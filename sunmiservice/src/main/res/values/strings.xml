@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">SunmiService</string>
+    <string name="str_net_exception">网络连接异常，请检查后重试</string>
+    <string name="str_check_net">请检查网络</string>
+    <string name="str_btn_try_again">点击重试</string>
+    <string name="str_copy_link">复制链接</string>
+    <string name="tip_copy_success">复制成功</string>
+    <string name="title_share_page">无需抵押，15分钟贷300万！</string>
+    <string name="description_share_page">微业贷-企业贷款就是快！</string>
+    <string name="str_share_to">分享到</string>
+    <string name="tip_wechat_not_installed">您还没有安装微信</string>
+    <string name="str_text_share">分享</string>
+    <string name="str_text_edit_sharing_content">编辑分享内容</string>
+    <string name="str_text_follow_official_weibo">关注官方微博</string>
+    <string name="str_unknown">未知</string>
+</resources>
