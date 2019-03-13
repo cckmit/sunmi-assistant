@@ -1,0 +1,82 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorOrange</item>
+
+        <!--上方状态栏-->
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <style name="activity_header_title_style">
+        <item name="android:textColor">@color/c_white</item>
+        <item name="android:textSize">@dimen/sp_22</item>
+        <item name="android:padding">@dimen/dp_2</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Son_dialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:background">#00000000</item>
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <style name="edittext_s_style">
+        <item name="android:background">@drawable/edittext_bg</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textSize">@dimen/sp_16</item>
+        <item name="android:textColor">@color/c_black</item>
+    </style>
+    <!--动画-->
+    <style name="RightInRightOutAnim" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/slide_in_right</item>
+        <item name="android:activityCloseEnterAnimation">@anim/slide_in_left</item>
+
+        <item name="android:activityOpenExitAnimation">@anim/slide_out_left</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_out_right</item>
+    </style>
+
+
+    <style name="Animation_RightInRightOutActivity" parent="android:Theme.Light">
+        <item name="android:windowAnimationStyle">@style/RightInRightOutAnim</item>
+    </style>
+
+    <style name="verify_code_text_style">
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_width">41dp</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/white_95a</item>
+        <item name="android:textSize">@dimen/dp_30</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!--底部菜单-->
+    <style name="PopWindowStyle" parent="@android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
+
+    <style name="PopWindowAnimation" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@null</item>
+        <item name="android:windowExitAnimation">@null</item>
+    </style>
+
+    <style name="MyEditText" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/colorOrange</item>
+        <item name="colorControlActivated">@color/colorOrange</item>
+    </style>
+
+</resources>

@@ -1,0 +1,65 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager_view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <Button
+        android:id="@+id/btnSkip"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_24"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/margin_50"
+        android:layout_marginEnd="@dimen/margin_30"
+        android:background="@drawable/edittext_edge_gold2"
+        android:text="@string/str_skip"
+        android:textColor="@color/colorWhite_30"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:visibility="visible" />
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/dp_36"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/point1"
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:background="@drawable/oval_gold" />
+
+        <ImageView
+            android:id="@+id/point2"
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/point1"
+            android:background="@drawable/oval_black_light" />
+
+        <ImageView
+            android:id="@+id/point3"
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/point2"
+            android:background="@drawable/oval_black_light" />
+
+        <ImageView
+            android:id="@+id/point4"
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/point3"
+            android:background="@drawable/oval_black_light" />
+    </RelativeLayout>
+
+</RelativeLayout>
