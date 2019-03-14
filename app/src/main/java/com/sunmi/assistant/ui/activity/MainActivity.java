@@ -71,7 +71,6 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
     private void initTabs() {
         mTabHost.setup(context, getSupportFragmentManager(), R.id.fl_content);
         mTabHost.getTabWidget().setShowDividers(0);
-
         MainTab[] mainTabs = MainTab.values();
         for (MainTab mainTab : mainTabs) {
             TabHost.TabSpec tab = mTabHost.newTabSpec(getString(mainTab.getResName()));
