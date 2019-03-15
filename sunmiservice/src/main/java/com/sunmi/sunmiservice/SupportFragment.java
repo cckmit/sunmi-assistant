@@ -77,12 +77,6 @@ public class SupportFragment extends BaseFragment
         mRefreshLayout.setIsShowLoadingMoreView(false); // 设置正在加载更多时的文本
     }
 
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (!hidden) refreshService();
-    }
-
     private void initWebView() {
         JSCall jsCall = new JSCall(mActivity, webView);
         jsCall.setApi(api);
@@ -199,7 +193,7 @@ public class SupportFragment extends BaseFragment
 
     @Override
     public void onProgressComplete() {
-        mRefreshLayout.endRefreshing();
+        endRefresh();
     }
 
     @Override
@@ -233,10 +227,19 @@ public class SupportFragment extends BaseFragment
 
     }
 
+    private void endRefresh() {
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mRefreshLayout.endRefreshing();
+            }
+        });
+    }
+
     private void refreshService() {
         if (!NetworkUtils.isNetworkAvailable(mActivity)) {
             shortTip(getString(R.string.str_check_net));
-            mRefreshLayout.endRefreshing();
+            endRefresh();
             return;
         }
         rlNetException.setVisibility(View.GONE);

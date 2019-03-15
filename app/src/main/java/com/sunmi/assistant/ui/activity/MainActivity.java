@@ -101,10 +101,12 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
         mTabHost.setOnTabChangedListener(this);
         mTabHost.getTabWidget().getChildAt(0).setOnClickListener(v -> {
             mTabHost.setCurrentTab(0);
+            if (isFastClick(1300)) return;
             BaseNotification.newInstance().postNotificationName(NotificationConfig.tabStore, "tabStore");
         });
         mTabHost.getTabWidget().getChildAt(1).setOnClickListener(v -> {
             mTabHost.setCurrentTab(1);
+            if (isFastClick(1300)) return;
             BaseNotification.newInstance().postNotificationName(NotificationConfig.tabSupport, "tabSupport");
         });
     }
