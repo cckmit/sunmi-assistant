@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/ic_background">
+
+    <TextView
+        android:id="@+id/tvLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_100"
+        android:background="@mipmap/ic_logo_text"
+        android:visibility="visible" />
+
+    <RelativeLayout
+        style="@style/marginLeftRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvLogo"
+        android:layout_centerInParent="true">
+
+        <RelativeLayout
+            android:id="@+id/rlUser"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_54"
+            android:layout_marginTop="@dimen/dp_72"
+            android:background="@drawable/edittext_edge_white">
+
+            <sunmi.common.view.ClearableEditText
+                android:id="@+id/etUser"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/margin_35"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20"
+                android:background="@null"
+                android:hint="@string/hint_input_user_name"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/colorWhite"
+                android:textColorHint="@color/white_40a"
+                android:textSize="@dimen/sp_16" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlPassword"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_54"
+            android:layout_below="@+id/rlUser"
+            android:layout_marginTop="@dimen/dp_12"
+            android:background="@drawable/edittext_edge_white">
+
+            <sunmi.common.view.ClearableEditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/margin_35"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_60"
+                android:background="@null"
+                android:hint="@string/hint_input_password"
+                android:inputType="textPassword"
+                android:maxLength="30"
+                android:textColor="@color/colorWhite"
+                android:textColorHint="@color/white_40a"
+                android:textSize="@dimen/sp_16" />
+
+            <ImageButton
+                android:id="@+id/passwordIsVisible"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dp_20"
+                android:background="@mipmap/ic_eye_light_hide" />
+        </RelativeLayout>
+
+
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_54"
+            android:layout_below="@+id/rlPassword"
+            android:layout_marginTop="@dimen/dp_15"
+            android:background="@drawable/edittext_soild_orange"
+            android:text="@string/str_login"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/sp_18" />
+
+        <RelativeLayout
+            android:id="@+id/rlForget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnLogin">
+
+            <TextView
+                android:id="@+id/tvForgetPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:paddingTop="@dimen/dp_12"
+                android:paddingBottom="@dimen/dp_12"
+                android:text="@string/tip_forget_psd"
+                android:textColor="@color/white_60a"
+                android:textSize="@dimen/sp_12" />
+
+            <TextView
+                android:id="@+id/tvSMSLogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:gravity="right"
+                android:paddingTop="@dimen/dp_12"
+                android:paddingBottom="@dimen/dp_12"
+                android:text="@string/str_sms_login"
+                android:textColor="@color/white_60a"
+                android:textSize="@dimen/sp_12" />
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/btnRegister"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_54"
+            android:layout_below="@+id/rlForget"
+            android:layout_marginTop="@dimen/margin_50"
+            android:layout_weight="0.5"
+            android:background="@drawable/edittext_edge_orange"
+            android:text="@string/str_register"
+            android:textColor="@color/colorOrangeText"
+            android:textSize="@dimen/sp_18" />
+
+        <Button
+            android:id="@+id/btnFixPassword"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_40"
+            android:layout_below="@+id/btnRegister"
+            android:layout_marginTop="@dimen/margin_10"
+            android:layout_weight="0.5"
+            android:background="@drawable/button_selector_edge2"
+            android:text="@string/str_change_password"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/sp_18"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_54"
+            android:layout_below="@+id/btnFixPassword"
+            android:layout_marginTop="@dimen/margin_10"
+            android:background="@drawable/button_selector_edge2"
+            android:text="@string/str_logout"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/sp_18"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+</RelativeLayout>

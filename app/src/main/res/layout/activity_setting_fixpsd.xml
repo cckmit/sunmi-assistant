@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorTextF4">
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/c_white"
+        app:dividerShow="true"
+        app:leftDefaultClickEnable="true"
+        app:leftIcon="@mipmap/ic_back_dark"
+        app:titleText="@string/str_change_password"
+        app:rightText="@string/str_complete"
+        app:titleTextColor="@color/colorText" />
+
+    <RelativeLayout
+        android:id="@+id/rlOri"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_60"
+        android:layout_below="@id/title_bar"
+        android:background="@color/colorWhite">
+
+        <TextView
+            android:id="@+id/tvOri"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dp_25"
+            android:text="@string/str_original_psw"
+            android:textColor="@color/colorText"
+            android:textSize="@dimen/sp_16" />
+
+        <sunmi.common.view.ClearableEditText
+            android:id="@+id/tvOriPassword"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_40"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dp_32"
+            android:layout_marginEnd="@dimen/dp_60"
+            android:layout_toEndOf="@id/tvOri"
+            android:background="@null"
+            android:hint="@string/tip_input_original_psw"
+            android:inputType="textPassword"
+            android:textColor="@color/colorText"
+            android:textColorHint="@color/colorText_40"
+            android:textSize="@dimen/sp_16" />
+
+        <ImageButton
+            android:id="@+id/passwordIsVisible"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:background="@mipmap/ic_eye_dark_hide" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlNew"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_60"
+        android:layout_below="@id/rlOri"
+        android:layout_marginTop="0.5dp"
+        android:background="@color/colorWhite">
+
+        <TextView
+            android:id="@+id/tvNew"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dp_25"
+            android:text="@string/str_new_psw"
+            android:textColor="@color/colorText"
+            android:textSize="@dimen/sp_16" />
+
+        <sunmi.common.view.ClearableEditText
+            android:id="@+id/tvNewPassword"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_40"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dp_32"
+            android:layout_marginEnd="@dimen/dp_60"
+            android:layout_toEndOf="@id/tvNew"
+            android:background="@null"
+            android:hint="@string/tip_input_new_psw"
+            android:inputType="textPassword"
+            android:maxLength="30"
+            android:textColor="@color/colorText"
+            android:textColorHint="@color/colorText_40"
+            android:textSize="@dimen/sp_16" />
+
+        <ImageButton
+            android:id="@+id/passwordIsVisibleNew"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:background="@mipmap/ic_eye_dark_hide" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlSureNew"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_60"
+        android:layout_below="@id/rlNew"
+        android:layout_marginTop="0.5dp"
+        android:background="@color/colorWhite">
+
+        <TextView
+            android:id="@+id/tvSureNew"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dp_25"
+            android:maxLength="30"
+            android:text="@string/str_psw_again"
+            android:textColor="@color/colorText"
+            android:textSize="@dimen/sp_16" />
+
+        <sunmi.common.view.ClearableEditText
+            android:id="@+id/tvSureNewPassword"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_40"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_60"
+            android:layout_toEndOf="@id/tvSureNew"
+            android:background="@null"
+            android:hint="@string/tip_input_psw_again"
+            android:inputType="textPassword"
+            android:textColor="@color/colorText"
+            android:textColorHint="@color/colorText_40"
+            android:textSize="@dimen/sp_16" />
+
+        <ImageButton
+            android:id="@+id/passwordIsVisibleSureNew"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:background="@mipmap/ic_eye_dark_hide" />
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rlSureNew"
+        android:layout_marginStart="@dimen/dp_25"
+        android:layout_marginTop="@dimen/dp_8"
+        android:text="@string/tip_password_non_standard"
+        android:textColor="@color/colorText_60"
+        android:textSize="@dimen/sp_12" />
+
+</RelativeLayout>

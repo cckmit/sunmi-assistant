@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/c_white">
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/c_white"
+        app:dividerShow="true"
+        app:leftDefaultClickEnable="true"
+        app:leftIcon="@mipmap/ic_back_dark"
+        app:titleText="@string/str_about"
+        app:titleTextColor="@color/colorText" />
+
+    <ImageView
+        android:id="@+id/ivLogo"
+        android:layout_width="@dimen/dp_62"
+        android:layout_height="@dimen/dp_62"
+        android:layout_below="@id/title_bar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_40"
+        android:background="@mipmap/ic_logo" />
+
+    <TextView
+        android:id="@+id/tvVersion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ivLogo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_10"
+        android:text="@string/app_name" />
+
+    <RelativeLayout
+        android:id="@+id/rlVersion"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_60"
+        android:layout_below="@id/tvVersion"
+        android:layout_marginTop="@dimen/dp_38"
+        android:background="@color/colorWhite">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_alignParentTop="true"
+            android:background="@color/colorText_10" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_25"
+            android:layout_toRightOf="@+id/iv10"
+             android:text="@string/str_version_update"
+            android:textColor="@color/colorText"
+            android:textSize="@dimen/sp_16" />
+
+        <RelativeLayout
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dp_15">
+
+            <ImageView
+                android:layout_width="@dimen/dp_15"
+                android:layout_height="@dimen/dp_18"
+                android:layout_centerInParent="true"
+                android:background="@mipmap/ic_right_arrow_small" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rlVersion"
+        android:background="@color/colorText_5">
+
+        <LinearLayout
+            android:id="@+id/rl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/dp_50"
+            android:gravity="center_horizontal">
+
+            <RelativeLayout
+                android:id="@+id/rlUserProtocol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tvPro"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sunmi_user_protocol"
+                    android:textColor="@color/common_orange"
+                    android:textSize="@dimen/sp_10" />
+
+                <TextView
+                    android:layout_width="@dimen/dp_60"
+                    android:layout_height="0.6dp"
+                    android:layout_below="@+id/tvPro"
+                    android:layout_centerHorizontal="true"
+                    android:background="@color/common_orange" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/str_and"
+                android:textColor="@color/common_orange"
+                android:textSize="@dimen/sp_10" />
+
+            <RelativeLayout
+                android:id="@+id/rlUserPrivate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tvPri"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/str_privacy"
+                    android:textColor="@color/common_orange"
+                    android:textSize="@dimen/sp_10" />
+
+                <TextView
+                    android:layout_width="@dimen/dp_40"
+                    android:layout_height="0.6dp"
+                    android:layout_below="@+id/tvPri"
+                    android:layout_centerHorizontal="true"
+                    android:background="@color/common_orange" />
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/dp_32"
+            android:layout_marginTop="@dimen/dp_10"
+            android:text="@string/str_sunmi_copyright_sound"
+            android:textColor="@color/colorText_40"
+            android:textSize="@dimen/sp_10" />
+
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

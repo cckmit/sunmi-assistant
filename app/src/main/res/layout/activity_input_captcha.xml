@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/ic_background">
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        app:dividerColor="@color/white_10a"
+        app:dividerShow="true"
+        app:leftDefaultClickEnable="true"
+        app:leftIcon="@mipmap/ic_back_white"
+        app:titleText="@string/str_set_password"
+        app:titleTextColor="@color/colorWhite" />
+
+    <LinearLayout
+        android:id="@+id/ll_register_step"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@+id/title_bar"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/white_60a" />
+
+        <TextView
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/white_60a" />
+
+        <TextView
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/white_20a" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_tip"
+        style="@style/marginLeftRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_157"
+        android:text="@string/str_input_captcha"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/sp_28" />
+
+    <RelativeLayout
+        android:id="@+id/ll_input"
+        style="@style/marginLeftRight"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_54"
+        android:layout_below="@+id/tv_tip"
+        android:layout_marginTop="@dimen/dp_24"
+        android:background="@drawable/edittext_edge_white">
+
+        <sunmi.common.view.ClearableEditText
+            android:id="@+id/cet_captcha"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_toStartOf="@+id/btn_resend"
+            android:background="@null"
+            android:hint="@string/tip_input_captcha"
+            android:inputType="number"
+            android:maxLength="4"
+            android:textColor="@color/colorWhite"
+            android:textColorHint="@color/white_40a"
+            android:textSize="@dimen/sp_16" />
+
+        <Button
+            android:id="@+id/btn_resend"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:background="@null"
+            android:text="@string/str_get_captcha"
+            android:textColor="@color/common_orange"
+            android:textSize="@dimen/sp_12" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_mobile"
+        style="@style/marginLeftRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_input"
+        android:layout_marginTop="@dimen/dp_8"
+        android:textColor="@color/white_40a"
+        android:textSize="@dimen/sp_12" />
+
+    <Button
+        android:id="@+id/btn_confirm"
+        style="@style/marginLeftRight"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_54"
+        android:layout_below="@+id/tv_mobile"
+        android:layout_marginTop="@dimen/dp_24"
+        android:background="@drawable/edittext_soild_orange"
+        android:text="@string/str_next"
+        android:textColor="@color/colorCalendarGrey2"
+        android:textSize="@dimen/sp_18" />
+
+</RelativeLayout>

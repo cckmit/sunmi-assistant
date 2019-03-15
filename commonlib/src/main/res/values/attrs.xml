@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TitleBarView">
+        <!--左边icon-->
+        <attr name="leftIcon" format="reference" />
+        <!--todo 左边文字、文字颜色、文字大小-->
+        <attr name="leftText" />
+        <attr name="leftTextColor" />
+        <attr name="leftTextSize" />
+        <!--todo Title文字、文字颜色、文字大小-->
+        <attr name="titleText" format="string" />
+        <attr name="titleTextColor" format="color" />
+        <attr name="titleTextSize" format="dimension" />
+        <!--todo 右边icon-->
+        <attr name="rightIcon" format="reference" />
+        <!--todo 右边文字、文字颜色、文字大小-->
+        <attr name="rightText" />
+        <attr name="rightTextColor" />
+        <attr name="rightTextSize" />
+        <!--状态栏颜色-->
+        <attr name="statusBarColor" format="reference" />
+        <!--分割线-->
+        <attr name="dividerShow" format="boolean" />
+        <attr name="dividerColor" format="color" />
+
+        <!--左边icon默认点击事件-->
+        <attr name="leftDefaultClickEnable" format="boolean" />
+
+        <attr name="topview_isAdjustResize" format="boolean" />
+    </declare-styleable>
+
+
+    <declare-styleable name="SettingItemLayout">
+        <attr name="parentWidth" format="dimension" />
+        <attr name="parentHeight" format="dimension" />
+        <attr name="leftText" />
+        <attr name="leftTextSize" />
+        <attr name="leftTextColor" />
+        <attr name="rightText" />
+        <attr name="rightTextSize" />
+        <attr name="rightTextColor" />
+        <attr name="imageLeft" format="reference" />
+        <attr name="imageLeftSize" format="dimension" />
+        <attr name="imageRight" format="reference" />
+        <attr name="leftPadding" format="dimension" />
+        <attr name="rightPadding" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="VerifyCodeInputView">
+        <attr name="box" format="integer" />
+        <attr name="child_h_padding" format="dimension" />
+        <attr name="child_v_padding" format="dimension" />
+        <attr name="child_width" format="dimension" />
+        <attr name="child_height" format="dimension" />
+        <attr name="text_color" format="color" />
+        <attr name="text_size" format="dimension" />
+        <attr name="padding" format="dimension" />
+        <attr name="box_bg_focus" format="reference" />
+        <attr name="box_bg_normal" format="reference" />
+        <attr name="inputType" format="string" />
+    </declare-styleable>
+</resources>
