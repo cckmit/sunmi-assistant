@@ -27,6 +27,7 @@ import org.androidannotations.annotations.ViewById;
 import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseFragment;
+import sunmi.common.constant.NotificationConfig;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -253,5 +254,18 @@ public class SupportFragment extends BaseFragment
     @Override
     public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
         return false;
+    }
+
+    @Override
+    public void didReceivedNotification(int id, Object... args) {
+        super.didReceivedNotification(id, args);
+        if (id == NotificationConfig.tabSupport) {
+            refreshService();
+        }
+    }
+
+    @Override
+    public int[] getStickNotificationId() {
+        return new int[]{NotificationConfig.tabSupport};
     }
 }
