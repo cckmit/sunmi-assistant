@@ -15,3 +15,6 @@
 /360jiagu/
 /JenkinsFile/
 /apmanager/.externalNativeBuild/
+/apmanager/
+/gradle/
+/settings.gradle
