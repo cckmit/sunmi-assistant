@@ -20,7 +20,7 @@ platform :android do
   lane :testEnv do
     gradle(
       task: "clean assemble",
-      build_type: "Debug",
+      build_type: "debug",
       properties: {
         "android.injected.signing.store.file" => ENV["WORKSPACE"] + "/Keystore.jks",
         "android.injected.signing.store.password" => "SUNMIwireless388",
@@ -32,7 +32,7 @@ platform :android do
   lane :releaseEnv do
     gradle(
       task: "clean assemble",
-      build_type: "Release",
+      build_type: "release",
       properties: {
         "android.injected.signing.store.file" => ENV["WORKSPACE"] + "/Keystore.jks",
         "android.injected.signing.store.password" => "SUNMIwireless388",
