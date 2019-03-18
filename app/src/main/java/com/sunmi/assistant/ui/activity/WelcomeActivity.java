@@ -22,6 +22,7 @@ import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.UiThread;
 import org.json.JSONObject;
 
 import okhttp3.Call;
@@ -182,13 +183,9 @@ public class WelcomeActivity extends BaseActivity {
         });
     }
 
-    private void forceUpdate(final String url) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                getUpgradeDialog(url).show();
-            }
-        });
+    @UiThread
+    void forceUpdate(final String url) {
+        getUpgradeDialog(url).show();
     }
 
     private CommonDialog getUpgradeDialog(final String url) {
