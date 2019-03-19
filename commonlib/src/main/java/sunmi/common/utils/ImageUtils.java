@@ -24,8 +24,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
-import sunmi.common.utils.log.LogCat;
-
 public class ImageUtils {
     /**
      * 按宽/高缩放图片到指定大小并进行裁剪得到中间部分图片
@@ -243,11 +241,11 @@ public class ImageUtils {
                                  boolean forceRefresh, int failureImgId) {
         if (TextUtils.isEmpty(url)) return;
         if (forceRefresh) {
-            Glide.with(context).load(url).error(failureImgId)
+            Glide.with(context).load(url).asBitmap().error(failureImgId)
                     .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
                     .diskCacheStrategy(DiskCacheStrategy.ALL).into(view);
         } else {
-            Glide.with(context).load(url).error(failureImgId)
+            Glide.with(context).load(url).asBitmap().error(failureImgId)
                     .diskCacheStrategy(DiskCacheStrategy.ALL).into(view);
         }
     }
