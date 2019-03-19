@@ -1,8 +1,6 @@
 package sunmi.common.view.webview;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.net.http.SslError;
 import android.os.Message;
 import android.webkit.SslErrorHandler;
@@ -10,10 +8,6 @@ import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-
-import com.commonlibrary.R;
-
-import sunmi.common.utils.log.LogCat;
 
 public abstract class SMWebViewClient extends WebViewClient {
 
@@ -52,24 +46,24 @@ public abstract class SMWebViewClient extends WebViewClient {
     @Override
     public void onReceivedSslError(WebView view, final SslErrorHandler handler,
                                    SslError error) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setMessage(R.string.str_ssl_error);
-        builder.setPositiveButton(mContext.getString(R.string.str_confirm),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        handler.proceed();
-                    }
-                });
-        builder.setNegativeButton(mContext.getString(R.string.str_cancel),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        handler.cancel();
-                    }
-                });
-        final AlertDialog dialog = builder.create();
-        dialog.show();
+//        final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+//        builder.setMessage(R.string.str_ssl_error);
+//        builder.setPositiveButton(mContext.getString(R.string.str_confirm),
+//                new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+        handler.proceed();
+//                    }
+//                });
+//        builder.setNegativeButton(mContext.getString(R.string.str_cancel),
+//                new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        handler.cancel();
+//                    }
+//                });
+//        final AlertDialog dialog = builder.create();
+//        dialog.show();
     }
 
     /**

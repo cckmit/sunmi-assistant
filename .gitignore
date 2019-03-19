@@ -13,6 +13,9 @@
 /debug/
 /keystore
 /apmanager/.externalNativeBuild/
+/apmanager/
+/gradle/
+/settings.gradle
 /360jiagu/
 /fastlane/
 /JenkinsFile/

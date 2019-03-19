@@ -94,19 +94,13 @@ dependencies {
 //    implementation fileTree(include: ['*.aar'], dir: 'libs')//不要提交！！！
     implementation project(':apmanager')//不要提交！！！
 
-//    implementation "com.android.support:appcompat-v7:${SUPPORT_VERSION}"
-//    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
-//    implementation "org.androidannotations:androidannotations-api:${AAVersion}"
     annotationProcessor "org.androidannotations:androidannotations:${AAVersion}"
 
     implementation project(':commonlib')//公共库
     implementation project(':sunmiservice')
-
-//    //wechat
-//    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
 
 }
