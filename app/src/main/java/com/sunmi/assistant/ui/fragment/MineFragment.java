@@ -23,10 +23,10 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.StringHelper;
+import sunmi.common.view.CircleImage;
 
 /**
  * 我的
@@ -36,7 +36,7 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
         implements MineContract.View {
 
     @ViewById(R.id.civ_avatar)
-    CircleImageView civAvatar;
+    CircleImage civAvatar;
     @ViewById(R.id.tv_name)
     TextView tvName;
     @ViewById(R.id.tv_account)

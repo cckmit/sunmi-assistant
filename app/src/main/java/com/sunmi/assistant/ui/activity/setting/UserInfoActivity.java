@@ -28,7 +28,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.notification.BaseNotification;
@@ -37,6 +36,7 @@ import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.PermissionUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.StringHelper;
+import sunmi.common.view.CircleImage;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.bottompopmenu.BottomPopMenu;
 import sunmi.common.view.bottompopmenu.PopItemAction;
@@ -49,8 +49,8 @@ import sunmi.common.view.bottompopmenu.PopItemAction;
 public class UserInfoActivity extends BaseMvpActivity<UserInfoPresenter>
         implements UserInfoContract.View {
 
-    @ViewById(R.id.civ_avatar)
-    CircleImageView civAvatar;
+    @ViewById(R.id.ci_avatar)
+    CircleImage civAvatar;
     @ViewById(R.id.sil_nickname)
     SettingItemLayout silNickname;
     @ViewById(R.id.sil_phone)

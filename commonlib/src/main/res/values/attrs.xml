@@ -59,4 +59,9 @@
         <attr name="box_bg_normal" format="reference" />
         <attr name="inputType" format="string" />
     </declare-styleable>
+
+    <declare-styleable name="CircleImage">
+        <attr name="radius" format="dimension" />
+    </declare-styleable>
+
 </resources>
