@@ -43,6 +43,7 @@ public class BootLoader {
         new SunmiServiceConfig().init(context, env);
 
         LogCat.init(!TextUtils.equals(env, ApConfig.ENV_RELEASE));//log 开关
+
         //file
         FileHelper.getInstance();
         //初始化创建数据库

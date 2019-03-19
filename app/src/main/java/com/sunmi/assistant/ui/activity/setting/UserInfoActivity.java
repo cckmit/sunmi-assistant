@@ -4,20 +4,16 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.contract.UserInfoContract;
 import com.sunmi.apmanager.model.UserInfo;
 import com.sunmi.apmanager.presenter.UserInfoPresenter;
-import com.sunmi.apmanager.rpc.ap.ResponseBean;
 import com.sunmi.apmanager.utils.FileHelper;
-import com.sunmi.apmanager.utils.NetConnectUtils;
 import com.sunmi.apmanager.utils.PhotoUtils;
 import com.sunmi.apmanager.utils.SpUtils;
 import com.sunmi.assistant.R;
@@ -73,8 +69,7 @@ public class UserInfoActivity extends BaseMvpActivity<UserInfoPresenter>
 
     @AfterViews
     void init() {
-        StatusBarUtils.setStatusBarColor(this,
-                StatusBarUtils.TYPE_DARK);//状态栏
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
         cropPath = FileHelper.SDCARD_CACHE_IMAGE_PATH + SpUtils.getUID() + "_avatar.jpg";
         initViews();
         mPresenter = new UserInfoPresenter();

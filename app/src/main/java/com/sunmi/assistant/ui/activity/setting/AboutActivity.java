@@ -1,9 +1,6 @@
 package com.sunmi.assistant.ui.activity.setting;
 
 import android.app.Activity;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
 import android.view.View;
 import android.widget.TextView;
 
@@ -28,7 +25,6 @@ import okhttp3.Response;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.StatusBarUtils;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.dialog.CommonDialog;
 
 /**
