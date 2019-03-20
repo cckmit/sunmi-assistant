@@ -26,6 +26,7 @@ import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.rpc.sso.SSOApi;
 import com.sunmi.apmanager.ui.view.MergeDialog;
 import com.sunmi.apmanager.update.AppUpdate;
+import com.sunmi.apmanager.update.AppUpdateDialog;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.DialogUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
@@ -34,6 +35,8 @@ import com.sunmi.apmanager.utils.SpUtils;
 import com.sunmi.apmanager.utils.UDPUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.MainActivity_;
+import com.vector.update_app.UpdateAppManager;
+import com.vector.update_app.UpdateDialogFragment;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -137,7 +140,6 @@ public class LoginActivity extends BaseActivity {
             etUser.setText(SpUtils.getEmail());
         }
 
-//        AppUpdate.versionUpdate((Activity) context, AppUpdate.updateUrl);
     }
 
     private void initData() {
@@ -174,6 +176,7 @@ public class LoginActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         UDPUtils.UdpManual.initSearchRouter(mHandler, this);//搜索路由器
+        HelpUtils.setSelectionEnd(etUser);
     }
 
     @Override
