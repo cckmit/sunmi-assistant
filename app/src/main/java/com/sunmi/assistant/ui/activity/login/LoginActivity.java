@@ -1,6 +1,5 @@
 package com.sunmi.assistant.ui.activity.login;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -25,7 +23,6 @@ import com.sunmi.apmanager.rpc.RpcCallback;
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.rpc.sso.SSOApi;
 import com.sunmi.apmanager.ui.view.MergeDialog;
-import com.sunmi.apmanager.update.AppUpdate;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.DialogUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
@@ -45,10 +42,8 @@ import org.json.JSONObject;
 import java.lang.ref.WeakReference;
 
 import sunmi.common.base.BaseActivity;
-import sunmi.common.base.BaseApplication;
 import sunmi.common.utils.PermissionUtils;
 import sunmi.common.utils.RegexUtils;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.dialog.CommonDialog;
 
@@ -137,7 +132,6 @@ public class LoginActivity extends BaseActivity {
             etUser.setText(SpUtils.getEmail());
         }
 
-//        AppUpdate.versionUpdate((Activity) context, AppUpdate.updateUrl);
     }
 
     private void initData() {
@@ -174,6 +168,7 @@ public class LoginActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         UDPUtils.UdpManual.initSearchRouter(mHandler, this);//搜索路由器
+        HelpUtils.setSelectionEnd(etUser);
     }
 
     @Override

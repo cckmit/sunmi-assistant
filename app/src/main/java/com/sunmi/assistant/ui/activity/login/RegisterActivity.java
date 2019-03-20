@@ -61,6 +61,7 @@ public class RegisterActivity extends BaseActivity {
             String mobile = bundle.getString("mobile");
             if (!TextUtils.isEmpty(mobile)) {
                 etMobile.setText(mobile);
+                HelpUtils.setSelectionEnd(etMobile);
             }
         }
         CommonUtils.trackDurationEventBegin(context, "registerUsernameDuration",

@@ -51,6 +51,7 @@ public class SendSmsLoginActivity extends BaseActivity {
             mobile = bundle.getString("mobile");
             if (!TextUtils.isEmpty(mobile)) {
                 etMobile.setText(mobile);
+                HelpUtils.setSelectionEnd(etMobile);
             }
         }
     }
