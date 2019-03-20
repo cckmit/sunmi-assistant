@@ -1,1 +1,1 @@
-include ':app', ':commonlib',  ':sunmiservice',':apmanager'
+include ':app', ':commonlib',  ':sunmiservice'//,':apmanager'
