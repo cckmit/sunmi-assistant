@@ -50,6 +50,7 @@ public class RetrievePasswordActivity extends BaseActivity {
             String phoneNum = bundle.getString("mobile");
             if (!TextUtils.isEmpty(phoneNum)) {
                 etMobile.setText(phoneNum);
+                HelpUtils.setSelectionEnd(etMobile);
             }
         }
         HelpUtils.setStatusBarFullTransparent(this);//透明标题栏

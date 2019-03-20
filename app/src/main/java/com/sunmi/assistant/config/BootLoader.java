@@ -42,7 +42,7 @@ public class BootLoader {
         new ApConfig().init(context, env);
         new SunmiServiceConfig().init(context, env);
 
-        LogCat.init(!TextUtils.equals(env, ApConfig.ENV_RELEASE));//log 开关
+        LogCat.init(TextUtils.equals(env, ApConfig.ENV_RELEASE));//log 开关
 
         //file
         FileHelper.getInstance();
