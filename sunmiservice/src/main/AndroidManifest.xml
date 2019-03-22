@@ -10,7 +10,6 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application>
-
         <activity
             android:name="com.sunmi.assistant.wxapi.WXEntryActivity"
             android:exported="true"

@@ -4,6 +4,7 @@ import com.sunmi.apmanager.ui.fragment.StoreFragment;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.MainActivity;
 import com.sunmi.assistant.ui.fragment.MineFragment_;
+import com.sunmi.ipc.IPCFragment_;
 import com.sunmi.sunmiservice.SupportFragment_;
 
 public enum MainTab {
@@ -13,6 +14,13 @@ public enum MainTab {
             R.string.str_store,
             R.drawable.tab_store,
             StoreFragment.class
+    ),
+
+    IPC(
+            MainActivity.TAB_IPC,
+            R.string.str_ipc,
+            R.drawable.tab_store,
+            IPCFragment_.class
     ),
 
     SUPPORT(
