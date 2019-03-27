@@ -4,7 +4,6 @@ import com.sunmi.cloudprinter.bean.Router;
 
 public class Utility {
 
-
     /**
      * 获取命令码
      * @param data
@@ -116,8 +115,4 @@ public class Utility {
         connectedWifi[5] = 8;
         return connectedWifi;
     }
-
-
-
-
 }

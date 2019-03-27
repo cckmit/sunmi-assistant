@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.sunmi.cloudprinter.R;
@@ -32,6 +33,7 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.utils.PermissionUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
+import sunmi.common.view.dialog.CommonDialog;
 
 @EActivity(resName = "activity_search_bluetooth")
 public class SearchBluetoothActivity extends BaseActivity implements BluetoothAdapter.LeScanCallback {
@@ -81,23 +83,20 @@ public class SearchBluetoothActivity extends BaseActivity implements BluetoothAd
                 (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         btAdapter = bluetoothManager.getAdapter();
         if (btAdapter.getState() == BluetoothAdapter.STATE_OFF) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle(getString(R.string.str_prompt)).setMessage(getString(R.string.str_tip_start_blue))
-                    .setPositiveButton(getString(R.string.str_determine), new DialogInterface.OnClickListener() {
+            new CommonDialog.Builder(this).setTitle(R.string.str_prompt).setMessage(R.string.str_tip_start_blue)
+                    .setCancelButton(R.string.str_cancel, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            btAdapter.enable();
-                            mHandler.post(scanStart);
-                        }
-                    })
-                    .setNegativeButton(getString(R.string.str_cancel), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
                             finish();
                         }
-                    });
-            AlertDialog dialog = builder.create();
-            dialog.show();
+                    }).setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    btAdapter.enable();
+                    mHandler.post(scanStart);
+                }
+            }).create().show();
         }
         startScan();
     }
@@ -129,12 +128,12 @@ public class SearchBluetoothActivity extends BaseActivity implements BluetoothAd
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         rvResult.setLayoutManager(layoutManager);
         rvResult.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
-        adapter = new BlueListAdapter(context, list,bundle);
+        adapter = new BlueListAdapter(context, list, bundle);
         rvResult.setAdapter(adapter);
     }
 
     private void addDevice(BluetoothDevice device) {
-        if (!snSet.contains(device.getAddress()) && device.getName() != null) {
+        if (!snSet.contains(device.getAddress()) && !TextUtils.isEmpty(device.getName())) {
             LogCat.e(TAG, "222222 added device addr = " + device.getAddress());
             snSet.add(device.getAddress());
             BlueDevice bleDevice = new BlueDevice();

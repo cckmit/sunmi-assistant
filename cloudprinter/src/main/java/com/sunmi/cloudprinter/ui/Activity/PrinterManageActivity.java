@@ -128,14 +128,7 @@ public class PrinterManageActivity extends BaseActivity {
 
     @Click(resName = "img_back")
     public void backClick() {
-        try {
-            Class<?> mainActivity = Class.forName("com.sunmi.assistant.ui.activity.MainActivity_");
-            Intent intent = new Intent(context, mainActivity);
-            // intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            context.startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        onBackPressed();
     }
 
     @Override

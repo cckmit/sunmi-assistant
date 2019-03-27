@@ -13,9 +13,11 @@ import android.widget.TextView;
 
 import com.sunmi.cloudprinter.R;
 import com.sunmi.cloudprinter.bean.BlueDevice;
-import com.sunmi.cloudprinter.ui.Activity.ReadAndWriteActivity_;
+import com.sunmi.cloudprinter.ui.Activity.SetPrinterActivity_;
 
 import java.util.List;
+
+import sunmi.common.view.dialog.CommonDialog;
 
 public class BlueListAdapter extends RecyclerView.Adapter<BlueListAdapter.ViewHolder> {
 
@@ -23,12 +25,11 @@ public class BlueListAdapter extends RecyclerView.Adapter<BlueListAdapter.ViewHo
     private List<BlueDevice> data;
     private Bundle bundle;
 
-    public BlueListAdapter(Context context, List<BlueDevice> data,Bundle bundle) {
+    public BlueListAdapter(Context context, List<BlueDevice> data, Bundle bundle) {
         this.context = context;
         this.data = data;
         this.bundle = bundle;
     }
-
 
     @NonNull
     @Override
@@ -40,24 +41,20 @@ public class BlueListAdapter extends RecyclerView.Adapter<BlueListAdapter.ViewHo
             @Override
             public void onClick(View v) {
                 final int position = viewHolder.getAdapterPosition();
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle(R.string.str_prompt).setMessage(R.string.str_tip_link_device)
-                        .setPositiveButton(R.string.str_determine, new DialogInterface.OnClickListener() {
+                new CommonDialog.Builder(context).setTitle(R.string.str_prompt).setMessage(R.string.str_tip_link_device)
+                        .setCancelButton(R.string.str_cancel, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                ReadAndWriteActivity_.intent(context).bleAddress(data.get(position)
-                                        .getAddress()).bundle(bundle).start();
+                                dialog.dismiss();
                             }
                         })
-                        .setNegativeButton(R.string.str_cancel, new DialogInterface.OnClickListener() {
+                        .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-
+                                SetPrinterActivity_.intent(context).bleAddress(data.get(position)
+                                        .getAddress()).bundle(bundle).start();
                             }
-                        });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-
+                        }).create().show();
             }
         });
         return viewHolder;
@@ -68,7 +65,6 @@ public class BlueListAdapter extends RecyclerView.Adapter<BlueListAdapter.ViewHo
         viewHolder.tvBlueName.setText(data.get(i).getName());
         viewHolder.tvBlueAddress.setText(data.get(i).getAddress());
     }
-
 
     @Override
     public int getItemCount() {
@@ -82,12 +78,10 @@ public class BlueListAdapter extends RecyclerView.Adapter<BlueListAdapter.ViewHo
         TextView tvBlueName;
         TextView tvBlueAddress;
 
-
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvBlueName = itemView.findViewById(R.id.left_text);
             tvBlueAddress = itemView.findViewById(R.id.right_text);
         }
-
     }
 }

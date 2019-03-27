@@ -6,8 +6,6 @@
     <string name="str_read_write">点击建立连接</string>
     <string name="str_prompt">提示</string>
     <string name="str_tip_start_blue">是否开启蓝牙？</string>
-    <string name="str_determine">确定</string>
-    <string name="str_cancel">取消</string>
     <string name="str_tip_link_device">是否连接该设备？</string>
     <string name="str_tip_link_router">是否连接到该路由器？</string>
     <string name="hint_input_router_pwd">请输入路由器密码</string>

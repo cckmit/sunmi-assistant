@@ -12,7 +12,7 @@
 
     <application>
         <activity android:name=".ui.Activity.SearchBluetoothActivity_" />
-        <activity android:name=".ui.Activity.ReadAndWriteActivity_" />
+        <activity android:name=".ui.Activity.SetPrinterActivity_" />
         <activity android:name=".ui.Activity.PrinterManageActivity_" />
     </application>
 
