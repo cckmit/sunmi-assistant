@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_common">#0E333C4F</color>
+    <color name="bg_title_dark">#C5C5C5</color>
+    <color name="bg_btn_gray">#8e8e8e</color>
+    <color name="bg_toast">#565656</color>
+    <color name="divider">#e0e0e0</color>
+    <color name="btn_line">#d4d3d3</color>
+    <color name="text_color">#333C4F</color>
+    <color name="text_color_40">#66333C4F</color>
+
+    <!--<color name="common_orange">#FF6000</color>-->
+    <color name="common_orange">#FF671F</color>
+
+    <!--loading-->
+    <color name="colorLoadingReady">#FFAD29</color>
+
+    <color name="colorText_10">#1A333C4F</color>
+
+    <color name="colorText_40">#66333C4F</color>
+    <color name="colorLoginLine">#CBCBCB</color>
+    <color name="colorWhite">#FFFFFF</color>
+
+</resources>
