@@ -17,4 +17,5 @@
     <string name="str_no_sd">设备没有SD卡！</string>
     <string name="str_please_open_camera">请允许打开相机！！</string>
     <string name="str_please_open_sd">请允许打操作SDCard！！</string>
+
 </resources>

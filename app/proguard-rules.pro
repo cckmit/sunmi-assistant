@@ -122,3 +122,6 @@
 -keep public class javax.**
 -keep public class android.webkit.**
 -dontwarn android.support.v4.**
+
+-keep class com.pili.pldroid.player.** { *; }
+-keep class com.qiniu.qplayer.mediaEngine.MediaPlayer{*;}

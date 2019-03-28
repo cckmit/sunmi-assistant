@@ -15,6 +15,13 @@ public enum MainTab {
             StoreFragment.class
     ),
 
+//    IPC(
+//            MainActivity.TAB_IPC,
+//            R.string.str_ipc,
+//            R.drawable.tab_store,
+//            IPCFragment_.class
+//    ),
+
     SUPPORT(
             MainActivity.TAB_SUPPORT,
             R.string.str_support,
