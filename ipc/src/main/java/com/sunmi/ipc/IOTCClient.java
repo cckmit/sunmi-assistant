@@ -7,16 +7,19 @@ import com.tutk.IOTC.IOTCAPIs;
 import com.tutk.IOTC.St_AVClientStartInConfig;
 import com.tutk.IOTC.St_AVClientStartOutConfig;
 
+import java.io.DataInputStream;
+
+import sunmi.common.utils.log.LogCat;
+
 /**
- * IOTCClient.start(MainActivity.this.UID);
+ *
  */
 public class IOTCClient {
     public static void start(String uid) {
-
-        System.out.println("StreamClient start...");
+        LogCat.e("IOTCClient", "StreamClient start...");
 
         int ret = IOTCAPIs.IOTC_Initialize2(0);
-        Log.e("IOTCClient", "IOTC_Initialize() ret = %d" + ret);
+        Log.e("IOTCClient", "IOTC_Initialize() ret = " + ret);
         if (ret != IOTCAPIs.IOTC_ER_NoERROR) {
             Log.e("IOTCClient", "IOTCAPIs_Device exit...!!");
             return;
@@ -27,11 +30,11 @@ public class IOTCClient {
 
         int sid = IOTCAPIs.IOTC_Get_SessionID();
         if (sid < 0) {
-            Log.e("IOTCClient", "IOTC_Get_SessionID error code [%d]" + sid);
+            Log.e("IOTCClient", "IOTC_Get_SessionID error code, sid = " + sid);
             return;
         }
         ret = IOTCAPIs.IOTC_Connect_ByUID_Parallel(uid, sid);
-        Log.e("IOTCClient", "Step 2: call IOTC_Connect_ByUID_Parallel(%s)......." + uid);
+        Log.e("IOTCClient", "Step 2: call IOTC_Connect_ByUID_Parallel, uid = " + uid);
 
         int srvType = 0;
         int bResend = 0;
@@ -50,34 +53,32 @@ public class IOTCClient {
         int[] pservType = new int[100];
         int[] bResend1 = new int[100];
 
-//	public native static int  avClientStart2(int nSID,String viewAcc,String viewPwd, int timeout_sec,int[]pservType,int ChID, int[] bResend);
-        avIndex = AVAPIs.avClientStart2(sid, "admin", "12345678", 20, pservType, 1, bResend1);
+        avIndex = AVAPIs.avClientStart2(sid, "admin", "12345678",
+                20, pservType, 1, bResend1);
         bResend = av_client_out_config.resend;
         srvType = av_client_out_config.server_type;
-        Log.e("IOTCClient", "Step 2: call avClientStartEx(%d)......." + avIndex);
+        Log.e("IOTCClient", "Step 2: call avClientStartEx, avIndex = " + avIndex);
 
         if (avIndex < 0) {
-            Log.e("IOTCClient", "avClientStartEx failed[%d]" + avIndex);
+            Log.e("IOTCClient", "avClientStartEx failed avIndex = " + avIndex);
             return;
         }
 
         if (startIpcamStream(avIndex)) {
-            Thread videoThread = new Thread(new VideoThread(avIndex),
-                    "Video Thread");
-            Thread audioThread = new Thread(new AudioThread(avIndex),
-                    "Audio Thread");
+            Thread videoThread = new Thread(new VideoThread(avIndex), "Video Thread");
+            Thread audioThread = new Thread(new AudioThread(avIndex), "Audio Thread");
             videoThread.start();
             audioThread.start();
             try {
                 videoThread.join();
             } catch (InterruptedException e) {
-                System.out.println(e.getMessage());
+                LogCat.e("IOTCClient", e.getMessage());
                 return;
             }
             try {
                 audioThread.join();
             } catch (InterruptedException e) {
-                System.out.println(e.getMessage());
+                LogCat.e("IOTCClient", e.getMessage());
                 return;
             }
         }
@@ -93,8 +94,7 @@ public class IOTCClient {
 
     public static boolean startIpcamStream(int avIndex) {
         AVAPIs av = new AVAPIs();
-        int ret = av.avSendIOCtrl(avIndex, AVAPIs.IOTYPE_INNER_SND_DATA_DELAY,
-                new byte[2], 2);
+        int ret = av.avSendIOCtrl(avIndex, AVAPIs.IOTYPE_INNER_SND_DATA_DELAY, new byte[2], 2);
         if (ret < 0) {
             Log.e("IOTCClient", "start_ipcam_stream failed[%d]" + ret);
             return false;
@@ -104,26 +104,23 @@ public class IOTCClient {
         // Sample/Linux/Sample_AVAPIs/AVIOCTRLDEFs.h
         //
         int IOTYPE_USER_IPCAM_START = 0x1FF;
-        ret = av.avSendIOCtrl(avIndex, IOTYPE_USER_IPCAM_START,
-                new byte[8], 8);
+        ret = av.avSendIOCtrl(avIndex, IOTYPE_USER_IPCAM_START, new byte[8], 8);
         if (ret < 0) {
             Log.e("IOTCClient", "start_ipcam_stream failed[%d]" + ret);
             return false;
         }
 
         int IOTYPE_USER_IPCAM_AUDIOSTART = 0x300;
-        ret = av.avSendIOCtrl(avIndex, IOTYPE_USER_IPCAM_AUDIOSTART,
-                new byte[8], 8);
+        ret = av.avSendIOCtrl(avIndex, IOTYPE_USER_IPCAM_AUDIOSTART, new byte[8], 8);
         if (ret < 0) {
             Log.e("IOTCClient", "start_ipcam_stream failed[%d]" + ret);
             return false;
         }
-
         return true;
     }
 
     public static class VideoThread implements Runnable {
-        static final int VIDEO_BUF_SIZE = 100000;
+        static final int VIDEO_BUF_SIZE = 200000;
         static final int FRAME_INFO_SIZE = 16;
 
         private int avIndex;
@@ -134,9 +131,7 @@ public class IOTCClient {
 
         @Override
         public void run() {
-            Log.e("IOTCClient", "[%s] Start" +
-                    Thread.currentThread().getName());
-
+            Log.e("IOTCClient", Thread.currentThread().getName() + " VideoThread Start");
             AVAPIs av = new AVAPIs();
             byte[] frameInfo = new byte[FRAME_INFO_SIZE];
             byte[] videoBuffer = new byte[VIDEO_BUF_SIZE];
@@ -154,35 +149,29 @@ public class IOTCClient {
                         Thread.sleep(30);
                         continue;
                     } catch (InterruptedException e) {
-                        System.out.println(e.getMessage());
+                        LogCat.e("IOTCClient", e.getMessage());
                         break;
                     }
                 } else if (ret == AVAPIs.AV_ER_LOSED_THIS_FRAME) {
-                    Log.e("IOTCClient", "[%s] Lost video frame number[%d]" +
-                            Thread.currentThread().getName() + frameNumber[0]);
+                    Log.e("IOTCClient", "Lost video frame number[%d]" + frameNumber[0]);
                     continue;
                 } else if (ret == AVAPIs.AV_ER_INCOMPLETE_FRAME) {
-                    Log.e("IOTCClient", "[%s] Incomplete video frame number[%d]" +
-                            Thread.currentThread().getName() + frameNumber[0]);
+                    Log.e("IOTCClient", "Incomplete video frame number = " + frameNumber[0]);
                     continue;
                 } else if (ret == AVAPIs.AV_ER_SESSION_CLOSE_BY_REMOTE) {
-                    Log.e("IOTCClient", "[%s] AV_ER_SESSION_CLOSE_BY_REMOTE" +
-                            Thread.currentThread().getName());
+                    Log.e("IOTCClient", "AV_ER_SESSION_CLOSE_BY_REMOTE");
                     break;
                 } else if (ret == AVAPIs.AV_ER_REMOTE_TIMEOUT_DISCONNECT) {
-                    Log.e("IOTCClient", "[%s] AV_ER_REMOTE_TIMEOUT_DISCONNECT" +
-                            Thread.currentThread().getName());
+                    Log.e("IOTCClient", "AV_ER_REMOTE_TIMEOUT_DISCONNECT");
                     break;
                 } else if (ret == AVAPIs.AV_ER_INVALID_SID) {
-                    Log.e("IOTCClient", "[%s] Session cant be used anymore" +
-                            Thread.currentThread().getName());
+                    Log.e("IOTCClient", "Session cant be used anymore");
                     break;
                 }
+                if (callback != null) callback.onVideoReceived(videoBuffer);
                 Log.e("IOTCClient", "333333 received video ret = " + ret);
             }
-
-            Log.e("IOTCClient", "[%s] Exit" +
-                    Thread.currentThread().getName());
+            Log.e("IOTCClient", Thread.currentThread().getName() + " VideoThread Start");
         }
     }
 
@@ -198,8 +187,7 @@ public class IOTCClient {
 
         @Override
         public void run() {
-            Log.e("IOTCClient", "[%s] Start" +
-                    Thread.currentThread().getName());
+            Log.e("IOTCClient", Thread.currentThread().getName() + " AudioThread Start");
 
             AVAPIs av = new AVAPIs();
             byte[] frameInfo = new byte[FRAME_INFO_SIZE];
@@ -207,48 +195,153 @@ public class IOTCClient {
             while (true) {
                 int ret = av.avCheckAudioBuf(avIndex);
 
-                if (ret < 0) {
-                    // Same error codes as below
-                    Log.e("IOTCClient", "[%s] avCheckAudioBuf() failed: %d" +
-                            Thread.currentThread().getName() + ret);
+                if (ret < 0) {// Same error codes as below
+                    Log.e("IOTCClient", Thread.currentThread().getName()
+                            + " avCheckAudioBuf(),failed: = " + ret);
                     break;
                 } else if (ret < 3) {
                     try {
                         Thread.sleep(120);
                         continue;
                     } catch (InterruptedException e) {
-                        System.out.println(e.getMessage());
+                        LogCat.e("IOTCClient", e.getMessage());
                         break;
                     }
                 }
 
                 int[] frameNumber = new int[1];
                 ret = av.avRecvAudioData(avIndex, audioBuffer,
-                        AUDIO_BUF_SIZE, frameInfo, FRAME_INFO_SIZE,
-                        frameNumber);
+                        AUDIO_BUF_SIZE, frameInfo, FRAME_INFO_SIZE, frameNumber);
 
                 if (ret == AVAPIs.AV_ER_SESSION_CLOSE_BY_REMOTE) {
-                    Log.e("IOTCClient", "[%s] AV_ER_SESSION_CLOSE_BY_REMOTE" +
-                            Thread.currentThread().getName());
+                    Log.e("IOTCClient", Thread.currentThread().getName() + " AV_ER_SESSION_CLOSE_BY_REMOTE");
                     break;
                 } else if (ret == AVAPIs.AV_ER_REMOTE_TIMEOUT_DISCONNECT) {
-                    Log.e("IOTCClient", "[%s] AV_ER_REMOTE_TIMEOUT_DISCONNECT" +
-                            Thread.currentThread().getName());
+                    Log.e("IOTCClient", Thread.currentThread().getName() + " AV_ER_REMOTE_TIMEOUT_DISCONNECT");
                     break;
                 } else if (ret == AVAPIs.AV_ER_INVALID_SID) {
-                    Log.e("IOTCClient", "[%s] Session cant be used anymore" +
-                            Thread.currentThread().getName());
+                    Log.e("IOTCClient", Thread.currentThread().getName() + " AV_ER_INVALID_SID");
                     break;
                 } else if (ret == AVAPIs.AV_ER_LOSED_THIS_FRAME) {
                     //Log.e("IOTCClient","[%s] Audio frame losed",
                     //        Thread.currentThread().getName());
                     continue;
                 }
-
+                if (callback != null) callback.onAudioReceived(audioBuffer);
                 Log.e("IOTCClient", "333333 received video ret = " + ret);
             }
 
-            Log.e("IOTCClient", "[%s] Exit" + Thread.currentThread().getName());
+            Log.e("IOTCClient", Thread.currentThread().getName() + "  Exit");
         }
     }
+
+    public static void setCallback(Callback callback) {
+        IOTCClient.callback = callback;
+    }
+
+    private static Callback callback;
+
+    public interface Callback {
+        void onVideoReceived(byte[] videoBuffer);
+
+        void onAudioReceived(byte[] audioBuffer);
+    }
+
+    public void initCodec(DataInputStream mInputStream) {
+//        MediaCodec mCodec;
+//        try {
+//            //通过多媒体格式名创建一个可用的解码器
+//            mCodec = MediaCodec.createDecoderByType("video/avc");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        //初始化编码器
+//        final MediaFormat mediaformat = MediaFormat.createVideoFormat("video/avc", 164, 164);
+//        //获取h264中的pps及sps数据
+//        if (isUsePpsAndSps) {
+//            byte[] header_sps = {0, 0, 0, 1, 103, 66, 0, 42, (byte) 149, (byte) 168, 30, 0, (byte) 137, (byte) 249, 102, (byte) 224, 32, 32, 32, 64};
+//            byte[] header_pps = {0, 0, 0, 1, 104, (byte) 206, 60, (byte) 128, 0, 0, 0, 1, 6, (byte) 229, 1, (byte) 151, (byte) 128};
+//            mediaformat.setByteBuffer("csd-0", ByteBuffer.wrap(header_sps));
+//            mediaformat.setByteBuffer("csd-1", ByteBuffer.wrap(header_pps));
+//        }
+//        //设置帧率
+//        mediaformat.setInteger(MediaFormat.KEY_FRAME_RATE, mFrameRate);
+//        mCodec.configure(mediaformat, mSurface, null, 0);
+    }
+//    public class decodeH264Thread implements Runnable {
+//        @Override
+//        public void run() {
+//            try {
+//                decodeLoop();
+//            } catch (Exception e) {
+//            }
+//        }
+//
+//        private void decodeLoop() {
+//            //存放目标文件的数据
+//            ByteBuffer[] inputBuffers = mCodec.getInputBuffers();
+//            //解码后的数据，包含每一个buffer的元数据信息，例如偏差，在相关解码器中有效的数据大小
+//            MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
+//            long startMs = System.currentTimeMillis();
+//            long timeoutUs = 10000;
+//            byte[] marker0 = new byte[]{0, 0, 0, 1};
+//            byte[] dummyFrame = new byte[]{0x00, 0x00, 0x01, 0x20};
+//            byte[] streamBuffer = null;
+//            try {
+//                streamBuffer = getBytes(mInputStream);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            int bytes_cnt = 0;
+//            while (mStartFlag == true) {
+//                bytes_cnt = streamBuffer.length;
+//                if (bytes_cnt == 0) {
+//                    streamBuffer = dummyFrame;
+//                }
+//
+//                int startIndex = 0;
+//                int remaining = bytes_cnt;
+//                while (true) {
+//                    if (remaining == 0 || startIndex >= remaining) {
+//                        break;
+//                    }
+//                    int nextFrameStart = KMPMatch(marker0, streamBuffer, startIndex + 2, remaining);
+//                    if (nextFrameStart == -1) {
+//                        nextFrameStart = remaining;
+//                    } else {
+//                    }
+//
+//                    int inIndex = mCodec.dequeueInputBuffer(timeoutUs);
+//                    if (inIndex >= 0) {
+//                        ByteBuffer byteBuffer = inputBuffers[inIndex];
+//                        byteBuffer.clear();
+//                        byteBuffer.put(streamBuffer, startIndex, nextFrameStart - startIndex);
+//                        //在给指定Index的inputbuffer[]填充数据后，调用这个函数把数据传给解码器
+//                        mCodec.queueInputBuffer(inIndex, 0, nextFrameStart - startIndex, 0, 0);
+//                        startIndex = nextFrameStart;
+//                    } else {
+//                        continue;
+//                    }
+//
+//                    int outIndex = mCodec.dequeueOutputBuffer(info, timeoutUs);
+//                    if (outIndex >= 0) {
+//                        //帧控制是不在这种情况下工作，因为没有PTS H264是可用的
+//                        while (info.presentationTimeUs / 1000 > System.currentTimeMillis() - startMs) {
+//                            try {
+//                                Thread.sleep(100);
+//                            } catch (InterruptedException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                        boolean doRender = (info.size != 0);
+//                        //对outputbuffer的处理完后，调用这个函数把buffer重新返回给codec类。
+//                        mCodec.releaseOutputBuffer(outIndex, doRender);
+//                    }
+//                }
+//                mStartFlag = false;
+//                mHandler.sendEmptyMessage(0);
+//            }
+//        }
+//    }
+
 }

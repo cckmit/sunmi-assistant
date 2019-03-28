@@ -14,8 +14,7 @@
 package com.tutk.IOTC;
 
 //base on the struct st_AvStatus in AVAPIs.h
-public class St_AvStatus
-{
+public class St_AvStatus {
     public int AvVersion;
     public int RoundTripTime;
     public int LostRate;
