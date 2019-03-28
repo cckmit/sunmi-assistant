@@ -26,6 +26,24 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    // 编译并发布AAR (删除旧AAR，编译新AAR，拷贝新AAR至同一目录)
+    //Gradle-->Task-->Other-->aarRelease
+    task aarRelease(type: Copy) {
+        // 根路径
+        def rootPath = rootProject.rootDir.path
+        // AAR所在的编译路径
+        def buildPath = "/build/outputs/aar/"
+        // AAR输出路径(主目录app libs下)
+        def copyToAAROutPath = rootPath + "/apmanager/libs"
+        // build outputs aar (commonlib)
+        def buildAARPath = rootPath + "/commonlib" + buildPath + "commonlib-release.aar"
+        //删除旧的aar
+        delete buildAARPath
+        // 执行编译AAR脚本（原生脚本）
+        dependsOn 'assembleRelease'
+        // 拷贝outputs下AAR到ARR输出目录
+        from buildAARPath into copyToAAROutPath;
+    }
 }
 
 dependencies {

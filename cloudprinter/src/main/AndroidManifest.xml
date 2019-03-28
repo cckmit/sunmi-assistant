@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.sunmi.cloudprinter">
+
+    <!-- 蓝牙 -->
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <!-- 仅在支持BLE（即蓝牙4.0）的设备上运行 -->
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
+
+    <application>
+        <activity android:name=".ui.Activity.SearchBluetoothActivity_" />
+        <activity android:name=".ui.Activity.SetPrinterActivity_" />
+        <activity android:name=".ui.Activity.PrinterManageActivity_" />
+    </application>
+
+</manifest>
