@@ -90,15 +90,16 @@ repositories {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-        implementation fileTree(include: ['*.aar'], dir: 'libs')//不要提交！！！
-//    implementation project(':apmanager')
-    //不要提交！！！
+    implementation fileTree(include: ['*.aar'], dir: 'libs')//不要提交！！！
+//    implementation project(':apmanager')//不要提交！！！
+
+    implementation project(':commonlib')//公共库
+    implementation project(':sunmiservice')
+//    implementation project(':ipc')
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     annotationProcessor "org.androidannotations:androidannotations:${AAVersion}"
-    implementation project(':commonlib')
-    //公共库
-    implementation project(':sunmiservice')
-    implementation project(':ipc')
+
 }
