@@ -14,7 +14,6 @@
     <string name="network_disconnect">网络已断开</string>
     <string name="toast_networkIsExceptional">当前网络存在异常</string>
     <string name="toast_serverNoResponse">请检查网络是否有异常</string>
-    <string name="network_wifi_low">网络连接失败</string>
     <string name="network_connected">网络已恢复</string>
     <string name="server_noreponse">服务器无响应</string>
 
@@ -25,6 +24,9 @@
     <string name="str_title_selected_pic">选择图片</string>
     <string name="str_ssl_error">证书错误</string>
 
-    <string name="textView_tip_protocol1">请同意勾选用户协议</string>
+    <string name="tip_agree_protocol">请同意勾选用户协议</string>
+
+    <string name="toast_network_Exception">网络连接异常</string>
+    <string name="network_wifi_low">网络连接失败</string>
 
 </resources>

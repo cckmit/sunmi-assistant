@@ -51,7 +51,7 @@ public class InputMobileActivity extends BaseActivity {
         if (isFastClick(1500)) return;
         String mobile = etMobile.getText().toString().trim();
         if (!ctvPrivacy.isChecked()) {
-            shortTip(R.string.textView_tip_protocol);
+            shortTip(R.string.tip_agree_protocol);
             return;
         }
         if (!RegexUtils.isChinaPhone(mobile)) {

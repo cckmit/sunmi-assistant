@@ -8,7 +8,7 @@ import android.widget.Button;
 import android.widget.CheckedTextView;
 
 import com.sunmi.apmanager.constant.Constants;
-import com.sunmi.apmanager.rpc.RpcCallback;
+import sunmi.common.rpc.http.RpcCallback;
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.rpc.sso.SSOApi;
 import com.sunmi.apmanager.ui.view.MergeDialog;
@@ -67,7 +67,7 @@ public class RegisterActivity extends BaseActivity {
         if (isFastClick(1500)) return;
         String mobile = etMobile.getText().toString().trim();
         if (!ctvPrivacy.isChecked()) {
-            shortTip(R.string.textView_tip_protocol);
+            shortTip(R.string.tip_agree_protocol);
             return;
         }
         if (!RegexUtils.isChinaPhone(mobile)) {
