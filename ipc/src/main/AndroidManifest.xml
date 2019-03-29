@@ -11,8 +11,8 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application>
-
-        <activity android:name=".IPCConfigActivity_" />
+        <activity android:name=".view.IPCConfigActivity_" />
+        <activity android:name=".view.WifiConfigActivity_" />
     </application>
 
 </manifest>

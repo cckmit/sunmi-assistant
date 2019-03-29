@@ -21,6 +21,7 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import sunmi.common.rpc.RpcConfig;
 import sunmi.common.utils.UnknownException;
 import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
@@ -39,6 +40,7 @@ public class BootLoader {
 
     public void init() {
         String env = Utils.getMetaValue(context, "ENV_DATA", ApConfig.ENV_TEST);
+        new RpcConfig().init(context, env);
         new ApConfig().init(context, env);
         new SunmiServiceConfig().init(context, env);
 
