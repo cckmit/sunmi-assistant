@@ -40,19 +40,9 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
     private static String UID = "C3YABT1MPRV4BM6GUHXJ";
 //    private static String UID = "CRYUBT1WKFV4UM6GUH71";
 
-    private RtspDecoder mPlayer = null;
+    private FLVDecoder mPlayer = null;
 
-    private SurfaceHolder mSurfaceHolder;
-    private Thread mDecodeThread;
-    private MediaCodec mCodec;
     private boolean mStopFlag = false;
-    //    private DataInputStream mInputStream;
-//    private String FileName = "test.h264";
-    private int Video_Width = 1920;
-    private int Video_Height = 1080;
-    private int FrameRate = 15;
-    private Boolean isUsePpsAndSps = false;
-//    private String filePath = Environment.getExternalStorageDirectory() + "/" + FileName;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -142,21 +132,19 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
 //        videoView.setMediaController(mMediaController);
     }
 
+    @Click(resName = "btn_stop")
+    void stopClick() {
+        IPCConfigActivity_.intent(mActivity).start();
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
     }
 
-    //
-    private void startDecodingThread(byte[] videoBytes) {
-        mCodec.start();
-        mDecodeThread = new Thread(new decodeH264Thread(videoBytes));
-        mDecodeThread.start();
-    }
-
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        mPlayer = new RtspDecoder(holder.getSurface(), 0);
+        mPlayer = new FLVDecoder(holder.getSurface(), 0);
 
     }
 
@@ -172,6 +160,23 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
             mPlayer.stopRunning();
             mPlayer = null;
         }
+    }
+
+    private SurfaceHolder mSurfaceHolder;
+    private MediaCodec mCodec;
+    //    private DataInputStream mInputStream;
+//    private String FileName = "test.h264";
+    private int Video_Width = 1920;
+    private int Video_Height = 1080;
+    private int FrameRate = 15;
+    private Boolean isUsePpsAndSps = false;
+//    private String filePath = Environment.getExternalStorageDirectory() + "/" + FileName;
+
+    //
+    private void startDecodingThread(byte[] videoBytes) {
+        mCodec.start();
+        Thread mDecodeThread = new Thread(new decodeH264Thread(videoBytes));
+        mDecodeThread.start();
     }
 
     /**
