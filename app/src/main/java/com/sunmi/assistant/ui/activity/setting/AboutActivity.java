@@ -41,7 +41,7 @@ public class AboutActivity extends BaseActivity {
     void init() {
         StatusBarUtils.setStatusBarColor(this,
                 StatusBarUtils.TYPE_DARK);//状态栏
-        ViewUtils.setPrivacy(this, ctvPrivacy, com.sunmi.ipc.R.color.colorOrange,false);
+        ViewUtils.setPrivacy(this, ctvPrivacy, R.color.colorOrange, false);
         tvVersion.setText(getString(R.string.str_version, CommonHelper.getAppVersionName(this)));
     }
 
