@@ -5,17 +5,13 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.TextView;
+import android.widget.CheckedTextView;
 
-import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.rpc.RpcCallback;
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.rpc.sso.SSOApi;
-import com.sunmi.apmanager.ui.activity.ProtocolActivity;
 import com.sunmi.apmanager.ui.view.MergeDialog;
-import com.sunmi.apmanager.utils.BundleUtils;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
@@ -30,6 +26,7 @@ import org.json.JSONObject;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.utils.RegexUtils;
+import sunmi.common.utils.ViewUtils;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.dialog.CommonDialog;
 
@@ -43,10 +40,8 @@ public class RegisterActivity extends BaseActivity {
     ClearableEditText etMobile;
     @ViewById(R.id.btnNext)
     Button btnNext;
-    @ViewById(R.id.BtnIsSelected)
-    ImageButton BtnIsSelected;
-
-    private boolean isSelectedPro = true;//是否选择了协议
+    @ViewById(R.id.ctv_privacy)
+    CheckedTextView ctvPrivacy;
 
     @AfterViews
     protected void init() {
@@ -54,8 +49,7 @@ public class RegisterActivity extends BaseActivity {
         etMobile.setClearIcon(R.mipmap.ic_edit_delete_white);
         new SomeMonitorEditText().setMonitorEditText(btnNext, etMobile);
         //初始化
-        BtnIsSelected.setBackgroundResource(R.mipmap.ic_selected_protocol);
-        isSelectedPro = true;
+        ViewUtils.setPrivacy(this, ctvPrivacy, R.color.white_40a,false);
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             String mobile = bundle.getString("mobile");
@@ -68,44 +62,19 @@ public class RegisterActivity extends BaseActivity {
                 "注册流程_输入联系方式_耗时", Constants.EVENT_DURATION_REGISTER_NAME);
     }
 
-    @Click({R.id.BtnIsSelected, R.id.btnNext, R.id.rlUserProtocol, R.id.rlUserPrivate})
+    @Click(R.id.btnNext)
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.BtnIsSelected://是否选择了协议
-                if (isSelectedPro) {
-                    BtnIsSelected.setBackgroundResource(R.mipmap.ic_normal_protocol);
-                    isSelectedPro = false;
-                } else {
-                    BtnIsSelected.setBackgroundResource(R.mipmap.ic_selected_protocol);
-                    isSelectedPro = true;
-                }
-                break;
-            case R.id.btnNext://获取验证码
-                if (isFastClick(1500)) return;
-                String mobile = etMobile.getText().toString().trim();
-                if (!isSelectedPro) {
-                    shortTip(R.string.textView_tip_protocol);
-                    break;
-                }
-                if (!RegexUtils.isChinaPhone(mobile)) {
-                    shortTip(R.string.str_invalid_phone);
-                    return;
-                }
-                invalidAccount(mobile);
-                break;
-            case R.id.rlUserProtocol://用户协议
-                if (isFastClick(1500)) return;
-                CommonUtils.trackCommonEvent(context, "userAgreement", "注册_用户协议", Constants.EVENT_REGISTER);
-                openActivity(context, ProtocolActivity.class, BundleUtils.protocol(AppConfig.USER_PROTOCOL), false);
-                overridePendingTransition(R.anim.activity_open_down_up, 0);
-                break;
-            case R.id.rlUserPrivate://隐私协议
-                if (isFastClick(1500)) return;
-                CommonUtils.trackCommonEvent(context, "privacyAgreement", "注册_隐私协议", Constants.EVENT_REGISTER);
-                openActivity(context, ProtocolActivity.class, BundleUtils.protocol(AppConfig.USER_PRIVATE), false);
-                overridePendingTransition(R.anim.activity_open_down_up, 0);
-                break;
+        if (isFastClick(1500)) return;
+        String mobile = etMobile.getText().toString().trim();
+        if (!ctvPrivacy.isChecked()) {
+            shortTip(R.string.textView_tip_protocol);
+            return;
         }
+        if (!RegexUtils.isChinaPhone(mobile)) {
+            shortTip(R.string.str_invalid_phone);
+            return;
+        }
+        invalidAccount(mobile);
     }
 
     private void invalidAccount(final String mobile) {

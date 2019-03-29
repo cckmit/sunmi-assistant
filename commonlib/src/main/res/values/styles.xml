@@ -79,4 +79,13 @@
         <item name="colorControlActivated">@color/colorOrange</item>
     </style>
 
+    <style name="BtnOrange">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/dp_54</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:background">@drawable/edittext_soild_orange</item>
+        <item name="android:textSize">@dimen/sp_18</item>
+        <item name="android:textColor">@color/c_white</item>
+    </style>
+
 </resources>
