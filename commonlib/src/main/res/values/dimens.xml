@@ -59,6 +59,7 @@
     <dimen name="dp_40">40dp</dimen>
     <dimen name="dp_44">44dp</dimen>
     <dimen name="dp_45">45dp</dimen>
+    <dimen name="dp_54">54dp</dimen>
     <dimen name="dp_64">64dp</dimen>
     <dimen name="dp_200">200dp</dimen>
     <dimen name="dp_270">270dp</dimen>

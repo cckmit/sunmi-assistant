@@ -41,6 +41,5 @@ dependencies {
 
     //wechat
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
-    implementation 'cn.bingoogolapple:bga-refreshlayout:1.1.7@aar'
 
 }

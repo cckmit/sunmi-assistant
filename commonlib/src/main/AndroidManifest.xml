@@ -2,6 +2,11 @@
     package="com.commonlibrary">
 
     <application>
+        <!-- 协议-->
+        <activity
+            android:name="sunmi.common.view.activity.ProtocolActivity_"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|adjustPan" />
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.sunmi.assistant.fileprovider"

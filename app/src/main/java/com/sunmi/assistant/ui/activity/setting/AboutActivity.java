@@ -2,13 +2,11 @@ package com.sunmi.assistant.ui.activity.setting;
 
 import android.app.Activity;
 import android.view.View;
+import android.widget.CheckedTextView;
 import android.widget.TextView;
 
-import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
-import com.sunmi.apmanager.ui.activity.ProtocolActivity;
 import com.sunmi.apmanager.update.AppUpdate;
-import com.sunmi.apmanager.utils.BundleUtils;
 import com.sunmi.apmanager.utils.NetConnectUtils;
 import com.sunmi.assistant.R;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -25,6 +23,7 @@ import okhttp3.Response;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.ViewUtils;
 import sunmi.common.view.dialog.CommonDialog;
 
 /**
@@ -35,32 +34,20 @@ public class AboutActivity extends BaseActivity {
 
     @ViewById(R.id.tvVersion)
     TextView tvVersion;
+    @ViewById(R.id.ctv_privacy)
+    CheckedTextView ctvPrivacy;
 
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this,
                 StatusBarUtils.TYPE_DARK);//状态栏
+        ViewUtils.setPrivacy(this, ctvPrivacy, R.color.colorOrange, false);
         tvVersion.setText(getString(R.string.str_version, CommonHelper.getAppVersionName(this)));
     }
 
-    @Click({R.id.rlVersion, R.id.rlUserProtocol, R.id.rlUserPrivate})
+    @Click(R.id.rlVersion)
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.rlVersion:
-//                Uri uri = Uri.parse("https://sj.qq.com/myapp/detail.htm?apkName=com.sunmi.assistant");
-//                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-//                startActivity(intent);
-                checkUpdate();
-                break;
-            case R.id.rlUserProtocol://用户协议
-                openActivity(this, ProtocolActivity.class, BundleUtils.protocol(AppConfig.USER_PROTOCOL), false);
-                overridePendingTransition(R.anim.activity_open_down_up, 0);
-                break;
-            case R.id.rlUserPrivate://隐私协议
-                openActivity(this, ProtocolActivity.class, BundleUtils.protocol(AppConfig.USER_PRIVATE), false);
-                overridePendingTransition(R.anim.activity_open_down_up, 0);
-                break;
-        }
+        checkUpdate();
     }
 
     private void checkUpdate() {

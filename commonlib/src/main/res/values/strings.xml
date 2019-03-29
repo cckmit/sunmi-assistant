@@ -6,11 +6,14 @@
     <string name="str_update">更新</string>
     <string name="str_ignore">忽略</string>
 
+    <string name="str_click_consent">点击“开始配置”代表你同意</string>
+    <string name="sunmi_user_protocol">《商米用户协议》</string>
+    <string name="str_privacy">《隐私政策》</string>
+    <string name="str_and">&#160;和&#160;</string>
     <!-- Network -->
     <string name="network_disconnect">网络已断开</string>
     <string name="toast_networkIsExceptional">当前网络存在异常</string>
     <string name="toast_serverNoResponse">请检查网络是否有异常</string>
-    <string name="network_wifi_low">网络连接失败</string>
     <string name="network_connected">网络已恢复</string>
     <string name="server_noreponse">服务器无响应</string>
 
@@ -20,4 +23,10 @@
     <string name="str_new_version_now">当前有新版本</string>
     <string name="str_title_selected_pic">选择图片</string>
     <string name="str_ssl_error">证书错误</string>
+
+    <string name="tip_agree_protocol">请同意勾选用户协议</string>
+
+    <string name="toast_network_Exception">网络连接异常</string>
+    <string name="network_wifi_low">网络连接失败</string>
+
 </resources>
