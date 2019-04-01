@@ -7,7 +7,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import sunmi.common.rpc.RpcConfig;
+import sunmi.common.constant.CommonConfig;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.SecurityUtils;
 import sunmi.common.utils.log.LogCat;
@@ -63,7 +63,7 @@ public class BaseHttpApi {
             String randomNum = (int) ((Math.random() * 9 + 1) * 100000) + "";
             String isEncrypted = "0";
             String sign = SecurityUtils.md5(params + isEncrypted +
-                    timeStamp + randomNum + SecurityUtils.md5(RpcConfig.CLOUD_TOKEN));
+                    timeStamp + randomNum + SecurityUtils.md5(CommonConfig.CLOUD_TOKEN));
             map.put("timeStamp", timeStamp);
             map.put("randomNum", randomNum);
             map.put("isEncrypted", isEncrypted);
@@ -86,7 +86,7 @@ public class BaseHttpApi {
             String randomNum = (int) ((Math.random() * 9 + 1) * 100000) + "";
             String isEncrypted = "0";
             String sign = SecurityUtils.md5(params + isEncrypted +
-                    timeStamp + randomNum + SecurityUtils.md5(RpcConfig.CLOUD_TOKEN));
+                    timeStamp + randomNum + SecurityUtils.md5(CommonConfig.CLOUD_TOKEN));
             map.put("timeStamp", timeStamp);
             map.put("randomNum", randomNum);
             map.put("isEncrypted", isEncrypted);

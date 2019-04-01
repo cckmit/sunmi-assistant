@@ -33,7 +33,7 @@
         android:layout_below="@+id/tv_1"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_20"
-        android:text="设置过程可能需要1-2分钟，请确保手机"
+        android:text="设置过程可能需要1-2分钟，请确保手机已连接至互联网，连接成功后，信号灯呈「绿色常亮」"
         android:textSize="@dimen/sp_18" />
 
     <ImageView

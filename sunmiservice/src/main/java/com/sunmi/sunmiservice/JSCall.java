@@ -132,6 +132,7 @@ public class JSCall {
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("userId", SharedManager.getValue(BaseApplication.getContext(), SsConstants.UID));
+            jsonObject.put("token", SharedManager.getValue(BaseApplication.getContext(), SsConstants.TOKEN));
             JSONObject jsonObject1 = new JSONObject();
             jsonObject1.put("appId", SunmiServiceConfig.FUMINBAO_APP_ID);
             jsonObject1.put("appSecret", SunmiServiceConfig.FUMINBAO_SECRET);

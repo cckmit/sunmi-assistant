@@ -5,19 +5,24 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 
+import com.google.gson.GsonBuilder;
 import com.sunmi.ipc.IPCCall;
+import com.sunmi.ipc.IpcConstants;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.model.WifiListResp;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.view.dialog.InputDialog;
 
 /**
@@ -30,17 +35,14 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
     @ViewById(resName = "rv_wifi")
     RecyclerView rvWifi;
 
+    @Extra
+    String shopId;
+
     WifiListAdapter wifiListAdapter;
 
     @AfterViews
     void init() {
-//        IPCCall.getInstance().getWifiList(context);
-        List<WifiListResp.ScanResultsBean> list = new ArrayList<>();
-        WifiListResp.ScanResultsBean item = new WifiListResp.ScanResultsBean();
-        item.setKey_mgmt("121231231");
-        item.setSsid("sdfsdfdsfsf");
-        list.add(item);
-        initApList(list);
+        IPCCall.getInstance().getWifiList(context);
     }
 
     @UiThread
@@ -58,6 +60,39 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
         createDialog(ssid, mgmt);
     }
 
+    @Override
+    public int[] getStickNotificationId() {
+        return new int[]{IpcConstants.getWifiList, IpcConstants.setIPCWifi, IpcConstants.getApStatus};
+    }
+
+    @Override
+    public void didReceivedNotification(int id, Object... args) {
+        if (args == null) return;
+        ResponseBean res = (ResponseBean) args[0];
+        if (id == IpcConstants.getWifiList) {
+            WifiListResp resp = new GsonBuilder().create()
+                    .fromJson(res.getResult().toString(), WifiListResp.class);
+            initApList(resp.getScan_results());
+        } else if (id == IpcConstants.setIPCWifi) {//{"data":[{"opcode":"0x3116","result":{},"errcode":0}],"msg_id":"11111","errcode":0}
+            IPCCall.getInstance().getApStatus(context);
+        } else if (id == IpcConstants.getApStatus) {//{"data":[{"opcode":"0x3119","result":{"wireless":{"connect_status":"0"}},"errcode":0}],"msg_id":"11111","errcode":0}
+            if (res.getResult().has("wireless")) {
+                try {
+                    JSONObject jsonObject = res.getResult().getJSONObject("wireless");
+                    if (jsonObject.has("connect_status")) {//是否成功关联上前端AP(0:正在关联。1：关联成功。2：关联失败)
+                        if (TextUtils.equals("0", jsonObject.getString("connect_status"))) {
+                            WifiConfiguringActivity_.intent(context).start();
+                            return;
+                        }
+                    }
+                    shortTip(R.string.tip_wifi_psw_error);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     private void createDialog(final String ssid, final String mgmt) {
         new InputDialog.Builder(context)
                 .setTitle(R.string.str_input_psw)
@@ -68,14 +103,10 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
                             public void onConfirmClick(InputDialog dialog, String input) {
                                 if (TextUtils.isEmpty(input)) {
                                     shortTip("密码不能为空");
-//                                    shortTip(R.string.tip_wifi_psw_error);
                                     return;
                                 }
-                                WifiConfiguringActivity_.intent(context).start();
-//                                WifiConfigCompletedActivity_.intent(context).start();
                                 dialog.dismiss();
-//                                IPCCall.getInstance().setIPCWifi(context,
-//                                        ssid, mgmt, input);
+                                IPCCall.getInstance().setIPCWifi(context, ssid, mgmt, input);
                             }
                         }).create().show();
     }

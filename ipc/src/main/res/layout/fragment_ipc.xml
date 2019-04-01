@@ -11,18 +11,16 @@
         android:layout_height="wrap_content"
         android:background="@color/c_white"
         app:dividerShow="true"
-        app:leftDefaultClickEnable="true"
-        app:leftIcon="@drawable/ic_back_dark"
         app:titleText="IPC"
         app:titleTextColor="@color/colorText" />
 
     <!--<com.pili.pldroid.player.widget.PLVideoView-->
-        <!--android:id="@+id/vv_ipc"-->
-        <!--android:layout_width="@dimen/dp_200"-->
-        <!--android:layout_height="@dimen/dp_200"-->
-        <!--android:layout_below="@+id/title_bar"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:layout_marginTop="46dp" />-->
+    <!--android:id="@+id/vv_ipc"-->
+    <!--android:layout_width="@dimen/dp_200"-->
+    <!--android:layout_height="@dimen/dp_200"-->
+    <!--android:layout_below="@+id/title_bar"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_marginTop="46dp" />-->
 
     <SurfaceView
         android:id="@+id/vv_ipc"

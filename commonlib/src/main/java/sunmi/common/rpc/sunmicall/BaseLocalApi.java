@@ -7,6 +7,8 @@ import com.commonlibrary.R;
 import java.io.IOException;
 import java.util.Map;
 
+import javax.net.ssl.SSLSocketFactory;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -38,6 +40,10 @@ public abstract class BaseLocalApi extends BaseApi {
 
     public abstract String getBaseUrl();
 
+    protected SSLSocketFactory getSSLSocketFactory() {
+        return new SSLSocketFactoryGenerator().generate();
+    }
+
     public abstract Map<String, String> getHeader();
 
     public abstract void onFail(ResponseBean res);
@@ -60,7 +66,7 @@ public abstract class BaseLocalApi extends BaseApi {
 
         //OkHttpClient
         OkHttpClient.Builder mBuilder = new OkHttpClient.Builder();
-        mBuilder.sslSocketFactory(new SSLSocketFactoryGenerator().generate());
+        mBuilder.sslSocketFactory(getSSLSocketFactory());
         mBuilder.hostnameVerifier(new OKHttpUtils.TrustAllHostnameVerifier());
         OkHttpClient okHttpClient = mBuilder.build();
 
@@ -81,6 +87,8 @@ public abstract class BaseLocalApi extends BaseApi {
                 //注意此处必须new 一个string 不然的话直接调用response.body().string()会崩溃，因为此处流只调用一次然后关闭了
                 String result = response.body().string();
                 LogCat.e(TAG, "local execute success: opCode = " + opCode + ", result = " + result);
+                ResponseBean res = new ResponseBean(result);
+                BaseNotification.newInstance().postNotificationName(opCode, res);
                 onSuccess(result, sn);
             }
         });

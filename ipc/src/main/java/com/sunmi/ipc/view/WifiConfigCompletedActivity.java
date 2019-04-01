@@ -14,7 +14,7 @@ public class WifiConfigCompletedActivity extends BaseActivity {
 
     @Click(resName = "btn_complete")
     void completeClick() {
-
+        finish();
     }
 
     @Click(resName = "btn_adjust_screen")
