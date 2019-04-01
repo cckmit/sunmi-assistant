@@ -1,5 +1,6 @@
 package com.sunmi.ipc.presenter;
 
+import com.sunmi.ipc.IPCCall;
 import com.sunmi.ipc.contract.WifiConfigContract;
 
 /**
@@ -9,7 +10,6 @@ import com.sunmi.ipc.contract.WifiConfigContract;
 public class WifiConfigPresenter implements WifiConfigContract.Presenter {
     @Override
     public void getWifiList() {
-
     }
 
     @Override

@@ -69,8 +69,8 @@ public class WinsafeSpinner<T> extends LinearLayout {
 //			ibtnDropdown.setBackgroundResource(R.drawable.wsspinner_dropdown_green);
 //			break;
 		case NONE:
-			tvTitle.setBackgroundResource(R.color.c_transparent);
-			actvText.setBackgroundResource(R.color.c_transparent);
+			tvTitle.setBackgroundResource(R.color.transparent);
+			actvText.setBackgroundResource(R.color.transparent);
 			ibtnDropdown.setVisibility(View.GONE);
 			break;
 		default:

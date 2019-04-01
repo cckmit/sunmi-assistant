@@ -40,7 +40,8 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
     @ViewById(resName = "btn_stop")
     Button btnStop;
 
-    private static String UID = "C3YABT1MPRV4BM6GUHXJ";
+//    private static String UID = "C3YABT1MPRV4BM6GUHXJ";
+    private static String UID = "CVYA8T1WKFV49NPGYHRJ";
 //    private static String UID = "CRYUBT1WKFV4UM6GUH71";
 
     private FLVDecoder mPlayer = null;

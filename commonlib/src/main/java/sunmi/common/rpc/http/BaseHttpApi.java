@@ -17,7 +17,7 @@ import sunmi.common.utils.log.LogCat;
  * Created by bruce on 2019/1/24.
  */
 public class BaseHttpApi {
-    private static final String TAG = "HttpCall";
+    public static final String TAG = "HttpCall";
     //net connect time
     public static final int CONN_TIMEOUT = 1000 * 10;
 

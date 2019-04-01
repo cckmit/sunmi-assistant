@@ -34,6 +34,7 @@ class IPCConfigActivity extends BaseActivity {
             shortTip(R.string.tip_agree_protocol);
             return;
         }
+        WifiConfigActivity_.intent(context).start();
     }
 
 }

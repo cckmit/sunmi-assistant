@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/c_white"
+        app:dividerShow="true"
+        app:leftDefaultClickEnable="true"
+        app:leftIcon="@mipmap/ic_back_dark"
+        app:titleText="摄像头设置"
+        app:titleTextColor="@color/colorText" />
+
+    <ImageView
+        android:id="@+id/iv_config_complete"
+        android:layout_width="@dimen/dp_164"
+        android:layout_height="@dimen/dp_164"
+        android:layout_below="@+id/title_bar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_24"
+        android:src="@mipmap/ic_ap_update_success" />
+
+    <TextView
+        android:id="@+id/tv_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_config_complete"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/c_black"
+        android:layout_marginTop="@dimen/dp_10"
+        android:text="摄像头设置成功"
+        android:textSize="@dimen/sp_23" />
+
+    <TextView
+        android:id="@+id/tv_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_10"
+        android:text="为了，请【调整画面】"
+        android:textSize="@dimen/sp_18" />
+
+    <Button
+        android:id="@+id/btn_complete"
+        style="@style/BtnOrange"
+        android:layout_above="@+id/btn_adjust_screen"
+        android:layout_alignParentBottom="false"
+        android:layout_margin="@dimen/dp_10"
+        android:text="@string/str_confirm" />
+
+    <Button
+        android:id="@+id/btn_adjust_screen"
+        style="@style/BtnOrange"
+        android:layout_margin="@dimen/dp_10"
+        android:background="@drawable/edittext_edge_grey_light"
+        android:text="@string/str_adjust_screen"
+        android:textColor="@color/c_black" />
+
+</RelativeLayout>
