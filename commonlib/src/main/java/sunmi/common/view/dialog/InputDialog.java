@@ -207,8 +207,6 @@ public class InputDialog extends Dialog {
                 if (confirmClickListener != null) {
                     cfmButton.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View v) {
-                            dialog.cancel();
-
                             confirmClickListener.onConfirmClick(dialog, etInput.getText().toString());
                         }
                     });

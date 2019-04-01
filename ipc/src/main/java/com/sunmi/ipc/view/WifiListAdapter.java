@@ -3,6 +3,7 @@ package com.sunmi.ipc.view;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,10 +28,15 @@ public class WifiListAdapter extends RecyclerView.Adapter<WifiListAdapter.ViewHo
     private Context context;
     private List<WifiListResp.ScanResultsBean> data;
 
+    private OnItemClickListener onItemClickListener;
 
     public WifiListAdapter(Context context, List<WifiListResp.ScanResultsBean> data) {
         this.context = context;
         this.data = data;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 
     @NonNull
@@ -82,22 +88,14 @@ public class WifiListAdapter extends RecyclerView.Adapter<WifiListAdapter.ViewHo
 
         @Override
         public void onClick(View v) {
-            createDialog(data.get(getAdapterPosition()).getSsid(),
-                    data.get(getAdapterPosition()).getKey_mgmt());
+            if (onItemClickListener != null)
+                onItemClickListener.onItemClick(data.get(getAdapterPosition()).getSsid(),
+                        data.get(getAdapterPosition()).getKey_mgmt());
         }
     }
 
-    private void createDialog(final String ssid, final String mgmt) {
-        new InputDialog.Builder(context)
-                .setCancelButton(R.string.str_cancel)
-                .setConfirmButton(R.string.str_confirm,
-                        new InputDialog.ConfirmClickListener() {
-                            @Override
-                            public void onConfirmClick(InputDialog dialog, String input) {
-                                IPCCall.getInstance().setIPCWifi(context,
-                                        ssid, mgmt, input);
-                            }
-                        }).create();
+    public interface OnItemClickListener {
+        void onItemClick(String ssid, String mgmt);
     }
 
 }
