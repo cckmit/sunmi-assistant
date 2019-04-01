@@ -2,6 +2,7 @@ package com.sunmi.ipc;
 
 import android.content.Context;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import sunmi.common.rpc.sunmicall.BaseApi;
@@ -28,27 +29,33 @@ public class IPCCall extends BaseApi {
 
     //获取摄像头搜索到的wifi列表
     public void getWifiList(Context context) {
-        post(context, "", 0x3118, new JSONObject());
-    } //获取摄像头搜索到的wifi列表
-
-
-    //    {
-//        "msg_id": "1",
-//            "params":[{
-//        "opcode":"0x3116",
-//                "param":{
-//            "ssid": "SUNMI_WBU",
-//                    "key_mgmt": "WPA-PSK",
-//                    "key": "sunmi388"
-//        }
-//    }]
-//    }
-    public void setIPCWifi(Context context, String ssid, String keyMgmt, String key) {
         post(context, "", IpcConstants.getWifiList, new JSONObject());
     }
 
+    public void setIPCWifi(Context context, String ssid, String keyMgmt, String key) {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("ssid", ssid);
+            object.put("key_mgmt", keyMgmt);
+            object.put("key", key);
+            post(context, "", IpcConstants.setIPCWifi, object);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //获取IPC无线关联前端AP的状态
+    public void getApStatus(Context context) {
+        post(context, "", IpcConstants.getApStatus, new JSONObject());
+    }
+
+    //获取token,绑定ipc使用
+    public void getToken(Context context) {
+        post(context, "", IpcConstants.getIpcToken, new JSONObject());
+    }
+
     private void post(Context context, String sn, int opCode, JSONObject jsonObject) {
-        RequestBean requestBean = new RequestBean("", opCode + "", jsonObject);
+        RequestBean requestBean = new RequestBean("11111", "0x" + Integer.toHexString(opCode), jsonObject);
         post(context, sn, requestBean.getMsgId(), opCode, requestBean.serialize());
     }
 

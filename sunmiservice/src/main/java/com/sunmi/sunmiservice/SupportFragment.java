@@ -27,7 +27,7 @@ import org.androidannotations.annotations.ViewById;
 import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseFragment;
-import sunmi.common.constant.NotificationConfig;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -262,13 +262,13 @@ public class SupportFragment extends BaseFragment
     @Override
     public void didReceivedNotification(int id, Object... args) {
         super.didReceivedNotification(id, args);
-        if (id == NotificationConfig.tabSupport) {
+        if (id == CommonConstants.tabSupport) {
             refreshService();
         }
     }
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{NotificationConfig.tabSupport};
+        return new int[]{CommonConstants.tabSupport};
     }
 }

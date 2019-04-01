@@ -17,8 +17,8 @@
 
     <ImageView
         android:id="@+id/iv_config_complete"
-        android:layout_width="@dimen/dp_164"
-        android:layout_height="@dimen/dp_164"
+        android:layout_width="@dimen/dp_160"
+        android:layout_height="@dimen/dp_160"
         android:layout_below="@+id/title_bar"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_24"
@@ -30,9 +30,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/iv_config_complete"
         android:layout_centerHorizontal="true"
-        android:textColor="@color/c_black"
         android:layout_marginTop="@dimen/dp_10"
         android:text="摄像头设置成功"
+        android:textColor="@color/c_black"
         android:textSize="@dimen/sp_23" />
 
     <TextView
@@ -42,7 +42,7 @@
         android:layout_below="@+id/tv_1"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_10"
-        android:text="为了，请【调整画面】"
+        android:text="为了提高摄像头识别效果，请「调整画面」"
         android:textSize="@dimen/sp_18" />
 
     <Button

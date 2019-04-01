@@ -16,9 +16,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.model.LoginDataBean;
+
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.rpc.http.RpcCallback;
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.rpc.sso.SSOApi;
@@ -82,7 +83,7 @@ public class LoginActivity extends BaseActivity {
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
-                case AppConfig.WHAT_UDP://切换wifi显示搜索的路由器
+                case CommonConstants.WHAT_UDP://切换wifi显示搜索的路由器
                     try {
                         JSONObject object = new JSONObject((String) msg.obj);
                         String name = object.getString("name");
