@@ -1,93 +1,22 @@
-package com.sunmi.ipc;
+package com.sunmi.ipc.audio;
 
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
-import android.util.Log;
 
-import com.sunmi.ipc.audio.AACDecoderUtil;
-import com.sunmi.ipc.audio.AudioTrackManager;
-
+import java.io.DataInputStream;
 import java.io.File;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-
-import sunmi.common.utils.ThreadPool;
+import java.io.FileInputStream;
 
 /**
  * Description:
- * Created by bruce on 2019/3/25.
+ * Created by bruce on 2019/4/3.
  */
-public class Decoder {
 
-    //音频解码器
-    private AACDecoderUtil audioUtil;
-
-    private boolean isRunning;
-
-    public Decoder() {
-        isRunning = true;
-//        initData();
-        this.audioUtil = new AACDecoderUtil();
-        this.audioUtil.start();
-        ThreadPool.getCachedThreadPool().submit(new DecodeAACWorker());//开启解码线程
-    }
-
-    //音频数据
-    private BlockingQueue<byte[]> audioDataQueue = new ArrayBlockingQueue<>(10000);
-
-    //添加音频数据
-    public void setAudioData(byte[] data) {
-        try {
-            audioDataQueue.put(data);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void stopRunning() {
-        audioDataQueue.clear();
-    }
-
-    class DecodeAACWorker implements Runnable {
-        @Override
-        public void run() {
-            try {
-                //每次从文件读取的数据
-                byte[] readData;
-                //循环读取数据
-                while (isRunning) {
-                    if (!audioDataQueue.isEmpty()) {
-                        readData = audioDataQueue.take();
-                        int readLen = readData.length;
-                        if (!isHeader(readData)) {
-                            Log.e("Decoder", "333333 not header---");
-//                            audioUtil.decode(readData, 13, readLen - 13 - 4);
-                            byte[] data = new byte[readLen - 13 - 4];
-                            System.arraycopy(readData, 13, data, 0, data.length);
-                            audioUtil.decode(data);
-//                            play(data);
-                        } else {
-                            Log.e("Decoder", "333333 is header---");
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * 判断aac帧头
-     */
-    private boolean isHeader(byte[] data) {
-        return (data[12] & 0xFF) == 0;
-    }
-//*********************************************************************************
-
+public class AudioTrackManager {
     private AudioTrack mAudioTrack;
+    private DataInputStream mDis;//播放文件的数据流
     private Thread mRecordThread;
     private boolean isStart = false;
     private volatile static AudioTrackManager mInstance;
@@ -95,9 +24,9 @@ public class Decoder {
     //音频流类型
     private static final int mStreamType = AudioManager.STREAM_MUSIC;
     //指定采样率 （MediaRecoder 的采样率通常是8000Hz AAC的通常是44100Hz。 设置采样率为44100，目前为常用的采样率，官方文档表示这个值可以兼容所有的设置）
-    private static final int mSampleRateInHz = 8000;
+    private static final int mSampleRateInHz = 44100;
     //指定捕获音频的声道数目。在AudioFormat类中指定用于此的常量
-    private static final int mChannelConfig = AudioFormat.CHANNEL_OUT_STEREO; //单声道
+    private static final int mChannelConfig = AudioFormat.CHANNEL_CONFIGURATION_MONO; //单声道
     //指定音频量化位数 ,在AudioFormaat类中指定了以下各种可能的常量。通常我们选择ENCODING_PCM_16BIT和ENCODING_PCM_8BIT PCM代表的是脉冲编码调制，它实际上是原始音频样本。
     //因此可以设置每个样本的分辨率为16位或者8位，16位将占用更多的空间和处理能力,表示的音频也更加接近真实。
     private static final int mAudioFormat = AudioFormat.ENCODING_PCM_16BIT;
@@ -107,6 +36,11 @@ public class Decoder {
     // 应用层从某个地方获取数据，例如通过编解码得到PCM数据，然后write到audiotrack。
     private static int mMode = AudioTrack.MODE_STREAM;
 
+
+    public AudioTrackManager() {
+        initData();
+    }
+
     private void initData() {
         //根据采样率，采样精度，单双声道来得到frame的大小。
         mMinBufferSize = AudioTrack.getMinBufferSize(mSampleRateInHz, mChannelConfig, mAudioFormat);//计算最小缓冲区
@@ -115,6 +49,7 @@ public class Decoder {
         mAudioTrack = new AudioTrack(mStreamType, mSampleRateInHz, mChannelConfig,
                 mAudioFormat, mMinBufferSize, mMode);
     }
+
 
     /**
      * 获取单例引用
@@ -166,24 +101,6 @@ public class Decoder {
         }
     }
 
-    private void play(byte[] tempBuffer) {
-        try {
-            //设置线程的优先级
-            android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
-            int readCount = tempBuffer.length;
-            if (readCount != 0) {//一边播放一边写入语音数据
-                //判断AudioTrack未初始化，停止播放的时候释放了，状态就为STATE_UNINITIALIZED
-                if (mAudioTrack.getState() == mAudioTrack.STATE_UNINITIALIZED) {
-                    initData();
-                }
-                mAudioTrack.play();
-                mAudioTrack.write(tempBuffer, 0, readCount);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     /**
      * 播放线程
      */
@@ -192,23 +109,23 @@ public class Decoder {
         public void run() {
             try {
                 //设置线程的优先级
-//                android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
-//                byte[] tempBuffer = new byte[mMinBufferSize];
-//                int readCount = 0;
-//                while (mDis.available() > 0) {
-//                    readCount = mDis.read(tempBuffer);
-//                    if (readCount == AudioTrack.ERROR_INVALID_OPERATION || readCount == AudioTrack.ERROR_BAD_VALUE) {
-//                        continue;
-//                    }
-//                    if (readCount != 0 && readCount != -1) {//一边播放一边写入语音数据
-//                        //判断AudioTrack未初始化，停止播放的时候释放了，状态就为STATE_UNINITIALIZED
-//                        if (mAudioTrack.getState() == mAudioTrack.STATE_UNINITIALIZED) {
-//                            initData();
-//                        }
-//                        mAudioTrack.play();
-//                        mAudioTrack.write(tempBuffer, 0, readCount);
-//                    }
-//                }
+                android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
+                byte[] tempBuffer = new byte[mMinBufferSize];
+                int readCount = 0;
+                while (mDis.available() > 0) {
+                    readCount = mDis.read(tempBuffer);
+                    if (readCount == AudioTrack.ERROR_INVALID_OPERATION || readCount == AudioTrack.ERROR_BAD_VALUE) {
+                        continue;
+                    }
+                    if (readCount != 0 && readCount != -1) {//一边播放一边写入语音数据
+                        //判断AudioTrack未初始化，停止播放的时候释放了，状态就为STATE_UNINITIALIZED
+                        if (mAudioTrack.getState() == mAudioTrack.STATE_UNINITIALIZED) {
+                            initData();
+                        }
+                        mAudioTrack.play();
+                        mAudioTrack.write(tempBuffer, 0, readCount);
+                    }
+                }
                 //播放完就停止播放
                 stopPlay();
             } catch (Exception e) {
@@ -226,7 +143,7 @@ public class Decoder {
      */
     private void setPath(String path) throws Exception {
         File file = new File(path);
-//        mDis = new DataInputStream(new FileInputStream(file));
+        mDis = new DataInputStream(new FileInputStream(file));
     }
 
     /**
@@ -257,9 +174,9 @@ public class Decoder {
                     mAudioTrack.release();//释放audioTrack资源
                 }
             }
-//            if (mDis != null) {
-//                mDis.close();//关闭数据输入流
-//            }
+            if (mDis != null) {
+                mDis.close();//关闭数据输入流
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

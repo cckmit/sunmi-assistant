@@ -2,6 +2,7 @@ package com.sunmi.ipc.view;
 
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
 
 import sunmi.common.base.BaseActivity;
 
@@ -11,6 +12,9 @@ import sunmi.common.base.BaseActivity;
  */
 @EActivity(resName = "activity_wifi_config_completed")
 public class WifiConfigCompletedActivity extends BaseActivity {
+
+    @Extra
+    String shopId;
 
     @Click(resName = "btn_complete")
     void completeClick() {

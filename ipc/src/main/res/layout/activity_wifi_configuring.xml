@@ -37,12 +37,12 @@
         android:textSize="@dimen/sp_18" />
 
     <ImageView
-        android:layout_width="@dimen/dp_200"
-        android:layout_height="@dimen/dp_200"
+        android:layout_width="@dimen/dp_160"
+        android:layout_height="@dimen/dp_160"
         android:layout_below="@+id/tv_2"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dp_40"
-        android:src="@mipmap/ic_ap_update_success" />
+        android:layout_marginTop="@dimen/dp_64"
+        android:src="@drawable/ic_camera" />
 
     <ProgressBar
         android:id="@+id/loading"

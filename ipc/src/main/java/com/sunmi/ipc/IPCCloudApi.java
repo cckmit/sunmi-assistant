@@ -2,10 +2,12 @@ package com.sunmi.ipc;
 
 import com.zhy.http.okhttp.callback.StringCallback;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
 
+import sunmi.common.base.BaseApplication;
 import sunmi.common.rpc.http.BaseHttpApi;
+import sunmi.common.utils.SharedManager;
 import sunmi.common.utils.log.LogCat;
 
 /**
@@ -23,19 +25,19 @@ public class IPCCloudApi extends BaseHttpApi {
      */
     public static void bindIPC(int shopId, String sn, String bindToken, float longitude,
                                float latitude, StringCallback callback) {
+        Map<String, String> map = new HashMap<>();
         try {
-            String params = new JSONObject()
-                    .put("user_id", sn)
-                    .put("sn", sn)
-                    .put("shop_id", shopId)
-                    .put("bind_token", bindToken)
-                    .put("longitude", longitude)
-                    .put("latitude", latitude)
-                    .toString();
-            post(IPCInterface.BIND_IPC, getSignedParams(params), callback);
-        } catch (JSONException e) {
-            LogCat.e(TAG, "bindIPC -> get params error,", e);
+            map.put("user_id", SharedManager.getValue(BaseApplication.getContext(), "UID"));
+            map.put("sn", sn);
+            map.put("shop_id", shopId + "");
+            map.put("bind_token", bindToken);
+            map.put("longitude", longitude + "");
+            map.put("latitude", latitude + "");
+        } catch (Exception e) {
+            LogCat.e(TAG, "getSignedParams error,", e);
         }
+
+        post(IPCInterface.BIND_IPC, map, callback);
     }
 
 }

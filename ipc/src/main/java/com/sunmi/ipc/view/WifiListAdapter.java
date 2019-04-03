@@ -3,6 +3,7 @@ package com.sunmi.ipc.view;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,17 +48,16 @@ public class WifiListAdapter extends RecyclerView.Adapter<WifiListAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         holder.itemView.setTag(position);
         holder.tvName.setText(data.get(position).getSsid());
-        setStatus(holder, position);
+        setStatus(holder, data.get(position).getKey_mgmt());
+        holder.ivSignal.setImageResource(R.drawable.ic_signal_3);
     }
 
-    private void setStatus(@NonNull ViewHolder holder, int position) {
-//        if (data.get(position).getStatus() == 0) {
-//            holder.tvStatus.setText(R.string.status_inactive);
-//        } else if (data.get(position).getStatus() == 1) {
-//            holder.tvStatus.setText(R.string.status_online);
-//        } else if (data.get(position).getStatus() == 2) {
-//            holder.tvStatus.setText(R.string.status_offline);
-//        }
+    private void setStatus(@NonNull ViewHolder holder, String mgmt) {
+        if (TextUtils.equals(mgmt, "NONE")) {
+            holder.ivSecret.setImageDrawable(null);
+        } else if (TextUtils.equals(mgmt, "WPA-PSK")) {
+            holder.ivSecret.setImageResource(R.drawable.ic_lock);
+        }
     }
 
     @Override
@@ -77,8 +77,8 @@ public class WifiListAdapter extends RecyclerView.Adapter<WifiListAdapter.ViewHo
             super(view);
             rootView = view.findViewById(R.id.rl_root);
             rootView.setOnClickListener(this);
-            ivSecret = view.findViewById(R.id.iv_secret);
             tvName = view.findViewById(R.id.tv_ap_name);
+            ivSecret = view.findViewById(R.id.iv_secret);
             ivSignal = view.findViewById(R.id.iv_signal);
         }
 
