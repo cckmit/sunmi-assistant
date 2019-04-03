@@ -42,8 +42,7 @@ class IPCConfigActivity extends BaseActivity {
             shortTip(R.string.tip_agree_protocol);
             return;
         }
-        WifiConfigCompletedActivity_.intent(context).start();
-//        WifiConfigActivity_.intent(context).start();
+        WifiConfigActivity_.intent(context).shopId(shopId).start();
     }
 
     @Override

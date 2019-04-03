@@ -14,26 +14,25 @@
         android:layout_marginEnd="@dimen/dp_40"
         android:ellipsize="end"
         android:singleLine="true"
-        android:text="adfasdfafdas"
         android:textColor="@color/color_555555"
         android:textSize="@dimen/sp_18" />
 
     <ImageView
         android:id="@+id/iv_secret"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_30"
+        android:layout_height="@dimen/dp_30"
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/dp_10"
         android:layout_toLeftOf="@+id/iv_signal"
-        app:srcCompat="@drawable/check_on" />
+        app:srcCompat="@drawable/ic_lock" />
 
     <ImageView
         android:id="@+id/iv_signal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_30"
+        android:layout_height="@dimen/dp_30"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/dp_10"
-        app:srcCompat="@drawable/point_bg_enable" />
+        app:srcCompat="@drawable/ic_signal_3" />
 
 </RelativeLayout>

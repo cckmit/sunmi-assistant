@@ -57,7 +57,11 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
 
     @Override
     public void onItemClick(String ssid, String mgmt) {
-        createDialog(ssid, mgmt);
+        if (TextUtils.equals(mgmt, "NONE")) {
+            IPCCall.getInstance().setIPCWifi(context, ssid, mgmt, "");
+        } else if (TextUtils.equals(mgmt, "WPA-PSK")) {
+            createDialog(ssid, mgmt);
+        }
     }
 
     @Override
@@ -80,8 +84,8 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
                 try {
                     JSONObject jsonObject = res.getResult().getJSONObject("wireless");
                     if (jsonObject.has("connect_status")) {//是否成功关联上前端AP(0:正在关联。1：关联成功。2：关联失败)
-                        if (TextUtils.equals("0", jsonObject.getString("connect_status"))) {
-                            WifiConfiguringActivity_.intent(context).start();
+                        if (TextUtils.equals("1", jsonObject.getString("connect_status"))) {
+                            WifiConfiguringActivity_.intent(context).shopId(shopId).start();
                             return;
                         }
                     }
