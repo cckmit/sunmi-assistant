@@ -5,9 +5,8 @@ import com.zhy.http.okhttp.callback.StringCallback;
 import java.util.HashMap;
 import java.util.Map;
 
-import sunmi.common.base.BaseApplication;
 import sunmi.common.rpc.http.BaseHttpApi;
-import sunmi.common.utils.SharedManager;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
 
 /**
@@ -27,7 +26,7 @@ public class IPCCloudApi extends BaseHttpApi {
                                float latitude, StringCallback callback) {
         Map<String, String> map = new HashMap<>();
         try {
-            map.put("user_id", SharedManager.getValue(BaseApplication.getContext(), "UID"));
+            map.put("user_id",SpUtils.getUID());
             map.put("sn", sn);
             map.put("shop_id", shopId + "");
             map.put("bind_token", bindToken);

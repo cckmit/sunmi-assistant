@@ -7,7 +7,7 @@ import com.sunmi.apmanager.config.ApConfig;
 import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.utils.DBUtils;
 import com.sunmi.apmanager.utils.FileHelper;
-import com.sunmi.apmanager.utils.SpUtils;
+import sunmi.common.utils.SpUtils;
 import com.sunmi.sunmiservice.SunmiServiceConfig;
 import com.tencent.bugly.crashreport.CrashReport;
 

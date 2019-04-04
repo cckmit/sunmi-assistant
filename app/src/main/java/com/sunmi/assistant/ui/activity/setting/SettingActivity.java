@@ -14,7 +14,6 @@ import com.sunmi.apmanager.constant.Constants;
 import sunmi.common.rpc.http.RpcCallback;
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.utils.CommonUtils;
-import com.sunmi.apmanager.utils.SpUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.login.LoginActivity_;
 
@@ -130,7 +129,7 @@ public class SettingActivity extends BaseActivity {
             public void onSuccess(int code, String msg, String data) {
                 if (code == 1) {
                     shortTip(R.string.tip_logout_success);
-                    SpUtils.logout();
+                    CommonUtils.logout();
                     LoginActivity_.intent(context).start();
                     finish();
                     System.gc();

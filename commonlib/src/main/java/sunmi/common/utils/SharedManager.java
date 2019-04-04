@@ -54,20 +54,5 @@ public class SharedManager {
         getSharedPreference(context).edit().remove(key).apply();
     }
 
-
-    private SharedPreferences mSharedPreferences = null;
-
-    /**
-     * 构造函数
-     *
-     * @param context    上下文
-     * @param sharedName 文件名字
-     */
-    public SharedManager(Context context, String sharedName) {
-        if (mSharedPreferences == null) {
-            mSharedPreferences = context.getSharedPreferences(sharedName, Context.MODE_PRIVATE);
-        }
-    }
-
 }
 

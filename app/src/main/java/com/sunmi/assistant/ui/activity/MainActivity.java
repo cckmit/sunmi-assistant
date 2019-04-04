@@ -18,7 +18,7 @@ import com.sunmi.apmanager.receiver.MyNetworkCallback;
 import com.sunmi.apmanager.rpc.mqtt.MQTTManager;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
-import com.sunmi.apmanager.utils.SpUtils;
+import sunmi.common.utils.SpUtils;
 import com.sunmi.assistant.MyApplication;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.utils.MainTab;

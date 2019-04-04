@@ -17,7 +17,6 @@ import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
-import com.sunmi.apmanager.utils.SpUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.MainActivity_;
 
@@ -123,7 +122,7 @@ public class SetPasswordActivity extends BaseActivity {
             public void onSuccess(int code, String msg, String data) {
                 if (code == 1) {
                     LoginDataBean bean = new Gson().fromJson(data, LoginDataBean.class);
-                    SpUtils.saveLoginInfo(bean);
+                    CommonUtils.saveLoginInfo(bean);
                     shortTip(R.string.register_success);
                     CommonUtils.trackDurationEventEnd(context, "registerPasswordDuration",
                             "注册流程_设置密码_耗时", Constants.EVENT_DURATION_REGISTER_PSW);

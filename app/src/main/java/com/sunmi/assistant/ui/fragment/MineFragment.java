@@ -12,7 +12,7 @@ import com.sunmi.apmanager.presenter.MinePresenter;
 import com.sunmi.apmanager.ui.activity.store.HelpActivity;
 import com.sunmi.apmanager.ui.activity.store.MyStoreActivity;
 import com.sunmi.apmanager.utils.CommonUtils;
-import com.sunmi.apmanager.utils.SpUtils;
+import sunmi.common.utils.SpUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.setting.SettingActivity_;
 import com.sunmi.assistant.ui.activity.setting.UserInfoActivity_;

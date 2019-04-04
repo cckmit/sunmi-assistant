@@ -7,7 +7,4 @@ package com.sunmi.sunmiservice;
 public class SsConstants {
     public static String JS_INTERFACE_NAME = "SunmiJSBridge";
 
-    public static final String UID = "UID";
-    public static final String TOKEN = "TOKEN";
-
 }

@@ -9,9 +9,9 @@ import android.widget.ImageButton;
 
 import sunmi.common.rpc.http.RpcCallback;
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
+import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.DialogUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
-import com.sunmi.apmanager.utils.SpUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.login.LoginActivity_;
 
@@ -150,7 +150,7 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
                 hideLoadingDialog();
                 if (code == 1) {
                     shortTip(R.string.tip_password_change_success);
-                    SpUtils.logout();
+                    CommonUtils.logout();
                     LoginActivity_.intent(context).start();
                     finish();
                 } else if (code == 201) {

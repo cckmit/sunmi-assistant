@@ -12,7 +12,8 @@ import android.widget.Toast;
 
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.update.AppUpdate;
-import com.sunmi.apmanager.utils.SpUtils;
+import com.sunmi.apmanager.utils.CommonUtils;
+import sunmi.common.utils.SpUtils;
 import com.sunmi.assistant.MyApplication;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.login.LoginActivity_;
@@ -45,7 +46,7 @@ public class WelcomeActivity extends BaseActivity {
     @AfterViews
     protected void init() {
         SpUtils.saveHeightPixel(this);//手机像素高度
-        if (TextUtils.equals(SpUtils.getLead(), SpUtils.LEAD_PAGES_PARAMS)) {
+        if (TextUtils.equals(SpUtils.getLead(), "TRUE")) {
             launch();
         } else {
             LeadPagesActivity_.intent(context).start();
@@ -146,7 +147,7 @@ public class WelcomeActivity extends BaseActivity {
     }
 
     private void logout() {
-        SpUtils.logout();
+        CommonUtils.logout();
         gotoLoginActivity();
     }
 
