@@ -2,6 +2,9 @@ package com.sunmi.ipc.rpc;
 
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +40,19 @@ public class IPCCloudApi extends BaseHttpApi {
         }
 
         post(IPCInterface.BIND_IPC, map, callback);
+    }
+
+    //创建APP用户登录EMQ的token
+    public static void createEmqToken(StringCallback callback) {
+        try {
+            String params = new JSONObject()
+                    .put("sso_token", SpUtils.getToken())
+                    .put("user_id", SpUtils.getUID())
+                    .toString();
+            post(IPCInterface.CREATE_EMQ_TOKEN, getSignedParams(params), callback);
+        } catch (JSONException e) {
+            LogCat.e(TAG, "createEmqToken -> get params error,", e);
+        }
     }
 
 }

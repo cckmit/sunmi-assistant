@@ -10,4 +10,6 @@ class IPCInterface {
     //绑定
     final static String BIND_IPC = IPC_API + "api/device/bind";
 
+    public final static String CREATE_EMQ_TOKEN = IPC_API + "api/emq/token/create";
+
 }
