@@ -1,4 +1,4 @@
-package com.sunmi.ipc;
+package com.sunmi.ipc.rpc;
 
 import java.util.Map;
 

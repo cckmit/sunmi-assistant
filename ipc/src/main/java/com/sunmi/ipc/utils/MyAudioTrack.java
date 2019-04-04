@@ -1,11 +1,11 @@
-package com.sunmi.ipc.audio;
+package com.sunmi.ipc.utils;
 
 import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.util.Log;
 
 /**
- * Created by ZhangHao on 2016/7/11.
+ * Created by bruce on 2019/4/3.
  * 播放pcm数据
  */
 public class MyAudioTrack {
@@ -14,7 +14,7 @@ public class MyAudioTrack {
     private int mSampBit;// 采样精度
     private AudioTrack mAudioTrack;
 
-    public MyAudioTrack(int frequency, int channel, int sampbit) {
+    MyAudioTrack(int frequency, int channel, int sampbit) {
         mFrequency = frequency;
         mChannel = channel;
         mSampBit = sampbit;
@@ -48,10 +48,10 @@ public class MyAudioTrack {
      * 将解码后的pcm数据写入audioTrack播放
      *
      * @param data   数据
-     * @param offset 便宜
+     * @param offset 开始位置
      * @param length 需要播放的长度
      */
-    public void playAudioTrack(byte[] data, int offset, int length) {
+    void playAudioTrack(byte[] data, int offset, int length) {
         if (data == null || data.length == 0) {
             return;
         }
@@ -63,7 +63,8 @@ public class MyAudioTrack {
         }
     }
 
-    public int getMinBufferSize() {
+    private int getMinBufferSize() {
         return AudioTrack.getMinBufferSize(mFrequency, mChannel, mSampBit);
     }
+
 }

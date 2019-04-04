@@ -1,4 +1,4 @@
-package com.sunmi.ipc;
+package com.sunmi.ipc.utils;
 
 import android.util.Log;
 
@@ -167,7 +167,7 @@ public class IOTCClient {
                     break;
                 }
                 if (callback != null) callback.onVideoReceived(videoBuffer);
-                Log.e("IOTCClient", "333333vvv VIDEO received ret = " + ret);
+//                Log.e("IOTCClient", "555555vvv VIDEO received ret = " + ret);
             }
             Log.e("IOTCClient", Thread.currentThread().getName() + " VideoThread Start");
         }
@@ -224,8 +224,10 @@ public class IOTCClient {
                     Log.e("IOTCClient", Thread.currentThread().getName() + " AV_ER_LOSED_THIS_FRAME");
                     continue;
                 }
-//                if (callback != null) callback.onAudioReceived(audioBuffer);
-                Log.e("IOTCClient", "333333aaa AUDIO received ret = " + ret);
+                byte[] data = new byte[ret];
+                System.arraycopy(audioBuffer, 0, data, 0, ret);
+                if (callback != null) callback.onAudioReceived(data);
+                Log.e("IOTCClient", "555555aaa AUDIO received ret = " + ret);
             }
 
             Log.e("IOTCClient", Thread.currentThread().getName() + "  Exit");

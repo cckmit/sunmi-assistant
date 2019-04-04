@@ -1,4 +1,4 @@
-package com.sunmi.ipc;
+package com.sunmi.ipc.rpc;
 
 /**
  * Description: IPCInterface

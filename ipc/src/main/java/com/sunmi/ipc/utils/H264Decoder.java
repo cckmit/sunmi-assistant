@@ -1,4 +1,4 @@
-package com.sunmi.ipc;
+package com.sunmi.ipc.utils;
 
 import android.media.MediaCodec;
 import android.media.MediaFormat;
@@ -16,7 +16,7 @@ import sunmi.common.utils.ThreadPool;
  * Description:
  * Created by bruce on 2019/3/25.
  */
-public class FLVDecoder {
+public class H264Decoder {
 
     private MediaCodec mediaCodec;//处理音视频的编解码的类MediaCodec
 
@@ -37,7 +37,7 @@ public class FLVDecoder {
     private long counterTime = System.currentTimeMillis();
     private boolean isRunning = false;
 
-    public FLVDecoder(Surface surface, int playerState) {
+    public H264Decoder(Surface surface, int playerState) {
         this.surface = surface;
         this.state = playerState;
     }
@@ -61,7 +61,7 @@ public class FLVDecoder {
             //第13位标识是视频数据还是头
             boolean isAVC = (data[12] & 0xFF) != 0;
             if (isAVC) {//视频数据
-                byte[] videoData = new byte[data.length - 20];
+                byte[] videoData = new byte[data.length - 20];//去掉头20和尾4再加上标准头4
                 System.arraycopy(h264Header, 0, videoData, 0, h264Header.length);
                 System.arraycopy(data, 20, videoData, h264Header.length, data.length - 20 - 4);
                 videoDataQueue.put(videoData);
@@ -185,7 +185,7 @@ public class FLVDecoder {
 
                     //所有流数据解码完成，可以进行关闭等操作
                     if ((info.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
-                        Log.e("FLVDecoder", "BUFFER_FLAG_END_OF_STREAM");
+                        Log.e("H264Decoder", "BUFFER_FLAG_END_OF_STREAM");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -194,47 +194,5 @@ public class FLVDecoder {
         }
     }
 
-//    /**
-//     * 解码{@link #srcPath}音频文件 得到PCM数据块
-//     * @return 是否解码完所有数据
-//     */
-//    private void srcAudioFormatToPCM() {
-//        for (int i = 0; i < decodeInputBuffers.length-1; i++) {
-//            int inputIndex = mediaDecode.dequeueInputBuffer(-1);//获取可用的inputBuffer -1代表一直等待，0表示不等待 建议-1,避免丢帧
-//            if (inputIndex < 0) {
-//                codeOver =true;
-//                return;
-//            }
-//
-//            ByteBuffer inputBuffer = decodeInputBuffers[inputIndex];//拿到inputBuffer
-//            inputBuffer.clear();//清空之前传入inputBuffer内的数据
-//            int sampleSize = mediaExtractor.readSampleData(inputBuffer, 0);//MediaExtractor读取数据到inputBuffer中
-//            if (sampleSize <0) {//小于0 代表所有数据已读取完成
-//                codeOver=true;
-//            }else {
-//                mediaDecode.queueInputBuffer(inputIndex, 0, sampleSize, 0, 0);//通知MediaDecode解码刚刚传入的数据
-//                mediaExtractor.advance();//MediaExtractor移动到下一取样处
-//                decodeSize+=sampleSize;
-//            }
-//        }
-//
-//        //获取解码得到的byte[]数据 参数BufferInfo上面已介绍 10000同样为等待时间 同上-1代表一直等待，0代表不等待。此处单位为微秒
-//        //此处建议不要填-1 有些时候并没有数据输出，那么他就会一直卡在这 等待
-//        int outputIndex = mediaDecode.dequeueOutputBuffer(decodeBufferInfo, 10000);
-//
-////        showLog("decodeOutIndex:" + outputIndex);
-//        ByteBuffer outputBuffer;
-//        byte[] chunkPCM;
-//        while (outputIndex >= 0) {//每次解码完成的数据不一定能一次吐出 所以用while循环，保证解码器吐出所有数据
-//            outputBuffer = decodeOutputBuffers[outputIndex];//拿到用于存放PCM数据的Buffer
-//            chunkPCM = new byte[decodeBufferInfo.size];//BufferInfo内定义了此数据块的大小
-//            outputBuffer.get(chunkPCM);//将Buffer内的数据取出到字节数组中
-//            outputBuffer.clear();//数据取出后一定记得清空此Buffer MediaCodec是循环使用这些Buffer的，不清空下次会得到同样的数据
-//            putPCMData(chunkPCM);//自己定义的方法，供编码器所在的线程获取数据,下面会贴出代码
-//            mediaDecode.releaseOutputBuffer(outputIndex, false);//此操作一定要做，不然MediaCodec用完所有的Buffer后 将不能向外输出数据
-//            outputIndex = mediaDecode.dequeueOutputBuffer(decodeBufferInfo, 10000);//再次获取数据，如果没有数据输出则outputIndex=-1 循环结束
-//        }
-//
-//    }
 }
 

@@ -2,8 +2,8 @@ package com.sunmi.ipc.view;
 
 import android.content.DialogInterface;
 
-import com.sunmi.ipc.IPCCall;
-import com.sunmi.ipc.IpcConstants;
+import com.sunmi.ipc.rpc.IPCCall;
+import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.contract.WifiConfiguringContract;
 import com.sunmi.ipc.presenter.WifiConfiguringPresenter;

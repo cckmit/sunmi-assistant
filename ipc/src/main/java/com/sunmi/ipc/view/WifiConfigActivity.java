@@ -6,8 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 
 import com.google.gson.GsonBuilder;
-import com.sunmi.ipc.IPCCall;
-import com.sunmi.ipc.IpcConstants;
+import com.sunmi.ipc.rpc.IPCCall;
+import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.model.WifiListResp;
 
