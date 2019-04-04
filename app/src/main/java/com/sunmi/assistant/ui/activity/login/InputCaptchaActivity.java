@@ -21,7 +21,6 @@ import com.sunmi.apmanager.ui.view.ImageCaptchaDialog;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
-import com.sunmi.apmanager.utils.SpUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.MainActivity_;
 
@@ -274,7 +273,7 @@ public class InputCaptchaActivity extends BaseActivity implements ImageCaptchaDi
             cancelTimer();//登录成功后取消计时
             Gson gson = new GsonBuilder().create();
             LoginDataBean smsLogin = gson.fromJson(data, LoginDataBean.class);
-            SpUtils.saveLoginInfo(smsLogin);
+            CommonUtils.saveLoginInfo(smsLogin);
             gotoMainActivity();
         } else {
             shortTip(R.string.login_error);

@@ -10,7 +10,7 @@ import com.tutk.IOTC.St_AVClientStartOutConfig;
 import sunmi.common.utils.log.LogCat;
 
 /**
- *
+ * ioct
  */
 public class IOTCClient {
     public static void start(String uid) {

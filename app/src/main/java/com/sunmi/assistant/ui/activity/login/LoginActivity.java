@@ -22,7 +22,7 @@ import com.sunmi.apmanager.ui.view.MergeDialog;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
-import com.sunmi.apmanager.utils.SpUtils;
+import sunmi.common.utils.SpUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.MainActivity_;
 
@@ -233,7 +233,7 @@ public class LoginActivity extends BaseActivity {
             public void onSuccess(int code, String msg, String data) {
                 if (code == 1) {
                     LoginDataBean bean = new Gson().fromJson(data, LoginDataBean.class);
-                    SpUtils.saveLoginInfo(bean);
+                    CommonUtils.saveLoginInfo(bean);
                     gotoMainActivity();
                 } else if (code == 201) {//用户名或密码错误
                     shortTip(R.string.textView_user_password_error);

@@ -8,7 +8,7 @@ import android.view.View;
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.contract.ChangeUsernameContract;
 import com.sunmi.apmanager.presenter.ChangeUsernamePresenter;
-import com.sunmi.apmanager.utils.SpUtils;
+import sunmi.common.utils.SpUtils;
 import com.sunmi.assistant.R;
 
 import org.androidannotations.annotations.AfterViews;
