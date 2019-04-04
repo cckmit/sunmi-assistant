@@ -2,7 +2,7 @@ package com.sunmi.ipc.view;
 
 import android.widget.CheckedTextView;
 
-import com.sunmi.ipc.IpcConstants;
+import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.R;
 
 import org.androidannotations.annotations.AfterViews;

@@ -7,9 +7,9 @@ import android.view.SurfaceView;
 import android.view.WindowManager;
 import android.widget.Button;
 
-import com.sunmi.ipc.Decoder;
-import com.sunmi.ipc.FLVDecoder;
-import com.sunmi.ipc.IOTCClient;
+import com.sunmi.ipc.utils.AACDecoder;
+import com.sunmi.ipc.utils.H264Decoder;
+import com.sunmi.ipc.utils.IOTCClient;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -38,8 +38,8 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
 //    private static String UID = "CVYA8T1WKFV49NPGYHRJ";//fs
 //    private static String UID = "CRYUBT1WKFV4UM6GUH71";
 
-    private FLVDecoder mPlayer = null;
-    private Decoder mAudioPlayer = null;
+    private H264Decoder mPlayer = null;
+    private AACDecoder mAudioPlayer = null;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -67,11 +67,13 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
             }
         });
         videoView.getHolder().addCallback(this);
-        mAudioPlayer = new Decoder();
+        mAudioPlayer = new AACDecoder();
     }
 
     @Click(resName = "btn_play")
     void playClick() {
+//        ReadAACFileThread audioThread = new ReadAACFileThread();
+//        audioThread.start();
         ThreadPool.getCachedThreadPool().submit(new Runnable() {
             @Override
             public void run() {
@@ -92,7 +94,7 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        mPlayer = new FLVDecoder(holder.getSurface(), 0);
+        mPlayer = new H264Decoder(holder.getSurface(), 0);
     }
 
     @Override

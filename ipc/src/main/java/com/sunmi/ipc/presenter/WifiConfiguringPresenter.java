@@ -1,7 +1,7 @@
 package com.sunmi.ipc.presenter;
 
-import com.sunmi.ipc.IPCCloudApi;
-import com.sunmi.ipc.IpcConstants;
+import com.sunmi.ipc.rpc.IPCCloudApi;
+import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.contract.WifiConfiguringContract;
 
 import sunmi.common.base.BasePresenter;
