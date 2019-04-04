@@ -18,6 +18,9 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import sunmi.common.base.BaseActivity;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.webview.SMWebView;
@@ -47,6 +50,9 @@ public class ProtocolActivity extends BaseActivity {
     public static final int USER_AP_PRIVATE = 3;
     public static final int USER_WX_HELP = 4;
 
+    private Timer timer;//计时器
+    private long timeout = 5000;//超时时间
+
     @AfterViews
     protected void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
@@ -55,9 +61,11 @@ public class ProtocolActivity extends BaseActivity {
         } else if (protocolType == USER_PRIVATE) {
             loadWebView(PROTOCOL_PRIVATE);
         } else if (protocolType == USER_AP_PROTOCOL) { //快速配置路由器协议
-            loadWebView("file:///android_asset/pro_sunmi.html");
+            loadWebView(PROTOCOL_USER);
+            //loadWebView("file:///android_asset/pro_sunmi.html");
         } else if (protocolType == USER_AP_PRIVATE) {
-            loadWebView("file:///android_asset/private_sunmi.html");
+            loadWebView(PROTOCOL_PRIVATE);
+            //loadWebView("file:///android_asset/private_sunmi.html");
         } else if (protocolType == USER_WX_HELP) {
             loadWebView(WX_AUTH_HELP);
         }
@@ -72,10 +80,49 @@ public class ProtocolActivity extends BaseActivity {
         webView.setWebChromeClient(webChrome);
     }
 
+
     @Click(resName = "btnImage")
     public void onClick(View v) {
+        closeTimer();
         finish();
         this.overridePendingTransition(0, R.anim.activity_close_up_down);
+    }
+
+    private void loadLocalHtml() {
+        if (protocolType == USER_PROTOCOL) { //app注册协议
+            loadWebView("file:///android_asset/pro_sunmi.html");
+        } else if (protocolType == USER_PRIVATE) {
+            loadWebView("file:///android_asset/private_sunmi.html");
+        } else if (protocolType == USER_AP_PROTOCOL) { //快速配置路由器协议
+            loadWebView("file:///android_asset/pro_sunmi.html");
+        } else if (protocolType == USER_AP_PRIVATE) {
+            loadWebView("file:///android_asset/private_sunmi.html");
+        } else if (protocolType == USER_WX_HELP) {
+            loadWebView(WX_AUTH_HELP);
+        }
+    }
+
+    private void startTimer() {
+        timer = new Timer();
+        TimerTask tt = new TimerTask() {
+            @Override
+            public void run() {
+                /* * 超时后,首先判断页面加载是否小于100,就执行超时后的动作 */
+                if (webView.getProgress() < 100) {
+                    loadLocalHtml();
+                    timer.cancel();
+                    timer.purge();
+                }
+            }
+        };
+        timer.schedule(tt, timeout, 1);
+    }
+
+    private void closeTimer() {
+        if (timer != null) {
+            timer.cancel();
+            timer.purge();
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -98,6 +145,7 @@ public class ProtocolActivity extends BaseActivity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
+                startTimer();
                 return true;
             }
 
@@ -111,6 +159,7 @@ public class ProtocolActivity extends BaseActivity {
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
                 hideLoadingDialog();
+                closeTimer();
             }
 
             @Override
