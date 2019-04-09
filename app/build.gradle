@@ -95,6 +95,7 @@ dependencies {
 
     implementation project(':commonlib')//公共库
     implementation project(':sunmiservice')
+    implementation project(':cloudPrinter')
 //    implementation project(':ipc')
 
     testImplementation 'junit:junit:4.12'

@@ -145,8 +145,8 @@ public class LoginActivity extends BaseActivity {
                     shortTip(R.string.tip_invalid_phone_number);
                     return;
                 }
-                if (!RegexUtils.isValidPassword(password)) {
-                    shortTip(R.string.textView_tip_psd);
+                if (TextUtils.isEmpty(password)) {
+                    shortTip(R.string.textView_config_psd8);
                     return;
                 }
                 userMerge(password);

@@ -9,12 +9,14 @@ import org.json.JSONObject;
 
 public class ResponseBean {
 
+
     /**
      * data : [{"opcode":"0x2025","result":{"data":[]},"errcode":0}]
      * errcode : 0
      * msg_id : 427211544080387273
      */
 
+    private String returnData;
     private String msgId;
     private String errCode;
 
@@ -46,6 +48,14 @@ public class ResponseBean {
 
     public ResponseBean(MqttMessage message) {
         deserializer(message.toString());
+    }
+
+    public String getReturnData() {
+        return returnData;
+    }
+
+    public void setReturnData(String returnData) {
+        this.returnData = returnData;
     }
 
     public String getMsgId() {
@@ -94,6 +104,7 @@ public class ResponseBean {
 
     private void deserializer(String jsonString) {
         try {
+            returnData = jsonString;
             JSONObject object = new JSONObject(jsonString);
             if (object.has("msg_id")) {
                 msgId = object.getString("msg_id");
