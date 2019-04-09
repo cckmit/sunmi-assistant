@@ -1,23 +1,33 @@
 package com.sunmi.ipc.view;
 
-import android.os.Handler;
-import android.os.Message;
+import android.text.TextUtils;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 
+import com.sunmi.ipc.rpc.IPCCloudApi;
 import com.sunmi.ipc.utils.AACDecoder;
 import com.sunmi.ipc.utils.H264Decoder;
 import com.sunmi.ipc.utils.IOTCClient;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.ViewById;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import okhttp3.Call;
+import okhttp3.Response;
 import sunmi.common.base.BaseFragment;
+import sunmi.common.rpc.http.HttpResponse;
 import sunmi.common.utils.ThreadPool;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 
 @EFragment(resName = "fragment_ipc")
@@ -31,23 +41,17 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
     Button btnPlay;
     @ViewById(resName = "btn_pause")
     Button btnPause;
-    @ViewById(resName = "btn_stop")
-    Button btnStop;
+    @ViewById(resName = "et_uid")
+    EditText etUid;
 
-    private static String UID = "C3YABT1MPRV4BM6GUHXJ";//ss
-//    private static String UID = "CVYA8T1WKFV49NPGYHRJ";//fs
-//    private static String UID = "CRYUBT1WKFV4UM6GUH71";
+    @FragmentArg("shopId")
+    String shopId;
+
+    //    private static String UID = "C3YABT1MPRV4BM6GUHXJ";//ss
+    private static String UID = "CVYA8T1WKFV49NPGYHRJ";//fs
 
     private H264Decoder mPlayer = null;
     private AACDecoder mAudioPlayer = null;
-
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            shortTip("播放结束!");
-        }
-    };
 
     @AfterViews
     void init() {
@@ -72,19 +76,65 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
 
     @Click(resName = "btn_play")
     void playClick() {
-//        ReadAACFileThread audioThread = new ReadAACFileThread();
-//        audioThread.start();
+        if (etUid == null || TextUtils.isEmpty(etUid.getText().toString().trim())) {
+            shortTip("请输入uid");
+            return;
+        }
         ThreadPool.getCachedThreadPool().submit(new Runnable() {
             @Override
             public void run() {
-                IOTCClient.start(UID);
+                IOTCClient.start(etUid.getText().toString().trim());
             }
         });
     }
 
-    @Click(resName = "btn_stop")
+    @Click(resName = "btn_unbind")
+    void unbindClick() {
+        getIpcList();
+    }
+
+    void unbind(String deviceId) {
+        IPCCloudApi.unbindIPC(deviceId, new StringCallback() {
+            @Override
+            public void onError(Call call, Response response, Exception e, int id) {
+
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                LogCat.e(TAG, "666666 unbind response = " + response);
+            }
+        });
+    }
+
+    void getIpcList() {
+        IPCCloudApi.getIpcList(shopId, new StringCallback() {
+            @Override
+            public void onError(Call call, Response response, Exception e, int id) {
+                LogCat.e(TAG, "666666 getIpcList onError response = " + response);
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                LogCat.e(TAG, "666666 getIpcList onResponse response = " + response);
+                HttpResponse res = new HttpResponse(response);
+                try {
+                    JSONObject jsonObject = new JSONObject(res.getData());
+                    JSONArray jsonArray = jsonObject.getJSONArray("device_list");
+                    if (jsonArray == null || jsonArray.length() <= 0) {
+                        return;
+                    }
+                    unbind(((JSONObject) jsonArray.opt(0)).getInt("id") + "");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    @Click(resName = "btn_config")
     void stopClick() {
-        IPCConfigActivity_.intent(mActivity).shopId("6878").start();
+        IPCConfigActivity_.intent(mActivity).shopId(shopId).start();
     }
 
     @Override

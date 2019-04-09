@@ -1,5 +1,6 @@
 package com.sunmi.ipc.view;
 
+import android.text.TextUtils;
 import android.widget.CheckedTextView;
 
 import com.sunmi.ipc.rpc.IpcConstants;
@@ -37,9 +38,12 @@ class IPCConfigActivity extends BaseActivity {
 
     @Click(resName = "btn_config")
     void configClick() {
-        LogCat.e(TAG, "555555 122" + ctvPrivacy.isChecked());
         if (!ctvPrivacy.isChecked()) {
             shortTip(R.string.tip_agree_protocol);
+            return;
+        }
+        if (TextUtils.isEmpty(IpcConstants.IPC_IP)) {
+            shortTip("请将手机连接到【SUNMI_AP】无线网路");
             return;
         }
         WifiConfigActivity_.intent(context).shopId(shopId).start();
@@ -63,7 +67,7 @@ class IPCConfigActivity extends BaseActivity {
     private void ipcFound(SunmiDevice ipc) {
         LogCat.e(TAG, "ipcFound  ipcdevice = " + ipc.toString());
         IpcConstants.IPC_SN = ipc.getDeviceid();
-        IpcConstants.IPC_IP = "http://" + ipc.getIp() + "/api/";//192.168.100.159/api/192.168.103.122
+        IpcConstants.IPC_IP = "https://" + ipc.getIp() + "/api/";//192.168.100.159/api/192.168.103.122
     }
 
 }

@@ -29,7 +29,7 @@ public class IPCCloudApi extends BaseHttpApi {
                                float latitude, StringCallback callback) {
         Map<String, String> map = new HashMap<>();
         try {
-            map.put("user_id",SpUtils.getUID());
+            map.put("user_id", SpUtils.getUID());
             map.put("sn", sn);
             map.put("shop_id", shopId + "");
             map.put("bind_token", bindToken);
@@ -40,6 +40,35 @@ public class IPCCloudApi extends BaseHttpApi {
         }
 
         post(IPCInterface.BIND_IPC, map, callback);
+    }
+
+    /**
+     * @param deviceId ipc设备id
+     */
+    public static void unbindIPC(String deviceId, StringCallback callback) {
+        Map<String, String> map = new HashMap<>();
+        try {
+            map.put("user_id", SpUtils.getUID());
+            map.put("device_id", deviceId);
+        } catch (Exception e) {
+            LogCat.e(TAG, "getSignedParams error,", e);
+        }
+
+        post(IPCInterface.UNBIND_IPC, map, callback);
+    }
+
+    /**
+     * @param shopId shop id
+     */
+    public static void getIpcList(String shopId, StringCallback callback) {
+        Map<String, String> map = new HashMap<>();
+        try {
+            map.put("user_id", SpUtils.getUID());
+            map.put("shop_id", shopId);
+        } catch (Exception e) {
+            LogCat.e(TAG, "getSignedParams error,", e);
+        }
+        post(IPCInterface.GET_IPC_LIST, map, callback);
     }
 
     //创建APP用户登录EMQ的token

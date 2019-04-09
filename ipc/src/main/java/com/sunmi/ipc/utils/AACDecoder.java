@@ -27,7 +27,7 @@ public class AACDecoder {
     private static final int KEY_SAMPLE_RATE = 8000;
     private static final int KEY_BIT_RATE = 128000;
     //用于播放解码后的pcm
-    private MyAudioTrack mPlayer;
+    private MusicAudioTrack mPlayer;
 
     private MediaCodec mDecoder; //解码器
 
@@ -100,7 +100,7 @@ public class AACDecoder {
      * 初始化所有变量
      */
     public void start() {
-        mPlayer = new MyAudioTrack(KEY_SAMPLE_RATE, AudioFormat.CHANNEL_OUT_STEREO,
+        mPlayer = new MusicAudioTrack(KEY_SAMPLE_RATE, AudioFormat.CHANNEL_OUT_STEREO,
                 AudioFormat.ENCODING_PCM_16BIT);
         mPlayer.init();
         decodeInit();
@@ -113,7 +113,7 @@ public class AACDecoder {
      */
     private boolean decodeInit() {
         // 初始化AudioTrack
-        mPlayer = new MyAudioTrack(KEY_SAMPLE_RATE, AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT);
+        mPlayer = new MusicAudioTrack(KEY_SAMPLE_RATE, AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT);
         mPlayer.init();
         try {
             //需要解码数据的类型

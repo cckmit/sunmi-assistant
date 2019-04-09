@@ -16,7 +16,7 @@ import sunmi.common.rpc.sunmicall.RequestBean;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 
 public class SMMqttCallback implements MqttCallbackExtended {
-    private String TAG = getClass().getSimpleName();
+    private String TAG = "IPC" + getClass().getSimpleName();
 
     @Override
     public void connectComplete(boolean reconnect, String serverURI) {
@@ -40,6 +40,7 @@ public class SMMqttCallback implements MqttCallbackExtended {
     @Override
     public void messageArrived(String topic, MqttMessage message) {
         Log.e(TAG, "mqtt messageArrived topic = " + topic);
+        Log.e(TAG, "mqtt messageArrived message = " + message.toString());
         if (TextUtils.equals(topic, MqttManager.tokenRequestSub)) {
             ResponseBean res = new ResponseBean(message.toString(), "params");
             MessageManager.newInstance().notice(res, MessageManager.REQUEST_CHANNEL);
@@ -47,9 +48,14 @@ public class SMMqttCallback implements MqttCallbackExtended {
             ResponseBean res = new ResponseBean(message);
             Log.e(TAG, "mqtt messageArrived " + ", thread id  = " + Process.myTid()
                     + ",message id = " + res.getMsgId() + ", opcode = " + res.getOpcode());
-            BaseNotification.newInstance().postNotificationName(
-                    MqttManager.getInstance().getCode(res.getMsgId()), res, topic);
-            MqttManager.getInstance().removeMessage(res.getMsgId());
+            if (MqttManager.getInstance().getCode(res.getMsgId()) > 0) {
+                BaseNotification.newInstance().postNotificationName(
+                        MqttManager.getInstance().getCode(res.getMsgId()), res, topic);
+                MqttManager.getInstance().removeMessage(res.getMsgId());
+            } else {
+                BaseNotification.newInstance().postNotificationName(
+                        Integer.parseInt(res.getOpcode().substring(2, res.getOpcode().length()), 16), res, topic);
+            }
         }
     }
 

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:id="@+id/rl_root"
-    android:layout_height="@dimen/dp_54">
+    android:layout_height="@dimen/dp_45">
 
     <TextView
         android:id="@+id/tv_ap_name"
@@ -19,8 +19,8 @@
 
     <ImageView
         android:id="@+id/iv_secret"
-        android:layout_width="@dimen/dp_30"
-        android:layout_height="@dimen/dp_30"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/dp_10"
         android:layout_toLeftOf="@+id/iv_signal"
@@ -28,8 +28,8 @@
 
     <ImageView
         android:id="@+id/iv_signal"
-        android:layout_width="@dimen/dp_30"
-        android:layout_height="@dimen/dp_30"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/dp_10"

@@ -227,9 +227,8 @@ public class IOTCClient {
                 byte[] data = new byte[ret];
                 System.arraycopy(audioBuffer, 0, data, 0, ret);
                 if (callback != null) callback.onAudioReceived(data);
-                Log.e("IOTCClient", "555555aaa AUDIO received ret = " + ret);
+//                Log.e("IOTCClient", "555555aaa AUDIO received ret = " + ret);
             }
-
             Log.e("IOTCClient", Thread.currentThread().getName() + "  Exit");
         }
     }

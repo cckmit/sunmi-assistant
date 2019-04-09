@@ -18,7 +18,6 @@ import com.sunmi.apmanager.receiver.MyNetworkCallback;
 import com.sunmi.apmanager.rpc.mqtt.MQTTManager;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
-import sunmi.common.utils.SpUtils;
 import com.sunmi.assistant.MyApplication;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.utils.MainTab;
@@ -32,6 +31,7 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.notification.BaseNotification;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.MyFragmentTabHost;
 
