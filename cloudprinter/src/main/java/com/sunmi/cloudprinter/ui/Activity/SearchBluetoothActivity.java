@@ -1,6 +1,5 @@
 package com.sunmi.cloudprinter.ui.Activity;
 
-import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;

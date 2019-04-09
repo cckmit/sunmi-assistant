@@ -3,9 +3,11 @@ package sunmi.common.utils;
 import android.app.Activity;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.CheckedTextView;
 
@@ -50,6 +52,7 @@ public class ViewUtils {
         };
         csProtocol.updateDrawState(tp);
         builder.setSpan(csProtocol, len1, len1 + protocol.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        //builder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), len1, len1 + protocol.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);  //粗体
         tv.setText(builder);
 
         //设置部分文字点击事件
@@ -65,6 +68,7 @@ public class ViewUtils {
         };
         csPrivacy.updateDrawState(tp);
         builder.setSpan(csPrivacy, len2, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        //builder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), len2, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);  //粗体
         tv.setText(builder);
 
         tv.setMovementMethod(LinkMovementMethod.getInstance());

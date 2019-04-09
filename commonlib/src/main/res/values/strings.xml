@@ -29,4 +29,7 @@
     <string name="toast_network_Exception">网络连接异常</string>
     <string name="network_wifi_low">网络连接失败</string>
 
+    <string name="str_retry">重试</string>
+    <string name="tip_set_complete">设置完成</string>
+    <string name="tip_set_fail">设置失败</string>
 </resources>

@@ -15,7 +15,7 @@ import com.sunmi.apmanager.model.UserInfo;
 import com.sunmi.apmanager.presenter.UserInfoPresenter;
 import com.sunmi.apmanager.utils.FileHelper;
 import com.sunmi.apmanager.utils.PhotoUtils;
-import com.sunmi.apmanager.utils.SpUtils;
+import sunmi.common.utils.SpUtils;
 import com.sunmi.assistant.R;
 
 import org.androidannotations.annotations.AfterViews;

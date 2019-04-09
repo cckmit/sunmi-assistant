@@ -69,12 +69,26 @@
     <color name="white_85a">#D9FFFFFF</color>
     <color name="white_90a">#E6FFFFFF</color>
     <color name="white_95a">#F2FFFFFF</color>
+    <!--black 模糊程度-->
+    <color name="black_5">#0D000000</color>
+    <color name="black_10">#1A000000</color>
+    <color name="black_15">#26000000</color>
+    <color name="black_20">#33000000</color>
+    <color name="black_30">#4D000000</color>
+    <color name="black_40">#66000000</color>
+    <color name="black_50">#80000000</color>
+    <color name="black_60">#99000000</color>
+    <color name="black_70">#B3000000</color>
+    <color name="black_80">#CC000000</color>
+    <color name="black_85">#D9000000</color>
+    <color name="black_90">#E6000000</color>
 
     <color name="color_999999">#999999</color>
     <color name="color_8E8E93">#8E8E93</color>
     <color name="color_555555">#555555</color>
     <color name="colorText">#333C4F</color>
 
+    <color name="rv_bg_color">#F5F5F5</color>
     <color name="pop_bg_content">#F9F9F9</color>
     <color name="pop_bg_translucent">#01000000</color>
     <color name="pop_item_text_normal_color">#333C4F</color>

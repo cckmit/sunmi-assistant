@@ -1,4 +1,4 @@
-package com.sunmi.ipc;
+package com.sunmi.ipc.utils;
 
 import android.util.Log;
 
@@ -7,12 +7,10 @@ import com.tutk.IOTC.IOTCAPIs;
 import com.tutk.IOTC.St_AVClientStartInConfig;
 import com.tutk.IOTC.St_AVClientStartOutConfig;
 
-import java.io.DataInputStream;
-
 import sunmi.common.utils.log.LogCat;
 
 /**
- *
+ * ioct
  */
 public class IOTCClient {
     public static void start(String uid) {
@@ -92,7 +90,7 @@ public class IOTCClient {
         Log.e("IOTCClient", "StreamClient exit...");
     }
 
-    public static boolean startIpcamStream(int avIndex) {
+    private static boolean startIpcamStream(int avIndex) {
         AVAPIs av = new AVAPIs();
         int ret = av.avSendIOCtrl(avIndex, AVAPIs.IOTYPE_INNER_SND_DATA_DELAY, new byte[2], 2);
         if (ret < 0) {
@@ -125,7 +123,7 @@ public class IOTCClient {
 
         private int avIndex;
 
-        public VideoThread(int avIndex) {
+        VideoThread(int avIndex) {
             this.avIndex = avIndex;
         }
 
@@ -169,7 +167,7 @@ public class IOTCClient {
                     break;
                 }
                 if (callback != null) callback.onVideoReceived(videoBuffer);
-                Log.e("IOTCClient", "333333 received video ret = " + ret);
+//                Log.e("IOTCClient", "555555vvv VIDEO received ret = " + ret);
             }
             Log.e("IOTCClient", Thread.currentThread().getName() + " VideoThread Start");
         }
@@ -181,7 +179,7 @@ public class IOTCClient {
 
         private int avIndex;
 
-        public AudioThread(int avIndex) {
+        AudioThread(int avIndex) {
             this.avIndex = avIndex;
         }
 
@@ -223,12 +221,13 @@ public class IOTCClient {
                     Log.e("IOTCClient", Thread.currentThread().getName() + " AV_ER_INVALID_SID");
                     break;
                 } else if (ret == AVAPIs.AV_ER_LOSED_THIS_FRAME) {
-                    //Log.e("IOTCClient","[%s] Audio frame losed",
-                    //        Thread.currentThread().getName());
+                    Log.e("IOTCClient", Thread.currentThread().getName() + " AV_ER_LOSED_THIS_FRAME");
                     continue;
                 }
-                if (callback != null) callback.onAudioReceived(audioBuffer);
-                Log.e("IOTCClient", "333333 received video ret = " + ret);
+                byte[] data = new byte[ret];
+                System.arraycopy(audioBuffer, 0, data, 0, ret);
+                if (callback != null) callback.onAudioReceived(data);
+                Log.e("IOTCClient", "555555aaa AUDIO received ret = " + ret);
             }
 
             Log.e("IOTCClient", Thread.currentThread().getName() + "  Exit");
@@ -246,102 +245,5 @@ public class IOTCClient {
 
         void onAudioReceived(byte[] audioBuffer);
     }
-
-    public void initCodec(DataInputStream mInputStream) {
-//        MediaCodec mCodec;
-//        try {
-//            //通过多媒体格式名创建一个可用的解码器
-//            mCodec = MediaCodec.createDecoderByType("video/avc");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        //初始化编码器
-//        final MediaFormat mediaformat = MediaFormat.createVideoFormat("video/avc", 164, 164);
-//        //获取h264中的pps及sps数据
-//        if (isUsePpsAndSps) {
-//            byte[] header_sps = {0, 0, 0, 1, 103, 66, 0, 42, (byte) 149, (byte) 168, 30, 0, (byte) 137, (byte) 249, 102, (byte) 224, 32, 32, 32, 64};
-//            byte[] header_pps = {0, 0, 0, 1, 104, (byte) 206, 60, (byte) 128, 0, 0, 0, 1, 6, (byte) 229, 1, (byte) 151, (byte) 128};
-//            mediaformat.setByteBuffer("csd-0", ByteBuffer.wrap(header_sps));
-//            mediaformat.setByteBuffer("csd-1", ByteBuffer.wrap(header_pps));
-//        }
-//        //设置帧率
-//        mediaformat.setInteger(MediaFormat.KEY_FRAME_RATE, mFrameRate);
-//        mCodec.configure(mediaformat, mSurface, null, 0);
-    }
-//    public class decodeH264Thread implements Runnable {
-//        @Override
-//        public void run() {
-//            try {
-//                decodeLoop();
-//            } catch (Exception e) {
-//            }
-//        }
-//
-//        private void decodeLoop() {
-//            //存放目标文件的数据
-//            ByteBuffer[] inputBuffers = mCodec.getInputBuffers();
-//            //解码后的数据，包含每一个buffer的元数据信息，例如偏差，在相关解码器中有效的数据大小
-//            MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
-//            long startMs = System.currentTimeMillis();
-//            long timeoutUs = 10000;
-//            byte[] marker0 = new byte[]{0, 0, 0, 1};
-//            byte[] dummyFrame = new byte[]{0x00, 0x00, 0x01, 0x20};
-//            byte[] streamBuffer = null;
-//            try {
-//                streamBuffer = getBytes(mInputStream);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            int bytes_cnt = 0;
-//            while (mStartFlag == true) {
-//                bytes_cnt = streamBuffer.length;
-//                if (bytes_cnt == 0) {
-//                    streamBuffer = dummyFrame;
-//                }
-//
-//                int startIndex = 0;
-//                int remaining = bytes_cnt;
-//                while (true) {
-//                    if (remaining == 0 || startIndex >= remaining) {
-//                        break;
-//                    }
-//                    int nextFrameStart = KMPMatch(marker0, streamBuffer, startIndex + 2, remaining);
-//                    if (nextFrameStart == -1) {
-//                        nextFrameStart = remaining;
-//                    } else {
-//                    }
-//
-//                    int inIndex = mCodec.dequeueInputBuffer(timeoutUs);
-//                    if (inIndex >= 0) {
-//                        ByteBuffer byteBuffer = inputBuffers[inIndex];
-//                        byteBuffer.clear();
-//                        byteBuffer.put(streamBuffer, startIndex, nextFrameStart - startIndex);
-//                        //在给指定Index的inputbuffer[]填充数据后，调用这个函数把数据传给解码器
-//                        mCodec.queueInputBuffer(inIndex, 0, nextFrameStart - startIndex, 0, 0);
-//                        startIndex = nextFrameStart;
-//                    } else {
-//                        continue;
-//                    }
-//
-//                    int outIndex = mCodec.dequeueOutputBuffer(info, timeoutUs);
-//                    if (outIndex >= 0) {
-//                        //帧控制是不在这种情况下工作，因为没有PTS H264是可用的
-//                        while (info.presentationTimeUs / 1000 > System.currentTimeMillis() - startMs) {
-//                            try {
-//                                Thread.sleep(100);
-//                            } catch (InterruptedException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                        boolean doRender = (info.size != 0);
-//                        //对outputbuffer的处理完后，调用这个函数把buffer重新返回给codec类。
-//                        mCodec.releaseOutputBuffer(outIndex, doRender);
-//                    }
-//                }
-//                mStartFlag = false;
-//                mHandler.sendEmptyMessage(0);
-//            }
-//        }
-//    }
 
 }

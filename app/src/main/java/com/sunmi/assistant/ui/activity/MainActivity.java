@@ -18,7 +18,7 @@ import com.sunmi.apmanager.receiver.MyNetworkCallback;
 import com.sunmi.apmanager.rpc.mqtt.MQTTManager;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
-import com.sunmi.apmanager.utils.SpUtils;
+import sunmi.common.utils.SpUtils;
 import com.sunmi.assistant.MyApplication;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.utils.MainTab;
@@ -30,7 +30,7 @@ import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.base.BaseApplication;
-import sunmi.common.constant.NotificationConfig;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.MyFragmentTabHost;
@@ -103,12 +103,12 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
         mTabHost.getTabWidget().getChildAt(0).setOnClickListener(v -> {
             mTabHost.setCurrentTab(0);
             if (isFastClick(1300)) return;
-            BaseNotification.newInstance().postNotificationName(NotificationConfig.tabStore, "tabStore");
+            BaseNotification.newInstance().postNotificationName(CommonConstants.tabStore, "tabStore");
         });
         mTabHost.getTabWidget().getChildAt(1).setOnClickListener(v -> {
             mTabHost.setCurrentTab(1);
             if (isFastClick(1300)) return;
-            BaseNotification.newInstance().postNotificationName(NotificationConfig.tabSupport, "tabSupport");
+            BaseNotification.newInstance().postNotificationName(CommonConstants.tabSupport, "tabSupport");
         });
     }
 

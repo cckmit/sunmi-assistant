@@ -21,8 +21,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/title_bar"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="@dimen/dp_40"
         android:text="连接您要设置的摄像头"
+        android:textColor="@color/c_black"
         android:textSize="@dimen/sp_23" />
 
     <TextView
@@ -48,12 +49,12 @@
         android:textSize="@dimen/sp_18" />
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_160"
+        android:layout_height="@dimen/dp_160"
         android:layout_below="@+id/tv_3"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="60dp"
-        android:src="@drawable/check_off" />
+        android:src="@drawable/ic_camera" />
 
     <CheckedTextView
         android:id="@+id/ctv_privacy"
