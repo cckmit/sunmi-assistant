@@ -18,10 +18,10 @@ import com.sunmi.apmanager.receiver.MyNetworkCallback;
 import com.sunmi.apmanager.rpc.mqtt.MQTTManager;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
-import sunmi.common.utils.SpUtils;
 import com.sunmi.assistant.MyApplication;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.utils.MainTab;
+import com.sunmi.ipc.rpc.mqtt.MqttManager;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import org.androidannotations.annotations.AfterViews;
@@ -32,6 +32,7 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.notification.BaseNotification;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.MyFragmentTabHost;
 
@@ -62,6 +63,7 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
         CrashReport.setUserId(SpUtils.getUID());
         if (MyApplication.isCheckedToken)
             MQTTManager.getInstance().createEmqToken(true);//初始化长连接
+        MqttManager.getInstance().createEmqToken(true);//ipc长连接
         initTabs();
     }
 

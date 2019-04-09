@@ -40,6 +40,7 @@ public class WifiConfiguringActivity extends BaseMvpActivity<WifiConfiguringPres
     @UiThread
     @Override
     public void ipcBindWifiSuccess() {
+        finish();
         WifiConfigCompletedActivity_.intent(context).shopId(shopId).start();
     }
 

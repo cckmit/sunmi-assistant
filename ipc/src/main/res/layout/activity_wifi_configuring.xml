@@ -10,8 +10,6 @@
         android:layout_height="wrap_content"
         android:background="@color/c_white"
         app:dividerShow="true"
-        app:leftDefaultClickEnable="true"
-        app:leftIcon="@mipmap/ic_back_dark"
         app:titleText="摄像头设置"
         app:titleTextColor="@color/colorText" />
 

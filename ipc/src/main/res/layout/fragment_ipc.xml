@@ -11,16 +11,10 @@
         android:layout_height="wrap_content"
         android:background="@color/c_white"
         app:dividerShow="true"
-        app:titleText="IPC"
+        app:leftDefaultClickEnable="true"
+        app:leftIcon="@mipmap/ic_back_dark"
+        app:titleText="IPC test"
         app:titleTextColor="@color/colorText" />
-
-    <!--<com.pili.pldroid.player.widget.PLVideoView-->
-    <!--android:id="@+id/vv_ipc"-->
-    <!--android:layout_width="@dimen/dp_200"-->
-    <!--android:layout_height="@dimen/dp_200"-->
-    <!--android:layout_below="@+id/title_bar"-->
-    <!--android:layout_centerHorizontal="true"-->
-    <!--android:layout_marginTop="46dp" />-->
 
     <SurfaceView
         android:id="@+id/vv_ipc"
@@ -30,10 +24,19 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="46dp" />
 
+    <EditText
+        android:id="@+id/et_uid"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_45"
+        android:layout_below="@+id/vv_ipc"
+        android:layout_margin="@dimen/dp_10"
+        android:hint="请输入摄像头的uid" />
+
     <RelativeLayout
+        android:id="@+id/rl_video"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/vv_ipc"
+        android:layout_below="@+id/et_uid"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_20">
 
@@ -60,12 +63,24 @@
             android:layout_toEndOf="@+id/btn_pause"
             android:text="停止" />
 
-        <Button
-            android:id="@+id/btn_unbind"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_45"
-            android:layout_marginStart="@dimen/dp_20"
-            android:layout_toEndOf="@+id/btn_stop"
-            android:text="解绑" />
     </RelativeLayout>
+
+    <Button
+        android:id="@+id/btn_config"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_45"
+        android:layout_below="@+id/rl_video"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_45"
+        android:text="配置IPC" />
+
+    <Button
+        android:id="@+id/btn_unbind"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_45"
+        android:layout_below="@+id/rl_video"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_45"
+        android:layout_toEndOf="@+id/btn_config"
+        android:text="解绑IPC" />
 </RelativeLayout>

@@ -1,5 +1,7 @@
 package com.sunmi.ipc.rpc.mqtt;
 
+import com.sunmi.ipc.config.IpcConfig;
+
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -65,23 +67,18 @@ public class MqttManager {
 
     public void createEmqToken(final boolean isInit) {
         if (isInit) {
-            //        private String clientID;
-            //        private String username;
-            //        private String password;
-            //        private String serverAddress;
-            //        private String port;
             MQttBean.DataBean bean = new MQttBean.DataBean();
             clientId = "Web_1234";
             bean.setClientID(clientId);
             bean.setUsername("APP_42721");
             bean.setPassword("123456");
-            bean.setServerAddress("47.96.240.44");
-            bean.setPort("30412");
+            bean.setServerAddress(IpcConfig.MQTT_HOST);
+            bean.setPort(IpcConfig.MQTT_PORT);
             initMQTT(bean);
         } else {
             mqttConnect();
         }
-        LogCat.e(TAG, "mqtt createEmqToken start");
+//        LogCat.e(TAG, "mqtt createEmqToken start");
 //        if (mqttClient != null) return;
 //        IPCCloudApi.createEmqToken(new StringCallback() {
 //            @Override
@@ -186,7 +183,8 @@ public class MqttManager {
                             == MqttException.REASON_CODE_CLIENT_EXCEPTION
                             || asyncActionToken.getException().getReasonCode()
                             == MqttException.REASON_CODE_CONNECT_IN_PROGRESS) {
-                        LogCat.e(TAG, "mqtt Connect fail," + asyncActionToken.getException().getReasonCode());
+                        LogCat.e(TAG, "mqtt Connect fail,code = " + asyncActionToken.getException().getReasonCode()
+                                + ", cause = " + asyncActionToken.getException().getCause());
                         disconnect();
                         isConnecting = false;
                         isRegister = false;

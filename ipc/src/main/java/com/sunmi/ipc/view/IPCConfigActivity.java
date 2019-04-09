@@ -1,5 +1,6 @@
 package com.sunmi.ipc.view;
 
+import android.text.TextUtils;
 import android.widget.CheckedTextView;
 
 import com.sunmi.ipc.rpc.IpcConstants;
@@ -39,6 +40,10 @@ class IPCConfigActivity extends BaseActivity {
     void configClick() {
         if (!ctvPrivacy.isChecked()) {
             shortTip(R.string.tip_agree_protocol);
+            return;
+        }
+        if (TextUtils.isEmpty(IpcConstants.IPC_IP)) {
+            shortTip("请将手机连接到【SUNMI_AP】无线网路");
             return;
         }
         WifiConfigActivity_.intent(context).shopId(shopId).start();
