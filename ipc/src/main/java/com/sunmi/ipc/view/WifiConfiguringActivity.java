@@ -51,14 +51,14 @@ public class WifiConfiguringActivity extends BaseMvpActivity<WifiConfiguringPres
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{IpcConstants.getIpcToken};
+        return new int[]{IpcConstants.getIpcToken, IpcConstants.bindIpc};
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (args == null) return;
+        ResponseBean res = (ResponseBean) args[0];
         if (id == IpcConstants.getIpcToken) {
-            ResponseBean res = (ResponseBean) args[0];
             if (res.getResult().has("ipc_info")) {
                 try {//"ipc_info":{"sn":"sn123456", "token":"fgu766fekjgllfkekajgiorag8tr..."}
                     JSONObject jsonObject = res.getResult().getJSONObject("ipc_info");
@@ -69,6 +69,18 @@ public class WifiConfiguringActivity extends BaseMvpActivity<WifiConfiguringPres
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+            }
+        } else if (id == IpcConstants.bindIpc) {
+            if (res.getDataErrCode() == 1) {
+                WifiConfigCompletedActivity_.intent(context).shopId(shopId).start();
+            } else if (res.getDataErrCode() == 5508) {
+                shortTip("已经绑定，不要重复绑定");
+            } else if (res.getDataErrCode() == 5501) {
+                shortTip("设备不存在");
+            } else if (res.getDataErrCode() == 5510) {
+                shortTip("已被其他用户绑定");
+            } else {
+                shortTip(res.getResult().toString());
             }
         }
     }

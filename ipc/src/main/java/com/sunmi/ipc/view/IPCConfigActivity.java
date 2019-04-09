@@ -37,7 +37,6 @@ class IPCConfigActivity extends BaseActivity {
 
     @Click(resName = "btn_config")
     void configClick() {
-        LogCat.e(TAG, "555555 122" + ctvPrivacy.isChecked());
         if (!ctvPrivacy.isChecked()) {
             shortTip(R.string.tip_agree_protocol);
             return;
@@ -63,7 +62,7 @@ class IPCConfigActivity extends BaseActivity {
     private void ipcFound(SunmiDevice ipc) {
         LogCat.e(TAG, "ipcFound  ipcdevice = " + ipc.toString());
         IpcConstants.IPC_SN = ipc.getDeviceid();
-        IpcConstants.IPC_IP = "http://" + ipc.getIp() + "/api/";//192.168.100.159/api/192.168.103.122
+        IpcConstants.IPC_IP = "https://" + ipc.getIp() + "/api/";//192.168.100.159/api/192.168.103.122
     }
 
 }

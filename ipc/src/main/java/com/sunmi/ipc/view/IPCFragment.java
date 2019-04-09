@@ -7,17 +7,26 @@ import android.view.SurfaceView;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import com.sunmi.ipc.rpc.IPCCloudApi;
 import com.sunmi.ipc.utils.AACDecoder;
 import com.sunmi.ipc.utils.H264Decoder;
 import com.sunmi.ipc.utils.IOTCClient;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import okhttp3.Call;
+import okhttp3.Response;
 import sunmi.common.base.BaseFragment;
+import sunmi.common.rpc.http.HttpResponse;
 import sunmi.common.utils.ThreadPool;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 
 @EFragment(resName = "fragment_ipc")
@@ -78,6 +87,49 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
             @Override
             public void run() {
                 IOTCClient.start(UID);
+            }
+        });
+    }
+
+    @Click(resName = "btn_unbind")
+    void unbindClick() {
+        getIpcList();
+    }
+
+    void unbind(String deviceId) {
+        IPCCloudApi.unbindIPC(deviceId, new StringCallback() {
+            @Override
+            public void onError(Call call, Response response, Exception e, int id) {
+
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                LogCat.e(TAG, "666666 unbind response = " + response);
+
+            }
+        });
+    }
+
+    void getIpcList() {
+        IPCCloudApi.getIpcList("6878", new StringCallback() {
+            @Override
+            public void onError(Call call, Response response, Exception e, int id) {
+
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                //{"code":1,"msg":"","data":{"device_list":[{"id":2227,"device_name":"绑定测试2"}]}}
+                HttpResponse res = new HttpResponse(response);
+                try {
+                    JSONObject jsonObject = new JSONObject(res.getData());
+                    JSONArray jsonArray = jsonObject.getJSONArray("device_list");
+                    unbind(((JSONObject) jsonArray.opt(0)).getInt("id") + "");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                LogCat.e(TAG, "666666 getIpcList response = " + response);
             }
         });
     }

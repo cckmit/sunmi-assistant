@@ -59,5 +59,13 @@
             android:layout_marginStart="@dimen/dp_20"
             android:layout_toEndOf="@+id/btn_pause"
             android:text="停止" />
+
+        <Button
+            android:id="@+id/btn_unbind"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_45"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_toEndOf="@+id/btn_stop"
+            android:text="解绑" />
     </RelativeLayout>
 </RelativeLayout>
