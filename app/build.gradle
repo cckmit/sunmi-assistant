@@ -29,7 +29,7 @@ android {
         manifestPlaceholders = [
                 BAIDU_KEY       : "4U2PRnVbrBVTVc0TLzmHgshUBP67vQeV",
                 ENV_VALUE       : "ENV_TEST",
-                DB_VERSION_VALUE: "3",
+                DB_VERSION_VALUE: "2",
                 MTA_APPKEY      : "A6INR132MGAI",
                 MTA_CHANNEL     : "myapp"]
     }
@@ -40,7 +40,7 @@ android {
                     BAIDU_KEY       : "4U2PRnVbrBVTVc0TLzmHgshUBP67vQeV",
                     ENV_VALUE       : "ENV_TEST",
 //                    ENV_VALUE       : "ENV_RELEASE",
-                    DB_VERSION_VALUE: "3",
+                    DB_VERSION_VALUE: "2",
                     MTA_APPKEY      : "A6INR132MGAI",
                     MTA_CHANNEL     : "myapp"]
         }
@@ -49,7 +49,7 @@ android {
             manifestPlaceholders = [
                     BAIDU_KEY       : "4U2PRnVbrBVTVc0TLzmHgshUBP67vQeV",
                     ENV_VALUE       : "ENV_RELEASE",
-                    DB_VERSION_VALUE: "3",
+                    DB_VERSION_VALUE: "2",
                     MTA_APPKEY      : "A6INR132MGAI",
                     MTA_CHANNEL     : "myapp"]
             //Zipalign优化
@@ -90,8 +90,8 @@ repositories {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-//    implementation fileTree(include: ['*.aar'], dir: 'libs')//不要提交！！！
-    implementation project(':apmanager')//不要提交！！！
+    implementation fileTree(include: ['*.aar'], dir: 'libs')//不要提交！！！
+//    implementation project(':apmanager')//不要提交！！！
 
     implementation project(':commonlib')//公共库
     implementation project(':sunmiservice')
