@@ -92,7 +92,9 @@ public class IOTCClient {
 
     private static boolean startIpcamStream(int avIndex) {
         AVAPIs av = new AVAPIs();
-        int ret = av.avSendIOCtrl(avIndex, AVAPIs.IOTYPE_INNER_SND_DATA_DELAY, new byte[2], 2);
+        //avClient(AP) change time interval of sending packets by avSendFrameData(avServer)
+        int IOTYPE_INNER_SND_DATA_DELAY = 0xFF;
+        int ret = av.avSendIOCtrl(avIndex, IOTYPE_INNER_SND_DATA_DELAY, new byte[2], 2);
         if (ret < 0) {
             Log.e("IOTCClient", "start_ipcam_stream failed[%d]" + ret);
             return false;
@@ -100,9 +102,11 @@ public class IOTCClient {
 
         // This IOTYPE constant and its corrsponsing data structure is defined in
         // Sample/Linux/Sample_AVAPIs/AVIOCTRLDEFs.h
-        //
+
         int IOTYPE_USER_IPCAM_START = 0x1FF;
+        Log.e("IOTCClient", "666666 start_ipcam_stream  start, " + ret);
         ret = av.avSendIOCtrl(avIndex, IOTYPE_USER_IPCAM_START, new byte[8], 8);
+        Log.e("IOTCClient", "666666 start_ipcam_stream  end, " + ret);
         if (ret < 0) {
             Log.e("IOTCClient", "start_ipcam_stream failed[%d]" + ret);
             return false;
@@ -138,10 +142,8 @@ public class IOTCClient {
             int[] outFrmInfoBufSize = new int[1];
             while (true) {
                 int[] frameNumber = new int[1];
-                int ret = av.avRecvFrameData2(avIndex, videoBuffer,
-                        VIDEO_BUF_SIZE, outBufSize, outFrameSize,
-                        frameInfo, FRAME_INFO_SIZE,
-                        outFrmInfoBufSize, frameNumber);
+                int ret = av.avRecvFrameData2(avIndex, videoBuffer, VIDEO_BUF_SIZE, outBufSize,
+                        outFrameSize, frameInfo, FRAME_INFO_SIZE, outFrmInfoBufSize, frameNumber);
                 if (ret == AVAPIs.AV_ER_DATA_NOREADY) {
                     try {
                         Thread.sleep(30);
@@ -167,7 +169,7 @@ public class IOTCClient {
                     break;
                 }
                 if (callback != null) callback.onVideoReceived(videoBuffer);
-//                Log.e("IOTCClient", "555555vvv VIDEO received ret = " + ret);
+                Log.e("IOTCClient", "555555vvv VIDEO received ret = " + ret);
             }
             Log.e("IOTCClient", Thread.currentThread().getName() + " VideoThread Start");
         }
@@ -227,7 +229,7 @@ public class IOTCClient {
                 byte[] data = new byte[ret];
                 System.arraycopy(audioBuffer, 0, data, 0, ret);
                 if (callback != null) callback.onAudioReceived(data);
-//                Log.e("IOTCClient", "555555aaa AUDIO received ret = " + ret);
+                Log.e("IOTCClient", "555555aaa AUDIO received ret = " + ret);
             }
             Log.e("IOTCClient", Thread.currentThread().getName() + "  Exit");
         }

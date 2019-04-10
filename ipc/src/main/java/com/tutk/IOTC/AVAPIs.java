@@ -1,38 +1,16 @@
-/*! \file AVAPIs.h
-This file describes all the APIs of the AV module in IOTC platform.
-AV module is a kind of data communication modules in IOTC platform to provide
-fluent streaming Audio / Video data from AV servers to AV clients in
-unidirectional way.
-
-\copyright Copyright (c) 2010 by Throughtek Co., Ltd. All Rights Reserved.
-
-Revision Table
-
-Version     | Name             |Date           |Description
-------------|------------------|---------------|-------------------
-3.1.10.5    |Terry Liu         |2018-12-17     |- Mark avServStart, avRecvFrameData as deprecated
- */
-
 package com.tutk.IOTC;
 
 import java.util.ArrayList;
 
+/**
+ * This file describes all the APIs of the AV module in IOTC platform.(AVAPIs.h)
+ * AV module is a kind of data communication modules in IOTC platform to provide
+ * fluent streaming Audio / Video data from AV servers to AV clients in
+ * unidirectional way.
+ */
 public class AVAPIs {
 
-    public static final int TIME_DELAY_DELTA = 1;        //ms
-    public static final int TIME_DELAY_MIN = 4;        //ms
-    public static final int TIME_DELAY_MAX = 500;    //ms
-    public static final int TIME_DELAY_INITIAL = 0;    //ms
-
-    public static final int TIME_SPAN_LOSED = 1000;    //ms
-
-    //--{{inner iotype-----------------------------------------------------
-    public static final int IOTYPE_INNER_SND_DATA_DELAY = 0xFF;    //C--->D: avClient(AP) change time interval of sending packets by avSendFrameData(avServer)
-
-    //--}}inner iotype-----------------------------------------------------
-
-    public static final int API_ER_ANDROID_NULL = -10000;
-    //AVApis error code	===================================================================================
+    //============================= AVApis error code =================================
     /**
      * The function is performed successfully.
      */
@@ -261,6 +239,13 @@ public class AVAPIs {
      */
     public static final int AV_ER_SDK_NOT_SUPPORT_DTLS = -21334;
 
+    static {
+        try {
+            System.loadLibrary("AVAPIs");
+        } catch (UnsatisfiedLinkError ule) {
+            System.out.println("loadLibrary(AVAPIs)," + ule.getMessage());
+        }
+    }
 
     public native static int avGetAVApiVer();    //save as Little endian
 
@@ -268,49 +253,63 @@ public class AVAPIs {
 
     public native static int avDeInitialize();
 
-    public native static int avSendIOCtrl(int avIndex, int ioType, byte[] ioCtrlBuf, int ioCtrlBufSize); //block thread,wait ack
+    public native static int avSendIOCtrl(int avIndex, int ioType,
+                                          byte[] ioCtrlBuf, int ioCtrlBufSize); //block thread,wait ack
 
-    public native static int avRecvIOCtrl(int avIndex, int[] pioType, byte[] ioCtrlBuf, int ioCtrlBufMaxSize, int timeout_ms);
+    public native static int avRecvIOCtrl(int avIndex, int[] pioType, byte[] ioCtrlBuf,
+                                          int ioCtrlBufMaxSize, int timeout_ms);
 
     public native static int avSendIOCtrlExit(int avIndex);
 
     //Device Side
-    public static int avServStart(int nSID, byte[] viewAcc, byte[] viewPwd, int timeout_sec, int servType, int ChID) {
+    public static int avServStart(int nSID, byte[] viewAcc, byte[] viewPwd,
+                                  int timeout_sec, int servType, int ChID) {
         return avServStart(nSID, new String(viewAcc), new String(viewPwd), timeout_sec, servType, ChID);
     }
 
     @Deprecated
-    public native static int avServStart(int nSID, String viewAcc, String viewPwd, int timeout_sec, int servType, int ChID);
+    public native static int avServStart(int nSID, String viewAcc, String viewPwd,
+                                         int timeout_sec, int servType, int ChID);
 
     public native static void avServStop(int avIndex);
 
     public native static void avServExit(int nSID, int ChID);
 
-    public native static int avSendFrameData(int avIndex, byte[] data, int dataSize, byte[] pFrmInfo, int FrmInfoSize);
+    public native static int avSendFrameData(int avIndex, byte[] data, int dataSize,
+                                             byte[] pFrmInfo, int FrmInfoSize);
 
-    public native static int avSendAudioData(int avIndex, byte[] data, int dataSize, byte[] pFrmInfo, int FrmInfoSize);
+    public native static int avSendAudioData(int avIndex, byte[] data, int dataSize,
+                                             byte[] pFrmInfo, int FrmInfoSize);
 
     //IOTCClient Side
-    public static int avClientStart(int nSID, byte[] viewAcc, byte[] viewPwd, int timeout_sec, int[] pservType, int ChID) {
+    public static int avClientStart(int nSID, byte[] viewAcc, byte[] viewPwd, int timeout_sec,
+                                    int[] pservType, int ChID) {
         return avClientStart(nSID, new String(viewAcc), new String(viewPwd), timeout_sec, pservType, ChID);
     }
 
-    public native static int avClientStart(int nSID, String viewAcc, String viewPwd, int timeout_sec, int[] pservType, int ChID);
+    public native static int avClientStart(int nSID, String viewAcc, String viewPwd,
+                                           int timeout_sec, int[] pservType, int ChID);
 
-    public native static int avClientStart2(int nSID, String viewAcc, String viewPwd, int timeout_sec, int[] pservType, int ChID, int[] bResend);
+    public native static int avClientStart2(int nSID, String viewAcc, String viewPwd,
+                                            int timeout_sec, int[] pservType, int ChID, int[] bResend);
 
-    public native static int avClientStartEx(St_AVClientStartInConfig avClientInConfig, St_AVClientStartOutConfig avlientOutConfig);
+    public native static int avClientStartEx(St_AVClientStartInConfig avClientInConfig,
+                                             St_AVClientStartOutConfig avlientOutConfig);
 
     public native static void avClientStop(int avIndex);
 
     public native static void avClientExit(int nSID, int ChID);
 
     @Deprecated
-    public native static int avRecvFrameData(int avIndex, byte[] buf, int bufMaxSize, byte[] pFrmInfo, int FrmInfoMaxSize, int[] pFrmNo);
+    public native static int avRecvFrameData(int avIndex, byte[] buf, int bufMaxSize,
+                                             byte[] pFrmInfo, int FrmInfoMaxSize, int[] pFrmNo);
 
-    public native static int avRecvFrameData2(int avIndex, byte[] buf, int inBufSize, int[] outBufSize, int[] outFrmSize, byte[] pFrmInfoBuf, int inFrmInfoBufSize, int[] outFrmInfoBufSize, int[] pFrmNo);
+    public native static int avRecvFrameData2(int avIndex, byte[] buf, int inBufSize,
+                                              int[] outBufSize, int[] outFrmSize, byte[] pFrmInfoBuf,
+                                              int inFrmInfoBufSize, int[] outFrmInfoBufSize, int[] pFrmNo);
 
-    public native static int avRecvAudioData(int avIndex, byte[] buf, int bufMaxSize, byte[] pFrmInfo, int FrmInfoMaxSize, int[] pFrmNo);
+    public native static int avRecvAudioData(int avIndex, byte[] buf, int bufMaxSize,
+                                             byte[] pFrmInfo, int FrmInfoMaxSize, int[] pFrmNo);
 
     public native static int avCheckAudioBuf(int avIndex); //return buf count
 
@@ -328,11 +327,14 @@ public class AVAPIs {
 
     public native static int avClientCleanLocalVideoBuf(int avIndex);
 
-    public native static int avServStart2(int nSID, String viewAcc, String viewPwd, int timeout_sec, int servType, int ChID);
+    public native static int avServStart2(int nSID, String viewAcc, String viewPwd,
+                                          int timeout_sec, int servType, int ChID);
 
-    public native static int avServStart3(int nSID, String viewAcc, String viewPwd, int timeout_sec, int servType, int ChID, int[] bResend);
+    public native static int avServStart3(int nSID, String viewAcc, String viewPwd,
+                                          int timeout_sec, int servType, int ChID, int[] bResend);
 
-    public native static int avServStartEx(St_AVServStartInConfig avServerInConfig, St_AVServStartOutConfig avServerOutConfig);
+    public native static int avServStartEx(St_AVServStartInConfig avServerInConfig,
+                                           St_AVServStartOutConfig avServerOutConfig);
 
     public native static void avServSetResendSize(int avIndex, int nSize);
 
@@ -346,15 +348,21 @@ public class AVAPIs {
 
     public native static int avServResetBuffer(int avIndex, int eTarget, int Timeout_ms);/* eTarget: RESET_VIDEO = 0, RESET_AUDIO = 1, RESET_ALL = 2*/
 
-    public native static int avClientRequestTokenWithIdentity(int av_index, String identity, String identity_description, String[] token, int[] status_code, int timeout_sec);
+    public native static int avClientRequestTokenWithIdentity(int av_index, String identity,
+                                                              String identity_description, String[] token,
+                                                              int[] status_code, int timeout_sec);
 
-    public native static int avClientDeleteIdentity(int av_index, String identity, int identity_length, int[] status_code, int timeout_sec);
+    public native static int avClientDeleteIdentity(int av_index, String identity, int identity_length,
+                                                    int[] status_code, int timeout_sec);
 
-    public native static int avClientRequestIdentityArray(int av_index, ArrayList<St_AvIdentity>[] identities, int[] identity_count, int[] status_code, int timeout_sec);
+    public native static int avClientRequestIdentityArray(int av_index, ArrayList<St_AvIdentity>[] identities,
+                                                          int[] identity_count, int[] status_code, int timeout_sec);
 
     public native static int avClientRequestServerAbility(int av_index, String[] ability, int timeout_sec);
 
-    public native static int avClientRequestChangeServerPassword(int av_index, String account, String old_password, String new_password, String[] new_iotc_authkey, int[] new_iotc_authkey_actual_length, int timeout_sec);
+    public native static int avClientRequestChangeServerPassword(int av_index, String account, String old_password,
+                                                                 String new_password, String[] new_iotc_authkey,
+                                                                 int[] new_iotc_authkey_actual_length, int timeout_sec);
 
     public native static int avStatusCheck(int avIndex, St_AvStatus avStatus);
 
@@ -384,15 +392,8 @@ public class AVAPIs {
     }
 
     public interface avChangePasswordRequestFn {
-        int change_password_request(int av_index, String account, String old_password, String new_password, String new_iotc_authkey);
+        int change_password_request(int av_index, String account, String old_password,
+                                    String new_password, String new_iotc_authkey);
     }
 
-
-    static {
-        try {
-            System.loadLibrary("AVAPIs");
-        } catch (UnsatisfiedLinkError ule) {
-            System.out.println("loadLibrary(AVAPIs)," + ule.getMessage());
-        }
-    }
 }

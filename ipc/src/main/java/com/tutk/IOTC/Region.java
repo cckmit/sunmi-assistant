@@ -1,8 +1,3 @@
-/**
- * Region.java
- * <p>
- * Copyright (c) by TUTK Co.LTD. All Rights Reserved.
- */
 package com.tutk.IOTC;
 
 /**
