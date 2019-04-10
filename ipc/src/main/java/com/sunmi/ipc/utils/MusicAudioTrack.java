@@ -5,8 +5,8 @@ import android.media.AudioTrack;
 import android.util.Log;
 
 /**
- * Created by bruce on 2019/4/3.
- * 播放pcm数据
+ * Description:播放pcm数据
+ * Created by bruce on 2019/3/25.
  */
 public class MusicAudioTrack {
     private int mFrequency;// 采样率

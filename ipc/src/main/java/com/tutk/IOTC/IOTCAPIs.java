@@ -18,10 +18,12 @@ Version     | Name             |Date           |Description
 
 package com.tutk.IOTC;
 
+import sunmi.common.utils.log.LogCat;
+
 public class IOTCAPIs {
 
     public static final int API_ER_ANDROID_NULL = -10000;
-    //IOTCApis error code===================================================================================
+    //=======================IOTCApis error code=========================
     /**
      * The function is performed successfully.
      */
@@ -397,6 +399,14 @@ public class IOTCAPIs {
      */
     public static final int IOTC_ER_MASTER_INVALID = -91;
 
+    static {
+        try {
+            System.loadLibrary("IOTCAPIs");
+        } catch (UnsatisfiedLinkError ule) {
+            System.out.println("loadLibrary(IOTCAPIsT)," + ule.getMessage());
+        }
+    }
+
     //IOTCApis interface
     public native static int IOTC_Get_Login_Info(int[] LoginInfo);
 
@@ -420,11 +430,13 @@ public class IOTCAPIs {
 
     public native static int IOTC_Listen(int Timeout_ms);
 
-    public native static int IOTC_Listen2(int Timeout_ms, String AesKey, int mode);     // mode-> 0: equal IOTC_Listen(), 1: only accept secure connection, 2: accept non-secure and secure then use IOTC_Session_Check() to know which mode
+    // mode-> 0: equal IOTC_Listen(), 1: only accept secure connection, 2: accept non-secure and secure then use IOTC_Session_Check() to know which mode
+    public native static int IOTC_Listen2(int Timeout_ms, String AesKey, int mode);
 
     public native static int IOTC_Connect_ByUID(String UID);
 
-    public native static int IOTC_Connect_ByUID2(String UID, String AesKey, int mode); // mode-> 0: equal IOTC_Listen(), 1: only accept secure connection, 2: accept non-secure and secure then use IOTC_Session_Check() to know which mode
+    // mode-> 0: equal IOTC_Listen(), 1: only accept secure connection, 2: accept non-secure and secure then use IOTC_Session_Check() to know which mode
+    public native static int IOTC_Connect_ByUID2(String UID, String AesKey, int mode);
 
     public native static int IOTC_Connect_ByUIDEx(String UID, int SID, St_IOTCConnectInput Connect_input);
 
@@ -474,13 +486,16 @@ public class IOTCAPIs {
 
     public native static void IOTC_Listen_Exit();
 
-    public native static void IOTC_Get_Login_Info_ByCallBackFn(Object obj);            //Callback method, pass object itself.
+    //Callback method, pass object itself.
+    public native static void IOTC_Get_Login_Info_ByCallBackFn(Object obj);
 
-    public native static int IOTC_Session_Check_ByCallBackFn(int SID, Object obj);    //Callback method, pass object itself.
+    //Callback method, pass object itself.
+    public native static int IOTC_Session_Check_ByCallBackFn(int SID, Object obj);
 
     public native static int IOTC_Set_Partial_Encryption(int SID, int bPartialEncryption);
 
-    public native static int IOTC_Session_Read_Check_Lost(int SID, byte[] Buf, int Max_size, int Timeout_ms, int[] PacketSN, int[] FlagLost, int ChID);
+    public native static int IOTC_Session_Read_Check_Lost(int SID, byte[] Buf, int Max_size,
+                                                          int Timeout_ms, int[] PacketSN, int[] FlagLost, int ChID);
 
     public native static void IOTC_Set_Device_Name(String DeviceName);
 
@@ -514,7 +529,8 @@ public class IOTCAPIs {
     public native static void IOTC_ConnModeChange_CallBack(Object obj);
 
     @Deprecated
-    public native static int IOTC_Device_LoginNB(String cszUID, String cszDeviceName, String cszDevicePWD, byte[] userData, Object obj);
+    public native static int IOTC_Device_LoginNB(String cszUID, String cszDeviceName,
+                                                 String cszDevicePWD, byte[] userData, Object obj);
 
     @Deprecated
     public native static int IOTC_Get_Device_Status(st_DeviceStInfo pDevStInfo);
@@ -555,39 +571,24 @@ public class IOTCAPIs {
     }
 
     public void onLineResultCB(int result, byte[] userData) {
-        System.out.println("[parent] onLineResult Callback, result=" + result + " UID=" + new String(userData));
+        LogCat.e("IOTCAPIS", "onLineResult , result=" + result + " UID=" + new String(userData));
         if (mListener != null) {
             mListener.onLineResultCB(result, userData);
         }
     }
 
-    ;
-
     public void loginInfoCB(int nLonInfo) {
         //This is callback method, we can modify it.
-        System.out.println("[parent] LoginInfo Callback, nLogInfo=" + nLonInfo);
+        LogCat.e("IOTCAPIS", "LoginInfo , nLogInfo=" + nLonInfo);
     }
-
-    ;
 
     public void sessionStatusCB(int nSID, int nErrCode) {
         //This is callback method, we can modify it.
-        System.out.println("[parent] SessionStatus Callback, nSID=" + nSID + ", nErrCode=" + nErrCode);
+        LogCat.e("IOTCAPIS", "SessionStatus , nSID=" + nSID + ", nErrCode=" + nErrCode);
     }
-
-    ;
 
     public void ConnectModeChangeCB(int nSID, int nConnMode) {
-        System.out.println("[parent] ConnectModeChangeCB Callback, nSID = " + nSID + ", nConnMode = " + nConnMode);
+        LogCat.e("IOTCAPIS", "ConnectModeChangeCB nSID = " + nSID + ", nConnMode = " + nConnMode);
     }
 
-    ;
-
-    static {
-        try {
-            System.loadLibrary("IOTCAPIs");
-        } catch (UnsatisfiedLinkError ule) {
-            System.out.println("loadLibrary(IOTCAPIsT)," + ule.getMessage());
-        }
-    }
 }
