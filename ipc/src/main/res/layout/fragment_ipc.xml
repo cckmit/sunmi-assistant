@@ -18,8 +18,16 @@
 
     <SurfaceView
         android:id="@+id/vv_ipc"
-        android:layout_width="@dimen/dp_200"
-        android:layout_height="@dimen/dp_200"
+        android:layout_width="@dimen/dp_270"
+        android:layout_height="@dimen/dp_270"
+        android:layout_below="@+id/title_bar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="46dp" />
+
+    <com.sunmi.ipc.view.OverCameraView
+        android:id="@+id/ocv_ipc"
+        android:layout_width="@dimen/dp_270"
+        android:layout_height="@dimen/dp_270"
         android:layout_below="@+id/title_bar"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="46dp" />

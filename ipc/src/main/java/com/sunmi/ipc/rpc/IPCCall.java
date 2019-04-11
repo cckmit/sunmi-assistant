@@ -2,6 +2,7 @@ package com.sunmi.ipc.rpc;
 
 import android.content.Context;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -52,6 +53,91 @@ public class IPCCall extends BaseApi {
     //获取token,绑定ipc使用
     public void getToken(Context context) {
         post(context, "", IpcConstants.getIpcToken, new JSONObject());
+    }
+
+    /**
+     * 设置缩放
+     *
+     * @param zoom 0-500
+     */
+    public void fsZoom(int zoom, Context context) {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("set", zoom);
+            post(context, "", IpcConstants.fsZoom, object);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 设置焦距
+     *
+     * @param focus 0-780
+     */
+    public void fsFocus(int focus, Context context) {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("set", focus);
+            post(context, "", IpcConstants.fsFocus, object);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 设置对焦点
+     *
+     * @param x 0-100
+     * @param y 0-100
+     */
+    public void fsSetFocusPoint(int x, int y, Context context) {
+        try {
+            JSONObject object = new JSONObject();
+            JSONArray jsonArray = new JSONArray();
+            jsonArray.put(x);
+            jsonArray.put(y);
+            object.put("area", jsonArray);
+            post(context, "", IpcConstants.fsAutoFocus, object);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 自动对焦
+     */
+    public void fsAutoFocus(Context context) {
+        fsSetFocusPoint(101, 101, context);
+    }
+
+    /**
+     * 重置
+     */
+    public void fsReset(Context context) {
+        post(context, "", IpcConstants.fsReset, new JSONObject());
+    }
+
+    /**
+     * 夜间模式
+     *
+     * @param set 1-夜间
+     */
+    public void fsIrMode(int set, Context context) {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("set", set);
+            post(context, "", IpcConstants.fsIrMode, object);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取设备信息
+     */
+    public void fsGetStatus(Context context) {
+        post(context, "", IpcConstants.fsGetStatus, new JSONObject());
     }
 
     private void post(Context context, String sn, int opCode, JSONObject jsonObject) {
