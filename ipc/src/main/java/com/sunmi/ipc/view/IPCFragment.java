@@ -1,13 +1,16 @@
 package com.sunmi.ipc.view;
 
 import android.text.TextUtils;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.sunmi.ipc.rpc.IPCCloudApi;
+import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.utils.AACDecoder;
 import com.sunmi.ipc.utils.H264Decoder;
 import com.sunmi.ipc.utils.IOTCClient;
@@ -26,7 +29,6 @@ import okhttp3.Call;
 import okhttp3.Response;
 import sunmi.common.base.BaseFragment;
 import sunmi.common.rpc.http.HttpResponse;
-import sunmi.common.utils.ThreadPool;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 
@@ -39,16 +41,17 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
     SurfaceView videoView;
     @ViewById(resName = "btn_play")
     Button btnPlay;
-    @ViewById(resName = "btn_pause")
-    Button btnPause;
     @ViewById(resName = "et_uid")
     EditText etUid;
+    @ViewById(resName = "ocv_ipc")
+    OverCameraView overCameraView;
 
     @FragmentArg("shopId")
     String shopId;
 
-//        private static String UID = "C3YABT1MPRV4BM6GUHXJ";//ss
+    //        private static String UID = "C3YABT1MPRV4BM6GUHXJ";//ss
     private static String UID = "CVYA8T1WKFV49NPGYHRJ";//fs
+//    private static String UID = "CBKA9T14URBC8MPGYHZJ";//fs
 
     private H264Decoder mPlayer = null;
     private AACDecoder mAudioPlayer = null;
@@ -58,6 +61,21 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
         //保持屏幕常亮
         mActivity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        videoView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    //获取点击屏幕的位置，作为焦点位置，用于计算对焦区域
+                    float x = event.getX();
+                    float y = event.getY();
+
+                    //对焦并绘制对焦矩形框
+                    overCameraView.setTouchFoucusRect(x, y);
+                }
+                return false;
+            }
+        });
         IOTCClient.setCallback(new IOTCClient.Callback() {
             @Override
             public void onVideoReceived(byte[] videoBuffer) {
@@ -81,12 +99,17 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
             shortTip("请输入uid");
             return;
         }
-        ThreadPool.getCachedThreadPool().submit(new Runnable() {
-            @Override
-            public void run() {
-                IOTCClient.start(etUid.getText().toString().trim());
-            }
-        });
+        if (TextUtils.isEmpty(IpcConstants.IPC_IP)) {
+            shortTip("请连接ipc所在的网络");
+            return;
+        }
+        VideoPlayActivity_.intent(mActivity).UID(etUid.getText().toString().trim()).start();
+    }
+
+    @Click(resName = "btn_pause")
+    void pauseClick() {
+//        IOTCClient.adjustVideo();
+        IOTCClient.stopVideo();
     }
 
     @Click(resName = "btn_unbind")

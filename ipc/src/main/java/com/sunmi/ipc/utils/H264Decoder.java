@@ -19,7 +19,7 @@ import sunmi.common.utils.ThreadPool;
 public class H264Decoder {
 
     private static final int VIDEO_WIDTH = 1920;
-    private static final int VIDEO_HEIGHT = 1920;
+    private static final int VIDEO_HEIGHT = 1080;
 
     private MediaCodec mediaCodec;//处理音视频的编解码的类MediaCodec
 
@@ -64,7 +64,7 @@ public class H264Decoder {
             //第13位标识是视频数据还是头
             boolean isAVC = (data[12] & 0xFF) != 0;
             if (isAVC) {//视频数据
-                byte[] videoData = new byte[data.length - 20];//去掉头20和尾4再加上标准头4
+                byte[] videoData = new byte[data.length - 20];//去掉头20和尾4再加上标准头4  todo oom
                 System.arraycopy(h264Header, 0, videoData, 0, h264Header.length);
                 System.arraycopy(data, 20, videoData, h264Header.length, data.length - 20 - 4);
                 videoDataQueue.put(videoData);
