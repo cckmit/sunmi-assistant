@@ -14,5 +14,6 @@ public class IpcConstants {
     public static final int setIPCWifi = 0x3116;
     public static final int getApStatus = 0x3119;
     public static final int getIpcToken = 0x3124;
+    public static final int bindIpc = 0x3059;
 
 }

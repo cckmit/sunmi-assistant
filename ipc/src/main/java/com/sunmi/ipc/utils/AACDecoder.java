@@ -14,12 +14,11 @@ import java.util.concurrent.BlockingQueue;
 import sunmi.common.utils.ThreadPool;
 
 /**
- * Description:
+ * Description:解析aac音频
  * Created by bruce on 2019/3/25.
  */
 public class AACDecoder {
 
-    //音频解码器
     private static final String TAG = "AACDecoderUtil";
     //声道数
     private static final int KEY_CHANNEL_COUNT = 2;
@@ -27,20 +26,18 @@ public class AACDecoder {
     private static final int KEY_SAMPLE_RATE = 8000;
     private static final int KEY_BIT_RATE = 128000;
     //用于播放解码后的pcm
-    private MyAudioTrack mPlayer;
+    private MusicAudioTrack mPlayer;
 
     private MediaCodec mDecoder; //解码器
 
     private int count = 0;//用来记录解码失败的帧数
 
     private MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();//编解码器缓冲区
-    private long kTimeOutUs = 0;
 
     private boolean isRunning;
 
     public AACDecoder() {
         isRunning = true;
-//        this.audioUtil = new AACDecoderUtil();
         start();
         ThreadPool.getCachedThreadPool().submit(new DecodeAACWorker());//开启解码线程
     }
@@ -61,34 +58,6 @@ public class AACDecoder {
         audioDataQueue.clear();
     }
 
-    class DecodeAACWorker implements Runnable {
-        @Override
-        public void run() {
-            try {
-                //每次从文件读取的数据
-                byte[] readData;
-                //循环读取数据
-                while (isRunning) {
-                    if (!audioDataQueue.isEmpty()) {
-                        readData = audioDataQueue.take();
-                        int readLen = readData.length;
-                        if (!isHeader(readData)) {
-//                            Log.e("AACDecoder", "555555 not header---");
-                            byte[] data = new byte[readLen - 13 - 4];
-                            System.arraycopy(readData, 13, data, 0, data.length);
-//                            audioUtil.decode(readData, 13, readLen - 13 - 4);
-                            decode(data, 0, data.length);
-                        } else {
-                            Log.e("AACDecoder", "555555 is header---");
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     /**
      * 判断aac帧头
      */
@@ -100,8 +69,8 @@ public class AACDecoder {
      * 初始化所有变量
      */
     public void start() {
-        mPlayer = new MyAudioTrack(KEY_SAMPLE_RATE, AudioFormat.CHANNEL_OUT_STEREO,
-                AudioFormat.ENCODING_PCM_16BIT);
+        mPlayer = new MusicAudioTrack(KEY_SAMPLE_RATE,
+                AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT);
         mPlayer.init();
         decodeInit();
     }
@@ -111,9 +80,10 @@ public class AACDecoder {
      *
      * @return 初始化失败返回false，成功返回true
      */
-    private boolean decodeInit() {
+    private void decodeInit() {
         // 初始化AudioTrack
-        mPlayer = new MyAudioTrack(KEY_SAMPLE_RATE, AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT);
+        mPlayer = new MusicAudioTrack(KEY_SAMPLE_RATE, AudioFormat.CHANNEL_OUT_STEREO,
+                AudioFormat.ENCODING_PCM_16BIT);
         mPlayer.init();
         try {
             //需要解码数据的类型
@@ -133,7 +103,8 @@ public class AACDecoder {
             //用来标记AAC是否有adts头，1->有
             mediaFormat.setInteger(MediaFormat.KEY_IS_ADTS, 0);
             //用来标记aac的类型
-            mediaFormat.setInteger(MediaFormat.KEY_AAC_PROFILE, MediaCodecInfo.CodecProfileLevel.AACObjectLC);
+            mediaFormat.setInteger(MediaFormat.KEY_AAC_PROFILE,
+                    MediaCodecInfo.CodecProfileLevel.AACObjectLC);
             //adts头
             int profile = MediaCodecInfo.CodecProfileLevel.AACObjectLC;  //AAC LC
             int freqIdx = 11;  //sample rate
@@ -142,17 +113,14 @@ public class AACDecoder {
             csd.put(0, (byte) (profile << 3 | freqIdx >> 1));
             csd.put(1, (byte) ((freqIdx & 0x01) << 7 | chanCfg << 3));
             mediaFormat.setByteBuffer("csd-0", csd);
-            //解码器配置
+            //配置解码器
             mDecoder.configure(mediaFormat, null, null, 0);
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
         }
-        if (mDecoder == null) {
-            return false;
+        if (mDecoder != null) {
+            mDecoder.start();
         }
-        mDecoder.start();
-        return true;
     }
 
     /**
@@ -166,6 +134,7 @@ public class AACDecoder {
         //等待时间，0->不等待，-1->一直等待
         try {
             //返回一个包含有效数据的input buffer的index,-1->不存在
+            long kTimeOutUs = 0;
             int inputBufIndex = mDecoder.dequeueInputBuffer(kTimeOutUs);
             if (inputBufIndex >= 0) {
                 //获取当前的ByteBuffer
@@ -181,8 +150,7 @@ public class AACDecoder {
             int outputBufferIndex = mDecoder.dequeueOutputBuffer(info, kTimeOutUs);
 
             if (outputBufferIndex < 0) {
-                //记录解码失败的次数
-                count++;
+                count++; //记录解码失败的次数
             }
             ByteBuffer outputBuffer;
             while (outputBufferIndex >= 0) {
@@ -221,6 +189,32 @@ public class AACDecoder {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    class DecodeAACWorker implements Runnable {
+        @Override
+        public void run() {
+            try {
+                //每次从文件读取的数据
+                byte[] readData;
+                //循环读取数据
+                while (isRunning) {
+                    if (!audioDataQueue.isEmpty()) {
+                        readData = audioDataQueue.take();
+                        int readLen = readData.length;
+                        if (!isHeader(readData)) {
+                            byte[] data = new byte[readLen - 13 - 4];
+                            System.arraycopy(readData, 13, data, 0, data.length);
+                            decode(data, 0, data.length);
+                        } else {
+                            Log.e("AACDecoder", "555555 is header---");
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

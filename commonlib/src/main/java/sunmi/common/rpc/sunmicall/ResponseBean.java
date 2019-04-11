@@ -9,7 +9,6 @@ import org.json.JSONObject;
 
 public class ResponseBean {
 
-
     /**
      * data : [{"opcode":"0x2025","result":{"data":[]},"errcode":0}]
      * errcode : 0
@@ -21,7 +20,7 @@ public class ResponseBean {
     private String errCode;
 
     private String opcode;
-    private String dataErrCode;
+    private int dataErrCode;
     private JSONObject result;
 
     private JSONArray jsonArray;
@@ -86,11 +85,11 @@ public class ResponseBean {
         return jsonArray;
     }
 
-    public String getDataErrCode() {
+    public int getDataErrCode() {
         return dataErrCode;
     }
 
-    public void setDataErrCode(String dataErrCode) {
+    public void setDataErrCode(int dataErrCode) {
         this.dataErrCode = dataErrCode;
     }
 
@@ -116,6 +115,11 @@ public class ResponseBean {
             }
             jsonArray = object.getJSONArray("data");
             opcode = ((JSONObject) jsonArray.opt(0)).getString("opcode");
+            try {
+                dataErrCode = ((JSONObject) jsonArray.opt(0)).getInt("errcode");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             if (((JSONObject) jsonArray.opt(0)).has("result")) {
                 result = ((JSONObject) jsonArray.opt(0)).getJSONObject("result");
             }

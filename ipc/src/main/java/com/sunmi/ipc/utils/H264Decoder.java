@@ -13,10 +13,13 @@ import java.util.concurrent.BlockingQueue;
 import sunmi.common.utils.ThreadPool;
 
 /**
- * Description:
+ * Description:视频解析
  * Created by bruce on 2019/3/25.
  */
 public class H264Decoder {
+
+    private static final int VIDEO_WIDTH = 1920;
+    private static final int VIDEO_HEIGHT = 1920;
 
     private MediaCodec mediaCodec;//处理音视频的编解码的类MediaCodec
 
@@ -37,6 +40,8 @@ public class H264Decoder {
     private long counterTime = System.currentTimeMillis();
     private boolean isRunning = false;
 
+    private byte[] h264Header = {0x00, 0x00, 0x00, 0x01};//h264标准头，所有数据都要拼上
+
     public H264Decoder(Surface surface, int playerState) {
         this.surface = surface;
         this.state = playerState;
@@ -45,8 +50,6 @@ public class H264Decoder {
     public void stopRunning() {
         videoDataQueue.clear();
     }
-
-    private byte[] h264Header = {0x00, 0x00, 0x00, 0x01};//h264标准头，所有数据都要拼上
 
     /**
      * 添加视频数据
@@ -73,32 +76,26 @@ public class H264Decoder {
         }
     }
 
-    public int getFPS() {
-        return fps;
-    }
-
     /**
      * 解析视频头
-     * <0900002d 00000000 00000017 00000000 014d402a ffe10019 674d402a 963500f0 078d3705 06054000 00fa0000 3a9826fa 80010004 68ee1f20 00000038>
+     * <0900002d 00000000 00000017 00000000 014d402a ffe10019 674d402a 963500f0
+     * 078d3705 06054000 00fa0000 3a9826fa 80010004 68ee1f20 00000038>
      * 23、24位是sps长度，sps数据之后的2、3位是pps长度
      */
     private void decodeHeader(byte[] data) throws IOException {
         //初始化编码器
-        MediaFormat format = MediaFormat.createVideoFormat("video/avc", 1920, 1920);
-//        LogCat.e("fld", "555555 data = " + Arrays.toString(data));
+        MediaFormat format = MediaFormat.createVideoFormat("video/avc", VIDEO_WIDTH, VIDEO_HEIGHT);
 
         //获取h264中的pps及sps数据
-        int spsLen = byteToInt2(new byte[]{data[22], data[23]});
+        int spsLen = byteToInt(new byte[]{data[22], data[23]});
         byte[] spsHeader = new byte[spsLen + 4];
         System.arraycopy(h264Header, 0, spsHeader, 0, h264Header.length);
         System.arraycopy(data, 24, spsHeader, h264Header.length, spsLen);
         byte[] ppsHeader = new byte[spsLen + 4];
-        int ppsLen = byteToInt2(new byte[]{data[spsLen + 24 + 1], data[spsLen + 24 + 2]});
+        int ppsLen = byteToInt(new byte[]{data[spsLen + 24 + 1], data[spsLen + 24 + 2]});
         System.arraycopy(h264Header, 0, ppsHeader, 0, h264Header.length);
         System.arraycopy(data, spsLen + 24 + 3, ppsHeader, h264Header.length, ppsLen);
 
-//        LogCat.e("fld", "555555 spsHeader = " + Arrays.toString(spsHeader));
-//        LogCat.e("fld", "555555 ppsHeader = " + Arrays.toString(ppsHeader));
         format.setByteBuffer("csd-0", ByteBuffer.wrap(spsHeader));
         format.setByteBuffer("csd-1", ByteBuffer.wrap(ppsHeader));
         format.setInteger(MediaFormat.KEY_FRAME_RATE, fps);
@@ -126,7 +123,7 @@ public class H264Decoder {
     /**
      * 将byte数组转换为int数据
      */
-    private int byteToInt2(byte[] b) {
+    private int byteToInt(byte[] b) {
         return (((int) b[0]) << 8) + b[1];
     }
 
