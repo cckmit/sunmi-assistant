@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_status_height"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <sunmi.common.view.webview.SMWebView
+        android:id="@+id/main_web_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tv_status_height" />
+
+    <ProgressBar
+        android:id="@+id/pb_web_view"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@+id/tv_status_height"
+        android:max="100"
+        android:progressDrawable="@drawable/pb_webview" />
+
+    <RelativeLayout
+        android:id="@+id/rlNetException"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorText_10"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/ivNoNet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@mipmap/ic_support_exception" />
+
+        <TextView
+            android:id="@+id/tvNetTip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ivNoNet"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_15"
+            android:text="@string/str_net_exception"
+            android:textColor="@color/colorText_60"
+            android:textSize="@dimen/sp_14" />
+
+        <Button
+            android:id="@+id/btnTryAgain"
+            android:layout_width="@dimen/dp_200"
+            android:layout_height="@dimen/dp_40"
+            android:layout_below="@id/tvNetTip"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_20"
+            android:background="@drawable/edittext_soild_orange1"
+            android:text="@string/str_btn_try_again"
+            android:textColor="@color/c_white"
+            android:textSize="@dimen/sp_16" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

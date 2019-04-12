@@ -16,7 +16,15 @@ public class GotoLoginUtils {
         if (TextUtils.isEmpty(SpUtils.getLoginStatus())
                 && !className.contains("LoginActivity")
                 && !className.contains("LeadPagesActivity")
-                && !className.contains("WelcomeActivity")) {
+                && !className.contains("WelcomeActivity")
+                && !className.contains("RegisterActivity")
+                && !className.contains("SendSmsLoginActivity")
+                && !className.contains("RetrievePasswordActivity")
+                && !className.contains("InputCaptchaActivity")
+                && !className.contains("InputCaptchaActivity")
+                && !className.contains("InputMobileActivity")
+                && !className.contains("ProtocolActivity")
+                ) {
             gotoLoginActivity(BaseApplication.getContext(), "1"); //1 剔除多端登录
         }
     }

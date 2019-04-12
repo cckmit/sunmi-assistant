@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import sunmi.common.rpc.http.RpcCallback;
+
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.DialogUtils;
@@ -123,9 +124,9 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
             isShowBackDialog();
         } else if (v.getId() == com.sunmi.apmanager.R.id.txt_right) {
             if (isFastClick(1500)) return;
-            String old = tvOriPassword.getText().toString().trim();
-            String new_psd = tvNewPassword.getText().toString().trim();
-            String sure_psd = tvSureNewPassword.getText().toString().trim();
+            String old = tvOriPassword.getText().toString();
+            String new_psd = tvNewPassword.getText().toString();
+            String sure_psd = tvSureNewPassword.getText().toString();
             if (TextUtils.isEmpty(old) || TextUtils.isEmpty(new_psd) || TextUtils.isEmpty(sure_psd)) {
                 shortTip(R.string.hint_input_password);
                 return;
@@ -136,6 +137,10 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
             }
             if (!new_psd.equals(sure_psd)) {
                 shortTip(R.string.tip_two_password_not_same);
+                return;
+            }
+            if (old.contains(" ") || new_psd.contains(" ") || sure_psd.contains(" ")) {
+                shortTip(getString(R.string.str_password_no_contains_blank));
                 return;
             }
             changePassword(old, new_psd);
@@ -157,6 +162,8 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
                     shortTip(R.string.tip_old_password_error);
                 } else if (code == 3604) {
                     shortTip(R.string.tip_old_and_new_psw_same);
+                } else if (code == 2066) {
+                    shortTip(getString(R.string.str_password_fomat_error));
                 } else {
                     shortTip(R.string.tip_password_change_fail);
                 }
