@@ -22,7 +22,6 @@ import com.sunmi.apmanager.ui.view.MergeDialog;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
-import sunmi.common.utils.SpUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.MainActivity_;
 
@@ -37,6 +36,7 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.rpc.http.RpcCallback;
 import sunmi.common.utils.PermissionUtils;
 import sunmi.common.utils.RegexUtils;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.dialog.CommonDialog;
 
@@ -147,6 +147,10 @@ public class LoginActivity extends BaseActivity {
                 }
                 if (TextUtils.isEmpty(password)) {
                     shortTip(R.string.textView_config_psd8);
+                    return;
+                }
+                if (password.contains(" ")) {
+                    shortTip(getString(R.string.str_password_no_contains_blank));
                     return;
                 }
                 userMerge(password);

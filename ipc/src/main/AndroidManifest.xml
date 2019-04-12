@@ -16,6 +16,9 @@
         <activity android:name=".view.WifiConfiguringActivity_" />
         <activity android:name=".view.WifiConfigCompletedActivity_" />
         <activity android:name=".view.IpcTestActivity_" />
+        <activity
+            android:name=".view.VideoPlayActivity_"
+            android:screenOrientation="landscape" />
     </application>
 
 </manifest>

@@ -73,7 +73,7 @@ public class SetPasswordActivity extends BaseActivity {
 
     @Click({R.id.passwordIsVisible, R.id.btnComplete})
     public void onClick(View v) {
-        String password = etPassword.getText().toString().trim();
+        String password = etPassword.getText().toString();
         switch (v.getId()) {
             case R.id.passwordIsVisible: //密码是否可见
                 if (psdIsVisible) {

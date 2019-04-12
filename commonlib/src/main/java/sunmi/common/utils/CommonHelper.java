@@ -207,7 +207,7 @@ public class CommonHelper {
      * @param activity 上下文
      * @return 返回手机屏幕的宽度
      */
-    public static int getScreenWidth(Activity activity) {
+    public static int getScreenWidth(Context activity) {
         return getScreenSize(activity).x;
     }
 
@@ -217,7 +217,7 @@ public class CommonHelper {
      * @param activity 上下文
      * @return 返回手机屏幕高度
      */
-    public static int getScreenHeight(Activity activity) {
+    public static int getScreenHeight(Context activity) {
         return getScreenSize(activity).y;
     }
 
