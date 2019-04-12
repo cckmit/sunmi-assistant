@@ -149,6 +149,10 @@ public class LoginActivity extends BaseActivity {
                     shortTip(R.string.textView_config_psd8);
                     return;
                 }
+                if (password.contains(" ")) {
+                    shortTip(getString(R.string.str_password_no_contains_blank));
+                    return;
+                }
                 userMerge(password);
                 break;
             case R.id.btnRegister: //注册
