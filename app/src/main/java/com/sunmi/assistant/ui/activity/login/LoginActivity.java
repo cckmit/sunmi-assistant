@@ -145,12 +145,12 @@ public class LoginActivity extends BaseActivity {
                     shortTip(R.string.tip_invalid_phone_number);
                     return;
                 }
-                if (TextUtils.isEmpty(password)) {
-                    shortTip(R.string.textView_config_psd8);
+                if (password.length() > 0 && password.contains(" ")) {
+                    shortTip(getString(R.string.str_password_no_contains_blank));
                     return;
                 }
-                if (password.contains(" ")) {
-                    shortTip(getString(R.string.str_password_no_contains_blank));
+                if (TextUtils.isEmpty(password)) {
+                    shortTip(R.string.textView_config_psd8);
                     return;
                 }
                 userMerge(password);
