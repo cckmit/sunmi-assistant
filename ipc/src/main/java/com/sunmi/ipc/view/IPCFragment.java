@@ -94,7 +94,7 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
 
     @Click(resName = "btn_play")
     void playClick() {
-        etUid.setText(UID);
+//        etUid.setText(UID);
         if (etUid == null || TextUtils.isEmpty(etUid.getText().toString().trim())) {
             shortTip("请输入uid");
             return;

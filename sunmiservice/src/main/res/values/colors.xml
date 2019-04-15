@@ -2,7 +2,6 @@
 <resources>
 
     <color name="colorText">#333C4F</color>
-    <color name="colorText_10">#1A333C4F</color>
     <color name="colorText_60">#99333C4F</color>
 
 </resources>

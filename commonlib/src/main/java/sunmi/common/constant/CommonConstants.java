@@ -19,4 +19,8 @@ public class CommonConstants {
     //tab store
     public static final int tabStore = 100001;
 
+    public static int TYPE_AP = 0;
+    public static int TYPE_FS = 1;
+    public static int TYPE_SS = 2;
+
 }
