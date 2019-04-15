@@ -24,6 +24,8 @@ import sunmi.common.utils.log.LogCat;
 public class IpcTestActivity extends BaseActivity {
     @Extra
     String shopId;
+    @Extra
+    int ipcType;
 
     @AfterViews
     void init() {
@@ -51,7 +53,12 @@ public class IpcTestActivity extends BaseActivity {
 
     //1 udp搜索完成 --> ap登录
     private void ipcFound(SunmiDevice ipc) {
-        if (TextUtils.equals("FS1", ipc.getModel())) {
+        if (ipcType == 0 && TextUtils.equals("FS1", ipc.getModel())) {
+            LogCat.e(TAG, "ipcFound  ipcdevice = " + ipc.toString());
+            IpcConstants.IPC_SN = ipc.getDeviceid();
+            IpcConstants.IPC_IP = "http://" + ipc.getIp() + "/api/";//192.168.100.159/api/192.168.103.122
+            LogCat.e(TAG, "ipcFound  IPC_IP = " + ipc.getIp());
+        } else if (ipcType == 1 && TextUtils.equals("SS1", ipc.getModel())) {
             LogCat.e(TAG, "ipcFound  ipcdevice = " + ipc.toString());
             IpcConstants.IPC_SN = ipc.getDeviceid();
             IpcConstants.IPC_IP = "http://" + ipc.getIp() + "/api/";//192.168.100.159/api/192.168.103.122

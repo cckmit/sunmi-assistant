@@ -15,8 +15,6 @@
     <!--loading-->
     <color name="colorLoadingReady">#FFAD29</color>
 
-    <color name="colorText_10">#1A333C4F</color>
-
     <color name="colorText_40">#66333C4F</color>
     <color name="colorLoginLine">#CBCBCB</color>
     <color name="colorWhite">#FFFFFF</color>
