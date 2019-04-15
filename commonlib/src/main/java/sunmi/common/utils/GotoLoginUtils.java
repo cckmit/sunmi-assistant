@@ -21,7 +21,6 @@ public class GotoLoginUtils {
                 && !className.contains("SendSmsLoginActivity")
                 && !className.contains("RetrievePasswordActivity")
                 && !className.contains("InputCaptchaActivity")
-                && !className.contains("InputCaptchaActivity")
                 && !className.contains("InputMobileActivity")
                 && !className.contains("ProtocolActivity")
                 ) {

@@ -53,6 +53,7 @@
 
     <color name="loading_pb_color">#FF6000</color>
     <color name="read_deep">#EA021E</color>
+    <color name="read_deep_more">#D0021B</color>
 
     <!--white 模糊程度-->
     <color name="white_5a">#0DFFFFFF</color>
