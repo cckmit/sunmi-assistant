@@ -12,7 +12,7 @@
         app:dividerShow="true"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@mipmap/ic_back_dark"
-        app:titleText="摄像头设置"
+        app:titleText="@string/str_title_ipc_set"
         app:titleTextColor="@color/colorText" />
 
     <TextView
@@ -54,7 +54,7 @@
         android:layout_below="@+id/tv_3"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="60dp"
-        android:src="@drawable/ic_camera" />
+        android:src="@mipmap/ic_fs" />
 
     <CheckedTextView
         android:id="@+id/ctv_privacy"
@@ -73,6 +73,7 @@
     <Button
         android:id="@+id/btn_config"
         style="@style/BtnOrange"
+        android:layout_alignParentBottom="true"
         android:layout_margin="@dimen/dp_10"
         android:text="开始设置"
         app:layout_constraintBottom_toBottomOf="parent"

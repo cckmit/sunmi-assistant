@@ -50,5 +50,7 @@
     <string name="str_primary_search_check_line">请检查路由器电源是否接通并连接网线</string>
     <string name="str_primary_search_on_find">没有发现路由器</string>
     <string name="str_primary_search_searching_ap">正在搜索您的路由器</string>
+    <string name="str_primary_search_searching_ipc">正在搜索您的摄像头</string>
+    <string name="str_loading">正在加载…</string>
 
 </resources>

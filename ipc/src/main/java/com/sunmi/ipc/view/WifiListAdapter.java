@@ -49,14 +49,14 @@ public class WifiListAdapter extends RecyclerView.Adapter<WifiListAdapter.ViewHo
         holder.itemView.setTag(position);
         holder.tvName.setText(data.get(position).getSsid());
         setStatus(holder, data.get(position).getKey_mgmt());
-        holder.ivSignal.setImageResource(R.drawable.ic_signal_3);
+        holder.ivSignal.setImageResource(R.mipmap.ic_signal_3);
     }
 
     private void setStatus(@NonNull ViewHolder holder, String mgmt) {
         if (TextUtils.equals(mgmt, "NONE")) {
             holder.ivSecret.setImageDrawable(null);
         } else if (TextUtils.equals(mgmt, "WPA-PSK")) {
-            holder.ivSecret.setImageResource(R.drawable.ic_lock);
+            holder.ivSecret.setImageResource(R.mipmap.ic_lock);
         }
     }
 
