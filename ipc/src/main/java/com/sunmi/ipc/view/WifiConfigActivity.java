@@ -3,15 +3,20 @@ package com.sunmi.ipc.view;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.TextUtils;
+import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.gson.GsonBuilder;
-import com.sunmi.ipc.rpc.IPCCall;
-import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.model.WifiListResp;
+import com.sunmi.ipc.rpc.IPCCall;
+import com.sunmi.ipc.rpc.IpcConstants;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
@@ -22,6 +27,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.view.dialog.InputDialog;
 
@@ -32,8 +38,14 @@ import sunmi.common.view.dialog.InputDialog;
 @EActivity(resName = "activity_wifi_config")
 public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.OnItemClickListener {
 
+    @ViewById(resName = "rl_progress")
+    RelativeLayout rlLoading;
     @ViewById(resName = "rv_wifi")
     RecyclerView rvWifi;
+    @ViewById(resName = "rl_no_wifi")
+    RelativeLayout rlNoWifi;
+    @ViewById(resName = "tv_skip")
+    TextView tvSkip;
 
     @Extra
     String shopId;
@@ -43,6 +55,7 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
     @AfterViews
     void init() {
         IPCCall.getInstance().getWifiList(context);
+        tvSkip.setText(Html.fromHtml(getString(R.string.tip_skip_config_wifi)));
     }
 
     @UiThread
@@ -53,6 +66,17 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
         wifiListAdapter = new WifiListAdapter(context, list);
         wifiListAdapter.setOnItemClickListener(this);
         rvWifi.setAdapter(wifiListAdapter);
+    }
+
+    @Click(resName = "btn_refresh")
+    void refreshClick() {
+        rlLoading.setVisibility(View.VISIBLE);
+        setNoWifiVisible(View.GONE);
+    }
+
+    @Click(resName = "tv_skip")
+    void skipClick() {
+        WifiConfiguringActivity_.intent(context).shopId(shopId).start();
     }
 
     @Override
@@ -69,13 +93,32 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
         return new int[]{IpcConstants.getWifiList, IpcConstants.setIPCWifi, IpcConstants.getApStatus};
     }
 
+    @UiThread
+    public void setNoWifiVisible(int visibility) {
+        rlNoWifi.setVisibility(visibility);
+    }
+
+    @UiThread
+    public void setLoadingVisible(int visibility) {
+        rlLoading.setVisibility(visibility);
+    }
+
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (args == null) return;
         ResponseBean res = (ResponseBean) args[0];
         if (id == IpcConstants.getWifiList) {
+            setLoadingVisible(View.GONE);
+            if (res == null || TextUtils.equals(res.getErrCode(), RpcErrorCode.WHAT_ERROR + "")) {
+                setNoWifiVisible(View.VISIBLE);
+                return;
+            }
             WifiListResp resp = new GsonBuilder().create()
                     .fromJson(res.getResult().toString(), WifiListResp.class);
+            if (resp == null || resp.getScan_results() == null || resp.getScan_results().size() == 0) {
+                setNoWifiVisible(View.VISIBLE);
+                return;
+            }
             initApList(resp.getScan_results());
         } else if (id == IpcConstants.setIPCWifi) {//{"data":[{"opcode":"0x3116","result":{},"errcode":0}],"msg_id":"11111","errcode":0}
             IPCCall.getInstance().getApStatus(context);
