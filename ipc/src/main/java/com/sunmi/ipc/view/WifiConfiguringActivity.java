@@ -1,17 +1,20 @@
 package com.sunmi.ipc.view;
 
 import android.content.DialogInterface;
+import android.text.Html;
+import android.widget.TextView;
 
-import com.sunmi.ipc.rpc.IPCCall;
-import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.contract.WifiConfiguringContract;
 import com.sunmi.ipc.presenter.WifiConfiguringPresenter;
+import com.sunmi.ipc.rpc.IPCCall;
+import com.sunmi.ipc.rpc.IpcConstants;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
+import org.androidannotations.annotations.ViewById;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,6 +29,8 @@ import sunmi.common.view.dialog.CommonDialog;
 @EActivity(resName = "activity_wifi_configuring")
 public class WifiConfiguringActivity extends BaseMvpActivity<WifiConfiguringPresenter>
         implements WifiConfiguringContract.View {
+    @ViewById(resName = "tv_tip")
+    TextView tvTip;
 
     @Extra
     String shopId;
@@ -34,6 +39,7 @@ public class WifiConfiguringActivity extends BaseMvpActivity<WifiConfiguringPres
     void init() {
         mPresenter = new WifiConfiguringPresenter();
         mPresenter.attachView(this);
+        tvTip.setText(Html.fromHtml(getString(R.string.tip_keep_same_network)));
         IPCCall.getInstance().getToken(context);
     }
 

@@ -3,7 +3,6 @@ package sunmi.common.view.activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Handler;
-import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -12,28 +11,36 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.commonlibrary.R;
+
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.ref.WeakReference;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.ResponseBean;
+import sunmi.common.utils.SMDeviceDiscoverUtils;
+import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.ViewUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.DiffuseView;
 import sunmi.common.view.TitleBarView;
 
 /**
- * Created by YangShiJie on 2019/3/29.
- * 主路由器开始配置-搜索
+ * Created by Bruce on 2019/3/29.
+ * 配置商米设备-搜索设备
  */
-@EActivity(resName = "activity_primary_router_search")
+@EActivity(resName = "activity_search_sunmi_device")
 public class SearchSMDeviceActivity extends BaseActivity implements View.OnClickListener {
 
     @ViewById(resName = "title_bar")
@@ -52,8 +59,8 @@ public class SearchSMDeviceActivity extends BaseActivity implements View.OnClick
     TextView tvFindName;
     @ViewById(resName = "tv_find_bind_tip")
     TextView tvFindBindTip;
-    @ViewById(resName = "rl_find_router")
-    RelativeLayout rlFindRouter;
+    @ViewById(resName = "rl_device_detected")
+    RelativeLayout rlDetected;
     @ViewById(resName = "iv_no_router")
     ImageView ivNoRouter;
     @ViewById(resName = "tv_no_find_tip")
@@ -62,11 +69,11 @@ public class SearchSMDeviceActivity extends BaseActivity implements View.OnClick
     TextView tvNoFindName;
     @ViewById(resName = "btn_refresh")
     Button btnRefresh;
-    @ViewById(resName = "rl_no_router")
-    RelativeLayout rlNoRouter;
+    @ViewById(resName = "rl_device_undetected")
+    RelativeLayout rlUndetected;
     @ViewById(resName = "ctv_privacy")
     CheckedTextView ctvPrivacy;
-    @ViewById(resName = "btnNext")
+    @ViewById(resName = "btn_next")
     Button btnNext;
     @ViewById(resName = "rl_bottom")
     RelativeLayout rlBottom;
@@ -90,6 +97,156 @@ public class SearchSMDeviceActivity extends BaseActivity implements View.OnClick
     private final int OPERATE_NO_BIND = 1;
     private final int OPERATE_ALREADY_BIND = 2;
     private boolean isRun;
+
+    @AfterViews
+    protected void init() {
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
+        titleBar.getLeftLayout().setOnClickListener(this);
+        ViewUtils.setPrivacy(this, ctvPrivacy, R.color.colorText, false);
+        if (deviceType == CommonConstants.TYPE_AP) {
+            titleBar.setAppTitle(R.string.str_title_ap_set);
+            tvSearchingTip.setText(R.string.str_primary_search_searching_ap);
+        } else if (deviceType == CommonConstants.TYPE_SS || deviceType == CommonConstants.TYPE_FS) {
+            titleBar.setAppTitle(R.string.str_title_ipc_set);
+            tvSearchingTip.setText(R.string.str_primary_search_searching_ipc);
+        }
+        startDiffuse();
+        searching();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isRun = true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isRun = false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopDiffuse();
+    }
+
+    @Override
+    public void onClick(View v) {
+        closeTimer();
+        finish();
+    }
+
+    @Click(resName = "btn_refresh")
+    void refreshClick(View v) {
+        startDiffuse();
+        searching();
+    }
+
+    @Click(resName = "btn_next")
+    void nextClick(View v) {
+        if (isFastClick(1000)) return;
+//        if (OPERATE_BUTTON == OPERATE_NEXT) {//开始配置
+//            if (!ctvPrivacy.isChecked()) {
+//                shortTip(R.string.tip_agree_protocol);
+//                return;
+//            }
+//            Bundle bundle = new Bundle();
+//            bundle.putString("sn", deviceidSearchSn);
+//            openActivity(this, PrimaryRouteSetPasswordActivity.class, bundle, false);
+//
+//        } else if (OPERATE_BUTTON == OPERATE_ALREADY_BIND) {//已经绑定
+//            gotoMainActivity();
+//        } else if (OPERATE_BUTTON == OPERATE_NO_BIND) {//未绑定
+//            bindRouterDialog();
+//        }
+    }
+
+    @Override
+    public int[] getUnStickNotificationId() {
+        return new int[]{
+//                NotificationConstant.checkApPassword, NotificationConstant.apGetInfo,
+                CommonConstants.WHAT_UDP};
+    }
+
+    @Override
+    public void didReceivedNotification(int id, Object... args) {
+        super.didReceivedNotification(id, args);
+        if (id == CommonConstants.WHAT_UDP) {
+            SunmiDevice ipc = (SunmiDevice) args[0];
+            handleSearchResult(ipc);
+        }
+//        if (!isRun || args == null) return;
+//        ResponseBean res = (ResponseBean) args[0];
+//        if (TextUtils.equals(res.getErrCode(), AppConfig.WHAT_ERROR + "")) {
+//            hideLoadingDialog();
+//            NetConnectUtils.isNetConnected(context);
+//
+//        } else if (NotificationConstant.checkApPassword == id) {
+//            LogCat.e(TAG, "result=" + res.getResult());
+//            checkedPasswordSuccess(res);
+//        } else if (NotificationConstant.apGetInfo == id) {
+//            getApInfoSuccess(res);
+//        }
+    }
+
+    //搜索结果
+    private void handleSearchResult(SunmiDevice device) {
+        LogCat.e(TAG, "ipc=" + device);
+        if (isFastClick(800)) return;
+        if (deviceType == CommonConstants.TYPE_AP && TextUtils.equals("W1", device.getModel())) {
+            handleAp(device);
+        } else if (deviceType == CommonConstants.TYPE_SS && TextUtils.equals("SS1", device.getModel())) {
+            handleIpc(device);
+        } else if (deviceType == CommonConstants.TYPE_FS && TextUtils.equals("FS1", device.getModel())) {
+            handleIpc(device);
+        }
+    }
+
+    private void handleIpc(SunmiDevice ipc) {
+
+    }
+
+    private void handleAp(SunmiDevice ipc) {
+//        try {
+//            searchName = ipc.getName();
+//            int factory = Integer.parseInt(ipc.getFactory());//是否已经设置 0已初始配置 1未初始化设置
+//            deviceidSearchSn = ipc.getDeviceid();
+//            searchMac = ipc.getMac();
+//            SEARCH_DEV_MSG[0] = deviceidSearchSn;
+//            SEARCH_DEV_MSG[1] = searchMac;
+//            if (!TextUtils.isEmpty(searchName)) {
+//                String ssid=NetworkUtils.getSSID(context, searchName);
+//                closeTimer();
+//                isSearch = true;
+//                if (factory == 0) {//已配置已经绑定
+//                    for (StoreBean sb : globalDevList) {
+//                        if (sb.getSn().equalsIgnoreCase(deviceidSearchSn)) {
+//                            findRouterConfigDoneBind(ssid);
+//                            return;
+//                        }
+//                    }
+//                    //已配置未绑定(查询云端绑定状态--判断无网络状态)
+//                    getBindRouterMessage(deviceidSearchSn, ssid);
+//                } else {
+//                    //未设置未绑定--快速配置
+//                    LogCat.e("TAG", "ssid=" + ssid);
+//                    findRouterConfigNo(ssid);
+//                }
+//            }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+    }
+
+    private void startDiffuse() {
+        dvView.start();
+    }
+
+    private void stopDiffuse() {
+        dvView.stop();
+    }
 
     //start Timer
     private void startTimer() {
@@ -126,115 +283,13 @@ public class SearchSMDeviceActivity extends BaseActivity implements View.OnClick
         }
     }
 
-    private Handler.Callback mCallback = new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            switch (msg.what) {
-                case CommonConstants.WHAT_UDP://udp搜索
-                    String result = (String) msg.obj;
-                    showSearchResult(result);
-                    break;
-            }
-            return false;
-        }
-    };
-
-    private Handler mHandler = new WeakRefHandler(mCallback);
-
-
-    private static class WeakRefHandler extends Handler {
-        private WeakReference<Callback> mWeakReference;
-
-        public WeakRefHandler(Callback callback) {
-            mWeakReference = new WeakReference<>(callback);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            if (mWeakReference != null && mWeakReference.get() != null) {
-                Callback callback = mWeakReference.get();
-                callback.handleMessage(msg);
-            }
-        }
-    }
-
-//    @Override
-//    protected int activityLayoutId() {
-//        return R.layout.activity_primary_router_search;
-//    }
-//
-//    @Override
-//    protected void initView() {
-//        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-//        titleBar.getLeftLayout().setOnClickListener(this);
-//        ViewUtils.setPrivacy(this, ctvPrivacy, R.color.colorText, false);
-//        startDiffuse();
-//        searching();
-//    }
-//
-//    private void startDiffuse() {
-//        dvView.start();
-//    }
-//
-//    private void stopDiffuse() {
-//        dvView.stop();
-//    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        isRun = true;
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        isRun = false;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-//        stopDiffuse();
-    }
-
-    @Override
-    public void onClick(View v) {
-        closeTimer();
-        finish();
-    }
-
-    //    @OnClick(R2.id.btn_refresh)
-    public void refreshClick(View v) {
-//        startDiffuse();
-        searching();
-    }
-
-    //    @OnClick(R2.id.btnNext)
-    public void nextClick(View v) {
-        if (isFastClick(1000)) return;
-//        if (OPERATE_BUTTON == OPERATE_NEXT) {//开始配置
-//            if (!ctvPrivacy.isChecked()) {
-//                shortTip(R.string.tip_agree_protocol);
-//                return;
-//            }
-//            Bundle bundle = new Bundle();
-//            bundle.putString("sn", deviceidSearchSn);
-//            openActivity(this, PrimaryRouteSetPasswordActivity.class, bundle, false);
-//
-//        } else if (OPERATE_BUTTON == OPERATE_ALREADY_BIND) {//已经绑定
-//            goToMainActivity();
-//        } else if (OPERATE_BUTTON == OPERATE_NO_BIND) {//未绑定
-//            bindRouterDialog();
-//        }
-    }
-
     //搜索路由器
     private void searchRouter() {
         startTimer();//开启计时器
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                SMDeviceDiscoverUtils.scanDevice(context, CommonConstants.WHAT_UDP);
 //                UDPUtils.UdpManual.initSearchRouter(mHandler, SearchSMDeviceActivity.this);
             }
         }, 1000);
@@ -260,16 +315,16 @@ public class SearchSMDeviceActivity extends BaseActivity implements View.OnClick
 //                    //已配置已经绑定
 //                    for (StoreBean sb : globalDevList) {
 //                        if (sb.getSn().equalsIgnoreCase(deviceidSearchSn)) {
-//                            findRouterConfigDoneBind(HelpUtils.getSSID(this, searchName));
+//                            findRouterConfigDoneBind(NetworkUtils.getSSID(context, searchName));
 //                            return;
 //                        }
 //                    }
 //                    //已配置未绑定(查询云端绑定状态--判断无网络状态)
-//                    getBindRouterMessage(deviceidSearchSn, HelpUtils.getSSID(this, searchName));
+//                    getBindRouterMessage(deviceidSearchSn, NetworkUtils.getSSID(context, searchName));
 //                } else {
 //                    //未设置未绑定--快速配置
-//                    LogCat.e("TAG", "ssid=" + HelpUtils.getSSID(this, searchName));
-//                    findRouterConfigNo(HelpUtils.getSSID(this, searchName));
+//                    LogCat.e("TAG", "ssid=" + NetworkUtils.getSSID(context, searchName));
+//                    findRouterConfigNo(NetworkUtils.getSSID(context, searchName));
 //                }
 //            }
 //        } catch (JSONException e) {
@@ -303,35 +358,31 @@ public class SearchSMDeviceActivity extends BaseActivity implements View.OnClick
     }
 
     //查询绑定信息（云端）
-    private void getBindBySnSuccess(final int code, final String result, final String name) {
+    @UiThread
+    void getBindBySnSuccess(final int code, final String result, final String name) {
         LogCat.e(TAG, "getBindBySnSuccess=" + result);
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    if (code == 1) {//成功
-//                        JSONObject object1 = new JSONObject(result);
-//                        //有返回数据说明已经绑定，无数据则没有绑定
-//                        if (!StringHelper.isNull(object1.getString("phone"))) {
-//                            String phone = object1.getString("phone");
-//                            findRouterConfigDoneBindOtherUser(
-//                                    HelpUtils.getSSID(SearchSMDeviceActivity.this, searchName),
-//                                    getString(R.string.str_call_unbind, StringHelper.getEncryptPhone(phone)));
+//        try {
+//            if (code == 1) {//成功
+//                JSONObject object1 = new JSONObject(result);
+//                //有返回数据说明已经绑定，无数据则没有绑定
+//                if (!StringHelper.isNull(object1.getString("phone"))) {
+//                    String phone = object1.getString("phone");
+//                    findRouterConfigDoneBindOtherUser(
+//                            HelpUtils.getSSID(SearchSMDeviceActivity.this, searchName),
+//                            getString(R.string.str_call_unbind, StringHelper.getEncryptPhone(phone)));
 //
-//                        } else if (!StringHelper.isNull(object1.getString("email"))) {
-//                            String email = object1.getString("email");
-//                            findRouterConfigDoneBindOtherUser(
-//                                    HelpUtils.getSSID(SearchSMDeviceActivity.this, searchName),
-//                                    getString(R.string.str_call_unbind, StringHelper.getEncryptEmail(email)));
-//                        } else {
-//                            findRouterConfigDoneUnbind(name);
-//                        }
-//                    }
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
+//                } else if (!StringHelper.isNull(object1.getString("email"))) {
+//                    String email = object1.getString("email");
+//                    findRouterConfigDoneBindOtherUser(
+//                            HelpUtils.getSSID(SearchSMDeviceActivity.this, searchName),
+//                            getString(R.string.str_call_unbind, StringHelper.getEncryptEmail(email)));
+//                } else {
+//                    findRouterConfigDoneUnbind(name);
 //                }
 //            }
-//        });
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
     }
 
     //绑定校验管理员密码
@@ -377,8 +428,8 @@ public class SearchSMDeviceActivity extends BaseActivity implements View.OnClick
         searchRouter();//搜索路由器
 
         rlSearchingRouter.setVisibility(View.VISIBLE);
-        rlFindRouter.setVisibility(View.GONE);
-        rlNoRouter.setVisibility(View.GONE);
+        rlDetected.setVisibility(View.GONE);
+        rlUndetected.setVisibility(View.GONE);
         rlBottom.setVisibility(View.GONE);
     }
 
@@ -390,8 +441,8 @@ public class SearchSMDeviceActivity extends BaseActivity implements View.OnClick
 //        tvFindTip.setText(R.string.str_primary_search_find);
 //        tvFindBindTip.setVisibility(View.GONE);
 //        rlSearchingRouter.setVisibility(View.GONE);
-//        rlFindRouter.setVisibility(View.VISIBLE);
-//        rlNoRouter.setVisibility(View.GONE);
+//        rlDetected.setVisibility(View.VISIBLE);
+//        rlUndetected.setVisibility(View.GONE);
 //        rlBottom.setVisibility(View.VISIBLE);
 //        ctvPrivacy.setVisibility(View.VISIBLE);
 //        btnNext.setText(R.string.str_button_start_config);
@@ -406,8 +457,8 @@ public class SearchSMDeviceActivity extends BaseActivity implements View.OnClick
 //        tvFindTip.setText(R.string.str_primary_search_bind);
 //        tvFindBindTip.setVisibility(View.GONE);
 //        rlSearchingRouter.setVisibility(View.GONE);
-//        rlFindRouter.setVisibility(View.VISIBLE);
-//        rlNoRouter.setVisibility(View.GONE);
+//        rlDetected.setVisibility(View.VISIBLE);
+//        rlUndetected.setVisibility(View.GONE);
 //        rlBottom.setVisibility(View.VISIBLE);
 //        ctvPrivacy.setVisibility(View.GONE);
 //        btnNext.setText(R.string.str_button_bind);
@@ -423,8 +474,8 @@ public class SearchSMDeviceActivity extends BaseActivity implements View.OnClick
 //        tvFindBindTip.setVisibility(View.VISIBLE);
 //        tvFindBindTip.setText(R.string.str_primary_search_already_bind);
 //        rlSearchingRouter.setVisibility(View.GONE);
-//        rlFindRouter.setVisibility(View.VISIBLE);
-//        rlNoRouter.setVisibility(View.GONE);
+//        rlDetected.setVisibility(View.VISIBLE);
+//        rlUndetected.setVisibility(View.GONE);
 //        rlBottom.setVisibility(View.VISIBLE);
 //        ctvPrivacy.setVisibility(View.GONE);
 //        btnNext.setText(R.string.str_button_sure);
@@ -439,8 +490,8 @@ public class SearchSMDeviceActivity extends BaseActivity implements View.OnClick
 //        tvFindBindTip.setVisibility(View.VISIBLE);
 //        tvFindBindTip.setText(tip);
 //        rlSearchingRouter.setVisibility(View.GONE);
-//        rlFindRouter.setVisibility(View.VISIBLE);
-//        rlNoRouter.setVisibility(View.GONE);
+//        rlDetected.setVisibility(View.VISIBLE);
+//        rlUndetected.setVisibility(View.GONE);
 //        rlBottom.setVisibility(View.VISIBLE);
 //        ctvPrivacy.setVisibility(View.GONE);
 //        btnNext.setText(R.string.str_button_sure);
@@ -452,32 +503,10 @@ public class SearchSMDeviceActivity extends BaseActivity implements View.OnClick
 //        stopDiffuse();
         closeTimer();
         rlSearchingRouter.setVisibility(View.GONE);
-        rlFindRouter.setVisibility(View.GONE);
-        rlNoRouter.setVisibility(View.VISIBLE);
+        rlDetected.setVisibility(View.GONE);
+        rlUndetected.setVisibility(View.VISIBLE);
         rlBottom.setVisibility(View.GONE);
     }
-
-    @Override
-    public void didReceivedNotification(int id, Object... args) {
-        super.didReceivedNotification(id, args);
-//        if (!isRun || args == null) return;
-//        ResponseBean res = (ResponseBean) args[0];
-//        if (TextUtils.equals(res.getErrCode(), AppConfig.WHAT_ERROR + "")) {
-//            hideLoadingDialog();
-//            NetConnectUtils.isNetConnected(context);
-//
-//        } else if (NotificationConstant.checkApPassword == id) {
-//            LogCat.e(TAG, "result=" + res.getResult());
-//            checkedPasswordSuccess(res);
-//        } else if (NotificationConstant.apGetInfo == id) {
-//            getApInfoSuccess(res);
-//        }
-    }
-
-//    @Override
-//    public int[] getUnStickNotificationId() {
-//        return new int[]{NotificationConstant.checkApPassword, NotificationConstant.apGetInfo};
-//    }
 
     //1 ap 管理密码校验
     private void checkedPasswordSuccess(ResponseBean res) {
@@ -528,8 +557,7 @@ public class SearchSMDeviceActivity extends BaseActivity implements View.OnClick
     //3 绑定--默认进行绑定
     private void bindAp(String sn, String token) {
         hideLoadingDialog();
-//        CloudApi.bind(sn, token, CURRENT_SHOP_ID, "", "",
-//                new RpcCallback1(this) {
+//        CloudApi.bind(sn, token, CURRENT_SHOP_ID, "", "",new RpcCallback1(this) {
 //                    @Override
 //                    public void onSuccess(int code, String msg, String data) {
 //                        LogCat.e(TAG, "bind data = " + data);
@@ -541,7 +569,7 @@ public class SearchSMDeviceActivity extends BaseActivity implements View.OnClick
 //                        } else if (code == 5012) {
 //                            shortTip(getString(R.string.str_dev_no_sn));
 //                        }
-//                        goToMainActivity();
+//                        gotoMainActivity();
 //                    }
 //
 //                    @Override
@@ -553,7 +581,7 @@ public class SearchSMDeviceActivity extends BaseActivity implements View.OnClick
 //                });
     }
 
-    private void goToMainActivity() {
+    private void gotoMainActivity() {
         try {
             Class<?> mainActivity = Class.forName("com.sunmi.assistant.ui.activity.MainActivity_");
             Intent intent = new Intent(context, mainActivity);
