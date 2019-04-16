@@ -77,7 +77,7 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
 
     private void startPrimaryRouteSearchActivity() {
         try {
-            Class<?> mainActivity = Class.forName("com.sunmi.apmanager.ui.activity.config.SearchSMDeviceActivity");
+            Class<?> mainActivity = Class.forName("com.sunmi.apmanager.ui.activity.config.PrimaryRouteSearchActivity");
             Intent intent = new Intent(context, mainActivity);
             context.startActivity(intent);
         } catch (Exception e) {
