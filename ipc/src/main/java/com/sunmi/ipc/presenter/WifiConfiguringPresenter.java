@@ -20,7 +20,7 @@ public class WifiConfiguringPresenter extends BasePresenter<WifiConfiguringContr
                 token, longitude, latitude, new HttpCallback<Object>(mView) {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
-
+                        mView.ipcBindWifiSuccess();
                     }
                 });
     }

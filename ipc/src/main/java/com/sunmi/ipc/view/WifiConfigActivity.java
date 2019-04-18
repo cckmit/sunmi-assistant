@@ -27,6 +27,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.view.dialog.InputDialog;
@@ -42,13 +43,15 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
     RelativeLayout rlLoading;
     @ViewById(resName = "rv_wifi")
     RecyclerView rvWifi;
-    @ViewById(resName = "rl_no_wifi")
+    @ViewById(resName = "rl_no_device")
     RelativeLayout rlNoWifi;
     @ViewById(resName = "tv_skip")
     TextView tvSkip;
 
     @Extra
     String shopId;
+    @Extra
+    SunmiDevice sunmiDevice;
 
     WifiListAdapter wifiListAdapter;
 
@@ -76,7 +79,7 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
 
     @Click(resName = "tv_skip")
     void skipClick() {
-        WifiConfiguringActivity_.intent(context).shopId(shopId).start();
+        WifiConfiguringActivity_.intent(context).sunmiDevice(sunmiDevice).shopId(shopId).start();
     }
 
     @Override

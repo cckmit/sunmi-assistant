@@ -21,8 +21,11 @@ import sunmi.common.view.activity.StartConfigSMDeviceActivity_;
  */
 public class ChooseDeviceDialog extends Dialog {
 
-    public ChooseDeviceDialog(Context context) {
+    String shopId;
+
+    public ChooseDeviceDialog(Context context, String shopId) {
         super(context);
+        this.shopId = shopId;
     }
 
     @Override
@@ -55,7 +58,9 @@ public class ChooseDeviceDialog extends Dialog {
         adapter.setOnItemClickListener(new SimpleRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int pos) {
-                StartConfigSMDeviceActivity_.intent(getContext()).deviceType(pos).start();
+                dismiss();
+                StartConfigSMDeviceActivity_.intent(getContext())
+                        .deviceType(pos).shopId(shopId).start();
             }
         });
         return adapter;

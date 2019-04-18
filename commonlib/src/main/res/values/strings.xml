@@ -6,6 +6,7 @@
     <string name="str_update">更新</string>
     <string name="str_ignore">忽略</string>
     <string name="str_refresh">刷新</string>
+    <string name="str_complete">完成</string>
 
     <string name="str_click_consent">点击“开始配置”代表你同意</string>
     <string name="sunmi_user_protocol">《商米用户协议》</string>
