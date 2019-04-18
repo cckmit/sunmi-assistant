@@ -19,6 +19,7 @@
         <activity
             android:name=".view.VideoPlayActivity_"
             android:screenOrientation="landscape" />
+        <activity android:name=".view.ChooseIPCActivity_" />
     </application>
 
 </manifest>

@@ -29,6 +29,8 @@ public class SunmiDevice implements Serializable {
     private String networkrol;
     private String factory;
     private String deviceid;
+    private int status;
+    private String network;
 
     public String getIp() {
         return ip;
@@ -100,6 +102,22 @@ public class SunmiDevice implements Serializable {
 
     public void setDeviceid(String deviceid) {
         this.deviceid = deviceid;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getNetwork() {
+        return network;
+    }
+
+    public void setNetwork(String network) {
+        this.network = network;
     }
 
 }

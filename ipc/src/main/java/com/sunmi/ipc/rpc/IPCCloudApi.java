@@ -38,7 +38,6 @@ public class IPCCloudApi extends BaseHttpApi {
         } catch (Exception e) {
             LogCat.e(TAG, "getSignedParams error,", e);
         }
-
         post(IPCInterface.BIND_IPC, map, callback);
     }
 
