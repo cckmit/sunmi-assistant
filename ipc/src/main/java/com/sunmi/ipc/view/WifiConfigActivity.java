@@ -131,7 +131,7 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
                     JSONObject jsonObject = res.getResult().getJSONObject("wireless");
                     if (jsonObject.has("connect_status")) {//是否成功关联上前端AP(0:正在关联。1：关联成功。2：关联失败)
                         if (TextUtils.equals("1", jsonObject.getString("connect_status"))) {
-                            WifiConfiguringActivity_.intent(context).shopId(shopId).start();
+                            WifiConfiguringActivity_.intent(context).sunmiDevice(sunmiDevice).shopId(shopId).start();
                             return;
                         }
                     }

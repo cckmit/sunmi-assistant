@@ -41,6 +41,7 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="-16dp"
+        android:checked="true"
         android:button="@drawable/checkbox_dev_selector"
         android:scaleX="0.35"
         android:scaleY="0.35" />

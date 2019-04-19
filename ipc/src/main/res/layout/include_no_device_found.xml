@@ -3,7 +3,6 @@
     android:id="@+id/rl_no_device"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dp_80"
     android:visibility="gone">
 
     <TextView
@@ -35,9 +34,9 @@
         android:layout_below="@+id/tv_check_network"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_24"
-        android:background="@drawable/bg_rounded_corner_gray_frame"
+        android:background="@drawable/edittext_soild_orange"
         android:text="@string/str_refresh"
-        android:textColor="@color/color_333333"
+        android:textColor="@color/c_white"
         android:textSize="@dimen/sp_16" />
 
 </RelativeLayout>

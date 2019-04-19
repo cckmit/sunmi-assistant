@@ -49,7 +49,9 @@ public class IPCListAdapter extends RecyclerView.Adapter<IPCListAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         holder.itemView.setTag(position);
-        holder.ivStatus.setImageResource(R.mipmap.ic_done);
+        if (data.size() == 1 && position == 0) {
+            holder.checkBox.setEnabled(false);
+        } else holder.checkBox.setEnabled(true);
         if (TextUtils.equals("FS1", data.get(position).getModel())) {
             holder.ivDevice.setImageResource(R.mipmap.item_fs);
         } else if (TextUtils.equals("SS1", data.get(position).getModel())) {

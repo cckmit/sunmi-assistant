@@ -1,9 +1,11 @@
 package com.sunmi.ipc.view;
 
+import android.os.Handler;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.sunmi.ipc.rpc.IpcConstants;
@@ -37,6 +39,8 @@ public class ChooseIPCActivity extends BaseActivity
 
     //    @ViewById(resName = "rl_progress")
 //    RelativeLayout rlLoading;
+    @ViewById(resName = "rl_search")
+    RelativeLayout rlSearch;
     @ViewById(resName = "rv_ipc")
     RecyclerView rvDevice;
     @ViewById(resName = "rl_no_device")
@@ -54,8 +58,22 @@ public class ChooseIPCActivity extends BaseActivity
 
     @AfterViews
     void init() {
-        SMDeviceDiscoverUtils.scanDevice(context, IpcConstants.ipcDiscovered);
+        startScan();
         initApList();
+    }
+
+    private void startScan() {
+        rlNoWifi.setVisibility(View.GONE);
+        rlSearch.setVisibility(View.VISIBLE);
+        SMDeviceDiscoverUtils.scanDevice(context, IpcConstants.ipcDiscovered);
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                if (ipcList.size() <= 0) {
+                    rlSearch.setVisibility(View.GONE);
+                    rlNoWifi.setVisibility(View.VISIBLE);
+                }
+            }
+        }, 5000);
     }
 
     @UiThread
@@ -68,19 +86,19 @@ public class ChooseIPCActivity extends BaseActivity
         rvDevice.setAdapter(ipcListAdapter);
     }
 
-//    @Click(resName = "btn_refresh")
-//    void refreshClick() {
-//        rlLoading.setVisibility(View.VISIBLE);
-//        setNoWifiVisible(View.GONE);
-//    }
+    @Click(resName = "btn_refresh")
+    void refreshClick() {
+        startScan();
+    }
 
     @Click(resName = "btn_config")
     void configClick() {
         if (isApMode) {
             if (ipcList == null || ipcList.size() < 1) return;
             WifiConfigActivity_.intent(context).sunmiDevice(ipcList.get(0)).shopId(shopId).start();
-        } else {
-            WifiConfigActivity_.intent(context).sunmiDevice(ipcList.get(0)).shopId(shopId).start();
+        } else {//todo sunmi link
+            if (ipcList == null || ipcList.size() < 1) return;
+            WifiConfiguringActivity_.intent(context).sunmiDevice(ipcList.get(0)).shopId(shopId).start();
 
         }
     }

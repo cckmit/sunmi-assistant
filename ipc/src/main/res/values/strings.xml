@@ -14,5 +14,6 @@
     <string name="str_searching">搜索中...</string>
     <string name="tip_ipc_config_complete">摄像头设置完成</string>
     <string name="tip_select_ipc">选择要添加的摄像头</string>
+    <string name="tip_choose_multi_ipc">可选择多台摄像头</string>
 
 </resources>

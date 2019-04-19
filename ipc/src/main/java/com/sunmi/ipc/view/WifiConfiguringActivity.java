@@ -49,8 +49,12 @@ public class WifiConfiguringActivity extends BaseMvpActivity<WifiConfiguringPres
     @UiThread
     @Override
     public void ipcBindWifiSuccess() {
-        sunmiDevice.setStatus(1);
-        WifiConfigCompletedActivity_.intent(context).shopId(shopId).sunmiDevice(sunmiDevice).start();
+
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 
     @UiThread
@@ -84,6 +88,7 @@ public class WifiConfiguringActivity extends BaseMvpActivity<WifiConfiguringPres
             if (res.getDataErrCode() == 1) {
                 sunmiDevice.setStatus(1);
                 WifiConfigCompletedActivity_.intent(context).shopId(shopId).sunmiDevice(sunmiDevice).start();
+                finish();
             } else if (res.getDataErrCode() == 5508) {
                 shortTip("已经绑定，不要重复绑定");
             } else if (res.getDataErrCode() == 5501) {
