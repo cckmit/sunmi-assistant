@@ -10,10 +10,8 @@ import android.text.TextUtils;
 
 import butterknife.ButterKnife;
 import sunmi.common.notification.BaseNotification;
-import sunmi.common.utils.GotoLoginUtils;
-import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.ToastUtils;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.dialog.LoadingDialog;
 
 /**
@@ -56,7 +54,7 @@ public abstract class BaseActivity extends FragmentActivity
     @Override
     protected void onResume() {
         super.onResume();
-        GotoLoginUtils.gotoLoginActivity(TAG);
+        GotoActivityUtils.gotoLoginActivity(TAG);
     }
 
     /**

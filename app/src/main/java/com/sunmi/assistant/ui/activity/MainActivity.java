@@ -21,6 +21,7 @@ import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.assistant.MyApplication;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.utils.MainTab;
+import com.sunmi.ipc.rpc.mqtt.MqttManager;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import org.androidannotations.annotations.AfterViews;
@@ -62,6 +63,7 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
         CrashReport.setUserId(SpUtils.getUID());
         if (MyApplication.isCheckedToken)
             MQTTManager.getInstance().createEmqToken(true);//初始化长连接
+        MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
         initTabs();
     }
 

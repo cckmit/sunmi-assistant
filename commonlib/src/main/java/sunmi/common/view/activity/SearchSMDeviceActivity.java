@@ -1,7 +1,6 @@
 package sunmi.common.view.activity;
 
 import android.app.Dialog;
-import android.content.Intent;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
@@ -579,17 +578,6 @@ public class SearchSMDeviceActivity extends BaseActivity implements View.OnClick
 //                        finish();
 //                    }
 //                });
-    }
-
-    private void gotoMainActivity() {
-        try {
-            Class<?> mainActivity = Class.forName("com.sunmi.assistant.ui.activity.MainActivity_");
-            Intent intent = new Intent(context, mainActivity);
-            context.startActivity(intent);
-            finish();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
 }

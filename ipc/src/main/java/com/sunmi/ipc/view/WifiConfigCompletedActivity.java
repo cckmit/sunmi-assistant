@@ -18,6 +18,7 @@ import java.util.List;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.ViewHolder;
 
@@ -46,6 +47,7 @@ public class WifiConfigCompletedActivity extends BaseActivity {
 
     @Click(resName = "btn_complete")
     void completeClick() {
+        GotoActivityUtils.gotoMainActivity(context);
         finish();
     }
 

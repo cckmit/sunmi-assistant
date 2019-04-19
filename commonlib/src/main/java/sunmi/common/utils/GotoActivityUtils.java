@@ -10,7 +10,7 @@ import sunmi.common.base.BaseApplication;
  * Created by YangShiJie on 2019/4/10.
  * 多端登录剔除，针对部分手机无法后台默认自启动如：Oppo等
  */
-public class GotoLoginUtils {
+public class GotoActivityUtils {
 
     public static void gotoLoginActivity(String className) {
         if (TextUtils.isEmpty(SpUtils.getLoginStatus())
@@ -36,6 +36,16 @@ public class GotoLoginUtils {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             if (!TextUtils.isEmpty(extra))
                 intent.putExtra("reason", extra);
+            context.startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void gotoMainActivity(Context context) {
+        try {
+            Class<?> mainActivity = Class.forName("com.sunmi.assistant.ui.activity.MainActivity_");
+            Intent intent = new Intent(context, mainActivity);
             context.startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
