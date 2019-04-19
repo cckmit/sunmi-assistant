@@ -36,7 +36,7 @@ public class ClearableEditText extends AppCompatEditText {
     }
 
     private void init() {
-        mClearDrawable = getResources().getDrawable(R.drawable.ic_edit_delete);
+        mClearDrawable = getResources().getDrawable(R.mipmap.ic_edit_delete);
     }
 
     @Override
