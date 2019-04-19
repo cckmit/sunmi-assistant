@@ -49,8 +49,8 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
     @FragmentArg("shopId")
     String shopId;
 
-    //        private static String UID = "C3YABT1MPRV4BM6GUHXJ";//ss
-    private static String UID = "CVYA8T1WKFV49NPGYHRJ";//fs
+            private static String UID = "C3YABT1MPRV4BM6GUHXJ";//ss
+//    private static String UID = "CVYA8T1WKFV49NPGYHRJ";//fs
 //    private static String UID = "CBKA9T14URBC8MPGYHZJ";//fs
 
     private H264Decoder mPlayer = null;
@@ -94,7 +94,7 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
 
     @Click(resName = "btn_play")
     void playClick() {
-//        etUid.setText(UID);
+        etUid.setText(UID);
         if (etUid == null || TextUtils.isEmpty(etUid.getText().toString().trim())) {
             shortTip("请输入uid");
             return;

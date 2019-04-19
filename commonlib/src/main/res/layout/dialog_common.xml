@@ -19,9 +19,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="@dimen/margin_15"
-            android:layout_marginRight="@dimen/margin_15"
-            android:layout_marginTop="@dimen/margin_25"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginRight="@dimen/dp_15"
+            android:layout_marginTop="@dimen/dp_25"
             android:gravity="center"
             android:textColor="@color/color_dialog_content"
             android:textSize="@dimen/sp_18"
@@ -32,9 +32,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="@dimen/margin_15"
-            android:layout_marginRight="@dimen/margin_15"
-            android:layout_marginTop="@dimen/margin_15"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginRight="@dimen/dp_15"
+            android:layout_marginTop="@dimen/dp_15"
             android:gravity="center"
             android:textColor="@color/colorText"
             android:textSize="@dimen/sp_16"
@@ -43,7 +43,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="0.3dp"
-            android:layout_marginTop="@dimen/margin_25"
+            android:layout_marginTop="@dimen/dp_25"
             android:background="@color/dialog_divider" />
 
         <LinearLayout

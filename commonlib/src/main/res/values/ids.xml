@@ -76,12 +76,6 @@
     <item name="etStorageLocation" type="id"></item>
     <item name="etInfo" type="id"></item>
 
-    <!-- WinsafeSpinner ids -->
-    <item name="wsOutorgan" type="id"></item>
-    <item name="wsOutwarehouse" type="id"></item>
-    <item name="wsInorgan" type="id"></item>
-    <item name="wsInwarehouse" type="id"></item>
-
     <!-- GridView ids -->
     <item name="gvMenu" type="id"></item>
 
