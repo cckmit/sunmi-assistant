@@ -16,63 +16,72 @@
         app:titleText="@string/str_title_ipc_set"
         app:titleTextColor="@color/colorText" />
 
-    <TextView
-        android:id="@+id/tv_1"
-        style="@style/configTitleText"
-        android:layout_below="@+id/title_bar"
-        android:text="@string/tip_select_ipc" />
-
-    <TextView
-        android:id="@+id/tip_select_multi"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_1"
-        android:layout_marginStart="@dimen/dp_30"
-        android:layout_marginTop="@dimen/dp_4"
-        android:text="可选择多台摄像头"
-        android:textColor="@color/color_666666"
-        android:textSize="@dimen/sp_16"
-        android:visibility="gone" />
-
-    <View
-        android:id="@+id/divider"
-        android:layout_width="wrap_content"
-        android:layout_height="1dp"
-        android:layout_below="@id/tv_1"
-        android:layout_marginStart="@dimen/dp_30"
-        android:layout_marginTop="@dimen/dp_80"
-        android:layout_marginEnd="@dimen/dp_30"
-        android:background="@color/color_divider" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_ipc"
+    <RelativeLayout
+        android:id="@+id/rl_search"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/divider"
-        android:layout_marginBottom="@dimen/dp_80"
-        android:background="@color/c_white"
-        android:overScrollMode="never"
-        android:paddingStart="@dimen/dp_30"
-        android:paddingEnd="@dimen/dp_30"
-        android:scrollbars="none" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/title_bar">
 
-    <ProgressBar
-        android:id="@+id/pb_loading"
-        android:layout_width="@dimen/dp_30"
-        android:layout_height="@dimen/dp_30"
-        android:layout_below="@id/rv_ipc"
-        android:layout_centerHorizontal="true"
-        android:indeterminate="false"
-        android:indeterminateDrawable="@drawable/loading_common" />
+        <TextView
+            android:id="@+id/tv_1"
+            style="@style/configTitleText"
+            android:text="@string/tip_select_ipc" />
 
-    <include layout="@layout/include_no_device_found" />
+        <TextView
+            android:id="@+id/tip_select_multi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_1"
+            android:layout_marginStart="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_4"
+            android:text="@string/tip_choose_multi_ipc"
+            android:textColor="@color/color_666666"
+            android:textSize="@dimen/sp_16"
+            android:visibility="gone" />
 
-    <Button
-        android:id="@+id/btn_config"
-        style="@style/BtnOrange"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_20"
-        android:text="@string/btn_start_config" />
+        <View
+            android:id="@+id/divider"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:layout_below="@id/tv_1"
+            android:layout_marginStart="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_80"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:background="@color/color_divider" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_ipc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/divider"
+            android:layout_marginBottom="@dimen/dp_40"
+            android:background="@color/c_white"
+            android:overScrollMode="never"
+            android:paddingStart="@dimen/dp_30"
+            android:paddingEnd="@dimen/dp_30"
+            android:scrollbars="none" />
+
+        <include
+            layout="@layout/loading_text_right"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rv_ipc"
+            android:layout_centerHorizontal="true" />
+
+        <Button
+            android:id="@+id/btn_config"
+            style="@style/BtnOrange"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:text="@string/btn_start_config" />
+    </RelativeLayout>
+
+    <include
+        layout="@layout/include_no_device_found"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/title_bar"
+        android:layout_marginTop="@dimen/dp_80" />
 
 </RelativeLayout>

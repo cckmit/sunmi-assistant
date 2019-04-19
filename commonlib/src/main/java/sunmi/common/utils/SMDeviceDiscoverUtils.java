@@ -3,6 +3,7 @@ package sunmi.common.utils;
 import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.util.Base64;
+import android.util.Log;
 
 import com.google.gson.GsonBuilder;
 
@@ -19,6 +20,8 @@ import java.util.zip.CRC32;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.notification.BaseNotification;
+
+import static sunmi.common.utils.ByteUtils.bytesToHex;
 
 /**
  * Description:通过udp获取sn号
@@ -120,7 +123,6 @@ public class SMDeviceDiscoverUtils {
                     //收发消息类型 发送01 接收02
                     byte[] message_type = new byte[1];
                     System.arraycopy(rd, 5, message_type, 0, 1);
-                    //printHexString(message_type);
 
                     //HEADER(4字节), PROTOCOL_VERSION(1字节), MESSAGE_TYPE(1字节), LENGTH(2字节), DATA(x字节),CRC_NUMBER(4字节)
                     //过滤掉本机发送的数据
@@ -131,13 +133,13 @@ public class SMDeviceDiscoverUtils {
                         CRC32 crc = new CRC32();
                         crc.update(crc_data);
                         String a = Long.toHexString(crc.getValue());
-                        //Log.i("TAG", "CRC32:---" + Long.toHexString(crc.getValue()));//十六进制
+                        Log.e("TAG", "CRC32:---" + Long.toHexString(crc.getValue()));//十六进制
 
                         //server返回的crc末尾4个字节数据
                         byte[] crc_end4 = new byte[4];
                         System.arraycopy(rd, len - 4, crc_end4, 0, 4);
-                        String b = ByteUtils.bytesToHex(crc_end4);
-                        //Log.i("TAG", "server return**16-->>" + bytesToHex(crc_end4));
+                        String b = bytesToHex(crc_end4);
+                        Log.e("TAG", "server return**16-->>" + bytesToHex(crc_end4));
                         //crc验证
                         if (b.contains(a)) {//crc验证通过
                             byte[] data = new byte[len - 12];////解析数据data，截取除去data的其他12个字节

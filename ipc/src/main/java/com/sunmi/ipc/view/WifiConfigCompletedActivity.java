@@ -1,6 +1,9 @@
 package com.sunmi.ipc.view;
 
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 
 import com.sunmi.ipc.R;
 
@@ -37,6 +40,7 @@ public class WifiConfigCompletedActivity extends BaseActivity {
 
     @AfterViews
     void init() {
+        list.add(sunmiDevice);
         initList();
     }
 
@@ -46,11 +50,19 @@ public class WifiConfigCompletedActivity extends BaseActivity {
     }
 
     private void initList() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        rvResult.setLayoutManager(layoutManager);
+        rvResult.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
         rvResult.setAdapter(new CommonListAdapter<SunmiDevice>(context,
                 R.layout.item_device_config_complete, list) {
             @Override
             public void convert(ViewHolder holder, final SunmiDevice device) {
                 holder.setText(R.id.tv_name, device.getName());
+                if (TextUtils.equals("FS1", device.getModel())) {
+                    holder.setImageResource(R.id.iv_device, R.mipmap.item_fs);
+                } else if (TextUtils.equals("SS1", device.getModel())) {
+                    holder.setImageResource(R.id.iv_device, R.mipmap.item_ss);
+                }
                 if (device.getStatus() == 1) {
                     holder.setText(R.id.tv_status, "添加成功");
                     holder.setImageResource(R.id.iv_status, R.mipmap.ic_done);
