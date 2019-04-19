@@ -6,13 +6,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextPaint;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import sunmi.common.notification.BaseNotification;
-import sunmi.common.utils.GotoLoginUtils;
-import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.ToastUtils;
 
 public class BaseFragment extends Fragment implements BaseNotification.NotificationCenterDelegate {
@@ -35,7 +33,7 @@ public class BaseFragment extends Fragment implements BaseNotification.Notificat
     @Override
     public void onResume() {
         super.onResume();
-        GotoLoginUtils.gotoLoginActivity(TAG);
+        GotoActivityUtils.gotoLoginActivity(TAG);
     }
 
     @Override

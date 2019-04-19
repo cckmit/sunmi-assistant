@@ -34,7 +34,7 @@ import sunmi.common.utils.log.LogCat;
  * Created by bruce on 2019/4/16.
  */
 @EActivity(resName = "activity_choose_ipc")
-public class ChooseIPCActivity extends BaseActivity
+public class IPCSearchActivity extends BaseActivity
         implements IPCListAdapter.OnItemClickListener, BGARefreshLayout.BGARefreshLayoutDelegate {
 
     //    @ViewById(resName = "rl_progress")

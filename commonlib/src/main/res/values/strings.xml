@@ -54,4 +54,9 @@
     <string name="str_primary_search_searching_ipc">正在搜索您的摄像头</string>
     <string name="str_loading">正在加载…</string>
 
+    <string name="str_add_success">添加成功</string>
+    <string name="str_add_fail">添加失败</string>
+    <string name="str_bind_net_error">请确保手机已连接互联网</string>
+    <string name="str_searching">搜索中…</string>
+
 </resources>

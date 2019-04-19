@@ -24,6 +24,7 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.webview.SMWebView;
@@ -133,13 +134,6 @@ public class PrinterManageActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        try {
-            Class<?> mainActivity = Class.forName("com.sunmi.assistant.ui.activity.MainActivity_");
-            Intent intent = new Intent(context, mainActivity);
-            //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            context.startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        GotoActivityUtils.gotoMainActivity(context);
     }
 }
