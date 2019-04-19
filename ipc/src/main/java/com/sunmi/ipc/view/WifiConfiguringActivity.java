@@ -19,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.view.dialog.CommonDialog;
 
@@ -34,6 +35,8 @@ public class WifiConfiguringActivity extends BaseMvpActivity<WifiConfiguringPres
 
     @Extra
     String shopId;
+    @Extra
+    SunmiDevice sunmiDevice;
 
     @AfterViews
     void init() {
@@ -46,8 +49,12 @@ public class WifiConfiguringActivity extends BaseMvpActivity<WifiConfiguringPres
     @UiThread
     @Override
     public void ipcBindWifiSuccess() {
-        finish();
-        WifiConfigCompletedActivity_.intent(context).shopId(shopId).start();
+
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 
     @UiThread
@@ -79,7 +86,9 @@ public class WifiConfiguringActivity extends BaseMvpActivity<WifiConfiguringPres
             }
         } else if (id == IpcConstants.bindIpc) {
             if (res.getDataErrCode() == 1) {
-                WifiConfigCompletedActivity_.intent(context).shopId(shopId).start();
+                sunmiDevice.setStatus(1);
+                WifiConfigCompletedActivity_.intent(context).shopId(shopId).sunmiDevice(sunmiDevice).start();
+                finish();
             } else if (res.getDataErrCode() == 5508) {
                 shortTip("已经绑定，不要重复绑定");
             } else if (res.getDataErrCode() == 5501) {

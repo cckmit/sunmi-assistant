@@ -41,6 +41,8 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
     TextView tvConfigTip;
 
     @Extra
+    String shopId;
+    @Extra
     int deviceType;
 
     @AfterViews
@@ -71,7 +73,16 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
         if (deviceType == CommonConstants.TYPE_AP) {
             startPrimaryRouteSearchActivity();
         } else if (deviceType == CommonConstants.TYPE_FS || deviceType == CommonConstants.TYPE_SS) {
-            SearchSMDeviceActivity_.intent(context).deviceType(deviceType).start();
+            try {
+                Class<?> mainActivity = Class.forName("com.sunmi.ipc.view.ChooseIPCActivity_");
+                Intent intent = new Intent(context, mainActivity);
+                intent.putExtra("shopId", shopId);
+                intent.putExtra("deviceType", deviceType);
+                context.startActivity(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+//            SearchSMDeviceActivity_.intent(context).deviceType(deviceType).start();
         }
     }
 
