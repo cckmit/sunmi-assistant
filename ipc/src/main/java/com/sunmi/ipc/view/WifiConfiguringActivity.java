@@ -1,7 +1,9 @@
 package com.sunmi.ipc.view;
 
 import android.content.DialogInterface;
+import android.os.Handler;
 import android.text.Html;
+import android.text.TextUtils;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;
@@ -20,7 +22,9 @@ import org.json.JSONObject;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.sunmicall.ResponseBean;
+import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.view.dialog.CommonDialog;
 
 /**
@@ -49,7 +53,11 @@ public class WifiConfiguringActivity extends BaseMvpActivity<WifiConfiguringPres
     @UiThread
     @Override
     public void ipcBindWifiSuccess() {
-
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                configFailDialog(R.string.tip_set_fail, R.string.dialog_msg_timeout_retry);
+            }
+        }, 10000);
     }
 
     @Override
@@ -60,7 +68,7 @@ public class WifiConfiguringActivity extends BaseMvpActivity<WifiConfiguringPres
     @UiThread
     @Override
     public void ipcBindWifiFail() {
-        bindFailDialog();
+        configFailDialog(R.string.tip_connect_ipc_fail, R.string.msg_in_same_wifi);
     }
 
     @Override
@@ -72,7 +80,9 @@ public class WifiConfiguringActivity extends BaseMvpActivity<WifiConfiguringPres
     public void didReceivedNotification(int id, Object... args) {
         if (args == null) return;
         ResponseBean res = (ResponseBean) args[0];
-        if (id == IpcConstants.getIpcToken) {
+        if (TextUtils.equals(res.getErrCode(), RpcErrorCode.WHAT_ERROR + "")) {
+            configFailDialog(R.string.tip_set_fail, R.string.str_bind_net_error);
+        } else if (id == IpcConstants.getIpcToken) {
             if (res.getResult().has("ipc_info")) {
                 try {//"ipc_info":{"sn":"sn123456", "token":"fgu766fekjgllfkekajgiorag8tr..."}
                     JSONObject jsonObject = res.getResult().getJSONObject("ipc_info");
@@ -102,25 +112,24 @@ public class WifiConfiguringActivity extends BaseMvpActivity<WifiConfiguringPres
     }
 
     @UiThread
-    void configFailDialog() {
+    void configFailDialog(int titleRes, int messageRes) {
         new CommonDialog.Builder(context)
-                .setTitle(R.string.tip_set_fail)
-                .setMessage(R.string.msg_in_same_wifi)
-                .setCancelButton(R.string.str_cancel)
+                .setTitle(titleRes)
+                .setMessage(messageRes)
+                .setCancelButton(R.string.str_quit_config,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                GotoActivityUtils.gotoMainActivity(context);
+                            }
+                        })
                 .setConfirmButton(R.string.str_retry,
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-
+                                IPCCall.getInstance().getToken(context);
                             }
                         }).create().show();
-    }
-
-    @UiThread
-    void bindFailDialog() {
-        new CommonDialog.Builder(context)
-                .setTitle("摄像头已绑定其他商米账号，如要添加请先从原账号解绑")
-                .setConfirmButton(R.string.str_confirm).create().show();
     }
 
 }
