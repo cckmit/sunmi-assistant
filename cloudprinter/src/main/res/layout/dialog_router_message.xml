@@ -39,7 +39,7 @@
             <sunmi.common.view.ClearableEditText
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/margin_35"
+                android:layout_height="@dimen/dp_35"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/dp_20"
                 android:layout_marginRight="@dimen/dp_20"

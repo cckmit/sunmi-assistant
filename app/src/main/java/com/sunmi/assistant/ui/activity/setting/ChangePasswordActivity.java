@@ -131,10 +131,6 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
                 shortTip(R.string.hint_input_password);
                 return;
             }
-            if (old.contains(" ") || new_psd.contains(" ") || sure_psd.contains(" ")) {
-                shortTip(getString(R.string.str_password_no_contains_blank));
-                return;
-            }
             if (!HelpUtils.isLetterDigit(new_psd) && new_psd.length() < 8) {
                 shortTip(R.string.tip_password_non_standard);
                 return;

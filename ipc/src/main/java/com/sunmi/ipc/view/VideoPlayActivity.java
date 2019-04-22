@@ -4,6 +4,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.SeekBar;
 
@@ -62,6 +63,9 @@ public class VideoPlayActivity extends BaseActivity
         screenW = CommonHelper.getScreenWidth(context);
         screenH = CommonHelper.getScreenHeight(context);
         sbZoom.setOnSeekBarChangeListener(this);
+        ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+        lp.height = lp.width = CommonHelper.getScreenHeight(context);
+        videoView.setLayoutParams(lp);
         videoView.setOnTouchListener(this);
         IOTCClient.setCallback(this);
         videoView.getHolder().addCallback(this);
