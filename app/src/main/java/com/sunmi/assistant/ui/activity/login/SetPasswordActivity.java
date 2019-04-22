@@ -88,12 +88,8 @@ public class SetPasswordActivity extends BaseActivity {
                 break;
             case R.id.btnComplete:
                 if (isFastClick(1500)) return;
-                if (password.contains(" ")) {
-                    shortTip(getString(R.string.str_password_no_contains_blank));
-                    return;
-                }
-                if (!RegexUtils.isValidPassword(password)) {
-                    shortTip(R.string.textView_tip_psd);
+                if (!RegexUtils.isValidPassword(password)&& password.length() < 8) {
+                    shortTip(R.string.tip_password_non_standard);
                     return;
                 }
                 trackFinish();
