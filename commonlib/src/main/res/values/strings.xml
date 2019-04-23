@@ -45,7 +45,7 @@
     <string name="str_config_tip_ipc_1"><![CDATA[1. 将摄像头接通电源，待信号灯呈<font color= \'#FF6000\'>「白色」</font>]]></string>
     <string name="tip_has_ap_already">已经有连网的商米路由器？</string>
     <string name="str_start_set">开始设置</string>
-    <string name="str_config_child_tip">如果您已经有一台连网的商米路由器，你可以在「路由器管理」中添加更多路由器</string>
+    <string name="str_config_child_tip">如果您已经有一台连网的商米路由器，您可以在「路由器管理」中添加更多路由器</string>
     <string name="btn_start_config">开始配置</string>
     <string name="textView_config_title">设置向导</string>
     <string name="str_primary_search_check_line">请检查路由器电源是否接通并连接网线</string>

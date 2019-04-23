@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 
 import sunmi.common.base.BaseApplication;
+import sunmi.common.utils.log.LogCat;
 
 /**
  * Created by YangShiJie on 2019/4/10.
@@ -22,8 +23,10 @@ public class GotoActivityUtils {
                 && !className.contains("RetrievePasswordActivity")
                 && !className.contains("InputCaptchaActivity")
                 && !className.contains("InputMobileActivity")
+                && !className.contains("SetPasswordActivity")
                 && !className.contains("ProtocolActivity")
                 ) {
+            LogCat.e("TAG", "gotoLoginActivity= " + className);
             gotoLoginActivity(BaseApplication.getContext(), "1"); //1 剔除多端登录
         }
     }
