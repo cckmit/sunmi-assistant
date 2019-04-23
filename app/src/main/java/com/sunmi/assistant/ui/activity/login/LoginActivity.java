@@ -138,7 +138,7 @@ public class LoginActivity extends BaseActivity {
             R.id.btnLogout, R.id.tvForgetPassword, R.id.tvSMSLogin})
     public void onClick(View v) {
         mobile = etUser.getText().toString().trim();
-        String password = etPassword.getText().toString().trim();
+        String password = etPassword.getText().toString();
         switch (v.getId()) {
             case R.id.btnLogin: //密码登录
                 if (!RegexUtils.isChinaPhone(mobile) && !RegexUtils.isEmail(mobile)) {
