@@ -27,6 +27,7 @@ import org.androidannotations.annotations.ViewById;
 import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseFragment;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -74,12 +75,6 @@ public class SupportFragment extends BaseFragment
         BGANormalRefreshViewHolder refreshViewHolder = new BGANormalRefreshViewHolder(getActivity(), false); // 设置下拉刷新和上拉加载更多的风格
         mRefreshLayout.setRefreshViewHolder(refreshViewHolder); // 为了增加下拉刷新头部和加载更多的通用性，提供了以下可选配置选项
         mRefreshLayout.setIsShowLoadingMoreView(false); // 设置正在加载更多时的文本
-    }
-
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (!hidden) refreshService();
     }
 
     private void initWebView() {
@@ -198,7 +193,7 @@ public class SupportFragment extends BaseFragment
 
     @Override
     public void onProgressComplete() {
-        mRefreshLayout.endRefreshing();
+        endRefresh();
     }
 
     @Override
@@ -232,10 +227,19 @@ public class SupportFragment extends BaseFragment
 
     }
 
+    private void endRefresh() {
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mRefreshLayout.endRefreshing();
+            }
+        });
+    }
+
     private void refreshService() {
         if (!NetworkUtils.isNetworkAvailable(mActivity)) {
             shortTip(getString(R.string.str_check_net));
-            mRefreshLayout.endRefreshing();
+            endRefresh();
             return;
         }
         rlNetException.setVisibility(View.GONE);
@@ -253,5 +257,18 @@ public class SupportFragment extends BaseFragment
     @Override
     public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
         return false;
+    }
+
+    @Override
+    public void didReceivedNotification(int id, Object... args) {
+        super.didReceivedNotification(id, args);
+        if (id == CommonConstants.tabSupport) {
+            refreshService();
+        }
+    }
+
+    @Override
+    public int[] getStickNotificationId() {
+        return new int[]{CommonConstants.tabSupport};
     }
 }

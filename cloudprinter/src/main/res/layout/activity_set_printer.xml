@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/c_white"
+        app:dividerColor="@color/colorText_10"
+        app:dividerShow="true"
+        app:leftDefaultClickEnable="true"
+        app:leftIcon="@mipmap/ic_back_dark"
+        app:titleText="@string/str_read_write"
+        app:titleTextColor="@color/colorText" />
+
+    <TextView
+        android:id="@+id/tv_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title_bar"
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
+        android:text="@string/str_already_search_router" />
+
+    <ProgressBar
+        android:id="@+id/pb_sending"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        android:layout_alignBottom="@+id/tv_loading"
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_toEndOf="@+id/tv_loading"
+        android:indeterminateBehavior="repeat"
+        android:indeterminateDrawable="@drawable/common_loading"
+        android:indeterminateOnly="true" />
+
+     <View
+        android:id="@+id/divider_top"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/tv_loading"
+        android:layout_marginTop="@dimen/dp_5"
+        android:background="@color/divider"
+        android:visibility="gone" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_router"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/divider_top"
+        android:layout_marginBottom="@dimen/dp_45"
+        android:background="@color/c_white"
+        android:overScrollMode="never"
+        android:paddingStart="@dimen/dp_5"
+        android:paddingEnd="@dimen/dp_5"
+        android:scrollbars="none" />
+
+</RelativeLayout>

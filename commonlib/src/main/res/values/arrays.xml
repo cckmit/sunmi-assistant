@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sunmi_devices">
+        <item>W1路由器</item>
+        <item>FS摄像头</item>
+        <item>SS摄像头</item>
+    </string-array>
+</resources>

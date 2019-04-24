@@ -12,7 +12,8 @@ import android.widget.Toast;
 
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.update.AppUpdate;
-import com.sunmi.apmanager.utils.SpUtils;
+import com.sunmi.apmanager.utils.CommonUtils;
+import sunmi.common.utils.SpUtils;
 import com.sunmi.assistant.MyApplication;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.login.LoginActivity_;
@@ -22,6 +23,7 @@ import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.UiThread;
 import org.json.JSONObject;
 
 import okhttp3.Call;
@@ -44,7 +46,7 @@ public class WelcomeActivity extends BaseActivity {
     @AfterViews
     protected void init() {
         SpUtils.saveHeightPixel(this);//手机像素高度
-        if (TextUtils.equals(SpUtils.getLead(), SpUtils.LEAD_PAGES_PARAMS)) {
+        if (TextUtils.equals(SpUtils.getLead(), "TRUE")) {
             launch();
         } else {
             LeadPagesActivity_.intent(context).start();
@@ -145,7 +147,7 @@ public class WelcomeActivity extends BaseActivity {
     }
 
     private void logout() {
-        SpUtils.logout();
+        CommonUtils.logout();
         gotoLoginActivity();
     }
 
@@ -182,13 +184,9 @@ public class WelcomeActivity extends BaseActivity {
         });
     }
 
-    private void forceUpdate(final String url) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                getUpgradeDialog(url).show();
-            }
-        });
+    @UiThread
+    void forceUpdate(final String url) {
+        getUpgradeDialog(url).show();
     }
 
     private CommonDialog getUpgradeDialog(final String url) {

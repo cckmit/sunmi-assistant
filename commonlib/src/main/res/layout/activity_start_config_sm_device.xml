@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/c_white">
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:dividerColor="@color/colorText_10"
+        app:dividerShow="true"
+        app:leftDefaultClickEnable="true"
+        app:leftIcon="@mipmap/ic_back_dark"
+        app:titleTextColor="@color/colorText" />
+
+    <ImageView
+        android:id="@+id/iv_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title_bar"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/tv_tip_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_image"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:textColor="@color/colorText"
+        android:textSize="@dimen/sp_28" />
+
+    <TextView
+        android:id="@+id/tv_tip_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_tip_1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="@dimen/dp_30"
+        android:gravity="center"
+        android:textSize="@dimen/sp_16" />
+
+    <TextView
+        android:id="@+id/tv_tip_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_tip_2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="@dimen/dp_30"
+        android:textSize="@dimen/sp_16" />
+
+    <TextView
+        android:id="@+id/tv_config_tip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btn_start"
+        android:layout_marginStart="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_40"
+        android:gravity="center_horizontal"
+        android:text="@string/tip_has_ap_already"
+        android:textColor="@color/c_text_blue"
+        android:textSize="@dimen/sp_14"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/btn_start"
+        style="@style/BtnOrange"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_20"
+        android:text="@string/str_start_set" />
+
+</RelativeLayout>

@@ -39,6 +39,7 @@ android {
             manifestPlaceholders = [
                     BAIDU_KEY       : "4U2PRnVbrBVTVc0TLzmHgshUBP67vQeV",
                     ENV_VALUE       : "ENV_TEST",
+//                    ENV_VALUE       : "ENV_RELEASE",
                     DB_VERSION_VALUE: "2",
                     MTA_APPKEY      : "A6INR132MGAI",
                     MTA_CHANNEL     : "myapp"]
@@ -79,7 +80,6 @@ android {
         // but continue the build even when errors are found:
         abortOnError false
     }
-
 }
 
 repositories {
@@ -89,23 +89,18 @@ repositories {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation fileTree(include: ['*.aar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.aar'], dir: 'libs')//不要提交！！！
+//    implementation project(':apmanager')//不要提交！！！
 
-//    implementation "com.android.support:appcompat-v7:${SUPPORT_VERSION}"
-//    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation project(':commonlib')//公共库
+    implementation project(':sunmiservice')
+    implementation project(':cloudPrinter')
+    implementation project(':ipc')
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-
-//    implementation "org.androidannotations:androidannotations-api:${AAVersion}"
     annotationProcessor "org.androidannotations:androidannotations:${AAVersion}"
-
-    implementation project(':commonlib')//公共库
-//    implementation project(':apmanager')
-    implementation project(':sunmiservice')
-
-//    //wechat
-//    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
 
 }

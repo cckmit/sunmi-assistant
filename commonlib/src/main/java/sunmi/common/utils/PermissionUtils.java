@@ -181,4 +181,29 @@ public class PermissionUtils {
         return false;
     }
 
+    //* 如果SDK版本大于等于23、或者Android系统版本是6.0以上，那么需要动态请求创建文件的权限 */
+    public static boolean checkLocationPermission(FragmentActivity getActivity) {
+        // 读,写,手机,定位,相机,短信权限
+        int REQUEST_STORAGE = 1;
+        String[] PERMISSIONS_STORAGE = {
+                "android.permission.ACCESS_COARSE_LOCATION",
+                "android.permission.ACCESS_FINE_LOCATION"};
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int coarse_location = ContextCompat.checkSelfPermission(getActivity, PERMISSIONS_STORAGE[0]);
+            int fine_location = ContextCompat.checkSelfPermission(getActivity, PERMISSIONS_STORAGE[1]);
+            if (coarse_location != PackageManager.PERMISSION_GRANTED ||
+                    fine_location != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(getActivity, new String[]{
+                        PERMISSIONS_STORAGE[0],
+                        PERMISSIONS_STORAGE[1],}, REQUEST_STORAGE);
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return true;
+    }
+
+
 }
