@@ -7,11 +7,12 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageButton;
 
-import com.sunmi.apmanager.rpc.RpcCallback;
+import sunmi.common.rpc.http.RpcCallback;
+
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
+import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.DialogUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
-import com.sunmi.apmanager.utils.SpUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.login.LoginActivity_;
 
@@ -123,9 +124,9 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
             isShowBackDialog();
         } else if (v.getId() == com.sunmi.apmanager.R.id.txt_right) {
             if (isFastClick(1500)) return;
-            String old = tvOriPassword.getText().toString().trim();
-            String new_psd = tvNewPassword.getText().toString().trim();
-            String sure_psd = tvSureNewPassword.getText().toString().trim();
+            String old = tvOriPassword.getText().toString();
+            String new_psd = tvNewPassword.getText().toString();
+            String sure_psd = tvSureNewPassword.getText().toString();
             if (TextUtils.isEmpty(old) || TextUtils.isEmpty(new_psd) || TextUtils.isEmpty(sure_psd)) {
                 shortTip(R.string.hint_input_password);
                 return;
@@ -150,13 +151,15 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
                 hideLoadingDialog();
                 if (code == 1) {
                     shortTip(R.string.tip_password_change_success);
-                    SpUtils.logout();
+                    CommonUtils.logout();
                     LoginActivity_.intent(context).start();
                     finish();
                 } else if (code == 201) {
                     shortTip(R.string.tip_old_password_error);
                 } else if (code == 3604) {
                     shortTip(R.string.tip_old_and_new_psw_same);
+                } else if (code == 2066) {
+                    shortTip(getString(R.string.str_password_fomat_error));
                 } else {
                     shortTip(R.string.tip_password_change_fail);
                 }

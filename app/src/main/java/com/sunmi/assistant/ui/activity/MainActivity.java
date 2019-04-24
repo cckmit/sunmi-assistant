@@ -18,10 +18,10 @@ import com.sunmi.apmanager.receiver.MyNetworkCallback;
 import com.sunmi.apmanager.rpc.mqtt.MQTTManager;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
-import com.sunmi.apmanager.utils.SpUtils;
 import com.sunmi.assistant.MyApplication;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.utils.MainTab;
+import com.sunmi.ipc.rpc.mqtt.MqttManager;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import org.androidannotations.annotations.AfterViews;
@@ -30,8 +30,9 @@ import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.base.BaseApplication;
-import sunmi.common.constant.NotificationConfig;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.notification.BaseNotification;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.MyFragmentTabHost;
 
@@ -43,6 +44,7 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
     public static final int TAB_STORE = 0;
     public static final int TAB_SUPPORT = 1;
     public static final int TAB_MINE = 2;
+    public static final int TAB_IPC = 3;
 
     @ViewById(android.R.id.tabhost)
     MyFragmentTabHost mTabHost;
@@ -61,6 +63,7 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
         CrashReport.setUserId(SpUtils.getUID());
         if (MyApplication.isCheckedToken)
             MQTTManager.getInstance().createEmqToken(true);//初始化长连接
+        MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
         initTabs();
     }
 
@@ -102,12 +105,12 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
         mTabHost.getTabWidget().getChildAt(0).setOnClickListener(v -> {
             mTabHost.setCurrentTab(0);
             if (isFastClick(1300)) return;
-            BaseNotification.newInstance().postNotificationName(NotificationConfig.tabStore, "tabStore");
+            BaseNotification.newInstance().postNotificationName(CommonConstants.tabStore, "tabStore");
         });
         mTabHost.getTabWidget().getChildAt(1).setOnClickListener(v -> {
             mTabHost.setCurrentTab(1);
             if (isFastClick(1300)) return;
-            BaseNotification.newInstance().postNotificationName(NotificationConfig.tabSupport, "tabSupport");
+            BaseNotification.newInstance().postNotificationName(CommonConstants.tabSupport, "tabSupport");
         });
     }
 

@@ -7,7 +7,7 @@ import com.sunmi.apmanager.config.ApConfig;
 import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.utils.DBUtils;
 import com.sunmi.apmanager.utils.FileHelper;
-import com.sunmi.apmanager.utils.SpUtils;
+import com.sunmi.ipc.config.IpcConfig;
 import com.sunmi.sunmiservice.SunmiServiceConfig;
 import com.tencent.bugly.crashreport.CrashReport;
 
@@ -21,6 +21,8 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import sunmi.common.constant.CommonConfig;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.UnknownException;
 import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
@@ -39,10 +41,13 @@ public class BootLoader {
 
     public void init() {
         String env = Utils.getMetaValue(context, "ENV_DATA", ApConfig.ENV_TEST);
+        new CommonConfig().init(context, env);
         new ApConfig().init(context, env);
         new SunmiServiceConfig().init(context, env);
+        new IpcConfig().init(context, env);
 
-        LogCat.init(TextUtils.equals(env, ApConfig.ENV_RELEASE));//log 开关
+        LogCat.init(!TextUtils.equals(env, ApConfig.ENV_RELEASE));//log 开关
+
         //file
         FileHelper.getInstance();
         //初始化创建数据库

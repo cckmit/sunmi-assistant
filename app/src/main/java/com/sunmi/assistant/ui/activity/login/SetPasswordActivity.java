@@ -7,18 +7,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.model.LoginDataBean;
-import com.sunmi.apmanager.rpc.RpcCallback;
+
+import sunmi.common.rpc.http.RpcCallback;
+
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
-import com.sunmi.apmanager.utils.SpUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.MainActivity_;
 
@@ -73,7 +73,7 @@ public class SetPasswordActivity extends BaseActivity {
 
     @Click({R.id.passwordIsVisible, R.id.btnComplete})
     public void onClick(View v) {
-        String password = etPassword.getText().toString().trim();
+        String password = etPassword.getText().toString();
         switch (v.getId()) {
             case R.id.passwordIsVisible: //密码是否可见
                 if (psdIsVisible) {
@@ -88,8 +88,8 @@ public class SetPasswordActivity extends BaseActivity {
                 break;
             case R.id.btnComplete:
                 if (isFastClick(1500)) return;
-                if (!RegexUtils.isValidPassword(password)) {
-                    shortTip(R.string.textView_tip_psd);
+                if (!RegexUtils.isValidPassword(password)&& password.length() < 8) {
+                    shortTip(R.string.tip_password_non_standard);
                     return;
                 }
                 trackFinish();
@@ -124,7 +124,7 @@ public class SetPasswordActivity extends BaseActivity {
             public void onSuccess(int code, String msg, String data) {
                 if (code == 1) {
                     LoginDataBean bean = new Gson().fromJson(data, LoginDataBean.class);
-                    SpUtils.saveLoginInfo(bean);
+                    CommonUtils.saveLoginInfo(bean);
                     shortTip(R.string.register_success);
                     CommonUtils.trackDurationEventEnd(context, "registerPasswordDuration",
                             "注册流程_设置密码_耗时", Constants.EVENT_DURATION_REGISTER_PSW);

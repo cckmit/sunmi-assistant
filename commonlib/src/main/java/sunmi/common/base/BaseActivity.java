@@ -10,6 +10,7 @@ import android.text.TextUtils;
 
 import butterknife.ButterKnife;
 import sunmi.common.notification.BaseNotification;
+import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.ToastUtils;
 import sunmi.common.view.dialog.LoadingDialog;
 
@@ -48,6 +49,12 @@ public abstract class BaseActivity extends FragmentActivity
 
     protected void initView() {
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        GotoActivityUtils.gotoLoginActivity(TAG);
     }
 
     /**

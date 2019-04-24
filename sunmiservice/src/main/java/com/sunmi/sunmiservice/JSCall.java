@@ -13,8 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import sunmi.common.base.BaseActivity;
-import sunmi.common.base.BaseApplication;
-import sunmi.common.utils.SharedManager;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.webview.SMWebView;
@@ -128,10 +127,31 @@ public class JSCall {
     }
 
     @JavascriptInterface
+    public void pushToSunmiStore(final String arg) {//商城
+        try {
+            JSONObject jsonObject = new JSONObject(arg);
+            LogCat.e("JSCall", "pushToSunmiStore, jsonObject = " + jsonObject);
+            if (jsonObject.has("url"))
+                startWebViewSunmiMallActivity(jsonObject.getString("url"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @JavascriptInterface
+    public void popSunmiStore(final String arg) {//关闭商城
+        LogCat.e("JSCall", "popSunmiStore, close = "+arg);
+        context.finish();
+    }
+
+    @JavascriptInterface
     public String getUserInfo() {
+        LogCat.e("JSCall", "getUserInfo");
         try {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("userId", SharedManager.getValue(BaseApplication.getContext(), SsConstants.UID));
+            jsonObject.put("userId", SpUtils.getUID());
+            jsonObject.put("token", SpUtils.getToken());
+            jsonObject.put("source", "5");
             JSONObject jsonObject1 = new JSONObject();
             jsonObject1.put("appId", SunmiServiceConfig.FUMINBAO_APP_ID);
             jsonObject1.put("appSecret", SunmiServiceConfig.FUMINBAO_SECRET);
@@ -196,6 +216,13 @@ public class JSCall {
      */
     private void startWebViewWithCloseActivity(String url) {
         WebViewWithCloseActivity_.intent(context).url(url).start();
+    }
+
+    /**
+     * 加载商米商城网页
+     */
+    private void startWebViewSunmiMallActivity(String url) {
+        WebViewSunmiMallActivity_.intent(context).url(url).start();
     }
 
 }

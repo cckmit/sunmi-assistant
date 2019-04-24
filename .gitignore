@@ -13,3 +13,8 @@
 /debug/
 /keystore
 /apmanager/.externalNativeBuild/
+/apmanager/
+/gradle/
+/360jiagu/
+/fastlane/
+/JenkinsFile/

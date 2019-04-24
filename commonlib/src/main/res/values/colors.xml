@@ -4,10 +4,8 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="header_title">#FF4081</color>
-    <color name="c_cancel">#fa965a</color>
 
-    <color name="header_title_backups">#21AA52</color>
-    <color name="c_transparent">#00000000</color>
+    <color name="transparent">#00000000</color>
     <color name="c_white">#ffffff</color>
     <color name="c_black">#000000</color>
     <color name="c_black_grey">#444444</color>
@@ -16,44 +14,31 @@
     <color name="c_green">#16cf03</color>
     <color name="c_lightgrey">#F2F2F2</color>
     <color name="color_divider">#FFE2E2E2</color>
-    <!-- Camera color -->
-    <color name="possible_result_points">#c0ffbd21</color>
+
     <color name="result_minor_text">#ffc0c0c0</color>
-    <color name="result_points">#c099cc00</color>
-    <color name="result_text">#ffffffff</color>
-    <color name="result_view">#b0000000</color>
-    <color name="transparent">#00000000</color>
-    <color name="viewfinder_laser">#ffcc0000</color>
-    <color name="viewfinder_mask">#60000000</color>
-    <color name="viewfinder_frame">#ffff0000</color>
     <color name="c_gray">#828180</color>
-    <color name="c_deepgray">#f6f5f5</color>
-    <color name="c_blue1">#539CCA</color>
     <color name="c_blue">#003b90</color>
-    <color name="c_deepblue">#2671fc</color>
     <color name="c_darkblue">#021e52</color>
-    <color name="c_lightblue">#199ade</color>
     <color name="color_333333">#ff333333</color>
     <color name="c_darkgray">#4c5e70</color>
-    <color name="province_line_border">#C7C7C7</color>
-    <color name="color_banner">#FF1C97D0</color>
     <color name="colorOrange">#FF6000</color>
     <color name="colorLoadingStart">#FF5A00</color>
     <color name="colorLoadingCenter">#FD935F</color>
     <color name="colorLoadingEnd">#00FF7A29</color>
-    <color name="black_30a">#4D000000</color>
+    <color name="c_text_blue">#3D76F6</color>
 
     <!--dialog-->
     <color name="color_dialog_content">#333C4F</color>
     <color name="color_dialog_cancel">#333C4F</color>
     <color name="color_dialog_sure">#FF6000</color>
-    <color name="color_background_button">#EDEDED</color>
-    <color name="color_background_shade">#1a000000</color>
     <color name="color_sms_edge">#66333C4F</color>
     <color name="dialog_divider">#CBCBCB</color>
 
+    <color name="colorText_10">#1A333C4F</color>
+
     <color name="loading_pb_color">#FF6000</color>
     <color name="read_deep">#EA021E</color>
+    <color name="read_deep_more">#D0021B</color>
 
     <!--white 模糊程度-->
     <color name="white_5a">#0DFFFFFF</color>
@@ -69,10 +54,25 @@
     <color name="white_85a">#D9FFFFFF</color>
     <color name="white_90a">#E6FFFFFF</color>
     <color name="white_95a">#F2FFFFFF</color>
+    <!--black 模糊程度-->
+    <color name="black_5">#0D000000</color>
+    <color name="black_10">#1A000000</color>
+    <color name="black_15">#26000000</color>
+    <color name="black_20">#33000000</color>
+    <color name="black_30">#4D000000</color>
+    <color name="black_40">#66000000</color>
+    <color name="black_50">#80000000</color>
+    <color name="black_60">#99000000</color>
+    <color name="black_70">#B3000000</color>
+    <color name="black_80">#CC000000</color>
+    <color name="black_85">#D9000000</color>
+    <color name="black_90">#E6000000</color>
 
     <color name="color_999999">#999999</color>
     <color name="color_8E8E93">#8E8E93</color>
     <color name="color_555555">#555555</color>
+    <color name="color_666666">#666666</color>
+    <color name="color_f5f5f5">#F5F5F5</color>
     <color name="colorText">#333C4F</color>
 
     <color name="pop_bg_content">#F9F9F9</color>

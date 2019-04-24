@@ -13,8 +13,8 @@
         <gradient
             android:centerColor="@color/colorLoadingCenter"
             android:centerY="0.50"
-            android:endColor="@color/colorLoadingEnd"
-            android:startColor="@color/colorLoadingStart"
+            android:endColor="@color/colorLoadingStart"
+            android:startColor="@color/colorLoadingEnd"
             android:type="sweep" />
     </shape>
 </rotate>

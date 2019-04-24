@@ -5,6 +5,8 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.NetworkInfo.State;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.telephony.TelephonyManager;
 
 import java.util.List;
@@ -16,6 +18,7 @@ public class NetworkUtils {
      */
     public static boolean isNetworkAvailable(Context context) {
         boolean isNetworkAvailable = false;
+        if (context == null) return false;
         ConnectivityManager connectivity =
                 (ConnectivityManager) (context.getSystemService(Context.CONNECTIVITY_SERVICE));
         NetworkInfo[] networkInfos = connectivity.getAllNetworkInfo();
@@ -139,4 +142,26 @@ public class NetworkUtils {
         }
         return netType;
     }
+
+    /**
+     * 获取信号ssid
+     *
+     * @param context
+     * @return
+     */
+    public static String getSSID(Context context, String model) {
+        WifiManager mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiInfo mWifiInfo = mWifiManager.getConnectionInfo();
+        String ssid = mWifiInfo.getSSID();
+        String name;
+        if (ssid.contains("\"")) {
+            name = ssid.replace("\"", "");//去除引号
+        } else if (ssid.contains("unknown")) {
+            name = model;
+        } else {
+            name = ssid;
+        }
+        return name;
+    }
+
 }

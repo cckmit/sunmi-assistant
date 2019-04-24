@@ -5,12 +5,17 @@
     <string name="str_cancel">取消</string>
     <string name="str_update">更新</string>
     <string name="str_ignore">忽略</string>
+    <string name="str_refresh">刷新</string>
+    <string name="str_complete">完成</string>
 
+    <string name="str_click_consent">点击“开始配置”代表你同意</string>
+    <string name="sunmi_user_protocol">《商米用户协议》</string>
+    <string name="str_privacy">《隐私政策》</string>
+    <string name="str_and">&#160;和&#160;</string>
     <!-- Network -->
     <string name="network_disconnect">网络已断开</string>
     <string name="toast_networkIsExceptional">当前网络存在异常</string>
     <string name="toast_serverNoResponse">请检查网络是否有异常</string>
-    <string name="network_wifi_low">网络连接失败</string>
     <string name="network_connected">网络已恢复</string>
     <string name="server_noreponse">服务器无响应</string>
 
@@ -20,4 +25,38 @@
     <string name="str_new_version_now">当前有新版本</string>
     <string name="str_title_selected_pic">选择图片</string>
     <string name="str_ssl_error">证书错误</string>
+
+    <string name="tip_agree_protocol">请同意勾选用户协议</string>
+
+    <string name="toast_network_Exception">网络连接异常</string>
+    <string name="network_wifi_low">网络连接失败</string>
+
+    <string name="str_retry">重试</string>
+    <string name="tip_set_complete">设置完成</string>
+    <string name="tip_set_fail">设置失败</string>
+    <string name="choose_device_type">选择设备类型</string>
+
+    <string name="str_title_ap_set">路由器设置</string>
+    <string name="str_title_ipc_set">摄像头设置</string>
+    <string name="str_config_tip_ap">连接您要设置的路由器</string>
+    <string name="str_config_tip_ap_1"><![CDATA[1. 接通电源并连接网线，待信号灯呈<font color= \'#FF6000\'>「白色」</font>]]></string>
+    <string name="str_config_tip_ap_2"><![CDATA[2. 将手机连接到<font color= \'#FF6000\'>「SUNMI_XX」</font> 无线网络]]></string>
+    <string name="str_config_tip_ipc">连接您要设置的摄像头</string>
+    <string name="str_config_tip_ipc_1"><![CDATA[1. 将摄像头接通电源，待信号灯呈<font color= \'#FF6000\'>「白色」</font>]]></string>
+    <string name="tip_has_ap_already">已经有连网的商米路由器？</string>
+    <string name="str_start_set">开始设置</string>
+    <string name="str_config_child_tip">如果您已经有一台连网的商米路由器，您可以在「路由器管理」中添加更多路由器</string>
+    <string name="btn_start_config">开始配置</string>
+    <string name="textView_config_title">设置向导</string>
+    <string name="str_primary_search_check_line">请检查路由器电源是否接通并连接网线</string>
+    <string name="str_primary_search_on_find">没有发现路由器</string>
+    <string name="str_primary_search_searching_ap">正在搜索您的路由器</string>
+    <string name="str_primary_search_searching_ipc">正在搜索您的摄像头</string>
+    <string name="str_loading">正在加载…</string>
+
+    <string name="str_add_success">添加成功</string>
+    <string name="str_add_fail">添加失败</string>
+    <string name="str_bind_net_error">请确保手机已连接互联网</string>
+    <string name="str_searching">搜索中…</string>
+
 </resources>

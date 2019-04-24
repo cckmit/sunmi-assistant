@@ -74,7 +74,7 @@ public class TitleBarView extends RelativeLayout {
             //显示一个IDE编辑状态下标题栏
             TextView textView = new TextView(context);
             textView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-                    getResources().getDimensionPixelSize(R.dimen.margin_65)));
+                    getResources().getDimensionPixelSize(R.dimen.dp_65)));
             addView(textView);
         } else {
             inflater = LayoutInflater.from(context);
@@ -426,7 +426,7 @@ public class TitleBarView extends RelativeLayout {
         setAppTitle(strRes);
         setLeftImgOnClickListener();
         setLeftTextOnClickListener();
-        setLeftImageResource(R.drawable.ic_back);
+        setLeftImageResource(R.mipmap.ic_back);
     }
 
     /**

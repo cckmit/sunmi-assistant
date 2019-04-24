@@ -4,22 +4,18 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.contract.UserInfoContract;
 import com.sunmi.apmanager.model.UserInfo;
 import com.sunmi.apmanager.presenter.UserInfoPresenter;
-import com.sunmi.apmanager.rpc.ap.ResponseBean;
 import com.sunmi.apmanager.utils.FileHelper;
-import com.sunmi.apmanager.utils.NetConnectUtils;
 import com.sunmi.apmanager.utils.PhotoUtils;
-import com.sunmi.apmanager.utils.SpUtils;
+import sunmi.common.utils.SpUtils;
 import com.sunmi.assistant.R;
 
 import org.androidannotations.annotations.AfterViews;
@@ -32,7 +28,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.notification.BaseNotification;
@@ -41,6 +36,7 @@ import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.PermissionUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.StringHelper;
+import sunmi.common.view.CircleImage;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.bottompopmenu.BottomPopMenu;
 import sunmi.common.view.bottompopmenu.PopItemAction;
@@ -53,8 +49,8 @@ import sunmi.common.view.bottompopmenu.PopItemAction;
 public class UserInfoActivity extends BaseMvpActivity<UserInfoPresenter>
         implements UserInfoContract.View {
 
-    @ViewById(R.id.civ_avatar)
-    CircleImageView civAvatar;
+    @ViewById(R.id.ci_avatar)
+    CircleImage civAvatar;
     @ViewById(R.id.sil_nickname)
     SettingItemLayout silNickname;
     @ViewById(R.id.sil_phone)
@@ -73,8 +69,7 @@ public class UserInfoActivity extends BaseMvpActivity<UserInfoPresenter>
 
     @AfterViews
     void init() {
-        StatusBarUtils.setStatusBarColor(this,
-                StatusBarUtils.TYPE_DARK);//状态栏
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
         cropPath = FileHelper.SDCARD_CACHE_IMAGE_PATH + SpUtils.getUID() + "_avatar.jpg";
         initViews();
         mPresenter = new UserInfoPresenter();

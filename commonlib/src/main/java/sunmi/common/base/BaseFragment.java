@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import sunmi.common.notification.BaseNotification;
+import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.ToastUtils;
 
 public class BaseFragment extends Fragment implements BaseNotification.NotificationCenterDelegate {
@@ -27,6 +28,12 @@ public class BaseFragment extends Fragment implements BaseNotification.Notificat
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         addObserver();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        GotoActivityUtils.gotoLoginActivity(TAG);
     }
 
     @Override

@@ -29,7 +29,8 @@ public class RegexUtils {
      */
     public static boolean isValidPassword(String str) {
         //(?!^\\d+$)(?!^[a-zA-Z]+$)(?!^[_#@]+$).{8,30}
-        Pattern pattern = Pattern.compile("^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,30}$");
+        //Pattern pattern = Pattern.compile("^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,30}$");//不包含符号
+        Pattern pattern = Pattern.compile("^(?![A-Za-z]+$)(?!\\d+$)(?![\\W_]+$)\\S{8,30}$");//包含符号
         Matcher match = pattern.matcher(str);
         return match.matches();
     }

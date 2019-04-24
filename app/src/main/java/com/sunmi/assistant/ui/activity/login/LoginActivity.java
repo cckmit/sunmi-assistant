@@ -1,37 +1,27 @@
 package com.sunmi.assistant.ui.activity.login;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.model.LoginDataBean;
-import com.sunmi.apmanager.rpc.RpcCallback;
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.rpc.sso.SSOApi;
 import com.sunmi.apmanager.ui.view.MergeDialog;
-import com.sunmi.apmanager.update.AppUpdate;
 import com.sunmi.apmanager.utils.CommonUtils;
-import com.sunmi.apmanager.utils.DialogUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
-import com.sunmi.apmanager.utils.SpUtils;
-import com.sunmi.apmanager.utils.UDPUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.MainActivity_;
 
@@ -42,13 +32,11 @@ import org.androidannotations.annotations.ViewById;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.ref.WeakReference;
-
 import sunmi.common.base.BaseActivity;
-import sunmi.common.base.BaseApplication;
+import sunmi.common.rpc.http.RpcCallback;
 import sunmi.common.utils.PermissionUtils;
 import sunmi.common.utils.RegexUtils;
-import sunmi.common.utils.log.LogCat;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.dialog.CommonDialog;
 
@@ -80,46 +68,7 @@ public class LoginActivity extends BaseActivity {
     private boolean psdIsVisible;//密码是否可见
     private String mobile;
 
-    private Handler mHandler;
     private CommonDialog kickedDialog;
-
-    private Handler.Callback mCallback = new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            switch (msg.what) {
-                case AppConfig.WHAT_UDP://切换wifi显示搜索的路由器
-                    try {
-                        JSONObject object = new JSONObject((String) msg.obj);
-                        String name = object.getString("name");
-                        String deviceId = object.getString("deviceid");
-                        int factory = object.getInt("factory");//是否已经设置0已初始 1未初始设置
-                        if (!TextUtils.isEmpty(name) && !isFinishing() && factory == 1) {
-                            DialogUtils.quickConfigDialog(LoginActivity.this, name, deviceId);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-            }
-            return false;
-        }
-    };
-
-    static class WeakRefHandler extends Handler {
-        private WeakReference<Callback> mWeakReference;
-
-        public WeakRefHandler(Callback callback) {
-            mWeakReference = new WeakReference<>(callback);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            if (mWeakReference != null && mWeakReference.get() != null) {
-                Callback callback = mWeakReference.get();
-                callback.handleMessage(msg);
-            }
-        }
-    }
 
     @AfterViews
     protected void init() {
@@ -128,7 +77,6 @@ public class LoginActivity extends BaseActivity {
         etUser.setClearIcon(R.mipmap.ic_edit_delete_white);
         etPassword.setClearIcon(R.mipmap.ic_edit_delete_white);
         String mobile = SpUtils.getMobile();
-        mHandler = new WeakRefHandler(mCallback);
         new SomeMonitorEditText().setMonitorEditText(btnLogin, etUser, etPassword);//button 是否可点击
         initData();
         if (!TextUtils.isEmpty(mobile)) {
@@ -137,7 +85,6 @@ public class LoginActivity extends BaseActivity {
             etUser.setText(SpUtils.getEmail());
         }
 
-//        AppUpdate.versionUpdate((Activity) context, AppUpdate.updateUrl);
     }
 
     private void initData() {
@@ -173,7 +120,7 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        UDPUtils.UdpManual.initSearchRouter(mHandler, this);//搜索路由器
+        HelpUtils.setSelectionEnd(etUser);
     }
 
     @Override
@@ -191,15 +138,15 @@ public class LoginActivity extends BaseActivity {
             R.id.btnLogout, R.id.tvForgetPassword, R.id.tvSMSLogin})
     public void onClick(View v) {
         mobile = etUser.getText().toString().trim();
-        String password = etPassword.getText().toString().trim();
+        String password = etPassword.getText().toString();
         switch (v.getId()) {
             case R.id.btnLogin: //密码登录
                 if (!RegexUtils.isChinaPhone(mobile) && !RegexUtils.isEmail(mobile)) {
                     shortTip(R.string.tip_invalid_phone_number);
                     return;
                 }
-                if (!RegexUtils.isValidPassword(password)) {
-                    shortTip(R.string.textView_tip_psd);
+                if (TextUtils.isEmpty(password)) {
+                    shortTip(R.string.textView_config_psd8);
                     return;
                 }
                 userMerge(password);
@@ -286,7 +233,7 @@ public class LoginActivity extends BaseActivity {
             public void onSuccess(int code, String msg, String data) {
                 if (code == 1) {
                     LoginDataBean bean = new Gson().fromJson(data, LoginDataBean.class);
-                    SpUtils.saveLoginInfo(bean);
+                    CommonUtils.saveLoginInfo(bean);
                     gotoMainActivity();
                 } else if (code == 201) {//用户名或密码错误
                     shortTip(R.string.textView_user_password_error);

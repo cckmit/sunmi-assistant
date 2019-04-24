@@ -14,14 +14,13 @@ import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.model.ImgSmsBean;
 import com.sunmi.apmanager.model.LoginDataBean;
-import com.sunmi.apmanager.rpc.RpcCallback;
+import sunmi.common.rpc.http.RpcCallback;
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.rpc.sso.SSOApi;
 import com.sunmi.apmanager.ui.view.ImageCaptchaDialog;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
-import com.sunmi.apmanager.utils.SpUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.MainActivity_;
 
@@ -31,7 +30,6 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.VerifyCodeInputView;
@@ -275,7 +273,7 @@ public class InputCaptchaActivity extends BaseActivity implements ImageCaptchaDi
             cancelTimer();//登录成功后取消计时
             Gson gson = new GsonBuilder().create();
             LoginDataBean smsLogin = gson.fromJson(data, LoginDataBean.class);
-            SpUtils.saveLoginInfo(smsLogin);
+            CommonUtils.saveLoginInfo(smsLogin);
             gotoMainActivity();
         } else {
             shortTip(R.string.login_error);
