@@ -12,7 +12,7 @@ pipeline{
           script{
             try{
               deleteDir()
-              git(branch: 'release', credentialsId: 'ca110ba7-8385-4443-9376-dd4db46625c8', url: 'git@172.16.0.151:app/android2.git', poll: true)
+              git(branch: 'release', credentialsId: 'lukai@sunmi.com', url: 'http://code.sunmi.com/wbu-app/sunmi-assistant-android.git', poll: true)
               sh('''
                 export PATH="/usr/local/bin/:$PATH"
                 export LC_ALL=en_US.UTF-8
