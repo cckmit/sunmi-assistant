@@ -29,8 +29,10 @@ public class SunmiDevice implements Serializable {
     private String networkrol;
     private String factory;
     private String deviceid;
-    private int status;
     private String network;
+
+    private int status;
+    private boolean isSelected;
 
     public String getIp() {
         return ip;
@@ -118,6 +120,14 @@ public class SunmiDevice implements Serializable {
 
     public void setNetwork(String network) {
         this.network = network;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 
 }
