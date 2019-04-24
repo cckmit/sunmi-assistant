@@ -17,6 +17,8 @@
     <string name="str_quit_config">退出设置</string>
     <string name="dialog_msg_timeout_retry">连接超时，请检查网络并重试</string>
     <string name="tip_connect_ipc_fail">无法连接摄像头</string>
+    <string name="str_HD">高清</string>
+    <string name="str_SD">标清</string>
 
 </resources>
 

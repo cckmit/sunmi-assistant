@@ -2,7 +2,6 @@
 <resources>
     <string-array name="sunmi_devices">
         <item>W1路由器</item>
-        <item>FS摄像头</item>
-        <item>SS摄像头</item>
+        <!--<item>摄像头</item>-->
     </string-array>
 </resources>
