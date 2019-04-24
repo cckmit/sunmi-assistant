@@ -17,23 +17,27 @@
         app:titleTextColor="@color/colorText" />
 
     <RelativeLayout
-        android:id="@+id/rl_main"
+        android:id="@+id/rl_search"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/title_bar">
 
-        <include layout="@layout/include_loading" />
-
         <TextView
             android:id="@+id/tv_1"
+            style="@style/configTitleText"
+            android:text="@string/tip_select_ipc" />
+
+        <TextView
+            android:id="@+id/tip_select_multi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/dp_24"
-            android:text="@string/tip_choose_wifi_to_connect"
-            android:textColor="@color/color_333333"
-            android:textSize="@dimen/sp_28"
-            android:textStyle="bold" />
+            android:layout_below="@+id/tv_1"
+            android:layout_marginStart="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_4"
+            android:text="@string/tip_choose_multi_ipc"
+            android:textColor="@color/color_666666"
+            android:textSize="@dimen/sp_16"
+            android:visibility="gone" />
 
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/nsv_ipc"
@@ -41,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_1"
             android:layout_marginStart="@dimen/dp_30"
-            android:layout_marginTop="@dimen/dp_40"
+            android:layout_marginTop="@dimen/dp_80"
             android:layout_marginEnd="@dimen/dp_30"
             android:layout_marginBottom="@dimen/dp_80">
 
@@ -54,33 +58,37 @@
                     android:id="@+id/divider"
                     android:layout_width="wrap_content"
                     android:layout_height="1dp"
-                    android:background="@color/color_divider"
-                    android:visibility="gone" />
+                    android:background="@color/color_divider" />
 
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rv_wifi"
+                    android:id="@+id/rv_ipc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/c_white"
                     android:overScrollMode="never"
                     android:scrollbars="none" />
+
+                <include
+                    layout="@layout/loading_text_right"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_24" />
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
 
-        <TextView
-            android:id="@+id/tv_skip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <Button
+            android:id="@+id/btn_config"
+            style="@style/BtnOrange"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/dp_32"
-            android:textColor="@color/color_999999" />
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:text="@string/btn_start_config" />
     </RelativeLayout>
 
     <include
         layout="@layout/include_no_device_found"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_below="@+id/title_bar"
         android:layout_marginTop="@dimen/dp_80" />
 

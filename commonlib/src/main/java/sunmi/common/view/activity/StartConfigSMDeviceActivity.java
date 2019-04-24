@@ -54,7 +54,7 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
             tvTip1.setText(R.string.str_config_tip_ap);
             tvTip2.setText(Html.fromHtml(getString(R.string.str_config_tip_ap_1)));
             tvConfigTip.setVisibility(View.VISIBLE);
-        } else if (deviceType == CommonConstants.TYPE_FS || deviceType == CommonConstants.TYPE_SS) {
+        } else if (deviceType == CommonConstants.TYPE_IPC) {
             titleBar.setAppTitle(R.string.str_title_ipc_set);
             ivImage.setImageResource(R.mipmap.ic_device_config_ipc);
             tvTip1.setText(R.string.str_config_tip_ipc);
@@ -72,12 +72,11 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
     public void nextClick(View v) {
         if (deviceType == CommonConstants.TYPE_AP) {
             startPrimaryRouteSearchActivity();
-        } else if (deviceType == CommonConstants.TYPE_FS || deviceType == CommonConstants.TYPE_SS) {
+        } else if (deviceType == CommonConstants.TYPE_IPC) {
             try {
                 Class<?> mainActivity = Class.forName("com.sunmi.ipc.view.IPCSearchActivity_");
                 Intent intent = new Intent(context, mainActivity);
                 intent.putExtra("shopId", shopId);
-                intent.putExtra("deviceType", deviceType);
                 context.startActivity(intent);
             } catch (Exception e) {
                 e.printStackTrace();

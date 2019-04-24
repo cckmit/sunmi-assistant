@@ -20,6 +20,10 @@ import org.androidannotations.annotations.ViewById;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.RpcErrorCode;
@@ -40,7 +44,9 @@ public class WifiConfiguringActivity extends BaseMvpActivity<WifiConfiguringPres
     @Extra
     String shopId;
     @Extra
-    SunmiDevice sunmiDevice;
+    ArrayList<SunmiDevice> sunmiDevices;
+
+    Set<String> deviceIds = new HashSet<>();
 
     @AfterViews
     void init() {
@@ -55,7 +61,11 @@ public class WifiConfiguringActivity extends BaseMvpActivity<WifiConfiguringPres
     public void ipcBindWifiSuccess() {
         new Handler().postDelayed(new Runnable() {
             public void run() {
-                configFailDialog(R.string.tip_set_fail, R.string.dialog_msg_timeout_retry);
+                for (SunmiDevice device : sunmiDevices) {
+                    if (deviceIds.contains(device.getDeviceid())) {
+                        device.setStatus(RpcErrorCode.RPC_ERR_TIMEOUT);
+                    }
+                }
             }
         }, 10000);
     }
@@ -86,7 +96,8 @@ public class WifiConfiguringActivity extends BaseMvpActivity<WifiConfiguringPres
             if (res.getResult().has("ipc_info")) {
                 try {//"ipc_info":{"sn":"sn123456", "token":"fgu766fekjgllfkekajgiorag8tr..."}
                     JSONObject jsonObject = res.getResult().getJSONObject("ipc_info");
-                    if (jsonObject.has("token")) {
+                    if (jsonObject.has("sn") && jsonObject.has("token")) {
+                        deviceIds.add(jsonObject.getString("sn"));
                         mPresenter.ipcBind(shopId, jsonObject.getString("token"),
                                 1, 1);
                     }
@@ -95,19 +106,25 @@ public class WifiConfiguringActivity extends BaseMvpActivity<WifiConfiguringPres
                 }
             }
         } else if (id == IpcConstants.bindIpc) {
-            if (res.getDataErrCode() == 1) {
-                sunmiDevice.setStatus(1);
-                WifiConfigCompletedActivity_.intent(context).shopId(shopId).sunmiDevice(sunmiDevice).start();
-                finish();
-            } else if (res.getDataErrCode() == 5508) {
-                shortTip("已经绑定，不要重复绑定");
-            } else if (res.getDataErrCode() == 5501) {
-                shortTip("设备不存在");
-            } else if (res.getDataErrCode() == 5510) {
-                shortTip("已被其他用户绑定");
-            } else {
-                shortTip(res.getResult().toString());
+            try {
+                setDeviceStatus(res.getResult().getString("sn"), res.getDataErrCode());
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
+        }
+    }
+
+    private void setDeviceStatus(String sn, int status) {
+        for (SunmiDevice device : sunmiDevices) {
+            if (TextUtils.equals(device.getDeviceid(), sn)) {
+                device.setStatus(status);
+                deviceIds.remove(sn);
+            }
+        }
+        if (deviceIds.isEmpty()) {
+            sunmiDevices.get(0).setStatus(1);
+            WifiConfigCompletedActivity_.intent(context).shopId(shopId).sunmiDevices(sunmiDevices).start();
+            finish();
         }
     }
 

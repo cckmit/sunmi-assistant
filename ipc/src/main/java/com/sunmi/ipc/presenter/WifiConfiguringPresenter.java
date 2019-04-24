@@ -17,7 +17,7 @@ public class WifiConfiguringPresenter extends BasePresenter<WifiConfiguringContr
     @Override
     public void ipcBind(String shopId, String token, float longitude, float latitude) {
         IPCCloudApi.bindIPC(Integer.parseInt(shopId), IpcConstants.IPC_SN,
-                token, longitude, latitude, new HttpCallback<Object>(mView) {
+                token, longitude, latitude, new HttpCallback<Object>(null) {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
                         mView.ipcBindWifiSuccess();
