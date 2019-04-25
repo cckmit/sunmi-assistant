@@ -53,7 +53,7 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
             ivImage.setImageResource(R.mipmap.ic_device_config_ap);
             tvTip1.setText(R.string.str_config_tip_ap);
             tvTip2.setText(Html.fromHtml(getString(R.string.str_config_tip_ap_1)));
-            tvConfigTip.setVisibility(View.VISIBLE);
+            tvConfigTip.setVisibility(View.GONE);
         } else if (deviceType == CommonConstants.TYPE_IPC) {
             titleBar.setAppTitle(R.string.str_title_ipc_set);
             ivImage.setImageResource(R.mipmap.ic_device_config_ipc);
