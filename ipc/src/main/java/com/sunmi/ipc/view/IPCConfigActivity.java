@@ -43,7 +43,7 @@ class IPCConfigActivity extends BaseActivity {
             return;
         }
         if (TextUtils.isEmpty(IpcConstants.IPC_IP)) {
-            shortTip("请将手机连接到【SUNMI_AP】无线网路");
+            shortTip("请将手机连接到【SUNMI_AP】无线网络");
             return;
         }
         WifiConfigActivity_.intent(context).shopId(shopId).start();

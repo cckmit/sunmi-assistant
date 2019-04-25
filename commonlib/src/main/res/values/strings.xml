@@ -39,7 +39,7 @@
     <string name="str_title_ap_set">路由器设置</string>
     <string name="str_title_ipc_set">摄像头设置</string>
     <string name="str_config_tip_ap">连接您要设置的路由器</string>
-    <string name="str_config_tip_ap_1"><![CDATA[1. 接通电源并连接网线，待信号灯呈<font color= \'#FF6000\'>「白色」</font>]]></string>
+    <string name="str_config_tip_ap_1"><![CDATA[1. 接通电源并连接网线，待系统指示灯停止闪烁<font color= \'#FF6000\'>「白色」</font>]]></string>
     <string name="str_config_tip_ap_2"><![CDATA[2. 将手机连接到<font color= \'#FF6000\'>「SUNMI_XX」</font> 无线网络]]></string>
     <string name="str_config_tip_ipc">连接您要设置的摄像头</string>
     <string name="str_config_tip_ipc_1"><![CDATA[1. 将摄像头接通电源，待信号灯呈<font color= \'#FF6000\'>「白色」</font>]]></string>

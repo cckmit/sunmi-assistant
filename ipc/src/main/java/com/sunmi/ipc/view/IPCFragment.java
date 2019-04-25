@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.sunmi.ipc.rpc.IPCCloudApi;
-import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.utils.AACDecoder;
 import com.sunmi.ipc.utils.H264Decoder;
 import com.sunmi.ipc.utils.IOTCClient;
@@ -99,10 +98,10 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
             shortTip("请输入uid");
             return;
         }
-        if (TextUtils.isEmpty(IpcConstants.IPC_IP)) {
-            shortTip("请连接ipc所在的网络");
-            return;
-        }
+//        if (TextUtils.isEmpty(IpcConstants.IPC_IP)) {
+//            shortTip("请连接ipc所在的网络");
+//            return;
+//        }
         VideoPlayActivity_.intent(mActivity).UID(etUid.getText().toString().trim()).start();
     }
 

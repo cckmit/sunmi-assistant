@@ -3,26 +3,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/transparent">
-    <!--返回-->
-    <ImageView
-        android:id="@+id/iv_back"
-        android:layout_width="@dimen/dp_28"
-        android:layout_height="@dimen/dp_28"
-        android:layout_marginStart="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_20"
-        android:background="@mipmap/ic_back_white" />
 
-    <!--设置-->
-    <ImageView
-        android:id="@+id/iv_setting"
-        android:layout_width="@dimen/dp_28"
-        android:layout_height="@dimen/dp_28"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginEnd="@dimen/dp_20"
-        android:background="@mipmap/ic_video_setting" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_64"
+        android:background="@mipmap/bg_video_title">
+        <!--返回-->
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="@dimen/dp_48"
+            android:layout_height="@dimen/dp_48"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_10"
+            android:padding="@dimen/dp_14"
+            android:src="@mipmap/ic_back_white" />
 
-    <!--设置-->
+        <!--设置-->
+        <ImageView
+            android:id="@+id/iv_setting"
+            android:layout_width="@dimen/dp_28"
+            android:layout_height="@dimen/dp_28"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:background="@mipmap/ic_video_setting" />
+    </RelativeLayout>
+    <!--录像-->
     <ImageView
         android:id="@+id/iv_record"
         android:layout_width="@dimen/dp_32"
@@ -32,7 +38,7 @@
         android:layout_marginEnd="@dimen/dp_25"
         android:background="@mipmap/ic_recording" />
 
-    <!--设置-->
+    <!--截图-->
     <ImageView
         android:id="@+id/iv_screenshot"
         android:layout_width="@dimen/dp_32"
@@ -108,39 +114,6 @@
             android:progressDrawable="@drawable/seekbar_progress" />
     </LinearLayout>
 
-    <!--播放完成-->
-    <LinearLayout
-        android:id="@+id/completed"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#6c0b0b0b"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/replay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@mipmap/refresh_head_arrow"
-            android:drawablePadding="4dp"
-            android:padding="8dp"
-            android:text="重新播放"
-            android:textColor="@android:color/white"
-            android:textSize="13sp" />
-
-        <TextView
-            android:id="@+id/share"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="64dp"
-            android:drawableLeft="@mipmap/ic_quit"
-            android:drawablePadding="4dp"
-            android:padding="8dp"
-            android:text="分享"
-            android:textColor="@android:color/white"
-            android:textSize="13sp" />
-    </LinearLayout>
     <!--播放错误-->
     <LinearLayout
         android:id="@+id/error"
@@ -182,24 +155,31 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="@dimen/dp_82"
         android:layout_marginBottom="@dimen/dp_44"
-        android:background="@drawable/bg_set_video_quality">
+        android:background="@drawable/bg_set_video_quality"
+        android:gravity="center">
 
-        <ProgressBar
-            android:id="@+id/change_volume_progress"
-            style="@android:style/Widget.ProgressBar.Horizontal"
-            android:layout_width="100dp"
-            android:layout_height="2dp"
+        <sunmi.common.view.VerticalSeekBar
+            android:layout_width="@dimen/dp_10"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="4dp"
-            android:max="100"
-            android:progressDrawable="@drawable/progress_search" />
+            android:max="100" />
+
+        <!--<ProgressBar-->
+        <!--android:id="@+id/change_volume_progress"-->
+        <!--style="@android:style/Widget.ProgressBar.Horizontal"-->
+        <!--android:layout_width="@dimen/dp_10"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:layout_marginTop="@dimen/dp_8"-->
+        <!--android:layout_marginBottom="@dimen/dp_8"-->
+        <!--android:max="100"-->
+        <!--android:progressDrawable="@drawable/progress_vertical" />-->
 
     </LinearLayout>
 
-    <!--改变亮度-->
+    <!--改变清晰度-->
     <LinearLayout
-        android:id="@+id/change_brightness"
+        android:id="@+id/ll_video_quality"
         android:layout_width="@dimen/dp_42"
         android:layout_height="@dimen/dp_48"
         android:layout_above="@+id/ll_bottom"
@@ -216,18 +196,18 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="高清"
+            android:text="@string/str_HD"
             android:textColor="@color/colorOrange"
-            android:textSize="@dimen/sp_14" />
+            android:textSize="@dimen/sp_10" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="标清"
+            android:text="@string/str_SD"
             android:textColor="@color/c_white"
-            android:textSize="@dimen/sp_14" />
+            android:textSize="@dimen/sp_10" />
     </LinearLayout>
 
     <!--底部控制区-->
@@ -284,8 +264,9 @@
             android:layout_marginEnd="@dimen/dp_20"
             android:background="@drawable/bg_alpha_rounded_white"
             android:gravity="center"
-            android:text="高清"
-            android:textColor="@color/c_white" />
+            android:text="@string/str_HD"
+            android:textColor="@color/c_white"
+            android:textSize="@dimen/sp_12" />
     </RelativeLayout>
 
 </RelativeLayout>

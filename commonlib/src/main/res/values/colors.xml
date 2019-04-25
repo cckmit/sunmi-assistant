@@ -24,8 +24,9 @@
     <color name="colorOrange">#FF6000</color>
     <color name="colorLoadingStart">#FF5A00</color>
     <color name="colorLoadingCenter">#FD935F</color>
-    <color name="colorLoadingEnd">#00FF7A29</color>
+    <color name="colorLoadingEnd">#FFFBF8</color>
     <color name="c_text_blue">#3D76F6</color>
+    <color name="color_333333_60">#99333333</color>
 
     <!--dialog-->
     <color name="color_dialog_content">#333C4F</color>

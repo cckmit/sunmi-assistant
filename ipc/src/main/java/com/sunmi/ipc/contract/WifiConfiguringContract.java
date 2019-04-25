@@ -7,8 +7,6 @@ import sunmi.common.base.BaseView;
  * Created by bruce on 2019/3/29.
  */
 public interface WifiConfiguringContract {
-    interface Model {
-    }
 
     interface View extends BaseView {
 
