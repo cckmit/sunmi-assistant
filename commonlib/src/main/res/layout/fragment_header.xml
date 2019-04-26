@@ -3,6 +3,7 @@
     android:id="@+id/relativeTitleBg"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_64"
+    android:visibility="gone"
     android:background="@color/c_white">
 
     <TextView
