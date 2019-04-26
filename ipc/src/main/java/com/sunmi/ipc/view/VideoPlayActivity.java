@@ -70,7 +70,7 @@ public class VideoPlayActivity extends BaseActivity
         IOTCClient.setCallback(this);
         videoView.getHolder().addCallback(this);
         mAudioPlayer = new AACDecoder();
-        IPCCall.getInstance().fsGetStatus(context);
+//        IPCCall.getInstance().fsGetStatus(context);//fs
         playClick();
     }
 

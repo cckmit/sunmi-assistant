@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/c_white">
 
     <sunmi.common.view.TitleBarView
         android:id="@+id/title_bar"
@@ -15,42 +16,72 @@
         app:titleText="@string/str_title_ipc_set"
         app:titleTextColor="@color/colorText" />
 
-    <include layout="@layout/include_loading" />
+    <RelativeLayout
+        android:id="@+id/rl_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/title_bar">
 
-    <TextView
-        android:id="@+id/tv_1"
+        <include layout="@layout/include_loading" />
+
+        <TextView
+            android:id="@+id/tv_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_24"
+            android:text="@string/tip_choose_wifi_to_connect"
+            android:textColor="@color/color_333333"
+            android:textSize="@dimen/sp_28"
+            android:textStyle="bold" />
+
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/nsv_ipc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_1"
+            android:layout_marginStart="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_40"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:layout_marginBottom="@dimen/dp_80">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="wrap_content"
+                    android:layout_height="1dp"
+                    android:background="@color/color_divider"
+                    android:visibility="gone" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_wifi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/c_white"
+                    android:overScrollMode="never"
+                    android:scrollbars="none" />
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+
+        <TextView
+            android:id="@+id/tv_skip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/dp_32"
+            android:textColor="@color/color_999999" />
+    </RelativeLayout>
+
+    <include
+        layout="@layout/include_no_device_found"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/title_bar"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dp_24"
-        android:text="@string/tip_choose_wifi_to_connect"
-        android:textColor="@color/color_333333"
-        android:textSize="@dimen/sp_28"
-        android:textStyle="bold" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_wifi"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_1"
-        android:layout_marginTop="@dimen/dp_40"
-        android:layout_marginBottom="@dimen/dp_80"
-        android:background="@color/c_white"
-        android:overScrollMode="never"
-        android:paddingStart="@dimen/dp_30"
-        android:paddingEnd="@dimen/dp_30"
-        android:scrollbars="none"/>
-
-    <include layout="@layout/include_no_device_found"/>
-
-    <TextView
-        android:id="@+id/tv_skip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/dp_32"
-        android:textColor="@color/color_999999" />
+        android:layout_marginTop="@dimen/dp_80" />
 
 </RelativeLayout>

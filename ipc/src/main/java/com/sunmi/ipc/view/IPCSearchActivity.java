@@ -1,12 +1,14 @@
 package com.sunmi.ipc.view;
 
 import android.os.Handler;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 
 import com.sunmi.ipc.rpc.IpcConstants;
 
@@ -24,7 +26,6 @@ import java.util.Set;
 
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseActivity;
-import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.utils.SMDeviceDiscoverUtils;
 import sunmi.common.utils.log.LogCat;
@@ -33,12 +34,12 @@ import sunmi.common.utils.log.LogCat;
  * Description:
  * Created by bruce on 2019/4/16.
  */
-@EActivity(resName = "activity_choose_ipc")
+@EActivity(resName = "activity_search_ipc")
 public class IPCSearchActivity extends BaseActivity
-        implements IPCListAdapter.OnItemClickListener, BGARefreshLayout.BGARefreshLayoutDelegate {
+        implements BGARefreshLayout.BGARefreshLayoutDelegate {
 
-    //    @ViewById(resName = "rl_progress")
-//    RelativeLayout rlLoading;
+    @ViewById(resName = "nsv_ipc")
+    NestedScrollView scrollView;
     @ViewById(resName = "rl_search")
     RelativeLayout rlSearch;
     @ViewById(resName = "rv_ipc")
@@ -49,7 +50,7 @@ public class IPCSearchActivity extends BaseActivity
     @Extra
     String shopId;
     @Extra
-    int deviceType;
+    boolean isSunmiLink;//是否是sunmi link模式
 
     private boolean isApMode;//是否ap模式
     IPCListAdapter ipcListAdapter;
@@ -82,7 +83,6 @@ public class IPCSearchActivity extends BaseActivity
         rvDevice.setLayoutManager(layoutManager);
         rvDevice.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
         ipcListAdapter = new IPCListAdapter(context, ipcList);
-        ipcListAdapter.setOnItemClickListener(this);
         rvDevice.setAdapter(ipcListAdapter);
     }
 
@@ -93,19 +93,18 @@ public class IPCSearchActivity extends BaseActivity
 
     @Click(resName = "btn_config")
     void configClick() {
+        if (ipcList == null || ipcList.size() < 1) return;
         if (isApMode) {
-            if (ipcList == null || ipcList.size() < 1) return;
             WifiConfigActivity_.intent(context).sunmiDevice(ipcList.get(0)).shopId(shopId).start();
-        } else {//todo sunmi link
-            if (ipcList == null || ipcList.size() < 1) return;
-            WifiConfiguringActivity_.intent(context).sunmiDevice(ipcList.get(0)).shopId(shopId).start();
-
+        } else if (isSunmiLink) {
+            sunmiLinkConfig();
+        } else {
+            WifiConfiguringActivity_.intent(context).sunmiDevices((ArrayList<SunmiDevice>) ipcList).shopId(shopId).start();
         }
     }
 
-    @Override
-    public void onItemClick(String ssid, String mgmt) {
-
+    private void sunmiLinkConfig() {//todo sunmi link
+        WifiConfigActivity_.intent(context).sunmiDevice(ipcList.get(0)).shopId(shopId).start();
     }
 
     @Override
@@ -124,11 +123,8 @@ public class IPCSearchActivity extends BaseActivity
 
     //1 udp搜索完成 --> ap登录
     private void ipcFound(SunmiDevice ipc) {
-        LogCat.e(TAG, "ipcFound  ipcdevice = " + ipc.getDeviceid());
-        if (deviceType == CommonConstants.TYPE_FS && TextUtils.equals("FS1", ipc.getModel())) {
+        if (TextUtils.equals("SS1", ipc.getModel()) || TextUtils.equals("FS1", ipc.getModel())) {
             LogCat.e(TAG, "ipcFound fs ipcdevice = " + ipc.toString());
-            hasFound(ipc);
-        } else if (deviceType == CommonConstants.TYPE_SS && TextUtils.equals("SS1", ipc.getModel())) {
             hasFound(ipc);
         }
     }
@@ -139,7 +135,8 @@ public class IPCSearchActivity extends BaseActivity
         } else {
             IpcConstants.IPC_SN = ipc.getDeviceid();
             IpcConstants.IPC_IP = "http://" + ipc.getIp() + "/api/";//192.168.100.159/api/192.168.103.122
-            isApMode = TextUtils.equals("ap", ipc.getNetwork());
+            isApMode = TextUtils.equals("AP", ipc.getNetwork());
+            ipc.setSelected(true);
             ipcSet.add(ipc.getDeviceid());
             addDevice(ipc);
         }
@@ -150,6 +147,12 @@ public class IPCSearchActivity extends BaseActivity
     void addDevice(SunmiDevice device) {
         ipcList.add(device);
         if (ipcListAdapter != null) ipcListAdapter.notifyDataSetChanged();
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+            }
+        });
     }
 
     @UiThread
@@ -166,10 +169,5 @@ public class IPCSearchActivity extends BaseActivity
     public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
         return false;
     }
-
-//    @UiThread
-//    public void setLoadingVisible(int visibility) {
-//        rlLoading.setVisibility(visibility);
-//    }
 
 }
