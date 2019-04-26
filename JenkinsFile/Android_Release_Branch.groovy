@@ -17,7 +17,7 @@ pipeline{
                 export PATH="/usr/local/bin/:$PATH"
                 export LC_ALL=en_US.UTF-8
                 export LANG=en_US.UTF-8
-                curl http://api.fir.im/apps/latest/5c048efcca87a826b0c07ece?api_token=b34226983b0b4281c9efad321204ea12 > info.json
+                curl http://api.fir.im/apps/latest/5c048efcca87a826b0c07ece?api_token=8abeee66a3604b68f707d9c2753f7fb4 > info.json
                 export ANDROID_HOME=/Users/admin/Library/Android/sdk
                 echo $ANDROID_HOME
                 mkdir -p build
