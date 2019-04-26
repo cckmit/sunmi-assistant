@@ -18,6 +18,7 @@ import com.sunmi.ipc.R;
 import java.util.List;
 
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.utils.SunmiDevUtils;
 
 /**
  * Description:
@@ -63,6 +64,8 @@ public class IPCListAdapter extends RecyclerView.Adapter<IPCListAdapter.ViewHold
             holder.ivDevice.setImageResource(R.mipmap.item_fs);
         } else if (TextUtils.equals("SS1", data.get(position).getModel())) {
             holder.ivDevice.setImageResource(R.mipmap.item_ss);
+        } else {
+            holder.ivDevice.setImageResource(SunmiDevUtils.setSearchLogo(data.get(position).getModel()));
         }
     }
 

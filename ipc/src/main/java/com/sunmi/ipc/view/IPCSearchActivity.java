@@ -96,10 +96,8 @@ public class IPCSearchActivity extends BaseActivity
         if (ipcList == null || ipcList.size() < 1) return;
         if (isApMode) {
             WifiConfigActivity_.intent(context).sunmiDevice(ipcList.get(0)).shopId(shopId).start();
-        } else if (isSunmiLink) {
-            sunmiLinkConfig();
         } else {
-            WifiConfiguringActivity_.intent(context).sunmiDevices((ArrayList<SunmiDevice>) ipcList).shopId(shopId).start();
+            IpcConfiguringActivity_.intent(context).sunmiDevices((ArrayList<SunmiDevice>) ipcList).shopId(shopId).start();
         }
     }
 
