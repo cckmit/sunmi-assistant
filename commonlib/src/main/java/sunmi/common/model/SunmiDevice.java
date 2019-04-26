@@ -35,7 +35,7 @@ public class SunmiDevice implements Serializable {
     private boolean isSelected;
 
     public String getIp() {
-        return ip;
+        return "http://" + ip + "/api/";//192.168.100.159/api/192.168.103.122
     }
 
     public void setIp(String ip) {

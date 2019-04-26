@@ -25,11 +25,11 @@ import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.ViewHolder;
 
 /**
- * Description: WifiConfigCompletedActivity
+ * Description: IpcConfigCompletedActivity
  * Created by Bruce on 2019/3/31.
  */
-@EActivity(resName = "activity_wifi_config_completed")
-public class WifiConfigCompletedActivity extends BaseActivity {
+@EActivity(resName = "activity_ipc_config_completed")
+public class IpcConfigCompletedActivity extends BaseActivity {
 
     @ViewById(resName = "rv_result")
     RecyclerView rvResult;

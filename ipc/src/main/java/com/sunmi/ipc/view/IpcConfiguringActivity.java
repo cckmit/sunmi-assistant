@@ -32,11 +32,11 @@ import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.view.dialog.CommonDialog;
 
 /**
- * Description: WifiConfiguringActivity
+ * Description: IpcConfiguringActivity
  * Created by Bruce on 2019/3/31.
  */
-@EActivity(resName = "activity_wifi_configuring")
-public class WifiConfiguringActivity extends BaseMvpActivity<WifiConfiguringPresenter>
+@EActivity(resName = "activity_ipc_configuring")
+public class IpcConfiguringActivity extends BaseMvpActivity<WifiConfiguringPresenter>
         implements WifiConfiguringContract.View {
     @ViewById(resName = "tv_tip")
     TextView tvTip;
@@ -53,7 +53,9 @@ public class WifiConfiguringActivity extends BaseMvpActivity<WifiConfiguringPres
         mPresenter = new WifiConfiguringPresenter();
         mPresenter.attachView(this);
         tvTip.setText(Html.fromHtml(getString(R.string.tip_keep_same_network)));
-        IPCCall.getInstance().getToken(context);
+        for (SunmiDevice sunmiDevice : sunmiDevices) {
+            IPCCall.getInstance().getToken(context,sunmiDevice.getIp());
+        }
     }
 
     @UiThread
@@ -123,7 +125,7 @@ public class WifiConfiguringActivity extends BaseMvpActivity<WifiConfiguringPres
         }
         if (deviceIds.isEmpty()) {
             sunmiDevices.get(0).setStatus(1);
-            WifiConfigCompletedActivity_.intent(context).shopId(shopId).sunmiDevices(sunmiDevices).start();
+            IpcConfigCompletedActivity_.intent(context).shopId(shopId).sunmiDevices(sunmiDevices).start();
             finish();
         }
     }

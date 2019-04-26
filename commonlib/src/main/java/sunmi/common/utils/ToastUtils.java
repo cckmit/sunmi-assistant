@@ -66,7 +66,7 @@ public class ToastUtils {
      * 短时间弹出消息提示
      */
     public static void toastForShort(Context context, int res) {
-        if (res <= 0) return;
+        if (res <= 0 || context == null) return;
         toastForShort(context, context.getResources().getString(res));
     }
 
