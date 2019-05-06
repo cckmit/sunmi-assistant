@@ -3,7 +3,6 @@ package com.sunmi.ipc.view;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +46,7 @@ public class IPCListAdapter extends RecyclerView.Adapter<IPCListAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         holder.itemView.setTag(position);
         setChecked(holder, position);
-        setIcon(holder, position);
+        holder.ivDevice.setImageResource(SunmiDevUtils.setSearchLogo(data.get(position).getModel()));
         holder.tvName.setText(data.get(position).getName());
     }
 
@@ -59,15 +58,15 @@ public class IPCListAdapter extends RecyclerView.Adapter<IPCListAdapter.ViewHold
         }
     }
 
-    private void setIcon(@NonNull ViewHolder holder, int position) {
-        if (TextUtils.equals("FS1", data.get(position).getModel())) {
-            holder.ivDevice.setImageResource(R.mipmap.item_fs);
-        } else if (TextUtils.equals("SS1", data.get(position).getModel())) {
-            holder.ivDevice.setImageResource(R.mipmap.item_ss);
-        } else {
-            holder.ivDevice.setImageResource(SunmiDevUtils.setSearchLogo(data.get(position).getModel()));
-        }
-    }
+//    private void setIcon(@NonNull ViewHolder holder, int position) {
+//        if (TextUtils.equals("FS1", data.get(position).getModel())) {
+//            holder.ivDevice.setImageResource(R.mipmap.item_fs);
+//        } else if (TextUtils.equals("SS1", data.get(position).getModel())) {
+//            holder.ivDevice.setImageResource(R.mipmap.item_ss);
+//        } else {
+//            holder.ivDevice.setImageResource(SunmiDevUtils.setSearchLogo(data.get(position).getModel()));
+//        }
+//    }
 
     @Override
     public int getItemCount() {
