@@ -88,4 +88,79 @@ public class RegexUtils {
                 && !TextUtils.equals(input, "255.255.255.255");
     }
 
+    // IpV4的正则表达式，用于判断IpV4地址是否合法
+    private static final String IPV4_REGEX = "((\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])" +
+            "(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3})";
+
+    /**
+     * 判断ipV4或者mask地址是否合法，通过正则表达式方式进行判断
+     *
+     * @param ipv4
+     */
+    public static boolean ipV4Validate(String ipv4) {
+        return ipv4Validate(ipv4, IPV4_REGEX);
+    }
+
+    /**
+     * 比较两个ip地址是否在同一个网段中，如果两个都是合法地址，两个都是非法地址时，可以正常比较；
+     * 如果有其一不是合法地址则返回false；
+     * 注意此处的ip地址指的是如“192.168.1.1”地址
+     */
+    public static boolean checkSameSegment(String ip1, String ip2, int mask) {
+        int ipValue1 = getIpV4Value(ip1);
+        int ipValue2 = getIpV4Value(ip2);
+        return (mask & ipValue1) == (mask & ipValue2);
+    }
+
+    private static boolean ipv4Validate(String addr, String regex) {
+        if (addr == null) {
+            return false;
+        } else {
+            return Pattern.matches(regex, addr.trim());
+        }
+    }
+
+    /**
+     * 比较两个ip地址，如果两个都是合法地址，则1代表ip1大于ip2，-1代表ip1小于ip2,0代表相等；
+     * 如果有其一不是合法地址，如ip2不是合法地址，则ip1大于ip2，返回1，反之返回-1；两个都是非法地址时，则返回0；
+     * 注意此处的ip地址指的是如“192.168.1.1”地址，并不包括mask
+     *
+     * @return
+     */
+    public static int compareIpV4s(String ip1, String ip2) {
+        int result = 0;
+        int ipValue1 = getIpV4Value(ip1);     // 获取ip1的32bit值
+        int ipValue2 = getIpV4Value(ip2); // 获取ip2的32bit值
+        if (ipValue1 > ipValue2) {
+            result = -1;
+        } else {
+            result = 1;
+        }
+        return result;
+    }
+
+    public static int getIpV4Value(String ipOrMask) {
+        byte[] addr = getIpV4Bytes(ipOrMask);
+        int address1 = addr[3] & 0xFF;
+        address1 |= ((addr[2] << 8) & 0xFF00);
+        address1 |= ((addr[1] << 16) & 0xFF0000);
+        address1 |= ((addr[0] << 24) & 0xFF000000);
+        return address1;
+    }
+
+    public static byte[] getIpV4Bytes(String ipOrMask) {
+        try {
+            String[] addrs = ipOrMask.split("\\.");
+            int length = addrs.length;
+            byte[] addr = new byte[length];
+            for (int index = 0; index < length; index++) {
+                addr[index] = (byte) (Integer.parseInt(addrs[index]) & 0xff);
+            }
+            return addr;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new byte[4];
+    }
+
 }

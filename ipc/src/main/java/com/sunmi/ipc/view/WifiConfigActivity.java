@@ -62,6 +62,8 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
 
     ArrayList<SunmiDevice> list = new ArrayList<>();
 
+    private boolean hasConfig;
+
     @AfterViews
     void init() {
         list.add(sunmiDevice);
@@ -86,18 +88,28 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
         setNoWifiVisible(View.GONE);
     }
 
-    @Click(resName = "tv_skip")
-    void skipClick() {
-        WifiConfiguringActivity_.intent(context).sunmiDevices(list).shopId(shopId).start();
-    }
+//    @Click(resName = "tv_skip")
+//    void skipClick() {
+//        IpcConfiguringActivity_.intent(context).sunmiDevices(list).shopId(shopId).start();
+//    }
 
     @Override
     public void onItemClick(String ssid, String mgmt) {
+        showLoadingDialog();
         if (TextUtils.equals(mgmt, "NONE")) {
             IPCCall.getInstance().setIPCWifi(context, ssid, mgmt, "");
         } else if (TextUtils.equals(mgmt, "WPA-PSK")) {
             createDialog(ssid, mgmt);
         }
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                hideLoadingDialog();
+//                if (!hasConfig) {
+//
+//                }
+//            }
+//        }, 10000);
     }
 
     @Override
@@ -133,15 +145,18 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
                 return;
             }
             initApList(resp.getScan_results());
-        } else if (id == IpcConstants.setIPCWifi) {//{"data":[{"opcode":"0x3116","result":{},"errcode":0}],"msg_id":"11111","errcode":0}
+        } else if (id == IpcConstants.setIPCWifi) {
+            //{"data":[{"opcode":"0x3116","result":{},"errcode":0}],"msg_id":"11111","errcode":0}
             IPCCall.getInstance().getApStatus(context);
-        } else if (id == IpcConstants.getApStatus) {//{"data":[{"opcode":"0x3119","result":{"wireless":{"connect_status":"0"}},"errcode":0}],"msg_id":"11111","errcode":0}
-            if (res.getResult().has("wireless")) {
+        } else if (id == IpcConstants.getApStatus) {
+            //{"data":[{"opcode":"0x3119","result":{"wireless":{"connect_status":"0"}},"errcode":0}],"msg_id":"11111","errcode":0}
+            hideLoadingDialog();
+            if (res.getResult() != null && res.getResult().has("wireless")) {
                 try {
                     JSONObject jsonObject = res.getResult().getJSONObject("wireless");
                     if (jsonObject.has("connect_status")) {//是否成功关联上前端AP(0:正在关联。1：关联成功。2：关联失败)
                         if (TextUtils.equals("1", jsonObject.getString("connect_status"))) {
-                            WifiConfiguringActivity_.intent(context).sunmiDevices(list).shopId(shopId).start();
+                            IpcConfiguringActivity_.intent(context).sunmiDevices(list).shopId(shopId).start();
                             return;
                         }
                     }

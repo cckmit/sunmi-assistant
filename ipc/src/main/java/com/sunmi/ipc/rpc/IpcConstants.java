@@ -15,6 +15,7 @@ public class IpcConstants {
     public static final int getApStatus = 0x3119;
     public static final int getIpcToken = 0x3124;
     public static final int bindIpc = 0x3059;
+    public static final int getIsWire = 0x3126;
 
     public static final int fsZoom = 0x3104;
     public static final int fsFocus = 0x3105;
