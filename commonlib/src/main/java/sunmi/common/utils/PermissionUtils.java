@@ -2,12 +2,13 @@ package sunmi.common.utils;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.provider.SyncStateContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.PermissionChecker;
 import android.widget.Toast;
 
 import com.commonlibrary.R;
@@ -182,7 +183,7 @@ public class PermissionUtils {
     }
 
     //* 如果SDK版本大于等于23、或者Android系统版本是6.0以上，那么需要动态请求创建文件的权限 */
-    public static boolean checkLocationPermission(FragmentActivity getActivity) {
+    public static boolean getLocationPermission(FragmentActivity getActivity) {
         // 读,写,手机,定位,相机,短信权限
         int REQUEST_STORAGE = 1;
         String[] PERMISSIONS_STORAGE = {
@@ -205,5 +206,17 @@ public class PermissionUtils {
         return true;
     }
 
+    //* 如果SDK版本大于等于23、或者Android系统版本是6.0以上，那么需要动态请求创建文件的权限 */
+    public static boolean checkLocationPermission(Context context) {
+        String[] PERMISSIONS_STORAGE = {"android.permission.ACCESS_COARSE_LOCATION",
+                "android.permission.ACCESS_FINE_LOCATION"};
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int coarse_location = ContextCompat.checkSelfPermission(context, PERMISSIONS_STORAGE[0]);
+            int fine_location = ContextCompat.checkSelfPermission(context, PERMISSIONS_STORAGE[1]);
+            return coarse_location == PackageManager.PERMISSION_GRANTED &&
+                    fine_location == PackageManager.PERMISSION_GRANTED;
+        }
+        return true;
+    }
 
 }

@@ -124,7 +124,7 @@ public class IpcConfiguringActivity extends BaseMvpActivity<WifiConfiguringPrese
             }
         }
         if (deviceIds.isEmpty()) {
-            sunmiDevices.get(0).setStatus(1);
+            sunmiDevices.get(0).setStatus(1);//todo
             IpcConfigCompletedActivity_.intent(context).shopId(shopId).sunmiDevices(sunmiDevices).start();
             finish();
         }
