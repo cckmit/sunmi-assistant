@@ -55,6 +55,14 @@ public class IPCCall extends BaseApi {
         post(context, "", IpcConstants.getIpcToken, new JSONObject());
     }
 
+    //获取token,绑定ipc使用
+    public void getToken(Context context, String url) {
+        int opCode = IpcConstants.getIpcToken;
+        RequestBean requestBean = new RequestBean("11111",
+                "0x" + Integer.toHexString(opCode), new JSONObject());
+        new IPCLocalApi(url).post(context, "", requestBean.getMsgId(), opCode, requestBean.serialize());
+    }
+
     /**
      * 设置缩放
      *

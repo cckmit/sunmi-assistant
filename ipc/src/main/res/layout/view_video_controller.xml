@@ -141,7 +141,7 @@
             android:paddingTop="4dp"
             android:paddingRight="12dp"
             android:paddingBottom="5dp"
-            android:text="点击重试"
+            android:text="@string/str_btn_try_again"
             android:textColor="@android:color/white"
             android:textSize="13sp" />
     </LinearLayout>

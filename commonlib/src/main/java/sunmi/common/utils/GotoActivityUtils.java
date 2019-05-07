@@ -55,4 +55,16 @@ public class GotoActivityUtils {
         }
     }
 
+    public static void gotoSunmiLinkSearchActivity(Context context, String sn) {
+        try {
+            Class<?> loginActivity = Class.forName("com.sunmi.assistant.ui.activity.SunmiLinkSearchActivity_");
+            Intent intent = new Intent(context, loginActivity);
+            if (!TextUtils.isEmpty(sn))
+                intent.putExtra("sn", sn);
+            context.startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

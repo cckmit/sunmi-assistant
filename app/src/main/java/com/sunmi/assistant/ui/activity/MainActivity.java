@@ -43,7 +43,6 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
     public static final int TAB_STORE = 0;
     public static final int TAB_SUPPORT = 1;
     public static final int TAB_MINE = 2;
-    public static final int TAB_IPC = 3;
 
     @ViewById(android.R.id.tabhost)
     MyFragmentTabHost mTabHost;
