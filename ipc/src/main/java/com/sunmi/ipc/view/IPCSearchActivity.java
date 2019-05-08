@@ -7,11 +7,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import com.sunmi.ipc.rpc.IPCCall;
-import com.sunmi.ipc.rpc.IPCCloudApi;
 import com.sunmi.ipc.rpc.IpcConstants;
 
 import org.androidannotations.annotations.AfterViews;
@@ -25,15 +25,12 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.model.SunmiDevice;
-import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.SMDeviceDiscoverUtils;
 import sunmi.common.utils.log.LogCat;
@@ -54,6 +51,10 @@ public class IPCSearchActivity extends BaseActivity
     RecyclerView rvDevice;
     @ViewById(resName = "rl_no_device")
     RelativeLayout rlNoWifi;
+    @ViewById(resName = "rl_loading")
+    RelativeLayout rlLoading;
+    @ViewById(resName = "btn_refresh")
+    Button btnRefresh;
 
     @Extra
     String shopId;
@@ -65,8 +66,6 @@ public class IPCSearchActivity extends BaseActivity
     List<SunmiDevice> ipcList = new ArrayList<>();
 
     private Map<String, SunmiDevice> ipcMap = new HashMap<>();
-    Set<String> ipcSet = new HashSet<>();
-    int selectCount, tokenGetCount;
 
     @AfterViews
     void init() {
@@ -83,6 +82,9 @@ public class IPCSearchActivity extends BaseActivity
                 if (ipcList.size() <= 0) {
                     rlSearch.setVisibility(View.GONE);
                     rlNoWifi.setVisibility(View.VISIBLE);
+                } else {
+                    rlLoading.setVisibility(View.GONE);
+                    btnRefresh.setVisibility(View.VISIBLE);
                 }
             }
         }, 3000);
@@ -97,68 +99,45 @@ public class IPCSearchActivity extends BaseActivity
         rvDevice.setAdapter(ipcListAdapter);
     }
 
+    @Click(resName = "btn_retry")
+    void retryClick() {
+        startScan();
+    }
+
     @Click(resName = "btn_refresh")
     void refreshClick() {
         startScan();
+        ipcList.clear();
+        isApMode = false;
+        ipcMap.clear();
+        ipcListAdapter.notifyDataSetChanged();
+        rlLoading.setVisibility(View.VISIBLE);
+        btnRefresh.setVisibility(View.GONE);
     }
 
     @Click(resName = "btn_config")
     void configClick() {
-//        if (ipcList == null || ipcList.size() < 1) return;
-//        getToken();
-//        if (isApMode) {
-//            getIsWire();
-//        } else {
-//            gotoIpcConfigActivity();
-//        }
-
-//        public static void bindIPC(int companyId, int shopId, String sn, int bindMode, String bindToken,
-//        float longitude, float latitude, RetrofitCallback callback) {
-        IPCCloudApi.getDetailList(6680, shopId, new RetrofitCallback() {
-            @Override
-            public void onSuccess(int code, String msg, Object data) {
-
-            }
-
-            @Override
-            public void onFail(int code, String msg, Object data) {
-
-            }
-        });
-
-    }
-
-    private void gotoWifiConfigActivity() {
-        if (selectCount == tokenGetCount) {
-            WifiConfigActivity_.intent(context).sunmiDevice(ipcList.get(0)).shopId(shopId).start();
+        if (ipcList == null || ipcList.size() < 1) return;
+        if (isApMode) {
+            getIsWire();
         } else {
-            shortTip("请求失败请重试");
+            gotoIpcConfigActivity();
         }
     }
 
-    private void gotoIpcConfigActivity() {
-        if (selectCount == tokenGetCount) {
-            IpcConfiguringActivity_.intent(context).sunmiDevices((ArrayList<SunmiDevice>) ipcList).shopId(shopId).start();
-        } else {
-            shortTip("请求失败请重试");
-        }
+    @UiThread
+    public void setNoWifiVisible(int visibility) {
+        rlNoWifi.setVisibility(visibility);
     }
 
-    private void getToken() {
-        for (SunmiDevice sunmiDevice : ipcList) {
-            if (sunmiDevice.isSelected()) {
-                selectCount++;
-                IPCCall.getInstance().getToken(context);
-            }
-        }
+    @Override
+    public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
+
     }
 
-    private void getIsWire() {
-        IPCCall.getInstance().getIsWire(context);
-    }
-
-    private void sunmiLinkConfig() {//todo sunmi link
-        WifiConfigActivity_.intent(context).sunmiDevice(ipcList.get(0)).shopId(shopId).start();
+    @Override
+    public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
+        return false;
     }
 
     @Override
@@ -198,7 +177,6 @@ public class IPCSearchActivity extends BaseActivity
                     JSONObject jsonObject = res.getResult().getJSONObject("ipc_info");
                     if (jsonObject.has("sn") && jsonObject.has("token")) {
                         for (SunmiDevice sunmiDevice : ipcList) {
-                            tokenGetCount++;
                             sunmiDevice.setToken(jsonObject.getString("token"));
                         }
                     }
@@ -208,6 +186,18 @@ public class IPCSearchActivity extends BaseActivity
                 e.printStackTrace();
             }
         }
+    }
+
+    @UiThread
+    void addDevice(SunmiDevice device) {
+        ipcList.add(device);
+        if (ipcListAdapter != null) ipcListAdapter.notifyDataSetChanged();
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+            }
+        });
     }
 
     //1 udp搜索到设备
@@ -228,47 +218,21 @@ public class IPCSearchActivity extends BaseActivity
         IPCCall.getInstance().getToken(context, ipc.getIp());
     }
 
-    @UiThread
-    void addDevice(SunmiDevice device) {
-        ipcList.add(device);
-        if (ipcListAdapter != null) ipcListAdapter.notifyDataSetChanged();
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
-            }
-        });
+    private void getIsWire() {
+        IPCCall.getInstance().getIsWire(context, ipcList.get(0).getIp());
     }
 
-    @UiThread
-    public void setNoWifiVisible(int visibility) {
-        rlNoWifi.setVisibility(visibility);
+    private void gotoWifiConfigActivity() {
+        WifiConfigActivity_.intent(context).sunmiDevice(ipcList.get(0)).shopId(shopId).start();
     }
 
-    @Override
-    public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
-
+    private void gotoIpcConfigActivity() {
+        ArrayList<SunmiDevice> selectedList = new ArrayList<>();
+        for (SunmiDevice device : ipcList) {
+            if (device.isSelected())
+                selectedList.add(device);
+        }
+        IpcConfiguringActivity_.intent(context).sunmiDevices(selectedList).shopId(shopId).start();
     }
-
-    @Override
-    public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
-        return false;
-    }
-
-    //    private boolean hasFound(SunmiDevice ipc) {
-    //        if (ipcSet.contains(ipc.getDeviceid())) {
-    //            return true;
-    //        } else {
-    //            ipc.setSelected(true);
-    //            isApMode = TextUtils.equals("AP", ipc.getNetwork());
-    //            if (isApMode) {
-    //                IpcConstants.IPC_SN = ipc.getDeviceid();
-    //                IpcConstants.IPC_IP = "http://" + ipc.getIp() + "/api/";//192.168.100.159/api/192.168.103.122
-    //            }
-    //            ipcSet.add(ipc.getDeviceid());
-    //            addDevice(ipc);
-    //        }
-    //        return false;
-    //    }
 
 }
