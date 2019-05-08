@@ -33,6 +33,7 @@ public class SunmiDevice implements Serializable {
 
     private int status;
     private boolean isSelected;
+    private String token;//绑定设备使用
 
     public String getIp() {
         return "http://" + ip + "/api/";//192.168.100.159/api/192.168.103.122
@@ -128,6 +129,14 @@ public class SunmiDevice implements Serializable {
 
     public void setSelected(boolean selected) {
         isSelected = selected;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
 }

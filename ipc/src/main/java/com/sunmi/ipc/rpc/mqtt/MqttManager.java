@@ -2,9 +2,7 @@ package com.sunmi.ipc.rpc.mqtt;
 
 import android.text.TextUtils;
 
-import com.google.gson.GsonBuilder;
 import com.sunmi.ipc.rpc.IPCCloudApi;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -16,12 +14,11 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import okhttp3.Call;
-import okhttp3.Response;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.SSLSocketFactoryGenerator;
-import sunmi.common.rpc.mqtt.MQttBean;
+import sunmi.common.rpc.mqtt.EmqTokenResp;
+import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
@@ -88,36 +85,57 @@ public class MqttManager {
 //        }
         LogCat.e(TAG, "mqtt createEmqToken start");
         if (mqttClient != null) return;
-        IPCCloudApi.createEmqToken(new StringCallback() {
+//        IPCCloudApi.createEmqToken(new StringCallback() {
+//            @Override
+//            public void onError(Call call, Response response, Exception e, int id) {
+//                LogCat.e(TAG, "mqtt createEmqToken " + response + e.getMessage());
+//            }
+//
+//            @Override
+//            public void onResponse(String response, int id) {
+//                LogCat.e(TAG, "mqtt checkToken sso token = " + response);
+//                if (TextUtils.isEmpty(response)) {
+//                    ToastUtils.toastForShort(BaseApplication.getContext(), "network error");
+//                }
+//                try {
+//                    MQttBean bean = new GsonBuilder().create().fromJson(response, MQttBean.class);
+//                    if (bean != null && bean.getData() != null) {
+//                        LogCat.e(TAG, "mqtt createEmqToken success");
+////                        if (mqttClient != null) mqttClient.disconnect();//todo 重连之前先断连，云端先考虑主动断连
+//                        if (isInit) {
+//                            initMQTT(bean.getData());
+//                        } else {
+//                            mqttConnect();
+//                        }
+//                    }
+//                } catch (Exception e) {
+//                    if (response.contains("code")) {//{"code":-1,"data":[],"msg":"invalid user token"}
+////                        CommonUtils.logout();
+//                    }
+////                    ToastUtils.toastForShort(BaseApplication.getContext(),
+////                            BaseApplication.getContext().getString(R.string.login_error));
+//                }
+//            }
+//        });
+        IPCCloudApi.createEmqToken(new RetrofitCallback<EmqTokenResp>() {
             @Override
-            public void onError(Call call, Response response, Exception e, int id) {
-                LogCat.e(TAG, "mqtt createEmqToken " + response + e.getMessage());
+            public void onSuccess(int code, String msg, EmqTokenResp response) {
+                LogCat.e(TAG, "mqtt checkToken sso token = " + response);
+                if (response == null) {
+                    ToastUtils.toastForShort(BaseApplication.getContext(), "network error");
+                }
+                LogCat.e(TAG, "mqtt createEmqToken success");
+//                if (mqttClient != null) mqttClient.disconnect();//todo 重连之前先断连，云端先考虑主动断连
+                if (isInit) {
+                    initMQTT(response);
+                } else {
+                    mqttConnect();
+                }
             }
 
             @Override
-            public void onResponse(String response, int id) {
-                LogCat.e(TAG, "mqtt checkToken sso token = " + response);
-                if (TextUtils.isEmpty(response)) {
-                    ToastUtils.toastForShort(BaseApplication.getContext(), "network error");
-                }
-                try {
-                    MQttBean bean = new GsonBuilder().create().fromJson(response, MQttBean.class);
-                    if (bean != null && bean.getData() != null) {
-                        LogCat.e(TAG, "mqtt createEmqToken success");
-//                        if (mqttClient != null) mqttClient.disconnect();//todo 重连之前先断连，云端先考虑主动断连
-                        if (isInit) {
-                            initMQTT(bean.getData());
-                        } else {
-                            mqttConnect();
-                        }
-                    }
-                } catch (Exception e) {
-                    if (response.contains("code")) {//{"code":-1,"data":[],"msg":"invalid user token"}
-//                        CommonUtils.logout();
-                    }
-//                    ToastUtils.toastForShort(BaseApplication.getContext(),
-//                            BaseApplication.getContext().getString(R.string.login_error));
-                }
+            public void onFail(int code, String msg, EmqTokenResp data) {
+//                LogCat.e(TAG, "mqtt createEmqToken " + response + e.getMessage());
             }
         });
     }
@@ -125,19 +143,18 @@ public class MqttManager {
     /**
      * MQtt设置及连接
      */
-    private void initMQTT(MQttBean.DataBean dataBean) {
+    private void initMQTT(EmqTokenResp resp) {
         //clientId客户端生成，每次建连重新生成
-        if (TextUtils.isEmpty(clientId))
-            clientId = SpUtils.getUID() + "_" + System.currentTimeMillis();
-        String host = dataBean.getServerAddress();
-        String port = dataBean.getPort();
+        String host = resp.getServer_address();
         String serverURL = new StringBuilder().append("ssl://")
-                .append(host).append(":").append(port).toString();  //需要证书
+                .append(host).toString();  //需要证书
+        if (TextUtils.isEmpty(clientId))
+            clientId = resp.getUsername() + "_" + System.currentTimeMillis();
 
         mqttClient = new MqttAndroidClient(BaseApplication.getContext(), serverURL, clientId);
         options = new MqttConnectOptions();
-        options.setUserName(dataBean.getUsername());
-        options.setPassword(dataBean.getPassword().toCharArray());//解密
+        options.setUserName(resp.getUsername());
+        options.setPassword(resp.getPassword().toCharArray());//解密
         options.setAutomaticReconnect(true);
         options.setCleanSession(true);
         options.setConnectionTimeout(10);
@@ -176,8 +193,8 @@ public class MqttManager {
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    LogCat.e(TAG, "mqtt Connect fail, asyncActionToken code = "
-                            + asyncActionToken.getException().getReasonCode());
+//                    LogCat.e(TAG, "mqtt Connect fail, asyncActionToken code = "
+//                            + asyncActionToken.getException().getReasonCode());
                     if (!NetworkUtils.isNetworkAvailable(BaseApplication.getContext())) {
                         LogCat.e(TAG, "mqtt Connect fail no net");
                         mqttClient = null;
@@ -186,7 +203,8 @@ public class MqttManager {
                         isConnecting = false;
                         return;
                     }
-                    if (asyncActionToken.getException().getReasonCode()
+                    if (asyncActionToken.getException() != null
+                            && asyncActionToken.getException().getReasonCode()
                             == MqttException.REASON_CODE_FAILED_AUTHENTICATION
                             || asyncActionToken.getException().getReasonCode()
                             == MqttException.REASON_CODE_CLIENT_EXCEPTION

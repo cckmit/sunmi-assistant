@@ -50,6 +50,11 @@ public class IPCCall extends BaseApi {
         post(context, "", IpcConstants.getApStatus, new JSONObject());
     }
 
+    //获取IPC无线还是有线
+    public void getIsWire(Context context) {
+        post(context, "", IpcConstants.getIsWire, new JSONObject());
+    }
+
     //获取token,绑定ipc使用
     public void getToken(Context context) {
         post(context, "", IpcConstants.getIpcToken, new JSONObject());

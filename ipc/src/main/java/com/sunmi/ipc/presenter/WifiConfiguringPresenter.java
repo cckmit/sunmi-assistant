@@ -1,8 +1,7 @@
 package com.sunmi.ipc.presenter;
 
-import com.sunmi.ipc.rpc.IPCCloudApi;
-import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.contract.WifiConfiguringContract;
+import com.sunmi.ipc.rpc.IPCCloudApi;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.rpc.http.HttpCallback;
@@ -15,12 +14,12 @@ public class WifiConfiguringPresenter extends BasePresenter<WifiConfiguringContr
         implements WifiConfiguringContract.Presenter {
 
     @Override
-    public void ipcBind(String shopId, String token, float longitude, float latitude) {
-        IPCCloudApi.bindIPC(Integer.parseInt(shopId), IpcConstants.IPC_SN,
+    public void ipcBind(String shopId, final String sn, String token, float longitude, float latitude) {
+        IPCCloudApi.bindIPC(Integer.parseInt(shopId), sn, 0,
                 token, longitude, latitude, new HttpCallback<Object>(null) {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
-                        mView.ipcBindWifiSuccess();
+                        mView.ipcBindWifiSuccess(sn);
                     }
                 });
     }
