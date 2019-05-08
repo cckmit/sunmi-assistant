@@ -68,10 +68,15 @@ public class IpcConfiguringActivity extends BaseMvpActivity<WifiConfiguringPrese
     @UiThread
     @Override
     public void ipcBindWifiSuccess(String sn) {
+        startCountDown();
+    }
+
+    private void startCountDown() {
         if (!isTimeoutStart) {
             isTimeoutStart = true;
             new Handler().postDelayed(new Runnable() {
                 public void run() {
+                    if (deviceIds.isEmpty()) return;
                     for (SunmiDevice device : sunmiDevices) {
                         if (deviceIds.contains(device.getDeviceid())) {
                             device.setStatus(RpcErrorCode.RPC_ERR_TIMEOUT);
@@ -83,16 +88,16 @@ public class IpcConfiguringActivity extends BaseMvpActivity<WifiConfiguringPrese
         }
     }
 
+    @UiThread
+    @Override
+    public void ipcBindWifiFail(String sn, int code, String msg) {
+        startCountDown();
+        setDeviceStatus(sn, code);
+    }
+
     @Override
     public void onBackPressed() {
 
-    }
-
-    @UiThread
-    @Override
-    public void ipcBindWifiFail(String sn) {
-        setDeviceStatus(sn, -1);
-//        configFailDialog(R.string.tip_connect_ipc_fail, R.string.msg_in_same_wifi);
     }
 
     @Override
@@ -118,8 +123,8 @@ public class IpcConfiguringActivity extends BaseMvpActivity<WifiConfiguringPrese
     private void setDeviceStatus(String sn, int status) {
         for (SunmiDevice device : sunmiDevices) {
             if (TextUtils.equals(device.getDeviceid(), sn)) {
-                device.setStatus(status);
                 deviceIds.remove(sn);
+                device.setStatus(status);
             }
         }
         configComplete();

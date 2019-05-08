@@ -3,6 +3,7 @@ package com.sunmi.ipc.view;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +48,10 @@ public class IPCListAdapter extends RecyclerView.Adapter<IPCListAdapter.ViewHold
         holder.itemView.setTag(position);
         setChecked(holder, position);
         holder.ivDevice.setImageResource(SunmiDevUtils.setSearchLogo(data.get(position).getModel()));
-        holder.tvName.setText(data.get(position).getName());
+        if (TextUtils.isEmpty(data.get(position).getName())) {
+            holder.tvName.setText(String.format("%s-%s", data.get(position).getModel(), data.get(position).getDeviceid()));
+        } else
+            holder.tvName.setText(data.get(position).getModel());
     }
 
     private void setChecked(@NonNull ViewHolder holder, int position) {

@@ -22,6 +22,7 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.utils.GotoActivityUtils;
+import sunmi.common.utils.SunmiDevUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.ViewHolder;
 
@@ -95,13 +96,9 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                 R.layout.item_device_config_complete, list) {
             @Override
             public void convert(ViewHolder holder, final SunmiDevice device) {
-                holder.setText(R.id.tv_name, device.getName());
+                holder.setText(R.id.tv_name, device.getModel());
                 holder.getView(R.id.tv_adjust).setVisibility(View.GONE);
-                if (TextUtils.equals("FS1", device.getModel())) {
-                    holder.setImageResource(R.id.iv_device, R.mipmap.item_fs);
-                } else if (TextUtils.equals("SS1", device.getModel())) {
-                    holder.setImageResource(R.id.iv_device, R.mipmap.item_ss);
-                }
+                holder.setImageResource(R.id.iv_device, SunmiDevUtils.setSearchLogo(device.getModel()));
                 if (device.getStatus() == 1) {
                     holder.setText(R.id.tv_status, "添加成功");
                     holder.setImageResource(R.id.iv_status, R.mipmap.ic_done);
@@ -116,12 +113,14 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                     }
                 } else {
                     String errStr = "绑定失败";
-                    if (device.getStatus() == 5508) {
-                        errStr = "已经绑定，不要重复绑定";
-                    } else if (device.getStatus() == 5501) {
+                    if (device.getStatus() == 5501) {
                         errStr = "设备不存在";
+                    } else if (device.getStatus() == 5508 || device.getStatus() == 5509) {
+                        errStr = "已经绑定，不要重复绑定";
                     } else if (device.getStatus() == 5510) {
                         errStr = "已被其他用户绑定";
+                    } else if (device.getStatus() == 5511) {
+                        errStr = "设备不在线";
                     } else if (device.getStatus() == RpcErrorCode.RPC_ERR_TIMEOUT) {
                         errStr = "绑定超时";
                     }

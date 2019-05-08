@@ -130,7 +130,7 @@ public class SunmiLinkSearchActivity extends BaseActivity {
         rvDevice.setAdapter(devListAdapter);
     }
 
-    @Click(resName = "btn_refresh")
+    @Click(resName = "btn_retry")
     void refreshClick() {
         startSunmiLink();
     }
@@ -265,11 +265,8 @@ public class SunmiLinkSearchActivity extends BaseActivity {
                     sd.setSelected(true);
                     String mac = object.getString("mac");
                     sd.setMac(mac);
-                    sd.setName(object.getString("model"));
                     if (object.has("devid")) {
                         sd.setDeviceid(object.getString("devid"));
-                        shortTip(sd.getDeviceid());
-                        sd.setName(sd.getModel() + " - " + sd.getDeviceid());
                     }
                     sunmiLinkFoundDevice(sd);
                 }

@@ -78,7 +78,7 @@ public class IPCCloudApi extends BaseHttpApi {
      * @param longitude 是	float	经度
      * @param latitude  是	float	纬度
      */
-    public static void bindIPC(int companyId, int shopId, String sn, int bindMode, String bindToken,
+    public static void bindIPC(String companyId, String shopId, String sn, int bindMode, String bindToken,
                                float longitude, float latitude, RetrofitCallback callback) {
         try {
             String params = new JSONObject()

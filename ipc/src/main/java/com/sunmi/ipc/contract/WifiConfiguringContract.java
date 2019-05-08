@@ -12,7 +12,7 @@ public interface WifiConfiguringContract {
 
         void ipcBindWifiSuccess(String sn);
 
-        void ipcBindWifiFail(String sn);
+        void ipcBindWifiFail(String sn, int code, String msg);
     }
 
     interface Presenter {

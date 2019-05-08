@@ -4,7 +4,8 @@ import com.sunmi.ipc.contract.WifiConfiguringContract;
 import com.sunmi.ipc.rpc.IPCCloudApi;
 
 import sunmi.common.base.BasePresenter;
-import sunmi.common.rpc.http.HttpCallback;
+import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.SpUtils;
 
 /**
  * Description:
@@ -15,13 +16,20 @@ public class WifiConfiguringPresenter extends BasePresenter<WifiConfiguringContr
 
     @Override
     public void ipcBind(String shopId, final String sn, String token, float longitude, float latitude) {
-        IPCCloudApi.bindIPC(Integer.parseInt(shopId), sn, 0,
-                token, longitude, latitude, new HttpCallback<Object>(null) {
+        IPCCloudApi.bindIPC(SpUtils.getMerchantUid(), shopId, sn, 0,
+                token, longitude, latitude, new RetrofitCallback() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
                         mView.ipcBindWifiSuccess(sn);
                     }
+
+                    @Override
+                    public void onFail(int code, String msg, Object data) {
+                        mView.ipcBindWifiFail(sn, code, msg);
+
+                    }
                 });
+
     }
 
 }
