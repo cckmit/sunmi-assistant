@@ -13,22 +13,15 @@ import com.sunmi.ipc.rpc.IPCCloudApi;
 import com.sunmi.ipc.utils.AACDecoder;
 import com.sunmi.ipc.utils.H264Decoder;
 import com.sunmi.ipc.utils.IOTCClient;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.ViewById;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import okhttp3.Call;
-import okhttp3.Response;
 import sunmi.common.base.BaseFragment;
-import sunmi.common.rpc.http.HttpResponse;
-import sunmi.common.utils.log.LogCat;
+import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.view.TitleBarView;
 
 @EFragment(resName = "fragment_ipc")
@@ -117,42 +110,42 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
     }
 
     void unbind(String deviceId) {
-        IPCCloudApi.unbindIPC(deviceId, new StringCallback() {
+        IPCCloudApi.unbindIPC(0, Integer.parseInt(shopId), deviceId, new RetrofitCallback() {
             @Override
-            public void onError(Call call, Response response, Exception e, int id) {
+            public void onSuccess(int code, String msg, Object data) {
 
             }
 
             @Override
-            public void onResponse(String response, int id) {
-                LogCat.e(TAG, "666666 unbind response = " + response);
+            public void onFail(int code, String msg, Object data) {
+
             }
         });
     }
 
     void getIpcList() {
-        IPCCloudApi.getIpcList(shopId, new StringCallback() {
-            @Override
-            public void onError(Call call, Response response, Exception e, int id) {
-                LogCat.e(TAG, "666666 getIpcList onError response = " + response);
-            }
-
-            @Override
-            public void onResponse(String response, int id) {
-                LogCat.e(TAG, "666666 getIpcList onResponse response = " + response);
-                HttpResponse res = new HttpResponse(response);
-                try {
-                    JSONObject jsonObject = new JSONObject(res.getData());
-                    JSONArray jsonArray = jsonObject.getJSONArray("device_list");
-                    if (jsonArray == null || jsonArray.length() <= 0) {
-                        return;
-                    }
-                    unbind(((JSONObject) jsonArray.opt(0)).getInt("id") + "");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+//        IPCCloudApi.getIpcList(shopId, new StringCallback() {
+//            @Override
+//            public void onError(Call call, Response response, Exception e, int id) {
+//                LogCat.e(TAG, "666666 getIpcList onError response = " + response);
+//            }
+//
+//            @Override
+//            public void onResponse(String response, int id) {
+//                LogCat.e(TAG, "666666 getIpcList onResponse response = " + response);
+//                HttpResponse res = new HttpResponse(response);
+//                try {
+//                    JSONObject jsonObject = new JSONObject(res.getData());
+//                    JSONArray jsonArray = jsonObject.getJSONArray("device_list");
+//                    if (jsonArray == null || jsonArray.length() <= 0) {
+//                        return;
+//                    }
+//                    unbind(((JSONObject) jsonArray.opt(0)).getInt("id") + "");
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
     }
 
     @Click(resName = "btn_config")

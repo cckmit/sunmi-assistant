@@ -5,6 +5,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 
 import com.sunmi.ipc.R;
 
@@ -33,6 +34,12 @@ public class IpcConfigCompletedActivity extends BaseActivity {
 
     @ViewById(resName = "rv_result")
     RecyclerView rvResult;
+    @ViewById(resName = "btn_complete")
+    Button btnComplete;
+    @ViewById(resName = "btn_retry")
+    Button btnRetry;
+    @ViewById(resName = "btn_finish")
+    Button btnFinish;
 
     @Extra
     String shopId;
@@ -40,16 +47,43 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     ArrayList<SunmiDevice> sunmiDevices;
 
     private List<SunmiDevice> list = new ArrayList<>();
+    private int failCount;
 
     @AfterViews
     void init() {
+        if (sunmiDevices != null) {
+            for (SunmiDevice sm : sunmiDevices) {
+                if (sm.getStatus() != 1) {
+                    failCount++;
+                }
+            }
+            if (failCount == sunmiDevices.size()) {
+                btnFinish.setVisibility(View.VISIBLE);
+                btnRetry.setVisibility(View.VISIBLE);
+            } else {
+                btnComplete.setVisibility(View.VISIBLE);
+            }
+        }
         list = sunmiDevices;
+
         initList();
     }
 
     @Click(resName = "btn_complete")
     void completeClick() {
         GotoActivityUtils.gotoMainActivity(context);
+        finish();
+    }
+
+    @Click(resName = "btn_finish")
+    void finishClick() {
+        GotoActivityUtils.gotoMainActivity(context);
+        finish();
+    }
+
+    @Click(resName = "btn_retry")
+    void retryClick() {
+        setResult(111);//todo
         finish();
     }
 

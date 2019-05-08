@@ -17,6 +17,7 @@ public class SpUtils {
     private static final String MERCHANT_UID = "MERCHANT_UID";
     private static final String UID = "UID";
     private static final String TOKEN = "TOKEN";
+    private static final String SSO_TOKEN = "SSO_TOKEN";
     private static final String LEAD_PAGES = "LEAD_PAGES";
     private static final String WEB_WIDTH = "WEB_WIDTH";
     private static final String WEB_HEIGHT = "WEB_HEIGHT";
@@ -92,6 +93,15 @@ public class SpUtils {
 
     public static void setToken(String token) {
         SharedManager.putValue(BaseApplication.getContext(), TOKEN, token);
+    }
+
+    //sso Token
+    public static String getSsoToken() {
+        return SharedManager.getValue(BaseApplication.getContext(), SSO_TOKEN);
+    }
+
+    public static void setSsoToken(String token) {
+        SharedManager.putValue(BaseApplication.getContext(), SSO_TOKEN, token);
     }
 
     //登录状态

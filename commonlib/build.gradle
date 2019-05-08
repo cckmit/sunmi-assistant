@@ -103,4 +103,8 @@ dependencies {
     //下拉刷新
     api 'cn.bingoogolapple:bga-refreshlayout:1.1.7@aar'
 
+    //retrofit
+    api 'com.squareup.okhttp3:okhttp:3.10.0'
+    api 'com.squareup.retrofit2:retrofit:2.4.0'
+    
 }
