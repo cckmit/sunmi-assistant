@@ -38,8 +38,9 @@ import java.util.TimerTask;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.RpcErrorCode;
-import sunmi.common.rpc.http.HttpCallback;
+import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.rpc.sunmicall.ResponseBean;
+import sunmi.common.utils.SpUtils;
 
 /**
  * Description:
@@ -178,15 +179,14 @@ public class SunmiLinkSearchActivity extends BaseActivity {
 
     private void bindIpc(SunmiDevice sunmiDevice) {
         ipcCount++;
-        IPCCloudApi.bindIPC(Integer.parseInt(shopId), sunmiDevice.getDeviceid(), 1,
-                "", 1, 1, new HttpCallback<Object>(null) {
+        IPCCloudApi.bindIPC(SpUtils.getMerchantUid(), shopId, sunmiDevice.getDeviceid(), 1,
+                "", 1, 1, new RetrofitCallback() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
                     }
 
                     @Override
-                    public void onFail(int code, String msg, String data) {
-
+                    public void onFail(int code, String msg, Object data) {
                     }
                 });
     }
