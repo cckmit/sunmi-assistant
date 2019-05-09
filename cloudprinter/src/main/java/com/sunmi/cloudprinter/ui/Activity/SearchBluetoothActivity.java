@@ -73,7 +73,7 @@ public class SearchBluetoothActivity extends BaseActivity implements BluetoothAd
     @Override
     protected void onResume() {
         super.onResume();
-        if (PermissionUtils.checkLocationPermission(this))
+        if (PermissionUtils.getLocationPermission(this))
             initBt();
     }
 

@@ -47,8 +47,11 @@ public class IPCListAdapter extends RecyclerView.Adapter<IPCListAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         holder.itemView.setTag(position);
         setChecked(holder, position);
-        setIcon(holder, position);
-        holder.tvName.setText(data.get(position).getName());
+        holder.ivDevice.setImageResource(SunmiDevUtils.setSearchLogo(data.get(position).getModel()));
+        if (TextUtils.isEmpty(data.get(position).getName())) {
+            holder.tvName.setText(String.format("%s-%s", data.get(position).getModel(), data.get(position).getDeviceid()));
+        } else
+            holder.tvName.setText(data.get(position).getModel());
     }
 
     private void setChecked(@NonNull ViewHolder holder, int position) {
@@ -59,15 +62,15 @@ public class IPCListAdapter extends RecyclerView.Adapter<IPCListAdapter.ViewHold
         }
     }
 
-    private void setIcon(@NonNull ViewHolder holder, int position) {
-        if (TextUtils.equals("FS1", data.get(position).getModel())) {
-            holder.ivDevice.setImageResource(R.mipmap.item_fs);
-        } else if (TextUtils.equals("SS1", data.get(position).getModel())) {
-            holder.ivDevice.setImageResource(R.mipmap.item_ss);
-        } else {
-            holder.ivDevice.setImageResource(SunmiDevUtils.setSearchLogo(data.get(position).getModel()));
-        }
-    }
+//    private void setIcon(@NonNull ViewHolder holder, int position) {
+//        if (TextUtils.equals("FS1", data.get(position).getModel())) {
+//            holder.ivDevice.setImageResource(R.mipmap.item_fs);
+//        } else if (TextUtils.equals("SS1", data.get(position).getModel())) {
+//            holder.ivDevice.setImageResource(R.mipmap.item_ss);
+//        } else {
+//            holder.ivDevice.setImageResource(SunmiDevUtils.setSearchLogo(data.get(position).getModel()));
+//        }
+//    }
 
     @Override
     public int getItemCount() {

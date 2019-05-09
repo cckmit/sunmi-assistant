@@ -67,7 +67,7 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
     @AfterViews
     void init() {
         list.add(sunmiDevice);
-        IPCCall.getInstance().getWifiList(context);
+        IPCCall.getInstance().getWifiList(context, sunmiDevice.getIp());
         tvSkip.setText(Html.fromHtml(getString(R.string.tip_skip_config_wifi)));
     }
 
@@ -88,16 +88,11 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
         setNoWifiVisible(View.GONE);
     }
 
-//    @Click(resName = "tv_skip")
-//    void skipClick() {
-//        IpcConfiguringActivity_.intent(context).sunmiDevices(list).shopId(shopId).start();
-//    }
-
     @Override
     public void onItemClick(String ssid, String mgmt) {
         showLoadingDialog();
         if (TextUtils.equals(mgmt, "NONE")) {
-            IPCCall.getInstance().setIPCWifi(context, ssid, mgmt, "");
+            IPCCall.getInstance().setIPCWifi(context, ssid, mgmt, "", sunmiDevice.getIp());
         } else if (TextUtils.equals(mgmt, "WPA-PSK")) {
             createDialog(ssid, mgmt);
         }
@@ -147,7 +142,7 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
             initApList(resp.getScan_results());
         } else if (id == IpcConstants.setIPCWifi) {
             //{"data":[{"opcode":"0x3116","result":{},"errcode":0}],"msg_id":"11111","errcode":0}
-            IPCCall.getInstance().getApStatus(context);
+            IPCCall.getInstance().getApStatus(context, sunmiDevice.getIp());
         } else if (id == IpcConstants.getApStatus) {
             //{"data":[{"opcode":"0x3119","result":{"wireless":{"connect_status":"0"}},"errcode":0}],"msg_id":"11111","errcode":0}
             hideLoadingDialog();
@@ -181,7 +176,7 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
                                     return;
                                 }
                                 dialog.dismiss();
-                                IPCCall.getInstance().setIPCWifi(context, ssid, mgmt, input);
+                                IPCCall.getInstance().setIPCWifi(context, ssid, mgmt, input, sunmiDevice.getIp());
                             }
                         }).create().show();
     }

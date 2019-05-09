@@ -36,16 +36,14 @@ public class SunmiServiceConfig extends BaseConfig {
 
     @Override
     protected void initDev(Context context, String env) {
-        VALUE_ADDED_SERVICES = "https://test.engine.sunmi.com/housekeeper/services-next";
+        VALUE_ADDED_SERVICES = "https://test-engine.sunmi.com/housekeeper/services-next";
         FUMINBAO_APP_ID = "20190121639982";
         FUMINBAO_SECRET = "cce3387477aaac220b589c5d8c0b5f9d";
     }
 
     @Override
     protected void initTest(Context context, String env) {
-//        VALUE_ADDED_SERVICES = "https://test.engine.sunmi.com/housekeeper/services-next";
         VALUE_ADDED_SERVICES = "https://test-engine.sunmi.com/housekeeper/services-next";
-//            VALUE_ADDED_SERVICES = "http://10.10.160.87:3005/housekeeper/services";
         FUMINBAO_APP_ID = "20190121639982";
         FUMINBAO_SECRET = "cce3387477aaac220b589c5d8c0b5f9d";
     }
