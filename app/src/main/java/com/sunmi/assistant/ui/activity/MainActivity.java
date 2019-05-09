@@ -21,18 +21,24 @@ import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.assistant.MyApplication;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.utils.MainTab;
+import com.sunmi.ipc.rpc.IPCCloudApi;
+import com.sunmi.ipc.rpc.mqtt.MqttManager;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.notification.BaseNotification;
+import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.MyFragmentTabHost;
 
 /**
@@ -61,8 +67,32 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
         CrashReport.setUserId(SpUtils.getUID());
         if (MyApplication.isCheckedToken)
             MQTTManager.getInstance().createEmqToken(true);//初始化长连接
-//        MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
         initTabs();
+        initIpc();
+    }
+
+    private void initIpc() {
+        //ipc初始化
+        if (TextUtils.isEmpty(SpUtils.getSsoToken()))
+            IPCCloudApi.getStoreToken(new RetrofitCallback() {
+                @Override
+                public void onSuccess(int code, String msg, Object data) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(data.toString());
+                        SpUtils.setSsoToken(jsonObject.getString("store_token"));
+                        MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
+                        LogCat.e(TAG, "222222 dada" + SpUtils.getSsoToken());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFail(int code, String msg, Object data) {
+
+                }
+            });
+        else MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
     }
 
     @Override

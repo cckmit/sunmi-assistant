@@ -89,6 +89,16 @@
         <item name="android:textColor">@color/c_white</item>
     </style>
 
+    <style name="BtnGrayRounded">
+        <item name="android:layout_marginLeft">@dimen/dp_20</item>
+        <item name="android:layout_marginRight">@dimen/dp_20</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/dp_44</item>
+        <item name="android:background">@drawable/bg_gray_rounded_corner</item>
+        <item name="android:textSize">@dimen/sp_18</item>
+        <item name="android:textColor">@color/color_333333</item>
+    </style>
+
     <!--checkbox-->
     <style name="CustomCheckBoxTheme" parent="@android:style/Widget.CompoundButton.CheckBox">
         <item name="android:button">@drawable/checkbox_dev_selector</item>

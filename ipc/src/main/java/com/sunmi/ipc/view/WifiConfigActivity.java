@@ -1,5 +1,6 @@
 package com.sunmi.ipc.view;
 
+import android.os.Handler;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,6 +27,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.model.SunmiDevice;
@@ -58,17 +61,17 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
     @Extra
     SunmiDevice sunmiDevice;
 
-    WifiListAdapter wifiListAdapter;
+    private int connectStatus = -1;
+    private Timer timer = new Timer();
+    private int retryCount;
+    private boolean alreadyFinish;
 
-    ArrayList<SunmiDevice> list = new ArrayList<>();
-
-    private boolean hasConfig;
+    private List<WifiListResp.ScanResultsBean> wifiList;
 
     @AfterViews
     void init() {
-        list.add(sunmiDevice);
-        IPCCall.getInstance().getWifiList(context);
         tvSkip.setText(Html.fromHtml(getString(R.string.tip_skip_config_wifi)));
+        getWifiList();
     }
 
     @UiThread
@@ -77,39 +80,39 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         rvWifi.setLayoutManager(layoutManager);
         rvWifi.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
-        wifiListAdapter = new WifiListAdapter(context, list);
+        WifiListAdapter wifiListAdapter = new WifiListAdapter(context, list);
         wifiListAdapter.setOnItemClickListener(this);
         rvWifi.setAdapter(wifiListAdapter);
     }
 
-    @Click(resName = "btn_refresh")
+    @Click(resName = "btn_retry")
     void refreshClick() {
         rlLoading.setVisibility(View.VISIBLE);
         setNoWifiVisible(View.GONE);
+        getWifiList();
     }
 
-//    @Click(resName = "tv_skip")
-//    void skipClick() {
-//        IpcConfiguringActivity_.intent(context).sunmiDevices(list).shopId(shopId).start();
-//    }
+    private void getWifiList() {
+        IPCCall.getInstance().getWifiList(context, sunmiDevice.getIp());
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                hideLoadingDialog();
+                if (wifiList.size() == 0) {
+                    setNoWifiVisible(View.VISIBLE);
+                }
+            }
+        }, 10000);
+    }
 
     @Override
     public void onItemClick(String ssid, String mgmt) {
-        showLoadingDialog();
         if (TextUtils.equals(mgmt, "NONE")) {
-            IPCCall.getInstance().setIPCWifi(context, ssid, mgmt, "");
+            showLoadingDialog();
+            IPCCall.getInstance().setIPCWifi(context, ssid, mgmt, "", sunmiDevice.getIp());
         } else if (TextUtils.equals(mgmt, "WPA-PSK")) {
             createDialog(ssid, mgmt);
         }
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                hideLoadingDialog();
-//                if (!hasConfig) {
-//
-//                }
-//            }
-//        }, 10000);
     }
 
     @Override
@@ -133,39 +136,103 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
         if (args == null) return;
         ResponseBean res = (ResponseBean) args[0];
         if (id == IpcConstants.getWifiList) {
-            setLoadingVisible(View.GONE);
-            if (res == null || TextUtils.equals(res.getErrCode(), RpcErrorCode.WHAT_ERROR + "")) {
-                setNoWifiVisible(View.VISIBLE);
-                return;
-            }
-            WifiListResp resp = new GsonBuilder().create()
-                    .fromJson(res.getResult().toString(), WifiListResp.class);
-            if (resp == null || resp.getScan_results() == null || resp.getScan_results().size() == 0) {
-                setNoWifiVisible(View.VISIBLE);
-                return;
-            }
-            initApList(resp.getScan_results());
+            wifiListGetSuccess(res);
         } else if (id == IpcConstants.setIPCWifi) {
-            //{"data":[{"opcode":"0x3116","result":{},"errcode":0}],"msg_id":"11111","errcode":0}
-            IPCCall.getInstance().getApStatus(context);
+            setIpcWifiSuccess();
         } else if (id == IpcConstants.getApStatus) {
-            //{"data":[{"opcode":"0x3119","result":{"wireless":{"connect_status":"0"}},"errcode":0}],"msg_id":"11111","errcode":0}
-            hideLoadingDialog();
-            if (res.getResult() != null && res.getResult().has("wireless")) {
-                try {
-                    JSONObject jsonObject = res.getResult().getJSONObject("wireless");
-                    if (jsonObject.has("connect_status")) {//是否成功关联上前端AP(0:正在关联。1：关联成功。2：关联失败)
-                        if (TextUtils.equals("1", jsonObject.getString("connect_status"))) {
-                            IpcConfiguringActivity_.intent(context).sunmiDevices(list).shopId(shopId).start();
-                            return;
-                        }
-                    }
-                    shortTip(R.string.tip_wifi_psw_error);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+            wifiStatusGetSuccess(res);
+        }
+    }
+
+    //{"data":[{"opcode":"0x3116","result":{},"errcode":0}],"msg_id":"11111","errcode":0}
+    @UiThread
+    void setIpcWifiSuccess() {
+        startGetStatusTimer();
+//        IPCCall.getInstance().getApStatus(context, sunmiDevice.getIp());
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                hideLoadingDialog();
+                stopTimer();
+                if (connectStatus != 1) {
+                    gotoBind();
                 }
             }
+        }, 20000);
+    }
+
+    //{"data":[{"opcode":"0x3119","result":{"wireless":{"connect_status":"0"}},"errcode":0}],"msg_id":"11111","errcode":0}
+    @UiThread
+    void wifiStatusGetSuccess(ResponseBean res) {
+        if (res.getResult() != null && res.getResult().has("wireless")) {
+            try {
+                JSONObject jsonObject = res.getResult().getJSONObject("wireless");
+                if (jsonObject.has("connect_status")) {//是否成功关联上前端AP(0:正在关联。1：关联成功。2：关联失败)
+                    connectStatus = jsonObject.getInt("connect_status");
+                    if (0 == connectStatus) {
+                        return;
+                    }
+                    stopTimer();
+                    if (1 == connectStatus) {
+                        hideLoadingDialog();
+                        gotoBind();
+                    } else {
+                        hideLoadingDialog();
+                        shortTip(R.string.tip_wifi_psw_error);
+                    }
+                } else {
+                    hideLoadingDialog();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
+    }
+
+    private void startGetStatusTimer() {
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (retryCount == 20) stopTimer();
+                retryCount++;
+                IPCCall.getInstance().getApStatus(context, sunmiDevice.getIp());
+            }
+        }, 0, 500);
+    }
+
+    // 停止定时器
+    private void stopTimer() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+    }
+
+    private void gotoBind() {
+        if (alreadyFinish) return;
+        alreadyFinish = true;
+        ArrayList<SunmiDevice> list = new ArrayList<>();
+        list.add(sunmiDevice);
+        IpcConfiguringActivity_.intent(context).sunmiDevices(list).shopId(shopId).start();
+        finish();
+    }
+
+    @UiThread
+    void wifiListGetSuccess(ResponseBean res) {
+        setLoadingVisible(View.GONE);
+        if (res == null || TextUtils.equals(res.getErrCode(), RpcErrorCode.WHAT_ERROR + "")) {
+            setNoWifiVisible(View.VISIBLE);
+            return;
+        }
+        WifiListResp resp = new GsonBuilder().create()
+                .fromJson(res.getResult().toString(), WifiListResp.class);
+        if (resp == null || resp.getScan_results() == null || resp.getScan_results().size() == 0) {
+            setNoWifiVisible(View.VISIBLE);
+            return;
+        }
+        wifiList = resp.getScan_results();
+        initApList(resp.getScan_results());
     }
 
     private void createDialog(final String ssid, final String mgmt) {
@@ -181,7 +248,8 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
                                     return;
                                 }
                                 dialog.dismiss();
-                                IPCCall.getInstance().setIPCWifi(context, ssid, mgmt, input);
+                                showLoadingDialog();
+                                IPCCall.getInstance().setIPCWifi(context, ssid, mgmt, input, sunmiDevice.getIp());
                             }
                         }).create().show();
     }

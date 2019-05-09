@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.contract.WifiConfiguringContract;
 import com.sunmi.ipc.presenter.WifiConfiguringPresenter;
-import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcConstants;
 
 import org.androidannotations.annotations.AfterViews;
@@ -18,7 +17,6 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -47,40 +45,59 @@ public class IpcConfiguringActivity extends BaseMvpActivity<WifiConfiguringPrese
     ArrayList<SunmiDevice> sunmiDevices;
 
     Set<String> deviceIds = new HashSet<>();
+    private boolean isTimeoutStart;
 
     @AfterViews
     void init() {
         mPresenter = new WifiConfiguringPresenter();
         mPresenter.attachView(this);
         tvTip.setText(Html.fromHtml(getString(R.string.tip_keep_same_network)));
-        for (SunmiDevice sunmiDevice : sunmiDevices) {
-            IPCCall.getInstance().getToken(context,sunmiDevice.getIp());
+        bind();
+    }
+
+    private void bind() {
+        if (sunmiDevices != null) {
+            for (SunmiDevice sunmiDevice : sunmiDevices) {
+                deviceIds.add(sunmiDevice.getDeviceid());
+                mPresenter.ipcBind(shopId, sunmiDevice.getDeviceid(),
+                        sunmiDevice.getToken(), 1, 1);
+            }
         }
     }
 
     @UiThread
     @Override
-    public void ipcBindWifiSuccess() {
-        new Handler().postDelayed(new Runnable() {
-            public void run() {
-                for (SunmiDevice device : sunmiDevices) {
-                    if (deviceIds.contains(device.getDeviceid())) {
-                        device.setStatus(RpcErrorCode.RPC_ERR_TIMEOUT);
+    public void ipcBindWifiSuccess(String sn) {
+        startCountDown();
+    }
+
+    private void startCountDown() {
+        if (!isTimeoutStart) {
+            isTimeoutStart = true;
+            new Handler().postDelayed(new Runnable() {
+                public void run() {
+                    if (deviceIds.isEmpty()) return;
+                    for (SunmiDevice device : sunmiDevices) {
+                        if (deviceIds.contains(device.getDeviceid())) {
+                            device.setStatus(RpcErrorCode.RPC_ERR_TIMEOUT);
+                        }
                     }
+                    configComplete();
                 }
-            }
-        }, 10000);
+            }, 10000);
+        }
+    }
+
+    @UiThread
+    @Override
+    public void ipcBindWifiFail(String sn, int code, String msg) {
+        startCountDown();
+        setDeviceStatus(sn, code);
     }
 
     @Override
     public void onBackPressed() {
 
-    }
-
-    @UiThread
-    @Override
-    public void ipcBindWifiFail() {
-        configFailDialog(R.string.tip_connect_ipc_fail, R.string.msg_in_same_wifi);
     }
 
     @Override
@@ -94,19 +111,6 @@ public class IpcConfiguringActivity extends BaseMvpActivity<WifiConfiguringPrese
         ResponseBean res = (ResponseBean) args[0];
         if (TextUtils.equals(res.getErrCode(), RpcErrorCode.WHAT_ERROR + "")) {
             configFailDialog(R.string.tip_set_fail, R.string.str_bind_net_error);
-        } else if (id == IpcConstants.getIpcToken) {
-            if (res.getResult().has("ipc_info")) {
-                try {//"ipc_info":{"sn":"sn123456", "token":"fgu766fekjgllfkekajgiorag8tr..."}
-                    JSONObject jsonObject = res.getResult().getJSONObject("ipc_info");
-                    if (jsonObject.has("sn") && jsonObject.has("token")) {
-                        deviceIds.add(jsonObject.getString("sn"));
-                        mPresenter.ipcBind(shopId, jsonObject.getString("token"),
-                                1, 1);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
         } else if (id == IpcConstants.bindIpc) {
             try {
                 setDeviceStatus(res.getResult().getString("sn"), res.getDataErrCode());
@@ -119,12 +123,15 @@ public class IpcConfiguringActivity extends BaseMvpActivity<WifiConfiguringPrese
     private void setDeviceStatus(String sn, int status) {
         for (SunmiDevice device : sunmiDevices) {
             if (TextUtils.equals(device.getDeviceid(), sn)) {
-                device.setStatus(status);
                 deviceIds.remove(sn);
+                device.setStatus(status);
             }
         }
+        configComplete();
+    }
+
+    private void configComplete() {
         if (deviceIds.isEmpty()) {
-            sunmiDevices.get(0).setStatus(1);//todo
             IpcConfigCompletedActivity_.intent(context).shopId(shopId).sunmiDevices(sunmiDevices).start();
             finish();
         }
@@ -146,7 +153,7 @@ public class IpcConfiguringActivity extends BaseMvpActivity<WifiConfiguringPrese
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                IPCCall.getInstance().getToken(context);
+                                bind();
                             }
                         }).create().show();
     }

@@ -9,11 +9,15 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
 
     <application>
         <activity android:name=".view.IPCConfigActivity_" />
         <activity android:name=".view.WifiConfigActivity_" />
-        <activity android:name=".view.IpcConfiguringActivity_" />
+        <activity
+            android:name=".view.IpcConfiguringActivity_"
+            android:launchMode="singleTask" />
         <activity android:name=".view.IpcConfigCompletedActivity_" />
         <activity android:name=".view.IpcTestActivity_" />
         <activity

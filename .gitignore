@@ -18,3 +18,6 @@
 /360jiagu/
 /fastlane/
 /JenkinsFile/
+src/main/java/com/sunmi/apmanager/rpc/ap/.DS_Store
+src/main/java/com/sunmi/apmanager/ui/activity/router/.DS_Store
+src/main/res/layout/.DS_Store

@@ -9,11 +9,11 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.gson.Gson;
 import com.sunmi.ipc.rpc.IPCCloudApi;
 import com.sunmi.ipc.utils.AACDecoder;
 import com.sunmi.ipc.utils.H264Decoder;
 import com.sunmi.ipc.utils.IOTCClient;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -24,10 +24,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import okhttp3.Call;
-import okhttp3.Response;
 import sunmi.common.base.BaseFragment;
-import sunmi.common.rpc.http.HttpResponse;
+import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 
@@ -48,7 +46,7 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
     @FragmentArg("shopId")
     String shopId;
 
-            private static String UID = "C3YABT1MPRV4BM6GUHXJ";//ss
+    private static String UID = "C3YABT1MPRV4BM6GUHXJ";//ss
 //    private static String UID = "CVYA8T1WKFV49NPGYHRJ";//fs
 //    private static String UID = "CBKA9T14URBC8MPGYHZJ";//fs
 
@@ -117,40 +115,42 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
     }
 
     void unbind(String deviceId) {
-        IPCCloudApi.unbindIPC(deviceId, new StringCallback() {
+        IPCCloudApi.unbindIPC("", Integer.parseInt(shopId), deviceId, new RetrofitCallback() {
             @Override
-            public void onError(Call call, Response response, Exception e, int id) {
-
+            public void onSuccess(int code, String msg, Object data) {
+                shortTip("解绑成功");
             }
 
             @Override
-            public void onResponse(String response, int id) {
-                LogCat.e(TAG, "666666 unbind response = " + response);
+            public void onFail(int code, String msg, Object data) {
+                shortTip("解绑失败");
             }
         });
     }
 
     void getIpcList() {
-        IPCCloudApi.getIpcList(shopId, new StringCallback() {
+        IPCCloudApi.getDetailList("", shopId, new RetrofitCallback() {
             @Override
-            public void onError(Call call, Response response, Exception e, int id) {
-                LogCat.e(TAG, "666666 getIpcList onError response = " + response);
-            }
-
-            @Override
-            public void onResponse(String response, int id) {
-                LogCat.e(TAG, "666666 getIpcList onResponse response = " + response);
-                HttpResponse res = new HttpResponse(response);
+            public void onSuccess(int code, String msg, Object data) {
+                LogCat.e(TAG, "666666 getIpcList onResponse response = " + data.toString());
                 try {
-                    JSONObject jsonObject = new JSONObject(res.getData());
-                    JSONArray jsonArray = jsonObject.getJSONArray("device_list");
+                    JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
+                    JSONArray jsonArray = jsonObject.getJSONArray("fs_list");
+                    if (jsonArray == null || jsonArray.length() <= 0) {
+                        jsonArray = jsonObject.getJSONArray("ss_list");
+                    }
                     if (jsonArray == null || jsonArray.length() <= 0) {
                         return;
                     }
-                    unbind(((JSONObject) jsonArray.opt(0)).getInt("id") + "");
+                    unbind(((JSONObject) jsonArray.opt(0)).getInt("id")+"");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+            }
+
+            @Override
+            public void onFail(int code, String msg, Object data) {
+
             }
         });
     }

@@ -10,13 +10,13 @@ public interface WifiConfiguringContract {
 
     interface View extends BaseView {
 
-        void ipcBindWifiSuccess();
+        void ipcBindWifiSuccess(String sn);
 
-        void ipcBindWifiFail();
+        void ipcBindWifiFail(String sn, int code, String msg);
     }
 
     interface Presenter {
-        void ipcBind(String shopId, String token, float longitude, float latitude);
+        void ipcBind(String shopId, String sn, String token, float longitude, float latitude);
     }
 
 }
