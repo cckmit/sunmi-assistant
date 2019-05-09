@@ -119,6 +119,7 @@ public class IPCSearchActivity extends BaseActivity
     void configClick() {
         if (ipcList == null || ipcList.size() < 1) return;
         if (isApMode) {
+            showLoadingDialog();
             getIsWire();
         } else {
             gotoIpcConfigActivity();
@@ -183,6 +184,7 @@ public class IPCSearchActivity extends BaseActivity
                 }
                 gotoWifiConfigActivity();
             } catch (JSONException e) {
+                hideLoadingDialog();
                 e.printStackTrace();
             }
         }
@@ -223,6 +225,7 @@ public class IPCSearchActivity extends BaseActivity
     }
 
     private void gotoWifiConfigActivity() {
+        hideLoadingDialog();
         WifiConfigActivity_.intent(context).sunmiDevice(ipcList.get(0)).shopId(shopId).start();
     }
 

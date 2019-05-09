@@ -6,6 +6,10 @@ package sunmi.common.constant;
  */
 public class CommonConstants {
     public static final String FILE_PROVIDER_AUTHORITY = "com.sunmi.assistant.fileprovider";
+
+    public static long LONGITUDE;//精度
+    public static long LATITUDE;//纬度
+
     //UDP发送IP
     public final static String SEND_IP = "255.255.255.255";
     //UDP发送端口号

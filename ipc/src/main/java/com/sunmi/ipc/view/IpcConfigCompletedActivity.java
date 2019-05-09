@@ -19,12 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.SunmiDevUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.ViewHolder;
+import sunmi.common.view.activity.StartConfigSMDeviceActivity_;
 
 /**
  * Description: IpcConfigCompletedActivity
@@ -84,7 +86,8 @@ public class IpcConfigCompletedActivity extends BaseActivity {
 
     @Click(resName = "btn_retry")
     void retryClick() {
-        setResult(111);//todo
+        StartConfigSMDeviceActivity_.intent(context)
+                .deviceType(CommonConstants.TYPE_IPC).shopId(shopId).start();
         finish();
     }
 
