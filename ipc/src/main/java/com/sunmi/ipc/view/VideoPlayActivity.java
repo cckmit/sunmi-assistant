@@ -6,11 +6,21 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Chronometer;
+import android.widget.DatePicker;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
+import com.datelibrary.DatePickDialog;
+import com.datelibrary.bean.DateType;
+import com.sunmi.ipc.R;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.utils.AACDecoder;
+import com.sunmi.ipc.utils.AudioMngHelper;
 import com.sunmi.ipc.utils.H264Decoder;
 import com.sunmi.ipc.utils.IOTCClient;
 
@@ -23,11 +33,17 @@ import org.androidannotations.annotations.ViewById;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
+
 import sunmi.common.base.BaseActivity;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.ThreadPool;
 import sunmi.common.utils.log.LogCat;
+import sunmi.common.view.VerticalSeekBar;
 
 /**
  * Description:
@@ -43,6 +59,30 @@ public class VideoPlayActivity extends BaseActivity
     OverCameraView overCameraView;
     @ViewById(resName = "sb_zoom")
     SeekBar sbZoom;
+    @ViewById(resName = "sBar_voice")
+    VerticalSeekBar sBarVoice;//音量控制
+    @ViewById(resName = "ll_change_volume")
+    LinearLayout llChangeVolume;//音量控制
+    @ViewById(resName = "iv_record")
+    ImageView ivRecord;//录制
+    @ViewById(resName = "iv_volume")
+    ImageView ivVolume;//音量
+    @ViewById(resName = "tv_quality")
+    TextView tvQuality;//画质
+    @ViewById(resName = "ll_video_quality")
+    LinearLayout llVideoQuality;//是否显示画质
+    @ViewById(resName = "tv_hd_quality")
+    TextView tvHDQuality;//高清画质
+    @ViewById(resName = "tv_sd_quality")
+    TextView tvSDQuality;//标清画质
+    @ViewById(resName = "cm_timer")
+    Chronometer cmTimer;//录制时间
+    @ViewById(resName = "rl_record")
+    RelativeLayout rlRecord;
+    @ViewById(resName = "dp_calender")
+    DatePicker datePicker;
+    @ViewById(resName = "iv_calender")
+    ImageView ivCalender;
 
     @Extra
     String UID;
@@ -54,6 +94,13 @@ public class VideoPlayActivity extends BaseActivity
 
     private H264Decoder mPlayer = null;
     private AACDecoder mAudioPlayer = null;
+
+
+    private AudioMngHelper audioMngHelper = null;
+    private boolean isStartRecord;//是否开始录制
+    private boolean isShowVolume;//是否显示音量调控
+    private boolean isShowQuality;//是否画质
+    private boolean isShowCalender;//是否显示日历
 
     @AfterViews
     void init() {
@@ -72,6 +119,8 @@ public class VideoPlayActivity extends BaseActivity
         mAudioPlayer = new AACDecoder();
 //        IPCCall.getInstance().fsGetStatus(context);//fs
         playClick();
+        adjustVoice();
+
     }
 
     @Override
@@ -102,11 +151,6 @@ public class VideoPlayActivity extends BaseActivity
                 IOTCClient.start(UID);
             }
         });
-    }
-
-    @Click(resName = "iv_back")
-    void backClick() {
-        finish();
     }
 
     @Click(resName = "tv_add")
@@ -145,6 +189,117 @@ public class VideoPlayActivity extends BaseActivity
         shortTip("y = " + (int) currY * 100 / screenH);
         IPCCall.getInstance().fsSetFocusPoint((int) currX * 100 / screenW, (int) currY * 100 / screenH, context);
     }
+
+    @Click(resName = "iv_back")
+    void backClick() {
+        finish();
+    }
+
+    //视频录制
+    @Click(resName = "iv_record")
+    void recordClick() {
+        if (isStartRecord) {
+            ivRecord.setBackgroundResource(R.mipmap.ic_recording_normal);
+            rlRecord.setVisibility(View.GONE);
+            isStartRecord = false;
+            cmTimer.stop();//关闭录制
+        } else {
+            ivRecord.setBackgroundResource(R.mipmap.ic_recording);
+            rlRecord.setVisibility(View.VISIBLE);
+            isStartRecord = true;
+            startRecord();//开始录制
+        }
+    }
+
+    //开始计时录制
+    private void startRecord() {
+        cmTimer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+            @Override
+            public void onChronometerTick(Chronometer cArg) {
+                long time = System.currentTimeMillis() - cArg.getBase();
+                Date d = new Date(time);
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.US);
+                sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                cmTimer.setText(sdf.format(d));
+            }
+        });
+        cmTimer.setBase(System.currentTimeMillis());
+        cmTimer.start();
+    }
+
+
+    //音量
+    @Click(resName = "iv_volume")
+    void volumeClick() {
+        if (isShowVolume) {
+            llChangeVolume.setVisibility(View.GONE);
+            isShowVolume = false;
+        } else {
+            llChangeVolume.setVisibility(View.VISIBLE);
+            isShowVolume = true;
+        }
+    }
+
+    //画质
+    @Click(resName = "tv_quality")
+    void qualityClick() {
+        if (isShowQuality) {
+            llVideoQuality.setVisibility(View.GONE);
+            isShowQuality = false;
+        } else {
+            llVideoQuality.setVisibility(View.VISIBLE);
+            isShowQuality = true;
+        }
+    }
+
+    //高清画质
+    @Click(resName = "tv_hd_quality")
+    void hdQualityClick() {
+        llVideoQuality.setVisibility(View.GONE);
+        isShowQuality = false;
+        tvQuality.setText(R.string.str_HD);
+    }
+
+    //标清画质
+    @Click(resName = "tv_sd_quality")
+    void sdQualityClick() {
+        llVideoQuality.setVisibility(View.GONE);
+        isShowQuality = false;
+        tvQuality.setText(R.string.str_SD);
+    }
+
+    //显示日历
+    @Click(resName = "iv_calender")
+    void calenderClick() {
+        //系统日历
+//        DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
+//
+//            @Override
+//            public void onDateSet(DatePicker arg0, int year, int month, int day) {
+//
+//            }
+//        };
+//        DatePickerDialog dialog = new DatePickerDialog(this, 0, listener, 2019, 4, 30);
+//        dialog.show();
+
+        //第三方
+        DatePickDialog dialog = new DatePickDialog(this);
+        //设置上下年分限制
+        dialog.setYearLimt(5);
+        //设置标题
+        dialog.setTitle("选择时间");
+        //设置类型
+        dialog.setType(DateType.TYPE_YMD);
+        //设置消息体的显示格式，日期格式
+        dialog.setMessageFormat("yyyy-MM-dd HH:mm");
+//        dialog.setMessageFormat("yyyy-MM-dd");
+        //设置选择回调
+        dialog.setOnChangeLisener(null);
+        //设置点击确定按钮回调
+        dialog.setOnSureLisener(null);
+        dialog.show();
+    }
+
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
@@ -230,4 +385,29 @@ public class VideoPlayActivity extends BaseActivity
         }
     }
 
+    //调节音量
+    private void adjustVoice() {
+        audioMngHelper = new AudioMngHelper(this);
+        int systemCurrent = audioMngHelper.getSystemCurrentVolume();
+        int systemMax = audioMngHelper.getSystemMaxVolume();
+        int currentVolume100 = audioMngHelper.get100CurrentVolume();
+        sBarVoice.setMax(100);
+        sBarVoice.setProgress(currentVolume100);
+        sBarVoice.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                audioMngHelper.setVoice100(progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+    }
 }

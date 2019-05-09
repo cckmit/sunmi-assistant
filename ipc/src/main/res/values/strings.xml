@@ -19,6 +19,7 @@
     <string name="tip_connect_ipc_fail">无法连接摄像头</string>
     <string name="str_HD">高清</string>
     <string name="str_SD">标清</string>
+    <string name="str_record_text">录制中：</string>
     <string name="str_go_home">返回首页</string>
     <string name="str_retry_add">重新添加</string>
     <string name="tip_no_ipc_found">没有发现摄像头</string>

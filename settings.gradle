@@ -1,4 +1,4 @@
-include ':app', ':commonlib', ':sunmiservice'
+include ':app', ':commonlib', ':sunmiservice', ':datelibrary'
 include ':apmanager'
 include ':cloudPrinter'
 include ':ipc'
