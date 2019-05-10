@@ -26,7 +26,7 @@ public class IpcConfig extends BaseConfig {
 //        IPC_CLOUD_URL = "http://47.96.240.44:35150/";
 //        MQTT_HOST = "47.96.240.44";
 //        MQTT_PORT = "30412";
-        IPC_CLOUD_URL = "http://dev-store.sunmi.com:30301/";
+        IPC_CLOUD_URL = "http://test-store.sunmi.com:30301/";
 //        IPC_CLOUD_URL = "http://test-store.sunmi.com:30301/";
 //        IPC_CLOUD_URL = "http://47.99.16.199:30401/";
 //        MQTT_HOST = "47.99.16.199";
