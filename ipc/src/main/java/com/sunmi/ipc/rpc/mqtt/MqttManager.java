@@ -78,39 +78,6 @@ public class MqttManager {
 
     public void createEmqToken(final boolean isInit) {
         LogCat.e(TAG, "mqtt createEmqToken start");
-        if (mqttClient != null) return;
-//        IPCCloudApi.createEmqToken(new StringCallback() {
-//            @Override
-//            public void onError(Call call, Response response, Exception e, int id) {
-//                LogCat.e(TAG, "mqtt createEmqToken " + response + e.getMessage());
-//            }
-//
-//            @Override
-//            public void onResponse(String response, int id) {
-//                LogCat.e(TAG, "mqtt checkToken sso token = " + response);
-//                if (TextUtils.isEmpty(response)) {
-//                    ToastUtils.toastForShort(BaseApplication.getContext(), "network error");
-//                }
-//                try {
-//                    MQttBean bean = new GsonBuilder().create().fromJson(response, MQttBean.class);
-//                    if (bean != null && bean.getData() != null) {
-//                        LogCat.e(TAG, "mqtt createEmqToken success");
-////                        if (mqttClient != null) mqttClient.disconnect();//todo 重连之前先断连，云端先考虑主动断连
-//                        if (isInit) {
-//                            initMQTT(bean.getData());
-//                        } else {
-//                            mqttConnect();
-//                        }
-//                    }
-//                } catch (Exception e) {
-//                    if (response.contains("code")) {//{"code":-1,"data":[],"msg":"invalid user token"}
-////                        CommonUtils.logout();
-//                    }
-////                    ToastUtils.toastForShort(BaseApplication.getContext(),
-////                            BaseApplication.getContext().getString(R.string.login_error));
-//                }
-//            }
-//        });
         IPCCloudApi.createEmqToken(new RetrofitCallback<EmqTokenResp>() {
             @Override
             public void onSuccess(int code, String msg, EmqTokenResp response) {

@@ -22,6 +22,7 @@ import com.sunmi.assistant.MyApplication;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.utils.MainTab;
 import com.sunmi.ipc.rpc.IPCCloudApi;
+import com.sunmi.ipc.rpc.RetrofitClient;
 import com.sunmi.ipc.rpc.mqtt.MqttManager;
 import com.tencent.bugly.crashreport.CrashReport;
 
@@ -80,6 +81,7 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
                     try {
                         JSONObject jsonObject = new JSONObject(data.toString());
                         SpUtils.setSsoToken(jsonObject.getString("store_token"));
+                        RetrofitClient.createInstance();//初始化retrofit
                         MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
                         LogCat.e(TAG, "222222 dada" + SpUtils.getSsoToken());
                     } catch (JSONException e) {
@@ -92,7 +94,9 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
 
                 }
             });
-        else MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
+        else {
+            MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
+        }
     }
 
     @Override

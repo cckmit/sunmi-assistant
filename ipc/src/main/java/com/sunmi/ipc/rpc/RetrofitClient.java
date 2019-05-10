@@ -14,7 +14,7 @@ import sunmi.common.utils.SpUtils;
  * Description:
  * Created by bruce on 2019/5/7.
  */
-public class RetrofitClient  extends BaseRetrofitClient {
+public class RetrofitClient extends BaseRetrofitClient {
 
     private static class SingletonHolder {
         private static RetrofitClient INSTANCE = new RetrofitClient();
@@ -34,7 +34,7 @@ public class RetrofitClient  extends BaseRetrofitClient {
 
     private Map<String, String> getHeaders() {
         Map<String, String> headers = new HashMap<>();
-        if (!TextUtils.isEmpty(SpUtils.getToken())) {
+        if (!TextUtils.isEmpty(SpUtils.getSsoToken())) {
             headers.put("Authorization", "Bearer " + SpUtils.getSsoToken());
         }
         return headers;
