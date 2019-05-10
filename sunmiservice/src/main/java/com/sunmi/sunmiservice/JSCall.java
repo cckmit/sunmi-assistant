@@ -222,7 +222,7 @@ public class JSCall {
      * 加载商米商城网页
      */
     private void startWebViewSunmiMallActivity(String url) {
-        WebViewSunmiMallActivity_.intent(context).url(url).start();
+        WebViewSunmiMallActivity_.intent(context).mUrl(url).start();
     }
 
 }

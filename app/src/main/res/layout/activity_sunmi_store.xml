@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorWhite">
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/c_white"
+        app:dividerColor="@color/colorText_10"
+        app:dividerShow="true"
+        app:leftIcon="@mipmap/ic_back_dark"
+        app:titleText="@string/str_printer_manage"
+        app:titleTextColor="@color/colorText" />
+
+    <sunmi.common.view.webview.SMWebView
+        android:id="@+id/webView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/title_bar"
+        android:layout_marginTop="@dimen/dp_5" />
+
+</RelativeLayout>
