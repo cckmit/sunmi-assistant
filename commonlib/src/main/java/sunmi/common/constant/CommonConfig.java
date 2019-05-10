@@ -16,16 +16,14 @@ public class CommonConfig extends BaseConfig {
 
     @Override
     protected void initDev(Context context, String env) {
-        CLOUD_TOKEN = "Jihewobox15";
-
-        DES_IV = "98765432";
-        DES_KEY = "jihexxkj";
+        CLOUD_TOKEN = "Woyouxinxi666";
+        DES_IV = "12345678";
+        DES_KEY = "wywmxxkj";
     }
 
     @Override
     protected void initTest(Context context, String env) {
         CLOUD_TOKEN = "Woyouxinxi666";
-
         DES_IV = "12345678";
         DES_KEY = "wywmxxkj";
     }
