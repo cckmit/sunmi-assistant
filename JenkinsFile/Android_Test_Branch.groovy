@@ -67,7 +67,7 @@ pipeline{
         success {
           echo "R ${currentBuild.result} C ${currentBuild.currentResult}"
           script{
-            def recipient_list = 'lukai@sunmi.com,xiaoxinwu@sunmi.com,gaofei@sunmi.com,lvsiwen@sunmi.com,ningrulin@sunmi.com,yangyan@sunmi.com,zhangshiqiang@sunmi.com,yangshijie@sunmi.com,yangjibin@sunmi.com'
+            def recipient_list = 'lukai@sunmi.com,xiaoxinwu@sunmi.com,gaofei@sunmi.com,lvsiwen@sunmi.com,ningrulin@sunmi.com,yangyan@sunmi.com,zhangshiqiang@sunmi.com,yangshijie@sunmi.com,yangjibin@sunmi.com,simayujing@sunmi.com,linianhan@sunmi.com'
             emailext(attachLog: false, body: '''Download url:   https://fir.im/sf4j''', mimeType: 'text/html', subject: 'Android Test Build Ready', to: recipient_list)
           }
         } 
