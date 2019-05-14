@@ -83,7 +83,7 @@ pipeline{
         success {
           echo "R ${currentBuild.result} C ${currentBuild.currentResult}"
           script{
-            def recipient_list = 'lukai@sunmi.com,xiaoxinwu@sunmi.com,yangshijie@sunmi.com,yangjibin@sunmi.com,gaofei@sunmi.com,lvsiwen@sunmi.com,ningrulin@sunmi.com,hanruifeng@sunmi.com'
+            def recipient_list = 'lukai@sunmi.com,xiaoxinwu@sunmi.com,yangshijie@sunmi.com,yangjibin@sunmi.com,gaofei@sunmi.com,lvsiwen@sunmi.com,ningrulin@sunmi.com,hanruifeng@sunmi.com,simayujing@sunmi.com,linianhan@sunmi.com'
             def details = """<p>请从以下URL下载： "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>"</p>"""
             emailext(attachLog: false, body: details, mimeType: 'text/html', subject: 'Android Release Build 已加固完成', to: recipient_list)
           }
