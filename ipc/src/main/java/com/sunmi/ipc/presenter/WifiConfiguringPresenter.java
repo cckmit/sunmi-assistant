@@ -6,6 +6,7 @@ import com.sunmi.ipc.rpc.IPCCloudApi;
 import sunmi.common.base.BasePresenter;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.log.LogCat;
 
 /**
  * Description:
@@ -20,13 +21,16 @@ public class WifiConfiguringPresenter extends BasePresenter<WifiConfiguringContr
                 token, longitude, latitude, new RetrofitCallback() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
-                        mView.ipcBindWifiSuccess(sn);
+                        LogCat.e("WifiConfiguringPresenter", "onSuccess 111");
+                        if (mView != null)
+                            mView.ipcBindWifiSuccess(sn);
                     }
 
                     @Override
                     public void onFail(int code, String msg, Object data) {
-                        mView.ipcBindWifiFail(sn, code, msg);
-
+                        LogCat.e("WifiConfiguringPresenter", "onFail 111");
+                        if (mView != null)
+                            mView.ipcBindWifiFail(sn, code, msg);
                     }
                 });
 

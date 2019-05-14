@@ -27,6 +27,7 @@ import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.GotoActivityUtils;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.dialog.CommonDialog;
 
 /**
@@ -77,10 +78,8 @@ public class IpcConfiguringActivity extends BaseMvpActivity<WifiConfiguringPrese
             new Handler().postDelayed(new Runnable() {
                 public void run() {
                     if (deviceIds.isEmpty()) return;
-                    for (SunmiDevice device : sunmiDevices) {
-                        if (deviceIds.contains(device.getDeviceid())) {
-                            device.setStatus(RpcErrorCode.RPC_ERR_TIMEOUT);
-                        }
+                    for (String deviceId : deviceIds) {
+                        setDeviceStatus(deviceId, RpcErrorCode.RPC_ERR_TIMEOUT);
                     }
                     configComplete();
                 }
@@ -131,6 +130,7 @@ public class IpcConfiguringActivity extends BaseMvpActivity<WifiConfiguringPrese
     }
 
     private void configComplete() {
+        LogCat.e(TAG, "222222 device id is empty =" + deviceIds.isEmpty());
         if (deviceIds.isEmpty()) {
             IpcConfigCompletedActivity_.intent(context).shopId(shopId).sunmiDevices(sunmiDevices).start();
             finish();

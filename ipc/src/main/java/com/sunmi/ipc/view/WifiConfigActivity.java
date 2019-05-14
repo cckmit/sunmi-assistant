@@ -66,7 +66,7 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
     private int retryCount;
     private boolean alreadyFinish;
 
-    private List<WifiListResp.ScanResultsBean> wifiList;
+    private List<WifiListResp.ScanResultsBean> wifiList = new ArrayList<>();
 
     @AfterViews
     void init() {
@@ -225,14 +225,20 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
             setNoWifiVisible(View.VISIBLE);
             return;
         }
-        WifiListResp resp = new GsonBuilder().create()
-                .fromJson(res.getResult().toString(), WifiListResp.class);
-        if (resp == null || resp.getScan_results() == null || resp.getScan_results().size() == 0) {
-            setNoWifiVisible(View.VISIBLE);
-            return;
+        try {
+            WifiListResp resp = new GsonBuilder().create()
+                    .fromJson(res.getResult().toString(), WifiListResp.class);
+            if (resp == null || resp.getScan_results() == null || resp.getScan_results().size() == 0) {
+                setNoWifiVisible(View.VISIBLE);
+                return;
+            }
+            if (resp.getScan_results() != null) {
+                wifiList = resp.getScan_results();
+                initApList(resp.getScan_results());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        wifiList = resp.getScan_results();
-        initApList(resp.getScan_results());
     }
 
     private void createDialog(final String ssid, final String mgmt) {

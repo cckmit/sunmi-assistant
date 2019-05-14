@@ -81,11 +81,10 @@ public class MqttManager {
         IPCCloudApi.createEmqToken(new RetrofitCallback<EmqTokenResp>() {
             @Override
             public void onSuccess(int code, String msg, EmqTokenResp response) {
-                LogCat.e(TAG, "mqtt checkToken sso token = " + response);
+                LogCat.e(TAG, "mqtt createEmqToken success");
                 if (response == null) {
                     ToastUtils.toastForShort(BaseApplication.getContext(), "network error");
                 }
-                LogCat.e(TAG, "mqtt createEmqToken success");
 //                if (mqttClient != null) mqttClient.disconnect();//todo 重连之前先断连，云端先考虑主动断连
                 if (isInit) {
                     initMQTT(response);
@@ -109,8 +108,8 @@ public class MqttManager {
         String host = resp.getServer_address();
         String serverURL = new StringBuilder().append("ssl://")
                 .append(host).toString();  //需要证书
-        if (TextUtils.isEmpty(clientId))
-            clientId = resp.getUsername() + "_" + System.currentTimeMillis();
+//        if (TextUtils.isEmpty(clientId))
+        clientId = resp.getUsername() + "_" + System.currentTimeMillis();
 
         mqttClient = new MqttAndroidClient(BaseApplication.getContext(), serverURL, clientId);
         options = new MqttConnectOptions();
@@ -119,12 +118,11 @@ public class MqttManager {
         options.setAutomaticReconnect(true);
         options.setCleanSession(true);
         options.setConnectionTimeout(10);
-        options.setKeepAliveInterval(20);
+        options.setKeepAliveInterval(10);
         //setWill方法，如果项目中需要知道客户端是否掉线可以调用该方法。设置最终端口的通知消息
 //        options.setWill(topic, "close".getBytes(), 2, true);
         options.setSocketFactory(new SSLSocketFactoryGenerator().generate());//设置证书校验
         mqttClient.setCallback(getSMMqttCallback()); //发布订阅回调
-        LogCat.e(TAG, "mqtt initMQTT");
         mqttConnect();//开始连接
     }
 
@@ -140,7 +138,7 @@ public class MqttManager {
     public void mqttConnect() {
         if (isConnecting) return;
         isConnecting = true;
-        if (!NetworkUtils.isNetworkAvailable(BaseApplication.getContext()) || mqttClient == null) {
+        if (mqttClient == null) {
             return;
         }
         try {
@@ -154,31 +152,26 @@ public class MqttManager {
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-//                    LogCat.e(TAG, "mqtt Connect fail, asyncActionToken code = "
-//                            + asyncActionToken.getException().getReasonCode());
+                    isConnecting = false;
                     if (!NetworkUtils.isNetworkAvailable(BaseApplication.getContext())) {
                         LogCat.e(TAG, "mqtt Connect fail no net");
                         mqttClient = null;
                         isRegister = false;
-                        disconnect();
-                        isConnecting = false;
                         return;
                     }
                     if (asyncActionToken.getException() != null
                             && asyncActionToken.getException().getReasonCode()
                             == MqttException.REASON_CODE_FAILED_AUTHENTICATION
                             || asyncActionToken.getException().getReasonCode()
-                            == MqttException.REASON_CODE_CLIENT_EXCEPTION
-                            || asyncActionToken.getException().getReasonCode()
-                            == MqttException.REASON_CODE_CONNECT_IN_PROGRESS) {
+                            == MqttException.REASON_CODE_CLIENT_EXCEPTION) {
                         LogCat.e(TAG, "mqtt Connect fail,code = " + asyncActionToken.getException().getReasonCode()
                                 + ", cause = " + asyncActionToken.getException().getCause());
-                        disconnect();
                         isConnecting = false;
                         isRegister = false;
                         createEmqToken(true);
                     }
-                    exception.printStackTrace();
+                    if (exception != null)
+                        exception.printStackTrace();
                 }
             });
         } catch (MqttException ex) {
