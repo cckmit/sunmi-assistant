@@ -2,6 +2,7 @@ package com.sunmi.ipc.rpc;
 
 import com.sunmi.ipc.rpc.api.DeviceInterface;
 import com.sunmi.ipc.rpc.api.EmqInterface;
+import com.sunmi.ipc.rpc.api.MediaInterface;
 import com.sunmi.ipc.rpc.api.UserInterface;
 
 import org.json.JSONException;
@@ -111,21 +112,35 @@ public class IPCCloudApi extends BaseHttpApi {
      * source  是	string	用户来源， APP或WEB
      */
     public static void createEmqToken(RetrofitCallback callback) {
-//        try {
-//            String params = new JSONObject()
-//                    .put("sso_token", SpUtils.getToken())
-//                    .put("user_id", SpUtils.getUID())
-//                    .toString();
-//            post(IPCInterface.CREATE_EMQ_TOKEN, getSignedParams(params), callback);
-//        } catch (JSONException e) {
-//            LogCat.e(TAG, "createEmqToken -> get params error,", e);
-//        }
         try {
             String params = new JSONObject()
                     .put("source", "APP")
                     .toString();
             RetrofitClient.getInstance().create(EmqInterface.class)
                     .create(getSignedRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取云端缓存的视频列表
+     *
+     * @param deviceId  是	int	ipc设备id
+     * @param startTime 是	int	开始时间戳
+     * @param endTime   是	int	结束时间戳
+     */
+    public static void getVideoList(int deviceId, long startTime, long endTime,
+                                    RetrofitCallback callback) {
+        try {
+            String params = new JSONObject()
+                    .put("device_id", deviceId)
+                    .put("start_time", startTime)
+                    .put("end_time", endTime)
+                    .toString();
+            RetrofitClient.getInstance().create(MediaInterface.class)
+                    .getVideoList(getSignedRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();

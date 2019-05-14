@@ -5,6 +5,10 @@ import android.util.Log;
 import com.tutk.IOTC.AVAPIs;
 import com.tutk.IOTC.IOTCAPIs;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import sunmi.common.utils.log.LogCat;
 
 /**
@@ -33,12 +37,13 @@ public class IOTCClient {
             Log.e("IOTCClient", "IOTC_Get_SessionID error code, sid = " + SID);
             return;
         }
+        Log.e("IOTCClient", "Step 1: call IOTC_Get_SessionID, uid = " + uid);
         ret = IOTCAPIs.IOTC_Connect_ByUID_Parallel(uid, SID);
-        Log.e("IOTCClient", "Step 2: call IOTC_Connect_ByUID_Parallel, uid = " + uid);
         if (ret < 0) {
             Log.e("IOTCClient", "IOTC_Connect_ByUID_Parallel failed ret = " + ret);
             return;
         }
+        Log.e("IOTCClient", "Step 2: call IOTC_Connect_ByUID_Parallel, uid = " + uid);
 
         String account = "admin";
         String password = "12345678";
@@ -49,31 +54,30 @@ public class IOTCClient {
 
         int avIndex = AVAPIs.avClientStart2(SID, account, password,
                 timeoutSec, pservType, channelId, bResend1);//chid用来传输音视频
-        Log.e("IOTCClient", "Step 2: call avClientStartEx, avIndex = " + avIndex);
-
         if (avIndex < 0) {
             Log.e("IOTCClient", "avClientStartEx failed avIndex = " + avIndex);
             return;
         }
-
-        if (startIpcamStream(avIndex)) {
-            Thread videoThread = new Thread(new VideoThread(avIndex), "Video Thread");
-            Thread audioThread = new Thread(new AudioThread(avIndex), "Audio Thread");
-            videoThread.start();
-            audioThread.start();
-            try {
-                videoThread.join();
-            } catch (InterruptedException e) {
-                LogCat.e("IOTCClient", e.getMessage());
-                return;
-            }
-            try {
-                audioThread.join();
-            } catch (InterruptedException e) {
-                LogCat.e("IOTCClient", e.getMessage());
-                return;
-            }
+        Log.e("IOTCClient", "Step 3: call avClientStartEx, avIndex = " + avIndex);
+        startPlay();
+//        if (startIpcamStream(avIndex)) {
+        Thread videoThread = new Thread(new VideoThread(avIndex), "Video Thread");
+        Thread audioThread = new Thread(new AudioThread(avIndex), "Audio Thread");
+        videoThread.start();
+        audioThread.start();
+        try {
+            videoThread.join();
+        } catch (InterruptedException e) {
+            LogCat.e("IOTCClient - videoThread:", e.getMessage());
+            return;
         }
+        try {
+            audioThread.join();
+        } catch (InterruptedException e) {
+            LogCat.e("IOTCClient - audioThread:", e.getMessage());
+            return;
+        }
+//        }
 
         AVAPIs.avClientStop(avIndex);
         Log.e("IOTCClient", "avClientStop OK");
@@ -116,9 +120,26 @@ public class IOTCClient {
         return true;
     }
 
-    public static void adjustVideo() {
-        byte[] req = "{\"id\":1000, \"cmd\":5, \"param\":{\"channel\":1, \"resolution\":1}}".getBytes();
-        IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
+    public static void startPlay() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("msg_id", "1000");
+            JSONArray array = new JSONArray();
+            JSONObject item = new JSONObject();
+            item.put("cmd", 1);
+            item.put("channel", 1);
+            JSONObject param = new JSONObject();
+            param.put("resolution", 0);
+            item.put("param", param);
+            array.put(item);
+            jsonObject.put("params", array);
+            String json = jsonObject.toString();
+            byte[] req = json.getBytes();
+            IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 1);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+//        byte[] req = "{\"msg_id\":\"1000\",\"params\":[{\"cmd\":1,\"channel\":1\"param\":{\"resolution\":0}}]}".getBytes();
     }
 
     public static void stopVideo() {
@@ -186,7 +207,7 @@ public class IOTCClient {
     }
 
     public static class AudioThread implements Runnable {
-        static final int AUDIO_BUF_SIZE = 1024 * 2;
+        static final int AUDIO_BUF_SIZE = 1024 * 4;
         static final int FRAME_INFO_SIZE = 16;
 
         private int avIndex;
@@ -222,6 +243,7 @@ public class IOTCClient {
                 int[] frameNumber = new int[1];
                 ret = av.avRecvAudioData(avIndex, audioBuffer,
                         AUDIO_BUF_SIZE, frameInfo, FRAME_INFO_SIZE, frameNumber);
+                LogCat.e("IOTCClient", "666666 ret = " + ret);
 
                 if (ret == AVAPIs.AV_ER_SESSION_CLOSE_BY_REMOTE) {
                     Log.e("IOTCClient", Thread.currentThread().getName() + " AV_ER_SESSION_CLOSE_BY_REMOTE");
@@ -236,6 +258,7 @@ public class IOTCClient {
                     Log.e("IOTCClient", Thread.currentThread().getName() + " AV_ER_LOSED_THIS_FRAME");
                     continue;
                 }
+                if (ret < 0) return;
                 byte[] data = new byte[ret];
                 System.arraycopy(audioBuffer, 0, data, 0, ret);
                 if (callback != null) callback.onAudioReceived(data);

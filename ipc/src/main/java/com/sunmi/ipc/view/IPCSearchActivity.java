@@ -31,6 +31,7 @@ import java.util.Map;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.SMDeviceDiscoverUtils;
 import sunmi.common.utils.log.LogCat;
@@ -156,7 +157,11 @@ public class IPCSearchActivity extends BaseActivity
         } else if (id == IpcConstants.getIpcToken) {
             ResponseBean res = (ResponseBean) args[0];
             try {
-                if (res.getResult().has("ipc_info")) {
+                if (TextUtils.equals(res.getErrCode(), RpcErrorCode.WHAT_ERROR + "")) {
+                    hideLoadingDialog();
+                    return;
+                }
+                if (res.getResult() != null && res.getResult().has("ipc_info")) {
                     JSONObject jsonObject = res.getResult().getJSONObject("ipc_info");
                     if (jsonObject.has("sn") && jsonObject.has("token")) {
                         String sn = jsonObject.getString("sn");
@@ -173,16 +178,18 @@ public class IPCSearchActivity extends BaseActivity
         } else if (id == IpcConstants.getIsWire) {
             ResponseBean res = (ResponseBean) args[0];
             try {
-                LogCat.e(TAG, "getIsWire res = " + res);
-                if (res.getResult().has("ipc_info")) {
-                    JSONObject jsonObject = res.getResult().getJSONObject("ipc_info");
-                    if (jsonObject.has("sn") && jsonObject.has("token")) {
-                        for (SunmiDevice sunmiDevice : ipcList) {
-                            sunmiDevice.setToken(jsonObject.getString("token"));
-                        }
-                    }
+                if (TextUtils.equals(res.getErrCode(), RpcErrorCode.WHAT_ERROR + "")) {
+                    hideLoadingDialog();
+                    return;
                 }
-                gotoWifiConfigActivity();
+                LogCat.e(TAG, "getIsWire res = " + res);
+                if (res.getResult() != null && res.getResult().has("wire")
+                        && res.getResult().getInt("wire") == 1
+                        || res.getResult().has("wireless")
+                        && res.getResult().getInt("wireless") == 1) {
+                    gotoIpcConfigActivity();
+                } else
+                    gotoWifiConfigActivity();
             } catch (JSONException e) {
                 hideLoadingDialog();
                 e.printStackTrace();
