@@ -32,15 +32,13 @@ public class SMMqttCallback implements MqttCallbackExtended {
     @Override
     public void connectionLost(Throwable cause) {
         Log.e(TAG, "mqtt connectionLost");
-//        BaseNotification.newInstance().postNotificationName(
-//                NotificationConstant.apStatusException, "-1");
 //        checkToken();
+        MqttManager.getInstance().createEmqToken(true);
     }
 
     @Override
     public void messageArrived(String topic, MqttMessage message) {
-        Log.e(TAG, "mqtt messageArrived topic = " + topic);
-        Log.e(TAG, "mqtt messageArrived message = " + message.toString());
+        Log.e(TAG, "mqtt messageArrived topic = " + topic + ", message = " + message.toString());
         if (TextUtils.equals(topic, MqttManager.tokenRequestSub)) {
             ResponseBean res = new ResponseBean(message.toString(), "params");
             MessageManager.newInstance().notice(res, MessageManager.REQUEST_CHANNEL);
@@ -54,7 +52,8 @@ public class SMMqttCallback implements MqttCallbackExtended {
                 MqttManager.getInstance().removeMessage(res.getMsgId());
             } else {
                 BaseNotification.newInstance().postNotificationName(
-                        Integer.parseInt(res.getOpcode().substring(2, res.getOpcode().length()), 16), res, topic);
+                        Integer.parseInt(res.getOpcode().substring(2,
+                                res.getOpcode().length()), 16), res, topic);
             }
         }
     }

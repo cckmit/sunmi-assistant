@@ -5,6 +5,7 @@
     android:background="@color/transparent">
 
     <RelativeLayout
+        android:id="@+id/rl_top_setting"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_64"
         android:background="@mipmap/bg_video_title">
@@ -150,7 +151,7 @@
     <LinearLayout
         android:id="@+id/ll_change_volume"
         android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_72"
+        android:layout_height="@dimen/dp_84"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="@dimen/dp_44"
@@ -164,7 +165,10 @@
             android:layout_width="@dimen/dp_15"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:max="100" />
+            android:max="100"
+            android:maxHeight="3dp"
+            android:minHeight="3dp"
+            android:progressDrawable="@drawable/bg_adjust_seek_bar" />
 
         <!--<ProgressBar-->
         <!--android:id="@+id/change_volume_progress"-->
@@ -272,16 +276,6 @@
             android:textColor="@color/c_white"
             android:textSize="@dimen/sp_12" />
     </RelativeLayout>
-
-    <DatePicker
-        android:id="@+id/dp_calender"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginLeft="@dimen/dp_60"
-        android:layout_marginRight="@dimen/dp_60"
-        android:background="@color/c_white"
-        android:visibility="gone" />
 
     <RelativeLayout
         android:id="@+id/rl_record"

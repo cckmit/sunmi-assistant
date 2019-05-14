@@ -14,6 +14,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.sunmi.apmanager.constant.Constants;
+import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.receiver.MyNetworkCallback;
 import com.sunmi.apmanager.rpc.mqtt.MQTTManager;
 import com.sunmi.apmanager.utils.CommonUtils;
@@ -219,6 +220,18 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
 
     private Fragment getFragment(String tag) {
         return getSupportFragmentManager().findFragmentByTag(tag);
+    }
+
+    @Override
+    public int[] getUnStickNotificationId() {
+        return new int[]{NotificationConstant.netConnectedMainActivity};
+    }
+
+    @Override
+    public void didReceivedNotification(int id, Object... args) {
+        if (NotificationConstant.netConnectedMainActivity == id) {
+            MqttManager.getInstance().createEmqToken(true);
+        }
     }
 
 }

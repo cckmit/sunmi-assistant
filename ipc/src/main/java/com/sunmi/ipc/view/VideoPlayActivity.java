@@ -1,5 +1,6 @@
 package com.sunmi.ipc.view;
 
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -7,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Chronometer;
-import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -79,10 +79,16 @@ public class VideoPlayActivity extends BaseActivity
     Chronometer cmTimer;//录制时间
     @ViewById(resName = "rl_record")
     RelativeLayout rlRecord;
-    @ViewById(resName = "dp_calender")
-    DatePicker datePicker;
     @ViewById(resName = "iv_calender")
     ImageView ivCalender;
+    @ViewById(resName = "rl_top_setting")
+    RelativeLayout rlTopSetting;//top设置
+    @ViewById(resName = "ll_bottom")
+    RelativeLayout rlBottomSetting;//bottom设置
+    @ViewById(resName = "iv_screenshot")
+    ImageView ivScreenshot;//截图
+    @ViewById(resName = "iv_live")
+    ImageView ivLive;//直播
 
     @Extra
     String UID;
@@ -100,7 +106,8 @@ public class VideoPlayActivity extends BaseActivity
     private boolean isStartRecord;//是否开始录制
     private boolean isShowVolume;//是否显示音量调控
     private boolean isShowQuality;//是否画质
-    private boolean isShowCalender;//是否显示日历
+    private boolean isClickScreen;//是否点击屏幕
+
 
     @AfterViews
     void init() {
@@ -236,6 +243,9 @@ public class VideoPlayActivity extends BaseActivity
             isShowVolume = false;
         } else {
             llChangeVolume.setVisibility(View.VISIBLE);
+            //获取当前音量
+            int currentVolume100 = audioMngHelper.get100CurrentVolume();
+            sBarVoice.setProgress(currentVolume100);
             isShowVolume = true;
         }
     }
@@ -271,21 +281,10 @@ public class VideoPlayActivity extends BaseActivity
     //显示日历
     @Click(resName = "iv_calender")
     void calenderClick() {
-        //系统日历
-//        DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
-//
-//            @Override
-//            public void onDateSet(DatePicker arg0, int year, int month, int day) {
-//
-//            }
-//        };
-//        DatePickerDialog dialog = new DatePickerDialog(this, 0, listener, 2019, 4, 30);
-//        dialog.show();
-
         //第三方
         DatePickDialog dialog = new DatePickDialog(this);
         //设置上下年分限制
-        dialog.setYearLimt(5);
+        dialog.setYearLimt(100);
         //设置标题
         dialog.setTitle("选择时间");
         //设置类型
@@ -298,6 +297,28 @@ public class VideoPlayActivity extends BaseActivity
         //设置点击确定按钮回调
         dialog.setOnSureLisener(null);
         dialog.show();
+    }
+
+    //点击屏幕
+    @Click(resName = "rl_screen")
+    void screenClick() {
+        if (isClickScreen) {
+            rlTopSetting.setVisibility(View.VISIBLE);
+            ivRecord.setVisibility(View.VISIBLE);
+            ivScreenshot.setVisibility(View.VISIBLE);
+            ivLive.setVisibility(View.VISIBLE);
+            rlBottomSetting.setVisibility(View.VISIBLE);
+
+            isClickScreen = false;
+        } else {
+            rlTopSetting.setVisibility(View.GONE);
+            ivRecord.setVisibility(View.GONE);
+            ivScreenshot.setVisibility(View.GONE);
+            ivLive.setVisibility(View.GONE);
+            rlBottomSetting.setVisibility(View.GONE);
+
+            isClickScreen = true;
+        }
     }
 
 
@@ -409,5 +430,18 @@ public class VideoPlayActivity extends BaseActivity
 
             }
         });
+    }
+
+    //按键控制音量，return true时不显示系统音量 return false时显示系统音量
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            llChangeVolume.setVisibility(View.GONE);
+            isShowVolume = false;
+            return false;
+        } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            llChangeVolume.setVisibility(View.GONE);
+            isShowVolume = false;
+            return false;
+        } else return super.onKeyDown(keyCode, event);
     }
 }
