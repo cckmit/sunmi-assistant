@@ -22,6 +22,8 @@
         <activity android:name=".view.IpcTestActivity_" />
         <activity
             android:name=".view.VideoPlayActivity_"
+            android:hardwareAccelerated="false"
+            android:largeHeap="true"
             android:screenOrientation="landscape" />
         <activity android:name=".view.IPCSearchActivity_" />
     </application>

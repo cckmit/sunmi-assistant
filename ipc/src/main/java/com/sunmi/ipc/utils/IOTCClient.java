@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
 
 /**
@@ -18,6 +19,15 @@ public class IOTCClient {
 
     private static Callback callback;
     private static int SID = -1;
+    private static int CMD_LIVE_START = 0x10;
+    private static int CMD_LIVE_STOP = 0x11;
+    private static int CMD_LIVE_START_AUDIO = 0x12;
+    private static int CMD_LIVE_STOP_AUDIO = 0x13;
+    private static int CMD_PLAYBACK_LIST = 0x20;
+    private static int CMD_PLAYBACK_START = 0x21;
+    private static int CMD_PLAYBACK_STOP = 0x22;
+    private static int CMD_PLAYBACK_PAUSE = 0x23;
+
 
     public static void start(String uid) {
         LogCat.e("IOTCClient", "StreamClient start...");
@@ -60,7 +70,7 @@ public class IOTCClient {
         }
         Log.e("IOTCClient", "Step 3: call avClientStartEx, avIndex = " + avIndex);
         startPlay();
-//        if (startIpcamStream(avIndex)) {
+
         Thread videoThread = new Thread(new VideoThread(avIndex), "Video Thread");
         Thread audioThread = new Thread(new AudioThread(avIndex), "Audio Thread");
         videoThread.start();
@@ -77,7 +87,6 @@ public class IOTCClient {
             LogCat.e("IOTCClient - audioThread:", e.getMessage());
             return;
         }
-//        }
 
         AVAPIs.avClientStop(avIndex);
         Log.e("IOTCClient", "avClientStop OK");
@@ -88,58 +97,46 @@ public class IOTCClient {
         Log.e("IOTCClient", "StreamClient exit...");
     }
 
-    private static boolean startIpcamStream(int avIndex) {
-        AVAPIs av = new AVAPIs();
-        int ret = 0;
-        //avClient(AP) change time interval of sending packets by avSendFrameData(avServer)
-//        int IOTYPE_INNER_SND_DATA_DELAY = 0xFF;
-//         ret = av.avSendIOCtrl(avIndex, IOTYPE_INNER_SND_DATA_DELAY, new byte[2], 2);
-        if (ret < 0) {
-            Log.e("IOTCClient", "start_ipcam_stream failed[%d]" + ret);
-            return false;
-        }
-
-        // This IOTYPE constant and its corrsponsing data structure is defined in
-        // Sample/Linux/Sample_AVAPIs/AVIOCTRLDEFs.h
-
-        Log.e("IOTCClient", "666666 start_ipcam_stream  start, " + ret);
-//        int IOTYPE_USER_IPCAM_START = 0x1FF;
-//        ret = av.avSendIOCtrl(avIndex, IOTYPE_USER_IPCAM_START, new byte[8], 8);
-        Log.e("IOTCClient", "666666 start_ipcam_stream  end, " + ret);
-        if (ret < 0) {
-            Log.e("IOTCClient", "start_ipcam_stream failed[%d]" + ret);
-            return false;
-        }
-
-//        int IOTYPE_USER_IPCAM_AUDIOSTART = 0x300;
-//        ret = av.avSendIOCtrl(avIndex, IOTYPE_USER_IPCAM_AUDIOSTART, new byte[8], 8);
-        if (ret < 0) {
-            Log.e("IOTCClient", "start_ipcam_stream failed[%d]" + ret);
-            return false;
-        }
-        return true;
-    }
-
-    public static void startPlay() {
+    private static String getPlayCommand(int resolution) {
         try {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("msg_id", "1000");
+            jsonObject.put("msg_id", SpUtils.getUID() + "_" + System.currentTimeMillis());
             JSONArray array = new JSONArray();
             JSONObject item = new JSONObject();
-            item.put("cmd", 1);
+            item.put("cmd", CMD_LIVE_START);
             item.put("channel", 1);
             JSONObject param = new JSONObject();
-            param.put("resolution", 0);
+            param.put("resolution", resolution);
             item.put("param", param);
             array.put(item);
             jsonObject.put("params", array);
-            String json = jsonObject.toString();
-            byte[] req = json.getBytes();
-            IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 1);
+            return jsonObject.toString();
         } catch (JSONException e) {
             e.printStackTrace();
         }
-//        byte[] req = "{\"msg_id\":\"1000\",\"params\":[{\"cmd\":1,\"channel\":1\"param\":{\"resolution\":0}}]}".getBytes();
+        return "";
+    }
+
+    /**
+     * 开始直播
+     */
+    private static void startPlay() {
+        String json = getPlayCommand(0);
+        Log.e("IOTCClient", "111111 start play json = " + json);
+        byte[] req = json.getBytes();
+        IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
+    }
+
+    /**
+     * 切换分辨率
+     *
+     * @param type 分辨率，0：超清，1：高清，2：标清
+     */
+    public static void changeValue(int type) {
+        String json = getPlayCommand(type);
+        Log.e("IOTCClient", "111111 start play json = " + json);
+        byte[] req = json.getBytes();
+        IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
     }
 
     public static void stopVideo() {

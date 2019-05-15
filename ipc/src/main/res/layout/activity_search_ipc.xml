@@ -36,8 +36,7 @@
             android:layout_marginTop="@dimen/dp_4"
             android:text="@string/tip_choose_multi_ipc"
             android:textColor="@color/color_666666"
-            android:textSize="@dimen/sp_16"
-            android:visibility="gone" />
+            android:textSize="@dimen/sp_16" />
 
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/nsv_ipc"
