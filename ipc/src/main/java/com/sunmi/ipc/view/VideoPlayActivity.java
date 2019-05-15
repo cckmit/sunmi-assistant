@@ -270,12 +270,17 @@ public class VideoPlayActivity extends BaseActivity
         tvQuality.setText(R.string.str_HD);
     }
 
+    int valueType = 0;
+
     //标清画质
     @Click(resName = "tv_sd_quality")
     void sdQualityClick() {
         llVideoQuality.setVisibility(View.GONE);
         isShowQuality = false;
         tvQuality.setText(R.string.str_SD);
+        valueType = valueType == 0 ? 1 : 0;
+        LogCat.e(TAG, "11111111 va" + valueType);
+        IOTCClient.changeValue(valueType);
     }
 
     //显示日历
@@ -320,7 +325,6 @@ public class VideoPlayActivity extends BaseActivity
             isClickScreen = true;
         }
     }
-
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
