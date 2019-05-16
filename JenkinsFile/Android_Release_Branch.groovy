@@ -1,7 +1,7 @@
 pipeline{
   agent none
   triggers {
-    pollSCM('H/2 * * * *')
+    pollSCM('H/5 * * * *')
   }
   stages{
     stage('Build'){
@@ -11,7 +11,6 @@ pipeline{
         {
           script{
             try{
-              deleteDir()
               git(branch: 'onl', credentialsId: 'lukai@sunmi.com', url: 'http://code.sunmi.com/wbu-app/sunmi-assistant-android.git', poll: true)
               dir('apmanager'){
                 git(branch: 'onl', credentialsId: 'lukai@sunmi.com', url: 'http://code.sunmi.com/wbu-app/sunmi-assistant-android-ap-manager.git', poll: true)
@@ -88,9 +87,24 @@ pipeline{
           echo "R ${currentBuild.result} C ${currentBuild.currentResult}"
           script{
             def recipient_list = 'lukai@sunmi.com,xiaoxinwu@sunmi.com,yangshijie@sunmi.com,yangjibin@sunmi.com,lvsiwen@sunmi.com,ningrulin@sunmi.com,hanruifeng@sunmi.com,simayujing@sunmi.com,linianhan@sunmi.com'
-            def commit = sh(returnStdout: true, script: 'git log -1 --pretty=%B | cat')
+            MAX_MSG_LEN = 100
+            def changeString = ""
+        
+            echo "Gathering SCM changes"
+            def changeLogSets = currentBuild.changeSets
+            for (int i = 0; i < changeLogSets.size(); i++) {
+                def entries = changeLogSets[i].items
+                for (int j = 0; j < entries.length; j++) {
+                    def entry = entries[j]
+                    truncated_msg = entry.msg.take(MAX_MSG_LEN)
+                    changeString += " - ${truncated_msg} [${entry.author}]\n"
+                }
+            }
+            if (!changeString) {
+                changeString = " - No new changes"
+            }
             def details = """<p>请从以下URL下载： "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>"</p><br/>更新内容：<br/>""" 
-            emailext(attachLog: false, body: details + commit, mimeType: 'text/html', subject: 'Android Release Build 已加固完成', to: recipient_list)
+            emailext(attachLog: false, body: details + changeString, mimeType: 'text/html', subject: 'Android Release Build 已加固完成', to: recipient_list)
           }
         } 
       }
