@@ -12,13 +12,17 @@ pipeline{
           script{
             try{
               deleteDir()
-              git(branch: 'release', credentialsId: 'lukai@sunmi.com', url: 'http://code.sunmi.com/wbu-app/sunmi-assistant-android.git', poll: true)
+              git(branch: 'onl', credentialsId: 'lukai@sunmi.com', url: 'http://code.sunmi.com/wbu-app/sunmi-assistant-android.git', poll: true)
+              dir('apmanager'){
+                git(branch: 'onl', credentialsId: 'lukai@sunmi.com', url: 'http://code.sunmi.com/wbu-app/sunmi-assistant-android-ap-manager.git', poll: true)
+              }
               sh('''
                 export PATH="/usr/local/bin/:$PATH"
                 export LC_ALL=en_US.UTF-8
                 export LANG=en_US.UTF-8
                 curl http://api.fir.im/apps/latest/5c048efcca87a826b0c07ece?api_token=8abeee66a3604b68f707d9c2753f7fb4 > info.json
                 export ANDROID_HOME=/Users/admin/Library/Android/sdk
+                export ANDROID_NDK_HOME=/Users/admin/Library/Android/ndk-bundle/android-ndk-r19c
                 echo $ANDROID_HOME
                 mkdir -p build
                 fastlane releaseEnv
@@ -83,9 +87,10 @@ pipeline{
         success {
           echo "R ${currentBuild.result} C ${currentBuild.currentResult}"
           script{
-            def recipient_list = 'lukai@sunmi.com,xiaoxinwu@sunmi.com,yangshijie@sunmi.com,yangjibin@sunmi.com,gaofei@sunmi.com,lvsiwen@sunmi.com,ningrulin@sunmi.com,hanruifeng@sunmi.com'
-            def details = """<p>请从以下URL下载： "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>"</p>"""
-            emailext(attachLog: false, body: details, mimeType: 'text/html', subject: 'Android Release Build 已加固完成', to: recipient_list)
+            def recipient_list = 'lukai@sunmi.com,xiaoxinwu@sunmi.com,yangshijie@sunmi.com,yangjibin@sunmi.com,lvsiwen@sunmi.com,ningrulin@sunmi.com,hanruifeng@sunmi.com,simayujing@sunmi.com,linianhan@sunmi.com'
+            def commit = sh(returnStdout: true, script: 'git log -1 --pretty=%B | cat')
+            def details = """<p>请从以下URL下载： "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>"</p><br/>更新内容：<br/>""" 
+            emailext(attachLog: false, body: details + commit, mimeType: 'text/html', subject: 'Android Release Build 已加固完成', to: recipient_list)
           }
         } 
       }
