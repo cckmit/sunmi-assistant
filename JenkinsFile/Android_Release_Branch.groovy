@@ -63,7 +63,7 @@ pipeline{
               echo name=$name >> version.txt
               echo version=$version >> version.txt
               cp version.txt release
-              unzip $apk_path$apk -d ./apk
+              unzip -u $apk_path$apk -d ./apk
               cp apk/$icon release/logo.png
               java -jar 360jiagu/jiagu/jiagu.jar -login lukai@sunmi.com sunmi388
               java -jar 360jiagu/jiagu/jiagu.jar -importsign Keystore.jks SUNMIwireless388 SUNMI_Key SUNMIwireless388
