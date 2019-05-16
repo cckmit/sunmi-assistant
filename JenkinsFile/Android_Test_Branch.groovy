@@ -1,7 +1,7 @@
 pipeline{
   agent none
   triggers {
-    pollSCM('H/2 * * * *')
+    pollSCM('H/5 * * * *')
   }
   stages{
     stage('Build'){
@@ -11,7 +11,6 @@ pipeline{
         {
           script{
             try{
-              deleteDir()
               git(branch: 'test', credentialsId: 'lukai@sunmi.com', url: 'http://code.sunmi.com/wbu-app/sunmi-assistant-android.git', poll: true)
               dir('apmanager'){
                 git(branch: 'test', credentialsId: 'lukai@sunmi.com', url: 'http://code.sunmi.com/wbu-app/sunmi-assistant-android-ap-manager.git', poll: true)
@@ -71,9 +70,24 @@ pipeline{
         success {
           echo "R ${currentBuild.result} C ${currentBuild.currentResult}"
           script{
-            def commit = sh(returnStdout: true, script: 'git log -1 --pretty=%B | cat')
             def recipient_list = 'lukai@sunmi.com,xiaoxinwu@sunmi.com,hanruifeng@sunmi.com,lvsiwen@sunmi.com,ningrulin@sunmi.com,yangyan@sunmi.com,zhangshiqiang@sunmi.com,yangshijie@sunmi.com,yangjibin@sunmi.com,simayujing@sunmi.com,linianhan@sunmi.com'
-            emailext(attachLog: false, body: '''Download url:   https://fir.im/sf4j<br/>更新内容：<br/>''' + commit, mimeType: 'text/html', subject: 'Android Test Build Ready', to: recipient_list)
+            MAX_MSG_LEN = 100
+            def changeString = ""
+        
+            echo "Gathering SCM changes"
+            def changeLogSets = currentBuild.changeSets
+            for (int i = 0; i < changeLogSets.size(); i++) {
+                def entries = changeLogSets[i].items
+                for (int j = 0; j < entries.length; j++) {
+                    def entry = entries[j]
+                    truncated_msg = entry.msg.take(MAX_MSG_LEN)
+                    changeString += " - ${truncated_msg} [${entry.author}]\n"
+                }
+            }
+            if (!changeString) {
+                changeString = " - No new changes"
+            }
+            emailext(attachLog: false, body: '''Download url:   https://fir.im/sf4j<br/>更新内容：<br/>''' + changeString, mimeType: 'text/html', subject: 'Android Test Build Ready', to: recipient_list)
           }
         } 
       }
