@@ -1,12 +1,16 @@
 package com.sunmi.ipc.view;
 
 import android.content.Context;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -44,10 +48,12 @@ import org.androidannotations.annotations.ViewById;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -103,6 +109,8 @@ public class VideoPlayActivity extends BaseActivity
     ImageView ivScreenshot;//截图
     @ViewById(resName = "iv_live")
     ImageView ivLive;//直播
+    @ViewById(resName = "iv_play")
+    ImageView ivPlay;//开始播放
     @ViewById(resName = "recyclerView")
     RecyclerView recyclerView;
     @ViewById(resName = "my_view")
@@ -126,9 +134,13 @@ public class VideoPlayActivity extends BaseActivity
     private boolean isShowVolume;//是否显示音量调控
     private boolean isShowQuality;//是否画质
     private boolean isClickScreen;//是否点击屏幕
+    private boolean isStartPlay;//是否开始播放
+    private boolean isCurrentPlayBack;//是否正在回放
 
     //
     private LinearLayoutManager linearLayoutManager;
+    //日历
+    private Calendar calendar;
     //选择视频日期列表
     private List<TimeBean> list = new ArrayList<>();
     //绘制的小时列表
@@ -150,31 +162,60 @@ public class VideoPlayActivity extends BaseActivity
     //刻度尺移动定时器
     private Timer moveTimer;
 
+
+    //用于播放视频的mediaPlayer对象
+    private MediaPlayer firstPlayer,     //负责播放进入视频播放界面后的第一段视频
+            nextMediaPlayer, //负责一段视频播放结束后，播放下一段视频
+            cachePlayer,     //负责setNextMediaPlayer的player缓存对象
+            currentPlayer;   //负责当前播放视频段落的player对象
+    private SurfaceHolder surfaceHolder;
+    //存放所有视频端的url
+    private ArrayList<String> videoListQueue = new ArrayList<>();
+    //所有player对象的缓存
+    private HashMap<String, MediaPlayer> playersCache = new HashMap<>();
+    //当前播放到的视频段落数
+    private int currentVideoIndex;
+
+
     @AfterViews
     void init() {
         //保持屏幕常亮
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//隐藏状态栏
-//        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN) ;//显示状态栏
+        //getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN) ;//显示状态栏
         screenW = CommonHelper.getScreenWidth(context);
         screenH = CommonHelper.getScreenHeight(context);
         sbZoom.setOnSeekBarChangeListener(this);
+
+        //当前天
+        calendar = Calendar.getInstance();
+        int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
+        ivCalender.setText(currentDay + "");
+
         layoutManger();
         recyclerViewInit();
+
+        //设置播放器的宽高
         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
-        lp.height = lp.width = CommonHelper.getScreenHeight(context);
+        //lp.height = lp.width = CommonHelper.getScreenHeight(context);//设置等宽
+        lp.width = screenW;//屏幕宽高
+        lp.height = screenH;
         videoView.setLayoutParams(lp);
-//        videoView.setOnTouchListener(this);
+
+        //回调
         IOTCClient.setCallback(this);
-        videoView.getHolder().addCallback(this);
+        surfaceHolder = videoView.getHolder();// SurfaceHolder是SurfaceView的控制接口
+        surfaceHolder.addCallback(this); // 因为这个类实现了SurfaceHolder.Callback接口，所以回调参数直接this
+        //videoView.getHolder().addCallback(this);
         mAudioPlayer = new AACDecoder();
 //        IPCCall.getInstance().fsGetStatus(context);//fs
 
-        playClick();
+        //直播
+//        playClick();
+        //初始化音量
         adjustVoice();
         initGetVolume();
-
     }
 
     @Override
@@ -198,6 +239,7 @@ public class VideoPlayActivity extends BaseActivity
         IPCCall.getInstance().fsZoom(seekBar.getProgress(), context);
     }
 
+    //开始直播
     void playClick() {
         ThreadPool.getCachedThreadPool().submit(new Runnable() {
             @Override
@@ -244,9 +286,9 @@ public class VideoPlayActivity extends BaseActivity
         IPCCall.getInstance().fsSetFocusPoint((int) currX * 100 / screenW, (int) currY * 100 / screenH, context);
     }
 
-    @Click(resName = "iv_back")
+    @Click(resName = "rl_video_back")
     void backClick() {
-        finish();
+        this.finish();
     }
 
     //视频录制
@@ -263,6 +305,7 @@ public class VideoPlayActivity extends BaseActivity
             isStartRecord = true;
             startRecord();//开始录制
         }
+        canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
     }
 
     //开始计时录制
@@ -294,7 +337,6 @@ public class VideoPlayActivity extends BaseActivity
     //音量
     @Click(resName = "iv_volume")
     void volumeClick() {
-        canvasHours(linearLayoutManager.findFirstVisibleItemPosition());
         if (isShowVolume) {
             llChangeVolume.setVisibility(View.GONE);
             isShowVolume = false;
@@ -310,7 +352,7 @@ public class VideoPlayActivity extends BaseActivity
             sBarVoice.setProgress(currentVolume100);
             isShowVolume = true;
         }
-
+        canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
     }
 
     //画质
@@ -323,6 +365,7 @@ public class VideoPlayActivity extends BaseActivity
             llVideoQuality.setVisibility(View.VISIBLE);
             isShowQuality = true;
         }
+        canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
     }
 
     //高清画质
@@ -331,6 +374,7 @@ public class VideoPlayActivity extends BaseActivity
         llVideoQuality.setVisibility(View.GONE);
         isShowQuality = false;
         tvQuality.setText(R.string.str_HD);
+        canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
     }
 
     int valueType = 0;
@@ -344,7 +388,23 @@ public class VideoPlayActivity extends BaseActivity
         valueType = valueType == 0 ? 1 : 0;
         LogCat.e(TAG, "11111111 va" + valueType);
         IOTCClient.changeValue(valueType);
+        canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
     }
+
+    //开始，暂停
+    @Click(resName = "iv_play")
+    void playLiveClick() {
+        playClick();
+        canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
+    }
+
+    //直播
+    @Click(resName = "iv_live")
+    void playApBackClick() {
+        playClick();
+        canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
+    }
+
 
     //显示日历
     @Click(resName = "iv_calender")
@@ -366,31 +426,174 @@ public class VideoPlayActivity extends BaseActivity
         dialog.show();
     }
 
-//    //点击屏幕
-//    @Click(resName = "rl_screen")
-//    void screenClick() {
-//        if (isClickScreen) {
-//            rlTopSetting.setVisibility(View.VISIBLE);
-//            ivRecord.setVisibility(View.VISIBLE);
-//            ivScreenshot.setVisibility(View.VISIBLE);
-//            ivLive.setVisibility(View.VISIBLE);
-//            rlBottomSetting.setVisibility(View.VISIBLE);
-//
-//            isClickScreen = false;
-//        } else {
-//            rlTopSetting.setVisibility(View.GONE);
-//            ivRecord.setVisibility(View.GONE);
-//            ivScreenshot.setVisibility(View.GONE);
-//            ivLive.setVisibility(View.GONE);
-//            rlBottomSetting.setVisibility(View.GONE);
-//
-//            isClickScreen = true;
-//        }
-//    }
+    //点击屏幕
+    @Click(resName = "rl_screen")
+    void screenClick() {
+        if (isClickScreen) {
+            rlTopSetting.setVisibility(View.VISIBLE);
+            ivRecord.setVisibility(View.VISIBLE);
+            ivScreenshot.setVisibility(View.VISIBLE);
+            ivLive.setVisibility(View.VISIBLE);
+            rlBottomSetting.setVisibility(View.VISIBLE);
+
+            isClickScreen = false;
+        } else {
+            rlTopSetting.setVisibility(View.GONE);
+            ivRecord.setVisibility(View.GONE);
+            ivScreenshot.setVisibility(View.GONE);
+            ivLive.setVisibility(View.GONE);
+            rlBottomSetting.setVisibility(View.GONE);
+
+            isClickScreen = true;
+        }
+        canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
+    }
+
+    //*********************************************************************
+    //***********************云端回放***************************************
+    //*********************************************************************
+    /*
+     * 初始化播放首段视频的player
+     */
+    private void initFirstPlayer() {
+        firstPlayer = new MediaPlayer();
+        firstPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        firstPlayer.setDisplay(surfaceHolder);
+
+        firstPlayer
+                .setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        onVideoPlayCompleted(mp);
+                    }
+                });
+
+        //设置cachePlayer为该player对象
+        cachePlayer = firstPlayer;
+        initNexttPlayer();
+
+        //player对象初始化完成后，开启播放
+        startPlayFirstVideo();
+    }
+
+    private void startPlayFirstVideo() {
+        try {
+            firstPlayer.setDataSource(videoListQueue.get(currentVideoIndex));
+            firstPlayer.prepare();
+            firstPlayer.start();
+        } catch (IOException e) {
+            // TODO 自动生成的 catch 块
+            e.printStackTrace();
+        }
+    }
+
+    /*
+     * 新开线程负责初始化负责播放剩余视频分段的player对象,避免UI线程做过多耗时操作
+     */
+    private void initNexttPlayer() {
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                for (int i = 1; i < videoListQueue.size(); i++) {
+                    nextMediaPlayer = new MediaPlayer();
+                    nextMediaPlayer
+                            .setAudioStreamType(AudioManager.STREAM_MUSIC);
+
+                    nextMediaPlayer
+                            .setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                                @Override
+                                public void onCompletion(MediaPlayer mp) {
+                                    onVideoPlayCompleted(mp);
+                                }
+                            });
+
+                    try {
+                        nextMediaPlayer.setDataSource(videoListQueue.get(i));
+                        nextMediaPlayer.prepare();
+                    } catch (IOException e) {
+                        // TODO 自动生成的 catch 块
+                        e.printStackTrace();
+                    }
+
+                    //set next mediaplayer
+                    cachePlayer.setNextMediaPlayer(nextMediaPlayer);
+                    //set new cachePlayer
+                    cachePlayer = nextMediaPlayer;
+                    //put nextMediaPlayer in cache
+                    playersCache.put(String.valueOf(i), nextMediaPlayer);
+
+                }
+
+            }
+        }).start();
+    }
+
+    /*
+     * 负责处理一段视频播放过后，切换player播放下一段视频
+     */
+    private void onVideoPlayCompleted(MediaPlayer mp) {
+        mp.setDisplay(null);
+        //get next player
+        currentPlayer = playersCache.get(String.valueOf(++currentVideoIndex));
+        if (currentPlayer != null) {
+            currentPlayer.setDisplay(surfaceHolder);
+        } else {
+            shortTip("视频播放完毕");
+        }
+    }
+
+    private void getVideoUrls() {
+//        videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/0_25.mp4");
+//        videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/25_50.mp4");
+//        videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/0_25.mp4");
+//        videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/25_50.mp4");
+
+        videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/0_20.mp4");
+        videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/20_40.mp4");
+        videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/40_60.mp4");
+    }
+
+    /*
+     * 负责界面销毁时，release各个mediaplayer
+     * @see android.app.Activity#onDestroy()
+     */
+    private void cloudPlayDestroy() {
+        if (firstPlayer != null) {
+            if (firstPlayer.isPlaying()) {
+                firstPlayer.stop();
+            }
+            firstPlayer.release();
+        }
+        if (nextMediaPlayer != null) {
+            if (nextMediaPlayer.isPlaying()) {
+                nextMediaPlayer.stop();
+            }
+            nextMediaPlayer.release();
+        }
+
+        if (currentPlayer != null) {
+            if (currentPlayer.isPlaying()) {
+                currentPlayer.stop();
+            }
+            currentPlayer.release();
+        }
+        currentPlayer = null;
+    }
+
+
+    //***********************云端回放***************************************!
+    //*********************************************************************
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         mPlayer = new H264Decoder(holder.getSurface(), 0);
+
+        //surfaceView创建完毕后，首先获取该直播间所有视频分段的url
+//        getVideoUrls();
+////        //然后初始化播放手段视频的player对象
+//        initFirstPlayer();
     }
 
     @Override
@@ -475,11 +678,12 @@ public class VideoPlayActivity extends BaseActivity
     //调节音量
     private void adjustVoice() {
         audioMngHelper = new AudioMngHelper(this);
-        int systemCurrent = audioMngHelper.getSystemCurrentVolume();
-        int systemMax = audioMngHelper.getSystemMaxVolume();
+        //int systemCurrent = audioMngHelper.getSystemCurrentVolume();
+        //int systemMax = audioMngHelper.getSystemMaxVolume();
         int currentVolume100 = audioMngHelper.get100CurrentVolume();
         sBarVoice.setMax(100);
         sBarVoice.setProgress(currentVolume100);
+        canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
         sBarVoice.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -489,6 +693,7 @@ public class VideoPlayActivity extends BaseActivity
                     ivVolume.setBackgroundResource(R.mipmap.ic_volume);
                 }
                 audioMngHelper.setVoice100(progress);
+                canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
             }
 
             @Override
@@ -498,7 +703,7 @@ public class VideoPlayActivity extends BaseActivity
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
             }
         });
     }
@@ -516,13 +721,24 @@ public class VideoPlayActivity extends BaseActivity
                 ivVolume.setBackgroundResource(R.mipmap.ic_volume);
             }
             return false;
-        }
-//        else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-//            llChangeVolume.setVisibility(View.GONE);
-//            isShowVolume = false;
-//            return false;
-//        }
-        else return super.onKeyDown(keyCode, event);
+        } else return super.onKeyDown(keyCode, event);
+    }
+
+    /**
+     * *******************生命周期***************************
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i("TAG", "onResume");
+        canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        closeMove();//关闭时间抽的timer
+        cloudPlayDestroy();//关闭云端视频
     }
 
     /**
@@ -536,7 +752,7 @@ public class VideoPlayActivity extends BaseActivity
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        Calendar calendar = Calendar.getInstance();
+
         //当前时间秒数
         currentDateSeconds = System.currentTimeMillis() / 1000;
         //三天前秒数
@@ -586,18 +802,6 @@ public class VideoPlayActivity extends BaseActivity
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        canvasHours(linearLayoutManager.findFirstVisibleItemPosition());
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        closeMove();
-    }
-
     //日期列表
     private List<TimeBean> timeList(List<TimeBean> list) {
         //添加时间列表（当前的日期）
@@ -628,15 +832,16 @@ public class VideoPlayActivity extends BaseActivity
     }
 
     //绘制时间
+    int offsetPx;
+
     private void canvasHours(int firstVisibleItem) {
         //int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
         if (firstVisibleItem < 0) return;
-        LogCat.e(TAG, "canvasHours-----");
         TimeBean bs = list.get(firstVisibleItem);
         String str = secondToDate(bs.getDate(), "HH:mm:ss");
         int hour = Integer.valueOf(str.substring(0, 2));
         int minute = Integer.valueOf(str.substring(3, 5));
-        int offsetPx;//第一个小时的偏移量
+        offsetPx = 0;//第一个小时的偏移量
         if (minute == 0) {
             offsetPx = 0;
         } else {
@@ -667,15 +872,23 @@ public class VideoPlayActivity extends BaseActivity
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {//停止滑动
+                    if (!isCurrentPlayBack) {
+                        IOTCClient.startPlayback();//设备回放
+                        isCurrentPlayBack = true;
+                    }
                     LogCat.e("TAG", "onScrolled00 ____");
                     int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
                     int lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
                     int center = (lastVisibleItem - firstVisibleItem) / 2 + firstVisibleItem;
                     TimeBean bs = list.get(center);
-                    String str = secondToDate(bs.getDate(), "yyyy-MM-dd HH:mm:ss");
+                    long date = bs.getDate();
+                    String str = secondToDate(date, "yyyy-MM-dd HH:mm:ss");
+                    String day = str.substring(8, 11);
                     LogCat.e("TAG", "firstVisibleItem=" + firstVisibleItem + " lastVisibleItem=" + lastVisibleItem + "   firstVisibleItem: date: " + str);
-//                    tvShow.setText(str);
-                    toastForShort(VideoPlayActivity.this, str);
+                    ivCalender.setText(day);  //滑动停止显示日期
+                    toastForShort(VideoPlayActivity.this, str);//toast显示时间
+                    canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
+
                 } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
                     LogCat.e("TAG", "onScrolled11 ____");
                 } else if (newState == RecyclerView.SCROLL_STATE_SETTLING) {
@@ -700,7 +913,6 @@ public class VideoPlayActivity extends BaseActivity
 
                     isOnclickScroll = false;
                 }
-
             }
         });
 
@@ -803,7 +1015,7 @@ public class VideoPlayActivity extends BaseActivity
     }
 
     //自定义toast
-    Toast mToast;
+    private Toast mToast;
 
     public void toastForShort(final Context context, final String msg) {
 

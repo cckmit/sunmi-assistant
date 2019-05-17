@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import java.util.List;
@@ -45,6 +46,7 @@ public class TimeView extends View {
         super.onDraw(canvas);
         // 绘制背景的填充色
 //        mPaint.setColor(Color.WHITE);
+//        mPaint.setColor(Color.BLACK);
         mPaint.setColor(Color.TRANSPARENT);
         // 绘制一个填充色的矩形
         canvas.drawRect(0, 0, getWidth(), getHeight(), mPaint);
@@ -56,6 +58,9 @@ public class TimeView extends View {
         // 初始化第一个小时的偏移量
         if (list == null || list.size() == 0) return;
         x = -hourOffset + x;
+        //x += -hourOffset;
+        Log.i("TAG", "x=" + x + "  hourOffset=" + hourOffset);
+        if (x > 0) return;
         for (int i = 0; i < list.size(); i++) {
             // 获取文本
             String timeText = list.get(i);
