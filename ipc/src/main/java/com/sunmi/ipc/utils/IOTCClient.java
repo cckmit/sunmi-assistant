@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import sunmi.common.utils.ByteUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
 
@@ -120,7 +121,7 @@ public class IOTCClient {
     /**
      * 开始直播
      */
-    private static void startPlay() {
+    public static void startPlay() {
         String json = getPlayCommand(0);
         Log.e("IOTCClient", "111111 start play json = " + json);
         byte[] req = json.getBytes();
@@ -139,14 +140,125 @@ public class IOTCClient {
         IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
     }
 
-    public static void stopVideo() {
-        byte[] req = "{\"id\":1000,\"cmd\":2,\"param\":{\"channel\":1}}".getBytes();
-        IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 1);
+    private static String getPlaybackListCommand() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("msg_id", SpUtils.getUID() + "_" + System.currentTimeMillis());
+            JSONArray array = new JSONArray();
+            JSONObject item = new JSONObject();
+            item.put("cmd", CMD_PLAYBACK_LIST);
+            item.put("channel", 1);
+            JSONObject param = new JSONObject();
+            param.put("start_time", System.currentTimeMillis() - 100 + "");
+            param.put("end_time", System.currentTimeMillis() + "");
+            item.put("param", param);
+            array.put(item);
+            jsonObject.put("params", array);
+            return jsonObject.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
-    public static void stopAudio() {
-        byte[] req = "{\"id\":1000,\"cmd\":4,\"param\":{\"channel\":1}}".getBytes();
+    public static void getPlaybackList() {
+        String json = getPlaybackListCommand();
+        Log.e("IOTCClient", "111111 start play json = " + json);
+        byte[] req = json.getBytes();
         IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
+        getdata();
+    }
+
+    public static void getdata() {
+        byte[] buf = new byte[1024];
+        int actualLen = IOTCAPIs.IOTC_Session_Read(SID, buf, 1024, 10000, 0);
+        Log.e("IOTCClient", "111111 getdata json = " + buf);
+        byte[] data = new byte[actualLen];
+        System.arraycopy(buf, 0, data, 0, actualLen);
+//        ByteUtils.byte2String(data);
+        Log.e("IOTCClient", "111111 getdata data = " + ByteUtils.byte2String(data));
+    }
+
+    private static String getStartPlaybackCommand() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("msg_id", SpUtils.getUID() + "_" + System.currentTimeMillis());
+            JSONArray array = new JSONArray();
+            JSONObject item = new JSONObject();
+            item.put("cmd", CMD_PLAYBACK_START);
+            item.put("channel", 1);
+            JSONObject param = new JSONObject();
+            param.put("start_time", System.currentTimeMillis() - 100 + "");
+            item.put("param", param);
+            array.put(item);
+            jsonObject.put("params", array);
+            return jsonObject.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public static void startPlayback() {
+        String json = getStartPlaybackCommand();
+        Log.e("IOTCClient", "111111 start play json = " + json);
+        byte[] req = json.getBytes();
+        IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
+        getdata();
+    }
+
+    private static String getStopPlaybackCommand() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("msg_id", SpUtils.getUID() + "_" + System.currentTimeMillis());
+            JSONArray array = new JSONArray();
+            JSONObject item = new JSONObject();
+            item.put("cmd", CMD_PLAYBACK_STOP);
+            item.put("channel", 1);
+            item.put("param", new JSONObject());
+            array.put(item);
+            jsonObject.put("params", array);
+            return jsonObject.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public static void stopPlayback() {
+        String json = getStartPlaybackCommand();
+        Log.e("IOTCClient", "111111 start play json = " + json);
+        byte[] req = json.getBytes();
+        IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
+        getdata();
+    }
+
+    private static String getPausePlaybackCommand(boolean isPause) {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("msg_id", SpUtils.getUID() + "_" + System.currentTimeMillis());
+            JSONArray array = new JSONArray();
+            JSONObject item = new JSONObject();
+            item.put("cmd", CMD_PLAYBACK_STOP);
+            item.put("channel", 1);
+            JSONObject param = new JSONObject();
+            param.put("pause", isPause ? 1 : 0);
+            item.put("param", param);
+            array.put(item);
+            jsonObject.put("params", array);
+            return jsonObject.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public static void pausePlayback(boolean isPause) {
+        String json = getPausePlaybackCommand(isPause);
+        Log.e("IOTCClient", "111111 start play json = " + json);
+        byte[] req = json.getBytes();
+        IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
+        getdata();
     }
 
     public static class VideoThread implements Runnable {
