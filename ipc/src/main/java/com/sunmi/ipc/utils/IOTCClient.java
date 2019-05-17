@@ -262,7 +262,7 @@ public class IOTCClient {
     }
 
     public static class VideoThread implements Runnable {
-        static final int VIDEO_BUF_SIZE = 1024 * 1024;
+        static final int VIDEO_BUF_SIZE = 2000000;
         static final int FRAME_INFO_SIZE = 16;
 
         private int avIndex;
