@@ -294,6 +294,7 @@ public class VideoPlayActivity extends BaseActivity
     //音量
     @Click(resName = "iv_volume")
     void volumeClick() {
+        canvasHours(linearLayoutManager.findFirstVisibleItemPosition());
         if (isShowVolume) {
             llChangeVolume.setVisibility(View.GONE);
             isShowVolume = false;
@@ -504,7 +505,7 @@ public class VideoPlayActivity extends BaseActivity
 
     //按键控制音量，return true时不显示系统音量 return false时显示系统音量
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
             llChangeVolume.setVisibility(View.GONE);
             isShowVolume = false;
             //获取当前音量
@@ -515,11 +516,13 @@ public class VideoPlayActivity extends BaseActivity
                 ivVolume.setBackgroundResource(R.mipmap.ic_volume);
             }
             return false;
-        } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-            llChangeVolume.setVisibility(View.GONE);
-            isShowVolume = false;
-            return false;
-        } else return super.onKeyDown(keyCode, event);
+        }
+//        else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+//            llChangeVolume.setVisibility(View.GONE);
+//            isShowVolume = false;
+//            return false;
+//        }
+        else return super.onKeyDown(keyCode, event);
     }
 
     /**
