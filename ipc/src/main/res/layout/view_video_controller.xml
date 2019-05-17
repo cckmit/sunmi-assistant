@@ -57,7 +57,7 @@
         android:layout_marginTop="@dimen/dp_16"
         android:background="@mipmap/ic_screenshot" />
 
-    <!--设置-->
+    <!--回直播-->
     <ImageView
         android:id="@+id/iv_live"
         android:layout_width="@dimen/dp_32"

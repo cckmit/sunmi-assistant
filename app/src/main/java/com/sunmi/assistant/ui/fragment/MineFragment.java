@@ -98,20 +98,20 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     //我的订单
     @Click(R.id.rlOrder)
     public void orderClick(View v) {
-        WebViewSunmiMallActivity_.intent(mActivity).mUrl("https://test.h5.mall.sunmi.com/my-order?channel=2&subchannel=4").start();
+        WebViewSunmiMallActivity_.intent(mActivity).mUrl("https://uat.h5.mall.sunmi.com/my-order?channel=2&subchannel=4").start();
     }
 
     //收货地址
     @Click(R.id.rlAddress)
     public void addressClick(View v) {
-        WebViewSunmiMallActivity_.intent(mActivity).mUrl("https://test.h5.mall.sunmi.com/select-address?channel=2&subchannel=4").start();
+        WebViewSunmiMallActivity_.intent(mActivity).mUrl("https://uat.h5.mall.sunmi.com/select-address?channel=2&subchannel=4").start();
 
     }
 
     //优惠券
     @Click(R.id.rlCoupon)
     public void couponClick(View v) {
-        WebViewSunmiMallActivity_.intent(mActivity).mUrl("https://test.h5.mall.sunmi.com/my-coupon?channel=2&subchannel=4").start();
+        WebViewSunmiMallActivity_.intent(mActivity).mUrl("https://uat.h5.mall.sunmi.com/my-coupon?channel=2&subchannel=4").start();
     }
 
     @Click(R.id.rlHelp)

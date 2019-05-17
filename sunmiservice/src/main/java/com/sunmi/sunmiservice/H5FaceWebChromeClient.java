@@ -24,6 +24,16 @@ public class H5FaceWebChromeClient extends WebChromeClient {
     }
 
     @Override
+    public void onProgressChanged(WebView view, int newProgress) {
+        if (callback != null) {
+            callback.onProgressChanged(newProgress);
+            if (newProgress == 100)
+                callback.onProgressComplete();
+        }
+        super.onProgressChanged(view, newProgress);
+    }
+
+    @Override
     public void onReceivedTitle(WebView view, String title) {
         super.onReceivedTitle(view, title);
         if (callback != null) callback.onReceivedTitle(title);
