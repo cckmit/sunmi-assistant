@@ -169,18 +169,6 @@
             android:maxHeight="3dp"
             android:minHeight="3dp"
             android:progressDrawable="@drawable/bg_adjust_seek_bar" />
-
-        <!--<ProgressBar-->
-        <!--android:id="@+id/change_volume_progress"-->
-        <!--style="@android:style/Widget.ProgressBar.Horizontal"-->
-        <!--android:layout_width="@dimen/dp_10"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_gravity="center"-->
-        <!--android:layout_marginTop="@dimen/dp_8"-->
-        <!--android:layout_marginBottom="@dimen/dp_8"-->
-        <!--android:max="100"-->
-        <!--android:progressDrawable="@drawable/progress_vertical" />-->
-
     </LinearLayout>
 
     <!--改变清晰度-->
@@ -230,29 +218,58 @@
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
             android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_28"
             android:layout_marginStart="@dimen/dp_20"
             android:src="@mipmap/play_normal" />
 
-        <TextView
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/dp_28"
-            android:layout_marginRight="@dimen/dp_28"
+            android:layout_height="@dimen/dp_56"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="28dp"
             android:layout_toEndOf="@+id/iv_play"
-            android:layout_toStartOf="@+id/iv_calender"
-            android:gravity="center"
-            android:singleLine="true"
-            android:text="adfasdfasdfasfasfasdfasdfsadfasfasfasdfasdfasdfasdfsafasdfasdfasdf"
-            android:textColor="@color/c_white" />
+            android:layout_toStartOf="@+id/iv_calender">
 
-        <ImageView
+            <RelativeLayout
+                android:id="@+id/rl_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_28">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_28"
+                    android:background="@color/c_black" />
+
+                <TextView
+                    android:layout_width="1dp"
+                    android:layout_height="@dimen/dp_20"
+                    android:layout_alignBottom="@id/recyclerView"
+                    android:layout_centerHorizontal="true"
+                    android:background="@color/c_red" />
+            </RelativeLayout>
+
+            <com.sunmi.ipc.utils.TimeView
+                android:id="@+id/my_view"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_16"
+                android:layout_below="@id/rl_recyclerView" />
+
+        </RelativeLayout>
+
+
+        <TextView
             android:id="@+id/iv_calender"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/dp_20"
             android:layout_toStartOf="@+id/iv_volume"
-            android:src="@mipmap/ic_calendar" />
+            android:background="@mipmap/ic_calendar"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@color/c_white"
+            android:textSize="@dimen/sp_12" />
 
         <ImageView
             android:id="@+id/iv_volume"
@@ -261,7 +278,7 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/dp_20"
             android:layout_toStartOf="@+id/tv_quality"
-            android:src="@mipmap/ic_volume" />
+            android:background="@mipmap/ic_volume" />
 
         <TextView
             android:id="@+id/tv_quality"
@@ -309,5 +326,13 @@
             android:textSize="@dimen/sp_12" />
     </RelativeLayout>
 
+    <TextView
+        android:id="@+id/tv_show"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@color/transparent"
+        android:gravity="center"
+        android:textColor="@color/c_white" />
 
 </RelativeLayout>

@@ -11,15 +11,12 @@
         android:layout_height="match_parent"
         android:layout_centerInParent="true" />
 
-    <com.sunmi.ipc.view.OverCameraView
-        android:id="@+id/ocv_ipc"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
     <include
         layout="@layout/layout_video_mask"
         android:visibility="gone" />
 
     <include layout="@layout/view_video_controller" />
+
 
 </RelativeLayout>
