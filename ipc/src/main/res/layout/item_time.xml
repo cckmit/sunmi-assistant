@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rl_item"
     android:layout_width="1dp"
-    android:layout_height="wrap_content">
+    android:layout_height="@dimen/dp_30">
 
     <TextView
         android:id="@+id/tv_line"
