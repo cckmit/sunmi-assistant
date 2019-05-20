@@ -222,12 +222,12 @@
 
         <ImageView
             android:id="@+id/iv_play"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/dp_28"
-            android:layout_marginStart="@dimen/dp_20"
-            android:src="@mipmap/play_normal" />
+            android:layout_marginEnd="28dp"
+            android:layout_marginStart="20dp"
+            android:background="@mipmap/play_disable" />
 
         <RelativeLayout
             android:layout_width="match_parent"
