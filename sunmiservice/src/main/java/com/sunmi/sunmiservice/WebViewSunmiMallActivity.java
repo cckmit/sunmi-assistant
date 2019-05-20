@@ -176,7 +176,6 @@ public class WebViewSunmiMallActivity extends BaseActivity
                     view.loadUrl(url);
                 }
                 return true;
-
             }
         });
     }

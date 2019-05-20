@@ -11,6 +11,7 @@ public class SunmiServiceConfig extends BaseConfig {
 
     //增值创新服务
     public static String VALUE_ADDED_SERVICES = "";
+    public static String SUNMI_MALL_HOST = "";
 
     //微信app id
     public static String WECHAT_APP_ID = "wxd1d7c6ec2279cfdc";
@@ -37,6 +38,7 @@ public class SunmiServiceConfig extends BaseConfig {
     @Override
     protected void initDev(Context context, String env) {
         VALUE_ADDED_SERVICES = "https://test-engine.sunmi.com/housekeeper/services-next";
+        SUNMI_MALL_HOST = "https://test.h5.mall.sunmi.com/";
         FUMINBAO_APP_ID = "20190121639982";
         FUMINBAO_SECRET = "cce3387477aaac220b589c5d8c0b5f9d";
     }
@@ -44,6 +46,7 @@ public class SunmiServiceConfig extends BaseConfig {
     @Override
     protected void initTest(Context context, String env) {
         VALUE_ADDED_SERVICES = "https://test-engine.sunmi.com/housekeeper/services-next";
+        SUNMI_MALL_HOST = "https://test.h5.mall.sunmi.com/";
         FUMINBAO_APP_ID = "20190121639982";
         FUMINBAO_SECRET = "cce3387477aaac220b589c5d8c0b5f9d";
     }
@@ -51,6 +54,9 @@ public class SunmiServiceConfig extends BaseConfig {
     @Override
     protected void initRelease(Context context, String env) {
         VALUE_ADDED_SERVICES = "https://engine.sunmi.com/housekeeper/services-next";
+        SUNMI_MALL_HOST = "https://h5.mall.sunmi.com/";
+        FUMINBAO_APP_ID = "20190121639982";
+        FUMINBAO_SECRET = "cce3387477aaac220b589c5d8c0b5f9d";
     }
 
 }
