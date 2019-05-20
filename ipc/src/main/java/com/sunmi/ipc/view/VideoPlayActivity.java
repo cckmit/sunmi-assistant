@@ -149,8 +149,6 @@ public class VideoPlayActivity extends BaseActivity
     private List<String> dateList = new ArrayList<>();
     //当前时间 ，三天前秒数 ，未来6小时后的秒数 ，区间总共秒数
     private long currentDateSeconds, threeDaysBeforeSeconds, sixHoursAfterSeconds, minutesTotal;
-    //手机屏幕的宽高
-    private int mScreenWidth, mScreenHeight;
     //3天秒数
     private long threeDaysSeconds = 3 * 24 * 60 * 60;
     //6小时后的秒数
@@ -205,9 +203,9 @@ public class VideoPlayActivity extends BaseActivity
 
         //设置播放器的宽高
         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
-        //lp.height = lp.width = CommonHelper.getScreenHeight(context);//设置等宽
-        lp.width = screenW;//屏幕宽高
-        lp.height = screenH;
+        lp.height = lp.width = CommonHelper.getScreenHeight(context);//设置等宽
+//        lp.width = screenW;//屏幕宽高
+//        lp.height = screenH;
         videoView.setLayoutParams(lp);
 
         //回调
@@ -219,7 +217,7 @@ public class VideoPlayActivity extends BaseActivity
 //        IPCCall.getInstance().fsGetStatus(context);//fs
 
         //直播
-//        playClick();
+        initP2pLive();
         //初始化音量
         adjustVoice();
         initGetVolume();
@@ -247,7 +245,7 @@ public class VideoPlayActivity extends BaseActivity
     }
 
     //开始直播
-    void playClick() {
+    void initP2pLive() {
         ThreadPool.getCachedThreadPool().submit(new Runnable() {
             @Override
             public void run() {
@@ -393,19 +391,21 @@ public class VideoPlayActivity extends BaseActivity
         IOTCClient.changeValue(valueType);
     }
 
+    boolean isPaused;
+
     //开始，暂停
     @Click(resName = "iv_play")
     void playLiveClick() {
-        IOTCClient.startPlayback();//设备回放
+        IOTCClient.pausePlayback(isPaused);
+        isPaused = !isPaused;
     }
 
     //直播
     @Click(resName = "iv_live")
     void playApBackClick() {
         ivPlay.setBackgroundResource(R.mipmap.play_disable);
-        playClick();//直播
+        IOTCClient.startPlay();
     }
-
 
     //显示日历
     @Click(resName = "iv_calender")
@@ -891,6 +891,7 @@ public class VideoPlayActivity extends BaseActivity
                     ivCalender.setText(day);  //滑动停止显示日期
                     toastForShort(VideoPlayActivity.this, str);//toast显示时间
                     canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
+                    IOTCClient.startPlayback(date);
                 }
             }
 
@@ -927,7 +928,7 @@ public class VideoPlayActivity extends BaseActivity
         if (minute == 0) {
             offsetPx = 0;
         } else {
-            offsetPx = (60 - minute) * CommonHelper.dp2px(VideoPlayActivity.this, 1);//偏移
+            offsetPx = (60 - minute) * (int) getResources().getDimension(R.dimen.dp_1);//CommonHelper.dp2px(context, getResources().getDimension(R.dimen.dp_1));//偏移
             hour++;
         }
         //绘制下方时间
@@ -965,7 +966,8 @@ public class VideoPlayActivity extends BaseActivity
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_time, viewGroup, false);
+            View view = LayoutInflater.from(viewGroup.getContext())
+                    .inflate(R.layout.item_time, viewGroup, false);
             ViewHolder holder = new ViewHolder(view);
             return holder;
         }
@@ -985,28 +987,25 @@ public class VideoPlayActivity extends BaseActivity
 //            }
             //当前时间线的高度
             ViewGroup.LayoutParams lp = viewHolder.tvLine.getLayoutParams();
-            if (minuteSecond.contains("10:00") ||
+            lp.width = CommonHelper.dp2px(context, (float) 0.8);
+            if (hour.contains("00")) {
+                lp.height = CommonHelper.dp2px(context, 8);
+                viewHolder.tvLine.setVisibility(View.VISIBLE);
+
+            } else {
+                lp.height = CommonHelper.dp2px(context, 4);
+                viewHolder.tvLine.setVisibility(showShortTimeLine(minuteSecond)
+                        ? View.VISIBLE : View.INVISIBLE);
+            }
+            viewHolder.tvLine.setLayoutParams(lp);
+        }
+
+        private boolean showShortTimeLine(String minuteSecond) {
+            return minuteSecond.contains("10:00") ||
                     minuteSecond.contains("20:00") ||
                     minuteSecond.contains("30:00") ||
                     minuteSecond.contains("40:00") ||
-                    minuteSecond.contains("50:00")) {
-                viewHolder.tvLine.setVisibility(View.VISIBLE);
-                lp.height = 15;
-                lp.width = 1;
-                viewHolder.tvLine.setLayoutParams(lp);
-
-            } else if (hour.contains("00")) {
-                viewHolder.tvLine.setVisibility(View.VISIBLE);
-                lp.height = 30;
-                lp.width = CommonHelper.dp2px(VideoPlayActivity.this, 1);
-                viewHolder.tvLine.setLayoutParams(lp);
-
-            } else {
-                viewHolder.tvLine.setVisibility(View.INVISIBLE);
-                lp.height = 15;
-                lp.width = 1;
-                viewHolder.tvLine.setLayoutParams(lp);
-            }
+                    minuteSecond.contains("50:00");
         }
 
         @Override

@@ -26,7 +26,6 @@
             android:largeHeap="true"
             android:screenOrientation="landscape" />
         <activity android:name=".view.IPCSearchActivity_" />
-        <activity android:name=".view.RulerActivity_" />
     </application>
 
 </manifest>
