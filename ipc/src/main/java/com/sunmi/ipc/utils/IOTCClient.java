@@ -147,8 +147,8 @@ public class IOTCClient {
             item.put("cmd", CMD_PLAYBACK_LIST);
             item.put("channel", 1);
             JSONObject param = new JSONObject();
-            param.put("start_time", System.currentTimeMillis() - 100 + "");
-            param.put("end_time", System.currentTimeMillis() + "");
+            param.put("start_time", System.currentTimeMillis() / 1000);
+            param.put("end_time", System.currentTimeMillis() / 1000);
             item.put("param", param);
             array.put(item);
             jsonObject.put("params", array);
@@ -170,14 +170,13 @@ public class IOTCClient {
     public static void getdata() {
         byte[] buf = new byte[1024];
         int actualLen = IOTCAPIs.IOTC_Session_Read(SID, buf, 1024, 10000, 0);
-        LogCat.e("IOTCClient", "111111 getdata json = " + buf);
         byte[] data = new byte[actualLen];
         System.arraycopy(buf, 0, data, 0, actualLen);
 //        ByteUtils.byte2String(data);
         LogCat.e("IOTCClient", "111111 getdata data = " + ByteUtils.byte2String(data));
     }
 
-    private static String getStartPlaybackCommand() {
+    private static String getStartPlaybackCommand(long startTime) {
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("msg_id", SpUtils.getUID() + "_" + System.currentTimeMillis());
@@ -186,7 +185,7 @@ public class IOTCClient {
             item.put("cmd", CMD_PLAYBACK_START);
             item.put("channel", 1);
             JSONObject param = new JSONObject();
-            param.put("start_time", System.currentTimeMillis() - 100 + "");
+            param.put("start_time", startTime);
             item.put("param", param);
             array.put(item);
             jsonObject.put("params", array);
@@ -197,8 +196,8 @@ public class IOTCClient {
         return "";
     }
 
-    public static void startPlayback() {
-        String json = getStartPlaybackCommand();
+    public static void startPlayback(long startTime) {
+        String json = getStartPlaybackCommand(startTime);
         LogCat.e("IOTCClient", "111111 startPlayback json = " + json);
         byte[] req = json.getBytes();
         IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
@@ -224,7 +223,7 @@ public class IOTCClient {
     }
 
     public static void stopPlayback() {
-        String json = getStartPlaybackCommand();
+        String json = getStopPlaybackCommand();
         LogCat.e("IOTCClient", "111111 stopPlayback json = " + json);
         byte[] req = json.getBytes();
         IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
