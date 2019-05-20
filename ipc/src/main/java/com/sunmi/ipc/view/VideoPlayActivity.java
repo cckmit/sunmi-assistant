@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -252,7 +251,7 @@ public class VideoPlayActivity extends BaseActivity
         ThreadPool.getCachedThreadPool().submit(new Runnable() {
             @Override
             public void run() {
-                IOTCClient.start(UID);
+                IOTCClient.init(UID);
             }
         });
     }
@@ -645,7 +644,8 @@ public class VideoPlayActivity extends BaseActivity
         ResponseBean res = (ResponseBean) args[0];
         if (res == null) return;
         if (id == IpcConstants.fsGetStatus) {
-            //{"data":[{"opcode":"0x3109","result":{"zoom":0,"max_zoom":500,"max_focus":780,"irmode":0,"auto_focus_start":0,"focus":389},"errcode":1}],"msg_id":"11111","errcode":1}
+            //{"data":[{"opcode":"0x3109","result":{"zoom":0,"max_zoom":500,"max_focus":780,
+            // "irmode":0,"auto_focus_start":0,"focus":389},"errcode":1}],"msg_id":"11111","errcode":1}
             try {
                 JSONObject jsonObject = res.getResult();
                 if (jsonObject.has("zoom")) {
@@ -768,7 +768,8 @@ public class VideoPlayActivity extends BaseActivity
                         int center = (lastVisibleItem - firstVisibleItem) / 2 + firstVisibleItem + 1;
                         TimeBean bs = list.get(center);
                         String str = secondToDate(bs.getDate(), "yyyy-MM-dd HH:mm:ss");
-                        LogCat.e("TAG", "firstVisibleItem=" + firstVisibleItem + " lastVisibleItem=" + lastVisibleItem + "firstVisibleItem: date: " + str);
+                        LogCat.e("TAG", "firstVisibleItem=" + firstVisibleItem +
+                                " lastVisibleItem=" + lastVisibleItem + "firstVisibleItem: date: " + str);
                         linearLayoutManager.scrollToPositionWithOffset(itemPosition++, 0);//
                         tvShow.setText(str);
                         //绘制时间点和偏移量
@@ -885,7 +886,8 @@ public class VideoPlayActivity extends BaseActivity
                     long date = bs.getDate();
                     String str = secondToDate(date, "yyyy-MM-dd HH:mm:ss");
                     String day = str.substring(8, 11);
-                    LogCat.e("TAG", "firstVisibleItem=" + firstVisibleItem + ", lastVisibleItem=" + lastVisibleItem + ", center=" + center + "    date: " + str);
+                    LogCat.e("TAG", "firstVisibleItem=" + firstVisibleItem + ", lastVisibleItem="
+                            + lastVisibleItem + ", center=" + center + "    date: " + str);
                     ivCalender.setText(day);  //滑动停止显示日期
                     toastForShort(VideoPlayActivity.this, str);//toast显示时间
                     canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
@@ -904,7 +906,8 @@ public class VideoPlayActivity extends BaseActivity
                     int center = (lastVisibleItem - firstVisibleItem) / 2 + firstVisibleItem + 1;
                     TimeBean bs = list.get(center);
                     String str = secondToDate(bs.getDate(), "yyyy-MM-dd HH:mm:ss");
-                    LogCat.e("TAG", "firstVisibleItem*** =" + firstVisibleItem + " lastVisibleItem=" + lastVisibleItem + ", center=" + center + "    date: " + str);
+                    LogCat.e("TAG", "firstVisibleItem*** =" + firstVisibleItem + " lastVisibleItem="
+                            + lastVisibleItem + ", center=" + center + "    date: " + str);
 
                     isOnclickScroll = false;
                 }
@@ -1054,6 +1057,5 @@ public class VideoPlayActivity extends BaseActivity
             }
         });
     }
-
 
 }

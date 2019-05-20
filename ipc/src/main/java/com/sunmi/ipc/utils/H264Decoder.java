@@ -64,13 +64,14 @@ public class H264Decoder {
             //第13位标识是视频数据还是头
             boolean isAVC = (data[12] & 0xFF) != 0;
             if (isAVC) {//视频数据
-                byte[] videoData = new byte[data.length - 20];//去掉头20和尾4再加上标准头4  todo oom
+                byte[] videoData = new byte[data.length - 20];//去掉头20和尾4再加上标准头4
                 System.arraycopy(h264Header, 0, videoData, 0, h264Header.length);
                 System.arraycopy(data, 20, videoData, h264Header.length, data.length - 20 - 4);
                 videoDataQueue.put(videoData);
             } else {//头信息
                 decodeHeader(data);
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -82,10 +83,9 @@ public class H264Decoder {
      * 078d3705 06054000 00fa0000 3a9826fa 80010004 68ee1f20 00000038>
      * 23、24位是sps长度，sps数据之后的2、3位是pps长度
      */
-    private void decodeHeader(byte[] data) throws IOException {
+    private void decodeHeader(byte[] data) {
         //初始化编码器
         MediaFormat format = MediaFormat.createVideoFormat("video/avc", VIDEO_WIDTH, VIDEO_HEIGHT);
-
         //获取h264中的pps及sps数据
         int spsLen = byteToInt(new byte[]{data[22], data[23]});
         byte[] spsHeader = new byte[spsLen + 4];
@@ -100,6 +100,14 @@ public class H264Decoder {
         format.setByteBuffer("csd-1", ByteBuffer.wrap(ppsHeader));
         format.setInteger(MediaFormat.KEY_FRAME_RATE, fps);
 
+        try {
+            initMediaCodec(format);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void initMediaCodec(MediaFormat format) throws IOException {
         if (mediaCodec != null) {
             mediaCodec.stop();
             mediaCodec.release();
