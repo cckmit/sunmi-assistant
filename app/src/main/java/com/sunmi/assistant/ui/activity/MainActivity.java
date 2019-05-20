@@ -40,7 +40,6 @@ import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.MyFragmentTabHost;
 
 /**
@@ -84,7 +83,6 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
                         SpUtils.setSsoToken(jsonObject.getString("store_token"));
                         RetrofitClient.createInstance();//初始化retrofit
                         MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
-                        LogCat.e(TAG, "222222 dada" + SpUtils.getSsoToken());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

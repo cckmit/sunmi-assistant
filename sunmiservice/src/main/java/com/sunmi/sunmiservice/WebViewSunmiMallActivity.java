@@ -33,7 +33,7 @@ import sunmi.common.view.webview.SMWebView;
 import sunmi.common.view.webview.SMWebViewClient;
 
 /**
- * Description:
+ * Description:商米商城
  * Created by bruce on 2019/1/23.
  */
 @EActivity(resName = "activity_webview_mall")
@@ -176,15 +176,16 @@ public class WebViewSunmiMallActivity extends BaseActivity
                     view.loadUrl(url);
                 }
                 return true;
-
             }
         });
     }
 
-
     @Override
     public void onProgressChanged(int progress) {
-
+        if (progress < 100)
+            showLoadingDialog();
+        else
+            hideLoadingDialog();
     }
 
     @Override
@@ -207,4 +208,5 @@ public class WebViewSunmiMallActivity extends BaseActivity
         }
         super.onBackPressed();
     }
+
 }

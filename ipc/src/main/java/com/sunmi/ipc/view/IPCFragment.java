@@ -67,9 +67,10 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
     //当前播放到的视频段落数
     private int currentVideoIndex;
 
-//    private static String UID = "C3YABT1MPRV4BM6GUHXJ";//ss
+    //    private static String UID = "C3YABT1MPRV4BM6GUHXJ";//ss
     // private static String  UID = "CVYA8T1WKFV49NPGYHRJ";//fs
-    private static String UID = "CRYUBT1WKFV4UM6GUH71";//ss - shenzhen
+    private static String UID = "CRYUBT1WKFV4UM6GUH71";//ss - shenzhen yangfeng
+//    private static String UID = "EFKUA51CZVBW8NPGUHZJ";//ss - shenzhen ceshi
 // private static String     UID = "CBKA9T14URBC8MPGYHZJ";//fs
 
     @AfterViews
@@ -79,27 +80,11 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         surfaceHolder = surface.getHolder();// SurfaceHolder是SurfaceView的控制接口
         surfaceHolder.addCallback(this); // 因为这个类实现了SurfaceHolder.Callback接口，所以回调参数直接this
-//        getVideoUrls();
-
-//        bottom_bar_layout = (LinearLayout) findViewById(R.id.live_buttom_bar);
-//        //点击屏幕任何地点，控制底部聊天栏的隐藏或显示
-//        video_layout = (FrameLayout) findViewById(R.id.videoLayout);
-//        video_layout.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View arg0) {
-//                if (bottom_bar_layout.getVisibility() == View.VISIBLE) {
-//                    bottom_bar_layout.setVisibility(View.GONE);
-//                } else {
-//                    bottom_bar_layout.setVisibility(View.VISIBLE);
-//                }
-//            }
-//        });
     }
 
     @Click(resName = "btn_play")
     void playClick() {
-//        etUid.setText(UID);
+        etUid.setText(UID);
         if (etUid == null || TextUtils.isEmpty(etUid.getText().toString().trim())) {
             shortTip("请输入uid");
             return;
@@ -116,9 +101,7 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
     // http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/25_50.mp4
     @Click(resName = "btn_pause")
     void pauseClick() {
-//        videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/abcdefghijklmn.flv");
-//        videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/D222066BBD2EACA182EA444D90CAF621.flv");
-//        initFirstPlayer();
+
     }
 
     @Click(resName = "btn_unbind")
@@ -162,22 +145,18 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
 
     @Override
     public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
-        // TODO 自动生成的方法存根
-
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder arg0) {
         //surfaceView创建完毕后，首先获取该直播间所有视频分段的url
 //        getVideoUrls();
-        //然后初始化播放手段视频的player对象
+//        然后初始化播放手段视频的player对象
 //        initFirstPlayer();
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder arg0) {
-        // TODO 自动生成的方法存根
-
     }
 
     /*
@@ -273,10 +252,9 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
     }
 
     private void getVideoUrls() {
-        videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/0_25.mp4");
-        videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/25_50.mp4");
-        videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/0_25.mp4");
-        videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/25_50.mp4");
+        videoListQueue.add("https://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/0_20.mp4");
+        videoListQueue.add("https://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/20_40.mp4");
+        videoListQueue.add("https://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/40_60.mp4");
     }
 
     //    /*
