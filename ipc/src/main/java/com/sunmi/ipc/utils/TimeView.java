@@ -19,6 +19,7 @@ import java.util.List;
 public class TimeView extends View {
     private List<String> list;
     private int x;//距离第一个长竖线的时间偏移量
+    private int mX;//临时绘制的间距值
 
     // 定义画笔
     private Paint mPaint;
@@ -45,8 +46,6 @@ public class TimeView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         // 绘制背景的填充色
-//        mPaint.setColor(Color.WHITE);
-//        mPaint.setColor(Color.BLACK);
         mPaint.setColor(Color.TRANSPARENT);
         // 绘制一个填充色的矩形
         canvas.drawRect(0, 0, getWidth(), getHeight(), mPaint);
@@ -54,13 +53,15 @@ public class TimeView extends View {
         //绘制文本颜色
         mPaint.setColor(Color.WHITE);
         mPaint.setTextSize(30);
-
         // 初始化第一个小时的偏移量
         if (list == null || list.size() == 0) return;
         x = -hourOffset + x;
-        //x += -hourOffset;
-        Log.i("TAG", "x=" + x + "  hourOffset=" + hourOffset);
-        if (x > 0) return;
+        //Log.i("TAG", "x=" + x + "  hourOffset=" + hourOffset + " ， list =" + list.size());
+        if (x > 0) {
+            x = mX;
+        } else if (x < 0) {
+            mX = x;//当绘制小于0的时候赋值
+        }
         for (int i = 0; i < list.size(); i++) {
             // 获取文本
             String timeText = list.get(i);
