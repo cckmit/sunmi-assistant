@@ -84,7 +84,7 @@ public class H264Decoder {
      * 23、24位是sps长度，sps数据之后的2、3位是pps长度
      */
     private void decodeHeader(byte[] data) {
-        //初始化编码器
+        //初始化解码器
         MediaFormat format = MediaFormat.createVideoFormat("video/avc", VIDEO_WIDTH, VIDEO_HEIGHT);
         //获取h264中的pps及sps数据
         int spsLen = byteToInt(new byte[]{data[22], data[23]});
@@ -99,7 +99,6 @@ public class H264Decoder {
         format.setByteBuffer("csd-0", ByteBuffer.wrap(spsHeader));
         format.setByteBuffer("csd-1", ByteBuffer.wrap(ppsHeader));
         format.setInteger(MediaFormat.KEY_FRAME_RATE, fps);
-
         try {
             initMediaCodec(format);
         } catch (IOException e) {

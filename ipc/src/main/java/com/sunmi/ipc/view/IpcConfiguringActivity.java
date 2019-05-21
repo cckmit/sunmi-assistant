@@ -7,8 +7,8 @@ import android.text.TextUtils;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;
-import com.sunmi.ipc.contract.WifiConfiguringContract;
-import com.sunmi.ipc.presenter.WifiConfiguringPresenter;
+import com.sunmi.ipc.contract.IpcConfiguringContract;
+import com.sunmi.ipc.presenter.IpcConfiguringPresenter;
 import com.sunmi.ipc.rpc.IpcConstants;
 
 import org.androidannotations.annotations.AfterViews;
@@ -35,8 +35,8 @@ import sunmi.common.view.dialog.CommonDialog;
  * Created by Bruce on 2019/3/31.
  */
 @EActivity(resName = "activity_ipc_configuring")
-public class IpcConfiguringActivity extends BaseMvpActivity<WifiConfiguringPresenter>
-        implements WifiConfiguringContract.View {
+public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresenter>
+        implements IpcConfiguringContract.View {
     @ViewById(resName = "tv_tip")
     TextView tvTip;
 
@@ -50,7 +50,7 @@ public class IpcConfiguringActivity extends BaseMvpActivity<WifiConfiguringPrese
 
     @AfterViews
     void init() {
-        mPresenter = new WifiConfiguringPresenter();
+        mPresenter = new IpcConfiguringPresenter();
         mPresenter.attachView(this);
         tvTip.setText(Html.fromHtml(getString(R.string.tip_keep_same_network)));
         bind();
@@ -83,7 +83,7 @@ public class IpcConfiguringActivity extends BaseMvpActivity<WifiConfiguringPrese
                     }
                     configComplete();
                 }
-            }, 10000);
+            }, 30000);
         }
     }
 

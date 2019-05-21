@@ -34,7 +34,6 @@ import com.sunmi.ipc.model.TimeBean;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.utils.AACDecoder;
-import com.sunmi.ipc.utils.AudioMngHelper;
 import com.sunmi.ipc.utils.H264Decoder;
 import com.sunmi.ipc.utils.IOTCClient;
 import com.sunmi.ipc.utils.TimeView;
@@ -64,6 +63,7 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.ThreadPool;
+import sunmi.common.utils.VolumeHelper;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.VerticalSeekBar;
 
@@ -77,6 +77,8 @@ public class VideoPlayActivity extends BaseActivity
         SeekBar.OnSeekBarChangeListener, OnSureLisener {
     @ViewById(resName = "vv_ipc")
     SurfaceView videoView;
+    @ViewById(resName = "rl_control_panel")
+    RelativeLayout rlControlPanel;
     @ViewById(resName = "sb_zoom")
     SeekBar sbZoom;
     @ViewById(resName = "sBar_voice")
@@ -120,27 +122,26 @@ public class VideoPlayActivity extends BaseActivity
 
     @Extra
     String UID;
+
     //手机屏幕的宽高
     private int screenW, screenH;
-    private float currX = 540, currY = 860;
 
-    int currZoom, currFocus;
+    private int currFocus;
 
-    private H264Decoder mPlayer = null;
-    private AACDecoder mAudioPlayer = null;
-
-    private AudioMngHelper audioMngHelper = null;
-    private boolean isStartRecord;//是否开始录制
-    private boolean isShowVolume;//是否显示音量调控
-    private boolean isShowQuality;//是否画质
-    private boolean isClickScreen;//是否点击屏幕
-    private boolean isStartPlay;//是否开始播放
-    private boolean isCurrentPlayBack;//是否正在回放
-
-    //
-    private LinearLayoutManager linearLayoutManager;
     //获取recyclerView width
     private int rvWidth;
+
+    private H264Decoder videoDecoder = null;
+    private AACDecoder audioDecoder = null;
+    private VolumeHelper volumeHelper = null;
+    private LinearLayoutManager linearLayoutManager;
+
+    private boolean isStartRecord;//是否开始录制
+    private boolean isControlPanelShow;//是否点击屏幕
+    private boolean isPaused;//回放是否暂停
+    private boolean isPlayBack;//是否正在回放
+    private int qualityType = 0;
+
     //日历
     private Calendar calendar;
     //选择视频日期列表
@@ -161,12 +162,9 @@ public class VideoPlayActivity extends BaseActivity
     private boolean isOnclickScroll;
     //刻度尺移动定时器
     private Timer moveTimer;
-    //可见第一个item距离第一个可见长条小时的偏移量
-    private int offsetPx;
-
 
     //用于播放视频的mediaPlayer对象
-    private MediaPlayer firstPlayer,     //负责播放进入视频播放界面后的第一段视频
+    private MediaPlayer firstPlayer,//负责播放进入视频播放界面后的第一段视频
             nextMediaPlayer, //负责一段视频播放结束后，播放下一段视频
             cachePlayer,     //负责setNextMediaPlayer的player缓存对象
             currentPlayer;   //负责当前播放视频段落的player对象
@@ -178,14 +176,12 @@ public class VideoPlayActivity extends BaseActivity
     //当前播放到的视频段落数
     private int currentVideoIndex;
 
-
     @AfterViews
     void init() {
         //保持屏幕常亮
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//隐藏状态栏
-        //getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN) ;//显示状态栏
         screenW = CommonHelper.getScreenWidth(context);
         screenH = CommonHelper.getScreenHeight(context);
         sbZoom.setOnSeekBarChangeListener(this);
@@ -203,18 +199,15 @@ public class VideoPlayActivity extends BaseActivity
 
         //设置播放器的宽高
         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
-        lp.height = lp.width = CommonHelper.getScreenHeight(context);//设置等宽
-//        lp.width = screenW;//屏幕宽高
-//        lp.height = screenH;
+        lp.width = isSS1() ? screenH : screenW;
+        lp.height = screenH;
         videoView.setLayoutParams(lp);
 
         //回调
         IOTCClient.setCallback(this);
         surfaceHolder = videoView.getHolder();// SurfaceHolder是SurfaceView的控制接口
         surfaceHolder.addCallback(this); // 因为这个类实现了SurfaceHolder.Callback接口，所以回调参数直接this
-        //videoView.getHolder().addCallback(this);
-        mAudioPlayer = new AACDecoder();
-//        IPCCall.getInstance().fsGetStatus(context);//fs
+        audioDecoder = new AACDecoder();
 
         //直播
         initP2pLive();
@@ -223,9 +216,23 @@ public class VideoPlayActivity extends BaseActivity
         initGetVolume();
     }
 
+    private boolean isSS1() {
+        return true;//todo
+    }
+
     @Override
     protected boolean needLandscape() {
         return true;
+    }
+
+    //开始直播
+    void initP2pLive() {
+        ThreadPool.getCachedThreadPool().submit(new Runnable() {
+            @Override
+            public void run() {
+                IOTCClient.init(UID);
+            }
+        });
     }
 
     @Override
@@ -240,18 +247,7 @@ public class VideoPlayActivity extends BaseActivity
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-        LogCat.e(TAG, "666666 seekBar.getProgress() = " + seekBar.getProgress());
         IPCCall.getInstance().fsZoom(seekBar.getProgress(), context);
-    }
-
-    //开始直播
-    void initP2pLive() {
-        ThreadPool.getCachedThreadPool().submit(new Runnable() {
-            @Override
-            public void run() {
-                IOTCClient.init(UID);
-            }
-        });
     }
 
     @Click(resName = "tv_add")
@@ -286,14 +282,16 @@ public class VideoPlayActivity extends BaseActivity
         }
         //        IPCCall.getInstance().fsReset(context);
         IPCCall.getInstance().fsIrMode(0, context);
+        float currX = 540;
         shortTip("x = " + (int) currX * 100 / screenW);
+        float currY = 860;
         shortTip("y = " + (int) currY * 100 / screenH);
         IPCCall.getInstance().fsSetFocusPoint((int) currX * 100 / screenW, (int) currY * 100 / screenH, context);
     }
 
     @Click(resName = "rl_video_back")
     void backClick() {
-        this.finish();
+        onBackPressed();
     }
 
     //视频录制
@@ -312,90 +310,60 @@ public class VideoPlayActivity extends BaseActivity
         }
     }
 
-    //开始计时录制
-    private void startRecord() {
-        cmTimer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
-            @Override
-            public void onChronometerTick(Chronometer cArg) {
-                long time = System.currentTimeMillis() - cArg.getBase();
-                Date d = new Date(time);
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.US);
-                sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-                cmTimer.setText(sdf.format(d));
-            }
-        });
-        cmTimer.setBase(System.currentTimeMillis());
-        cmTimer.start();
-    }
-
-    //获取当前音量
-    private void initGetVolume() {
-        int currentVolume100 = audioMngHelper.get100CurrentVolume();
-        if (currentVolume100 == 0) {
-            ivVolume.setBackgroundResource(R.mipmap.ic_muse);
-        } else {
-            ivVolume.setBackgroundResource(R.mipmap.ic_volume);
-        }
-    }
-
     //音量
     @Click(resName = "iv_volume")
     void volumeClick() {
-        if (isShowVolume) {
+        if (llChangeVolume.isShown()) {
             llChangeVolume.setVisibility(View.GONE);
-            isShowVolume = false;
         } else {
             llChangeVolume.setVisibility(View.VISIBLE);
-            //获取当前音量
-            int currentVolume100 = audioMngHelper.get100CurrentVolume();
+            int currentVolume100 = volumeHelper.get100CurrentVolume();//获取当前音量
+            sBarVoice.setProgress(currentVolume100);
             if (currentVolume100 == 0) {
                 ivVolume.setBackgroundResource(R.mipmap.ic_muse);
             } else {
                 ivVolume.setBackgroundResource(R.mipmap.ic_volume);
             }
-            sBarVoice.setProgress(currentVolume100);
-            isShowVolume = true;
         }
     }
 
     //画质
     @Click(resName = "tv_quality")
     void qualityClick() {
-        if (isShowQuality) {
-            llVideoQuality.setVisibility(View.GONE);
-            isShowQuality = false;
+        if (isPlayBack) return;
+        llVideoQuality.setVisibility(llVideoQuality.isShown() ? View.GONE : View.VISIBLE);
+        if (qualityType == 0) {
+            tvHDQuality.setTextColor(getResources().getColor(R.color.colorOrange));
+            tvSDQuality.setTextColor(getResources().getColor(R.color.c_white));
         } else {
-            llVideoQuality.setVisibility(View.VISIBLE);
-            isShowQuality = true;
+            tvHDQuality.setTextColor(getResources().getColor(R.color.c_white));
+            tvSDQuality.setTextColor(getResources().getColor(R.color.colorOrange));
         }
     }
 
     //高清画质
     @Click(resName = "tv_hd_quality")
     void hdQualityClick() {
-        llVideoQuality.setVisibility(View.GONE);
-        isShowQuality = false;
         tvQuality.setText(R.string.str_HD);
+        changeQuality(0);
     }
-
-    int valueType = 0;
 
     //标清画质
     @Click(resName = "tv_sd_quality")
     void sdQualityClick() {
-        llVideoQuality.setVisibility(View.GONE);
-        isShowQuality = false;
         tvQuality.setText(R.string.str_SD);
-        valueType = valueType == 0 ? 1 : 0;
-        LogCat.e(TAG, "11111111 va" + valueType);
-        IOTCClient.changeValue(valueType);
+        changeQuality(1);
     }
-
-    boolean isPaused;
 
     //开始，暂停
     @Click(resName = "iv_play")
     void playLiveClick() {
+        if (!isPlayBack) return;
+        if (isFastClick(1000)) return;
+        if (isPaused)
+            ivPlay.setBackgroundResource(R.mipmap.play_normal);
+        else
+            ivPlay.setBackgroundResource(R.mipmap.pause_normal);
         IOTCClient.pausePlayback(isPaused);
         isPaused = !isPaused;
     }
@@ -404,6 +372,7 @@ public class VideoPlayActivity extends BaseActivity
     @Click(resName = "iv_live")
     void playApBackClick() {
         ivPlay.setBackgroundResource(R.mipmap.play_disable);
+        isPlayBack = false;
         IOTCClient.startPlay();
     }
 
@@ -430,29 +399,51 @@ public class VideoPlayActivity extends BaseActivity
     //点击屏幕
     @Click(resName = "rl_screen")
     void screenClick() {
-        if (isClickScreen) {
-            rlTopSetting.setVisibility(View.VISIBLE);
-            ivRecord.setVisibility(View.VISIBLE);
-            ivScreenshot.setVisibility(View.VISIBLE);
-            ivLive.setVisibility(View.VISIBLE);
-            rlBottomSetting.setVisibility(View.VISIBLE);
-
-            isClickScreen = false;
-        } else {
-            rlTopSetting.setVisibility(View.GONE);
-            ivRecord.setVisibility(View.GONE);
-            ivScreenshot.setVisibility(View.GONE);
-            ivLive.setVisibility(View.GONE);
-            rlBottomSetting.setVisibility(View.GONE);
+        if (isControlPanelShow) {
+            rlControlPanel.setVisibility(View.GONE);
             //音量
             llChangeVolume.setVisibility(View.GONE);
-            isShowVolume = false;
             //画质
             llVideoQuality.setVisibility(View.GONE);
-            isShowQuality = false;
-
-            isClickScreen = true;
+            isControlPanelShow = false;
+        } else {
+            rlControlPanel.setVisibility(View.VISIBLE);
+            isControlPanelShow = true;
         }
+    }
+
+    //开始计时录制
+    private void startRecord() {
+        cmTimer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+            @Override
+            public void onChronometerTick(Chronometer cArg) {
+                long time = System.currentTimeMillis() - cArg.getBase();
+                Date d = new Date(time);
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.US);
+                sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                cmTimer.setText(sdf.format(d));
+            }
+        });
+        cmTimer.setBase(System.currentTimeMillis());
+        cmTimer.start();
+    }
+
+    //获取当前音量
+    private void initGetVolume() {
+        int currentVolume100 = volumeHelper.get100CurrentVolume();
+        if (currentVolume100 == 0) {
+            ivVolume.setBackgroundResource(R.mipmap.ic_muse);
+        } else {
+            ivVolume.setBackgroundResource(R.mipmap.ic_volume);
+        }
+    }
+
+    private void changeQuality(int type) {
+        llVideoQuality.setVisibility(View.GONE);
+        if (type == qualityType) return;
+        qualityType = qualityType == 0 ? 1 : 0;
+        LogCat.e(TAG, "11111111 va" + qualityType);
+        IOTCClient.changeValue(qualityType);
     }
 
     //*********************************************************************
@@ -466,8 +457,8 @@ public class VideoPlayActivity extends BaseActivity
         firstPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         firstPlayer.setDisplay(surfaceHolder);
 
-        firstPlayer
-                .setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        firstPlayer.setOnCompletionListener(
+                new MediaPlayer.OnCompletionListener() {
                     @Override
                     public void onCompletion(MediaPlayer mp) {
                         onVideoPlayCompleted(mp);
@@ -498,17 +489,14 @@ public class VideoPlayActivity extends BaseActivity
      */
     private void initNexttPlayer() {
         new Thread(new Runnable() {
-
             @Override
             public void run() {
-
                 for (int i = 1; i < videoListQueue.size(); i++) {
                     nextMediaPlayer = new MediaPlayer();
-                    nextMediaPlayer
-                            .setAudioStreamType(AudioManager.STREAM_MUSIC);
+                    nextMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
-                    nextMediaPlayer
-                            .setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    nextMediaPlayer.setOnCompletionListener(
+                            new MediaPlayer.OnCompletionListener() {
                                 @Override
                                 public void onCompletion(MediaPlayer mp) {
                                     onVideoPlayCompleted(mp);
@@ -529,9 +517,7 @@ public class VideoPlayActivity extends BaseActivity
                     cachePlayer = nextMediaPlayer;
                     //put nextMediaPlayer in cache
                     playersCache.put(String.valueOf(i), nextMediaPlayer);
-
                 }
-
             }
         }).start();
     }
@@ -588,13 +574,12 @@ public class VideoPlayActivity extends BaseActivity
         currentPlayer = null;
     }
 
-
     //***********************云端回放***************************************!
     //*********************************************************************
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        mPlayer = new H264Decoder(holder.getSurface(), 0);
+        videoDecoder = new H264Decoder(holder.getSurface(), 0);
 
         //surfaceView创建完毕后，首先获取该直播间所有视频分段的url
 //        getVideoUrls();
@@ -610,21 +595,21 @@ public class VideoPlayActivity extends BaseActivity
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         //关闭操作
-        if (mPlayer != null) {
-            mPlayer.stopRunning();
-            mPlayer = null;
+        if (videoDecoder != null) {
+            videoDecoder.stopRunning();
+            videoDecoder = null;
         }
     }
 
     @Override
     public void onVideoReceived(byte[] videoBuffer) {
-        if (mPlayer != null)
-            mPlayer.setVideoData(videoBuffer);
+        if (videoDecoder != null)
+            videoDecoder.setVideoData(videoBuffer);
     }
 
     @Override
     public void onAudioReceived(byte[] audioBuffer) {
-        mAudioPlayer.setAudioData(audioBuffer);
+        audioDecoder.setAudioData(audioBuffer);
     }
 
     @Override
@@ -649,7 +634,7 @@ public class VideoPlayActivity extends BaseActivity
             try {
                 JSONObject jsonObject = res.getResult();
                 if (jsonObject.has("zoom")) {
-                    currZoom = jsonObject.getInt("zoom");
+                    int currZoom = jsonObject.getInt("zoom");
                     setSeekBarProgress(currZoom);
                 }
                 if (jsonObject.has("focus")) {
@@ -667,10 +652,10 @@ public class VideoPlayActivity extends BaseActivity
 
     //调节音量
     private void adjustVoice() {
-        audioMngHelper = new AudioMngHelper(this);
-        //int systemCurrent = audioMngHelper.getSystemCurrentVolume();
-        //int systemMax = audioMngHelper.getSystemMaxVolume();
-        int currentVolume100 = audioMngHelper.get100CurrentVolume();
+        volumeHelper = new VolumeHelper(this);
+        //int systemCurrent = volumeHelper.getSystemCurrentVolume();
+        //int systemMax = volumeHelper.getSystemMaxVolume();
+        int currentVolume100 = volumeHelper.get100CurrentVolume();
         sBarVoice.setMax(100);
         sBarVoice.setProgress(currentVolume100);
         sBarVoice.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -681,7 +666,7 @@ public class VideoPlayActivity extends BaseActivity
                 } else {
                     ivVolume.setBackgroundResource(R.mipmap.ic_volume);
                 }
-                audioMngHelper.setVoice100(progress);
+                volumeHelper.setVoice100(progress);
             }
 
             @Override
@@ -699,9 +684,8 @@ public class VideoPlayActivity extends BaseActivity
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
             llChangeVolume.setVisibility(View.GONE);
-            isShowVolume = false;
             //获取当前音量
-            int currentVolume100 = audioMngHelper.get100CurrentVolume();
+            int currentVolume100 = volumeHelper.get100CurrentVolume();
             if (currentVolume100 == 0) {
                 ivVolume.setBackgroundResource(R.mipmap.ic_muse);
             } else {
@@ -710,7 +694,6 @@ public class VideoPlayActivity extends BaseActivity
             return false;
         } else return super.onKeyDown(keyCode, event);
     }
-
 
     @Override
     protected void onResume() {
@@ -804,7 +787,6 @@ public class VideoPlayActivity extends BaseActivity
                 list.add(bean);
             }
         }
-
         return list;
     }
 
@@ -820,7 +802,6 @@ public class VideoPlayActivity extends BaseActivity
         DateAdapter adapter = new DateAdapter(list);
         recyclerView.setAdapter(adapter);
     }
-
 
     //选择日历日期回调
     @Override
@@ -859,14 +840,13 @@ public class VideoPlayActivity extends BaseActivity
                 rvWidth = recyclerView.getWidth();
             }
         });
-
     }
 
     //滑动选择日期的0点
     private void scrollSelectedDate0AM() {
 //        isOnclickScroll = true;
         //滚动到中间
-        long leftToCenterMinutes = CommonHelper.px2dp(this, screenW / 2);//中间距离左侧屏幕的分钟
+        long leftToCenterMinutes = CommonHelper.px2dp(this, rvWidth / 2);//中间距离左侧屏幕的分钟
         long threeDaysBeforeDate = 3 * 24 * 60;//3天分钟数
         linearLayoutManager.scrollToPositionWithOffset((int) (threeDaysBeforeDate - leftToCenterMinutes), 0);
     }
@@ -924,7 +904,8 @@ public class VideoPlayActivity extends BaseActivity
         String str = secondToDate(bs.getDate(), "HH:mm:ss");
         int hour = Integer.valueOf(str.substring(0, 2));
         int minute = Integer.valueOf(str.substring(3, 5));
-        offsetPx = 0;//第一个小时的偏移量
+        //可见第一个item距离第一个可见长条小时的偏移量
+        int offsetPx = 0;
         if (minute == 0) {
             offsetPx = 0;
         } else {

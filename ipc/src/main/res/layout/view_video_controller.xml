@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:id="@+id/rl_control_panel"
     android:layout_height="match_parent"
     android:background="@color/transparent">
 
@@ -65,7 +66,8 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_25"
-        android:background="@mipmap/ic_live" />
+        android:background="@mipmap/ic_live"
+        android:visibility="gone" />
 
     <!--加载动画-->
     <LinearLayout
