@@ -39,6 +39,7 @@ import com.sunmi.ipc.utils.IOTCClient;
 import com.sunmi.ipc.utils.TimeView;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
@@ -63,7 +64,6 @@ import java.util.TimerTask;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.CommonHelper;
-import sunmi.common.utils.ThreadPool;
 import sunmi.common.utils.VolumeHelper;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.VerticalSeekBar;
@@ -139,9 +139,9 @@ public class VideoPlayActivity extends BaseActivity
 
     private boolean isStartRecord;//是否开始录制
     private boolean isControlPanelShow;//是否点击屏幕
-    private boolean isPaused;//回放是否暂停
     private boolean isPlayBack;//是否正在回放
-    private int qualityType = 0;
+    private boolean isPaused;//回放是否暂停
+    private int qualityType = 0;//0-高清，1-标清
 
     //日历
     private Calendar calendar;
@@ -215,8 +215,6 @@ public class VideoPlayActivity extends BaseActivity
         surfaceHolder.addCallback(this); // 因为这个类实现了SurfaceHolder.Callback接口，所以回调参数直接this
         audioDecoder = new AACDecoder();
 
-        //直播
-        initP2pLive();
         //初始化音量
         adjustVoice();
         initGetVolume();
@@ -232,13 +230,9 @@ public class VideoPlayActivity extends BaseActivity
     }
 
     //开始直播
+    @Background
     void initP2pLive() {
-        ThreadPool.getCachedThreadPool().submit(new Runnable() {
-            @Override
-            public void run() {
-                IOTCClient.init(UID);
-            }
-        });
+        IOTCClient.init(UID);
     }
 
     @Override
@@ -417,10 +411,8 @@ public class VideoPlayActivity extends BaseActivity
     void screenClick() {
         if (isControlPanelShow) {
             rlControlPanel.setVisibility(View.GONE);
-            //音量
-            llChangeVolume.setVisibility(View.GONE);
-            //画质
-            llVideoQuality.setVisibility(View.GONE);
+            llChangeVolume.setVisibility(View.GONE);//音量
+            llVideoQuality.setVisibility(View.GONE);//画质
             isControlPanelShow = false;
         } else {
             rlControlPanel.setVisibility(View.VISIBLE);
@@ -596,7 +588,7 @@ public class VideoPlayActivity extends BaseActivity
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         videoDecoder = new H264Decoder(holder.getSurface(), 0);
-
+        initP2pLive();
         //surfaceView创建完毕后，首先获取该直播间所有视频分段的url
 //        getVideoUrls();
 ////        //然后初始化播放手段视频的player对象
@@ -709,11 +701,6 @@ public class VideoPlayActivity extends BaseActivity
             }
             return false;
         } else return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     @Override
