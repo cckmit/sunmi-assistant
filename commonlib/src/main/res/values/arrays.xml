@@ -3,5 +3,6 @@
     <string-array name="sunmi_devices">
         <item>W1路由器</item>
         <!--<item>摄像头</item>-->
+        <!--<item>打印机</item>-->
     </string-array>
 </resources>

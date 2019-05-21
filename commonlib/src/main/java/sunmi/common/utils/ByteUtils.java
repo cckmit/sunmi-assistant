@@ -1,5 +1,9 @@
 package sunmi.common.utils;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+
 /**
  * Description:
  * Created by bruce on 2019/4/1.
@@ -66,6 +70,15 @@ public class ByteUtils {
         targets[0] = (byte) (i >> 8 & 0xFF);
         targets[1] = (byte) (i & 0xFF);
         return targets;
+    }
+
+    public static String byte2String(byte[] bytes) {
+        Charset cs = Charset.forName("UTF-8");
+        ByteBuffer bb = ByteBuffer.allocate(bytes.length);
+        bb.put(bytes);
+        bb.flip();
+        CharBuffer cb = cs.decode(bb);
+        return cb.toString();
     }
 
 }

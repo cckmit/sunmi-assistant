@@ -90,7 +90,7 @@ repositories {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    //implementation fileTree(include: ['*.aar'], dir: 'libs')//不要提交！！！
+//    implementation fileTree(include: ['*.aar'], dir: 'libs')//不要提交！！！
     implementation project(':apmanager')//不要提交！！！
 
     implementation project(':commonlib')//公共库

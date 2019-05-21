@@ -10,14 +10,15 @@ import sunmi.common.base.BaseConfig;
  */
 public class IpcConfig extends BaseConfig {
     public static String IPC_CLOUD_URL = "";
-    public static String MQTT_HOST = "";
-    public static String MQTT_PORT = "";
+//    public static String MQTT_HOST = "";
+//    public static String MQTT_PORT = "";
 
     @Override
     protected void initDev(Context context, String env) {
-        IPC_CLOUD_URL = "http://47.96.240.44:35150/";
-        MQTT_HOST = "47.96.240.44";
-        MQTT_PORT = "30412";
+        IPC_CLOUD_URL = "http://dev-store.sunmi.com:30301/";
+//        IPC_CLOUD_URL = "http://47.96.240.44:35150/";
+//        MQTT_HOST = "47.96.240.44";
+//        MQTT_PORT = "30412";
     }
 
     @Override
@@ -25,16 +26,18 @@ public class IpcConfig extends BaseConfig {
 //        IPC_CLOUD_URL = "http://47.96.240.44:35150/";
 //        MQTT_HOST = "47.96.240.44";
 //        MQTT_PORT = "30412";
-        IPC_CLOUD_URL = "http://47.99.16.199:30401/";
-        MQTT_HOST = "47.99.16.199";
-        MQTT_PORT = "30412";
+        IPC_CLOUD_URL = "http://test-store.sunmi.com:30301/";
+//        IPC_CLOUD_URL = "http://test-store.sunmi.com:30301/";
+//        IPC_CLOUD_URL = "http://47.99.16.199:30401/";
+//        MQTT_HOST = "47.99.16.199";
+//        MQTT_PORT = "30412";
     }
 
     @Override
     protected void initRelease(Context context, String env) {
         IPC_CLOUD_URL = "http://47.99.16.199:30401/";
-        MQTT_HOST = "47.99.16.199";
-        MQTT_PORT = "30412";
+//        MQTT_HOST = "47.99.16.199";
+//        MQTT_PORT = "30412";
     }
 
 }

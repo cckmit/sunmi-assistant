@@ -1,5 +1,9 @@
 package com.sunmi.sunmiservice;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.net.Uri;
+import android.text.TextUtils;
 import android.view.View;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -9,10 +13,17 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alipay.sdk.app.H5PayCallback;
+import com.alipay.sdk.app.PayTask;
+import com.alipay.sdk.util.H5PayResultModel;
+
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.utils.NetworkUtils;
@@ -22,7 +33,7 @@ import sunmi.common.view.webview.SMWebView;
 import sunmi.common.view.webview.SMWebViewClient;
 
 /**
- * Description:
+ * Description:商米商城
  * Created by bruce on 2019/1/23.
  */
 @EActivity(resName = "activity_webview_mall")
@@ -39,14 +50,14 @@ public class WebViewSunmiMallActivity extends BaseActivity
     RelativeLayout rlNetException;
 
     @Extra
-    String url;
+    String mUrl;
 
     @AfterViews
     protected void init() {
         setStatusHeight();
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
         initWebView();
-        webView.loadUrl(url);
+        webView.loadUrl(mUrl);
     }
 
     private void setStatusHeight() {
@@ -65,20 +76,24 @@ public class WebViewSunmiMallActivity extends BaseActivity
         return result;
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private void initWebView() {
-        final WebSettings webSetting = webView.getSettings();
-        webSetting.setJavaScriptEnabled(true);
-        webSetting.setAllowUniversalAccessFromFileURLs(true);
-        webSetting.setDefaultTextEncodingName("utf-8");
-        webSetting.setSupportZoom(false);
-        webSetting.setDomStorageEnabled(true);
-        webSetting.setBuiltInZoomControls(true);
-        webSetting.setUseWideViewPort(true);
-        webSetting.setLoadsImagesAutomatically(true);
-        webSetting.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
-        webSetting.setBlockNetworkImage(true);//同步请求图片
-        webSetting.setAllowFileAccess(true);// 设置允许访问文件数据
-        webSetting.setLoadWithOverviewMode(true);
+        final WebSettings webSettings = webView.getSettings();
+        webSettings.setDomStorageEnabled(true);//设置DOM Storage缓存
+        webSettings.setDatabaseEnabled(true);//设置可使用数据库
+        webSettings.setJavaScriptEnabled(true);//支持js脚本
+        webSettings.setUseWideViewPort(true);//将图片调整到适合webview的大小
+        webSettings.setSupportZoom(false);//支持缩放
+        webSettings.setBuiltInZoomControls(false);//支持缩放
+        webSettings.setSupportMultipleWindows(false);//多窗口
+        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);//关闭webview中缓存
+        webSettings.setAllowFileAccess(true);//设置可以访问文件
+        webSettings.setNeedInitialFocus(true);//当webview调用requestFocus时为webview设置节点
+        webSettings.setJavaScriptCanOpenWindowsAutomatically(true);//支持通过JS打开新窗口
+        webSettings.setLoadsImagesAutomatically(true);//支持自动加载图片N
+        webSettings.setGeolocationEnabled(true);//启用地理定位
+        webSettings.setAllowFileAccessFromFileURLs(true);//使用允许访问文件的urls
+        webSettings.setAllowUniversalAccessFromFileURLs(true);//使用允许访问文件的urls
 
         JSCall jsCall = new JSCall(this, webView);
         webView.addJavascriptInterface(jsCall, SsConstants.JS_INTERFACE_NAME);
@@ -101,17 +116,76 @@ public class WebViewSunmiMallActivity extends BaseActivity
                         webView.setVisibility(View.VISIBLE);
                         view.clearCache(true);
                         view.clearHistory();
-                        webView.loadUrl(url);
+                        webView.loadUrl(mUrl);
                     }
                 });
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(final WebView view, String url) {
+                //微信支付
+                if (url.startsWith("weixin://wap/pay?")) {
+                    try {
+                        Intent intent = new Intent();
+                        intent.setAction(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(url));
+                        startActivity(intent);
+                    } catch (Exception e) {
+                        view.goBack();
+                        shortTip(R.string.tip_wechat_not_installed);
+                    }
+                    return true;
+                } else if (url.startsWith("https://wx.tenpay.com")) {
+                    //H5微信支付要用，不然说"商家参数格式有误"
+                    Map<String, String> extraHeaders = new HashMap<String, String>();
+                    extraHeaders.put("Referer", mUrl);//商户申请H5时提交的授权域名
+                    view.loadUrl(url, extraHeaders);
+                    return true;
+                }
+                //支付宝
+                final PayTask payTask = new PayTask(WebViewSunmiMallActivity.this);
+                boolean isIntercepted = payTask.payInterceptorWithUrl(url, true, new H5PayCallback() {
+                    @Override
+                    public void onPayResult(H5PayResultModel result) {
+                        final String url = result.getReturnUrl();
+                        if (!TextUtils.isEmpty(url)) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    view.loadUrl(url);
+                                }
+                            });
+                        }
+                        // 5000支付失败 6001重复请求 6002中途取消
+                        if ("5000".equals(result.getResultCode()) || "6001".equals(result.getResultCode())
+                                || "6002".equals(result.getResultCode())) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    view.goBack();
+                                }
+                            });
+                        }
+                    }
+                });
+
+                if (!isIntercepted) {
+                    if (!(url.startsWith("http") || url.startsWith("https"))) {
+                        return true;
+                    }
+                    view.loadUrl(url);
+                }
+                return true;
             }
         });
     }
 
-
     @Override
     public void onProgressChanged(int progress) {
-
+        if (progress < 100)
+            showLoadingDialog();
+        else
+            hideLoadingDialog();
     }
 
     @Override
@@ -132,6 +206,8 @@ public class WebViewSunmiMallActivity extends BaseActivity
             webView.goBack();
             return;
         }
+        webView.clearCache(true);
         super.onBackPressed();
     }
+
 }

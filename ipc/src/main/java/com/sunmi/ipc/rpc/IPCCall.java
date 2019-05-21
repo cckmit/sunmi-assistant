@@ -28,31 +28,43 @@ public class IPCCall extends BaseApi {
         return mInstance;
     }
 
-    //获取摄像头搜索到的wifi列表
-    public void getWifiList(Context context) {
-        post(context, "", IpcConstants.getWifiList, new JSONObject());
+    //获取IPC无线还是有线
+    public void getWifiList(Context context, String url) {
+        int opCode = IpcConstants.getWifiList;
+        RequestBean requestBean = new RequestBean("11111",
+                "0x" + Integer.toHexString(opCode), new JSONObject());
+        new IPCLocalApi(url).post(context, "", requestBean.getMsgId(), opCode, requestBean.serialize());
     }
 
-    public void setIPCWifi(Context context, String ssid, String keyMgmt, String key) {
+    public void setIPCWifi(Context context, String ssid, String keyMgmt, String key, String url) {
         try {
             JSONObject object = new JSONObject();
             object.put("ssid", ssid);
             object.put("key_mgmt", keyMgmt);
             object.put("key", key);
-            post(context, "", IpcConstants.setIPCWifi, object);
+            int opCode = IpcConstants.setIPCWifi;
+            RequestBean requestBean = new RequestBean("11111",
+                    "0x" + Integer.toHexString(opCode), object);
+            new IPCLocalApi(url).post(context, "", requestBean.getMsgId(), opCode, requestBean.serialize());
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
     //获取IPC无线关联前端AP的状态
-    public void getApStatus(Context context) {
-        post(context, "", IpcConstants.getApStatus, new JSONObject());
+    public void getApStatus(Context context, String url) {
+        int opCode = IpcConstants.getApStatus;
+        RequestBean requestBean = new RequestBean("11111",
+                "0x" + Integer.toHexString(opCode), new JSONObject());
+        new IPCLocalApi(url).post(context, "", requestBean.getMsgId(), opCode, requestBean.serialize());
     }
 
-    //获取token,绑定ipc使用
-    public void getToken(Context context) {
-        post(context, "", IpcConstants.getIpcToken, new JSONObject());
+    //获取IPC无线还是有线
+    public void getIsWire(Context context, String url) {
+        int opCode = IpcConstants.getIsWire;
+        RequestBean requestBean = new RequestBean("11111",
+                "0x" + Integer.toHexString(opCode), new JSONObject());
+        new IPCLocalApi(url).post(context, "", requestBean.getMsgId(), opCode, requestBean.serialize());
     }
 
     //获取token,绑定ipc使用

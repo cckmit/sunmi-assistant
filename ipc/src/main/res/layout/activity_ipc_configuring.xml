@@ -13,30 +13,35 @@
         app:titleText="@string/str_title_ipc_set"
         app:titleTextColor="@color/colorText" />
 
-    <ImageView
-        android:id="@+id/iv_device"
+    <RelativeLayout
+        android:id="@+id/rl_loading"
         android:layout_width="@dimen/dp_275"
         android:layout_height="@dimen/dp_275"
         android:layout_below="@+id/title_bar"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dp_50"
-        android:src="@mipmap/ic_fs" />
+        android:layout_marginTop="@dimen/dp_50">
 
-    <ProgressBar
-        android:id="@+id/loading"
-        android:layout_width="@dimen/dp_275"
-        android:layout_height="@dimen/dp_275"
-        android:layout_below="@+id/title_bar"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dp_50"
-        android:indeterminate="false"
-        android:indeterminateDrawable="@drawable/pb_loading" />
+        <ImageView
+            android:id="@+id/iv_device"
+            android:layout_width="@dimen/dp_255"
+            android:layout_height="@dimen/dp_255"
+            android:layout_centerInParent="true"
+            android:src="@mipmap/ic_ipc_router" />
+
+        <ProgressBar
+            android:id="@+id/loading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:indeterminate="false"
+            android:indeterminateDrawable="@drawable/pb_loading" />
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/tv_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/iv_device"
+        android:layout_below="@+id/rl_loading"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_30"
         android:text="@string/tip_setting_ipc"

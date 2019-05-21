@@ -10,9 +10,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:drawableTop="@mipmap/ic_no_ipc_found"
+        android:drawableTop="@mipmap/ic_no_ipc"
         android:drawablePadding="@dimen/dp_16"
-        android:text="@string/tip_no_wifi_for_ipc"
+        android:text="@string/tip_no_ipc_found"
         android:textColor="@color/color_333333"
         android:textSize="@dimen/sp_20" />
 
@@ -23,12 +23,12 @@
         android:layout_below="@+id/tv_no_wifi"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_8"
-        android:text="@string/tip_check_network"
+        android:text="@string/tip_check_ipc_wifi"
         android:textColor="@color/color_666666"
         android:textSize="@dimen/sp_12" />
 
     <Button
-        android:id="@+id/btn_refresh"
+        android:id="@+id/btn_retry"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_44"
         android:layout_below="@+id/tv_check_network"

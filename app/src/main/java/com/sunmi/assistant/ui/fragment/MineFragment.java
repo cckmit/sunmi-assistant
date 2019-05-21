@@ -12,10 +12,11 @@ import com.sunmi.apmanager.presenter.MinePresenter;
 import com.sunmi.apmanager.ui.activity.store.HelpActivity;
 import com.sunmi.apmanager.ui.activity.store.MyStoreActivity;
 import com.sunmi.apmanager.utils.CommonUtils;
-import sunmi.common.utils.SpUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.setting.SettingActivity_;
 import com.sunmi.assistant.ui.activity.setting.UserInfoActivity_;
+import com.sunmi.sunmiservice.SunmiServiceConfig;
+import com.sunmi.sunmiservice.WebViewSunmiMallActivity_;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -25,6 +26,7 @@ import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.utils.ImageUtils;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StringHelper;
 import sunmi.common.view.CircleImage;
 
@@ -79,6 +81,12 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
         }
     }
 
+    //商户
+    @Click(R.id.rlCompany)
+    public void companyClick(View v) {
+
+    }
+
     @Click(R.id.rlStore)
     public void storeClick(View v) {
         CommonUtils.trackCommonEvent(mActivity, "myStore",
@@ -86,6 +94,28 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
         openActivity(mActivity, MyStoreActivity.class);
 //        Intent intent = new Intent(context, cls);
 //        startActivity(intent);
+    }
+
+    //我的订单
+    @Click(R.id.rlOrder)
+    public void orderClick(View v) {
+        WebViewSunmiMallActivity_.intent(mActivity).mUrl(SunmiServiceConfig.SUNMI_MALL_HOST
+                + "my-order?channel=2&subchannel=4").start();
+    }
+
+    //收货地址
+    @Click(R.id.rlAddress)
+    public void addressClick(View v) {
+        WebViewSunmiMallActivity_.intent(mActivity).mUrl(SunmiServiceConfig.SUNMI_MALL_HOST
+                + "select-address?channel=2&subchannel=4").start();
+
+    }
+
+    //优惠券
+    @Click(R.id.rlCoupon)
+    public void couponClick(View v) {
+        WebViewSunmiMallActivity_.intent(mActivity).mUrl(SunmiServiceConfig.SUNMI_MALL_HOST
+                + "my-coupon?channel=2&subchannel=4").start();
     }
 
     @Click(R.id.rlHelp)

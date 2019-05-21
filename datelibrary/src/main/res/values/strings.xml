@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">My Library</string>
+    <string name="str_cancel">取消</string>
+    <string name="str_sure">确定</string>
+</resources>
