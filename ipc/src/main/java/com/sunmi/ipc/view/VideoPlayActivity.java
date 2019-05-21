@@ -48,6 +48,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -162,6 +163,8 @@ public class VideoPlayActivity extends BaseActivity
     private boolean isOnclickScroll;
     //刻度尺移动定时器
     private Timer moveTimer;
+    //滑动停止的时间戳
+    private long scrollTime;
 
     //用于播放视频的mediaPlayer对象
     private MediaPlayer firstPlayer,//负责播放进入视频播放界面后的第一段视频
@@ -381,6 +384,16 @@ public class VideoPlayActivity extends BaseActivity
     void calenderClick() {
         //第三方
         DatePickDialog dialog = new DatePickDialog(this);
+        if (scrollTime > 0) {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String d = format.format(scrollTime);
+            try {
+                Date date = format.parse(d);
+                dialog.setStartDate(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
         //设置上下年分限制
         dialog.setYearLimt(100);
         //设置标题
@@ -388,7 +401,7 @@ public class VideoPlayActivity extends BaseActivity
         //设置类型
         dialog.setType(DateType.TYPE_YMD);
         //设置消息体的显示格式，日期格式
-        dialog.setMessageFormat("yyyy-MM-dd HH:mm");
+        dialog.setMessageFormat("yyyy-MM-dd");
         //设置选择回调
         dialog.setOnChangeLisener(null);
         //设置点击确定按钮回调
@@ -806,7 +819,9 @@ public class VideoPlayActivity extends BaseActivity
     //选择日历日期回调
     @Override
     public void onSure(Date date) {
-        long time = date.getTime() / 1000; //设置日期的秒数
+        scrollTime = date.getTime();//选择日期的时间戳毫秒
+        long time = scrollTime / 1000; //设置日期的秒数
+        LogCat.e(TAG, "time=" + time);
         String strDate = secondToDate(time, "yyyy-MM-dd");
         int year = Integer.valueOf(strDate.substring(0, 4));
         int month = Integer.valueOf(strDate.substring(5, 7));
@@ -871,7 +886,9 @@ public class VideoPlayActivity extends BaseActivity
                     ivCalender.setText(day);  //滑动停止显示日期
                     toastForShort(VideoPlayActivity.this, str);//toast显示时间
                     canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
-                    IOTCClient.startPlayback(date);
+                    scrollTime = date * 1000;//滑动日历的时间戳毫秒
+
+//                    IOTCClient.startPlayback(date);
                 }
             }
 
