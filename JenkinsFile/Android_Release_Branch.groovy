@@ -24,6 +24,7 @@ pipeline{
                 export ANDROID_NDK_HOME=/Users/admin/Library/Android/ndk-bundle/android-ndk-r19c
                 echo $ANDROID_HOME
                 mkdir -p build
+                rm -rf apmanager/build/outputs/*
                 fastlane releaseEnv
                 ''') 
               stash(includes: 'app/build/outputs/apk/**/app-universal-*.apk', name: 'apk')
@@ -54,6 +55,7 @@ pipeline{
               export ANDROID_HOME=/Users/admin/Library/Android/sdk
               export apk_path=app/build/outputs/apk/release/
               mkdir -p release
+              rm -rf release/*
               cd $apk_path
               apk=`ls *universal*`
               cd $WORKSPACE
