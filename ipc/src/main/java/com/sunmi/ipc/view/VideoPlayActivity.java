@@ -165,6 +165,8 @@ public class VideoPlayActivity extends BaseActivity
     private Timer moveTimer;
     //滑动停止的时间戳
     private long scrollTime;
+    //当前的itemPosition
+    private int currentItemPosition;
 
     //用于播放视频的mediaPlayer对象
     private MediaPlayer firstPlayer,//负责播放进入视频播放界面后的第一段视频
@@ -196,9 +198,10 @@ public class VideoPlayActivity extends BaseActivity
 
         //初始化recyclerView
         layoutManger();
+        getRecyclerViewWidth();
         showTimeList(false);
         recyclerViewAddOnScrollListener();
-        getRecyclerViewWidth();
+        scrollCurrentTime(); //滚动到当前时间
 
         //设置播放器的宽高
         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
@@ -744,8 +747,6 @@ public class VideoPlayActivity extends BaseActivity
         currentSecond = calendar.get(Calendar.SECOND);
     }
 
-    int itemPosition = 5;
-
     //开始移动
     public void openMove() {
         if (moveTimer != null) {
@@ -766,20 +767,21 @@ public class VideoPlayActivity extends BaseActivity
                         String str = secondToDate(bs.getDate(), "yyyy-MM-dd HH:mm:ss");
                         LogCat.e("TAG", "firstVisibleItem=" + firstVisibleItem +
                                 " lastVisibleItem=" + lastVisibleItem + "firstVisibleItem: date: " + str);
-                        linearLayoutManager.scrollToPositionWithOffset(itemPosition++, 0);//
+                        linearLayoutManager.scrollToPositionWithOffset(currentItemPosition++, 0);//
                         tvShow.setText(str);
                         //绘制时间点和偏移量
                         canvasHours(firstVisibleItem);
                     }
                 });
             }
-        }, 0, 1000);//一分钟轮询一次
+        }, 0, 1000 * 60);//一分钟轮询一次
     }
 
     //结束移动
     public void closeMove() {
         if (moveTimer != null) {
             moveTimer.cancel();
+            moveTimer = null;
         }
     }
 
@@ -840,7 +842,7 @@ public class VideoPlayActivity extends BaseActivity
         minutesTotal = currentDateSeconds - selectedDate + threeDaysSeconds + sixHoursSeconds;
         //列表
         showTimeList(true);
-
+        //滑动到选择日期的0.00点
         scrollSelectedDate0AM();
 
     }
@@ -863,7 +865,26 @@ public class VideoPlayActivity extends BaseActivity
         //滚动到中间
         long leftToCenterMinutes = CommonHelper.px2dp(this, rvWidth / 2);//中间距离左侧屏幕的分钟
         long threeDaysBeforeDate = 3 * 24 * 60;//3天分钟数
+        currentItemPosition = (int) (threeDaysBeforeDate - leftToCenterMinutes);
         linearLayoutManager.scrollToPositionWithOffset((int) (threeDaysBeforeDate - leftToCenterMinutes), 0);
+
+        openMove();
+    }
+
+    //延时滑动当前时间
+    private void scrollCurrentTime() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                long leftToCenterMinutes = CommonHelper.px2dp(VideoPlayActivity.this, rvWidth / 2);//中间距离左侧屏幕的分钟
+                LogCat.e(TAG, "leftToCenterMinutes=" + leftToCenterMinutes);
+                long currentMinutes = (minutesTotal - sixHoursSeconds) / 60 - leftToCenterMinutes;
+                currentItemPosition = (int) currentMinutes;//当前的item
+                linearLayoutManager.scrollToPositionWithOffset((int) (currentMinutes), 0);
+
+                openMove();
+            }
+        }, 500);
     }
 
     //recyclerView 滑动监听
@@ -888,7 +909,7 @@ public class VideoPlayActivity extends BaseActivity
                     canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
                     scrollTime = date * 1000;//滑动日历的时间戳毫秒
 
-//                    IOTCClient.startPlayback(date);
+                    IOTCClient.startPlayback(date);
                 }
             }
 
