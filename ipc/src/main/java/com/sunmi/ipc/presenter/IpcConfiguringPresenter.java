@@ -1,6 +1,6 @@
 package com.sunmi.ipc.presenter;
 
-import com.sunmi.ipc.contract.WifiConfiguringContract;
+import com.sunmi.ipc.contract.IpcConfiguringContract;
 import com.sunmi.ipc.rpc.IPCCloudApi;
 
 import sunmi.common.base.BasePresenter;
@@ -12,8 +12,8 @@ import sunmi.common.utils.log.LogCat;
  * Description:
  * Created by bruce on 2019/3/29.
  */
-public class WifiConfiguringPresenter extends BasePresenter<WifiConfiguringContract.View>
-        implements WifiConfiguringContract.Presenter {
+public class IpcConfiguringPresenter extends BasePresenter<IpcConfiguringContract.View>
+        implements IpcConfiguringContract.Presenter {
 
     @Override
     public void ipcBind(String shopId, final String sn, String token, float longitude, float latitude) {
@@ -21,14 +21,14 @@ public class WifiConfiguringPresenter extends BasePresenter<WifiConfiguringContr
                 token, longitude, latitude, new RetrofitCallback() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
-                        LogCat.e("WifiConfiguringPresenter", "onSuccess 111");
+                        LogCat.e("IpcConfiguringPresenter", "onSuccess 111");
                         if (mView != null)
                             mView.ipcBindWifiSuccess(sn);
                     }
 
                     @Override
                     public void onFail(int code, String msg, Object data) {
-                        LogCat.e("WifiConfiguringPresenter", "onFail 111");
+                        LogCat.e("IpcConfiguringPresenter", "onFail 111");
                         if (mView != null)
                             mView.ipcBindWifiFail(sn, code, msg);
                     }
