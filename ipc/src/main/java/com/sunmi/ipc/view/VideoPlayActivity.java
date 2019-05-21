@@ -9,8 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -18,6 +16,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.Chronometer;
 import android.widget.ImageView;
@@ -28,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.datelibrary.DatePickDialog;
+import com.datelibrary.OnSureLisener;
 import com.datelibrary.bean.DateType;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.model.TimeBean;
@@ -74,7 +74,7 @@ import sunmi.common.view.VerticalSeekBar;
 @EActivity(resName = "activity_video_play")
 public class VideoPlayActivity extends BaseActivity
         implements SurfaceHolder.Callback, IOTCClient.Callback,
-        SeekBar.OnSeekBarChangeListener {
+        SeekBar.OnSeekBarChangeListener, OnSureLisener {
     @ViewById(resName = "vv_ipc")
     SurfaceView videoView;
     @ViewById(resName = "sb_zoom")
@@ -139,6 +139,8 @@ public class VideoPlayActivity extends BaseActivity
 
     //
     private LinearLayoutManager linearLayoutManager;
+    //获取recyclerView width
+    private int rvWidth;
     //日历
     private Calendar calendar;
     //选择视频日期列表
@@ -147,8 +149,6 @@ public class VideoPlayActivity extends BaseActivity
     private List<String> dateList = new ArrayList<>();
     //当前时间 ，三天前秒数 ，未来6小时后的秒数 ，区间总共秒数
     private long currentDateSeconds, threeDaysBeforeSeconds, sixHoursAfterSeconds, minutesTotal;
-    //手机屏幕的宽高
-    private int mScreenWidth, mScreenHeight;
     //3天秒数
     private long threeDaysSeconds = 3 * 24 * 60 * 60;
     //6小时后的秒数
@@ -161,6 +161,8 @@ public class VideoPlayActivity extends BaseActivity
     private boolean isOnclickScroll;
     //刻度尺移动定时器
     private Timer moveTimer;
+    //可见第一个item距离第一个可见长条小时的偏移量
+    private int offsetPx;
 
 
     //用于播放视频的mediaPlayer对象
@@ -193,14 +195,17 @@ public class VideoPlayActivity extends BaseActivity
         int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
         ivCalender.setText(currentDay + "");
 
+        //初始化recyclerView
         layoutManger();
-        recyclerViewInit();
+        showTimeList(false);
+        recyclerViewAddOnScrollListener();
+        getRecyclerViewWidth();
 
         //设置播放器的宽高
         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
-        //lp.height = lp.width = CommonHelper.getScreenHeight(context);//设置等宽
-        lp.width = screenW;//屏幕宽高
-        lp.height = screenH;
+        lp.height = lp.width = CommonHelper.getScreenHeight(context);//设置等宽
+//        lp.width = screenW;//屏幕宽高
+//        lp.height = screenH;
         videoView.setLayoutParams(lp);
 
         //回调
@@ -212,7 +217,7 @@ public class VideoPlayActivity extends BaseActivity
 //        IPCCall.getInstance().fsGetStatus(context);//fs
 
         //直播
-//        playClick();
+        initP2pLive();
         //初始化音量
         adjustVoice();
         initGetVolume();
@@ -240,11 +245,11 @@ public class VideoPlayActivity extends BaseActivity
     }
 
     //开始直播
-    void playClick() {
+    void initP2pLive() {
         ThreadPool.getCachedThreadPool().submit(new Runnable() {
             @Override
             public void run() {
-                IOTCClient.start(UID);
+                IOTCClient.init(UID);
             }
         });
     }
@@ -305,7 +310,6 @@ public class VideoPlayActivity extends BaseActivity
             isStartRecord = true;
             startRecord();//开始录制
         }
-        canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
     }
 
     //开始计时录制
@@ -352,7 +356,6 @@ public class VideoPlayActivity extends BaseActivity
             sBarVoice.setProgress(currentVolume100);
             isShowVolume = true;
         }
-        canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
     }
 
     //画质
@@ -365,7 +368,6 @@ public class VideoPlayActivity extends BaseActivity
             llVideoQuality.setVisibility(View.VISIBLE);
             isShowQuality = true;
         }
-        canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
     }
 
     //高清画质
@@ -374,7 +376,6 @@ public class VideoPlayActivity extends BaseActivity
         llVideoQuality.setVisibility(View.GONE);
         isShowQuality = false;
         tvQuality.setText(R.string.str_HD);
-        canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
     }
 
     int valueType = 0;
@@ -388,23 +389,23 @@ public class VideoPlayActivity extends BaseActivity
         valueType = valueType == 0 ? 1 : 0;
         LogCat.e(TAG, "11111111 va" + valueType);
         IOTCClient.changeValue(valueType);
-        canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
     }
+
+    boolean isPaused;
 
     //开始，暂停
     @Click(resName = "iv_play")
     void playLiveClick() {
-        playClick();
-        canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
+        IOTCClient.pausePlayback(isPaused);
+        isPaused = !isPaused;
     }
 
     //直播
     @Click(resName = "iv_live")
     void playApBackClick() {
-        playClick();
-        canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
+        ivPlay.setBackgroundResource(R.mipmap.play_disable);
+        IOTCClient.startPlay();
     }
-
 
     //显示日历
     @Click(resName = "iv_calender")
@@ -422,7 +423,7 @@ public class VideoPlayActivity extends BaseActivity
         //设置选择回调
         dialog.setOnChangeLisener(null);
         //设置点击确定按钮回调
-        dialog.setOnSureLisener(null);
+        dialog.setOnSureLisener(this);
         dialog.show();
     }
 
@@ -443,10 +444,15 @@ public class VideoPlayActivity extends BaseActivity
             ivScreenshot.setVisibility(View.GONE);
             ivLive.setVisibility(View.GONE);
             rlBottomSetting.setVisibility(View.GONE);
+            //音量
+            llChangeVolume.setVisibility(View.GONE);
+            isShowVolume = false;
+            //画质
+            llVideoQuality.setVisibility(View.GONE);
+            isShowQuality = false;
 
             isClickScreen = true;
         }
-        canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
     }
 
     //*********************************************************************
@@ -610,23 +616,6 @@ public class VideoPlayActivity extends BaseActivity
         }
     }
 
-//    @Override
-//    public boolean onTouch(View v, MotionEvent event) {
-//        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-//            //获取点击屏幕的位置，作为焦点位置，用于计算对焦区域
-//            float x = event.getX();
-//            float y = event.getY();
-//
-//            if (120 < x && x < 1800 && 160 < y && y < 800) {
-//                currX = x;
-//                currY = y;
-//                //对焦并绘制对焦矩形框
-//                overCameraView.setTouchFoucusRect(x, y);
-//            }
-//        }
-//        return false;
-//    }
-
     @Override
     public void onVideoReceived(byte[] videoBuffer) {
         if (mPlayer != null)
@@ -655,7 +644,8 @@ public class VideoPlayActivity extends BaseActivity
         ResponseBean res = (ResponseBean) args[0];
         if (res == null) return;
         if (id == IpcConstants.fsGetStatus) {
-            //{"data":[{"opcode":"0x3109","result":{"zoom":0,"max_zoom":500,"max_focus":780,"irmode":0,"auto_focus_start":0,"focus":389},"errcode":1}],"msg_id":"11111","errcode":1}
+            //{"data":[{"opcode":"0x3109","result":{"zoom":0,"max_zoom":500,"max_focus":780,
+            // "irmode":0,"auto_focus_start":0,"focus":389},"errcode":1}],"msg_id":"11111","errcode":1}
             try {
                 JSONObject jsonObject = res.getResult();
                 if (jsonObject.has("zoom")) {
@@ -683,7 +673,6 @@ public class VideoPlayActivity extends BaseActivity
         int currentVolume100 = audioMngHelper.get100CurrentVolume();
         sBarVoice.setMax(100);
         sBarVoice.setProgress(currentVolume100);
-        canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
         sBarVoice.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -693,7 +682,6 @@ public class VideoPlayActivity extends BaseActivity
                     ivVolume.setBackgroundResource(R.mipmap.ic_volume);
                 }
                 audioMngHelper.setVoice100(progress);
-                canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
             }
 
             @Override
@@ -703,7 +691,6 @@ public class VideoPlayActivity extends BaseActivity
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
             }
         });
     }
@@ -724,14 +711,10 @@ public class VideoPlayActivity extends BaseActivity
         } else return super.onKeyDown(keyCode, event);
     }
 
-    /**
-     * *******************生命周期***************************
-     */
+
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i("TAG", "onResume");
-        canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
     }
 
     @Override
@@ -761,7 +744,8 @@ public class VideoPlayActivity extends BaseActivity
         sixHoursAfterSeconds = currentDateSeconds + sixHoursSeconds;
         //区间总共秒数 --当前时间前三天+未来6小时的秒数
         minutesTotal = threeDaysSeconds + sixHoursSeconds;
-        currentSecond = calendar.get(Calendar.SECOND);//当前分钟走的秒数
+        //当前分钟走的秒数
+        currentSecond = calendar.get(Calendar.SECOND);
     }
 
     int itemPosition = 5;
@@ -784,7 +768,8 @@ public class VideoPlayActivity extends BaseActivity
                         int center = (lastVisibleItem - firstVisibleItem) / 2 + firstVisibleItem + 1;
                         TimeBean bs = list.get(center);
                         String str = secondToDate(bs.getDate(), "yyyy-MM-dd HH:mm:ss");
-                        LogCat.e("TAG", "firstVisibleItem=" + firstVisibleItem + " lastVisibleItem=" + lastVisibleItem + "firstVisibleItem: date: " + str);
+                        LogCat.e("TAG", "firstVisibleItem=" + firstVisibleItem +
+                                " lastVisibleItem=" + lastVisibleItem + "firstVisibleItem: date: " + str);
                         linearLayoutManager.scrollToPositionWithOffset(itemPosition++, 0);//
                         tvShow.setText(str);
                         //绘制时间点和偏移量
@@ -802,38 +787,136 @@ public class VideoPlayActivity extends BaseActivity
         }
     }
 
-    //日期列表
-    private List<TimeBean> timeList(List<TimeBean> list) {
-        //添加时间列表（当前的日期）
+    //日期列表，是否选择日期列表
+    private List<TimeBean> timeList(List<TimeBean> list, boolean isSelectedDate) {
+        list.clear();
         TimeBean bean;
-        for (int i = 0; i < minutesTotal; i += 60) {//10分钟一个item
-            bean = new TimeBean();
-            bean.setDate(threeDaysBeforeSeconds - currentSecond + i);
-            list.add(bean);
+        if (isSelectedDate) {//选择日期
+            for (int i = 0; i < minutesTotal; i += 60) {
+                bean = new TimeBean();
+                bean.setDate(threeDaysBeforeSeconds + i);
+                list.add(bean);
+            }
+        } else {//当前日期
+            for (int i = 0; i < minutesTotal; i += 60) {//10分钟一个item
+                bean = new TimeBean();
+                bean.setDate(threeDaysBeforeSeconds - currentSecond + i);
+                list.add(bean);
+            }
         }
-
-        //选择的日期当前的秒数
-//        calendar.clear();
-//        calendar.set(2019, 4, 12, 0, 0, 0);//设置时候月份减1即是当月
-//        long selectedDate = calendar.getTimeInMillis() / 1000;//设置日期的秒数
-//        String str = secondToDate(selectedDate, "yyyy-MM-dd HH:mm:ss");
-//        LogCat.e("TAG", "selectedDate=" + str);
-//        threeDaysBeforeSeconds = selectedDate - threeDaysSeconds;//选择日期三天前的秒数
-//        minutesTotal = currentDateSeconds - selectedDate + threeDaysSeconds + sixHoursSeconds;//区间总共秒数
-//        //添加时间列表（选择的日期）
-//        TimeBean bean;
-//        for (int i = 0; i < minutesTotal; i += 60) {//10分钟一个item 60秒的过度
-//            bean = new TimeBean();
-//            bean.setDate(threeDaysBeforeSeconds + i);
-//            list.add(bean);
-//        }
 
         return list;
     }
 
-    //绘制时间
-    int offsetPx;
+    /**
+     * 时间列表
+     *
+     * @param isSelectedDate 是否选择日期列表
+     */
+    private void showTimeList(boolean isSelectedDate) {
+        //添加list
+        timeList(list, isSelectedDate);
+        //adapter
+        DateAdapter adapter = new DateAdapter(list);
+        recyclerView.setAdapter(adapter);
+    }
 
+
+    //选择日历日期回调
+    @Override
+    public void onSure(Date date) {
+        long time = date.getTime() / 1000; //设置日期的秒数
+        String strDate = secondToDate(time, "yyyy-MM-dd");
+        int year = Integer.valueOf(strDate.substring(0, 4));
+        int month = Integer.valueOf(strDate.substring(5, 7));
+        int day = Integer.valueOf(strDate.substring(8, 10));
+        int hour = 0, minute = 0, second = 0;
+        //显示日历天数
+        ivCalender.setText(day + "");
+
+        //设置选择日期的年月日0时0分0秒
+        calendar.clear();
+        calendar.set(year, month - 1, day, hour, minute, second);//设置时候月份减1即是当月
+        long selectedDate = calendar.getTimeInMillis() / 1000;//设置日期的秒数
+        //选择日期三天前的秒数
+        threeDaysBeforeSeconds = selectedDate - threeDaysSeconds;
+        //区间总共秒数
+        minutesTotal = currentDateSeconds - selectedDate + threeDaysSeconds + sixHoursSeconds;
+        //列表
+        showTimeList(true);
+
+        scrollSelectedDate0AM();
+
+    }
+
+    //获取RecyclerView Width
+    private void getRecyclerViewWidth() {
+        ViewTreeObserver vto = recyclerView.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                rvWidth = recyclerView.getWidth();
+            }
+        });
+
+    }
+
+    //滑动选择日期的0点
+    private void scrollSelectedDate0AM() {
+//        isOnclickScroll = true;
+        //滚动到中间
+        long leftToCenterMinutes = CommonHelper.px2dp(this, screenW / 2);//中间距离左侧屏幕的分钟
+        long threeDaysBeforeDate = 3 * 24 * 60;//3天分钟数
+        linearLayoutManager.scrollToPositionWithOffset((int) (threeDaysBeforeDate - leftToCenterMinutes), 0);
+    }
+
+    //recyclerView 滑动监听
+    private void recyclerViewAddOnScrollListener() {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {//停止滑动
+                    LogCat.e("TAG", "onScrolled00 ____");
+                    int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
+                    int lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
+                    int center = (lastVisibleItem - firstVisibleItem) / 2 + firstVisibleItem;
+                    TimeBean bs = list.get(center);
+                    long date = bs.getDate();
+                    String str = secondToDate(date, "yyyy-MM-dd HH:mm:ss");
+                    String day = str.substring(8, 11);
+                    LogCat.e("TAG", "firstVisibleItem=" + firstVisibleItem + ", lastVisibleItem="
+                            + lastVisibleItem + ", center=" + center + "    date: " + str);
+                    ivCalender.setText(day);  //滑动停止显示日期
+                    toastForShort(VideoPlayActivity.this, str);//toast显示时间
+                    canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
+                    IOTCClient.startPlayback(date);
+                }
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                LogCat.e("TAG", "onScrolled33 _____" + dx + " dy=" + dy);
+                int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
+                canvasHours(firstVisibleItem);//绘制时间
+                //点击滚动某个position
+                if (isOnclickScroll) {
+                    int lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
+                    int center = (lastVisibleItem - firstVisibleItem) / 2 + firstVisibleItem + 1;
+                    TimeBean bs = list.get(center);
+                    String str = secondToDate(bs.getDate(), "yyyy-MM-dd HH:mm:ss");
+                    LogCat.e("TAG", "firstVisibleItem*** =" + firstVisibleItem + " lastVisibleItem="
+                            + lastVisibleItem + ", center=" + center + "    date: " + str);
+
+                    isOnclickScroll = false;
+                }
+            }
+        });
+    }
+
+    //绘制时间
     private void canvasHours(int firstVisibleItem) {
         //int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
         if (firstVisibleItem < 0) return;
@@ -845,7 +928,7 @@ public class VideoPlayActivity extends BaseActivity
         if (minute == 0) {
             offsetPx = 0;
         } else {
-            offsetPx = (60 - minute) * CommonHelper.dp2px(VideoPlayActivity.this, 1);//偏移
+            offsetPx = (60 - minute) * (int) getResources().getDimension(R.dimen.dp_1);//CommonHelper.dp2px(context, getResources().getDimension(R.dimen.dp_1));//偏移
             hour++;
         }
         //绘制下方时间
@@ -858,70 +941,6 @@ public class VideoPlayActivity extends BaseActivity
             }
             timeView.refresh(dateList, offsetPx);
         }
-    }
-
-    private void recyclerViewInit() {
-        //添加时间列表
-        timeList(list);
-        //adapter
-        DateAdapter adapter = new DateAdapter(list);
-        recyclerView.setAdapter(adapter);
-        //recyclerView 滑动监听
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {//停止滑动
-                    if (!isCurrentPlayBack) {
-                        IOTCClient.startPlayback();//设备回放
-                        isCurrentPlayBack = true;
-                    }
-                    LogCat.e("TAG", "onScrolled00 ____");
-                    int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
-                    int lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-                    int center = (lastVisibleItem - firstVisibleItem) / 2 + firstVisibleItem;
-                    TimeBean bs = list.get(center);
-                    long date = bs.getDate();
-                    String str = secondToDate(date, "yyyy-MM-dd HH:mm:ss");
-                    String day = str.substring(8, 11);
-                    LogCat.e("TAG", "firstVisibleItem=" + firstVisibleItem + " lastVisibleItem=" + lastVisibleItem + "   firstVisibleItem: date: " + str);
-                    ivCalender.setText(day);  //滑动停止显示日期
-                    toastForShort(VideoPlayActivity.this, str);//toast显示时间
-                    canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
-
-                } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    LogCat.e("TAG", "onScrolled11 ____");
-                } else if (newState == RecyclerView.SCROLL_STATE_SETTLING) {
-                    LogCat.e("TAG", "onScrolled22 _____");
-                }
-            }
-
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                LogCat.e("TAG", "onScrolled33 _____");
-                int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
-                canvasHours(firstVisibleItem);//绘制时间
-                //点击滚动某个position
-                if (isOnclickScroll) {
-                    int lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-                    int center = (lastVisibleItem - firstVisibleItem) / 2 + firstVisibleItem + 1;
-                    TimeBean bs = list.get(center);
-                    String str = secondToDate(bs.getDate(), "yyyy-MM-dd HH:mm:ss");
-                    LogCat.e("TAG", "firstVisibleItem*** =" + firstVisibleItem + " lastVisibleItem=" + lastVisibleItem + "   firstVisibleItem: date: " + str);
-                    tvShow.setText(str);
-
-                    isOnclickScroll = false;
-                }
-            }
-        });
-
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                openMove();
-//            }
-//        }, 2000);
     }
 
     //date adapter
@@ -947,7 +966,8 @@ public class VideoPlayActivity extends BaseActivity
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_time, viewGroup, false);
+            View view = LayoutInflater.from(viewGroup.getContext())
+                    .inflate(R.layout.item_time, viewGroup, false);
             ViewHolder holder = new ViewHolder(view);
             return holder;
         }
@@ -961,35 +981,31 @@ public class VideoPlayActivity extends BaseActivity
 //            String hourMinute = str.substring(0, 5);
             String minuteSecond = str.substring(3, 8);
             String hour = str.substring(3, 5);
-            LogCat.e("TAG", "minute=" + minuteSecond);
             //渲染
 //            if (60 < i && i < 200) {
 //                viewHolder.rlItem.setBackgroundResource(R.color.colorOrange);
 //            }
             //当前时间线的高度
             ViewGroup.LayoutParams lp = viewHolder.tvLine.getLayoutParams();
-            if (minuteSecond.contains("10:00") ||
+            lp.width = CommonHelper.dp2px(context, (float) 0.8);
+            if (hour.contains("00")) {
+                lp.height = CommonHelper.dp2px(context, 8);
+                viewHolder.tvLine.setVisibility(View.VISIBLE);
+
+            } else {
+                lp.height = CommonHelper.dp2px(context, 4);
+                viewHolder.tvLine.setVisibility(showShortTimeLine(minuteSecond)
+                        ? View.VISIBLE : View.INVISIBLE);
+            }
+            viewHolder.tvLine.setLayoutParams(lp);
+        }
+
+        private boolean showShortTimeLine(String minuteSecond) {
+            return minuteSecond.contains("10:00") ||
                     minuteSecond.contains("20:00") ||
                     minuteSecond.contains("30:00") ||
                     minuteSecond.contains("40:00") ||
-                    minuteSecond.contains("50:00")) {
-                viewHolder.tvLine.setVisibility(View.VISIBLE);
-                lp.height = 15;
-                lp.width = 1;
-                viewHolder.tvLine.setLayoutParams(lp);
-
-            } else if (hour.contains("00")) {
-                viewHolder.tvLine.setVisibility(View.VISIBLE);
-                lp.height = 30;
-                lp.width = CommonHelper.dp2px(VideoPlayActivity.this, 1);
-                viewHolder.tvLine.setLayoutParams(lp);
-
-            } else {
-                viewHolder.tvLine.setVisibility(View.INVISIBLE);
-                lp.height = 15;
-                lp.width = 1;
-                viewHolder.tvLine.setLayoutParams(lp);
-            }
+                    minuteSecond.contains("50:00");
         }
 
         @Override
@@ -1040,6 +1056,5 @@ public class VideoPlayActivity extends BaseActivity
             }
         });
     }
-
 
 }

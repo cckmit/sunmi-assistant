@@ -25,15 +25,14 @@
                 android:src="@mipmap/ic_back_white" />
         </RelativeLayout>
 
-
         <!--设置-->
         <ImageView
             android:id="@+id/iv_setting"
             android:layout_width="@dimen/dp_28"
             android:layout_height="@dimen/dp_28"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginEnd="@dimen/dp_20"
             android:background="@mipmap/ic_video_setting" />
     </RelativeLayout>
     <!--录像-->
@@ -42,8 +41,8 @@
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="@dimen/dp_25"
         android:layout_marginTop="@dimen/dp_123"
+        android:layout_marginEnd="@dimen/dp_25"
         android:background="@mipmap/ic_recording_normal" />
 
     <!--截图-->
@@ -51,10 +50,10 @@
         android:id="@+id/iv_screenshot"
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
-        android:layout_alignParentEnd="true"
         android:layout_below="@+id/iv_record"
-        android:layout_marginEnd="@dimen/dp_25"
+        android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_25"
         android:background="@mipmap/ic_screenshot" />
 
     <!--回直播-->
@@ -62,10 +61,10 @@
         android:id="@+id/iv_live"
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
-        android:layout_alignParentEnd="true"
         android:layout_below="@+id/iv_screenshot"
-        android:layout_marginEnd="@dimen/dp_25"
+        android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_25"
         android:background="@mipmap/ic_live" />
 
     <!--加载动画-->
@@ -78,15 +77,15 @@
         android:visibility="gone">
 
         <ProgressBar
-            android:layout_width="27dp"
-            android:layout_height="10dp"
+            android:layout_width="@dimen/dp_27"
+            android:layout_height="@dimen/dp_10"
             android:indeterminateDrawable="@mipmap/loading" />
 
         <TextView
             android:id="@+id/load_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/dp_8"
             android:text="正在缓冲..."
             android:textColor="@android:color/white"
             android:textSize="13sp" />
@@ -100,7 +99,7 @@
         android:background="@drawable/bg_rounded_corner_top_white"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="8dp"
+        android:padding="@dimen/dp_8"
         android:visibility="gone">
 
         <TextView
@@ -109,15 +108,15 @@
             android:layout_height="wrap_content"
             android:text="00:00"
             android:textColor="@android:color/white"
-            android:textSize="28sp" />
+            android:textSize="@dimen/sp_28" />
 
         <ProgressBar
             android:id="@+id/change_position_progress"
             style="@android:style/Widget.ProgressBar.Horizontal"
             android:layout_width="100dp"
-            android:layout_height="2dp"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="8dp"
+            android:layout_height="@dimen/dp_2"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_4"
             android:max="100"
             android:progressDrawable="@drawable/seekbar_progress" />
     </LinearLayout>
@@ -137,18 +136,18 @@
             android:layout_height="wrap_content"
             android:text="播放错误，请重试。"
             android:textColor="@android:color/white"
-            android:textSize="13sp" />
+            android:textSize="@dimen/sp_13" />
 
         <TextView
             android:id="@+id/retry"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/dp_8"
             android:background="@drawable/bg_shap_green"
-            android:paddingBottom="5dp"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
-            android:paddingTop="4dp"
+            android:paddingLeft="@dimen/dp_12"
+            android:paddingTop="@dimen/dp_4"
+            android:paddingRight="@dimen/dp_12"
+            android:paddingBottom="@dimen/dp_5"
             android:text="点击重试"
             android:textColor="@android:color/white"
             android:textSize="13sp" />
@@ -159,10 +158,10 @@
         android:id="@+id/ll_change_volume"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_84"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginBottom="@dimen/dp_44"
+        android:layout_alignParentBottom="true"
         android:layout_marginEnd="@dimen/dp_82"
+        android:layout_marginBottom="@dimen/dp_44"
         android:background="@drawable/bg_set_video_quality"
         android:gravity="center"
         android:visibility="gone">
@@ -173,8 +172,8 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:max="100"
-            android:maxHeight="3dp"
-            android:minHeight="3dp"
+            android:maxHeight="@dimen/dp_3"
+            android:minHeight="@dimen/dp_3"
             android:progressDrawable="@drawable/bg_adjust_seek_bar" />
     </LinearLayout>
 
@@ -184,10 +183,10 @@
         android:layout_width="@dimen/dp_42"
         android:layout_height="@dimen/dp_48"
         android:layout_above="@+id/ll_bottom"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginBottom="@dimen/dp_44"
+        android:layout_alignParentBottom="true"
         android:layout_marginEnd="@dimen/dp_20"
+        android:layout_marginBottom="@dimen/dp_44"
         android:background="@drawable/bg_set_video_quality"
         android:orientation="vertical"
         android:visibility="gone">
@@ -225,17 +224,17 @@
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/dp_28"
             android:layout_marginStart="@dimen/dp_20"
-            android:src="@mipmap/play_normal" />
+            android:layout_marginEnd="@dimen/dp_24"
+            android:background="@mipmap/play_disable" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_56"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="28dp"
-            android:layout_toEndOf="@+id/iv_play"
+            android:layout_marginEnd="@dimen/dp_24"
             android:layout_toStartOf="@+id/iv_calender"
+            android:layout_toEndOf="@+id/iv_play"
             android:background="@color/transparent">
 
             <RelativeLayout
@@ -250,7 +249,7 @@
 
                 <!--和RecyclerView item_time 的高度相同 dp_30=dp_20+dp_10 -->
                 <TextView
-                    android:layout_width="1dp"
+                    android:layout_width="@dimen/dp_1"
                     android:layout_height="@dimen/dp_20"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="@dimen/dp_10"
@@ -262,9 +261,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_30"
                 android:layout_alignBottom="@id/rl_recyclerView" />
-
         </RelativeLayout>
-
 
         <TextView
             android:id="@+id/iv_calender"
@@ -275,7 +272,6 @@
             android:layout_toStartOf="@+id/iv_volume"
             android:background="@mipmap/ic_calendar"
             android:gravity="center"
-            android:text="20"
             android:textColor="@color/c_white"
             android:textSize="@dimen/sp_12" />
 
@@ -317,8 +313,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/dp_14"
-            android:drawableLeft="@drawable/oval_red"
+            android:layout_marginStart="@dimen/dp_14"
+            android:drawableStart="@drawable/oval_red"
             android:drawablePadding="@dimen/dp_8"
             android:text="@string/str_record_text"
             android:textColor="@color/c_white"
@@ -329,8 +325,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/dp_14"
-            android:layout_toRightOf="@id/tv_text_record"
+            android:layout_marginEnd="@dimen/dp_14"
+            android:layout_toEndOf="@id/tv_text_record"
             android:format="00:00:00"
             android:textColor="@color/c_white"
             android:textSize="@dimen/sp_12" />
