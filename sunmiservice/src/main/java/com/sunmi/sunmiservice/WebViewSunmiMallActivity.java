@@ -157,8 +157,8 @@ public class WebViewSunmiMallActivity extends BaseActivity
                             });
                         }
                         // 5000支付失败 6001重复请求 6002中途取消
-                        if ("5000".equals(result.getResultCode()) || "6001".equals(result.getResultCode()) ||
-                                "6002".equals(result.getResultCode())) {
+                        if ("5000".equals(result.getResultCode()) || "6001".equals(result.getResultCode())
+                                || "6002".equals(result.getResultCode())) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -206,6 +206,7 @@ public class WebViewSunmiMallActivity extends BaseActivity
             webView.goBack();
             return;
         }
+        webView.clearCache(true);
         super.onBackPressed();
     }
 
