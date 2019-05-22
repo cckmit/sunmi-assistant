@@ -120,10 +120,7 @@ public class IOTCClient {
      * 开始直播
      */
     public static void startPlay() {
-        String json = getPlayCommand(0);
-        LogCat.e("IOTCClient", "111111 start play json = " + json);
-        byte[] req = json.getBytes();
-        IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
+        changeValue(0);
     }
 
     /**

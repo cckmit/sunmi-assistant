@@ -203,7 +203,7 @@ public class SunmiLinkSearchActivity extends BaseActivity {
                 }
                 configComplete();
             }
-        }, 10000);
+        }, 30000);
     }
 
     @Override

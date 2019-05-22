@@ -6,7 +6,7 @@ import sunmi.common.base.BaseView;
  * Description:
  * Created by bruce on 2019/3/29.
  */
-public interface WifiConfiguringContract {
+public interface IpcConfiguringContract {
 
     interface View extends BaseView {
 
