@@ -51,7 +51,7 @@ public class ChooseDeviceDialog extends Dialog {
      * 只有图标和文字的简单adapter
      */
     private SimpleRecyclerViewAdapter getAdapter() {
-        int[] imageIds = {R.mipmap.ic_sunmi_ap};//, R.mipmap.ic_sunmi_fs, R.mipmap.ic_sunmi_ss};
+        int[] imageIds = {R.mipmap.ic_sunmi_ap, R.mipmap.ic_sunmi_fs, R.mipmap.ic_sunmi_ss};
         String[] names = getContext().getResources().getStringArray(R.array.sunmi_devices);
         SimpleRecyclerViewAdapter adapter = new SimpleRecyclerViewAdapter(
                 R.layout.item_choose_device, imageIds, names);
