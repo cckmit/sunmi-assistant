@@ -4,9 +4,12 @@ import java.util.UUID;
 
 public class Constants {
 
-
     public static final UUID SERVICE_UUID = UUID.fromString("0000180a-0000-1000-8000-00805f9b34fb");
     public static final UUID CHARACTER_UUID = UUID.fromString("0000993f-0000-1000-8000-00805f9b34fb");
+    public static final byte PRINTER_CMD_VERSION = 100;     //打印机命令的版本号
+    public static final byte PRINTER_CMD_TAG1 = (byte) Integer.parseInt("AA", 16);//打印机命令的标识，第一个byte
+    public static final byte PRINTER_CMD_TAG2 = (byte) Integer.parseInt("55", 16);//打印机命令的标识，第二个byte
+
     public static final String JS_INTERFACE_NAME = "SunmiJSBridge";
     public static final int SRV2CLI_SEND_SN = 0;   //发送sn号
     public static final int SRV2CLI_SEND_WIFI_ERROR = 1;   //发送wifi出错信息

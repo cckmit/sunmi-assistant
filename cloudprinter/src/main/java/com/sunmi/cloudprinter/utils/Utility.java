@@ -2,28 +2,68 @@ package com.sunmi.cloudprinter.utils;
 
 import com.sunmi.cloudprinter.bean.Router;
 
+import sunmi.common.utils.log.LogCat;
+
+import static com.sunmi.cloudprinter.constant.Constants.PRINTER_CMD_TAG1;
+import static com.sunmi.cloudprinter.constant.Constants.PRINTER_CMD_TAG2;
+
 public class Utility {
+
+    public static boolean isFirstPac(byte[] data) {
+//        byte[] tag1 = new byte[2];
+//        System.arraycopy(data, 0, tag1, 0, 2);
+//        byte[] tag2 = new byte[2];
+//        System.arraycopy(data, 2, tag2, 0, 2);
+        int aa = data[0] & 0xFF;
+        int bb = data[1] & 0xFF;
+        LogCat.e("util", "aaaaaa isFirstPac aa = " + aa);
+        LogCat.e("util", "aaaaaa isFirstPac bb = " + bb);
+        return aa == 0xAA && bb == 0x55;
+    }
+
+    public static byte[] getCmdTag() {
+        return new byte[]{PRINTER_CMD_TAG1, PRINTER_CMD_TAG2};
+    }
+
+    //命令头
+    public static byte[] getCmdHead(int cmdLen) {
+        return new byte[]{PRINTER_CMD_TAG1, PRINTER_CMD_TAG2};
+    }
+
+    /**
+     * 获取包的长度
+     */
+    public static int getPacLength(byte[] data) {
+        byte[] len = new byte[2];
+        System.arraycopy(data, 2, len, 0, 2);
+        int aa = ByteUtils.byte2ToInt(len);
+        LogCat.e("util", "aaaaaa getPacLength aa = " + aa);
+        return aa;
+    }
 
     /**
      * 获取命令码
+     *
      * @param data
      * @return
      */
-    public static int getCmd(byte[] data){
+    public static int getCmd(byte[] data) {
         return (int) data[5];
     }
 
     /**
      * 获取版本号
+     *
      * @param data
      * @return
      */
-    public static byte getVersion(byte[] data){
+    public static byte getVersion(byte[] data) {
         return data[4];
     }
 
     /**
      * 命令码 00
+     *
      * @param data
      * @return
      */
@@ -35,6 +75,7 @@ public class Utility {
 
     /**
      * 命令码 02
+     *
      * @param data
      * @return
      */
@@ -58,10 +99,8 @@ public class Utility {
 
     /**
      * 命令码 05
-     * @param version
-     * @return
      */
-    public static byte[] cmdGetSn(byte version) {
+    public static byte[] getSn(byte version) {
         byte[] getSn = new byte[6];
         byte[] len = ByteUtils.intToByte4(6);
         System.arraycopy(len, 0, getSn, 0, len.length);
@@ -71,14 +110,34 @@ public class Utility {
     }
 
     /**
+     * 命令码 05
+     *
+     * @param version
+     * @return
+     */
+    public static byte[] cmdGetSn(byte version) {
+        byte[] getSn = new byte[6];
+        byte[] cmdTag = getCmdTag();
+        System.arraycopy(cmdTag, 0, getSn, 0, cmdTag.length);
+        byte[] len = ByteUtils.intToByte2(6);
+        System.arraycopy(len, 0, getSn, 2, len.length);
+        getSn[4] = version;
+        getSn[5] = 5;
+        return getSn;
+    }
+
+    /**
      * 命令码06
+     *
      * @param version
      * @return
      */
     public static byte[] cmdGetWifi(byte version) {
         byte[] getWifi = new byte[6];
-        byte[] len = ByteUtils.intToByte4(6);
-        System.arraycopy(len, 0, getWifi, 0, len.length);
+        byte[] cmdTag = getCmdTag();
+        System.arraycopy(cmdTag, 0, getWifi, 0, cmdTag.length);
+        byte[] len = ByteUtils.intToByte2(6);
+        System.arraycopy(len, 0, getWifi, 2, len.length);
         getWifi[4] = version;
         getWifi[5] = 6;
         return getWifi;
@@ -86,6 +145,7 @@ public class Utility {
 
     /**
      * 命令码 07
+     *
      * @param version
      * @param ssid
      * @param pwd
@@ -104,6 +164,7 @@ public class Utility {
 
     /**
      * 命令码 08
+     *
      * @param version
      * @return
      */
@@ -115,4 +176,5 @@ public class Utility {
         connectedWifi[5] = 8;
         return connectedWifi;
     }
+
 }

@@ -25,7 +25,6 @@ public class CommonConstants {
 
     public static int TYPE_AP = 0;
     public static int TYPE_IPC = 1;
-    public static int TYPE_FS = 2;
-    public static int TYPE_SS = 3;
+    public static int TYPE_PRINTER = 2;
 
 }
