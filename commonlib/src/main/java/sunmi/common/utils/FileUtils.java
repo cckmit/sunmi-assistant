@@ -19,7 +19,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -36,7 +35,6 @@ import java.util.List;
 
 import sunmi.common.base.BaseApplication;
 import sunmi.common.utils.log.LogCat;
-import sunmi.common.utils.log.LogHelper;
 
 import static javax.xml.transform.OutputKeys.ENCODING;
 
@@ -720,15 +718,13 @@ public class FileUtils {
             mFileInputStream.read(buffer);
             result = EncodingUtils.getString(buffer, "UTF-8");
         } catch (Exception e) {
-            LogHelper.exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
-                    "Exception:" + e.getMessage(), true);
+            LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage(), e);
         } finally {
             if (mFileInputStream != null) {
                 try {
                     mFileInputStream.close();
                 } catch (IOException e) {
-                    LogHelper.exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
-                            "Exception:" + e.getMessage(), true);
+                    LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage(), e);
                 }
             }
         }
@@ -749,8 +745,7 @@ public class FileUtils {
         try {
             result = context.deleteFile(fileName);
         } catch (Exception e) {
-            LogHelper.exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
-                    "Exception:" + e.getMessage(), true);
+            LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage(), e);
         }
 
         return result;
@@ -789,20 +784,15 @@ public class FileUtils {
                 output.write(buffer, 0, i);
             }
             output.flush();
-        } catch (FileNotFoundException e) {
-            LogHelper.exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
-                    "FileNotFoundException:" + e.getMessage(), true);
-        } catch (IOException e) {
-            LogHelper.exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
-                    "IOException:" + e.getMessage(), true);
+        } catch (Exception e) {
+            LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage(), e);
         } finally {
             try {
                 if (output != null) {
                     output.close();
                 }
             } catch (IOException e) {
-                LogHelper.exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
-                        "IOException:" + e.getMessage(), true);
+                LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage(), e);
             }
         }
         return file;
@@ -825,20 +815,15 @@ public class FileUtils {
                 fos.write(buffer, 0, i);
             }
             fos.flush();
-        } catch (FileNotFoundException e) {
-            LogHelper.exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
-                    "FileNotFoundException:" + e.getMessage(), true);
-        } catch (IOException e) {
-            LogHelper.exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
-                    "IOException:" + e.getMessage(), true);
+        } catch (Exception e) {
+            LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage(), e);
         } finally {
             try {
                 if (fos != null) {
                     fos.close();
                 }
             } catch (IOException e) {
-                LogHelper.exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
-                        "IOException:" + e.getMessage(), true);
+                LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage(), e);
             }
         }
     }
@@ -909,19 +894,14 @@ public class FileUtils {
                     inputStream.close();
                 }
             }
-        } catch (FileNotFoundException e) {
-            LogHelper.exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
-                    "FileNotFoundException:" + e.getMessage(), true);
-        } catch (IOException e) {
-            LogHelper.exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
-                    "IOException:" + e.getMessage(), true);
+        } catch (Exception e) {
+            LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage(), e);
         } finally {
             if (inputStream != null) {
                 try {
                     inputStream.close();
                 } catch (IOException e) {
-                    LogHelper.exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
-                            "IOException:" + e.getMessage(), true);
+                    LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage(), e);
                 }
             }
         }
@@ -946,8 +926,7 @@ public class FileUtils {
         try {
             inputStream = context.getAssets().open(fileName);
         } catch (IOException e) {
-            LogHelper.exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
-                    e.getMessage(), true);
+            LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage(), e);
         }
 
         return inputStream;
@@ -981,8 +960,7 @@ public class FileUtils {
             file = new File(FileUtils.getSDPath() + dir + File.separator + fileName);
             file.createNewFile();
         } catch (IOException e) {
-            LogHelper.exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
-                    "IOException:" + e.getMessage(), true);
+            LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage(), e);
         }
         return file;
     }
