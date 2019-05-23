@@ -69,6 +69,21 @@
         android:background="@mipmap/ic_live"
         android:visibility="gone" />
 
+    <!--云回放-->
+    <TextView
+        android:id="@+id/test_cloud_back"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/iv_live"
+        android:layout_marginEnd="@dimen/dp_25"
+        android:layout_marginTop="@dimen/dp_36"
+        android:text="云回"
+        android:textColor="@color/c_white"
+        android:gravity="center"
+        android:textSize="@dimen/sp_12"
+        android:visibility="visible" />
+
     <!--加载动画-->
     <LinearLayout
         android:id="@+id/loading"
@@ -236,7 +251,7 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/dp_24"
             android:layout_toEndOf="@+id/iv_play"
-            android:layout_toStartOf="@+id/iv_calender"
+            android:layout_toStartOf="@+id/tv_calender"
             android:background="@color/transparent">
 
             <RelativeLayout
@@ -266,7 +281,7 @@
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/iv_calender"
+            android:id="@+id/tv_calender"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
             android:layout_centerVertical="true"
@@ -333,14 +348,5 @@
             android:textColor="@color/c_white"
             android:textSize="@dimen/sp_12" />
     </RelativeLayout>
-
-    <TextView
-        android:id="@+id/tv_show"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:background="@color/transparent"
-        android:gravity="center"
-        android:textColor="@color/c_white" />
 
 </RelativeLayout>

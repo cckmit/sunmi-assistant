@@ -135,6 +135,43 @@ public class IOTCClient {
         IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
     }
 
+    /**
+     * 停止直播
+     */
+    public static void stopLivePlay() {
+        getStopLivePlayCommand();
+    }
+
+    /**
+     * 停止直播参数
+     */
+    public static void getStopLivePlayCommand() {
+        String json = getStopLiveJson();
+        LogCat.e("IOTCClient", "111111 StopLive json = " + json);
+        byte[] req = json.getBytes();
+        IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
+    }
+    /**
+     * 停止直播参数json
+     */
+    private static String getStopLiveJson() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("msg_id", SpUtils.getUID() + "_" + System.currentTimeMillis());
+            JSONArray array = new JSONArray();
+            JSONObject item = new JSONObject();
+            item.put("cmd", CMD_LIVE_STOP);
+            item.put("channel", 1);
+            item.put("param", new JSONObject());
+            array.put(item);
+            jsonObject.put("params", array);
+            return jsonObject.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     private static String getPlaybackListCommand() {
         try {
             JSONObject jsonObject = new JSONObject();
