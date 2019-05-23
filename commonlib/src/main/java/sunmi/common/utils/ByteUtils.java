@@ -30,6 +30,12 @@ public class ByteUtils {
         return all_byte;
     }
 
+    public static byte[] subBytes(byte[] src, int begin, int count) {
+        byte[] bs = new byte[count];
+        System.arraycopy(src, begin, bs, 0, count);
+        return bs;
+    }
+
     //byte[]字节 转化string 的16进制
     public static String bytesToHex(byte[] bytes) {
         StringBuilder buf = new StringBuilder(bytes.length * 2);
