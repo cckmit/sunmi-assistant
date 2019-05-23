@@ -77,10 +77,10 @@
         android:layout_alignParentEnd="true"
         android:layout_below="@+id/iv_live"
         android:layout_marginEnd="@dimen/dp_25"
-        android:layout_marginTop="@dimen/dp_36"
+        android:layout_marginTop="@dimen/dp_16"
+        android:gravity="center"
         android:text="云回"
         android:textColor="@color/c_white"
-        android:gravity="center"
         android:textSize="@dimen/sp_12"
         android:visibility="visible" />
 
@@ -269,7 +269,7 @@
                     android:layout_width="@dimen/dp_1"
                     android:layout_height="@dimen/dp_20"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_5"
                     android:background="@color/c_red" />
             </RelativeLayout>
 
