@@ -1,14 +1,13 @@
 package sunmi.common.utils;
 
 import android.content.Context;
-import android.os.Looper;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.Thread.UncaughtExceptionHandler;
 
-import sunmi.common.utils.log.LogHelper;
+import sunmi.common.utils.log.LogCat;
 
 public class UnknownException implements UncaughtExceptionHandler {
     private Context mContext = null;
@@ -38,8 +37,7 @@ public class UnknownException implements UncaughtExceptionHandler {
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
-                LogHelper.exportLog(CommonHelper.getCName(new Exception()),
-                        CommonHelper.getMName(new Exception()), "InterruptedException:" + e.getMessage(), isSaveLog);
+                LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage(), e);
             }
         }
     }
@@ -65,8 +63,7 @@ public class UnknownException implements UncaughtExceptionHandler {
         if (msg == null)
             return false;
         ToastUtils.toastForShort(mContext, "Sorry,app generates unknown error,please retry few minutes later");
-        LogHelper.exportLog(CommonHelper.getCName(new Exception()),
-                CommonHelper.getMName(new Exception()), getErrorInfo(throwable), isSaveLog);
+        LogCat.e(CommonHelper.getCName(new Exception()), throwable);
         return true;
     }
 

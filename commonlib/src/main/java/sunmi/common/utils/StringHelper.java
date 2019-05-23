@@ -10,7 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Collection;
 
-import sunmi.common.utils.log.LogHelper;
+import sunmi.common.utils.log.LogCat;
 
 public class StringHelper {
 
@@ -58,9 +58,7 @@ public class StringHelper {
             // 如果字节数大于1是汉字，以这种方式区别英文字母和中文汉字并不是十分严谨
             result = String.valueOf(c).getBytes(GBK).length > 1;
         } catch (UnsupportedEncodingException e) {
-            LogHelper.exportLog(CommonHelper.getCName(new Exception()),
-                    CommonHelper.getMName(new Exception()),
-                    "UnsupportedEncodingException:" + e.getMessage(), true);
+            LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage(), e);
         }
         return result;
     }
