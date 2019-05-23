@@ -151,6 +151,7 @@ public class IOTCClient {
         byte[] req = json.getBytes();
         IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
     }
+
     /**
      * 停止直播参数json
      */
@@ -204,6 +205,7 @@ public class IOTCClient {
     public static void getdata() {
         byte[] buf = new byte[1024];
         int actualLen = IOTCAPIs.IOTC_Session_Read(SID, buf, 1024, 10000, 0);
+        LogCat.e("IOTCClient", "111111 actualLen = " + actualLen);
         byte[] data = new byte[actualLen];
         System.arraycopy(buf, 0, data, 0, actualLen);
 //        ByteUtils.byte2String(data);
