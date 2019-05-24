@@ -2,9 +2,7 @@ package com.sunmi.cloudprinter.ui.adaper;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,12 +21,10 @@ public class BlueListAdapter extends RecyclerView.Adapter<BlueListAdapter.ViewHo
 
     private Context context;
     private List<BlueDevice> data;
-    private Bundle bundle;
 
-    public BlueListAdapter(Context context, List<BlueDevice> data, Bundle bundle) {
+    public BlueListAdapter(Context context, List<BlueDevice> data) {
         this.context = context;
         this.data = data;
-        this.bundle = bundle;
     }
 
     @NonNull
@@ -52,7 +48,7 @@ public class BlueListAdapter extends RecyclerView.Adapter<BlueListAdapter.ViewHo
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 SetPrinterActivity_.intent(context).bleAddress(data.get(position)
-                                        .getAddress()).bundle(bundle).start();
+                                        .getAddress()).start();
                             }
                         }).create().show();
             }

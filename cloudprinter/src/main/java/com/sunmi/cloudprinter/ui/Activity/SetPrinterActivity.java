@@ -1,7 +1,6 @@
 package com.sunmi.cloudprinter.ui.Activity;
 
 import android.app.Dialog;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -15,7 +14,6 @@ import android.widget.RelativeLayout;
 import com.inuker.bluetooth.library.BluetoothClient;
 import com.inuker.bluetooth.library.connect.options.BleConnectOptions;
 import com.inuker.bluetooth.library.connect.response.BleConnectResponse;
-import com.inuker.bluetooth.library.connect.response.BleMtuResponse;
 import com.inuker.bluetooth.library.connect.response.BleNotifyResponse;
 import com.inuker.bluetooth.library.connect.response.BleWriteResponse;
 import com.inuker.bluetooth.library.model.BleGattProfile;
@@ -39,13 +37,15 @@ import java.util.List;
 import java.util.UUID;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.dialog.ProgressDialog;
 
 @EActivity(resName = "activity_set_printer")
-public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter> implements SetPrinterContract.View {
+public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter>
+        implements SetPrinterContract.View {
     @ViewById(resName = "rv_router")
     RecyclerView rvRouter;
     @ViewById(resName = "pb_sending")
@@ -53,9 +53,6 @@ public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter> imp
 
     @Extra
     String bleAddress;
-
-    @Extra
-    Bundle bundle;
 
     private BluetoothClient mClient;
     private ProgressDialog dialog;
@@ -75,7 +72,6 @@ public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter> imp
         mClient = new BluetoothClient(context);
         showProgressDialog();
         connectBle();
-
     }
 
     @Override
@@ -161,7 +157,6 @@ public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter> imp
                     router.setPwd(pwd);
                     byte[] password = ByteUtils.String2Byte64(pwd);
                     onSendMessage(Utility.cmdConnectWifi(version, router.getEssid(), password));
-
                 } else {
                     byte[] password = ByteUtils.getNoneByte64();
                     onSendMessage(Utility.cmdConnectWifi(version, router.getEssid(), password));
@@ -173,68 +168,104 @@ public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter> imp
         routerDialog.show();
     }
 
+    private void unpackData(final byte[] data) {
+//for (byte)
+    }
 
     @UiThread
     @Override
     public void onInitNotify() {
         if (mClient == null) return;
-        mClient.notify(bleAddress, Constants.SERVICE_UUID, Constants.CHARACTER_UUID, new BleNotifyResponse() {
-            @Override
-            public void onNotify(UUID service, UUID character, byte[] value) {
-                Log.e(TAG, "onNotify value = " + value.length);
-                for (byte data : value) {
-                    Log.e(TAG, "onNotify data = " + data);
-                }
-                mPresenter.onNotify(value,version);
-            }
+        mClient.notify(bleAddress, Constants.SERVICE_UUID, Constants.CHARACTER_UUID,
+                new BleNotifyResponse() {
+                    @Override
+                    public void onNotify(UUID service, UUID character, byte[] value) {
+                        Log.e(TAG, "onNotify value = " + value.length);
+                        for (byte data : value) {
+                            Log.e(TAG, "onNotify data = " + data);
+                        }
+                        mPresenter.onNotify(value, version);
+                    }
 
-            @Override
-            public void onResponse(int code) {
-                Log.e(TAG, "initNotify onResponse, code = " + code);
-                if (code == 0) {
-                    mPresenter.initNotifySuccess(version);
-                }else {
-                    mPresenter.initNotifyFailed();
-                }
-            }
-        });
+                    @Override
+                    public void onResponse(int code) {
+                        Log.e(TAG, "initNotify onResponse, code = " + code);
+                        if (code == 0) {
+                            mPresenter.initNotifySuccess(version);
+                        } else {
+                            mPresenter.initNotifyFailed();
+                        }
+                    }
+                });
     }
 
     @UiThread
     @Override
     public void onInitMtu() {
         if (mClient == null) return;
-        mClient.requestMtu(bleAddress, 256, new BleMtuResponse() {
-            @Override
-            public void onResponse(int code, Integer data) {
-                if (code == 0) {
-                    mPresenter.initMtuSuccess();
-                } else {
-                  mPresenter.initMtuFailed();
-                }
-            }
-        });
+        onInitNotify();
+
+//        mClient.requestMtu(bleAddress, 256, new BleMtuResponse() {
+//            @Override
+//            public void onResponse(int code, Integer data) {
+//                if (code == 0) {
+//                    mPresenter.initMtuSuccess();
+//                } else {
+//                    mPresenter.initMtuFailed();
+//                }
+//            }
+//        });
     }
 
     @UiThread
     @Override
     public void onSendMessage(final byte[] data) {
+//        if (mClient == null) return;
+//        mClient.write(bleAddress, Constants.SERVICE_UUID, Constants.CHARACTER_UUID, data, new BleWriteResponse() {
+//            @Override
+//            public void onResponse(int code) {
+//                Log.e(TAG, "send Message:" + code);
+//                if (code == 0) {
+//                    if (data[5] == 8) {
+//                        Log.e(TAG, "send Message: data " + data[5]);
+//                        routerDialog.dismiss();
+//                        PrinterManageActivity_.intent(context).sn(sn).userId(SpUtils.getUID())
+//                                .merchantId(SpUtils.getMerchantUid()).start();
+//                    }
+//                }
+//            }
+//        });
+        int dataLen = data.length;
+        int cmd = data[5];
+        if (dataLen > 20) {
+            int remainLen = dataLen;
+            while (remainLen > 0) {
+                writeData(sunmi.common.utils.ByteUtils.subBytes(data,
+                        dataLen - remainLen, remainLen > 20 ? 20 : remainLen), cmd);
+                remainLen -= 20;
+            }
+        } else {
+            writeData(data, cmd);
+        }
+    }
+
+    private void writeData(final byte[] data, final int cmd) {
         if (mClient == null) return;
         mClient.write(bleAddress, Constants.SERVICE_UUID, Constants.CHARACTER_UUID, data, new BleWriteResponse() {
             @Override
             public void onResponse(int code) {
+                Log.e(TAG, "send Message:" + code);
                 if (code == 0) {
-                    shortTip("send success");
-                    Log.e(TAG, "send Message:" + data[5]);
-                    if (data[5] == 8) {
+                    if (cmd == 8) {
                         routerDialog.dismiss();
-                        PrinterManageActivity_.intent(context).sn(sn).userId(bundle.getString("userId"))
-                                .merchantId(bundle.getString("merchantId")).start();
+                        PrinterManageActivity_.intent(context).sn(sn).userId(SpUtils.getUID())
+                                .merchantId(SpUtils.getMerchantUid()).start();
                     }
                 }
             }
         });
     }
+
 
     @UiThread
     @Override
@@ -244,7 +275,7 @@ public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter> imp
 
     @Override
     public void setSn(String sn) {
-        this.sn=sn;
+        this.sn = sn;
     }
 
     private void showProgressDialog() {
@@ -261,4 +292,5 @@ public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter> imp
             dialog.dismiss();
         }
     }
+
 }

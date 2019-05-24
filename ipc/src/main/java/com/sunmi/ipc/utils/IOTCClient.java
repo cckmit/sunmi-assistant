@@ -18,6 +18,7 @@ public class IOTCClient {
 
     private static Callback callback;
     private static int SID = -1;
+    private static int avIndex = -1;
     private static int CMD_LIVE_START = 0x10;
     private static int CMD_LIVE_STOP = 0x11;
     private static int CMD_LIVE_START_AUDIO = 0x12;
@@ -61,7 +62,7 @@ public class IOTCClient {
         int[] pservType = new int[100];
         int[] bResend1 = new int[100];
 
-        int avIndex = AVAPIs.avClientStart2(SID, account, password,
+        avIndex = AVAPIs.avClientStart2(SID, account, password,
                 timeoutSec, pservType, channelId, bResend1);//chid用来传输音视频
         if (avIndex < 0) {
             LogCat.e("IOTCClient", "avClientStartEx failed avIndex = " + avIndex);
@@ -86,7 +87,11 @@ public class IOTCClient {
             LogCat.e("IOTCClient - audioThread:", e.getMessage());
             return;
         }
+        close();
+    }
 
+    public static void close() {
+        if (avIndex < 0) return;
         AVAPIs.avClientStop(avIndex);
         LogCat.e("IOTCClient", "avClientStop OK");
         IOTCAPIs.IOTC_Session_Close(SID);
@@ -133,6 +138,44 @@ public class IOTCClient {
         LogCat.e("IOTCClient", "111111 changeValue json = " + json);
         byte[] req = json.getBytes();
         IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
+    }
+
+    /**
+     * 停止直播
+     */
+    public static void stopLivePlay() {
+        getStopLivePlayCommand();
+    }
+
+    /**
+     * 停止直播参数
+     */
+    public static void getStopLivePlayCommand() {
+        String json = getStopLiveJson();
+        LogCat.e("IOTCClient", "111111 StopLive json = " + json);
+        byte[] req = json.getBytes();
+        IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
+    }
+
+    /**
+     * 停止直播参数json
+     */
+    private static String getStopLiveJson() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("msg_id", SpUtils.getUID() + "_" + System.currentTimeMillis());
+            JSONArray array = new JSONArray();
+            JSONObject item = new JSONObject();
+            item.put("cmd", CMD_LIVE_STOP);
+            item.put("channel", 1);
+            item.put("param", new JSONObject());
+            array.put(item);
+            jsonObject.put("params", array);
+            return jsonObject.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     private static String getPlaybackListCommand() {
@@ -302,9 +345,11 @@ public class IOTCClient {
                     LogCat.e("IOTCClient", "Session cant be used anymore");
                     break;
                 }
-                byte[] data = new byte[ret];
-                System.arraycopy(videoBuffer, 0, data, 0, ret);
-                if (callback != null) callback.onVideoReceived(data);
+                if (ret > 0) {
+                    byte[] data = new byte[ret];
+                    System.arraycopy(videoBuffer, 0, data, 0, ret);
+                    if (callback != null) callback.onVideoReceived(data);
+                }
 //                LogCat.e("IOTCClient", "555555vvv VIDEO received ret = " + ret);
             }
         }

@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import sunmi.common.utils.log.LogHelper;
+import sunmi.common.utils.log.LogCat;
 
 public class DateTimeUtils {
     private DateTimeUtils() {
@@ -402,8 +402,7 @@ public class DateTimeUtils {
                 date = dateFormat.parse(dateYMStr);
             }
         } catch (ParseException e) {
-            LogHelper.exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
-                    "ParseException:" + e.getMessage(), true);
+            LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage(), e);
         }
         return date;
     }
@@ -424,8 +423,7 @@ public class DateTimeUtils {
                 date = dateFormat.parse(dateStr);
             }
         } catch (ParseException e) {
-            LogHelper.exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
-                    "ParseException:" + e.getMessage(), true);
+            LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage(), e);
         }
         return date;
     }
@@ -445,8 +443,7 @@ public class DateTimeUtils {
                 date = dateFormat.parse(dateStr);
             }
         } catch (ParseException e) {
-            LogHelper.exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
-                    "ParseException:" + e.getMessage(), true);
+            LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage(), e);
         }
         return date;
     }
@@ -465,8 +462,7 @@ public class DateTimeUtils {
                     Locale.getDefault());
             date = dateFormat.parse(dateTimeStr);
         } catch (ParseException e) {
-            LogHelper.exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
-                    "ParseException:" + e.getMessage(), true);
+            LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage(), e);
         }
         return date;
     }

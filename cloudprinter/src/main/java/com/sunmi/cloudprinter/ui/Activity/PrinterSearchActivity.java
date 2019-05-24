@@ -5,7 +5,6 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.DividerItemDecoration;
@@ -20,7 +19,6 @@ import com.sunmi.cloudprinter.ui.adaper.BlueListAdapter;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
@@ -34,16 +32,13 @@ import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.dialog.CommonDialog;
 
-@EActivity(resName = "activity_search_bluetooth")
-public class SearchBluetoothActivity extends BaseActivity implements BluetoothAdapter.LeScanCallback {
+@EActivity(resName = "activity_search_printer")
+public class PrinterSearchActivity extends BaseActivity implements BluetoothAdapter.LeScanCallback {
 
     @ViewById(resName = "rv_ble")
     RecyclerView rvResult;
     @ViewById(resName = "divider_top")
     View dividerTop;
-
-    @Extra
-    Bundle bundle;
 
     private Set<String> snSet = new HashSet<>();
     private List<BlueDevice> list = new ArrayList<>();
@@ -127,7 +122,7 @@ public class SearchBluetoothActivity extends BaseActivity implements BluetoothAd
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         rvResult.setLayoutManager(layoutManager);
         rvResult.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
-        adapter = new BlueListAdapter(context, list, bundle);
+        adapter = new BlueListAdapter(context, list);
         rvResult.setAdapter(adapter);
     }
 

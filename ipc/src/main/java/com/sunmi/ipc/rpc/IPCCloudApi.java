@@ -125,13 +125,13 @@ public class IPCCloudApi extends BaseHttpApi {
     }
 
     /**
-     * 获取云端缓存的视频列表
+     * 获取指定时间的视频时间轴信息
      *
      * @param deviceId  是	int	ipc设备id
      * @param startTime 是	int	开始时间戳
      * @param endTime   是	int	结束时间戳
      */
-    public static void getVideoList(int deviceId, long startTime, long endTime,
+    public static void getTimeSlots(int deviceId, long startTime, long endTime,
                                     RetrofitCallback callback) {
         try {
             String params = new JSONObject()
@@ -140,12 +140,39 @@ public class IPCCloudApi extends BaseHttpApi {
                     .put("end_time", endTime)
                     .toString();
             RetrofitClient.getInstance().create(MediaInterface.class)
+                    .getTimeSlots(getSignedRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取设备录制视频列表
+     *
+     * @param deviceId
+     * @param startTime
+     * @param endTime
+     * @param callback
+     */
+    public static void getVideoList(int deviceId, long startTime, long endTime,
+                                    RetrofitCallback callback) {
+        try {
+            String params = new JSONObject()
+                    .put("device_id", deviceId)
+                    .put("start_time", startTime)
+                    .put("end_time", endTime)
+//                    .put("page_num", pageNum)
+//                    .put("page_size", pageSize)
+                    .toString();
+            RetrofitClient.getInstance().create(MediaInterface.class)
                     .getVideoList(getSignedRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+
 
     /**
      * 参数加签

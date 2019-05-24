@@ -1,5 +1,7 @@
 package com.sunmi.cloudprinter.presenter;
 
+import android.util.Log;
+
 import com.sunmi.cloudprinter.R;
 import com.sunmi.cloudprinter.bean.Router;
 import com.sunmi.cloudprinter.constant.Constants;
@@ -10,6 +12,9 @@ import sunmi.common.base.BasePresenter;
 
 public class SetPrinterPresenter extends BasePresenter<SetPrinterContract.View> implements SetPrinterContract.Presenter {
 
+    byte[] data;
+    int receivedLen;
+
     @Override
     public void initMtuSuccess() {
         mView.onInitNotify();
@@ -17,7 +22,7 @@ public class SetPrinterPresenter extends BasePresenter<SetPrinterContract.View> 
 
     @Override
     public void initMtuFailed() {
-        mView.onInitMtu();
+//        mView.onInitMtu();
     }
 
     @Override
@@ -32,6 +37,22 @@ public class SetPrinterPresenter extends BasePresenter<SetPrinterContract.View> 
 
     @Override
     public void onNotify(byte[] value, byte version) {
+        Log.e("spp", "555555 onNotify, value = " + value);
+        if (value.length > 0) {
+            if (Utility.isFirstPac(value)) {
+                data = new byte[Utility.getPacLength(value)];
+                System.arraycopy(value, 0, data, 0, value.length);
+            } else {
+                System.arraycopy(value, receivedLen, data, 0, value.length);
+            }
+            receivedLen += value.length;
+            if (data.length == receivedLen) {
+                onDataReceived(data, version);
+            }
+        }
+    }
+
+    private void onDataReceived(byte[] value, byte version) {
         int cmd = Utility.getCmd(value);
         if (cmd == Constants.SRV2CLI_SEND_SN) {
             mView.setSn(Utility.getSn(value));
@@ -47,7 +68,6 @@ public class SetPrinterPresenter extends BasePresenter<SetPrinterContract.View> 
         } else if (cmd == Constants.SRV2CLI_SEND_ALREADY_CONNECTED_WIFI) {
             mView.onSendMessage(Utility.cmdAlreadyConnectedWifi(version));
         }
-
     }
 
 }
