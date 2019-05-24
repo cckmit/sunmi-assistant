@@ -220,10 +220,19 @@ public class VideoPlayActivity extends BaseActivity
         surfaceHolder = videoView.getHolder();// SurfaceHolder是SurfaceView的控制接口
         surfaceHolder.addCallback(this); // 因为这个类实现了SurfaceHolder.Callback接口，所以回调参数直接this
         audioDecoder = new AACDecoder();
-
         //初始化音量
         adjustVoice();
         initGetVolume();
+
+        //获取AP回放时间列表
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //获取AP回放时间列表
+                IOTCClient.getPlaybackList(threeDaysBeforeSeconds, currentDateSeconds);
+            }
+        },3000);
+
     }
 
     private boolean isSS1() {
@@ -488,6 +497,7 @@ public class VideoPlayActivity extends BaseActivity
             }
         }, 3000);
     }
+
     /*
      * 初始化播放首段视频的player
      */
@@ -627,7 +637,7 @@ public class VideoPlayActivity extends BaseActivity
     public void surfaceCreated(SurfaceHolder holder) {
         videoDecoder = new H264Decoder(holder.getSurface(), 0);
         initP2pLive();
-       // surfaceView创建完毕后，首先获取该直播间所有视频分段的url
+        // surfaceView创建完毕后，首先获取该直播间所有视频分段的url
 //        getVideoUrls();
 //       // 然后初始化播放手段视频的player对象
 //        initFirstPlayer();
@@ -656,6 +666,11 @@ public class VideoPlayActivity extends BaseActivity
     @Override
     public void onAudioReceived(byte[] audioBuffer) {
         audioDecoder.setAudioData(audioBuffer);
+    }
+
+    @Override
+    public void IOTCResult(String result) {
+        LogCat.e(TAG, "111111 get result = " + result);
     }
 
     @Override
@@ -747,7 +762,6 @@ public class VideoPlayActivity extends BaseActivity
         closeMove();//关闭时间抽的timer
         cloudPlayDestroy();//关闭云端视频
         //关闭IOTC的session
-
 
     }
 

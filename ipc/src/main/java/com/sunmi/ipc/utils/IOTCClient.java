@@ -150,6 +150,7 @@ public class IOTCClient {
         LogCat.e("IOTCClient", "111111 StopLive json = " + json);
         byte[] req = json.getBytes();
         IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
+        getdata();
     }
 
     /**
@@ -173,7 +174,7 @@ public class IOTCClient {
         return "";
     }
 
-    private static String getPlaybackListCommand() {
+    private static String getPlaybackListCommand(long startTime, long enTime) {
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("msg_id", SpUtils.getUID() + "_" + System.currentTimeMillis());
@@ -182,8 +183,8 @@ public class IOTCClient {
             item.put("cmd", CMD_PLAYBACK_LIST);
             item.put("channel", 1);
             JSONObject param = new JSONObject();
-            param.put("start_time", System.currentTimeMillis() / 1000);
-            param.put("end_time", System.currentTimeMillis() / 1000);
+            param.put("start_time", startTime);
+            param.put("end_time", enTime);
             item.put("param", param);
             array.put(item);
             jsonObject.put("params", array);
@@ -194,8 +195,9 @@ public class IOTCClient {
         return "";
     }
 
-    public static void getPlaybackList() {
-        String json = getPlaybackListCommand();
+    //AP回放时间轴
+    public static void getPlaybackList(long startTime, long enTime) {
+        String json = getPlaybackListCommand(startTime, enTime);
         LogCat.e("IOTCClient", "111111 getPlaybackList json = " + json);
         byte[] req = json.getBytes();
         IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
@@ -206,10 +208,12 @@ public class IOTCClient {
         byte[] buf = new byte[1024];
         int actualLen = IOTCAPIs.IOTC_Session_Read(SID, buf, 1024, 10000, 0);
         LogCat.e("IOTCClient", "111111 actualLen = " + actualLen);
+        if (actualLen <= 0) return;
         byte[] data = new byte[actualLen];
         System.arraycopy(buf, 0, data, 0, actualLen);
-//        ByteUtils.byte2String(data);
-        LogCat.e("IOTCClient", "111111 getdata data = " + ByteUtils.byte2String(data));
+        String result = ByteUtils.byte2String(data);
+        if (callback != null) callback.IOTCResult(result);
+        LogCat.e("IOTCClient", "111111 getdata data = " + result);
     }
 
     private static String getStartPlaybackCommand(long startTime) {
@@ -417,6 +421,8 @@ public class IOTCClient {
         void onVideoReceived(byte[] videoBuffer);
 
         void onAudioReceived(byte[] audioBuffer);
+
+        void IOTCResult(String result);
     }
 
 }

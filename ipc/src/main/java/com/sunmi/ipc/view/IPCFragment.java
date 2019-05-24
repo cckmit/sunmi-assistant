@@ -442,7 +442,7 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
     }
 
     void getTimeList() {
-        IPCCloudApi.getTimeSlots(2237, 1558644240, 1558594980, new RetrofitCallback() {
+        IPCCloudApi.getTimeSlots(2237, 1558454340, 1558627140, new RetrofitCallback() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 LogCat.e(TAG, "date11 getTimeSlots==" + data.toString());
@@ -455,12 +455,11 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
             }
         });
     }
-
     void getVideoList() {
-        IPCCloudApi.getVideoList(2237, 1558644240, 1558594980, new RetrofitCallback() {
+        IPCCloudApi.getVideoList(2237, 1558537926, 1558537326, new RetrofitCallback() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
-                LogCat.e(TAG, "date11 getVideoList== code" + code + ",  " + data.toString());
+                LogCat.e(TAG, "date11 getVideoList== code=" + code + ",  " + data.toString());
             }
 
             @Override

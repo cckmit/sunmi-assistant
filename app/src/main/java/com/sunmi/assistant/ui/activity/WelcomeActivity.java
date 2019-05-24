@@ -13,7 +13,9 @@ import android.widget.Toast;
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.update.AppUpdate;
 import com.sunmi.apmanager.utils.CommonUtils;
+
 import sunmi.common.utils.SpUtils;
+
 import com.sunmi.assistant.MyApplication;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.login.LoginActivity_;
@@ -208,9 +210,13 @@ public class WelcomeActivity extends BaseActivity {
      * 8.0上授权是否允许安装未知来源
      */
     private void requestPackagePermission() {
-        if (haveInstallPermission() || TextUtils.equals("ZUK", android.os.Build.BRAND)) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O ||
+                TextUtils.equals("ZUK", android.os.Build.BRAND) ||
+                haveInstallPermission()) {
             AppUpdate.versionUpdate((Activity) context, appUrl);
+            LogCat.e(TAG,"2222");
         } else {
+            LogCat.e(TAG,"22221111");
             Toast.makeText(context, R.string.str_open_permission_to_update, Toast.LENGTH_LONG).show();
             //跳转设置开启允许安装
             Uri packageURI = Uri.parse("package:" + context.getPackageName());
