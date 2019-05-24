@@ -1,7 +1,6 @@
 package com.sunmi.ipc.rpc.mqtt;
 
 import android.os.Build;
-import android.text.TextUtils;
 
 import com.sunmi.ipc.rpc.IPCCloudApi;
 
@@ -200,8 +199,8 @@ public class MqttManager {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     LogCat.e(TAG, "mqtt Subscribed token success");
-                    if (!isRegister)
-                        pubRegister(clientId);
+//                    if (!isRegister)
+                    pubRegister(clientId);
                 }
 
                 @Override
