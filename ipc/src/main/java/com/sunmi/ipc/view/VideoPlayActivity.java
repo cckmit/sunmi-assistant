@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +14,7 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -345,17 +347,17 @@ public class VideoPlayActivity extends BaseActivity
         }
     }
 
-    //高清画质
+    //超清画质
     @Click(resName = "tv_hd_quality")
     void hdQualityClick() {
-        tvQuality.setText(R.string.str_HD);
+        tvQuality.setText(R.string.str_FHD);
         changeQuality(0);
     }
 
-    //标清画质
+    //高清画质
     @Click(resName = "tv_sd_quality")
     void sdQualityClick() {
-        tvQuality.setText(R.string.str_SD);
+        tvQuality.setText(R.string.str_HD);
         changeQuality(1);
     }
 
@@ -429,25 +431,6 @@ public class VideoPlayActivity extends BaseActivity
         }
     }
 
-    //test 云端回放
-    @Click(resName = "test_cloud_back")
-    void testCloudPlayBackClick() {
-        //
-//        cloudPlayDestroy();
-//        initP2pLive();
-
-        //先停止直播
-        IOTCClient.stopLivePlay();
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                //获取视频源
-//                getVideoUrls();
-//                //然后初始化播放手段视频的player对象
-//                initFirstPlayer();
-//            }
-//        }, 3000);
-    }
 
     //开始计时录制
     private void startRecord() {
@@ -486,6 +469,25 @@ public class VideoPlayActivity extends BaseActivity
     //*********************************************************************
     //***********************云端回放***************************************
     //*********************************************************************
+    //test 云端回放
+    @Click(resName = "test_cloud_back")
+    void testCloudPlayBackClick() {
+        //
+//        cloudPlayDestroy();
+//        initP2pLive();
+
+        //先停止直播
+        IOTCClient.stopLivePlay();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //获取视频源
+                getVideoUrls();
+                //然后初始化播放手段视频的player对象
+                initFirstPlayer();
+            }
+        }, 3000);
+    }
     /*
      * 初始化播放首段视频的player
      */
@@ -513,8 +515,15 @@ public class VideoPlayActivity extends BaseActivity
     private void startPlayFirstVideo() {
         try {
             firstPlayer.setDataSource(videoListQueue.get(currentVideoIndex));
-            firstPlayer.prepare();
-            firstPlayer.start();
+            firstPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    firstPlayer.start();
+                }
+            });
+            firstPlayer.prepareAsync();
+//            firstPlayer.prepare();
+//            firstPlayer.start();
         } catch (IOException e) {
             // TODO 自动生成的 catch 块
             e.printStackTrace();
@@ -618,9 +627,9 @@ public class VideoPlayActivity extends BaseActivity
     public void surfaceCreated(SurfaceHolder holder) {
         videoDecoder = new H264Decoder(holder.getSurface(), 0);
         initP2pLive();
-        //surfaceView创建完毕后，首先获取该直播间所有视频分段的url
+       // surfaceView创建完毕后，首先获取该直播间所有视频分段的url
 //        getVideoUrls();
-//        //然后初始化播放手段视频的player对象
+//       // 然后初始化播放手段视频的player对象
 //        initFirstPlayer();
     }
 
@@ -737,6 +746,9 @@ public class VideoPlayActivity extends BaseActivity
         super.onDestroy();
         closeMove();//关闭时间抽的timer
         cloudPlayDestroy();//关闭云端视频
+        //关闭IOTC的session
+
+
     }
 
     /**
@@ -901,7 +913,7 @@ public class VideoPlayActivity extends BaseActivity
 
     //初始化延时滑动当前时间
     private void scrollCurrentTime() {
-
+        isPlayBack = false;//当前直播
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -919,6 +931,7 @@ public class VideoPlayActivity extends BaseActivity
 
     //点击直播按钮滑动到当前时间
     private void scrollCurrentClickLiveBtn() {
+        isPlayBack = false;//当前直播
         //当前时间秒数
         long nowMinute = System.currentTimeMillis() / 1000;
         //初始化当前的秒数和现在的秒数时间戳对比相差的偏移量--比对分钟数
@@ -1064,7 +1077,7 @@ public class VideoPlayActivity extends BaseActivity
             //1558603200 1558614660
             if (date > 1558599120 && date < 1558603200) {
                 viewHolder.rlItem.setBackgroundResource(R.color.colorLoadingCenter);
-            }else {
+            } else {
                 viewHolder.rlItem.setBackgroundResource(R.color.transparent);
             }
             //当前时间线的高度
