@@ -209,7 +209,7 @@ public class SunmiLinkSearchActivity extends BaseActivity {
     @Override
     public int[] getStickNotificationId() {
         return new int[]{NotificationConstant.apSearchStart, NotificationConstant.apSearchStop,
-                NotificationConstant.apGetSearchInfo, IpcConstants.ipcDiscovered};
+                NotificationConstant.apGetSearchInfo, IpcConstants.ipcDiscovered, IpcConstants.bindIpc};
     }
 
     @Override
