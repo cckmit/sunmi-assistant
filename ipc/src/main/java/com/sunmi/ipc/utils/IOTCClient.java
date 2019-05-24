@@ -18,6 +18,7 @@ public class IOTCClient {
 
     private static Callback callback;
     private static int SID = -1;
+    private static int avIndex = -1;
     private static int CMD_LIVE_START = 0x10;
     private static int CMD_LIVE_STOP = 0x11;
     private static int CMD_LIVE_START_AUDIO = 0x12;
@@ -61,7 +62,7 @@ public class IOTCClient {
         int[] pservType = new int[100];
         int[] bResend1 = new int[100];
 
-        int avIndex = AVAPIs.avClientStart2(SID, account, password,
+        avIndex = AVAPIs.avClientStart2(SID, account, password,
                 timeoutSec, pservType, channelId, bResend1);//chid用来传输音视频
         if (avIndex < 0) {
             LogCat.e("IOTCClient", "avClientStartEx failed avIndex = " + avIndex);
@@ -86,7 +87,11 @@ public class IOTCClient {
             LogCat.e("IOTCClient - audioThread:", e.getMessage());
             return;
         }
+        close();
+    }
 
+    public static void close() {
+        if (avIndex < 0) return;
         AVAPIs.avClientStop(avIndex);
         LogCat.e("IOTCClient", "avClientStop OK");
         IOTCAPIs.IOTC_Session_Close(SID);
@@ -205,7 +210,6 @@ public class IOTCClient {
     public static void getdata() {
         byte[] buf = new byte[1024];
         int actualLen = IOTCAPIs.IOTC_Session_Read(SID, buf, 1024, 10000, 0);
-        LogCat.e("IOTCClient", "111111 actualLen = " + actualLen);
         byte[] data = new byte[actualLen];
         System.arraycopy(buf, 0, data, 0, actualLen);
 //        ByteUtils.byte2String(data);
@@ -341,9 +345,11 @@ public class IOTCClient {
                     LogCat.e("IOTCClient", "Session cant be used anymore");
                     break;
                 }
-                byte[] data = new byte[ret];
-                System.arraycopy(videoBuffer, 0, data, 0, ret);
-                if (callback != null) callback.onVideoReceived(data);
+                if (ret > 0) {
+                    byte[] data = new byte[ret];
+                    System.arraycopy(videoBuffer, 0, data, 0, ret);
+                    if (callback != null) callback.onVideoReceived(data);
+                }
 //                LogCat.e("IOTCClient", "555555vvv VIDEO received ret = " + ret);
             }
         }

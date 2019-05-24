@@ -106,12 +106,16 @@ public class H264Decoder {
         }
     }
 
-    private void initMediaCodec(MediaFormat format) throws IOException {
+    public void release() {
         if (mediaCodec != null) {
             mediaCodec.stop();
             mediaCodec.release();
             mediaCodec = null;
         }
+    }
+
+    private void initMediaCodec(MediaFormat format) throws IOException {
+        release();
         mediaCodec = MediaCodec.createDecoderByType("video/avc");
         if (mediaCodec == null) {
             return;

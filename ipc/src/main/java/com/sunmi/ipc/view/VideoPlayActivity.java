@@ -3,10 +3,8 @@ package com.sunmi.ipc.view;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +12,6 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -67,7 +64,6 @@ import java.util.TimerTask;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.CommonHelper;
-import sunmi.common.utils.ToastUtils;
 import sunmi.common.utils.VolumeHelper;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.VerticalSeekBar;
@@ -233,6 +229,15 @@ public class VideoPlayActivity extends BaseActivity
     @Override
     protected boolean needLandscape() {
         return true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (videoDecoder != null)
+            videoDecoder.release();
+        cloudPlayDestroy();//关闭云端视频
+        IOTCClient.close();
     }
 
     //开始直播
@@ -431,6 +436,29 @@ public class VideoPlayActivity extends BaseActivity
         }
     }
 
+    //test 云端回放
+    @Click(resName = "test_cloud_back")
+    void testCloudPlayBackClick() {
+        initP2pLive();
+        //先停止直播
+        IOTCClient.stopLivePlay();
+        if (videoDecoder != null) videoDecoder.release();
+
+        //获取视频源
+        getVideoUrls();
+        //然后初始化播放手段视频的player对象
+        initFirstPlayer();
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                //获取视频源
+//                getVideoUrls();
+//                //然后初始化播放手段视频的player对象
+//                initFirstPlayer();
+////                startPlayFirstVideo();
+//            }
+//        }, 3000);
+    }
 
     //开始计时录制
     private void startRecord() {
@@ -469,25 +497,6 @@ public class VideoPlayActivity extends BaseActivity
     //*********************************************************************
     //***********************云端回放***************************************
     //*********************************************************************
-    //test 云端回放
-    @Click(resName = "test_cloud_back")
-    void testCloudPlayBackClick() {
-        //
-//        cloudPlayDestroy();
-//        initP2pLive();
-
-        //先停止直播
-        IOTCClient.stopLivePlay();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //获取视频源
-                getVideoUrls();
-                //然后初始化播放手段视频的player对象
-                initFirstPlayer();
-            }
-        }, 3000);
-    }
     /*
      * 初始化播放首段视频的player
      */
@@ -514,18 +523,15 @@ public class VideoPlayActivity extends BaseActivity
 
     private void startPlayFirstVideo() {
         try {
+            if (firstPlayer.isPlaying()) {
+                firstPlayer.stop();
+                firstPlayer.release();
+                firstPlayer = new MediaPlayer();
+            }
             firstPlayer.setDataSource(videoListQueue.get(currentVideoIndex));
-            firstPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    firstPlayer.start();
-                }
-            });
-            firstPlayer.prepareAsync();
-//            firstPlayer.prepare();
-//            firstPlayer.start();
-        } catch (IOException e) {
-            // TODO 自动生成的 catch 块
+            firstPlayer.prepare();
+            firstPlayer.start();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -627,7 +633,7 @@ public class VideoPlayActivity extends BaseActivity
     public void surfaceCreated(SurfaceHolder holder) {
         videoDecoder = new H264Decoder(holder.getSurface(), 0);
         initP2pLive();
-       // surfaceView创建完毕后，首先获取该直播间所有视频分段的url
+        // surfaceView创建完毕后，首先获取该直播间所有视频分段的url
 //        getVideoUrls();
 //       // 然后初始化播放手段视频的player对象
 //        initFirstPlayer();
@@ -745,10 +751,6 @@ public class VideoPlayActivity extends BaseActivity
     protected void onDestroy() {
         super.onDestroy();
         closeMove();//关闭时间抽的timer
-        cloudPlayDestroy();//关闭云端视频
-        //关闭IOTC的session
-
-
     }
 
     /**
@@ -844,7 +846,6 @@ public class VideoPlayActivity extends BaseActivity
         adapter = new DateAdapter(list);
         recyclerView.setAdapter(adapter);
     }
-
 
     //选择日历日期回调
     @Override
