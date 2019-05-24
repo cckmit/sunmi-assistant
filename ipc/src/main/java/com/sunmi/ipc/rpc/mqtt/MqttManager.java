@@ -114,7 +114,7 @@ public class MqttManager {
         options = new MqttConnectOptions();
         options.setUserName(resp.getUsername());
         options.setPassword(resp.getPassword().toCharArray());//解密
-        options.setAutomaticReconnect(true);
+        options.setAutomaticReconnect(false);
         options.setCleanSession(true);
         options.setConnectionTimeout(10);
         options.setKeepAliveInterval(10);

@@ -439,25 +439,25 @@ public class VideoPlayActivity extends BaseActivity
     //test 云端回放
     @Click(resName = "test_cloud_back")
     void testCloudPlayBackClick() {
-        //
-//        cloudPlayDestroy();
         initP2pLive();
-//        getVideoUrls();
-//        initNexttPlayer();
-        //player对象初始化完成后，开启播放
         //先停止直播
         IOTCClient.stopLivePlay();
         if (videoDecoder != null) videoDecoder.release();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //获取视频源
-                getVideoUrls();
-                //然后初始化播放手段视频的player对象
-                initFirstPlayer();
-//                startPlayFirstVideo();
-            }
-        }, 3000);
+
+        //获取视频源
+        getVideoUrls();
+        //然后初始化播放手段视频的player对象
+        initFirstPlayer();
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                //获取视频源
+//                getVideoUrls();
+//                //然后初始化播放手段视频的player对象
+//                initFirstPlayer();
+////                startPlayFirstVideo();
+//            }
+//        }, 3000);
     }
 
     //开始计时录制
@@ -523,23 +523,15 @@ public class VideoPlayActivity extends BaseActivity
 
     private void startPlayFirstVideo() {
         try {
-            try {
-
-                if (firstPlayer.isPlaying()) {
-                    firstPlayer.stop();
-                    firstPlayer.release();
-                    firstPlayer = new MediaPlayer();
-                }
-                firstPlayer.setDataSource(videoListQueue.get(currentVideoIndex));
-                firstPlayer.prepare();
-                firstPlayer.start();
-            } catch (IllegalStateException e) {
-                e.printStackTrace();
+            if (firstPlayer.isPlaying()) {
+                firstPlayer.stop();
+                firstPlayer.release();
+                firstPlayer = new MediaPlayer();
             }
-//            firstPlayer.prepare();
-//            firstPlayer.start();
-        } catch (IOException e) {
-            // TODO 自动生成的 catch 块
+            firstPlayer.setDataSource(videoListQueue.get(currentVideoIndex));
+            firstPlayer.prepare();
+            firstPlayer.start();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
