@@ -1,5 +1,7 @@
 package com.sunmi.ipc.view;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.text.TextUtils;
@@ -10,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.gson.Gson;
+import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.rpc.IPCCloudApi;
 
 import org.androidannotations.annotations.AfterViews;
@@ -82,14 +85,27 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
         surfaceHolder.addCallback(this); // 因为这个类实现了SurfaceHolder.Callback接口，所以回调参数直接this
     }
 
+    private void showSingleChoiceDialog() {
+        final String[] items = {"C3YABT1MPRV4BM6GUHXJ", "CRYUBT1WKFV4UM6GUH71", "EFKUA51CZVBW8NPGUHZJ", "CVYA8T1WKFV49NPGYHRJ", "CBKA9T14URBC8MPGYHZJ"};
+        final AlertDialog.Builder singleChoiceDialog = new AlertDialog.Builder(getActivity());
+        singleChoiceDialog.setSingleChoiceItems(items, 1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                etUid.setText(items[which]);
+                if (etUid == null || TextUtils.isEmpty(etUid.getText().toString().trim())) {
+                    shortTip("请输入uid");
+                    return;
+                }
+                VideoPlayActivity_.intent(mActivity).UID(etUid.getText().toString().trim()).start();
+            }
+        });
+        singleChoiceDialog.show();
+    }
+
+
     @Click(resName = "btn_play")
     void playClick() {
-        etUid.setText(UID);
-        if (etUid == null || TextUtils.isEmpty(etUid.getText().toString().trim())) {
-            shortTip("请输入uid");
-            return;
-        }
-        VideoPlayActivity_.intent(mActivity).UID(etUid.getText().toString().trim()).start();
+        showSingleChoiceDialog();
     }
 
     // http://test.cdn.sunmi.com/VIDEO/IPC/4E58E60001B29C869E34C9506B9CCD23
@@ -113,6 +129,17 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
     void stopClick() {
         IPCConfigActivity_.intent(mActivity).shopId(shopId).start();
     }
+
+    @Click(resName = "btn_time")
+    void timeClick() {
+        getTimeList();
+    }
+
+    @Click(resName = "btn_video")
+    void videoClick() {
+        getVideoList();
+    }
+
 
     /*
      * 负责界面销毁时，release各个mediaplayer
@@ -405,6 +432,35 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+            }
+
+            @Override
+            public void onFail(int code, String msg, Object data) {
+
+            }
+        });
+    }
+
+    void getTimeList() {
+        IPCCloudApi.getTimeSlots(2237, 1558644240, 1558594980, new RetrofitCallback() {
+            @Override
+            public void onSuccess(int code, String msg, Object data) {
+                LogCat.e(TAG, "date11 getTimeSlots==" + data.toString());
+
+            }
+
+            @Override
+            public void onFail(int code, String msg, Object data) {
+
+            }
+        });
+    }
+
+    void getVideoList() {
+        IPCCloudApi.getVideoList(2237, 1558644240, 1558594980, new RetrofitCallback() {
+            @Override
+            public void onSuccess(int code, String msg, Object data) {
+                LogCat.e(TAG, "date11 getVideoList== code" + code + ",  " + data.toString());
             }
 
             @Override

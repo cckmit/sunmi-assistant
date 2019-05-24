@@ -214,7 +214,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/str_HD"
+            android:text="@string/str_FHD"
             android:textColor="@color/colorOrange"
             android:textSize="@dimen/sp_10" />
 
@@ -224,7 +224,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/str_SD"
+            android:text="@string/str_HD"
             android:textColor="@color/c_white"
             android:textSize="@dimen/sp_10" />
     </LinearLayout>
