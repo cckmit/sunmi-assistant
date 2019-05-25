@@ -301,7 +301,8 @@ public class VideoPlayActivity extends BaseActivity
         shortTip("x = " + (int) currX * 100 / screenW);
         float currY = 860;
         shortTip("y = " + (int) currY * 100 / screenH);
-        IPCCall.getInstance().fsSetFocusPoint((int) currX * 100 / screenW, (int) currY * 100 / screenH, context);
+        IPCCall.getInstance().fsSetFocusPoint((int) currX * 100 / screenW,
+                (int) currY * 100 / screenH, context);
     }
 
     @Click(resName = "rl_video_back")
