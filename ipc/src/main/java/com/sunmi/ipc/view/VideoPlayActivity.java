@@ -139,12 +139,11 @@ public class VideoPlayActivity extends BaseActivity
 
     private boolean isStartRecord;//是否开始录制
     private boolean isControlPanelShow;//是否点击屏幕
-    private boolean isPlayBack;//是否正在回放
+    private boolean isCloudPlayBack;//是否正在云回放
+    private boolean isPlayBack;//是否正在设备回放
     private boolean isPaused;//回放是否暂停
     private int qualityType = 0;//0-高清，1-标清
 
-    //日历 DateAdapter
-    private DateAdapter adapter;
     //日历
     private Calendar calendar;
     //选择视频日期列表
@@ -157,12 +156,8 @@ public class VideoPlayActivity extends BaseActivity
     private long threeDaysSeconds = 3 * 24 * 60 * 60;
     //6小时后的秒数
     private int sixHoursSeconds = 6 * 60 * 60;
-    //3天的分钟数 1分钟=1dp
-    private long threeDaysMinutes = 3 * 24 * 60;
     //当前分钟走的秒数
     private int currentSecond;
-    //是否点击滚动到某个位置
-    private boolean isOnclickScroll;
     //刻度尺移动定时器
     private Timer moveTimer;
     //滑动停止的时间戳
@@ -171,7 +166,8 @@ public class VideoPlayActivity extends BaseActivity
     private int currentItemPosition;
 
     //用于播放视频的mediaPlayer对象
-    private MediaPlayer firstPlayer,//负责播放进入视频播放界面后的第一段视频
+    private MediaPlayer
+            firstPlayer,//负责播放进入视频播放界面后的第一段视频
             nextMediaPlayer, //负责一段视频播放结束后，播放下一段视频
             cachePlayer,     //负责setNextMediaPlayer的player缓存对象
             currentPlayer;   //负责当前播放视频段落的player对象
@@ -195,8 +191,7 @@ public class VideoPlayActivity extends BaseActivity
 
         //当前天
         calendar = Calendar.getInstance();
-        int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
-        tvCalender.setText(currentDay + "");
+        tvCalender.setText(calendar.get(Calendar.DAY_OF_MONTH) + "");
 
         //初始化recyclerView
         layoutManger();
@@ -384,9 +379,10 @@ public class VideoPlayActivity extends BaseActivity
     void playApBackClick() {
         ivPlay.setBackgroundResource(R.mipmap.play_disable);
         isPlayBack = false;
-        //1，如果是云端回放此时需要调用停止操作然后直播
-        //2，如果是Ap回放直接开始直播
-
+        //如果是云端回放此时需要调用停止操作然后直播
+        if (isCloudPlayBack) {
+            cloudPlayDestroy();
+        }
         IOTCClient.startPlay();
         //滑动当前时间轴
         scrollCurrentClickLiveBtn();
@@ -395,7 +391,6 @@ public class VideoPlayActivity extends BaseActivity
     //显示日历
     @Click(resName = "tv_calender")
     void calenderClick() {
-        //第三方
         DatePickDialog dialog = new DatePickDialog(this);
         if (scrollTime > 0) {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -443,7 +438,7 @@ public class VideoPlayActivity extends BaseActivity
         //先停止直播
         IOTCClient.stopLive();
         if (videoDecoder != null) videoDecoder.release();
-
+        isCloudPlayBack = true;
         //获取视频源
         getVideoUrls();
         //然后初始化播放手段视频的player对象
@@ -505,7 +500,7 @@ public class VideoPlayActivity extends BaseActivity
 
         //设置cachePlayer为该player对象
         cachePlayer = firstPlayer;
-        initNexttPlayer();
+        initNextPlayer();
 
         //player对象初始化完成后，开启播放
         startPlayFirstVideo();
@@ -529,7 +524,7 @@ public class VideoPlayActivity extends BaseActivity
     /*
      * 新开线程负责初始化负责播放剩余视频分段的player对象,避免UI线程做过多耗时操作
      */
-    private void initNexttPlayer() {
+    private void initNextPlayer() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -544,12 +539,10 @@ public class VideoPlayActivity extends BaseActivity
                                     onVideoPlayCompleted(mp);
                                 }
                             });
-
                     try {
                         nextMediaPlayer.setDataSource(videoListQueue.get(i));
                         nextMediaPlayer.prepare();
                     } catch (IOException e) {
-                        // TODO 自动生成的 catch 块
                         e.printStackTrace();
                     }
 
@@ -579,11 +572,6 @@ public class VideoPlayActivity extends BaseActivity
     }
 
     private void getVideoUrls() {
-//        videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/0_25.mp4");
-//        videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/25_50.mp4");
-//        videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/0_25.mp4");
-//        videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/25_50.mp4");
-
         videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/0_20.mp4");
         videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/20_40.mp4");
         videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/40_60.mp4");
@@ -833,7 +821,8 @@ public class VideoPlayActivity extends BaseActivity
         //添加list
         timeList(list, isSelectedDate);
         //adapter
-        adapter = new DateAdapter(list);
+        //日历 DateAdapter
+        DateAdapter adapter = new DateAdapter(list);
         recyclerView.setAdapter(adapter);
     }
 
