@@ -396,6 +396,7 @@ public class VideoPlayActivity extends BaseActivity
         //如果是云端回放此时需要调用停止操作然后直播
         if (isCloudPlayBack) {
             cloudPlayDestroy();
+            videoDecoder.initMediaCodec();
         }
         IOTCClient.startPlay();
         //滑动当前时间轴
@@ -448,6 +449,7 @@ public class VideoPlayActivity extends BaseActivity
     //test 云端回放
     @Click(resName = "test_cloud_back")
     void testCloudPlayBackClick() {
+        showLoadingDialog();
         initP2pLive();
         //先停止直播
         IOTCClient.stopLive();
@@ -457,6 +459,8 @@ public class VideoPlayActivity extends BaseActivity
         getVideoUrls();
         //然后初始化播放手段视频的player对象
         initFirstPlayer();
+        hideLoadingDialog();
+        ivLive.setVisibility(View.VISIBLE);
     }
 
     //开始计时录制
@@ -853,17 +857,10 @@ public class VideoPlayActivity extends BaseActivity
         scrollTime = date.getTime();//选择日期的时间戳毫秒
         long time = scrollTime / 1000; //设置日期的秒数
 
-        if (time >= currentTime) {
-            /*
-            未来时间或当前--滑动当前直播
-             */
+        if (time >= currentTime) {//未来时间或当前--滑动当前直播
             tvCalender.setText(calendar.get(Calendar.DAY_OF_MONTH) + "");
             startPlayLive();
-
-        } else {
-            /*
-            回放时间
-             */
+        } else {//回放时间
             ivPlay.setBackgroundResource(R.mipmap.pause_normal);
             ivLive.setVisibility(View.VISIBLE);
             isPlayBack = true;

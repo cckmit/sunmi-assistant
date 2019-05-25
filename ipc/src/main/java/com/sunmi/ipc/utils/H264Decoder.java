@@ -32,6 +32,8 @@ public class H264Decoder {
 
     private int fps = 30;
 
+    private MediaFormat format;
+
     private ByteBuffer[] inputBuffers;
     private ByteBuffer[] outputBuffers;
     private MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
@@ -85,7 +87,13 @@ public class H264Decoder {
      */
     private void decodeHeader(byte[] data) {
         //初始化解码器
-        MediaFormat format = MediaFormat.createVideoFormat("video/avc", VIDEO_WIDTH, VIDEO_HEIGHT);
+        initFormat(data);
+        initMediaCodec();
+        ThreadPool.getCachedThreadPool().submit(new DecodeH264Thread());//开启解码线程
+    }
+
+    private void initFormat(byte[] data) {
+        format = MediaFormat.createVideoFormat("video/avc", VIDEO_WIDTH, VIDEO_HEIGHT);
         //获取h264中的pps及sps数据
         int spsLen = byteToInt(new byte[]{data[22], data[23]});
         byte[] spsHeader = new byte[spsLen + 4];
@@ -99,14 +107,10 @@ public class H264Decoder {
         format.setByteBuffer("csd-0", ByteBuffer.wrap(spsHeader));
         format.setByteBuffer("csd-1", ByteBuffer.wrap(ppsHeader));
         format.setInteger(MediaFormat.KEY_FRAME_RATE, fps);
-        try {
-            initMediaCodec(format);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public void release() {
+        isRunning = false;
         if (mediaCodec != null) {
             mediaCodec.stop();
             mediaCodec.release();
@@ -114,9 +118,13 @@ public class H264Decoder {
         }
     }
 
-    private void initMediaCodec(MediaFormat format) throws IOException {
+    public void initMediaCodec() {
         release();
-        mediaCodec = MediaCodec.createDecoderByType("video/avc");
+        try {
+            mediaCodec = MediaCodec.createDecoderByType("video/avc");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         if (mediaCodec == null) {
             return;
         }
@@ -128,7 +136,7 @@ public class H264Decoder {
         frameCount = 0;
         deltaTime = 0;
         isRunning = true;
-        ThreadPool.getCachedThreadPool().submit(new DecodeH264Thread());//开启解码线程
+//        ThreadPool.getCachedThreadPool().submit(new DecodeH264Thread());//开启解码线程
     }
 
     /**
