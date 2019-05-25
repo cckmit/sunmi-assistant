@@ -3,10 +3,8 @@ package com.sunmi.ipc.view;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +12,6 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -67,7 +64,6 @@ import java.util.TimerTask;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.CommonHelper;
-import sunmi.common.utils.ToastUtils;
 import sunmi.common.utils.VolumeHelper;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.VerticalSeekBar;
@@ -244,6 +240,15 @@ public class VideoPlayActivity extends BaseActivity
         return true;
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (videoDecoder != null)
+            videoDecoder.release();
+        cloudPlayDestroy();//关闭云端视频
+        IOTCClient.close();
+    }
+
     //开始直播
     @Background
     void initP2pLive() {
@@ -376,11 +381,11 @@ public class VideoPlayActivity extends BaseActivity
         if (!isPlayBack) return;
         if (isFastClick(1000)) return;
         if (isPaused)
-            ivPlay.setBackgroundResource(R.mipmap.play_normal);
-        else
             ivPlay.setBackgroundResource(R.mipmap.pause_normal);
-        IOTCClient.pausePlayback(isPaused);
+        else
+            ivPlay.setBackgroundResource(R.mipmap.play_normal);
         isPaused = !isPaused;
+        IOTCClient.pausePlayback(isPaused);
     }
 
     //直播
@@ -440,6 +445,19 @@ public class VideoPlayActivity extends BaseActivity
         }
     }
 
+    //test 云端回放
+    @Click(resName = "test_cloud_back")
+    void testCloudPlayBackClick() {
+        initP2pLive();
+        //先停止直播
+        IOTCClient.stopLive();
+        if (videoDecoder != null) videoDecoder.release();
+
+        //获取视频源
+        getVideoUrls();
+        //然后初始化播放手段视频的player对象
+        initFirstPlayer();
+    }
 
     //开始计时录制
     private void startRecord() {
@@ -524,18 +542,15 @@ public class VideoPlayActivity extends BaseActivity
 
     private void startPlayFirstVideo() {
         try {
+            if (firstPlayer.isPlaying()) {
+                firstPlayer.stop();
+                firstPlayer.release();
+                firstPlayer = new MediaPlayer();
+            }
             firstPlayer.setDataSource(videoListQueue.get(currentVideoIndex));
-            firstPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    firstPlayer.start();
-                }
-            });
-            firstPlayer.prepareAsync();
-//            firstPlayer.prepare();
-//            firstPlayer.start();
-        } catch (IOException e) {
-            // TODO 自动生成的 catch 块
+            firstPlayer.prepare();
+            firstPlayer.start();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -859,7 +874,6 @@ public class VideoPlayActivity extends BaseActivity
         recyclerView.setAdapter(adapter);
     }
 
-
     //选择日历日期回调
     @Override
     public void onSure(Date date) {
@@ -1003,14 +1017,13 @@ public class VideoPlayActivity extends BaseActivity
                         ivPlay.setBackgroundResource(R.mipmap.pause_normal);
                         ivLive.setVisibility(View.VISIBLE);
                         isPlayBack = true;
-                        isPaused = false;
                     } else {
                         //当前时间、未来时间
                         ivPlay.setBackgroundResource(R.mipmap.play_disable);
                         ivLive.setVisibility(View.GONE);
                         isPlayBack = false;
-                        isPaused = false;
                     }
+                    isPaused = false;
                 }
             }
 

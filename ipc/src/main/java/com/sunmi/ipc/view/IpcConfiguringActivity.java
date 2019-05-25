@@ -27,7 +27,7 @@ import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.GotoActivityUtils;
-import sunmi.common.utils.log.LogCat;
+import sunmi.common.utils.NetworkUtils;
 import sunmi.common.view.dialog.CommonDialog;
 
 /**
@@ -58,6 +58,10 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
 
     private void bind() {
         if (sunmiDevices != null) {
+            if (!NetworkUtils.isNetworkAvailable(context)) {
+                configFailDialog(R.string.tip_set_fail, R.string.str_bind_net_error);
+                return;
+            }
             for (SunmiDevice sunmiDevice : sunmiDevices) {
                 deviceIds.add(sunmiDevice.getDeviceid());
                 mPresenter.ipcBind(shopId, sunmiDevice.getDeviceid(),
@@ -130,9 +134,9 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
     }
 
     private void configComplete() {
-        LogCat.e(TAG, "222222 device id is empty =" + deviceIds.isEmpty());
         if (deviceIds.isEmpty()) {
-            IpcConfigCompletedActivity_.intent(context).shopId(shopId).sunmiDevices(sunmiDevices).start();
+            IpcConfigCompletedActivity_.intent(context).shopId(shopId)
+                    .sunmiDevices(sunmiDevices).start();
             finish();
         }
     }
@@ -142,20 +146,18 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
         new CommonDialog.Builder(context)
                 .setTitle(titleRes)
                 .setMessage(messageRes)
-                .setCancelButton(R.string.str_quit_config,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                GotoActivityUtils.gotoMainActivity(context);
-                            }
-                        })
-                .setConfirmButton(R.string.str_retry,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                bind();
-                            }
-                        }).create().show();
+                .setCancelButton(R.string.str_quit_config, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        GotoActivityUtils.gotoMainActivity(context);
+                    }
+                })
+                .setConfirmButton(R.string.str_retry, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        bind();
+                    }
+                }).create().show();
     }
 
 }

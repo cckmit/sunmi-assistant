@@ -1,7 +1,6 @@
 package com.sunmi.ipc.rpc.mqtt;
 
 import android.os.Build;
-import android.text.TextUtils;
 
 import com.sunmi.ipc.rpc.IPCCloudApi;
 
@@ -29,6 +28,7 @@ import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.ToastUtils;
+import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 
 public class MqttManager {
@@ -115,7 +115,7 @@ public class MqttManager {
         options = new MqttConnectOptions();
         options.setUserName(resp.getUsername());
         options.setPassword(resp.getPassword().toCharArray());//解密
-        options.setAutomaticReconnect(true);
+        options.setAutomaticReconnect(false);
         options.setCleanSession(true);
         options.setConnectionTimeout(10);
         options.setKeepAliveInterval(10);
@@ -200,8 +200,8 @@ public class MqttManager {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     LogCat.e(TAG, "mqtt Subscribed token success");
-                    if (!isRegister)
-                        pubRegister(clientId);
+//                    if (!isRegister)
+                    pubRegister(clientId);
                 }
 
                 @Override
@@ -229,16 +229,12 @@ public class MqttManager {
             for (Map.Entry<String, String> entry : map.entrySet()) {
                 param.put(entry.getKey(), entry.getValue());
             }
-            RequestBean requestBean = new RequestBean(getMsgId(),
+            RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                     "0x0056", param);
             MqttManager.getInstance().pubRegisterMessage(requestBean.serialize());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    private String getMsgId() {
-        return SpUtils.getUID() + System.currentTimeMillis();
     }
 
     /**
