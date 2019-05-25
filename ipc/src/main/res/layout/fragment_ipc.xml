@@ -96,19 +96,29 @@
         android:id="@+id/btn_time"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_45"
-        android:layout_toRightOf="@id/btn_unbind"
+        android:layout_alignBaseline="@+id/btn_config"
         android:layout_marginStart="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_45"
-        android:layout_alignBaseline="@+id/btn_config"
+        android:layout_toRightOf="@id/btn_unbind"
         android:text="时间轴" />
 
     <Button
         android:id="@+id/btn_video"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_45"
-        android:layout_toRightOf="@id/btn_time"
+        android:layout_alignBaseline="@+id/btn_config"
         android:layout_marginStart="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_45"
-        android:layout_alignBaseline="@+id/btn_config"
+        android:layout_toRightOf="@id/btn_time"
         android:text="视频" />
+
+    <Button
+        android:id="@+id/btn_canvas"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_45"
+        android:layout_below="@id/btn_config"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_45"
+        android:text="时间组合" />
+
 </RelativeLayout>

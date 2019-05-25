@@ -211,10 +211,19 @@ public class VideoPlayActivity extends BaseActivity
         surfaceHolder = videoView.getHolder();// SurfaceHolder是SurfaceView的控制接口
         surfaceHolder.addCallback(this); // 因为这个类实现了SurfaceHolder.Callback接口，所以回调参数直接this
         audioDecoder = new AACDecoder();
-
         //初始化音量
         adjustVoice();
         initGetVolume();
+
+        //获取AP回放时间列表
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //获取AP回放时间列表
+                IOTCClient.getPlaybackList(threeDaysBeforeSeconds, currentDateSeconds);
+            }
+        }, 3000);
+
     }
 
     private boolean isSS1() {
@@ -377,6 +386,10 @@ public class VideoPlayActivity extends BaseActivity
     //直播
     @Click(resName = "iv_live")
     void playApBackClick() {
+        startPlayLive();
+    }
+
+    private void startPlayLive() {
         ivPlay.setBackgroundResource(R.mipmap.play_disable);
         isPlayBack = false;
         //如果是云端回放此时需要调用停止操作然后直播
@@ -385,7 +398,7 @@ public class VideoPlayActivity extends BaseActivity
         }
         IOTCClient.startPlay();
         //滑动当前时间轴
-        scrollCurrentClickLiveBtn();
+        scrollCurrentLive();
     }
 
     //显示日历
@@ -482,6 +495,7 @@ public class VideoPlayActivity extends BaseActivity
     //*********************************************************************
     //***********************云端回放***************************************
     //*********************************************************************
+
     /*
      * 初始化播放首段视频的player
      */
@@ -640,6 +654,11 @@ public class VideoPlayActivity extends BaseActivity
     @Override
     public void onAudioReceived(byte[] audioBuffer) {
         audioDecoder.setAudioData(audioBuffer);
+    }
+
+    @Override
+    public void IOTCResult(String result) {
+        LogCat.e(TAG, "111111 get result = " + result);
     }
 
     @Override
@@ -829,29 +848,47 @@ public class VideoPlayActivity extends BaseActivity
     //选择日历日期回调
     @Override
     public void onSure(Date date) {
+        long currentTime = System.currentTimeMillis() / 1000;//当前时间戳秒
         scrollTime = date.getTime();//选择日期的时间戳毫秒
         long time = scrollTime / 1000; //设置日期的秒数
-        LogCat.e(TAG, "time=" + time);
-        String strDate = secondToDate(time, "yyyy-MM-dd");
-        int year = Integer.valueOf(strDate.substring(0, 4));
-        int month = Integer.valueOf(strDate.substring(5, 7));
-        int day = Integer.valueOf(strDate.substring(8, 10));
-        int hour = 0, minute = 0, second = 0;
-        //显示日历天数
-        tvCalender.setText(day + "");
 
-        //设置选择日期的年月日0时0分0秒
-        calendar.clear();
-        calendar.set(year, month - 1, day, hour, minute, second);//设置时候月份减1即是当月
-        long selectedDate = calendar.getTimeInMillis() / 1000;//设置日期的秒数
-        //选择日期三天前的秒数
-        threeDaysBeforeSeconds = selectedDate - threeDaysSeconds;
-        //区间总共秒数
-        minutesTotal = currentDateSeconds - selectedDate + threeDaysSeconds + sixHoursSeconds;
-        //列表
-        showTimeList(true);
-        //滑动到选择日期的0.00点
-        scrollSelectedDate0AM();
+        if (time >= currentTime) {
+            /*
+            未来时间或当前--滑动当前直播
+             */
+            tvCalender.setText(calendar.get(Calendar.DAY_OF_MONTH) + "");
+            startPlayLive();
+
+        } else {
+            /*
+            回放时间
+             */
+            ivPlay.setBackgroundResource(R.mipmap.pause_normal);
+            ivLive.setVisibility(View.VISIBLE);
+            isPlayBack = true;
+
+            String strDate = secondToDate(time, "yyyy-MM-dd");
+            int year = Integer.valueOf(strDate.substring(0, 4));
+            int month = Integer.valueOf(strDate.substring(5, 7));
+            int day = Integer.valueOf(strDate.substring(8, 10));
+            int hour = 0, minute = 0, second = 0;
+            //显示日历天数
+            tvCalender.setText(day + "");
+
+            //设置选择日期的年月日0时0分0秒
+            calendar.clear();
+            calendar.set(year, month - 1, day, hour, minute, second);//设置时候月份减1即是当月
+            long selectedDate = calendar.getTimeInMillis() / 1000;//设置日期的秒数
+            //选择日期三天前的秒数
+            threeDaysBeforeSeconds = selectedDate - threeDaysSeconds;
+            //区间总共秒数
+            minutesTotal = currentDateSeconds - selectedDate + threeDaysSeconds + sixHoursSeconds;
+            //列表
+            showTimeList(true);
+            //滑动到选择日期的0.00点
+            scrollSelectedDate0AM();
+        }
+
 
     }
 
@@ -902,7 +939,7 @@ public class VideoPlayActivity extends BaseActivity
                 LogCat.e(TAG, "leftToCenterMinutes=" + leftToCenterMinutes);
                 long currentMinutes = (minutesTotal - sixHoursSeconds) / 60 - leftToCenterMinutes;//初始化无偏移量
                 currentItemPosition = (int) currentMinutes;//当前的item
-                linearLayoutManager.scrollToPositionWithOffset((int) (currentMinutes), 0);
+                linearLayoutManager.scrollToPositionWithOffset((int) (currentMinutes + 1), 0);
 
                 openMove();
             }
@@ -910,7 +947,7 @@ public class VideoPlayActivity extends BaseActivity
     }
 
     //点击直播按钮滑动到当前时间
-    private void scrollCurrentClickLiveBtn() {
+    private void scrollCurrentLive() {
         isPlayBack = false;//当前直播
         //当前时间秒数
         long nowMinute = System.currentTimeMillis() / 1000;
@@ -948,7 +985,15 @@ public class VideoPlayActivity extends BaseActivity
                     toastForShort(VideoPlayActivity.this, str);//toast显示时间
                     canvasHours(linearLayoutManager.findFirstVisibleItemPosition());//绘制时间轴
                     scrollTime = date * 1000;//滑动日历的时间戳毫秒
+                    long currentSeconds = System.currentTimeMillis() / 1000;//当前时间戳秒
 
+                    //停止到未来时间
+                    if (date > currentSeconds && date - currentSeconds > 1) {
+                        //滚动到当前时间
+                        IOTCClient.startPlayback(currentSeconds);
+                        scrollCurrentTime();
+                        return;
+                    }
                     //设备回放
                     IOTCClient.startPlayback(date);
                     //回放到拖动的时间点

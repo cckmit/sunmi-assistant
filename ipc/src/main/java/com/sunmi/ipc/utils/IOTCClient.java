@@ -183,6 +183,8 @@ public class IOTCClient {
         if (actualLen > 0) {
             byte[] data = new byte[actualLen];
             System.arraycopy(buf, 0, data, 0, actualLen);
+            String result = ByteUtils.byte2String(data);
+            if (callback != null) callback.IOTCResult(result);
             LogCat.e("IOTCClient", "111111 getCmdResponse data = " + ByteUtils.byte2String(data));
         }
     }
@@ -312,6 +314,7 @@ public class IOTCClient {
         void onVideoReceived(byte[] videoBuffer);
 
         void onAudioReceived(byte[] audioBuffer);
-    }
 
+        void IOTCResult(String result);
+    }
 }
