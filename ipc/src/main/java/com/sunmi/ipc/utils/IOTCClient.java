@@ -1,14 +1,15 @@
 package com.sunmi.ipc.utils;
 
+import com.google.gson.Gson;
+import com.sunmi.ipc.model.IotcCmdBean;
 import com.tutk.IOTC.AVAPIs;
 import com.tutk.IOTC.IOTCAPIs;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
 
 import sunmi.common.utils.ByteUtils;
-import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 
 /**
@@ -101,26 +102,6 @@ public class IOTCClient {
         LogCat.e("IOTCClient", "StreamClient exit...");
     }
 
-    private static String getPlayCommand(int resolution) {
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("msg_id", SpUtils.getUID() + "_" + System.currentTimeMillis());
-            JSONArray array = new JSONArray();
-            JSONObject item = new JSONObject();
-            item.put("cmd", CMD_LIVE_START);
-            item.put("channel", 1);
-            JSONObject param = new JSONObject();
-            param.put("resolution", resolution);
-            item.put("param", param);
-            array.put(item);
-            jsonObject.put("params", array);
-            return jsonObject.toString();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
     /**
      * 开始直播
      */
@@ -134,168 +115,76 @@ public class IOTCClient {
      * @param type 分辨率，0：超清，1：高清，2：标清
      */
     public static void changeValue(int type) {
-        String json = getPlayCommand(type);
+        IotcCmdBean cmd = new IotcCmdBean(Utils.getMsgId(), CMD_LIVE_START, 1,
+                new HashMap<>().put("resolution", type));
+        String json = new Gson().toJson(cmd);
         LogCat.e("IOTCClient", "111111 changeValue json = " + json);
         byte[] req = json.getBytes();
         IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
-    }
-
-    /**
-     * 停止直播
-     */
-    public static void stopLivePlay() {
-        getStopLivePlayCommand();
+        getCmdResponse();
     }
 
     /**
      * 停止直播参数
      */
-    public static void getStopLivePlayCommand() {
-        String json = getStopLiveJson();
+    public static void stopLive() {
+        IotcCmdBean cmd = new IotcCmdBean(Utils.getMsgId(), CMD_LIVE_STOP, 1, new Object());
+        String json = new Gson().toJson(cmd);
         LogCat.e("IOTCClient", "111111 StopLive json = " + json);
         byte[] req = json.getBytes();
         IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
+        getCmdResponse();
     }
 
-    /**
-     * 停止直播参数json
-     */
-    private static String getStopLiveJson() {
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("msg_id", SpUtils.getUID() + "_" + System.currentTimeMillis());
-            JSONArray array = new JSONArray();
-            JSONObject item = new JSONObject();
-            item.put("cmd", CMD_LIVE_STOP);
-            item.put("channel", 1);
-            item.put("param", new JSONObject());
-            array.put(item);
-            jsonObject.put("params", array);
-            return jsonObject.toString();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-    private static String getPlaybackListCommand() {
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("msg_id", SpUtils.getUID() + "_" + System.currentTimeMillis());
-            JSONArray array = new JSONArray();
-            JSONObject item = new JSONObject();
-            item.put("cmd", CMD_PLAYBACK_LIST);
-            item.put("channel", 1);
-            JSONObject param = new JSONObject();
-            param.put("start_time", System.currentTimeMillis() / 1000);
-            param.put("end_time", System.currentTimeMillis() / 1000);
-            item.put("param", param);
-            array.put(item);
-            jsonObject.put("params", array);
-            return jsonObject.toString();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-    public static void getPlaybackList() {
-        String json = getPlaybackListCommand();
+    public static void getPlaybackList(long start, long end) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("start_time", start / 1000);
+        param.put("end_time", end / 1000);
+        IotcCmdBean cmd = new IotcCmdBean(Utils.getMsgId(), CMD_PLAYBACK_LIST, 1, param);
+        String json = new Gson().toJson(cmd);
         LogCat.e("IOTCClient", "111111 getPlaybackList json = " + json);
         byte[] req = json.getBytes();
         IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
-        getdata();
-    }
-
-    public static void getdata() {
-        byte[] buf = new byte[1024];
-        int actualLen = IOTCAPIs.IOTC_Session_Read(SID, buf, 1024, 10000, 0);
-        byte[] data = new byte[actualLen];
-        System.arraycopy(buf, 0, data, 0, actualLen);
-//        ByteUtils.byte2String(data);
-        LogCat.e("IOTCClient", "111111 getdata data = " + ByteUtils.byte2String(data));
-    }
-
-    private static String getStartPlaybackCommand(long startTime) {
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("msg_id", SpUtils.getUID() + "_" + System.currentTimeMillis());
-            JSONArray array = new JSONArray();
-            JSONObject item = new JSONObject();
-            item.put("cmd", CMD_PLAYBACK_START);
-            item.put("channel", 1);
-            JSONObject param = new JSONObject();
-            param.put("start_time", startTime);
-            item.put("param", param);
-            array.put(item);
-            jsonObject.put("params", array);
-            return jsonObject.toString();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return "";
+        getCmdResponse();
     }
 
     public static void startPlayback(long startTime) {
-        String json = getStartPlaybackCommand(startTime);
+        IotcCmdBean cmd = new IotcCmdBean(Utils.getMsgId(), CMD_PLAYBACK_START, 1,
+                new HashMap<>().put("start_time", startTime));
+        String json = new Gson().toJson(cmd);
         LogCat.e("IOTCClient", "111111 startPlayback json = " + json);
         byte[] req = json.getBytes();
         IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
-        getdata();
-    }
-
-    private static String getStopPlaybackCommand() {
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("msg_id", SpUtils.getUID() + "_" + System.currentTimeMillis());
-            JSONArray array = new JSONArray();
-            JSONObject item = new JSONObject();
-            item.put("cmd", CMD_PLAYBACK_STOP);
-            item.put("channel", 1);
-            item.put("param", new JSONObject());
-            array.put(item);
-            jsonObject.put("params", array);
-            return jsonObject.toString();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return "";
+        getCmdResponse();
     }
 
     public static void stopPlayback() {
-        String json = getStopPlaybackCommand();
+        IotcCmdBean cmd = new IotcCmdBean(Utils.getMsgId(), CMD_PLAYBACK_STOP, 1, new Object());
+        String json = new Gson().toJson(cmd);
         LogCat.e("IOTCClient", "111111 stopPlayback json = " + json);
         byte[] req = json.getBytes();
         IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
-        getdata();
-    }
-
-    private static String getPausePlaybackCommand(boolean isPause) {
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("msg_id", SpUtils.getUID() + "_" + System.currentTimeMillis());
-            JSONArray array = new JSONArray();
-            JSONObject item = new JSONObject();
-            item.put("cmd", CMD_PLAYBACK_STOP);
-            item.put("channel", 1);
-            JSONObject param = new JSONObject();
-            param.put("pause", isPause ? 1 : 0);
-            item.put("param", param);
-            array.put(item);
-            jsonObject.put("params", array);
-            return jsonObject.toString();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return "";
+        getCmdResponse();
     }
 
     public static void pausePlayback(boolean isPause) {
-        String json = getPausePlaybackCommand(isPause);
+        IotcCmdBean cmd = new IotcCmdBean(Utils.getMsgId(), CMD_PLAYBACK_PAUSE, 1,
+                new HashMap<>().put("pause", isPause ? 1 : 0));
+        String json = new Gson().toJson(cmd);
         LogCat.e("IOTCClient", "111111 pausePlayback json = " + json);
         byte[] req = json.getBytes();
         IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
-        getdata();
+        getCmdResponse();
+    }
+
+    public static void getCmdResponse() {
+        byte[] buf = new byte[1024];
+        int actualLen = IOTCAPIs.IOTC_Session_Read(SID, buf, 1024, 10000, 0);
+        if (actualLen > 0) {
+            byte[] data = new byte[actualLen];
+            System.arraycopy(buf, 0, data, 0, actualLen);
+            LogCat.e("IOTCClient", "111111 getCmdResponse data = " + ByteUtils.byte2String(data));
+        }
     }
 
     public static class VideoThread implements Runnable {
@@ -345,12 +234,12 @@ public class IOTCClient {
                     LogCat.e("IOTCClient", "Session cant be used anymore");
                     break;
                 }
+//                LogCat.e("IOTCClient", "555555vvv VIDEO received ret = " + ret);
                 if (ret > 0) {
                     byte[] data = new byte[ret];
                     System.arraycopy(videoBuffer, 0, data, 0, ret);
                     if (callback != null) callback.onVideoReceived(data);
                 }
-//                LogCat.e("IOTCClient", "555555vvv VIDEO received ret = " + ret);
             }
         }
     }

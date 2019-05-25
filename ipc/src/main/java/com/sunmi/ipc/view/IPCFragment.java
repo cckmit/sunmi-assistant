@@ -69,7 +69,7 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
     //当前播放到的视频段落数
     private int currentVideoIndex;
 
-            private static String UID = "C3YABT1MPRV4BM6GUHXJ";//ss
+    private static String UID = "C3YABT1MPRV4BM6GUHXJ";//ss
 //    private static String UID = "CRYUBT1WKFV4UM6GUH71";//ss - shenzhen yangfeng
 //    private static String UID = "EFKUA51CZVBW8NPGUHZJ";//ss - shenzhen ceshi
     // private static String  UID = "CVYA8T1WKFV49NPGYHRJ";//fs

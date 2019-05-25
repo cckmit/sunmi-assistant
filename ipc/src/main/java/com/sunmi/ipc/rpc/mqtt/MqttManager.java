@@ -28,6 +28,7 @@ import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.ToastUtils;
+import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 
 public class MqttManager {
@@ -228,16 +229,12 @@ public class MqttManager {
             for (Map.Entry<String, String> entry : map.entrySet()) {
                 param.put(entry.getKey(), entry.getValue());
             }
-            RequestBean requestBean = new RequestBean(getMsgId(),
+            RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                     "0x0056", param);
             MqttManager.getInstance().pubRegisterMessage(requestBean.serialize());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    private String getMsgId() {
-        return SpUtils.getUID() + System.currentTimeMillis();
     }
 
     /**

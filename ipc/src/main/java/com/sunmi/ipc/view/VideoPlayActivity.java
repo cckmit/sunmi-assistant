@@ -372,11 +372,11 @@ public class VideoPlayActivity extends BaseActivity
         if (!isPlayBack) return;
         if (isFastClick(1000)) return;
         if (isPaused)
-            ivPlay.setBackgroundResource(R.mipmap.play_normal);
-        else
             ivPlay.setBackgroundResource(R.mipmap.pause_normal);
-        IOTCClient.pausePlayback(isPaused);
+        else
+            ivPlay.setBackgroundResource(R.mipmap.play_normal);
         isPaused = !isPaused;
+        IOTCClient.pausePlayback(isPaused);
     }
 
     //直播
@@ -441,23 +441,13 @@ public class VideoPlayActivity extends BaseActivity
     void testCloudPlayBackClick() {
         initP2pLive();
         //先停止直播
-        IOTCClient.stopLivePlay();
+        IOTCClient.stopLive();
         if (videoDecoder != null) videoDecoder.release();
 
         //获取视频源
         getVideoUrls();
         //然后初始化播放手段视频的player对象
         initFirstPlayer();
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                //获取视频源
-//                getVideoUrls();
-//                //然后初始化播放手段视频的player对象
-//                initFirstPlayer();
-////                startPlayFirstVideo();
-//            }
-//        }, 3000);
     }
 
     //开始计时录制
@@ -990,14 +980,13 @@ public class VideoPlayActivity extends BaseActivity
                         ivPlay.setBackgroundResource(R.mipmap.pause_normal);
                         ivLive.setVisibility(View.VISIBLE);
                         isPlayBack = true;
-                        isPaused = false;
                     } else {
                         //当前时间、未来时间
                         ivPlay.setBackgroundResource(R.mipmap.play_disable);
                         ivLive.setVisibility(View.GONE);
                         isPlayBack = false;
-                        isPaused = false;
                     }
+                    isPaused = false;
                 }
             }
 
