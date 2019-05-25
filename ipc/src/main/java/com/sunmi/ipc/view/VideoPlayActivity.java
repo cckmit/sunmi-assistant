@@ -31,7 +31,9 @@ import com.datelibrary.OnSureLisener;
 import com.datelibrary.bean.DateType;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.model.TimeBean;
+import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.rpc.IPCCall;
+import com.sunmi.ipc.rpc.IPCCloudApi;
 import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.utils.AACDecoder;
 import com.sunmi.ipc.utils.H264Decoder;
@@ -62,6 +64,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.ThreadPool;
@@ -174,7 +177,7 @@ public class VideoPlayActivity extends BaseActivity
             currentPlayer;   //负责当前播放视频段落的player对象
     private SurfaceHolder surfaceHolder;
     //存放所有视频端的url
-    private ArrayList<String> videoListQueue = new ArrayList<>();
+    private List<VideoListResp.VideoBean> videoListQueue = new ArrayList<>();
     //所有player对象的缓存
     private HashMap<String, MediaPlayer> playersCache = new HashMap<>();
     //当前播放到的视频段落数
@@ -526,13 +529,14 @@ public class VideoPlayActivity extends BaseActivity
     }
 
     private void startPlayFirstVideo() {
+        if (videoListQueue.size() <= 0) return;
         try {
             if (firstPlayer.isPlaying()) {
                 firstPlayer.stop();
                 firstPlayer.release();
                 firstPlayer = new MediaPlayer();
             }
-            firstPlayer.setDataSource(videoListQueue.get(currentVideoIndex));
+            firstPlayer.setDataSource(videoListQueue.get(currentVideoIndex).getUrl());
             firstPlayer.prepareAsync();
             firstPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
@@ -564,7 +568,7 @@ public class VideoPlayActivity extends BaseActivity
                                 }
                             });
                     try {
-                        nextMediaPlayer.setDataSource(videoListQueue.get(i));
+                        nextMediaPlayer.setDataSource(videoListQueue.get(i).getUrl());
                         nextMediaPlayer.prepare();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -596,9 +600,21 @@ public class VideoPlayActivity extends BaseActivity
     }
 
     private void getVideoUrls() {
-        videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/0_20.mp4");
-        videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/20_40.mp4");
-        videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/40_60.mp4");
+//        videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/0_20.mp4");
+//        videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/20_40.mp4");
+//        videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/40_60.mp4");
+        IPCCloudApi.getVideoList(2237, 1558537326, 1558537926, new RetrofitCallback<VideoListResp>() {
+            @Override
+            public void onSuccess(int code, String msg, VideoListResp data) {
+                videoListQueue = data.getVideo_list();
+                initFirstPlayer();
+            }
+
+            @Override
+            public void onFail(int code, String msg, VideoListResp data) {
+
+            }
+        });
     }
 
     /*
@@ -634,10 +650,6 @@ public class VideoPlayActivity extends BaseActivity
     public void surfaceCreated(SurfaceHolder holder) {
         videoDecoder = new H264Decoder(holder.getSurface(), 0);
         initP2pLive();
-        // surfaceView创建完毕后，首先获取该直播间所有视频分段的url
-//        getVideoUrls();
-//       // 然后初始化播放手段视频的player对象
-//        initFirstPlayer();
     }
 
     @Override

@@ -21,8 +21,8 @@ public interface MediaInterface {
      * 获取视频列表
      */
     @POST(path + "getVideoList")
-//    Call<BaseResponse<VideoListResp>> getVideoList(@Body BaseRequest request);
-    Call<BaseResponse<Object>> getVideoList(@Body BaseRequest request);
+    Call<BaseResponse<VideoListResp>> getVideoList(@Body BaseRequest request);
+//    Call<BaseResponse<Object>> getVideoList(@Body BaseRequest request);
 
     /**
      * 获取时间轴
