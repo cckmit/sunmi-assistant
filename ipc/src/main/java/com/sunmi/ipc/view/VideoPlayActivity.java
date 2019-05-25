@@ -216,10 +216,19 @@ public class VideoPlayActivity extends BaseActivity
         surfaceHolder = videoView.getHolder();// SurfaceHolder是SurfaceView的控制接口
         surfaceHolder.addCallback(this); // 因为这个类实现了SurfaceHolder.Callback接口，所以回调参数直接this
         audioDecoder = new AACDecoder();
-
         //初始化音量
         adjustVoice();
         initGetVolume();
+
+        //获取AP回放时间列表
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //获取AP回放时间列表
+                IOTCClient.getPlaybackList(threeDaysBeforeSeconds, currentDateSeconds);
+            }
+        },3000);
+
     }
 
     private boolean isSS1() {
@@ -487,6 +496,26 @@ public class VideoPlayActivity extends BaseActivity
     //*********************************************************************
     //***********************云端回放***************************************
     //*********************************************************************
+    //test 云端回放
+    @Click(resName = "test_cloud_back")
+    void testCloudPlayBackClick() {
+        //
+//        cloudPlayDestroy();
+//        initP2pLive();
+
+        //先停止直播
+        IOTCClient.stopLivePlay();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //获取视频源
+                getVideoUrls();
+                //然后初始化播放手段视频的player对象
+                initFirstPlayer();
+            }
+        }, 3000);
+    }
+
     /*
      * 初始化播放首段视频的player
      */
@@ -655,6 +684,11 @@ public class VideoPlayActivity extends BaseActivity
     }
 
     @Override
+    public void IOTCResult(String result) {
+        LogCat.e(TAG, "111111 get result = " + result);
+    }
+
+    @Override
     public int[] getStickNotificationId() {
         return new int[]{IpcConstants.fsAutoFocus, IpcConstants.fsFocus, IpcConstants.fsGetStatus,
                 IpcConstants.fsIrMode, IpcConstants.fsReset, IpcConstants.fsZoom};
@@ -741,6 +775,9 @@ public class VideoPlayActivity extends BaseActivity
     protected void onDestroy() {
         super.onDestroy();
         closeMove();//关闭时间抽的timer
+        cloudPlayDestroy();//关闭云端视频
+        //关闭IOTC的session
+
     }
 
     /**

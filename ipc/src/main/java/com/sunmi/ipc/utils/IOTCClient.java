@@ -133,19 +133,90 @@ public class IOTCClient {
         LogCat.e("IOTCClient", "111111 StopLive json = " + json);
         byte[] req = json.getBytes();
         IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
-        getCmdResponse();
+        getdata();
     }
 
-    public static void getPlaybackList(long start, long end) {
-        Map<String, Object> param = new HashMap<>();
-        param.put("start_time", start / 1000);
-        param.put("end_time", end / 1000);
-        IotcCmdBean cmd = new IotcCmdBean(Utils.getMsgId(), CMD_PLAYBACK_LIST, 1, param);
-        String json = new Gson().toJson(cmd);
+    /**
+     * 停止直播参数json
+     */
+    private static String getStopLiveJson() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("msg_id", SpUtils.getUID() + "_" + System.currentTimeMillis());
+            JSONArray array = new JSONArray();
+            JSONObject item = new JSONObject();
+            item.put("cmd", CMD_LIVE_STOP);
+            item.put("channel", 1);
+            item.put("param", new JSONObject());
+            array.put(item);
+            jsonObject.put("params", array);
+            return jsonObject.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    private static String getPlaybackListCommand(long startTime, long enTime) {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("msg_id", SpUtils.getUID() + "_" + System.currentTimeMillis());
+            JSONArray array = new JSONArray();
+            JSONObject item = new JSONObject();
+            item.put("cmd", CMD_PLAYBACK_LIST);
+            item.put("channel", 1);
+            JSONObject param = new JSONObject();
+            param.put("start_time", startTime);
+            param.put("end_time", enTime);
+            item.put("param", param);
+            array.put(item);
+            jsonObject.put("params", array);
+            return jsonObject.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    //AP回放时间轴
+    public static void getPlaybackList(long startTime, long enTime) {
+        String json = getPlaybackListCommand(startTime, enTime);
         LogCat.e("IOTCClient", "111111 getPlaybackList json = " + json);
         byte[] req = json.getBytes();
         IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
-        getCmdResponse();
+        getdata();
+    }
+
+    public static void getdata() {
+        byte[] buf = new byte[1024];
+        int actualLen = IOTCAPIs.IOTC_Session_Read(SID, buf, 1024, 10000, 0);
+        LogCat.e("IOTCClient", "111111 actualLen = " + actualLen);
+        if (actualLen <= 0) return;
+        byte[] data = new byte[actualLen];
+        System.arraycopy(buf, 0, data, 0, actualLen);
+        String result = ByteUtils.byte2String(data);
+        if (callback != null) callback.IOTCResult(result);
+        LogCat.e("IOTCClient", "111111 getdata data = " + result);
+    }
+
+    private static String getStartPlaybackCommand(long startTime) {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("msg_id", SpUtils.getUID() + "_" + System.currentTimeMillis());
+            JSONArray array = new JSONArray();
+            JSONObject item = new JSONObject();
+            item.put("cmd", CMD_PLAYBACK_START);
+            item.put("channel", 1);
+            JSONObject param = new JSONObject();
+            param.put("start_time", startTime);
+            item.put("param", param);
+            array.put(item);
+            jsonObject.put("params", array);
+            return jsonObject.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     public static void startPlayback(long startTime) {
@@ -312,6 +383,8 @@ public class IOTCClient {
         void onVideoReceived(byte[] videoBuffer);
 
         void onAudioReceived(byte[] audioBuffer);
+
+        void IOTCResult(String result);
     }
 
 }
