@@ -25,6 +25,9 @@
     <string name="str_retry_add">重新添加</string>
     <string name="tip_no_ipc_found">没有发现摄像头</string>
     <string name="tip_check_ipc_wifi">请检查手机是否连接上摄像头WiFi，指示灯是否为「蓝色常亮」</string>
+    <string name="str_select_time">选择时间</string>
+    <string name="tip_video_quality_fhd">已切换至超清</string>
+    <string name="tip_video_quality_hd">已切换至高清</string>
 
 </resources>
 

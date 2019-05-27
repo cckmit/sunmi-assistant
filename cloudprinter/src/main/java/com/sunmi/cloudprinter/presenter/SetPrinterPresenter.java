@@ -69,7 +69,7 @@ public class SetPrinterPresenter extends BasePresenter<SetPrinterContract.View> 
             mView.shortTip(R.string.str_wifi_msg_completely);
             mView.hideProgressBar();
         } else if (cmd == Constants.SRV2CLI_SEND_ALREADY_CONNECTED_WIFI) {
-            mView.onSendMessage(Utility.cmdAlreadyConnectedWifi(version));
+            mView.onSendMessage(Utility.cmdAlreadyConnectedWifi());
         }
     }
 

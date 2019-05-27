@@ -148,7 +148,7 @@ public class VideoPlayActivity extends BaseActivity
     private boolean isStartRecord;//是否开始录制
     private boolean isControlPanelShow;//是否点击屏幕
     private boolean isCloudPlayBack;//是否正在云回放
-    private boolean isPlayBack;//是否正在设备回放
+    private boolean isDevPlayBack;//是否正在设备回放
     private boolean isPaused;//回放是否暂停
     private int qualityType = 0;//0-超清，1-高清
 
@@ -385,7 +385,7 @@ public class VideoPlayActivity extends BaseActivity
     //画质
     @Click(resName = "tv_quality")
     void qualityClick() {
-        if (isPlayBack) return;
+        if (isDevPlayBack) return;
         llVideoQuality.setVisibility(llVideoQuality.isShown() ? View.GONE : View.VISIBLE);
         if (qualityType == 0) {
             tvHDQuality.setTextColor(getResources().getColor(R.color.colorOrange));
@@ -413,7 +413,7 @@ public class VideoPlayActivity extends BaseActivity
     //开始，暂停
     @Click(resName = "iv_play")
     void playLiveClick() {
-        if (!isPlayBack) return;
+        if (!isDevPlayBack) return;
         if (isFastClick(1000)) return;
         if (isPaused)
             ivPlay.setBackgroundResource(R.mipmap.pause_normal);
@@ -426,20 +426,7 @@ public class VideoPlayActivity extends BaseActivity
     //直播
     @Click(resName = "iv_live")
     void playApBackClick() {
-        startPlayLive();
-    }
-
-    private void startPlayLive() {
-        ivPlay.setBackgroundResource(R.mipmap.play_disable);
-        isPlayBack = false;
-        //如果是云端回放此时需要调用停止操作然后直播
-        if (isCloudPlayBack) {
-            cloudPlayDestroy();
-            videoDecoder.initMediaCodec();
-        }
-        IOTCClient.startPlay();
-        //滑动当前时间轴
-        scrollCurrentLive();
+        switch2Live();
     }
 
     //显示日历
@@ -459,7 +446,7 @@ public class VideoPlayActivity extends BaseActivity
         //设置上下年分限制
         dialog.setYearLimt(100);
         //设置标题
-        dialog.setTitle("选择时间");
+        dialog.setTitle(R.string.str_select_time);
         //设置类型
         dialog.setType(DateType.TYPE_YMD);
         //设置消息体的显示格式，日期格式
@@ -485,16 +472,56 @@ public class VideoPlayActivity extends BaseActivity
         }
     }
 
-    //test 云端回放
-    @Click(resName = "test_cloud_back")
-    void testCloudPlayBackClick() {
+    /**
+     * 切回直播
+     */
+    private void switch2Live() {
         showLoadingDialog();
-        initP2pLive();
-        //先停止直播
-        IOTCClient.stopLive();
-        if (videoDecoder != null) videoDecoder.release();
-        isCloudPlayBack = true;
-        getCloudVideoUrls();
+        ivPlay.setBackgroundResource(R.mipmap.play_disable);
+        //如果是云端回放此时需要调用停止操作然后直播
+        if (isCloudPlayBack) {
+            cloudPlayDestroy();
+            videoDecoder.initMediaCodec();
+            isCloudPlayBack = false;
+        }
+        IOTCClient.startPlay();
+        scrollCurrentLive();
+        ivLive.setVisibility(View.GONE);
+        isDevPlayBack = false;
+        hideLoadingDialog();
+    }
+
+    /**
+     * 切到设备回放
+     */
+    void switch2DevPlayback(long start) {
+        showLoadingDialog();
+        if (isCloudPlayBack) {
+            cloudPlayDestroy();
+            videoDecoder.initMediaCodec();
+            isCloudPlayBack = false;
+        }
+        IOTCClient.startPlayback(start);
+        isDevPlayBack = true;
+        ivLive.setVisibility(View.VISIBLE);
+        hideLoadingDialog();
+    }
+
+    //切换到云端回放
+    @Click(resName = "test_cloud_back")
+    void switch2CloudPlayback(long start, long end) {
+        showLoadingDialog();
+        if (!isCloudPlayBack) {
+            if (isDevPlayBack) {
+                IOTCClient.stopPlayback();//先停止设备回放
+                isDevPlayBack = false;
+            } else {
+                IOTCClient.stopLive();//先停止直播
+            }
+            if (videoDecoder != null) videoDecoder.release();//释放surfaceView
+            isCloudPlayBack = true;
+        }
+        getCloudVideoUrls(1558537326, 1558537926);//todo
         ivLive.setVisibility(View.VISIBLE);
     }
 
@@ -530,9 +557,9 @@ public class VideoPlayActivity extends BaseActivity
         qualityType = qualityType == 0 ? 1 : 0;
         IOTCClient.changeValue(qualityType);
         if (qualityType == 0) {
-            shortTip("已切换至超清");
+            shortTip(R.string.tip_video_quality_fhd);
         } else if (qualityType == 1) {
-            shortTip("已切换至高清");
+            shortTip(R.string.tip_video_quality_hd);
         }
     }
 
@@ -635,8 +662,8 @@ public class VideoPlayActivity extends BaseActivity
         }
     }
 
-    private void getCloudVideoUrls() {
-        IPCCloudApi.getVideoList(2237, 1558537326, 1558537926, new RetrofitCallback<VideoListResp>() {
+    private void getCloudVideoUrls(long start, long end) {
+        IPCCloudApi.getVideoList(2237, start, end, new RetrofitCallback<VideoListResp>() {
             @Override
             public void onSuccess(int code, String msg, VideoListResp data) {
                 videoListQueue = data.getVideo_list();
@@ -920,12 +947,12 @@ public class VideoPlayActivity extends BaseActivity
         if (time >= currentTime) {//未来时间或当前--滑动当前直播
             isSelectedDate = false;
             tvCalender.setText(calendar.get(Calendar.DAY_OF_MONTH) + "");
-            startPlayLive();
+            switch2Live();
         } else {//回放时间
             isSelectedDate = true;
             ivPlay.setBackgroundResource(R.mipmap.pause_normal);
             ivLive.setVisibility(View.VISIBLE);
-            isPlayBack = true;
+            isDevPlayBack = true;
 
             String strDate = secondToDate(time, "yyyy-MM-dd");
             int year = Integer.valueOf(strDate.substring(0, 4));
@@ -971,9 +998,7 @@ public class VideoPlayActivity extends BaseActivity
         long threeDaysBeforeDate = 3 * 24 * 60;//3天分钟数
         currentItemPosition = (int) (threeDaysBeforeDate - leftToCenterMinutes);
         linearLayoutManager.scrollToPositionWithOffset((int) (threeDaysBeforeDate - leftToCenterMinutes), 0);
-        //设备回放
-        IOTCClient.startPlayback(currentItemPosition * 60);
-
+        switch2DevPlayback(currentItemPosition * 60); //设备回放
         openMove();
     }
 
@@ -990,7 +1015,7 @@ public class VideoPlayActivity extends BaseActivity
 
     //初始化延时滑动当前时间
     private void scrollCurrentTime() {
-        isPlayBack = false;//当前直播
+        isDevPlayBack = false;//当前直播
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -1006,9 +1031,11 @@ public class VideoPlayActivity extends BaseActivity
         }, 500);
     }
 
-    //点击直播按钮滑动到当前时间
+    /**
+     * 点击直播按钮滑动到当前时间
+     */
     private void scrollCurrentLive() {
-        isPlayBack = false;//当前直播
+        isDevPlayBack = false;//当前直播
         //当前时间秒数
         long nowMinute = System.currentTimeMillis() / 1000;
         //初始化当前的秒数和现在的秒数时间戳对比相差的偏移量--比对分钟数
@@ -1047,16 +1074,13 @@ public class VideoPlayActivity extends BaseActivity
                     //当前时间戳秒
                     long currentSeconds = System.currentTimeMillis() / 1000;
                     //停止到未来时间
-                    if (date > currentSeconds && date - currentSeconds > 1) {
-                        //滚动到当前时间
-                        IOTCClient.startPlayback(currentSeconds);
+                    if (date > currentSeconds && date - currentSeconds > 1) {//滚动到当前时间
+                        switch2DevPlayback(currentSeconds);
                         scrollCurrentLive();
                         return;
                     }
-                    //设备回放
-                    IOTCClient.startPlayback(date);
-                    //回放到拖动的时间点
-                    scrollCurrentPlayBackTime(date);
+                    switch2DevPlayback(date);
+                    scrollCurrentPlayBackTime(date);//回放到拖动的时间点
                 } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING ||
                         newState == RecyclerView.SCROLL_STATE_SETTLING) {//拖动和自动滑动
                     int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
@@ -1072,12 +1096,12 @@ public class VideoPlayActivity extends BaseActivity
                         //回放时间
                         ivPlay.setBackgroundResource(R.mipmap.pause_normal);
                         ivLive.setVisibility(View.VISIBLE);
-                        isPlayBack = true;
+                        isDevPlayBack = true;
                     } else {
                         //当前时间、未来时间
                         ivPlay.setBackgroundResource(R.mipmap.play_disable);
                         ivLive.setVisibility(View.GONE);
-                        isPlayBack = false;
+                        isDevPlayBack = false;
                     }
                     isPaused = false;
                 }
