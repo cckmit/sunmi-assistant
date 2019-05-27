@@ -8,6 +8,8 @@ import com.sunmi.cloudprinter.constant.Constants;
 import com.sunmi.cloudprinter.contract.SetPrinterContract;
 import com.sunmi.cloudprinter.utils.Utility;
 
+import java.util.Arrays;
+
 import sunmi.common.base.BasePresenter;
 
 public class SetPrinterPresenter extends BasePresenter<SetPrinterContract.View> implements SetPrinterContract.Presenter {
@@ -37,13 +39,14 @@ public class SetPrinterPresenter extends BasePresenter<SetPrinterContract.View> 
 
     @Override
     public void onNotify(byte[] value, byte version) {
-        Log.e("spp", "555555 onNotify, value = " + value);
+        Log.e("spp", "555555 onNotify, value = " + Arrays.toString(value));
         if (value.length > 0) {
             if (Utility.isFirstPac(value)) {
+                receivedLen = 0;
                 data = new byte[Utility.getPacLength(value)];
                 System.arraycopy(value, 0, data, 0, value.length);
             } else {
-                System.arraycopy(value, receivedLen, data, 0, value.length);
+                System.arraycopy(value, 0, data, receivedLen, value.length);
             }
             receivedLen += value.length;
             if (data.length == receivedLen) {

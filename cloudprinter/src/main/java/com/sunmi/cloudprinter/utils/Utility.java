@@ -10,14 +10,9 @@ import static com.sunmi.cloudprinter.constant.Constants.PRINTER_CMD_TAG2;
 public class Utility {
 
     public static boolean isFirstPac(byte[] data) {
-//        byte[] tag1 = new byte[2];
-//        System.arraycopy(data, 0, tag1, 0, 2);
-//        byte[] tag2 = new byte[2];
-//        System.arraycopy(data, 2, tag2, 0, 2);
         int aa = data[0] & 0xFF;
         int bb = data[1] & 0xFF;
-        LogCat.e("util", "aaaaaa isFirstPac aa = " + aa);
-        LogCat.e("util", "aaaaaa isFirstPac bb = " + bb);
+        LogCat.e("util", "555555 isFirstPac{" + aa + "," + bb + "}");
         return aa == 0xAA && bb == 0x55;
     }
 
@@ -37,7 +32,7 @@ public class Utility {
         byte[] len = new byte[2];
         System.arraycopy(data, 2, len, 0, 2);
         int aa = ByteUtils.byte2ToInt(len);
-        LogCat.e("util", "aaaaaa getPacLength aa = " + aa);
+        LogCat.e("util", "555555 getPacLength aa = " + aa);
         return aa;
     }
 
