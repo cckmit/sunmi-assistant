@@ -22,6 +22,7 @@
     <color name="color_333333">#ff333333</color>
     <color name="c_darkgray">#4c5e70</color>
     <color name="colorOrange">#FF6000</color>
+    <color name="colorOrangeLight">#33FF6000</color>
     <color name="colorLoadingStart">#FF5A00</color>
     <color name="colorLoadingCenter">#FD935F</color>
     <color name="colorLoadingEnd">#FFFBF8</color>

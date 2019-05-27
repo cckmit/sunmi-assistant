@@ -257,6 +257,7 @@
             <RelativeLayout
                 android:id="@+id/rl_recyclerView"
                 android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/dp_8"
                 android:layout_height="@dimen/dp_56">
 
                 <android.support.v7.widget.RecyclerView
@@ -267,16 +268,15 @@
                 <!--和RecyclerView item_time 的高度相同 dp_30=dp_20+dp_10 -->
                 <TextView
                     android:layout_width="@dimen/dp_1"
-                    android:layout_height="@dimen/dp_20"
+                    android:layout_height="@dimen/dp_16"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="@dimen/dp_5"
                     android:background="@color/c_red" />
             </RelativeLayout>
 
             <com.sunmi.ipc.utils.TimeView
                 android:id="@+id/my_view"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_30"
+                android:layout_height="@dimen/dp_36"
                 android:layout_alignBottom="@id/rl_recyclerView" />
         </RelativeLayout>
 
