@@ -1107,13 +1107,26 @@ public class VideoPlayActivity extends BaseActivity
                 int center = (lastVisibleItem - firstVisibleItem) / 2 + firstVisibleItem + 1;
                 TimeBean bs = list.get(center);
                 long date = bs.getDate();
-                for (ApCloudTimeBean bean : listAp) {
+                int apSize = listAp.size();
+                for (int i = 0; i < apSize; i++) {
+                    ApCloudTimeBean bean = listAp.get(i);
                     long start = bean.getStartTime();
                     long end = bean.getEndTime();
                     //当滑动到最后前后一分钟时，判断下一个视频片段ap还是cloud
-                    if (date >= start && date <= end && end - date < 60 && end - date > 1) {
-                        boolean isApVideo = bean.isApPlay();
-                        LogCat.e("TAG", "isApVideo=" + isApVideo);
+                    if (date >= start && date < end && end - date < 60 && end - date > 1) {
+                        if (i + 1 < apSize) {
+                            boolean isApVideo = listAp.get(i + 1).isApPlay();
+                            LogCat.e("TAG", "isApVideo=" + isApVideo);
+                        }
+
+                    } else if (date == end) {
+                        //播到当前片段的endTime
+
+                    } else if (date > end) {
+                        //开始下一个视频片段
+                        if (i + 1 < apSize) {
+                            videoSkipScrollPosition(listAp.get(i + 1).getStartTime());
+                        }
 
                     }
                 }
