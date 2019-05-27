@@ -138,8 +138,8 @@ public class IOTCClient {
 
     public static void getPlaybackList(long start, long end) {
         Map<String, Object> param = new HashMap<>();
-        param.put("start_time", start / 1000);
-        param.put("end_time", end / 1000);
+        param.put("start_time", start);
+        param.put("end_time", end);
         IotcCmdBean cmd = new IotcCmdBean(Utils.getMsgId(), CMD_PLAYBACK_LIST, 1, param);
         String json = new Gson().toJson(cmd);
         LogCat.e(TAG, "111111 getPlaybackList json = " + json);
