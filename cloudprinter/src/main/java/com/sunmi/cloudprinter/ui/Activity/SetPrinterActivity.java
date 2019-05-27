@@ -23,7 +23,6 @@ import com.sunmi.cloudprinter.constant.Constants;
 import com.sunmi.cloudprinter.contract.SetPrinterContract;
 import com.sunmi.cloudprinter.presenter.SetPrinterPresenter;
 import com.sunmi.cloudprinter.ui.adaper.RouterListAdapter;
-import com.sunmi.cloudprinter.utils.ByteUtils;
 import com.sunmi.cloudprinter.utils.Utility;
 
 import org.androidannotations.annotations.AfterViews;
@@ -155,11 +154,11 @@ public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter>
                         return;
                     }
                     router.setPwd(pwd);
-                    byte[] password = ByteUtils.String2Byte64(pwd);
-                    onSendMessage(Utility.cmdConnectWifi(version, router.getEssid(), password));
+                    byte[] password = sunmi.common.utils.ByteUtils.String2Byte64(pwd);
+                    onSendMessage(Utility.cmdConnectWifi(router.getEssid(), password));
                 } else {
-                    byte[] password = ByteUtils.getNoneByte64();
-                    onSendMessage(Utility.cmdConnectWifi(version, router.getEssid(), password));
+                    byte[] password = sunmi.common.utils.ByteUtils.getNoneByte64();
+                    onSendMessage(Utility.cmdConnectWifi(router.getEssid(), password));
                 }
             }
         });
