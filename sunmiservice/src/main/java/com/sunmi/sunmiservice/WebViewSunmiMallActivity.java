@@ -28,6 +28,7 @@ import java.util.Map;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.webview.SMWebView;
 import sunmi.common.view.webview.SMWebViewClient;
@@ -62,18 +63,8 @@ public class WebViewSunmiMallActivity extends BaseActivity
 
     private void setStatusHeight() {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) tvStatusHeight.getLayoutParams();
-        params.height = getStatusBarHeight();
+        params.height = Utils.getStatusBarHeight(context);
         tvStatusHeight.setLayoutParams(params);
-    }
-
-    public int getStatusBarHeight() {
-        int result = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
-        }
-        LogCat.e(TAG, "getStatusBarHeight=" + result);
-        return result;
     }
 
     @SuppressLint("SetJavaScriptEnabled")

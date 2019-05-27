@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.gson.Gson;
+import com.sunmi.ipc.model.ApCloudTimeBean;
 import com.sunmi.ipc.rpc.IPCCloudApi;
 
 import org.androidannotations.annotations.AfterViews;
@@ -26,6 +27,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import sunmi.common.base.BaseFragment;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -69,7 +71,7 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
     //当前播放到的视频段落数
     private int currentVideoIndex;
 
-            private static String UID = "C3YABT1MPRV4BM6GUHXJ";//ss
+    private static String UID = "C3YABT1MPRV4BM6GUHXJ";//ss
 //    private static String UID = "CRYUBT1WKFV4UM6GUH71";//ss - shenzhen yangfeng
 //    private static String UID = "EFKUA51CZVBW8NPGUHZJ";//ss - shenzhen ceshi
     // private static String  UID = "CVYA8T1WKFV49NPGYHRJ";//fs
@@ -137,6 +139,11 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
     @Click(resName = "btn_video")
     void videoClick() {
         getVideoList();
+    }
+
+    @Click(resName = "btn_canvas")
+    void canvasClick() {
+        getCanvasList();
     }
 
 
@@ -441,7 +448,7 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
     }
 
     void getTimeList() {
-        IPCCloudApi.getTimeSlots(2237, 1558644240, 1558594980, new RetrofitCallback() {
+        IPCCloudApi.getTimeSlots(2237, 1558537326, 1558537926, new RetrofitCallback() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 LogCat.e(TAG, "date11 getTimeSlots==" + data.toString());
@@ -456,10 +463,10 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
     }
 
     void getVideoList() {
-        IPCCloudApi.getVideoList(2237, 1558644240, 1558594980, new RetrofitCallback() {
+        IPCCloudApi.getVideoList(2237, 1558537326, 1558537926, new RetrofitCallback() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
-                LogCat.e(TAG, "date11 getVideoList== code" + code + ",  " + data.toString());
+                LogCat.e(TAG, "date11 getVideoList== code=" + code + ",  " + data.toString());
             }
 
             @Override
@@ -469,4 +476,100 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
         });
     }
 
+    //绘制时间组合
+    int mStart = 0, mEnd = 15;
+
+    void getCanvasList() {
+        List<ApCloudTimeBean> listAp = new ArrayList<>();
+        List<ApCloudTimeBean> listCloud = new ArrayList<>();
+        List<ApCloudTimeBean> list = new ArrayList<>();
+
+        ApCloudTimeBean a1 = new ApCloudTimeBean();
+        a1.setStartTime(5);
+        a1.setEndTime(7);
+        a1.setApPlay(true);
+        listAp.add(a1);
+
+        ApCloudTimeBean a2 = new ApCloudTimeBean();
+        a2.setStartTime(8);
+        a2.setEndTime(10);
+        a2.setApPlay(true);
+        listAp.add(a2);
+
+        ApCloudTimeBean a3 = new ApCloudTimeBean();
+        a3.setStartTime(11);
+        a3.setEndTime(13);
+        a3.setApPlay(true);
+        listAp.add(a3);
+
+        ApCloudTimeBean c1 = new ApCloudTimeBean();
+        c1.setStartTime(3);
+        c1.setEndTime(5);
+        listCloud.add(c1);
+
+        ApCloudTimeBean c2 = new ApCloudTimeBean();
+        c2.setStartTime(6);
+        c2.setEndTime(11);
+        listCloud.add(c2);
+
+
+        int apSize = listAp.size();
+        int cloudSize = listCloud.size();
+
+        ApCloudTimeBean bean;
+        //AP时间
+        for (int i = 0; i < apSize + 1; i++) {
+            bean = new ApCloudTimeBean();
+            long startAp = 0, endAp = 0;
+            if (i == 0) {
+                startAp = mStart;
+                endAp = listAp.get(i).getStartTime();
+                LogCat.e(TAG, "getCanvasList aaa=  " + startAp + "," + endAp);
+            } else if (i > 0 && i < apSize) {
+                startAp = listAp.get(i - 1).getEndTime();
+                endAp = listAp.get(i).getStartTime();
+                LogCat.e(TAG, "getCanvasList aaa=  " + startAp + "," + endAp);
+            } else if (i == apSize) {
+                startAp = listAp.get(i - 1).getEndTime();
+                endAp = mEnd;
+                LogCat.e(TAG, "getCanvasList aaa=  " + startAp + "," + endAp);
+            }
+            //cloud时间
+            for (int j = 0; j < cloudSize; j++) {
+                long startCloud = listCloud.get(j).getStartTime();
+                long endCloud = listCloud.get(j).getEndTime();
+
+                if (startCloud >= startAp && endAp > startCloud && endCloud >= endAp) {
+                    bean.setStartTime(startCloud);
+                    bean.setEndTime(endAp);
+                    bean.setApPlay(false);
+                    listAp.add(bean);
+                } else if (startAp >= startCloud && endCloud > startAp && endAp >= endCloud) {
+                    bean.setStartTime(startAp);
+                    bean.setEndTime(endCloud);
+                    bean.setApPlay(false);
+                    listAp.add(bean);
+                } else if (startAp >= startCloud && endAp <= endCloud) {
+                    bean.setStartTime(startAp);
+                    bean.setEndTime(endAp);
+                    bean.setApPlay(false);
+                    listAp.add(bean);
+                } else if (startCloud >= startAp && endCloud <= endAp) {
+                    bean.setStartTime(startCloud);
+                    bean.setEndTime(endCloud);
+                    bean.setApPlay(false);
+                    listAp.add(bean);
+                }
+            }
+        }
+//        listAp.addAll(list);
+        //必须去重
+
+        LogCat.e(TAG, "getCanvasList aaa=  " + (long) 1.55853732E9);
+        for (ApCloudTimeBean aa : listAp) {
+            LogCat.e(TAG, "getCanvasList=  " + aa.getStartTime() + "," + aa.getEndTime() + " ,pPlay== " + aa.isApPlay());
+        }
+
+
+    }
 }

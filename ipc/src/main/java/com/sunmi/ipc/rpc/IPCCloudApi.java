@@ -162,8 +162,6 @@ public class IPCCloudApi extends BaseHttpApi {
                     .put("device_id", deviceId)
                     .put("start_time", startTime)
                     .put("end_time", endTime)
-//                    .put("page_num", pageNum)
-//                    .put("page_size", pageSize)
                     .toString();
             RetrofitClient.getInstance().create(MediaInterface.class)
                     .getVideoList(getSignedRequest(params))
