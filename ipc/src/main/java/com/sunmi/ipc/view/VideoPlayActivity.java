@@ -153,6 +153,7 @@ public class VideoPlayActivity extends BaseActivity
     private boolean isPaused;//回放是否暂停
     private int qualityType = 0;//0-超清，1-高清
 
+    private SurfaceHolder surfaceHolder;
     //adapter
     private DateAdapter adapter;
     //日历
@@ -180,14 +181,13 @@ public class VideoPlayActivity extends BaseActivity
     //是否为选择的日期
     private boolean isSelectedDate;
 
-
+    //云端回放
     //用于播放视频的mediaPlayer对象
     private MediaPlayer
             firstPlayer,//负责播放进入视频播放界面后的第一段视频
             nextMediaPlayer, //负责一段视频播放结束后，播放下一段视频
             cachePlayer,     //负责setNextMediaPlayer的player缓存对象
             currentPlayer;   //负责当前播放视频段落的player对象
-    private SurfaceHolder surfaceHolder;
     //存放所有视频端的url
     private List<VideoListResp.VideoBean> videoListQueue = new ArrayList<>();
     //所有player对象的缓存
@@ -508,23 +508,27 @@ public class VideoPlayActivity extends BaseActivity
         hideLoadingDialog();
     }
 
-//    //切换到云端回放
-//    @Click(resName = "test_cloud_back")
-//    void switch2CloudPlayback(long start, long end) {
-//        showLoadingDialog();
-//        if (!isCloudPlayBack) {
-//            if (isDevPlayBack) {
-//                IOTCClient.stopPlayback();//先停止设备回放
-//                isDevPlayBack = false;
-//            } else {
-//                IOTCClient.stopLive();//先停止直播
-//            }
-//            if (videoDecoder != null) videoDecoder.release();//释放surfaceView
-//            isCloudPlayBack = true;
-//        }
-//        getCloudVideoUrls(1558537326, 1558537926);//todo
-//        ivLive.setVisibility(View.VISIBLE);
-//    }
+    //切换到云端回放
+    @Click(resName = "test_cloud_back")
+    void switch2CloudPlaybackClick() {
+        switch2CloudPlayback(1558537326, 1558537926);
+    }
+
+    void switch2CloudPlayback(long start, long end) {
+        showLoadingDialog();
+        if (!isCloudPlayBack) {
+            if (isDevPlayBack) {
+                IOTCClient.stopPlayback();//先停止设备回放
+                isDevPlayBack = false;
+            } else {
+                IOTCClient.stopLive();//先停止直播
+            }
+            if (videoDecoder != null) videoDecoder.release();//释放surfaceView
+            isCloudPlayBack = true;
+        }
+        getCloudVideoUrls(start, end);
+        ivLive.setVisibility(View.VISIBLE);
+    }
 
     //开始计时录制
     private void startRecord() {

@@ -123,7 +123,7 @@ public class Utility {
     public static byte[] cmdConnectWifi(byte[] ssid, byte[] pwd) {
         return ByteUtils.byteMergerAll(
                 getCmdTag(),
-                ByteUtils.intToByte4(134),
+                ByteUtils.intToByte2(134),
                 getCmd(7),
                 ssid, pwd);
 //        byte[] connectWifi = new byte[134];
@@ -142,7 +142,7 @@ public class Utility {
     public static byte[] cmdAlreadyConnectedWifi() {
         return ByteUtils.byteMergerAll(
                 getCmdTag(),
-                ByteUtils.intToByte4(6),
+                ByteUtils.intToByte2(6),
                 getCmd(8));
 
 //        byte[] connectedWifi = new byte[6];
