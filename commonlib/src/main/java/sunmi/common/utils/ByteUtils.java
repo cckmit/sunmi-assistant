@@ -110,7 +110,7 @@ public class ByteUtils {
      * @return byte
      */
     public static byte[] intToByte2(int i) {
-        byte[] targets = new byte[4];
+        byte[] targets = new byte[2];
         targets[1] = (byte) (i & 0xFF);
         targets[0] = (byte) (i >> 8 & 0xFF);
         return targets;
