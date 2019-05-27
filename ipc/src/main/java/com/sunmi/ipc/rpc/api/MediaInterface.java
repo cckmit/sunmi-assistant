@@ -1,5 +1,6 @@
 package com.sunmi.ipc.rpc.api;
 
+import com.google.gson.JsonObject;
 import com.sunmi.ipc.model.VideoListResp;
 
 import retrofit2.Call;
@@ -28,7 +29,7 @@ public interface MediaInterface {
      * 获取时间轴
      */
     @POST(videoPath + "getTimeSlots")
-    Call<BaseResponse<Object>> getTimeSlots(@Body BaseRequest request);
+    Call<BaseResponse<JsonObject>> getTimeSlots(@Body BaseRequest request);
 
 
 }

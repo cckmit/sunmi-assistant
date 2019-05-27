@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.sunmi.ipc.model.ApCloudTimeBean;
 import com.sunmi.ipc.rpc.IPCCloudApi;
 
@@ -134,6 +135,10 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
     @Click(resName = "btn_time")
     void timeClick() {
         getTimeList();
+    }
+
+    @Click(resName = "btn_time_ap")
+    void timeApClick() {
     }
 
     @Click(resName = "btn_video")
@@ -448,16 +453,15 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
     }
 
     void getTimeList() {
-        IPCCloudApi.getTimeSlots(2237, 1558537326, 1558537926, new RetrofitCallback() {
+        IPCCloudApi.getTimeSlots(2237, 1558537326, 1558537926, new RetrofitCallback<JsonObject>() {
             @Override
-            public void onSuccess(int code, String msg, Object data) {
+            public void onSuccess(int code, String msg, JsonObject data) {
                 LogCat.e(TAG, "date11 getTimeSlots==" + data.toString());
-
             }
 
             @Override
-            public void onFail(int code, String msg, Object data) {
-
+            public void onFail(int code, String msg, JsonObject data) {
+                LogCat.e(TAG, "date11 getTimeSlots onFail");
             }
         });
     }
@@ -466,11 +470,12 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
         IPCCloudApi.getVideoList(2237, 1558537326, 1558537926, new RetrofitCallback() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
-                LogCat.e(TAG, "date11 getVideoList== code=" + code + ",  " + data.toString());
+                LogCat.e(TAG, "date11 getVideoList onSuccess== code=" + code + ",  " + data.toString());
             }
 
             @Override
             public void onFail(int code, String msg, Object data) {
+                LogCat.e(TAG, "date11 getVideoLis onFail");
 
             }
         });
@@ -521,6 +526,7 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
         for (int i = 0; i < apSize + 1; i++) {
             bean = new ApCloudTimeBean();
             long startAp = 0, endAp = 0;
+            //不包含ap时间轴内的时间
             if (i == 0) {
                 startAp = mStart;
                 endAp = listAp.get(i).getStartTime();
