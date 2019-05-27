@@ -459,10 +459,7 @@ public class VideoPlayActivity extends BaseActivity
         IOTCClient.stopLive();
         if (videoDecoder != null) videoDecoder.release();
         isCloudPlayBack = true;
-        //获取视频源
-        getVideoUrls();
-        //然后初始化播放手段视频的player对象
-        initFirstPlayer();
+        getCloudVideoUrls();
         ivLive.setVisibility(View.VISIBLE);
     }
 
@@ -523,9 +520,6 @@ public class VideoPlayActivity extends BaseActivity
         //设置cachePlayer为该player对象
         cachePlayer = firstPlayer;
         initNextPlayer();
-
-        //player对象初始化完成后，开启播放
-        startPlayFirstVideo();
     }
 
     private void startPlayFirstVideo() {
@@ -557,6 +551,9 @@ public class VideoPlayActivity extends BaseActivity
         ThreadPool.getCachedThreadPool().submit(new Runnable() {
             @Override
             public void run() {
+
+                //player对象初始化完成后，开启播放
+                startPlayFirstVideo();
                 for (int i = 1; i < videoListQueue.size(); i++) {
                     nextMediaPlayer = new MediaPlayer();
                     nextMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -599,10 +596,7 @@ public class VideoPlayActivity extends BaseActivity
         }
     }
 
-    private void getVideoUrls() {
-//        videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/0_20.mp4");
-//        videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/20_40.mp4");
-//        videoListQueue.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/40_60.mp4");
+    private void getCloudVideoUrls() {
         IPCCloudApi.getVideoList(2237, 1558537326, 1558537926, new RetrofitCallback<VideoListResp>() {
             @Override
             public void onSuccess(int code, String msg, VideoListResp data) {
@@ -621,26 +615,30 @@ public class VideoPlayActivity extends BaseActivity
      * 负责界面销毁时，release各个mediaPlayer
      */
     private void cloudPlayDestroy() {
-        if (firstPlayer != null) {
-            if (firstPlayer.isPlaying()) {
-                firstPlayer.stop();
+        try {
+            if (firstPlayer != null) {
+                if (firstPlayer.isPlaying()) {
+                    firstPlayer.stop();
+                }
+                firstPlayer.release();
             }
-            firstPlayer.release();
-        }
-        if (nextMediaPlayer != null) {
-            if (nextMediaPlayer.isPlaying()) {
-                nextMediaPlayer.stop();
+            if (nextMediaPlayer != null) {
+                if (nextMediaPlayer.isPlaying()) {
+                    nextMediaPlayer.stop();
+                }
+                nextMediaPlayer.release();
             }
-            nextMediaPlayer.release();
-        }
 
-        if (currentPlayer != null) {
-            if (currentPlayer.isPlaying()) {
-                currentPlayer.stop();
+            if (currentPlayer != null) {
+                if (currentPlayer.isPlaying()) {
+                    currentPlayer.stop();
+                }
+                currentPlayer.release();
             }
-            currentPlayer.release();
+            currentPlayer = null;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        currentPlayer = null;
     }
 
     //***********************云端回放***************************************!
