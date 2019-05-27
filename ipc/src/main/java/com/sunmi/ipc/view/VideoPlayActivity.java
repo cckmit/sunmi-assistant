@@ -508,23 +508,23 @@ public class VideoPlayActivity extends BaseActivity
         hideLoadingDialog();
     }
 
-    //切换到云端回放
-    @Click(resName = "test_cloud_back")
-    void switch2CloudPlayback(long start, long end) {
-        showLoadingDialog();
-        if (!isCloudPlayBack) {
-            if (isDevPlayBack) {
-                IOTCClient.stopPlayback();//先停止设备回放
-                isDevPlayBack = false;
-            } else {
-                IOTCClient.stopLive();//先停止直播
-            }
-            if (videoDecoder != null) videoDecoder.release();//释放surfaceView
-            isCloudPlayBack = true;
-        }
-        getCloudVideoUrls(1558537326, 1558537926);//todo
-        ivLive.setVisibility(View.VISIBLE);
-    }
+//    //切换到云端回放
+//    @Click(resName = "test_cloud_back")
+//    void switch2CloudPlayback(long start, long end) {
+//        showLoadingDialog();
+//        if (!isCloudPlayBack) {
+//            if (isDevPlayBack) {
+//                IOTCClient.stopPlayback();//先停止设备回放
+//                isDevPlayBack = false;
+//            } else {
+//                IOTCClient.stopLive();//先停止直播
+//            }
+//            if (videoDecoder != null) videoDecoder.release();//释放surfaceView
+//            isCloudPlayBack = true;
+//        }
+//        getCloudVideoUrls(1558537326, 1558537926);//todo
+//        ivLive.setVisibility(View.VISIBLE);
+//    }
 
     //开始计时录制
     private void startRecord() {
@@ -1132,28 +1132,31 @@ public class VideoPlayActivity extends BaseActivity
                 TimeBean bs = list.get(center);
                 long date = bs.getDate();
                 int apSize = listAp.size();
-                for (int i = 0; i < apSize; i++) {
-                    ApCloudTimeBean bean = listAp.get(i);
-                    long start = bean.getStartTime();
-                    long end = bean.getEndTime();
-                    //当滑动到最后前后一分钟时，判断下一个视频片段ap还是cloud
-                    if (date >= start && date < end && end - date < 60 && end - date > 1) {
-                        if (i + 1 < apSize) {
-                            boolean isApVideo = listAp.get(i + 1).isApPlay();
-                            LogCat.e("TAG", "isApVideo=" + isApVideo);
-                        }
-
-                    } else if (date == end) {
-                        //播到当前片段的endTime
-
-                    } else if (date > end) {
-                        //开始下一个视频片段
-                        if (i + 1 < apSize) {
-                            videoSkipScrollPosition(listAp.get(i + 1).getStartTime());
-                        }
-
-                    }
-                }
+//                for (int i = 0; i < apSize; i++) {
+//                    ApCloudTimeBean bean = listAp.get(i);
+//                    long start = bean.getStartTime();
+//                    long end = bean.getEndTime();
+//                    //当滑动到最后前后一分钟时，判断下一个视频片段ap还是cloud
+//                    if (date >= start && date < end && end - date < 60 && end - date > 1) {
+//                        if (i + 1 < apSize) {
+//                            boolean isApVideo = listAp.get(i + 1).isApPlay();
+//                            LogCat.e("TAG", "isApVideo=" + isApVideo);
+//                        }
+//
+//                    } else if (date == end) {
+//                        //播到当前片段的endTime
+//
+//                    }
+//                    else if (date > end) {
+////                        LogCat.e("TAG", "11111 ************");
+////                        //开始下一个视频片段
+////                        if (i + 1 == apSize) {
+////                            videoSkipScrollPosition(listAp.get(i + 1).getStartTime());
+////                        }
+//
+//
+//                    }
+//                }
 
             }
         });
@@ -1350,7 +1353,6 @@ public class VideoPlayActivity extends BaseActivity
                         listAp.add(ap);
                     }
                     //cloud回放时间轴
-                    //LogCat.e(TAG, "111111 cloud = " + threeDaysBeforeSeconds + ", " + currentDateSeconds);
                     getTimeList(2237, threeDaysBeforeSeconds, currentDateSeconds);
                 }
             }
@@ -1368,6 +1370,11 @@ public class VideoPlayActivity extends BaseActivity
                 if (code == 1) {
                     try {
                         JSONObject object = new JSONObject(data.toString());
+                        int total_count = object.getInt("total_count");
+                        if (total_count == 0) {
+                            makeUpTimeCanvasList(listAp);
+                            return;
+                        }
                         JSONArray jsonArray = object.getJSONArray("timeslots");
                         ApCloudTimeBean cloud;
                         listCloud.clear();
