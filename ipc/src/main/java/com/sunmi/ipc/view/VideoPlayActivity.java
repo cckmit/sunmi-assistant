@@ -150,7 +150,7 @@ public class VideoPlayActivity extends BaseActivity
     private boolean isCloudPlayBack;//是否正在云回放
     private boolean isPlayBack;//是否正在设备回放
     private boolean isPaused;//回放是否暂停
-    private int qualityType = 0;//0-高清，1-标清
+    private int qualityType = 0;//0-超清，1-高清
 
     //adapter
     private DateAdapter adapter;
@@ -528,8 +528,12 @@ public class VideoPlayActivity extends BaseActivity
         llVideoQuality.setVisibility(View.GONE);
         if (type == qualityType) return;
         qualityType = qualityType == 0 ? 1 : 0;
-        LogCat.e(TAG, "11111111 va" + qualityType);
         IOTCClient.changeValue(qualityType);
+        if (qualityType == 0) {
+            shortTip("已切换至超清");
+        } else if (qualityType == 1) {
+            shortTip("已切换至高清");
+        }
     }
 
     //*********************************************************************

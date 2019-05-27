@@ -180,10 +180,7 @@ public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter>
                 new BleNotifyResponse() {
                     @Override
                     public void onNotify(UUID service, UUID character, byte[] value) {
-                        Log.e(TAG, "onNotify value = " + value.length);
-                        for (byte data : value) {
-                            Log.e(TAG, "onNotify data = " + data);
-                        }
+                        Log.e(TAG, "555555 onNotify value = " + value.length);
                         mPresenter.onNotify(value, version);
                     }
 

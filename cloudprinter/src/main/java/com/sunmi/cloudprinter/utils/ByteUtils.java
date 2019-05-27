@@ -39,7 +39,7 @@ public class ByteUtils {
     public static int byte2ToInt(byte[] bytes) {
         int b0 = bytes[0] & 0xFF;
         int b1 = bytes[1] & 0xFF;
-        return (b0 << 8) | b1;
+        return (b1 << 8) | b0;
     }
 
     /**
