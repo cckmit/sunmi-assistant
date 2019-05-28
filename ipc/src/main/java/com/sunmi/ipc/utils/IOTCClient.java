@@ -212,9 +212,9 @@ public class IOTCClient {
                 int[] frameNumber = new int[1];
                 int ret = av.avRecvFrameData2(avIndex, videoBuffer, VIDEO_BUF_SIZE, outBufSize,
                         outFrameSize, frameInfo, FRAME_INFO_SIZE, outFrmInfoBufSize, frameNumber);
-                if (ret == AVAPIs.AV_ER_DATA_NOREADY) {
+                if (ret == AVAPIs.AV_ER_DATA_NOREADY) {//缓存没数据等待10ms再读
                     try {
-                        Thread.sleep(30);
+                        Thread.sleep(10);
                         continue;
                     } catch (InterruptedException e) {
                         LogCat.e(TAG, e.getMessage());
@@ -263,25 +263,18 @@ public class IOTCClient {
             byte[] frameInfo = new byte[FRAME_INFO_SIZE];
             byte[] audioBuffer = new byte[AUDIO_BUF_SIZE];
             while (true) {
-                int ret = av.avCheckAudioBuf(avIndex);
-
-                if (ret < 0) {// Same error codes as below
-                    LogCat.e(TAG, "AudioThread - avCheckAudioBuf(),failed: = " + ret);
-                    break;
-                } else if (ret < 3) {
+                int[] frameNumber = new int[1];
+                int ret = av.avRecvAudioData(avIndex, audioBuffer,
+                        AUDIO_BUF_SIZE, frameInfo, FRAME_INFO_SIZE, frameNumber);
+                if (ret == AVAPIs.AV_ER_DATA_NOREADY) {//缓存没数据等待10ms再读
                     try {
-                        Thread.sleep(120);
+                        Thread.sleep(10);
                         continue;
                     } catch (InterruptedException e) {
                         LogCat.e(TAG, e.getMessage());
                         break;
                     }
-                }
-
-                int[] frameNumber = new int[1];
-                ret = av.avRecvAudioData(avIndex, audioBuffer,
-                        AUDIO_BUF_SIZE, frameInfo, FRAME_INFO_SIZE, frameNumber);
-                if (ret == AVAPIs.AV_ER_SESSION_CLOSE_BY_REMOTE) {
+                } else if (ret == AVAPIs.AV_ER_SESSION_CLOSE_BY_REMOTE) {
                     LogCat.e(TAG, "AudioThread - AV_ER_SESSION_CLOSE_BY_REMOTE");
                     break;
                 } else if (ret == AVAPIs.AV_ER_REMOTE_TIMEOUT_DISCONNECT) {
