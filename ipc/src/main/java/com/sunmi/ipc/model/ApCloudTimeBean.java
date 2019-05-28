@@ -1,10 +1,12 @@
 package com.sunmi.ipc.model;
 
+import android.support.annotation.NonNull;
+
 /**
  * ap和云端时间组合
  * Created by YangShiJie on 2019/5/25.
  */
-public class ApCloudTimeBean {
+public class ApCloudTimeBean implements Comparable<ApCloudTimeBean> {
     private long startTime;
     private long endTime;
     private boolean isApPlay;
@@ -31,5 +33,13 @@ public class ApCloudTimeBean {
 
     public void setApPlay(boolean apPlay) {
         isApPlay = apPlay;
+    }
+
+    @Override
+    public int compareTo(@NonNull ApCloudTimeBean o) {
+        if (this.startTime >= o.getStartTime()) {
+            return 1;
+        }
+        return -1;
     }
 }

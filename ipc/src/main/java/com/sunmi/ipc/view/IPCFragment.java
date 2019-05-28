@@ -27,7 +27,10 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import sunmi.common.base.BaseFragment;
@@ -568,14 +571,19 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
                 }
             }
         }
-//        listAp.addAll(list);
-        //必须去重
-
-        LogCat.e(TAG, "getCanvasList aaa=  " + (long) 1.55853732E9);
+        listAp = duplicateRemoval(listAp);
+        Collections.sort(listAp);//正序比较
         for (ApCloudTimeBean aa : listAp) {
             LogCat.e(TAG, "getCanvasList=  " + aa.getStartTime() + "," + aa.getEndTime() + " ,pPlay== " + aa.isApPlay());
         }
+    }
 
-
+    //去重
+    private List<ApCloudTimeBean> duplicateRemoval(List<ApCloudTimeBean> list) {
+        LinkedHashSet<ApCloudTimeBean> tmpSet = new LinkedHashSet<>(list.size());
+        tmpSet.addAll(list);
+        list.clear();
+        list.addAll(tmpSet);
+        return list;
     }
 }

@@ -127,8 +127,8 @@ public class H264Decoder {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (mediaCodec == null||format==null) {
-            ToastUtils.toastForShort(BaseApplication.getContext(),"播放失败，清重试");
+        if (mediaCodec == null || format == null) {
+            ToastUtils.toastForShort(BaseApplication.getContext(), "播放失败，清重试");
             return;
         }
 
@@ -182,6 +182,7 @@ public class H264Decoder {
                     }
 
                     int outIndex = mediaCodec.dequeueOutputBuffer(info, 0);
+//                    LogCat.e("H264Decoder", "555555vvv VIDEO play");
                     switch (outIndex) {
                         case MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED:
                             outputBuffers = mediaCodec.getOutputBuffers();
