@@ -13,7 +13,8 @@ import android.widget.ScrollView;
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.rpc.ap.APCall;
 import com.sunmi.assistant.R;
-import com.sunmi.ipc.rpc.IPCCloudApi;
+import com.sunmi.ipc.contract.IpcConfiguringContract;
+import com.sunmi.ipc.presenter.IpcConfiguringPresenter;
 import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.view.IPCListAdapter;
 import com.sunmi.ipc.view.IpcConfigCompletedActivity_;
@@ -35,19 +36,18 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import sunmi.common.base.BaseActivity;
+import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.RpcErrorCode;
-import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.rpc.sunmicall.ResponseBean;
-import sunmi.common.utils.SpUtils;
 
 /**
  * Description:
  * Created by bruce on 2019/4/24.
  */
 @EActivity(R.layout.activity_search_ipc)
-public class SunmiLinkSearchActivity extends BaseActivity {
+public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPresenter>
+        implements IpcConfiguringContract.View {
 
     @ViewById(resName = "nsv_ipc")
     NestedScrollView scrollView;
@@ -71,9 +71,12 @@ public class SunmiLinkSearchActivity extends BaseActivity {
 
     private Timer timer = null;//定时器用于主动获取ap搜到的设备
     private TimerTask myTask = null;
+    private boolean isTimeoutStart;
 
     @AfterViews
     void init() {
+        mPresenter = new IpcConfiguringPresenter();
+        mPresenter.attachView(this);
         startSunmiLink();
         initList();
     }
@@ -98,7 +101,6 @@ public class SunmiLinkSearchActivity extends BaseActivity {
         showLoadingDialog();
         sunmiLinkBlock(devList);
         sunmiLinkConfig();
-        setTimeout();
     }
 
     //开启sunmi link搜索，时长120s
@@ -170,36 +172,37 @@ public class SunmiLinkSearchActivity extends BaseActivity {
         for (SunmiDevice sunmiDevice : devList) {
             if (TextUtils.equals("FS1", sunmiDevice.getModel())
                     || TextUtils.equals("SS1", sunmiDevice.getModel()))
-                bindIpc(sunmiDevice);
+                mPresenter.ipcBind(shopId, sunmiDevice.getDeviceid(), "", 1, 1);
         }
     }
 
-    private void bindIpc(SunmiDevice sunmiDevice) {
-        IPCCloudApi.bindIPC(SpUtils.getMerchantUid(), shopId, sunmiDevice.getDeviceid(),
-                1, "", 1, 1, new RetrofitCallback() {
-                    @Override
-                    public void onSuccess(int code, String msg, Object data) {
+    void setTimeout() {
+        if (!isTimeoutStart) {
+            isTimeoutStart = true;
+            new Handler().postDelayed(new Runnable() {
+                public void run() {
+                    if (devSet.isEmpty()) return;
+                    for (SunmiDevice device : devList) {
+                        if (devSet.contains(device.getDeviceid())) {
+                            device.setStatus(RpcErrorCode.RPC_ERR_TIMEOUT);
+                            devSet.remove(device.getDeviceid());
+                        }
                     }
-
-                    @Override
-                    public void onFail(int code, String msg, Object data) {
-                    }
-                });
+                    configComplete();
+                }
+            }, 30000);
+        }
     }
 
-    void setTimeout() {
-        new Handler().postDelayed(new Runnable() {
-            public void run() {
-                if (devSet.isEmpty()) return;
-                for (SunmiDevice device : devList) {
-                    if (devSet.contains(device.getDeviceid())) {
-                        device.setStatus(RpcErrorCode.RPC_ERR_TIMEOUT);
-                        devSet.remove(device.getDeviceid());
-                    }
-                }
-                configComplete();
-            }
-        }, 30000);
+    @Override
+    public void ipcBindWifiSuccess(String sn) {
+        setTimeout();
+    }
+
+    @Override
+    public void ipcBindWifiFail(String sn, int code, String msg) {
+        setDeviceStatus(sn, code);
+        setTimeout();
     }
 
     @Override

@@ -138,7 +138,7 @@ public class AACDecoder {
                 outputBuffer.clear(); //清空缓存
 
                 audioTrack.playAudioTrack(outData, 0, info.size);//播放
-                LogCat.e(TAG, "555555aaa AUDIO play");
+//                LogCat.e(TAG, "555555aaa AUDIO play");
 
                 mDecoder.releaseOutputBuffer(outputBufferIndex, false);//释放已经解码的buffer
                 outputBufferIndex = mDecoder.dequeueOutputBuffer(info, kTimeOutUs);//解码未解完的数据

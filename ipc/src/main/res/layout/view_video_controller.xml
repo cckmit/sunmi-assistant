@@ -32,8 +32,8 @@
             android:layout_width="@dimen/dp_28"
             android:layout_height="@dimen/dp_28"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginEnd="@dimen/dp_20"
             android:background="@mipmap/ic_video_setting" />
     </RelativeLayout>
     <!--录像-->
@@ -42,8 +42,8 @@
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="@dimen/dp_25"
         android:layout_marginTop="@dimen/dp_123"
+        android:layout_marginEnd="@dimen/dp_25"
         android:background="@mipmap/ic_recording_normal" />
 
     <!--截图-->
@@ -51,10 +51,10 @@
         android:id="@+id/iv_screenshot"
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
-        android:layout_alignParentEnd="true"
         android:layout_below="@+id/iv_record"
-        android:layout_marginEnd="@dimen/dp_25"
+        android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_25"
         android:background="@mipmap/ic_screenshot" />
 
     <!--回直播-->
@@ -62,10 +62,10 @@
         android:id="@+id/iv_live"
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
-        android:layout_alignParentEnd="true"
         android:layout_below="@+id/iv_screenshot"
-        android:layout_marginEnd="@dimen/dp_25"
+        android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_25"
         android:background="@mipmap/ic_live"
         android:visibility="gone" />
 
@@ -74,15 +74,15 @@
         android:id="@+id/test_cloud_back"
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
-        android:layout_alignParentEnd="true"
         android:layout_below="@+id/iv_live"
-        android:layout_marginEnd="@dimen/dp_25"
+        android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_25"
         android:gravity="center"
         android:text="云回"
         android:textColor="@color/c_white"
         android:textSize="@dimen/sp_12"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <!--加载动画-->
     <LinearLayout
@@ -132,8 +132,8 @@
             style="@android:style/Widget.ProgressBar.Horizontal"
             android:layout_width="100dp"
             android:layout_height="@dimen/dp_2"
-            android:layout_marginBottom="@dimen/dp_4"
             android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_4"
             android:max="100"
             android:progressDrawable="@drawable/seekbar_progress" />
     </LinearLayout>
@@ -161,10 +161,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
             android:background="@drawable/bg_shap_green"
-            android:paddingBottom="@dimen/dp_5"
             android:paddingLeft="@dimen/dp_12"
-            android:paddingRight="@dimen/dp_12"
             android:paddingTop="@dimen/dp_4"
+            android:paddingRight="@dimen/dp_12"
+            android:paddingBottom="@dimen/dp_5"
             android:text="点击重试"
             android:textColor="@android:color/white"
             android:textSize="13sp" />
@@ -175,10 +175,10 @@
         android:id="@+id/ll_change_volume"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_84"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginBottom="@dimen/dp_44"
+        android:layout_alignParentBottom="true"
         android:layout_marginEnd="@dimen/dp_82"
+        android:layout_marginBottom="@dimen/dp_44"
         android:background="@drawable/bg_set_video_quality"
         android:gravity="center"
         android:visibility="gone">
@@ -200,10 +200,10 @@
         android:layout_width="@dimen/dp_42"
         android:layout_height="@dimen/dp_48"
         android:layout_above="@+id/ll_bottom"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginBottom="@dimen/dp_44"
+        android:layout_alignParentBottom="true"
         android:layout_marginEnd="@dimen/dp_20"
+        android:layout_marginBottom="@dimen/dp_44"
         android:background="@drawable/bg_set_video_quality"
         android:orientation="vertical"
         android:visibility="gone">
@@ -241,8 +241,8 @@
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/dp_24"
             android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginEnd="@dimen/dp_24"
             android:background="@mipmap/play_disable" />
 
         <RelativeLayout
@@ -250,15 +250,15 @@
             android:layout_height="@dimen/dp_56"
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/dp_24"
-            android:layout_toEndOf="@+id/iv_play"
             android:layout_toStartOf="@+id/tv_calender"
+            android:layout_toEndOf="@+id/iv_play"
             android:background="@color/transparent">
 
             <RelativeLayout
                 android:id="@+id/rl_recyclerView"
                 android:layout_width="match_parent"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_height="@dimen/dp_56">
+                android:layout_height="@dimen/dp_56"
+                android:layout_marginTop="@dimen/dp_8">
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recyclerView"
@@ -331,8 +331,8 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_14"
-            android:drawablePadding="@dimen/dp_8"
             android:drawableStart="@drawable/oval_red"
+            android:drawablePadding="@dimen/dp_8"
             android:text="@string/str_record_text"
             android:textColor="@color/c_white"
             android:textSize="@dimen/sp_12" />
