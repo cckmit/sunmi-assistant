@@ -237,11 +237,10 @@ public class IOTCClient {
                     break;
                 }
 //                LogCat.e(TAG, "555555vvv VIDEO received ret = " + ret);
-                if (ret > 0) {
-                    byte[] data = new byte[ret];
-                    System.arraycopy(videoBuffer, 0, data, 0, ret);
-                    if (callback != null) callback.onVideoReceived(data);
-                }
+                if (ret < 0) return;
+                byte[] data = new byte[ret];
+                System.arraycopy(videoBuffer, 0, data, 0, ret);
+                if (callback != null) callback.onVideoReceived(data);
             }
         }
     }
@@ -295,11 +294,11 @@ public class IOTCClient {
                     LogCat.e(TAG, "AudioThread - AV_ER_LOSED_THIS_FRAME");
                     continue;
                 }
+//                LogCat.e(TAG, "555555aaa AUDIO received ret = " + ret);
                 if (ret < 0) return;
                 byte[] data = new byte[ret];
                 System.arraycopy(audioBuffer, 0, data, 0, ret);
                 if (callback != null) callback.onAudioReceived(data);
-//                LogCat.e(TAG, "555555aaa AUDIO received ret = " + ret);
             }
             LogCat.e(TAG, "AudioThread - Exit");
         }
