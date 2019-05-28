@@ -237,10 +237,11 @@ public class IOTCClient {
                     break;
                 }
 //                LogCat.e(TAG, "555555vvv VIDEO received ret = " + ret);
-                if (ret < 0) return;
-                byte[] data = new byte[ret];
-                System.arraycopy(videoBuffer, 0, data, 0, ret);
-                if (callback != null) callback.onVideoReceived(data);
+                if (ret > 0) {
+                    byte[] data = new byte[ret];
+                    System.arraycopy(videoBuffer, 0, data, 0, ret);
+                    if (callback != null) callback.onVideoReceived(data);
+                }
             }
         }
     }
