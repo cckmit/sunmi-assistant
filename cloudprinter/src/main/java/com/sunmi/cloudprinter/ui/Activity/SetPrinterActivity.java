@@ -36,11 +36,11 @@ import java.util.List;
 import java.util.UUID;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.utils.ByteUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.ClearableEditText;
-import sunmi.common.view.dialog.ProgressDialog;
 
 @EActivity(resName = "activity_set_printer")
 public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter>
@@ -54,7 +54,6 @@ public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter>
     String bleAddress;
 
     private BluetoothClient mClient;
-    private ProgressDialog dialog;
     private Dialog routerDialog;
     private String pwd = "";
     private String sn = "123456";
@@ -69,7 +68,7 @@ public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter>
         mPresenter = new SetPrinterPresenter();
         mPresenter.attachView(this);
         mClient = new BluetoothClient(context);
-        showProgressDialog();
+        showLoadingDialog();
         connectBle();
     }
 
@@ -111,7 +110,7 @@ public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter>
             public void onResponse(int code, BleGattProfile profile) {
                 LogCat.e(TAG, "connect   = " + code);
                 if (code == 0) {
-                    closeProgressDialog();
+                    hideLoadingDialog();
                     onInitMtu();
                 }
             }
@@ -154,10 +153,10 @@ public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter>
                         return;
                     }
                     router.setPwd(pwd);
-                    byte[] password = sunmi.common.utils.ByteUtils.String2Byte64(pwd);
+                    byte[] password = ByteUtils.String2Byte64(pwd);
                     onSendMessage(Utility.cmdConnectWifi(router.getEssid(), password));
                 } else {
-                    byte[] password = sunmi.common.utils.ByteUtils.getNoneByte64();
+                    byte[] password = ByteUtils.getNoneByte64();
                     onSendMessage(Utility.cmdConnectWifi(router.getEssid(), password));
                 }
             }
@@ -165,10 +164,6 @@ public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter>
         routerDialog.setContentView(view);
         routerDialog.setCancelable(false);
         routerDialog.show();
-    }
-
-    private void unpackData(final byte[] data) {
-//for (byte)
     }
 
     @UiThread
@@ -200,7 +195,6 @@ public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter>
     public void onInitMtu() {
         if (mClient == null) return;
         onInitNotify();
-
 //        mClient.requestMtu(bleAddress, 256, new BleMtuResponse() {
 //            @Override
 //            public void onResponse(int code, Integer data) {
@@ -236,7 +230,7 @@ public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter>
         if (dataLen > 20) {
             int remainLen = dataLen;
             while (remainLen > 0) {
-                writeData(sunmi.common.utils.ByteUtils.subBytes(data,
+                writeData(ByteUtils.subBytes(data,
                         dataLen - remainLen, remainLen > 20 ? 20 : remainLen), cmd);
                 remainLen -= 20;
             }
@@ -262,31 +256,9 @@ public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter>
         });
     }
 
-
-    @UiThread
-    @Override
-    public void hideProgressBar() {
-        progressBar.setVisibility(View.VISIBLE);
-    }
-
     @Override
     public void setSn(String sn) {
         this.sn = sn;
-    }
-
-    private void showProgressDialog() {
-        if (dialog == null) {
-            dialog = new ProgressDialog(context);
-            dialog.setContent(getString(R.string.str_set_link));
-            dialog.setCanceledOnTouchOutside(false);
-        }
-        dialog.show();
-    }
-
-    private void closeProgressDialog() {
-        if (dialog != null) {
-            dialog.dismiss();
-        }
     }
 
 }
