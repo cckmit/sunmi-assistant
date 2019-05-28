@@ -198,7 +198,7 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
                 retryCount++;
                 IPCCall.getInstance().getApStatus(context, sunmiDevice.getIp());
             }
-        }, 0, 500);
+        }, 0, 1000);
     }
 
     // 停止定时器
@@ -221,7 +221,7 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
     @UiThread
     void wifiListGetSuccess(ResponseBean res) {
         setLoadingVisible(View.GONE);
-        if (res == null || TextUtils.equals(res.getErrCode(), RpcErrorCode.WHAT_ERROR + "")) {
+        if (res == null || TextUtils.equals(res.getErrCode(), RpcErrorCode.RPC_COMMON_ERROR + "")) {
             setNoWifiVisible(View.VISIBLE);
             return;
         }

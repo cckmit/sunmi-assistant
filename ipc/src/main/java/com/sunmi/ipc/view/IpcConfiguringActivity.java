@@ -112,7 +112,7 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
     public void didReceivedNotification(int id, Object... args) {
         if (args == null) return;
         ResponseBean res = (ResponseBean) args[0];
-        if (TextUtils.equals(res.getErrCode(), RpcErrorCode.WHAT_ERROR + "")) {
+        if (TextUtils.equals(res.getErrCode(), RpcErrorCode.RPC_COMMON_ERROR + "")) {
             configFailDialog(R.string.tip_set_fail, R.string.str_bind_net_error);
         } else if (id == IpcConstants.bindIpc) {
             try {

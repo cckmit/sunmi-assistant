@@ -178,7 +178,7 @@ public class SearchSMDeviceActivity extends BaseActivity implements View.OnClick
         }
 //        if (!isRun || args == null) return;
 //        ResponseBean res = (ResponseBean) args[0];
-//        if (TextUtils.equals(res.getErrCode(), AppConfig.WHAT_ERROR + "")) {
+//        if (TextUtils.equals(res.getErrCode(), AppConfig.RPC_COMMON_ERROR + "")) {
 //            hideLoadingDialog();
 //            NetConnectUtils.isNetConnected(context);
 //
