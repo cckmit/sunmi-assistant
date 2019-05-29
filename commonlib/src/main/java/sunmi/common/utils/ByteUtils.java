@@ -1,5 +1,7 @@
 package sunmi.common.utils;
 
+import android.text.TextUtils;
+
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -85,15 +87,17 @@ public class ByteUtils {
     }
 
     public static byte[] String2Byte64(String message) {
-        int len = message.length();
-        byte[] bytes = new byte[len];
-        char[] chars = message.toCharArray();
         byte[] byte64 = new byte[64];
         Arrays.fill(byte64, (byte) 0);
-        for (int i = 0; i < len; i++) {
-            bytes[i] = (byte) chars[i];
+        if (TextUtils.isEmpty(message)) {
+            return byte64;
         }
-        System.arraycopy(bytes, 0, byte64, 64 - bytes.length, bytes.length);
+        int len = message.length();
+//        byte[] bytes = new byte[len];
+        char[] chars = message.toCharArray();
+        for (int i = 0; i < len; i++) {
+            byte64[i] = (byte) chars[i];
+        }
         return byte64;
     }
 
