@@ -142,7 +142,7 @@ public class MqttManager {
             return;
         }
         try {
-            mqttClient.connect(options, null, new IMqttActionListener() {
+            mqttClient.connect(options, BaseApplication.getContext(), new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     isConnecting = false;

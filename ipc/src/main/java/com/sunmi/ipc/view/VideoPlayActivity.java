@@ -1,6 +1,5 @@
 package com.sunmi.ipc.view;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
@@ -611,7 +610,6 @@ public class VideoPlayActivity extends BaseActivity
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
                     //set next mediaplayer
                     cachePlayer.setNextMediaPlayer(nextMediaPlayer);
                     //set new cachePlayer
