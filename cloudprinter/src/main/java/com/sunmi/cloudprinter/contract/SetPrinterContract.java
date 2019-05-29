@@ -19,6 +19,7 @@ public interface SetPrinterContract {
 
         void setSn(String sn);
 
+        void wifiSetSuccess();
     }
 
     interface Presenter {

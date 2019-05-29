@@ -1,14 +1,10 @@
 package com.sunmi.cloudprinter.presenter;
 
-import android.util.Log;
-
 import com.sunmi.cloudprinter.R;
 import com.sunmi.cloudprinter.bean.Router;
 import com.sunmi.cloudprinter.constant.Constants;
 import com.sunmi.cloudprinter.contract.SetPrinterContract;
 import com.sunmi.cloudprinter.utils.Utility;
-
-import java.util.Arrays;
 
 import sunmi.common.base.BasePresenter;
 
@@ -39,7 +35,6 @@ public class SetPrinterPresenter extends BasePresenter<SetPrinterContract.View> 
 
     @Override
     public void onNotify(byte[] value, byte version) {
-        Log.e("spp", "555555 onNotify, value = " + Arrays.toString(value));
         if (value.length > 0) {
             if (Utility.isFirstPac(value)) {
                 receivedLen = 0;
@@ -69,6 +64,7 @@ public class SetPrinterPresenter extends BasePresenter<SetPrinterContract.View> 
             mView.shortTip(R.string.str_wifi_msg_completely);
             mView.hideLoadingDialog();
         } else if (cmd == Constants.SRV2CLI_SEND_ALREADY_CONNECTED_WIFI) {
+            mView.wifiSetSuccess();
             mView.onSendMessage(Utility.cmdAlreadyConnectedWifi());
         }
     }
