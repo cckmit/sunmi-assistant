@@ -122,7 +122,6 @@ public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter>
     public void initRouter(Router router) {
         routers.add(router);
         adapter.notifyDataSetChanged();
-
     }
 
     private void showMessageDialog(final Router router) {
@@ -146,6 +145,7 @@ public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter>
         btnSure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showLoadingDialog();
                 if (router.isHasPwd()) {
                     pwd = etPassword.getText().toString().trim();
                     if (TextUtils.isEmpty(pwd)) {
@@ -227,11 +227,6 @@ public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter>
 //        });
         int dataLen = data.length;
         int cmd = data[5];
-        if (cmd == 8) {
-            routerDialog.dismiss();
-            PrinterManageActivity_.intent(context).sn(sn).userId(SpUtils.getUID())
-                    .merchantId(SpUtils.getMerchantUid()).start();
-        }
         if (dataLen > 20) {
             int remainLen = dataLen;
             while (remainLen > 0) {
@@ -260,6 +255,14 @@ public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter>
     @Override
     public void setSn(String sn) {
         this.sn = sn;
+    }
+
+    @Override
+    public void wifiSetSuccess() {
+        hideLoadingDialog();
+        routerDialog.dismiss();
+        PrinterManageActivity_.intent(context).sn(sn).userId(SpUtils.getUID())
+                .merchantId(SpUtils.getMerchantUid()).start();
     }
 
 }

@@ -22,6 +22,9 @@ public interface BaseView {
      * toast提示
      */
     void shortTip(int resId);
+
+    void shortTip(String tip);
+
 //    /**
 //     * 数据获取失败
 //     *
