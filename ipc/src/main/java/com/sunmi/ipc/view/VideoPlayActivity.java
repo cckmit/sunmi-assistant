@@ -612,7 +612,6 @@ public class VideoPlayActivity extends BaseActivity
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
                     //set next mediaplayer
                     cachePlayer.setNextMediaPlayer(nextMediaPlayer);
                     //set new cachePlayer

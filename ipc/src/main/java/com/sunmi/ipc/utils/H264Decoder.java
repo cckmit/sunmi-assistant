@@ -114,9 +114,13 @@ public class H264Decoder {
     public void release() {
         isRunning = false;
         if (mediaCodec != null) {
-            mediaCodec.stop();
-            mediaCodec.release();
-            mediaCodec = null;
+            try {
+                mediaCodec.stop();
+                mediaCodec.release();
+                mediaCodec = null;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
