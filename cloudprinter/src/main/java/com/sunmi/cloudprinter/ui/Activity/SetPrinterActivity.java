@@ -227,6 +227,11 @@ public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter>
 //        });
         int dataLen = data.length;
         int cmd = data[5];
+        if (cmd == 8) {
+            routerDialog.dismiss();
+            PrinterManageActivity_.intent(context).sn(sn).userId(SpUtils.getUID())
+                    .merchantId(SpUtils.getMerchantUid()).start();
+        }
         if (dataLen > 20) {
             int remainLen = dataLen;
             while (remainLen > 0) {
@@ -246,11 +251,7 @@ public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter>
             public void onResponse(int code) {
                 Log.e(TAG, "send Message:" + code);
                 if (code == 0) {
-                    if (cmd == 8) {
-                        routerDialog.dismiss();
-                        PrinterManageActivity_.intent(context).sn(sn).userId(SpUtils.getUID())
-                                .merchantId(SpUtils.getMerchantUid()).start();
-                    }
+
                 }
             }
         });
