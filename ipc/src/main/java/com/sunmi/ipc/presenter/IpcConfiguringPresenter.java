@@ -1,5 +1,7 @@
 package com.sunmi.ipc.presenter;
 
+import android.text.TextUtils;
+
 import com.sunmi.ipc.contract.IpcConfiguringContract;
 import com.sunmi.ipc.rpc.IPCCloudApi;
 
@@ -17,7 +19,7 @@ public class IpcConfiguringPresenter extends BasePresenter<IpcConfiguringContrac
 
     @Override
     public void ipcBind(String shopId, final String sn, String token, float longitude, float latitude) {
-        IPCCloudApi.bindIPC(SpUtils.getMerchantUid(), shopId, sn, 0,
+        IPCCloudApi.bindIPC(SpUtils.getMerchantUid(), shopId, sn, TextUtils.isEmpty(token) ? 1 : 0,
                 token, longitude, latitude, new RetrofitCallback() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
@@ -33,7 +35,6 @@ public class IpcConfiguringPresenter extends BasePresenter<IpcConfiguringContrac
                             mView.ipcBindWifiFail(sn, code, msg);
                     }
                 });
-
     }
 
 }
