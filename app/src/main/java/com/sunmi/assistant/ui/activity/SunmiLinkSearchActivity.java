@@ -1,5 +1,6 @@
 package com.sunmi.assistant.ui.activity;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DividerItemDecoration;
@@ -16,6 +17,7 @@ import com.sunmi.assistant.R;
 import com.sunmi.ipc.contract.IpcConfiguringContract;
 import com.sunmi.ipc.presenter.IpcConfiguringPresenter;
 import com.sunmi.ipc.rpc.IpcConstants;
+import com.sunmi.ipc.rpc.mqtt.MqttManager;
 import com.sunmi.ipc.view.IPCListAdapter;
 import com.sunmi.ipc.view.IpcConfigCompletedActivity_;
 
@@ -40,6 +42,7 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.sunmicall.ResponseBean;
+import sunmi.common.utils.log.LogCat;
 
 /**
  * Description:
@@ -64,6 +67,8 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
     String sn;
     @Extra
     boolean isSunmiLink;//是否是sunmiLink模式
+
+    private static final int REQUEST_COMPLETE = 100;//配置完成
 
     IPCListAdapter devListAdapter;
     List<SunmiDevice> devList = new ArrayList<>();
@@ -103,8 +108,54 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
         sunmiLinkConfig();
     }
 
+    @Override
+    public void ipcBindWifiSuccess(String sn) {
+        LogCat.e(TAG, "777777 111111");
+        MqttManager.getInstance().isConnect();
+        setTimeout();
+    }
+
+    @Override
+    public void ipcBindWifiFail(String sn, int code, String msg) {
+        setDeviceStatus(sn, code);
+        setTimeout();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == REQUEST_COMPLETE) {
+            startSunmiLink();
+        }
+    }
+
+    @Override
+    public int[] getStickNotificationId() {
+        return new int[]{NotificationConstant.apSearchStart, NotificationConstant.apSearchStop,
+                NotificationConstant.apGetSearchInfo, IpcConstants.ipcDiscovered, IpcConstants.bindIpc};
+    }
+
+    @Override
+    public void didReceivedNotification(int id, Object... args) {
+        super.didReceivedNotification(id, args);
+        ResponseBean res = (ResponseBean) args[0];
+        if (NotificationConstant.apGetSearchInfo == id) {//sunmilink搜索的设备列表
+            apGetSearchResult(res);
+        } else if (id == IpcConstants.bindIpc) {//绑定结果的mqtt消息
+            try {
+                setDeviceStatus(res.getResult().getString("sn"), res.getDataErrCode());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     //开启sunmi link搜索，时长120s
     private void startSunmiLink() {
+        if (devList.size() > 0) {
+            devList.clear();
+            devListAdapter.notifyDataSetChanged();
+        }
         rlNoWifi.setVisibility(View.GONE);
         rlSearch.setVisibility(View.VISIBLE);
         APCall.getInstance().searchStart(context, sn);//开始搜索商米设备
@@ -149,7 +200,7 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
         try {
             JSONArray jsonArray = new JSONArray();
             for (SunmiDevice sunmiDevice : list) {
-                if (!sunmiDevice.isSelected()) {//todo
+                if (!sunmiDevice.isSelected()) {
                     JSONObject jsonObject1 = new JSONObject();
                     jsonObject1.put("mac", sunmiDevice.getMac());
                     jsonArray.put(jsonObject1);
@@ -194,38 +245,6 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
         }
     }
 
-    @Override
-    public void ipcBindWifiSuccess(String sn) {
-        setTimeout();
-    }
-
-    @Override
-    public void ipcBindWifiFail(String sn, int code, String msg) {
-        setDeviceStatus(sn, code);
-        setTimeout();
-    }
-
-    @Override
-    public int[] getStickNotificationId() {
-        return new int[]{NotificationConstant.apSearchStart, NotificationConstant.apSearchStop,
-                NotificationConstant.apGetSearchInfo, IpcConstants.ipcDiscovered, IpcConstants.bindIpc};
-    }
-
-    @Override
-    public void didReceivedNotification(int id, Object... args) {
-        super.didReceivedNotification(id, args);
-        ResponseBean res = (ResponseBean) args[0];
-        if (NotificationConstant.apGetSearchInfo == id) {//sunmilink搜索的设备列表
-            apGetSearchResult(res);
-        } else if (id == IpcConstants.bindIpc) {//绑定结果的mqtt消息
-            try {
-                setDeviceStatus(res.getResult().getString("sn"), res.getDataErrCode());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     /**
      * 设置设备的绑定状态
      */
@@ -254,9 +273,8 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
             if (device.isSelected())
                 devicesChoose.add(device);
         }
-        IpcConfigCompletedActivity_.intent(context)
-                .shopId(shopId).sunmiDevices(devicesChoose).start();
-        finish();
+        IpcConfigCompletedActivity_.intent(context).shopId(shopId).sunmiDevices(devicesChoose)
+                .isSunmiLink(true).startForResult(REQUEST_COMPLETE);
     }
 
     private void apGetSearchResult(ResponseBean res) {

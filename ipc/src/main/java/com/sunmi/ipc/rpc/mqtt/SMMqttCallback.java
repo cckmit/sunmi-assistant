@@ -22,7 +22,7 @@ public class SMMqttCallback implements MqttCallbackExtended {
     public void connectComplete(boolean reconnect, String serverURI) {
         Log.e(TAG, "mqtt connectComplete reconnect = " + reconnect);
         if (reconnect) {//如果是mqtt自动重连，重新订阅一次
-            Log.e(TAG, "mqtt connectComplete clientId = " + MqttManager.getClientId());
+            Log.e(TAG, "mqtt connectComplete clientId = " + MqttManager.getInstance().getClientId());
             Log.e(TAG, "mqtt connectComplete thread id  = " + Process.myTid());
             MqttManager.getInstance().subscribeToTopic();
 //            BaseNotification.newInstance().postNotificationName(NotificationConstant.updateConnectComplete, "connectComplete");
@@ -46,9 +46,9 @@ public class SMMqttCallback implements MqttCallbackExtended {
             ResponseBean res = new ResponseBean(message);
             Log.e(TAG, "mqtt messageArrived " + ", thread id  = " + Process.myTid()
                     + ",message id = " + res.getMsgId() + ", opcode = " + res.getOpcode());
-            if (MqttManager.getInstance().getCode(res.getMsgId()) > 0) {
+            if (MqttManager.getInstance().getOpCode(res.getMsgId()) > 0) {
                 BaseNotification.newInstance().postNotificationName(
-                        MqttManager.getInstance().getCode(res.getMsgId()), res, topic);
+                        MqttManager.getInstance().getOpCode(res.getMsgId()), res, topic);
                 MqttManager.getInstance().removeMessage(res.getMsgId());
             } else {
                 BaseNotification.newInstance().postNotificationName(
