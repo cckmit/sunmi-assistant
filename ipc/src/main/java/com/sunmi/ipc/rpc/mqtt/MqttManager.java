@@ -63,16 +63,20 @@ public class MqttManager {
         return mqttManager;
     }
 
-    public static String getClientId() {
+    public boolean isConnect() {
+        return mqttClient.isConnected();
+    }
+
+    String getClientId() {
         return clientId;
     }
 
-    public int getCode(String msgID) {
+    int getOpCode(String msgID) {
         Integer code = messages.get(msgID);
         return code != null ? code : -1;
     }
 
-    public void removeMessage(String msgID) {
+    void removeMessage(String msgID) {
         messages.remove(msgID);
     }
 
