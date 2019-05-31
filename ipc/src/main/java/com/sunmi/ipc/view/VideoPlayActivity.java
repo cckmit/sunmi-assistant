@@ -1259,11 +1259,7 @@ public class VideoPlayActivity extends BaseActivity
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 LogCat.e("TAG", "onScrolled33=" + dx + " dy=" + dy);
-                if (dx < 0) {//左边滑动
-                    isLeftScroll = true;
-                } else {//右边滑动
-                    isLeftScroll = false;
-                }
+                isLeftScroll = dx < 0; //dx < 0左边滑动  dx > 0右边滑动
                 int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
                 int lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
                 int center = (lastVisibleItem - firstVisibleItem) / 2 + firstVisibleItem + 1;
@@ -1518,7 +1514,7 @@ public class VideoPlayActivity extends BaseActivity
             public void run() {
                 IOTCClient.getPlaybackList(threeDaysBeforeSeconds, currentDateSeconds); //获取AP回放时间列表
             }
-        }, 1500);
+        }, 2000);
     }
 
     @Override
