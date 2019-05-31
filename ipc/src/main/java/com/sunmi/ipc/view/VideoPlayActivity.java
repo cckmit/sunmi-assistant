@@ -1,5 +1,6 @@
 package com.sunmi.ipc.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
@@ -13,6 +14,7 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -86,7 +88,9 @@ import sunmi.common.view.VerticalSeekBar;
 @EActivity(resName = "activity_video_play")
 public class VideoPlayActivity extends BaseActivity
         implements SurfaceHolder.Callback, IOTCClient.Callback,
-        SeekBar.OnSeekBarChangeListener, OnSureLisener {
+        SeekBar.OnSeekBarChangeListener, OnSureLisener, View.OnTouchListener {
+    @ViewById(resName = "rl_screen")
+    RelativeLayout rlScreen;
     @ViewById(resName = "vv_ipc")
     SurfaceView videoView;
     @ViewById(resName = "rl_control_panel")
@@ -149,7 +153,7 @@ public class VideoPlayActivity extends BaseActivity
     private LinearLayoutManager linearLayoutManager;
 
     private boolean isStartRecord;//是否开始录制
-    private boolean isControlPanelShow;//是否点击屏幕
+    private boolean isControlPanelShow = true;//是否点击屏幕
     private boolean isCloudPlayBack;//是否正在云回放
     private boolean isDevPlayBack;//是否正在设备回放
     private boolean isPaused;//回放是否暂停
@@ -170,7 +174,7 @@ public class VideoPlayActivity extends BaseActivity
     private long threeDaysSeconds = 3 * 24 * 60 * 60;
     //6小时后的秒数
     private int sixHoursSeconds = 6 * 60 * 60;
-    private int tenSeconds = 10 * 60;
+    private int tenMinutes = 10 * 60;
     //当前分钟走的秒数
     private int currentSecond;
     //刻度尺移动定时器
@@ -199,8 +203,57 @@ public class VideoPlayActivity extends BaseActivity
     private int currentVideoIndex;
 
     //设备id
-    private int deviceId = 2237;
-//    private int deviceId = 2223;
+//    private int deviceId = 2237;
+    private int deviceId = 2223;
+
+
+    //屏幕控件自动隐藏计时器
+    private Timer screenHideTimer = null;
+    private TimerTask screenHideTimerTask = null;
+    private int countdown;
+
+    //重置倒计时
+    private void resetCountdown() {
+        countdown = 0;
+    }
+
+    //开启计时
+    private void startScreenHideTimer() {
+        stopScreenHideTimer();
+        screenHideTimer = new Timer();
+        screenHideTimer.schedule(screenHideTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                countdown++;
+                LogCat.e(TAG, "countdown=" + countdown);
+                if (countdown == 38) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            rlControlPanel.setVisibility(View.GONE);
+                            llChangeVolume.setVisibility(View.GONE);//音量
+                            llVideoQuality.setVisibility(View.GONE);//画质
+                            isControlPanelShow = false;
+                            stopScreenHideTimer();
+                        }
+                    });
+                }
+            }
+        }, 0, 1000);
+    }
+
+    // 停止计时
+    private void stopScreenHideTimer() {
+        resetCountdown();
+        if (screenHideTimer != null) {
+            screenHideTimer.cancel();
+            screenHideTimer = null;
+        }
+        if (screenHideTimerTask != null) {
+            screenHideTimerTask.cancel();
+            screenHideTimerTask = null;
+        }
+    }
 
     @AfterViews
     void init() {
@@ -211,6 +264,7 @@ public class VideoPlayActivity extends BaseActivity
         screenW = CommonHelper.getScreenWidth(context);
         screenH = CommonHelper.getScreenHeight(context);
         sbZoom.setOnSeekBarChangeListener(this);
+        rlScreen.setOnTouchListener(this);
         setTextViewTimeDrawable();
         //当前天
         calendar = Calendar.getInstance();
@@ -221,7 +275,7 @@ public class VideoPlayActivity extends BaseActivity
         recyclerViewAddOnScrollListener();
         showTimeList(false, listAp);
         scrollCurrentTime(); //滚动到当前时间
-//        refreshCanvasList();//渲染
+        //refreshCanvasList();//渲染
 
         //设置播放器的宽高
         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
@@ -409,7 +463,7 @@ public class VideoPlayActivity extends BaseActivity
         if (isFastClick(1000)) return;
         DatePickDialog dialog = new DatePickDialog(this);
         if (scrollTime > 0) {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
             String d = format.format(scrollTime);
             try {
                 Date date = format.parse(d);
@@ -445,6 +499,17 @@ public class VideoPlayActivity extends BaseActivity
             rlControlPanel.setVisibility(View.VISIBLE);
             isControlPanelShow = true;
         }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                if (isControlPanelShow) startScreenHideTimer();
+                break;
+        }
+        return false;
     }
 
     /**
@@ -644,6 +709,7 @@ public class VideoPlayActivity extends BaseActivity
         IPCCloudApi.getVideoList(deviceId, start, end, new RetrofitCallback<VideoListResp>() {
             @Override
             public void onSuccess(int code, String msg, VideoListResp data) {
+                LogCat.e(TAG, "getCloudVideoUrls=" + data.toString());
                 videoListQueue = data.getVideo_list();
                 initFirstPlayer();
             }
@@ -867,7 +933,7 @@ public class VideoPlayActivity extends BaseActivity
     }
 
     //日期列表，是否选择日期列表
-    private List<TimeBean> timeList(List<TimeBean> list, boolean isSelectedDate) {
+    private void timeList(List<TimeBean> list, boolean isSelectedDate) {
         list.clear();
         TimeBean bean;
         if (isSelectedDate) {//选择日期
@@ -883,7 +949,6 @@ public class VideoPlayActivity extends BaseActivity
                 list.add(bean);
             }
         }
-        return list;
     }
 
     /**
@@ -897,6 +962,9 @@ public class VideoPlayActivity extends BaseActivity
         //日历DateAdapter
         adapter = new DateAdapter(list, apCloudList);
         recyclerView.setAdapter(adapter);
+
+        //开启控件隐藏倒计时
+        startScreenHideTimer();
     }
 
     //渲染时间轴并滚动到指定时间
@@ -906,19 +974,25 @@ public class VideoPlayActivity extends BaseActivity
             public void run() {
                 adapter = new DateAdapter(list, apCloudList);
                 recyclerView.setAdapter(adapter);
-                if (isSelectedDate) {
-                    scrollSelectedDate0AM();  //滑动到选择日期的0.00点
+
+                if (!isFirstScroll && !isSelectedDate) {
+                    //初始化左滑渲染及回放
+                    selectedTimeIsHaveVideo(firstLeftScrollCurrentTime);
                 } else {
-                    scrollCurrentTime(); //滚动到当前时间
+                    if (isSelectedDate) {
+                        scrollSelectedDate0AM();  //滑动到选择日期的0.00点
+                    } else {
+                        scrollCurrentTime(); //滚动到当前时间
+                    }
                 }
             }
         });
     }
 
-
     //选择日历日期回调
     @Override
     public void onSure(Date date) {
+        resetCountdown();//重置隐藏控件计时
         long currentTime = System.currentTimeMillis() / 1000;//当前时间戳秒
         scrollTime = date.getTime();//选择日期的时间戳毫秒
         long time = scrollTime / 1000; //设置日期的秒数
@@ -977,7 +1051,6 @@ public class VideoPlayActivity extends BaseActivity
         long threeDaysBeforeDate = 3 * 24 * 60;//3天分钟数
         currentItemPosition = (int) (threeDaysBeforeDate - leftToCenterMinutes);
         linearLayoutManager.scrollToPositionWithOffset((int) (threeDaysBeforeDate - leftToCenterMinutes), 0);
-        //switch2DevPlayback(currentItemPosition * 60); //设备回放
         openMove();
     }
 
@@ -1078,7 +1151,7 @@ public class VideoPlayActivity extends BaseActivity
                 boolean isCloud = !listAp.get(i).isApPlay();
                 if (isCloud) {
                     LogCat.e(TAG, "55555555 11");
-                    switch2CloudPlayback(endOpposite, endOpposite + tenSeconds);
+                    switch2CloudPlayback(endOpposite, endOpposite + tenMinutes);
                 } else if (isCloudPlayBack) {
                     LogCat.e(TAG, "55555555 22");
                     switch2DevPlayback(endOpposite);
@@ -1092,7 +1165,7 @@ public class VideoPlayActivity extends BaseActivity
                 boolean isCloud = !listAp.get(i).isApPlay();
                 if (isCloud) {
                     LogCat.e(TAG, "55555555 44");
-                    switch2CloudPlayback(currTime, currTime + tenSeconds);
+                    switch2CloudPlayback(currTime, currTime + tenMinutes);
                 } else if (isCloudPlayBack) {
                     LogCat.e(TAG, "55555555 55");
                     switch2DevPlayback(currTime);
@@ -1105,6 +1178,11 @@ public class VideoPlayActivity extends BaseActivity
         }
     }
 
+    //非第一次滑动停止
+    private boolean isFirstScroll = true;
+    //第一次向左滑动的中心点时间
+    private long firstLeftScrollCurrentTime;
+
     //recyclerView 滑动监听
     private void recyclerViewAddOnScrollListener() {
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -1112,12 +1190,21 @@ public class VideoPlayActivity extends BaseActivity
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {//停止滑动
-                    LogCat.e("TAG", "onScrolled00 ____");
+                    LogCat.e("TAG", "onScrolled00");
+                    resetCountdown();//重置隐藏控件计时
+                    //center date
                     int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
                     int lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
                     int center = (lastVisibleItem - firstVisibleItem) / 2 + firstVisibleItem + 1;
                     TimeBean bs = list.get(center);
                     long currTime = bs.getDate();
+                    //首次向左滑动请求+渲染
+                    if (isFirstScroll && isLeftScroll) {
+                        firstLeftScrollCurrentTime = currTime;
+                        refreshCanvasList();//渲染
+                        isFirstScroll = false;
+                        return;
+                    }
                     String strDate = secondToDate(currTime, "yyyy-MM-dd HH:mm:ss");
                     String day = strDate.substring(8, 11);
                     tvCalender.setText(" " + day);  //滑动停止显示日期
@@ -1126,7 +1213,6 @@ public class VideoPlayActivity extends BaseActivity
                     toastForShort(VideoPlayActivity.this, hourMinuteSecond, isLeftScroll);//toast显示时间
                     canvasHours(firstVisibleItem);//绘制时间轴
                     long currentSeconds = System.currentTimeMillis() / 1000;//当前时间戳秒
-
                     //停止到未来时间
                     if (currTime > currentSeconds && currTime - currentSeconds > 1) {
                         //滚动到当前时间
@@ -1142,7 +1228,6 @@ public class VideoPlayActivity extends BaseActivity
                     }
                     //拖动或选择的时间是否有video（ap或cloud）
                     selectedTimeIsHaveVideo(currTime);
-
 
                 } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING ||
                         newState == RecyclerView.SCROLL_STATE_SETTLING) {//拖动和自动滑动
@@ -1173,12 +1258,8 @@ public class VideoPlayActivity extends BaseActivity
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                LogCat.e("TAG", "onScrolled33 _____" + dx + " dy=" + dy);
-                if (dx < 0) {//左边滑动
-                    isLeftScroll = true;
-                } else {//右边滑动
-                    isLeftScroll = false;
-                }
+                LogCat.e("TAG", "onScrolled33=" + dx + " dy=" + dy);
+                isLeftScroll = dx < 0; //dx < 0左边滑动  dx > 0右边滑动
                 int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
                 int lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
                 int center = (lastVisibleItem - firstVisibleItem) / 2 + firstVisibleItem + 1;
@@ -1230,7 +1311,7 @@ public class VideoPlayActivity extends BaseActivity
                             @Override
                             public void run() {
                                 switch2CloudPlayback(listAp.get(finalI + 1).getStartTime(),
-                                        listAp.get(finalI + 1).getStartTime() + tenSeconds);
+                                        listAp.get(finalI + 1).getStartTime() + tenMinutes);
                                 videoSkipScrollPosition(listAp.get(finalI + 1).getStartTime()); //偏移跳转
                             }
                         }, (end - currTime - currentSecond) * 1000);
@@ -1251,7 +1332,6 @@ public class VideoPlayActivity extends BaseActivity
                                 videoSkipScrollPosition(listAp.get(finalI + 1).getStartTime()); //偏移跳转
                             }
                         }, (end - currTime - currentSecond) * 1000);
-
                     }
                 }
             }
@@ -1290,7 +1370,7 @@ public class VideoPlayActivity extends BaseActivity
         private List<TimeBean> list;
         private List<ApCloudTimeBean> apCloudList;//组合时间轴
 
-        public DateAdapter(List<TimeBean> list, List<ApCloudTimeBean> apCloudList) {
+        DateAdapter(List<TimeBean> list, List<ApCloudTimeBean> apCloudList) {
             this.list = list;
             this.apCloudList = apCloudList;
         }
@@ -1300,7 +1380,7 @@ public class VideoPlayActivity extends BaseActivity
             TextView tvLine;
             RelativeLayout rlItem;
 
-            public ViewHolder(@NonNull View itemView) {
+            ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 tvLine = itemView.findViewById(R.id.tv_line);
                 rlItem = itemView.findViewById(R.id.rl_item);
@@ -1312,8 +1392,7 @@ public class VideoPlayActivity extends BaseActivity
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
             View view = LayoutInflater.from(viewGroup.getContext())
                     .inflate(R.layout.item_time, viewGroup, false);
-            ViewHolder holder = new ViewHolder(view);
-            return holder;
+            return new ViewHolder(view);
         }
 
         @Override
@@ -1378,9 +1457,8 @@ public class VideoPlayActivity extends BaseActivity
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(second * 1000);//转换为毫秒
         Date date = calendar.getTime();
-        SimpleDateFormat format = new SimpleDateFormat(patten);
-        String dateString = format.format(date);
-        return dateString;
+        SimpleDateFormat format = new SimpleDateFormat(patten, Locale.getDefault());
+        return format.format(date);
     }
 
     //自定义toast
