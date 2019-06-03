@@ -157,6 +157,7 @@ public class VideoPlayActivity extends BaseActivity
     private boolean isCloudPlayBack;//是否正在云回放
     private boolean isDevPlayBack;//是否正在设备回放
     private boolean isPaused;//回放是否暂停
+    private boolean isCurrentLive;//当前是否直播
     private int qualityType = 0;//0-超清，1-高清
 
     private SurfaceHolder surfaceHolder;
@@ -173,7 +174,8 @@ public class VideoPlayActivity extends BaseActivity
     //3天秒数
     private long threeDaysSeconds = 3 * 24 * 60 * 60;
     //6小时后的秒数
-    private int sixHoursSeconds = 6 * 60 * 60;
+//    private int sixHoursSeconds = 6 * 60 * 60;
+    private int sixHoursSeconds = 12 * 60 * 60;
     private int tenMinutes = 10 * 60;
     //当前分钟走的秒数
     private int currentSecond;
@@ -268,7 +270,9 @@ public class VideoPlayActivity extends BaseActivity
         setTextViewTimeDrawable();
         //当前天
         calendar = Calendar.getInstance();
-        tvCalender.setText(calendar.get(Calendar.DAY_OF_MONTH) + "");
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        tvCalender.setText(day > 9 ? day + "" : "0" + day);
+        LogCat.e(TAG, "5555:" + calendar.get(Calendar.DAY_OF_MONTH));
         //初始化recyclerView
         layoutManger();
         getRecyclerViewWidth();
@@ -441,14 +445,19 @@ public class VideoPlayActivity extends BaseActivity
     //开始，暂停
     @Click(resName = "iv_play")
     void playLiveClick() {
-        if (!isDevPlayBack) return;
+        if (!isDevPlayBack && !isCloudPlayBack) return;
         if (isFastClick(1000)) return;
-        if (isPaused)
+        if (isPaused) {
             ivPlay.setBackgroundResource(R.mipmap.pause_normal);
-        else
+            if (isCloudPlayBack) currentPlayer.start();
+        } else {
             ivPlay.setBackgroundResource(R.mipmap.play_normal);
+            if (isCloudPlayBack) currentPlayer.pause();
+        }
         isPaused = !isPaused;
-        IOTCClient.pausePlayback(isPaused);
+        if (isDevPlayBack) {
+            IOTCClient.pausePlayback(isPaused);
+        }
     }
 
     //直播
@@ -516,6 +525,11 @@ public class VideoPlayActivity extends BaseActivity
      * 切回直播
      */
     private void switch2Live() {
+        if (!isCloudPlayBack && !isDevPlayBack) {
+            LogCat.e(TAG, "6666666 11 live");
+            scrollCurrentLive();
+            return;
+        }
         showLoadingDialog();
         ivPlay.setBackgroundResource(R.mipmap.play_disable);
         //如果是云端回放此时需要调用停止操作然后直播
@@ -524,6 +538,7 @@ public class VideoPlayActivity extends BaseActivity
             videoDecoder.initMediaCodec();
             isCloudPlayBack = false;
         }
+        LogCat.e(TAG, "6666666 22 live");
         IOTCClient.startPlay();
         scrollCurrentLive();
         ivLive.setVisibility(View.GONE);
@@ -709,7 +724,7 @@ public class VideoPlayActivity extends BaseActivity
         IPCCloudApi.getVideoList(deviceId, start, end, new RetrofitCallback<VideoListResp>() {
             @Override
             public void onSuccess(int code, String msg, VideoListResp data) {
-                LogCat.e(TAG, "getCloudVideoUrls=" + data.toString());
+                videoListQueue.clear();
                 videoListQueue = data.getVideo_list();
                 initFirstPlayer();
             }
@@ -873,6 +888,7 @@ public class VideoPlayActivity extends BaseActivity
     protected void onDestroy() {
         super.onDestroy();
         closeMove();//关闭时间抽的timer
+        stopScreenHideTimer();//关闭屏幕控件自动hide计时器
     }
 
     /**
@@ -976,8 +992,7 @@ public class VideoPlayActivity extends BaseActivity
                 recyclerView.setAdapter(adapter);
 
                 if (!isFirstScroll && !isSelectedDate) {
-                    //初始化左滑渲染及回放
-                    selectedTimeIsHaveVideo(firstLeftScrollCurrentTime);
+                    selectedTimeIsHaveVideo(firstLeftScrollCurrentTime); //初始化左滑渲染及回放
                 } else {
                     if (isSelectedDate) {
                         scrollSelectedDate0AM();  //滑动到选择日期的0.00点
@@ -990,22 +1005,26 @@ public class VideoPlayActivity extends BaseActivity
     }
 
     //选择日历日期回调
+    @SuppressLint("DefaultLocale")
     @Override
     public void onSure(Date date) {
         resetCountdown();//重置隐藏控件计时
         long currentTime = System.currentTimeMillis() / 1000;//当前时间戳秒
         scrollTime = date.getTime();//选择日期的时间戳毫秒
         long time = scrollTime / 1000; //设置日期的秒数
-
-        if (time >= currentTime) {//未来时间或当前--滑动当前直播
+        if (time > currentTime) {//未来时间或当前--滑动当前直播
+            LogCat.e(TAG, "6666666 33 live forward " + "time=" + time + " ,currentTime=" + currentTime);
             isSelectedDate = false;
-            tvCalender.setText(Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "");
+            int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+            tvCalender.setText(day > 9 ? day + "" : "0" + day);
             switch2Live();
         } else {//回放时间
+            LogCat.e(TAG, "6666666 44 back");
+            isFirstScroll = false;//非首次滑动
             isSelectedDate = true;
+            isDevPlayBack = true;
             ivPlay.setBackgroundResource(R.mipmap.pause_normal);
             ivLive.setVisibility(View.VISIBLE);
-            isDevPlayBack = true;
 
             String strDate = secondToDate(time, "yyyy-MM-dd");
             int year = Integer.valueOf(strDate.substring(0, 4));
@@ -1013,7 +1032,7 @@ public class VideoPlayActivity extends BaseActivity
             int day = Integer.valueOf(strDate.substring(8, 10));
             int hour = 0, minute = 0, second = 0;
             //显示日历天数
-            tvCalender.setText(day + "");
+            tvCalender.setText(String.format("%d", day));
 
             //设置选择日期的年月日0时0分0秒
             calendar.clear();
@@ -1073,6 +1092,7 @@ public class VideoPlayActivity extends BaseActivity
     //初始化延时滑动当前时间
     private void scrollCurrentTime() {
         isDevPlayBack = false;//当前直播
+        isCloudPlayBack = false;
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -1092,7 +1112,7 @@ public class VideoPlayActivity extends BaseActivity
      * 点击直播按钮滑动到当前时间
      */
     private void scrollCurrentLive() {
-        isDevPlayBack = false;//当前直播
+        //isDevPlayBack = false;//当前直播
         //当前时间秒数
         long nowMinute = System.currentTimeMillis() / 1000;
         //初始化当前的秒数和现在的秒数时间戳对比相差的偏移量--比对分钟数
@@ -1145,7 +1165,7 @@ public class VideoPlayActivity extends BaseActivity
                 if (i == apSize) {//最后一个无视频区域跳转直播
                     LogCat.e(TAG, "55555555 00");
                     switch2Live();
-                    scrollCurrentLive();
+                    //scrollCurrentLive();
                     return;
                 }
                 boolean isCloud = !listAp.get(i).isApPlay();
@@ -1183,6 +1203,15 @@ public class VideoPlayActivity extends BaseActivity
     //第一次向左滑动的中心点时间
     private long firstLeftScrollCurrentTime;
 
+    //可视时间轴中间对应的时间
+    private long centerCurrentTime(int firstVisibleItem) {
+        //int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
+        int lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
+        int center = (lastVisibleItem - firstVisibleItem) / 2 + firstVisibleItem + 1;
+        TimeBean bs = list.get(center);
+        return bs.getDate();
+    }
+
     //recyclerView 滑动监听
     private void recyclerViewAddOnScrollListener() {
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -1190,14 +1219,11 @@ public class VideoPlayActivity extends BaseActivity
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {//停止滑动
-                    LogCat.e("TAG", "onScrolled00");
+                    LogCat.e("TAG", "onScrolled00 " + ", isCloudPlayBack=" + isCloudPlayBack + " ,isDevPlayBack=" + isDevPlayBack);
                     resetCountdown();//重置隐藏控件计时
                     //center date
                     int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
-                    int lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-                    int center = (lastVisibleItem - firstVisibleItem) / 2 + firstVisibleItem + 1;
-                    TimeBean bs = list.get(center);
-                    long currTime = bs.getDate();
+                    long currTime = centerCurrentTime(firstVisibleItem);//当前中间轴时间
                     //首次向左滑动请求+渲染
                     if (isFirstScroll && isLeftScroll) {
                         firstLeftScrollCurrentTime = currTime;
@@ -1207,7 +1233,7 @@ public class VideoPlayActivity extends BaseActivity
                     }
                     String strDate = secondToDate(currTime, "yyyy-MM-dd HH:mm:ss");
                     String day = strDate.substring(8, 11);
-                    tvCalender.setText(" " + day);  //滑动停止显示日期
+                    tvCalender.setText(String.format(" %s", day));  //滑动停止显示日期
                     scrollTime = currTime * 1000;//滑动日历的时间戳毫秒
                     String hourMinuteSecond = strDate.substring(11, strDate.length());
                     toastForShort(VideoPlayActivity.this, hourMinuteSecond, isLeftScroll);//toast显示时间
@@ -1216,8 +1242,9 @@ public class VideoPlayActivity extends BaseActivity
                     //停止到未来时间
                     if (currTime > currentSeconds && currTime - currentSeconds > 1) {
                         //滚动到当前时间
+                        LogCat.e(TAG, "6666666 55 live");
                         switch2Live();
-                        scrollCurrentLive();
+                        //scrollCurrentLive();
                         return;
                     }
                     //无回放视频跳转当前
@@ -1228,19 +1255,14 @@ public class VideoPlayActivity extends BaseActivity
                     }
                     //拖动或选择的时间是否有video（ap或cloud）
                     selectedTimeIsHaveVideo(currTime);
-
                 } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING ||
                         newState == RecyclerView.SCROLL_STATE_SETTLING) {//拖动和自动滑动
                     isSelectedDate = false;//手动拖动或自动滑动
-
                     int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
-                    int lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-                    int center = (lastVisibleItem - firstVisibleItem) / 2 + firstVisibleItem + 1;
-                    TimeBean bs = list.get(center);
-                    long date = bs.getDate();
+                    long currTime = centerCurrentTime(firstVisibleItem);//当前中间轴时间
                     long currentSeconds = System.currentTimeMillis() / 1000;//当前时间戳秒
-                    LogCat.e(TAG, "date=" + date + ", currentSeconds" + currentSeconds);
-                    if (date < currentSeconds && currentSeconds - date > 1) {
+                    LogCat.e(TAG, "date=" + currTime + ", currentSeconds" + currentSeconds);
+                    if (currTime < currentSeconds && currentSeconds - currTime > 1) {
                         //回放时间
                         ivPlay.setBackgroundResource(R.mipmap.pause_normal);
                         ivLive.setVisibility(View.VISIBLE);
@@ -1259,21 +1281,17 @@ public class VideoPlayActivity extends BaseActivity
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 LogCat.e("TAG", "onScrolled33=" + dx + " dy=" + dy);
-                isLeftScroll = dx < 0; //dx < 0左边滑动  dx > 0右边滑动
+                isLeftScroll = dx <= 0; //dx < 0左边滑动  dx > 0右边滑动
                 int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
-                int lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-                int center = (lastVisibleItem - firstVisibleItem) / 2 + firstVisibleItem + 1;
-                TimeBean bs = list.get(center);
-                long currTime = bs.getDate();
+                long currTime = centerCurrentTime(firstVisibleItem);//当前中间轴时间
                 String strDate = secondToDate(currTime, "yyyy-MM-dd HH:mm:ss");
                 String day = strDate.substring(8, 11);
-                tvCalender.setText(" " + day);
+                tvCalender.setText(String.format(" %s", day));
                 scrollTime = currTime * 1000;//滑动日历的时间戳毫秒
 
                 canvasHours(firstVisibleItem);//绘制时间
-                switch2Playback(firstVisibleItem);//判断下一个视频ap还是cloud播放
+                switch2Playback(currTime);//判断下一个视频ap还是cloud播放
                 if (isSelectedDate) {
-                    LogCat.e(TAG, "111111isSelectedDate");
                     if (listAp == null || listAp.size() == 0) {
                         LogCat.e(TAG, "1111122 no video");
                         return;
@@ -1285,12 +1303,8 @@ public class VideoPlayActivity extends BaseActivity
         });
     }
 
-    private void switch2Playback(int firstVisibleItem) {
+    private void switch2Playback(long currTime) {
         if (!isCloudPlayBack && !isDevPlayBack) return;
-        int lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-        int center = (lastVisibleItem - firstVisibleItem) / 2 + firstVisibleItem + 1;
-        TimeBean bs = list.get(center);
-        long currTime = bs.getDate();
         int availableVideoSize = listAp.size();
         for (int i = 0; i < availableVideoSize; i++) {
             ApCloudTimeBean bean = listAp.get(i);
@@ -1315,7 +1329,7 @@ public class VideoPlayActivity extends BaseActivity
                                 videoSkipScrollPosition(listAp.get(finalI + 1).getStartTime()); //偏移跳转
                             }
                         }, (end - currTime - currentSecond) * 1000);
-                    } else if (isCloudPlayBack && !isCloud) {
+                    } else if (isCloudPlayBack) {
                         LogCat.e(TAG, "22222222222222 44");
                         new Handler().postDelayed(new Runnable() {
                             @Override
@@ -1324,7 +1338,7 @@ public class VideoPlayActivity extends BaseActivity
                                 videoSkipScrollPosition(listAp.get(finalI + 1).getStartTime());//偏移跳转
                             }
                         }, (end - currTime - currentSecond) * 1000);
-                    } else if (isDevPlayBack && !isCloud) {
+                    } else if (isDevPlayBack) {
                         LogCat.e(TAG, "22222222222222 55");
                         new Handler().postDelayed(new Runnable() {
                             @Override
@@ -1355,7 +1369,7 @@ public class VideoPlayActivity extends BaseActivity
         }
         //绘制下方时间
         dateList.clear();
-        for (int i = 0; i < 13; i++) {
+        for (int i = 0; i < 10; i++) {
             if (hour <= 23) {
                 dateList.add((hour++) + ":00");
             } else {
