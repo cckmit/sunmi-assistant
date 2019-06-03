@@ -8,15 +8,15 @@ import java.io.Serializable;
  */
 public class BaseRequest implements Serializable {
 
-    String timeStamp;
-    String randomNum;
-    String isEncrypted;
-    String params;
-    String sign;
-    String lang;
+    private String timeStamp;
+    private String randomNum;
+    private String isEncrypted;
+    private String params;
+    private String sign;
+    private String lang;
 
-    public BaseRequest(String timeStamp, String randomNum, String isEncrypted,
-                       String params, String sign, String lang) {
+    private BaseRequest(String timeStamp, String randomNum, String isEncrypted,
+                        String params, String sign, String lang) {
         this.timeStamp = timeStamp;
         this.randomNum = randomNum;
         this.isEncrypted = isEncrypted;
@@ -73,7 +73,7 @@ public class BaseRequest implements Serializable {
         this.lang = lang;
     }
 
-    public static final  class Builder {
+    public static final class Builder {
         private String timeStamp;
         private String randomNum;
         private String isEncrypted;

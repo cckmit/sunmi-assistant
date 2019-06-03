@@ -22,4 +22,6 @@ public class Constants {
     public static final int CLI2SRV_GET_ALREADY_CONNECTED_WIFI = 8;   //收到成功连接上指定AP的通知
     public static final int SRV2CLI_SEND_PROTOCOL_VERSION = 9;     //发送协议版本号不匹配通知
 
+    public static final int NOTIFICATION_PRINTER_ADDED = 600;     //添加打印机成功
+
 }

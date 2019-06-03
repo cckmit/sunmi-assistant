@@ -13,6 +13,7 @@ public class CommonConfig extends BaseConfig {
     public static String CLOUD_TOKEN = ""; //sign cloud params
     public static String DES_IV = "";
     public static String DES_KEY = "";
+    public static boolean SUPPORT_PRINTER;//是否支持打印机
 
     @Override
     protected void initDev(Context context, String env) {

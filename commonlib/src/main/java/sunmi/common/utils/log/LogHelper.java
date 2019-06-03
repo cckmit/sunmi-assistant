@@ -6,12 +6,13 @@ import android.util.Log;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 
 import sunmi.common.utils.DateTimeUtils;
 
-
 public class LogHelper {
+
+    private static final String TAG = "LogHelper";
+
     private LogHelper() {
     }
 
@@ -41,19 +42,16 @@ public class LogHelper {
             String strTag = className + "-->" + methodName + ":" + message;
             System.out.println(strTag);
         } catch (Exception e) {
-            Log.e("LogHelper-->printLog-->", "Exception:" + e.getMessage());
+            Log.e(TAG, "outLog, Exception:" + e.getMessage());
         }
     }
 
-    // ==============================================
-    // ============ Private method ================
-    // ==============================================
-    private static void printLog(String tag,  String message) {
+    private static void printLog(String tag, String message) {
         try {
             String strTag = tag + "-->";
             Log.e(strTag, message);
         } catch (Exception e) {
-            Log.e("LogHelper-->printLog-->", "Exception:" + e.getMessage());
+            Log.e(TAG, "printLog, Exception:" + e.getMessage());
         }
     }
 
@@ -61,13 +59,11 @@ public class LogHelper {
         try {
             File filePath = null;
             if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                filePath = new File(Environment.getExternalStorageDirectory().getCanonicalPath() + "/sunmi/log/");
+                filePath = new File(Environment.getExternalStorageDirectory() + "/Sunmi/logs/");
                 writeFile(filePath, tag, message);
             }
-        } catch (IOException e) {
-            Log.e("LogHelper-->writeLog->", "IOException:" + e.getMessage());
         } catch (Exception e) {
-            Log.e("LogHelper-->writeLog->", "Exception:" + e.getMessage());
+            Log.e(TAG, "writeLog，Exception:" + e.getMessage());
         }
     }
 
@@ -76,30 +72,29 @@ public class LogHelper {
             if (!filePath.exists()) {
                 filePath.mkdirs();
             }
-            String strFileName = DateTimeUtils.getStringDateTimeByStringPattern(DateTimeUtils.DateTimePattern.SHORT_DATETIME_1) + ".txt";
+            String strFileName = DateTimeUtils.getStringDateTimeByStringPattern(
+                    DateTimeUtils.DateTimePattern.SHORT_DATETIME_1) + ".txt";
             File file = new File(filePath, strFileName);
             FileWriter fileWriter = new FileWriter(file.getAbsolutePath(), file.exists());
             String strMsg = getMessage(tag, message);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             bufferedWriter.write(strMsg);
             bufferedWriter.close();
-        } catch (IOException e) {
-            Log.e("LogHelper-->writeFile->", "IOException:" + e.getMessage());
         } catch (Exception e) {
-            Log.e("LogHelper-->writeFile->", "Exception:" + e.getMessage());
+            Log.e(TAG, "writeFile，Exception:" + e.getMessage());
         }
     }
 
     private static String getMessage(String tag, String message) {
-        String strMessage = "";
-
-        String strTime = DateTimeUtils.getStringDateTimeByStringPattern(DateTimeUtils.DateTimePattern.LONG_DATETIME_1);
+        String strMessage;
+        String strTime = DateTimeUtils.getStringDateTimeByStringPattern(
+                DateTimeUtils.DateTimePattern.LONG_DATETIME_1);
         StringBuffer builder = new StringBuffer();
         builder.append("TRACE__TIME:" + strTime);
         builder.append("  E/" + tag);
         builder.append(": " + message + "\n\r");
         strMessage = builder.toString();
-
         return strMessage;
     }
+
 }

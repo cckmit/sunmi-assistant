@@ -15,6 +15,7 @@ import android.webkit.WebViewClient;
 
 import com.sunmi.cloudprinter.bean.PrinterJSCall;
 import com.sunmi.cloudprinter.bean.db.Printer;
+import com.sunmi.cloudprinter.config.PrinterConfig;
 import com.sunmi.cloudprinter.constant.Constants;
 
 import org.androidannotations.annotations.AfterViews;
@@ -42,6 +43,8 @@ public class PrinterManageActivity extends BaseActivity {
     String userId;
     @Extra
     String merchantId;
+    @Extra
+    int channelId;
 
     @AfterViews
     protected void init() {
@@ -51,7 +54,7 @@ public class PrinterManageActivity extends BaseActivity {
         printer.setStatus("在线");
         printer.saveOrUpdate("sn=?", sn);
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
-        PrinterJSCall jsCall = new PrinterJSCall(userId, merchantId, sn);
+        PrinterJSCall jsCall = new PrinterJSCall(userId, merchantId, sn, channelId);
         webView.addJavascriptInterface(jsCall, Constants.JS_INTERFACE_NAME);
         webView.setDownloadListener(new DownloadListener() {
             @Override
@@ -72,7 +75,7 @@ public class PrinterManageActivity extends BaseActivity {
         // 设置setWebChromeClient对象
         webView.setWebChromeClient(webChrome);
         webView.setWebViewClient(new WebViewClient());
-        loadWebView("http://dev.h5.sunmi.com/cloud-print/index.html");
+        loadWebView(PrinterConfig.IOT_H5_URL);
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -136,4 +139,5 @@ public class PrinterManageActivity extends BaseActivity {
     public void onBackPressed() {
         GotoActivityUtils.gotoMainActivity(context);
     }
+
 }

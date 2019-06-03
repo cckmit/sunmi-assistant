@@ -36,8 +36,9 @@ import java.util.List;
 import java.util.UUID;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.ByteUtils;
-import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.ClearableEditText;
@@ -52,11 +53,13 @@ public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter>
 
     @Extra
     String bleAddress;
+    @Extra
+    String sn;
 
     private BluetoothClient mClient;
     private Dialog routerDialog;
     private String pwd = "";
-    private String sn = "123456";
+//    private String sn = "123456";
 
     private List<Router> routers = new ArrayList<>();
     private RouterListAdapter adapter;
@@ -225,6 +228,8 @@ public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter>
 //                }
 //            }
 //        });
+        if (routerDialog != null)
+            routerDialog.dismiss();
         int dataLen = data.length;
         int cmd = data[5];
         if (dataLen > 20) {
@@ -260,9 +265,10 @@ public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter>
     @Override
     public void wifiSetSuccess() {
         hideLoadingDialog();
-        routerDialog.dismiss();
-        PrinterManageActivity_.intent(context).sn(sn).userId(SpUtils.getUID())
-                .merchantId(SpUtils.getMerchantUid()).start();
+        if (routerDialog != null)
+            routerDialog.dismiss();
+        GotoActivityUtils.gotoMainActivity(context);
+        BaseNotification.newInstance().postNotificationName(Constants.NOTIFICATION_PRINTER_ADDED);
     }
 
 }
