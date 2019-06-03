@@ -1255,7 +1255,6 @@ public class VideoPlayActivity extends BaseActivity
                     }
                     //拖动或选择的时间是否有video（ap或cloud）
                     selectedTimeIsHaveVideo(currTime);
-
                 } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING ||
                         newState == RecyclerView.SCROLL_STATE_SETTLING) {//拖动和自动滑动
                     isSelectedDate = false;//手动拖动或自动滑动
