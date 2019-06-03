@@ -63,7 +63,7 @@ public class Utility {
      * 命令码 00 - 获取到打印机发过来的sn
      */
     public static String getSn(byte[] data) {
-        byte[] bSn = new byte[14];
+        byte[] bSn = new byte[13];
         System.arraycopy(data, 6, bSn, 0, bSn.length);
         return new String(bSn);
     }
@@ -92,13 +92,13 @@ public class Utility {
     /**
      * 命令码 05 - 获取打印机的sn
      */
-    public static byte[] cmdGetSn(byte version) {
+    public static byte[] cmdGetSn() {
         byte[] getSn = new byte[6];
         byte[] cmdTag = getCmdTag();
         System.arraycopy(cmdTag, 0, getSn, 0, cmdTag.length);
         byte[] len = ByteUtils.intToByte2(6);
         System.arraycopy(len, 0, getSn, 2, len.length);
-        getSn[4] = version;
+        getSn[4] = btCmdVersion;
         getSn[5] = 5;
         return getSn;
     }
