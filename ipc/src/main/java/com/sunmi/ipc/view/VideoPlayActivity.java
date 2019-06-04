@@ -206,7 +206,8 @@ public class VideoPlayActivity extends BaseActivity
 
     //设备id
 //    private int deviceId = 2237;
-    private int deviceId = 2223;
+//    private int deviceId = 2223;
+    private int deviceId = 2239;
 
 
     //屏幕控件自动隐藏计时器
@@ -228,7 +229,7 @@ public class VideoPlayActivity extends BaseActivity
             public void run() {
                 countdown++;
                 LogCat.e(TAG, "countdown=" + countdown);
-                if (countdown == 38) {
+                if (countdown == 8) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -272,7 +273,6 @@ public class VideoPlayActivity extends BaseActivity
         calendar = Calendar.getInstance();
         int day = calendar.get(Calendar.DAY_OF_MONTH);
         tvCalender.setText(day > 9 ? day + "" : "0" + day);
-        LogCat.e(TAG, "5555:" + calendar.get(Calendar.DAY_OF_MONTH));
         //初始化recyclerView
         layoutManger();
         getRecyclerViewWidth();
@@ -525,13 +525,15 @@ public class VideoPlayActivity extends BaseActivity
      * 切回直播
      */
     private void switch2Live() {
+        isCurrentLive = true; //直播
+        ivPlay.setBackgroundResource(R.mipmap.play_disable);
+        ivLive.setVisibility(View.GONE);
         if (!isCloudPlayBack && !isDevPlayBack) {
             LogCat.e(TAG, "6666666 11 live");
             scrollCurrentLive();
             return;
         }
         showLoadingDialog();
-        ivPlay.setBackgroundResource(R.mipmap.play_disable);
         //如果是云端回放此时需要调用停止操作然后直播
         if (isCloudPlayBack) {
             cloudPlayDestroy();
@@ -541,7 +543,6 @@ public class VideoPlayActivity extends BaseActivity
         LogCat.e(TAG, "6666666 22 live");
         IOTCClient.startPlay();
         scrollCurrentLive();
-        ivLive.setVisibility(View.GONE);
         isDevPlayBack = false;
         hideLoadingDialog();
     }
@@ -552,11 +553,13 @@ public class VideoPlayActivity extends BaseActivity
     void switch2DevPlayback(long start) {
         showLoadingDialog();
         if (isCloudPlayBack) {
+            LogCat.e(TAG, "55555555 cloud to dev");
             cloudPlayDestroy();
             videoDecoder.initMediaCodec();
             isCloudPlayBack = false;
         }
         IOTCClient.startPlayback(start);
+        isCurrentLive = false;
         isDevPlayBack = true;
         ivLive.setVisibility(View.VISIBLE);
         hideLoadingDialog();
@@ -572,14 +575,17 @@ public class VideoPlayActivity extends BaseActivity
         showLoadingDialog();
         if (!isCloudPlayBack) {
             if (isDevPlayBack) {
+                LogCat.e(TAG, "55555555 dev to cloud 00");
                 IOTCClient.stopPlayback();//先停止设备回放
                 isDevPlayBack = false;
             } else {
+                LogCat.e(TAG, "55555555 dev to cloud 11");
                 IOTCClient.stopLive();//先停止直播
             }
             if (videoDecoder != null) videoDecoder.release();//释放surfaceView
             isCloudPlayBack = true;
         }
+        isCurrentLive = false;
         getCloudVideoUrls(start, end);
         ivLive.setVisibility(View.VISIBLE);
     }
@@ -724,14 +730,18 @@ public class VideoPlayActivity extends BaseActivity
         IPCCloudApi.getVideoList(deviceId, start, end, new RetrofitCallback<VideoListResp>() {
             @Override
             public void onSuccess(int code, String msg, VideoListResp data) {
+                hideLoadingDialog();
                 videoListQueue.clear();
                 videoListQueue = data.getVideo_list();
+                for (int i = 0; i < videoListQueue.size(); i++) {
+                    LogCat.e(TAG, "videoListQueue=" + videoListQueue.get(i).getUrl() + " time= " + (long)videoListQueue.get(i).getStart_time());
+                }
                 initFirstPlayer();
             }
 
             @Override
             public void onFail(int code, String msg, VideoListResp data) {
-
+                hideLoadingDialog();
             }
         });
     }
@@ -1022,7 +1032,8 @@ public class VideoPlayActivity extends BaseActivity
             LogCat.e(TAG, "6666666 44 back");
             isFirstScroll = false;//非首次滑动
             isSelectedDate = true;
-            isDevPlayBack = true;
+            //isDevPlayBack = true;
+            isCurrentLive = false; //回放
             ivPlay.setBackgroundResource(R.mipmap.pause_normal);
             ivLive.setVisibility(View.VISIBLE);
 
@@ -1044,9 +1055,10 @@ public class VideoPlayActivity extends BaseActivity
             threeDaysBeforeSeconds = selectedDate - threeDaysSeconds;
             //区间总共秒数
             minutesTotal = currentDateSeconds - selectedDate + threeDaysSeconds + sixHoursSeconds;
+            listAp.clear();
             showTimeList(true, listAp);
             //滑动到选择日期的0.00点
-            scrollSelectedDate0AM();
+            //scrollSelectedDate0AM();
             refreshCanvasList();//渲染
         }
     }
@@ -1089,10 +1101,16 @@ public class VideoPlayActivity extends BaseActivity
         openMove();
     }
 
+    //直播boolean状态
+    private void setPlayBooleanStatus() {
+        isDevPlayBack = false;//dev
+        isCloudPlayBack = false;//cloud
+        isCurrentLive = true; //直播
+    }
+
     //初始化延时滑动当前时间
     private void scrollCurrentTime() {
-        isDevPlayBack = false;//当前直播
-        isCloudPlayBack = false;
+        setPlayBooleanStatus();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -1112,7 +1130,7 @@ public class VideoPlayActivity extends BaseActivity
      * 点击直播按钮滑动到当前时间
      */
     private void scrollCurrentLive() {
-        //isDevPlayBack = false;//当前直播
+        setPlayBooleanStatus();
         //当前时间秒数
         long nowMinute = System.currentTimeMillis() / 1000;
         //初始化当前的秒数和现在的秒数时间戳对比相差的偏移量--比对分钟数
@@ -1139,9 +1157,24 @@ public class VideoPlayActivity extends BaseActivity
         linearLayoutManager.scrollToPositionWithOffset((int) (currentMinutes), 0);
     }
 
+//    private void setBooleanPlayStatus(boolean isCloud) {
+//        if (isCloud) {
+//            isCloudPlayBack = true;
+//            isDevPlayBack = false;
+//        } else {
+//            isCloudPlayBack = false;
+//            isDevPlayBack = true;
+//        }
+//        isCurrentLive = false;
+//    }
+
     //拖动或选择的时间是否有video（ap或cloud）
     private void selectedTimeIsHaveVideo(long currTime) {
         int apSize = listAp.size();
+        if (apSize == 0) {
+            switch2Live();//跳转直播
+            return;
+        }
         long mStartTime = threeDaysBeforeSeconds, mEndTime = currentDateSeconds;
         for (int i = 0; i < apSize + 1; i++) {
             long startOpposite = 0, endOpposite = 0, start = 0, end = 0;
@@ -1165,18 +1198,14 @@ public class VideoPlayActivity extends BaseActivity
                 if (i == apSize) {//最后一个无视频区域跳转直播
                     LogCat.e(TAG, "55555555 00");
                     switch2Live();
-                    //scrollCurrentLive();
                     return;
                 }
                 boolean isCloud = !listAp.get(i).isApPlay();
                 if (isCloud) {
                     LogCat.e(TAG, "55555555 11");
                     switch2CloudPlayback(endOpposite, endOpposite + tenMinutes);
-                } else if (isCloudPlayBack) {
+                } else {
                     LogCat.e(TAG, "55555555 22");
-                    switch2DevPlayback(endOpposite);
-                } else if (isDevPlayBack) {
-                    LogCat.e(TAG, "55555555 33");
                     switch2DevPlayback(endOpposite);
                 }
                 scrollCurrentPlayBackTime(endOpposite);//回放到拖动的时间点
@@ -1186,11 +1215,8 @@ public class VideoPlayActivity extends BaseActivity
                 if (isCloud) {
                     LogCat.e(TAG, "55555555 44");
                     switch2CloudPlayback(currTime, currTime + tenMinutes);
-                } else if (isCloudPlayBack) {
+                } else {
                     LogCat.e(TAG, "55555555 55");
-                    switch2DevPlayback(currTime);
-                } else if (isDevPlayBack) {
-                    LogCat.e(TAG, "55555555 66");
                     switch2DevPlayback(currTime);
                 }
                 scrollCurrentPlayBackTime(currTime);//回放到拖动的时间点
@@ -1229,6 +1255,7 @@ public class VideoPlayActivity extends BaseActivity
                         firstLeftScrollCurrentTime = currTime;
                         refreshCanvasList();//渲染
                         isFirstScroll = false;
+                        isCurrentLive = false; //回放
                         return;
                     }
                     String strDate = secondToDate(currTime, "yyyy-MM-dd HH:mm:ss");
@@ -1241,10 +1268,7 @@ public class VideoPlayActivity extends BaseActivity
                     long currentSeconds = System.currentTimeMillis() / 1000;//当前时间戳秒
                     //停止到未来时间
                     if (currTime > currentSeconds && currTime - currentSeconds > 1) {
-                        //滚动到当前时间
-                        LogCat.e(TAG, "6666666 55 live");
-                        switch2Live();
-                        //scrollCurrentLive();
+                        switch2Live();  //滚动到当前直播
                         return;
                     }
                     //无回放视频跳转当前
@@ -1266,12 +1290,14 @@ public class VideoPlayActivity extends BaseActivity
                         //回放时间
                         ivPlay.setBackgroundResource(R.mipmap.pause_normal);
                         ivLive.setVisibility(View.VISIBLE);
-                        isDevPlayBack = true;
+                        isCurrentLive = false;
+                        //isDevPlayBack = true;
                     } else {
                         //当前时间、未来时间
                         ivPlay.setBackgroundResource(R.mipmap.play_disable);
                         ivLive.setVisibility(View.GONE);
-                        isDevPlayBack = false;
+                        isCurrentLive = true;
+                        //isDevPlayBack = false;
                     }
                     isPaused = false;
                 }
@@ -1304,7 +1330,7 @@ public class VideoPlayActivity extends BaseActivity
     }
 
     private void switch2Playback(long currTime) {
-        if (!isCloudPlayBack && !isDevPlayBack) return;
+        if (!isCloudPlayBack && !isDevPlayBack && !isCurrentLive) return;
         int availableVideoSize = listAp.size();
         for (int i = 0; i < availableVideoSize; i++) {
             ApCloudTimeBean bean = listAp.get(i);
@@ -1574,8 +1600,8 @@ public class VideoPlayActivity extends BaseActivity
                         JSONObject object = new JSONObject(data.toString());
                         int total_count = object.getInt("total_count");
                         if (total_count == 0) {
-                            timeCanvasList(listAp);
                             hideLoadingDialog();
+                            timeCanvasList(listAp);
                             return;
                         }
                         JSONArray jsonArray = object.getJSONArray("timeslots");
@@ -1607,7 +1633,12 @@ public class VideoPlayActivity extends BaseActivity
     private void getCanvasList(long mStartTime, long mEndTime) {
         int apSize = listAp.size();
         int cloudSize = listCloud.size();
-
+        if (apSize == 0 && cloudSize > 0) {
+            listAp = listCloud;
+            timeCanvasList(listAp);//组合时间轴
+            hideLoadingDialog();
+            return;
+        }
         ApCloudTimeBean bean;
         //AP时间
         for (int i = 0; i < apSize + 1; i++) {
