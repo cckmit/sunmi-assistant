@@ -63,7 +63,7 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
             tvTip3.setText(Html.fromHtml(getString(R.string.str_config_tip_ap_2)));
         } else if (deviceType == CommonConstants.TYPE_PRINTER) {
             titleBar.setAppTitle(R.string.str_title_printer_set);
-            ivImage.setImageResource(R.mipmap.ic_device_config_ipc);
+            ivImage.setImageResource(R.mipmap.ic_device_config_printer);
             tvTip1.setText(R.string.str_config_tip_printer);
             tvTip2.setText(Html.fromHtml(getString(R.string.str_config_tip_printer_1)));
             tvTip3.setText(Html.fromHtml(getString(R.string.str_config_tip_printer_2)));

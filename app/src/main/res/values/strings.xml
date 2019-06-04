@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">商米助手</string>
-    <string name="str_skip">跳过</string>
     <string name="str_text_lead_remote">远程管理</string>
     <string name="str_text_lead_query_status">随时随地查看店铺状态</string>
     <string name="str_text_lead_tem">联网终端管理</string>

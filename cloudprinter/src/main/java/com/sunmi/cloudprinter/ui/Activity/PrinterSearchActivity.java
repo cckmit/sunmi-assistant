@@ -95,10 +95,10 @@ public class PrinterSearchActivity extends BaseMvpActivity<BtBlePresenter>
     protected void onStop() {
         super.onStop();
         stopScan();
-        if (mClient != null) {
-            mClient.disconnect(bleAddress);
-            mClient = null;
-        }
+//        if (mClient != null) {
+//            mClient.disconnect(bleAddress);
+//            mClient = null;
+//        }
     }
 
     @Override
@@ -233,11 +233,25 @@ public class PrinterSearchActivity extends BaseMvpActivity<BtBlePresenter>
     }
 
     private void gotoPrinterSet() {
-        if (mClient != null) {
-            mClient.disconnect(bleAddress);
-            mClient = null;
-        }
-        SetPrinterActivity_.intent(context).sn(sn).bleAddress(bleAddress).start();
+        new CommonDialog.Builder(this)
+                .setMessage("已完成绑定，是否要继续给打印机配置无线网络？")
+                .setCancelButton(R.string.str_skip, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        finish();
+                    }
+                }).setConfirmButton(R.string.str_continue, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+//                if (mClient != null) {
+//                    mClient.disconnect(bleAddress);
+//                    mClient = null;
+//                }
+                dialog.dismiss();
+                SetPrinterActivity_.intent(context).sn(sn).bleAddress(bleAddress).start();
+            }
+        }).create().show();
     }
 
 }
