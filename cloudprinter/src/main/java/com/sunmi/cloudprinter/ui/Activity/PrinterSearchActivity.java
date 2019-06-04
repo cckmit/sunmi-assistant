@@ -34,7 +34,9 @@ import java.util.List;
 import java.util.Set;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.http.HttpCallback;
+import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.PermissionUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
@@ -239,6 +241,8 @@ public class PrinterSearchActivity extends BaseMvpActivity<BtBlePresenter>
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
+                        GotoActivityUtils.gotoMainActivity(context);
+                        BaseNotification.newInstance().postNotificationName(Constants.NOTIFICATION_PRINTER_ADDED);
                         finish();
                     }
                 }).setConfirmButton(R.string.str_continue, new DialogInterface.OnClickListener() {
