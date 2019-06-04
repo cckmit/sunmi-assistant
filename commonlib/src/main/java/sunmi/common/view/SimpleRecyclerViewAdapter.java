@@ -49,7 +49,7 @@ public class SimpleRecyclerViewAdapter extends RecyclerView.Adapter<SimpleRecycl
 
     @Override
     public int getItemCount() {
-        return mNames.length;
+        return mIcons.length;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

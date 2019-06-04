@@ -7,6 +7,7 @@ import com.sunmi.apmanager.config.ApConfig;
 import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.utils.DBUtils;
 import com.sunmi.apmanager.utils.FileHelper;
+import com.sunmi.cloudprinter.config.PrinterConfig;
 import com.sunmi.ipc.config.IpcConfig;
 import com.sunmi.sunmiservice.SunmiServiceConfig;
 import com.tencent.bugly.crashreport.CrashReport;
@@ -45,6 +46,7 @@ public class BootLoader {
         new ApConfig().init(context, env);
         new SunmiServiceConfig().init(context, env);
         new IpcConfig().init(context, env);
+        new PrinterConfig().init(context, env);
 
         LogCat.init(!TextUtils.equals(env, ApConfig.ENV_RELEASE));//log 开关
 

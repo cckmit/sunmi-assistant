@@ -187,7 +187,7 @@ public class H264Decoder {
                     }
 
                     int outIndex = mediaCodec.dequeueOutputBuffer(info, 0);
-                    LogCat.e("H264Decoder", "555555vvv VIDEO play");
+                    //LogCat.e("H264Decoder", "555555vvv VIDEO play");
                     switch (outIndex) {
                         case MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED:
                             outputBuffers = mediaCodec.getOutputBuffers();

@@ -12,6 +12,7 @@ import android.view.WindowManager;
 
 import com.commonlibrary.R;
 
+import sunmi.common.constant.CommonConfig;
 import sunmi.common.view.SimpleRecyclerViewAdapter;
 import sunmi.common.view.activity.StartConfigSMDeviceActivity_;
 
@@ -51,7 +52,12 @@ public class ChooseDeviceDialog extends Dialog {
      * 只有图标和文字的简单adapter
      */
     private SimpleRecyclerViewAdapter getAdapter() {
-        int[] imageIds = {R.mipmap.ic_sunmi_ap, R.mipmap.ic_sunmi_fs, R.mipmap.ic_sunmi_ss};
+        int[] imageIds;
+        if (CommonConfig.SUPPORT_PRINTER) {
+            imageIds = new int[]{R.mipmap.ic_sunmi_ap, R.mipmap.ic_sunmi_fs, R.mipmap.ic_sunmi_ss};
+        } else {
+            imageIds = new int[]{R.mipmap.ic_sunmi_ap, R.mipmap.ic_sunmi_fs};
+        }
         String[] names = getContext().getResources().getStringArray(R.array.sunmi_devices);
         SimpleRecyclerViewAdapter adapter = new SimpleRecyclerViewAdapter(
                 R.layout.item_choose_device, imageIds, names);
