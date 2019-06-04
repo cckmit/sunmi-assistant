@@ -579,15 +579,15 @@ public class VideoPlayActivity extends BaseActivity
                 IOTCClient.stopPlayback();//先停止设备回放
                 isDevPlayBack = false;
             } else {
-                LogCat.e(TAG, "55555555 dev to cloud 11");
+                LogCat.e(TAG, "55555555 live to cloud 11");
                 IOTCClient.stopLive();//先停止直播
             }
             if (videoDecoder != null) videoDecoder.release();//释放surfaceView
             isCloudPlayBack = true;
         }
         isCurrentLive = false;
-        getCloudVideoUrls(start, end);
         ivLive.setVisibility(View.VISIBLE);
+        getCloudVideoUrls(start, end);
     }
 
     //开始计时录制
@@ -636,6 +636,8 @@ public class VideoPlayActivity extends BaseActivity
      * 初始化播放首段视频的player
      */
     private void initFirstPlayer() {
+        cloudPlayDestroy();//初始化之前销毁
+
         firstPlayer = new MediaPlayer();
         firstPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         firstPlayer.setDisplay(surfaceHolder);
@@ -734,7 +736,7 @@ public class VideoPlayActivity extends BaseActivity
                 videoListQueue.clear();
                 videoListQueue = data.getVideo_list();
                 for (int i = 0; i < videoListQueue.size(); i++) {
-                    LogCat.e(TAG, "videoListQueue=" + videoListQueue.get(i).getUrl() + " time= " + (long)videoListQueue.get(i).getStart_time());
+                    LogCat.e(TAG, "videoListQueue=" + videoListQueue.get(i).getUrl() + " time= " + (long) videoListQueue.get(i).getStart_time());
                 }
                 initFirstPlayer();
             }
