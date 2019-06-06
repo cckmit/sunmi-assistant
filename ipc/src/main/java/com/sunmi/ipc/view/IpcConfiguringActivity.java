@@ -53,15 +53,20 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
         mPresenter = new IpcConfiguringPresenter();
         mPresenter.attachView(this);
         tvTip.setText(Html.fromHtml(getString(R.string.tip_keep_same_network)));
-        bind();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                bind();
+            }
+        }, 1000);
     }
 
     private void bind() {
+        if (!NetworkUtils.isNetworkAvailable(context)) {
+            configFailDialog(R.string.tip_set_fail, R.string.str_bind_net_error);
+            return;
+        }
         if (sunmiDevices != null) {
-            if (!NetworkUtils.isNetworkAvailable(context)) {
-                configFailDialog(R.string.tip_set_fail, R.string.str_bind_net_error);
-                return;
-            }
             for (SunmiDevice sunmiDevice : sunmiDevices) {
                 deviceIds.add(sunmiDevice.getDeviceid());
                 mPresenter.ipcBind(shopId, sunmiDevice.getDeviceid(),

@@ -88,15 +88,15 @@ import sunmi.common.view.VerticalSeekBar;
 @EActivity(resName = "activity_video_play")
 public class VideoPlayActivity extends BaseActivity
         implements SurfaceHolder.Callback, IOTCClient.Callback,
-        SeekBar.OnSeekBarChangeListener, OnSureLisener, View.OnTouchListener {
+        SeekBar.OnSeekBarChangeListener, View.OnTouchListener {
     @ViewById(resName = "rl_screen")
     RelativeLayout rlScreen;
     @ViewById(resName = "vv_ipc")
     SurfaceView videoView;
-    @ViewById(resName = "rl_control_panel")
-    RelativeLayout rlControlPanel;
-    @ViewById(resName = "sb_zoom")
-    SeekBar sbZoom;
+    @ViewById(resName = "rl_top")
+    RelativeLayout rlTopBar;
+    @ViewById(resName = "rl_bottom")
+    RelativeLayout rlBottomBar;
     @ViewById(resName = "sBar_voice")
     VerticalSeekBar sBarVoice;//音量控制
     @ViewById(resName = "ll_change_volume")
@@ -119,10 +119,6 @@ public class VideoPlayActivity extends BaseActivity
     RelativeLayout rlRecord;
     @ViewById(resName = "tv_calender")
     TextView tvCalender;//日历
-    @ViewById(resName = "rl_top_setting")
-    RelativeLayout rlTopSetting;//top设置
-    @ViewById(resName = "ll_bottom")
-    RelativeLayout rlBottomSetting;//bottom设置
     @ViewById(resName = "iv_screenshot")
     ImageView ivScreenshot;//截图
     @ViewById(resName = "iv_live")
@@ -135,7 +131,8 @@ public class VideoPlayActivity extends BaseActivity
     TimeView timeView;//时间绘制
     @ViewById(resName = "iv_setting")
     ImageView ivSetting;//设置
-
+    @ViewById(resName = "sb_zoom")
+    SeekBar sbZoom;
     @Extra
     String UID;
 
@@ -229,17 +226,10 @@ public class VideoPlayActivity extends BaseActivity
             public void run() {
                 countdown++;
                 LogCat.e(TAG, "countdown=" + countdown);
-                if (countdown == 20) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            rlControlPanel.setVisibility(View.GONE);
-                            llChangeVolume.setVisibility(View.GONE);//音量
-                            llVideoQuality.setVisibility(View.GONE);//画质
-                            isControlPanelShow = false;
-                            stopScreenHideTimer();
-                        }
-                    });
+                if (countdown == 8) {
+                    hideControlBar();
+                    isControlPanelShow = false;
+                    stopScreenHideTimer();
                 }
             }
         }, 0, 1000);
@@ -506,7 +496,12 @@ public class VideoPlayActivity extends BaseActivity
         //设置选择回调
         dialog.setOnChangeLisener(null);
         //设置点击确定按钮回调
-        dialog.setOnSureLisener(this);
+        dialog.setOnSureLisener(new OnSureLisener() {
+            @Override
+            public void onSure(Date date) {
+                onSure(date);
+            }
+        });
         dialog.show();
     }
 
@@ -514,14 +509,21 @@ public class VideoPlayActivity extends BaseActivity
     @Click(resName = "rl_screen")
     void screenClick() {
         if (isControlPanelShow) {
-            rlControlPanel.setVisibility(View.GONE);
-            llChangeVolume.setVisibility(View.GONE);//音量
-            llVideoQuality.setVisibility(View.GONE);//画质
+            hideControlBar();
             isControlPanelShow = false;
         } else {
-            rlControlPanel.setVisibility(View.VISIBLE);
+            rlTopBar.setVisibility(View.VISIBLE);
+            rlBottomBar.setVisibility(View.VISIBLE);
             isControlPanelShow = true;
         }
+    }
+
+    @UiThread
+    void hideControlBar() {
+        rlTopBar.setVisibility(View.GONE);
+        rlBottomBar.setVisibility(View.GONE);
+        llChangeVolume.setVisibility(View.GONE);//音量
+        llVideoQuality.setVisibility(View.GONE);//画质
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -786,6 +788,7 @@ public class VideoPlayActivity extends BaseActivity
                 currentPlayer.release();
             }
             currentPlayer = null;
+            playersCache.clear();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1031,7 +1034,6 @@ public class VideoPlayActivity extends BaseActivity
 
     //选择日历日期回调
     @SuppressLint("DefaultLocale")
-    @Override
     public void onSure(Date date) {
         resetCountdown();//重置隐藏控件计时
         long currentTime = System.currentTimeMillis() / 1000;//当前时间戳秒
@@ -1062,7 +1064,8 @@ public class VideoPlayActivity extends BaseActivity
 
             //设置选择日期的年月日0时0分0秒
             calendar.clear();
-            calendar.set(year, month - 1, day, hour, minute, second);//设置时候月份减1即是当月
+            calendar.setTimeInMillis(scrollTime);
+//            calendar.set(year, month - 1, day, hour, minute, second);//设置时候月份减1即是当月
             long selectedDate = calendar.getTimeInMillis() / 1000;//设置日期的秒数
             //当前时间秒数
             currentDateSeconds = System.currentTimeMillis() / 1000;

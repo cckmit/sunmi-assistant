@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.rpc.ap.APCall;
@@ -43,6 +44,7 @@ import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.log.LogCat;
+import sunmi.common.view.TitleBarView;
 
 /**
  * Description:
@@ -52,14 +54,24 @@ import sunmi.common.utils.log.LogCat;
 public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPresenter>
         implements IpcConfiguringContract.View {
 
-    @ViewById(resName = "nsv_ipc")
+    @ViewById(R.id.title_bar)
+    TitleBarView titleBar;
+    @ViewById(R.id.nsv_ipc)
     NestedScrollView scrollView;
-    @ViewById(resName = "rl_search")
+    @ViewById(R.id.rl_search)
     RelativeLayout rlSearch;
-    @ViewById(resName = "rv_ipc")
+    @ViewById(R.id.rv_ipc)
     RecyclerView rvDevice;
-    @ViewById(resName = "rl_no_device")
+    @ViewById(R.id.rl_no_device)
     RelativeLayout rlNoWifi;
+    @ViewById(R.id.tv_1)
+    TextView tvTipTitle;
+    @ViewById(R.id.tip_select_multi)
+    TextView tvSummary;
+    @ViewById(R.id.tv_no_wifi)
+    TextView tvNoWifi;
+    @ViewById(R.id.tv_check_network)
+    TextView tvCheckNetwork;
 
     @Extra
     String shopId;
@@ -82,6 +94,11 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
     void init() {
         mPresenter = new IpcConfiguringPresenter();
         mPresenter.attachView(this);
+        titleBar.setAppTitle(R.string.str_search_nearby_sunmi_devices);
+        tvTipTitle.setText(R.string.tip_title_choose_device);
+        tvSummary.setText(R.string.tip_support_multi_select);
+        tvNoWifi.setText(R.string.tip_no_device_found);
+        tvCheckNetwork.setText(getString(R.string.tip_keep_device_in));
         startSunmiLink();
         initList();
     }
