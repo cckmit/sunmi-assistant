@@ -1064,8 +1064,8 @@ public class VideoPlayActivity extends BaseActivity
 
             //设置选择日期的年月日0时0分0秒
             calendar.clear();
-            calendar.setTimeInMillis(scrollTime);
-//            calendar.set(year, month - 1, day, hour, minute, second);//设置时候月份减1即是当月
+//            calendar.setTimeInMillis(scrollTime);
+            calendar.set(year, month - 1, day, hour, minute, second);//设置时候月份减1即是当月
             long selectedDate = calendar.getTimeInMillis() / 1000;//设置日期的秒数
             //当前时间秒数
             currentDateSeconds = System.currentTimeMillis() / 1000;
@@ -1349,8 +1349,9 @@ public class VideoPlayActivity extends BaseActivity
 //                    refreshCanvasList();//i是最后一个，基于i的end作为start再拉7天的数据。
                     LogCat.e(TAG, "22222222222222 11");
                 } else {
-                    LogCat.e(TAG, "22222222222222 22" + " end - currTime=" + (end - currTime - currentSecond));
                     boolean isCloud = !listAp.get(i + 1).isApPlay();
+                    int delayMillis = (int) end - currTime < 0 ? 1 : (int) (end - currTime);
+                    LogCat.e(TAG, "22222222222222 22" + " end - currTime=" + (end - currTime));
                     final int finalI = i;
                     if (isCloud) {
                         LogCat.e(TAG, "22222222222222 33");
@@ -1361,8 +1362,8 @@ public class VideoPlayActivity extends BaseActivity
                                         listAp.get(finalI + 1).getStartTime() + tenMinutes);
                                 videoSkipScrollPosition(listAp.get(finalI + 1).getStartTime()); //偏移跳转
                             }
-                        }, (end - currTime - currentSecond) * 1000);
-                    } else if (isCloudPlayBack) {
+                        }, delayMillis * 1000);
+                    } else {
                         LogCat.e(TAG, "22222222222222 44");
                         new Handler().postDelayed(new Runnable() {
                             @Override
@@ -1370,16 +1371,27 @@ public class VideoPlayActivity extends BaseActivity
                                 switch2DevPlayback(listAp.get(finalI + 1).getStartTime());
                                 videoSkipScrollPosition(listAp.get(finalI + 1).getStartTime());//偏移跳转
                             }
-                        }, (end - currTime - currentSecond) * 1000);
-                    } else if (isDevPlayBack) {
-                        LogCat.e(TAG, "22222222222222 55");
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                videoSkipScrollPosition(listAp.get(finalI + 1).getStartTime()); //偏移跳转
-                            }
-                        }, (end - currTime - currentSecond) * 1000);
+                        }, delayMillis * 1000);
                     }
+//                    else if (isCloudPlayBack) {
+//                        LogCat.e(TAG, "22222222222222 44");
+//                        new Handler().postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                switch2DevPlayback(listAp.get(finalI + 1).getStartTime());
+//                                videoSkipScrollPosition(listAp.get(finalI + 1).getStartTime());//偏移跳转
+//                            }
+//                        }, delayMillis * 1000);
+//                    } else if (isDevPlayBack) {
+//                        LogCat.e(TAG, "22222222222222 55");
+//                        new Handler().postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                switch2DevPlayback(listAp.get(finalI + 1).getStartTime());
+//                                videoSkipScrollPosition(listAp.get(finalI + 1).getStartTime()); //偏移跳转
+//                            }
+//                        }, delayMillis * 1000);
+//                    }
                 }
             }
         }
@@ -1561,7 +1573,7 @@ public class VideoPlayActivity extends BaseActivity
             public void run() {
                 IOTCClient.getPlaybackList(threeDaysBeforeSeconds, currentDateSeconds); //获取AP回放时间列表
             }
-        }, 2000);
+        }, 2500);
     }
 
     @Override
