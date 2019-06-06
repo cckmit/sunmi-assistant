@@ -13,6 +13,7 @@ import com.sunmi.apmanager.ui.activity.store.HelpActivity;
 import com.sunmi.apmanager.ui.activity.store.MyStoreActivity;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.ui.activity.setting.ChangeCompanyNameActivity_;
 import com.sunmi.assistant.ui.activity.setting.SettingActivity_;
 import com.sunmi.assistant.ui.activity.setting.UserInfoActivity_;
 import com.sunmi.sunmiservice.SunmiServiceConfig;
@@ -84,7 +85,7 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     //商户
     @Click(R.id.rlCompany)
     public void companyClick(View v) {
-
+        ChangeCompanyNameActivity_.intent(mActivity).start();
     }
 
     @Click(R.id.rlStore)
