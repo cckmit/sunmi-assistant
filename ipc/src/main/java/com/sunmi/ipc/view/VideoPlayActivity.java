@@ -225,7 +225,6 @@ public class VideoPlayActivity extends BaseActivity
             @Override
             public void run() {
                 countdown++;
-                LogCat.e(TAG, "countdown=" + countdown);
                 if (countdown == 20) {
                     hideControlBar();
                     isControlPanelShow = false;
