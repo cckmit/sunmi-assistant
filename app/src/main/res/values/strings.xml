@@ -17,5 +17,9 @@
     <string name="str_please_open_sd">请允许打操作SDCard！！</string>
     <string name="str_password_no_contains_blank">密码不能包含空格</string>
     <string name="str_password_fomat_error">密码格式错误</string>
+    <string name="tip_support_multi_select">可选择多台设备</string>
+    <string name="tip_title_choose_device">选择您要连接的设备</string>
+    <string name="tip_no_device_found">没有发现新设备</string>
+    <string name="tip_keep_device_in">请确保您的设备处于路由器信号范围内</string>
 
 </resources>

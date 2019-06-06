@@ -28,7 +28,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -132,7 +131,7 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
 
     @Click(resName = "btn_config")
     void stopClick() {
-        IPCConfigActivity_.intent(mActivity).shopId(shopId).start();
+
     }
 
     @Click(resName = "btn_time")
@@ -153,7 +152,6 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
     void canvasClick() {
         getCanvasList();
     }
-
 
     /*
      * 负责界面销毁时，release各个mediaplayer
