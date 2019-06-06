@@ -125,7 +125,7 @@ public class MqttManager {
         options.setKeepAliveInterval(10);
         //setWill方法，如果项目中需要知道客户端是否掉线可以调用该方法。设置最终端口的通知消息
 //        options.setWill(topic, "close".getBytes(), 2, true);
-        options.setSocketFactory(new SSLSocketFactoryGenerator().generate());//设置证书校验
+        options.setSocketFactory(new SSLSocketFactoryGenerator().generate());//设置证书校验 //todo ssl
         mqttClient.setCallback(getSMMqttCallback()); //发布订阅回调
         mqttConnect();//开始连接
     }
