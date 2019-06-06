@@ -16,6 +16,7 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.LocaleList;
 import android.support.v4.app.NotificationCompat;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
@@ -46,6 +47,14 @@ public class CommonHelper {
     private static final int MAX_FRAME_HEIGHT = 360;
 
     private CommonHelper() {
+    }
+
+    public static String getLanguage() {
+        Locale locale;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            locale = LocaleList.getDefault().get(0);
+        } else locale = Locale.getDefault();
+        return locale.getLanguage().toLowerCase() + "_" + locale.getCountry().toLowerCase();
     }
 
     /**

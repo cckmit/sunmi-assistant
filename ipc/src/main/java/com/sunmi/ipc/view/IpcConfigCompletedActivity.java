@@ -107,7 +107,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                 holder.getView(R.id.tv_adjust).setVisibility(View.GONE);
                 holder.setImageResource(R.id.iv_device, SunmiDevUtils.setSearchLogo(device.getModel()));
                 if (device.getStatus() == 1) {
-                    holder.setText(R.id.tv_status, "添加成功");
+                    holder.setText(R.id.tv_status, getString(R.string.str_add_success));
                     holder.setImageResource(R.id.iv_status, R.mipmap.ic_done);
                     if (TextUtils.equals("FS1", device.getModel())) {
                         holder.getView(R.id.tv_adjust).setVisibility(View.VISIBLE);
@@ -128,6 +128,8 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                         errStr = getString(R.string.tip_bound_by_others);
                     } else if (device.getStatus() == 5511) {
                         errStr = getString(R.string.tip_device_offline);
+                    } else if (device.getStatus() == 5013) {
+                        errStr = "错误的商户id或者店铺id";
                     } else if (device.getStatus() == RpcErrorCode.RPC_ERR_TIMEOUT) {
                         errStr = getString(R.string.tip_bind_timeout);
                     }

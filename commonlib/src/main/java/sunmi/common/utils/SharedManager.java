@@ -16,6 +16,13 @@ public class SharedManager {
     /**
      * 获取SharedPreference 值
      */
+    public static int getIntValue(Context context, String key) {
+        return getSharedPreference(context).getInt(key, -1);
+    }
+
+    /**
+     * 获取SharedPreference 值
+     */
     public static String getValue(Context context, String key) {
         return getSharedPreference(context).getString(key, "");
     }
@@ -47,6 +54,12 @@ public class SharedManager {
     public static void putValue(Context context, String key, boolean value) {
         SharedPreferences.Editor edit = getSharedPreference(context).edit();
         edit.putBoolean(key, value);
+        edit.apply();
+    }
+
+    public static void putValue(Context context, String key, int value) {
+        SharedPreferences.Editor edit = getSharedPreference(context).edit();
+        edit.putInt(key, value);
         edit.apply();
     }
 

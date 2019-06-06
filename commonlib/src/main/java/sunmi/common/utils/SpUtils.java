@@ -24,6 +24,7 @@ public class SpUtils {
     private static final String SET_ROUTER_MANGER_PASSWORD = "SET_ROUTER_MANGER_PASSWORD";//设置路由管理密码
     private static final String UDP_ROUTER = "UDP_ROUTER";    //快速配置路由的token
     private static final String BIND_TYPE_ERROR = "BIND_TYPE_ERROR";    //快速配置绑定路由 1 net异常  2 其他人绑定
+    private static final String COMPANY_ID = "company_id";
 
     SpUtils() {
     }
@@ -212,4 +213,13 @@ public class SpUtils {
     public static void clearConfigBindType() {
         SharedManager.clearValue(BaseApplication.getContext(), BIND_TYPE_ERROR);
     }
+
+    public static void setCompanyId(int companyId) {
+        SharedManager.putValue(BaseApplication.getContext(), COMPANY_ID, companyId);
+    }
+
+    public static int getCompanyId() {
+        return SharedManager.getIntValue(BaseApplication.getContext(), COMPANY_ID);
+    }
+
 }
