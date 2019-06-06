@@ -29,13 +29,14 @@
 
         <!--设置-->
         <ImageView
-            android:visibility="gone"
             android:id="@+id/iv_setting"
             android:layout_width="@dimen/dp_28"
             android:layout_height="@dimen/dp_28"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="@dimen/dp_20"
-            android:background="@mipmap/ic_video_setting" />
+            android:layout_marginEnd="@dimen/dp_20"
+            android:background="@mipmap/ic_video_setting"
+            android:visibility="gone" />
     </RelativeLayout>
 
     <!--录像-->
