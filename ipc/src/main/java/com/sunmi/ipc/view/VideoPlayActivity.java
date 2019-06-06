@@ -226,7 +226,7 @@ public class VideoPlayActivity extends BaseActivity
             public void run() {
                 countdown++;
                 LogCat.e(TAG, "countdown=" + countdown);
-                if (countdown == 8) {
+                if (countdown == 20) {
                     hideControlBar();
                     isControlPanelShow = false;
                     stopScreenHideTimer();
@@ -435,18 +435,32 @@ public class VideoPlayActivity extends BaseActivity
     //开始，暂停
     @Click(resName = "iv_play")
     void playLiveClick() {
-        if (!isDevPlayBack && !isCloudPlayBack) return;
+        if (!isDevPlayBack && !isCloudPlayBack && isCurrentLive) return;
         if (isFastClick(1000)) return;
         if (isPaused) {
             ivPlay.setBackgroundResource(R.mipmap.pause_normal);
-            if (isCloudPlayBack) currentPlayer.start();
+            if (isCloudPlayBack) cloudPlayIsStart();
         } else {
             ivPlay.setBackgroundResource(R.mipmap.play_normal);
-            if (isCloudPlayBack) currentPlayer.pause();
+            if (isCloudPlayBack) cloudPlayIsStart();
         }
         isPaused = !isPaused;
         if (isDevPlayBack) {
             IOTCClient.pausePlayback(isPaused);
+        }
+    }
+
+    //cloud播放 start/pause
+    private void cloudPlayIsStart() {
+        try {
+            if (currentPlayer != null) {
+                if (currentPlayer.isPlaying())
+                    currentPlayer.pause();
+                else
+                    currentPlayer.start();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -517,7 +531,7 @@ public class VideoPlayActivity extends BaseActivity
     public boolean onTouch(View v, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (isControlPanelShow) startScreenHideTimer();
+                if (!isControlPanelShow) startScreenHideTimer();
                 break;
         }
         return false;
@@ -734,17 +748,16 @@ public class VideoPlayActivity extends BaseActivity
         IPCCloudApi.getVideoList(deviceId, start, end, new RetrofitCallback<VideoListResp>() {
             @Override
             public void onSuccess(int code, String msg, VideoListResp data) {
-                hideLoadingDialog();
+                LogCat.e(TAG, "55555555 cloud onSuccess");
+                //hideLoadingDialog();
                 videoListQueue.clear();
                 videoListQueue = data.getVideo_list();
-                for (int i = 0; i < videoListQueue.size(); i++) {
-                    LogCat.e(TAG, "videoListQueue=" + videoListQueue.get(i).getUrl() + ", time= " + (long) videoListQueue.get(i).getStart_time());
-                }
                 initFirstPlayer();
             }
 
             @Override
             public void onFail(int code, String msg, VideoListResp data) {
+                LogCat.e(TAG, "55555555 cloud onFail");
                 hideLoadingDialog();
             }
         });
@@ -1162,17 +1175,6 @@ public class VideoPlayActivity extends BaseActivity
         linearLayoutManager.scrollToPositionWithOffset((int) (currentMinutes), 0);
     }
 
-//    private void setBooleanPlayStatus(boolean isCloud) {
-//        if (isCloud) {
-//            isCloudPlayBack = true;
-//            isDevPlayBack = false;
-//        } else {
-//            isCloudPlayBack = false;
-//            isDevPlayBack = true;
-//        }
-//        isCurrentLive = false;
-//    }
-
     //拖动或选择的时间是否有video（ap或cloud）
     private void selectedTimeIsHaveVideo(long currTime) {
         int apSize = listAp.size();
@@ -1335,7 +1337,7 @@ public class VideoPlayActivity extends BaseActivity
     }
 
     private void switch2Playback(long currTime) {
-        if (!isCloudPlayBack && !isDevPlayBack && !isCurrentLive) return;
+        if (!isCloudPlayBack && !isDevPlayBack && isCurrentLive) return;
         int availableVideoSize = listAp.size();
         for (int i = 0; i < availableVideoSize; i++) {
             ApCloudTimeBean bean = listAp.get(i);
