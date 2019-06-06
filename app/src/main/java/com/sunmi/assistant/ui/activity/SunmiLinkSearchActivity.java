@@ -71,6 +71,8 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
     TextView tvNoWifi;
     @ViewById(R.id.tv_check_network)
     TextView tvCheckNetwork;
+    @ViewById(R.id.rl_loading)
+    RelativeLayout rlLoading;
 
     @Extra
     String shopId;
@@ -122,11 +124,17 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
         showLoadingDialog();
         sunmiLinkBlock(devList);
         sunmiLinkConfig();
+        stopSearch();
+        rlLoading.setVisibility(View.GONE);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        stopSearch();
+    }
+
+    private void stopSearch() {
         closeTimer();
         APCall.getInstance().searchStop(context, sn);//停止搜索商米设备
     }
@@ -183,8 +191,7 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
         APCall.getInstance().searchStart(context, sn);//开始搜索商米设备
         new Handler().postDelayed(new Runnable() {
             public void run() {
-                closeTimer();
-                APCall.getInstance().searchStop(context, sn);//停止搜索商米设备
+                stopSearch();
                 if (devList.size() <= 0) {
                     rlSearch.setVisibility(View.GONE);
                     rlNoWifi.setVisibility(View.VISIBLE);
