@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/iv_image"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="@dimen/dp_40"
         android:textColor="@color/colorText"
         android:textSize="@dimen/sp_28" />
 
@@ -39,7 +39,7 @@
         android:layout_below="@id/tv_tip_1"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="@dimen/dp_30"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_30"
         android:gravity="center"
         android:textSize="@dimen/sp_16" />
@@ -51,7 +51,7 @@
         android:layout_below="@id/tv_tip_2"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="@dimen/dp_30"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_30"
         android:textSize="@dimen/sp_16" />
 
@@ -67,6 +67,20 @@
         android:textColor="@color/c_text_blue"
         android:textSize="@dimen/sp_14"
         android:visibility="gone" />
+
+    <CheckedTextView
+        android:id="@+id/ctv_privacy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btn_start"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:checked="true"
+        android:drawableStart="@drawable/selector_privacy"
+        android:drawablePadding="@dimen/dp_3"
+        android:text="@string/str_click_consent"
+        android:textColor="@color/c_black"
+        android:textSize="@dimen/sp_10" />
 
     <Button
         android:id="@+id/btn_start"

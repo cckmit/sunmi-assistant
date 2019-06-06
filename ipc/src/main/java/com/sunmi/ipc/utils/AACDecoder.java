@@ -175,12 +175,16 @@ public class AACDecoder {
                 //循环读取数据
                 while (isRunning) {
                     if (!audioDataQueue.isEmpty()) {
+//                        LogCat.e(TAG, "555555aaa AUDIO play 111");
                         readData = audioDataQueue.take();
+//                        LogCat.e(TAG, "555555aaa AUDIO play 222");
                         int readLen = readData.length;
                         if (!isHeader(readData)) {
                             byte[] data = new byte[readLen - 13 - 4];
                             System.arraycopy(readData, 13, data, 0, data.length);
+//                            LogCat.e(TAG, "555555aaa AUDIO play 333");
                             decode(data, 0, data.length);
+//                            LogCat.e(TAG, "555555aaa AUDIO play 444");
                         }
                     }
                 }

@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.rpc.ap.APCall;
@@ -42,7 +43,7 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.sunmicall.ResponseBean;
-import sunmi.common.utils.log.LogCat;
+import sunmi.common.view.TitleBarView;
 
 /**
  * Description:
@@ -52,14 +53,26 @@ import sunmi.common.utils.log.LogCat;
 public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPresenter>
         implements IpcConfiguringContract.View {
 
-    @ViewById(resName = "nsv_ipc")
+    @ViewById(R.id.title_bar)
+    TitleBarView titleBar;
+    @ViewById(R.id.nsv_ipc)
     NestedScrollView scrollView;
-    @ViewById(resName = "rl_search")
+    @ViewById(R.id.rl_search)
     RelativeLayout rlSearch;
-    @ViewById(resName = "rv_ipc")
+    @ViewById(R.id.rv_ipc)
     RecyclerView rvDevice;
-    @ViewById(resName = "rl_no_device")
+    @ViewById(R.id.rl_no_device)
     RelativeLayout rlNoWifi;
+    @ViewById(R.id.tv_1)
+    TextView tvTipTitle;
+    @ViewById(R.id.tip_select_multi)
+    TextView tvSummary;
+    @ViewById(R.id.tv_no_wifi)
+    TextView tvNoWifi;
+    @ViewById(R.id.tv_check_network)
+    TextView tvCheckNetwork;
+    @ViewById(R.id.rl_loading)
+    RelativeLayout rlLoading;
 
     @Extra
     String shopId;
@@ -82,6 +95,11 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
     void init() {
         mPresenter = new IpcConfiguringPresenter();
         mPresenter.attachView(this);
+        titleBar.setAppTitle(R.string.str_search_nearby_sunmi_devices);
+        tvTipTitle.setText(R.string.tip_title_choose_device);
+        tvSummary.setText(R.string.tip_support_multi_select);
+        tvNoWifi.setText(R.string.tip_no_device_found);
+        tvCheckNetwork.setText(getString(R.string.tip_keep_device_in));
         startSunmiLink();
         initList();
     }
@@ -106,11 +124,23 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
         showLoadingDialog();
         sunmiLinkBlock(devList);
         sunmiLinkConfig();
+        stopSearch();
+        rlLoading.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        stopSearch();
+    }
+
+    private void stopSearch() {
+        closeTimer();
+        APCall.getInstance().searchStop(context, sn);//停止搜索商米设备
     }
 
     @Override
     public void ipcBindWifiSuccess(String sn) {
-        LogCat.e(TAG, "777777 111111");
         MqttManager.getInstance().isConnect();
         setTimeout();
     }
@@ -161,8 +191,7 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
         APCall.getInstance().searchStart(context, sn);//开始搜索商米设备
         new Handler().postDelayed(new Runnable() {
             public void run() {
-                closeTimer();
-                APCall.getInstance().searchStop(context, sn);//停止搜索商米设备
+                stopSearch();
                 if (devList.size() <= 0) {
                     rlSearch.setVisibility(View.GONE);
                     rlNoWifi.setVisibility(View.VISIBLE);
@@ -220,10 +249,15 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
 
     //已选中的设备继续配置
     private void sunmiLinkConfig() {
+        int ipcDeviceCount = 0;
         for (SunmiDevice sunmiDevice : devList) {
             if (TextUtils.equals("FS1", sunmiDevice.getModel())
                     || TextUtils.equals("SS1", sunmiDevice.getModel()))
-                mPresenter.ipcBind(shopId, sunmiDevice.getDeviceid(), "", 1, 1);
+                ipcDeviceCount++;
+            mPresenter.ipcBind(shopId, sunmiDevice.getDeviceid(), "", 1, 1);
+        }
+        if (ipcDeviceCount == 0) {
+            configComplete();
         }
     }
 
@@ -235,7 +269,10 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
                     if (devSet.isEmpty()) return;
                     for (SunmiDevice device : devList) {
                         if (devSet.contains(device.getDeviceid())) {
-                            device.setStatus(RpcErrorCode.RPC_ERR_TIMEOUT);
+                            if (TextUtils.equals("FS1", device.getModel())
+                                    || TextUtils.equals("SS1", device.getModel())) {
+                                device.setStatus(RpcErrorCode.RPC_ERR_TIMEOUT);
+                            }
                             devSet.remove(device.getDeviceid());
                         }
                     }
@@ -303,6 +340,7 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
 
     private void sunmiLinkFoundDevice(SunmiDevice device) {
         if (!devSet.contains(device.getDeviceid())) {
+            device.setStatus(1);
             devSet.add(device.getDeviceid());
             addDevice(device);
         }

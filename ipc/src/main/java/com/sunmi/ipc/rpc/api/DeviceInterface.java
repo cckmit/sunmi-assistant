@@ -1,5 +1,7 @@
 package com.sunmi.ipc.rpc.api;
 
+import com.sunmi.ipc.model.IpcListResp;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
@@ -29,6 +31,6 @@ public interface DeviceInterface {
      * 获取用户指定店铺下的摄像头首页列表
      */
     @POST(path + "getDetailList")
-    Call<BaseResponse<Object>> getDetailList(@Body BaseRequest request);
+    Call<BaseResponse<IpcListResp>> getDetailList(@Body BaseRequest request);
 
 }

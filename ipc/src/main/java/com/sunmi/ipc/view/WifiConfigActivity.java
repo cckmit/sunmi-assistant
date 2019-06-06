@@ -92,17 +92,10 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
         getWifiList();
     }
 
-    private void getWifiList() {
-        IPCCall.getInstance().getWifiList(context, sunmiDevice.getIp());
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                hideLoadingDialog();
-                if (wifiList.size() == 0) {
-                    setNoWifiVisible(View.VISIBLE);
-                }
-            }
-        }, 10000);
+    @Override
+    protected void onStop() {
+        super.onStop();
+        stopTimer();
     }
 
     @Override
@@ -120,17 +113,6 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
         return new int[]{IpcConstants.getWifiList, IpcConstants.setIPCWifi, IpcConstants.getApStatus};
     }
 
-    @UiThread
-    public void setNoWifiVisible(int visibility) {
-        rlNoWifi.setVisibility(visibility);
-        rlMain.setVisibility(visibility == View.VISIBLE ? View.GONE : View.VISIBLE);
-    }
-
-    @UiThread
-    public void setLoadingVisible(int visibility) {
-        rlLoading.setVisibility(visibility);
-    }
-
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (args == null) return;
@@ -144,11 +126,34 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
         }
     }
 
+    private void getWifiList() {
+        IPCCall.getInstance().getWifiList(context, sunmiDevice.getIp());
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                hideLoadingDialog();
+                if (wifiList.size() == 0) {
+                    setNoWifiVisible(View.VISIBLE);
+                }
+            }
+        }, 10000);
+    }
+
+    @UiThread
+    public void setNoWifiVisible(int visibility) {
+        rlNoWifi.setVisibility(visibility);
+        rlMain.setVisibility(visibility == View.VISIBLE ? View.GONE : View.VISIBLE);
+    }
+
+    @UiThread
+    public void setLoadingVisible(int visibility) {
+        rlLoading.setVisibility(visibility);
+    }
+
     //{"data":[{"opcode":"0x3116","result":{},"errcode":0}],"msg_id":"11111","errcode":0}
     @UiThread
     void setIpcWifiSuccess() {
         startGetStatusTimer();
-//        IPCCall.getInstance().getApStatus(context, sunmiDevice.getIp());
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -194,11 +199,11 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (retryCount == 20) stopTimer();
+                if (retryCount == 30) stopTimer();
                 retryCount++;
                 IPCCall.getInstance().getApStatus(context, sunmiDevice.getIp());
             }
-        }, 0, 1000);
+        }, 0, 3000);
     }
 
     // 停止定时器
@@ -214,8 +219,10 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
         alreadyFinish = true;
         ArrayList<SunmiDevice> list = new ArrayList<>();
         list.add(sunmiDevice);
-        IpcConfiguringActivity_.intent(context).sunmiDevices(list).shopId(shopId).start();
-        finish();
+        if (list.size() > 0) {
+            IpcConfiguringActivity_.intent(context).sunmiDevices(list).shopId(shopId).start();
+            finish();
+        }
     }
 
     @UiThread
@@ -250,7 +257,7 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
                             @Override
                             public void onConfirmClick(InputDialog dialog, String input) {
                                 if (TextUtils.isEmpty(input)) {
-                                    shortTip("密码不能为空");
+                                    shortTip(R.string.str_text_password_no_null);
                                     return;
                                 }
                                 dialog.dismiss();
