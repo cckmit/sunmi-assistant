@@ -252,9 +252,10 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
         int ipcDeviceCount = 0;
         for (SunmiDevice sunmiDevice : devList) {
             if (TextUtils.equals("FS1", sunmiDevice.getModel())
-                    || TextUtils.equals("SS1", sunmiDevice.getModel()))
+                    || TextUtils.equals("SS1", sunmiDevice.getModel())) {
                 ipcDeviceCount++;
-            mPresenter.ipcBind(shopId, sunmiDevice.getDeviceid(), "", 1, 1);
+                mPresenter.ipcBind(shopId, sunmiDevice.getDeviceid(), "", 1, 1);
+            }
         }
         if (ipcDeviceCount == 0) {
             configComplete();
