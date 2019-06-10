@@ -498,7 +498,7 @@ public class VideoPlayActivity extends BaseActivity
         dialog.setOnSureLisener(new OnSureLisener() {
             @Override
             public void onSure(Date date) {
-                onSure(date);
+                onSureButton(date);
             }
         });
         dialog.show();
@@ -513,6 +513,11 @@ public class VideoPlayActivity extends BaseActivity
         } else {
             rlTopBar.setVisibility(View.VISIBLE);
             rlBottomBar.setVisibility(View.VISIBLE);
+            ivRecord.setVisibility(View.VISIBLE);//录制
+            ivScreenshot.setVisibility(View.VISIBLE);//截图
+            if (!isCurrentLive) {
+                ivLive.setVisibility(View.VISIBLE);//直播
+            }
             isControlPanelShow = true;
         }
     }
@@ -523,6 +528,9 @@ public class VideoPlayActivity extends BaseActivity
         rlBottomBar.setVisibility(View.GONE);
         llChangeVolume.setVisibility(View.GONE);//音量
         llVideoQuality.setVisibility(View.GONE);//画质
+        ivRecord.setVisibility(View.INVISIBLE);//录制
+        ivScreenshot.setVisibility(View.INVISIBLE);//截图
+        ivLive.setVisibility(View.GONE);//直播
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -1033,7 +1041,7 @@ public class VideoPlayActivity extends BaseActivity
 
     //选择日历日期回调
     @SuppressLint("DefaultLocale")
-    public void onSure(Date date) {
+    public void onSureButton(Date date) {
         resetCountdown();//重置隐藏控件计时
         long currentTime = System.currentTimeMillis() / 1000;//当前时间戳秒
         scrollTime = date.getTime();//选择日期的时间戳毫秒
@@ -1691,12 +1699,14 @@ public class VideoPlayActivity extends BaseActivity
                     bean.setEndTime(endCloud);
                     bean.setApPlay(false);
                     listAp.add(bean);
-                } else if (startAp >= startCloud && endAp <= endCloud) {
-                    bean.setStartTime(startAp);
-                    bean.setEndTime(endAp);
-                    bean.setApPlay(false);
-                    listAp.add(bean);
-                } else if (startCloud >= startAp && endCloud <= endAp) {
+                }
+//                else if (startAp >= startCloud && endAp <= endCloud) {
+//                    bean.setStartTime(startAp);
+//                    bean.setEndTime(endAp);
+//                    bean.setApPlay(false);
+//                    listAp.add(bean);
+//                }
+                else if (startCloud >= startAp && endCloud <= endAp) {
                     bean.setStartTime(startCloud);
                     bean.setEndTime(endCloud);
                     bean.setApPlay(false);
@@ -1704,8 +1714,10 @@ public class VideoPlayActivity extends BaseActivity
                 }
             }
         }
-        listAp = duplicateRemoval(listAp);//去重
-        Collections.sort(listAp);//正序比较
+        if (listAp.size() > 1) {
+            listAp = duplicateRemoval(listAp);//去重
+            Collections.sort(listAp);//正序比较
+        }
         timeCanvasList(listAp);//组合时间轴
         hideLoadingDialog();
     }

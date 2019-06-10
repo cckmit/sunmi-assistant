@@ -19,7 +19,7 @@ public class IpcConfiguringPresenter extends BasePresenter<IpcConfiguringContrac
 
     @Override
     public void ipcBind(String shopId, final String sn, String token, float longitude, float latitude) {
-        IPCCloudApi.bindIPC(SpUtils.getMerchantUid(), shopId, sn, TextUtils.isEmpty(token) ? 1 : 0,
+        IPCCloudApi.bindIPC(SpUtils.getCompanyId() + "", shopId, sn, TextUtils.isEmpty(token) ? 1 : 0,
                 token, longitude, latitude, new RetrofitCallback() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
