@@ -75,7 +75,7 @@ public class IPCCloudApi extends BaseHttpApi {
                                  String deviceId, RetrofitCallback callback) {
         try {
             String params = new JSONObject()
-                    .put("company_id", SpUtils.getMerchantUid())
+                    .put("company_id", SpUtils.getCompanyId())
                     .put("shop_id", shopId)
                     .put("device_id", deviceId)
                     .toString();
