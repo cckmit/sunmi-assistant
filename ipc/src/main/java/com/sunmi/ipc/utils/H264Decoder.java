@@ -7,13 +7,13 @@ import android.view.Surface;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import sunmi.common.base.BaseApplication;
 import sunmi.common.utils.ThreadPool;
 import sunmi.common.utils.ToastUtils;
-import sunmi.common.utils.log.LogCat;
 
 /**
  * Description:视频解析
@@ -79,6 +79,7 @@ public class H264Decoder {
 
         } catch (Exception e) {
             e.printStackTrace();
+            Log.e("H264Decoder", "decode fail, data = " + Arrays.toString(data));
         }
     }
 
@@ -102,8 +103,8 @@ public class H264Decoder {
         byte[] spsHeader = new byte[spsLen + 4];
         System.arraycopy(h264Header, 0, spsHeader, 0, h264Header.length);
         System.arraycopy(data, 24, spsHeader, h264Header.length, spsLen);
-        byte[] ppsHeader = new byte[spsLen + 4];
         int ppsLen = byteToInt(new byte[]{data[spsLen + 24 + 1], data[spsLen + 24 + 2]});
+        byte[] ppsHeader = new byte[ppsLen + 4];
         System.arraycopy(h264Header, 0, ppsHeader, 0, h264Header.length);
         System.arraycopy(data, spsLen + 24 + 3, ppsHeader, h264Header.length, ppsLen);
 
@@ -125,7 +126,7 @@ public class H264Decoder {
         }
     }
 
-    public void initMediaCodec() {
+    public synchronized void initMediaCodec() {
         release();
         try {
             mediaCodec = MediaCodec.createDecoderByType("video/avc");
@@ -144,7 +145,6 @@ public class H264Decoder {
         frameCount = 0;
         deltaTime = 0;
         isRunning = true;
-//        ThreadPool.getCachedThreadPool().submit(new DecodeH264Thread());//开启解码线程
     }
 
     /**
