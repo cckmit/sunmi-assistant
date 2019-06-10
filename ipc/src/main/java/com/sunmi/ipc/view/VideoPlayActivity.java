@@ -513,11 +513,6 @@ public class VideoPlayActivity extends BaseActivity
         } else {
             rlTopBar.setVisibility(View.VISIBLE);
             rlBottomBar.setVisibility(View.VISIBLE);
-            ivRecord.setVisibility(View.VISIBLE);//录制
-            ivScreenshot.setVisibility(View.VISIBLE);//截图
-            if (!isCurrentLive) {
-                ivLive.setVisibility(View.VISIBLE);//直播
-            }
             isControlPanelShow = true;
         }
     }
@@ -528,9 +523,6 @@ public class VideoPlayActivity extends BaseActivity
         rlBottomBar.setVisibility(View.GONE);
         llChangeVolume.setVisibility(View.GONE);//音量
         llVideoQuality.setVisibility(View.GONE);//画质
-        ivRecord.setVisibility(View.INVISIBLE);//录制
-        ivScreenshot.setVisibility(View.INVISIBLE);//截图
-        ivLive.setVisibility(View.GONE);//直播
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -1080,8 +1072,8 @@ public class VideoPlayActivity extends BaseActivity
             threeDaysBeforeSeconds = selectedDate - threeDaysSeconds;
             //区间总共秒数
             minutesTotal = currentDateSeconds - selectedDate + threeDaysSeconds + sixHoursSeconds;
-            listAp.clear();
-            showTimeList(true, listAp);
+            //加载时间轴无渲染
+            showTimeList(true, null);
             //滑动到选择日期的0.00点
             //scrollSelectedDate0AM();
             refreshCanvasList();//渲染
@@ -1106,7 +1098,7 @@ public class VideoPlayActivity extends BaseActivity
         long leftToCenterMinutes = CommonHelper.px2dp(this, rvWidth / 2);//中间距离左侧屏幕的分钟
         long threeDaysBeforeDate = 3 * 24 * 60;//3天分钟数
         currentItemPosition = (int) (threeDaysBeforeDate - leftToCenterMinutes);
-        linearLayoutManager.scrollToPositionWithOffset((int) (threeDaysBeforeDate - leftToCenterMinutes), 0);
+        linearLayoutManager.scrollToPositionWithOffset(currentItemPosition, 0);
         openMove();
     }
 
@@ -1114,6 +1106,7 @@ public class VideoPlayActivity extends BaseActivity
     private void videoSkipScrollPosition(long currentTimeMinutes) {
         long leftToCenterMinutes = CommonHelper.px2dp(this, rvWidth / 2);//中间距离左侧屏幕的分钟
         currentItemPosition = (int) (currentTimeMinutes / 60 - threeDaysBeforeSeconds / 60 - leftToCenterMinutes);
+        linearLayoutManager.scrollToPositionWithOffset(currentItemPosition, 0);
     }
 
     //滑动回放定位的中间 position
@@ -1305,13 +1298,11 @@ public class VideoPlayActivity extends BaseActivity
                         ivPlay.setBackgroundResource(R.mipmap.pause_normal);
                         ivLive.setVisibility(View.VISIBLE);
                         isCurrentLive = false;
-                        //isDevPlayBack = true;
                     } else {
                         //当前时间、未来时间
                         ivPlay.setBackgroundResource(R.mipmap.play_disable);
                         ivLive.setVisibility(View.GONE);
                         isCurrentLive = true;
-                        //isDevPlayBack = false;
                     }
                     isPaused = false;
                 }
@@ -1380,25 +1371,6 @@ public class VideoPlayActivity extends BaseActivity
                             }
                         }, delayMillis * 1000);
                     }
-//                    else if (isCloudPlayBack) {
-//                        LogCat.e(TAG, "22222222222222 44");
-//                        new Handler().postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                switch2DevPlayback(listAp.get(finalI + 1).getStartTime());
-//                                videoSkipScrollPosition(listAp.get(finalI + 1).getStartTime());//偏移跳转
-//                            }
-//                        }, delayMillis * 1000);
-//                    } else if (isDevPlayBack) {
-//                        LogCat.e(TAG, "22222222222222 55");
-//                        new Handler().postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                switch2DevPlayback(listAp.get(finalI + 1).getStartTime());
-//                                videoSkipScrollPosition(listAp.get(finalI + 1).getStartTime()); //偏移跳转
-//                            }
-//                        }, delayMillis * 1000);
-//                    }
                 }
             }
         }
@@ -1487,11 +1459,11 @@ public class VideoPlayActivity extends BaseActivity
             if (apCloudList != null) {
                 for (int j = 0; j < apCloudList.size(); j++) {
                     if (date > apCloudList.get(j).getStartTime() && date < apCloudList.get(j).getEndTime()) {
-//                        viewHolder.rlItem.setBackgroundResource(R.color.colorOrangeLight);
-                        if (apCloudList.get(j).isApPlay())
-                            viewHolder.rlItem.setBackgroundResource(R.color.colorOrangeLight);
-                        else
-                            viewHolder.rlItem.setBackgroundResource(R.color.c_green);
+                        viewHolder.rlItem.setBackgroundResource(R.color.colorOrangeLight);
+//                        if (apCloudList.get(j).isApPlay())
+//                            viewHolder.rlItem.setBackgroundResource(R.color.colorOrangeLight);
+//                        else
+//                            viewHolder.rlItem.setBackgroundResource(R.color.c_green);
                     }
                 }
             }
@@ -1609,7 +1581,7 @@ public class VideoPlayActivity extends BaseActivity
                     ///获取cloud回放时间轴
                     getTimeList(deviceId, threeDaysBeforeSeconds, currentDateSeconds);
                 }
-            }
+            } else hideLoadingDialog();
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1674,15 +1646,12 @@ public class VideoPlayActivity extends BaseActivity
             if (i == 0) {
                 startAp = mStartTime;
                 endAp = listAp.get(i).getStartTime();
-                LogCat.e(TAG, "getCanvasList aaa=  " + startAp + "," + endAp);
             } else if (i < apSize) {
                 startAp = listAp.get(i - 1).getEndTime();
                 endAp = listAp.get(i).getStartTime();
-                LogCat.e(TAG, "getCanvasList aaa=  " + startAp + "," + endAp);
             } else if (i == apSize) {
                 startAp = listAp.get(i - 1).getEndTime();
                 endAp = mEndTime;
-                LogCat.e(TAG, "getCanvasList aaa=  " + startAp + "," + endAp);
             }
             //cloud时间
             for (int j = 0; j < cloudSize; j++) {
@@ -1699,14 +1668,12 @@ public class VideoPlayActivity extends BaseActivity
                     bean.setEndTime(endCloud);
                     bean.setApPlay(false);
                     listAp.add(bean);
-                }
-//                else if (startAp >= startCloud && endAp <= endCloud) {
-//                    bean.setStartTime(startAp);
-//                    bean.setEndTime(endAp);
-//                    bean.setApPlay(false);
-//                    listAp.add(bean);
-//                }
-                else if (startCloud >= startAp && endCloud <= endAp) {
+                } else if (startAp != endAp && startAp >= startCloud && endAp <= endCloud) {
+                    bean.setStartTime(startAp);
+                    bean.setEndTime(endAp);
+                    bean.setApPlay(false);
+                    listAp.add(bean);
+                } else if (startCloud != endCloud && startCloud >= startAp && endCloud <= endAp) {
                     bean.setStartTime(startCloud);
                     bean.setEndTime(endCloud);
                     bean.setApPlay(false);
@@ -1720,6 +1687,9 @@ public class VideoPlayActivity extends BaseActivity
         }
         timeCanvasList(listAp);//组合时间轴
         hideLoadingDialog();
+//        for (int i = 0; i < listAp.size(); i++) {
+//            LogCat.e(TAG, "3333=  " + listAp.get(i).getStartTime() + ", " + listAp.get(i).getEndTime() + ", " + listAp.get(i).isApPlay());
+//        }
     }
 
     //去重
