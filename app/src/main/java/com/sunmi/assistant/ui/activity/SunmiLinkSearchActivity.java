@@ -321,15 +321,22 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
                 JSONObject objectResult = res.getResult();
                 JSONObject jsonObject2 = objectResult.getJSONObject("sunmimesh");
                 JSONArray array = jsonObject2.getJSONArray("devices");
-                for (int j = 0; j < array.length(); j++) {
+                for (int i = 0; i < array.length(); i++) {
                     SunmiDevice sd = new SunmiDevice();
-                    JSONObject object = (JSONObject) array.opt(j);
+                    JSONObject object = (JSONObject) array.opt(i);
                     sd.setModel(object.getString("model"));
                     sd.setSelected(true);
                     String mac = object.getString("mac");
                     sd.setMac(mac);
                     if (object.has("devid")) {
-                        sd.setDeviceid(object.getString("devid"));
+                        String sn = object.getString("devid");
+                        if (!TextUtils.isEmpty(sn)) {
+                            sd.setDeviceid(sn);
+                        } else {
+                            sd.setDeviceid(mac);
+                        }
+                    } else {
+                        sd.setDeviceid(mac);
                     }
                     sunmiLinkFoundDevice(sd);
                 }
