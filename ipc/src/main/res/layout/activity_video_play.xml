@@ -11,6 +11,13 @@
         android:layout_height="match_parent"
         android:layout_centerInParent="true" />
 
+    <SurfaceView
+        android:id="@+id/sv_cloud"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:layout_centerInParent="true" />
+
     <include
         layout="@layout/layout_video_mask"
         android:visibility="gone" />
