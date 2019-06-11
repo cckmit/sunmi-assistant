@@ -34,6 +34,7 @@ import java.util.List;
 
 import sunmi.common.base.BaseFragment;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 
@@ -90,7 +91,8 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
     }
 
     private void showSingleChoiceDialog() {
-        final String[] items = {"C3YABT1MPRV4BM6GUHXJ", "CRYUBT1WKFV4UM6GUH71", "EFKUA51CZVBW8NPGUHZJ", "CVYA8T1WKFV49NPGYHRJ", "CBKA9T14URBC8MPGYHZJ"};
+        final String[] items = {"C3YABT1MPRV4BM6GUHXJ", "CRYUBT1WKFV4UM6GUH71", "EFKUA51CZVBW8NPGUHZJ",
+                "CVYA8T1WKFV49NPGYHRJ", "CBKA9T14URBC8MPGYHZJ", "CWT4X19FUCZ6RSRC111A"};
         final AlertDialog.Builder singleChoiceDialog = new AlertDialog.Builder(getActivity());
         singleChoiceDialog.setSingleChoiceItems(items, 1, new DialogInterface.OnClickListener() {
             @Override
@@ -413,7 +415,7 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
 //    }
 //
     void unbind(String deviceId) {
-        IPCCloudApi.unbindIPC("", Integer.parseInt(shopId), deviceId, new RetrofitCallback() {
+        IPCCloudApi.unbindIPC(SpUtils.getCompanyId(), Integer.parseInt(shopId), deviceId, new RetrofitCallback() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 shortTip("解绑成功");
@@ -427,7 +429,7 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
     }
 
     void getIpcList() {
-        IPCCloudApi.getDetailList("", shopId, new RetrofitCallback() {
+        IPCCloudApi.getDetailList(SpUtils.getCompanyId(), shopId, new RetrofitCallback() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 LogCat.e(TAG, "666666 getIpcList onResponse response = " + data.toString());
