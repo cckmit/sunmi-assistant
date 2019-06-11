@@ -186,6 +186,8 @@ public class VideoPlayActivity extends BaseActivity
     private boolean isLeftScroll;
     //是否为选择的日期
     private boolean isSelectedDate;
+    //是否自动滚动
+    private boolean isAutoScroll;
 
     //云端回放
     //用于播放视频的mediaPlayer对象
@@ -220,6 +222,7 @@ public class VideoPlayActivity extends BaseActivity
     //开启计时
     private void startScreenHideTimer() {
         stopScreenHideTimer();
+        isAutoScroll = true;
         screenHideTimer = new Timer();
         screenHideTimer.schedule(screenHideTimerTask = new TimerTask() {
             @Override
@@ -513,11 +516,6 @@ public class VideoPlayActivity extends BaseActivity
         } else {
             rlTopBar.setVisibility(View.VISIBLE);
             rlBottomBar.setVisibility(View.VISIBLE);
-            ivRecord.setVisibility(View.VISIBLE);//录制
-            ivScreenshot.setVisibility(View.VISIBLE);//截图
-            if (!isCurrentLive) {
-                ivLive.setVisibility(View.VISIBLE);//直播
-            }
             isControlPanelShow = true;
         }
     }
@@ -528,9 +526,6 @@ public class VideoPlayActivity extends BaseActivity
         rlBottomBar.setVisibility(View.GONE);
         llChangeVolume.setVisibility(View.GONE);//音量
         llVideoQuality.setVisibility(View.GONE);//画质
-        ivRecord.setVisibility(View.INVISIBLE);//录制
-        ivScreenshot.setVisibility(View.INVISIBLE);//截图
-        ivLive.setVisibility(View.GONE);//直播
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -659,12 +654,13 @@ public class VideoPlayActivity extends BaseActivity
      * 初始化播放首段视频的player
      */
     private void initFirstPlayer() {
+        LogCat.e(TAG, "55555555 11 cloud onSuccess");
         cloudPlayDestroy();//初始化之前销毁
-
+        LogCat.e(TAG, "55555555 22 cloud onSuccess");
         firstPlayer = new MediaPlayer();
         firstPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         firstPlayer.setDisplay(surfaceHolder);
-
+        LogCat.e(TAG, "55555555 33 cloud onSuccess");
         firstPlayer.setOnCompletionListener(
                 new MediaPlayer.OnCompletionListener() {
                     @Override
@@ -679,6 +675,7 @@ public class VideoPlayActivity extends BaseActivity
     }
 
     private void startPlayFirstVideo() {
+        LogCat.e(TAG, "55555555 44 cloud onSuccess");
         if (videoListQueue.size() <= 0) return;
         try {
             if (firstPlayer.isPlaying()) {
@@ -686,6 +683,7 @@ public class VideoPlayActivity extends BaseActivity
                 firstPlayer.release();
                 firstPlayer = new MediaPlayer();
             }
+            LogCat.e(TAG, "55555555 55 cloud onSuccess");
             firstPlayer.setDataSource(videoListQueue.get(currentVideoIndex).getUrl());
             firstPlayer.prepareAsync();
             firstPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -710,6 +708,7 @@ public class VideoPlayActivity extends BaseActivity
 
                 //player对象初始化完成后，开启播放
                 startPlayFirstVideo();
+                LogCat.e(TAG, "55555555 66 cloud onSuccess");
                 for (int i = 1; i < videoListQueue.size(); i++) {
                     nextMediaPlayer = new MediaPlayer();
                     nextMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -733,6 +732,7 @@ public class VideoPlayActivity extends BaseActivity
                     //put nextMediaPlayer in cache
                     playersCache.put(String.valueOf(i), nextMediaPlayer);
                 }
+                LogCat.e(TAG, "55555555 77 cloud onSuccess");
             }
         });
     }
@@ -971,7 +971,7 @@ public class VideoPlayActivity extends BaseActivity
                     }
                 });
             }
-//        }, 0, 1000 * 4);//一分钟轮询一次
+//        }, 0, 1000);//一分钟轮询一次
         }, 0, 1000 * 60);//一分钟轮询一次
     }
 
@@ -1049,14 +1049,12 @@ public class VideoPlayActivity extends BaseActivity
         if (time > currentTime) {//未来时间或当前--滑动当前直播
             LogCat.e(TAG, "6666666 33 live forward " + "time=" + time + " ,currentTime=" + currentTime);
             isSelectedDate = false;
-            int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-            tvCalender.setText(day > 9 ? day + "" : "0" + day);
+            tvCalender.setText(String.format("%td%n", date));
             switch2Live();
         } else {//回放时间
             LogCat.e(TAG, "6666666 44 back");
             isFirstScroll = false;//非首次滑动
             isSelectedDate = true;
-            //isDevPlayBack = true;
             isCurrentLive = false; //回放
             ivPlay.setBackgroundResource(R.mipmap.pause_normal);
             ivLive.setVisibility(View.VISIBLE);
@@ -1065,14 +1063,12 @@ public class VideoPlayActivity extends BaseActivity
             int year = Integer.valueOf(strDate.substring(0, 4));
             int month = Integer.valueOf(strDate.substring(5, 7));
             int day = Integer.valueOf(strDate.substring(8, 10));
-            int hour = 0, minute = 0, second = 0;
             //显示日历天数
-            tvCalender.setText(String.format("%d", day));
+            tvCalender.setText(String.format("%td%n", date));
 
             //设置选择日期的年月日0时0分0秒
             calendar.clear();
-//            calendar.setTimeInMillis(scrollTime);
-            calendar.set(year, month - 1, day, hour, minute, second);//设置时候月份减1即是当月
+            calendar.set(year, month - 1, day, 0, 0, 0);//设置时候月份减1即是当月
             long selectedDate = calendar.getTimeInMillis() / 1000;//设置日期的秒数
             //当前时间秒数
             currentDateSeconds = System.currentTimeMillis() / 1000;
@@ -1080,10 +1076,10 @@ public class VideoPlayActivity extends BaseActivity
             threeDaysBeforeSeconds = selectedDate - threeDaysSeconds;
             //区间总共秒数
             minutesTotal = currentDateSeconds - selectedDate + threeDaysSeconds + sixHoursSeconds;
-            listAp.clear();
-            showTimeList(true, listAp);
+            //加载时间轴无渲染
+            showTimeList(true, null);
             //滑动到选择日期的0.00点
-            //scrollSelectedDate0AM();
+            scrollSelectedDate0AM();
             refreshCanvasList();//渲染
         }
     }
@@ -1106,7 +1102,7 @@ public class VideoPlayActivity extends BaseActivity
         long leftToCenterMinutes = CommonHelper.px2dp(this, rvWidth / 2);//中间距离左侧屏幕的分钟
         long threeDaysBeforeDate = 3 * 24 * 60;//3天分钟数
         currentItemPosition = (int) (threeDaysBeforeDate - leftToCenterMinutes);
-        linearLayoutManager.scrollToPositionWithOffset((int) (threeDaysBeforeDate - leftToCenterMinutes), 0);
+        linearLayoutManager.scrollToPositionWithOffset(currentItemPosition, 0);
         openMove();
     }
 
@@ -1114,6 +1110,7 @@ public class VideoPlayActivity extends BaseActivity
     private void videoSkipScrollPosition(long currentTimeMinutes) {
         long leftToCenterMinutes = CommonHelper.px2dp(this, rvWidth / 2);//中间距离左侧屏幕的分钟
         currentItemPosition = (int) (currentTimeMinutes / 60 - threeDaysBeforeSeconds / 60 - leftToCenterMinutes);
+        linearLayoutManager.scrollToPositionWithOffset(currentItemPosition, 0);
     }
 
     //滑动回放定位的中间 position
@@ -1296,6 +1293,7 @@ public class VideoPlayActivity extends BaseActivity
                 } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING ||
                         newState == RecyclerView.SCROLL_STATE_SETTLING) {//拖动和自动滑动
                     isSelectedDate = false;//手动拖动或自动滑动
+                    isAutoScroll = false;//非自动滑动
                     int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
                     long currTime = centerCurrentTime(firstVisibleItem);//当前中间轴时间
                     long currentSeconds = System.currentTimeMillis() / 1000;//当前时间戳秒
@@ -1305,13 +1303,11 @@ public class VideoPlayActivity extends BaseActivity
                         ivPlay.setBackgroundResource(R.mipmap.pause_normal);
                         ivLive.setVisibility(View.VISIBLE);
                         isCurrentLive = false;
-                        //isDevPlayBack = true;
                     } else {
                         //当前时间、未来时间
                         ivPlay.setBackgroundResource(R.mipmap.play_disable);
                         ivLive.setVisibility(View.GONE);
                         isCurrentLive = true;
-                        //isDevPlayBack = false;
                     }
                     isPaused = false;
                 }
@@ -1330,14 +1326,11 @@ public class VideoPlayActivity extends BaseActivity
                 scrollTime = currTime * 1000;//滑动日历的时间戳毫秒
 
                 canvasHours(firstVisibleItem);//绘制时间
-                switch2Playback(currTime);//判断下一个视频ap还是cloud播放
+                if (isAutoScroll) switch2Playback(currTime);//自动滑动时下一个视频ap还是cloud播放
                 if (isSelectedDate) {
-                    if (listAp == null || listAp.size() == 0) {
-                        LogCat.e(TAG, "1111122 no video");
-                        return;
-                    }
-                    LogCat.e(TAG, "1111122 have video");
+                    if (listAp == null || listAp.size() == 0) return;
                     selectedTimeIsHaveVideo(currTime);
+                    LogCat.e(TAG, "1111122 have video");
                 }
             }
         });
@@ -1380,25 +1373,6 @@ public class VideoPlayActivity extends BaseActivity
                             }
                         }, delayMillis * 1000);
                     }
-//                    else if (isCloudPlayBack) {
-//                        LogCat.e(TAG, "22222222222222 44");
-//                        new Handler().postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                switch2DevPlayback(listAp.get(finalI + 1).getStartTime());
-//                                videoSkipScrollPosition(listAp.get(finalI + 1).getStartTime());//偏移跳转
-//                            }
-//                        }, delayMillis * 1000);
-//                    } else if (isDevPlayBack) {
-//                        LogCat.e(TAG, "22222222222222 55");
-//                        new Handler().postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                switch2DevPlayback(listAp.get(finalI + 1).getStartTime());
-//                                videoSkipScrollPosition(listAp.get(finalI + 1).getStartTime()); //偏移跳转
-//                            }
-//                        }, delayMillis * 1000);
-//                    }
                 }
             }
         }
@@ -1487,11 +1461,11 @@ public class VideoPlayActivity extends BaseActivity
             if (apCloudList != null) {
                 for (int j = 0; j < apCloudList.size(); j++) {
                     if (date > apCloudList.get(j).getStartTime() && date < apCloudList.get(j).getEndTime()) {
-//                        viewHolder.rlItem.setBackgroundResource(R.color.colorOrangeLight);
-                        if (apCloudList.get(j).isApPlay())
-                            viewHolder.rlItem.setBackgroundResource(R.color.colorOrangeLight);
-                        else
-                            viewHolder.rlItem.setBackgroundResource(R.color.c_green);
+                        viewHolder.rlItem.setBackgroundResource(R.color.colorOrangeLight);
+//                        if (apCloudList.get(j).isApPlay())
+//                            viewHolder.rlItem.setBackgroundResource(R.color.colorOrangeLight);
+//                        else
+//                            viewHolder.rlItem.setBackgroundResource(R.color.c_green);
                     }
                 }
             }
@@ -1609,7 +1583,7 @@ public class VideoPlayActivity extends BaseActivity
                     ///获取cloud回放时间轴
                     getTimeList(deviceId, threeDaysBeforeSeconds, currentDateSeconds);
                 }
-            }
+            } else hideLoadingDialog();
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1674,15 +1648,12 @@ public class VideoPlayActivity extends BaseActivity
             if (i == 0) {
                 startAp = mStartTime;
                 endAp = listAp.get(i).getStartTime();
-                LogCat.e(TAG, "getCanvasList aaa=  " + startAp + "," + endAp);
             } else if (i < apSize) {
                 startAp = listAp.get(i - 1).getEndTime();
                 endAp = listAp.get(i).getStartTime();
-                LogCat.e(TAG, "getCanvasList aaa=  " + startAp + "," + endAp);
             } else if (i == apSize) {
                 startAp = listAp.get(i - 1).getEndTime();
                 endAp = mEndTime;
-                LogCat.e(TAG, "getCanvasList aaa=  " + startAp + "," + endAp);
             }
             //cloud时间
             for (int j = 0; j < cloudSize; j++) {
@@ -1699,14 +1670,12 @@ public class VideoPlayActivity extends BaseActivity
                     bean.setEndTime(endCloud);
                     bean.setApPlay(false);
                     listAp.add(bean);
-                }
-//                else if (startAp >= startCloud && endAp <= endCloud) {
-//                    bean.setStartTime(startAp);
-//                    bean.setEndTime(endAp);
-//                    bean.setApPlay(false);
-//                    listAp.add(bean);
-//                }
-                else if (startCloud >= startAp && endCloud <= endAp) {
+                } else if (startAp != endAp && startAp >= startCloud && endAp <= endCloud) {
+                    bean.setStartTime(startAp);
+                    bean.setEndTime(endAp);
+                    bean.setApPlay(false);
+                    listAp.add(bean);
+                } else if (startCloud != endCloud && startCloud >= startAp && endCloud <= endAp) {
                     bean.setStartTime(startCloud);
                     bean.setEndTime(endCloud);
                     bean.setApPlay(false);
@@ -1720,6 +1689,9 @@ public class VideoPlayActivity extends BaseActivity
         }
         timeCanvasList(listAp);//组合时间轴
         hideLoadingDialog();
+//        for (int i = 0; i < listAp.size(); i++) {
+//            LogCat.e(TAG, "3333=  " + listAp.get(i).getStartTime() + ", " + listAp.get(i).getEndTime() + ", " + listAp.get(i).isApPlay());
+//        }
     }
 
     //去重
