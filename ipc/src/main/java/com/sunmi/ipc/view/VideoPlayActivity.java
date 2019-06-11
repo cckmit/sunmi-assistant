@@ -186,6 +186,8 @@ public class VideoPlayActivity extends BaseActivity
     private boolean isLeftScroll;
     //是否为选择的日期
     private boolean isSelectedDate;
+    //是否自动滚动
+    private boolean isAutoScroll;
 
     //云端回放
     //用于播放视频的mediaPlayer对象
@@ -220,6 +222,7 @@ public class VideoPlayActivity extends BaseActivity
     //开启计时
     private void startScreenHideTimer() {
         stopScreenHideTimer();
+        isAutoScroll = true;
         screenHideTimer = new Timer();
         screenHideTimer.schedule(screenHideTimerTask = new TimerTask() {
             @Override
@@ -651,12 +654,13 @@ public class VideoPlayActivity extends BaseActivity
      * 初始化播放首段视频的player
      */
     private void initFirstPlayer() {
+        LogCat.e(TAG, "55555555 11 cloud onSuccess");
         cloudPlayDestroy();//初始化之前销毁
-
+        LogCat.e(TAG, "55555555 22 cloud onSuccess");
         firstPlayer = new MediaPlayer();
         firstPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         firstPlayer.setDisplay(surfaceHolder);
-
+        LogCat.e(TAG, "55555555 33 cloud onSuccess");
         firstPlayer.setOnCompletionListener(
                 new MediaPlayer.OnCompletionListener() {
                     @Override
@@ -671,6 +675,7 @@ public class VideoPlayActivity extends BaseActivity
     }
 
     private void startPlayFirstVideo() {
+        LogCat.e(TAG, "55555555 44 cloud onSuccess");
         if (videoListQueue.size() <= 0) return;
         try {
             if (firstPlayer.isPlaying()) {
@@ -678,6 +683,7 @@ public class VideoPlayActivity extends BaseActivity
                 firstPlayer.release();
                 firstPlayer = new MediaPlayer();
             }
+            LogCat.e(TAG, "55555555 55 cloud onSuccess");
             firstPlayer.setDataSource(videoListQueue.get(currentVideoIndex).getUrl());
             firstPlayer.prepareAsync();
             firstPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -702,6 +708,7 @@ public class VideoPlayActivity extends BaseActivity
 
                 //player对象初始化完成后，开启播放
                 startPlayFirstVideo();
+                LogCat.e(TAG, "55555555 66 cloud onSuccess");
                 for (int i = 1; i < videoListQueue.size(); i++) {
                     nextMediaPlayer = new MediaPlayer();
                     nextMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -725,6 +732,7 @@ public class VideoPlayActivity extends BaseActivity
                     //put nextMediaPlayer in cache
                     playersCache.put(String.valueOf(i), nextMediaPlayer);
                 }
+                LogCat.e(TAG, "55555555 77 cloud onSuccess");
             }
         });
     }
@@ -963,7 +971,7 @@ public class VideoPlayActivity extends BaseActivity
                     }
                 });
             }
-//        }, 0, 1000 * 4);//一分钟轮询一次
+//        }, 0, 1000);//一分钟轮询一次
         }, 0, 1000 * 60);//一分钟轮询一次
     }
 
@@ -1041,14 +1049,12 @@ public class VideoPlayActivity extends BaseActivity
         if (time > currentTime) {//未来时间或当前--滑动当前直播
             LogCat.e(TAG, "6666666 33 live forward " + "time=" + time + " ,currentTime=" + currentTime);
             isSelectedDate = false;
-            int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-            tvCalender.setText(day > 9 ? day + "" : "0" + day);
+            tvCalender.setText(String.format("%td%n", date));
             switch2Live();
         } else {//回放时间
             LogCat.e(TAG, "6666666 44 back");
             isFirstScroll = false;//非首次滑动
             isSelectedDate = true;
-            //isDevPlayBack = true;
             isCurrentLive = false; //回放
             ivPlay.setBackgroundResource(R.mipmap.pause_normal);
             ivLive.setVisibility(View.VISIBLE);
@@ -1057,14 +1063,12 @@ public class VideoPlayActivity extends BaseActivity
             int year = Integer.valueOf(strDate.substring(0, 4));
             int month = Integer.valueOf(strDate.substring(5, 7));
             int day = Integer.valueOf(strDate.substring(8, 10));
-            int hour = 0, minute = 0, second = 0;
             //显示日历天数
-            tvCalender.setText(String.format("%d", day));
+            tvCalender.setText(String.format("%td%n", date));
 
             //设置选择日期的年月日0时0分0秒
             calendar.clear();
-//            calendar.setTimeInMillis(scrollTime);
-            calendar.set(year, month - 1, day, hour, minute, second);//设置时候月份减1即是当月
+            calendar.set(year, month - 1, day, 0, 0, 0);//设置时候月份减1即是当月
             long selectedDate = calendar.getTimeInMillis() / 1000;//设置日期的秒数
             //当前时间秒数
             currentDateSeconds = System.currentTimeMillis() / 1000;
@@ -1289,6 +1293,7 @@ public class VideoPlayActivity extends BaseActivity
                 } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING ||
                         newState == RecyclerView.SCROLL_STATE_SETTLING) {//拖动和自动滑动
                     isSelectedDate = false;//手动拖动或自动滑动
+                    isAutoScroll = false;//非自动滑动
                     int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
                     long currTime = centerCurrentTime(firstVisibleItem);//当前中间轴时间
                     long currentSeconds = System.currentTimeMillis() / 1000;//当前时间戳秒
@@ -1321,14 +1326,11 @@ public class VideoPlayActivity extends BaseActivity
                 scrollTime = currTime * 1000;//滑动日历的时间戳毫秒
 
                 canvasHours(firstVisibleItem);//绘制时间
-                switch2Playback(currTime);//判断下一个视频ap还是cloud播放
+                if (isAutoScroll) switch2Playback(currTime);//自动滑动时下一个视频ap还是cloud播放
                 if (isSelectedDate) {
-                    if (listAp == null || listAp.size() == 0) {
-                        LogCat.e(TAG, "1111122 no video");
-                        return;
-                    }
-                    LogCat.e(TAG, "1111122 have video");
+                    if (listAp == null || listAp.size() == 0) return;
                     selectedTimeIsHaveVideo(currTime);
+                    LogCat.e(TAG, "1111122 have video");
                 }
             }
         });
