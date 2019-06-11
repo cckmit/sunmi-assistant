@@ -130,12 +130,12 @@ public class H264Decoder {
     public synchronized void initMediaCodec() {
         release();
         try {
-            LogCat.e("h264", "99999999 surface view = " + surface.isValid());
             mediaCodec = MediaCodec.createDecoderByType("video/avc");
             if (mediaCodec == null || format == null || surface == null) {
                 ToastUtils.toastForShort(BaseApplication.getContext(), "播放失败，清重试");
                 return;
             }
+            LogCat.e("h264", "99999999 surface view = " + surface.isValid());
             mediaCodec.configure(format, surface, null, 0);
             mediaCodec.start();
             inputBuffers = mediaCodec.getInputBuffers();
