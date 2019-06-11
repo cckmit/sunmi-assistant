@@ -1079,7 +1079,7 @@ public class VideoPlayActivity extends BaseActivity
             //加载时间轴无渲染
             showTimeList(true, null);
             //滑动到选择日期的0.00点
-            //scrollSelectedDate0AM();
+            scrollSelectedDate0AM();
             refreshCanvasList();//渲染
         }
     }
