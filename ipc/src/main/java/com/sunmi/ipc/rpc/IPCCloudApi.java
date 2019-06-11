@@ -27,7 +27,7 @@ public class IPCCloudApi extends BaseHttpApi {
             String params = new JSONObject()
                     .put("user_id", SpUtils.getUID())
                     .put("token", SpUtils.getToken())
-                    .put("merchant_id", SpUtils.getMerchantUid())
+                    .put("merchant_id", SpUtils.getCompanyId())
                     .put("app_type", 2)//1代表web, 2 代表app
                     .toString();
             RetrofitClient.getInstance().create(UserInterface.class)
@@ -71,11 +71,11 @@ public class IPCCloudApi extends BaseHttpApi {
      * @param shopId    是	integer	店铺id
      * @param deviceId  是	integer	设备id
      */
-    public static void unbindIPC(String companyId, int shopId,
+    public static void unbindIPC(int companyId, int shopId,
                                  String deviceId, RetrofitCallback callback) {
         try {
             String params = new JSONObject()
-                    .put("company_id", SpUtils.getCompanyId())
+                    .put("company_id", companyId)
                     .put("shop_id", shopId)
                     .put("device_id", deviceId)
                     .toString();
@@ -91,10 +91,10 @@ public class IPCCloudApi extends BaseHttpApi {
      * @param companyId 是	int64	商户id
      * @param shopId    是	int64	店铺id
      */
-    public static void getDetailList(String companyId, String shopId, RetrofitCallback callback) {
+    public static void getDetailList(int companyId, String shopId, RetrofitCallback callback) {
         try {
             String params = new JSONObject()
-                    .put("company_id", SpUtils.getMerchantUid())
+                    .put("company_id", companyId)
                     .put("shop_id", shopId)
                     .toString();
             RetrofitClient.getInstance().create(DeviceInterface.class)

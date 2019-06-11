@@ -93,6 +93,8 @@ public class VideoPlayActivity extends BaseActivity
     RelativeLayout rlScreen;
     @ViewById(resName = "vv_ipc")
     SurfaceView videoView;
+    @ViewById(resName = "sv_cloud")
+    SurfaceView svCloud;
     @ViewById(resName = "rl_top")
     RelativeLayout rlTopBar;
     @ViewById(resName = "rl_bottom")
@@ -157,7 +159,7 @@ public class VideoPlayActivity extends BaseActivity
     private boolean isCurrentLive;//当前是否直播
     private int qualityType = 0;//0-超清，1-高清
 
-    private SurfaceHolder surfaceHolder;
+    private SurfaceHolder surfaceHolder, shCloud;
     //adapter
     private DateAdapter adapter;
     //日历
@@ -278,6 +280,12 @@ public class VideoPlayActivity extends BaseActivity
         lp.width = isSS1() ? screenH : screenW;
         lp.height = screenH;
         videoView.setLayoutParams(lp);
+
+        ViewGroup.LayoutParams lpCloud = svCloud.getLayoutParams();
+        lpCloud.width = isSS1() ? screenH : screenW;
+        lpCloud.height = screenH;
+        svCloud.setLayoutParams(lpCloud);
+        shCloud = svCloud.getHolder();
 
         //回调
         IOTCClient.setCallback(this);
@@ -547,7 +555,7 @@ public class VideoPlayActivity extends BaseActivity
         ivPlay.setBackgroundResource(R.mipmap.play_disable);
         ivLive.setVisibility(View.GONE);
         if (!isCloudPlayBack && !isDevPlayBack) {
-            LogCat.e(TAG, "6666666 11 live");
+            LogCat.e(TAG, "6666666 switch2Live");
             scrollCurrentLive();
             return;
         }
@@ -555,10 +563,11 @@ public class VideoPlayActivity extends BaseActivity
         //如果是云端回放此时需要调用停止操作然后直播
         if (isCloudPlayBack) {
             cloudPlayDestroy();
-            videoDecoder.initMediaCodec();
+//            videoDecoder.initMediaCodec();
+            svCloud.setVisibility(View.GONE);
+            videoView.setVisibility(View.VISIBLE);
             isCloudPlayBack = false;
         }
-        LogCat.e(TAG, "6666666 22 live");
         IOTCClient.startPlay();
         scrollCurrentLive();
         isDevPlayBack = false;
@@ -571,9 +580,11 @@ public class VideoPlayActivity extends BaseActivity
     void switch2DevPlayback(long start) {
         showLoadingDialog();
         if (isCloudPlayBack) {
-            LogCat.e(TAG, "55555555 cloud to dev");
+            LogCat.e(TAG, "6666666 switch2DevPlayback");
             cloudPlayDestroy();
-            videoDecoder.initMediaCodec();
+            svCloud.setVisibility(View.GONE);
+            videoView.setVisibility(View.VISIBLE);
+//            videoDecoder.initMediaCodec();
             isCloudPlayBack = false;
         }
         IOTCClient.startPlayback(start);
@@ -583,24 +594,21 @@ public class VideoPlayActivity extends BaseActivity
         hideLoadingDialog();
     }
 
-    //切换到云端回放
-    @Click(resName = "test_cloud_back")
-    void switch2CloudPlaybackClick() {
-        switch2CloudPlayback(1558537326, 1558537926);
-    }
-
     void switch2CloudPlayback(long start, long end) {
         showLoadingDialog();
         if (!isCloudPlayBack) {
             if (isDevPlayBack) {
-                LogCat.e(TAG, "55555555 dev to cloud 00");
                 IOTCClient.stopPlayback();//先停止设备回放
                 isDevPlayBack = false;
             } else {
-                LogCat.e(TAG, "55555555 live to cloud 11");
                 IOTCClient.stopLive();//先停止直播
             }
-            if (videoDecoder != null) videoDecoder.release();//释放surfaceView
+            LogCat.e(TAG, "6666666 switch2CloudPlayback");
+            svCloud.setVisibility(View.VISIBLE);
+            videoView.setVisibility(View.GONE);
+//            if (videoDecoder != null) {
+//                videoDecoder.release();//释放surfaceView
+//            }
             isCloudPlayBack = true;
         }
         isCurrentLive = false;
@@ -659,7 +667,7 @@ public class VideoPlayActivity extends BaseActivity
         LogCat.e(TAG, "55555555 22 cloud onSuccess");
         firstPlayer = new MediaPlayer();
         firstPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        firstPlayer.setDisplay(surfaceHolder);
+        firstPlayer.setDisplay(shCloud);
         LogCat.e(TAG, "55555555 33 cloud onSuccess");
         firstPlayer.setOnCompletionListener(
                 new MediaPlayer.OnCompletionListener() {
@@ -745,7 +753,7 @@ public class VideoPlayActivity extends BaseActivity
         //get next player
         currentPlayer = playersCache.get(String.valueOf(++currentVideoIndex));
         if (currentPlayer != null) {
-            currentPlayer.setDisplay(surfaceHolder);
+            currentPlayer.setDisplay(shCloud);
         } else {
             shortTip("视频播放完毕");
         }
@@ -755,8 +763,6 @@ public class VideoPlayActivity extends BaseActivity
         IPCCloudApi.getVideoList(deviceId, start, end, new RetrofitCallback<VideoListResp>() {
             @Override
             public void onSuccess(int code, String msg, VideoListResp data) {
-                LogCat.e(TAG, "55555555 cloud onSuccess");
-                //hideLoadingDialog();
                 videoListQueue.clear();
                 videoListQueue = data.getVideo_list();
                 initFirstPlayer();
@@ -764,7 +770,6 @@ public class VideoPlayActivity extends BaseActivity
 
             @Override
             public void onFail(int code, String msg, VideoListResp data) {
-                LogCat.e(TAG, "55555555 cloud onFail");
                 hideLoadingDialog();
             }
         });
@@ -867,7 +872,6 @@ public class VideoPlayActivity extends BaseActivity
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            LogCat.e(TAG, "666666,111res = " + res.toString());
         } else if (id == IpcConstants.fsAutoFocus) {
             LogCat.e(TAG, "666666,222res = " + res.toString());
         } else if (id == IpcConstants.fsReset) {
