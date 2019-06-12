@@ -22,6 +22,7 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
@@ -71,9 +72,11 @@ public class SupportFragment extends BaseFragment
     }
 
     private void initRefreshLayout() {
-        mRefreshLayout.setDelegate(this); // 设置下拉刷新和上拉加载更多的风格     参数1：应用程序上下文，参数2：是否具有上拉加载更多功能
-        BGANormalRefreshViewHolder refreshViewHolder = new BGANormalRefreshViewHolder(getActivity(), false); // 设置下拉刷新和上拉加载更多的风格
-        mRefreshLayout.setRefreshViewHolder(refreshViewHolder); // 为了增加下拉刷新头部和加载更多的通用性，提供了以下可选配置选项
+        mRefreshLayout.setDelegate(this);
+        // 设置下拉刷新和上拉加载更多的风格     参数1：应用程序上下文，参数2：是否具有上拉加载更多功能
+        BGANormalRefreshViewHolder refreshViewHolder =
+                new BGANormalRefreshViewHolder(getActivity(), false);
+        mRefreshLayout.setRefreshViewHolder(refreshViewHolder);
         mRefreshLayout.setIsShowLoadingMoreView(false); // 设置正在加载更多时的文本
     }
 
@@ -116,7 +119,7 @@ public class SupportFragment extends BaseFragment
             }
         });
         webView.setOnScrollChangeListener(this);
-        webView.loadUrl(getBaseUrl());//services
+        webView.loadUrl(getBaseUrl());
     }
 
     private String getBaseUrl() {
@@ -133,9 +136,6 @@ public class SupportFragment extends BaseFragment
 
     /**
      * app主动发送消息给微信，发送完成之后会切回到第三方app界面
-     *
-     * @param text
-     * @param imgUrl
      */
     private void sendWXReq(String text, String imgUrl) {
         //初始化一个 WXTextObject 对象，填写分享的文本内容
@@ -161,8 +161,6 @@ public class SupportFragment extends BaseFragment
 
     /**
      * 微信向第三方app请求数据，第三方app回应数据之后会切回到微信界面
-     *
-     * @param text
      */
     private void sendWXResp(String text, Bundle bundle) {
         // 初始化一个 WXTextObject 对象
@@ -227,13 +225,10 @@ public class SupportFragment extends BaseFragment
 
     }
 
-    private void endRefresh() {
-        mActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mRefreshLayout.endRefreshing();
-            }
-        });
+    @UiThread
+    void endRefresh() {
+        if (mRefreshLayout != null)
+            mRefreshLayout.endRefreshing();
     }
 
     private void refreshService() {
@@ -271,4 +266,5 @@ public class SupportFragment extends BaseFragment
     public int[] getStickNotificationId() {
         return new int[]{CommonConstants.tabSupport};
     }
+
 }

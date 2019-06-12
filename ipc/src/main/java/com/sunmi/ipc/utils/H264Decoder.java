@@ -54,7 +54,8 @@ public class H264Decoder {
     }
 
     public void stopRunning() {
-        videoDataQueue.clear();
+        if (videoDataQueue != null)
+            videoDataQueue.clear();
     }
 
     /**
@@ -115,6 +116,7 @@ public class H264Decoder {
     }
 
     public void release() {
+        stopRunning();
         isRunning = false;
         if (mediaCodec != null) {
             try {

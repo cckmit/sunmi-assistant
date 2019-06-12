@@ -199,6 +199,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_56"
             android:layout_centerVertical="true"
+            android:id="@+id/ll_date_view"
             android:layout_marginEnd="@dimen/dp_24"
             android:layout_toStartOf="@+id/tv_calender"
             android:layout_toEndOf="@+id/iv_play"

@@ -15,14 +15,13 @@
         android:id="@+id/sv_cloud"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        android:layout_centerInParent="true" />
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
 
     <include
         layout="@layout/layout_video_mask"
         android:visibility="gone" />
 
     <include layout="@layout/view_video_controller" />
-
 
 </RelativeLayout>
