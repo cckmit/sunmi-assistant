@@ -12,7 +12,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import sunmi.common.utils.ThreadPool;
-import sunmi.common.utils.log.LogCat;
 
 /**
  * Description:解析aac音频
@@ -55,7 +54,7 @@ public class AACDecoder {
     }
 
     public void stopRunning() {
-        audioDataQueue.clear();
+        if (audioDataQueue != null) audioDataQueue.clear();
     }
 
     /**
@@ -153,6 +152,7 @@ public class AACDecoder {
      * 释放资源
      */
     public void stop() {
+        stopRunning();
         try {
             if (audioTrack != null) {
                 audioTrack.release();
