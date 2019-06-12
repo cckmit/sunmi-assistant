@@ -103,5 +103,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     annotationProcessor "org.androidannotations:androidannotations:${AAVersion}"
 
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
+    implementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
 }
