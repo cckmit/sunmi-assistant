@@ -630,6 +630,13 @@ public class VideoPlayActivity extends BaseActivity
         getCloudVideoUrls(start, end);
     }
 
+    //点击屏幕
+    @Click(resName = "test_cloud_back")
+    void cloudClick() {
+        switch2CloudPlayback(1560096000,1560100000);
+    }
+
+
     //开始计时录制
     private void startRecord() {
         cmTimer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {

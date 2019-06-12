@@ -1,11 +1,8 @@
 package com.sunmi.assistant.config;
 
-import android.app.Application;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.squareup.leakcanary.LeakCanary;
-import com.squareup.leakcanary.RefWatcher;
 import com.sunmi.apmanager.config.ApConfig;
 import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.utils.DBUtils;
