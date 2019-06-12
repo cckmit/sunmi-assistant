@@ -7,47 +7,71 @@ import com.sunmi.cloudprinter.contract.SetPrinterContract;
 import com.sunmi.cloudprinter.utils.Utility;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.utils.log.LogCat;
 
 public class SetPrinterPresenter extends BasePresenter<SetPrinterContract.View> implements SetPrinterContract.Presenter {
 
+    byte[] data;
+    int receivedLen;
+
     @Override
     public void initMtuSuccess() {
-        mView.onInitNotify();
+        if (isViewAttached()) mView.onInitNotify();
     }
 
     @Override
     public void initMtuFailed() {
-        mView.onInitMtu();
+//        mView.onInitMtu();
     }
 
     @Override
     public void initNotifySuccess(byte version) {
-        mView.onSendMessage(Utility.cmdGetSn(version));
+//        mView.onSendMessage(Utility.cmdGetSn());
+        if (isViewAttached()) mView.onSendMessage(Utility.cmdGetWifi(version));
     }
 
     @Override
     public void initNotifyFailed() {
-        mView.onInitNotify();
+        if (isViewAttached()) mView.onInitNotify();
     }
 
     @Override
     public void onNotify(byte[] value, byte version) {
+        if (value.length > 0) {
+            if (Utility.isFirstPac(value)) {
+                receivedLen = 0;
+                data = new byte[Utility.getPacLength(value)];
+                System.arraycopy(value, 0, data, 0, value.length);
+            } else {
+                System.arraycopy(value, 0, data, receivedLen, value.length);
+            }
+            receivedLen += value.length;
+            if (data.length == receivedLen) {
+                onDataReceived(data, version);
+            }
+        }
+    }
+
+    private void onDataReceived(byte[] value, byte version) {
+        if (!isViewAttached()) return;
         int cmd = Utility.getCmd(value);
         if (cmd == Constants.SRV2CLI_SEND_SN) {
-            mView.setSn(Utility.getSn(value));
-            mView.onSendMessage(Utility.cmdGetWifi(version));
+//            mView.setSn(Utility.getSn(value));
+            if (isViewAttached()) mView.onSendMessage(Utility.cmdGetWifi(version));
         } else if (cmd == Constants.SRV2CLI_SEND_WIFI_ERROR) {
-            mView.shortTip(R.string.str_get_wifi_msg_error);
+            LogCat.e("spp", "222222");
+            if (isViewAttached()) mView.hideLoadingDialog();
+            if (isViewAttached()) mView.shortTip(R.string.str_get_wifi_msg_error);
         } else if (cmd == Constants.SRV2CLI_SEND_WIFI_AP) {
             Router router = Utility.getRouter(value);
             mView.initRouter(router);
         } else if (cmd == Constants.SRV2CLI_SEND_WIFI_AP_COMPLETELY) {
             mView.shortTip(R.string.str_wifi_msg_completely);
-            mView.hideProgressBar();
+            mView.hideLoadingDialog();
         } else if (cmd == Constants.SRV2CLI_SEND_ALREADY_CONNECTED_WIFI) {
-            mView.onSendMessage(Utility.cmdAlreadyConnectedWifi(version));
+            mView.wifiSetSuccess();
+            mView.onSendMessage(Utility.cmdAlreadyConnectedWifi());
         }
-
     }
 
 }

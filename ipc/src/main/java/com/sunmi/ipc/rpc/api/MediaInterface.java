@@ -1,5 +1,6 @@
 package com.sunmi.ipc.rpc.api;
 
+import com.google.gson.JsonObject;
 import com.sunmi.ipc.model.VideoListResp;
 
 import retrofit2.Call;
@@ -15,11 +16,20 @@ import sunmi.common.rpc.retrofit.BaseResponse;
 public interface MediaInterface {
 
     String path = "ipc/api/media/";
+    String videoPath = "ipc/api/media/video/";
 
     /**
-     * 创建emq token去连mqtt
+     * 获取视频列表
      */
     @POST(path + "getVideoList")
     Call<BaseResponse<VideoListResp>> getVideoList(@Body BaseRequest request);
+//    Call<BaseResponse<Object>> getVideoList(@Body BaseRequest request);
+
+    /**
+     * 获取时间轴
+     */
+    @POST(videoPath + "getTimeSlots")
+    Call<BaseResponse<JsonObject>> getTimeSlots(@Body BaseRequest request);
+
 
 }

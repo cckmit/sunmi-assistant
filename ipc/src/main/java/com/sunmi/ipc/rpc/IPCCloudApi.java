@@ -27,7 +27,7 @@ public class IPCCloudApi extends BaseHttpApi {
             String params = new JSONObject()
                     .put("user_id", SpUtils.getUID())
                     .put("token", SpUtils.getToken())
-                    .put("merchant_id", SpUtils.getMerchantUid())
+                    .put("merchant_id", SpUtils.getCompanyId())
                     .put("app_type", 2)//1代表web, 2 代表app
                     .toString();
             RetrofitClient.getInstance().create(UserInterface.class)
@@ -71,11 +71,11 @@ public class IPCCloudApi extends BaseHttpApi {
      * @param shopId    是	integer	店铺id
      * @param deviceId  是	integer	设备id
      */
-    public static void unbindIPC(String companyId, int shopId,
+    public static void unbindIPC(int companyId, int shopId,
                                  String deviceId, RetrofitCallback callback) {
         try {
             String params = new JSONObject()
-                    .put("company_id", SpUtils.getMerchantUid())
+                    .put("company_id", companyId)
                     .put("shop_id", shopId)
                     .put("device_id", deviceId)
                     .toString();
@@ -91,10 +91,10 @@ public class IPCCloudApi extends BaseHttpApi {
      * @param companyId 是	int64	商户id
      * @param shopId    是	int64	店铺id
      */
-    public static void getDetailList(String companyId, String shopId, RetrofitCallback callback) {
+    public static void getDetailList(int companyId, String shopId, RetrofitCallback callback) {
         try {
             String params = new JSONObject()
-                    .put("company_id", SpUtils.getMerchantUid())
+                    .put("company_id", companyId)
                     .put("shop_id", shopId)
                     .toString();
             RetrofitClient.getInstance().create(DeviceInterface.class)
@@ -125,11 +125,35 @@ public class IPCCloudApi extends BaseHttpApi {
     }
 
     /**
-     * 获取云端缓存的视频列表
+     * 获取指定时间的视频时间轴信息
      *
      * @param deviceId  是	int	ipc设备id
      * @param startTime 是	int	开始时间戳
      * @param endTime   是	int	结束时间戳
+     */
+    public static void getTimeSlots(int deviceId, long startTime, long endTime,
+                                    RetrofitCallback callback) {
+        try {
+            String params = new JSONObject()
+                    .put("device_id", deviceId)
+                    .put("start_time", startTime)
+                    .put("end_time", endTime)
+                    .toString();
+            RetrofitClient.getInstance().create(MediaInterface.class)
+                    .getTimeSlots(getSignedRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取设备录制视频列表
+     *
+     * @param deviceId
+     * @param startTime
+     * @param endTime
+     * @param callback
      */
     public static void getVideoList(int deviceId, long startTime, long endTime,
                                     RetrofitCallback callback) {
@@ -146,6 +170,7 @@ public class IPCCloudApi extends BaseHttpApi {
             e.printStackTrace();
         }
     }
+
 
     /**
      * 参数加签

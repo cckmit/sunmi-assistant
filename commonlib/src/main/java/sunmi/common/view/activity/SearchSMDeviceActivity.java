@@ -105,7 +105,7 @@ public class SearchSMDeviceActivity extends BaseActivity implements View.OnClick
         if (deviceType == CommonConstants.TYPE_AP) {
             titleBar.setAppTitle(R.string.str_title_ap_set);
             tvSearchingTip.setText(R.string.str_primary_search_searching_ap);
-        } else if (deviceType == CommonConstants.TYPE_SS || deviceType == CommonConstants.TYPE_FS) {
+        } else if (deviceType == CommonConstants.TYPE_IPC) {
             titleBar.setAppTitle(R.string.str_title_ipc_set);
             tvSearchingTip.setText(R.string.str_primary_search_searching_ipc);
         }
@@ -178,7 +178,7 @@ public class SearchSMDeviceActivity extends BaseActivity implements View.OnClick
         }
 //        if (!isRun || args == null) return;
 //        ResponseBean res = (ResponseBean) args[0];
-//        if (TextUtils.equals(res.getErrCode(), AppConfig.WHAT_ERROR + "")) {
+//        if (TextUtils.equals(res.getErrCode(), AppConfig.RPC_COMMON_ERROR + "")) {
 //            hideLoadingDialog();
 //            NetConnectUtils.isNetConnected(context);
 //
@@ -196,9 +196,7 @@ public class SearchSMDeviceActivity extends BaseActivity implements View.OnClick
         if (isFastClick(800)) return;
         if (deviceType == CommonConstants.TYPE_AP && TextUtils.equals("W1", device.getModel())) {
             handleAp(device);
-        } else if (deviceType == CommonConstants.TYPE_SS && TextUtils.equals("SS1", device.getModel())) {
-            handleIpc(device);
-        } else if (deviceType == CommonConstants.TYPE_FS && TextUtils.equals("FS1", device.getModel())) {
+        } else if (deviceType == CommonConstants.TYPE_IPC) {
             handleIpc(device);
         }
     }
@@ -289,7 +287,6 @@ public class SearchSMDeviceActivity extends BaseActivity implements View.OnClick
             @Override
             public void run() {
                 SMDeviceDiscoverUtils.scanDevice(context, CommonConstants.WHAT_UDP);
-//                UDPUtils.UdpManual.initSearchRouter(mHandler, SearchSMDeviceActivity.this);
             }
         }, 1000);
     }

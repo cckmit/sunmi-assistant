@@ -25,14 +25,28 @@
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_12"
         android:layout_marginEnd="@dimen/dp_64"
         android:layout_toEndOf="@+id/iv_device"
         android:ellipsize="end"
         android:singleLine="true"
         android:textColor="@color/color_333333"
         android:textSize="@dimen/sp_16" />
+
+    <TextView
+        android:id="@+id/tv_sn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_64"
+        android:layout_marginBottom="@dimen/dp_12"
+        android:layout_toEndOf="@+id/iv_device"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/color_333333"
+        android:textSize="@dimen/sp_14" />
 
     <CheckBox
         android:id="@+id/cb_item"
@@ -41,8 +55,8 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="-16dp"
-        android:checked="true"
         android:button="@drawable/checkbox_dev_selector"
+        android:checked="true"
         android:scaleX="0.35"
         android:scaleY="0.35" />
 

@@ -20,25 +20,24 @@ import sunmi.common.utils.ThreadPool;
 public class AACDecoder {
 
     private static final String TAG = "AACDecoderUtil";
-    //声道数
-    private static final int KEY_CHANNEL_COUNT = 2;
-    //采样率
-    private static final int KEY_SAMPLE_RATE = 8000;
-    private static final int KEY_BIT_RATE = 128000;
-    //用于播放解码后的pcm
-    private MusicAudioTrack mPlayer;
+
+    private static final int KEY_CHANNEL_COUNT = 2;//声道数
+    private static final int KEY_SAMPLE_RATE = 8000;//采样率
+    private static final int KEY_BIT_RATE = 128000;//比特率
+
+    private MusicAudioTrack audioTrack; //用于播放解码后的pcm
 
     private MediaCodec mDecoder; //解码器
 
-    private int count = 0;//用来记录解码失败的帧数
-
     private MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();//编解码器缓冲区
+
+    private int count = 0;//用来记录解码失败的帧数
 
     private boolean isRunning;
 
     public AACDecoder() {
         isRunning = true;
-        start();
+        decodeInit();
         ThreadPool.getCachedThreadPool().submit(new DecodeAACWorker());//开启解码线程
     }
 
@@ -55,7 +54,7 @@ public class AACDecoder {
     }
 
     public void stopRunning() {
-        audioDataQueue.clear();
+        if (audioDataQueue != null) audioDataQueue.clear();
     }
 
     /**
@@ -66,25 +65,13 @@ public class AACDecoder {
     }
 
     /**
-     * 初始化所有变量
-     */
-    public void start() {
-        mPlayer = new MusicAudioTrack(KEY_SAMPLE_RATE,
-                AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT);
-        mPlayer.init();
-        decodeInit();
-    }
-
-    /**
      * 初始化解码器
-     *
-     * @return 初始化失败返回false，成功返回true
      */
     private void decodeInit() {
         // 初始化AudioTrack
-        mPlayer = new MusicAudioTrack(KEY_SAMPLE_RATE, AudioFormat.CHANNEL_OUT_STEREO,
+        audioTrack = new MusicAudioTrack(KEY_SAMPLE_RATE, AudioFormat.CHANNEL_OUT_STEREO,
                 AudioFormat.ENCODING_PCM_16BIT);
-        mPlayer.init();
+        audioTrack.init();
         try {
             //需要解码数据的类型
             String mine = "audio/mp4a-latm";
@@ -92,19 +79,13 @@ public class AACDecoder {
             mDecoder = MediaCodec.createDecoderByType(mine);
             //MediaFormat用于描述音视频数据的相关参数
             MediaFormat mediaFormat = new MediaFormat();
-            //数据类型
-            mediaFormat.setString(MediaFormat.KEY_MIME, mine);
-            //声道个数
-            mediaFormat.setInteger(MediaFormat.KEY_CHANNEL_COUNT, KEY_CHANNEL_COUNT);
-            //采样率
-            mediaFormat.setInteger(MediaFormat.KEY_SAMPLE_RATE, KEY_SAMPLE_RATE);
-            //比特率
-            mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, KEY_BIT_RATE);
-            //用来标记AAC是否有adts头，1->有
-            mediaFormat.setInteger(MediaFormat.KEY_IS_ADTS, 0);
-            //用来标记aac的类型
+            mediaFormat.setString(MediaFormat.KEY_MIME, mine);//数据类型
+            mediaFormat.setInteger(MediaFormat.KEY_CHANNEL_COUNT, KEY_CHANNEL_COUNT); //声道个数
+            mediaFormat.setInteger(MediaFormat.KEY_SAMPLE_RATE, KEY_SAMPLE_RATE); //采样率
+            mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, KEY_BIT_RATE); //比特率
+            mediaFormat.setInteger(MediaFormat.KEY_IS_ADTS, 0);//用来标记AAC是否有adts头，1->有
             mediaFormat.setInteger(MediaFormat.KEY_AAC_PROFILE,
-                    MediaCodecInfo.CodecProfileLevel.AACObjectLC);
+                    MediaCodecInfo.CodecProfileLevel.AACObjectLC); //用来标记aac的类型
             //adts头
             int profile = MediaCodecInfo.CodecProfileLevel.AACObjectLC;  //AAC LC
             int freqIdx = 11;  //sample rate
@@ -113,13 +94,13 @@ public class AACDecoder {
             csd.put(0, (byte) (profile << 3 | freqIdx >> 1));
             csd.put(1, (byte) ((freqIdx & 0x01) << 7 | chanCfg << 3));
             mediaFormat.setByteBuffer("csd-0", csd);
-            //配置解码器
-            mDecoder.configure(mediaFormat, null, null, 0);
+
+            mDecoder.configure(mediaFormat, null, null, 0);//配置解码器
+            if (mDecoder != null) {
+                mDecoder.start();
+            }
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        if (mDecoder != null) {
-            mDecoder.start();
         }
     }
 
@@ -127,22 +108,17 @@ public class AACDecoder {
      * aac解码+播放
      */
     public void decode(byte[] buf, int offset, int length) {
-        //输入ByteBuffer
-        ByteBuffer[] codecInputBuffers = mDecoder.getInputBuffers();
-        //输出ByteBuffer
-        ByteBuffer[] codecOutputBuffers = mDecoder.getOutputBuffers();
-        //等待时间，0->不等待，-1->一直等待
+        ByteBuffer[] codecInputBuffers = mDecoder.getInputBuffers();//输入ByteBuffer
+        ByteBuffer[] codecOutputBuffers = mDecoder.getOutputBuffers();//输出ByteBuffer
+
         try {
+            long kTimeOutUs = 0;//等待时间，0->不等待，-1->一直等待
             //返回一个包含有效数据的input buffer的index,-1->不存在
-            long kTimeOutUs = 0;
             int inputBufIndex = mDecoder.dequeueInputBuffer(kTimeOutUs);
             if (inputBufIndex >= 0) {
-                //获取当前的ByteBuffer
-                ByteBuffer dstBuf = codecInputBuffers[inputBufIndex];
-                //清空ByteBuffer
-                dstBuf.clear();
-                //填充数据
-                dstBuf.put(buf, offset, length);
+                ByteBuffer dstBuf = codecInputBuffers[inputBufIndex]; //获取当前的ByteBuffer
+                dstBuf.clear();//清空ByteBuffer
+                dstBuf.put(buf, offset, length);//填充数据
                 //将指定index的input buffer提交给解码器
                 mDecoder.queueInputBuffer(inputBufIndex, 0, length, 0, 0);
             }
@@ -154,19 +130,17 @@ public class AACDecoder {
             }
             ByteBuffer outputBuffer;
             while (outputBufferIndex >= 0) {
-                //获取解码后的ByteBuffer
-                outputBuffer = codecOutputBuffers[outputBufferIndex];
-                //用来保存解码后的数据
-                byte[] outData = new byte[info.size];
+                outputBuffer = codecOutputBuffers[outputBufferIndex];//获取解码后的ByteBuffer
+
+                byte[] outData = new byte[info.size];//用来保存解码后的数据
                 outputBuffer.get(outData);
-                //清空缓存
-                outputBuffer.clear();
-                //播放
-                mPlayer.playAudioTrack(outData, 0, info.size);
-                //释放已经解码的buffer
-                mDecoder.releaseOutputBuffer(outputBufferIndex, false);
-                //解码未解完的数据
-                outputBufferIndex = mDecoder.dequeueOutputBuffer(info, kTimeOutUs);
+                outputBuffer.clear(); //清空缓存
+
+                audioTrack.playAudioTrack(outData, 0, info.size);//播放
+//                LogCat.e(TAG, "555555aaa AUDIO play");
+
+                mDecoder.releaseOutputBuffer(outputBufferIndex, false);//释放已经解码的buffer
+                outputBufferIndex = mDecoder.dequeueOutputBuffer(info, kTimeOutUs);//解码未解完的数据
             }
         } catch (Exception e) {
             Log.e(TAG, e.toString());
@@ -178,10 +152,11 @@ public class AACDecoder {
      * 释放资源
      */
     public void stop() {
+        stopRunning();
         try {
-            if (mPlayer != null) {
-                mPlayer.release();
-                mPlayer = null;
+            if (audioTrack != null) {
+                audioTrack.release();
+                audioTrack = null;
             }
             if (mDecoder != null) {
                 mDecoder.stop();
@@ -196,19 +171,20 @@ public class AACDecoder {
         @Override
         public void run() {
             try {
-                //每次从文件读取的数据
                 byte[] readData;
                 //循环读取数据
                 while (isRunning) {
                     if (!audioDataQueue.isEmpty()) {
+//                        LogCat.e(TAG, "555555aaa AUDIO play 111");
                         readData = audioDataQueue.take();
+//                        LogCat.e(TAG, "555555aaa AUDIO play 222");
                         int readLen = readData.length;
                         if (!isHeader(readData)) {
                             byte[] data = new byte[readLen - 13 - 4];
                             System.arraycopy(readData, 13, data, 0, data.length);
+//                            LogCat.e(TAG, "555555aaa AUDIO play 333");
                             decode(data, 0, data.length);
-                        } else {
-                            Log.e("AACDecoder", "555555 is header---");
+//                            LogCat.e(TAG, "555555aaa AUDIO play 444");
                         }
                     }
                 }

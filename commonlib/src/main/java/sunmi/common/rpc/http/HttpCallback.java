@@ -30,7 +30,7 @@ public abstract class HttpCallback<T> extends StringCallback {
 
     @Override
     public void onError(Call call, Response response, Exception e, int id) {
-        LogCat.e("RpcCallback", "onError, e = " + e);
+        LogCat.e("HttpCallback", "onError, e = " + e);
         networkErrorHandler(id, response);
     }
 
@@ -48,7 +48,7 @@ public abstract class HttpCallback<T> extends StringCallback {
 
     @Override
     public void onResponse(String response, int id) {
-        LogCat.e("RpcCallback", "onResponse, response = " + response);
+        LogCat.e("HttpCallback", "onResponse, response = " + response);
         if (view != null) {
             view.hideLoadingDialog();
         }

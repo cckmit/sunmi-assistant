@@ -19,11 +19,20 @@
     <string name="tip_connect_ipc_fail">无法连接摄像头</string>
     <string name="str_HD">高清</string>
     <string name="str_SD">标清</string>
+    <string name="str_FHD">超清</string>
     <string name="str_record_text">录制中：</string>
     <string name="str_go_home">返回首页</string>
     <string name="str_retry_add">重新添加</string>
     <string name="tip_no_ipc_found">没有发现摄像头</string>
     <string name="tip_check_ipc_wifi">请检查手机是否连接上摄像头WiFi，指示灯是否为「蓝色常亮」</string>
+    <string name="str_select_time">选择时间</string>
+    <string name="tip_video_quality_fhd">已切换至超清</string>
+    <string name="tip_video_quality_hd">已切换至高清</string>
+    <string name="tip_device_not_exist">设备不存在</string>
+    <string name="tip_already_bound">已经绑定，不要重复绑定</string>
+    <string name="tip_bound_by_others">已被其他用户绑定</string>
+    <string name="tip_device_offline">设备不在线</string>
+    <string name="tip_bind_timeout">绑定超时</string>
 
 </resources>
 

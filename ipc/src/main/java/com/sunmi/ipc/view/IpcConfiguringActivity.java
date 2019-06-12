@@ -7,8 +7,8 @@ import android.text.TextUtils;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;
-import com.sunmi.ipc.contract.WifiConfiguringContract;
-import com.sunmi.ipc.presenter.WifiConfiguringPresenter;
+import com.sunmi.ipc.contract.IpcConfiguringContract;
+import com.sunmi.ipc.presenter.IpcConfiguringPresenter;
 import com.sunmi.ipc.rpc.IpcConstants;
 
 import org.androidannotations.annotations.AfterViews;
@@ -27,7 +27,7 @@ import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.GotoActivityUtils;
-import sunmi.common.utils.log.LogCat;
+import sunmi.common.utils.NetworkUtils;
 import sunmi.common.view.dialog.CommonDialog;
 
 /**
@@ -35,8 +35,8 @@ import sunmi.common.view.dialog.CommonDialog;
  * Created by Bruce on 2019/3/31.
  */
 @EActivity(resName = "activity_ipc_configuring")
-public class IpcConfiguringActivity extends BaseMvpActivity<WifiConfiguringPresenter>
-        implements WifiConfiguringContract.View {
+public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresenter>
+        implements IpcConfiguringContract.View {
     @ViewById(resName = "tv_tip")
     TextView tvTip;
 
@@ -50,13 +50,22 @@ public class IpcConfiguringActivity extends BaseMvpActivity<WifiConfiguringPrese
 
     @AfterViews
     void init() {
-        mPresenter = new WifiConfiguringPresenter();
+        mPresenter = new IpcConfiguringPresenter();
         mPresenter.attachView(this);
         tvTip.setText(Html.fromHtml(getString(R.string.tip_keep_same_network)));
-        bind();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                bind();
+            }
+        }, 1000);
     }
 
     private void bind() {
+        if (!NetworkUtils.isNetworkAvailable(context)) {
+            configFailDialog(R.string.tip_set_fail, R.string.str_bind_net_error);
+            return;
+        }
         if (sunmiDevices != null) {
             for (SunmiDevice sunmiDevice : sunmiDevices) {
                 deviceIds.add(sunmiDevice.getDeviceid());
@@ -83,7 +92,7 @@ public class IpcConfiguringActivity extends BaseMvpActivity<WifiConfiguringPrese
                     }
                     configComplete();
                 }
-            }, 10000);
+            }, 30000);
         }
     }
 
@@ -108,7 +117,7 @@ public class IpcConfiguringActivity extends BaseMvpActivity<WifiConfiguringPrese
     public void didReceivedNotification(int id, Object... args) {
         if (args == null) return;
         ResponseBean res = (ResponseBean) args[0];
-        if (TextUtils.equals(res.getErrCode(), RpcErrorCode.WHAT_ERROR + "")) {
+        if (TextUtils.equals(res.getErrCode(), RpcErrorCode.RPC_COMMON_ERROR + "")) {
             configFailDialog(R.string.tip_set_fail, R.string.str_bind_net_error);
         } else if (id == IpcConstants.bindIpc) {
             try {
@@ -130,9 +139,9 @@ public class IpcConfiguringActivity extends BaseMvpActivity<WifiConfiguringPrese
     }
 
     private void configComplete() {
-        LogCat.e(TAG, "222222 device id is empty =" + deviceIds.isEmpty());
         if (deviceIds.isEmpty()) {
-            IpcConfigCompletedActivity_.intent(context).shopId(shopId).sunmiDevices(sunmiDevices).start();
+            IpcConfigCompletedActivity_.intent(context).shopId(shopId)
+                    .sunmiDevices(sunmiDevices).start();
             finish();
         }
     }
@@ -142,20 +151,18 @@ public class IpcConfiguringActivity extends BaseMvpActivity<WifiConfiguringPrese
         new CommonDialog.Builder(context)
                 .setTitle(titleRes)
                 .setMessage(messageRes)
-                .setCancelButton(R.string.str_quit_config,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                GotoActivityUtils.gotoMainActivity(context);
-                            }
-                        })
-                .setConfirmButton(R.string.str_retry,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                bind();
-                            }
-                        }).create().show();
+                .setCancelButton(R.string.str_quit_config, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        GotoActivityUtils.gotoMainActivity(context);
+                    }
+                })
+                .setConfirmButton(R.string.str_retry, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        bind();
+                    }
+                }).create().show();
     }
 
 }

@@ -1,23 +1,23 @@
 package com.sunmi.ipc.utils;
 
+import com.google.gson.Gson;
+import com.sunmi.ipc.model.IotcCmdBean;
 import com.tutk.IOTC.AVAPIs;
 import com.tutk.IOTC.IOTCAPIs;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import sunmi.common.utils.ByteUtils;
-import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 
 /**
  * iotc
  */
 public class IOTCClient {
+    private static String TAG = "IOTCClient";
 
     private static Callback callback;
     private static int SID = -1;
+    private static int avIndex = -1;
     private static int CMD_LIVE_START = 0x10;
     private static int CMD_LIVE_STOP = 0x11;
     private static int CMD_LIVE_START_AUDIO = 0x12;
@@ -29,12 +29,11 @@ public class IOTCClient {
 
 
     public static void init(String uid) {
-        LogCat.e("IOTCClient", "StreamClient init...");
-
+        LogCat.e(TAG, "StreamClient init...");
         int ret = IOTCAPIs.IOTC_Initialize2(0);
-        LogCat.e("IOTCClient", "IOTC_Initialize() ret = " + ret);
+        LogCat.e(TAG, "IOTC_Initialize() ret = " + ret);
         if (ret != IOTCAPIs.IOTC_ER_NoERROR) {
-            LogCat.e("IOTCClient", "IOTCAPIs_Device exit...!!");
+            LogCat.e(TAG, "IOTCAPIs_Device exit...!!");
             return;
         }
 
@@ -43,16 +42,16 @@ public class IOTCClient {
 
         SID = IOTCAPIs.IOTC_Get_SessionID();
         if (SID < 0) {
-            LogCat.e("IOTCClient", "IOTC_Get_SessionID error code, sid = " + SID);
+            LogCat.e(TAG, "IOTC_Get_SessionID error code, sid = " + SID);
             return;
         }
-        LogCat.e("IOTCClient", "Step 1: call IOTC_Get_SessionID, uid = " + uid);
+        LogCat.e(TAG, "Step 1: call IOTC_Get_SessionID, uid = " + uid);
         ret = IOTCAPIs.IOTC_Connect_ByUID_Parallel(uid, SID);
         if (ret < 0) {
-            LogCat.e("IOTCClient", "IOTC_Connect_ByUID_Parallel failed ret = " + ret);
+            LogCat.e(TAG, "IOTC_Connect_ByUID_Parallel failed ret = " + ret);
             return;
         }
-        LogCat.e("IOTCClient", "Step 2: call IOTC_Connect_ByUID_Parallel, uid = " + uid);
+        LogCat.e(TAG, "Step 2: call IOTC_Connect_ByUID_Parallel, uid = " + uid);
 
         String account = "admin";
         String password = "12345678";
@@ -61,13 +60,13 @@ public class IOTCClient {
         int[] pservType = new int[100];
         int[] bResend1 = new int[100];
 
-        int avIndex = AVAPIs.avClientStart2(SID, account, password,
+        avIndex = AVAPIs.avClientStart2(SID, account, password,
                 timeoutSec, pservType, channelId, bResend1);//chid用来传输音视频
         if (avIndex < 0) {
-            LogCat.e("IOTCClient", "avClientStartEx failed avIndex = " + avIndex);
+            LogCat.e(TAG, "avClientStartEx failed avIndex = " + avIndex);
             return;
         }
-        LogCat.e("IOTCClient", "Step 3: call avClientStartEx, avIndex = " + avIndex);
+        LogCat.e(TAG, "Step 3: call avClientStartEx, avIndex = " + avIndex);
         startPlay();
 
         Thread videoThread = new Thread(new VideoThread(avIndex), "Video Thread");
@@ -86,44 +85,25 @@ public class IOTCClient {
             LogCat.e("IOTCClient - audioThread:", e.getMessage());
             return;
         }
-
-        AVAPIs.avClientStop(avIndex);
-        LogCat.e("IOTCClient", "avClientStop OK");
-        IOTCAPIs.IOTC_Session_Close(SID);
-        LogCat.e("IOTCClient", "IOTC_Session_Close OK");
-        AVAPIs.avDeInitialize();
-        IOTCAPIs.IOTC_DeInitialize();
-        LogCat.e("IOTCClient", "StreamClient exit...");
+        close();
     }
 
-    private static String getPlayCommand(int resolution) {
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("msg_id", SpUtils.getUID() + "_" + System.currentTimeMillis());
-            JSONArray array = new JSONArray();
-            JSONObject item = new JSONObject();
-            item.put("cmd", CMD_LIVE_START);
-            item.put("channel", 1);
-            JSONObject param = new JSONObject();
-            param.put("resolution", resolution);
-            item.put("param", param);
-            array.put(item);
-            jsonObject.put("params", array);
-            return jsonObject.toString();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return "";
+    public static void close() {
+        if (avIndex < 0) return;
+        AVAPIs.avClientStop(avIndex);
+        LogCat.e(TAG, "avClientStop OK");
+        IOTCAPIs.IOTC_Session_Close(SID);
+        LogCat.e(TAG, "IOTC_Session_Close OK");
+        AVAPIs.avDeInitialize();
+        IOTCAPIs.IOTC_DeInitialize();
+        LogCat.e(TAG, "StreamClient exit...");
     }
 
     /**
      * 开始直播
      */
     public static void startPlay() {
-        String json = getPlayCommand(0);
-        LogCat.e("IOTCClient", "111111 start play json = " + json);
-        byte[] req = json.getBytes();
-        IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
+        changeValue(0);
     }
 
     /**
@@ -132,130 +112,79 @@ public class IOTCClient {
      * @param type 分辨率，0：超清，1：高清，2：标清
      */
     public static void changeValue(int type) {
-        String json = getPlayCommand(type);
-        LogCat.e("IOTCClient", "111111 changeValue json = " + json);
-        byte[] req = json.getBytes();
-        IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
+        IotcCmdBean cmd = new IotcCmdBean.Builder()
+                .setMsg_id(Utils.getMsgId())
+                .setCmd(CMD_LIVE_START)
+                .setChannel(1)
+                .setParam("resolution", type).builder();
+        cmdCall(cmd);
     }
 
-    private static String getPlaybackListCommand() {
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("msg_id", SpUtils.getUID() + "_" + System.currentTimeMillis());
-            JSONArray array = new JSONArray();
-            JSONObject item = new JSONObject();
-            item.put("cmd", CMD_PLAYBACK_LIST);
-            item.put("channel", 1);
-            JSONObject param = new JSONObject();
-            param.put("start_time", System.currentTimeMillis() / 1000);
-            param.put("end_time", System.currentTimeMillis() / 1000);
-            item.put("param", param);
-            array.put(item);
-            jsonObject.put("params", array);
-            return jsonObject.toString();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return "";
+    /**
+     * 停止直播参数
+     */
+    public static void stopLive() {
+        IotcCmdBean cmd = new IotcCmdBean.Builder()
+                .setMsg_id(Utils.getMsgId())
+                .setCmd(CMD_LIVE_STOP)
+                .setChannel(1).builder();
+        cmdCall(cmd);
     }
 
-    public static void getPlaybackList() {
-        String json = getPlaybackListCommand();
-        LogCat.e("IOTCClient", "111111 getPlaybackList json = " + json);
-        byte[] req = json.getBytes();
-        IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
-        getdata();
-    }
-
-    public static void getdata() {
-        byte[] buf = new byte[1024];
-        int actualLen = IOTCAPIs.IOTC_Session_Read(SID, buf, 1024, 10000, 0);
-        byte[] data = new byte[actualLen];
-        System.arraycopy(buf, 0, data, 0, actualLen);
-//        ByteUtils.byte2String(data);
-        LogCat.e("IOTCClient", "111111 getdata data = " + ByteUtils.byte2String(data));
-    }
-
-    private static String getStartPlaybackCommand(long startTime) {
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("msg_id", SpUtils.getUID() + "_" + System.currentTimeMillis());
-            JSONArray array = new JSONArray();
-            JSONObject item = new JSONObject();
-            item.put("cmd", CMD_PLAYBACK_START);
-            item.put("channel", 1);
-            JSONObject param = new JSONObject();
-            param.put("start_time", startTime);
-            item.put("param", param);
-            array.put(item);
-            jsonObject.put("params", array);
-            return jsonObject.toString();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return "";
+    public static void getPlaybackList(long start, long end) {
+        IotcCmdBean cmd = new IotcCmdBean.Builder()
+                .setMsg_id(Utils.getMsgId())
+                .setCmd(CMD_PLAYBACK_LIST)
+                .setChannel(1)
+                .setParam("start_time", start)
+                .setParam("end_time", end).builder();
+        cmdCall(cmd);
     }
 
     public static void startPlayback(long startTime) {
-        String json = getStartPlaybackCommand(startTime);
-        LogCat.e("IOTCClient", "111111 startPlayback json = " + json);
-        byte[] req = json.getBytes();
-        IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
-        getdata();
-    }
-
-    private static String getStopPlaybackCommand() {
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("msg_id", SpUtils.getUID() + "_" + System.currentTimeMillis());
-            JSONArray array = new JSONArray();
-            JSONObject item = new JSONObject();
-            item.put("cmd", CMD_PLAYBACK_STOP);
-            item.put("channel", 1);
-            item.put("param", new JSONObject());
-            array.put(item);
-            jsonObject.put("params", array);
-            return jsonObject.toString();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return "";
+        IotcCmdBean cmd = new IotcCmdBean.Builder()
+                .setMsg_id(Utils.getMsgId())
+                .setCmd(CMD_PLAYBACK_START)
+                .setChannel(1)
+                .setParam("start_time", startTime).builder();
+        cmdCall(cmd);
     }
 
     public static void stopPlayback() {
-        String json = getStopPlaybackCommand();
-        LogCat.e("IOTCClient", "111111 stopPlayback json = " + json);
-        byte[] req = json.getBytes();
-        IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
-        getdata();
-    }
-
-    private static String getPausePlaybackCommand(boolean isPause) {
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("msg_id", SpUtils.getUID() + "_" + System.currentTimeMillis());
-            JSONArray array = new JSONArray();
-            JSONObject item = new JSONObject();
-            item.put("cmd", CMD_PLAYBACK_STOP);
-            item.put("channel", 1);
-            JSONObject param = new JSONObject();
-            param.put("pause", isPause ? 1 : 0);
-            item.put("param", param);
-            array.put(item);
-            jsonObject.put("params", array);
-            return jsonObject.toString();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return "";
+        IotcCmdBean cmd = new IotcCmdBean.Builder()
+                .setMsg_id(Utils.getMsgId())
+                .setCmd(CMD_PLAYBACK_STOP)
+                .setChannel(1).builder();
+        cmdCall(cmd);
     }
 
     public static void pausePlayback(boolean isPause) {
-        String json = getPausePlaybackCommand(isPause);
-        LogCat.e("IOTCClient", "111111 pausePlayback json = " + json);
+        IotcCmdBean cmd = new IotcCmdBean.Builder()
+                .setMsg_id(Utils.getMsgId())
+                .setCmd(CMD_PLAYBACK_PAUSE)
+                .setChannel(1)
+                .setParam("pause", isPause ? 1 : 0).builder();
+        cmdCall(cmd);
+    }
+
+    private static void cmdCall(IotcCmdBean cmd) {
+        String json = new Gson().toJson(cmd);
+        LogCat.e(TAG, "111111 cmdCall json = " + json);
         byte[] req = json.getBytes();
         IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
-        getdata();
+        getCmdResponse();
+    }
+
+    private static void getCmdResponse() {
+        byte[] buf = new byte[1024];
+        int actualLen = IOTCAPIs.IOTC_Session_Read(SID, buf, 1024, 10000, 0);
+        if (actualLen > 0) {
+            byte[] data = new byte[actualLen];
+            System.arraycopy(buf, 0, data, 0, actualLen);
+            String result = ByteUtils.byte2String(data);
+            if (callback != null) callback.IOTCResult(result);
+            LogCat.e(TAG, "111111 getCmdResponse data = " + ByteUtils.byte2String(data));
+        }
     }
 
     public static class VideoThread implements Runnable {
@@ -270,7 +199,7 @@ public class IOTCClient {
 
         @Override
         public void run() {
-            LogCat.e("IOTCClient", Thread.currentThread().getName() + " VideoThread Start");
+            LogCat.e(TAG, Thread.currentThread().getName() + " VideoThread Start");
             AVAPIs av = new AVAPIs();
             byte[] frameInfo = new byte[FRAME_INFO_SIZE];
             byte[] videoBuffer = new byte[VIDEO_BUF_SIZE];
@@ -281,34 +210,36 @@ public class IOTCClient {
                 int[] frameNumber = new int[1];
                 int ret = av.avRecvFrameData2(avIndex, videoBuffer, VIDEO_BUF_SIZE, outBufSize,
                         outFrameSize, frameInfo, FRAME_INFO_SIZE, outFrmInfoBufSize, frameNumber);
-                if (ret == AVAPIs.AV_ER_DATA_NOREADY) {
+                if (ret == AVAPIs.AV_ER_DATA_NOREADY) {//缓存没数据等待10ms再读
                     try {
-                        Thread.sleep(30);
+                        Thread.sleep(10);
                         continue;
                     } catch (InterruptedException e) {
-                        LogCat.e("IOTCClient", e.getMessage());
+                        LogCat.e(TAG, e.getMessage());
                         break;
                     }
                 } else if (ret == AVAPIs.AV_ER_LOSED_THIS_FRAME) {
-                    LogCat.e("IOTCClient", "Lost video frame number[%d]" + frameNumber[0]);
+                    LogCat.e(TAG, "Lost video frame number[%d]" + frameNumber[0]);
                     continue;
                 } else if (ret == AVAPIs.AV_ER_INCOMPLETE_FRAME) {
-                    LogCat.e("IOTCClient", "Incomplete video frame number = " + frameNumber[0]);
+                    LogCat.e(TAG, "Incomplete video frame number = " + frameNumber[0]);
                     continue;
                 } else if (ret == AVAPIs.AV_ER_SESSION_CLOSE_BY_REMOTE) {
-                    LogCat.e("IOTCClient", "AV_ER_SESSION_CLOSE_BY_REMOTE");
+                    LogCat.e(TAG, "AV_ER_SESSION_CLOSE_BY_REMOTE");
                     break;
                 } else if (ret == AVAPIs.AV_ER_REMOTE_TIMEOUT_DISCONNECT) {
-                    LogCat.e("IOTCClient", "AV_ER_REMOTE_TIMEOUT_DISCONNECT");
+                    LogCat.e(TAG, "AV_ER_REMOTE_TIMEOUT_DISCONNECT");
                     break;
                 } else if (ret == AVAPIs.AV_ER_INVALID_SID) {
-                    LogCat.e("IOTCClient", "Session cant be used anymore");
+                    LogCat.e(TAG, "Session cant be used anymore");
                     break;
                 }
-                byte[] data = new byte[ret];
-                System.arraycopy(videoBuffer, 0, data, 0, ret);
-                if (callback != null) callback.onVideoReceived(data);
-//                LogCat.e("IOTCClient", "555555vvv VIDEO received ret = " + ret);
+//                LogCat.e(TAG, "555555vvv VIDEO received ret = " + ret);
+                if (ret > 0) {
+                    byte[] data = new byte[ret];
+                    System.arraycopy(videoBuffer, 0, data, 0, ret);
+                    if (callback != null) callback.onVideoReceived(data);
+                }
             }
         }
     }
@@ -325,51 +256,43 @@ public class IOTCClient {
 
         @Override
         public void run() {
-            LogCat.e("IOTCClient", Thread.currentThread().getName() + " AudioThread Start");
+            LogCat.e(TAG, Thread.currentThread().getName() + " AudioThread Start");
 
             AVAPIs av = new AVAPIs();
             byte[] frameInfo = new byte[FRAME_INFO_SIZE];
             byte[] audioBuffer = new byte[AUDIO_BUF_SIZE];
             while (true) {
-                int ret = av.avCheckAudioBuf(avIndex);
-
-                if (ret < 0) {// Same error codes as below
-                    LogCat.e("IOTCClient", Thread.currentThread().getName()
-                            + " avCheckAudioBuf(),failed: = " + ret);
-                    break;
-                } else if (ret < 3) {
+                int[] frameNumber = new int[1];
+                int ret = av.avRecvAudioData(avIndex, audioBuffer,
+                        AUDIO_BUF_SIZE, frameInfo, FRAME_INFO_SIZE, frameNumber);
+                if (ret == AVAPIs.AV_ER_DATA_NOREADY) {//缓存没数据等待10ms再读
                     try {
-                        Thread.sleep(120);
+                        Thread.sleep(10);
                         continue;
                     } catch (InterruptedException e) {
-                        LogCat.e("IOTCClient", e.getMessage());
+                        LogCat.e(TAG, e.getMessage());
                         break;
                     }
-                }
-
-                int[] frameNumber = new int[1];
-                ret = av.avRecvAudioData(avIndex, audioBuffer,
-                        AUDIO_BUF_SIZE, frameInfo, FRAME_INFO_SIZE, frameNumber);
-                if (ret == AVAPIs.AV_ER_SESSION_CLOSE_BY_REMOTE) {
-                    LogCat.e("IOTCClient", Thread.currentThread().getName() + " AV_ER_SESSION_CLOSE_BY_REMOTE");
+                } else if (ret == AVAPIs.AV_ER_SESSION_CLOSE_BY_REMOTE) {
+                    LogCat.e(TAG, "AudioThread - AV_ER_SESSION_CLOSE_BY_REMOTE");
                     break;
                 } else if (ret == AVAPIs.AV_ER_REMOTE_TIMEOUT_DISCONNECT) {
-                    LogCat.e("IOTCClient", Thread.currentThread().getName() + " AV_ER_REMOTE_TIMEOUT_DISCONNECT");
+                    LogCat.e(TAG, "AudioThread - AV_ER_REMOTE_TIMEOUT_DISCONNECT");
                     break;
                 } else if (ret == AVAPIs.AV_ER_INVALID_SID) {
-                    LogCat.e("IOTCClient", Thread.currentThread().getName() + " AV_ER_INVALID_SID");
+                    LogCat.e(TAG, "AudioThread - AV_ER_INVALID_SID");
                     break;
                 } else if (ret == AVAPIs.AV_ER_LOSED_THIS_FRAME) {
-                    LogCat.e("IOTCClient", Thread.currentThread().getName() + " AV_ER_LOSED_THIS_FRAME");
+                    LogCat.e(TAG, "AudioThread - AV_ER_LOSED_THIS_FRAME");
                     continue;
                 }
+//                LogCat.e(TAG, "555555aaa AUDIO received ret = " + ret);
                 if (ret < 0) return;
                 byte[] data = new byte[ret];
                 System.arraycopy(audioBuffer, 0, data, 0, ret);
                 if (callback != null) callback.onAudioReceived(data);
-//                LogCat.e("IOTCClient", "555555aaa AUDIO received ret = " + ret);
             }
-            LogCat.e("IOTCClient", Thread.currentThread().getName() + "  Exit");
+            LogCat.e(TAG, "AudioThread - Exit");
         }
     }
 
@@ -381,6 +304,8 @@ public class IOTCClient {
         void onVideoReceived(byte[] videoBuffer);
 
         void onAudioReceived(byte[] audioBuffer);
+
+        void IOTCResult(String result);
     }
 
 }

@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import sunmi.common.utils.log.LogHelper;
+import sunmi.common.utils.log.LogCat;
 
 public class DateTimeUtils {
     private DateTimeUtils() {
@@ -41,6 +41,21 @@ public class DateTimeUtils {
         strDateTime = mSimpleDateFormat.format(new Date());
 
         return strDateTime;
+    }
+
+    /**
+     * 秒转换为指定格式的日期
+     *
+     * @param second
+     * @param patten
+     * @return
+     */
+    public static String secondToDate(long second, String patten) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(second * 1000);//转换为毫秒
+        Date date = calendar.getTime();
+        SimpleDateFormat format = new SimpleDateFormat(patten, Locale.getDefault());
+        return format.format(date);
     }
 
     public enum DateTimePattern {
@@ -402,8 +417,7 @@ public class DateTimeUtils {
                 date = dateFormat.parse(dateYMStr);
             }
         } catch (ParseException e) {
-            LogHelper.exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
-                    "ParseException:" + e.getMessage(), true);
+            LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage(), e);
         }
         return date;
     }
@@ -424,8 +438,7 @@ public class DateTimeUtils {
                 date = dateFormat.parse(dateStr);
             }
         } catch (ParseException e) {
-            LogHelper.exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
-                    "ParseException:" + e.getMessage(), true);
+            LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage(), e);
         }
         return date;
     }
@@ -445,8 +458,7 @@ public class DateTimeUtils {
                 date = dateFormat.parse(dateStr);
             }
         } catch (ParseException e) {
-            LogHelper.exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
-                    "ParseException:" + e.getMessage(), true);
+            LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage(), e);
         }
         return date;
     }
@@ -465,8 +477,7 @@ public class DateTimeUtils {
                     Locale.getDefault());
             date = dateFormat.parse(dateTimeStr);
         } catch (ParseException e) {
-            LogHelper.exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
-                    "ParseException:" + e.getMessage(), true);
+            LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage(), e);
         }
         return date;
     }

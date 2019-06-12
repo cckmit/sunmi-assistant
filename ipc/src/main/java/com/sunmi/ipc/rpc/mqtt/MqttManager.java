@@ -1,7 +1,6 @@
 package com.sunmi.ipc.rpc.mqtt;
 
 import android.os.Build;
-import android.text.TextUtils;
 
 import com.sunmi.ipc.rpc.IPCCloudApi;
 
@@ -29,6 +28,7 @@ import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.ToastUtils;
+import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 
 public class MqttManager {
@@ -63,16 +63,20 @@ public class MqttManager {
         return mqttManager;
     }
 
-    public static String getClientId() {
+    public boolean isConnect() {
+        return mqttClient.isConnected();
+    }
+
+    String getClientId() {
         return clientId;
     }
 
-    public int getCode(String msgID) {
+    int getOpCode(String msgID) {
         Integer code = messages.get(msgID);
         return code != null ? code : -1;
     }
 
-    public void removeMessage(String msgID) {
+    void removeMessage(String msgID) {
         messages.remove(msgID);
     }
 
@@ -115,13 +119,13 @@ public class MqttManager {
         options = new MqttConnectOptions();
         options.setUserName(resp.getUsername());
         options.setPassword(resp.getPassword().toCharArray());//解密
-        options.setAutomaticReconnect(true);
+        options.setAutomaticReconnect(false);
         options.setCleanSession(true);
         options.setConnectionTimeout(10);
         options.setKeepAliveInterval(10);
         //setWill方法，如果项目中需要知道客户端是否掉线可以调用该方法。设置最终端口的通知消息
 //        options.setWill(topic, "close".getBytes(), 2, true);
-        options.setSocketFactory(new SSLSocketFactoryGenerator().generate());//设置证书校验
+        options.setSocketFactory(new SSLSocketFactoryGenerator().generate());//设置证书校验 //todo ssl
         mqttClient.setCallback(getSMMqttCallback()); //发布订阅回调
         mqttConnect();//开始连接
     }
@@ -142,7 +146,7 @@ public class MqttManager {
             return;
         }
         try {
-            mqttClient.connect(options, null, new IMqttActionListener() {
+            mqttClient.connect(options, BaseApplication.getContext(), new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     isConnecting = false;
@@ -200,8 +204,8 @@ public class MqttManager {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     LogCat.e(TAG, "mqtt Subscribed token success");
-                    if (!isRegister)
-                        pubRegister(clientId);
+//                    if (!isRegister)
+                    pubRegister(clientId);
                 }
 
                 @Override
@@ -229,16 +233,12 @@ public class MqttManager {
             for (Map.Entry<String, String> entry : map.entrySet()) {
                 param.put(entry.getKey(), entry.getValue());
             }
-            RequestBean requestBean = new RequestBean(getMsgId(),
+            RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                     "0x0056", param);
             MqttManager.getInstance().pubRegisterMessage(requestBean.serialize());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    private String getMsgId() {
-        return SpUtils.getUID() + System.currentTimeMillis();
     }
 
     /**
@@ -280,7 +280,7 @@ public class MqttManager {
                 || mqttClient == null || !mqttClient.isConnected()) {
             LogCat.e(TAG, "pubByPassMessage  no net or client is null ");
             ResponseBean res = new ResponseBean();
-            res.setErrCode(RpcErrorCode.WHAT_ERROR + "");
+            res.setErrCode(RpcErrorCode.RPC_COMMON_ERROR + "");
 //            BaseNotification.newInstance().postNotificationName(
 //                    NotificationConstant.dismissDialogException, res);
             return;

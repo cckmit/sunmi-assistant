@@ -16,6 +16,7 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.LocaleList;
 import android.support.v4.app.NotificationCompat;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
@@ -36,6 +37,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Locale;
 
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.utils.log.LogHelper;
 
 public class CommonHelper {
@@ -45,6 +47,14 @@ public class CommonHelper {
     private static final int MAX_FRAME_HEIGHT = 360;
 
     private CommonHelper() {
+    }
+
+    public static String getLanguage() {
+        Locale locale;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            locale = LocaleList.getDefault().get(0);
+        } else locale = Locale.getDefault();
+        return locale.getLanguage().toLowerCase() + "_" + locale.getCountry().toLowerCase();
     }
 
     /**
@@ -68,12 +78,9 @@ public class CommonHelper {
                 if (field.getName().equalsIgnoreCase("fingerprint")) {
                     deviceInfo += field.getName() + ":" + field.get(null).toString();
                 }
-            } catch (IllegalArgumentException e) {
-                LogHelper.exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
+            } catch (Exception e) {
+                LogHelper.exportLog(CommonHelper.getCName(new Exception()),
                         "IllegalArgumentException:" + e.getMessage(), true);
-            } catch (IllegalAccessException e) {
-                LogHelper.exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()), "IllegalAccessException:" + e.getMessage(),
-                        true);
             }
         }
 
@@ -103,8 +110,7 @@ public class CommonHelper {
         try {
             mPackageInfo = mPackageManager.getPackageInfo(context.getPackageName(), PackageManager.GET_ACTIVITIES);
         } catch (NameNotFoundException e) {
-            LogHelper
-                    .exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()), "NameNotFoundException:" + e.getMessage(), true);
+            LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage());
         }
 
         if (mPackageInfo != null) {
@@ -260,8 +266,7 @@ public class CommonHelper {
                 result = true;
             }
         } catch (Exception e) {
-            LogHelper.exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
-                    "Exception:" + e.getMessage(), true);
+            LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage());
         }
 
         return result;
@@ -297,9 +302,7 @@ public class CommonHelper {
         try {
             mPackageInfo = mPackageManager.getPackageInfo(context.getPackageName(), PackageManager.GET_ACTIVITIES);
         } catch (NameNotFoundException e) {
-            LogHelper
-                    .exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
-                            "NameNotFoundException:" + e.getMessage(), true);
+            LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage());
         }
 
         if (mPackageInfo != null) {
@@ -323,9 +326,7 @@ public class CommonHelper {
         try {
             mPackageInfo = mPackageManager.getPackageInfo(context.getPackageName(), PackageManager.GET_ACTIVITIES);
         } catch (NameNotFoundException e) {
-            LogHelper
-                    .exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
-                            "NameNotFoundException:" + e.getMessage(), true);
+            LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage());
         }
 
         if (mPackageInfo != null) {
@@ -349,9 +350,7 @@ public class CommonHelper {
         try {
             mPackageInfo = mPackageManager.getPackageInfo(pContext.getPackageName(), PackageManager.GET_ACTIVITIES);
         } catch (NameNotFoundException e) {
-            LogHelper
-                    .exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
-                            "NameNotFoundException:" + e.getMessage(), true);
+            LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage(), e);
         }
 
         if (mPackageInfo != null) {
@@ -450,8 +449,7 @@ public class CommonHelper {
         try {
             myFileUrl = new URL(url);
         } catch (MalformedURLException e) {
-            LogHelper.exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
-                    "Exception:" + e.getMessage(), true);
+            LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage(), e);
         }
 
         try {
@@ -463,8 +461,7 @@ public class CommonHelper {
             bitmap = BitmapFactory.decodeStream(is);
             is.close();
         } catch (IOException e) {
-            LogHelper.exportLog(CommonHelper.getCName(new Exception()), CommonHelper.getMName(new Exception()),
-                    "Exception:" + e.getMessage(), true);
+            LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage(), e);
         }
         return bitmap;
     }

@@ -77,7 +77,7 @@ public abstract class BaseLocalApi extends BaseApi {
                 LogCat.e(TAG, "execute fail: e = " + e);
                 errorTip(BaseApplication.getContext());
                 ResponseBean res = new ResponseBean();
-                res.setErrCode(RpcErrorCode.WHAT_ERROR + "");
+                res.setErrCode(RpcErrorCode.RPC_COMMON_ERROR + "");
                 BaseNotification.newInstance().postNotificationName(opCode, res);
                 onFail(res);
             }

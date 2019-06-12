@@ -13,7 +13,6 @@
 
 
     <application>
-        <activity android:name=".view.IPCConfigActivity_" />
         <activity android:name=".view.WifiConfigActivity_" />
         <activity
             android:name=".view.IpcConfiguringActivity_"

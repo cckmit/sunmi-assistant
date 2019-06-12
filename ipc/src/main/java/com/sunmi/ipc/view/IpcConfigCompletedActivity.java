@@ -47,6 +47,8 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     @Extra
     String shopId;
     @Extra
+    boolean isSunmiLink;
+    @Extra
     ArrayList<SunmiDevice> sunmiDevices;
 
     private List<SunmiDevice> list = new ArrayList<>();
@@ -68,7 +70,6 @@ public class IpcConfigCompletedActivity extends BaseActivity {
             }
         }
         list = sunmiDevices;
-
         initList();
     }
 
@@ -86,8 +87,11 @@ public class IpcConfigCompletedActivity extends BaseActivity {
 
     @Click(resName = "btn_retry")
     void retryClick() {
-        StartConfigSMDeviceActivity_.intent(context)
-                .deviceType(CommonConstants.TYPE_IPC).shopId(shopId).start();
+        if (isSunmiLink) {
+            setResult(RESULT_OK);
+        } else
+            StartConfigSMDeviceActivity_.intent(context)
+                    .deviceType(CommonConstants.TYPE_IPC).shopId(shopId).start();
         finish();
     }
 
@@ -103,7 +107,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                 holder.getView(R.id.tv_adjust).setVisibility(View.GONE);
                 holder.setImageResource(R.id.iv_device, SunmiDevUtils.setSearchLogo(device.getModel()));
                 if (device.getStatus() == 1) {
-                    holder.setText(R.id.tv_status, "添加成功");
+                    holder.setText(R.id.tv_status, getString(R.string.str_add_success));
                     holder.setImageResource(R.id.iv_status, R.mipmap.ic_done);
                     if (TextUtils.equals("FS1", device.getModel())) {
                         holder.getView(R.id.tv_adjust).setVisibility(View.VISIBLE);
@@ -115,17 +119,19 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                         });
                     }
                 } else {
-                    String errStr = "绑定失败";
+                    String errStr = getString(R.string.str_bind_fail);
                     if (device.getStatus() == 5501) {
-                        errStr = "设备不存在";
+                        errStr = getString(R.string.tip_device_not_exist);
                     } else if (device.getStatus() == 5508 || device.getStatus() == 5509) {
-                        errStr = "已经绑定，不要重复绑定";
+                        errStr = getString(R.string.tip_already_bound);
                     } else if (device.getStatus() == 5510) {
-                        errStr = "已被其他用户绑定";
+                        errStr = getString(R.string.tip_bound_by_others);
                     } else if (device.getStatus() == 5511) {
-                        errStr = "设备不在线";
+                        errStr = getString(R.string.tip_device_offline);
+                    } else if (device.getStatus() == 5013) {
+                        errStr = "错误的商户id或者店铺id";
                     } else if (device.getStatus() == RpcErrorCode.RPC_ERR_TIMEOUT) {
-                        errStr = "绑定超时";
+                        errStr = getString(R.string.tip_bind_timeout);
                     }
                     holder.setText(R.id.tv_status, errStr);
                     holder.setImageResource(R.id.iv_status, R.mipmap.ic_error);

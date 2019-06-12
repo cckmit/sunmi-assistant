@@ -7,10 +7,14 @@ import android.view.Surface;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import sunmi.common.base.BaseApplication;
 import sunmi.common.utils.ThreadPool;
+import sunmi.common.utils.ToastUtils;
+import sunmi.common.utils.log.LogCat;
 
 /**
  * Description:视频解析
@@ -32,6 +36,8 @@ public class H264Decoder {
 
     private int fps = 30;
 
+    private MediaFormat format;
+
     private ByteBuffer[] inputBuffers;
     private ByteBuffer[] outputBuffers;
     private MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
@@ -48,7 +54,8 @@ public class H264Decoder {
     }
 
     public void stopRunning() {
-        videoDataQueue.clear();
+        if (videoDataQueue != null)
+            videoDataQueue.clear();
     }
 
     /**
@@ -74,6 +81,7 @@ public class H264Decoder {
 
         } catch (Exception e) {
             e.printStackTrace();
+            Log.e("H264Decoder", "decode fail, data = " + Arrays.toString(data));
         }
     }
 
@@ -84,48 +92,63 @@ public class H264Decoder {
      * 23、24位是sps长度，sps数据之后的2、3位是pps长度
      */
     private void decodeHeader(byte[] data) {
-        //初始化编码器
-        MediaFormat format = MediaFormat.createVideoFormat("video/avc", VIDEO_WIDTH, VIDEO_HEIGHT);
+        //初始化解码器
+        initFormat(data);
+        initMediaCodec();
+        ThreadPool.getCachedThreadPool().submit(new DecodeH264Thread());//开启解码线程
+    }
+
+    private void initFormat(byte[] data) {
+        format = MediaFormat.createVideoFormat("video/avc", VIDEO_WIDTH, VIDEO_HEIGHT);
         //获取h264中的pps及sps数据
         int spsLen = byteToInt(new byte[]{data[22], data[23]});
         byte[] spsHeader = new byte[spsLen + 4];
         System.arraycopy(h264Header, 0, spsHeader, 0, h264Header.length);
         System.arraycopy(data, 24, spsHeader, h264Header.length, spsLen);
-        byte[] ppsHeader = new byte[spsLen + 4];
         int ppsLen = byteToInt(new byte[]{data[spsLen + 24 + 1], data[spsLen + 24 + 2]});
+        byte[] ppsHeader = new byte[ppsLen + 4];
         System.arraycopy(h264Header, 0, ppsHeader, 0, h264Header.length);
         System.arraycopy(data, spsLen + 24 + 3, ppsHeader, h264Header.length, ppsLen);
 
         format.setByteBuffer("csd-0", ByteBuffer.wrap(spsHeader));
         format.setByteBuffer("csd-1", ByteBuffer.wrap(ppsHeader));
         format.setInteger(MediaFormat.KEY_FRAME_RATE, fps);
+    }
 
-        try {
-            initMediaCodec(format);
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void release() {
+        stopRunning();
+        isRunning = false;
+        if (mediaCodec != null) {
+            try {
+                mediaCodec.stop();
+                mediaCodec.release();
+                mediaCodec = null;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    private void initMediaCodec(MediaFormat format) throws IOException {
-        if (mediaCodec != null) {
-            mediaCodec.stop();
-            mediaCodec.release();
-            mediaCodec = null;
+    public synchronized void initMediaCodec() {
+        release();
+        try {
+            mediaCodec = MediaCodec.createDecoderByType("video/avc");
+            if (mediaCodec == null || format == null || surface == null) {
+                ToastUtils.toastForShort(BaseApplication.getContext(), "播放失败，清重试");
+                return;
+            }
+            LogCat.e("h264", "99999999 surface view = " + surface.isValid());
+            mediaCodec.configure(format, surface, null, 0);
+            mediaCodec.start();
+            inputBuffers = mediaCodec.getInputBuffers();
+            outputBuffers = mediaCodec.getOutputBuffers();
+            frameCount = 0;
+            deltaTime = 0;
+            isRunning = true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            ToastUtils.toastForShort(BaseApplication.getContext(), "播放失败，清重试");
         }
-        mediaCodec = MediaCodec.createDecoderByType("video/avc");
-        if (mediaCodec == null) {
-            return;
-        }
-
-        mediaCodec.configure(format, surface, null, 0);
-        mediaCodec.start();
-        inputBuffers = mediaCodec.getInputBuffers();
-        outputBuffers = mediaCodec.getOutputBuffers();
-        frameCount = 0;
-        deltaTime = 0;
-        isRunning = true;
-        ThreadPool.getCachedThreadPool().submit(new DecodeH264Thread());//开启解码线程
     }
 
     /**
@@ -168,6 +191,7 @@ public class H264Decoder {
                     }
 
                     int outIndex = mediaCodec.dequeueOutputBuffer(info, 0);
+                    //LogCat.e("H264Decoder", "555555vvv VIDEO play");
                     switch (outIndex) {
                         case MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED:
                             outputBuffers = mediaCodec.getOutputBuffers();

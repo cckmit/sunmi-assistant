@@ -1,10 +1,9 @@
-package com.sunmi.ipc.utils;
+package sunmi.common.utils;
 
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Build;
 import android.support.annotation.IntDef;
-import android.support.annotation.RequiresApi;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -12,10 +11,7 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * Created by YangShiJie on 2019/4/29.
  */
-public class AudioMngHelper {
-    private final String TAG = "AudioMngHelper";
-    private final boolean OpenLog = true;
-
+public class VolumeHelper {
     private AudioManager audioManager;
     private int NOW_AUDIO_TYPE = TYPE_MUSIC;
     private int NOW_FLAG = FLAG_NOTHING;
@@ -50,7 +46,7 @@ public class AudioMngHelper {
      *
      * @param context 上下文
      */
-    public AudioMngHelper(Context context) {
+    public VolumeHelper(Context context) {
         audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
     }
 
@@ -77,7 +73,7 @@ public class AudioMngHelper {
      * @param step step
      * @return this
      */
-    public AudioMngHelper setVoiceStep100(int step) {
+    public VolumeHelper setVoiceStep100(int step) {
         VOICE_STEP_100 = step;
         return this;
     }
@@ -88,7 +84,7 @@ public class AudioMngHelper {
      * @param type
      * @return
      */
-    public AudioMngHelper setAudioType(@TYPE int type) {
+    public VolumeHelper setAudioType(@TYPE int type) {
         NOW_AUDIO_TYPE = type;
         return this;
     }
@@ -99,17 +95,17 @@ public class AudioMngHelper {
      * @param flag
      * @return
      */
-    public AudioMngHelper setFlag(@FLAG int flag) {
+    public VolumeHelper setFlag(@FLAG int flag) {
         NOW_FLAG = flag;
         return this;
     }
 
-    public AudioMngHelper addVoiceSystem() {
+    public VolumeHelper addVoiceSystem() {
         audioManager.adjustStreamVolume(NOW_AUDIO_TYPE, AudioManager.ADJUST_RAISE, NOW_FLAG);
         return this;
     }
 
-    public AudioMngHelper subVoiceSystem() {
+    public VolumeHelper subVoiceSystem() {
         audioManager.adjustStreamVolume(NOW_AUDIO_TYPE, AudioManager.ADJUST_LOWER, NOW_FLAG);
         return this;
     }
@@ -158,10 +154,10 @@ public class AudioMngHelper {
 
     //取消静音
     public void unMute() {
-        if (Build.VERSION.SDK_INT >Build.VERSION_CODES.M){
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
             audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_MUTE,
                     AudioManager.FLAG_SHOW_UI);  //23以后的版本用这个
-        }else {
+        } else {
             audioManager.setStreamMute(AudioManager.STREAM_MUSIC, true);//API 23
         }
         audioManager.setMicrophoneMute(true);
@@ -169,12 +165,13 @@ public class AudioMngHelper {
 
     //静音
     public void mute() {
-        if (Build.VERSION.SDK_INT >Build.VERSION_CODES.M){
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
             audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_UNMUTE,
                     AudioManager.FLAG_SHOW_UI);  //23以后的版本用这个
-        }else {
+        } else {
             audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);//API 23
         }
         audioManager.setMicrophoneMute(false);
     }
+
 }

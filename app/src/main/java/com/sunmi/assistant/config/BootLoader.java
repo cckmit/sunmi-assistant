@@ -1,12 +1,16 @@
 package com.sunmi.assistant.config;
 
+import android.app.Application;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
 import com.sunmi.apmanager.config.ApConfig;
 import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.utils.DBUtils;
 import com.sunmi.apmanager.utils.FileHelper;
+import com.sunmi.cloudprinter.config.PrinterConfig;
 import com.sunmi.ipc.config.IpcConfig;
 import com.sunmi.sunmiservice.SunmiServiceConfig;
 import com.tencent.bugly.crashreport.CrashReport;
@@ -33,7 +37,6 @@ import sunmi.common.utils.log.LogCat;
  */
 public class BootLoader {
     private Context context;
-//    private RefWatcher refWatcher;
 
     public BootLoader(Context context) {
         this.context = context;
@@ -45,6 +48,7 @@ public class BootLoader {
         new ApConfig().init(context, env);
         new SunmiServiceConfig().init(context, env);
         new IpcConfig().init(context, env);
+        new PrinterConfig().init(context, env);
 
         LogCat.init(!TextUtils.equals(env, ApConfig.ENV_RELEASE));//log 开关
 
@@ -53,11 +57,12 @@ public class BootLoader {
         //初始化创建数据库
         DBUtils.initDb(context);
         captureUnknownException();
-//        refWatcher = LeakCanary.install(context);
+        //内存监测
+//        LeakCanary.install((Application) context);
         //bugly
         CrashReport.initCrashReport(context, ApConfig.BUGLY_ID, true);
         CrashReport.setUserId(SpUtils.getUID());
-//trustAllCerts
+        //trustAllCerts
         handleSSLHandshake();
     }
 
@@ -66,11 +71,6 @@ public class BootLoader {
         UnknownException mUnknownException = UnknownException.getInstance();
         mUnknownException.init(context, AppConfig.isLogSave);
     }
-
-//    public static RefWatcher getRefWatcher(Context context) {
-//        MyApplication application = (MyApplication) context.getApplicationContext();
-//        return application.refWatcher;
-//    }
 
     /**
      * Glide加载https部分失败，设置信任证书

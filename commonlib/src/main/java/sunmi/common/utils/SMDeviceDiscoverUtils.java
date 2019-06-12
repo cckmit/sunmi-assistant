@@ -32,7 +32,7 @@ public class SMDeviceDiscoverUtils {
     //本机发送的data
     private static String data = "{\"reserve\":\"111\"}";
     private static byte[] dataByte = SafeUtils.encodeBase64ToByte(data);
-    private static byte[] baseLength = ByteUtils.intToByte2(dataByte.length);
+    private static byte[] baseLength = ByteUtils.intToByte2L(dataByte.length);
     //header：4字节
     private static final byte[] HEADER = {(byte) 0xFF, (byte) 0xFF, 0x33, (byte) 0xFF};
     //协议版本号：1字节

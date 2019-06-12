@@ -15,10 +15,11 @@ public interface SetPrinterContract {
 
         void initRouter(Router router);
 
-        void hideProgressBar();
+//        void hideProgressBar();
 
         void setSn(String sn);
 
+        void wifiSetSuccess();
     }
 
     interface Presenter {

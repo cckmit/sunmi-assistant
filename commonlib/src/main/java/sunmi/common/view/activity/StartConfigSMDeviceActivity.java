@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckedTextView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,6 +20,7 @@ import org.androidannotations.annotations.ViewById;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.ViewUtils;
 import sunmi.common.view.TitleBarView;
 
 /**
@@ -39,6 +41,8 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
     TextView tvTip3;
     @ViewById(resName = "tv_config_tip")
     TextView tvConfigTip;
+    @ViewById(resName = "ctv_privacy")
+    CheckedTextView ctvPrivacy;
 
     @Extra
     String shopId;
@@ -53,14 +57,22 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
             ivImage.setImageResource(R.mipmap.ic_device_config_ap);
             tvTip1.setText(R.string.str_config_tip_ap);
             tvTip2.setText(Html.fromHtml(getString(R.string.str_config_tip_ap_1)));
+            tvTip3.setText(Html.fromHtml(getString(R.string.str_config_tip_ap_2)));
             tvConfigTip.setVisibility(View.GONE);
         } else if (deviceType == CommonConstants.TYPE_IPC) {
             titleBar.setAppTitle(R.string.str_title_ipc_set);
             ivImage.setImageResource(R.mipmap.ic_device_config_ipc);
             tvTip1.setText(R.string.str_config_tip_ipc);
             tvTip2.setText(Html.fromHtml(getString(R.string.str_config_tip_ipc_1)));
+            tvTip3.setText(Html.fromHtml(getString(R.string.str_config_tip_ipc_2)));
+        } else if (deviceType == CommonConstants.TYPE_PRINTER) {
+            titleBar.setAppTitle(R.string.str_title_printer_set);
+            ivImage.setImageResource(R.mipmap.ic_device_config_printer);
+            tvTip1.setText(R.string.str_config_tip_printer);
+            tvTip2.setText(Html.fromHtml(getString(R.string.str_config_tip_printer_1)));
+            tvTip3.setText(Html.fromHtml(getString(R.string.str_config_tip_printer_2)));
         }
-        tvTip3.setText(Html.fromHtml(getString(R.string.str_config_tip_ap_2)));
+        ViewUtils.setPrivacy(this, ctvPrivacy, R.color.white_40a, false);
     }
 
     @Click(resName = "tv_config_tip")
@@ -70,18 +82,31 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
 
     @Click(resName = "btn_start")
     public void nextClick(View v) {
+        if (!ctvPrivacy.isChecked()) {
+            shortTip(R.string.tip_agree_protocol);
+            return;
+        }
         if (deviceType == CommonConstants.TYPE_AP) {
             startPrimaryRouteSearchActivity();
         } else if (deviceType == CommonConstants.TYPE_IPC) {
             try {
-                Class<?> mainActivity = Class.forName("com.sunmi.ipc.view.IPCSearchActivity_");
-                Intent intent = new Intent(context, mainActivity);
+                Class<?> ipcSearchActivity = Class.forName("com.sunmi.ipc.view.IPCSearchActivity_");
+                Intent intent = new Intent(context, ipcSearchActivity);
                 intent.putExtra("shopId", shopId);
                 context.startActivity(intent);
             } catch (Exception e) {
                 e.printStackTrace();
             }
 //            SearchSMDeviceActivity_.intent(context).deviceType(deviceType).start();
+        } else if (deviceType == CommonConstants.TYPE_PRINTER) {
+            try {
+                Class<?> printerSearchActivity = Class.forName("com.sunmi.cloudprinter.ui.Activity.PrinterSearchActivity_");
+                Intent intent = new Intent(context, printerSearchActivity);
+                intent.putExtra("shopId", shopId);
+                context.startActivity(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

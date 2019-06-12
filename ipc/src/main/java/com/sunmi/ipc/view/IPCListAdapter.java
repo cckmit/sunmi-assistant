@@ -3,7 +3,6 @@ package com.sunmi.ipc.view;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,10 +47,8 @@ public class IPCListAdapter extends RecyclerView.Adapter<IPCListAdapter.ViewHold
         holder.itemView.setTag(position);
         setChecked(holder, position);
         holder.ivDevice.setImageResource(SunmiDevUtils.setSearchLogo(data.get(position).getModel()));
-        if (TextUtils.isEmpty(data.get(position).getName())) {
-            holder.tvName.setText(String.format("%s-%s", data.get(position).getModel(), data.get(position).getDeviceid()));
-        } else
-            holder.tvName.setText(data.get(position).getModel());
+        holder.tvName.setText(data.get(position).getModel());
+        holder.tvSn.setText(data.get(position).getDeviceid());
     }
 
     private void setChecked(@NonNull ViewHolder holder, int position) {
@@ -61,16 +58,6 @@ public class IPCListAdapter extends RecyclerView.Adapter<IPCListAdapter.ViewHold
             holder.checkBox.setEnabled(true);
         }
     }
-
-//    private void setIcon(@NonNull ViewHolder holder, int position) {
-//        if (TextUtils.equals("FS1", data.get(position).getModel())) {
-//            holder.ivDevice.setImageResource(R.mipmap.item_fs);
-//        } else if (TextUtils.equals("SS1", data.get(position).getModel())) {
-//            holder.ivDevice.setImageResource(R.mipmap.item_ss);
-//        } else {
-//            holder.ivDevice.setImageResource(SunmiDevUtils.setSearchLogo(data.get(position).getModel()));
-//        }
-//    }
 
     @Override
     public int getItemCount() {
@@ -84,6 +71,7 @@ public class IPCListAdapter extends RecyclerView.Adapter<IPCListAdapter.ViewHold
         ImageView ivDevice;
         ImageView ivStatus;
         TextView tvName;
+        TextView tvSn;
         CheckBox checkBox;
 
         ViewHolder(View view) {
@@ -92,6 +80,7 @@ public class IPCListAdapter extends RecyclerView.Adapter<IPCListAdapter.ViewHold
             ivDevice = view.findViewById(R.id.iv_device);
             ivStatus = view.findViewById(R.id.iv_status);
             tvName = view.findViewById(R.id.tv_name);
+            tvSn = view.findViewById(R.id.tv_sn);
             checkBox = view.findViewById(R.id.cb_item);
             checkBox.setOnCheckedChangeListener(this);
         }

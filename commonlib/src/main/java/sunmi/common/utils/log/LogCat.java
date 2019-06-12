@@ -41,7 +41,7 @@ public class LogCat {
      * @param msg 消息
      */
     public static void e(String tag, String msg) {
-//        ExceptionLog.getInstance().log(tag + " : " + msg);
+        LogHelper.exportLog(tag, msg, true);
         if (mSwitch && tag != null && msg != null)
             Log.e(tag, msg);
     }
@@ -53,19 +53,15 @@ public class LogCat {
      * @param tr  异常
      */
     public static void e(String tag, Throwable tr) {
-//        ExceptionLog.getInstance().log(tag + " : tr = " + tr);
+        LogHelper.exportLog(tag, Log.getStackTraceString(tr), true);
         e(tag, tr == null ? "" : tr.getMessage());
     }
 
     /**
      * 错误级别日志
-     *
-     * @param tag
-     * @param msg
-     * @param tr
      */
     public static void e(String tag, String msg, Throwable tr) {
-//        ExceptionLog.getInstance().log(tag + " : " + msg + ", e = " + Log.getStackTraceString(tr));
+        LogHelper.exportLog(tag, msg + "-->+" + Log.getStackTraceString(tr), true);
         if (mSwitch && tag != null && msg != null)
             Log.e(tag, msg, tr);
     }
@@ -84,6 +80,7 @@ public class LogCat {
      * @param msg 消息
      */
     public static void v(String tag, String msg) {
+        LogHelper.exportLog(tag, msg, true);
         if (mSwitch && tag != null && msg != null)
             Log.v(tag, msg);
     }

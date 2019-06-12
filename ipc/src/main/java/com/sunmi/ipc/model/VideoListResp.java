@@ -33,45 +33,25 @@ public class VideoListResp {
 
     public static class VideoBean {
         /**
-         * device_id : 2222
-         * sn : FS101D8BS00088
-         * video_name : FS101D8BS00088_1551854897_1551854958.flv
-         * url : http://test.cdn.sunmi.com/VIDEO/IPC/4EBC673EA927F122A58FAED2FDEEF9F6
-         * video_start_time : 1551854897
-         * video_end_time : 1551854958
-         * storage_source : 0
+         * name : 0E5E023AB
+         * url : http: //sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00087/3C85FC47FF82F66E6E9989C0E5E023AB
+         * device_id : 2237.0
+         * start_time : 1.55853732E9
+         * end_time : 1.558537328E9
          */
 
-        private int device_id;
-        private String sn;
-        private String video_name;
+        private String name;
         private String url;
-        private int video_start_time;
-        private int video_end_time;
-        private int storage_source;
+        private double device_id;
+        private double start_time;
+        private double end_time;
 
-        public int getDevice_id() {
-            return device_id;
+        public String getName() {
+            return name;
         }
 
-        public void setDevice_id(int device_id) {
-            this.device_id = device_id;
-        }
-
-        public String getSn() {
-            return sn;
-        }
-
-        public void setSn(String sn) {
-            this.sn = sn;
-        }
-
-        public String getVideo_name() {
-            return video_name;
-        }
-
-        public void setVideo_name(String video_name) {
-            this.video_name = video_name;
+        public void setName(String name) {
+            this.name = name;
         }
 
         public String getUrl() {
@@ -82,28 +62,28 @@ public class VideoListResp {
             this.url = url;
         }
 
-        public int getVideo_start_time() {
-            return video_start_time;
+        public double getDevice_id() {
+            return device_id;
         }
 
-        public void setVideo_start_time(int video_start_time) {
-            this.video_start_time = video_start_time;
+        public void setDevice_id(double device_id) {
+            this.device_id = device_id;
         }
 
-        public int getVideo_end_time() {
-            return video_end_time;
+        public double getStart_time() {
+            return start_time;
         }
 
-        public void setVideo_end_time(int video_end_time) {
-            this.video_end_time = video_end_time;
+        public void setStart_time(double start_time) {
+            this.start_time = start_time;
         }
 
-        public int getStorage_source() {
-            return storage_source;
+        public double getEnd_time() {
+            return end_time;
         }
 
-        public void setStorage_source(int storage_source) {
-            this.storage_source = storage_source;
+        public void setEnd_time(double end_time) {
+            this.end_time = end_time;
         }
     }
 

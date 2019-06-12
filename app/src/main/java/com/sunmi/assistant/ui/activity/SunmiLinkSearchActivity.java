@@ -1,5 +1,6 @@
 package com.sunmi.assistant.ui.activity;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DividerItemDecoration;
@@ -9,12 +10,15 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.rpc.ap.APCall;
 import com.sunmi.assistant.R;
-import com.sunmi.ipc.rpc.IPCCloudApi;
+import com.sunmi.ipc.contract.IpcConfiguringContract;
+import com.sunmi.ipc.presenter.IpcConfiguringPresenter;
 import com.sunmi.ipc.rpc.IpcConstants;
+import com.sunmi.ipc.rpc.mqtt.MqttManager;
 import com.sunmi.ipc.view.IPCListAdapter;
 import com.sunmi.ipc.view.IpcConfigCompletedActivity_;
 
@@ -35,91 +39,69 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import sunmi.common.base.BaseActivity;
+import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.RpcErrorCode;
-import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.rpc.sunmicall.ResponseBean;
-import sunmi.common.utils.SpUtils;
+import sunmi.common.view.TitleBarView;
 
 /**
  * Description:
  * Created by bruce on 2019/4/24.
  */
 @EActivity(R.layout.activity_search_ipc)
-public class SunmiLinkSearchActivity extends BaseActivity {
+public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPresenter>
+        implements IpcConfiguringContract.View {
 
-    @ViewById(resName = "nsv_ipc")
+    @ViewById(R.id.title_bar)
+    TitleBarView titleBar;
+    @ViewById(R.id.nsv_ipc)
     NestedScrollView scrollView;
-    @ViewById(resName = "rl_search")
+    @ViewById(R.id.rl_search)
     RelativeLayout rlSearch;
-    @ViewById(resName = "rv_ipc")
+    @ViewById(R.id.rv_ipc)
     RecyclerView rvDevice;
-    @ViewById(resName = "rl_no_device")
+    @ViewById(R.id.rl_no_device)
     RelativeLayout rlNoWifi;
+    @ViewById(R.id.tv_1)
+    TextView tvTipTitle;
+    @ViewById(R.id.tip_select_multi)
+    TextView tvSummary;
+    @ViewById(R.id.tv_no_wifi)
+    TextView tvNoWifi;
+    @ViewById(R.id.tv_check_network)
+    TextView tvCheckNetwork;
+    @ViewById(R.id.rl_loading)
+    RelativeLayout rlLoading;
 
     @Extra
     String shopId;
     @Extra
     String sn;
     @Extra
-    boolean isSunmiLink;//是否是sunmi link模式
+    boolean isSunmiLink;//是否是sunmiLink模式
+
+    private static final int REQUEST_COMPLETE = 100;//配置完成
 
     IPCListAdapter devListAdapter;
     List<SunmiDevice> devList = new ArrayList<>();
-    //    List<SunmiDevice> devListUdp = new ArrayList<>();
     Set<String> devSet = new HashSet<>();
-    //    private int ipcCountSunmiLinkSearched;
-    int ipcCount = 0, ipcBoundCount = 0;
 
     private Timer timer = null;//定时器用于主动获取ap搜到的设备
     private TimerTask myTask = null;
+    private boolean isTimeoutStart;
 
     @AfterViews
     void init() {
+        mPresenter = new IpcConfiguringPresenter();
+        mPresenter.attachView(this);
+        titleBar.setAppTitle(R.string.str_search_nearby_sunmi_devices);
+        tvTipTitle.setText(R.string.tip_title_choose_device);
+        tvSummary.setText(R.string.tip_support_multi_select);
+        tvNoWifi.setText(R.string.tip_no_device_found);
+        tvCheckNetwork.setText(getString(R.string.tip_keep_device_in));
         startSunmiLink();
         initList();
-    }
-
-    //开启sunmi link搜索
-    private void startSunmiLink() {
-        rlNoWifi.setVisibility(View.GONE);
-        rlSearch.setVisibility(View.VISIBLE);
-        APCall.getInstance().searchStart(context, sn);//开始搜索商米设备
-        new Handler().postDelayed(new Runnable() {
-            public void run() {
-                closeTimer();
-                APCall.getInstance().searchStop(context, sn);//停止搜索商米设备
-                if (devList.size() <= 0) {
-                    rlSearch.setVisibility(View.GONE);
-                    rlNoWifi.setVisibility(View.VISIBLE);
-                }
-            }
-        }, 120000);
-        startGetDeviceInfoTimer();
-    }
-
-    //start Timer
-    private void startGetDeviceInfoTimer() {
-        timer = new Timer();
-        timer.schedule(myTask = new TimerTask() {
-            @Override
-            public void run() {
-                APCall.getInstance().getSearchInfo(context, sn);//(轮询)获取搜索商米设备
-            }
-        }, 0, 4000);
-    }
-
-    //close Timer
-    private void closeTimer() {
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-        }
-        if (myTask != null) {
-            myTask.cancel();
-            myTask = null;
-        }
     }
 
     @UiThread
@@ -140,17 +122,114 @@ public class SunmiLinkSearchActivity extends BaseActivity {
     void configClick() {
         if (devList == null || devList.size() < 1) return;
         showLoadingDialog();
-        sunmiLinkBlock();
+        sunmiLinkBlock(devList);
         sunmiLinkConfig();
+        stopSearch();
+        rlLoading.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        stopSearch();
+    }
+
+    private void stopSearch() {
+        closeTimer();
+        APCall.getInstance().searchStop(context, sn);//停止搜索商米设备
+    }
+
+    @Override
+    public void ipcBindWifiSuccess(String sn) {
+        MqttManager.getInstance().isConnect();
         setTimeout();
     }
 
+    @Override
+    public void ipcBindWifiFail(String sn, int code, String msg) {
+        setDeviceStatus(sn, code);
+        setTimeout();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == REQUEST_COMPLETE) {
+            startSunmiLink();
+        }
+    }
+
+    @Override
+    public int[] getStickNotificationId() {
+        return new int[]{NotificationConstant.apSearchStart, NotificationConstant.apSearchStop,
+                NotificationConstant.apGetSearchInfo, IpcConstants.ipcDiscovered, IpcConstants.bindIpc};
+    }
+
+    @Override
+    public void didReceivedNotification(int id, Object... args) {
+        super.didReceivedNotification(id, args);
+        ResponseBean res = (ResponseBean) args[0];
+        if (NotificationConstant.apGetSearchInfo == id) {//sunmilink搜索的设备列表
+            apGetSearchResult(res);
+        } else if (id == IpcConstants.bindIpc) {//绑定结果的mqtt消息
+            try {
+                setDeviceStatus(res.getResult().getString("sn"), res.getDataErrCode());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //开启sunmi link搜索，时长120s
+    private void startSunmiLink() {
+        if (devList.size() > 0) {
+            devList.clear();
+            devListAdapter.notifyDataSetChanged();
+        }
+        rlNoWifi.setVisibility(View.GONE);
+        rlSearch.setVisibility(View.VISIBLE);
+        APCall.getInstance().searchStart(context, sn);//开始搜索商米设备
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                stopSearch();
+                if (devList.size() <= 0) {
+                    rlSearch.setVisibility(View.GONE);
+                    rlNoWifi.setVisibility(View.VISIBLE);
+                }
+            }
+        }, 120000);
+        startGetDeviceInfoTimer();
+    }
+
+    //start Timer (轮询)获取搜索商米设备
+    private void startGetDeviceInfoTimer() {
+        timer = new Timer();
+        timer.schedule(myTask = new TimerTask() {
+            @Override
+            public void run() {
+                APCall.getInstance().getSearchInfo(context, sn);
+            }
+        }, 0, 4000);
+    }
+
+    //close Timer
+    private void closeTimer() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+        if (myTask != null) {
+            myTask.cancel();
+            myTask = null;
+        }
+    }
+
     //为选中的设备加黑名单
-    private void sunmiLinkBlock() {
+    private void sunmiLinkBlock(List<SunmiDevice> list) {
         try {
             JSONArray jsonArray = new JSONArray();
-            for (SunmiDevice sunmiDevice : devList) {
-                if (!sunmiDevice.isSelected()) {//todo
+            for (SunmiDevice sunmiDevice : list) {
+                if (!sunmiDevice.isSelected()) {
                     JSONObject jsonObject1 = new JSONObject();
                     jsonObject1.put("mac", sunmiDevice.getMac());
                     jsonArray.put(jsonObject1);
@@ -161,74 +240,54 @@ public class SunmiLinkSearchActivity extends BaseActivity {
                 jsonObject2.put("devices", jsonArray);
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("sunmimesh", jsonObject2);
-                APCall.getInstance().apSunmiMeshBlock(context, sn, jsonObject);//获取设备状态
+                APCall.getInstance().apSunmiMeshBlock(context, sn, jsonObject);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    //以选中的设备继续配置
+    //已选中的设备继续配置
     private void sunmiLinkConfig() {
+        int ipcDeviceCount = 0;
         for (SunmiDevice sunmiDevice : devList) {
             if (TextUtils.equals("FS1", sunmiDevice.getModel())
-                    || TextUtils.equals("SS1", sunmiDevice.getModel()))
-                bindIpc(sunmiDevice);
+                    || TextUtils.equals("SS1", sunmiDevice.getModel())) {
+                ipcDeviceCount++;
+                mPresenter.ipcBind(shopId, sunmiDevice.getDeviceid(), "", 1, 1);
+            }
         }
-    }
-
-    private void bindIpc(SunmiDevice sunmiDevice) {
-        ipcCount++;
-        IPCCloudApi.bindIPC(SpUtils.getMerchantUid(), shopId, sunmiDevice.getDeviceid(), 1,
-                "", 1, 1, new RetrofitCallback() {
-                    @Override
-                    public void onSuccess(int code, String msg, Object data) {
-                    }
-
-                    @Override
-                    public void onFail(int code, String msg, Object data) {
-                    }
-                });
+        if (ipcDeviceCount == 0) {
+            configComplete();
+        }
     }
 
     void setTimeout() {
-        new Handler().postDelayed(new Runnable() {
-            public void run() {
-                if (devSet.isEmpty()) return;
-                for (SunmiDevice device : devList) {
-                    if (devSet.contains(device.getDeviceid())) {
-                        device.setStatus(RpcErrorCode.RPC_ERR_TIMEOUT);
-                        devSet.remove(device.getDeviceid());
+        if (!isTimeoutStart) {
+            isTimeoutStart = true;
+            new Handler().postDelayed(new Runnable() {
+                public void run() {
+                    if (devSet.isEmpty()) return;
+                    for (SunmiDevice device : devList) {
+                        if (devSet.contains(device.getDeviceid())) {
+                            if (TextUtils.equals("FS1", device.getModel())
+                                    || TextUtils.equals("SS1", device.getModel())) {
+                                device.setStatus(RpcErrorCode.RPC_ERR_TIMEOUT);
+                            }
+                            devSet.remove(device.getDeviceid());
+                        }
                     }
+                    configComplete();
                 }
-                configComplete();
-            }
-        }, 10000);
-    }
-
-    @Override
-    public int[] getStickNotificationId() {
-        return new int[]{NotificationConstant.apSearchStart, NotificationConstant.apSearchStop,
-                NotificationConstant.apGetSearchInfo, IpcConstants.ipcDiscovered};
-    }
-
-    @Override
-    public void didReceivedNotification(int id, Object... args) {
-        super.didReceivedNotification(id, args);
-        ResponseBean res = (ResponseBean) args[0];
-        if (NotificationConstant.apGetSearchInfo == id) {//搜索的设备列表
-            apGetSearchResult(res);
-        } else if (id == IpcConstants.bindIpc) {
-            try {
-                setDeviceStatus(res.getResult().getString("sn"), res.getDataErrCode());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        } else if (NotificationConstant.apSearchStop == id) {//停止搜索
+            }, 30000);
         }
     }
 
+    /**
+     * 设置设备的绑定状态
+     */
     private void setDeviceStatus(String sn, int status) {
+        if (devSet.isEmpty()) return;
         for (SunmiDevice device : devList) {
             if (TextUtils.equals(device.getDeviceid(), sn)) {
                 device.setStatus(status);
@@ -241,15 +300,19 @@ public class SunmiLinkSearchActivity extends BaseActivity {
         }
     }
 
+    /**
+     * 配置完成，跳到结果页
+     */
     private void configComplete() {
+        hideLoadingDialog();
+        APCall.getInstance().searchStop(context, sn);//停止搜索商米设备
         ArrayList<SunmiDevice> devicesChoose = new ArrayList<>();
         for (SunmiDevice device : devList) {
             if (device.isSelected())
                 devicesChoose.add(device);
         }
-        hideLoadingDialog();
-        APCall.getInstance().searchStop(context, sn);//停止搜索商米设备
-        IpcConfigCompletedActivity_.intent(context).shopId(shopId).sunmiDevices(devicesChoose).start();
+        IpcConfigCompletedActivity_.intent(context).shopId(shopId).sunmiDevices(devicesChoose)
+                .isSunmiLink(true).startForResult(REQUEST_COMPLETE);
     }
 
     private void apGetSearchResult(ResponseBean res) {
@@ -258,15 +321,22 @@ public class SunmiLinkSearchActivity extends BaseActivity {
                 JSONObject objectResult = res.getResult();
                 JSONObject jsonObject2 = objectResult.getJSONObject("sunmimesh");
                 JSONArray array = jsonObject2.getJSONArray("devices");
-                for (int j = 0; j < array.length(); j++) {
+                for (int i = 0; i < array.length(); i++) {
                     SunmiDevice sd = new SunmiDevice();
-                    JSONObject object = (JSONObject) array.opt(j);
+                    JSONObject object = (JSONObject) array.opt(i);
                     sd.setModel(object.getString("model"));
                     sd.setSelected(true);
                     String mac = object.getString("mac");
                     sd.setMac(mac);
                     if (object.has("devid")) {
-                        sd.setDeviceid(object.getString("devid"));
+                        String sn = object.getString("devid");
+                        if (!TextUtils.isEmpty(sn)) {
+                            sd.setDeviceid(sn);
+                        } else {
+                            sd.setDeviceid(mac);
+                        }
+                    } else {
+                        sd.setDeviceid(mac);
                     }
                     sunmiLinkFoundDevice(sd);
                 }
@@ -276,14 +346,12 @@ public class SunmiLinkSearchActivity extends BaseActivity {
         }
     }
 
-    private boolean sunmiLinkFoundDevice(SunmiDevice device) {
-        if (devSet.contains(device.getDeviceid())) {
-            return true;
-        } else {
+    private void sunmiLinkFoundDevice(SunmiDevice device) {
+        if (!devSet.contains(device.getDeviceid())) {
+            device.setStatus(1);
             devSet.add(device.getDeviceid());
             addDevice(device);
         }
-        return false;
     }
 
     @UiThread

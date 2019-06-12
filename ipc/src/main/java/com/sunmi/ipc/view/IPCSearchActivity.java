@@ -157,7 +157,7 @@ public class IPCSearchActivity extends BaseActivity
         } else if (id == IpcConstants.getIpcToken) {
             ResponseBean res = (ResponseBean) args[0];
             try {
-                if (TextUtils.equals(res.getErrCode(), RpcErrorCode.WHAT_ERROR + "")) {
+                if (TextUtils.equals(res.getErrCode(), RpcErrorCode.RPC_COMMON_ERROR + "")) {
                     hideLoadingDialog();
                     return;
                 }
@@ -178,7 +178,7 @@ public class IPCSearchActivity extends BaseActivity
         } else if (id == IpcConstants.getIsWire) {
             ResponseBean res = (ResponseBean) args[0];
             try {
-                if (TextUtils.equals(res.getErrCode(), RpcErrorCode.WHAT_ERROR + "")) {
+                if (TextUtils.equals(res.getErrCode(), RpcErrorCode.RPC_COMMON_ERROR + "")) {
                     hideLoadingDialog();
                     return;
                 }
@@ -212,7 +212,6 @@ public class IPCSearchActivity extends BaseActivity
     //1 udp搜索到设备
     private void ipcFound(SunmiDevice ipc) {
         if (TextUtils.equals("SS1", ipc.getModel()) || TextUtils.equals("FS1", ipc.getModel())) {
-            LogCat.e(TAG, "ipcFound fs ipcdevice = " + ipc.toString());
             if (!ipcMap.containsKey(ipc.getDeviceid())) {
                 ipc.setSelected(true);
                 isApMode = TextUtils.equals("AP", ipc.getNetwork());
@@ -233,7 +232,8 @@ public class IPCSearchActivity extends BaseActivity
 
     private void gotoWifiConfigActivity() {
         hideLoadingDialog();
-        WifiConfigActivity_.intent(context).sunmiDevice(ipcList.get(0)).shopId(shopId).start();
+        if (ipcList != null && ipcList.size() > 0)
+            WifiConfigActivity_.intent(context).sunmiDevice(ipcList.get(0)).shopId(shopId).start();
     }
 
     private void gotoIpcConfigActivity() {
@@ -242,7 +242,8 @@ public class IPCSearchActivity extends BaseActivity
             if (device.isSelected())
                 selectedList.add(device);
         }
-        IpcConfiguringActivity_.intent(context).sunmiDevices(selectedList).shopId(shopId).start();
+        if (selectedList.size() > 0)
+            IpcConfiguringActivity_.intent(context).sunmiDevices(selectedList).shopId(shopId).start();
     }
 
 }
