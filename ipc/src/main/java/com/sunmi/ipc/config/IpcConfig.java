@@ -35,9 +35,14 @@ public class IpcConfig extends BaseConfig {
 
     @Override
     protected void initRelease(Context context, String env) {
-        IPC_CLOUD_URL = "http://47.99.16.199:30401/";
+        IPC_CLOUD_URL = "https://store.sunmi.com:443/";
 //        MQTT_HOST = "47.99.16.199";
 //        MQTT_PORT = "30412";
+    }
+
+    @Override
+    protected void initUat(Context context, String env) {
+        IPC_CLOUD_URL = "https://uat-store.sunmi.com:443/";
     }
 
 }
