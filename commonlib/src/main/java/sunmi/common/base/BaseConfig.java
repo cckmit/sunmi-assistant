@@ -12,6 +12,8 @@ public abstract class BaseConfig {
     public static final String ENV_DEV = "ENV_DEV";
     //测试
     public static final String ENV_TEST = "ENV_TEST";
+    //UAT
+    public static final String ENV_UAT = "ENV_UAT";
     //生产
     public static final String ENV_RELEASE = "ENV_RELEASE";
 
@@ -20,6 +22,8 @@ public abstract class BaseConfig {
             initDev(context, env);
         } else if (TextUtils.equals(ENV_TEST, env)) {
             initTest(context, env);
+        } else if (TextUtils.equals(ENV_UAT, env)) {
+            initUat(context, env);
         } else if (TextUtils.equals(ENV_RELEASE, env)) {
             initRelease(context, env);
         }
@@ -30,5 +34,7 @@ public abstract class BaseConfig {
     protected abstract void initTest(Context context, String env);
 
     protected abstract void initRelease(Context context, String env);
+
+    protected abstract void initUat(Context context, String env);
 
 }
