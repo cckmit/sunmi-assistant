@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.receiver.MyNetworkCallback;
+import com.sunmi.apmanager.rpc.merchant.MerchantApi;
 import com.sunmi.apmanager.rpc.mqtt.MQTTManager;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
@@ -70,6 +71,7 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
             MQTTManager.getInstance().createEmqToken(true);//初始化长连接
         initTabs();
         initIpc();
+        MerchantApi.getCompanyId();
     }
 
     private void initIpc() {
