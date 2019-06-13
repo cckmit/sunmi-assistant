@@ -1011,9 +1011,12 @@ public class VideoPlayActivity extends BaseActivity
         //日历DateAdapter
         adapter = new DateAdapter(context, list, apCloudList);
         recyclerView.setAdapter(adapter);
+
+        //滑动到选择日期的0.00点
+        if (isSelectedDate) scrollSelectedDate0AM();
+
         //开启控件隐藏倒计时
         startScreenHideTimer();
-//        initDateList();
     }
 
     @UiThread
@@ -1076,7 +1079,7 @@ public class VideoPlayActivity extends BaseActivity
             //加载时间轴无渲染
             showTimeList(true, null);
             //滑动到选择日期的0.00点
-            scrollSelectedDate0AM();
+            //scrollSelectedDate0AM();
             refreshCanvasList();//渲染
         }
     }
