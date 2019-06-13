@@ -36,7 +36,7 @@ public class SunmiDevice implements Serializable {
     private String token;//绑定设备使用
 
     public String getIp() {
-        return "http://" + ip + "/api/";//192.168.100.159/api/192.168.103.122
+        return "https://" + ip + "/api/";//192.168.100.159/api/192.168.103.122
     }
 
     public void setIp(String ip) {
