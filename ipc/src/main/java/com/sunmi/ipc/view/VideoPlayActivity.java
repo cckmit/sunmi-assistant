@@ -142,6 +142,8 @@ public class VideoPlayActivity extends BaseActivity
     String UID;
     @Extra
     String ipcType;
+    @Extra
+    int deviceId; //2237 2223     //设备id
 
     //手机屏幕的宽高
     private int screenW, screenH;
@@ -208,9 +210,6 @@ public class VideoPlayActivity extends BaseActivity
     private HashMap<String, MediaPlayer> playersCache = new HashMap<>();
     //当前播放到的视频段落数
     private int currentVideoIndex;
-
-    //设备id
-    private int deviceId = 2239; //2237 2223
 
     //屏幕控件自动隐藏计时器
     private Timer screenHideTimer = null;
@@ -633,9 +632,8 @@ public class VideoPlayActivity extends BaseActivity
     //点击屏幕
     @Click(resName = "test_cloud_back")
     void cloudClick() {
-        switch2CloudPlayback(1560096000,1560100000);
+        switch2CloudPlayback(1560096000, 1560100000);
     }
-
 
     //开始计时录制
     private void startRecord() {
@@ -765,6 +763,10 @@ public class VideoPlayActivity extends BaseActivity
     }
 
     private void getCloudVideoUrls(long start, long end) {
+        if (deviceId <= 0) {
+            shortTip("设备信息不完整");
+            return;
+        }
         IPCCloudApi.getVideoList(deviceId, start, end, new RetrofitCallback<VideoListResp>() {
             @Override
             public void onSuccess(int code, String msg, VideoListResp data) {
