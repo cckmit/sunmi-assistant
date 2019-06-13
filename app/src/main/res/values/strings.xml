@@ -22,4 +22,6 @@
     <string name="tip_no_device_found">没有发现新设备</string>
     <string name="tip_keep_device_in">请确保您的设备处于路由器信号范围内</string>
 
+    <string name="ic_tab_data_title">数据</string>
+
 </resources>
