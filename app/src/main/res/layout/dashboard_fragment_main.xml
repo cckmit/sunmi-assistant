@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="24dp"
-        android:hint="Test"
+        android:text="永辉超市Test"
         android:textColor="#333338"
         android:textSize="16sp" />
 
@@ -21,8 +21,8 @@
         android:layout_marginStart="12dp"
         android:layout_marginTop="4dp"
         android:drawableStart="@drawable/dashboard_ic_location"
-        android:hint="Test"
-        android:textColor="@color/color_333333"
+        android:text="五角场店Test"
+        android:textColor="#333338"
         android:textSize="28sp" />
 
     <LinearLayout
@@ -41,7 +41,9 @@
             android:layout_weight="1"
             android:background="@drawable/dashboard_btn_bg_corner"
             android:gravity="center"
-            android:text="Test" />
+            android:text="今日Test"
+            android:textColor="@drawable/dashboard_switch_text_color"
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/tv_dashboard_week"
@@ -50,7 +52,9 @@
             android:layout_weight="1"
             android:background="@drawable/dashboard_btn_bg_corner"
             android:gravity="center"
-            android:text="Test" />
+            android:text="本周Test"
+            android:textColor="@drawable/dashboard_switch_text_color"
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/tv_dashboard_month"
@@ -59,7 +63,9 @@
             android:layout_weight="1"
             android:background="@drawable/dashboard_btn_bg_corner"
             android:gravity="center"
-            android:text="Test" />
+            android:text="本月Test"
+            android:textColor="@drawable/dashboard_switch_text_color"
+            android:textSize="12sp" />
 
     </LinearLayout>
 
@@ -70,10 +76,10 @@
         android:background="@color/color_333333" />
 
     <android.support.v7.widget.RecyclerView
-        android:background="#FAFAFA"
         android:id="@+id/rv_dashboard_card_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="#FAFAFA" />
 
 
 </LinearLayout>

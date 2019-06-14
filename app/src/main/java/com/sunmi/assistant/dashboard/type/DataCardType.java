@@ -1,5 +1,6 @@
 package com.sunmi.assistant.dashboard.type;
 
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.widget.TextView;
 
@@ -35,9 +36,11 @@ public class DataCardType extends ItemType<DataCard, BaseViewHolder<DataCard>> {
         if (model.trendData >= 0) {
             trendData.setCompoundDrawablesRelativeWithIntrinsicBounds(
                     R.drawable.dashboard_ic_trend_up, 0, 0, 0);
+            trendData.setTextColor(Color.parseColor("#FF0000"));
         } else {
             trendData.setCompoundDrawablesRelativeWithIntrinsicBounds(
                     R.drawable.dashboard_ic_trend_down, 0, 0, 0);
+            trendData.setTextColor(Color.parseColor("#00B552"));
         }
     }
 }
