@@ -6,9 +6,9 @@ package com.sunmi.assistant.dashboard.model;
  * @author yinhui
  * @since 2019-06-13
  */
-public class CardData {
+public class DataCard {
     public String title;
-    public float data;
-    public String subTitle;
-    public float subData;
+    public String data;
+    public String trendName;
+    public float trendData;
 }

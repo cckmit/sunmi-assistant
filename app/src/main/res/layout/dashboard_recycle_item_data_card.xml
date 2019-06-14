@@ -9,7 +9,7 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/tv_title"
+            android:id="@+id/tv_dashboard_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -22,7 +22,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tv_data"
+            android:id="@+id/tv_dashboard_data"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -32,10 +32,10 @@
             android:textSize="28sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_title" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_title" />
 
         <TextView
-            android:id="@+id/tv_trade_name"
+            android:id="@+id/tv_dashboard_trend_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -43,10 +43,10 @@
             android:text="Test"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_data" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_data" />
 
         <TextView
-            android:id="@+id/tv_trade_data"
+            android:id="@+id/tv_dashboard_trend_data"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -55,8 +55,8 @@
             android:text="Test"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_trade_name"
-            app:layout_constraintTop_toBottomOf="@+id/tv_data" />
+            app:layout_constraintStart_toEndOf="@+id/tv_dashboard_trend_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_data" />
 
     </android.support.constraint.ConstraintLayout>
 

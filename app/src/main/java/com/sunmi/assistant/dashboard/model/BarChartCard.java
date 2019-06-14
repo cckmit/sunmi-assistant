@@ -8,8 +8,9 @@ import java.util.ArrayList;
  * @author yinhui
  * @since 2019-06-13
  */
-public class ChartData {
+public class BarChartCard {
     public String title;
-    public ArrayList<String> types;
-    public int currentType;
+    public ArrayList<String> dataSource;
+    public int currentSource;
+    public ChartDataset dataset;
 }
