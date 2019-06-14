@@ -3,7 +3,7 @@ package com.sunmi.assistant.utils;
 import com.sunmi.apmanager.ui.fragment.StoreFragment;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.MainActivity;
-import com.sunmi.assistant.ui.fragment.DataFragment;
+import com.sunmi.assistant.ui.fragment.DashboardFragment_;
 import com.sunmi.assistant.ui.fragment.MineFragment_;
 import com.sunmi.sunmiservice.SupportFragment_;
 
@@ -13,7 +13,7 @@ public enum MainTab {
             MainActivity.TAB_DATA,
             R.string.ic_tab_data_title,
             R.drawable.ic_tab_data,
-            DataFragment.class
+            DashboardFragment_.class
     ),
 
     STORE(

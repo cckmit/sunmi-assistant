@@ -1,8 +1,8 @@
-package com.sunmi.assistant.contract;
+package com.sunmi.assistant.dashboard;
 
 import sunmi.common.base.BaseView;
 
-public interface DataContract {
+public interface DashboardContract {
 
     interface View extends BaseView {
 
