@@ -1,6 +1,8 @@
 package sunmi.common.base.recycle;
 
+import android.content.Context;
 import android.support.annotation.IdRes;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.View;
@@ -26,6 +28,7 @@ public class BaseViewHolder<T> extends RecyclerView.ViewHolder {
     private SparseArray<View> mViews = new SparseArray<>();
     private T mItem;
     private int mPosition;
+    private ArrayMap<String, Object> mTags = new ArrayMap<>();
 
     public BaseViewHolder(View itemView, ItemType<T, ?> type) {
         super(itemView);
@@ -41,6 +44,10 @@ public class BaseViewHolder<T> extends RecyclerView.ViewHolder {
             addOnLongClickListener(adapter, longClickListeners.keyAt(i),
                     longClickListeners.valueAt(i));
         }
+    }
+
+    public Context getContext() {
+        return itemView.getContext();
     }
 
     void setup(T item, int pos) {
@@ -59,6 +66,15 @@ public class BaseViewHolder<T> extends RecyclerView.ViewHolder {
             mViews.put(resId, view);
         }
         return (V) view;
+    }
+
+    public void putTag(String key, Object tag) {
+        mTags.put(key, tag);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <Tag> Tag getTag(String key) {
+        return (Tag) mTags.get(key);
     }
 
     private void setOnItemClickListener(final BaseRecyclerAdapter<T> adapter,

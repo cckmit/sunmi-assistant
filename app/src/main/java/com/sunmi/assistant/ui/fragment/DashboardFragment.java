@@ -14,9 +14,11 @@ import com.sunmi.assistant.dashboard.DashboardPresenter;
 import com.sunmi.assistant.dashboard.model.BarChartCard;
 import com.sunmi.assistant.dashboard.model.DashboardConfig;
 import com.sunmi.assistant.dashboard.model.DataCard;
+import com.sunmi.assistant.dashboard.model.ListCard;
 import com.sunmi.assistant.dashboard.model.PieChartCard;
 import com.sunmi.assistant.dashboard.type.BarChartCardType;
 import com.sunmi.assistant.dashboard.type.DataCardType;
+import com.sunmi.assistant.dashboard.type.ListCardType;
 import com.sunmi.assistant.dashboard.type.PieChartCardType;
 
 import org.androidannotations.annotations.AfterViews;
@@ -75,11 +77,13 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         DataCardType dataCardType = new DataCardType();
         BarChartCardType barChartCardType = new BarChartCardType();
         PieChartCardType pieChartCardType = new PieChartCardType();
+        ListCardType listCardType = new ListCardType();
 
         mAdapter = new BaseArrayAdapter<>();
         mAdapter.register(DataCard.class, dataCardType);
         mAdapter.register(BarChartCard.class, barChartCardType);
         mAdapter.register(PieChartCard.class, pieChartCardType);
+        mAdapter.register(ListCard.class, listCardType);
 
         GridLayoutManager layout = new GridLayoutManager(getContext(), 2);
         layout.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {

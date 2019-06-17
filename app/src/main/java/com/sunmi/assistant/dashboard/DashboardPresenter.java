@@ -6,10 +6,12 @@ import com.sunmi.assistant.dashboard.model.BarChartCard;
 import com.sunmi.assistant.dashboard.model.BarChartDataSet;
 import com.sunmi.assistant.dashboard.model.DashboardConfig;
 import com.sunmi.assistant.dashboard.model.DataCard;
+import com.sunmi.assistant.dashboard.model.ListCard;
 import com.sunmi.assistant.dashboard.model.PieChartCard;
 import com.sunmi.assistant.dashboard.model.PieChartDataSet;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
@@ -45,6 +47,18 @@ public class DashboardPresenter extends BasePresenter<DashboardContract.View>
         }
         PieChartDataSet dataSetPie = new PieChartDataSet(dataPie);
         testList.add(new PieChartCard("支付方式", dataSetPie));
+
+        List<ListCard.Item> list = new ArrayList<>();
+        List<Integer> counts = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            counts.add((int) (Math.random() * 100000));
+        }
+        Collections.sort(counts, (o1, o2) -> o2 - o1);
+        for (int i = 0; i < 10; i++) {
+            list.add(new ListCard.Item(i + 1, "TestName" + i, counts.get(i)));
+        }
+        testList.add(new ListCard("商品销量排行", list));
+
 
         mCurrentTimeSpan = timeSpan;
         mView.updateData(testList);
