@@ -58,7 +58,7 @@
             android:layout_weight="1"
             android:background="@drawable/abc_list_selector_holo_light"
             android:gravity="center"
-            android:text="@string/str_cancel"
+            android:text="@string/sm_cancel"
             android:textColor="@color/colorText"
             android:textSize="14sp" />
 

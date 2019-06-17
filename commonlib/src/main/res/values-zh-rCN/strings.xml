@@ -1,0 +1,77 @@
+<resources>
+    <string name="app_name">CommonLibrary</string>
+    <string name="str_confirm">确定</string>
+    <string name="sm_cancel">取消</string>
+    <string name="str_update">更新</string>
+    <string name="str_ignore">忽略</string>
+    <string name="str_refresh">刷新</string>
+    <string name="str_complete">完成</string>
+    <string name="str_skip">跳过</string>
+    <string name="str_continue">继续</string>
+    <string name="str_exit">退出</string>
+
+    <string name="str_click_consent">点击“开始配置”代表你同意</string>
+    <string name="sunmi_user_protocol">《商米用户协议》</string>
+    <string name="str_privacy">《隐私政策》</string>
+    <string name="str_and">&#160;和&#160;</string>
+    <!-- Network -->
+    <string name="network_disconnect">网络已断开</string>
+    <string name="toast_networkIsExceptional">当前网络存在异常</string>
+    <string name="toast_serverNoResponse">请检查网络是否有异常</string>
+    <string name="network_connected">网络已恢复</string>
+    <string name="server_noreponse">服务器无响应</string>
+
+    <string name="tip_granted">已授权</string>
+    <string name="tip_permission_ungranted">拒绝授权会影响部分功能使用</string>
+    <string name="permission_granted">手机权限已获取</string>
+    <string name="str_new_version_now">当前有新版本</string>
+    <string name="str_title_selected_pic">选择图片</string>
+    <string name="str_ssl_error">证书错误</string>
+
+    <string name="tip_agree_protocol">请同意勾选用户协议</string>
+
+    <string name="toast_network_Exception">网络连接异常</string>
+    <string name="network_wifi_low">网络连接失败</string>
+
+    <string name="str_retry">重试</string>
+    <string name="tip_set_complete">设置完成</string>
+    <string name="tip_set_fail">设置失败</string>
+    <string name="choose_device_type">选择设备类型</string>
+
+    <string name="str_text_password_no_null">密码不能为空</string>
+
+    <string name="str_title_ap_set">路由器设置</string>
+    <string name="str_title_ipc_set">摄像头设置</string>
+    <string name="str_title_printer_set">打印机设置</string>
+    <string name="str_config_tip_ap">连接您要设置的路由器</string>
+    <string name="str_config_tip_ap_1"><![CDATA[1. 接通电源并连接网线，待系统指示灯停止闪烁]]></string>
+    <string name="str_config_tip_ap_2"><![CDATA[2. 将手机连接到<font color= \'#FF6000\'>「SUNMI_XX」</font> 无线网络]]></string>
+    <string name="str_config_tip_ipc">连接您要设置的摄像头</string>
+    <string name="str_config_tip_ipc_1"><![CDATA[1. 将摄像头接通电源，待信号灯呈<font color= \'#FF6000\'>「蓝色」</font>]]></string>
+    <string name="str_config_tip_ipc_2"><![CDATA[2. 将手机连接到<font color= \'#FF6000\'>「SUNMI_XXXX」</font> 无线网络]]></string>
+    <string name="str_config_tip_printer">连接您要设置的打印机</string>
+    <string name="str_config_tip_printer_1">1. 将打印机接通电源，按一下配对按钮</string>
+    <string name="str_config_tip_printer_2"><![CDATA[2. 手机连接到<font color= \'#FF6000\'>「CloudPrint_XXXX」</font> 蓝牙]]></string>
+    <string name="tip_has_ap_already">已经有连网的商米路由器？</string>
+    <string name="str_start_set">开始设置</string>
+    <string name="str_config_child_tip">如果您已经有一台连网的商米路由器，您可以在「路由器管理」中添加更多路由器</string>
+    <string name="btn_start_config">开始配置</string>
+    <string name="textView_config_title">设置向导</string>
+    <string name="str_primary_search_check_line">请检查路由器电源是否接通并连接网线</string>
+    <string name="str_primary_search_on_find">没有发现路由器</string>
+    <string name="str_primary_search_searching_ap">正在搜索您的路由器</string>
+    <string name="str_primary_search_searching_ipc">正在搜索您的摄像头</string>
+    <string name="str_loading">正在加载…</string>
+
+    <string name="str_add_success">添加成功</string>
+    <string name="str_add_fail">添加失败</string>
+    <string name="str_bind_net_error">请确保手机已连接互联网</string>
+    <string name="str_searching">搜索中…</string>
+
+    <string name="str_check_net">请检查网络</string>
+    <string name="str_net_exception">网络连接异常，请检查后重试</string>
+    <string name="str_btn_try_again">点击重试</string>
+    <string name="tip_forbid_by_server">该请求被服务端拒绝</string>
+    <string name="str_bind_success">绑定成功</string>
+    <string name="str_bind_fail">绑定失败</string>
+</resources>

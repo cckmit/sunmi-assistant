@@ -1,16 +1,17 @@
 <resources>
     <string name="app_name">BluetoothDemo</string>
-    <string name="str_bluetooth_list">搜索到的设备</string>
-    <string name="str_already_search">已搜索到的设备</string>
-    <string name="str_set_link">正在建立链接</string>
-    <string name="str_read_write">点击建立连接</string>
-    <string name="str_prompt">提示</string>
-    <string name="str_tip_start_blue">是否开启蓝牙？</string>
-    <string name="str_tip_link_device">是否连接该设备？</string>
-    <string name="str_tip_link_router">是否连接到该路由器？</string>
-    <string name="hint_input_router_pwd">请输入路由器密码</string>
-    <string name="str_already_search_router">已搜索到的路由器</string>
-    <string name="str_printer_manage">云打印机配置</string>
-    <string name="str_get_wifi_msg_error">获取Wi-Fi信息出错</string>
-    <string name="str_wifi_msg_completely">Wi-Fi信息接受完毕</string>
+    <string name="str_bluetooth_list">Searched device</string>
+    <string name="str_already_search">Searched device</string>
+    <string name="str_set_link">Creating a link now</string>
+    <string name="str_read_write">Click to create a link</string>
+    <string name="str_prompt">Prompt</string>
+    <string name="str_tip_start_blue">Do you wish to enable Bluetooth?</string>
+    <string name="str_tip_link_device">Are you sure to connect this device?</string>
+    <string name="str_tip_link_router">Are you sure to connect to this router?</string>
+    <string name="hint_input_router_pwd">Please enter the password for router password</string>
+    <string name="str_already_search_router">Searched router</string>
+    <string name="str_printer_manage">Setup cloud printer</string>
+    <string name="str_get_wifi_msg_error">Obtain Wi-Fi information error</string>
+    <string name="str_wifi_msg_completely">Receive Wi-Fi information completely</string>
 </resources>
+

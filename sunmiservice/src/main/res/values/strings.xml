@@ -1,13 +1,13 @@
 <resources>
     <string name="app_name">SunmiService</string>
-    <string name="str_copy_link">复制链接</string>
-    <string name="tip_copy_success">复制成功</string>
-    <string name="title_share_page">无需抵押，15分钟贷300万！</string>
-    <string name="description_share_page">微业贷-企业贷款就是快！</string>
-    <string name="str_share_to">分享到</string>
-    <string name="tip_wechat_not_installed">您还没有安装微信</string>
-    <string name="str_text_share">分享</string>
-    <string name="str_text_edit_sharing_content">编辑分享内容</string>
-    <string name="str_text_follow_official_weibo">关注官方微博</string>
-    <string name="str_unknown">未知</string>
+    <string name="str_copy_link">Copy the link</string>
+    <string name="tip_copy_success">Copy successfully</string>
+    <string name="title_share_page">No mortgage required, 15 minutes loan RMB 3 million!</string>
+    <string name="description_share_page">Small Business Loans - just as fast as you hope!</string>
+    <string name="str_share_to">Share to</string>
+    <string name="tip_wechat_not_installed">The APP of WeChat is not installed</string>
+    <string name="str_text_share">Share</string>
+    <string name="str_text_edit_sharing_content">Edit sharing content</string>
+    <string name="str_text_follow_official_weibo">Follow the official blogs</string>
+    <string name="str_unknown">Unknown</string>
 </resources>
