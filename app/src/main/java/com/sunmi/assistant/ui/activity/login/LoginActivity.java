@@ -256,7 +256,7 @@ public class LoginActivity extends BaseActivity {
             public void run() {
                 new CommonDialog.Builder(LoginActivity.this)
                         .setTitle(R.string.tip_unregister)
-                        .setCancelButton(R.string.str_cancel)
+                        .setCancelButton(R.string.sm_cancel)
                         .setConfirmButton(R.string.str_register_now,
                                 new DialogInterface.OnClickListener() {
                                     @Override

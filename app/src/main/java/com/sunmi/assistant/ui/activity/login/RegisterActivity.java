@@ -8,7 +8,6 @@ import android.widget.Button;
 import android.widget.CheckedTextView;
 
 import com.sunmi.apmanager.constant.Constants;
-import sunmi.common.rpc.http.RpcCallback;
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.rpc.sso.SSOApi;
 import com.sunmi.apmanager.ui.view.MergeDialog;
@@ -25,6 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.rpc.http.RpcCallback;
 import sunmi.common.utils.RegexUtils;
 import sunmi.common.utils.ViewUtils;
 import sunmi.common.view.ClearableEditText;
@@ -106,7 +106,7 @@ public class RegisterActivity extends BaseActivity {
             public void run() {
                 new CommonDialog.Builder(RegisterActivity.this)
                         .setTitle(R.string.tip_register_already)
-                        .setCancelButton(R.string.str_cancel)
+                        .setCancelButton(R.string.sm_cancel)
                         .setConfirmButton(R.string.str_goto_register, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

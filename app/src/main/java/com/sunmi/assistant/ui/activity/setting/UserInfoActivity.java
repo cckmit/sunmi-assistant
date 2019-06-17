@@ -15,7 +15,6 @@ import com.sunmi.apmanager.model.UserInfo;
 import com.sunmi.apmanager.presenter.UserInfoPresenter;
 import com.sunmi.apmanager.utils.FileHelper;
 import com.sunmi.apmanager.utils.PhotoUtils;
-import sunmi.common.utils.SpUtils;
 import com.sunmi.assistant.R;
 
 import org.androidannotations.annotations.AfterViews;
@@ -34,6 +33,7 @@ import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.FileUtils;
 import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.PermissionUtils;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.StringHelper;
 import sunmi.common.view.CircleImage;
@@ -211,7 +211,7 @@ public class UserInfoActivity extends BaseMvpActivity<UserInfoPresenter>
                                     openAlbum();
                                 }
                             }))
-                    .addItemAction(new PopItemAction(R.string.str_cancel,
+                    .addItemAction(new PopItemAction(R.string.sm_cancel,
                             PopItemAction.PopItemStyle.Cancel))
                     .create();
         choosePhotoMenu.show();

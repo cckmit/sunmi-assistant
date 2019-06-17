@@ -94,7 +94,7 @@ public class AboutActivity extends BaseActivity {
                 .setTitle(R.string.tip_title_upgrade)
                 .setMessage(R.string.tip_message_upgrade_set)
                 .setConfirmButton(R.string.go_upgrade, (dialog, which) -> AppUpdate.versionUpdate((Activity) context, url))
-                .setCancelButton(R.string.str_cancel)
+                .setCancelButton(R.string.sm_cancel)
                 .create();
         commonDialog.showWithOutTouchable(false);
         return commonDialog;
