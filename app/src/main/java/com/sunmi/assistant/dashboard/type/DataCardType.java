@@ -24,6 +24,11 @@ public class DataCardType extends ItemType<DataCard, BaseViewHolder<DataCard>> {
     }
 
     @Override
+    public int getSpanSize() {
+        return 1;
+    }
+
+    @Override
     public void onBindViewHolder(@NonNull BaseViewHolder<DataCard> holder, DataCard model, int position) {
         TextView title = holder.getView(R.id.tv_dashboard_title);
         TextView data = holder.getView(R.id.tv_dashboard_data);

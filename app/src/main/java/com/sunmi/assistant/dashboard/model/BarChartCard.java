@@ -13,4 +13,13 @@ public class BarChartCard {
     public ArrayList<String> dataSource;
     public int currentSource;
     public ChartDataset dataset;
+
+    public BarChartCard(String title, ChartDataset dataset) {
+        this.title = title;
+        this.dataSource = new ArrayList<>();
+        this.dataSource.add("按销售额");
+        this.dataSource.add("按订单数");
+        this.currentSource = 0;
+        this.dataset = dataset;
+    }
 }

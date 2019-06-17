@@ -1,12 +1,21 @@
 package com.sunmi.assistant.ui.fragment;
 
+import android.graphics.Rect;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.TextView;
 
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.DashboardContract;
 import com.sunmi.assistant.dashboard.DashboardPresenter;
+import com.sunmi.assistant.dashboard.model.BarChartCard;
+import com.sunmi.assistant.dashboard.model.DashboardConfig;
+import com.sunmi.assistant.dashboard.model.DataCard;
+import com.sunmi.assistant.dashboard.type.BarChartCardType;
+import com.sunmi.assistant.dashboard.type.DataCardType;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -14,7 +23,10 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
+import java.util.List;
+
 import sunmi.common.base.BaseMvpFragment;
+import sunmi.common.base.recycle.BaseArrayAdapter;
 
 /**
  * 首页数据Dashboard的展示
@@ -40,61 +52,87 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @ViewById(R.id.rv_dashboard_card_list)
     RecyclerView mCardList;
+    private BaseArrayAdapter<Object> mAdapter;
 
     @AfterViews
     void init() {
         mPresenter = new DashboardPresenter();
         mPresenter.attachView(this);
-        mPresenter.loadConfig();
-        mPresenter.loadDashboardData(DashboardContract.TIME_SPAN_TODAY);
         initView();
+        initAdapter();
+        mPresenter.loadConfig();
+        mPresenter.timeSpanSwitchTo(DashboardContract.TIME_SPAN_TODAY);
     }
 
-    @UiThread
-    void initView() {
-        initSwitchers();
+    private void initView() {
+        updateRadioStateTo(DashboardContract.TIME_SPAN_TODAY);
     }
 
-    @UiThread
-    void initSwitchers() {
-        mTimeSpanToday.setSelected(true);
-        mTimeSpanWeek.setSelected(false);
-        mTimeSpanMonth.setSelected(false);
+    private void initAdapter() {
+        DataCardType dataCardType = new DataCardType();
+        BarChartCardType barChartCardType = new BarChartCardType();
+
+        mAdapter = new BaseArrayAdapter<>();
+        mAdapter.register(DataCard.class, dataCardType);
+        mAdapter.register(BarChartCard.class, barChartCardType);
+
+        GridLayoutManager layout = new GridLayoutManager(getContext(), 2);
+        layout.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                return mAdapter.getItemType(position).getSpanSize();
+            }
+        });
+        mCardList.setLayoutManager(layout);
+        mCardList.setAdapter(mAdapter);
     }
 
+    @Override
     @UiThread
-    void setNames(String company, String store) {
-        mCompanyName.setText(company);
-        mStoreName.setText(store);
+    public void updateInfo(DashboardConfig config) {
+        mCompanyName.setText(config.companyName);
+        mStoreName.setText(config.storeName);
     }
 
-    @UiThread
-    void setAdapter() {
-
+    @Override
+    public void updateData(List<Object> data) {
+        if (mAdapter != null) {
+            mAdapter.setData(data);
+        }
     }
 
     @Click(R.id.tv_dashboard_today)
     void switchToToday() {
-        mPresenter.loadDashboardData(DashboardContract.TIME_SPAN_TODAY);
-        mTimeSpanToday.setSelected(true);
-        mTimeSpanWeek.setSelected(false);
-        mTimeSpanMonth.setSelected(false);
+        mPresenter.timeSpanSwitchTo(DashboardContract.TIME_SPAN_TODAY);
+        updateRadioStateTo(DashboardContract.TIME_SPAN_TODAY);
     }
 
     @Click(R.id.tv_dashboard_week)
     void switchToWeek() {
-        mPresenter.loadDashboardData(DashboardContract.TIME_SPAN_WEEK);
-        mTimeSpanToday.setSelected(false);
-        mTimeSpanWeek.setSelected(true);
-        mTimeSpanMonth.setSelected(false);
+        mPresenter.timeSpanSwitchTo(DashboardContract.TIME_SPAN_WEEK);
+        updateRadioStateTo(DashboardContract.TIME_SPAN_WEEK);
     }
 
     @Click(R.id.tv_dashboard_month)
     void switchToMonth() {
-        mPresenter.loadDashboardData(DashboardContract.TIME_SPAN_MONTH);
-        mTimeSpanToday.setSelected(false);
-        mTimeSpanWeek.setSelected(false);
-        mTimeSpanMonth.setSelected(true);
+        mPresenter.timeSpanSwitchTo(DashboardContract.TIME_SPAN_MONTH);
+        updateRadioStateTo(DashboardContract.TIME_SPAN_MONTH);
+    }
+
+    private void updateRadioStateTo(int timeSpan) {
+        if (timeSpan == DashboardContract.TIME_SPAN_TODAY) {
+            mTimeSpanToday.setSelected(true);
+            mTimeSpanWeek.setSelected(false);
+            mTimeSpanMonth.setSelected(false);
+        } else if (timeSpan == DashboardContract.TIME_SPAN_WEEK) {
+            mTimeSpanToday.setSelected(false);
+            mTimeSpanWeek.setSelected(true);
+            mTimeSpanMonth.setSelected(false);
+        } else {
+            mTimeSpanToday.setSelected(false);
+            mTimeSpanWeek.setSelected(false);
+            mTimeSpanMonth.setSelected(true);
+        }
     }
 
     @Override
@@ -106,6 +144,15 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     public void didReceivedNotification(int id, Object... args) {
         if (id == NotificationConstant.storeNameChanged) {
             // TODO: Update store name.
+        }
+    }
+
+    private static class ItemSpaceDecoration extends RecyclerView.ItemDecoration {
+
+        @Override
+        public void getItemOffsets(@NonNull Rect outRect, @NonNull View view,
+                                   @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+            outRect.left = 30;
         }
     }
 

@@ -11,4 +11,11 @@ public class DataCard {
     public String data;
     public String trendName;
     public float trendData;
+
+    public DataCard(String title, String data, String trendName, float trendData) {
+        this.title = title;
+        this.data = data;
+        this.trendName = trendName;
+        this.trendData = trendData;
+    }
 }

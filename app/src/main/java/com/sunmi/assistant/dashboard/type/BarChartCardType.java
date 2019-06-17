@@ -19,6 +19,11 @@ public class BarChartCardType extends ItemType<BarChartCard, BaseViewHolder<BarC
     }
 
     @Override
+    public int getSpanSize() {
+        return 2;
+    }
+
+    @Override
     public void onBindViewHolder(@NonNull BaseViewHolder<BarChartCard> holder, BarChartCard model, int position) {
 
     }

@@ -39,6 +39,15 @@ public class TypePool implements ITypePool {
         return types.get(viewType);
     }
 
+    @SuppressWarnings("unchecked")
+    public <T, VH extends BaseViewHolder<T>> ItemType<T, VH> getType(Class<T> itemClass) {
+        if (isMultiType) {
+            return types.get(classes.indexOf(itemClass));
+        } else {
+            return types.get(0);
+        }
+    }
+
     @Override
     public int getIndexOfType(Class<?> itemClass) {
         if (isMultiType) {

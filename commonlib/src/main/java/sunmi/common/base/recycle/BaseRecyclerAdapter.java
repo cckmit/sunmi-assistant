@@ -49,6 +49,14 @@ public abstract class BaseRecyclerAdapter<T>
         return mTypePool.getIndexOfType(getItem(position).getClass());
     }
 
+    public <Type, VH extends BaseViewHolder<Type>> ItemType<Type, VH> getItemType(int position) {
+        return mTypePool.getType(getItemViewType(position));
+    }
+
+    public <Type, VH extends BaseViewHolder<Type>> ItemType<Type, VH> getItemType(Class<Type> itemClass) {
+        return mTypePool.getType(itemClass);
+    }
+
     public <Type> void register(@NonNull ItemType<Type, ?> itemType) {
         register(null, itemType);
     }
