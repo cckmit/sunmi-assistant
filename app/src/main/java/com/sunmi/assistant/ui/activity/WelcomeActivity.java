@@ -13,9 +13,6 @@ import android.widget.Toast;
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.update.AppUpdate;
 import com.sunmi.apmanager.utils.CommonUtils;
-
-import sunmi.common.utils.SpUtils;
-
 import com.sunmi.assistant.MyApplication;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.login.LoginActivity_;
@@ -33,6 +30,7 @@ import okhttp3.Response;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.utils.NetworkUtils;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.ThreadPool;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.dialog.CommonDialog;
@@ -166,7 +164,7 @@ public class WelcomeActivity extends BaseActivity {
                     if (response != null) {
                         JSONObject jsonObject = new JSONObject(response);
                         if (jsonObject.has("code") && jsonObject.getInt("code") == 1) {
-                            JSONObject object = (JSONObject) jsonObject.getJSONArray("data").opt(0);
+                            JSONObject object = (JSONObject) jsonObject.getJSONArray("dataSet").opt(0);
                             if (object.has("is_force_upgrade")) {
                                 // 是否需要强制升级 0-否 1-是
                                 int needMerge = object.getInt("is_force_upgrade");
@@ -229,9 +227,7 @@ public class WelcomeActivity extends BaseActivity {
         //先获取是否有安装未知来源应用的权限
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             boolean haveInstallPermission = context.getPackageManager().canRequestPackageInstalls();
-            if (haveInstallPermission) {
-                return true;
-            }
+            return haveInstallPermission;
         }
         return false;
     }

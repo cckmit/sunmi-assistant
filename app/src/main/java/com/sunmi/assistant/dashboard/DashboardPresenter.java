@@ -1,7 +1,13 @@
 package com.sunmi.assistant.dashboard;
 
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.PieEntry;
+import com.sunmi.assistant.dashboard.model.BarChartCard;
+import com.sunmi.assistant.dashboard.model.BarChartDataSet;
 import com.sunmi.assistant.dashboard.model.DashboardConfig;
 import com.sunmi.assistant.dashboard.model.DataCard;
+import com.sunmi.assistant.dashboard.model.PieChartCard;
+import com.sunmi.assistant.dashboard.model.PieChartDataSet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +31,20 @@ public class DashboardPresenter extends BasePresenter<DashboardContract.View>
         testList.add(new DataCard("客单价", "42.00", "日环比", 0.09f));
         testList.add(new DataCard("总笔数", "123", "日环比", 0.1f));
         testList.add(new DataCard("退款笔数", "3", "日环比", -0.5f));
+
+        List<BarEntry> data = new ArrayList<>();
+        for (int i = 0; i < 24; i++) {
+            data.add(new BarEntry(i, (float) (Math.random() * 300)));
+        }
+        BarChartDataSet dataSet = new BarChartDataSet(data, "xxxxx", "yyyyy");
+        testList.add(new BarChartCard("交易时间分布", dataSet));
+
+        List<PieEntry> dataPie = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            dataPie.add(new PieEntry((float) Math.random(), "Test " + i));
+        }
+        PieChartDataSet dataSetPie = new PieChartDataSet(dataPie);
+        testList.add(new PieChartCard("支付方式", dataSetPie));
 
         mCurrentTimeSpan = timeSpan;
         mView.updateData(testList);

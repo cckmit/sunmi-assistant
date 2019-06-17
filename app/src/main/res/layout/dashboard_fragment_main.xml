@@ -73,7 +73,7 @@
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:layout_marginTop="20dp"
-        android:background="@color/color_333333" />
+        android:background="#85858A" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_dashboard_card_list"

@@ -47,8 +47,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tv_dashboard_title" />
 
-        <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/chart_dashboard_bar"
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/chart_dashboard_pie"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="20dp"

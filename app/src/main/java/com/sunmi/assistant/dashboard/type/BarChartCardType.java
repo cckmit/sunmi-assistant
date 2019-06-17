@@ -1,7 +1,12 @@
 package com.sunmi.assistant.dashboard.type;
 
 import android.support.annotation.NonNull;
+import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.model.BarChartCard;
 
 import sunmi.common.base.recycle.BaseViewHolder;
@@ -15,7 +20,7 @@ public class BarChartCardType extends ItemType<BarChartCard, BaseViewHolder<BarC
 
     @Override
     public int getLayoutId(int type) {
-        return 0;
+        return R.layout.dashboard_recycle_item_chart_bar;
     }
 
     @Override
@@ -25,6 +30,10 @@ public class BarChartCardType extends ItemType<BarChartCard, BaseViewHolder<BarC
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder<BarChartCard> holder, BarChartCard model, int position) {
-
+        TextView title = holder.getView(R.id.tv_dashboard_title);
+        BarChart chart = holder.getView(R.id.chart_dashboard_bar);
+        title.setText(model.title);
+        BarDataSet dataSet = new BarDataSet(model.dataSet.data, "aaaaaa");
+        chart.setData(new BarData(dataSet));
     }
 }

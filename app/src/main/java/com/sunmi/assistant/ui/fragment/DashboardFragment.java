@@ -14,8 +14,10 @@ import com.sunmi.assistant.dashboard.DashboardPresenter;
 import com.sunmi.assistant.dashboard.model.BarChartCard;
 import com.sunmi.assistant.dashboard.model.DashboardConfig;
 import com.sunmi.assistant.dashboard.model.DataCard;
+import com.sunmi.assistant.dashboard.model.PieChartCard;
 import com.sunmi.assistant.dashboard.type.BarChartCardType;
 import com.sunmi.assistant.dashboard.type.DataCardType;
+import com.sunmi.assistant.dashboard.type.PieChartCardType;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -27,6 +29,7 @@ import java.util.List;
 
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.base.recycle.BaseArrayAdapter;
+import sunmi.common.utils.CommonHelper;
 
 /**
  * 首页数据Dashboard的展示
@@ -71,10 +74,12 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     private void initAdapter() {
         DataCardType dataCardType = new DataCardType();
         BarChartCardType barChartCardType = new BarChartCardType();
+        PieChartCardType pieChartCardType = new PieChartCardType();
 
         mAdapter = new BaseArrayAdapter<>();
         mAdapter.register(DataCard.class, dataCardType);
         mAdapter.register(BarChartCard.class, barChartCardType);
+        mAdapter.register(PieChartCard.class, pieChartCardType);
 
         GridLayoutManager layout = new GridLayoutManager(getContext(), 2);
         layout.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -84,6 +89,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             }
         });
         mCardList.setLayoutManager(layout);
+        mCardList.addItemDecoration(new ItemSpaceDecoration());
         mCardList.setAdapter(mAdapter);
     }
 
@@ -147,12 +153,42 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         }
     }
 
-    private static class ItemSpaceDecoration extends RecyclerView.ItemDecoration {
+    private class ItemSpaceDecoration extends RecyclerView.ItemDecoration {
 
         @Override
         public void getItemOffsets(@NonNull Rect outRect, @NonNull View view,
                                    @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-            outRect.left = 30;
+            if (getContext() == null) {
+                super.getItemOffsets(outRect, view, parent, state);
+                return;
+            }
+            int space = CommonHelper.dp2px(getContext(), 10.0f);
+            int position = parent.getChildAdapterPosition(view);
+            int spanSize = mAdapter.getItemType(position).getSpanSize();
+            if (spanSize == 2) {
+                outRect.left = space;
+                outRect.right = space;
+            } else {
+                int posPoint = position - 1;
+                boolean isFirst = true;
+                while (posPoint >= 0) {
+                    if (mAdapter.getItemType(posPoint).getSpanSize() == 1) {
+                        isFirst = !isFirst;
+                    } else {
+                        break;
+                    }
+                    posPoint--;
+                }
+                if (isFirst) {
+                    outRect.left = space;
+                    outRect.right = space / 2;
+                } else {
+                    outRect.left = space / 2;
+                    outRect.right = space;
+                }
+            }
+            outRect.top = space;
+            outRect.bottom = position == mAdapter.getData().size() - 1 ? space : 0;
         }
     }
 
