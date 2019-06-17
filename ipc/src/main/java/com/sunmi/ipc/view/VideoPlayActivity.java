@@ -230,7 +230,7 @@ public class VideoPlayActivity extends BaseActivity
             @Override
             public void run() {
                 countdown++;
-                if (countdown == 20) {
+                if (countdown == 8) {
                     hideControlBar();
                     isControlPanelShow = false;
                     stopScreenHideTimer();
@@ -1101,26 +1101,29 @@ public class VideoPlayActivity extends BaseActivity
         });
     }
 
+    //中间距离左侧屏幕的分钟
+    private long leftToCenterMinutes() {
+        LogCat.e(TAG, "offsetPx leftToCenterMinutes=" + CommonHelper.px2dp(this, rvWidth / 2));
+        return CommonHelper.px2dp(this, rvWidth / 2);
+    }
+
     //滑动选择日期的0点
     private void scrollSelectedDate0AM() {
-        long leftToCenterMinutes = CommonHelper.px2dp(this, rvWidth / 2);//中间距离左侧屏幕的分钟
         long threeDaysBeforeDate = 3 * 24 * 60;//3天分钟数
-        currentItemPosition = (int) (threeDaysBeforeDate - leftToCenterMinutes);
+        currentItemPosition = (int) (threeDaysBeforeDate - leftToCenterMinutes());
         linearLayoutManager.scrollToPositionWithOffset(currentItemPosition, 0);
         openMove();
     }
 
     //获取视频跳转播放的currentItemPosition
     private void videoSkipScrollPosition(long currentTimeMinutes) {
-        long leftToCenterMinutes = CommonHelper.px2dp(this, rvWidth / 2);//中间距离左侧屏幕的分钟
-        currentItemPosition = (int) (currentTimeMinutes / 60 - threeDaysBeforeSeconds / 60 - leftToCenterMinutes);
+        currentItemPosition = (int) (currentTimeMinutes / 60 - threeDaysBeforeSeconds / 60 - leftToCenterMinutes());
         linearLayoutManager.scrollToPositionWithOffset(currentItemPosition, 0);
     }
 
     //滑动回放定位的中间 position
     private void scrollCurrentPlayBackTime(long currentTimeMinutes) {
-        long leftToCenterMinutes = CommonHelper.px2dp(this, rvWidth / 2);//中间距离左侧屏幕的分钟
-        currentItemPosition = (int) (currentTimeMinutes / 60 - threeDaysBeforeSeconds / 60 - leftToCenterMinutes);
+        currentItemPosition = (int) (currentTimeMinutes / 60 - threeDaysBeforeSeconds / 60 - leftToCenterMinutes());
         linearLayoutManager.scrollToPositionWithOffset(currentItemPosition, 0);
         openMove();
     }
@@ -1139,8 +1142,7 @@ public class VideoPlayActivity extends BaseActivity
             @Override
             public void run() {
                 //中间距离左侧屏幕的分钟
-                long leftToCenterMinutes = CommonHelper.px2dp(context, rvWidth / 2);
-                long currentMinutes = (minutesTotal - twelveHoursSeconds) / 60 - leftToCenterMinutes;//初始化无偏移量
+                long currentMinutes = (minutesTotal - twelveHoursSeconds) / 60 - leftToCenterMinutes();//初始化无偏移量
                 currentItemPosition = (int) currentMinutes;//当前的item
                 linearLayoutManager.scrollToPositionWithOffset(currentItemPosition, 0);
                 openMove();
@@ -1158,8 +1160,7 @@ public class VideoPlayActivity extends BaseActivity
         //初始化当前的秒数和现在的秒数时间戳对比相差的偏移量--比对分钟数
         long offsetMinutes = nowMinute / 60 - currentDateSeconds / 60;
         //中间距离左侧屏幕的分钟
-        long leftToCenterMinutes = CommonHelper.px2dp(VideoPlayActivity.this, rvWidth / 2);
-        long currentMinutes = (minutesTotal - twelveHoursSeconds) / 60 - leftToCenterMinutes + offsetMinutes;//点击直播+偏移量offsetMinutes
+        long currentMinutes = (minutesTotal - twelveHoursSeconds) / 60 - leftToCenterMinutes() + offsetMinutes;//点击直播+偏移量offsetMinutes
         currentItemPosition = (int) currentMinutes;//当前的item
         linearLayoutManager.scrollToPositionWithOffset(currentItemPosition, 0);
         openMove();
@@ -1170,9 +1171,7 @@ public class VideoPlayActivity extends BaseActivity
         //long currentTimeSecond = System.currentTimeMillis() / 1000;
         //初始化当前的秒数和现在的秒数时间戳对比相差的偏移量--比对分钟数
         long offsetMinutes = currentTimeSecond / 60 - currentDateSeconds / 60;
-        //中间距离左侧屏幕的分钟
-        long leftToCenterMinutes = CommonHelper.px2dp(VideoPlayActivity.this, rvWidth / 2);
-        long currentMinutes = (minutesTotal - twelveHoursSeconds) / 60 - leftToCenterMinutes + offsetMinutes;//点击直播+偏移量offsetMinutes
+        long currentMinutes = (minutesTotal - twelveHoursSeconds) / 60 - leftToCenterMinutes() + offsetMinutes;//点击直播+偏移量offsetMinutes
         currentItemPosition = (int) currentMinutes;//当前的item
         linearLayoutManager.scrollToPositionWithOffset(currentItemPosition, 0);
     }
@@ -1383,6 +1382,7 @@ public class VideoPlayActivity extends BaseActivity
             offsetPx = 0;
         } else {
             offsetPx = (60 - minute) * (int) getResources().getDimension(R.dimen.dp_1);
+            LogCat.e(TAG,"offsetPx="+offsetPx);
             hour++;
         }
         //绘制下方时间
