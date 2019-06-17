@@ -54,7 +54,7 @@ public class DashboardPresenter extends BasePresenter<DashboardContract.View>
             counts.add((int) (Math.random() * 100000));
         }
         Collections.sort(counts, (o1, o2) -> o2 - o1);
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
             list.add(new ListCard.Item(i + 1, "TestName" + i, counts.get(i)));
         }
         testList.add(new ListCard("商品销量排行", list));
