@@ -124,7 +124,7 @@ public class PrinterSearchActivity extends BaseMvpActivity<BtBlePresenter>
     public void onItemClick(final BlueDevice blueDevice) {
         new CommonDialog.Builder(context).setTitle(R.string.str_prompt)
                 .setMessage(R.string.str_tip_link_device)
-                .setCancelButton(R.string.str_cancel, new DialogInterface.OnClickListener() {
+                .setCancelButton(R.string.sm_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -159,7 +159,7 @@ public class PrinterSearchActivity extends BaseMvpActivity<BtBlePresenter>
         if (btAdapter.getState() == BluetoothAdapter.STATE_OFF) {
             new CommonDialog.Builder(this).setTitle(R.string.str_prompt)
                     .setMessage(R.string.str_tip_start_blue)
-                    .setCancelButton(R.string.str_cancel, new DialogInterface.OnClickListener() {
+                    .setCancelButton(R.string.sm_cancel, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
