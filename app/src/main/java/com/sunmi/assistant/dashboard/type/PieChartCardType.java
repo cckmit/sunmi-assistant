@@ -1,6 +1,7 @@
 package com.sunmi.assistant.dashboard.type;
 
 import android.support.annotation.NonNull;
+import android.view.View;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.PieChart;
@@ -27,6 +28,22 @@ public class PieChartCardType extends ItemType<PieChartCard, BaseViewHolder<PieC
     public int getSpanSize() {
         return 2;
     }
+
+
+    @NonNull
+    @Override
+    public BaseViewHolder<PieChartCard> onCreateViewHolder(
+            @NonNull View view, @NonNull ItemType<PieChartCard, BaseViewHolder<PieChartCard>> type) {
+        BaseViewHolder<PieChartCard> holder = new BaseViewHolder<>(view, type);
+        PieChart chart = holder.getView(R.id.chart_dashboard_pie);
+
+        chart.setTouchEnabled(false);
+        chart.getDescription().setEnabled(false);
+        chart.getLegend().setEnabled(false);
+
+        return holder;
+    }
+
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder<PieChartCard> holder, PieChartCard model, int position) {
