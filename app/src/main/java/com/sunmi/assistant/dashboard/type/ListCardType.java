@@ -48,7 +48,7 @@ public class ListCardType extends ItemType<ListCard, BaseViewHolder<ListCard>> {
 
         RankListAdapter adapter = (RankListAdapter) listView.getAdapter();
         ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = CommonHelper.dp2px(holder.getContext(), 36.0f * model.list.size());
+        params.height = CommonHelper.dp2px(holder.getContext(), 36.0f * model.list.size() + 2.0f);
         listView.setLayoutParams(params);
         adapter.setDatas(model.list);
         adapter.notifyDataSetChanged();

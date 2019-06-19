@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.animation.ChartAnimator;
-import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.buffer.BarBuffer;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -99,7 +98,11 @@ public class BarChartCardType extends ItemType<BarChartCard, BaseViewHolder<BarC
     public void onBindViewHolder(@NonNull BaseViewHolder<BarChartCard> holder, BarChartCard model, int position) {
         TextView title = holder.getView(R.id.tv_dashboard_title);
         BarChart chart = holder.getView(R.id.chart_dashboard_bar);
+        TextView bySales = holder.getView(R.id.tv_dashboard_radio_by_sales);
+        TextView byOrder = holder.getView(R.id.tv_dashboard_radio_by_order);
         title.setText(model.title);
+        bySales.setSelected(true);
+        byOrder.setSelected(false);
 
         BarDataSet dataSet;
         if (chart.getData() != null && chart.getData().getDataSetCount() > 0) {
@@ -114,7 +117,7 @@ public class BarChartCardType extends ItemType<BarChartCard, BaseViewHolder<BarC
             BarData data = new BarData(dataSet);
             chart.setData(data);
         }
-        chart.animateY(300, Easing.EaseOutCubic);
+//        chart.animateY(300, Easing.EaseOutCubic);
     }
 
     public static class BarXAxisLabelFormatter extends ValueFormatter {
