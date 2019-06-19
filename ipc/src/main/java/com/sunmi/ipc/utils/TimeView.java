@@ -13,6 +13,7 @@ import com.sunmi.ipc.R;
 import java.util.List;
 
 import sunmi.common.utils.CommonHelper;
+import sunmi.common.utils.log.LogCat;
 
 /**
  * Created by YangShiJie on 2019/5/16
@@ -33,7 +34,7 @@ public class TimeView extends View {
 
     public TimeView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        hourOffset = getResources().getDimensionPixelSize(R.dimen.dp_60);
+        hourOffset = getResources().getDimensionPixelSize(R.dimen.dp_1) * 60;
         // 初始化画笔、Rect
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mBounds = new Rect();

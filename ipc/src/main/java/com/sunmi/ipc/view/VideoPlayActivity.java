@@ -230,7 +230,7 @@ public class VideoPlayActivity extends BaseActivity
             @Override
             public void run() {
                 countdown++;
-                if (countdown == 8) {
+                if (countdown == 20) {
                     hideControlBar();
                     isControlPanelShow = false;
                     stopScreenHideTimer();
@@ -462,15 +462,12 @@ public class VideoPlayActivity extends BaseActivity
         if (isFastClick(1000)) return;
         if (isPaused) {
             ivPlay.setBackgroundResource(R.mipmap.pause_normal);
-            if (isCloudPlayBack) cloudPlayIsStart();
         } else {
             ivPlay.setBackgroundResource(R.mipmap.play_normal);
-            if (isCloudPlayBack) cloudPlayIsStart();
         }
         isPaused = !isPaused;
-        if (isDevPlayBack) {
-            IOTCClient.pausePlayback(isPaused);
-        }
+        if (isDevPlayBack) IOTCClient.pausePlayback(isPaused);
+        if (isCloudPlayBack) cloudPlayIsStart();
     }
 
     //cloud播放 start/pause
@@ -1103,8 +1100,9 @@ public class VideoPlayActivity extends BaseActivity
 
     //中间距离左侧屏幕的分钟
     private long leftToCenterMinutes() {
-        LogCat.e(TAG, "offsetPx leftToCenterMinutes=" + CommonHelper.px2dp(this, rvWidth / 2));
-        return CommonHelper.px2dp(this, rvWidth / 2);
+        //时间轴的一半除去px2dp的比例
+        //return CommonHelper.px2dp(this, rvWidth / 2);
+        return rvWidth / 2 / getResources().getDimensionPixelSize(R.dimen.dp_1);
     }
 
     //滑动选择日期的0点
@@ -1381,9 +1379,9 @@ public class VideoPlayActivity extends BaseActivity
         if (minute == 0) {
             offsetPx = 0;
         } else {
-            offsetPx = (60 - minute) * (int) getResources().getDimension(R.dimen.dp_1);
-            LogCat.e(TAG,"offsetPx="+offsetPx);
+            offsetPx = (60 - minute) * (int) getResources().getDimensionPixelSize(R.dimen.dp_1);
             hour++;
+            LogCat.e(TAG, "offsetPx=" + offsetPx + ", minute=" + minute + " , px=" + (int) getResources().getDimensionPixelSize(R.dimen.dp_1) + ", px#=" + CommonHelper.dp2px(this, 1));
         }
         //绘制下方时间
         dateList.clear();
