@@ -7,7 +7,6 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.View;
 import android.widget.TextView;
 
-import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
@@ -65,7 +64,6 @@ public class PieChartCardType extends ItemType<PieChartCard, BaseViewHolder<PieC
         chart.setUsePercentValues(true);
         chart.setTransparentCircleRadius(0f);
         chart.getLegend().setEnabled(false);
-        chart.animateY(300, Easing.EaseOutCubic);
 
         List<TextView> legends = new ArrayList<>(6);
         legends.add(holder.getView(R.id.chart_dashboard_legend1));
@@ -83,6 +81,7 @@ public class PieChartCardType extends ItemType<PieChartCard, BaseViewHolder<PieC
         legendsData.add(holder.getView(R.id.chart_dashboard_legend6_data));
         holder.putTag(HOLDER_TAG_LEGENDS, legends);
         holder.putTag(HOLDER_TAG_LEGENDS_DATA, legendsData);
+//        chart.animateY(300, Easing.EaseOutCubic);
 
         return holder;
     }

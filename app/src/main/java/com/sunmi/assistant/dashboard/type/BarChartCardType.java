@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.animation.ChartAnimator;
-import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.buffer.BarBuffer;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.Chart;
@@ -95,7 +94,7 @@ public class BarChartCardType extends ItemType<BarChartCard, BaseViewHolder<BarC
         yAxis.setAxisMinimum(0.0f);
         yAxis.enableGridDashedLine(dashLength, dashSpaceLength, 0f);
         yAxis.setGridLineWidth(1f);
-        chart.animateY(300, Easing.EaseOutCubic);
+//        chart.animateY(300, Easing.EaseOutCubic);
         return holder;
     }
 
