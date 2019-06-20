@@ -1318,7 +1318,8 @@ public class VideoPlayActivity extends BaseActivity
                 scrollTime = currTime * 1000;//滑动日历的时间戳毫秒
 
                 canvasHours(firstVisibleItem);//绘制时间
-                if (isAutoScroll) switch2Playback(currTime);//自动滑动时下一个视频ap还是cloud播放
+//                if (isAutoScroll) switch2Playback(currTime);//自动滑动时下一个视频ap还是cloud播放
+                switch2Playback(currTime);//自动滑动时下一个视频ap还是cloud播放
                 if (isSelectedDate) {
                     if (listAp == null || listAp.size() == 0) return;
                     selectedTimeIsHaveVideo(currTime);
@@ -1329,7 +1330,9 @@ public class VideoPlayActivity extends BaseActivity
     }
 
     private void switch2Playback(long currTime) {
+        LogCat.e(TAG, "888888 11");
         if (!isCloudPlayBack && !isDevPlayBack && isCurrentLive) return;
+        LogCat.e(TAG, "888888 22");
         int availableVideoSize = listAp.size();
         for (int i = 0; i < availableVideoSize; i++) {
             ApCloudTimeBean bean = listAp.get(i);
@@ -1341,19 +1344,20 @@ public class VideoPlayActivity extends BaseActivity
 //                    refreshCanvasList();//i是最后一个，基于i的end作为start再拉7天的数据。
                 } else {
                     boolean isCloud = !listAp.get(i + 1).isApPlay();
-                    int delayMillis = (int) end - currTime < 0 ? 1 : (int) (end - currTime);
+                    final int delayMillis = (int) end - currTime < 0 ? 1 : (int) (end - currTime);
                     final int finalI = i;
                     if (isCloud) {
+                        LogCat.e(TAG, "888888 33 delayMillis=" + delayMillis);
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                LogCat.e(TAG, "999999 333");
                                 switch2CloudPlayback(listAp.get(finalI + 1).getStartTime(),
                                         listAp.get(finalI + 1).getStartTime() + tenMinutes);
                                 videoSkipScrollPosition(listAp.get(finalI + 1).getStartTime()); //偏移跳转
                             }
                         }, delayMillis * 1000);
                     } else {
+                        LogCat.e(TAG, "888888 44 11delayMillis=" + delayMillis);
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
