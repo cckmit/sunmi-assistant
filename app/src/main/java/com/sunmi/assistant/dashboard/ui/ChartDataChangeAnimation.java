@@ -1,7 +1,6 @@
 package com.sunmi.assistant.dashboard.ui;
 
 import android.os.Handler;
-import android.util.Log;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 
@@ -55,9 +54,7 @@ public abstract class ChartDataChangeAnimation<T extends Entry, C extends ChartD
         @Override
         public void run() {
             float increment = (float) (System.currentTimeMillis() - startTime) / duration;
-            Log.d(TAG, "increment=" + increment);
             increment = interpolator.getInterpolation(increment < 0f ? 0f : increment > 1f ? 1f : increment);
-            DataSet<T> dataSet = (DataSet<T>) chart.getData().getDataSetByIndex(0);
             int oldSize = oldData.size();
             int newSize = newData.size();
             List<T> newDataSet = new ArrayList<>(newSize);
@@ -67,8 +64,8 @@ public abstract class ChartDataChangeAnimation<T extends Entry, C extends ChartD
                 float newY = entry.getY();
                 newDataSet.add(newEntry(entry, oldY + (newY - oldY) * increment));
             }
+            DataSet<T> dataSet = (DataSet<T>) chart.getData().getDataSetByIndex(0);
             dataSet.setValues(newDataSet);
-            Log.d(TAG, newDataSet.get(0).toString());
             chart.getData().notifyDataChanged();
             chart.notifyDataSetChanged();
             chart.invalidate();

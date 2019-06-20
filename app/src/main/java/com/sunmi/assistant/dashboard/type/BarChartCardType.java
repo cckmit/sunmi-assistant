@@ -95,6 +95,7 @@ public class BarChartCardType extends ItemType<BarChartCard, BaseViewHolder<BarC
         yAxis.enableGridDashedLine(dashLength, dashSpaceLength, 0f);
         yAxis.setGridLineWidth(1f);
 //        chart.animateY(300, Easing.EaseOutCubic);
+
         return holder;
     }
 
@@ -108,16 +109,24 @@ public class BarChartCardType extends ItemType<BarChartCard, BaseViewHolder<BarC
         bySales.setSelected(true);
         byOrder.setSelected(false);
 
-        if (model.dataSet.data == null || model.dataSet.data.size() == 0) {
+        List<BarEntry> dataList = model.dataSet.data;
+        if (dataList == null || dataList.size() == 0) {
             chart.setData(null);
             chart.invalidate();
             return;
         }
+        float max = 0;
+        for (BarEntry entry : dataList) {
+            if (entry.getY() > max) {
+                max = entry.getY();
+            }
+        }
+        chart.getAxisLeft().setAxisMaximum(max * 1.2f);
 
         BarDataSet dataSet;
         if (chart.getData() != null && chart.getData().getDataSetCount() > 0) {
             dataSet = (BarDataSet) chart.getData().getDataSetByIndex(0);
-            dataSet.setValues(model.dataSet.data);
+            dataSet.setValues(dataList);
             chart.getData().notifyDataChanged();
             chart.notifyDataSetChanged();
             chart.invalidate();
@@ -125,7 +134,7 @@ public class BarChartCardType extends ItemType<BarChartCard, BaseViewHolder<BarC
 //                    dataSet.getValues(), model.dataSet.data);
 //            anim.run();
         } else {
-            dataSet = new BarDataSet(model.dataSet.data, "data");
+            dataSet = new BarDataSet(dataList, "data");
             dataSet.setColor(Color.parseColor("#2997FF"));
             dataSet.setDrawValues(false);
             BarData data = new BarData(dataSet);
