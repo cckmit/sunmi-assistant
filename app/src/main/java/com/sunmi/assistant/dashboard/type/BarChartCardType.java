@@ -12,8 +12,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.animation.ChartAnimator;
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.buffer.BarBuffer;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -30,7 +32,9 @@ import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.model.BarChartCard;
+import com.sunmi.assistant.dashboard.ui.ChartDataChangeAnimation;
 
+import java.util.List;
 import java.util.Locale;
 
 import sunmi.common.base.recycle.BaseViewHolder;
@@ -91,6 +95,7 @@ public class BarChartCardType extends ItemType<BarChartCard, BaseViewHolder<BarC
         yAxis.setAxisMinimum(0.0f);
         yAxis.enableGridDashedLine(dashLength, dashSpaceLength, 0f);
         yAxis.setGridLineWidth(1f);
+        chart.animateY(300, Easing.EaseOutCubic);
         return holder;
     }
 
@@ -104,20 +109,30 @@ public class BarChartCardType extends ItemType<BarChartCard, BaseViewHolder<BarC
         bySales.setSelected(true);
         byOrder.setSelected(false);
 
+        if (model.dataSet.data == null || model.dataSet.data.size() == 0) {
+            chart.setData(null);
+            chart.invalidate();
+            return;
+        }
+
         BarDataSet dataSet;
         if (chart.getData() != null && chart.getData().getDataSetCount() > 0) {
             dataSet = (BarDataSet) chart.getData().getDataSetByIndex(0);
             dataSet.setValues(model.dataSet.data);
             chart.getData().notifyDataChanged();
             chart.notifyDataSetChanged();
+            chart.invalidate();
+//            BarChartDataUpdateAnim anim = new BarChartDataUpdateAnim(300, chart,
+//                    dataSet.getValues(), model.dataSet.data);
+//            anim.run();
         } else {
             dataSet = new BarDataSet(model.dataSet.data, "data");
             dataSet.setColor(Color.parseColor("#2997FF"));
             dataSet.setDrawValues(false);
             BarData data = new BarData(dataSet);
             chart.setData(data);
+            chart.invalidate();
         }
-//        chart.animateY(300, Easing.EaseOutCubic);
     }
 
     public static class BarXAxisLabelFormatter extends ValueFormatter {
@@ -308,6 +323,19 @@ public class BarChartCardType extends ItemType<BarChartCard, BaseViewHolder<BarC
             path.close();//Given close, last lineto can be removed.
 
             return path;
+        }
+    }
+
+    private static class BarChartDataUpdateAnim extends ChartDataChangeAnimation<BarEntry, BarData> {
+
+        private BarChartDataUpdateAnim(int duration, Chart<BarData> chart,
+                                       List<BarEntry> oldData, List<BarEntry> newData) {
+            super(duration, chart, oldData, newData);
+        }
+
+        @Override
+        public BarEntry newEntry(BarEntry entry, float newValue) {
+            return new BarEntry(entry.getX(), newValue);
         }
     }
 }

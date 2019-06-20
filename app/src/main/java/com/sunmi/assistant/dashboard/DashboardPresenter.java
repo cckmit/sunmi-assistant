@@ -13,7 +13,6 @@ import com.sunmi.assistant.dashboard.model.PieChartDataSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 import sunmi.common.base.BasePresenter;
 
@@ -36,7 +35,7 @@ public class DashboardPresenter extends BasePresenter<DashboardContract.View>
         testList.add(new DataCard("退款笔数", "3", "日环比", -0.5f));
 
         List<BarEntry> data = new ArrayList<>();
-        for (int i = 0; i < 24; i++) {
+        for (int i = 0; i < Math.random() * 16 + 16; i++) {
             data.add(new BarEntry(i, (float) (Math.random() * 300)));
         }
         BarChartDataSet dataSet = new BarChartDataSet(data, "xxxxx", "yyyyy");
@@ -46,11 +45,11 @@ public class DashboardPresenter extends BasePresenter<DashboardContract.View>
         float total = 1.0f;
         for (int i = 0; i < 8; i++) {
             if (i == 7) {
-                dataPie.add(new PieEntry(total, "Test Last: " + String.format(Locale.getDefault(), "%.0f%%", total * 100)));
+                dataPie.add(new PieEntry(total, "Test Last"));
             } else {
                 float random = (float) Math.random() * total / 2;
                 total -= random;
-                dataPie.add(new PieEntry(random, "Test " + i + ": " + String.format(Locale.getDefault(), "%.0f%%", random * 100)));
+                dataPie.add(new PieEntry(random, "Test " + i));
             }
         }
         PieChartDataSet dataSetPie = new PieChartDataSet(dataPie);

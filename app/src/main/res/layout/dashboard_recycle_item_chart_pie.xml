@@ -47,10 +47,142 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tv_dashboard_title" />
 
+        <TextView
+            android:id="@+id/chart_dashboard_legend1_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp"
+            android:textColor="#333338"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_title" />
+
+        <TextView
+            android:id="@+id/chart_dashboard_legend1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:drawablePadding="4dp"
+            android:textColor="#85858A"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chart_dashboard_legend1_data" />
+
+        <TextView
+            android:id="@+id/chart_dashboard_legend2_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="18dp"
+            android:textColor="#333338"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chart_dashboard_legend1" />
+
+        <TextView
+            android:id="@+id/chart_dashboard_legend2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:drawablePadding="4dp"
+            android:textColor="#85858A"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chart_dashboard_legend2_data" />
+
+        <TextView
+            android:id="@+id/chart_dashboard_legend3_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="18dp"
+            android:textColor="#333338"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chart_dashboard_legend2" />
+
+        <TextView
+            android:id="@+id/chart_dashboard_legend3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:drawablePadding="4dp"
+            android:textColor="#85858A"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chart_dashboard_legend3_data" />
+
+        <TextView
+            android:id="@+id/chart_dashboard_legend4_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:layout_marginTop="32dp"
+            android:textColor="#333338"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_title" />
+
+        <TextView
+            android:id="@+id/chart_dashboard_legend4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:drawablePadding="4dp"
+            android:textColor="#85858A"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chart_dashboard_legend4_data" />
+
+        <TextView
+            android:id="@+id/chart_dashboard_legend5_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:layout_marginTop="18dp"
+            android:textColor="#333338"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chart_dashboard_legend4" />
+
+        <TextView
+            android:id="@+id/chart_dashboard_legend5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:drawablePadding="4dp"
+            android:textColor="#85858A"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chart_dashboard_legend5_data" />
+
+        <TextView
+            android:id="@+id/chart_dashboard_legend6_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:layout_marginTop="18dp"
+            android:textColor="#333338"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chart_dashboard_legend5" />
+
+        <TextView
+            android:id="@+id/chart_dashboard_legend6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:drawablePadding="4dp"
+            android:textColor="#85858A"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chart_dashboard_legend6_data" />
+
         <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/chart_dashboard_pie"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="12dp"
             android:layout_marginEnd="20dp"

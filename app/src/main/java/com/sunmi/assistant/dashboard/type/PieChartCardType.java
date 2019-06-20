@@ -1,27 +1,45 @@
 package com.sunmi.assistant.dashboard.type;
 
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.View;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.animation.Easing;
+import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.data.PieEntry;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.model.PieChartCard;
+import com.sunmi.assistant.dashboard.ui.ChartDataChangeAnimation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
+
+import static com.github.mikephil.charting.utils.ColorTemplate.rgb;
 
 /**
  * @author yinhui
  * @since 2019-06-14
  */
 public class PieChartCardType extends ItemType<PieChartCard, BaseViewHolder<PieChartCard>> {
+
+    private static final String HOLDER_TAG_LEGENDS = "legends";
+    private static final String HOLDER_TAG_LEGENDS_DATA = "legends_data";
+
+    private static final Integer[] PIE_COLORS = {
+            rgb("#2ecc71"), rgb("#f1c40f"), rgb("#e74c3c"), rgb("#3498db"), Color.rgb(193, 37, 82), Color.rgb(255, 102, 0), Color.rgb(245, 199, 0),
+            Color.rgb(106, 150, 31), Color.rgb(179, 100, 53), Color.rgb(51, 181, 229)
+    };
 
     @Override
     public int getLayoutId(int type) {
@@ -46,15 +64,25 @@ public class PieChartCardType extends ItemType<PieChartCard, BaseViewHolder<PieC
         chart.setDrawEntryLabels(false);
         chart.setUsePercentValues(true);
         chart.setTransparentCircleRadius(0f);
-        chart.setExtraRightOffset(50);
+        chart.getLegend().setEnabled(false);
+        chart.animateY(300, Easing.EaseOutCubic);
 
-        Legend l = chart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-        l.setOrientation(Legend.LegendOrientation.VERTICAL);
-        l.setForm(Legend.LegendForm.CIRCLE);
-        l.setFormSize(4f);
-        l.setTextSize(12f);
+        List<TextView> legends = new ArrayList<>(6);
+        legends.add(holder.getView(R.id.chart_dashboard_legend1));
+        legends.add(holder.getView(R.id.chart_dashboard_legend2));
+        legends.add(holder.getView(R.id.chart_dashboard_legend3));
+        legends.add(holder.getView(R.id.chart_dashboard_legend4));
+        legends.add(holder.getView(R.id.chart_dashboard_legend5));
+        legends.add(holder.getView(R.id.chart_dashboard_legend6));
+        List<TextView> legendsData = new ArrayList<>(6);
+        legendsData.add(holder.getView(R.id.chart_dashboard_legend1_data));
+        legendsData.add(holder.getView(R.id.chart_dashboard_legend2_data));
+        legendsData.add(holder.getView(R.id.chart_dashboard_legend3_data));
+        legendsData.add(holder.getView(R.id.chart_dashboard_legend4_data));
+        legendsData.add(holder.getView(R.id.chart_dashboard_legend5_data));
+        legendsData.add(holder.getView(R.id.chart_dashboard_legend6_data));
+        holder.putTag(HOLDER_TAG_LEGENDS, legends);
+        holder.putTag(HOLDER_TAG_LEGENDS_DATA, legendsData);
 
         return holder;
     }
@@ -70,29 +98,75 @@ public class PieChartCardType extends ItemType<PieChartCard, BaseViewHolder<PieC
         bySales.setSelected(true);
         byOrder.setSelected(false);
 
+        if (model.dataSet.data == null || model.dataSet.data.size() == 0) {
+            chart.setData(null);
+            chart.invalidate();
+            return;
+        }
+
         PieDataSet dataSet;
+        List<PieEntry> dataList = model.dataSet.data;
+        legendSetUp(holder, dataList);
         if (chart.getData() != null && chart.getData().getDataSetCount() > 0) {
             dataSet = (PieDataSet) chart.getData().getDataSetByIndex(0);
-            dataSet.setValues(model.dataSet.data);
+            dataSet.setValues(dataList);
             chart.getData().notifyDataChanged();
             chart.notifyDataSetChanged();
+            chart.invalidate();
+//            PieChartDataUpdateAnim anim = new PieChartDataUpdateAnim(300, chart,
+//                    dataSet.getValues(), model.dataSet.data);
+//            anim.run();
         } else {
-            dataSet = new PieDataSet(model.dataSet.data, "");
-
-            ArrayList<Integer> colors = new ArrayList<>();
-            for (int c : ColorTemplate.MATERIAL_COLORS)
-                colors.add(c);
-            for (int c : ColorTemplate.COLORFUL_COLORS)
-                colors.add(c);
-            colors.add(ColorTemplate.getHoloBlue());
-
-            dataSet.setColors(colors);
+            dataSet = new PieDataSet(dataList, "data");
+            dataSet.setColors(Arrays.asList(PIE_COLORS));
             dataSet.setDrawValues(false);
             dataSet.setDrawIcons(false);
             PieData data = new PieData(dataSet);
             chart.setData(data);
+            chart.invalidate();
         }
-//        chart.animateY(300, Easing.EaseOutCubic);
+    }
+
+    private void legendSetUp(@NonNull BaseViewHolder<PieChartCard> holder, List<PieEntry> dataList) {
+        int size = dataList.size();
+        List<TextView> legends = holder.getTag(HOLDER_TAG_LEGENDS);
+        List<TextView> legendsData = holder.getTag(HOLDER_TAG_LEGENDS_DATA);
+        for (int i = 0; i < 6; i++) {
+            TextView legend = legends.get(i);
+            TextView legendData = legendsData.get(i);
+            if (i < size) {
+                Drawable drawable = holder.getContext().getResources()
+                        .getDrawable(R.drawable.dashboard_pie_chart_legend_form);
+                drawable = DrawableCompat.wrap(drawable);
+                PieEntry entry = dataList.get(i);
+                DrawableCompat.setTint(drawable, PIE_COLORS[i]);
+                if (i < 3) {
+                    legend.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
+                } else {
+                    legend.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
+                }
+                legend.setText(entry.getLabel());
+                legendData.setText(String.format(Locale.getDefault(), "%.0f%%", entry.getValue() * 100));
+                legend.setVisibility(View.VISIBLE);
+                legendData.setVisibility(View.VISIBLE);
+            } else {
+                legend.setVisibility(View.GONE);
+                legendData.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private static class PieChartDataUpdateAnim extends ChartDataChangeAnimation<PieEntry, PieData> {
+
+        private PieChartDataUpdateAnim(int duration, Chart<PieData> chart,
+                                       List<PieEntry> oldData, List<PieEntry> newData) {
+            super(duration, chart, oldData, newData);
+        }
+
+        @Override
+        public PieEntry newEntry(PieEntry entry, float newValue) {
+            return new PieEntry(newValue, entry.getLabel());
+        }
     }
 
 }
