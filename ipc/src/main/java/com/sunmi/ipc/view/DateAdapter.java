@@ -51,7 +51,8 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.ViewHolder> {
 
         //当前时间线的高度
         ViewGroup.LayoutParams lp = viewHolder.tvLine.getLayoutParams();
-        lp.width = CommonHelper.dp2px(context, (float) 0.8);
+//        lp.width = CommonHelper.dp2px(context, 1f);
+        lp.width = context.getResources().getDimensionPixelSize(R.dimen.dp_1);
         if (hour.contains("00")) {
             lp.height = CommonHelper.dp2px(context, 8);
             viewHolder.tvLine.setVisibility(View.VISIBLE);

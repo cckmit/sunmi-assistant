@@ -2,6 +2,7 @@ package com.sunmi.assistant.ui.activity.setting;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -11,7 +12,6 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.sunmi.apmanager.constant.Constants;
-import sunmi.common.rpc.http.RpcCallback;
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
@@ -23,6 +23,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.rpc.http.RpcCallback;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.StatusBarUtils;
 
@@ -130,7 +131,9 @@ public class SettingActivity extends BaseActivity {
                 if (code == 1) {
                     shortTip(R.string.tip_logout_success);
                     CommonUtils.logout();
-                    LoginActivity_.intent(context).start();
+                    LoginActivity_.intent(context).flags(Intent.FLAG_ACTIVITY_NEW_TASK
+                            | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                            | Intent.FLAG_ACTIVITY_NO_HISTORY).start();
                     finish();
                     System.gc();
                 } else {
