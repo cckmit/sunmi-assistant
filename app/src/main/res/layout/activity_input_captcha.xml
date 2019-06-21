@@ -104,7 +104,7 @@
         android:layout_height="@dimen/dp_54"
         android:layout_below="@+id/tv_mobile"
         android:layout_marginTop="@dimen/dp_24"
-        android:background="@drawable/edittext_soild_orange"
+        android:background="@drawable/edittext_solid_orange"
         android:text="@string/str_next"
         android:textColor="@color/colorCalendarGrey2"
         android:textSize="@dimen/sp_18" />
