@@ -3,7 +3,11 @@ package com.sunmi.ipc.presenter;
 import android.text.TextUtils;
 
 import com.sunmi.ipc.contract.IpcConfiguringContract;
+import com.sunmi.ipc.model.IpcListResp;
 import com.sunmi.ipc.rpc.IPCCloudApi;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -35,6 +39,29 @@ public class IpcConfiguringPresenter extends BasePresenter<IpcConfiguringContrac
                             mView.ipcBindWifiFail(sn, code, msg);
                     }
                 });
+    }
+
+    @Override
+    public void getIpcList(int companyId, String shopId) {
+        IPCCloudApi.getDetailList(companyId, shopId, new RetrofitCallback<IpcListResp>() {
+            @Override
+            public void onSuccess(int code, String msg, IpcListResp data) {
+                LogCat.e("111111", "666666 getIpcList onResponse response = " + data.toString());
+                List<IpcListResp.SsListBean> ipcList = new ArrayList<>();
+                if (data.getFs_list() != null) {
+                    ipcList.addAll(data.getFs_list());
+                }
+                if (data.getFs_list() != null) {
+                    ipcList.addAll(data.getSs_list());
+                }
+                if (isViewAttached()) mView.getIpcListSuccess(ipcList);
+            }
+
+            @Override
+            public void onFail(int code, String msg, IpcListResp data) {
+                if (isViewAttached()) mView.shortTip(msg);
+            }
+        });
     }
 
 }
