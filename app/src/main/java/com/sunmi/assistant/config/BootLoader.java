@@ -58,7 +58,7 @@ public class BootLoader {
 //        LeakCanary.install((Application) context);
         //bugly
         CrashReport.initCrashReport(context, ApConfig.BUGLY_ID, true);
-        CrashReport.setUserId(SpUtils.getUID());
+        CrashReport.setUserId(SpUtils.getUID());//todo login后修改
         //trustAllCerts
         handleSSLHandshake();
     }
