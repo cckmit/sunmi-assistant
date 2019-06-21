@@ -2,7 +2,7 @@
 <resources>
     <string name="str_ipc">IPC</string>
     <string name="str_input_psw">输入密码</string>
-    <string name="tip_wifi_psw_error">网络密码错误</string>
+    <string name="tip_wifi_psw_error">摄像头配网失败</string>
     <string name="str_adjust_screen">调整画面</string>
     <string name="msg_in_same_wifi">请保持手机与摄像头在同一网络内</string>
     <string name="tip_no_wifi_for_ipc">没有摄像头可连接的Wi-Fi</string>
