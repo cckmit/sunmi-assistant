@@ -146,7 +146,7 @@
             android:layout_below="@id/tv_no_find_name"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_40"
-            android:background="@drawable/edittext_soild_orange"
+            android:background="@drawable/edittext_solid_orange"
             android:text="@string/str_refresh"
             android:textColor="@color/c_white"
             android:textSize="@dimen/sp_18" />

@@ -79,7 +79,7 @@
                     android:layout_height="@dimen/dp_44"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/dp_24"
-                    android:background="@drawable/edittext_soild_orange"
+                    android:background="@drawable/edittext_solid_orange"
                     android:text="@string/str_refresh"
                     android:textColor="@color/c_white"
                     android:textSize="@dimen/sp_16"
