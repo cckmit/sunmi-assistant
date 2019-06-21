@@ -58,7 +58,7 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
             public void run() {
                 bind();
             }
-        }, 1000);
+        }, 5000);
     }
 
     private void bind() {

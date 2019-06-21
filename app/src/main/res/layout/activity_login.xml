@@ -82,7 +82,7 @@
             android:layout_height="@dimen/dp_54"
             android:layout_below="@+id/rlPassword"
             android:layout_marginTop="@dimen/dp_15"
-            android:background="@drawable/edittext_soild_orange"
+            android:background="@drawable/edittext_solid_orange"
             android:text="@string/str_login"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/sp_18" />
