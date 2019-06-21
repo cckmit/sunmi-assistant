@@ -197,6 +197,8 @@ public class VideoPlayActivity extends BaseActivity
     private boolean isSelectedDate;
     //是否自动滚动
     private boolean isAutoScroll;
+    private Handler handler = new Handler();
+
 
     //用于云端回放的播放视频的mediaPlayer对象
     private MediaPlayer
@@ -224,6 +226,7 @@ public class VideoPlayActivity extends BaseActivity
     //开启计时
     private void startScreenHideTimer() {
         stopScreenHideTimer();
+        LogCat.e(TAG, "888888 ————isAutoScroll=" + isAutoScroll);
         isAutoScroll = true;
         screenHideTimer = new Timer();
         screenHideTimer.schedule(screenHideTimerTask = new TimerTask() {
@@ -462,15 +465,12 @@ public class VideoPlayActivity extends BaseActivity
         if (isFastClick(1000)) return;
         if (isPaused) {
             ivPlay.setBackgroundResource(R.mipmap.pause_normal);
-            if (isCloudPlayBack) cloudPlayIsStart();
         } else {
             ivPlay.setBackgroundResource(R.mipmap.play_normal);
-            if (isCloudPlayBack) cloudPlayIsStart();
         }
         isPaused = !isPaused;
-        if (isDevPlayBack) {
-            IOTCClient.pausePlayback(isPaused);
-        }
+        if (isDevPlayBack) IOTCClient.pausePlayback(isPaused);
+        if (isCloudPlayBack) cloudPlayIsStart();
     }
 
     //cloud播放 start/pause
@@ -942,6 +942,7 @@ public class VideoPlayActivity extends BaseActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        removeCallbacks();
         closeMove();//关闭时间抽的timer
         stopScreenHideTimer();//关闭屏幕控件自动hide计时器
     }
@@ -1033,6 +1034,7 @@ public class VideoPlayActivity extends BaseActivity
         recyclerView.setAdapter(adapter);
 
         if (!isFirstScroll && !isSelectedDate) {
+            LogCat.e(TAG, "6666666 22");
             selectedTimeIsHaveVideo(firstLeftScrollCurrentTime); //初始化左滑渲染及回放
         } else {
             if (isSelectedDate) {
@@ -1101,26 +1103,30 @@ public class VideoPlayActivity extends BaseActivity
         });
     }
 
+    //中间距离左侧屏幕的分钟
+    private long leftToCenterMinutes() {
+        //时间轴的一半除去px2dp的比例
+        //return CommonHelper.px2dp(this, rvWidth / 2);
+        return rvWidth / 2 / getResources().getDimensionPixelSize(R.dimen.dp_1);
+    }
+
     //滑动选择日期的0点
     private void scrollSelectedDate0AM() {
-        long leftToCenterMinutes = CommonHelper.px2dp(this, rvWidth / 2);//中间距离左侧屏幕的分钟
         long threeDaysBeforeDate = 3 * 24 * 60;//3天分钟数
-        currentItemPosition = (int) (threeDaysBeforeDate - leftToCenterMinutes);
+        currentItemPosition = (int) (threeDaysBeforeDate - leftToCenterMinutes());
         linearLayoutManager.scrollToPositionWithOffset(currentItemPosition, 0);
         openMove();
     }
 
     //获取视频跳转播放的currentItemPosition
     private void videoSkipScrollPosition(long currentTimeMinutes) {
-        long leftToCenterMinutes = CommonHelper.px2dp(this, rvWidth / 2);//中间距离左侧屏幕的分钟
-        currentItemPosition = (int) (currentTimeMinutes / 60 - threeDaysBeforeSeconds / 60 - leftToCenterMinutes);
+        currentItemPosition = (int) (currentTimeMinutes / 60 - threeDaysBeforeSeconds / 60 - leftToCenterMinutes());
         linearLayoutManager.scrollToPositionWithOffset(currentItemPosition, 0);
     }
 
     //滑动回放定位的中间 position
     private void scrollCurrentPlayBackTime(long currentTimeMinutes) {
-        long leftToCenterMinutes = CommonHelper.px2dp(this, rvWidth / 2);//中间距离左侧屏幕的分钟
-        currentItemPosition = (int) (currentTimeMinutes / 60 - threeDaysBeforeSeconds / 60 - leftToCenterMinutes);
+        currentItemPosition = (int) (currentTimeMinutes / 60 - threeDaysBeforeSeconds / 60 - leftToCenterMinutes());
         linearLayoutManager.scrollToPositionWithOffset(currentItemPosition, 0);
         openMove();
     }
@@ -1139,8 +1145,7 @@ public class VideoPlayActivity extends BaseActivity
             @Override
             public void run() {
                 //中间距离左侧屏幕的分钟
-                long leftToCenterMinutes = CommonHelper.px2dp(context, rvWidth / 2);
-                long currentMinutes = (minutesTotal - twelveHoursSeconds) / 60 - leftToCenterMinutes;//初始化无偏移量
+                long currentMinutes = (minutesTotal - twelveHoursSeconds) / 60 - leftToCenterMinutes();//初始化无偏移量
                 currentItemPosition = (int) currentMinutes;//当前的item
                 linearLayoutManager.scrollToPositionWithOffset(currentItemPosition, 0);
                 openMove();
@@ -1158,8 +1163,7 @@ public class VideoPlayActivity extends BaseActivity
         //初始化当前的秒数和现在的秒数时间戳对比相差的偏移量--比对分钟数
         long offsetMinutes = nowMinute / 60 - currentDateSeconds / 60;
         //中间距离左侧屏幕的分钟
-        long leftToCenterMinutes = CommonHelper.px2dp(VideoPlayActivity.this, rvWidth / 2);
-        long currentMinutes = (minutesTotal - twelveHoursSeconds) / 60 - leftToCenterMinutes + offsetMinutes;//点击直播+偏移量offsetMinutes
+        long currentMinutes = (minutesTotal - twelveHoursSeconds) / 60 - leftToCenterMinutes() + offsetMinutes;//点击直播+偏移量offsetMinutes
         currentItemPosition = (int) currentMinutes;//当前的item
         linearLayoutManager.scrollToPositionWithOffset(currentItemPosition, 0);
         openMove();
@@ -1170,9 +1174,7 @@ public class VideoPlayActivity extends BaseActivity
         //long currentTimeSecond = System.currentTimeMillis() / 1000;
         //初始化当前的秒数和现在的秒数时间戳对比相差的偏移量--比对分钟数
         long offsetMinutes = currentTimeSecond / 60 - currentDateSeconds / 60;
-        //中间距离左侧屏幕的分钟
-        long leftToCenterMinutes = CommonHelper.px2dp(VideoPlayActivity.this, rvWidth / 2);
-        long currentMinutes = (minutesTotal - twelveHoursSeconds) / 60 - leftToCenterMinutes + offsetMinutes;//点击直播+偏移量offsetMinutes
+        long currentMinutes = (minutesTotal - twelveHoursSeconds) / 60 - leftToCenterMinutes() + offsetMinutes;//点击直播+偏移量offsetMinutes
         currentItemPosition = (int) currentMinutes;//当前的item
         linearLayoutManager.scrollToPositionWithOffset(currentItemPosition, 0);
     }
@@ -1244,6 +1246,10 @@ public class VideoPlayActivity extends BaseActivity
         return bs.getDate();
     }
 
+    private void removeCallbacks() {
+        handler.removeCallbacksAndMessages(null);
+    }
+
     //recyclerView 滑动监听
     private void recyclerViewAddOnScrollListener() {
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -1284,9 +1290,11 @@ public class VideoPlayActivity extends BaseActivity
                         return;
                     }
                     //拖动或选择的时间是否有video（ap或cloud）
+                    LogCat.e(TAG, "6666666 11");
                     selectedTimeIsHaveVideo(currTime);
                 } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING ||
                         newState == RecyclerView.SCROLL_STATE_SETTLING) {//拖动和自动滑动
+                    removeCallbacks();
                     isSelectedDate = false;//手动拖动或自动滑动
                     isAutoScroll = false;//非自动滑动
                     int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
@@ -1321,43 +1329,51 @@ public class VideoPlayActivity extends BaseActivity
                 scrollTime = currTime * 1000;//滑动日历的时间戳毫秒
 
                 canvasHours(firstVisibleItem);//绘制时间
-                if (isAutoScroll) switch2Playback(currTime);//自动滑动时下一个视频ap还是cloud播放
+                LogCat.e(TAG, "888888 isAutoScroll=" + isAutoScroll);
+//                if (isAutoScroll) switch2Playback(currTime);//自动滑动时下一个视频ap还是cloud播放
+                switch2Playback(currTime);//自动滑动时下一个视频ap还是cloud播放
                 if (isSelectedDate) {
                     if (listAp == null || listAp.size() == 0) return;
+                    LogCat.e(TAG, "6666666 00");
                     selectedTimeIsHaveVideo(currTime);
-                    LogCat.e(TAG, "1111122 have video");
                 }
             }
         });
     }
 
     private void switch2Playback(long currTime) {
+        LogCat.e(TAG, "888888 11");
         if (!isCloudPlayBack && !isDevPlayBack && isCurrentLive) return;
+        LogCat.e(TAG, "888888 22");
         int availableVideoSize = listAp.size();
         for (int i = 0; i < availableVideoSize; i++) {
             ApCloudTimeBean bean = listAp.get(i);
             long start = bean.getStartTime();
             long end = bean.getEndTime();
+            LogCat.e(TAG, "888888 222");
             //当滑动到最后前后一分钟时，判断下一个视频片段ap还是cloud
             if (currTime >= start && currTime < end && end - currTime < 60) {
                 if (i == availableVideoSize - 1) {//todo 最后一个，需要渲染后面的数据
 //                    refreshCanvasList();//i是最后一个，基于i的end作为start再拉7天的数据。
+                    LogCat.e(TAG, "888888 2222");
                 } else {
                     boolean isCloud = !listAp.get(i + 1).isApPlay();
-                    int delayMillis = (int) end - currTime < 0 ? 1 : (int) (end - currTime);
+                    final int delayMillis = (int) end - currTime < 0 ? 1 : (int) (end - currTime);
                     final int finalI = i;
                     if (isCloud) {
-                        new Handler().postDelayed(new Runnable() {
+                        LogCat.e(TAG, "888888 33 delayMillis=" + delayMillis);
+
+                        handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                LogCat.e(TAG, "999999 333");
                                 switch2CloudPlayback(listAp.get(finalI + 1).getStartTime(),
                                         listAp.get(finalI + 1).getStartTime() + tenMinutes);
                                 videoSkipScrollPosition(listAp.get(finalI + 1).getStartTime()); //偏移跳转
                             }
                         }, delayMillis * 1000);
                     } else {
-                        new Handler().postDelayed(new Runnable() {
+                        LogCat.e(TAG, "888888 44 11delayMillis=" + delayMillis);
+                        handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 switch2DevPlayback(listAp.get(finalI + 1).getStartTime());
@@ -1382,7 +1398,7 @@ public class VideoPlayActivity extends BaseActivity
         if (minute == 0) {
             offsetPx = 0;
         } else {
-            offsetPx = (60 - minute) * (int) getResources().getDimension(R.dimen.dp_1);
+            offsetPx = (60 - minute) * getResources().getDimensionPixelSize(R.dimen.dp_1);
             hour++;
         }
         //绘制下方时间
@@ -1485,6 +1501,15 @@ public class VideoPlayActivity extends BaseActivity
         }
     }
 
+    private void cloudListNullOrFail() {
+        if (listAp == null || listAp.size() == 0) {
+            switch2Live();//无ap且无cloud的时间列表
+        } else {
+            timeCanvasList(listAp); //ap时间列表>0且cloud列表=0
+        }
+        hideLoadingDialog();
+    }
+
     //获取cloud回放时间轴
     public void getTimeList(int deviceId, final long startTime, final long endTime) {
         IPCCloudApi.getTimeSlots(deviceId, startTime, endTime, new RetrofitCallback<JsonObject>() {
@@ -1496,8 +1521,7 @@ public class VideoPlayActivity extends BaseActivity
                         JSONObject object = new JSONObject(data.toString());
                         int total_count = object.getInt("total_count");
                         if (total_count == 0) {
-                            hideLoadingDialog();
-                            timeCanvasList(listAp);
+                            cloudListNullOrFail();
                             return;
                         }
                         JSONArray jsonArray = object.getJSONArray("timeslots");
@@ -1520,7 +1544,7 @@ public class VideoPlayActivity extends BaseActivity
             @Override
             public void onFail(int code, String msg, JsonObject data) {
                 LogCat.e(TAG, "111111 cloud getTimeSlots onFail");
-                hideLoadingDialog();
+                cloudListNullOrFail();
             }
         });
     }

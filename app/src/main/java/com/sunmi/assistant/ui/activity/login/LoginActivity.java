@@ -141,6 +141,7 @@ public class LoginActivity extends BaseActivity {
         String password = etPassword.getText().toString();
         switch (v.getId()) {
             case R.id.btnLogin: //密码登录
+                if (isFastClick(1500)) return;
                 if (!RegexUtils.isChinaPhone(mobile) && !RegexUtils.isEmail(mobile)) {
                     shortTip(R.string.tip_invalid_phone_number);
                     return;
@@ -195,6 +196,7 @@ public class LoginActivity extends BaseActivity {
     //账号合并
     private void userMerge(final String password) {
         if (etUser.getText() == null) return;
+        showLoadingDialog();
         String user = etUser.getText().toString();  //email test: esyzim06497@chacuo.net
         if (RegexUtils.isChinaPhone(user) || RegexUtils.isEmail(user)) {
             SSOApi.checkUserName(user, new RpcCallback(context, false) {
@@ -256,7 +258,7 @@ public class LoginActivity extends BaseActivity {
             public void run() {
                 new CommonDialog.Builder(LoginActivity.this)
                         .setTitle(R.string.tip_unregister)
-                        .setCancelButton(R.string.str_cancel)
+                        .setCancelButton(R.string.sm_cancel)
                         .setConfirmButton(R.string.str_register_now,
                                 new DialogInterface.OnClickListener() {
                                     @Override

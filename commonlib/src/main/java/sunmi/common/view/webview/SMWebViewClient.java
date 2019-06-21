@@ -55,7 +55,7 @@ public abstract class SMWebViewClient extends WebViewClient {
         handler.proceed();
 //                    }
 //                });
-//        builder.setNegativeButton(mContext.getString(R.string.str_cancel),
+//        builder.setNegativeButton(mContext.getString(R.string.sm_cancel),
 //                new DialogInterface.OnClickListener() {
 //                    @Override
 //                    public void onClick(DialogInterface dialog, int which) {

@@ -251,7 +251,7 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
     private void createDialog(final String ssid, final String mgmt) {
         new InputDialog.Builder(context)
                 .setTitle(R.string.str_input_psw)
-                .setCancelButton(R.string.str_cancel)
+                .setCancelButton(R.string.sm_cancel)
                 .setConfirmButton(R.string.str_confirm,
                         new InputDialog.ConfirmClickListener() {
                             @Override

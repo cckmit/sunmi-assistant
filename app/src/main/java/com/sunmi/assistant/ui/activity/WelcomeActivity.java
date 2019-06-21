@@ -49,10 +49,12 @@ public class WelcomeActivity extends BaseActivity {
     protected void init() {
         SpUtils.saveHeightPixel(this);//手机像素高度
         if (TextUtils.equals(SpUtils.getLead(), "TRUE")) {
-            launch();
+            launch(false);
         } else {
-            LeadPagesActivity_.intent(context).start();
-            finish();
+            //首次安装或清空数据时
+            launch(true);
+//            LeadPagesActivity_.intent(context).start();
+//            finish();
         }
         initMTA();
     }
@@ -69,7 +71,7 @@ public class WelcomeActivity extends BaseActivity {
         }
     }
 
-    private void launch() {
+    private void launch(boolean isLeadPage) {
         ThreadPool.getCachedThreadPool().submit(new Runnable() {
             @Override
             public void run() {
@@ -83,7 +85,7 @@ public class WelcomeActivity extends BaseActivity {
                     }
                 } else {
                     LogCat.e(TAG, "ping time -- 333");
-                    checkUpdate();
+                    checkUpdate(isLeadPage);
                 }
             }
         });
@@ -153,7 +155,7 @@ public class WelcomeActivity extends BaseActivity {
         gotoLoginActivity();
     }
 
-    private void checkUpdate() {
+    private void checkUpdate(boolean isLeadPage) {
         CloudApi.checkUpgrade(new StringCallback() {
             @Override
             public void onError(Call call, Response response, Exception e, int id) {
@@ -174,6 +176,11 @@ public class WelcomeActivity extends BaseActivity {
                                     appUrl = object.getString("url");
                                     forceUpdate(appUrl);
                                     return;
+                                } else {
+                                    if (isLeadPage) {
+                                        LeadPagesActivity_.intent(context).start();
+                                        finish();
+                                    }
                                 }
                             }
                         }
@@ -214,9 +221,9 @@ public class WelcomeActivity extends BaseActivity {
                 TextUtils.equals("ZUK", android.os.Build.BRAND) ||
                 haveInstallPermission()) {
             AppUpdate.versionUpdate((Activity) context, appUrl);
-            LogCat.e(TAG,"2222");
+            LogCat.e(TAG, "2222");
         } else {
-            LogCat.e(TAG,"22221111");
+            LogCat.e(TAG, "22221111");
             Toast.makeText(context, R.string.str_open_permission_to_update, Toast.LENGTH_LONG).show();
             //跳转设置开启允许安装
             Uri packageURI = Uri.parse("package:" + context.getPackageName());
