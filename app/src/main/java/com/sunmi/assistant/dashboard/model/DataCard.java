@@ -1,21 +1,24 @@
 package com.sunmi.assistant.dashboard.model;
 
+import com.sunmi.assistant.dashboard.DataRefreshHelper;
+
 /**
  * 小卡片数据
  *
  * @author yinhui
  * @since 2019-06-13
  */
-public class DataCard {
+public class DataCard extends BaseRefreshCard<DataCard> {
     public String title;
-    public String data;
+    public float data = 1000;
+    public String dataFormat;
     public String trendName;
     public float trendData;
 
-    public DataCard(String title, String data, String trendName, float trendData) {
+    public DataCard(String title, String dataFormat,
+                    DataRefreshHelper<DataCard> helper) {
+        super(helper);
         this.title = title;
-        this.data = data;
-        this.trendName = trendName;
-        this.trendData = trendData;
+        this.dataFormat = dataFormat;
     }
 }

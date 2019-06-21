@@ -12,7 +12,6 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.DashboardContract;
 import com.sunmi.assistant.dashboard.DashboardPresenter;
 import com.sunmi.assistant.dashboard.model.BarChartCard;
-import com.sunmi.assistant.dashboard.model.DashboardConfig;
 import com.sunmi.assistant.dashboard.model.DataCard;
 import com.sunmi.assistant.dashboard.model.ListCard;
 import com.sunmi.assistant.dashboard.model.PieChartCard;
@@ -99,13 +98,13 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Override
     @UiThread
-    public void updateInfo(DashboardConfig config) {
-        mCompanyName.setText(config.companyName);
-        mStoreName.setText(config.storeName);
+    public void updateInfo(String companyName, String storeName) {
+        mCompanyName.setText(companyName);
+        mStoreName.setText(storeName);
     }
 
     @Override
-    public void updateData(List<Object> data) {
+    public void updateData(List<?> data) {
         if (mAdapter != null) {
             mAdapter.setData(data);
         }

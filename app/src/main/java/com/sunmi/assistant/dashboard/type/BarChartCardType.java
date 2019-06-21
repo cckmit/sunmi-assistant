@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.animation.ChartAnimator;
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.buffer.BarBuffer;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.Chart;
@@ -94,7 +95,7 @@ public class BarChartCardType extends ItemType<BarChartCard, BaseViewHolder<BarC
         yAxis.setAxisMinimum(0.0f);
         yAxis.enableGridDashedLine(dashLength, dashSpaceLength, 0f);
         yAxis.setGridLineWidth(1f);
-//        chart.animateY(300, Easing.EaseOutCubic);
+        chart.animateY(300, Easing.EaseOutCubic);
 
         return holder;
     }
@@ -126,13 +127,13 @@ public class BarChartCardType extends ItemType<BarChartCard, BaseViewHolder<BarC
         BarDataSet dataSet;
         if (chart.getData() != null && chart.getData().getDataSetCount() > 0) {
             dataSet = (BarDataSet) chart.getData().getDataSetByIndex(0);
-            dataSet.setValues(dataList);
-            chart.getData().notifyDataChanged();
-            chart.notifyDataSetChanged();
-            chart.invalidate();
-//            BarChartDataUpdateAnim anim = new BarChartDataUpdateAnim(300, chart,
-//                    dataSet.getValues(), model.dataSet.data);
-//            anim.run();
+//            dataSet.setValues(dataList);
+//            chart.getData().notifyDataChanged();
+//            chart.notifyDataSetChanged();
+//            chart.invalidate();
+            BarChartDataUpdateAnim anim = new BarChartDataUpdateAnim(300, chart,
+                    dataSet.getValues(), model.dataSet.data);
+            anim.run();
         } else {
             dataSet = new BarDataSet(dataList, "data");
             dataSet.setColor(Color.parseColor("#2997FF"));

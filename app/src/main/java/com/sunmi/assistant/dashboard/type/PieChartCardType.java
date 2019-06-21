@@ -7,6 +7,7 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.View;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
@@ -81,7 +82,7 @@ public class PieChartCardType extends ItemType<PieChartCard, BaseViewHolder<PieC
         legendsData.add(holder.getView(R.id.chart_dashboard_legend6_data));
         holder.putTag(HOLDER_TAG_LEGENDS, legends);
         holder.putTag(HOLDER_TAG_LEGENDS_DATA, legendsData);
-//        chart.animateY(300, Easing.EaseOutCubic);
+        chart.animateY(300, Easing.EaseOutCubic);
 
         return holder;
     }
@@ -108,13 +109,13 @@ public class PieChartCardType extends ItemType<PieChartCard, BaseViewHolder<PieC
         legendSetUp(holder, dataList);
         if (chart.getData() != null && chart.getData().getDataSetCount() > 0) {
             dataSet = (PieDataSet) chart.getData().getDataSetByIndex(0);
-            dataSet.setValues(dataList);
-            chart.getData().notifyDataChanged();
-            chart.notifyDataSetChanged();
-            chart.invalidate();
-//            PieChartDataUpdateAnim anim = new PieChartDataUpdateAnim(300, chart,
-//                    dataSet.getValues(), model.dataSet.data);
-//            anim.run();
+//            dataSet.setValues(dataList);
+//            chart.getData().notifyDataChanged();
+//            chart.notifyDataSetChanged();
+//            chart.invalidate();
+            PieChartDataUpdateAnim anim = new PieChartDataUpdateAnim(300, chart,
+                    dataSet.getValues(), model.dataSet.data);
+            anim.run();
         } else {
             dataSet = new PieDataSet(dataList, "data");
             dataSet.setColors(Arrays.asList(PIE_COLORS));

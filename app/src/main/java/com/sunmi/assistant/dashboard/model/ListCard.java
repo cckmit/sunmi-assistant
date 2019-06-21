@@ -1,19 +1,21 @@
 package com.sunmi.assistant.dashboard.model;
 
+import com.sunmi.assistant.dashboard.DataRefreshHelper;
+
 import java.util.List;
 
 /**
  * @author yinhui
  * @since 2019-06-17
  */
-public class ListCard {
+public class ListCard extends BaseRefreshCard<ListCard> {
 
     public String title;
     public List<Item> list;
 
-    public ListCard(String title, List<Item> list) {
+    public ListCard(String title, DataRefreshHelper<ListCard> helper) {
+        super(helper);
         this.title = title;
-        this.list = list;
     }
 
     public static class Item {
