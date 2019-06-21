@@ -39,7 +39,7 @@
         android:id="@+id/wheelLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"></FrameLayout>
+        android:padding="10dp" />
 
     <View
         android:layout_width="match_parent"
@@ -58,7 +58,7 @@
             android:layout_weight="1"
             android:background="@drawable/abc_list_selector_holo_light"
             android:gravity="center"
-            android:text="@string/str_cancel"
+            android:text="@string/sm_cancel"
             android:textColor="@color/colorText"
             android:textSize="14sp" />
 
@@ -76,7 +76,7 @@
             android:layout_weight="1"
             android:background="@drawable/abc_list_selector_holo_light"
             android:gravity="center"
-            android:text="@string/str_sure"
+            android:text="@string/str_confirm"
             android:textColor="@color/colorOrange"
             android:textSize="14sp" />
 

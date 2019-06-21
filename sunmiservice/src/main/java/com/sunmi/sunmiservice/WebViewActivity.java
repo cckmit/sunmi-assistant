@@ -14,7 +14,6 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareAPI;
@@ -27,7 +26,6 @@ import com.umeng.socialize.shareboard.SnsPlatform;
 import com.umeng.socialize.utils.ShareBoardlistener;
 
 import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
@@ -213,7 +211,7 @@ public class WebViewActivity extends BaseActivity
         config.setMenuItemTextColor(getResources().getColor(R.color.color_999999));
         config.setShareboardBackgroundColor(getResources().getColor(R.color.c_white));
         config.setIndicatorVisibility(false);
-        config.setCancelButtonText(getString(R.string.str_cancel));
+        config.setCancelButtonText(getString(R.string.sm_cancel));
         return config;
     }
 

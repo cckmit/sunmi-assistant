@@ -36,8 +36,9 @@ public class GotoActivityUtils {
         try {
             Class<?> loginActivity = Class.forName("com.sunmi.assistant.ui.activity.login.LoginActivity_");
             Intent intent = new Intent(context, loginActivity);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY);
+
             if (!TextUtils.isEmpty(extra))
                 intent.putExtra("reason", extra);
             context.startActivity(intent);

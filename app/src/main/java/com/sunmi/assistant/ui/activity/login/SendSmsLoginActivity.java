@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.Button;
 
 import com.sunmi.apmanager.constant.Constants;
-import sunmi.common.rpc.http.RpcCallback;
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.rpc.sso.SSOApi;
 import com.sunmi.apmanager.ui.view.MergeDialog;
@@ -24,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.rpc.http.RpcCallback;
 import sunmi.common.utils.RegexUtils;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.dialog.CommonDialog;
@@ -85,7 +85,7 @@ public class SendSmsLoginActivity extends BaseActivity {
     private void mobileUnregister() {
         new CommonDialog.Builder(this)
                 .setTitle(R.string.tip_unregister)
-                .setCancelButton(R.string.str_cancel)
+                .setCancelButton(R.string.sm_cancel)
                 .setConfirmButton(R.string.str_register_now, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

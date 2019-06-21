@@ -561,7 +561,7 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
         ApCloudTimeBean bean;
         //AP时间
         for (int i = 0; i < apSize + 1; i++) {
-            bean = new ApCloudTimeBean();
+
             long startAp = 0, endAp = 0;
             //不包含ap时间轴内的时间
             if (i == 0) {
@@ -579,47 +579,38 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
             }
             //cloud时间
             for (int j = 0; j < cloudSize; j++) {
+                bean = new ApCloudTimeBean();
                 long startCloud = listCloud.get(j).getStartTime();
                 long endCloud = listCloud.get(j).getEndTime();
                 LogCat.e(TAG, "getCanvasList cloud=  " + startCloud + "," + endCloud + "**** ap=" + startAp + "," + endAp);
-//                if (startCloud >= startAp && endAp > startCloud && endCloud >= endAp) {
-//                    bean.setStartTime(startCloud);
-//                    bean.setEndTime(endAp);
-//                    bean.setApPlay(false);
-//                    listAp.add(bean);
-//                }
-//                else if (startAp >= startCloud && endCloud > startAp && endAp >= endCloud) {
-//                    bean.setStartTime(startAp);
-//                    bean.setEndTime(endCloud);
-//                    bean.setApPlay(false);
-//                    listAp.add(bean);
-//                }
-
-//                else
-                if (startAp > startCloud && endCloud < endAp && endCloud > startAp) {
+                if (startCloud >= startAp && endAp > startCloud && endCloud >= endAp) {
+                    bean.setStartTime(startCloud);
+                    bean.setEndTime(endAp);
+                    bean.setApPlay(false);
+                    listAp.add(bean);
+                } else if (startAp >= startCloud && endCloud > startAp && endAp >= endCloud) {
                     bean.setStartTime(startAp);
                     bean.setEndTime(endCloud);
                     bean.setApPlay(false);
-                    list.add(bean);
-                }
-
-//                else if (startAp >= startCloud && endAp <= endCloud) {
-//                    bean.setStartTime(startAp);
-//                    bean.setEndTime(endAp);
-//                    bean.setApPlay(false);
-//                    listAp.add(bean);
-//                }
-                else if (startCloud >= startAp && endCloud <= endAp) {
+                    listAp.add(bean);
+                } else if (startAp != endAp && startAp >= startCloud && endAp <= endCloud) {
+                    bean.setStartTime(startAp);
+                    bean.setEndTime(endAp);
+                    bean.setApPlay(false);
+                    listAp.add(bean);
+                } else if (startCloud != endCloud && startCloud >= startAp && endCloud <= endAp) {
                     bean.setStartTime(startCloud);
                     bean.setEndTime(endCloud);
                     bean.setApPlay(false);
-                    list.add(bean);
+                    listAp.add(bean);
                 }
             }
         }
-        listAp.addAll(list);
+
+
         listAp = duplicateRemoval(listAp);
         Collections.sort(listAp);//正序比较
+        LogCat.e(TAG, "getCanvasList=  ************************************************************");
         for (ApCloudTimeBean aa : listAp) {
             LogCat.e(TAG, "getCanvasList=  " + aa.getStartTime() + "," + aa.getEndTime() + " ,pPlay== " + aa.isApPlay());
         }
