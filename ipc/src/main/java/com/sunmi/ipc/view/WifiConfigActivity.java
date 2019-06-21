@@ -131,7 +131,6 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                hideLoadingDialog();
                 if (wifiList.size() == 0) {
                     setNoWifiVisible(View.VISIBLE);
                 }
@@ -179,14 +178,11 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
                     }
                     stopTimer();
                     if (1 == connectStatus) {
-                        hideLoadingDialog();
                         gotoBind();
                     } else {
                         hideLoadingDialog();
                         shortTip(R.string.tip_wifi_psw_error);
                     }
-                } else {
-                    hideLoadingDialog();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -221,6 +217,7 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
         list.add(sunmiDevice);
         if (list.size() > 0) {
             IpcConfiguringActivity_.intent(context).sunmiDevices(list).shopId(shopId).start();
+            hideLoadingDialog();
             finish();
         }
     }

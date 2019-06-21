@@ -2,7 +2,7 @@
 <resources>
     <string name="str_ipc">IPC</string>
     <string name="str_input_psw">Input the password</string>
-    <string name="tip_wifi_psw_error">Wi-Fi password error</string>
+    <string name="tip_wifi_psw_error">Set Wi-Fi fail</string>
     <string name="str_adjust_screen">Adjust the screen image</string>
     <string name="msg_in_same_wifi">Please keep the mobile phone and camera staying on the same network</string>
     <string name="tip_no_wifi_for_ipc">No Wi-Fi available for camera</string>
