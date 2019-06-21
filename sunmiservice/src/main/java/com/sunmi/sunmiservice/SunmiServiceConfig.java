@@ -46,7 +46,7 @@ public class SunmiServiceConfig extends BaseConfig {
     @Override
     protected void initTest(Context context, String env) {
         VALUE_ADDED_SERVICES = "https://test-engine.sunmi.com/housekeeper/services-next";
-        SUNMI_MALL_HOST = "https://test.h5.mall.sunmi.com/";
+        SUNMI_MALL_HOST = "https://h5-mall.test.sunmi.com/";
         FUMINBAO_APP_ID = "20190121639982";
         FUMINBAO_SECRET = "cce3387477aaac220b589c5d8c0b5f9d";
     }
@@ -62,7 +62,7 @@ public class SunmiServiceConfig extends BaseConfig {
     @Override
     protected void initUat(Context context, String env) {
         VALUE_ADDED_SERVICES = "https://uat-engine.sunmi.com/housekeeper/services-next";
-        SUNMI_MALL_HOST = "https://uat.h5.mall.sunmi.com/";
+        SUNMI_MALL_HOST = "https://h5-mall.uat.sunmi.com/";
         FUMINBAO_APP_ID = "20190121639982";
         FUMINBAO_SECRET = "cce3387477aaac220b589c5d8c0b5f9d";
     }
