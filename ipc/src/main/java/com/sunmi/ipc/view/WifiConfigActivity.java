@@ -4,7 +4,6 @@ import android.os.Handler;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -47,12 +46,12 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
     RelativeLayout rlMain;
     @ViewById(resName = "rl_progress")
     RelativeLayout rlLoading;
+    @ViewById(resName = "tv_progress_tip")
+    TextView tvProgressTip;
     @ViewById(resName = "rv_wifi")
     RecyclerView rvWifi;
     @ViewById(resName = "rl_no_device")
     RelativeLayout rlNoWifi;
-    @ViewById(resName = "tv_skip")
-    TextView tvSkip;
     @ViewById(resName = "divider")
     View vTopDivider;
 
@@ -70,7 +69,7 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
 
     @AfterViews
     void init() {
-        tvSkip.setText(Html.fromHtml(getString(R.string.tip_skip_config_wifi)));
+        tvProgressTip.setText(R.string.loading_search_wifi);
         getWifiList();
     }
 

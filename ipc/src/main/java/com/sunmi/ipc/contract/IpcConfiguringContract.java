@@ -20,7 +20,7 @@ public interface IpcConfiguringContract {
 
         void getIpcListSuccess(List<IpcListResp.SsListBean> ipcList);
 
-        void getIpcListFail(String sn, int code, String msg);
+        void getIpcListFail(int code, String msg);
     }
 
     interface Presenter {

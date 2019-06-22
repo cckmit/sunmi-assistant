@@ -10,6 +10,7 @@
     <string name="str_skip">Skip</string>
     <string name="str_continue">Continue</string>
     <string name="str_exit">Exit</string>
+    <string name="str_next">Next</string>
 
     <string name="str_click_consent">By clicking the button of "Start Configuration", you agree</string>
     <string name="sunmi_user_protocol">《Sunmi User Protocol》</string>
@@ -37,26 +38,27 @@
     <string name="str_retry">Retry</string>
     <string name="tip_set_complete">Setup complete</string>
     <string name="tip_set_fail">Setup failed</string>
-    <string name="choose_device_type">Choose the device type</string>
+    <string name="choose_device_type">Choose the device</string>
 
-    <string name="str_title_ap_set">Setup router</string>
+    <string name="str_title_ap_set">Router setup</string>
     <string name="str_title_ipc_set">Setup IP camera</string>
     <string name="str_title_printer_set">Setup printer</string>
     <string name="str_text_password_no_null">The password can not be null</string>
-    <string name="str_config_tip_ap">Connect the router you wish to setup</string>
-    <string name="str_config_tip_ap_1"><![CDATA[1. Connect the power supply and network cable, wait till the system indicator stop blinking]]></string>
+    <string name="str_config_tip_ap">Prepare to set up the router</string>
+    <string name="str_config_tip_ap_1"><![CDATA[1. Connect the power supply and network cable to the router, then wait till the system indicator stop blinking.]]></string>
     <string name="str_config_tip_ap_2"><![CDATA[2. Connect your mobile phone to<font color= \'#FF6000\'>「SUNMI_XX」</font> Wi-Fi]]></string>
     <string name="str_config_tip_ipc">Connect to the IP camera you need to setup</string>
     <string name="str_config_tip_ipc_1"><![CDATA[1. Power on the IP camera, wait till the indicator is <font color= \'#FF6000\'>「white」</font>]]></string>
     <string name="str_config_tip_ipc_2"><![CDATA[2. Connect your mobile phone to<font color= \'#FF6000\'>「SUNMI_XXXX」</font> Wi-Fi]]></string>
+    <string name="str_config_tip_ipc_3"><![CDATA[3. 如使用无线连接，请将手机连接机身背面标识的无线网络<font color= \'#FF6000\'>「SUNMI_XXXX」</font>]]></string>
     <string name="str_config_tip_printer">Connect the printer you wish to setup</string>
     <string name="str_config_tip_printer_1">1. 将打印机接通电源，按一下配对按钮</string>
     <string name="str_config_tip_printer_2"><![CDATA[2. Connect your mobile phone to<font color= \'#FF6000\'>「CloudPrint_XXXX」</font> BT]]></string>
     <string name="tip_has_ap_already">Is there a connected Sunmi router already？</string>
-    <string name="str_start_set">Start setup</string>
+    <string name="str_start_set">Start</string>
     <string name="str_config_child_tip">If you already had a connected Sunmi router, you could add more routers in「Router Management」</string>
     <string name="btn_start_config">Start configuration</string>
-    <string name="textView_config_title">Wizard settings</string>
+    <string name="textView_config_title">Setup Wizard</string>
     <string name="str_primary_search_check_line">Please check whether the router has been powered on with the network cable connected</string>
     <string name="str_primary_search_on_find">No router found</string>
     <string name="str_primary_search_searching_ap">Searching your router</string>

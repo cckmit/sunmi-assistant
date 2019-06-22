@@ -66,16 +66,6 @@
                     android:scrollbars="none" />
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
-
-        <TextView
-            android:id="@+id/tv_skip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/dp_32"
-            android:textColor="@color/color_999999"
-            android:visibility="gone" />
     </RelativeLayout>
 
     <include
