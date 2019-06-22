@@ -69,7 +69,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/btn_next"
         android:layout_centerHorizontal="true"
-        android:text="请将测试人员安排在画面合适位置，面向摄像头"
+        android:text="请将测试人员安排在画面合适位置，面向摄像机"
         android:textColor="@color/c_white" />
 
     <Button

@@ -38,7 +38,7 @@
         android:layout_height="@dimen/dp_45"
         android:layout_below="@+id/vv_ipc"
         android:layout_margin="@dimen/dp_10"
-        android:hint="请输入摄像头的uid" />
+        android:hint="请输入摄像机的uid" />
 
     <RelativeLayout
         android:id="@+id/rl_video"

@@ -103,7 +103,11 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                 R.layout.item_device_config_complete, list) {
             @Override
             public void convert(ViewHolder holder, final SunmiDevice device) {
-                holder.setText(R.id.tv_name, device.getModel());
+                if (!TextUtils.isEmpty(device.getDeviceid())) {
+                    holder.setText(R.id.tv_name, device.getDeviceid());
+                } else {
+                    holder.setText(R.id.tv_name, device.getName());
+                }
                 holder.getView(R.id.tv_adjust).setVisibility(View.GONE);
                 holder.setImageResource(R.id.iv_device, SunmiDevUtils.setSearchLogo(device.getModel()));
                 if (device.getStatus() == 1) {
@@ -114,7 +118,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                         holder.getView(R.id.tv_adjust).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-
+                                //TODO 摄像头校准
                             }
                         });
                     }

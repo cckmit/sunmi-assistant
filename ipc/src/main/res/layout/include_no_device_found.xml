@@ -13,6 +13,7 @@
         android:drawableTop="@mipmap/ic_no_ipc"
         android:drawablePadding="@dimen/dp_16"
         android:text="@string/tip_no_ipc_found"
+        android:gravity="center"
         android:textColor="@color/color_333333"
         android:textSize="@dimen/sp_20" />
 

@@ -20,7 +20,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/title_bar"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_12" />
 
     <TextView
         android:id="@+id/tv_tip_1"
@@ -37,11 +38,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_tip_1"
-        android:layout_centerHorizontal="true"
         android:layout_marginLeft="@dimen/dp_30"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_30"
-        android:gravity="center"
         android:textSize="@dimen/sp_16" />
 
     <TextView
@@ -49,11 +48,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_tip_2"
-        android:layout_centerHorizontal="true"
         android:layout_marginLeft="@dimen/dp_30"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_30"
         android:textSize="@dimen/sp_16" />
+
+    <TextView
+        android:id="@+id/tv_tip_4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_tip_3"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_30"
+        android:textSize="@dimen/sp_16"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/tv_config_tip"
