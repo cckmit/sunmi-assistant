@@ -89,12 +89,13 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
         startCountDown();
     }
 
-    private void startCountDown() {
+    private synchronized void startCountDown() {
         if (!isTimeoutStart) {
             isTimeoutStart = true;
             new Handler().postDelayed(new Runnable() {
                 public void run() {
                     if (deviceIds.isEmpty()) return;
+                    LogCat.e(TAG, "888888 getIpcList");
                     mPresenter.getIpcList(SpUtils.getCompanyId(), shopId);
                 }
             }, 30000);
@@ -110,7 +111,8 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
             public void run() {
                 LogCat.e(TAG, "888888 ipcBindWifiFail,retryCount = " + retryCount);
                 if (sunmiDevices.size() > 1 || retryCount == 20
-                        || code == 5501 || code == 5508 || code == 5509 || code == 5510 || code == 5511 || code == 5013) {
+                        || code == 5501 || code == 5508 || code == 5509 || code == 5510
+                        || code == 5511 || code == 5512 || code == 5013) {
                     startCountDown();
                     setDeviceStatus(sn, code);
                     return;
@@ -125,6 +127,7 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
     public void getIpcListSuccess(List<IpcListResp.SsListBean> ipcList) {
         for (IpcListResp.SsListBean bean : ipcList) {
             for (SunmiDevice device : sunmiDevices) {
+                LogCat.e(TAG, "888888 bean.getSn() = " + bean.getSn() + ",device.getDeviceid() = " + device.getDeviceid());
                 if (TextUtils.equals(bean.getSn(), device.getDeviceid())) {
                     setDeviceStatus(device.getDeviceid(), 1);
                 }

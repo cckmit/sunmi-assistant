@@ -110,7 +110,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                 }
                 holder.getView(R.id.tv_adjust).setVisibility(View.GONE);
                 holder.setImageResource(R.id.iv_device, SunmiDevUtils.setSearchLogo(device.getModel()));
-                if (device.getStatus() == 1) {
+                if (device.getStatus() == 1 || device.getStatus() == 5512) {
                     holder.setText(R.id.tv_status, getString(R.string.str_add_success));
                     holder.setImageResource(R.id.iv_status, R.mipmap.ic_done);
                     if (TextUtils.equals("FS1", device.getModel())) {
@@ -126,10 +126,8 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                     String errStr = getString(R.string.str_bind_fail);
                     if (device.getStatus() == 5501) {
                         errStr = getString(R.string.tip_device_not_exist);
-                    } else if (device.getStatus() == 5508 || device.getStatus() == 5509) {
+                    } else if (device.getStatus() == 5509) {
                         errStr = getString(R.string.tip_already_bound);
-                    } else if (device.getStatus() == 5510) {
-                        errStr = getString(R.string.tip_bound_by_others);
                     } else if (device.getStatus() == 5511) {
                         errStr = getString(R.string.tip_device_offline);
                     } else if (device.getStatus() == 5013) {
