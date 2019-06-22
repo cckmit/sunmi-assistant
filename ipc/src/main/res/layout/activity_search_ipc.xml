@@ -94,7 +94,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_20"
-            android:text="@string/btn_start_config" />
+            android:text="@string/str_next" />
     </RelativeLayout>
 
     <include
