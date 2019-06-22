@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import com.commonlibrary.R;
 import com.google.gson.Gson;
 
+import java.net.UnknownHostException;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -59,6 +61,7 @@ public abstract class RetrofitCallback<T> implements Callback<BaseResponse<T>> {
 
     @Override
     public void onFailure(@NonNull Call<BaseResponse<T>> call, @NonNull Throwable t) {
+        if (t instanceof UnknownHostException) return;
         onFail(0, t.getMessage(), null);
     }
 

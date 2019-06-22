@@ -137,7 +137,7 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
     }
 
     @Override
-    public void getIpcListFail(String sn, int code, String msg) {
+    public void getIpcListFail(int code, String msg) {
         for (String deviceId : deviceIds) {
             setDeviceStatus(deviceId, RpcErrorCode.RPC_ERR_TIMEOUT);
         }

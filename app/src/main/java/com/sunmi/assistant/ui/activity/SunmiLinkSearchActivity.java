@@ -44,6 +44,7 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.sunmicall.ResponseBean;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 
 /**
@@ -158,7 +159,7 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
     }
 
     @Override
-    public void getIpcListFail(String sn, int code, String msg) {
+    public void getIpcListFail(int code, String msg) {
 
     }
 
