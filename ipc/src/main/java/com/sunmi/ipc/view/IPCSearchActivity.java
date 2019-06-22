@@ -107,13 +107,13 @@ public class IPCSearchActivity extends BaseActivity
 
     @Click(resName = "btn_refresh")
     void refreshClick() {
-        startScan();
         ipcList.clear();
         isApMode = false;
         ipcMap.clear();
         ipcListAdapter.notifyDataSetChanged();
         rlLoading.setVisibility(View.VISIBLE);
         btnRefresh.setVisibility(View.GONE);
+        startScan();
     }
 
     @Click(resName = "btn_config")
@@ -199,6 +199,11 @@ public class IPCSearchActivity extends BaseActivity
 
     @UiThread
     void addDevice(SunmiDevice device) {
+        for (SunmiDevice sunmiDevice : ipcList) {
+            if (TextUtils.equals(sunmiDevice.getDeviceid(), device.getDeviceid())) {
+                return;
+            }
+        }
         ipcList.add(device);
         if (ipcListAdapter != null) ipcListAdapter.notifyDataSetChanged();
         new Handler().post(new Runnable() {
@@ -210,14 +215,12 @@ public class IPCSearchActivity extends BaseActivity
     }
 
     //1 udp搜索到设备
-    private void ipcFound(SunmiDevice ipc) {
-        if (TextUtils.equals("SS1", ipc.getModel()) || TextUtils.equals("FS1", ipc.getModel())) {
-            if (!ipcMap.containsKey(ipc.getDeviceid())) {
-                ipc.setSelected(true);
-                isApMode = TextUtils.equals("AP", ipc.getNetwork());
-                ipcMap.put(ipc.getDeviceid(), ipc);
-                getToken(ipc);
-            }
+    private synchronized void ipcFound(SunmiDevice ipc) {
+        if (!ipcMap.containsKey(ipc.getDeviceid())) {
+            ipc.setSelected(true);
+            ipcMap.put(ipc.getDeviceid(), ipc);
+            isApMode = TextUtils.equals("AP", ipc.getNetwork());
+            getToken(ipc);
         }
     }
 
