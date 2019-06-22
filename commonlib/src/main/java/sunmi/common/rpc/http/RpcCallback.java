@@ -42,8 +42,9 @@ public abstract class RpcCallback extends StringCallback {
     private void networkErrorHandler(Response response) {
         if (context instanceof BaseActivity) {
             ((BaseActivity) context).hideLoadingDialog();
-            ((BaseActivity) context).shortTip(NetworkUtils.isNetworkAvailable(context)
-                    ? R.string.toast_network_Exception : R.string.network_wifi_low);
+            if (!NetworkUtils.isNetworkAvailable(context)) {
+                ((BaseActivity) context).shortTip(R.string.network_wifi_low);
+            }
         }
     }
 
