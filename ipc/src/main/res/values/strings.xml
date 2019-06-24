@@ -2,7 +2,7 @@
 <resources>
     <string name="str_ipc">IPC</string>
     <string name="str_input_psw">Input the password</string>
-    <string name="tip_wifi_psw_error">Set Wi-Fi fail</string>
+    <string name="tip_wifi_psw_error">Wi-Fi password error</string>
     <string name="str_adjust_screen">Adjust the screen image</string>
     <string name="msg_in_same_wifi">Please keep the mobile phone and camera staying on the same network</string>
     <string name="tip_no_wifi_for_ipc">No Wi-Fi available for camera</string>
@@ -33,6 +33,8 @@
     <string name="tip_bound_by_others">已被其他用户绑定</string>
     <string name="tip_device_offline">设备不在线</string>
     <string name="tip_bind_timeout">绑定超时</string>
+    <string name="tip_no_play_video">当前日期无回放视频</string>
+    <string name="loading_search_wifi">正在搜索Wi-Fi…</string>
 
 </resources>
 

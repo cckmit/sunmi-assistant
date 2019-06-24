@@ -9,6 +9,7 @@
     <string name="str_skip">跳过</string>
     <string name="str_continue">继续</string>
     <string name="str_exit">退出</string>
+    <string name="str_next">下一步</string>
 
     <string name="str_click_consent">点击“开始配置”代表你同意</string>
     <string name="sunmi_user_protocol">《商米用户协议》</string>
@@ -41,14 +42,15 @@
     <string name="str_text_password_no_null">密码不能为空</string>
 
     <string name="str_title_ap_set">路由器设置</string>
-    <string name="str_title_ipc_set">摄像头设置</string>
+    <string name="str_title_ipc_set">摄像机设置</string>
     <string name="str_title_printer_set">打印机设置</string>
     <string name="str_config_tip_ap">连接您要设置的路由器</string>
     <string name="str_config_tip_ap_1"><![CDATA[1. 接通电源并连接网线，待系统指示灯停止闪烁]]></string>
-    <string name="str_config_tip_ap_2"><![CDATA[2. 将手机连接到<font color= \'#FF6000\'>「SUNMI_XX」</font> 无线网络]]></string>
-    <string name="str_config_tip_ipc">连接您要设置的摄像头</string>
-    <string name="str_config_tip_ipc_1"><![CDATA[1. 将摄像头接通电源，待信号灯呈<font color= \'#FF6000\'>「蓝色」</font>]]></string>
-    <string name="str_config_tip_ipc_2"><![CDATA[2. 将手机连接到<font color= \'#FF6000\'>「SUNMI_XXXX」</font> 无线网络]]></string>
+    <string name="str_config_tip_ap_2"><![CDATA[3. 如使用无线连接，请将手机连接机身背面标识的无线网络<font color= \'#FF6000\'>「SUNMI_XX」</font>]]></string>
+    <string name="str_config_tip_ipc">连接您要设置的摄像机</string>
+    <string name="str_config_tip_ipc_1"><![CDATA[1. 将摄像机接通电源，待信号灯呈<font color= \'#FF6000\'>「绿色闪烁」</font>或<font color= \'#FF6000\'>「蓝色常亮」</font>状态]]></string>
+    <string name="str_config_tip_ipc_2">2. 如使用有线网络连接，请为摄像机插入网线，并将手机连接至同一网络</string>
+    <string name="str_config_tip_ipc_3"><![CDATA[3. 如使用无线连接，请将手机连接机身背面标识的无线网络<font color= \'#FF6000\'>「SUNMI_XXXX」</font>]]></string>
     <string name="str_config_tip_printer">连接您要设置的打印机</string>
     <string name="str_config_tip_printer_1">1. 将打印机接通电源，按一下配对按钮</string>
     <string name="str_config_tip_printer_2"><![CDATA[2. 手机连接到<font color= \'#FF6000\'>「CloudPrint_XXXX」</font> 蓝牙]]></string>
@@ -60,7 +62,7 @@
     <string name="str_primary_search_check_line">请检查路由器电源是否接通并连接网线</string>
     <string name="str_primary_search_on_find">没有发现路由器</string>
     <string name="str_primary_search_searching_ap">正在搜索您的路由器</string>
-    <string name="str_primary_search_searching_ipc">正在搜索您的摄像头</string>
+    <string name="str_primary_search_searching_ipc">正在搜索您的摄像机</string>
     <string name="str_loading">正在加载…</string>
 
     <string name="str_add_success">添加成功</string>

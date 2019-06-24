@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.contract.IpcConfiguringContract;
+import com.sunmi.ipc.model.IpcListResp;
 import com.sunmi.ipc.presenter.IpcConfiguringPresenter;
 import com.sunmi.ipc.rpc.IpcConstants;
 
@@ -20,14 +21,18 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.NetworkUtils;
+import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.dialog.CommonDialog;
 
 /**
@@ -47,6 +52,8 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
 
     Set<String> deviceIds = new HashSet<>();
     private boolean isTimeoutStart;
+
+    private int retryCount;
 
     @AfterViews
     void init() {
@@ -78,19 +85,18 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
     @UiThread
     @Override
     public void ipcBindWifiSuccess(String sn) {
+        retryCount = 20;
         startCountDown();
     }
 
-    private void startCountDown() {
+    private synchronized void startCountDown() {
         if (!isTimeoutStart) {
             isTimeoutStart = true;
             new Handler().postDelayed(new Runnable() {
                 public void run() {
                     if (deviceIds.isEmpty()) return;
-                    for (String deviceId : deviceIds) {
-                        setDeviceStatus(deviceId, RpcErrorCode.RPC_ERR_TIMEOUT);
-                    }
-                    configComplete();
+                    LogCat.e(TAG, "888888 getIpcList");
+                    mPresenter.getIpcList(SpUtils.getCompanyId(), shopId);
                 }
             }, 30000);
         }
@@ -98,9 +104,47 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
 
     @UiThread
     @Override
-    public void ipcBindWifiFail(String sn, int code, String msg) {
-        startCountDown();
-        setDeviceStatus(sn, code);
+    public void ipcBindWifiFail(final String sn, final int code, String msg) {
+        LogCat.e(TAG, "888888 ipcBindWifiFail,code=" + code);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                LogCat.e(TAG, "888888 ipcBindWifiFail,retryCount = " + retryCount);
+                if (sunmiDevices.size() > 1 || retryCount == 20
+                        || code == 5501 || code == 5508 || code == 5509 || code == 5510
+                        || code == 5511 || code == 5512 || code == 5013) {
+                    startCountDown();
+                    setDeviceStatus(sn, code);
+                    return;
+                }
+                retryCount++;
+                bind();
+            }
+        }, 3000);
+    }
+
+    @Override
+    public void getIpcListSuccess(List<IpcListResp.SsListBean> ipcList) {
+        for (IpcListResp.SsListBean bean : ipcList) {
+            for (SunmiDevice device : sunmiDevices) {
+                LogCat.e(TAG, "888888 bean.getSn() = " + bean.getSn() + ",device.getDeviceid() = " + device.getDeviceid());
+                if (TextUtils.equals(bean.getSn(), device.getDeviceid())) {
+                    setDeviceStatus(device.getDeviceid(), 1);
+                }
+            }
+        }
+        for (String deviceId : deviceIds) {
+            setDeviceStatus(deviceId, RpcErrorCode.RPC_ERR_TIMEOUT);
+        }
+        configComplete();
+    }
+
+    @Override
+    public void getIpcListFail(int code, String msg) {
+        for (String deviceId : deviceIds) {
+            setDeviceStatus(deviceId, RpcErrorCode.RPC_ERR_TIMEOUT);
+        }
+        configComplete();
     }
 
     @Override
@@ -139,6 +183,7 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
     }
 
     private void configComplete() {
+        BaseNotification.newInstance().postNotificationName(IpcConstants.refreshIpcList);
         if (deviceIds.isEmpty()) {
             IpcConfigCompletedActivity_.intent(context).shopId(shopId)
                     .sunmiDevices(sunmiDevices).start();

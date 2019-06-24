@@ -54,9 +54,9 @@ public class ChooseDeviceDialog extends Dialog {
     private SimpleRecyclerViewAdapter getAdapter() {
         int[] imageIds;
         if (CommonConfig.SUPPORT_PRINTER) {
-            imageIds = new int[]{R.mipmap.ic_sunmi_ap, R.mipmap.ic_sunmi_fs, R.mipmap.ic_sunmi_printer};
+            imageIds = new int[]{R.mipmap.ic_sunmi_ap, R.mipmap.ic_sunmi_ss, R.mipmap.ic_sunmi_printer};
         } else {
-            imageIds = new int[]{R.mipmap.ic_sunmi_ap, R.mipmap.ic_sunmi_fs};
+            imageIds = new int[]{R.mipmap.ic_sunmi_ap, R.mipmap.ic_sunmi_ss};
         }
         String[] names = getContext().getResources().getStringArray(R.array.sunmi_devices);
         SimpleRecyclerViewAdapter adapter = new SimpleRecyclerViewAdapter(

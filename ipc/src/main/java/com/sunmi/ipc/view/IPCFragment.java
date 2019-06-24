@@ -432,7 +432,6 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
         IPCCloudApi.getDetailList(SpUtils.getCompanyId(), shopId, new RetrofitCallback() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
-                LogCat.e(TAG, "666666 getIpcList onResponse response = " + data.toString());
                 try {
                     JSONObject jsonObject = new JSONObject(new Gson().toJson(data));
                     JSONArray jsonArray = jsonObject.getJSONArray("fs_list");

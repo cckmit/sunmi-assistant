@@ -39,6 +39,8 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
     TextView tvTip2;
     @ViewById(resName = "tv_tip_3")
     TextView tvTip3;
+    @ViewById(resName = "tv_tip_4")
+    TextView tvTip4;
     @ViewById(resName = "tv_config_tip")
     TextView tvConfigTip;
     @ViewById(resName = "ctv_privacy")
@@ -65,6 +67,8 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
             tvTip1.setText(R.string.str_config_tip_ipc);
             tvTip2.setText(Html.fromHtml(getString(R.string.str_config_tip_ipc_1)));
             tvTip3.setText(Html.fromHtml(getString(R.string.str_config_tip_ipc_2)));
+            tvTip4.setVisibility(View.VISIBLE);
+            tvTip4.setText(Html.fromHtml(getString(R.string.str_config_tip_ipc_3)));
         } else if (deviceType == CommonConstants.TYPE_PRINTER) {
             titleBar.setAppTitle(R.string.str_title_printer_set);
             ivImage.setImageResource(R.mipmap.ic_device_config_printer);

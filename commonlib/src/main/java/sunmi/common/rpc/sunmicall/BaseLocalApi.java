@@ -95,8 +95,9 @@ public abstract class BaseLocalApi extends BaseApi {
     }
 
     private void errorTip(Context context) {
-        ToastUtils.toastForShort(context, NetworkUtils.isNetworkAvailable(context)
-                ? R.string.toast_network_Exception : R.string.network_wifi_low);
+        if (!NetworkUtils.isNetworkAvailable(context)) {
+            ToastUtils.toastForShort(context, R.string.network_wifi_low);
+        }
     }
 
 }

@@ -16,6 +16,7 @@ import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.rpc.ap.APCall;
 import com.sunmi.assistant.R;
 import com.sunmi.ipc.contract.IpcConfiguringContract;
+import com.sunmi.ipc.model.IpcListResp;
 import com.sunmi.ipc.presenter.IpcConfiguringPresenter;
 import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.rpc.mqtt.MqttManager;
@@ -43,6 +44,7 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.sunmicall.ResponseBean;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 
 /**
@@ -149,6 +151,16 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
     public void ipcBindWifiFail(String sn, int code, String msg) {
         setDeviceStatus(sn, code);
         setTimeout();
+    }
+
+    @Override
+    public void getIpcListSuccess(List<IpcListResp.SsListBean> ipcList) {
+
+    }
+
+    @Override
+    public void getIpcListFail(int code, String msg) {
+
     }
 
     @Override
