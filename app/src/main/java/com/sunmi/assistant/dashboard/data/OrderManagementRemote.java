@@ -180,8 +180,8 @@ public class OrderManagementRemote {
             String params = new JSONObject()
                     .put("company_id", companyId)
                     .put("shop_id", shopId)
-                    .put("time_range_start", timeStart)
-                    .put("time_range_end", timeEnd)
+                    .put("start_time", timeStart)
+                    .put("end_time", timeEnd)
                     .toString();
             mService.getPurchaseTypeRank(Utils.createRequestBody(params)).enqueue(callback);
         } catch (JSONException e) {
@@ -190,14 +190,14 @@ public class OrderManagementRemote {
     }
 
     public void getTimeDistribution(int companyId, int shopId, long timeStart, long timeEnd,
-                                    int rateFlag, RetrofitCallback<TimeDistributionResponse> callback) {
+                                    int interval, RetrofitCallback<TimeDistributionResponse> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
                     .put("shop_id", shopId)
-                    .put("time_range_start", timeStart)
-                    .put("time_range_end", timeEnd)
-                    .put("rate_required", rateFlag)
+                    .put("start_time", timeStart)
+                    .put("end_time", timeEnd)
+                    .put("time_interval", interval)
                     .toString();
             mService.getTimeDistribution(Utils.createRequestBody(params)).enqueue(callback);
         } catch (JSONException e) {

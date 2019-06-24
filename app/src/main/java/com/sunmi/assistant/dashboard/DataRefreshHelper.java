@@ -202,7 +202,7 @@ public interface DataRefreshHelper<T> {
             Log.d(TAG, "HTTP request time distribution detail.");
             model.state = BaseRefreshCard.STATE_LOADING;
             OrderManagementRemote.get().getTimeDistribution(companyId, shopId,
-                    model.timeSpanPair.first, model.timeSpanPair.second, 1,
+                    model.timeSpanPair.first, model.timeSpanPair.second, 3600,
                     new CardCallback<BarChartCard, TimeDistributionResponse>(model) {
                         @Override
                         public void success(TimeDistributionResponse data) {
@@ -245,17 +245,42 @@ public interface DataRefreshHelper<T> {
                             List<PurchaseTypeRankResponse.PurchaseTypeRankItem> list = data.getPurchase_type_list();
                             List<PieEntry> amountList = new ArrayList<>(list.size());
                             List<PieEntry> countList = new ArrayList<>(list.size());
+                            float amountTotal = 0;
+                            float countTotal = 0;
                             for (PurchaseTypeRankResponse.PurchaseTypeRankItem item : list) {
                                 String label = item.getPurchase_type_name();
-                                amountList.add(new PieEntry(item.getAmount(), label));
-                                countList.add(new PieEntry(item.getCount(), label));
+                                float amount = item.getAmount();
+                                int count = item.getCount();
+                                amountTotal += amount;
+                                countTotal += count;
+                                if (amount > 0) {
+                                    amountList.add(new PieEntry(amount, label));
+                                }
+                                if (count > 0) {
+                                    countList.add(new PieEntry(count, label));
+                                }
                             }
-                            Collections.sort(amountList, (o1, o2) ->
-                                    o1.getValue() - o2.getValue() > 0 ? 1 :
-                                            (o1.getValue() - o2.getValue() < 0 ? -1 : 0));
-                            Collections.sort(countList, (o1, o2) ->
-                                    o1.getValue() - o2.getValue() > 0 ? 1 :
-                                            (o1.getValue() - o2.getValue() < 0 ? -1 : 0));
+                            Collections.sort(amountList, (o1, o2) -> {
+                                if ("其他".equals(o2.getLabel())) {
+                                    return -1;
+                                } else if ("其他".equals(o1.getLabel())) {
+                                    return 1;
+                                } else {
+                                    return o2.getValue() - o1.getValue() > 0 ? 1 :
+                                            (o2.getValue() - o1.getValue() < 0 ? -1 : 0);
+                                }
+                            });
+                            Collections.sort(countList, (o1, o2) -> {
+                                if ("其他".equals(o2.getLabel())) {
+                                    return -1;
+                                } else if ("其他".equals(o1.getLabel())) {
+                                    return 1;
+                                } else {
+                                    return o2.getValue() - o1.getValue() > 0 ? 1 :
+                                            (o2.getValue() - o1.getValue() < 0 ? -1 : 0);
+                                }
+                            });
+                            Log.d(TAG, amountList.toString());
                             int amountSize = amountList.size();
                             int countSize = countList.size();
                             float other = 0f;
@@ -273,6 +298,12 @@ public interface DataRefreshHelper<T> {
                                     countList.remove(i);
                                 }
                                 countList.add(new PieEntry(other, ""));
+                            }
+                            for (PieEntry entry : amountList) {
+                                entry.setY(entry.getValue() / amountTotal);
+                            }
+                            for (PieEntry entry : countList) {
+                                entry.setY(entry.getValue() / countTotal);
                             }
                             model.dataSets[0] = new PieChartCard.PieChartDataSet(amountList);
                             model.dataSets[1] = new PieChartCard.PieChartDataSet(countList);
@@ -302,7 +333,7 @@ public interface DataRefreshHelper<T> {
                         public void success(QuantityRankResponse data) {
                             Log.d(TAG, "HTTP request quantity rank success.");
                             List<QuantityRankResponse.QuantityRankItem> list = data.getQuantity_rank();
-                            Collections.sort(list, (o1, o2) -> o1.getQuantity() - o2.getQuantity());
+                            Collections.sort(list, (o1, o2) -> o2.getQuantity() - o1.getQuantity());
                             int size = list.size();
                             model.list = new ArrayList<>(size);
                             for (int i = 0; i < size; i++) {

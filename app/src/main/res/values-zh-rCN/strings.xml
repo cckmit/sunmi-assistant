@@ -40,4 +40,5 @@
     <string name="dashboard_time_distribution">交易时间分布</string>
     <string name="dashboard_purchase_rank">支付方式</string>
     <string name="dashboard_quantity_rank">商品销量排行</string>
+    <string name="dashboard_purchase_others">其他</string>
 </resources>

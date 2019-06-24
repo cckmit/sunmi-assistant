@@ -40,5 +40,6 @@
     <string name="dashboard_time_distribution">Transaction Time Distribution</string>
     <string name="dashboard_purchase_rank">Purchase Method</string>
     <string name="dashboard_quantity_rank">Product Sales Ranking</string>
+    <string name="dashboard_purchase_others">Others</string>
 
 </resources>

@@ -3,6 +3,7 @@ package com.sunmi.assistant.dashboard.type;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -79,7 +80,6 @@ public class PieChartCardType extends ItemType<PieChartCard, BaseViewHolder<PieC
         legendsData.add(holder.getView(R.id.chart_dashboard_legend6_data));
         holder.putTag(HOLDER_TAG_LEGENDS, legends);
         holder.putTag(HOLDER_TAG_LEGENDS_DATA, legendsData);
-        chart.animateY(300, Easing.EaseOutCubic);
 
         return holder;
     }
@@ -118,6 +118,10 @@ public class PieChartCardType extends ItemType<PieChartCard, BaseViewHolder<PieC
 
         PieDataSet dataSet;
         List<PieEntry> dataList = modelDataSet.data;
+        PieEntry last = dataList.get(dataList.size() - 1);
+        if (TextUtils.isEmpty(last.getLabel())) {
+            last.setLabel(holder.getContext().getResources().getString(R.string.dashboard_purchase_others));
+        }
         legendSetUp(holder, dataList);
         if (chart.getData() != null && chart.getData().getDataSetCount() > 0) {
             dataSet = (PieDataSet) chart.getData().getDataSetByIndex(0);
@@ -126,7 +130,7 @@ public class PieChartCardType extends ItemType<PieChartCard, BaseViewHolder<PieC
 //            chart.notifyDataSetChanged();
 //            chart.invalidate();
             PieChartDataUpdateAnim anim = new PieChartDataUpdateAnim(300, chart,
-                    dataSet.getValues(), modelDataSet.data);
+                    dataSet.getValues(), dataList);
             anim.run();
         } else {
             dataSet = new PieDataSet(dataList, "data");
@@ -134,6 +138,7 @@ public class PieChartCardType extends ItemType<PieChartCard, BaseViewHolder<PieC
             dataSet.setDrawValues(false);
             dataSet.setDrawIcons(false);
             PieData data = new PieData(dataSet);
+            chart.animateY(300, Easing.EaseOutCubic);
             chart.setData(data);
             chart.invalidate();
         }

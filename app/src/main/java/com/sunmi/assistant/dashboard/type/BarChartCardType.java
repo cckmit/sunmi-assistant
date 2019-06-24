@@ -96,7 +96,6 @@ public class BarChartCardType extends ItemType<BarChartCard, BaseViewHolder<BarC
         yAxis.setAxisMinimum(0.0f);
         yAxis.enableGridDashedLine(dashLength, dashSpaceLength, 0f);
         yAxis.setGridLineWidth(1f);
-        chart.animateY(300, Easing.EaseOutCubic);
 
         return holder;
     }
@@ -155,6 +154,7 @@ public class BarChartCardType extends ItemType<BarChartCard, BaseViewHolder<BarC
             dataSet.setColor(Color.parseColor("#2997FF"));
             dataSet.setDrawValues(false);
             BarData data = new BarData(dataSet);
+            chart.animateY(300, Easing.EaseOutCubic);
             chart.setData(data);
             chart.invalidate();
         }

@@ -59,8 +59,8 @@ public class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 if (shopList == null || shopList.size() == 0) {
                     Log.e(TAG, "Get shop list EMPTY!");
                 } else {
-                    mShopId = shopList.get(0).getShop_id();
-                    mShopName = shopList.get(0).getShop_name();
+                    mShopId = shopList.get(1).getShop_id();
+                    mShopName = shopList.get(1).getShop_name();
                     mView.updateShopName(mShopName);
                     initList();
                 }
@@ -121,13 +121,13 @@ public class DashboardPresenter extends BasePresenter<DashboardContract.View>
         purchaseRank.setTimeSpan(mTimeSpan, mTimeSpanPair);
         quantityRank.setTimeSpan(mTimeSpan, mTimeSpanPair);
 
-        mList.add(totalSalesAmount);
-        mList.add(customerPrice);
-        mList.add(totalSalesVolume);
-        mList.add(totalRefunds);
-        mList.add(timeDistribution);
-        mList.add(purchaseRank);
-        mList.add(quantityRank);
+//        mList.add(totalSalesAmount);
+//        mList.add(customerPrice);
+//        mList.add(totalSalesVolume);
+//        mList.add(totalRefunds);
+//        mList.add(timeDistribution);
+//        mList.add(purchaseRank);
+//        mList.add(quantityRank);
         mView.updateData(mList);
     }
 
