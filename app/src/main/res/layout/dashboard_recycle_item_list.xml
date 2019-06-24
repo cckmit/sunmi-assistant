@@ -16,7 +16,6 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
-            android:text="交易时间分布Test"
             android:textColor="#333338"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"

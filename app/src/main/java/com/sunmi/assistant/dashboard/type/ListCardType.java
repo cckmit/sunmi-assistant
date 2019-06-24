@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.DataRefreshCallback;
 import com.sunmi.assistant.dashboard.model.ListCard;
 
 import sunmi.common.base.adapter.CommonAdapter;
@@ -48,10 +49,26 @@ public class ListCardType extends ItemType<ListCard, BaseViewHolder<ListCard>> {
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder<ListCard> holder, ListCard model, int position) {
+        model.setCallback(new DataRefreshCallback() {
+            @Override
+            public void onSuccess() {
+                setupView(holder, model, position);
+            }
+
+            @Override
+            public void onFail() {
+            }
+        });
+        setupView(holder, model, position);
+    }
+
+    private void setupView(BaseViewHolder<ListCard> holder, ListCard model, int position) {
         ListView listView = holder.getView(R.id.lv_dashboard_list);
         TextView title = holder.getView(R.id.tv_dashboard_title);
         title.setText(model.title);
-
+        if (model.list == null || model.list.size() == 0) {
+            return;
+        }
         RankListAdapter adapter = (RankListAdapter) listView.getAdapter();
         ViewGroup.LayoutParams params = listView.getLayoutParams();
         params.height = CommonHelper.dp2px(holder.getContext(), 36.0f * model.list.size() + 2.0f);

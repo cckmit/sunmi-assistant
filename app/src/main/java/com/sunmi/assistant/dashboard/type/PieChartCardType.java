@@ -1,6 +1,5 @@
 package com.sunmi.assistant.dashboard.type;
 
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -14,6 +13,7 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.DataRefreshCallback;
 import com.sunmi.assistant.dashboard.model.PieChartCard;
 import com.sunmi.assistant.dashboard.ui.ChartDataChangeAnimation;
 
@@ -25,8 +25,6 @@ import java.util.Locale;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
 
-import static com.github.mikephil.charting.utils.ColorTemplate.rgb;
-
 /**
  * @author yinhui
  * @since 2019-06-14
@@ -37,8 +35,7 @@ public class PieChartCardType extends ItemType<PieChartCard, BaseViewHolder<PieC
     private static final String HOLDER_TAG_LEGENDS_DATA = "legends_data";
 
     private static final Integer[] PIE_COLORS = {
-            rgb("#2ecc71"), rgb("#f1c40f"), rgb("#e74c3c"), rgb("#3498db"), Color.rgb(193, 37, 82), Color.rgb(255, 102, 0), Color.rgb(245, 199, 0),
-            Color.rgb(106, 150, 31), Color.rgb(179, 100, 53), Color.rgb(51, 181, 229)
+            0xFF2997FF, 0xFF09E896, 0xFFED9600, 0xFFFFA100, 0xFFFC5656, 0xFF8766FF
     };
 
     @Override
@@ -90,22 +87,37 @@ public class PieChartCardType extends ItemType<PieChartCard, BaseViewHolder<PieC
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder<PieChartCard> holder, PieChartCard model, int position) {
+        model.setCallback(new DataRefreshCallback() {
+            @Override
+            public void onSuccess() {
+                setupView(holder, model, position);
+            }
+
+            @Override
+            public void onFail() {
+            }
+        });
+        setupView(holder, model, position);
+    }
+
+    private void setupView(BaseViewHolder<PieChartCard> holder, PieChartCard model, int position) {
         TextView title = holder.getView(R.id.tv_dashboard_title);
         TextView bySales = holder.getView(R.id.tv_dashboard_radio_by_sales);
         TextView byOrder = holder.getView(R.id.tv_dashboard_radio_by_order);
         PieChart chart = holder.getView(R.id.chart_dashboard_pie);
         title.setText(model.title);
-        bySales.setSelected(true);
-        byOrder.setSelected(false);
+        bySales.setSelected(model.dataSource == 0);
+        byOrder.setSelected(model.dataSource == 1);
 
-        if (model.dataSet.data == null || model.dataSet.data.size() == 0) {
+        PieChartCard.PieChartDataSet modelDataSet = model.dataSets[model.dataSource];
+        if (modelDataSet == null || modelDataSet.data == null || modelDataSet.data.size() == 0) {
             chart.setData(null);
             chart.invalidate();
             return;
         }
 
         PieDataSet dataSet;
-        List<PieEntry> dataList = model.dataSet.data;
+        List<PieEntry> dataList = modelDataSet.data;
         legendSetUp(holder, dataList);
         if (chart.getData() != null && chart.getData().getDataSetCount() > 0) {
             dataSet = (PieDataSet) chart.getData().getDataSetByIndex(0);
@@ -114,7 +126,7 @@ public class PieChartCardType extends ItemType<PieChartCard, BaseViewHolder<PieC
 //            chart.notifyDataSetChanged();
 //            chart.invalidate();
             PieChartDataUpdateAnim anim = new PieChartDataUpdateAnim(300, chart,
-                    dataSet.getValues(), model.dataSet.data);
+                    dataSet.getValues(), modelDataSet.data);
             anim.run();
         } else {
             dataSet = new PieDataSet(dataList, "data");

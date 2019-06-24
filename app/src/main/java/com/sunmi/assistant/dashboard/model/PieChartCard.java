@@ -14,7 +14,7 @@ import java.util.List;
 public class PieChartCard extends BaseRefreshCard<PieChartCard> {
     public String title;
     public int dataSource;
-    public PieChartDataSet dataSet;
+    public PieChartDataSet[] dataSets = new PieChartDataSet[2];
 
     public PieChartCard(String title, int dataSource, DataRefreshHelper<PieChartCard> helper) {
         super(helper);
@@ -22,7 +22,7 @@ public class PieChartCard extends BaseRefreshCard<PieChartCard> {
         this.dataSource = dataSource;
     }
 
-    public class PieChartDataSet {
+    public static class PieChartDataSet {
         public List<PieEntry> data;
 
         public PieChartDataSet(List<PieEntry> data) {

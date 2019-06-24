@@ -1,5 +1,6 @@
 package com.sunmi.assistant.dashboard.data;
 
+import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.data.response.AvgUnitSaleResponse;
 import com.sunmi.assistant.dashboard.data.response.DetailListResponse;
 import com.sunmi.assistant.dashboard.data.response.OrderListResponse;
@@ -17,7 +18,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 
 /**
@@ -52,70 +52,70 @@ public class OrderManagementRemote {
                     .put("time_range_end", timeEnd)
                     .put("rate_required", rateFlag)
                     .toString();
-            mService.getTotalAmount(createRequestBody(params)).enqueue(callback);
+            mService.getTotalAmount(Utils.createRequestBody(params)).enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public void getTotalCount(int companyId, int storeId, long timeStart, long timeEnd,
+    public void getTotalCount(int companyId, int shopId, long timeStart, long timeEnd,
                               int rateFlag, RetrofitCallback<TotalCountResponse> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
-                    .put("shop_id", storeId)
+                    .put("shop_id", shopId)
                     .put("time_range_start", timeStart)
                     .put("time_range_end", timeEnd)
                     .put("rate_required", rateFlag)
                     .toString();
-            mService.getTotalCount(createRequestBody(params)).enqueue(callback);
+            mService.getTotalCount(Utils.createRequestBody(params)).enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public void getRefundCount(int companyId, int storeId, long timeStart, long timeEnd,
+    public void getRefundCount(int companyId, int shopId, long timeStart, long timeEnd,
                                int rateFlag, RetrofitCallback<TotalRefundCountResponse> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
-                    .put("shop_id", storeId)
+                    .put("shop_id", shopId)
                     .put("time_range_start", timeStart)
                     .put("time_range_end", timeEnd)
                     .put("rate_required", rateFlag)
                     .toString();
-            mService.getRefundCount(createRequestBody(params)).enqueue(callback);
+            mService.getRefundCount(Utils.createRequestBody(params)).enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public void getAvgUnitSale(int companyId, int storeId, long timeStart, long timeEnd,
+    public void getAvgUnitSale(int companyId, int shopId, long timeStart, long timeEnd,
                                int rateFlag, RetrofitCallback<AvgUnitSaleResponse> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
-                    .put("shop_id", storeId)
+                    .put("shop_id", shopId)
                     .put("time_range_start", timeStart)
                     .put("time_range_end", timeEnd)
                     .put("rate_required", rateFlag)
                     .toString();
-            mService.getAvgUnitSale(createRequestBody(params)).enqueue(callback);
+            mService.getAvgUnitSale(Utils.createRequestBody(params)).enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public void getQuantityRank(int companyId, int storeId, long timeStart, long timeEnd,
+    public void getQuantityRank(int companyId, int shopId, long timeStart, long timeEnd,
                                 RetrofitCallback<QuantityRankResponse> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
-                    .put("shop_id", storeId)
+                    .put("shop_id", shopId)
                     .put("time_range_start", timeStart)
                     .put("time_range_end", timeEnd)
                     .toString();
-            mService.getQuantityRank(createRequestBody(params)).enqueue(callback);
+            mService.getQuantityRank(Utils.createRequestBody(params)).enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -129,7 +129,7 @@ public class OrderManagementRemote {
         mService.getPurchaseTypeList().enqueue(callback);
     }
 
-    public void getList(int companyId, int storeId, long timeStart, long timeEnd,
+    public void getList(int companyId, int shopId, long timeStart, long timeEnd,
                         int amountOrder, int timeOrder, int[] orderType, int[] purchaseType,
                         int pageNum, int pageSize, RetrofitCallback<OrderListResponse> callback) {
         try {
@@ -147,7 +147,7 @@ public class OrderManagementRemote {
             }
             String params = new JSONObject()
                     .put("company_id", companyId)
-                    .put("shop_id", storeId)
+                    .put("shop_id", shopId)
                     .put("time_range_start", timeStart)
                     .put("time_range_end", timeEnd)
                     .put("sort_by_amount", amountOrder)
@@ -157,7 +157,7 @@ public class OrderManagementRemote {
                     .put("page_num", pageNum)
                     .put("page_size", pageSize)
                     .toString();
-            mService.getList(createRequestBody(params)).enqueue(callback);
+            mService.getList(Utils.createRequestBody(params)).enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -168,47 +168,41 @@ public class OrderManagementRemote {
             String params = new JSONObject()
                     .put("order_id", orderId)
                     .toString();
-            mService.getDetailList(createRequestBody(params)).enqueue(callback);
+            mService.getDetailList(Utils.createRequestBody(params)).enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public void getPurchaseTypeRank(int companyId, int storeId, long timeStart, long timeEnd,
+    public void getPurchaseTypeRank(int companyId, int shopId, long timeStart, long timeEnd,
                                     RetrofitCallback<PurchaseTypeRankResponse> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
-                    .put("shop_id", storeId)
+                    .put("shop_id", shopId)
                     .put("time_range_start", timeStart)
                     .put("time_range_end", timeEnd)
                     .toString();
-            mService.getPurchaseTypeRank(createRequestBody(params)).enqueue(callback);
+            mService.getPurchaseTypeRank(Utils.createRequestBody(params)).enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public void getTimeDistribution(int companyId, int storeId, long timeStart, long timeEnd,
+    public void getTimeDistribution(int companyId, int shopId, long timeStart, long timeEnd,
                                     int rateFlag, RetrofitCallback<TimeDistributionResponse> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
-                    .put("shop_id", storeId)
+                    .put("shop_id", shopId)
                     .put("time_range_start", timeStart)
                     .put("time_range_end", timeEnd)
                     .put("rate_required", rateFlag)
                     .toString();
-            mService.getTimeDistribution(createRequestBody(params)).enqueue(callback);
+            mService.getTimeDistribution(Utils.createRequestBody(params)).enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    private BaseRequest createRequestBody(String params) {
-        return new BaseRequest.Builder()
-                .setParams(params)
-                .setLang("zh").createBaseRequest();
     }
 
 }

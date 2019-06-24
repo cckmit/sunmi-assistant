@@ -1,5 +1,7 @@
 package com.sunmi.assistant.dashboard;
 
+import android.content.Context;
+
 import java.util.List;
 
 import sunmi.common.base.BaseView;
@@ -16,7 +18,11 @@ public interface DashboardContract {
 
     interface View extends BaseView {
 
-        void updateInfo(String companyName, String storeName);
+        Context getContext();
+
+        void updateCompanyName(String companyName);
+
+        void updateShopName(String shopName);
 
         void updateData(List<?> data);
     }

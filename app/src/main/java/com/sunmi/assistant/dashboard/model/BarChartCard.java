@@ -14,7 +14,7 @@ import java.util.List;
 public class BarChartCard extends BaseRefreshCard<BarChartCard> {
     public String title;
     public int dataSource;
-    public BarChartDataSet dataSet;
+    public BarChartDataSet[] dataSets = new BarChartDataSet[2];
 
     public BarChartCard(String title, int dataSource, DataRefreshHelper<BarChartCard> helper) {
         super(helper);
@@ -23,13 +23,9 @@ public class BarChartCard extends BaseRefreshCard<BarChartCard> {
     }
 
     public static class BarChartDataSet {
-        public String xAxisLabel;
-        public String yAxisLabel;
         public List<BarEntry> data;
 
-        public BarChartDataSet(List<BarEntry> data, String xAxisLabel, String yAxisLabel) {
-            this.xAxisLabel = xAxisLabel;
-            this.yAxisLabel = yAxisLabel;
+        public BarChartDataSet(List<BarEntry> data) {
             this.data = data;
         }
     }

@@ -44,8 +44,8 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @ViewById(R.id.tv_dashboard_company_name)
     TextView mCompanyName;
-    @ViewById(R.id.tv_dashboard_store_name)
-    TextView mStoreName;
+    @ViewById(R.id.tv_dashboard_shop_name)
+    TextView mShopName;
 
     @ViewById(R.id.tv_dashboard_today)
     TextView mTimeSpanToday;
@@ -65,7 +65,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         initView();
         initAdapter();
         mPresenter.loadConfig();
-        mPresenter.timeSpanSwitchTo(DashboardContract.TIME_SPAN_TODAY);
+        switchToToday();
     }
 
     private void initView() {
@@ -75,7 +75,27 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     private void initAdapter() {
         DataCardType dataCardType = new DataCardType();
         BarChartCardType barChartCardType = new BarChartCardType();
+        barChartCardType.addOnViewClickListener(R.id.tv_dashboard_radio_by_sales,
+                (adapter, holder, v, model, position) -> {
+                    model.dataSource = DashboardContract.DATA_MODE_SALES;
+                    adapter.notifyItemChanged(position);
+                });
+        barChartCardType.addOnViewClickListener(R.id.tv_dashboard_radio_by_order,
+                (adapter, holder, v, model, position) -> {
+                    model.dataSource = DashboardContract.DATA_MODE_ORDER;
+                    adapter.notifyItemChanged(position);
+                });
         PieChartCardType pieChartCardType = new PieChartCardType();
+        pieChartCardType.addOnViewClickListener(R.id.tv_dashboard_radio_by_sales,
+                (adapter, holder, v, model, position) -> {
+                    model.dataSource = DashboardContract.DATA_MODE_SALES;
+                    adapter.notifyItemChanged(position);
+                });
+        pieChartCardType.addOnViewClickListener(R.id.tv_dashboard_radio_by_order,
+                (adapter, holder, v, model, position) -> {
+                    model.dataSource = DashboardContract.DATA_MODE_ORDER;
+                    adapter.notifyItemChanged(position);
+                });
         ListCardType listCardType = new ListCardType();
 
         mAdapter = new BaseArrayAdapter<>();
@@ -96,13 +116,19 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mCardList.setAdapter(mAdapter);
     }
 
-    @Override
     @UiThread
-    public void updateInfo(String companyName, String storeName) {
+    @Override
+    public void updateCompanyName(String companyName) {
         mCompanyName.setText(companyName);
-        mStoreName.setText(storeName);
     }
 
+    @UiThread
+    @Override
+    public void updateShopName(String shopName) {
+        mShopName.setText(shopName);
+    }
+
+    @UiThread
     @Override
     public void updateData(List<?> data) {
         if (mAdapter != null) {

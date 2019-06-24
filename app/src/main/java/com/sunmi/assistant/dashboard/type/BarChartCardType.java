@@ -31,6 +31,7 @@ import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.DataRefreshCallback;
 import com.sunmi.assistant.dashboard.model.BarChartCard;
 import com.sunmi.assistant.dashboard.ui.ChartDataChangeAnimation;
 
@@ -102,20 +103,35 @@ public class BarChartCardType extends ItemType<BarChartCard, BaseViewHolder<BarC
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder<BarChartCard> holder, BarChartCard model, int position) {
+        model.setCallback(new DataRefreshCallback() {
+            @Override
+            public void onSuccess() {
+                setupView(holder, model, position);
+            }
+
+            @Override
+            public void onFail() {
+            }
+        });
+        setupView(holder, model, position);
+    }
+
+    private void setupView(BaseViewHolder<BarChartCard> holder, BarChartCard model, int position) {
         TextView title = holder.getView(R.id.tv_dashboard_title);
         BarChart chart = holder.getView(R.id.chart_dashboard_bar);
         TextView bySales = holder.getView(R.id.tv_dashboard_radio_by_sales);
         TextView byOrder = holder.getView(R.id.tv_dashboard_radio_by_order);
         title.setText(model.title);
-        bySales.setSelected(true);
-        byOrder.setSelected(false);
+        bySales.setSelected(model.dataSource == 0);
+        byOrder.setSelected(model.dataSource == 1);
 
-        List<BarEntry> dataList = model.dataSet.data;
-        if (dataList == null || dataList.size() == 0) {
+        BarChartCard.BarChartDataSet modelDataSet = model.dataSets[model.dataSource];
+        if (modelDataSet == null || modelDataSet.data == null || modelDataSet.data.size() == 0) {
             chart.setData(null);
             chart.invalidate();
             return;
         }
+        List<BarEntry> dataList = modelDataSet.data;
         float max = 0;
         for (BarEntry entry : dataList) {
             if (entry.getY() > max) {
@@ -132,7 +148,7 @@ public class BarChartCardType extends ItemType<BarChartCard, BaseViewHolder<BarC
 //            chart.notifyDataSetChanged();
 //            chart.invalidate();
             BarChartDataUpdateAnim anim = new BarChartDataUpdateAnim(300, chart,
-                    dataSet.getValues(), model.dataSet.data);
+                    dataSet.getValues(), modelDataSet.data);
             anim.run();
         } else {
             dataSet = new BarDataSet(dataList, "data");
