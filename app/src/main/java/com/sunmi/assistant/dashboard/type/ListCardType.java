@@ -85,7 +85,6 @@ public class ListCardType extends ItemType<ListCard, BaseViewHolder<ListCard>> {
         listView.setLayoutParams(params);
         adapter.setDatas(model.list);
         adapter.notifyDataSetChanged();
-        holder.getView(R.id.pb_dashboard_loading).setVisibility(View.GONE);
     }
 
     private static class RankListAdapter extends CommonAdapter<ListCard.Item> {
