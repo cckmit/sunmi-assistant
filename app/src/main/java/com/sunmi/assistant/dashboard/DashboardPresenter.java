@@ -1,5 +1,7 @@
 package com.sunmi.assistant.dashboard;
 
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.util.Log;
 import android.util.Pair;
 
@@ -26,6 +28,15 @@ public class DashboardPresenter extends BasePresenter<DashboardContract.View>
         implements DashboardContract.Presenter {
 
     private static final String TAG = "DashboardPresenter";
+
+    private static final int REFRESH_TIME_PERIOD = 120_000;
+    private static final HandlerThread sThread = new HandlerThread("RefreshTask");
+    private static final Handler sHandler;
+
+    static {
+        sThread.start();
+        sHandler = new Handler(sThread.getLooper());
+    }
 
     private int mCompanyId;
     private String mCompanyName;
@@ -129,6 +140,24 @@ public class DashboardPresenter extends BasePresenter<DashboardContract.View>
         mList.add(purchaseRank);
         mList.add(quantityRank);
         mView.updateData(mList);
+        sHandler.postDelayed(new RefreshTask(mList), REFRESH_TIME_PERIOD);
+    }
+
+    private static class RefreshTask implements Runnable {
+
+        private final List<BaseRefreshCard> mList;
+
+        private RefreshTask(List<BaseRefreshCard> list) {
+            this.mList = list;
+        }
+
+        @Override
+        public void run() {
+            for (BaseRefreshCard card : mList) {
+                card.refresh();
+            }
+            sHandler.postDelayed(this, REFRESH_TIME_PERIOD);
+        }
     }
 
 }
