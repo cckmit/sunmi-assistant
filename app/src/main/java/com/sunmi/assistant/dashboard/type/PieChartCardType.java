@@ -122,6 +122,7 @@ public class PieChartCardType extends ItemType<PieChartCard, BaseViewHolder<PieC
         if (modelDataSet == null || modelDataSet.data == null || modelDataSet.data.size() == 0) {
             chart.setData(null);
             chart.invalidate();
+            holder.getView(R.id.pb_dashboard_loading).setVisibility(View.GONE);
             return;
         }
 
