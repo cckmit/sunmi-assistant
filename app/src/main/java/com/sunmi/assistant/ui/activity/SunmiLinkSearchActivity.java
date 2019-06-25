@@ -44,7 +44,6 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.sunmicall.ResponseBean;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 
 /**
