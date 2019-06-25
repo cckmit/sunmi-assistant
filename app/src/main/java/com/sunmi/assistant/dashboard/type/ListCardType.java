@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.DataRefreshCallback;
+import com.sunmi.assistant.dashboard.model.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.model.ListCard;
 
 import sunmi.common.base.adapter.CommonAdapter;
@@ -25,6 +27,8 @@ import sunmi.common.utils.CommonHelper;
  * @since 2019-06-14
  */
 public class ListCardType extends ItemType<ListCard, BaseViewHolder<ListCard>> {
+
+    private static final String TAG = "ListCardType";
 
     @Override
     public int getLayoutId(int type) {
@@ -66,6 +70,12 @@ public class ListCardType extends ItemType<ListCard, BaseViewHolder<ListCard>> {
         ListView listView = holder.getView(R.id.lv_dashboard_list);
         TextView title = holder.getView(R.id.tv_dashboard_title);
         title.setText(model.title);
+
+        if (model.flag == BaseRefreshCard.FLAG_INIT) {
+            Log.d(TAG, "Card data setup view skip.");
+            return;
+        }
+
         if (model.list == null || model.list.size() == 0) {
             return;
         }
@@ -75,6 +85,7 @@ public class ListCardType extends ItemType<ListCard, BaseViewHolder<ListCard>> {
         listView.setLayoutParams(params);
         adapter.setDatas(model.list);
         adapter.notifyDataSetChanged();
+        holder.getView(R.id.pb_dashboard_loading).setVisibility(View.GONE);
     }
 
     private static class RankListAdapter extends CommonAdapter<ListCard.Item> {

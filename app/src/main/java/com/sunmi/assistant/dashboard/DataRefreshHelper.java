@@ -1,6 +1,6 @@
 package com.sunmi.assistant.dashboard;
 
-import android.annotation.SuppressLint;
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -20,10 +20,8 @@ import com.sunmi.assistant.dashboard.model.DataCard;
 import com.sunmi.assistant.dashboard.model.ListCard;
 import com.sunmi.assistant.dashboard.model.PieChartCard;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -42,10 +40,12 @@ public interface DataRefreshHelper<T> {
 
     class TotalSalesAmountRefresh implements DataRefreshHelper<DataCard> {
 
+        private Context context;
         private int companyId;
         private int shopId;
 
-        TotalSalesAmountRefresh(int companyId, int shopId) {
+        TotalSalesAmountRefresh(Context context, int companyId, int shopId) {
+            this.context = context;
             this.companyId = companyId;
             this.shopId = shopId;
         }
@@ -54,7 +54,7 @@ public interface DataRefreshHelper<T> {
         public void refresh(DataCard model) {
             Log.d(TAG, "HTTP request total sales amount.");
             model.state = BaseRefreshCard.STATE_LOADING;
-            model.trendName = Utils.getTrendNameByTimeSpan(model.timeSpan);
+            model.trendName = Utils.getTrendNameByTimeSpan(context, model.timeSpan);
             OrderManagementRemote.get().getTotalAmount(companyId, shopId,
                     model.timeSpanPair.first, model.timeSpanPair.second, 1,
                     new CardCallback<DataCard, TotalAmountResponse>(model) {
@@ -78,10 +78,12 @@ public interface DataRefreshHelper<T> {
 
     class CustomerPriceRefresh implements DataRefreshHelper<DataCard> {
 
+        private Context context;
         private int companyId;
         private int shopId;
 
-        CustomerPriceRefresh(int companyId, int shopId) {
+        CustomerPriceRefresh(Context context, int companyId, int shopId) {
+            this.context = context;
             this.companyId = companyId;
             this.shopId = shopId;
         }
@@ -90,7 +92,7 @@ public interface DataRefreshHelper<T> {
         public void refresh(DataCard model) {
             Log.d(TAG, "HTTP request customer price.");
             model.state = BaseRefreshCard.STATE_LOADING;
-            model.trendName = Utils.getTrendNameByTimeSpan(model.timeSpan);
+            model.trendName = Utils.getTrendNameByTimeSpan(context, model.timeSpan);
             OrderManagementRemote.get().getAvgUnitSale(companyId, shopId,
                     model.timeSpanPair.first, model.timeSpanPair.second, 1,
                     new CardCallback<DataCard, AvgUnitSaleResponse>(model) {
@@ -114,10 +116,12 @@ public interface DataRefreshHelper<T> {
 
     class TotalSalesVolumeRefresh implements DataRefreshHelper<DataCard> {
 
+        private Context context;
         private int companyId;
         private int shopId;
 
-        TotalSalesVolumeRefresh(int companyId, int shopId) {
+        TotalSalesVolumeRefresh(Context context, int companyId, int shopId) {
+            this.context = context;
             this.companyId = companyId;
             this.shopId = shopId;
         }
@@ -126,7 +130,7 @@ public interface DataRefreshHelper<T> {
         public void refresh(DataCard model) {
             Log.d(TAG, "HTTP request total sales volume.");
             model.state = BaseRefreshCard.STATE_LOADING;
-            model.trendName = Utils.getTrendNameByTimeSpan(model.timeSpan);
+            model.trendName = Utils.getTrendNameByTimeSpan(context, model.timeSpan);
             OrderManagementRemote.get().getTotalCount(companyId, shopId,
                     model.timeSpanPair.first, model.timeSpanPair.second, 1,
                     new CardCallback<DataCard, TotalCountResponse>(model) {
@@ -150,10 +154,12 @@ public interface DataRefreshHelper<T> {
 
     class TotalRefundsRefresh implements DataRefreshHelper<DataCard> {
 
+        private Context context;
         private int companyId;
         private int shopId;
 
-        TotalRefundsRefresh(int companyId, int shopId) {
+        TotalRefundsRefresh(Context context, int companyId, int shopId) {
+            this.context = context;
             this.companyId = companyId;
             this.shopId = shopId;
         }
@@ -162,7 +168,7 @@ public interface DataRefreshHelper<T> {
         public void refresh(DataCard model) {
             Log.d(TAG, "HTTP request total refunds.");
             model.state = BaseRefreshCard.STATE_LOADING;
-            model.trendName = Utils.getTrendNameByTimeSpan(model.timeSpan);
+            model.trendName = Utils.getTrendNameByTimeSpan(context, model.timeSpan);
             OrderManagementRemote.get().getRefundCount(companyId, shopId,
                     model.timeSpanPair.first, model.timeSpanPair.second, 1,
                     new CardCallback<DataCard, TotalRefundCountResponse>(model) {
@@ -186,13 +192,10 @@ public interface DataRefreshHelper<T> {
 
     class TimeDistributionRefresh implements DataRefreshHelper<BarChartCard> {
 
-        @SuppressLint("SimpleDateFormat")
-        private static final SimpleDateFormat format = new SimpleDateFormat("HH");
-
         private int companyId;
         private int shopId;
 
-        TimeDistributionRefresh(int companyId, int shopId) {
+        TimeDistributionRefresh(Context context, int companyId, int shopId) {
             this.companyId = companyId;
             this.shopId = shopId;
         }
@@ -201,8 +204,16 @@ public interface DataRefreshHelper<T> {
         public void refresh(BarChartCard model) {
             Log.d(TAG, "HTTP request time distribution detail.");
             model.state = BaseRefreshCard.STATE_LOADING;
+            int interval;
+            if (model.timeSpan == DashboardContract.TIME_SPAN_MONTH) {
+                interval = 86400;
+            } else if (model.timeSpan == DashboardContract.TIME_SPAN_WEEK) {
+                interval = 86400;
+            } else {
+                interval = 3600;
+            }
             OrderManagementRemote.get().getTimeDistribution(companyId, shopId,
-                    model.timeSpanPair.first, model.timeSpanPair.second, 3600,
+                    model.timeSpanPair.first, model.timeSpanPair.second, interval,
                     new CardCallback<BarChartCard, TimeDistributionResponse>(model) {
                         @Override
                         public void success(TimeDistributionResponse data) {
@@ -211,7 +222,7 @@ public interface DataRefreshHelper<T> {
                             List<BarEntry> amountList = new ArrayList<>(list.size());
                             List<BarEntry> countList = new ArrayList<>(list.size());
                             for (TimeDistributionResponse.TimeSpanItem item : list) {
-                                float x = Float.valueOf(format.format(new Date(item.getTime())));
+                                float x = Utils.encodeBarChartXAxisFloat(model.timeSpan, item.getTime());
                                 amountList.add(new BarEntry(x, item.getAmount()));
                                 countList.add(new BarEntry(x, item.getCount()));
                             }
@@ -227,7 +238,7 @@ public interface DataRefreshHelper<T> {
         private int companyId;
         private int shopId;
 
-        PurchaseTypeRankRefresh(int companyId, int shopId) {
+        PurchaseTypeRankRefresh(Context context, int companyId, int shopId) {
             this.companyId = companyId;
             this.shopId = shopId;
         }
@@ -317,7 +328,7 @@ public interface DataRefreshHelper<T> {
         private int companyId;
         private int shopId;
 
-        QuantityRankRefresh(int companyId, int shopId) {
+        QuantityRankRefresh(Context context, int companyId, int shopId) {
             this.companyId = companyId;
             this.shopId = shopId;
         }

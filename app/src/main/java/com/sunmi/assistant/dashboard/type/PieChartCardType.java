@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -15,6 +16,7 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.DataRefreshCallback;
+import com.sunmi.assistant.dashboard.model.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.model.PieChartCard;
 import com.sunmi.assistant.dashboard.ui.ChartDataChangeAnimation;
 
@@ -31,6 +33,8 @@ import sunmi.common.base.recycle.ItemType;
  * @since 2019-06-14
  */
 public class PieChartCardType extends ItemType<PieChartCard, BaseViewHolder<PieChartCard>> {
+
+    private static final String TAG = "PieChartCardType";
 
     private static final String HOLDER_TAG_LEGENDS = "legends";
     private static final String HOLDER_TAG_LEGENDS_DATA = "legends_data";
@@ -109,6 +113,11 @@ public class PieChartCardType extends ItemType<PieChartCard, BaseViewHolder<PieC
         bySales.setSelected(model.dataSource == 0);
         byOrder.setSelected(model.dataSource == 1);
 
+        if (model.flag == BaseRefreshCard.FLAG_INIT) {
+            Log.d(TAG, "Card data setup view skip.");
+            return;
+        }
+
         PieChartCard.PieChartDataSet modelDataSet = model.dataSets[model.dataSource];
         if (modelDataSet == null || modelDataSet.data == null || modelDataSet.data.size() == 0) {
             chart.setData(null);
@@ -142,6 +151,7 @@ public class PieChartCardType extends ItemType<PieChartCard, BaseViewHolder<PieC
             chart.setData(data);
             chart.invalidate();
         }
+        holder.getView(R.id.pb_dashboard_loading).setVisibility(View.GONE);
     }
 
     private void legendSetUp(@NonNull BaseViewHolder<PieChartCard> holder, List<PieEntry> dataList) {
@@ -167,8 +177,8 @@ public class PieChartCardType extends ItemType<PieChartCard, BaseViewHolder<PieC
                 legend.setVisibility(View.VISIBLE);
                 legendData.setVisibility(View.VISIBLE);
             } else {
-                legend.setVisibility(View.GONE);
-                legendData.setVisibility(View.GONE);
+                legend.setVisibility(View.INVISIBLE);
+                legendData.setVisibility(View.INVISIBLE);
             }
         }
     }

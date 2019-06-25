@@ -59,8 +59,8 @@ public class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 if (shopList == null || shopList.size() == 0) {
                     Log.e(TAG, "Get shop list EMPTY!");
                 } else {
-                    mShopId = shopList.get(1).getShop_id();
-                    mShopName = shopList.get(1).getShop_name();
+                    mShopId = shopList.get(0).getShop_id();
+                    mShopName = shopList.get(0).getShop_name();
                     mView.updateShopName(mShopName);
                     initList();
                 }
@@ -93,25 +93,25 @@ public class DashboardPresenter extends BasePresenter<DashboardContract.View>
         mList = new ArrayList<>(7);
         DataCard totalSalesAmount = new DataCard(mView.getContext().getString(
                 R.string.dashboard_total_sales_amount), "%.2f",
-                new DataRefreshHelper.TotalSalesAmountRefresh(mCompanyId, mShopId));
+                new DataRefreshHelper.TotalSalesAmountRefresh(mView.getContext(), mCompanyId, mShopId));
         DataCard customerPrice = new DataCard(mView.getContext().getString(
                 R.string.dashboard_customer_price), "%.2f",
-                new DataRefreshHelper.CustomerPriceRefresh(mCompanyId, mShopId));
+                new DataRefreshHelper.CustomerPriceRefresh(mView.getContext(), mCompanyId, mShopId));
         DataCard totalSalesVolume = new DataCard(mView.getContext().getString(
                 R.string.dashboard_total_sales_volume), "%.0f",
-                new DataRefreshHelper.TotalSalesVolumeRefresh(mCompanyId, mShopId));
+                new DataRefreshHelper.TotalSalesVolumeRefresh(mView.getContext(), mCompanyId, mShopId));
         DataCard totalRefunds = new DataCard(mView.getContext().getString(
                 R.string.dashboard_total_refunds), "%.0f",
-                new DataRefreshHelper.TotalRefundsRefresh(mCompanyId, mShopId));
+                new DataRefreshHelper.TotalRefundsRefresh(mView.getContext(), mCompanyId, mShopId));
         BarChartCard timeDistribution = new BarChartCard(mView.getContext().getString(
                 R.string.dashboard_time_distribution), DashboardContract.DATA_MODE_SALES,
-                new DataRefreshHelper.TimeDistributionRefresh(mCompanyId, mShopId));
+                new DataRefreshHelper.TimeDistributionRefresh(mView.getContext(), mCompanyId, mShopId));
         PieChartCard purchaseRank = new PieChartCard(mView.getContext().getString(
                 R.string.dashboard_purchase_rank), DashboardContract.DATA_MODE_SALES,
-                new DataRefreshHelper.PurchaseTypeRankRefresh(mCompanyId, mShopId));
+                new DataRefreshHelper.PurchaseTypeRankRefresh(mView.getContext(), mCompanyId, mShopId));
         ListCard quantityRank = new ListCard(mView.getContext().getString(
                 R.string.dashboard_quantity_rank),
-                new DataRefreshHelper.QuantityRankRefresh(mCompanyId, mShopId));
+                new DataRefreshHelper.QuantityRankRefresh(mView.getContext(), mCompanyId, mShopId));
 
         totalSalesAmount.setTimeSpan(mTimeSpan, mTimeSpanPair);
         customerPrice.setTimeSpan(mTimeSpan, mTimeSpanPair);
@@ -121,13 +121,13 @@ public class DashboardPresenter extends BasePresenter<DashboardContract.View>
         purchaseRank.setTimeSpan(mTimeSpan, mTimeSpanPair);
         quantityRank.setTimeSpan(mTimeSpan, mTimeSpanPair);
 
-//        mList.add(totalSalesAmount);
-//        mList.add(customerPrice);
-//        mList.add(totalSalesVolume);
-//        mList.add(totalRefunds);
-//        mList.add(timeDistribution);
-//        mList.add(purchaseRank);
-//        mList.add(quantityRank);
+        mList.add(totalSalesAmount);
+        mList.add(customerPrice);
+        mList.add(totalSalesVolume);
+        mList.add(totalRefunds);
+        mList.add(timeDistribution);
+        mList.add(purchaseRank);
+        mList.add(quantityRank);
         mView.updateData(mList);
     }
 

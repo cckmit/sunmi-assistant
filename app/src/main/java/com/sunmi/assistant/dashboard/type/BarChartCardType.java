@@ -8,6 +8,7 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -28,15 +29,16 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.model.GradientColor;
 import com.github.mikephil.charting.renderer.BarChartRenderer;
 import com.github.mikephil.charting.utils.Transformer;
-import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.DashboardContract;
 import com.sunmi.assistant.dashboard.DataRefreshCallback;
+import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.model.BarChartCard;
+import com.sunmi.assistant.dashboard.model.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.ui.ChartDataChangeAnimation;
 
 import java.util.List;
-import java.util.Locale;
 
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
@@ -47,6 +49,8 @@ import sunmi.common.utils.CommonHelper;
  * @since 2019-06-14
  */
 public class BarChartCardType extends ItemType<BarChartCard, BaseViewHolder<BarChartCard>> {
+
+    private static final String TAG = "BarChartCardType";
 
     @Override
     public int getLayoutId(int type) {
@@ -85,15 +89,17 @@ public class BarChartCardType extends ItemType<BarChartCard, BaseViewHolder<BarC
         xAxis.setDrawAxisLine(true);
         xAxis.setTextSize(10f);
         xAxis.setTextColor(Color.parseColor("#333338"));
-        xAxis.setValueFormatter(new BarXAxisLabelFormatter());
+        xAxis.setValueFormatter(new BarXAxisLabelFormatter(holder.getContext()));
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
         YAxis yAxis = chart.getAxisLeft();
         yAxis.setDrawAxisLine(false);
+        yAxis.setGranularityEnabled(true);
+        yAxis.setGranularity(1f);
         yAxis.setTextSize(10f);
         yAxis.setTextColor(Color.parseColor("#333338"));
         yAxis.setGridColor(Color.parseColor("#1A000000"));
-        yAxis.setAxisMinimum(0.0f);
+        yAxis.setAxisMinimum(0f);
         yAxis.enableGridDashedLine(dashLength, dashSpaceLength, 0f);
         yAxis.setGridLineWidth(1f);
 
@@ -124,12 +130,19 @@ public class BarChartCardType extends ItemType<BarChartCard, BaseViewHolder<BarC
         bySales.setSelected(model.dataSource == 0);
         byOrder.setSelected(model.dataSource == 1);
 
+        if (model.flag == BaseRefreshCard.FLAG_INIT) {
+            Log.d(TAG, "Card data setup view skip.");
+            return;
+        }
+
         BarChartCard.BarChartDataSet modelDataSet = model.dataSets[model.dataSource];
         if (modelDataSet == null || modelDataSet.data == null || modelDataSet.data.size() == 0) {
             chart.setData(null);
             chart.invalidate();
             return;
         }
+
+        // Calculate min & max of Y-Axis value.
         List<BarEntry> dataList = modelDataSet.data;
         float max = 0;
         for (BarEntry entry : dataList) {
@@ -137,7 +150,17 @@ public class BarChartCardType extends ItemType<BarChartCard, BaseViewHolder<BarC
                 max = entry.getY();
             }
         }
-        chart.getAxisLeft().setAxisMaximum(max * 1.2f);
+        chart.getAxisLeft().setAxisMaximum(max > 0 ? max * 1.2f : 5f);
+
+        // Set the radius of bar chart based on the time span.
+        RoundEdgeBarChartRenderer renderer = (RoundEdgeBarChartRenderer) chart.getRenderer();
+        if (model.timeSpan == DashboardContract.TIME_SPAN_MONTH) {
+            renderer.setRadius(16);
+        } else if (model.timeSpan == DashboardContract.TIME_SPAN_WEEK) {
+            renderer.setRadius(68);
+        } else {
+            renderer.setRadius(20);
+        }
 
         BarDataSet dataSet;
         if (chart.getData() != null && chart.getData().getDataSetCount() > 0) {
@@ -158,12 +181,20 @@ public class BarChartCardType extends ItemType<BarChartCard, BaseViewHolder<BarC
             chart.setData(data);
             chart.invalidate();
         }
+        holder.getView(R.id.pb_dashboard_loading).setVisibility(View.GONE);
     }
 
     public static class BarXAxisLabelFormatter extends ValueFormatter {
+
+        private static String[] sWeekName;
+
+        BarXAxisLabelFormatter(Context context) {
+            sWeekName = context.getResources().getStringArray(R.array.dashboard_week_name);
+        }
+
         @Override
         public String getAxisLabel(float value, AxisBase axis) {
-            return String.format(Locale.getDefault(), "%02.0f:00", value);
+            return Utils.decodeBarChartXAxisFloat(value, sWeekName);
         }
     }
 
@@ -184,7 +215,8 @@ public class BarChartCardType extends ItemType<BarChartCard, BaseViewHolder<BarC
 
             Transformer trans = mChart.getTransformer(dataSet.getAxisDependency());
             mBarBorderPaint.setColor(dataSet.getBarBorderColor());
-            mBarBorderPaint.setStrokeWidth(Utils.convertDpToPixel(dataSet.getBarBorderWidth()));
+            mBarBorderPaint.setStrokeWidth(com.github.mikephil.charting.utils.Utils
+                    .convertDpToPixel(dataSet.getBarBorderWidth()));
             mShadowPaint.setColor(dataSet.getBarShadowColor());
             boolean drawBorder = dataSet.getBarBorderWidth() > 0f;
 
