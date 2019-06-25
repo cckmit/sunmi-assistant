@@ -42,17 +42,17 @@ public class DataCardType extends ItemType<DataCard, BaseViewHolder<DataCard>> {
         model.setCallback(new DataRefreshCallback() {
             @Override
             public void onSuccess() {
-                setupView(holder, model, position);
+                setupView(holder, model);
             }
 
             @Override
             public void onFail() {
             }
         });
-        setupView(holder, model, position);
+        setupView(holder, model);
     }
 
-    private void setupView(@NonNull BaseViewHolder<DataCard> holder, DataCard model, int position) {
+    private void setupView(@NonNull BaseViewHolder<DataCard> holder, DataCard model) {
         Log.d(TAG, "Setup card view.");
         TextView title = holder.getView(R.id.tv_dashboard_title);
         TextView data = holder.getView(R.id.tv_dashboard_data);

@@ -111,17 +111,17 @@ public class BarChartCardType extends ItemType<BarChartCard, BaseViewHolder<BarC
         model.setCallback(new DataRefreshCallback() {
             @Override
             public void onSuccess() {
-                setupView(holder, model, position);
+                setupView(holder, model);
             }
 
             @Override
             public void onFail() {
             }
         });
-        setupView(holder, model, position);
+        setupView(holder, model);
     }
 
-    private void setupView(BaseViewHolder<BarChartCard> holder, BarChartCard model, int position) {
+    private void setupView(BaseViewHolder<BarChartCard> holder, BarChartCard model) {
         TextView title = holder.getView(R.id.tv_dashboard_title);
         BarChart chart = holder.getView(R.id.chart_dashboard_bar);
         TextView bySales = holder.getView(R.id.tv_dashboard_radio_by_sales);

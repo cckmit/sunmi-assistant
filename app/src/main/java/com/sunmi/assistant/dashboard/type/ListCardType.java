@@ -56,17 +56,17 @@ public class ListCardType extends ItemType<ListCard, BaseViewHolder<ListCard>> {
         model.setCallback(new DataRefreshCallback() {
             @Override
             public void onSuccess() {
-                setupView(holder, model, position);
+                setupView(holder, model);
             }
 
             @Override
             public void onFail() {
             }
         });
-        setupView(holder, model, position);
+        setupView(holder, model);
     }
 
-    private void setupView(BaseViewHolder<ListCard> holder, ListCard model, int position) {
+    private void setupView(BaseViewHolder<ListCard> holder, ListCard model) {
         ListView listView = holder.getView(R.id.lv_dashboard_list);
         TextView title = holder.getView(R.id.tv_dashboard_title);
         title.setText(model.title);

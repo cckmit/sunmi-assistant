@@ -94,17 +94,17 @@ public class PieChartCardType extends ItemType<PieChartCard, BaseViewHolder<PieC
         model.setCallback(new DataRefreshCallback() {
             @Override
             public void onSuccess() {
-                setupView(holder, model, position);
+                setupView(holder, model);
             }
 
             @Override
             public void onFail() {
             }
         });
-        setupView(holder, model, position);
+        setupView(holder, model);
     }
 
-    private void setupView(BaseViewHolder<PieChartCard> holder, PieChartCard model, int position) {
+    private void setupView(BaseViewHolder<PieChartCard> holder, PieChartCard model) {
         TextView title = holder.getView(R.id.tv_dashboard_title);
         TextView bySales = holder.getView(R.id.tv_dashboard_radio_by_sales);
         TextView byOrder = holder.getView(R.id.tv_dashboard_radio_by_order);
