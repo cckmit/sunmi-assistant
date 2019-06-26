@@ -54,7 +54,7 @@ public class LoginActivity extends BaseActivity {
     TextView tvSMSLogin;
     @ViewById(R.id.tvForgetPassword)
     TextView tvForgetPassword;
-    @ViewById(R.id.passwordIsVisible)
+    @ViewById(R.id.ib_visible)
     ImageButton passwordIsVisible;
     @ViewById(R.id.btnLogin)
     Button btnLogin;
@@ -134,7 +134,7 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
-    @Click({R.id.btnLogin, R.id.btnRegister, R.id.btnFixPassword, R.id.passwordIsVisible,
+    @Click({R.id.btnLogin, R.id.btnRegister, R.id.btnFixPassword, R.id.ib_visible,
             R.id.btnLogout, R.id.tvForgetPassword, R.id.tvSMSLogin})
     public void onClick(View v) {
         mobile = etUser.getText().toString().trim();
@@ -161,7 +161,7 @@ public class LoginActivity extends BaseActivity {
                         .extra("mobile", RegexUtils.isChinaPhone(mobile) ? mobile : "")
                         .start();
                 break;
-            case R.id.passwordIsVisible: //密码是否可见
+            case R.id.ib_visible: //密码是否可见
                 if (psdIsVisible) {
                     etPassword.setTransformationMethod(PasswordTransformationMethod.getInstance()); //隐藏密码
                     passwordIsVisible.setBackgroundResource(R.mipmap.ic_eye_light_hide);
@@ -170,6 +170,9 @@ public class LoginActivity extends BaseActivity {
                     etPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance()); //显示密码
                     passwordIsVisible.setBackgroundResource(R.mipmap.ic_eye_light_open);
                     psdIsVisible = true;
+                }
+                if (etPassword.getText() != null) {
+                    etPassword.setSelection(etPassword.getText().length());
                 }
                 break;
             case R.id.tvForgetPassword: //忘记密码
