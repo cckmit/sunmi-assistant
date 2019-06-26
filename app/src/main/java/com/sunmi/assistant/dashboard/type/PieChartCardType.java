@@ -115,9 +115,11 @@ public class PieChartCardType extends ItemType<PieChartCard, BaseViewHolder<PieC
 
         if (model.flag == BaseRefreshCard.FLAG_INIT) {
             Log.d(TAG, "Card data setup view skip.");
+            chart.setVisibility(View.INVISIBLE);
             return;
         }
 
+        chart.setVisibility(View.VISIBLE);
         PieChartCard.PieChartDataSet modelDataSet = model.dataSets[model.dataSource];
         if (modelDataSet == null || modelDataSet.data == null || modelDataSet.data.size() == 0) {
             chart.setData(null);

@@ -1,6 +1,7 @@
 package com.sunmi.assistant.dashboard.data;
 
 import com.sunmi.assistant.dashboard.Utils;
+import com.sunmi.assistant.dashboard.data.response.ShopInfoResponse;
 import com.sunmi.assistant.dashboard.data.response.ShopListResponse;
 import com.sunmi.ipc.rpc.RetrofitClient;
 
@@ -37,6 +38,17 @@ public class ShopManagementRemote {
                     .put("company_id", companyId)
                     .toString();
             mService.getList(Utils.createRequestBody(params)).enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getShopInfo(int shopId, RetrofitCallback<ShopInfoResponse> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("shop_id", shopId)
+                    .toString();
+            mService.getInfo(Utils.createRequestBody(params)).enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
         }

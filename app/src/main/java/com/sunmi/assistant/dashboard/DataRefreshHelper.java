@@ -41,13 +41,9 @@ public interface DataRefreshHelper<T> {
     class TotalSalesAmountRefresh implements DataRefreshHelper<DataCard> {
 
         private Context context;
-        private int companyId;
-        private int shopId;
 
-        TotalSalesAmountRefresh(Context context, int companyId, int shopId) {
+        TotalSalesAmountRefresh(Context context) {
             this.context = context;
-            this.companyId = companyId;
-            this.shopId = shopId;
         }
 
         @Override
@@ -55,7 +51,7 @@ public interface DataRefreshHelper<T> {
             Log.d(TAG, "HTTP request total sales amount.");
             model.state = BaseRefreshCard.STATE_LOADING;
             model.trendName = Utils.getTrendNameByTimeSpan(context, model.timeSpan);
-            OrderManagementRemote.get().getTotalAmount(companyId, shopId,
+            OrderManagementRemote.get().getTotalAmount(model.companyId, model.shopId,
                     model.timeSpanPair.first, model.timeSpanPair.second, 1,
                     new CardCallback<DataCard, TotalAmountResponse>(model) {
                         @Override
@@ -79,13 +75,9 @@ public interface DataRefreshHelper<T> {
     class CustomerPriceRefresh implements DataRefreshHelper<DataCard> {
 
         private Context context;
-        private int companyId;
-        private int shopId;
 
-        CustomerPriceRefresh(Context context, int companyId, int shopId) {
+        CustomerPriceRefresh(Context context) {
             this.context = context;
-            this.companyId = companyId;
-            this.shopId = shopId;
         }
 
         @Override
@@ -93,7 +85,7 @@ public interface DataRefreshHelper<T> {
             Log.d(TAG, "HTTP request customer price.");
             model.state = BaseRefreshCard.STATE_LOADING;
             model.trendName = Utils.getTrendNameByTimeSpan(context, model.timeSpan);
-            OrderManagementRemote.get().getAvgUnitSale(companyId, shopId,
+            OrderManagementRemote.get().getAvgUnitSale(model.companyId, model.shopId,
                     model.timeSpanPair.first, model.timeSpanPair.second, 1,
                     new CardCallback<DataCard, AvgUnitSaleResponse>(model) {
                         @Override
@@ -117,13 +109,9 @@ public interface DataRefreshHelper<T> {
     class TotalSalesVolumeRefresh implements DataRefreshHelper<DataCard> {
 
         private Context context;
-        private int companyId;
-        private int shopId;
 
-        TotalSalesVolumeRefresh(Context context, int companyId, int shopId) {
+        TotalSalesVolumeRefresh(Context context) {
             this.context = context;
-            this.companyId = companyId;
-            this.shopId = shopId;
         }
 
         @Override
@@ -131,7 +119,7 @@ public interface DataRefreshHelper<T> {
             Log.d(TAG, "HTTP request total sales volume.");
             model.state = BaseRefreshCard.STATE_LOADING;
             model.trendName = Utils.getTrendNameByTimeSpan(context, model.timeSpan);
-            OrderManagementRemote.get().getTotalCount(companyId, shopId,
+            OrderManagementRemote.get().getTotalCount(model.companyId, model.shopId,
                     model.timeSpanPair.first, model.timeSpanPair.second, 1,
                     new CardCallback<DataCard, TotalCountResponse>(model) {
                         @Override
@@ -155,13 +143,9 @@ public interface DataRefreshHelper<T> {
     class TotalRefundsRefresh implements DataRefreshHelper<DataCard> {
 
         private Context context;
-        private int companyId;
-        private int shopId;
 
-        TotalRefundsRefresh(Context context, int companyId, int shopId) {
+        TotalRefundsRefresh(Context context) {
             this.context = context;
-            this.companyId = companyId;
-            this.shopId = shopId;
         }
 
         @Override
@@ -169,7 +153,7 @@ public interface DataRefreshHelper<T> {
             Log.d(TAG, "HTTP request total refunds.");
             model.state = BaseRefreshCard.STATE_LOADING;
             model.trendName = Utils.getTrendNameByTimeSpan(context, model.timeSpan);
-            OrderManagementRemote.get().getRefundCount(companyId, shopId,
+            OrderManagementRemote.get().getRefundCount(model.companyId, model.shopId,
                     model.timeSpanPair.first, model.timeSpanPair.second, 1,
                     new CardCallback<DataCard, TotalRefundCountResponse>(model) {
                         @Override
@@ -192,14 +176,6 @@ public interface DataRefreshHelper<T> {
 
     class TimeDistributionRefresh implements DataRefreshHelper<BarChartCard> {
 
-        private int companyId;
-        private int shopId;
-
-        TimeDistributionRefresh(Context context, int companyId, int shopId) {
-            this.companyId = companyId;
-            this.shopId = shopId;
-        }
-
         @Override
         public void refresh(BarChartCard model) {
             Log.d(TAG, "HTTP request time distribution detail.");
@@ -212,7 +188,7 @@ public interface DataRefreshHelper<T> {
             } else {
                 interval = 3600;
             }
-            OrderManagementRemote.get().getTimeDistribution(companyId, shopId,
+            OrderManagementRemote.get().getTimeDistribution(model.companyId, model.shopId,
                     model.timeSpanPair.first, model.timeSpanPair.second, interval,
                     new CardCallback<BarChartCard, TimeDistributionResponse>(model) {
                         @Override
@@ -235,19 +211,11 @@ public interface DataRefreshHelper<T> {
 
     class PurchaseTypeRankRefresh implements DataRefreshHelper<PieChartCard> {
 
-        private int companyId;
-        private int shopId;
-
-        PurchaseTypeRankRefresh(Context context, int companyId, int shopId) {
-            this.companyId = companyId;
-            this.shopId = shopId;
-        }
-
         @Override
         public void refresh(PieChartCard model) {
             Log.d(TAG, "HTTP request purchase type rank.");
             model.state = BaseRefreshCard.STATE_LOADING;
-            OrderManagementRemote.get().getPurchaseTypeRank(companyId, shopId,
+            OrderManagementRemote.get().getPurchaseTypeRank(model.companyId, model.shopId,
                     model.timeSpanPair.first, model.timeSpanPair.second,
                     new CardCallback<PieChartCard, PurchaseTypeRankResponse>(model) {
                         @Override
@@ -291,7 +259,6 @@ public interface DataRefreshHelper<T> {
                                             (o2.getValue() - o1.getValue() < 0 ? -1 : 0);
                                 }
                             });
-                            Log.d(TAG, amountList.toString());
                             int amountSize = amountList.size();
                             int countSize = countList.size();
                             float other = 0f;
@@ -325,19 +292,11 @@ public interface DataRefreshHelper<T> {
 
     class QuantityRankRefresh implements DataRefreshHelper<ListCard> {
 
-        private int companyId;
-        private int shopId;
-
-        QuantityRankRefresh(Context context, int companyId, int shopId) {
-            this.companyId = companyId;
-            this.shopId = shopId;
-        }
-
         @Override
         public void refresh(ListCard model) {
             Log.d(TAG, "HTTP request quantity rank.");
             model.state = BaseRefreshCard.STATE_LOADING;
-            OrderManagementRemote.get().getQuantityRank(companyId, shopId,
+            OrderManagementRemote.get().getQuantityRank(model.companyId, model.shopId,
                     model.timeSpanPair.first, model.timeSpanPair.second,
                     new CardCallback<ListCard, QuantityRankResponse>(model) {
                         @Override

@@ -19,14 +19,15 @@ public class BaseRefreshCard<T> {
 
     public static final int FLAG_INIT = 0;
     public static final int FLAG_NORMAL = 1;
-    public static final int FLAG_NEED_REFRESH = 2;
 
+    public int companyId = -1;
+    public int shopId = -1;
     public int timeSpan = DashboardContract.TIME_SPAN_INIT;
     public Pair<Long, Long> timeSpanPair;
     public int state = STATE_INIT;
     public int flag = FLAG_INIT;
 
-    public DataRefreshHelper<T> helper;
+    private DataRefreshHelper<T> helper;
     public DataRefreshCallback callback;
 
     BaseRefreshCard(DataRefreshHelper<T> refresh) {
@@ -35,6 +36,22 @@ public class BaseRefreshCard<T> {
 
     public void setCallback(DataRefreshCallback callback) {
         this.callback = callback;
+    }
+
+    public void setCompanyId(int companyId) {
+        if (this.companyId == companyId || companyId < 0) {
+            return;
+        }
+        this.companyId = companyId;
+        refresh();
+    }
+
+    public void setShopId(int shopId) {
+        if (this.shopId == shopId || shopId < 0) {
+            return;
+        }
+        this.shopId = shopId;
+        refresh();
     }
 
     public void setTimeSpan(int timeSpan, Pair<Long, Long> timeSpanPair) {
@@ -47,7 +64,9 @@ public class BaseRefreshCard<T> {
     }
 
     public void refresh() {
-        //noinspection unchecked
-        helper.refresh((T) this);
+        if (helper != null && timeSpanPair != null && this.companyId > 0 && this.shopId > 0) {
+            //noinspection unchecked
+            helper.refresh((T) this);
+        }
     }
 }

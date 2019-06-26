@@ -31,7 +31,7 @@ public class CompanyManagementRemote {
         return Holder.INSTANCE;
     }
 
-    public void getShopList(int companyId, RetrofitCallback<CompanyInfoResponse> callback) {
+    public void getCompanyInfo(int companyId, RetrofitCallback<CompanyInfoResponse> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)

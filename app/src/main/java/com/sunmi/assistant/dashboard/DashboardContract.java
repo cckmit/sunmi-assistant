@@ -20,9 +20,7 @@ public interface DashboardContract {
 
         Context getContext();
 
-        void updateCompanyName(String companyName);
-
-        void updateShopName(String shopName);
+        void updateTitle();
 
         void updateData(List<?> data);
     }

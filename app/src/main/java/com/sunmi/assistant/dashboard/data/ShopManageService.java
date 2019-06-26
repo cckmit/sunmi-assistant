@@ -1,5 +1,6 @@
 package com.sunmi.assistant.dashboard.data;
 
+import com.sunmi.assistant.dashboard.data.response.ShopInfoResponse;
 import com.sunmi.assistant.dashboard.data.response.ShopListResponse;
 
 import retrofit2.Call;
@@ -18,5 +19,8 @@ public interface ShopManageService {
 
     @POST("/api/shop/getList")
     Call<BaseResponse<ShopListResponse>> getList(@Body BaseRequest request);
+
+    @POST("/api/shop/getInfo")
+    Call<BaseResponse<ShopInfoResponse>> getInfo(@Body BaseRequest request);
 
 }

@@ -132,9 +132,10 @@ public class BarChartCardType extends ItemType<BarChartCard, BaseViewHolder<BarC
 
         if (model.flag == BaseRefreshCard.FLAG_INIT) {
             Log.d(TAG, "Card data setup view skip.");
+            chart.setVisibility(View.INVISIBLE);
             return;
         }
-
+        chart.setVisibility(View.VISIBLE);
         BarChartCard.BarChartDataSet modelDataSet = model.dataSets[model.dataSource];
         if (modelDataSet == null || modelDataSet.data == null || modelDataSet.data.size() == 0) {
             chart.setData(null);
