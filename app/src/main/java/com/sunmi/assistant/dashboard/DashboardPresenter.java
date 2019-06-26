@@ -42,6 +42,7 @@ public class DashboardPresenter extends BasePresenter<DashboardContract.View>
         sHandler = new Handler(sThread.getLooper());
     }
 
+    private int mCompanyId;
     private String mCompanyName;
     private int mShopId;
     private String mShopName;
@@ -57,7 +58,7 @@ public class DashboardPresenter extends BasePresenter<DashboardContract.View>
     @Override
     public void loadConfig() {
         initList();
-        int mCompanyId = SpUtils.getCompanyId();
+        mCompanyId = SpUtils.getCompanyId();
         mCompanyName = SpUtils.getCompanyName();
         mShopId = SpUtils.getShopId();
         mShopName = SpUtils.getShopName();

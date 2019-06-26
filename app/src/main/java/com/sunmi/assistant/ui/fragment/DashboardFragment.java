@@ -6,6 +6,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.assistant.R;
@@ -25,6 +27,7 @@ import com.sunmi.assistant.dashboard.type.TabType;
 import com.sunmi.assistant.dashboard.type.TitleType;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
@@ -47,7 +50,17 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @ViewById(R.id.rv_dashboard_card_list)
     RecyclerView mCardList;
+    @ViewById(R.id.layout_dashboard_sticky_tab)
+    ViewGroup mStickyTab;
+    @ViewById(R.id.tv_dashboard_today)
+    TextView mTabToday;
+    @ViewById(R.id.tv_dashboard_week)
+    TextView mTabWeek;
+    @ViewById(R.id.tv_dashboard_month)
+    TextView mTabMonth;
+
     private BaseArrayAdapter<Object> mAdapter;
+    private GridLayoutManager mLayoutManager;
 
     @AfterViews
     void init() {
@@ -64,7 +77,6 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         if (animator instanceof SimpleItemAnimator) {
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         }
-//        updateRadioStateTo(DashboardContract.TIME_SPAN_TODAY);
     }
 
     private void initAdapter() {
@@ -75,18 +87,21 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
                     model.timeSpan = DashboardContract.TIME_SPAN_TODAY;
                     adapter.notifyItemChanged(position);
                     mPresenter.timeSpanSwitchTo(DashboardContract.TIME_SPAN_TODAY);
+                    updateStickyTab(model.timeSpan);
                 });
         tabType.addOnViewClickListener(R.id.tv_dashboard_week,
                 (adapter, holder, v, model, position) -> {
                     model.timeSpan = DashboardContract.TIME_SPAN_WEEK;
                     adapter.notifyItemChanged(position);
                     mPresenter.timeSpanSwitchTo(DashboardContract.TIME_SPAN_WEEK);
+                    updateStickyTab(model.timeSpan);
                 });
         tabType.addOnViewClickListener(R.id.tv_dashboard_month,
                 (adapter, holder, v, model, position) -> {
-                    model.timeSpan = DashboardContract.TIME_SPAN_TODAY;
+                    model.timeSpan = DashboardContract.TIME_SPAN_MONTH;
                     adapter.notifyItemChanged(position);
                     mPresenter.timeSpanSwitchTo(DashboardContract.TIME_SPAN_MONTH);
+                    updateStickyTab(model.timeSpan);
                 });
         DataCardType dataCardType = new DataCardType();
         BarChartCardType barChartCardType = new BarChartCardType();
@@ -121,16 +136,44 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mAdapter.register(PieChartCard.class, pieChartCardType);
         mAdapter.register(ListCard.class, listCardType);
 
-        GridLayoutManager layout = new GridLayoutManager(getContext(), 2);
-        layout.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+        mLayoutManager = new GridLayoutManager(getContext(), 2);
+        mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
                 return mAdapter.getItemType(position).getSpanSize();
             }
         });
-        mCardList.setLayoutManager(layout);
+        mCardList.setLayoutManager(mLayoutManager);
+        mCardList.addOnScrollListener(new ItemStickyListener());
         mCardList.addItemDecoration(new ItemSpaceDecoration());
         mCardList.setAdapter(mAdapter);
+    }
+
+    @Click(R.id.tv_dashboard_today)
+    void clickTimeSpanToday() {
+        mPresenter.timeSpanSwitchTo(DashboardContract.TIME_SPAN_TODAY);
+        updateStickyTab(DashboardContract.TIME_SPAN_TODAY);
+        mAdapter.notifyItemChanged(1);
+    }
+
+    @Click(R.id.tv_dashboard_week)
+    void clickTimeSpanWeek() {
+        mPresenter.timeSpanSwitchTo(DashboardContract.TIME_SPAN_WEEK);
+        updateStickyTab(DashboardContract.TIME_SPAN_WEEK);
+        mAdapter.notifyItemChanged(1);
+    }
+
+    @Click(R.id.tv_dashboard_month)
+    void clickTimeSpanMonth() {
+        mPresenter.timeSpanSwitchTo(DashboardContract.TIME_SPAN_MONTH);
+        updateStickyTab(DashboardContract.TIME_SPAN_MONTH);
+        mAdapter.notifyItemChanged(1);
+    }
+
+    private void updateStickyTab(int timeSpan) {
+        mTabToday.setSelected(timeSpan == DashboardContract.TIME_SPAN_TODAY);
+        mTabWeek.setSelected(timeSpan == DashboardContract.TIME_SPAN_WEEK);
+        mTabMonth.setSelected(timeSpan == DashboardContract.TIME_SPAN_MONTH);
     }
 
     @Override
@@ -157,6 +200,19 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     public void didReceivedNotification(int id, Object... args) {
         if (id == NotificationConstant.storeNameChanged) {
             // TODO: Update store name.
+        }
+    }
+
+    private class ItemStickyListener extends RecyclerView.OnScrollListener {
+
+        @Override
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            if (mLayoutManager.findFirstVisibleItemPosition() > 0) {
+                mStickyTab.setVisibility(View.VISIBLE);
+            } else {
+                mStickyTab.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
