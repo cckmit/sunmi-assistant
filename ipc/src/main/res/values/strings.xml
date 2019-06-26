@@ -25,16 +25,15 @@
     <string name="str_retry_add">Re-add</string>
     <string name="tip_no_ipc_found">No IP camera was found</string>
     <string name="tip_check_ipc_wifi">Please check whether the mobile phone has been connected with the same Wi-Fi of IP camera, whether the indicator is solid blue「solid blue」</string>
-    <string name="str_select_time">选择时间</string>
-    <string name="tip_video_quality_fhd">已切换至超清</string>
-    <string name="tip_video_quality_hd">已切换至高清</string>
-    <string name="tip_device_not_exist">设备不存在</string>
-    <string name="tip_already_bound">已经绑定，不要重复绑定</string>
-    <string name="tip_bound_by_others">已被其他用户绑定</string>
-    <string name="tip_device_offline">设备不在线</string>
-    <string name="tip_bind_timeout">绑定超时</string>
-    <string name="tip_no_play_video">当前日期无回放视频</string>
-    <string name="loading_search_wifi">正在搜索Wi-Fi…</string>
+    <string name="str_select_time">Choose date</string>
+    <string name="tip_video_quality_fhd">Switch to Super definition</string>
+    <string name="tip_video_quality_hd">Switch to high definition</string>
+    <string name="tip_device_not_exist">Device not exist</string>
+    <string name="tip_already_bound">Already bound</string>
+    <string name="tip_device_offline">Device offline</string>
+    <string name="tip_bind_timeout">Bind timeout</string>
+    <string name="tip_no_play_video">No video data</string>
+    <string name="loading_search_wifi">Searching Wi-Fi…</string>
 
 </resources>
 
