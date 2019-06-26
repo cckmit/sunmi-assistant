@@ -76,5 +76,6 @@
     <string name="tip_forbid_by_server">The request has been denied by server</string>
     <string name="str_bind_success">Bind success</string>
     <string name="str_bind_fail">Bind fail</string>
-    
+    <string name="str_dev_binded">This device was bound by other user already</string>
+
 </resources>
