@@ -76,4 +76,6 @@
     <string name="tip_forbid_by_server">该请求被服务端拒绝</string>
     <string name="str_bind_success">绑定成功</string>
     <string name="str_bind_fail">绑定失败</string>
+    <string name="str_dev_binded">该设备已被其他用户绑定</string>
+
 </resources>
