@@ -1,6 +1,5 @@
 package com.sunmi.assistant.data;
 
-import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.data.response.AvgUnitSaleResponse;
 import com.sunmi.assistant.data.response.DetailListResponse;
 import com.sunmi.assistant.data.response.OrderListResponse;
@@ -12,6 +11,7 @@ import com.sunmi.assistant.data.response.TimeDistributionResponse;
 import com.sunmi.assistant.data.response.TotalAmountResponse;
 import com.sunmi.assistant.data.response.TotalCountResponse;
 import com.sunmi.assistant.data.response.TotalRefundCountResponse;
+import com.sunmi.assistant.utils.Utils;
 import com.sunmi.ipc.rpc.RetrofitClient;
 
 import org.json.JSONArray;

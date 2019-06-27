@@ -63,7 +63,7 @@ public class AboutActivity extends BaseActivity {
                     if (response != null) {
                         JSONObject jsonObject = new JSONObject(response);
                         if (jsonObject.has("code") && jsonObject.getInt("code") == 1) {
-                            JSONObject object = (JSONObject) jsonObject.getJSONArray("dataSet").opt(0);
+                            JSONObject object = (JSONObject) jsonObject.getJSONArray("data").opt(0);
                             if (object.has("has_new_version")) {
                                 // 是否需要升级 0-否 1-是
                                 int needUpdate = object.getInt("has_new_version");

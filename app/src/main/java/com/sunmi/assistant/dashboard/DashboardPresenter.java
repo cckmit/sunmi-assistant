@@ -19,6 +19,7 @@ import com.sunmi.assistant.data.ShopManagementRemote;
 import com.sunmi.assistant.data.response.CompanyInfoResponse;
 import com.sunmi.assistant.data.response.ShopInfoResponse;
 import com.sunmi.assistant.data.response.ShopListResponse;
+import com.sunmi.assistant.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;

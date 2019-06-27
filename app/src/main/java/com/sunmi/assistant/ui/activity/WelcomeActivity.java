@@ -164,7 +164,7 @@ public class WelcomeActivity extends BaseActivity {
                     if (response != null) {
                         JSONObject jsonObject = new JSONObject(response);
                         if (jsonObject.has("code") && jsonObject.getInt("code") == 1) {
-                            JSONObject object = (JSONObject) jsonObject.getJSONArray("dataSet").opt(0);
+                            JSONObject object = (JSONObject) jsonObject.getJSONArray("data").opt(0);
                             if (object.has("is_force_upgrade")) {
                                 // 是否需要强制升级 0-否 1-是
                                 int needMerge = object.getInt("is_force_upgrade");

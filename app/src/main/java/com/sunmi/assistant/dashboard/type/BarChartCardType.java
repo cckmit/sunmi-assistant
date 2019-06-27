@@ -33,10 +33,10 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.DashboardContract;
 import com.sunmi.assistant.dashboard.DataRefreshCallback;
-import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.model.BarChartCard;
 import com.sunmi.assistant.dashboard.model.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.ui.ChartDataChangeAnimation;
+import com.sunmi.assistant.utils.Utils;
 
 import java.util.List;
 

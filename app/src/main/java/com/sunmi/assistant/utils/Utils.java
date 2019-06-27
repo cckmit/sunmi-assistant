@@ -1,10 +1,11 @@
-package com.sunmi.assistant.dashboard;
+package com.sunmi.assistant.utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Pair;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.DashboardContract;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -45,7 +46,7 @@ public class Utils {
                 .setLang("zh").createBaseRequest();
     }
 
-    static String getTrendNameByTimeSpan(Context context, int timeSpan) {
+    public static String getTrendNameByTimeSpan(Context context, int timeSpan) {
         if (timeSpan == DashboardContract.TIME_SPAN_MONTH) {
             return context.getResources().getString(R.string.dashboard_month_ratio);
         } else if (timeSpan == DashboardContract.TIME_SPAN_WEEK) {
@@ -55,7 +56,7 @@ public class Utils {
         }
     }
 
-    static Pair<Long, Long> calcTimeSpan(int timeSpan) {
+    public static Pair<Long, Long> calcTimeSpan(int timeSpan) {
         long timeStart;
         long timeEnd;
         Calendar c = Calendar.getInstance();
@@ -86,7 +87,7 @@ public class Utils {
         return new Pair<>(timeStart / 1000, timeEnd / 1000);
     }
 
-    static float encodeBarChartXAxisFloat(int timeSpan, long timestamp) {
+    public static float encodeBarChartXAxisFloat(int timeSpan, long timestamp) {
         DateFormat format;
         int offset;
         if (timeSpan == DashboardContract.TIME_SPAN_MONTH) {

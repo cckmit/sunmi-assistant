@@ -19,6 +19,7 @@ import com.sunmi.assistant.data.response.TimeDistributionResponse;
 import com.sunmi.assistant.data.response.TotalAmountResponse;
 import com.sunmi.assistant.data.response.TotalCountResponse;
 import com.sunmi.assistant.data.response.TotalRefundCountResponse;
+import com.sunmi.assistant.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
