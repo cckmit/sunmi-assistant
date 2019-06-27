@@ -46,14 +46,7 @@ public class WelcomeActivity extends BaseActivity {
     @AfterViews
     protected void init() {
         SpUtils.saveHeightPixel(this);//手机像素高度
-        if (TextUtils.equals(SpUtils.getLead(), "TRUE")) {
-            launch(false);
-        } else {
-            //首次安装或清空数据时
-            launch(true);
-//            LeadPagesActivity_.intent(context).start();
-//            finish();
-        }
+        launch();
         initMTA();
     }
 
@@ -69,7 +62,7 @@ public class WelcomeActivity extends BaseActivity {
         }
     }
 
-    private void launch(boolean isLeadPage) {
+    private void launch() {
         ThreadPool.getCachedThreadPool().submit(new Runnable() {
             @Override
             public void run() {
@@ -83,7 +76,7 @@ public class WelcomeActivity extends BaseActivity {
                     }
                 } else {
                     LogCat.e(TAG, "ping time -- 333");
-                    checkUpdate(isLeadPage);
+                    checkUpdate();
                 }
             }
         });
@@ -109,6 +102,11 @@ public class WelcomeActivity extends BaseActivity {
 
     private void gotoMainActivity() {
         MainActivity_.intent(context).start();
+        finish();
+    }
+
+    private void gotoLeadPagesActivity() {
+        LeadPagesActivity_.intent(context).start();
         finish();
     }
 
@@ -153,7 +151,7 @@ public class WelcomeActivity extends BaseActivity {
         gotoLoginActivity();
     }
 
-    private void checkUpdate(boolean isLeadPage) {
+    private void checkUpdate() {
         CloudApi.checkUpgrade(new StringCallback() {
             @Override
             public void onError(Call call, Response response, Exception e, int id) {
@@ -175,9 +173,10 @@ public class WelcomeActivity extends BaseActivity {
                                     forceUpdate(appUrl);
                                     return;
                                 } else {
-                                    if (isLeadPage) {
-                                        LeadPagesActivity_.intent(context).start();
-                                        finish();
+                                    //首次安装或清空数据时
+                                    if (!TextUtils.equals(SpUtils.getLead(), "TRUE")) {
+                                        gotoLeadPagesActivity();
+                                        return;
                                     }
                                 }
                             }
