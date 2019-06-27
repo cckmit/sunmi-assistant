@@ -21,4 +21,33 @@
     <string name="tip_no_device_found">没有发现新设备</string>
     <string name="tip_keep_device_in">请确保您的设备处于路由器信号范围内</string>
 
+    <string name="ic_tab_data_title">数据</string>
+
+    <string name="dashboard_data_format">%s%%</string>
+    <string name="dashboard_today">今日</string>
+    <string name="dashboard_this_week">本周</string>
+    <string name="dashboard_this_month">本月</string>
+    <string name="dashboard_day_ratio">日环比</string>
+    <string name="dashboard_week_ratio">周环比</string>
+    <string name="dashboard_month_ratio">月同比</string>
+    <string name="dashboard_by_sales">按销售额</string>
+    <string name="dashboard_by_order">按订单数</string>
+    <string name="dashboard_total_sales_amount">总销售额</string>
+    <string name="dashboard_customer_price">客单价</string>
+    <string name="dashboard_total_sales_volume">总笔数</string>
+    <string name="dashboard_total_refunds">退款笔数</string>
+    <string name="dashboard_time_distribution">交易时间分布</string>
+    <string name="dashboard_purchase_rank">支付方式</string>
+    <string name="dashboard_quantity_rank">商品销量排行</string>
+    <string name="dashboard_purchase_others">其他</string>
+
+    <string-array name="dashboard_week_name">
+        <item>周一</item>
+        <item>周二</item>
+        <item>周三</item>
+        <item>周四</item>
+        <item>周五</item>
+        <item>周六</item>
+        <item>周日</item>
+    </string-array>
 </resources>

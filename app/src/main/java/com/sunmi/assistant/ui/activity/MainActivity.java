@@ -48,9 +48,10 @@ import sunmi.common.view.MyFragmentTabHost;
  */
 @EActivity(R.layout.activity_main)
 public class MainActivity extends BaseActivity implements TabHost.OnTabChangeListener {
-    public static final int TAB_STORE = 0;
-    public static final int TAB_SUPPORT = 1;
-    public static final int TAB_MINE = 2;
+    public static final int TAB_DATA = 0;
+    public static final int TAB_STORE = 1;
+    public static final int TAB_SUPPORT = 2;
+    public static final int TAB_MINE = 3;
 
     @ViewById(android.R.id.tabhost)
     MyFragmentTabHost mTabHost;

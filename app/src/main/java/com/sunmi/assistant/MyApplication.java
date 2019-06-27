@@ -28,7 +28,6 @@ public class MyApplication extends BaseApplication {
         StatConfig.setDebugEnable(!TextUtils.equals(Utils.getMetaValue(this,
                 "ENV_DATA", ApConfig.ENV_TEST), ApConfig.ENV_RELEASE));
         StatService.registerActivityLifecycleCallbacks(this);
-
     }
 
 }
