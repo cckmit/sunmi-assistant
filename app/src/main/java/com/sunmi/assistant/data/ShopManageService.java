@@ -1,7 +1,7 @@
-package com.sunmi.assistant.dashboard.data;
+package com.sunmi.assistant.data;
 
-import com.sunmi.assistant.dashboard.data.response.ShopInfoResponse;
-import com.sunmi.assistant.dashboard.data.response.ShopListResponse;
+import com.sunmi.assistant.data.response.ShopInfoResponse;
+import com.sunmi.assistant.data.response.ShopListResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

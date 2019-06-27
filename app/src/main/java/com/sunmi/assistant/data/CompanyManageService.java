@@ -1,6 +1,6 @@
-package com.sunmi.assistant.dashboard.data;
+package com.sunmi.assistant.data;
 
-import com.sunmi.assistant.dashboard.data.response.CompanyInfoResponse;
+import com.sunmi.assistant.data.response.CompanyInfoResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

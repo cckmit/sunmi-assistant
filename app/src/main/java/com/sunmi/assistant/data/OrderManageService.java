@@ -1,16 +1,16 @@
-package com.sunmi.assistant.dashboard.data;
+package com.sunmi.assistant.data;
 
-import com.sunmi.assistant.dashboard.data.response.AvgUnitSaleResponse;
-import com.sunmi.assistant.dashboard.data.response.DetailListResponse;
-import com.sunmi.assistant.dashboard.data.response.OrderListResponse;
-import com.sunmi.assistant.dashboard.data.response.OrderTypeListResponse;
-import com.sunmi.assistant.dashboard.data.response.PurchaseTypeListResponse;
-import com.sunmi.assistant.dashboard.data.response.PurchaseTypeRankResponse;
-import com.sunmi.assistant.dashboard.data.response.QuantityRankResponse;
-import com.sunmi.assistant.dashboard.data.response.TimeDistributionResponse;
-import com.sunmi.assistant.dashboard.data.response.TotalAmountResponse;
-import com.sunmi.assistant.dashboard.data.response.TotalCountResponse;
-import com.sunmi.assistant.dashboard.data.response.TotalRefundCountResponse;
+import com.sunmi.assistant.data.response.AvgUnitSaleResponse;
+import com.sunmi.assistant.data.response.DetailListResponse;
+import com.sunmi.assistant.data.response.OrderListResponse;
+import com.sunmi.assistant.data.response.OrderTypeListResponse;
+import com.sunmi.assistant.data.response.PurchaseTypeListResponse;
+import com.sunmi.assistant.data.response.PurchaseTypeRankResponse;
+import com.sunmi.assistant.data.response.QuantityRankResponse;
+import com.sunmi.assistant.data.response.TimeDistributionResponse;
+import com.sunmi.assistant.data.response.TotalAmountResponse;
+import com.sunmi.assistant.data.response.TotalCountResponse;
+import com.sunmi.assistant.data.response.TotalRefundCountResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

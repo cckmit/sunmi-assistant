@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.data.response;
+package com.sunmi.assistant.data.response;
 
 public class CompanyInfoResponse {
 

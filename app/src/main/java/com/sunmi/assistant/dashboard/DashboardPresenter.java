@@ -7,11 +7,6 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.data.CompanyManagementRemote;
-import com.sunmi.assistant.dashboard.data.ShopManagementRemote;
-import com.sunmi.assistant.dashboard.data.response.CompanyInfoResponse;
-import com.sunmi.assistant.dashboard.data.response.ShopInfoResponse;
-import com.sunmi.assistant.dashboard.data.response.ShopListResponse;
 import com.sunmi.assistant.dashboard.model.BarChartCard;
 import com.sunmi.assistant.dashboard.model.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.model.DataCard;
@@ -19,6 +14,11 @@ import com.sunmi.assistant.dashboard.model.ListCard;
 import com.sunmi.assistant.dashboard.model.PieChartCard;
 import com.sunmi.assistant.dashboard.model.Tab;
 import com.sunmi.assistant.dashboard.model.Title;
+import com.sunmi.assistant.data.CompanyManagementRemote;
+import com.sunmi.assistant.data.ShopManagementRemote;
+import com.sunmi.assistant.data.response.CompanyInfoResponse;
+import com.sunmi.assistant.data.response.ShopInfoResponse;
+import com.sunmi.assistant.data.response.ShopListResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     private static final String TAG = "DashboardPresenter";
 
-    private static final int REFRESH_TIME_PERIOD = 12000;
+    private static final int REFRESH_TIME_PERIOD = 120_000;
     private static final HandlerThread sThread = new HandlerThread("RefreshTask");
     private static final Handler sHandler;
 

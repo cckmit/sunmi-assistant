@@ -1,8 +1,8 @@
-package com.sunmi.assistant.dashboard.data;
+package com.sunmi.assistant.data;
 
 import com.sunmi.assistant.dashboard.Utils;
-import com.sunmi.assistant.dashboard.data.response.ShopInfoResponse;
-import com.sunmi.assistant.dashboard.data.response.ShopListResponse;
+import com.sunmi.assistant.data.response.ShopInfoResponse;
+import com.sunmi.assistant.data.response.ShopListResponse;
 import com.sunmi.ipc.rpc.RetrofitClient;
 
 import org.json.JSONException;

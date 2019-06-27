@@ -6,19 +6,19 @@ import android.util.Log;
 
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.PieEntry;
-import com.sunmi.assistant.dashboard.data.OrderManagementRemote;
-import com.sunmi.assistant.dashboard.data.response.AvgUnitSaleResponse;
-import com.sunmi.assistant.dashboard.data.response.PurchaseTypeRankResponse;
-import com.sunmi.assistant.dashboard.data.response.QuantityRankResponse;
-import com.sunmi.assistant.dashboard.data.response.TimeDistributionResponse;
-import com.sunmi.assistant.dashboard.data.response.TotalAmountResponse;
-import com.sunmi.assistant.dashboard.data.response.TotalCountResponse;
-import com.sunmi.assistant.dashboard.data.response.TotalRefundCountResponse;
 import com.sunmi.assistant.dashboard.model.BarChartCard;
 import com.sunmi.assistant.dashboard.model.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.model.DataCard;
 import com.sunmi.assistant.dashboard.model.ListCard;
 import com.sunmi.assistant.dashboard.model.PieChartCard;
+import com.sunmi.assistant.data.OrderManagementRemote;
+import com.sunmi.assistant.data.response.AvgUnitSaleResponse;
+import com.sunmi.assistant.data.response.PurchaseTypeRankResponse;
+import com.sunmi.assistant.data.response.QuantityRankResponse;
+import com.sunmi.assistant.data.response.TimeDistributionResponse;
+import com.sunmi.assistant.data.response.TotalAmountResponse;
+import com.sunmi.assistant.data.response.TotalCountResponse;
+import com.sunmi.assistant.data.response.TotalRefundCountResponse;
 
 import java.util.ArrayList;
 import java.util.Collections;
