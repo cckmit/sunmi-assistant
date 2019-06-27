@@ -11,14 +11,14 @@ import com.sunmi.assistant.dashboard.model.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.model.DataCard;
 import com.sunmi.assistant.dashboard.model.ListCard;
 import com.sunmi.assistant.dashboard.model.PieChartCard;
-import com.sunmi.assistant.data.OrderManagementRemote;
-import com.sunmi.assistant.data.response.AvgUnitSaleResponse;
-import com.sunmi.assistant.data.response.PurchaseTypeRankResponse;
-import com.sunmi.assistant.data.response.QuantityRankResponse;
-import com.sunmi.assistant.data.response.TimeDistributionResponse;
-import com.sunmi.assistant.data.response.TotalAmountResponse;
-import com.sunmi.assistant.data.response.TotalCountResponse;
-import com.sunmi.assistant.data.response.TotalRefundCountResponse;
+import com.sunmi.assistant.data.SunmiStoreRemote;
+import com.sunmi.assistant.data.response.OrderAvgUnitSaleResp;
+import com.sunmi.assistant.data.response.OrderPayTypeRankResp;
+import com.sunmi.assistant.data.response.OrderQuantityRankResp;
+import com.sunmi.assistant.data.response.OrderTimeDistributionResp;
+import com.sunmi.assistant.data.response.OrderTotalAmountResp;
+import com.sunmi.assistant.data.response.OrderTotalCountResp;
+import com.sunmi.assistant.data.response.OrderTotalRefundsResp;
 import com.sunmi.assistant.utils.Utils;
 
 import java.util.ArrayList;
@@ -52,11 +52,11 @@ public interface DataRefreshHelper<T> {
             Log.d(TAG, "HTTP request total sales amount.");
             model.state = BaseRefreshCard.STATE_LOADING;
             model.trendName = Utils.getTrendNameByTimeSpan(context, model.timeSpan);
-            OrderManagementRemote.get().getTotalAmount(model.companyId, model.shopId,
+            SunmiStoreRemote.get().getOrderTotalAmount(model.companyId, model.shopId,
                     model.timeSpanPair.first, model.timeSpanPair.second, 1,
-                    new CardCallback<DataCard, TotalAmountResponse>(model, callback) {
+                    new CardCallback<DataCard, OrderTotalAmountResp>(model, callback) {
                         @Override
-                        public void success(TotalAmountResponse data) {
+                        public void success(OrderTotalAmountResp data) {
                             Log.d(TAG, "HTTP request total sales amount success.");
                             model.data = data.getTotal_amount();
                             if (model.timeSpan == DashboardContract.TIME_SPAN_MONTH
@@ -86,11 +86,11 @@ public interface DataRefreshHelper<T> {
             Log.d(TAG, "HTTP request customer price.");
             model.state = BaseRefreshCard.STATE_LOADING;
             model.trendName = Utils.getTrendNameByTimeSpan(context, model.timeSpan);
-            OrderManagementRemote.get().getAvgUnitSale(model.companyId, model.shopId,
+            SunmiStoreRemote.get().getOrderAvgUnitSale(model.companyId, model.shopId,
                     model.timeSpanPair.first, model.timeSpanPair.second, 1,
-                    new CardCallback<DataCard, AvgUnitSaleResponse>(model, callback) {
+                    new CardCallback<DataCard, OrderAvgUnitSaleResp>(model, callback) {
                         @Override
-                        public void success(AvgUnitSaleResponse data) {
+                        public void success(OrderAvgUnitSaleResp data) {
                             Log.d(TAG, "HTTP request customer price success.");
                             model.data = data.getAus();
                             if (model.timeSpan == DashboardContract.TIME_SPAN_MONTH
@@ -120,11 +120,11 @@ public interface DataRefreshHelper<T> {
             Log.d(TAG, "HTTP request total sales volume.");
             model.state = BaseRefreshCard.STATE_LOADING;
             model.trendName = Utils.getTrendNameByTimeSpan(context, model.timeSpan);
-            OrderManagementRemote.get().getTotalCount(model.companyId, model.shopId,
+            SunmiStoreRemote.get().getOrderTotalCount(model.companyId, model.shopId,
                     model.timeSpanPair.first, model.timeSpanPair.second, 1,
-                    new CardCallback<DataCard, TotalCountResponse>(model, callback) {
+                    new CardCallback<DataCard, OrderTotalCountResp>(model, callback) {
                         @Override
-                        public void success(TotalCountResponse data) {
+                        public void success(OrderTotalCountResp data) {
                             Log.d(TAG, "HTTP request total sales volume success.");
                             model.data = data.getTotal_count();
                             if (model.timeSpan == DashboardContract.TIME_SPAN_MONTH
@@ -154,11 +154,11 @@ public interface DataRefreshHelper<T> {
             Log.d(TAG, "HTTP request total refunds.");
             model.state = BaseRefreshCard.STATE_LOADING;
             model.trendName = Utils.getTrendNameByTimeSpan(context, model.timeSpan);
-            OrderManagementRemote.get().getRefundCount(model.companyId, model.shopId,
+            SunmiStoreRemote.get().getOrderRefundCount(model.companyId, model.shopId,
                     model.timeSpanPair.first, model.timeSpanPair.second, 1,
-                    new CardCallback<DataCard, TotalRefundCountResponse>(model, callback) {
+                    new CardCallback<DataCard, OrderTotalRefundsResp>(model, callback) {
                         @Override
-                        public void success(TotalRefundCountResponse data) {
+                        public void success(OrderTotalRefundsResp data) {
                             Log.d(TAG, "HTTP request total refunds success.");
                             model.data = data.getRefund_count();
                             if (model.timeSpan == DashboardContract.TIME_SPAN_MONTH
@@ -189,16 +189,16 @@ public interface DataRefreshHelper<T> {
             } else {
                 interval = 3600;
             }
-            OrderManagementRemote.get().getTimeDistribution(model.companyId, model.shopId,
+            SunmiStoreRemote.get().getOrderTimeDistribution(model.companyId, model.shopId,
                     model.timeSpanPair.first, model.timeSpanPair.second, interval,
-                    new CardCallback<BarChartCard, TimeDistributionResponse>(model, callback) {
+                    new CardCallback<BarChartCard, OrderTimeDistributionResp>(model, callback) {
                         @Override
-                        public void success(TimeDistributionResponse data) {
+                        public void success(OrderTimeDistributionResp data) {
                             Log.d(TAG, "HTTP request time distribution detail success.");
-                            List<TimeDistributionResponse.TimeSpanItem> list = data.getOrder_list();
+                            List<OrderTimeDistributionResp.TimeSpanItem> list = data.getOrder_list();
                             List<BarEntry> amountList = new ArrayList<>(list.size());
                             List<BarEntry> countList = new ArrayList<>(list.size());
-                            for (TimeDistributionResponse.TimeSpanItem item : list) {
+                            for (OrderTimeDistributionResp.TimeSpanItem item : list) {
                                 float x = Utils.encodeBarChartXAxisFloat(model.timeSpan, item.getTime());
                                 amountList.add(new BarEntry(x, item.getAmount()));
                                 countList.add(new BarEntry(x, item.getCount()));
@@ -216,18 +216,18 @@ public interface DataRefreshHelper<T> {
         public void refresh(PieChartCard model, DataRefreshCallback callback) {
             Log.d(TAG, "HTTP request purchase type rank.");
             model.state = BaseRefreshCard.STATE_LOADING;
-            OrderManagementRemote.get().getPurchaseTypeRank(model.companyId, model.shopId,
+            SunmiStoreRemote.get().getOrderPurchaseTypeRank(model.companyId, model.shopId,
                     model.timeSpanPair.first, model.timeSpanPair.second,
-                    new CardCallback<PieChartCard, PurchaseTypeRankResponse>(model, callback) {
+                    new CardCallback<PieChartCard, OrderPayTypeRankResp>(model, callback) {
                         @Override
-                        public void success(PurchaseTypeRankResponse data) {
+                        public void success(OrderPayTypeRankResp data) {
                             Log.d(TAG, "HTTP request purchase type rank success.");
-                            List<PurchaseTypeRankResponse.PurchaseTypeRankItem> list = data.getPurchase_type_list();
+                            List<OrderPayTypeRankResp.PurchaseTypeRankItem> list = data.getPurchase_type_list();
                             List<PieEntry> amountList = new ArrayList<>(list.size());
                             List<PieEntry> countList = new ArrayList<>(list.size());
                             float amountTotal = 0;
                             float countTotal = 0;
-                            for (PurchaseTypeRankResponse.PurchaseTypeRankItem item : list) {
+                            for (OrderPayTypeRankResp.PurchaseTypeRankItem item : list) {
                                 String label = item.getPurchase_type_name();
                                 float amount = item.getAmount();
                                 int count = item.getCount();
@@ -297,18 +297,18 @@ public interface DataRefreshHelper<T> {
         public void refresh(ListCard model, DataRefreshCallback callback) {
             Log.d(TAG, "HTTP request quantity rank.");
             model.state = BaseRefreshCard.STATE_LOADING;
-            OrderManagementRemote.get().getQuantityRank(model.companyId, model.shopId,
+            SunmiStoreRemote.get().getOrderQuantityRank(model.companyId, model.shopId,
                     model.timeSpanPair.first, model.timeSpanPair.second,
-                    new CardCallback<ListCard, QuantityRankResponse>(model, callback) {
+                    new CardCallback<ListCard, OrderQuantityRankResp>(model, callback) {
                         @Override
-                        public void success(QuantityRankResponse data) {
+                        public void success(OrderQuantityRankResp data) {
                             Log.d(TAG, "HTTP request quantity rank success.");
-                            List<QuantityRankResponse.QuantityRankItem> list = data.getQuantity_rank();
+                            List<OrderQuantityRankResp.QuantityRankItem> list = data.getQuantity_rank();
                             Collections.sort(list, (o1, o2) -> o2.getQuantity() - o1.getQuantity());
                             int size = list.size();
                             model.list = new ArrayList<>(size);
                             for (int i = 0; i < size; i++) {
-                                QuantityRankResponse.QuantityRankItem item = list.get(i);
+                                OrderQuantityRankResp.QuantityRankItem item = list.get(i);
                                 model.list.add(new ListCard.Item(i + 1, item.getName(), item.getQuantity()));
                             }
                         }

@@ -1,6 +1,6 @@
 package com.sunmi.assistant.data;
 
-import com.sunmi.assistant.data.response.CompanyInfoResponse;
+import com.sunmi.assistant.data.response.CompanyInfoResp;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -17,6 +17,6 @@ import sunmi.common.rpc.retrofit.BaseResponse;
 public interface CompanyManageService {
 
     @POST("/api/company/getInfo")
-    Call<BaseResponse<CompanyInfoResponse>> getInfo(@Body BaseRequest request);
+    Call<BaseResponse<CompanyInfoResp>> getInfo(@Body BaseRequest request);
 
 }

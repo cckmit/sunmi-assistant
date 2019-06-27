@@ -2,7 +2,7 @@ package com.sunmi.assistant.data.response;
 
 import java.util.List;
 
-public class ShopListResponse {
+public class ShopListResp {
 
     private List<ShopInfo> shop_list;
     private int total_count;

@@ -14,11 +14,10 @@ import com.sunmi.assistant.dashboard.model.ListCard;
 import com.sunmi.assistant.dashboard.model.PieChartCard;
 import com.sunmi.assistant.dashboard.model.Tab;
 import com.sunmi.assistant.dashboard.model.Title;
-import com.sunmi.assistant.data.CompanyManagementRemote;
-import com.sunmi.assistant.data.ShopManagementRemote;
-import com.sunmi.assistant.data.response.CompanyInfoResponse;
-import com.sunmi.assistant.data.response.ShopInfoResponse;
-import com.sunmi.assistant.data.response.ShopListResponse;
+import com.sunmi.assistant.data.SunmiStoreRemote;
+import com.sunmi.assistant.data.response.CompanyInfoResp;
+import com.sunmi.assistant.data.response.ShopInfoResp;
+import com.sunmi.assistant.data.response.ShopListResp;
 import com.sunmi.assistant.utils.Utils;
 
 import java.util.ArrayList;
@@ -74,9 +73,9 @@ public class DashboardPresenter extends BasePresenter<DashboardContract.View>
         }
 
         if (TextUtils.isEmpty(mCompanyName)) {
-            CompanyManagementRemote.get().getCompanyInfo(mCompanyId, new RetrofitCallback<CompanyInfoResponse>() {
+            SunmiStoreRemote.get().getCompanyInfo(mCompanyId, new RetrofitCallback<CompanyInfoResp>() {
                 @Override
-                public void onSuccess(int code, String msg, CompanyInfoResponse data) {
+                public void onSuccess(int code, String msg, CompanyInfoResp data) {
                     mCompanyName = data.getCompany_name();
                     mTitle.setCompanyName(mCompanyName);
                     SpUtils.setCompanyName(mCompanyName);
@@ -84,7 +83,7 @@ public class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 }
 
                 @Override
-                public void onFail(int code, String msg, CompanyInfoResponse data) {
+                public void onFail(int code, String msg, CompanyInfoResp data) {
                     Log.e(TAG, "Get company info FAILED. code=" + code + "; msg=" + msg);
                 }
             });
@@ -94,14 +93,14 @@ public class DashboardPresenter extends BasePresenter<DashboardContract.View>
         }
 
         if (mShopId < 0) {
-            ShopManagementRemote.get().getShopList(mCompanyId, new RetrofitCallback<ShopListResponse>() {
+            SunmiStoreRemote.get().getShopList(mCompanyId, new RetrofitCallback<ShopListResp>() {
                 @Override
-                public void onSuccess(int code, String msg, ShopListResponse data) {
-                    List<ShopListResponse.ShopInfo> shopList = data.getShop_list();
+                public void onSuccess(int code, String msg, ShopListResp data) {
+                    List<ShopListResp.ShopInfo> shopList = data.getShop_list();
                     if (shopList == null || shopList.size() == 0) {
                         Log.e(TAG, "Get shop list EMPTY!");
                     } else {
-                        ShopListResponse.ShopInfo shopInfo = shopList.get(0);
+                        ShopListResp.ShopInfo shopInfo = shopList.get(0);
                         mShopId = shopInfo.getShop_id();
                         mShopName = shopInfo.getShop_name();
                         SpUtils.setShopId(mShopId);
@@ -115,14 +114,14 @@ public class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 }
 
                 @Override
-                public void onFail(int code, String msg, ShopListResponse data) {
+                public void onFail(int code, String msg, ShopListResp data) {
                     Log.e(TAG, "Get shop list FAILED. code=" + code + "; msg=" + msg);
                 }
             });
         } else if (TextUtils.isEmpty(mShopName)) {
-            ShopManagementRemote.get().getShopInfo(mShopId, new RetrofitCallback<ShopInfoResponse>() {
+            SunmiStoreRemote.get().getShopInfo(mShopId, new RetrofitCallback<ShopInfoResp>() {
                 @Override
-                public void onSuccess(int code, String msg, ShopInfoResponse data) {
+                public void onSuccess(int code, String msg, ShopInfoResp data) {
                     mShopName = data.getShop_name();
                     SpUtils.setShopName(mShopName);
                     mTitle.setShopName(mShopName);
@@ -130,7 +129,7 @@ public class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 }
 
                 @Override
-                public void onFail(int code, String msg, ShopInfoResponse data) {
+                public void onFail(int code, String msg, ShopInfoResp data) {
                     Log.e(TAG, "Get shop info FAILED. code=" + code + "; msg=" + msg);
                 }
             });

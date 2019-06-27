@@ -2,7 +2,7 @@ package com.sunmi.assistant.data.response;
 
 import java.util.List;
 
-public class PurchaseTypeRankResponse {
+public class OrderPayTypeRankResp {
 
     private int total_count;
     private float total_amount;

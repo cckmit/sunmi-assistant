@@ -1,6 +1,6 @@
 package com.sunmi.assistant.data.response;
 
-public class CompanyInfoResponse {
+public class CompanyInfoResp {
 
     private int company_id;
     private String company_name;

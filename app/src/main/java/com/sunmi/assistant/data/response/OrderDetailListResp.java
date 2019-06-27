@@ -2,15 +2,15 @@ package com.sunmi.assistant.data.response;
 
 import java.util.List;
 
-public class QuantityRankResponse {
+public class OrderDetailListResp {
 
-    private List<QuantityRankItem> quantity_rank;
+    private List<DetailItem> detail_list;
 
-    public List<QuantityRankItem> getQuantity_rank() {
-        return quantity_rank;
+    public List<DetailItem> getDetail_list() {
+        return detail_list;
     }
 
-    public static class QuantityRankItem {
+    public static class DetailItem {
 
         private String name;
         private int quantity;

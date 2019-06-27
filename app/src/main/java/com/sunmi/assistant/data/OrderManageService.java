@@ -1,16 +1,16 @@
 package com.sunmi.assistant.data;
 
-import com.sunmi.assistant.data.response.AvgUnitSaleResponse;
-import com.sunmi.assistant.data.response.DetailListResponse;
+import com.sunmi.assistant.data.response.OrderAvgUnitSaleResp;
+import com.sunmi.assistant.data.response.OrderDetailListResp;
 import com.sunmi.assistant.data.response.OrderListResponse;
-import com.sunmi.assistant.data.response.OrderTypeListResponse;
-import com.sunmi.assistant.data.response.PurchaseTypeListResponse;
-import com.sunmi.assistant.data.response.PurchaseTypeRankResponse;
-import com.sunmi.assistant.data.response.QuantityRankResponse;
-import com.sunmi.assistant.data.response.TimeDistributionResponse;
-import com.sunmi.assistant.data.response.TotalAmountResponse;
-import com.sunmi.assistant.data.response.TotalCountResponse;
-import com.sunmi.assistant.data.response.TotalRefundCountResponse;
+import com.sunmi.assistant.data.response.OrderPayTypeListResp;
+import com.sunmi.assistant.data.response.OrderPayTypeRankResp;
+import com.sunmi.assistant.data.response.OrderQuantityRankResp;
+import com.sunmi.assistant.data.response.OrderTimeDistributionResp;
+import com.sunmi.assistant.data.response.OrderTotalAmountResp;
+import com.sunmi.assistant.data.response.OrderTotalCountResp;
+import com.sunmi.assistant.data.response.OrderTotalRefundsResp;
+import com.sunmi.assistant.data.response.OrderTypeListResp;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -27,36 +27,36 @@ import sunmi.common.rpc.retrofit.BaseResponse;
 public interface OrderManageService {
 
     @POST("/api/payment/getTotalAmount")
-    Call<BaseResponse<TotalAmountResponse>> getTotalAmount(@Body BaseRequest request);
+    Call<BaseResponse<OrderTotalAmountResp>> getTotalAmount(@Body BaseRequest request);
 
     @POST("/api/payment/getTotalCount")
-    Call<BaseResponse<TotalCountResponse>> getTotalCount(@Body BaseRequest request);
+    Call<BaseResponse<OrderTotalCountResp>> getTotalCount(@Body BaseRequest request);
 
     @POST("/api/payment/getRefundCount")
-    Call<BaseResponse<TotalRefundCountResponse>> getRefundCount(@Body BaseRequest request);
+    Call<BaseResponse<OrderTotalRefundsResp>> getRefundCount(@Body BaseRequest request);
 
     @POST("/api/payment/getAvgUnitSale")
-    Call<BaseResponse<AvgUnitSaleResponse>> getAvgUnitSale(@Body BaseRequest request);
+    Call<BaseResponse<OrderAvgUnitSaleResp>> getAvgUnitSale(@Body BaseRequest request);
 
     @POST("/api/payment/getQuantityRank")
-    Call<BaseResponse<QuantityRankResponse>> getQuantityRank(@Body BaseRequest request);
+    Call<BaseResponse<OrderQuantityRankResp>> getQuantityRank(@Body BaseRequest request);
 
     @POST("/api/payment/getOrderTypeList")
-    Call<BaseResponse<OrderTypeListResponse>> getOrderTypeList();
+    Call<BaseResponse<OrderTypeListResp>> getOrderTypeList();
 
     @POST("/api/payment/getPurchaseTypeList")
-    Call<BaseResponse<PurchaseTypeListResponse>> getPurchaseTypeList();
+    Call<BaseResponse<OrderPayTypeListResp>> getPurchaseTypeList();
 
     @POST("/api/payment/getList")
     Call<BaseResponse<OrderListResponse>> getList(@Body BaseRequest request);
 
     @POST("/api/payment/getDetailList")
-    Call<BaseResponse<DetailListResponse>> getDetailList(@Body BaseRequest request);
+    Call<BaseResponse<OrderDetailListResp>> getDetailList(@Body BaseRequest request);
 
     @POST("/api/payment/getPurchaseTypeStatistics")
-    Call<BaseResponse<PurchaseTypeRankResponse>> getPurchaseTypeRank(@Body BaseRequest request);
+    Call<BaseResponse<OrderPayTypeRankResp>> getPurchaseTypeRank(@Body BaseRequest request);
 
     @POST("/api/payment/getTimeDistribution")
-    Call<BaseResponse<TimeDistributionResponse>> getTimeDistribution(@Body BaseRequest request);
+    Call<BaseResponse<OrderTimeDistributionResp>> getTimeDistribution(@Body BaseRequest request);
 
 }

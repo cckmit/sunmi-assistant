@@ -2,7 +2,7 @@ package com.sunmi.assistant.data.response;
 
 import java.util.List;
 
-public class PurchaseTypeListResponse {
+public class OrderPayTypeListResp {
 
     private List<PurchaseType> purchase_type_list;
 

@@ -1,6 +1,6 @@
 package com.sunmi.assistant.data.response;
 
-public class TotalRefundCountResponse {
+public class OrderTotalRefundsResp {
 
     private int refund_count;
     private String day_rate;

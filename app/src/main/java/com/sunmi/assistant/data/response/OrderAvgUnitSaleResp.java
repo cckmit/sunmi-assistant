@@ -1,14 +1,14 @@
 package com.sunmi.assistant.data.response;
 
-public class TotalCountResponse {
+public class OrderAvgUnitSaleResp {
 
-    private int total_count;
+    private float aus;
     private String day_rate;
     private String week_rate;
     private String month_rate;
 
-    public int getTotal_count() {
-        return total_count;
+    public float getAus() {
+        return aus;
     }
 
     public String getDay_rate() {

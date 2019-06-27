@@ -1,7 +1,7 @@
 package com.sunmi.assistant.data;
 
-import com.sunmi.assistant.data.response.ShopInfoResponse;
-import com.sunmi.assistant.data.response.ShopListResponse;
+import com.sunmi.assistant.data.response.ShopInfoResp;
+import com.sunmi.assistant.data.response.ShopListResp;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -18,9 +18,9 @@ import sunmi.common.rpc.retrofit.BaseResponse;
 public interface ShopManageService {
 
     @POST("/api/shop/getList")
-    Call<BaseResponse<ShopListResponse>> getList(@Body BaseRequest request);
+    Call<BaseResponse<ShopListResp>> getList(@Body BaseRequest request);
 
     @POST("/api/shop/getInfo")
-    Call<BaseResponse<ShopInfoResponse>> getInfo(@Body BaseRequest request);
+    Call<BaseResponse<ShopInfoResp>> getInfo(@Body BaseRequest request);
 
 }

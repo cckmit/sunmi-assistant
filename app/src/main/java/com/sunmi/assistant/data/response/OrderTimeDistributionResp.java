@@ -2,7 +2,7 @@ package com.sunmi.assistant.data.response;
 
 import java.util.List;
 
-public class TimeDistributionResponse {
+public class OrderTimeDistributionResp {
 
     private List<TimeSpanItem> order_list;
 
