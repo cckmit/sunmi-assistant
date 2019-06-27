@@ -94,7 +94,7 @@ public class ListCardType extends ItemType<ListCard, BaseViewHolder<ListCard>> {
         }
 
         @Override
-        public void convert(ViewHolder holder, ListCard.Item item, int position) {
+        public void convert(ViewHolder holder, ListCard.Item item) {
             TextView rank = holder.getView(R.id.tv_dashboard_rank);
             TextView name = holder.getView(R.id.tv_dashboard_name);
             TextView count = holder.getView(R.id.tv_dashboard_count);
@@ -104,6 +104,7 @@ public class ListCardType extends ItemType<ListCard, BaseViewHolder<ListCard>> {
             Drawable drawable = rank.getResources()
                     .getDrawable(R.drawable.dashboard_rank_bg_circle);
             drawable = DrawableCompat.wrap(drawable);
+            int position = holder.getPosition();
             if (position == 0) {
                 DrawableCompat.setTint(drawable, Color.parseColor("#FFFC5656"));
                 rank.setBackground(drawable);
