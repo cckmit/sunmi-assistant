@@ -21,4 +21,34 @@
     <string name="tip_no_device_found">没有发现新设备</string>
     <string name="tip_keep_device_in">请确保您的设备处于路由器信号范围内</string>
 
+    <string name="ic_tab_data_title">Data</string>
+
+    <string name="dashboard_data_format">%s%%</string>
+    <string name="dashboard_today">Today</string>
+    <string name="dashboard_this_week">This Week</string>
+    <string name="dashboard_this_month">This Month</string>
+    <string name="dashboard_day_ratio">Day Ratio</string>
+    <string name="dashboard_week_ratio">Week Ratio</string>
+    <string name="dashboard_month_ratio">Year-on-Year Ratio</string>
+    <string name="dashboard_by_sales">By Sales</string>
+    <string name="dashboard_by_order">By Order</string>
+    <string name="dashboard_total_sales_amount">Total Sales Amount</string>
+    <string name="dashboard_customer_price">Customer Price</string>
+    <string name="dashboard_total_sales_volume">Total Sales Volume</string>
+    <string name="dashboard_total_refunds">Total Refunds</string>
+    <string name="dashboard_time_distribution">Transaction Time Distribution</string>
+    <string name="dashboard_purchase_rank">Purchase Method</string>
+    <string name="dashboard_quantity_rank">Product Sales Ranking</string>
+    <string name="dashboard_purchase_others">Others</string>
+
+    <string-array name="dashboard_week_name">
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+        <item>Sunday</item>
+    </string-array>
+
 </resources>

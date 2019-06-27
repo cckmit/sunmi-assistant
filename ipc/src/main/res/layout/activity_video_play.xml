@@ -11,12 +11,11 @@
         android:layout_height="match_parent"
         android:layout_centerInParent="true" />
 
-    <SurfaceView
-        android:id="@+id/sv_cloud"
+    <sunmi.common.utils.IVideoPlayer
+        android:id="@+id/ivp_cloud"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:visibility="gone" />
+        android:layout_centerInParent="true" />
 
     <include
         layout="@layout/layout_video_mask"

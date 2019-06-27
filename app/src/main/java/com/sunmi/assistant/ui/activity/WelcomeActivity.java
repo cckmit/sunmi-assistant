@@ -233,9 +233,7 @@ public class WelcomeActivity extends BaseActivity {
         //先获取是否有安装未知来源应用的权限
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             boolean haveInstallPermission = context.getPackageManager().canRequestPackageInstalls();
-            if (haveInstallPermission) {
-                return true;
-            }
+            return haveInstallPermission;
         }
         return false;
     }
