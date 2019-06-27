@@ -3,7 +3,6 @@ package com.sunmi.ipc.view;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Looper;
@@ -56,7 +55,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -76,7 +74,7 @@ import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.DateTimeUtils;
-import sunmi.common.utils.ThreadPool;
+import sunmi.common.utils.IVideoPlayer;
 import sunmi.common.utils.VolumeHelper;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.VerticalSeekBar;
@@ -88,13 +86,13 @@ import sunmi.common.view.VerticalSeekBar;
 @EActivity(resName = "activity_video_play")
 public class VideoPlayActivity extends BaseActivity
         implements SurfaceHolder.Callback, IOTCClient.Callback,
-        SeekBar.OnSeekBarChangeListener, View.OnTouchListener {
+        SeekBar.OnSeekBarChangeListener, View.OnTouchListener, IVideoPlayer.VideoPlayListener {
     @ViewById(resName = "rl_screen")
     RelativeLayout rlScreen;
     @ViewById(resName = "vv_ipc")
     SurfaceView videoView;
-    @ViewById(resName = "sv_cloud")
-    SurfaceView svCloud;
+    @ViewById(resName = "ivp_cloud")
+    IVideoPlayer ivpCloud;
     @ViewById(resName = "rl_top")
     RelativeLayout rlTopBar;
     @ViewById(resName = "rl_bottom")
@@ -166,7 +164,7 @@ public class VideoPlayActivity extends BaseActivity
     private boolean isCurrentLive;//当前是否直播
     private int qualityType = 0;//0-超清，1-高清
 
-    private SurfaceHolder surfaceHolder, shCloud;
+    private SurfaceHolder surfaceHolder;//, shCloud;
     //adapter
     private DateAdapter adapter;
     //日历
@@ -257,6 +255,8 @@ public class VideoPlayActivity extends BaseActivity
 
     @AfterViews
     void init() {
+//        deviceId = 2239;
+//        ipcType = "SS1";
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//保持屏幕常亮
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//隐藏状态栏
@@ -301,11 +301,11 @@ public class VideoPlayActivity extends BaseActivity
         surfaceHolder = videoView.getHolder();// SurfaceHolder是SurfaceView的控制接口
         surfaceHolder.addCallback(this); // 因为这个类实现了SurfaceHolder.Callback接口，所以回调参数直接this
 
-        ViewGroup.LayoutParams lpCloud = svCloud.getLayoutParams();
+        ViewGroup.LayoutParams lpCloud = ivpCloud.getLayoutParams();
         lpCloud.width = width;
         lpCloud.height = height;
-        svCloud.setLayoutParams(lpCloud);
-        shCloud = svCloud.getHolder();
+        ivpCloud.setLayoutParams(lpCloud);
+        ivpCloud.setVideoPlayListener(this);
     }
 
     private boolean isSS1() {
@@ -577,7 +577,7 @@ public class VideoPlayActivity extends BaseActivity
         if (isCloudPlayBack) {
             cloudPlayDestroy();
 //            videoDecoder.initMediaCodec();
-            svCloud.setVisibility(View.GONE);
+            ivpCloud.setVisibility(View.GONE);
             videoView.setVisibility(View.VISIBLE);
             isCloudPlayBack = false;
         }
@@ -595,7 +595,7 @@ public class VideoPlayActivity extends BaseActivity
         if (isCloudPlayBack) {
             LogCat.e(TAG, "6666666 switch2DevPlayback");
             cloudPlayDestroy();
-            svCloud.setVisibility(View.GONE);
+            ivpCloud.setVisibility(View.GONE);
             videoView.setVisibility(View.VISIBLE);
 //            videoDecoder.initMediaCodec();
             isCloudPlayBack = false;
@@ -617,7 +617,7 @@ public class VideoPlayActivity extends BaseActivity
                 IOTCClient.stopLive();//先停止直播
             }
             LogCat.e(TAG, "6666666 switch2CloudPlayback");
-            svCloud.setVisibility(View.VISIBLE);
+            ivpCloud.setVisibility(View.VISIBLE);
             videoView.setVisibility(View.GONE);
 //            if (videoDecoder != null) {
 //                videoDecoder.release();//释放surfaceView
@@ -670,98 +670,98 @@ public class VideoPlayActivity extends BaseActivity
     /*
      * 初始化播放首段视频的player
      */
-    private void initFirstPlayer() {
-        cloudPlayDestroy();//初始化之前销毁
-        firstPlayer = new MediaPlayer();
-        firstPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        firstPlayer.setDisplay(shCloud);
-        firstPlayer.setOnCompletionListener(
-                new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mp) {
-                        onVideoPlayCompleted(mp);
-                    }
-                });
-        //设置cachePlayer为该player对象
-        cachePlayer = firstPlayer;
-        initNextPlayer();
-    }
+//    private void initFirstPlayer() {
+//        cloudPlayDestroy();//初始化之前销毁
+//        firstPlayer = new MediaPlayer();
+//        firstPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+//        firstPlayer.setDisplay(shCloud);
+//        firstPlayer.setOnCompletionListener(
+//                new MediaPlayer.OnCompletionListener() {
+//                    @Override
+//                    public void onCompletion(MediaPlayer mp) {
+//                        onVideoPlayCompleted(mp);
+//                    }
+//                });
+//        //设置cachePlayer为该player对象
+//        cachePlayer = firstPlayer;
+//        initNextPlayer();
+//    }
 
-    private void startPlayFirstVideo() {
-        if (videoListQueue.size() <= 0) return;
-        try {
-            if (firstPlayer.isPlaying()) {
-                firstPlayer.stop();
-                firstPlayer.release();
-                firstPlayer = new MediaPlayer();
-            }
-            firstPlayer.setDataSource(videoListQueue.get(currentVideoIndex).getUrl());
-            firstPlayer.prepareAsync();
-            firstPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    firstPlayer.start();
-                    hideLoadingDialog();
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    private void startPlayFirstVideo() {
+//        if (videoListQueue.size() <= 0) return;
+//        try {
+//            if (firstPlayer.isPlaying()) {
+//                firstPlayer.stop();
+//                firstPlayer.release();
+//                firstPlayer = new MediaPlayer();
+//            }
+//            firstPlayer.setDataSource(videoListQueue.get(currentVideoIndex).getUrl());
+//            firstPlayer.prepareAsync();
+//            firstPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+//                @Override
+//                public void onPrepared(MediaPlayer mp) {
+//                    firstPlayer.start();
+//                    hideLoadingDialog();
+//                }
+//            });
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     /*
      * 新开线程负责初始化负责播放剩余视频分段的player对象,避免UI线程做过多耗时操作
      */
-    private void initNextPlayer() {
-        ThreadPool.getCachedThreadPool().submit(new Runnable() {
-            @Override
-            public void run() {
-
-                //player对象初始化完成后，开启播放
-                startPlayFirstVideo();
-                LogCat.e(TAG, "55555555 66 cloud onSuccess");
-                for (int i = 1; i < videoListQueue.size(); i++) {
-                    nextMediaPlayer = new MediaPlayer();
-                    nextMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                    nextMediaPlayer.setOnCompletionListener(
-                            new MediaPlayer.OnCompletionListener() {
-                                @Override
-                                public void onCompletion(MediaPlayer mp) {
-                                    onVideoPlayCompleted(mp);
-                                }
-                            });
-                    try {
-                        nextMediaPlayer.setDataSource(videoListQueue.get(i).getUrl());
-                        nextMediaPlayer.prepare();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    //set next mediaplayer
-                    cachePlayer.setNextMediaPlayer(nextMediaPlayer);
-                    //set new cachePlayer
-                    cachePlayer = nextMediaPlayer;
-                    //put nextMediaPlayer in cache
-                    playersCache.put(String.valueOf(i), nextMediaPlayer);
-                }
-                LogCat.e(TAG, "55555555 77 cloud onSuccess");
-            }
-        });
-    }
+//    private void initNextPlayer() {
+//        ThreadPool.getCachedThreadPool().submit(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//                //player对象初始化完成后，开启播放
+//                startPlayFirstVideo();
+//                LogCat.e(TAG, "55555555 66 cloud onSuccess");
+//                for (int i = 1; i < videoListQueue.size(); i++) {
+//                    nextMediaPlayer = new MediaPlayer();
+//                    nextMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+//                    nextMediaPlayer.setOnCompletionListener(
+//                            new MediaPlayer.OnCompletionListener() {
+//                                @Override
+//                                public void onCompletion(MediaPlayer mp) {
+//                                    onVideoPlayCompleted(mp);
+//                                }
+//                            });
+//                    try {
+//                        nextMediaPlayer.setDataSource(videoListQueue.get(i).getUrl());
+//                        nextMediaPlayer.prepare();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                    //set next mediaplayer
+//                    cachePlayer.setNextMediaPlayer(nextMediaPlayer);
+//                    //set new cachePlayer
+//                    cachePlayer = nextMediaPlayer;
+//                    //put nextMediaPlayer in cache
+//                    playersCache.put(String.valueOf(i), nextMediaPlayer);
+//                }
+//                LogCat.e(TAG, "55555555 77 cloud onSuccess");
+//            }
+//        });
+//    }
 
     /*
      * 负责处理一段视频播放过后，切换player播放下一段视频
      */
-    private void onVideoPlayCompleted(MediaPlayer mp) {
-        mp.setDisplay(null);
-        //get next player
-        currentPlayer = playersCache.get(String.valueOf(++currentVideoIndex));
-        if (currentPlayer != null) {
-            currentPlayer.setDisplay(shCloud);
-        } else {
-            hideLoadingDialog();
-//            shortTip("视频播放完毕");
-        }
-    }
+//    private void onVideoPlayCompleted(MediaPlayer mp) {
+//        mp.setDisplay(null);
+//        //get next player
+//        currentPlayer = playersCache.get(String.valueOf(++currentVideoIndex));
+//        if (currentPlayer != null) {
+//            currentPlayer.setDisplay(shCloud);
+//        } else {
+//            hideLoadingDialog();
+////            shortTip("视频播放完毕");
+//        }
+//    }
 
     private void getCloudVideoUrls(long start, long end) {
         if (deviceId <= 0) {
@@ -774,7 +774,15 @@ public class VideoPlayActivity extends BaseActivity
                 videoListQueue.clear();
                 currentVideoIndex = 0;
                 videoListQueue = data.getVideo_list();
-                initFirstPlayer();
+                List<String> urlList = new ArrayList<>();
+                LogCat.e(TAG, "55555555 getVideoList 111");
+                for (VideoListResp.VideoBean bean : data.getVideo_list()) {
+                    urlList.add(bean.getUrl());
+                }
+                LogCat.e(TAG, "55555555 getVideoList 222");
+//                initFirstPlayer();
+                cloudPlay(urlList);
+
             }
 
             @Override
@@ -784,11 +792,24 @@ public class VideoPlayActivity extends BaseActivity
         });
     }
 
+    private void cloudPlay(List<String> urlList) {
+        ivpCloud.setUrlQueue(urlList);
+        try {
+            ivpCloud.startPlay();
+        } catch (Exception e) {
+            shortTip("播放失败");
+            e.printStackTrace();
+        }
+    }
+
     /*
      * 负责界面销毁时，release各个mediaPlayer
      */
     private void cloudPlayDestroy() {
         try {
+            if (ivpCloud != null) {
+                ivpCloud.release();
+            }
             if (firstPlayer != null) {
                 if (firstPlayer.isPlaying()) {
                     firstPlayer.stop();
@@ -1626,4 +1647,15 @@ public class VideoPlayActivity extends BaseActivity
         list.addAll(tmpSet);
         return list;
     }
+
+    @Override
+    public void onStartPlay() {
+        hideLoadingDialog();
+    }
+
+    @Override
+    public void onPlayComplete() {
+
+    }
+
 }

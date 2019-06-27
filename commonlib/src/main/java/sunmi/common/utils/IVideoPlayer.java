@@ -8,12 +8,9 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.FrameLayout;
-
-import com.commonlibrary.R;
+import android.widget.RelativeLayout;
 
 import java.util.List;
 import java.util.Map;
@@ -25,10 +22,10 @@ import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 /**
- * Description:
+ * Description: 封装ijkPlayer的videoView
  * Created by bruce on 2019/6/19.
  */
-public class IVideoPlayer extends FrameLayout {
+public class IVideoPlayer extends RelativeLayout {
 
     private Context mContext;
     private SurfaceView surfaceView, cacheSurfaceView;
@@ -41,6 +38,8 @@ public class IVideoPlayer extends FrameLayout {
     private Queue<String> urlQueue = new LinkedBlockingQueue<>();
     //视频请求header
     private Map<String, String> header;
+
+    VideoPlayListener videoPlayListener;
 
 //    private AudioManager audioManager;
 //    private AudioFocusHelper audioFocusHelper;
@@ -68,11 +67,19 @@ public class IVideoPlayer extends FrameLayout {
 //        audioFocusHelper = new AudioFocusHelper();
     }
 
+    //设置播放地址
+    public void setUrlQueue(List<String> urlList) {
+        urlQueue.clear();
+        urlQueue.addAll(urlList);
+    }
+
+    public void setVideoPlayListener(VideoPlayListener videoPlayListener) {
+        this.videoPlayListener = videoPlayListener;
+    }
+
     //创建默认surfaceView
     private void createSurfaceView() {
         surfaceView = new SurfaceView(mContext);
-        surfaceView.setBackgroundResource(R.color.transparent);
-        surfaceView.setZOrderOnTop(true);
         surfaceView.getHolder().setFormat(PixelFormat.TRANSPARENT);
         surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
@@ -93,22 +100,20 @@ public class IVideoPlayer extends FrameLayout {
             }
         });
         LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT,
-                LayoutParams.MATCH_PARENT, Gravity.CENTER);
-        addView(surfaceView, 0, layoutParams);
+                LayoutParams.MATCH_PARENT);
+        addView(surfaceView, -1, layoutParams);
     }
 
     //创建第二个surfaceView
     private void createCacheSurfaceView() {
         cacheSurfaceView = new SurfaceView(mContext);
-        cacheSurfaceView.setBackgroundResource(R.color.transparent);
-        cacheSurfaceView.setZOrderOnTop(true);
         cacheSurfaceView.getHolder().setFormat(PixelFormat.TRANSPARENT);
         LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT,
-                LayoutParams.MATCH_PARENT, Gravity.CENTER);
+                LayoutParams.MATCH_PARENT);
         addView(cacheSurfaceView, 0, layoutParams);
 //        cacheSurfaceView.setVisibility(GONE);
-        LayoutParams lp0 = new LayoutParams(0, 0, Gravity.CENTER);
-        cacheSurfaceView.setLayoutParams(lp0);
+//        LayoutParams lp0 = new LayoutParams(0, 0);
+//        cacheSurfaceView.setLayoutParams(lp0);
         cacheSurfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder surfaceHolder) {
@@ -129,19 +134,16 @@ public class IVideoPlayer extends FrameLayout {
         });
     }
 
-    //开始加载视频
-    public void startPlay() {
-        initPlayer(true);
-        initCachePlayer();
-    }
-
     private void initPlayer(final boolean isFirstVideo) {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
             mediaPlayer.release();
             mediaPlayer = null;
         }
-        if (urlQueue.isEmpty()) return;
+        if (urlQueue.isEmpty()) {
+            if (videoPlayListener != null) videoPlayListener.onPlayComplete();
+            return;
+        }
         mediaPlayer = createPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mediaPlayer.setDisplay(surfaceView.getHolder());
@@ -160,6 +162,7 @@ public class IVideoPlayer extends FrameLayout {
                 public void onPrepared(IMediaPlayer iMediaPlayer) {
                     if (isFirstVideo) {
                         startPlayer();
+                        if (videoPlayListener != null) videoPlayListener.onStartPlay();
                     } else {
                         mediaPlayer.start();
                         new Handler().postDelayed(new Runnable() {
@@ -179,7 +182,10 @@ public class IVideoPlayer extends FrameLayout {
             cacheMediaPlayer.release();
             cacheMediaPlayer = null;
         }
-        if (urlQueue.isEmpty()) return;
+        if (urlQueue.isEmpty()) {
+            if (videoPlayListener != null) videoPlayListener.onPlayComplete();
+            return;
+        }
         cacheMediaPlayer = createPlayer();
         cacheMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         cacheMediaPlayer.setDisplay(cacheSurfaceView.getHolder());
@@ -228,16 +234,16 @@ public class IVideoPlayer extends FrameLayout {
             currentMediaPlayer = mediaPlayer;
             mediaPlayer.start();
 //            audioFocusHelper.requestFocus();
-            LayoutParams lp1 = new LayoutParams(LayoutParams.MATCH_PARENT,
-                    LayoutParams.MATCH_PARENT, Gravity.CENTER);
-            surfaceView.setLayoutParams(lp1);
-//            surfaceView.setVisibility(VISIBLE);
+//            LayoutParams lp1 = new LayoutParams(LayoutParams.MATCH_PARENT,
+//                    LayoutParams.MATCH_PARENT);
+//            surfaceView.setLayoutParams(lp1);
+            surfaceView.setVisibility(VISIBLE);
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    LayoutParams lp0 = new LayoutParams(0, 0, Gravity.CENTER);
-                    cacheSurfaceView.setLayoutParams(lp0);
-//                    cacheSurfaceView.setVisibility(GONE);
+//                    LayoutParams lp0 = new LayoutParams(0, 0);
+//                    cacheSurfaceView.setLayoutParams(lp0);
+                    cacheSurfaceView.setVisibility(GONE);
                 }
             }, 200);
         }
@@ -249,16 +255,16 @@ public class IVideoPlayer extends FrameLayout {
             currentMediaPlayer = cacheMediaPlayer;
             cacheMediaPlayer.start();
 //            audioFocusHelper.requestFocus();
-            LayoutParams lp1 = new LayoutParams(LayoutParams.MATCH_PARENT,
-                    LayoutParams.MATCH_PARENT, Gravity.CENTER);
-            cacheSurfaceView.setLayoutParams(lp1);
-//            cacheSurfaceView.setVisibility(VISIBLE);
+//            LayoutParams lp1 = new LayoutParams(LayoutParams.MATCH_PARENT,
+//                    LayoutParams.MATCH_PARENT);
+//            cacheSurfaceView.setLayoutParams(lp1);
+            cacheSurfaceView.setVisibility(VISIBLE);
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    LayoutParams lp0 = new LayoutParams(0, 0, Gravity.CENTER);
-                    surfaceView.setLayoutParams(lp0);
-//                    surfaceView.setVisibility(GONE);
+//                    LayoutParams lp0 = new LayoutParams(0, 0);
+//                    surfaceView.setLayoutParams(lp0);
+                    surfaceView.setVisibility(GONE);
                 }
             }, 200);
         }
@@ -292,23 +298,13 @@ public class IVideoPlayer extends FrameLayout {
         ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-handle-resolution-change", value);
     }
 
-    //设置播放地址
-    public void setUrlQueue(List<String> urlList) {
-        urlQueue.addAll(urlList);
-    }
-
-    public void release() {
-        if (mediaPlayer != null) {
-            mediaPlayer.reset();
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
-        if (cacheMediaPlayer != null) {
-            cacheMediaPlayer.reset();
-            cacheMediaPlayer.release();
-            cacheMediaPlayer = null;
-        }
-//            audioFocusHelper.abandonFocus();
+    /**
+     * 开始播放
+     */
+    public void startPlay() {
+        release();
+        initPlayer(true);
+        initCachePlayer();
     }
 
     /**
@@ -349,6 +345,20 @@ public class IVideoPlayer extends FrameLayout {
         }
         if (cacheMediaPlayer != null) {
             cacheMediaPlayer.reset();
+        }
+//            audioFocusHelper.abandonFocus();
+    }
+
+    public void release() {
+        if (mediaPlayer != null) {
+            mediaPlayer.reset();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+        if (cacheMediaPlayer != null) {
+            cacheMediaPlayer.reset();
+            cacheMediaPlayer.release();
+            cacheMediaPlayer = null;
         }
 //            audioFocusHelper.abandonFocus();
     }
@@ -428,10 +438,10 @@ public class IVideoPlayer extends FrameLayout {
 //        }
 //    }
 
-    public interface VideoListener extends IMediaPlayer.OnBufferingUpdateListener,
-            IMediaPlayer.OnCompletionListener, IMediaPlayer.OnPreparedListener,
-            IMediaPlayer.OnInfoListener, IMediaPlayer.OnVideoSizeChangedListener,
-            IMediaPlayer.OnErrorListener, IMediaPlayer.OnSeekCompleteListener {
+    public interface VideoPlayListener {
+        void onStartPlay();
+
+        void onPlayComplete();
     }
 
 }
