@@ -36,7 +36,7 @@ public interface DataRefreshHelper<T> {
 
     String TAG = "DataRefreshHelper";
 
-    void refresh(T model);
+    void refresh(T model, DataRefreshCallback callback);
 
     class TotalSalesAmountRefresh implements DataRefreshHelper<DataCard> {
 
@@ -47,13 +47,13 @@ public interface DataRefreshHelper<T> {
         }
 
         @Override
-        public void refresh(DataCard model) {
+        public void refresh(DataCard model, DataRefreshCallback callback) {
             Log.d(TAG, "HTTP request total sales amount.");
             model.state = BaseRefreshCard.STATE_LOADING;
             model.trendName = Utils.getTrendNameByTimeSpan(context, model.timeSpan);
             OrderManagementRemote.get().getTotalAmount(model.companyId, model.shopId,
                     model.timeSpanPair.first, model.timeSpanPair.second, 1,
-                    new CardCallback<DataCard, TotalAmountResponse>(model) {
+                    new CardCallback<DataCard, TotalAmountResponse>(model, callback) {
                         @Override
                         public void success(TotalAmountResponse data) {
                             Log.d(TAG, "HTTP request total sales amount success.");
@@ -81,13 +81,13 @@ public interface DataRefreshHelper<T> {
         }
 
         @Override
-        public void refresh(DataCard model) {
+        public void refresh(DataCard model, DataRefreshCallback callback) {
             Log.d(TAG, "HTTP request customer price.");
             model.state = BaseRefreshCard.STATE_LOADING;
             model.trendName = Utils.getTrendNameByTimeSpan(context, model.timeSpan);
             OrderManagementRemote.get().getAvgUnitSale(model.companyId, model.shopId,
                     model.timeSpanPair.first, model.timeSpanPair.second, 1,
-                    new CardCallback<DataCard, AvgUnitSaleResponse>(model) {
+                    new CardCallback<DataCard, AvgUnitSaleResponse>(model, callback) {
                         @Override
                         public void success(AvgUnitSaleResponse data) {
                             Log.d(TAG, "HTTP request customer price success.");
@@ -115,13 +115,13 @@ public interface DataRefreshHelper<T> {
         }
 
         @Override
-        public void refresh(DataCard model) {
+        public void refresh(DataCard model, DataRefreshCallback callback) {
             Log.d(TAG, "HTTP request total sales volume.");
             model.state = BaseRefreshCard.STATE_LOADING;
             model.trendName = Utils.getTrendNameByTimeSpan(context, model.timeSpan);
             OrderManagementRemote.get().getTotalCount(model.companyId, model.shopId,
                     model.timeSpanPair.first, model.timeSpanPair.second, 1,
-                    new CardCallback<DataCard, TotalCountResponse>(model) {
+                    new CardCallback<DataCard, TotalCountResponse>(model, callback) {
                         @Override
                         public void success(TotalCountResponse data) {
                             Log.d(TAG, "HTTP request total sales volume success.");
@@ -149,13 +149,13 @@ public interface DataRefreshHelper<T> {
         }
 
         @Override
-        public void refresh(DataCard model) {
+        public void refresh(DataCard model, DataRefreshCallback callback) {
             Log.d(TAG, "HTTP request total refunds.");
             model.state = BaseRefreshCard.STATE_LOADING;
             model.trendName = Utils.getTrendNameByTimeSpan(context, model.timeSpan);
             OrderManagementRemote.get().getRefundCount(model.companyId, model.shopId,
                     model.timeSpanPair.first, model.timeSpanPair.second, 1,
-                    new CardCallback<DataCard, TotalRefundCountResponse>(model) {
+                    new CardCallback<DataCard, TotalRefundCountResponse>(model, callback) {
                         @Override
                         public void success(TotalRefundCountResponse data) {
                             Log.d(TAG, "HTTP request total refunds success.");
@@ -177,7 +177,7 @@ public interface DataRefreshHelper<T> {
     class TimeDistributionRefresh implements DataRefreshHelper<BarChartCard> {
 
         @Override
-        public void refresh(BarChartCard model) {
+        public void refresh(BarChartCard model, DataRefreshCallback callback) {
             Log.d(TAG, "HTTP request time distribution detail.");
             model.state = BaseRefreshCard.STATE_LOADING;
             int interval;
@@ -190,7 +190,7 @@ public interface DataRefreshHelper<T> {
             }
             OrderManagementRemote.get().getTimeDistribution(model.companyId, model.shopId,
                     model.timeSpanPair.first, model.timeSpanPair.second, interval,
-                    new CardCallback<BarChartCard, TimeDistributionResponse>(model) {
+                    new CardCallback<BarChartCard, TimeDistributionResponse>(model, callback) {
                         @Override
                         public void success(TimeDistributionResponse data) {
                             Log.d(TAG, "HTTP request time distribution detail success.");
@@ -212,12 +212,12 @@ public interface DataRefreshHelper<T> {
     class PurchaseTypeRankRefresh implements DataRefreshHelper<PieChartCard> {
 
         @Override
-        public void refresh(PieChartCard model) {
+        public void refresh(PieChartCard model, DataRefreshCallback callback) {
             Log.d(TAG, "HTTP request purchase type rank.");
             model.state = BaseRefreshCard.STATE_LOADING;
             OrderManagementRemote.get().getPurchaseTypeRank(model.companyId, model.shopId,
                     model.timeSpanPair.first, model.timeSpanPair.second,
-                    new CardCallback<PieChartCard, PurchaseTypeRankResponse>(model) {
+                    new CardCallback<PieChartCard, PurchaseTypeRankResponse>(model, callback) {
                         @Override
                         public void success(PurchaseTypeRankResponse data) {
                             Log.d(TAG, "HTTP request purchase type rank success.");
@@ -293,12 +293,12 @@ public interface DataRefreshHelper<T> {
     class QuantityRankRefresh implements DataRefreshHelper<ListCard> {
 
         @Override
-        public void refresh(ListCard model) {
+        public void refresh(ListCard model, DataRefreshCallback callback) {
             Log.d(TAG, "HTTP request quantity rank.");
             model.state = BaseRefreshCard.STATE_LOADING;
             OrderManagementRemote.get().getQuantityRank(model.companyId, model.shopId,
                     model.timeSpanPair.first, model.timeSpanPair.second,
-                    new CardCallback<ListCard, QuantityRankResponse>(model) {
+                    new CardCallback<ListCard, QuantityRankResponse>(model, callback) {
                         @Override
                         public void success(QuantityRankResponse data) {
                             Log.d(TAG, "HTTP request quantity rank success.");
@@ -319,9 +319,11 @@ public interface DataRefreshHelper<T> {
             extends RetrofitCallback<Response> {
 
         private Model model;
+        private DataRefreshCallback callback;
 
-        CardCallback(Model model) {
+        CardCallback(Model model, DataRefreshCallback callback) {
             this.model = model;
+            this.callback = callback;
         }
 
         public abstract void success(Response data);
@@ -334,6 +336,9 @@ public interface DataRefreshHelper<T> {
             if (model.callback != null) {
                 model.callback.onSuccess();
             }
+            if (callback != null) {
+                callback.onSuccess();
+            }
         }
 
         @Override
@@ -342,6 +347,9 @@ public interface DataRefreshHelper<T> {
             model.state = BaseRefreshCard.STATE_FAILED;
             if (model.callback != null) {
                 model.callback.onFail();
+            }
+            if (callback != null) {
+                callback.onFail();
             }
         }
     }

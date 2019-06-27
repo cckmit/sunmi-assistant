@@ -3,11 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_dashboard_card_list"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/srl_dashboard_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#FAFAFA" />
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_dashboard_card_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FAFAFA" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <include
         android:id="@+id/layout_dashboard_sticky_tab"

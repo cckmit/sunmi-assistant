@@ -30,5 +30,7 @@ public interface DashboardContract {
         void loadConfig();
 
         void timeSpanSwitchTo(int timeSpan);
+
+        void refresh(DataRefreshCallback callback);
     }
 }

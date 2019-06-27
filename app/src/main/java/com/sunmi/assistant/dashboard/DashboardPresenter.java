@@ -156,6 +156,15 @@ public class DashboardPresenter extends BasePresenter<DashboardContract.View>
         }
     }
 
+    @Override
+    public void refresh(DataRefreshCallback callback) {
+        if (mList != null) {
+            for (BaseRefreshCard card : mList) {
+                card.refresh(callback);
+            }
+        }
+    }
+
     private void initList() {
         mList = new ArrayList<>(9);
         mTitle = new Title();
@@ -221,7 +230,7 @@ public class DashboardPresenter extends BasePresenter<DashboardContract.View>
         @Override
         public void run() {
             for (BaseRefreshCard card : mList) {
-                card.refresh();
+                card.refresh(null);
             }
             sHandler.postDelayed(this, REFRESH_TIME_PERIOD);
         }

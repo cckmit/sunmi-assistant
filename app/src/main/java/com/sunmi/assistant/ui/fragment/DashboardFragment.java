@@ -2,6 +2,7 @@ package com.sunmi.assistant.ui.fragment;
 
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -13,6 +14,7 @@ import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.DashboardContract;
 import com.sunmi.assistant.dashboard.DashboardPresenter;
+import com.sunmi.assistant.dashboard.DataRefreshCallback;
 import com.sunmi.assistant.dashboard.model.BarChartCard;
 import com.sunmi.assistant.dashboard.model.DataCard;
 import com.sunmi.assistant.dashboard.model.ListCard;
@@ -48,6 +50,8 @@ import sunmi.common.utils.CommonHelper;
 public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         implements DashboardContract.View {
 
+    @ViewById(R.id.srl_dashboard_refresh)
+    SwipeRefreshLayout mRefreshLayout;
     @ViewById(R.id.rv_dashboard_card_list)
     RecyclerView mCardList;
     @ViewById(R.id.layout_dashboard_sticky_tab)
@@ -77,6 +81,17 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         if (animator instanceof SimpleItemAnimator) {
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         }
+        mRefreshLayout.setOnRefreshListener(() -> mPresenter.refresh(new DataRefreshCallback() {
+            @Override
+            public void onSuccess() {
+                mRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onFail() {
+                mRefreshLayout.setRefreshing(false);
+            }
+        }));
     }
 
     private void initAdapter() {

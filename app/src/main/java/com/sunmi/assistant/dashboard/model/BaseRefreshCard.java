@@ -43,7 +43,7 @@ public class BaseRefreshCard<T> {
             return;
         }
         this.companyId = companyId;
-        refresh();
+        refresh(null);
     }
 
     public void setShopId(int shopId) {
@@ -51,7 +51,7 @@ public class BaseRefreshCard<T> {
             return;
         }
         this.shopId = shopId;
-        refresh();
+        refresh(null);
     }
 
     public void setTimeSpan(int timeSpan, Pair<Long, Long> timeSpanPair) {
@@ -60,13 +60,13 @@ public class BaseRefreshCard<T> {
         }
         this.timeSpan = timeSpan;
         this.timeSpanPair = timeSpanPair;
-        refresh();
+        refresh(null);
     }
 
-    public void refresh() {
+    public void refresh(DataRefreshCallback callback) {
         if (helper != null && timeSpanPair != null && this.companyId > 0 && this.shopId > 0) {
             //noinspection unchecked
-            helper.refresh((T) this);
+            helper.refresh((T) this, callback);
         }
     }
 }
