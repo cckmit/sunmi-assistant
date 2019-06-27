@@ -6,7 +6,7 @@ public class OrderPayTypeRankResp {
 
     private int total_count;
     private float total_amount;
-    private List<PurchaseTypeRankItem> purchase_type_list;
+    private List<PayTypeRankItem> purchase_type_list;
 
     public int getTotal_count() {
         return total_count;
@@ -16,11 +16,11 @@ public class OrderPayTypeRankResp {
         return total_amount;
     }
 
-    public List<PurchaseTypeRankItem> getPurchase_type_list() {
+    public List<PayTypeRankItem> getPurchase_type_list() {
         return purchase_type_list;
     }
 
-    public static class PurchaseTypeRankItem {
+    public static class PayTypeRankItem {
 
         private String purchase_type_name;
         private int count;

@@ -8,10 +8,10 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="28dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="20dp"
+        android:layout_height="@dimen/dp_28"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginEnd="@dimen/dp_20"
         android:background="@drawable/dashboard_btn_bg_corner_normal"
         android:orientation="horizontal">
 
@@ -24,7 +24,7 @@
             android:gravity="center"
             android:text="@string/dashboard_today"
             android:textColor="@drawable/dashboard_switch_text_color"
-            android:textSize="12sp" />
+            android:textSize="@dimen/sp_12" />
 
         <TextView
             android:id="@+id/tv_dashboard_week"
@@ -35,7 +35,7 @@
             android:gravity="center"
             android:text="@string/dashboard_this_week"
             android:textColor="@drawable/dashboard_switch_text_color"
-            android:textSize="12sp" />
+            android:textSize="@dimen/sp_12" />
 
         <TextView
             android:id="@+id/tv_dashboard_month"
@@ -46,14 +46,14 @@
             android:gravity="center"
             android:text="@string/dashboard_this_month"
             android:textColor="@drawable/dashboard_switch_text_color"
-            android:textSize="12sp" />
+            android:textSize="@dimen/sp_12" />
 
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:layout_marginTop="20dp"
-        android:background="#85858A" />
+        android:layout_marginTop="@dimen/dp_20"
+        android:background="@color/color_85858A" />
 
 </LinearLayout>
