@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ptr="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/shop_title"
+        layout="@layout/dashboard_recycle_item_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dp_12" />
+
+    <com.sunmi.apmanager.utils.pulltorefresh.library.PullToRefreshScrollView1
+        android:id="@+id/prsv_device"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/shop_title"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
+        ptr:ptrHeaderTextColor="@color/colorText">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/vp_banner"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_173"
+                android:layout_marginTop="@dimen/dp_8"
+                android:background="@drawable/bg_card_white_corner_rounded"
+                android:clipToPadding="false"
+                android:overScrollMode="never" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_device"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_8" />
+
+            <RelativeLayout
+                android:id="@+id/rl_empty"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_238"
+                android:background="@drawable/bg_card_white_corner_rounded">
+
+                <TextView
+                    android:id="@+id/tv_no_device"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/dp_24"
+                    android:drawableTop="@mipmap/ic_no_sunmi_device"
+                    android:drawablePadding="@dimen/dp_4"
+                    android:text="暂无设备, 请添加"
+                    android:textColor="@color/color_999999"
+                    android:textSize="@dimen/sp_12" />
+
+                <Button
+                    android:id="@+id/btn_add_device"
+                    style="@style/BtnGrayRounded"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="@dimen/dp_36"
+                    android:text="@string/str_add_device" />
+            </RelativeLayout>
+        </LinearLayout>
+    </com.sunmi.apmanager.utils.pulltorefresh.library.PullToRefreshScrollView1>
+
+    <TextView
+        android:id="@+id/btn_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-9dp"
+        android:background="@mipmap/ic_add_sunmi_device"
+        android:visibility="gone" />
+
+</RelativeLayout>

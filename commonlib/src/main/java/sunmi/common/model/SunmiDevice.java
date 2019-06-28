@@ -20,6 +20,7 @@ public class SunmiDevice implements Serializable {
      * deviceid : xxxxxxxx
      */
 
+    private int id;
     private String ip;
     private String mac;
     private String firmware;
@@ -30,10 +31,13 @@ public class SunmiDevice implements Serializable {
     private String factory;
     private String deviceid;
     private String network;
-
     private int status;
     private boolean isSelected;
     private String token;//绑定设备使用
+    private String uid;
+    private int deviceType;
+    private int shopId;
+    private int channelId;
 
     public String getIp() {
         return "https://" + ip + "/api/";//192.168.100.159/api/192.168.103.122
@@ -139,4 +143,35 @@ public class SunmiDevice implements Serializable {
         this.token = token;
     }
 
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public int getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(int shopId) {
+        this.shopId = shopId;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getChannelId() {
+        return channelId;
+    }
+
+    public void setChannelId(int channelId) {
+        this.channelId = channelId;
+    }
 }
