@@ -41,6 +41,25 @@
     <string name="dashboard_quantity_rank">Product Sales Ranking</string>
     <string name="dashboard_purchase_others">Others</string>
 
+    <string name="order_list_title">Order List</string>
+    <string name="order_amount_order">Amount Order</string>
+    <string name="order_amount_ascending">Amount Ascending</string>
+    <string name="order_amount_descending">Amount Descending</string>
+    <string name="order_pay_type">Purchase Type</string>
+    <string name="order_transaction_type">Transaction Type</string>
+    <string name="order_time_order">Time Order</string>
+    <string name="order_time_ascending">Time Ascending</string>
+    <string name="order_time_descending">Time Descending</string>
+    <string name="order_id">Order Id</string>
+    <string name="order_pay_method">Purchase Method</string>
+    <string name="order_no_list">No order details.</string>
+    <string name="order_detail_title">Order Detail</string>
+    <string name="order_success">Successful Transaction</string>
+    <string name="order_time">Transaction Time</string>
+    <string name="order_order_detail">Order Detail</string>
+    <string name="order_commodity">Commodity</string>
+    <string name="order_quantity">Quantity</string>
+
     <string-array name="dashboard_week_name">
         <item>Monday</item>
         <item>Tuesday</item>

@@ -475,7 +475,7 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
     }
 
     void getIpcList() {
-        IPCCloudApi.getDetailList(SpUtils.getCompanyId(), shopId, new RetrofitCallback() {
+        IPCCloudApi.getDetailList(SpUtils.getCompanyId(), SpUtils.getShopId(), new RetrofitCallback() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 try {

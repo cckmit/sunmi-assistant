@@ -28,7 +28,7 @@ import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
 
 
-public class DashboardPresenter extends BasePresenter<DashboardContract.View>
+class DashboardPresenter extends BasePresenter<DashboardContract.View>
         implements DashboardContract.Presenter {
 
     private static final String TAG = "DashboardPresenter";
