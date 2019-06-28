@@ -2,7 +2,6 @@ package com.sunmi.assistant.dashboard.type;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
@@ -35,11 +34,9 @@ public class TitleType extends ItemType<Title, BaseViewHolder<Title>> {
         TextView shopName = holder.getView(R.id.tv_dashboard_shop_name);
         if (!TextUtils.isEmpty(model.companyName)) {
             companyName.setText(model.companyName);
-            holder.getView(R.id.pb_dashboard_company_loading).setVisibility(View.GONE);
         }
         if (!TextUtils.isEmpty(model.shopName)) {
             shopName.setText(model.shopName);
-            holder.getView(R.id.pb_dashboard_shop_loading).setVisibility(View.GONE);
         }
     }
 

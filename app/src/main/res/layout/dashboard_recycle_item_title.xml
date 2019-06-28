@@ -1,48 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/tv_dashboard_company_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="24dp"
-        android:textColor="#333338"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ProgressBar
-        android:id="@+id/pb_dashboard_company_loading"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        app:layout_constraintBottom_toBottomOf="@id/tv_dashboard_company_name"
-        app:layout_constraintStart_toStartOf="@id/tv_dashboard_company_name"
-        app:layout_constraintTop_toTopOf="@id/tv_dashboard_company_name" />
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:ellipsize="end"
+        android:maxWidth="@dimen/dp_280"
+        android:singleLine="true"
+        android:textColor="@color/color_333338"
+        android:textSize="@dimen/sp_16" />
 
     <TextView
         android:id="@+id/tv_dashboard_shop_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_20"
         android:drawableStart="@drawable/dashboard_ic_location"
-        android:textColor="#333338"
-        android:textSize="28sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_company_name" />
+        android:ellipsize="end"
+        android:maxWidth="@dimen/dp_280"
+        android:singleLine="true"
+        android:textColor="@color/color_333338"
+        android:textSize="@dimen/sp_28" />
 
-    <ProgressBar
-        android:id="@+id/pb_dashboard_shop_loading"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_marginStart="24dp"
-        app:layout_constraintBottom_toBottomOf="@id/tv_dashboard_shop_name"
-        app:layout_constraintStart_toStartOf="@id/tv_dashboard_shop_name"
-        app:layout_constraintTop_toTopOf="@id/tv_dashboard_shop_name" />
-
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>
