@@ -3,6 +3,7 @@ package com.sunmi.assistant.ui.activity.merchant;
 import android.annotation.SuppressLint;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Button;
 import android.widget.CheckBox;
 
 import com.sunmi.assistant.R;
@@ -36,7 +37,8 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
         implements AuthStoreCompleteContract.View {
     @ViewById(R.id.recyclerView)
     RecyclerView recyclerView;
-
+    @ViewById(R.id.btnComplete)
+    Button btnComplete;
     private List<AuthStoreInfo> list = new ArrayList<>();
     public Map<Integer, Boolean> checkedMap = new HashMap<>();
     private List<AuthStoreInfo> listChecked = null;//选中列表
@@ -59,14 +61,15 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
 
     @Click({R.id.btnComplete})
     void btnComplete() {
-        for (int i = 0; i < listChecked.size(); i++) {
-            LogCat.e(TAG, "getShopId=" + listChecked.get(i).getShopId());
-        }
+//        for (int i = 0; i < listChecked.size(); i++) {
+//            LogCat.e(TAG, "getShopId=" + listChecked.get(i).getShopId());
+//        }
     }
 
     // 保存选中的数据
     public void listCheckedNotifyDataSetChanged() {
         listChecked = new ArrayList<>();
+        LogCat.e(TAG, "*=2222222222222");
         AuthStoreInfo bean;
         for (int i = 0; i < list.size(); i++) {
             Boolean isChecked = checkedMap.get(list.get(i).getShopId());
@@ -78,17 +81,19 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
                 listChecked.add(bean);
             }
         }
+        isCanClick(listChecked);
     }
 
     private void showViewList() {
         AuthStoreInfo bean;
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 5; i++) {
             bean = new AuthStoreInfo();
             bean.setShopName("安居客");
             bean.setPlatform("11111111");
             bean.setShopId(i);
             list.add(bean);
         }
+        isCanClick(listChecked);
         recyclerView.setAdapter(new CommonListAdapter<AuthStoreInfo>(this, R.layout.item_merchant_auth_store, list) {
             @Override
             public void convert(ViewHolder holder, final AuthStoreInfo bean) {
@@ -110,6 +115,16 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
                 });
             }
         });
+    }
+
+    private void isCanClick(List<AuthStoreInfo> listChecked) {
+        if (listChecked != null && listChecked.size() > 0) {
+            btnComplete.setAlpha(1f);
+            btnComplete.setEnabled(true);
+        } else {
+            btnComplete.setAlpha(0.5f);
+            btnComplete.setEnabled(false);
+        }
     }
 
     @Override

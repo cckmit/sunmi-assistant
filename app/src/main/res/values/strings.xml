@@ -45,6 +45,17 @@
     <string name="dashboard_purchase_others">Others</string>
     <string name="str_platform_list">平台列表</string>
     <string name="str_platform_skip">跳过</string>
+    <string name="str_button_check">验证</string>
+    <string name="str_get_sms_code">获取验证码</string>
+    <string name="str_please_input_sms_code">请输入验证码</string>
+    <string name="str_sms_code">验证码</string>
+    <string name="str_please_input_mobile">请输入手机号码</string>
+    <string name="str_mobile">手机号</string>
+    <string name="str_check_mobile">验证手机号</string>
+    <string name="str_please_input_platform_mobile">请输入您在%s的手机号</string>
+    <string name="str_platform_sms_code_error">验证码错误，请重新输入</string>
+    <string name="str_button_auto_create">自动创建</string>
+    <string name="str_dialog_auto_create_store">未发现与该手机号匹配的内容，是否允许系统自动为您创建门店？</string>
 
     <string-array name="dashboard_week_name">
         <item>Monday</item>

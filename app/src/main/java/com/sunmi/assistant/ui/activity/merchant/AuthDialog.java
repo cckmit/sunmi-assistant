@@ -102,7 +102,7 @@ public class AuthDialog extends Dialog {
             tvAuthPlatform.setText(message);
             TextView tvProtocol = layout.findViewById(R.id.tv_protocol);
             tvProtocol.setText(Html.fromHtml(context.getString(R.string.str_auth_onclick_protocol)
-                    + "<font color= '#FF6000'>" + context.getString(R.string.str_auth_protocol_text)
+                    + "<font color= '#2896FE'>" + context.getString(R.string.str_auth_protocol_text)
                     + "</font> "));
             Button btnAllow = layout.findViewById(R.id.btnAllow);
             Button btnCancel = layout.findViewById(R.id.btnCancel);

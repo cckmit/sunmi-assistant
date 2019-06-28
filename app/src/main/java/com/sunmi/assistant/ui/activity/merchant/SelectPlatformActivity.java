@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -39,6 +40,10 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
     TitleBarView titleBar;
     @ViewById(R.id.recyclerView)
     RecyclerView recyclerView;
+    @ViewById(R.id.btn_next)
+    Button btnNext;
+    private String selectPlatform;
+
 
     private List<PlatformInfo> list = new ArrayList<>();
 
@@ -46,11 +51,22 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
         initRecycler();
+        isCanClick(false);
         mPresenter = new PlatformPresenter();
         mPresenter.attachView(this);
         mPresenter.getPlatformInfo();
 
         showViewList();
+    }
+
+    private void isCanClick(boolean isClick) {
+        if (isClick) {
+            btnNext.setAlpha(1f);
+            btnNext.setEnabled(true);
+        } else {
+            btnNext.setAlpha(0.5f);
+            btnNext.setEnabled(false);
+        }
     }
 
     @Override
@@ -67,7 +83,9 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
 
     @Click({R.id.btn_next})
     void btnNext() {
-        CheckPlatformMobileActivity_.intent(this).start();
+        CheckPlatformMobileActivity_.intent(this)
+                .extra("platform", selectPlatform)
+                .start();
     }
 
     private void initRecycler() {
@@ -96,7 +114,9 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
                     @Override
                     public void onClick(View v) {
                         selectedIndex = holder.getAdapterPosition();
+                        selectPlatform = bean.getMsg();
                         notifyDataSetChanged();//刷新
+                        isCanClick(true);
                     }
                 });
                 if (selectedIndex == holder.getAdapterPosition()) {

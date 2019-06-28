@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
+        android:padding="@dimen/dp_10"
         android:scaleX="0.3"
         android:scaleY="0.3" />
 
