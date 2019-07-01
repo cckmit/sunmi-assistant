@@ -3,6 +3,7 @@ package com.sunmi.assistant.utils;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Pair;
+import android.util.SparseArray;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.DashboardContract;
@@ -19,7 +20,7 @@ import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.SafeUtils;
 
 /**
- * @author jacob
+ * @author yinhui
  * @since 2019-06-21
  */
 public class Utils {
@@ -30,6 +31,12 @@ public class Utils {
     private static final SimpleDateFormat DAY_IN_WEEK_FORMAT = new SimpleDateFormat("u");
     @SuppressLint("SimpleDateFormat")
     private static final SimpleDateFormat DAY_IN_MONTH_FORMAT = new SimpleDateFormat("d");
+    @SuppressLint("SimpleDateFormat")
+    private static final SimpleDateFormat HOUR_MINUTE_TIME = new SimpleDateFormat("HH:mm");
+    @SuppressLint("SimpleDateFormat")
+    private static final SimpleDateFormat DATE_HOUR_MINUTE_TIME = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+
+    private static SparseArray<Pair<Long, Long>> sPeriodCache = new SparseArray<>(3);
 
     public static BaseRequest createRequestBody(String params) {
         String timeStamp = DateTimeUtils.currentTimeSecond() + "";
@@ -56,7 +63,11 @@ public class Utils {
         }
     }
 
-    public static Pair<Long, Long> calcTimeSpan(int timeSpan) {
+    public static Pair<Long, Long> getPeriodTimestamp(int period) {
+        Pair<Long, Long> periodTimestamp = sPeriodCache.get(period);
+        if (periodTimestamp != null) {
+            return periodTimestamp;
+        }
         long timeStart;
         long timeEnd;
         Calendar c = Calendar.getInstance();
@@ -66,13 +77,13 @@ public class Utils {
         c.clear();
         c.setFirstDayOfWeek(Calendar.MONDAY);
         c.set(year, month, date);
-        if (timeSpan == DashboardContract.TIME_SPAN_MONTH) {
+        if (period == DashboardContract.TIME_SPAN_MONTH) {
             c.clear();
             c.set(year, month, 1);
             timeStart = c.getTimeInMillis();
             c.add(Calendar.MONTH, 1);
             timeEnd = c.getTimeInMillis();
-        } else if (timeSpan == DashboardContract.TIME_SPAN_WEEK) {
+        } else if (period == DashboardContract.TIME_SPAN_WEEK) {
             int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
             int offset = c.getFirstDayOfWeek() - dayOfWeek;
             c.add(Calendar.DATE, offset > 0 ? offset - 7 : offset);
@@ -84,7 +95,9 @@ public class Utils {
             c.add(Calendar.DATE, 1);
             timeEnd = c.getTimeInMillis();
         }
-        return new Pair<>(timeStart / 1000, timeEnd / 1000);
+        periodTimestamp = new Pair<>(timeStart / 1000, timeEnd / 1000);
+        sPeriodCache.put(period, periodTimestamp);
+        return periodTimestamp;
     }
 
     public static float encodeBarChartXAxisFloat(int timeSpan, long timestamp) {
@@ -111,5 +124,13 @@ public class Utils {
         } else {
             return String.format(Locale.getDefault(), "%02.0f:00", value);
         }
+    }
+
+    public static String getHourMinuteTime(long timestamp) {
+        return HOUR_MINUTE_TIME.format(new Date(timestamp));
+    }
+
+    public static String getDateHourMinuteTime(long timestamp) {
+        return DATE_HOUR_MINUTE_TIME.format(new Date(timestamp));
     }
 }

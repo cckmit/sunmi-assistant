@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author jacob
+ * @author yinhui
  * @since 19-4-13
  */
 public class TypePool implements ITypePool {

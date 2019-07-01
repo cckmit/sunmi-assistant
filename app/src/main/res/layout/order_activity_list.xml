@@ -2,26 +2,61 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/order_list_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/c_white"
     tools:context=".order.OrderListActivity">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/order_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/order_line_decoration" />
+
+    <TextView
+        android:id="@+id/order_list_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_132"
+        android:drawableTop="@drawable/order_list_empty"
+        android:drawablePadding="@dimen/dp_4"
+        android:gravity="center"
+        android:text="@string/order_list_empty"
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/order_line_decoration" />
+
+    <View
+        android:id="@+id/order_list_overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/c_black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/order_line_decoration" />
 
     <sunmi.common.view.TitleBarView
         android:id="@+id/title_bar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/c_white"
         app:dividerShow="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@mipmap/ic_back_dark"
-        app:titleText="@string/str_setting"
-        app:titleTextColor="@color/colorText" />
+        app:titleText="@string/order_list_title"
+        app:titleTextColor="@color/color_333338" />
 
     <sunmi.common.view.DropdownMenu
-        android:id="@+id/order_filter_amount"
+        android:id="@+id/order_filter_sort"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_44"
         app:layout_constraintEnd_toStartOf="@+id/order_filter_pay_type"
@@ -35,25 +70,16 @@
         android:layout_height="@dimen/dp_44"
         app:layout_constraintEnd_toStartOf="@+id/order_filter_order_type"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/order_filter_amount"
+        app:layout_constraintStart_toEndOf="@+id/order_filter_sort"
         app:layout_constraintTop_toBottomOf="@+id/title_bar" />
 
     <sunmi.common.view.DropdownMenu
         android:id="@+id/order_filter_order_type"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_44"
-        app:layout_constraintEnd_toStartOf="@+id/order_filter_time"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/order_filter_pay_type"
-        app:layout_constraintTop_toBottomOf="@+id/title_bar" />
-
-    <sunmi.common.view.DropdownMenu
-        android:id="@+id/order_filter_time"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_44"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/order_filter_order_type"
+        app:layout_constraintStart_toEndOf="@+id/order_filter_pay_type"
         app:layout_constraintTop_toBottomOf="@+id/title_bar" />
 
     <View
@@ -63,15 +89,6 @@
         android:background="@color/black_10"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/order_filter_amount" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/order_list"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/order_line_decoration" />
+        app:layout_constraintTop_toBottomOf="@id/order_filter_sort" />
 
 </android.support.constraint.ConstraintLayout>

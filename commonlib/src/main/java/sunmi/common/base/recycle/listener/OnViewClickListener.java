@@ -6,7 +6,7 @@ import sunmi.common.base.recycle.BaseRecyclerAdapter;
 import sunmi.common.base.recycle.BaseViewHolder;
 
 /**
- * @author jacob
+ * @author yinhui
  * @since 19-4-18
  */
 public interface OnViewClickListener<T> {

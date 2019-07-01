@@ -1,7 +1,7 @@
 package sunmi.common.base.recycle;
 
 /**
- * @author jacob
+ * @author yinhui
  * @since 19-4-13
  */
 interface ITypePool {

@@ -2,7 +2,7 @@ package com.sunmi.assistant.data;
 
 import com.sunmi.assistant.data.response.OrderAvgUnitSaleResp;
 import com.sunmi.assistant.data.response.OrderDetailListResp;
-import com.sunmi.assistant.data.response.OrderListResponse;
+import com.sunmi.assistant.data.response.OrderListResp;
 import com.sunmi.assistant.data.response.OrderPayTypeListResp;
 import com.sunmi.assistant.data.response.OrderPayTypeRankResp;
 import com.sunmi.assistant.data.response.OrderQuantityRankResp;
@@ -48,7 +48,7 @@ public interface OrderManageService {
     Call<BaseResponse<OrderPayTypeListResp>> getPurchaseTypeList();
 
     @POST("/api/payment/getList")
-    Call<BaseResponse<OrderListResponse>> getList(@Body BaseRequest request);
+    Call<BaseResponse<OrderListResp>> getList(@Body BaseRequest request);
 
     @POST("/api/payment/getDetailList")
     Call<BaseResponse<OrderDetailListResp>> getDetailList(@Body BaseRequest request);

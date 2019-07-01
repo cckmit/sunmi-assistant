@@ -8,7 +8,6 @@ import android.support.annotation.IntRange;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.SparseArray;
@@ -16,6 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+
+import com.commonlibrary.R;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,6 +51,16 @@ public class DropdownMenu extends FrameLayout implements View.OnClickListener {
         mPopup = new CustomPopup(getContext());
     }
 
+    @Override
+    public void setTag(Object tag) {
+        super.setTag(tag);
+        mPopup.setTag(tag);
+    }
+
+    public void setLayoutManager(RecyclerView.LayoutManager manager) {
+        mPopup.setLayoutManager(manager);
+    }
+
     public void setAdapter(BaseAdapter adapter) {
         mAdapter = adapter;
         if (mTitle != null) {
@@ -61,9 +72,7 @@ public class DropdownMenu extends FrameLayout implements View.OnClickListener {
                 ViewGroup.LayoutParams.MATCH_PARENT
         );
         mPopup.setAdapter(adapter);
-        if (mAdapter.getData() != null && !mAdapter.getData().isEmpty()) {
-            adapter.setCurrent(0);
-        }
+        adapter.initCurrent();
         addView(mTitle.itemView, lp);
         setOnClickListener(this);
     }
@@ -117,19 +126,24 @@ public class DropdownMenu extends FrameLayout implements View.OnClickListener {
      * Allows for different dropdown menu modes.
      */
     private interface InternalMenuPopup extends MenuPopup {
+
+        void setLayoutManager(RecyclerView.LayoutManager manager);
+
         void setAdapter(BaseAdapter adapter);
 
         void setPopupHelper(PopupHelper helper);
+
+        void setTag(Object tag);
 
         void initMenu();
     }
 
     public interface PopupHelper {
-        void initMenu(View menu);
+        void initMenu(View list);
 
-        void show(View menu, boolean animated);
+        void show(View list, boolean animated);
 
-        void dismiss(View menu, boolean animated);
+        void dismiss(View list, boolean animated);
     }
 
     public interface OnItemClickListener<T> {
@@ -145,7 +159,18 @@ public class DropdownMenu extends FrameLayout implements View.OnClickListener {
         @SuppressLint("InflateParams")
         private CustomPopup(Context context) {
             mRecyclerView = new RecyclerView(context);
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+            mRecyclerView.setId(View.generateViewId());
+            mRecyclerView.setBackgroundColor(context.getResources().getColor(R.color.c_white));
+        }
+
+        @Override
+        public void setTag(Object tag) {
+            mRecyclerView.setTag(tag);
+        }
+
+        @Override
+        public void setLayoutManager(RecyclerView.LayoutManager manager) {
+            mRecyclerView.setLayoutManager(manager);
         }
 
         @Override
@@ -197,6 +222,7 @@ public class DropdownMenu extends FrameLayout implements View.OnClickListener {
         @LayoutRes
         private int mItemRes;
         private BaseViewHolder<T> mTitleHolder;
+        private T mInitData = null;
         private List<T> mData = new ArrayList<>();
         private T mCurrent;
 
@@ -219,16 +245,14 @@ public class DropdownMenu extends FrameLayout implements View.OnClickListener {
         }
 
         @Override
-        public BaseViewHolder<T> onCreateViewHolder(ViewGroup parent, int viewType) {
+        @NonNull
+        public BaseViewHolder<T> onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext()).inflate(mItemRes, parent, false);
-            RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            itemView.setLayoutParams(lp);
             return createItem(itemView);
         }
 
         @Override
-        public void onBindViewHolder(BaseViewHolder<T> holder, int position) {
+        public void onBindViewHolder(@NonNull BaseViewHolder<T> holder, int position) {
             T model = mData.get(position);
             holder.setUpView(model, position);
         }
@@ -246,6 +270,23 @@ public class DropdownMenu extends FrameLayout implements View.OnClickListener {
             return mData;
         }
 
+        private void initCurrent() {
+            if (mInitData != null) {
+                mCurrent = mInitData;
+                mTitleHolder.setUpView(mInitData, -1);
+            } else if (mData != null && mData.size() > 0) {
+                mCurrent = mData.get(0);
+                mTitleHolder.setUpView(mCurrent, 0);
+                if (mListener != null) {
+                    mListener.onItemSelected(this, mCurrent, 0);
+                }
+            }
+        }
+
+        public void setInitData(T data) {
+            mInitData = data;
+        }
+
         public void setData(@NonNull Collection<? extends T> data) {
             setData(data, 0);
         }
@@ -253,11 +294,13 @@ public class DropdownMenu extends FrameLayout implements View.OnClickListener {
         public void setData(@NonNull Collection<? extends T> data, int selection) {
             mData.clear();
             mData.addAll(data);
-            mPopup.initMenu();
-            if (mData.size() > selection) {
+            if (selection < 0) {
+                initCurrent();
+            } else if (mData.size() > selection) {
                 setCurrent(selection);
             }
             notifyDataSetChanged();
+            mPopup.initMenu();
         }
 
         public void addData(@NonNull T data) {
@@ -315,11 +358,11 @@ public class DropdownMenu extends FrameLayout implements View.OnClickListener {
                 return;
             }
             mCurrent = mData.get(pos);
-            mTitleHolder.setUpView(mCurrent, pos);
             // Invoke callback of on item click.
             if (mListener != null) {
                 mListener.onItemSelected(this, mCurrent, pos);
             }
+            mTitleHolder.setUpView(mCurrent, pos);
         }
 
         protected abstract BaseTitleViewHolder<T> createTitle(View view);

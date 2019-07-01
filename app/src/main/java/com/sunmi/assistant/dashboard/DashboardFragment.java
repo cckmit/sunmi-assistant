@@ -24,6 +24,7 @@ import com.sunmi.assistant.dashboard.type.ListCardType;
 import com.sunmi.assistant.dashboard.type.PieChartCardType;
 import com.sunmi.assistant.dashboard.type.TabType;
 import com.sunmi.assistant.dashboard.type.TitleType;
+import com.sunmi.assistant.order.OrderListActivity_;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -35,6 +36,9 @@ import java.util.List;
 
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.base.recycle.BaseArrayAdapter;
+import sunmi.common.base.recycle.BaseRecyclerAdapter;
+import sunmi.common.base.recycle.BaseViewHolder;
+import sunmi.common.base.recycle.listener.OnItemClickListener;
 import sunmi.common.utils.CommonHelper;
 
 /**
@@ -59,6 +63,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     TextView mTabWeek;
     @ViewById(R.id.tv_dashboard_month)
     TextView mTabMonth;
+
 
     private BaseArrayAdapter<Object> mAdapter;
     private GridLayoutManager mLayoutManager;
@@ -117,6 +122,15 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
                     updateStickyTab(model.timeSpan);
                 });
         DataCardType dataCardType = new DataCardType();
+        dataCardType.setOnItemClickListener(new OnItemClickListener<DataCard>() {
+            @Override
+            public void onClick(BaseRecyclerAdapter<DataCard> adapter, BaseViewHolder<DataCard> holder, DataCard model, int position) {
+                OrderListActivity_.intent(DashboardFragment.this)
+                        .mTimeStart(model.timeSpanPair.first)
+                        .mTimeEnd(model.timeSpanPair.second)
+                        .start();
+            }
+        });
         BarChartCardType barChartCardType = new BarChartCardType();
         barChartCardType.addOnViewClickListener(R.id.tv_dashboard_radio_by_sales,
                 (adapter, holder, v, model, position) -> {
