@@ -4,20 +4,16 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.constant.NotificationConstant;
@@ -27,24 +23,28 @@ import com.sunmi.apmanager.rpc.ap.APCall;
 import com.sunmi.apmanager.ui.activity.config.PrimaryRouteStartActivity;
 import com.sunmi.apmanager.ui.activity.router.RouterManagerNewActivity;
 import com.sunmi.apmanager.ui.activity.router.RouterMangerActivity;
-import com.sunmi.apmanager.ui.adapter.StorePagerAdapter;
 import com.sunmi.apmanager.utils.ApCompatibleUtils;
 import com.sunmi.apmanager.utils.ApIsNewVersionUtils;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.DBUtils;
 import com.sunmi.apmanager.utils.EncryptUtils;
 import com.sunmi.apmanager.utils.pulltorefresh.library.PullToRefreshBase;
-import com.sunmi.apmanager.utils.pulltorefresh.library.PullToRefreshScrollView1;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
 import com.sunmi.assistant.data.response.AdListResp;
 import com.sunmi.assistant.presenter.DevicePresenter;
 import com.sunmi.assistant.ui.DeviceSettingDialog;
+import com.sunmi.assistant.ui.MainTopBar;
 import com.sunmi.assistant.ui.adapter.DeviceListAdapter;
+import com.sunmi.assistant.utils.GlideImageLoader;
 import com.sunmi.cloudprinter.ui.Activity.PrinterManageActivity_;
 import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.view.VideoPlayActivity_;
 import com.sunmi.sunmiservice.WebViewActivity_;
+import com.youth.banner.Banner;
+import com.youth.banner.BannerConfig;
+import com.youth.banner.Transformer;
+import com.youth.banner.listener.OnBannerListener;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -60,6 +60,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
+import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
@@ -78,16 +80,15 @@ import sunmi.common.view.dialog.CommonDialog;
 @EFragment(R.layout.fragment_device)
 public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         implements DeviceContract.View, PullToRefreshBase.OnRefreshListener2<NestedScrollView>,
-        DeviceListAdapter.OnDeviceClickListener, DeviceSettingDialog.OnSettingsClickListener {
+        DeviceListAdapter.OnDeviceClickListener, DeviceSettingDialog.OnSettingsClickListener,
+        OnBannerListener, BGARefreshLayout.BGARefreshLayoutDelegate {
 
-    @ViewById(R.id.tv_dashboard_company_name)
-    TextView tvCompanyName;
-    @ViewById(R.id.tv_dashboard_shop_name)
-    TextView tvShopName;
-    @ViewById(R.id.prsv_device)
-    PullToRefreshScrollView1 refreshView;
+    @ViewById(R.id.shop_title)
+    MainTopBar topBar;
+    @ViewById(R.id.bga_refresh)
+    BGARefreshLayout refreshView;
     @ViewById(R.id.vp_banner)
-    ViewPager vpBanner;
+    Banner vpBanner;
     @ViewById(R.id.rv_device)
     RecyclerView rvDevice;
     @ViewById(R.id.rl_empty)
@@ -95,18 +96,21 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     @ViewById(R.id.btn_add)
     TextView btnAdd;
 
-    private List<SunmiDevice> deviceList = new ArrayList<>();
+    List<AdListResp.AdListBean> adList = new ArrayList<>();//广告
+    private List<SunmiDevice> deviceList = new ArrayList<>();//设备列表全集
     List<SunmiDevice> routerList = new ArrayList<>();
     List<SunmiDevice> ipcList = new ArrayList<>();
     List<SunmiDevice> printerList = new ArrayList<>();
 
-    private ArrayList<CardView> viewList = new ArrayList<>();//banner数据源
-    private StorePagerAdapter mCardAdapter;
     private Timer timer = null, timerException = null;
-    ChooseDeviceDialog chooseDeviceDialog;//选择设备
-    DeviceListAdapter deviceListAdapter;
+    private DeviceListAdapter deviceListAdapter;
     private LinearLayoutManager layoutManager;
-    DeviceSettingDialog deviceSettingDialog;
+    private DeviceSettingDialog deviceSettingDialog;
+
+    private Dialog dialogPassword = null;
+    private String password = "";    //路由管理密码
+    private String mPassword;
+    private SunmiDevice clickedDevice;
 
     @AfterViews
     protected void init() {
@@ -116,22 +120,25 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     }
 
     protected void initViews() {
-        tvCompanyName.setText(SpUtils.getCompanyName());
-        tvShopName.setText(SpUtils.getShopName());
+        topBar.setCompanyName(SpUtils.getCompanyName());
+        topBar.setShopName(SpUtils.getShopName());
+        initRefreshLayout();
         layoutManager = new LinearLayoutManager(mActivity);
         rvDevice.setLayoutManager(layoutManager);
         deviceListAdapter = new DeviceListAdapter(mActivity, deviceList);
         deviceListAdapter.setClickListener(this);
         rvDevice.setAdapter(deviceListAdapter);
-        // 刷新label的设置
-        refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(getString(R.string.str_refresh_loading1));
-        //设置刷新的模式
-        refreshView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);//both  可以上拉、可以下拉
-        refreshView.setOnRefreshListener(this);
-        mCardAdapter = new StorePagerAdapter(viewList);
-        vpBanner.setAdapter(mCardAdapter);
         showLoadingDialog();
         getDeviceList();
+    }
+
+    private void initRefreshLayout() {
+        refreshView.setDelegate(this);
+        // 设置下拉刷新和上拉加载更多的风格     参数1：应用程序上下文，参数2：是否具有上拉加载更多功能
+        BGANormalRefreshViewHolder refreshViewHolder =
+                new BGANormalRefreshViewHolder(getActivity(), false);
+        refreshView.setRefreshViewHolder(refreshViewHolder);
+        refreshView.setIsShowLoadingMoreView(false); // 设置正在加载更多时的文本
     }
 
     private void getDeviceList() {
@@ -148,49 +155,39 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 "主页_店铺_添加设备", Constants.EVENT_MAIN_PAGE);
         CommonUtils.trackDurationEventBegin(mActivity, "bindDeviceDuration",
                 "添加设备开始到立即绑定弹框", Constants.EVENT_DURATION_ADD_DEVICE);
-        chooseDeviceDialog = new ChooseDeviceDialog(mActivity, SpUtils.getShopId());
+        //选择设备
+        ChooseDeviceDialog chooseDeviceDialog = new ChooseDeviceDialog(mActivity, SpUtils.getShopId());
         chooseDeviceDialog.show();
 //        globalDevList = devList;//todo
     }
-
-    List<AdListResp.AdListBean> adList = new ArrayList<>();
 
     @Override
     public void getAdListSuccess(AdListResp adListResp) {
         adList.clear();
         adList.addAll(adListResp.getAd_list());
-        for (AdListResp.AdListBean bean : adListResp.getAd_list()) {
-            addPage(bean);
-        }
-    }
-
-    /**
-     * 该方法封装了添加页面的代码逻辑实现，参数text为要展示的数据
-     */
-    public void addPage(AdListResp.AdListBean item) {
-        if (mCardAdapter == null) return;
-        LayoutInflater inflater = LayoutInflater.from(mActivity);//获取LayoutInflater的实例
-        //调用LayoutInflater实例的inflate()方法来加载页面的布局
-        CardView view = (CardView) inflater.inflate(R.layout.item_card_adapter, null);
-        ImageView ivPic = view.findViewById(R.id.ivPic);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                WebViewActivity_.intent(mActivity).url(item.getLink()).start();
-            }
-        });
-        if (!TextUtils.isEmpty(item.getImage_addr())) {
-            Glide.with(mActivity).load(item.getImage_addr()).into(ivPic);
-        }
-        view.setTag(item.getName());
-        viewList.add(view);
-        mCardAdapter.notifyDataSetChanged();//通知UI更新
+        //设置banner样式
+        vpBanner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR);
+        //设置图片加载器
+        vpBanner.setImageLoader(new GlideImageLoader());
+        //设置图片集合
+        vpBanner.setImages(adList);
+        //设置banner动画效果
+        vpBanner.setBannerAnimation(Transformer.Default);
+        vpBanner.setOnBannerListener(this);
+        //设置自动轮播，默认为true
+        vpBanner.isAutoPlay(true);
+        //设置轮播时间
+        vpBanner.setDelayTime(2000);
+        //设置指示器位置（当banner模式中有指示器时）
+        vpBanner.setIndicatorGravity(BannerConfig.CENTER);
+        //banner设置方法全部调用完毕时最后调用
+        vpBanner.start();
     }
 
     @Override
     public void getRouterListSuccess(List<SunmiDevice> devices) {
         routerList.clear();
-        routerList = devices;
+        routerList.addAll(devices);
         refreshList();
     }
 
@@ -199,7 +196,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         if (code == 1) {//解绑成功后发送通知
             shortTip(R.string.str_delete_success);
             DBUtils.deleteUnBindDevLocal(sn);
-            getDeviceList();
+            mPresenter.getRouterList();
         } else {
             shortTip(R.string.str_delete_fail);
         }
@@ -208,20 +205,20 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     @Override
     public void getIpcListSuccess(List<SunmiDevice> devices) {
         ipcList.clear();
-        ipcList = devices;
+        ipcList.addAll(devices);
         refreshList();
     }
 
     @Override
     public void getPrinterListSuccess(List<SunmiDevice> devices) {
         printerList.clear();
-        printerList = devices;
+        printerList.addAll(devices);
         refreshList();
     }
 
     @Override
     public void unbindIpcSuccess(int code, String msg, Object data) {
-        getDeviceList();
+        mPresenter.getIpcList();
     }
 
     @Override
@@ -236,7 +233,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @Override
     public void unbindPrinterSuccess(String sn) {
-        getDeviceList();
+        mPresenter.getPrinterList();
     }
 
     @Override
@@ -244,11 +241,18 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         return new int[]{
                 NotificationConstant.netDisconnection, NotificationConstant.bindRouterChanged,
                 NotificationConstant.apPostStatus, NotificationConstant.apStatusException,
-                NotificationConstant.checkApPassword,
+                NotificationConstant.checkApPassword, IpcConstants.refreshIpcList,
                 NotificationConstant.updateConnectComplete, NotificationConstant.checkLogin,
                 NotificationConstant.checkLoginAgain, CommonConstants.tabDevice,
-                NotificationConstant.apisConfig, IpcConstants.refreshIpcList,
+                NotificationConstant.apisConfig,
                 com.sunmi.cloudprinter.constant.Constants.NOTIFICATION_PRINTER_ADDED
+        };
+    }
+
+    @Override
+    public int[] getStickNotificationId() {
+        return new int[]{
+                NotificationConstant.shopSwitched
         };
     }
 
@@ -256,6 +260,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     public void didReceivedNotification(int id, Object... args) {
         if (args == null) return;
         if (id == CommonConstants.tabDevice) {
+            getDeviceList();
+        } else if (id == NotificationConstant.shopSwitched) {
+            topBar.setShopName(SpUtils.getShopName());
             getDeviceList();
         } else if (NotificationConstant.netDisconnection == id) {//网络断开 todo 列表状态更新
         } else if (NotificationConstant.apStatusException == id) {//异常
@@ -314,7 +321,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         } else if (NotificationConstant.storeNameChanged == id) {
             String shopName = (String) args[1];
             if (!TextUtils.isEmpty(shopName)) {
-                tvShopName.setText(shopName);
+                topBar.setShopName(shopName);
             }
         } else if (NotificationConstant.bindRouterChanged == id) {
             getDeviceList();
@@ -337,11 +344,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             mPresenter.getIpcList();
         }
     }
-
-    private Dialog dialogPassword = null;
-    //路由管理密码
-    private String password = "";
-    String mPassword;
 
     private void saveMangerPasswordDialog(String type) {
         hideLoadingDialog();
@@ -516,9 +518,11 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             deviceList.addAll(ipcList);
             deviceList.addAll(printerList);
             if (deviceList.size() > 0) {
+                rvDevice.setVisibility(View.VISIBLE);
                 rlNoDevice.setVisibility(View.GONE);
                 btnAdd.setVisibility(View.VISIBLE);
             } else {
+                rvDevice.setVisibility(View.GONE);
                 rlNoDevice.setVisibility(View.VISIBLE);
                 btnAdd.setVisibility(View.GONE);
             }
@@ -531,8 +535,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     @UiThread
     @Override
     public void endRefresh() {
-        if (refreshView != null && refreshView.isRefreshing()) {
-            refreshView.onRefreshComplete();
+        if (refreshView != null) {
+            refreshView.endRefreshing();
         }
     }
 
@@ -545,8 +549,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     public void onPullUpToRefresh(PullToRefreshBase<NestedScrollView> refreshView) {
 
     }
-
-    SunmiDevice clickedDevice;
 
     @Override
     public void onDeviceClick(SunmiDevice device) {
@@ -577,6 +579,32 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             PrinterManageActivity_.intent(mActivity).sn(device.getDeviceid()).userId(SpUtils.getUID())
                     .merchantId(SpUtils.getShopId() + "").channelId(device.getChannelId()).start();
         }
+    }
+
+    @Override
+    public void onMoreClick(SunmiDevice item, int position) {
+        if (deviceSettingDialog != null && deviceSettingDialog.isShowing()) {
+            deviceSettingDialog.dismiss();
+        } else {
+            deviceSettingDialog = new DeviceSettingDialog(mActivity, item);
+            deviceSettingDialog.setOnSettingsClickListener(this);
+            deviceSettingDialog.show(layoutManager.findViewByPosition(position)
+                    .findViewById(R.id.iv_more));
+        }
+    }
+
+    @Override
+    public void onSettingsClick(SunmiDevice device, int type) {
+        if (type == 0) {
+            onDeviceClick(device);
+        } else if (type == 1) {
+            deleteDevice(device);
+        }
+    }
+
+    @Override
+    public void OnBannerClick(int position) {
+        WebViewActivity_.intent(mActivity).url(adList.get(position).getLink()).start();
     }
 
     private void isComeRouterManager(String sn, int status) {
@@ -612,27 +640,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             openActivity(mActivity, RouterMangerActivity.class, bundle);
     }
 
-    @Override
-    public void onMoreClick(SunmiDevice item, int position) {
-        if (deviceSettingDialog != null && deviceSettingDialog.isShowing()) {
-            deviceSettingDialog.dismiss();
-        } else {
-            deviceSettingDialog = new DeviceSettingDialog(mActivity, item);
-            deviceSettingDialog.setOnSettingsClickListener(this);
-            deviceSettingDialog.show(layoutManager.findViewByPosition(position)
-                    .findViewById(R.id.iv_more));
-        }
-    }
-
-    @Override
-    public void onSettingsClick(SunmiDevice device, int type) {
-        if (type == 0) {
-            onDeviceClick(device);
-        } else if (type == 1) {
-            deleteDevice(device);
-        }
-    }
-
     private void deleteDevice(SunmiDevice device) {
         String msg = "";
         if (TextUtils.equals(device.getType(), "ROUTER")) {
@@ -661,7 +668,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                                 if (TextUtils.equals(device.getType(), "ROUTER")) {
                                     mPresenter.unbindRouter(device.getDeviceid());
                                 } else if (TextUtils.equals(device.getType(), "IPC")) {
-                                    mPresenter.unbindIPC(device.getDeviceid());
+                                    mPresenter.unbindIPC(device.getId());
                                 } else if (TextUtils.equals(device.getType(), "PRINTER")) {
                                     mPresenter.unBindPrinter(device.getDeviceid());
                                 }
@@ -681,4 +688,13 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 }).create().show();
     }
 
+    @Override
+    public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
+        getDeviceList();
+    }
+
+    @Override
+    public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
+        return false;
+    }
 }

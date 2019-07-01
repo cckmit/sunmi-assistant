@@ -11,7 +11,7 @@ import java.util.Collection;
  * 可插入移除的Cursor适配器，支持缓存。
  * 额外插入的数据使用Map保存位置，并依据该位置，计算Cursor数据的位置偏移。
  *
- * @author Jacob
+ * @author yinhui
  * @since 18-4-3
  */
 public abstract class BaseCursorAdapter<T> extends BaseRecyclerAdapter<T> {

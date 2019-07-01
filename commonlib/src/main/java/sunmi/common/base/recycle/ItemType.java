@@ -11,7 +11,7 @@ import sunmi.common.base.recycle.listener.OnViewClickListener;
 import sunmi.common.base.recycle.listener.OnViewLongClickListener;
 
 /**
- * @author jacob
+ * @author yinhui
  * @since 19-4-13
  */
 public abstract class ItemType<T, VH extends BaseViewHolder<T>> {

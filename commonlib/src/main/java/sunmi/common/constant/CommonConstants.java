@@ -28,4 +28,8 @@ public class CommonConstants {
     public static int TYPE_IPC = 1;
     public static int TYPE_PRINTER = 2;
 
+    // 订单类型tag
+    public static final String ORDER_TYPE_NORMAL = "payment-order-type-normal";
+    public static final String ORDER_TYPE_REFUNDS = "payment-order-type-refund";
+
 }

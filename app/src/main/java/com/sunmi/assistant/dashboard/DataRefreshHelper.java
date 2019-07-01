@@ -30,7 +30,7 @@ import sunmi.common.rpc.retrofit.RetrofitCallback;
 /**
  * 为每个Card实现数据更新能力
  *
- * @author jacob
+ * @author yinhui
  * @since 2019-06-21
  */
 public interface DataRefreshHelper<T> {

@@ -45,7 +45,7 @@ public interface DeviceContract {
 
         void getIpcList();
 
-        void unbindIPC(String deviceId);
+        void unbindIPC(int deviceId);
 
         void getPrinterList();
 

@@ -7,7 +7,7 @@ import com.sunmi.assistant.dashboard.DataRefreshCallback;
 import com.sunmi.assistant.dashboard.DataRefreshHelper;
 
 /**
- * @author jacob
+ * @author yinhui
  * @since 2019-06-21
  */
 public class BaseRefreshCard<T> {

@@ -148,7 +148,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             return;
         }
         this.mTimeSpan = timeSpan;
-        this.mTimeSpanPair = Utils.calcTimeSpan(timeSpan);
+        this.mTimeSpanPair = Utils.getPeriodTimestamp(timeSpan);
         if (mList != null) {
             for (BaseRefreshCard card : mList) {
                 card.setTimeSpan(timeSpan, mTimeSpanPair);

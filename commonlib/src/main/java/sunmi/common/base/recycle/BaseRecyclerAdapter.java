@@ -14,7 +14,7 @@ import java.util.Collection;
  * that can be used in {@link RecyclerView RecyclerView}.
  * <p>
  *
- * @author Jacob
+ * @author yinhui
  * @since 17-12-22
  */
 public abstract class BaseRecyclerAdapter<T>

@@ -20,7 +20,7 @@ import sunmi.common.base.recycle.listener.OnViewLongClickListener;
  * 3. Set up views by item model.
  * 4. Interface of item type.
  *
- * @author Jacob
+ * @author yinhui
  * @since 17-12-23
  */
 public class BaseViewHolder<T> extends RecyclerView.ViewHolder {
