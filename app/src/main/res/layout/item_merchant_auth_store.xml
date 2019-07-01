@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_72"
+    android:layout_centerInParent="true"
+    android:background="@color/c_white">
+
+    <CheckBox
+        android:id="@+id/CBox"
+        style="@style/CustomCheckBoxTheme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:padding="@dimen/dp_10"
+        android:scaleX="0.3"
+        android:scaleY="0.3" />
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="@dimen/dp_150"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_16"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="phone"
+        android:textColor="@color/colorText"
+        android:textSize="@dimen/sp_16" />
+
+    <TextView
+        android:id="@+id/tvPlatform"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvName"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_6"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="phone"
+        android:textColor="@color/colorText_40"
+        android:textSize="@dimen/sp_12" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:layout_marginStart="@dimen/dp_20"
+        android:background="@color/colorBlack_10" />
+
+</RelativeLayout>
