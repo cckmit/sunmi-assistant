@@ -28,6 +28,7 @@
         android:layout_marginTop="@dimen/dp_32"
         android:textColor="@color/color_333338"
         android:textSize="@dimen/sp_28"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_bar" />
@@ -156,6 +157,7 @@
         android:text="@string/order_commodity"
         android:textColor="@color/color_333338"
         android:textSize="@dimen/sp_14"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/order_detail_label" />
 
@@ -167,6 +169,7 @@
         android:text="@string/order_quantity"
         android:textColor="@color/color_333338"
         android:textSize="@dimen/sp_14"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/order_detail_label"
         app:layout_constraintTop_toTopOf="@+id/order_commodity_label" />

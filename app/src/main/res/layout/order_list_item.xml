@@ -13,6 +13,7 @@
         android:text="@string/order_id_colon"
         android:textColor="@color/color_333338"
         android:textSize="@dimen/sp_14"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,6 +24,7 @@
         android:layout_marginTop="@dimen/dp_16"
         android:textColor="@color/color_2896FE"
         android:textSize="@dimen/sp_14"
+        android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/order_item_name"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -45,6 +47,7 @@
         android:layout_marginEnd="@dimen/dp_20"
         android:textColor="@color/color_333338"
         android:textSize="@dimen/sp_16"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

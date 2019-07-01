@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.data.response.OrderDetailListResp;
-import com.sunmi.assistant.data.response.OrderListResp;
+import com.sunmi.assistant.order.model.OrderInfo;
 import com.sunmi.assistant.utils.Utils;
 
 import org.androidannotations.annotations.AfterViews;
@@ -31,10 +31,12 @@ public class OrderDetailActivity extends BaseMvpActivity<OrderDetailPresenter>
         implements OrderDetailContract.View {
 
     @Extra
-    OrderListResp.OrderItem mOrderItem;
+    OrderInfo mOrderInfo;
 
     @ViewById(R.id.order_detail_amount)
     TextView mTvAmount;
+    @ViewById(R.id.order_detail_state)
+    TextView mTvState;
     @ViewById(R.id.order_id)
     TextView mTvOrderId;
     @ViewById(R.id.order_time)
@@ -50,18 +52,20 @@ public class OrderDetailActivity extends BaseMvpActivity<OrderDetailPresenter>
         initViews();
         mPresenter = new OrderDetailPresenter();
         mPresenter.attachView(this);
-        mPresenter.loadDetail(mOrderItem.getId());
+        mPresenter.loadDetail(mOrderInfo.getId());
     }
 
     private void initViews() {
-        mTvAmount.setText(getResources().getString(R.string.order_amount, mOrderItem.getAmount()));
-        mTvOrderId.setText(String.valueOf(mOrderItem.getId()));
-        mTvTime.setText(Utils.getDateHourMinuteTime(mOrderItem.getPurchase_time()));
-        mTvType.setText(mOrderItem.getPurchase_type());
+        mTvAmount.setText(getResources().getString(R.string.order_amount, mOrderInfo.getAmount()));
+        mTvState.setText(mOrderInfo.isOrderNormal() ?
+                getResources().getString(R.string.order_success) : getResources().getString(R.string.order_refunds));
+        mTvOrderId.setText(String.valueOf(mOrderInfo.getId()));
+        mTvTime.setText(Utils.getDateHourMinuteTime(mOrderInfo.getPurchaseTime()));
+        mTvType.setText(mOrderInfo.getPurchaseType());
         mDetailListAdapter = new DetailListAdapter(this);
+        mDetailList.setDividerHeight(0);
         mDetailList.setAdapter(mDetailListAdapter);
     }
-
 
     @Override
     public Context getContext() {

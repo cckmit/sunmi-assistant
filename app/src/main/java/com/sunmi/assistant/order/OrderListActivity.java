@@ -11,8 +11,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.data.response.OrderListResp;
 import com.sunmi.assistant.order.model.FilterItem;
+import com.sunmi.assistant.order.model.OrderInfo;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -42,7 +42,7 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
 
     @ViewById(R.id.order_list)
     RecyclerView mOrderList;
-    BaseArrayAdapter<OrderListResp.OrderItem> mOrderListAdapter;
+    BaseArrayAdapter<OrderInfo> mOrderListAdapter;
 
     @Extra
     long mTimeStart;
@@ -86,7 +86,7 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
         mOrderListAdapter = new BaseArrayAdapter<>();
         OrderListItemType orderItem = new OrderListItemType();
         orderItem.setOnItemClickListener((adapter, holder, model, position) ->
-                OrderDetailActivity_.intent(this).mOrderItem(model).start());
+                OrderDetailActivity_.intent(this).mOrderInfo(model).start());
         mOrderListAdapter.register(orderItem);
         mOrderList.setLayoutManager(new LinearLayoutManager(this));
         mOrderList.setAdapter(mOrderListAdapter);
@@ -144,7 +144,7 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
     }
 
     @Override
-    public void setData(List<OrderListResp.OrderItem> list) {
+    public void setData(List<OrderInfo> list) {
         if (list == null || list.isEmpty()) {
             mOrderListEmpty.setVisibility(View.VISIBLE);
         } else {
@@ -154,7 +154,7 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
     }
 
     @Override
-    public void addData(List<OrderListResp.OrderItem> list) {
+    public void addData(List<OrderInfo> list) {
         mOrderListAdapter.add(list);
     }
 
