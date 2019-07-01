@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Created by Jacob on 18-4-3.
+ * Created by yinhui on 18-4-3.
  */
 
 public class BaseArrayAdapter<T> extends BaseRecyclerAdapter<T> {

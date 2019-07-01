@@ -44,7 +44,7 @@
     <string name="order_list_title">详情列表</string>
     <string name="order_amount_order">金额排序</string>
     <string name="order_amount_ascending">金额正序</string>
-    <string name="order_amount_descending">金额到序</string>
+    <string name="order_amount_descending">金额倒序</string>
     <string name="order_pay_type">支付类型</string>
     <string name="order_transaction_type">交易类型</string>
     <string name="order_time_order">时间排序</string>
