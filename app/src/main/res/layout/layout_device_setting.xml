@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pop_view"
+    android:layout_width="@dimen/dp_102"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_device_setting"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_detail"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginStart="@dimen/dp_24"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="查看详情"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/sp_14" />
+
+    <TextView
+        android:id="@+id/tv_delete"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginStart="@dimen/dp_24"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="删除设备"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/sp_14" />
+
+</LinearLayout>

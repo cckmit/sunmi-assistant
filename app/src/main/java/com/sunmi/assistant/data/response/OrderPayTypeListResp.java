@@ -4,13 +4,13 @@ import java.util.List;
 
 public class OrderPayTypeListResp {
 
-    private List<PurchaseType> purchase_type_list;
+    private List<PayType> purchase_type_list;
 
-    public List<PurchaseType> getPurchase_type_list() {
+    public List<PayType> getPurchase_type_list() {
         return purchase_type_list;
     }
 
-    public static class PurchaseType {
+    public static class PayType {
 
         private int id;
         private String tag;

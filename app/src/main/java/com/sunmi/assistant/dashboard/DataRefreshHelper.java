@@ -222,12 +222,12 @@ public interface DataRefreshHelper<T> {
                         @Override
                         public void success(OrderPayTypeRankResp data) {
                             Log.d(TAG, "HTTP request purchase type rank success.");
-                            List<OrderPayTypeRankResp.PurchaseTypeRankItem> list = data.getPurchase_type_list();
+                            List<OrderPayTypeRankResp.PayTypeRankItem> list = data.getPurchase_type_list();
                             List<PieEntry> amountList = new ArrayList<>(list.size());
                             List<PieEntry> countList = new ArrayList<>(list.size());
                             float amountTotal = 0;
                             float countTotal = 0;
-                            for (OrderPayTypeRankResp.PurchaseTypeRankItem item : list) {
+                            for (OrderPayTypeRankResp.PayTypeRankItem item : list) {
                                 String label = item.getPurchase_type_name();
                                 float amount = item.getAmount();
                                 int count = item.getCount();

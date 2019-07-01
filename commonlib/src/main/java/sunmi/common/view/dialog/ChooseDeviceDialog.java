@@ -22,9 +22,9 @@ import sunmi.common.view.activity.StartConfigSMDeviceActivity_;
  */
 public class ChooseDeviceDialog extends Dialog {
 
-    String shopId;
+    int shopId;
 
-    public ChooseDeviceDialog(Context context, String shopId) {
+    public ChooseDeviceDialog(Context context, int shopId) {
         super(context);
         this.shopId = shopId;
     }
@@ -54,9 +54,10 @@ public class ChooseDeviceDialog extends Dialog {
     private SimpleRecyclerViewAdapter getAdapter() {
         int[] imageIds;
         if (CommonConfig.SUPPORT_PRINTER) {
-            imageIds = new int[]{R.mipmap.ic_sunmi_ap, R.mipmap.ic_sunmi_ss, R.mipmap.ic_sunmi_printer};
+            imageIds = new int[]{R.mipmap.ic_add_sunmi_ap, R.mipmap.ic_add_sunmi_ss,
+                    R.mipmap.ic_add_sunmi_printer};
         } else {
-            imageIds = new int[]{R.mipmap.ic_sunmi_ap, R.mipmap.ic_sunmi_ss};
+            imageIds = new int[]{R.mipmap.ic_add_sunmi_ap, R.mipmap.ic_add_sunmi_ss};
         }
         String[] names = getContext().getResources().getStringArray(R.array.sunmi_devices);
         SimpleRecyclerViewAdapter adapter = new SimpleRecyclerViewAdapter(
@@ -66,7 +67,7 @@ public class ChooseDeviceDialog extends Dialog {
             public void onItemClick(int pos) {
                 dismiss();
                 StartConfigSMDeviceActivity_.intent(getContext())
-                        .deviceType(pos).shopId(shopId).start();
+                        .deviceType(pos).shopId(shopId + "").start();
             }
         });
         return adapter;

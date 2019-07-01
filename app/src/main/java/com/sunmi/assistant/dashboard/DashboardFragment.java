@@ -1,4 +1,4 @@
-package com.sunmi.assistant.ui.fragment;
+package com.sunmi.assistant.dashboard;
 
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
@@ -12,9 +12,6 @@ import android.widget.TextView;
 
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.DashboardContract;
-import com.sunmi.assistant.dashboard.DashboardPresenter;
-import com.sunmi.assistant.dashboard.DataRefreshCallback;
 import com.sunmi.assistant.dashboard.model.BarChartCard;
 import com.sunmi.assistant.dashboard.model.DataCard;
 import com.sunmi.assistant.dashboard.model.ListCard;
@@ -74,6 +71,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         initAdapter();
         mPresenter.loadConfig();
         mPresenter.timeSpanSwitchTo(DashboardContract.TIME_SPAN_TODAY);
+        updateStickyTab(DashboardContract.TIME_SPAN_TODAY);
     }
 
     private void initView() {

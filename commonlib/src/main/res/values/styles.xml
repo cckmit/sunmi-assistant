@@ -95,7 +95,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/dp_44</item>
         <item name="android:background">@drawable/bg_gray_rounded_corner</item>
-        <item name="android:textSize">@dimen/sp_18</item>
+        <item name="android:textSize">@dimen/sp_16</item>
         <item name="android:textColor">@color/color_333333</item>
     </style>
 

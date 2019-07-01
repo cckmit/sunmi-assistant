@@ -91,7 +91,7 @@ public class IPCCloudApi extends BaseHttpApi {
      * @param companyId 是	int64	商户id
      * @param shopId    是	int64	店铺id
      */
-    public static void getDetailList(int companyId, String shopId, RetrofitCallback callback) {
+    public static void getDetailList(int companyId, int shopId, RetrofitCallback callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
