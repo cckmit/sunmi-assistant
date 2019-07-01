@@ -10,20 +10,23 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.data.response.OrderListResp;
 import com.sunmi.assistant.order.model.FilterItem;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.base.recycle.BaseArrayAdapter;
 import sunmi.common.view.DropdownMenu;
 
 @SuppressLint("Registered")
-@EActivity(R.layout.order_activity_list)
+@EActivity(R.layout.order_list_activity_list)
 public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
         implements OrderListContract.View {
 
@@ -34,11 +37,17 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
     View mOverlay;
 
     @ViewById(R.id.order_list)
-    RecyclerView mListView;
+    RecyclerView mOrderList;
+    BaseArrayAdapter<OrderListResp.OrderItem> mOrderListAdapter;
+
+    @Extra
+    long mTimeStart;
+    @Extra
+    long mTimeEnd;
 
     private DropdownAnimation mDropdownAnimator = new DropdownAnimation();
     private List<DropdownMenu> mFilters = new ArrayList<>(4);
-    private List<DropdownAdapter> mAdapters = new ArrayList<>(4);
+    private List<DropdownAdapter> mFilterAdapters = new ArrayList<>(4);
     private int mCurrentShowFilter = -1;
 
     @AfterViews
@@ -46,7 +55,7 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
         initViews();
         mPresenter = new OrderListPresenter();
         mPresenter.attachView(this);
-        mPresenter.loadList();
+        mPresenter.loadList(mTimeStart, mTimeEnd);
     }
 
     private void initViews() {
@@ -72,10 +81,14 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
         createFilterDropdownMenu(getString(R.string.order_transaction_type), helper);
         createFilterDropdownMenu(getString(R.string.order_time_order), helper);
 
+        mOrderListAdapter = new BaseArrayAdapter<>();
+        mOrderListAdapter.register(new OrderListItemType());
+        mOrderList.setLayoutManager(new LinearLayoutManager(this));
+        mOrderList.setAdapter(mOrderListAdapter);
     }
 
     private void createFilterDropdownMenu(String name, CustomPopupHelper helper) {
-        int index = mAdapters.size();
+        int index = mFilterAdapters.size();
         DropdownMenu menu = mFilters.get(index);
         DropdownAdapter adapter = new DropdownAdapter(this);
         adapter.setInitData(new FilterItem(-1, name));
@@ -83,7 +96,7 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
         menu.setLayoutManager(new FilterMenuLayoutManager(this));
         menu.setPopupHelper(helper);
         menu.setAdapter(adapter);
-        mAdapters.add(adapter);
+        mFilterAdapters.add(adapter);
     }
 
     @Override
@@ -93,7 +106,12 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
 
     @Override
     public void updateFilter(int filterIndex, List<FilterItem> list) {
-        mAdapters.get(filterIndex).setData(list, -1);
+        mFilterAdapters.get(filterIndex).setData(list, -1);
+    }
+
+    @Override
+    public void setData(List<OrderListResp.OrderItem> list) {
+        mOrderListAdapter.setData(list);
     }
 
     @Override

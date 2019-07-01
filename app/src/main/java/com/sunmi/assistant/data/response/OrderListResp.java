@@ -2,7 +2,7 @@ package com.sunmi.assistant.data.response;
 
 import java.util.List;
 
-public class OrderListResponse {
+public class OrderListResp {
 
     private List<OrderItem> order_list;
     private int total_count;

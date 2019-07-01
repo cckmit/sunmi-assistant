@@ -64,6 +64,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @ViewById(R.id.tv_dashboard_month)
     TextView mTabMonth;
 
+
     private BaseArrayAdapter<Object> mAdapter;
     private GridLayoutManager mLayoutManager;
 
@@ -124,7 +125,10 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         dataCardType.setOnItemClickListener(new OnItemClickListener<DataCard>() {
             @Override
             public void onClick(BaseRecyclerAdapter<DataCard> adapter, BaseViewHolder<DataCard> holder, DataCard model, int position) {
-                OrderListActivity_.intent(DashboardFragment.this).start();
+                OrderListActivity_.intent(DashboardFragment.this)
+                        .mTimeStart(model.timeSpanPair.first)
+                        .mTimeEnd(model.timeSpanPair.second)
+                        .start();
             }
         });
         BarChartCardType barChartCardType = new BarChartCardType();

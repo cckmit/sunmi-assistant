@@ -2,6 +2,7 @@ package com.sunmi.assistant.order;
 
 import android.content.Context;
 
+import com.sunmi.assistant.data.response.OrderListResp;
 import com.sunmi.assistant.order.model.FilterItem;
 
 import java.util.List;
@@ -20,11 +21,12 @@ public interface OrderListContract {
 
         void updateFilter(int filterIndex, List<FilterItem> list);
 
+        void setData(List<OrderListResp.OrderItem> list);
     }
 
     interface Presenter {
 
-        void loadList();
+        void loadList(long timeStart, long timeEnd);
 
         void setFilterCurrent(int filterIndex, FilterItem model);
 

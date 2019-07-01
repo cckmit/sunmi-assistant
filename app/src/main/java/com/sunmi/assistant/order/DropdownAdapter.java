@@ -17,7 +17,7 @@ import sunmi.common.view.DropdownMenu;
 public class DropdownAdapter extends DropdownMenu.BaseAdapter<FilterItem> {
 
     DropdownAdapter(Context context) {
-        super(context, R.layout.order_dropdown_title, R.layout.order_dropdown_item);
+        super(context, R.layout.order_list_dropdown_title, R.layout.order_list_dropdown_item);
     }
 
     @Override

@@ -3,7 +3,7 @@ package com.sunmi.assistant.data;
 import com.sunmi.assistant.data.response.CompanyInfoResp;
 import com.sunmi.assistant.data.response.OrderAvgUnitSaleResp;
 import com.sunmi.assistant.data.response.OrderDetailListResp;
-import com.sunmi.assistant.data.response.OrderListResponse;
+import com.sunmi.assistant.data.response.OrderListResp;
 import com.sunmi.assistant.data.response.OrderPayTypeListResp;
 import com.sunmi.assistant.data.response.OrderPayTypeRankResp;
 import com.sunmi.assistant.data.response.OrderQuantityRankResp;
@@ -181,7 +181,7 @@ public class SunmiStoreRemote {
 
     public void getOrderList(int companyId, int shopId, long timeStart, long timeEnd,
                              int amountOrder, int timeOrder, int[] orderType, int[] purchaseType,
-                             int pageNum, int pageSize, RetrofitCallback<OrderListResponse> callback) {
+                             int pageNum, int pageSize, RetrofitCallback<OrderListResp> callback) {
         try {
             JSONArray orderArray = new JSONArray();
             if (orderType != null && orderType.length > 0) {
