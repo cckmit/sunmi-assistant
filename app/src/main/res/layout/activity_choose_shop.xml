@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rl_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_common">
+
+    <!--<RelativeLayout-->
+    <!--android:id="@+id/rl_top"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content">-->
+
+    <!--<RelativeLayout-->
+    <!--android:id="@+id/title_bar_1"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="@dimen/dp_130"-->
+    <!--android:layout_marginBottom="@dimen/dp_12"-->
+    <!--android:background="@color/bg_common"-->
+    <!--android:visibility="gone">-->
+
+    <!--<RelativeLayout-->
+    <!--android:id="@+id/rl_back_1"-->
+    <!--android:layout_width="@dimen/dp_50"-->
+    <!--android:layout_height="@dimen/dp_56"-->
+    <!--android:layout_marginTop="@dimen/dp_24"-->
+    <!--android:background="@drawable/right_image_selector">-->
+
+    <!--<ImageView-->
+    <!--android:id="@+id/img_back"-->
+    <!--android:layout_width="@dimen/dp_20"-->
+    <!--android:layout_height="@dimen/dp_20"-->
+    <!--android:layout_marginStart="@dimen/dp_20"-->
+    <!--android:layout_marginTop="@dimen/dp_20"-->
+    <!--android:src="@mipmap/ic_back" />-->
+
+    <!--</RelativeLayout>-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/tv_title_1"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_marginBottom="@dimen/dp_28"-->
+    <!--android:gravity="center"-->
+    <!--android:text="@string/str_login"-->
+    <!--android:textColor="@color/c_white"-->
+    <!--android:textSize="@dimen/sp_25" />-->
+    <!--</RelativeLayout>-->
+
+    <!--</RelativeLayout>-->
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/bg_common"
+        app:dividerShow="true"
+        app:leftDefaultClickEnable="true"
+        app:leftText="@string/sm_cancel"
+        app:leftTextColor="@color/colorText"
+        app:titleText="我的门店"
+        app:titleTextColor="@color/colorText" />
+
+    <cn.bingoogolapple.refreshlayout.BGARefreshLayout
+        android:id="@+id/bgarl_choose"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_bar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/ll_current"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_92"
+                android:background="@color/c_white"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_20"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:text="当前门店"
+                    android:textColor="@color/colorText_60"
+                    android:textSize="@dimen/sp_14" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_12"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:id="@+id/tv_current_shop"
+                    android:drawableStart="@drawable/dashboard_ic_location"
+                    android:drawablePadding="@dimen/dp_4"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="dsdafsadfadfa"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/sp_20" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_others"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/dp_8"
+                android:background="@color/c_white"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_other"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/dp_20"
+                    android:paddingTop="@dimen/dp_16"
+                    android:text="其他门店"
+                    android:textColor="@color/colorText_60"
+                    android:textSize="@dimen/sp_14" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_choose"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_other"
+                    android:background="@color/c_white"
+                    android:paddingStart="@dimen/dp_40" />
+
+                <TextView
+                    android:id="@+id/tv_tip_no_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_other"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/dp_96"
+                    android:drawableTop="@drawable/ic_no_store"
+                    android:drawablePadding="@dimen/dp_12"
+                    android:gravity="center"
+                    android:text="暂无其他门店"
+                    android:textSize="@dimen/sp_14"
+                    android:visibility="gone" />
+            </RelativeLayout>
+        </LinearLayout>
+    </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
+
+</RelativeLayout>

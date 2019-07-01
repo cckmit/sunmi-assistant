@@ -95,9 +95,6 @@
 -keep class okhttp3.internal.**{*;}
 -dontwarn okio.**
 
-#Glide
--keep class com.bumptech.glide.**{*;}
-
 #bugly
 -dontwarn com.tencent.bugly.**
 -keep public class com.tencent.bugly.**{*;}
@@ -136,3 +133,14 @@
 
 # 如果使用了 单类注入，即不定义接口实现 IProvider，需添加下面规则，保护实现
 # -keep class * implements com.alibaba.android.arouter.facade.template.IProvider
+
+#Glide
+-keep class com.bumptech.glide.**{*;}
+-keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+# banner 的混淆代码
+-keep class com.youth.banner.** {
+  *;
+}

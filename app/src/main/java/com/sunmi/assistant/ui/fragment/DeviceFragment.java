@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -40,11 +39,17 @@ import com.sunmi.assistant.contract.DeviceContract;
 import com.sunmi.assistant.data.response.AdListResp;
 import com.sunmi.assistant.presenter.DevicePresenter;
 import com.sunmi.assistant.ui.DeviceSettingDialog;
+import com.sunmi.assistant.ui.MainTopBar;
 import com.sunmi.assistant.ui.adapter.DeviceListAdapter;
+import com.sunmi.assistant.utils.GlideImageLoader;
 import com.sunmi.cloudprinter.ui.Activity.PrinterManageActivity_;
 import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.view.VideoPlayActivity_;
 import com.sunmi.sunmiservice.WebViewActivity_;
+import com.youth.banner.Banner;
+import com.youth.banner.BannerConfig;
+import com.youth.banner.Transformer;
+import com.youth.banner.listener.OnBannerListener;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -78,16 +83,14 @@ import sunmi.common.view.dialog.CommonDialog;
 @EFragment(R.layout.fragment_device)
 public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         implements DeviceContract.View, PullToRefreshBase.OnRefreshListener2<NestedScrollView>,
-        DeviceListAdapter.OnDeviceClickListener, DeviceSettingDialog.OnSettingsClickListener {
+        DeviceListAdapter.OnDeviceClickListener, DeviceSettingDialog.OnSettingsClickListener, OnBannerListener {
 
-    @ViewById(R.id.tv_dashboard_company_name)
-    TextView tvCompanyName;
-    @ViewById(R.id.tv_dashboard_shop_name)
-    TextView tvShopName;
+    @ViewById(R.id.shop_title)
+    MainTopBar topBar;
     @ViewById(R.id.prsv_device)
     PullToRefreshScrollView1 refreshView;
     @ViewById(R.id.vp_banner)
-    ViewPager vpBanner;
+    Banner vpBanner;
     @ViewById(R.id.rv_device)
     RecyclerView rvDevice;
     @ViewById(R.id.rl_empty)
@@ -116,8 +119,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     }
 
     protected void initViews() {
-        tvCompanyName.setText(SpUtils.getCompanyName());
-        tvShopName.setText(SpUtils.getShopName());
+        topBar.setCompanyName(SpUtils.getCompanyName());
+        topBar.setShopName(SpUtils.getShopName());
         layoutManager = new LinearLayoutManager(mActivity);
         rvDevice.setLayoutManager(layoutManager);
         deviceListAdapter = new DeviceListAdapter(mActivity, deviceList);
@@ -128,8 +131,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         //设置刷新的模式
         refreshView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);//both  可以上拉、可以下拉
         refreshView.setOnRefreshListener(this);
-        mCardAdapter = new StorePagerAdapter(viewList);
-        vpBanner.setAdapter(mCardAdapter);
+//        mCardAdapter = new StorePagerAdapter(viewList,vpBanner);
+//        vpBanner.setAdapter(mCardAdapter);
         showLoadingDialog();
         getDeviceList();
     }
@@ -159,9 +162,24 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     public void getAdListSuccess(AdListResp adListResp) {
         adList.clear();
         adList.addAll(adListResp.getAd_list());
-        for (AdListResp.AdListBean bean : adListResp.getAd_list()) {
-            addPage(bean);
-        }
+        //设置banner样式
+        vpBanner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR);
+        //设置图片加载器
+        vpBanner.setImageLoader(new GlideImageLoader());
+        //设置图片集合
+        vpBanner.setImages(adList);
+        //设置banner动画效果
+        vpBanner.setBannerAnimation(Transformer.Default);
+        vpBanner.setOnBannerListener(this);
+        //设置自动轮播，默认为true
+        vpBanner.isAutoPlay(true);
+        //设置轮播时间
+        vpBanner.setDelayTime(2000);
+        //设置指示器位置（当banner模式中有指示器时）
+        vpBanner.setIndicatorGravity(BannerConfig.CENTER);
+        //banner设置方法全部调用完毕时最后调用
+        vpBanner.start();
+
     }
 
     /**
@@ -244,10 +262,10 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         return new int[]{
                 NotificationConstant.netDisconnection, NotificationConstant.bindRouterChanged,
                 NotificationConstant.apPostStatus, NotificationConstant.apStatusException,
-                NotificationConstant.checkApPassword,
+                NotificationConstant.checkApPassword, IpcConstants.refreshIpcList,
                 NotificationConstant.updateConnectComplete, NotificationConstant.checkLogin,
                 NotificationConstant.checkLoginAgain, CommonConstants.tabDevice,
-                NotificationConstant.apisConfig, IpcConstants.refreshIpcList,
+                NotificationConstant.apisConfig, NotificationConstant.shopSwitched,
                 com.sunmi.cloudprinter.constant.Constants.NOTIFICATION_PRINTER_ADDED
         };
     }
@@ -256,6 +274,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     public void didReceivedNotification(int id, Object... args) {
         if (args == null) return;
         if (id == CommonConstants.tabDevice) {
+            getDeviceList();
+        } else if (id == NotificationConstant.shopSwitched) {
+            topBar.setShopName(SpUtils.getShopName());
             getDeviceList();
         } else if (NotificationConstant.netDisconnection == id) {//网络断开 todo 列表状态更新
         } else if (NotificationConstant.apStatusException == id) {//异常
@@ -314,7 +335,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         } else if (NotificationConstant.storeNameChanged == id) {
             String shopName = (String) args[1];
             if (!TextUtils.isEmpty(shopName)) {
-                tvShopName.setText(shopName);
+                topBar.setShopName(shopName);
             }
         } else if (NotificationConstant.bindRouterChanged == id) {
             getDeviceList();
@@ -681,4 +702,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 }).create().show();
     }
 
+    @Override
+    public void OnBannerClick(int position) {
+
+    }
 }
