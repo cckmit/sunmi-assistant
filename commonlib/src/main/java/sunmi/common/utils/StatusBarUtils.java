@@ -10,6 +10,9 @@ import android.view.WindowManager;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import sunmi.common.utils.systembar.StatusBarCompat;
+import sunmi.common.utils.systembar.StatusBarUtil;
+
 public class StatusBarUtils {
 
     public static final int TYPE_TRANSPARENT = 0;//透明
@@ -22,11 +25,20 @@ public class StatusBarUtils {
      * @param type
      */
     public static void setStatusBarColor(Activity activity, int type) {
-        if (type == TYPE_TRANSPARENT) {
-            setStatusBarFullTransparent(activity);
-        } else {
-            StatusBarLightMode(activity);
-        }
+//        if (type == TYPE_TRANSPARENT) {
+//            setStatusBarFullTransparent(activity);
+//        } else {
+//            StatusBarLightMode(activity);
+//        }
+
+        setStatusBarColor(activity);
+    }
+
+    public static void setStatusBarColor(Activity activity) {
+        //状态栏颜色是否隐藏
+        StatusBarCompat.translucentStatusBar(activity, true);
+        //修改状态栏字体颜色
+        StatusBarUtil.setImmersiveStatusBar(activity, true);
     }
 
     /**
