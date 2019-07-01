@@ -22,6 +22,8 @@ public interface OrderListContract {
         void updateFilter(int filterIndex, List<FilterItem> list);
 
         void setData(List<OrderListResp.OrderItem> list);
+
+        void addData(List<OrderListResp.OrderItem> list);
     }
 
     interface Presenter {
@@ -30,5 +32,6 @@ public interface OrderListContract {
 
         void setFilterCurrent(int filterIndex, FilterItem model);
 
+        void loadMore();
     }
 }

@@ -25,11 +25,25 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
         implements OrderListContract.Presenter {
 
     private static final String TAG = "OrderListPresenter";
+    private static final int PAGE_SIZE = 20;
 
     private SparseArray<FilterItem> mFilterCurrent = new SparseArray<>(4);
+    private int mFilterAmount = -1;
+    private int[] mFilterPayType = null;
+    private int[] mFilterOrderType = null;
+    private int mFilterTime = -1;
+
+
+    private long mTimeStart;
+    private long mTimeEnd;
+
+    private int mCurrentPage = 0;
 
     @Override
     public void loadList(long timeStart, long timeEnd) {
+        mTimeStart = timeStart;
+        mTimeEnd = timeEnd;
+
         List<FilterItem> amount = new ArrayList<>(2);
         amount.add(new FilterItem(1,
                 mView.getContext().getString(R.string.order_amount_descending)));
@@ -80,8 +94,8 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
         });
 
         SunmiStoreRemote.get().getOrderList(SpUtils.getCompanyId(), SpUtils.getShopId(),
-                timeStart, timeEnd, -1, -1, null, null,
-                0, 20, new RetrofitCallback<OrderListResp>() {
+                mTimeStart, mTimeEnd, mFilterAmount, mFilterTime, mFilterOrderType, mFilterPayType,
+                mCurrentPage, PAGE_SIZE, new RetrofitCallback<OrderListResp>() {
                     @Override
                     public void onSuccess(int code, String msg, OrderListResp data) {
                         mView.setData(data.getOrder_list());
@@ -105,6 +119,24 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
         }
         model.setChecked(true);
         mFilterCurrent.put(filterIndex, model);
+    }
+
+    @Override
+    public void loadMore() {
+        mCurrentPage++;
+        SunmiStoreRemote.get().getOrderList(SpUtils.getCompanyId(), SpUtils.getShopId(),
+                mTimeStart, mTimeEnd, mFilterAmount, mFilterTime, mFilterOrderType, mFilterPayType,
+                mCurrentPage, PAGE_SIZE, new RetrofitCallback<OrderListResp>() {
+                    @Override
+                    public void onSuccess(int code, String msg, OrderListResp data) {
+                        mView.addData(data.getOrder_list());
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg, OrderListResp data) {
+                        Log.e(TAG, "Get order list FAILED. code=" + code + "; msg=" + msg);
+                    }
+                });
     }
 
 }

@@ -85,6 +85,35 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
         mOrderListAdapter.register(new OrderListItemType());
         mOrderList.setLayoutManager(new LinearLayoutManager(this));
         mOrderList.setAdapter(mOrderListAdapter);
+        mOrderList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            private int mLastPosition;
+
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+                if (layoutManager == null) {
+                    return;
+                }
+                int visibleItemCount = layoutManager.getChildCount();
+                int totalItemCount = layoutManager.getItemCount();
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (visibleItemCount > 0 && mLastPosition >= totalItemCount - 1) {
+                        mPresenter.loadMore();
+                    }
+                }
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+                if (!(layoutManager instanceof LinearLayoutManager)) {
+                    return;
+                }
+                mLastPosition = ((LinearLayoutManager) layoutManager).findLastCompletelyVisibleItemPosition();
+            }
+        });
     }
 
     private void createFilterDropdownMenu(String name, CustomPopupHelper helper) {
@@ -112,6 +141,11 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
     @Override
     public void setData(List<OrderListResp.OrderItem> list) {
         mOrderListAdapter.setData(list);
+    }
+
+    @Override
+    public void addData(List<OrderListResp.OrderItem> list) {
+        mOrderListAdapter.add(list);
     }
 
     @Override
