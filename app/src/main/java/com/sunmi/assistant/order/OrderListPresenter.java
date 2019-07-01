@@ -9,11 +9,13 @@ import com.sunmi.assistant.data.response.OrderListResp;
 import com.sunmi.assistant.data.response.OrderPayTypeListResp;
 import com.sunmi.assistant.data.response.OrderTypeListResp;
 import com.sunmi.assistant.order.model.FilterItem;
+import com.sunmi.assistant.order.model.OrderInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
 
@@ -35,6 +37,8 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
     private List<Integer> mFilterPayType = new ArrayList<>(1);
     private List<Integer> mFilterOrderType = new ArrayList<>(1);
 
+    private SparseArray<String> mOrderType = new SparseArray<>(2);
+    private OrderListResp mPendingData;
 
     private long mTimeStart;
     private long mTimeEnd;
@@ -85,9 +89,14 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
                 List<OrderTypeListResp.OrderType> list = data.getOrder_type_list();
                 List<FilterItem> orderType = new ArrayList<>(list.size());
                 for (OrderTypeListResp.OrderType type : list) {
+                    mOrderType.put(type.getId(), type.getTag());
                     orderType.add(new FilterItem(type.getId(), type.getName()));
                 }
                 mView.updateFilter(2, orderType);
+                if (mPendingData != null) {
+                    mView.setData(buildOrderList(mPendingData));
+                    mPendingData = null;
+                }
             }
 
             @Override
@@ -150,10 +159,15 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
                 new RetrofitCallback<OrderListResp>() {
                     @Override
                     public void onSuccess(int code, String msg, OrderListResp data) {
+                        if (mOrderType.size() == 0) {
+                            mPendingData = data;
+                            return;
+                        }
+                        List<OrderInfo> list = buildOrderList(data);
                         if (refresh) {
-                            mView.setData(data.getOrder_list());
+                            mView.setData(list);
                         } else {
-                            mView.addData(data.getOrder_list());
+                            mView.addData(list);
                         }
                     }
 
@@ -165,6 +179,21 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
                         }
                     }
                 });
+    }
+
+    private List<OrderInfo> buildOrderList(OrderListResp data) {
+        List<OrderInfo> list = new ArrayList<>(data.getOrder_list().size());
+        for (OrderListResp.OrderItem item : data.getOrder_list()) {
+            int orderType = CommonConstants.ORDER_TYPE_NORMAL.equals(
+                    mOrderType.get(item.getOrder_type_id())) ?
+                    OrderInfo.ORDER_TYPE_NORMAL : OrderInfo.ORDER_TYPE_REFUNDS;
+            float rawAmount = item.getAmount();
+            float amount = orderType == OrderInfo.ORDER_TYPE_NORMAL ?
+                    Math.abs(rawAmount) : -1 * Math.abs(rawAmount);
+            list.add(new OrderInfo(item.getId(), amount, orderType,
+                    item.getPurchase_type(), item.getPurchase_time()));
+        }
+        return list;
     }
 
 }

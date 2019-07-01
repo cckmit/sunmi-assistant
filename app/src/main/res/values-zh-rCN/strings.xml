@@ -66,6 +66,7 @@
     <string name="order_list_empty">暂无订单详情</string>
     <string name="order_detail_title">订单详情</string>
     <string name="order_success">交易成功</string>
+    <string name="order_refunds">退款</string>
     <string name="order_time">交易时间</string>
     <string name="order_order_detail">支付明细</string>
     <string name="order_commodity">商品</string>

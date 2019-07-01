@@ -1,0 +1,83 @@
+package com.sunmi.assistant.order.model;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+/**
+ * @author yinhui
+ * @since 2019-07-01
+ */
+public class OrderInfo implements Parcelable {
+
+    public static final int ORDER_TYPE_NORMAL = 0;
+    public static final int ORDER_TYPE_REFUNDS = 1;
+
+    private int id;
+    private float amount;
+    private int orderType;
+    private String purchaseType;
+    private long purchaseTime;
+
+    public OrderInfo(int id, float amount, int orderType, String purchaseType, long purchaseTime) {
+        this.id = id;
+        this.amount = amount;
+        this.orderType = orderType;
+        this.purchaseType = purchaseType;
+        this.purchaseTime = purchaseTime;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public float getAmount() {
+        return amount;
+    }
+
+    public String getPurchaseType() {
+        return purchaseType;
+    }
+
+    public long getPurchaseTime() {
+        return purchaseTime;
+    }
+
+    public boolean isOrderNormal() {
+        return orderType == ORDER_TYPE_NORMAL;
+    }
+
+    protected OrderInfo(Parcel in) {
+        id = in.readInt();
+        amount = in.readFloat();
+        orderType = in.readInt();
+        purchaseType = in.readString();
+        purchaseTime = in.readLong();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeFloat(amount);
+        dest.writeInt(orderType);
+        dest.writeString(purchaseType);
+        dest.writeLong(purchaseTime);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<OrderInfo> CREATOR = new Creator<OrderInfo>() {
+        @Override
+        public OrderInfo createFromParcel(Parcel in) {
+            return new OrderInfo(in);
+        }
+
+        @Override
+        public OrderInfo[] newArray(int size) {
+            return new OrderInfo[size];
+        }
+    };
+
+}

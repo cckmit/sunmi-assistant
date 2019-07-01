@@ -2,8 +2,8 @@ package com.sunmi.assistant.order;
 
 import android.content.Context;
 
-import com.sunmi.assistant.data.response.OrderListResp;
 import com.sunmi.assistant.order.model.FilterItem;
+import com.sunmi.assistant.order.model.OrderInfo;
 
 import java.util.List;
 
@@ -21,9 +21,9 @@ public interface OrderListContract {
 
         void updateFilter(int filterIndex, List<FilterItem> list);
 
-        void setData(List<OrderListResp.OrderItem> list);
+        void setData(List<OrderInfo> list);
 
-        void addData(List<OrderListResp.OrderItem> list);
+        void addData(List<OrderInfo> list);
     }
 
     interface Presenter {
