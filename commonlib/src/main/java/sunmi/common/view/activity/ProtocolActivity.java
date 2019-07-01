@@ -49,9 +49,11 @@ public class ProtocolActivity extends BaseActivity {
     public static final int USER_AP_PROTOCOL = 2;
     public static final int USER_AP_PRIVATE = 3;
     public static final int USER_WX_HELP = 4;
+    public static final int USER_AUTH_PLATFORM = 5;
 
     private Timer timer;//计时器
     private long timeout = 5000;//超时时间
+
 
     @AfterViews
     protected void init() {
@@ -62,11 +64,11 @@ public class ProtocolActivity extends BaseActivity {
             loadWebView(PROTOCOL_PRIVATE);
         } else if (protocolType == USER_AP_PROTOCOL) { //快速配置路由器协议
             loadWebView(PROTOCOL_USER);
-            //loadWebView("file:///android_asset/pro_sunmi.html");
         } else if (protocolType == USER_AP_PRIVATE) {
             loadWebView(PROTOCOL_PRIVATE);
-            //loadWebView("file:///android_asset/private_sunmi.html");
         } else if (protocolType == USER_WX_HELP) {
+            loadWebView(WX_AUTH_HELP);
+        } else if (protocolType == USER_AUTH_PLATFORM) {//获取平台授权协议
             loadWebView(WX_AUTH_HELP);
         }
         // 设置标题

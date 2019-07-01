@@ -87,6 +87,9 @@
         <activity android:name=".ui.activity.setting.ChangeUsernameActivity_" />
         <activity android:name=".ui.activity.SunmiLinkSearchActivity_" />
         <activity android:name=".ui.activity.setting.ChangeCompanyNameActivity_" />
+        <activity android:name=".ui.activity.merchant.SelectPlatformActivity_" />
+        <activity android:name=".ui.activity.merchant.SelectStoreActivity_" />
+        <activity android:name=".ui.activity.merchant.CheckPlatformMobileActivity_" />
         <activity android:name=".order.OrderListActivity_" />
 
         <!--百度地图-->
