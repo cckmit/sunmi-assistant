@@ -27,7 +27,7 @@ import sunmi.common.base.recycle.BaseArrayAdapter;
 import sunmi.common.view.DropdownMenu;
 
 @SuppressLint("Registered")
-@EActivity(R.layout.order_list_activity_list)
+@EActivity(R.layout.order_activity_list)
 public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
         implements OrderListContract.View {
 
@@ -86,7 +86,10 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
         createFilterDropdownMenu(getString(R.string.order_time_order), helper);
 
         mOrderListAdapter = new BaseArrayAdapter<>();
-        mOrderListAdapter.register(new OrderListItemType());
+        OrderListItemType orderItem = new OrderListItemType();
+        orderItem.setOnItemClickListener((adapter, holder, model, position) ->
+                OrderDetailActivity_.intent(this).mOrderItem(model).start());
+        mOrderListAdapter.register(orderItem);
         mOrderList.setLayoutManager(new LinearLayoutManager(this));
         mOrderList.setAdapter(mOrderListAdapter);
         mOrderList.addOnScrollListener(new RecyclerView.OnScrollListener() {

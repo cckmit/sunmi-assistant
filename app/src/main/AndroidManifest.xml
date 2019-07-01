@@ -88,6 +88,7 @@
         <activity android:name=".ui.activity.SunmiLinkSearchActivity_" />
         <activity android:name=".ui.activity.setting.ChangeCompanyNameActivity_" />
         <activity android:name=".order.OrderListActivity_" />
+        <activity android:name=".order.OrderDetailActivity_" />
 
         <!--百度地图-->
         <service

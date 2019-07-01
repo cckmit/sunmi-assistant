@@ -1,5 +1,8 @@
 package com.sunmi.assistant.data.response;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 public class OrderListResp {
@@ -15,7 +18,7 @@ public class OrderListResp {
         return total_count;
     }
 
-    public static class OrderItem {
+    public static class OrderItem implements Parcelable {
 
         private int id;
         private String order_no;
@@ -72,5 +75,53 @@ public class OrderListResp {
         public float getAmount() {
             return amount;
         }
+
+
+        protected OrderItem(Parcel in) {
+            id = in.readInt();
+            order_no = in.readString();
+            order_type = in.readString();
+            order_type_id = in.readInt();
+            ipc_device_name = in.readString();
+            payment_device_name = in.readString();
+            payment_device_sn = in.readString();
+            purchase_type = in.readString();
+            purchase_type_id = in.readInt();
+            purchase_time = in.readLong();
+            amount = in.readFloat();
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(id);
+            dest.writeString(order_no);
+            dest.writeString(order_type);
+            dest.writeInt(order_type_id);
+            dest.writeString(ipc_device_name);
+            dest.writeString(payment_device_name);
+            dest.writeString(payment_device_sn);
+            dest.writeString(purchase_type);
+            dest.writeInt(purchase_type_id);
+            dest.writeLong(purchase_time);
+            dest.writeFloat(amount);
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        public static final Creator<OrderItem> CREATOR = new Creator<OrderItem>() {
+            @Override
+            public OrderItem createFromParcel(Parcel in) {
+                return new OrderItem(in);
+            }
+
+            @Override
+            public OrderItem[] newArray(int size) {
+                return new OrderItem[size];
+            }
+        };
+
     }
 }
