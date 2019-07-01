@@ -41,7 +41,7 @@ public class IpcConfiguringPresenter extends BasePresenter<IpcConfiguringContrac
 
     @Override
     public void getIpcList(int companyId, String shopId) {
-        IPCCloudApi.getDetailList(companyId, shopId, new RetrofitCallback<IpcListResp>() {
+        IPCCloudApi.getDetailList(companyId, SpUtils.getShopId(), new RetrofitCallback<IpcListResp>() {
             @Override
             public void onSuccess(int code, String msg, IpcListResp data) {
                 LogCat.e("111111", "666666 getIpcList onResponse response = " + data.toString());
