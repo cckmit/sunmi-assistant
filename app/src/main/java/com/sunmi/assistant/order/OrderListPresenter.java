@@ -29,8 +29,8 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
 
     private SparseArray<FilterItem> mFilterCurrent = new SparseArray<>(4);
     private int mFilterAmount = -1;
-    private int[] mFilterPayType = null;
-    private int[] mFilterOrderType = null;
+    private List<Integer> mFilterPayType = new ArrayList<>(1);
+    private List<Integer> mFilterOrderType = new ArrayList<>(1);
     private int mFilterTime = -1;
 
 
@@ -38,9 +38,13 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
     private long mTimeEnd;
 
     private int mCurrentPage = 0;
+    private int mCompanyId;
+    private int mShopId;
 
     @Override
     public void loadList(long timeStart, long timeEnd) {
+        mCompanyId = SpUtils.getCompanyId();
+        mShopId = SpUtils.getShopId();
         mTimeStart = timeStart;
         mTimeEnd = timeEnd;
 
@@ -92,24 +96,29 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
                 Log.e(TAG, "Get order type list FAILED. code=" + code + "; msg=" + msg);
             }
         });
-
-        SunmiStoreRemote.get().getOrderList(SpUtils.getCompanyId(), SpUtils.getShopId(),
-                mTimeStart, mTimeEnd, mFilterAmount, mFilterTime, mFilterOrderType, mFilterPayType,
-                mCurrentPage, PAGE_SIZE, new RetrofitCallback<OrderListResp>() {
-                    @Override
-                    public void onSuccess(int code, String msg, OrderListResp data) {
-                        mView.setData(data.getOrder_list());
-                    }
-
-                    @Override
-                    public void onFail(int code, String msg, OrderListResp data) {
-                        Log.e(TAG, "Get order list FAILED. code=" + code + "; msg=" + msg);
-                    }
-                });
+        loadData(true);
     }
 
     @Override
     public void setFilterCurrent(int filterIndex, FilterItem model) {
+        // Update order list
+        switch (filterIndex) {
+            case 0:
+                mFilterAmount = model.getId();
+                break;
+            case 1:
+                mFilterPayType.clear();
+                mFilterPayType.add(model.getId());
+                break;
+            case 2:
+                mFilterOrderType.clear();
+                mFilterOrderType.add(model.getId());
+                break;
+            case 3:
+                mFilterTime = model.getId();
+        }
+        loadData(true);
+        // Update model data & update dropdown menu item view.
         FilterItem current = mFilterCurrent.get(filterIndex);
         if (current == model) {
             return;
@@ -123,13 +132,25 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
 
     @Override
     public void loadMore() {
-        mCurrentPage++;
-        SunmiStoreRemote.get().getOrderList(SpUtils.getCompanyId(), SpUtils.getShopId(),
+        loadData(false);
+    }
+
+    private void loadData(boolean refresh) {
+        if (refresh) {
+            mCurrentPage = 0;
+        } else {
+            mCurrentPage++;
+        }
+        SunmiStoreRemote.get().getOrderList(mCompanyId, mShopId,
                 mTimeStart, mTimeEnd, mFilterAmount, mFilterTime, mFilterOrderType, mFilterPayType,
                 mCurrentPage, PAGE_SIZE, new RetrofitCallback<OrderListResp>() {
                     @Override
                     public void onSuccess(int code, String msg, OrderListResp data) {
-                        mView.addData(data.getOrder_list());
+                        if (refresh) {
+                            mView.setData(data.getOrder_list());
+                        } else {
+                            mView.addData(data.getOrder_list());
+                        }
                     }
 
                     @Override

@@ -21,6 +21,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 
 /**
@@ -180,17 +182,17 @@ public class SunmiStoreRemote {
     }
 
     public void getOrderList(int companyId, int shopId, long timeStart, long timeEnd,
-                             int amountOrder, int timeOrder, int[] orderType, int[] purchaseType,
+                             int amountOrder, int timeOrder, List<Integer> orderType, List<Integer> purchaseType,
                              int pageNum, int pageSize, RetrofitCallback<OrderListResp> callback) {
         try {
             JSONArray orderArray = new JSONArray();
-            if (orderType != null && orderType.length > 0) {
+            if (orderType != null && !orderType.isEmpty()) {
                 for (int order : orderType) {
                     orderArray.put(order);
                 }
             }
             JSONArray purchaseArray = new JSONArray();
-            if (purchaseType != null && purchaseType.length > 0) {
+            if (purchaseType != null && !purchaseType.isEmpty()) {
                 for (int purchase : purchaseType) {
                     purchaseArray.put(purchase);
                 }
