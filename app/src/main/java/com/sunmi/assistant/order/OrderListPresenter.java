@@ -25,19 +25,21 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
         implements OrderListContract.Presenter {
 
     private static final String TAG = "OrderListPresenter";
+
+    private static final int PAGE_INIT = 1;
     private static final int PAGE_SIZE = 20;
 
-    private SparseArray<FilterItem> mFilterCurrent = new SparseArray<>(4);
-    private int mFilterAmount = -1;
+    private SparseArray<FilterItem> mFilterCurrent = new SparseArray<>(3);
+    private int mFilterAmountSort = -1;
+    private int mFilterTimeSort = -1;
     private List<Integer> mFilterPayType = new ArrayList<>(1);
     private List<Integer> mFilterOrderType = new ArrayList<>(1);
-    private int mFilterTime = -1;
 
 
     private long mTimeStart;
     private long mTimeEnd;
 
-    private int mCurrentPage = 0;
+    private int mCurrentPage = PAGE_INIT;
     private int mCompanyId;
     private int mShopId;
 
@@ -48,20 +50,17 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
         mTimeStart = timeStart;
         mTimeEnd = timeEnd;
 
-        List<FilterItem> amount = new ArrayList<>(2);
-        amount.add(new FilterItem(1,
+        List<FilterItem> order = new ArrayList<>(2);
+        order.add(new FilterItem(1,
                 mView.getContext().getString(R.string.order_amount_descending)));
-        amount.add(new FilterItem(0,
+        order.add(new FilterItem(0,
                 mView.getContext().getString(R.string.order_amount_ascending)));
-
-        List<FilterItem> time = new ArrayList<>(2);
-        time.add(new FilterItem(1,
+        order.add(new FilterItem(11,
                 mView.getContext().getString(R.string.order_time_descending)));
-        time.add(new FilterItem(0,
+        order.add(new FilterItem(10,
                 mView.getContext().getString(R.string.order_time_ascending)));
 
-        mView.updateFilter(0, amount);
-        mView.updateFilter(3, time);
+        mView.updateFilter(0, order);
 
         SunmiStoreRemote.get().getOrderPurchaseTypeList(new RetrofitCallback<OrderPayTypeListResp>() {
             @Override
@@ -104,7 +103,13 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
         // Update order list
         switch (filterIndex) {
             case 0:
-                mFilterAmount = model.getId();
+                if (model.getId() < 10) {
+                    mFilterAmountSort = model.getId();
+                    mFilterTimeSort = -1;
+                } else {
+                    mFilterAmountSort = -1;
+                    mFilterTimeSort = model.getId() - 10;
+                }
                 break;
             case 1:
                 mFilterPayType.clear();
@@ -114,8 +119,6 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
                 mFilterOrderType.clear();
                 mFilterOrderType.add(model.getId());
                 break;
-            case 3:
-                mFilterTime = model.getId();
         }
         loadData(true);
         // Update model data & update dropdown menu item view.
@@ -137,13 +140,14 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
 
     private void loadData(boolean refresh) {
         if (refresh) {
-            mCurrentPage = 0;
+            mCurrentPage = PAGE_INIT;
         } else {
             mCurrentPage++;
         }
         SunmiStoreRemote.get().getOrderList(mCompanyId, mShopId,
-                mTimeStart, mTimeEnd, mFilterAmount, mFilterTime, mFilterOrderType, mFilterPayType,
-                mCurrentPage, PAGE_SIZE, new RetrofitCallback<OrderListResp>() {
+                mTimeStart, mTimeEnd, mFilterAmountSort, mFilterTimeSort,
+                mFilterOrderType, mFilterPayType, mCurrentPage, PAGE_SIZE,
+                new RetrofitCallback<OrderListResp>() {
                     @Override
                     public void onSuccess(int code, String msg, OrderListResp data) {
                         if (refresh) {
@@ -156,6 +160,9 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
                     @Override
                     public void onFail(int code, String msg, OrderListResp data) {
                         Log.e(TAG, "Get order list FAILED. code=" + code + "; msg=" + msg);
+                        if (refresh) {
+                            mView.setData(null);
+                        }
                     }
                 });
     }

@@ -50,8 +50,8 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
     long mTimeEnd;
 
     private DropdownAnimation mDropdownAnimator = new DropdownAnimation();
-    private List<DropdownMenu> mFilters = new ArrayList<>(4);
-    private List<DropdownAdapter> mFilterAdapters = new ArrayList<>(4);
+    private List<DropdownMenu> mFilters = new ArrayList<>(3);
+    private List<DropdownAdapter> mFilterAdapters = new ArrayList<>(3);
     private int mCurrentShowFilter = -1;
 
     @AfterViews
@@ -63,12 +63,11 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
     }
 
     private void initViews() {
-        mFilters.add(findViewById(R.id.order_filter_amount));
+        mFilters.add(findViewById(R.id.order_filter_sort));
         mFilters.add(findViewById(R.id.order_filter_pay_type));
         mFilters.add(findViewById(R.id.order_filter_order_type));
-        mFilters.add(findViewById(R.id.order_filter_time));
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 3; i++) {
             mFilters.get(i).setTag(i);
         }
 
@@ -80,10 +79,9 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
 
         CustomPopupHelper helper = new CustomPopupHelper();
 
-        createFilterDropdownMenu(getString(R.string.order_amount_order), helper);
+        createFilterDropdownMenu(getString(R.string.order_filter_sort), helper);
         createFilterDropdownMenu(getString(R.string.order_pay_type), helper);
         createFilterDropdownMenu(getString(R.string.order_transaction_type), helper);
-        createFilterDropdownMenu(getString(R.string.order_time_order), helper);
 
         mOrderListAdapter = new BaseArrayAdapter<>();
         OrderListItemType orderItem = new OrderListItemType();

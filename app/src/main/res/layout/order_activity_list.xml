@@ -56,7 +56,7 @@
         app:titleTextColor="@color/color_333338" />
 
     <sunmi.common.view.DropdownMenu
-        android:id="@+id/order_filter_amount"
+        android:id="@+id/order_filter_sort"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_44"
         android:background="@color/c_white"
@@ -72,7 +72,7 @@
         android:background="@color/c_white"
         app:layout_constraintEnd_toStartOf="@+id/order_filter_order_type"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/order_filter_amount"
+        app:layout_constraintStart_toEndOf="@+id/order_filter_sort"
         app:layout_constraintTop_toBottomOf="@+id/title_bar" />
 
     <sunmi.common.view.DropdownMenu
@@ -80,19 +80,9 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_44"
         android:background="@color/c_white"
-        app:layout_constraintEnd_toStartOf="@+id/order_filter_time"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/order_filter_pay_type"
-        app:layout_constraintTop_toBottomOf="@+id/title_bar" />
-
-    <sunmi.common.view.DropdownMenu
-        android:id="@+id/order_filter_time"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_44"
-        android:background="@color/c_white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/order_filter_order_type"
+        app:layout_constraintStart_toEndOf="@+id/order_filter_pay_type"
         app:layout_constraintTop_toBottomOf="@+id/title_bar" />
 
     <View
@@ -102,6 +92,6 @@
         android:background="@color/black_10"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/order_filter_amount" />
+        app:layout_constraintTop_toBottomOf="@id/order_filter_sort" />
 
 </android.support.constraint.ConstraintLayout>
