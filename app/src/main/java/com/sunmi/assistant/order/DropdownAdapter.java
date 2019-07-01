@@ -2,6 +2,7 @@ package com.sunmi.assistant.order;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.TextView;
 
@@ -40,6 +41,14 @@ public class DropdownAdapter extends DropdownMenu.BaseAdapter<FilterItem> {
         public void setUpView(FilterItem model, int position) {
             TextView title = getView(R.id.order_filter_title);
             title.setText(model.getName());
+            Drawable drawable = title.getCompoundDrawablesRelative()[2].mutate();
+            if (model.isChecked()) {
+                title.setTextColor(mContext.getResources().getColor(R.color.color_F35000));
+                drawable.setTint(mContext.getResources().getColor(R.color.color_F35000));
+            } else {
+                title.setTextColor(mContext.getResources().getColor(R.color.color_333338));
+                drawable.setTint(mContext.getResources().getColor(R.color.color_333338));
+            }
         }
     }
 

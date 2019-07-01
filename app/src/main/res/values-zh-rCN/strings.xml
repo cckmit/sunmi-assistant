@@ -52,7 +52,7 @@
     <string name="order_time_descending">时间倒序</string>
     <string name="order_id">订单号</string>
     <string name="order_pay_method">支付方式</string>
-    <string name="order_no_list">暂无订单详情</string>
+    <string name="order_list_empty">暂无订单详情</string>
     <string name="order_detail_title">订单详情</string>
     <string name="order_success">交易成功</string>
     <string name="order_time">交易时间</string>

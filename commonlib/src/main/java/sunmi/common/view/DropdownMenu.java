@@ -252,7 +252,7 @@ public class DropdownMenu extends FrameLayout implements View.OnClickListener {
         }
 
         @Override
-        public void onBindViewHolder(BaseViewHolder<T> holder, int position) {
+        public void onBindViewHolder(@NonNull BaseViewHolder<T> holder, int position) {
             T model = mData.get(position);
             holder.setUpView(model, position);
         }
@@ -358,11 +358,11 @@ public class DropdownMenu extends FrameLayout implements View.OnClickListener {
                 return;
             }
             mCurrent = mData.get(pos);
-            mTitleHolder.setUpView(mCurrent, pos);
             // Invoke callback of on item click.
             if (mListener != null) {
                 mListener.onItemSelected(this, mCurrent, pos);
             }
+            mTitleHolder.setUpView(mCurrent, pos);
         }
 
         protected abstract BaseTitleViewHolder<T> createTitle(View view);

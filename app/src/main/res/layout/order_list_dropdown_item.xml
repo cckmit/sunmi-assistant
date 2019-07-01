@@ -24,7 +24,7 @@
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
         android:layout_marginEnd="@dimen/dp_25"
-        android:src="@drawable/order_ic_checkbox"
+        android:src="@drawable/order_list_ic_filter_checkbox"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

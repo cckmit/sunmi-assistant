@@ -8,6 +8,7 @@ import android.support.constraint.ConstraintSet;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.data.response.OrderListResp;
@@ -32,6 +33,9 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
 
     @ViewById(R.id.order_list_content)
     ConstraintLayout mContent;
+
+    @ViewById(R.id.order_list_empty)
+    TextView mOrderListEmpty;
 
     @ViewById(R.id.order_list_overlay)
     View mOverlay;
@@ -140,7 +144,12 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
 
     @Override
     public void setData(List<OrderListResp.OrderItem> list) {
-        mOrderListAdapter.setData(list);
+        if (list == null || list.isEmpty()) {
+            mOrderListEmpty.setVisibility(View.VISIBLE);
+        } else {
+            mOrderListEmpty.setVisibility(View.GONE);
+            mOrderListAdapter.setData(list);
+        }
     }
 
     @Override

@@ -13,11 +13,7 @@
         android:maxWidth="@dimen/dp_90"
         android:singleLine="true"
         android:textColor="@color/color_333338"
+        android:drawableEnd="@drawable/order_list_ic_arrow_drop_down"
         android:textSize="@dimen/sp_12" />
-
-    <ImageView
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
-        android:src="@drawable/order_ic_arrow_drop_down" />
 
 </LinearLayout>

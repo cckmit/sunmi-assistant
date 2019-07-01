@@ -52,7 +52,7 @@
     <string name="order_time_descending">Time Descending</string>
     <string name="order_id">Order Id</string>
     <string name="order_pay_method">Purchase Method</string>
-    <string name="order_no_list">No order details.</string>
+    <string name="order_list_empty">No order details.</string>
     <string name="order_detail_title">Order Detail</string>
     <string name="order_success">Successful Transaction</string>
     <string name="order_time">Transaction Time</string>

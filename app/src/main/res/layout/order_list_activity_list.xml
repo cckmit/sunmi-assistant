@@ -16,6 +16,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/order_line_decoration" />
 
+    <TextView
+        android:id="@+id/order_list_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_132"
+        android:drawableTop="@drawable/order_list_empty"
+        android:drawablePadding="@dimen/dp_4"
+        android:gravity="center"
+        android:text="@string/order_list_empty"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/order_line_decoration" />
+
     <View
         android:id="@+id/order_list_overlay"
         android:layout_width="0dp"
