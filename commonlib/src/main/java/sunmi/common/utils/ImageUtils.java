@@ -14,7 +14,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.signature.StringSignature;
+import com.bumptech.glide.signature.ObjectKey;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -219,33 +219,17 @@ public class ImageUtils {
      * glide加载图片
      *
      * @param forceRefresh 是否强制刷新，针对url不变的图片
-     */
-    public static void loadImage(Context context, String url, ImageView view, boolean forceRefresh) {
-        if (TextUtils.isEmpty(url)) return;
-        if (forceRefresh) {
-            Glide.with(context).load(url)
-                    .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
-                    .diskCacheStrategy(DiskCacheStrategy.ALL).into(view);
-        } else {
-            Glide.with(context).load(url).diskCacheStrategy(DiskCacheStrategy.ALL).into(view);
-        }
-    }
-
-    /**
-     * glide加载图片
-     *
-     * @param forceRefresh 是否强制刷新，针对url不变的图片
      * @param failureImgId 加载图片失败后显示的图片
      */
     public static void loadImage(Context context, String url, ImageView view,
                                  boolean forceRefresh, int failureImgId) {
         if (TextUtils.isEmpty(url)) return;
         if (forceRefresh) {
-            Glide.with(context).load(url).asBitmap().error(failureImgId)
-                    .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+            Glide.with(context).load(url).error(failureImgId)
+                    .signature(new ObjectKey(String.valueOf(System.currentTimeMillis())))
                     .diskCacheStrategy(DiskCacheStrategy.ALL).into(view);
         } else {
-            Glide.with(context).load(url).asBitmap().error(failureImgId)
+            Glide.with(context).load(url).error(failureImgId)
                     .diskCacheStrategy(DiskCacheStrategy.ALL).into(view);
         }
     }
