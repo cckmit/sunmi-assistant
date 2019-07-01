@@ -21,52 +21,55 @@
     <string name="tip_no_device_found">没有发现新设备</string>
     <string name="tip_keep_device_in">请确保您的设备处于路由器信号范围内</string>
 
-    <string name="ic_tab_data_title">Data</string>
+    <string name="ic_tab_data_title">数据</string>
 
     <string name="dashboard_data_format">%s%%</string>
-    <string name="dashboard_today">Today</string>
-    <string name="dashboard_this_week">This Week</string>
-    <string name="dashboard_this_month">This Month</string>
-    <string name="dashboard_day_ratio">Day Ratio</string>
-    <string name="dashboard_week_ratio">Week Ratio</string>
-    <string name="dashboard_month_ratio">Year-on-Year Ratio</string>
-    <string name="dashboard_by_sales">By Sales</string>
-    <string name="dashboard_by_order">By Order</string>
-    <string name="dashboard_total_sales_amount">Total Sales Amount</string>
-    <string name="dashboard_customer_price">Customer Price</string>
-    <string name="dashboard_total_sales_volume">Total Sales Volume</string>
-    <string name="dashboard_total_refunds">Total Refunds</string>
-    <string name="dashboard_time_distribution">Transaction Time Distribution</string>
-    <string name="dashboard_purchase_rank">Purchase Method</string>
-    <string name="dashboard_quantity_rank">Product Sales Ranking</string>
-    <string name="dashboard_purchase_others">Others</string>
+    <string name="dashboard_today">今日</string>
+    <string name="dashboard_this_week">本周</string>
+    <string name="dashboard_this_month">本月</string>
+    <string name="dashboard_day_ratio">日环比</string>
+    <string name="dashboard_week_ratio">周环比</string>
+    <string name="dashboard_month_ratio">月同比</string>
+    <string name="dashboard_by_sales">按销售额</string>
+    <string name="dashboard_by_order">按订单数</string>
+    <string name="dashboard_total_sales_amount">总销售额</string>
+    <string name="dashboard_customer_price">客单价</string>
+    <string name="dashboard_total_sales_volume">总笔数</string>
+    <string name="dashboard_total_refunds">退款笔数</string>
+    <string name="dashboard_time_distribution">交易时间分布</string>
+    <string name="dashboard_purchase_rank">支付方式</string>
+    <string name="dashboard_quantity_rank">商品销量排行</string>
+    <string name="dashboard_purchase_others">其他</string>
 
-    <string name="order_list_title">Order List</string>
-    <string name="order_filter_sort">Integrated Order</string>
-    <string name="order_amount_ascending">Amount Ascending</string>
-    <string name="order_amount_descending">Amount Descending</string>
-    <string name="order_time_ascending">Time Ascending</string>
-    <string name="order_time_descending">Time Descending</string>
-    <string name="order_pay_type">Purchase Type</string>
-    <string name="order_transaction_type">Transaction Type</string>
-    <string name="order_id">Order Id</string>
-    <string name="order_pay_method">Purchase Method</string>
-    <string name="order_list_empty">No order details.</string>
-    <string name="order_detail_title">Order Detail</string>
-    <string name="order_success">Successful Transaction</string>
-    <string name="order_time">Transaction Time</string>
-    <string name="order_order_detail">Order Detail</string>
-    <string name="order_commodity">Commodity</string>
-    <string name="order_quantity">Quantity</string>
+    <string name="order_list_title">详情列表</string>
+    <string name="order_filter_sort">综合排序</string>
+    <string name="order_amount_ascending">金额正序</string>
+    <string name="order_amount_descending">金额倒序</string>
+    <string name="order_time_ascending">时间正序</string>
+    <string name="order_time_descending">时间倒序</string>
+    <string name="order_pay_type">支付类型</string>
+    <string name="order_transaction_type">交易类型</string>
+    <string name="order_id_colon">订单号：</string>
+    <string name="order_id">订单号</string>
+    <string name="order_amount">%+.2f元</string>
+    <string name="order_pay_method_colon">支付方式：%s</string>
+    <string name="order_pay_method">支付方式</string>
+    <string name="order_list_empty">暂无订单详情</string>
+    <string name="order_detail_title">订单详情</string>
+    <string name="order_success">交易成功</string>
+    <string name="order_time">交易时间</string>
+    <string name="order_order_detail">支付明细</string>
+    <string name="order_commodity">商品</string>
+    <string name="order_quantity">数量</string>
 
     <string-array name="dashboard_week_name">
-        <item>Monday</item>
-        <item>Tuesday</item>
-        <item>Wednesday</item>
-        <item>Thursday</item>
-        <item>Friday</item>
-        <item>Saturday</item>
-        <item>Sunday</item>
+        <item>周一</item>
+        <item>周二</item>
+        <item>周三</item>
+        <item>周四</item>
+        <item>周五</item>
+        <item>周六</item>
+        <item>周日</item>
     </string-array>
 
 </resources>

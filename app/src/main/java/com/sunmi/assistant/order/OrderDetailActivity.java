@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.data.response.OrderDetailListResp;
 import com.sunmi.assistant.data.response.OrderListResp;
+import com.sunmi.assistant.utils.Utils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -53,9 +54,9 @@ public class OrderDetailActivity extends BaseMvpActivity<OrderDetailPresenter>
     }
 
     private void initViews() {
-        mTvAmount.setText(String.valueOf(mOrderItem.getAmount()));
+        mTvAmount.setText(getResources().getString(R.string.order_amount, mOrderItem.getAmount()));
         mTvOrderId.setText(String.valueOf(mOrderItem.getId()));
-        mTvTime.setText(String.valueOf(mOrderItem.getPurchase_time()));
+        mTvTime.setText(Utils.getDateHourMinuteTime(mOrderItem.getPurchase_time()));
         mTvType.setText(mOrderItem.getPurchase_type());
         mDetailListAdapter = new DetailListAdapter(this);
         mDetailList.setAdapter(mDetailListAdapter);

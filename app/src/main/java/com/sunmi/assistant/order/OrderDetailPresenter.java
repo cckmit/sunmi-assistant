@@ -1,6 +1,12 @@
 package com.sunmi.assistant.order;
 
+import android.util.Log;
+
+import com.sunmi.assistant.data.SunmiStoreRemote;
+import com.sunmi.assistant.data.response.OrderDetailListResp;
+
 import sunmi.common.base.BasePresenter;
+import sunmi.common.rpc.retrofit.RetrofitCallback;
 
 /**
  * @author yinhui
@@ -13,6 +19,16 @@ public class OrderDetailPresenter extends BasePresenter<OrderDetailContract.View
 
     @Override
     public void loadDetail(int orderId) {
+        SunmiStoreRemote.get().getOrderDetailList(orderId, new RetrofitCallback<OrderDetailListResp>() {
+            @Override
+            public void onSuccess(int code, String msg, OrderDetailListResp data) {
+                mView.updateDetailList(data.getDetail_list());
+            }
 
+            @Override
+            public void onFail(int code, String msg, OrderDetailListResp data) {
+                Log.e(TAG, "Get order detail FAILED. code=" + code + "; msg=" + msg);
+            }
+        });
     }
 }

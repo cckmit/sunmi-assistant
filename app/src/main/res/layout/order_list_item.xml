@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/order_id_colon"
         android:textColor="@color/color_333338"
         android:textSize="@dimen/sp_14"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,7 +33,6 @@
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_4"
         android:textColor="@color/color_85858A"
-
         android:textSize="@dimen/sp_12"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/order_item_name" />
@@ -58,5 +58,14 @@
         android:textSize="@dimen/sp_12"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/order_item_amount" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1px"
+        android:layout_marginStart="@dimen/dp_20"
+        android:background="@color/black_10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

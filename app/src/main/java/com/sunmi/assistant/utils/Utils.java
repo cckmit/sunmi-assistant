@@ -31,6 +31,10 @@ public class Utils {
     private static final SimpleDateFormat DAY_IN_WEEK_FORMAT = new SimpleDateFormat("u");
     @SuppressLint("SimpleDateFormat")
     private static final SimpleDateFormat DAY_IN_MONTH_FORMAT = new SimpleDateFormat("d");
+    @SuppressLint("SimpleDateFormat")
+    private static final SimpleDateFormat HOUR_MINUTE_TIME = new SimpleDateFormat("HH:mm");
+    @SuppressLint("SimpleDateFormat")
+    private static final SimpleDateFormat DATE_HOUR_MINUTE_TIME = new SimpleDateFormat("yyyy.MM.dd HH:mm");
 
     private static SparseArray<Pair<Long, Long>> sPeriodCache = new SparseArray<>(3);
 
@@ -120,5 +124,13 @@ public class Utils {
         } else {
             return String.format(Locale.getDefault(), "%02.0f:00", value);
         }
+    }
+
+    public static String getHourMinuteTime(long timestamp) {
+        return HOUR_MINUTE_TIME.format(new Date(timestamp));
+    }
+
+    public static String getDateHourMinuteTime(long timestamp) {
+        return DATE_HOUR_MINUTE_TIME.format(new Date(timestamp));
     }
 }
