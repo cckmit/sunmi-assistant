@@ -10,8 +10,8 @@
         android:layout_height="wrap_content"
         ptr:bottom_margin="@dimen/dp_12" />
 
-    <com.sunmi.apmanager.utils.pulltorefresh.library.PullToRefreshScrollView1
-        android:id="@+id/prsv_device"
+    <cn.bingoogolapple.refreshlayout.BGARefreshLayout
+        android:id="@+id/bga_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/shop_title"
@@ -32,26 +32,19 @@
                 android:layout_marginTop="@dimen/dp_8"
                 android:background="@drawable/bg_card_white_corner_rounded" />
 
-            <!--<android.support.v4.view.ViewPager-->
-            <!--android:id="@+id/vp_banner"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="@dimen/dp_173"-->
-            <!--android:layout_marginTop="@dimen/dp_8"-->
-            <!--android:background="@drawable/bg_card_white_corner_rounded"-->
-            <!--android:clipToPadding="false"-->
-            <!--android:overScrollMode="never" />-->
-
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_device"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginBottom="@dimen/dp_8" />
+                android:layout_marginBottom="@dimen/dp_8"
+                android:fadingEdge="none" />
 
             <RelativeLayout
                 android:id="@+id/rl_empty"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_238"
+                android:layout_marginTop="@dimen/dp_8"
                 android:background="@drawable/bg_card_white_corner_rounded">
 
                 <TextView
@@ -74,7 +67,7 @@
                     android:text="@string/str_add_device" />
             </RelativeLayout>
         </LinearLayout>
-    </com.sunmi.apmanager.utils.pulltorefresh.library.PullToRefreshScrollView1>
+    </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
 
     <TextView
         android:id="@+id/btn_add"

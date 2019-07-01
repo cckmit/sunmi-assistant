@@ -97,6 +97,7 @@ public class MainTopBar extends LinearLayout implements BaseNotification.Notific
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
+        setCompanyName(SpUtils.getCompanyName());
         setShopName(SpUtils.getShopName());
     }
 
