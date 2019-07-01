@@ -186,8 +186,9 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
         @Override
         public void initMenu(View list) {
             // Add view into ConstraintLayout.
+            int index = mContent.indexOfChild(mOverlay) + 1;
             if (mContent.indexOfChild(list) == -1) {
-                mContent.addView(list, 2);
+                mContent.addView(list, index);
             }
             // Init constraint set of menu list in ConstraintLayout.
             ConstraintSet con = new ConstraintSet();

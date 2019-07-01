@@ -26,6 +26,7 @@
         android:gravity="center"
         android:text="@string/order_list_empty"
         android:textSize="@dimen/sp_12"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/order_line_decoration" />
