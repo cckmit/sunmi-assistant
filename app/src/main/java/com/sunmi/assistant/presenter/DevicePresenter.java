@@ -60,8 +60,8 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
             @Override
             public void onSuccess(int code, String msg, String data) {
                 mView.endRefresh();
+                List<SunmiDevice> list = new ArrayList<>();
                 try {
-                    List<SunmiDevice> list = new ArrayList<>();
                     if (code == 1) {
                         JSONArray jsonArray = new JSONArray(data);
                         for (int i = 0; i < jsonArray.length(); i++) {
@@ -82,12 +82,12 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                                 device.setShopId(object.getInt("shop_id"));
                             }
                             list.add(device);
-                            if (isViewAttached()) mView.getRouterListSuccess(list);
                         }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                if (isViewAttached()) mView.getRouterListSuccess(list);
             }
 
             @Override
@@ -160,8 +160,8 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
     }
 
     @Override
-    public void unbindIPC(String deviceId) {
-        IPCCloudApi.unbindIPC(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId, new RetrofitCallback() {
+    public void unbindIPC(int deviceId) {
+        IPCCloudApi.unbindIPC(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId + "", new RetrofitCallback() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
