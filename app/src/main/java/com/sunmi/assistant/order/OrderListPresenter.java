@@ -17,6 +17,7 @@ import java.util.List;
 import sunmi.common.base.BasePresenter;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
 
 /**
@@ -38,21 +39,26 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
     private List<Integer> mFilterOrderType = new ArrayList<>(1);
 
     private SparseArray<String> mOrderType = new SparseArray<>(2);
-    private OrderListResp mPendingData;
 
     private long mTimeStart;
     private long mTimeEnd;
+    private int mInitOrderType;
 
     private int mCurrentPage = PAGE_INIT;
     private int mCompanyId;
     private int mShopId;
 
     @Override
-    public void loadList(long timeStart, long timeEnd) {
+    public void loadList(long timeStart, long timeEnd, int initOrderType) {
         mCompanyId = SpUtils.getCompanyId();
         mShopId = SpUtils.getShopId();
         mTimeStart = timeStart;
         mTimeEnd = timeEnd;
+        mInitOrderType = initOrderType;
+
+        if (!isViewAttached()) {
+            return;
+        }
 
         List<FilterItem> order = new ArrayList<>(2);
         order.add(new FilterItem(1,
@@ -92,14 +98,20 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
                 List<FilterItem> orderType = new ArrayList<>(list.size());
                 for (OrderTypeListResp.OrderType type : list) {
                     mOrderType.put(type.getId(), type.getTag());
-                    orderType.add(new FilterItem(type.getId(), type.getName()));
+                    FilterItem item = new FilterItem(type.getId(), type.getName());
+                    if (mInitOrderType != OrderInfo.ORDER_TYPE_ALL) {
+                        if ((mInitOrderType == OrderInfo.ORDER_TYPE_NORMAL
+                                && CommonConstants.ORDER_TYPE_NORMAL.equals(type.getTag()))
+                                || (mInitOrderType == OrderInfo.ORDER_TYPE_REFUNDS
+                                && CommonConstants.ORDER_TYPE_REFUNDS.equals(type.getTag()))) {
+                            item.setChecked(true);
+                        }
+                    }
+                    orderType.add(item);
                 }
                 if (isViewAttached()) {
                     mView.updateFilter(2, orderType);
-                }
-                if (isViewAttached() && mPendingData != null) {
-                    mView.setData(buildOrderList(mPendingData));
-                    mPendingData = null;
+                    loadData(true);
                 }
             }
 
@@ -108,7 +120,6 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
                 Log.e(TAG, "Get order type list FAILED. code=" + code + "; msg=" + msg);
             }
         });
-        loadData(true);
     }
 
     @Override
@@ -152,6 +163,14 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
     }
 
     private void loadData(boolean refresh) {
+        if (!isViewAttached()) {
+            return;
+        }
+        if (!NetworkUtils.isNetworkAvailable(mView.getContext())) {
+            mView.shortTip(R.string.toast_networkIsExceptional);
+            mView.setData(null);
+            return;
+        }
         if (refresh) {
             mCurrentPage = PAGE_INIT;
         } else {
@@ -166,10 +185,6 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
                         if (!isViewAttached()) {
                             return;
                         }
-                        if (mOrderType.size() == 0) {
-                            mPendingData = data;
-                            return;
-                        }
                         List<OrderInfo> list = buildOrderList(data);
                         if (refresh) {
                             mView.setData(list);
@@ -181,7 +196,11 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
                     @Override
                     public void onFail(int code, String msg, OrderListResp data) {
                         Log.e(TAG, "Get order list FAILED. code=" + code + "; msg=" + msg);
-                        if (isViewAttached() && refresh) {
+                        if (!isViewAttached()) {
+                            return;
+                        }
+                        mView.shortTip(R.string.toast_networkIsExceptional);
+                        if (refresh) {
                             mView.setData(null);
                         }
                     }
@@ -197,7 +216,7 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
             float rawAmount = item.getAmount();
             float amount = orderType == OrderInfo.ORDER_TYPE_NORMAL ?
                     Math.abs(rawAmount) : -1 * Math.abs(rawAmount);
-            list.add(new OrderInfo(item.getId(), amount, orderType,
+            list.add(new OrderInfo(item.getId(), item.getOrder_no(), amount, orderType,
                     item.getPurchase_type(), item.getPurchase_time() * 1000));
         }
         return list;

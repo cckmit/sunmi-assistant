@@ -2,7 +2,6 @@ package com.sunmi.assistant.dashboard.card;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Pair;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
@@ -32,7 +31,7 @@ public class TopTabCard extends BaseRefreshCard<TopTabCard.Model> {
     }
 
     @Override
-    protected void load(int companyId, int shopId, int period, Pair<Long, Long> periodTimestamp, Model o) {
+    protected void load(int companyId, int shopId, int period, Model o) {
     }
 
     public class TopTabType extends ItemType<Model, BaseViewHolder<Model>> {

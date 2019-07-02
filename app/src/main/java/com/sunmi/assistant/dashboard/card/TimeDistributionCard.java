@@ -54,13 +54,14 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
     }
 
     @Override
-    protected void load(int companyId, int shopId, int period, Pair<Long, Long> periodTimestamp, Model model) {
+    protected void load(int companyId, int shopId, int period, Model model) {
         int interval;
         if (period == DashboardContract.TIME_PERIOD_TODAY) {
             interval = 3600;
         } else {
             interval = 86400;
         }
+        Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(period);
         SunmiStoreRemote.get().getOrderTimeDistribution(companyId, shopId,
                 periodTimestamp.first, periodTimestamp.second, interval,
                 new CardCallback<OrderTimeDistributionResp>() {
@@ -170,11 +171,23 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
             }
             chart.getAxisLeft().setAxisMaximum(max > 0 ? max * 1.2f : 5f);
 
+            // Calculate bar width.
+            float barWidthRatio;
+            if (getPeriod() == DashboardContract.TIME_PERIOD_MONTH) {
+                barWidthRatio = 0.75f;
+            } else if (getPeriod() == DashboardContract.TIME_PERIOD_WEEK) {
+                barWidthRatio = 0.2f;
+            } else {
+                barWidthRatio = 0.65f;
+            }
+
             BarDataSet dataSet;
-            if (chart.getData() != null && chart.getData().getDataSetCount() > 0) {
-                dataSet = (BarDataSet) chart.getData().getDataSetByIndex(0);
+            BarData barData = chart.getData();
+            if (barData != null && barData.getDataSetCount() > 0) {
+                dataSet = (BarDataSet) barData.getDataSetByIndex(0);
                 dataSet.setValues(dataList);
-                chart.getData().notifyDataChanged();
+                barData.setBarWidth(barWidthRatio);
+                barData.notifyDataChanged();
                 chart.notifyDataSetChanged();
                 chart.invalidate();
 //                BarChartDataUpdateAnim anim = new BarChartDataUpdateAnim(300, chart,
@@ -184,8 +197,9 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
                 dataSet = new BarDataSet(dataList, "data");
                 dataSet.setColor(holder.getContext().getResources().getColor(R.color.color_2997FF));
                 dataSet.setDrawValues(false);
-                BarData data = new BarData(dataSet);
-                chart.setData(data);
+                barData = new BarData(dataSet);
+                barData.setBarWidth(barWidthRatio);
+                chart.setData(barData);
                 chart.invalidate();
             }
             chart.animateY(300, Easing.EaseOutCubic);

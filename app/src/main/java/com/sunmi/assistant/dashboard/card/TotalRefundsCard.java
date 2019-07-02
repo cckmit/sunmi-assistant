@@ -44,9 +44,9 @@ public class TotalRefundsCard extends BaseRefreshCard<TotalRefundsCard.Model> {
     }
 
     @Override
-    protected void load(int companyId, int shopId, int period, Pair<Long, Long> periodTimestamp,
-                        Model model) {
+    protected void load(int companyId, int shopId, int period, Model model) {
         Log.d(TAG, "HTTP request total refunds volume.");
+        Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(period);
         SunmiStoreRemote.get().getOrderRefundCount(companyId, shopId,
                 periodTimestamp.first, periodTimestamp.second, 1,
                 new CardCallback<OrderTotalRefundsResp>() {
@@ -62,6 +62,8 @@ public class TotalRefundsCard extends BaseRefreshCard<TotalRefundsCard.Model> {
                             model.trendData = Float.valueOf(data.getWeek_rate());
                         } else if (!TextUtils.isEmpty(data.getDay_rate())) {
                             model.trendData = Float.valueOf(data.getDay_rate());
+                        } else {
+                            model.trendData = 0;
                         }
                     }
                 });
@@ -100,10 +102,14 @@ public class TotalRefundsCard extends BaseRefreshCard<TotalRefundsCard.Model> {
             }
 
             data.setText(String.format(Locale.getDefault(), "%.0f", model.data));
-            trendData.setText(holder.getContext().getResources().getString(R.string.dashboard_data_format,
-                    format.format(model.trendData * 100)));
+            String number = this.format.format(Math.abs(model.trendData * 100));
+            trendData.setText(holder.getContext().getResources()
+                    .getString(R.string.dashboard_data_format, number));
 
-            if (model.trendData >= 0) {
+            if (TextUtils.equals(number, "0")) {
+                trendData.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null);
+                trendData.setTextColor(holder.getContext().getResources().getColor(R.color.color_333338));
+            } else if (model.trendData > 0) {
                 trendData.setCompoundDrawablesRelativeWithIntrinsicBounds(
                         R.drawable.dashboard_ic_trend_up, 0, 0, 0);
                 trendData.setTextColor(holder.getContext().getResources().getColor(R.color.color_FF0000));

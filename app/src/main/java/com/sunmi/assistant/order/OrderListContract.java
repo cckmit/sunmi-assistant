@@ -28,7 +28,7 @@ public interface OrderListContract {
 
     interface Presenter {
 
-        void loadList(long timeStart, long timeEnd);
+        void loadList(long timeStart, long timeEnd, int initState);
 
         void setFilterCurrent(int filterIndex, FilterItem model);
 

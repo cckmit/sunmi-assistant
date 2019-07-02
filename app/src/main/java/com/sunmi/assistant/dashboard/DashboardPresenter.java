@@ -18,6 +18,7 @@ import com.sunmi.assistant.dashboard.card.TotalCountCard;
 import com.sunmi.assistant.dashboard.card.TotalRefundsCard;
 import com.sunmi.assistant.dashboard.card.TotalSalesCard;
 import com.sunmi.assistant.order.OrderListActivity_;
+import com.sunmi.assistant.order.model.OrderInfo;
 import com.sunmi.assistant.utils.Utils;
 
 import java.util.ArrayList;
@@ -74,6 +75,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     @Override
     public void switchShopTo(int shopId) {
+        mShopId = shopId;
         if (mList != null) {
             for (BaseRefreshCard card : mList) {
                 card.setShopId(shopId);
@@ -91,8 +93,10 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     private void initList(int companyId, int shopId, int period) {
+        if (!isViewAttached()) {
+            return;
+        }
         Context context = mView.getContext();
-        Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(mPeriod);
 
         TopTabCard tab = new TopTabCard(context, period);
         TotalSalesCard totalSales = new TotalSalesCard(context, companyId, shopId, period);
@@ -119,25 +123,13 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         });
 
         totalSales.setOnItemClickListener((adapter, holder, model, position) ->
-                OrderListActivity_.intent(mView.getContext())
-                        .mTimeStart(periodTimestamp.first)
-                        .mTimeEnd(periodTimestamp.second)
-                        .start());
+                goToOrderList(OrderInfo.ORDER_TYPE_ALL));
         customerPrice.setOnItemClickListener((adapter, holder, model, position) ->
-                OrderListActivity_.intent(mView.getContext())
-                        .mTimeStart(periodTimestamp.first)
-                        .mTimeEnd(periodTimestamp.second)
-                        .start());
+                goToOrderList(OrderInfo.ORDER_TYPE_NORMAL));
         totalCount.setOnItemClickListener((adapter, holder, model, position) ->
-                OrderListActivity_.intent(mView.getContext())
-                        .mTimeStart(periodTimestamp.first)
-                        .mTimeEnd(periodTimestamp.second)
-                        .start());
+                goToOrderList(OrderInfo.ORDER_TYPE_NORMAL));
         totalRefunds.setOnItemClickListener((adapter, holder, model, position) ->
-                OrderListActivity_.intent(mView.getContext())
-                        .mTimeStart(periodTimestamp.first)
-                        .mTimeEnd(periodTimestamp.second)
-                        .start());
+                goToOrderList(OrderInfo.ORDER_TYPE_REFUNDS));
 
         timeDistribution.addOnViewClickListener(R.id.tv_dashboard_radio_by_sales,
                 (adapter, holder, v, model, position) -> {
@@ -161,7 +153,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 });
 
         mList = new ArrayList<>(9);
-        mList.add(new TitleCard(context));
+        mList.add(new TitleCard(context, companyId, shopId, period));
         mList.add(tab);
         mList.add(totalSales);
         mList.add(customerPrice);
@@ -173,6 +165,15 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         mView.initData(mList);
         mTask = new RefreshTask(mList);
         sHandler.postDelayed(mTask, REFRESH_TIME_PERIOD);
+    }
+
+    private void goToOrderList(int orderType) {
+        Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(mPeriod);
+        OrderListActivity_.intent(mView.getContext())
+                .mTimeStart(periodTimestamp.first)
+                .mTimeEnd(periodTimestamp.second)
+                .mInitOrderType(orderType)
+                .start();
     }
 
     @Override

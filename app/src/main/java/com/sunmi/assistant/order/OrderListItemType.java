@@ -23,11 +23,11 @@ public class OrderListItemType extends ItemType<OrderInfo, BaseViewHolder<OrderI
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder<OrderInfo> holder, OrderInfo model, int position) {
-        TextView orderId = holder.getView(R.id.order_item_id);
+        TextView orderNo = holder.getView(R.id.order_item_no);
         TextView orderAmount = holder.getView(R.id.order_item_amount);
         TextView orderPayType = holder.getView(R.id.order_item_pay_type);
         TextView orderTime = holder.getView(R.id.order_item_time);
-        orderId.setText(String.valueOf(model.getId()));
+        orderNo.setText(model.getNo());
         orderAmount.setText(holder.getContext().getResources().getString(
                 R.string.order_amount, model.getAmount()));
         orderPayType.setText(holder.getContext().getResources().getString(
