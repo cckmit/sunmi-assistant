@@ -119,7 +119,7 @@ public abstract class BaseRefreshCard<Model> {
         }
     }
 
-    private void updateView() {
+    void updateView() {
         if (mHolder != null) {
             mType.onBindViewHolder(mHolder, mModel, mHolder.getAdapterPosition());
         }

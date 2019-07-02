@@ -4,9 +4,11 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.ui.MainTopBar;
 
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
+import sunmi.common.utils.SpUtils;
 
 /**
  * @author yinhui
@@ -14,8 +16,8 @@ import sunmi.common.base.recycle.ItemType;
  */
 public class TitleCard extends BaseRefreshCard<TitleCard.Model> {
 
-    public TitleCard(Context context) {
-        super(context);
+    public TitleCard(Context context, int companyId, int shopId, int period) {
+        super(context, companyId, shopId, period);
     }
 
     @Override
@@ -29,10 +31,12 @@ public class TitleCard extends BaseRefreshCard<TitleCard.Model> {
     }
 
     @Override
-    protected void load(int companyId, int shopId, int period, Model o) {
+    protected void load(int companyId, int shopId, int period, Model model) {
+        model.shopName = SpUtils.getShopName();
+        updateView();
     }
 
-    private static class TitleType extends ItemType<Model, BaseViewHolder<Model>> {
+    private class TitleType extends ItemType<Model, BaseViewHolder<Model>> {
 
         @Override
         public int getLayoutId(int type) {
@@ -46,10 +50,21 @@ public class TitleCard extends BaseRefreshCard<TitleCard.Model> {
 
         @Override
         public void onBindViewHolder(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+            setHolder(holder);
+            MainTopBar bar = holder.getView(R.id.dashboard_title);
+            bar.setCompanyName(model.companyName);
+            bar.setShopName(model.shopName);
         }
 
     }
 
     public static class Model {
+        public String companyName;
+        public String shopName;
+
+        public Model() {
+            this.companyName = SpUtils.getCompanyName();
+            this.shopName = SpUtils.getShopName();
+        }
     }
 }

@@ -170,7 +170,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 });
 
         mList = new ArrayList<>(9);
-        mList.add(new TitleCard(context));
+        mList.add(new TitleCard(context, companyId, shopId, period));
         mList.add(tab);
         mList.add(totalSales);
         mList.add(customerPrice);
