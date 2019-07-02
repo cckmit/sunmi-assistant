@@ -74,7 +74,9 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
                 for (OrderPayTypeListResp.PayType type : list) {
                     payType.add(new FilterItem(type.getId(), type.getName()));
                 }
-                mView.updateFilter(1, payType);
+                if (isViewAttached()) {
+                    mView.updateFilter(1, payType);
+                }
             }
 
             @Override
@@ -92,8 +94,10 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
                     mOrderType.put(type.getId(), type.getTag());
                     orderType.add(new FilterItem(type.getId(), type.getName()));
                 }
-                mView.updateFilter(2, orderType);
-                if (mPendingData != null) {
+                if (isViewAttached()) {
+                    mView.updateFilter(2, orderType);
+                }
+                if (isViewAttached() && mPendingData != null) {
                     mView.setData(buildOrderList(mPendingData));
                     mPendingData = null;
                 }
@@ -159,6 +163,9 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
                 new RetrofitCallback<OrderListResp>() {
                     @Override
                     public void onSuccess(int code, String msg, OrderListResp data) {
+                        if (!isViewAttached()) {
+                            return;
+                        }
                         if (mOrderType.size() == 0) {
                             mPendingData = data;
                             return;
@@ -174,7 +181,7 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
                     @Override
                     public void onFail(int code, String msg, OrderListResp data) {
                         Log.e(TAG, "Get order list FAILED. code=" + code + "; msg=" + msg);
-                        if (refresh) {
+                        if (isViewAttached() && refresh) {
                             mView.setData(null);
                         }
                     }
@@ -191,7 +198,7 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
             float amount = orderType == OrderInfo.ORDER_TYPE_NORMAL ?
                     Math.abs(rawAmount) : -1 * Math.abs(rawAmount);
             list.add(new OrderInfo(item.getId(), amount, orderType,
-                    item.getPurchase_type(), item.getPurchase_time()));
+                    item.getPurchase_type(), item.getPurchase_time() * 1000));
         }
         return list;
     }
