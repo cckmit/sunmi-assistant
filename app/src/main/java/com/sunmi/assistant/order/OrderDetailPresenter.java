@@ -22,7 +22,9 @@ public class OrderDetailPresenter extends BasePresenter<OrderDetailContract.View
         SunmiStoreRemote.get().getOrderDetailList(orderId, new RetrofitCallback<OrderDetailListResp>() {
             @Override
             public void onSuccess(int code, String msg, OrderDetailListResp data) {
-                mView.updateDetailList(data.getDetail_list());
+                if (isViewAttached()) {
+                    mView.updateDetailList(data.getDetail_list());
+                }
             }
 
             @Override

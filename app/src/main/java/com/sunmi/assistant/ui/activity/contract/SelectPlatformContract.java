@@ -1,5 +1,7 @@
 package com.sunmi.assistant.ui.activity.contract;
 
+import com.sunmi.assistant.ui.activity.model.PlatformInfo;
+
 import sunmi.common.base.BaseView;
 
 /**
@@ -7,7 +9,7 @@ import sunmi.common.base.BaseView;
  */
 public interface SelectPlatformContract {
     interface View extends BaseView {
-        void getPlatformInfoSuccess(String data);
+        void getPlatformInfoSuccess(PlatformInfo data);
 
         void getPlatformInfoFail(int code, String msg);
 

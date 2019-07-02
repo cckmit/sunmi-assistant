@@ -92,6 +92,7 @@
         <activity android:name=".ui.activity.merchant.CheckPlatformMobileActivity_" />
         <activity android:name=".order.OrderListActivity_" />
         <activity android:name=".order.OrderDetailActivity_" />
+        <activity android:name=".ui.activity.login.LoginChooseShopActivity_" />
         <activity android:name=".ui.activity.ChooseShopActivity_" />
 
         <!--百度地图-->

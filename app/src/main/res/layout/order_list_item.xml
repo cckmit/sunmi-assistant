@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_16"
-        android:text="@string/order_id_colon"
+        android:text="@string/order_no_colon"
         android:textColor="@color/color_333338"
         android:textSize="@dimen/sp_14"
         android:textStyle="bold"
@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/order_item_id"
+        android:id="@+id/order_item_no"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"

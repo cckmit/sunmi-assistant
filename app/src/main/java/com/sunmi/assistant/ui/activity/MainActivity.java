@@ -6,7 +6,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkRequest;
 import android.os.Build;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,13 +15,10 @@ import android.widget.TextView;
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.receiver.MyNetworkCallback;
-import com.sunmi.apmanager.rpc.merchant.MerchantApi;
 import com.sunmi.apmanager.rpc.mqtt.MQTTManager;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.MyApplication;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.data.SunmiStoreRemote;
-import com.sunmi.assistant.data.response.ShopListResp;
 import com.sunmi.assistant.utils.MainTab;
 import com.sunmi.ipc.rpc.IPCCloudApi;
 import com.sunmi.ipc.rpc.RetrofitClient;
@@ -35,17 +31,13 @@ import org.androidannotations.annotations.ViewById;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
-
 import sunmi.common.base.BaseActivity;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.notification.BaseNotification;
-import sunmi.common.rpc.http.RpcCallback;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.MyFragmentTabHost;
 
 /**
@@ -77,7 +69,12 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
         if (MyApplication.isCheckedToken)
             MQTTManager.getInstance().createEmqToken(true);//初始化长连接
         initIpc();
-        getCompanyId();
+        if (TextUtils.isEmpty(SpUtils.getCompanyName())) {
+            CommonUtils.logout();
+            CommonUtils.gotoLoginActivity(context, "");
+        } else {
+            initTabs();
+        }
     }
 
     @Override
@@ -86,8 +83,8 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
         unRegisterNetworkReceiver();
     }
 
+    //ipc初始化
     private void initIpc() {
-        //ipc初始化
         if (TextUtils.isEmpty(SpUtils.getSsoToken()))
             IPCCloudApi.getStoreToken(new RetrofitCallback() {
                 @Override
@@ -110,48 +107,6 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
         else {
             MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
         }
-    }
-
-    private void getCompanyId() {
-        if (SpUtils.getCompanyId() > 0) {
-            getShopList();
-        } else {
-            MerchantApi.getCompanyId(new RpcCallback(context) {
-                @Override
-                public void onSuccess(int code, String msg, String data) {
-                    try {
-                        JSONObject jsonObject = new JSONObject(data);
-                        if (jsonObject.has("company_id")) {
-                            LogCat.e(TAG, "111111 getCompanyId -> get params error," + jsonObject.getInt("company_id"));
-                            SpUtils.setCompanyId(jsonObject.getInt("company_id"));
-                            getShopList();
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }
-    }
-
-    private void getShopList() {
-        SunmiStoreRemote.get().getShopList(SpUtils.getCompanyId(), new RetrofitCallback<ShopListResp>() {
-            @Override
-            public void onSuccess(int code, String msg, ShopListResp data) {
-                List<ShopListResp.ShopInfo> shopList = data.getShop_list();
-                if (shopList != null && shopList.size() != 0) {
-                    ShopListResp.ShopInfo shopInfo = shopList.get(0);
-                    SpUtils.setShopId(shopInfo.getShop_id());
-                    SpUtils.setShopName(shopInfo.getShop_name());
-                    initTabs();
-                }
-            }
-
-            @Override
-            public void onFail(int code, String msg, ShopListResp data) {
-                Log.e(TAG, "Get shop list FAILED. code=" + code + "; msg=" + msg);
-            }
-        });
     }
 
     private void initTabs() {
@@ -215,7 +170,6 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
     @Override
     public void onTabChanged(String tabId) {
         trackTabEvent(tabId);
-        initStatusBar(tabId);
         final int size = mTabHost.getTabWidget().getTabCount();
         for (int i = 0; i < size; i++) {
             View v = mTabHost.getTabWidget().getChildAt(i);
@@ -226,15 +180,6 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
                 v.setSelected(false);
             }
         }
-    }
-
-    private void initStatusBar(String tabId) {
-//        if (TextUtils.equals(getStringById(R.string.str_tab_device), tabId)) {
-//            HelpUtils.setStatusBarFullTransparent(this);//透明标题栏
-//        } else {
-        StatusBarUtils.setStatusBarColor(this,
-                StatusBarUtils.TYPE_DARK);//状态栏
-//        }
     }
 
     private void trackTabEvent(String tabId) {

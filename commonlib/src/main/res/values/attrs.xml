@@ -4,9 +4,9 @@
         <!--左边icon-->
         <attr name="leftIcon" format="reference" />
         <!--todo 左边文字、文字颜色、文字大小-->
-        <attr name="leftText" />
-        <attr name="leftTextColor" />
-        <attr name="leftTextSize" />
+        <attr name="leftText" format="string" />
+        <attr name="leftTextColor" format="color" />
+        <attr name="leftTextSize" format="dimension" />
         <!--todo Title文字、文字颜色、文字大小-->
         <attr name="titleText" format="string" />
         <attr name="titleTextColor" format="color" />
@@ -14,9 +14,9 @@
         <!--todo 右边icon-->
         <attr name="rightIcon" format="reference" />
         <!--todo 右边文字、文字颜色、文字大小-->
-        <attr name="rightText" />
-        <attr name="rightTextColor" />
-        <attr name="rightTextSize" />
+        <attr name="rightText" format="string" />
+        <attr name="rightTextColor" format="color" />
+        <attr name="rightTextSize" format="dimension" />
         <!--状态栏颜色-->
         <attr name="statusBarColor" format="reference" />
         <!--分割线-->

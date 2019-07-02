@@ -63,14 +63,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_20"
-        android:text="@string/order_id"
+        android:text="@string/order_no"
         android:textColor="@color/color_85858A"
         android:textSize="@dimen/sp_14"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/order_detail_line_decoration" />
 
     <TextView
-        android:id="@+id/order_id"
+        android:id="@+id/order_no"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_20"

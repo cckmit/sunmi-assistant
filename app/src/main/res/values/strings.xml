@@ -66,6 +66,10 @@
     <string name="str_platform_sms_code_error">验证码错误，请重新输入</string>
     <string name="str_button_auto_create">自动创建</string>
     <string name="str_dialog_auto_create_store">未发现与该手机号匹配的内容，是否允许系统自动为您创建门店？</string>
+    <string name="str_dialog_auth_message">申请获取您在%s的门店数据。</string>
+    <string name="str_unkunw_store">%s的门店</string>
+    <string name="str_create_store_fail">当前门店创建失败</string>
+    <string name="str_create_store_alredy_exit">门店名称已存在</string>
 
     <string name="order_list_title">详情列表</string>
     <string name="order_filter_sort">综合排序</string>
@@ -75,8 +79,8 @@
     <string name="order_time_descending">时间倒序</string>
     <string name="order_pay_type">支付类型</string>
     <string name="order_transaction_type">交易类型</string>
-    <string name="order_id_colon">订单号：</string>
-    <string name="order_id">订单号</string>
+    <string name="order_no_colon">订单号：</string>
+    <string name="order_no">订单号</string>
     <string name="order_amount">%+.2f元</string>
     <string name="order_pay_method_colon">支付方式：%s</string>
     <string name="order_pay_method">支付方式</string>
@@ -88,5 +92,11 @@
     <string name="order_order_detail">支付明细</string>
     <string name="order_commodity">商品</string>
     <string name="order_quantity">数量</string>
+    <string name="tip_no_device_please_add">暂无设备, 请添加</string>
+    <string name="str_my_shop">我的门店</string>
+    <string name="str_current_shop">当前门店</string>
+    <string name="str_other_shop">其他门店</string>
+    <string name="tip_no_other_shop">暂无其他门店</string>
+    <string name="str_my_company">我的商户</string>
 
 </resources>

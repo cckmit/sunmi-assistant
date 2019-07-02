@@ -1,10 +1,12 @@
 package com.sunmi.assistant.ui.activity.presenter;
 
-import com.sunmi.apmanager.rpc.merchant.MerchantApi;
+import com.sunmi.assistant.rpc.CloudCall;
 import com.sunmi.assistant.ui.activity.contract.AuthStoreCompleteContract;
+import com.sunmi.assistant.ui.activity.model.CreateStoreInfo;
 
 import sunmi.common.base.BasePresenter;
-import sunmi.common.rpc.http.HttpCallback;
+import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.SpUtils;
 
 
 /**
@@ -13,18 +15,42 @@ import sunmi.common.rpc.http.HttpCallback;
  */
 public class AuthStoreCompletePresenter extends BasePresenter<AuthStoreCompleteContract.View>
         implements AuthStoreCompleteContract.Presenter {
-    @Override
-    public void getAuthStoreCompleteInfo() {
-        MerchantApi.getUserInfo(new HttpCallback<String>(mView) {
 
+
+    @Override
+    public void authStoreCompleteInfo(String shop_id, String saas_source, String shop_no, String saas_name) {
+        CloudCall.authorizeSaas(SpUtils.getCompanyId() + "", shop_id, saas_source, shop_no, saas_name, new RetrofitCallback<String>() {
             @Override
-            public void onFail(int code, String msg, String data) {
-                mView.getAuthStoreCompleteFail(code,data);
+            public void onSuccess(int code, String msg, String data) {
+                if (isViewAttached()) {
+                    mView.authStoreCompleteSuccess(data);
+                }
             }
 
             @Override
-            public void onSuccess(int code, String msg, String data) {
-                mView.getAuthStoreCompleteSuccess(data);
+            public void onFail(int code, String msg, String data) {
+                if (isViewAttached()) {
+                    mView.authStoreCompleteFail(code, data);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void createStore(String shopName) {
+        CloudCall.createShop(SpUtils.getCompanyId() + "", shopName, new RetrofitCallback<CreateStoreInfo>() {
+            @Override
+            public void onSuccess(int code, String msg, CreateStoreInfo data) {
+                if (isViewAttached()) {
+                    mView.createStoreSuccess(data);
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, CreateStoreInfo data) {
+                if (isViewAttached()) {
+                    mView.createStoreFail(code, msg);
+                }
             }
         });
     }

@@ -2,16 +2,18 @@ package com.sunmi.assistant.dashboard;
 
 import android.content.Context;
 
+import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+
 import java.util.List;
 
 import sunmi.common.base.BaseView;
 
 public interface DashboardContract {
 
-    int TIME_SPAN_INIT = 0;
-    int TIME_SPAN_TODAY = 1;
-    int TIME_SPAN_WEEK = 2;
-    int TIME_SPAN_MONTH = 3;
+    int TIME_PERIOD_INIT = 0;
+    int TIME_PERIOD_TODAY = 1;
+    int TIME_PERIOD_WEEK = 2;
+    int TIME_PERIOD_MONTH = 3;
 
     int DATA_MODE_SALES = 0;
     int DATA_MODE_ORDER = 1;
@@ -20,17 +22,22 @@ public interface DashboardContract {
 
         Context getContext();
 
-        void updateTitle();
+        void initData(List<BaseRefreshCard> data);
 
-        void updateData(List<?> data);
+        void updateStickyTab(int period);
+
+        void updateCard(int position);
     }
 
     interface Presenter {
 
         void loadConfig();
 
-        void timeSpanSwitchTo(int timeSpan);
+        void switchPeriodTo(int period);
 
-        void refresh(DataRefreshCallback callback);
+        void switchShopTo(int shopId);
+
+        void refresh();
+
     }
 }

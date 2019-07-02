@@ -1,8 +1,11 @@
 package com.sunmi.assistant.rpc;
 
+import com.sunmi.apmanager.model.LoginDataBean;
+import com.sunmi.assistant.data.CompanyManageService;
 import com.sunmi.assistant.rpc.api.AdInterface;
 import com.sunmi.assistant.rpc.api.PlatformInterface;
 import com.sunmi.ipc.rpc.RetrofitClient;
+import com.sunmi.ipc.rpc.api.UserInterface;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,6 +23,22 @@ import sunmi.common.utils.SafeUtils;
  */
 public class CloudCall extends BaseHttpApi {
 
+    public static void getStoreToken(LoginDataBean loginData, RetrofitCallback callback) {
+        try {
+            String params = new JSONObject()
+                    .put("user_id", loginData.getUid())
+                    .put("token", loginData.getToken())
+                    .put("merchant_id", loginData.getCompany_id())
+                    .put("app_type", 2)//1代表web, 2 代表app
+                    .toString();
+            RetrofitClient.getInstance().create(UserInterface.class)
+                    .getStoreToken(getSignedRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void getAdList(int companyId, int shopId, RetrofitCallback callback) {
         try {
             String params = new JSONObject()
@@ -30,6 +49,21 @@ public class CloudCall extends BaseHttpApi {
                     .getAdList(getSignedRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取商户列表
+     */
+    public static void getCompanyList(RetrofitCallback callback) {
+        try {
+            String params = new JSONObject()
+                    .toString();
+            RetrofitClient.getInstance().create(CompanyManageService.class)
+                    .getList(getSignedRequest(""))
+                    .enqueue(callback);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -56,14 +90,14 @@ public class CloudCall extends BaseHttpApi {
     /**
      * 创建门店
      */
-    public static void createShop(String companyName, String shopName, RetrofitCallback callback) {
+    public static void createShop(String company_id, String shopName, RetrofitCallback callback) {
         try {
             String params = new JSONObject()
-                    .put("company_name", companyName)
+                    .put("company_id", company_id)
                     .put("shop_name", shopName)
                     .toString();
             RetrofitClient.getInstance().create(PlatformInterface.class)
-                    .createMerchant(getSignedRequest(params))
+                    .createShop(getSignedRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -89,10 +123,10 @@ public class CloudCall extends BaseHttpApi {
     /**
      * 米商引擎所支持的Saas平台信息
      */
-    public static void getPlatformList(String phone, RetrofitCallback callback) {
+    public static void getPlatformList( RetrofitCallback callback) {
         try {
             RetrofitClient.getInstance().create(PlatformInterface.class)
-                    .getPlatformList(null)
+                    .getPlatformList(getSignedRequest(""))
                     .enqueue(callback);
         } catch (Exception e) {
             e.printStackTrace();
@@ -153,7 +187,7 @@ public class CloudCall extends BaseHttpApi {
                     .put("saas_name", saas_name)
                     .toString();
             RetrofitClient.getInstance().create(PlatformInterface.class)
-                    .sendSaasVerifyCode(getSignedRequest(params))
+                    .authorizeSaas(getSignedRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();

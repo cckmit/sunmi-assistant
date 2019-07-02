@@ -24,6 +24,7 @@ import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.base.recycle.BaseArrayAdapter;
+import sunmi.common.utils.NetworkUtils;
 import sunmi.common.view.DropdownMenu;
 
 @SuppressLint("Registered")
@@ -48,6 +49,8 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
     long mTimeStart;
     @Extra
     long mTimeEnd;
+    @Extra
+    int mInitOrderType;
 
     private DropdownAnimation mDropdownAnimator = new DropdownAnimation();
     private List<DropdownMenu> mFilters = new ArrayList<>(3);
@@ -59,7 +62,11 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
         initViews();
         mPresenter = new OrderListPresenter();
         mPresenter.attachView(this);
-        mPresenter.loadList(mTimeStart, mTimeEnd);
+        if (!NetworkUtils.isNetworkAvailable(this)) {
+            shortTip(R.string.toast_networkIsExceptional);
+            return;
+        }
+        mPresenter.loadList(mTimeStart, mTimeEnd, mInitOrderType);
     }
 
     private void initViews() {
@@ -140,17 +147,26 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
 
     @Override
     public void updateFilter(int filterIndex, List<FilterItem> list) {
-        mFilterAdapters.get(filterIndex).setData(list, -1);
+        int selection = -1;
+        for (int i = 0, size = list.size(); i < size; i++) {
+            if (list.get(i).isChecked()) {
+                selection = i;
+            }
+        }
+        mFilterAdapters.get(filterIndex).setData(list, selection);
     }
 
     @Override
     public void setData(List<OrderInfo> list) {
-        if (list == null || list.isEmpty()) {
+        if (list == null) {
+            mOrderListEmpty.setVisibility(View.GONE);
+            list = new ArrayList<>();
+        } else if (list.isEmpty()) {
             mOrderListEmpty.setVisibility(View.VISIBLE);
         } else {
             mOrderListEmpty.setVisibility(View.GONE);
-            mOrderListAdapter.setData(list);
         }
+        mOrderListAdapter.setData(list);
     }
 
     @Override
