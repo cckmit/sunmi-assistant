@@ -17,6 +17,7 @@ import java.util.List;
 import sunmi.common.base.BasePresenter;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
 
 /**
@@ -162,6 +163,14 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
     }
 
     private void loadData(boolean refresh) {
+        if (!isViewAttached()) {
+            return;
+        }
+        if (!NetworkUtils.isNetworkAvailable(mView.getContext())) {
+            mView.shortTip(R.string.toast_networkIsExceptional);
+            mView.setData(null);
+            return;
+        }
         if (refresh) {
             mCurrentPage = PAGE_INIT;
         } else {
@@ -187,7 +196,11 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
                     @Override
                     public void onFail(int code, String msg, OrderListResp data) {
                         Log.e(TAG, "Get order list FAILED. code=" + code + "; msg=" + msg);
-                        if (isViewAttached() && refresh) {
+                        if (!isViewAttached()) {
+                            return;
+                        }
+                        mView.shortTip(R.string.toast_networkIsExceptional);
+                        if (refresh) {
                             mView.setData(null);
                         }
                     }

@@ -24,6 +24,7 @@ import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.base.recycle.BaseArrayAdapter;
+import sunmi.common.utils.NetworkUtils;
 import sunmi.common.view.DropdownMenu;
 
 @SuppressLint("Registered")
@@ -61,6 +62,10 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
         initViews();
         mPresenter = new OrderListPresenter();
         mPresenter.attachView(this);
+        if (!NetworkUtils.isNetworkAvailable(this)) {
+            shortTip(R.string.toast_networkIsExceptional);
+            return;
+        }
         mPresenter.loadList(mTimeStart, mTimeEnd, mInitOrderType);
     }
 
@@ -153,12 +158,15 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
 
     @Override
     public void setData(List<OrderInfo> list) {
-        if (list == null || list.isEmpty()) {
+        if (list == null) {
+            mOrderListEmpty.setVisibility(View.GONE);
+            list = new ArrayList<>();
+        } else if (list.isEmpty()) {
             mOrderListEmpty.setVisibility(View.VISIBLE);
         } else {
             mOrderListEmpty.setVisibility(View.GONE);
-            mOrderListAdapter.setData(list);
         }
+        mOrderListAdapter.setData(list);
     }
 
     @Override
