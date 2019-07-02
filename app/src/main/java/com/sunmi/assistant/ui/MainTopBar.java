@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
@@ -41,6 +42,7 @@ public class MainTopBar extends LinearLayout implements BaseNotification.Notific
         super(context, attrs, defStyleAttr);
         mContext = context;
         BaseNotification.newInstance().addStickObserver(this, NotificationConstant.shopSwitched);
+        BaseNotification.newInstance().addStickObserver(this, NotificationConstant.shopNameChanged);
         init(attrs);
     }
 
@@ -54,6 +56,7 @@ public class MainTopBar extends LinearLayout implements BaseNotification.Notific
         tvCompanyName.setTextColor(mContext.getResources().getColor(R.color.colorText));
         tvCompanyName.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContext.getResources().getDimensionPixelSize(R.dimen.sp_16));
         tvCompanyName.setSingleLine();
+        tvCompanyName.setEllipsize(TextUtils.TruncateAt.END);
         tvCompanyName.setText(SpUtils.getCompanyName());
         LayoutParams lpCompany = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         lpCompany.setMargins((int) mContext.getResources().getDimension(R.dimen.dp_20),
@@ -66,6 +69,7 @@ public class MainTopBar extends LinearLayout implements BaseNotification.Notific
         tvShopName.setTextColor(mContext.getResources().getColor(R.color.colorText));
         tvShopName.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContext.getResources().getDimensionPixelSize(R.dimen.sp_28));
         tvShopName.setSingleLine();
+        tvShopName.setEllipsize(TextUtils.TruncateAt.END);
         tvShopName.setText(SpUtils.getShopName());
         Drawable drawableLeft = getResources().getDrawable(R.drawable.dashboard_ic_location);
         tvShopName.setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null);
@@ -93,6 +97,7 @@ public class MainTopBar extends LinearLayout implements BaseNotification.Notific
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         BaseNotification.newInstance().removeObserver(this, NotificationConstant.shopSwitched);
+        BaseNotification.newInstance().removeObserver(this, NotificationConstant.shopNameChanged);
     }
 
     @Override

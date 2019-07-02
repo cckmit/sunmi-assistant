@@ -220,12 +220,12 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{NotificationConstant.storeNameChanged};
+        return new int[]{NotificationConstant.shopNameChanged};
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
-        if (id == NotificationConstant.storeNameChanged) {
+        if (id == NotificationConstant.shopNameChanged) {
             // TODO: Update store name.
         }
     }
