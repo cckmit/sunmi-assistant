@@ -111,8 +111,8 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
                 }
                 if (isViewAttached()) {
                     mView.updateFilter(2, orderType);
+                    loadData(true);
                 }
-                loadData(true);
             }
 
             @Override

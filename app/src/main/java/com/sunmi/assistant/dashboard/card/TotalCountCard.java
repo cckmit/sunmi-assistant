@@ -106,14 +106,14 @@ public class TotalCountCard extends BaseRefreshCard<TotalCountCard.Model> {
             trendData.setText(holder.getContext().getResources()
                     .getString(R.string.dashboard_data_format, number));
 
-            if ("0".equals(number)) {
+            if (TextUtils.equals(number, "0")) {
                 trendData.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null);
                 trendData.setTextColor(holder.getContext().getResources().getColor(R.color.color_333338));
             } else if (model.trendData > 0) {
                 trendData.setCompoundDrawablesRelativeWithIntrinsicBounds(
                         R.drawable.dashboard_ic_trend_up, 0, 0, 0);
                 trendData.setTextColor(holder.getContext().getResources().getColor(R.color.color_FF0000));
-            } else if (model.trendData < 0) {
+            } else {
                 trendData.setCompoundDrawablesRelativeWithIntrinsicBounds(
                         R.drawable.dashboard_ic_trend_down, 0, 0, 0);
                 trendData.setTextColor(holder.getContext().getResources().getColor(R.color.color_00B552));
