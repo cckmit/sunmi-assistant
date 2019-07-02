@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -183,20 +184,20 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         List<Object> list = new ArrayList<>(data.size());
         for (BaseRefreshCard item : data) {
             item.registerIntoAdapter(mAdapter);
-            list.add(item.mModel);
+            list.add(item.getModel());
         }
         mAdapter.setData(list);
     }
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{NotificationConstant.shopNameChanged};
+        return new int[]{NotificationConstant.shopSwitched};
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
-        if (id == NotificationConstant.shopNameChanged) {
-            // TODO: Update store name.
+        if (id == NotificationConstant.shopSwitched) {
+            mPresenter.switchShopTo((int) args[0]);
         }
     }
 

@@ -2,6 +2,8 @@ package com.sunmi.assistant.dashboard;
 
 import android.content.Context;
 
+import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+
 import java.util.List;
 
 import sunmi.common.base.BaseView;
@@ -29,6 +31,9 @@ public interface DashboardContract {
 
         void switchPeriodTo(int period);
 
+        void switchShopTo(int shopId);
+
         void refresh();
+
     }
 }

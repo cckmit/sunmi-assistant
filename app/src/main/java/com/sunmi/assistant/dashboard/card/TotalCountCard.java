@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.DashboardContract;
 import com.sunmi.assistant.data.SunmiStoreRemote;
 import com.sunmi.assistant.data.response.OrderTotalCountResp;
@@ -31,7 +30,7 @@ public class TotalCountCard extends BaseRefreshCard<TotalCountCard.Model> {
 
     @Override
     protected Model createData() {
-        return new Model(mContext.getString(R.string.dashboard_total_sales_volume));
+        return new Model(getContext().getString(R.string.dashboard_total_sales_volume));
     }
 
     @Override
@@ -40,8 +39,8 @@ public class TotalCountCard extends BaseRefreshCard<TotalCountCard.Model> {
     }
 
     @Override
-    protected void onPeriodChange(int period) {
-        mModel.trendName = Utils.getTrendNameByPeriod(mContext, this.period);
+    protected void onPeriodChange(Model model, int period) {
+        model.trendName = Utils.getTrendNameByPeriod(getContext(), period);
     }
 
     @Override
@@ -85,13 +84,13 @@ public class TotalCountCard extends BaseRefreshCard<TotalCountCard.Model> {
         @Override
         public void onBindViewHolder(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
             Log.d(TAG, "Setup card view.");
-            mHolder = holder;
+            setHolder(holder);
             TextView title = holder.getView(R.id.tv_dashboard_title);
             TextView data = holder.getView(R.id.tv_dashboard_data);
             TextView trendName = holder.getView(R.id.tv_dashboard_trend_name);
             TextView trendData = holder.getView(R.id.tv_dashboard_trend_data);
             title.setText(model.title);
-            if (mState == STATE_INIT) {
+            if (getState() == STATE_INIT || getState() == STATE_LOADING) {
                 Log.d(TAG, "Card data setup view skip.");
                 return;
             }

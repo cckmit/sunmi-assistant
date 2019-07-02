@@ -16,9 +16,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.DashboardContract;
-import com.sunmi.assistant.dashboard.ui.BarChartDataUpdateAnim;
 import com.sunmi.assistant.dashboard.ui.BarXAxisLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.RoundEdgeBarChartRenderer;
 import com.sunmi.assistant.data.SunmiStoreRemote;
@@ -46,17 +44,13 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
 
     @Override
     protected Model createData() {
-        return new Model(mContext.getString(R.string.dashboard_time_distribution),
+        return new Model(getContext().getString(R.string.dashboard_time_distribution),
                 DashboardContract.DATA_MODE_SALES);
     }
 
     @Override
     protected ItemType<Model, BaseViewHolder<Model>> createType() {
         return new TimeDistributionType();
-    }
-
-    @Override
-    protected void onPeriodChange(int period) {
     }
 
     @Override
@@ -144,7 +138,8 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
 
         @Override
         public void onBindViewHolder(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-            mHolder = holder;
+            setHolder(holder);
+            Log.d(TAG, "onBindViewHolder.");
             TextView title = holder.getView(R.id.tv_dashboard_title);
             BarChart chart = holder.getView(R.id.chart_dashboard_bar);
             TextView bySales = holder.getView(R.id.tv_dashboard_radio_by_sales);
@@ -153,12 +148,11 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
             bySales.setSelected(model.dataSource == DashboardContract.DATA_MODE_SALES);
             byOrder.setSelected(model.dataSource == DashboardContract.DATA_MODE_ORDER);
 
-            if (mState == STATE_INIT) {
+            if (getState() == STATE_INIT || getState() == STATE_LOADING) {
                 Log.d(TAG, "Card data setup view skip.");
-                chart.setVisibility(View.INVISIBLE);
                 return;
             }
-            chart.setVisibility(View.VISIBLE);
+
             List<BarEntry> dataList = model.dataSets.get(model.dataSource);
             if (dataList == null || dataList.size() == 0) {
                 chart.setData(null);
@@ -176,35 +170,25 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
             }
             chart.getAxisLeft().setAxisMaximum(max > 0 ? max * 1.2f : 5f);
 
-            // Set the radius of bar chart based on the time span.
-            RoundEdgeBarChartRenderer renderer = (RoundEdgeBarChartRenderer) chart.getRenderer();
-            if (period == DashboardContract.TIME_PERIOD_MONTH) {
-                renderer.setRadius(16);
-            } else if (period == DashboardContract.TIME_PERIOD_WEEK) {
-                renderer.setRadius(68);
-            } else {
-                renderer.setRadius(20);
-            }
-
             BarDataSet dataSet;
             if (chart.getData() != null && chart.getData().getDataSetCount() > 0) {
                 dataSet = (BarDataSet) chart.getData().getDataSetByIndex(0);
-//            dataSet.setValues(dataList);
-//            chart.getData().notifyDataChanged();
-//            chart.notifyDataSetChanged();
-//            chart.invalidate();
-                BarChartDataUpdateAnim anim = new BarChartDataUpdateAnim(300, chart,
-                        dataSet.getValues(), dataList);
-                anim.run();
+                dataSet.setValues(dataList);
+                chart.getData().notifyDataChanged();
+                chart.notifyDataSetChanged();
+                chart.invalidate();
+//                BarChartDataUpdateAnim anim = new BarChartDataUpdateAnim(300, chart,
+//                        dataSet.getValues(), dataList);
+//                anim.run();
             } else {
                 dataSet = new BarDataSet(dataList, "data");
                 dataSet.setColor(holder.getContext().getResources().getColor(R.color.color_2997FF));
                 dataSet.setDrawValues(false);
                 BarData data = new BarData(dataSet);
-                chart.animateY(300, Easing.EaseOutCubic);
                 chart.setData(data);
                 chart.invalidate();
             }
+            chart.animateY(300, Easing.EaseOutCubic);
             holder.getView(R.id.pb_dashboard_loading).setVisibility(View.GONE);
         }
 

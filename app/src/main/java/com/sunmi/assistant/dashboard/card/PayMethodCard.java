@@ -17,9 +17,7 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.DashboardContract;
-import com.sunmi.assistant.dashboard.ui.PieChartDataUpdateAnim;
 import com.sunmi.assistant.data.SunmiStoreRemote;
 import com.sunmi.assistant.data.response.OrderPayTypeRankResp;
 
@@ -53,17 +51,13 @@ public class PayMethodCard extends BaseRefreshCard<PayMethodCard.Model> {
 
     @Override
     protected Model createData() {
-        return new Model(mContext.getString(R.string.dashboard_purchase_rank),
+        return new Model(getContext().getString(R.string.dashboard_purchase_rank),
                 DashboardContract.DATA_MODE_SALES);
     }
 
     @Override
     protected ItemType<Model, BaseViewHolder<Model>> createType() {
         return new PayMethodType();
-    }
-
-    @Override
-    protected void onPeriodChange(int period) {
     }
 
     @Override
@@ -177,7 +171,7 @@ public class PayMethodCard extends BaseRefreshCard<PayMethodCard.Model> {
 
         @Override
         public void onBindViewHolder(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-            mHolder = holder;
+            setHolder(holder);
             TextView title = holder.getView(R.id.tv_dashboard_title);
             TextView bySales = holder.getView(R.id.tv_dashboard_radio_by_sales);
             TextView byOrder = holder.getView(R.id.tv_dashboard_radio_by_order);
@@ -186,13 +180,11 @@ public class PayMethodCard extends BaseRefreshCard<PayMethodCard.Model> {
             bySales.setSelected(model.dataSource == DashboardContract.DATA_MODE_SALES);
             byOrder.setSelected(model.dataSource == DashboardContract.DATA_MODE_ORDER);
 
-            if (mState == STATE_INIT) {
+            if (getState() == STATE_INIT || getState() == STATE_LOADING) {
                 Log.d(TAG, "Card data setup view skip.");
-                chart.setVisibility(View.INVISIBLE);
                 return;
             }
 
-            chart.setVisibility(View.VISIBLE);
             List<PieEntry> newDataSet = model.dataSets.get(model.dataSource);
             if (newDataSet == null || newDataSet.isEmpty()) {
                 chart.setData(null);
@@ -209,23 +201,23 @@ public class PayMethodCard extends BaseRefreshCard<PayMethodCard.Model> {
             legendSetUp(holder, newDataSet);
             if (chart.getData() != null && chart.getData().getDataSetCount() > 0) {
                 dataSet = (PieDataSet) chart.getData().getDataSetByIndex(0);
-//            dataSet.setValues(dataList);
-//            chart.getData().notifyDataChanged();
-//            chart.notifyDataSetChanged();
-//            chart.invalidate();
-                PieChartDataUpdateAnim anim = new PieChartDataUpdateAnim(300, chart,
-                        dataSet.getValues(), newDataSet);
-                anim.run();
+                dataSet.setValues(newDataSet);
+                chart.getData().notifyDataChanged();
+                chart.notifyDataSetChanged();
+                chart.invalidate();
+//                PieChartDataUpdateAnim anim = new PieChartDataUpdateAnim(300, chart,
+//                        dataSet.getValues(), newDataSet);
+//                anim.run();
             } else {
                 dataSet = new PieDataSet(newDataSet, "data");
                 dataSet.setColors(Arrays.asList(PIE_COLORS));
                 dataSet.setDrawValues(false);
                 dataSet.setDrawIcons(false);
                 PieData data = new PieData(dataSet);
-                chart.animateY(300, Easing.EaseOutCubic);
                 chart.setData(data);
                 chart.invalidate();
             }
+            chart.animateY(300, Easing.EaseOutCubic);
             holder.getView(R.id.pb_dashboard_loading).setVisibility(View.GONE);
         }
 

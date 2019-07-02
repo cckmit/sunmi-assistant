@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 
+import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.card.CustomerPriceCard;
 import com.sunmi.assistant.dashboard.card.PayMethodCard;
 import com.sunmi.assistant.dashboard.card.QuantityRankCard;
@@ -68,6 +69,15 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     @Override
+    public void switchShopTo(int shopId) {
+        if (mList != null) {
+            for (BaseRefreshCard card : mList) {
+                card.setShopId(shopId);
+            }
+        }
+    }
+
+    @Override
     public void refresh() {
         if (mList != null) {
             for (BaseRefreshCard card : mList) {
@@ -97,6 +107,9 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     public void detachView() {
         super.detachView();
         sHandler.removeCallbacks(mTask);
+        for (BaseRefreshCard card : mList) {
+            card.clearHolder();
+        }
     }
 
     private static class RefreshTask implements Runnable {

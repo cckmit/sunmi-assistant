@@ -1,9 +1,10 @@
-package com.sunmi.assistant.dashboard;
+package com.sunmi.assistant.dashboard.card;
 
 import android.content.Context;
 import android.util.Log;
 import android.util.Pair;
 
+import com.sunmi.assistant.dashboard.DashboardContract;
 import com.sunmi.assistant.utils.Utils;
 
 import sunmi.common.base.recycle.BaseRecyclerAdapter;
@@ -16,21 +17,22 @@ public abstract class BaseRefreshCard<Model> {
     private static final String TAG = "BaseRefreshCard";
 
     public static final int STATE_INIT = 0;
+    public static final int STATE_LOADING = 1;
     public static final int STATE_SUCCESS = 2;
     public static final int STATE_FAILED = 3;
 
-    protected Context mContext;
+    private Context mContext;
 
-    protected Model mModel;
-    protected ItemType<Model, BaseViewHolder<Model>> mType;
-    protected BaseViewHolder<Model> mHolder;
+    private Model mModel;
+    private ItemType<Model, BaseViewHolder<Model>> mType;
+    private BaseViewHolder<Model> mHolder;
 
-    public int mCompanyId;
-    public int mShopId;
-    public int period;
-    public int mState = STATE_INIT;
+    private int mCompanyId;
+    private int mShopId;
+    private int mPeriod;
+    private int mState = STATE_INIT;
 
-    protected Pair<Long, Long> periodTimestamp;
+    private Pair<Long, Long> mPeriodTimestamp;
 
     public BaseRefreshCard(Context context) {
         this(context, -1, -1);
@@ -44,12 +46,32 @@ public abstract class BaseRefreshCard<Model> {
         this.mContext = context;
         this.mCompanyId = companyId;
         this.mShopId = shopId;
-        this.period = period;
-        if (this.period != DashboardContract.TIME_PERIOD_INIT) {
-            this.periodTimestamp = Utils.getPeriodTimestamp(this.period);
+        this.mPeriod = period;
+        if (this.mPeriod != DashboardContract.TIME_PERIOD_INIT) {
+            this.mPeriodTimestamp = Utils.getPeriodTimestamp(this.mPeriod);
         }
         mModel = createData();
         mType = createType();
+    }
+
+    Context getContext() {
+        return mContext;
+    }
+
+    int getState() {
+        return mState;
+    }
+
+    void setHolder(BaseViewHolder<Model> holder) {
+        mHolder = holder;
+    }
+
+    public Model getModel() {
+        return mModel;
+    }
+
+    public void clearHolder() {
+        mHolder = null;
     }
 
     public void registerIntoAdapter(BaseRecyclerAdapter<Object> adapter) {
@@ -74,20 +96,25 @@ public abstract class BaseRefreshCard<Model> {
         refresh();
     }
 
+    public int getPeriod() {
+        return mPeriod;
+    }
+
     public void setPeriod(int period) {
-        if (this.period == period || period == DashboardContract.TIME_PERIOD_INIT) {
+        if (this.mPeriod == period || period == DashboardContract.TIME_PERIOD_INIT) {
             return;
         }
-        this.period = period;
-        this.periodTimestamp = Utils.getPeriodTimestamp(this.period);
-        onPeriodChange(period);
+        this.mPeriod = period;
+        this.mPeriodTimestamp = Utils.getPeriodTimestamp(this.mPeriod);
+        this.mState = STATE_LOADING;
+        onPeriodChange(mModel, period);
         updateView();
         refresh();
     }
 
     public void refresh() {
-        if (mCompanyId > 0 && mShopId > 0 && period != DashboardContract.TIME_PERIOD_INIT) {
-            load(mCompanyId, mShopId, period, periodTimestamp, mModel);
+        if (mCompanyId > 0 && mShopId > 0 && mPeriod != DashboardContract.TIME_PERIOD_INIT) {
+            load(mCompanyId, mShopId, mPeriod, mPeriodTimestamp, mModel);
         }
     }
 
@@ -101,7 +128,8 @@ public abstract class BaseRefreshCard<Model> {
 
     protected abstract ItemType<Model, BaseViewHolder<Model>> createType();
 
-    protected abstract void onPeriodChange(int period);
+    protected void onPeriodChange(Model model, int period) {
+    }
 
     protected abstract void load(int companyId, int shopId,
                                  int period, Pair<Long, Long> periodTimestamp, Model model);
@@ -112,15 +140,15 @@ public abstract class BaseRefreshCard<Model> {
 
         @Override
         public void onSuccess(int code, String msg, Response data) {
+            mState = STATE_SUCCESS;
             success(data);
             updateView();
-            mState = STATE_SUCCESS;
         }
 
         @Override
         public void onFail(int code, String msg, Response data) {
-            Log.e(TAG, "HTTP request Failed. " + msg);
             mState = STATE_FAILED;
+            Log.e(TAG, "HTTP request Failed. " + msg);
         }
     }
 

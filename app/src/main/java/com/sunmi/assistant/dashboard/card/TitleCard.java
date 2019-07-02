@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.BaseRefreshCard;
 
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
@@ -28,11 +27,6 @@ public class TitleCard extends BaseRefreshCard<TitleCard.Model> {
     @Override
     protected ItemType<Model, BaseViewHolder<Model>> createType() {
         return new TitleType();
-    }
-
-    @Override
-    protected void onPeriodChange(int period) {
-
     }
 
     @Override

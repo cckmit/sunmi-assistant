@@ -6,7 +6,6 @@ import android.util.Pair;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.DashboardContract;
 
 import sunmi.common.base.recycle.BaseViewHolder;
@@ -33,10 +32,6 @@ public class TopTabCard extends BaseRefreshCard<TopTabCard.Model> {
     }
 
     @Override
-    protected void onPeriodChange(int period) {
-    }
-
-    @Override
     protected void load(int companyId, int shopId, int period, Pair<Long, Long> periodTimestamp, Model o) {
     }
 
@@ -59,9 +54,9 @@ public class TopTabCard extends BaseRefreshCard<TopTabCard.Model> {
             TextView today = holder.getView(R.id.tv_dashboard_today);
             TextView week = holder.getView(R.id.tv_dashboard_week);
             TextView month = holder.getView(R.id.tv_dashboard_month);
-            today.setSelected(period == DashboardContract.TIME_PERIOD_TODAY);
-            week.setSelected(period == DashboardContract.TIME_PERIOD_WEEK);
-            month.setSelected(period == DashboardContract.TIME_PERIOD_MONTH);
+            today.setSelected(getPeriod() == DashboardContract.TIME_PERIOD_TODAY);
+            week.setSelected(getPeriod() == DashboardContract.TIME_PERIOD_WEEK);
+            month.setSelected(getPeriod() == DashboardContract.TIME_PERIOD_MONTH);
         }
 
     }

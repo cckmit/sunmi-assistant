@@ -96,11 +96,12 @@ public class Utils {
 
     public static float encodeBarChartXAxisFloat(int period, long timestamp) {
         sTempCalendar.setTimeInMillis(timestamp * 1000);
-        sTempCalendar.setFirstDayOfWeek(Calendar.MONDAY);
-        if (period == DashboardContract.TIME_PERIOD_MONTH) {
+        if (period == 3) {
             return (float) (sTempCalendar.get(Calendar.DAY_OF_MONTH) + 10000);
-        } else if (period == DashboardContract.TIME_PERIOD_WEEK) {
-            return sTempCalendar.get(Calendar.DAY_OF_WEEK) + 99;
+        } else if (period == 2) {
+            int index = sTempCalendar.get(Calendar.DAY_OF_WEEK);
+            index = (index + 5) % 7;
+            return index + 100;
         } else {
             return sTempCalendar.get(Calendar.HOUR_OF_DAY);
         }
