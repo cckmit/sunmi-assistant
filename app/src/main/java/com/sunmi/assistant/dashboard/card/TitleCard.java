@@ -2,7 +2,6 @@ package com.sunmi.assistant.dashboard.card;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Pair;
 
 import com.sunmi.assistant.R;
 
@@ -30,7 +29,7 @@ public class TitleCard extends BaseRefreshCard<TitleCard.Model> {
     }
 
     @Override
-    protected void load(int companyId, int shopId, int period, Pair<Long, Long> periodTimestamp, Model o) {
+    protected void load(int companyId, int shopId, int period, Model o) {
     }
 
     private static class TitleType extends ItemType<Model, BaseViewHolder<Model>> {

@@ -44,9 +44,9 @@ public class CustomerPriceCard extends BaseRefreshCard<CustomerPriceCard.Model> 
     }
 
     @Override
-    protected void load(int companyId, int shopId, int period, Pair<Long, Long> periodTimestamp,
-                        Model model) {
+    protected void load(int companyId, int shopId, int period, Model model) {
         Log.d(TAG, "HTTP request customer unit price.");
+        Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(period);
         SunmiStoreRemote.get().getOrderAvgUnitSale(companyId, shopId,
                 periodTimestamp.first, periodTimestamp.second, 1,
                 new CardCallback<OrderAvgUnitSaleResp>() {

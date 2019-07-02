@@ -3,10 +3,8 @@ package com.sunmi.assistant.dashboard.card;
 import android.content.Context;
 import android.support.annotation.IdRes;
 import android.util.Log;
-import android.util.Pair;
 
 import com.sunmi.assistant.dashboard.DashboardContract;
-import com.sunmi.assistant.utils.Utils;
 
 import sunmi.common.base.recycle.BaseRecyclerAdapter;
 import sunmi.common.base.recycle.BaseViewHolder;
@@ -37,8 +35,6 @@ public abstract class BaseRefreshCard<Model> {
     private int mPeriod;
     private int mState = STATE_INIT;
 
-    private Pair<Long, Long> mPeriodTimestamp;
-
     public BaseRefreshCard(Context context) {
         this(context, -1, -1);
     }
@@ -52,9 +48,6 @@ public abstract class BaseRefreshCard<Model> {
         this.mCompanyId = companyId;
         this.mShopId = shopId;
         this.mPeriod = period;
-        if (this.mPeriod != DashboardContract.TIME_PERIOD_INIT) {
-            this.mPeriodTimestamp = Utils.getPeriodTimestamp(this.mPeriod);
-        }
         mModel = createData();
         mType = createType();
     }
@@ -114,7 +107,6 @@ public abstract class BaseRefreshCard<Model> {
             return;
         }
         this.mPeriod = period;
-        this.mPeriodTimestamp = Utils.getPeriodTimestamp(this.mPeriod);
         this.mState = STATE_LOADING;
         onPeriodChange(mModel, period);
         updateView();
@@ -123,7 +115,7 @@ public abstract class BaseRefreshCard<Model> {
 
     public void refresh() {
         if (mCompanyId > 0 && mShopId > 0 && mPeriod != DashboardContract.TIME_PERIOD_INIT) {
-            load(mCompanyId, mShopId, mPeriod, mPeriodTimestamp, mModel);
+            load(mCompanyId, mShopId, mPeriod, mModel);
         }
     }
 
@@ -141,7 +133,7 @@ public abstract class BaseRefreshCard<Model> {
     }
 
     protected abstract void load(int companyId, int shopId,
-                                 int period, Pair<Long, Long> periodTimestamp, Model model);
+                                 int period, Model model);
 
     public void setOnItemClickListener(OnItemClickListener<Model> l) {
         if (mType != null) {

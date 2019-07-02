@@ -44,9 +44,9 @@ public class TotalRefundsCard extends BaseRefreshCard<TotalRefundsCard.Model> {
     }
 
     @Override
-    protected void load(int companyId, int shopId, int period, Pair<Long, Long> periodTimestamp,
-                        Model model) {
+    protected void load(int companyId, int shopId, int period, Model model) {
         Log.d(TAG, "HTTP request total refunds volume.");
+        Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(period);
         SunmiStoreRemote.get().getOrderRefundCount(companyId, shopId,
                 periodTimestamp.first, periodTimestamp.second, 1,
                 new CardCallback<OrderTotalRefundsResp>() {

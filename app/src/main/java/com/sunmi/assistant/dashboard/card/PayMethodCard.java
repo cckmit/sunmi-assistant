@@ -20,6 +20,7 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.DashboardContract;
 import com.sunmi.assistant.data.SunmiStoreRemote;
 import com.sunmi.assistant.data.response.OrderPayTypeRankResp;
+import com.sunmi.assistant.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,8 +62,9 @@ public class PayMethodCard extends BaseRefreshCard<PayMethodCard.Model> {
     }
 
     @Override
-    protected void load(int companyId, int shopId, int period, Pair<Long, Long> periodTimestamp, Model model) {
+    protected void load(int companyId, int shopId, int period, Model model) {
         Log.d(TAG, "HTTP request pay method rank.");
+        Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(period);
         SunmiStoreRemote.get().getOrderPurchaseTypeRank(companyId, shopId,
                 periodTimestamp.first, periodTimestamp.second,
                 new CardCallback<OrderPayTypeRankResp>() {

@@ -30,6 +30,7 @@ public class Utils {
     private static final SimpleDateFormat DATE_HOUR_MINUTE_TIME = new SimpleDateFormat("yyyy.MM.dd HH:mm");
 
     private static SparseArray<Pair<Long, Long>> sPeriodCache = new SparseArray<>(3);
+    private static Calendar sLastCalendar = Calendar.getInstance();
     private static Calendar sTempCalendar = Calendar.getInstance();
 
     public static BaseRequest createRequestBody(String params) {
@@ -58,13 +59,22 @@ public class Utils {
     }
 
     public static Pair<Long, Long> getPeriodTimestamp(int period) {
+        sTempCalendar = Calendar.getInstance();
+        if (sLastCalendar != null
+                && (sTempCalendar.get(Calendar.DAY_OF_YEAR) != sLastCalendar.get(Calendar.DAY_OF_YEAR)
+                || sTempCalendar.get(Calendar.YEAR) != sLastCalendar.get(Calendar.YEAR)
+                || sTempCalendar.get(Calendar.ERA) != sLastCalendar.get(Calendar.ERA))) {
+            sPeriodCache.clear();
+        }
+        sLastCalendar = sTempCalendar;
+        sTempCalendar = Calendar.getInstance();
         Pair<Long, Long> periodTimestamp = sPeriodCache.get(period);
         if (periodTimestamp != null) {
             return periodTimestamp;
         }
         long timeStart;
         long timeEnd;
-        Calendar c = Calendar.getInstance();
+        Calendar c = sTempCalendar;
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH);
         int date = c.get(Calendar.DATE);

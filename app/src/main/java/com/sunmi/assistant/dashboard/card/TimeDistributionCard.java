@@ -54,13 +54,14 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
     }
 
     @Override
-    protected void load(int companyId, int shopId, int period, Pair<Long, Long> periodTimestamp, Model model) {
+    protected void load(int companyId, int shopId, int period, Model model) {
         int interval;
         if (period == DashboardContract.TIME_PERIOD_TODAY) {
             interval = 3600;
         } else {
             interval = 86400;
         }
+        Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(period);
         SunmiStoreRemote.get().getOrderTimeDistribution(companyId, shopId,
                 periodTimestamp.first, periodTimestamp.second, interval,
                 new CardCallback<OrderTimeDistributionResp>() {
