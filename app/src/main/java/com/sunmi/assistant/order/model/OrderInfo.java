@@ -9,8 +9,9 @@ import android.os.Parcelable;
  */
 public class OrderInfo implements Parcelable {
 
-    public static final int ORDER_TYPE_NORMAL = 0;
-    public static final int ORDER_TYPE_REFUNDS = 1;
+    public static final int ORDER_TYPE_ALL = 0;
+    public static final int ORDER_TYPE_NORMAL = 1;
+    public static final int ORDER_TYPE_REFUNDS = 2;
 
     private int id;
     private float amount;

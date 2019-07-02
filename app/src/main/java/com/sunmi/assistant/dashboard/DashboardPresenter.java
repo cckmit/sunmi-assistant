@@ -18,6 +18,7 @@ import com.sunmi.assistant.dashboard.card.TotalCountCard;
 import com.sunmi.assistant.dashboard.card.TotalRefundsCard;
 import com.sunmi.assistant.dashboard.card.TotalSalesCard;
 import com.sunmi.assistant.order.OrderListActivity_;
+import com.sunmi.assistant.order.model.OrderInfo;
 import com.sunmi.assistant.utils.Utils;
 
 import java.util.ArrayList;
@@ -123,21 +124,25 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 OrderListActivity_.intent(mView.getContext())
                         .mTimeStart(periodTimestamp.first)
                         .mTimeEnd(periodTimestamp.second)
+                        .mInitOrderType(OrderInfo.ORDER_TYPE_ALL)
                         .start());
         customerPrice.setOnItemClickListener((adapter, holder, model, position) ->
                 OrderListActivity_.intent(mView.getContext())
                         .mTimeStart(periodTimestamp.first)
                         .mTimeEnd(periodTimestamp.second)
+                        .mInitOrderType(OrderInfo.ORDER_TYPE_NORMAL)
                         .start());
         totalCount.setOnItemClickListener((adapter, holder, model, position) ->
                 OrderListActivity_.intent(mView.getContext())
                         .mTimeStart(periodTimestamp.first)
                         .mTimeEnd(periodTimestamp.second)
+                        .mInitOrderType(OrderInfo.ORDER_TYPE_NORMAL)
                         .start());
         totalRefunds.setOnItemClickListener((adapter, holder, model, position) ->
                 OrderListActivity_.intent(mView.getContext())
                         .mTimeStart(periodTimestamp.first)
                         .mTimeEnd(periodTimestamp.second)
+                        .mInitOrderType(OrderInfo.ORDER_TYPE_REFUNDS)
                         .start());
 
         timeDistribution.addOnViewClickListener(R.id.tv_dashboard_radio_by_sales,
