@@ -42,7 +42,7 @@ public class PayMethodCard extends BaseRefreshCard<PayMethodCard.Model> {
     private static final String HOLDER_TAG_LEGENDS_DATA = "legends_data";
 
     private static final Integer[] PIE_COLORS = {
-            0xFF2997FF, 0xFF09E896, 0xFFED9600, 0xFFFFA100, 0xFFFC5656, 0xFF8766FF
+            0xFF2997FF, 0xFF09E896, 0xFFED9600, 0xFFFFA100, 0xFFFC5656, 0xFF8766FF, 0xFFC0C0C0
     };
 
     public PayMethodCard(Context context, int companyId, int shopId, int period) {
@@ -92,12 +92,12 @@ public class PayMethodCard extends BaseRefreshCard<PayMethodCard.Model> {
                         }
                         for (OrderPayTypeRankResp.PayTypeRankItem item : list) {
                             String label = item.getPurchase_type_name();
-                            amountList.add(new PieEntry(item.getAmount() / totalAmount, label));
-                            countList.add(new PieEntry((float) (item.getCount()) / totalCount, label));
+                            amountList.add(new PieEntry(totalAmount <= 0 ? 0 : item.getAmount() / totalAmount, label));
+                            countList.add(new PieEntry(totalCount <= 0 ? 0 : (float) (item.getCount()) / totalCount, label));
                         }
                         if (size > 6) {
-                            amountList.add(new PieEntry(otherAmount / totalAmount, ""));
-                            countList.add(new PieEntry(otherCount / totalCount, ""));
+                            amountList.add(new PieEntry(totalAmount <= 0 ? 0 : otherAmount / totalAmount, ""));
+                            countList.add(new PieEntry(totalCount <= 0 ? 0 : otherCount / totalCount, ""));
                         }
                         model.dataSets.put(DashboardContract.DATA_MODE_SALES, amountList);
                         model.dataSets.put(DashboardContract.DATA_MODE_ORDER, countList);
@@ -199,6 +199,16 @@ public class PayMethodCard extends BaseRefreshCard<PayMethodCard.Model> {
                 last.setLabel(holder.getContext().getResources().getString(R.string.dashboard_purchase_others));
             }
             legendSetUp(holder, newDataSet);
+
+            // Handle empty data.
+            float total = 0;
+            for (PieEntry entry : newDataSet) {
+                total += entry.getValue();
+            }
+            if (total <= 0) {
+                newDataSet.add(new PieEntry(1));
+            }
+
             if (chart.getData() != null && chart.getData().getDataSetCount() > 0) {
                 dataSet = (PieDataSet) chart.getData().getDataSetByIndex(0);
                 dataSet.setValues(newDataSet);

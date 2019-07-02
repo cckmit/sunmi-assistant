@@ -26,6 +26,7 @@ import java.util.List;
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.base.recycle.BaseArrayAdapter;
 import sunmi.common.utils.CommonHelper;
+import sunmi.common.utils.SpUtils;
 
 /**
  * 首页数据Dashboard的展示
@@ -77,63 +78,6 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     private void initAdapter() {
-//        TitleType titleType = new TitleType();
-//        TabType tabType = new TabType();
-//        tabType.addOnViewClickListener(R.id.tv_dashboard_today,
-//                (adapter, holder, v, model, position) -> {
-//                    model.timeSpan = DashboardContract.TIME_PERIOD_TODAY;
-//                    adapter.notifyItemChanged(position);
-//                    mPresenter.switchPeriodTo(DashboardContract.TIME_PERIOD_TODAY);
-//                    updateStickyTab(model.timeSpan);
-//                });
-//        tabType.addOnViewClickListener(R.id.tv_dashboard_week,
-//                (adapter, holder, v, model, position) -> {
-//                    model.timeSpan = DashboardContract.TIME_PERIOD_WEEK;
-//                    adapter.notifyItemChanged(position);
-//                    mPresenter.switchPeriodTo(DashboardContract.TIME_PERIOD_WEEK);
-//                    updateStickyTab(model.timeSpan);
-//                });
-//        tabType.addOnViewClickListener(R.id.tv_dashboard_month,
-//                (adapter, holder, v, model, position) -> {
-//                    model.timeSpan = DashboardContract.TIME_PERIOD_MONTH;
-//                    adapter.notifyItemChanged(position);
-//                    mPresenter.switchPeriodTo(DashboardContract.TIME_PERIOD_MONTH);
-//                    updateStickyTab(model.timeSpan);
-//                });
-//        DataCardType dataCardType = new DataCardType();
-//        dataCardType.setOnItemClickListener(new OnItemClickListener<DataCard>() {
-//            @Override
-//            public void onClick(BaseRecyclerAdapter<DataCard> adapter, BaseViewHolder<DataCard> holder, DataCard model, int position) {
-//                OrderListActivity_.intent(DashboardFragment.this)
-//                        .mTimeStart(model.timeSpanPair.first)
-//                        .mTimeEnd(model.timeSpanPair.second)
-//                        .start();
-//            }
-//        });
-//        BarChartCardType barChartCardType = new BarChartCardType();
-//        barChartCardType.addOnViewClickListener(R.id.tv_dashboard_radio_by_sales,
-//                (adapter, holder, v, model, position) -> {
-//                    model.dataSource = DashboardContract.DATA_MODE_SALES;
-//                    adapter.notifyItemChanged(position);
-//                });
-//        barChartCardType.addOnViewClickListener(R.id.tv_dashboard_radio_by_order,
-//                (adapter, holder, v, model, position) -> {
-//                    model.dataSource = DashboardContract.DATA_MODE_ORDER;
-//                    adapter.notifyItemChanged(position);
-//                });
-//        PieChartCardType pieChartCardType = new PieChartCardType();
-//        pieChartCardType.addOnViewClickListener(R.id.tv_dashboard_radio_by_sales,
-//                (adapter, holder, v, model, position) -> {
-//                    model.dataSource = DashboardContract.DATA_MODE_SALES;
-//                    adapter.notifyItemChanged(position);
-//                });
-//        pieChartCardType.addOnViewClickListener(R.id.tv_dashboard_radio_by_order,
-//                (adapter, holder, v, model, position) -> {
-//                    model.dataSource = DashboardContract.DATA_MODE_ORDER;
-//                    adapter.notifyItemChanged(position);
-//                });
-//        ListCardType listCardType = new ListCardType();
-
         mAdapter = new BaseArrayAdapter<>();
         mLayoutManager = new GridLayoutManager(getContext(), 2);
         mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -203,7 +147,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (id == NotificationConstant.shopSwitched) {
-            mPresenter.switchShopTo((int) args[0]);
+            mPresenter.switchShopTo(SpUtils.getShopId());
         }
     }
 

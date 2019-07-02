@@ -74,6 +74,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     @Override
     public void switchShopTo(int shopId) {
+        mShopId = shopId;
         if (mList != null) {
             for (BaseRefreshCard card : mList) {
                 card.setShopId(shopId);
