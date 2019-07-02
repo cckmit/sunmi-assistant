@@ -37,8 +37,8 @@ public class OrderDetailActivity extends BaseMvpActivity<OrderDetailPresenter>
     TextView mTvAmount;
     @ViewById(R.id.order_detail_state)
     TextView mTvState;
-    @ViewById(R.id.order_id)
-    TextView mTvOrderId;
+    @ViewById(R.id.order_no)
+    TextView mTvOrderNo;
     @ViewById(R.id.order_time)
     TextView mTvTime;
     @ViewById(R.id.order_type)
@@ -59,7 +59,7 @@ public class OrderDetailActivity extends BaseMvpActivity<OrderDetailPresenter>
         mTvAmount.setText(getResources().getString(R.string.order_amount, mOrderInfo.getAmount()));
         mTvState.setText(mOrderInfo.isOrderNormal() ?
                 getResources().getString(R.string.order_success) : getResources().getString(R.string.order_refunds));
-        mTvOrderId.setText(String.valueOf(mOrderInfo.getId()));
+        mTvOrderNo.setText(String.valueOf(mOrderInfo.getNo()));
         mTvTime.setText(Utils.getDateHourMinuteTime(mOrderInfo.getPurchaseTime()));
         mTvType.setText(mOrderInfo.getPurchaseType());
         mDetailListAdapter = new DetailListAdapter(this);

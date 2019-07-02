@@ -14,13 +14,15 @@ public class OrderInfo implements Parcelable {
     public static final int ORDER_TYPE_REFUNDS = 2;
 
     private int id;
+    private String no;
     private float amount;
     private int orderType;
     private String purchaseType;
     private long purchaseTime;
 
-    public OrderInfo(int id, float amount, int orderType, String purchaseType, long purchaseTime) {
+    public OrderInfo(int id, String no, float amount, int orderType, String purchaseType, long purchaseTime) {
         this.id = id;
+        this.no = no;
         this.amount = amount;
         this.orderType = orderType;
         this.purchaseType = purchaseType;
@@ -29,6 +31,10 @@ public class OrderInfo implements Parcelable {
 
     public int getId() {
         return id;
+    }
+
+    public String getNo() {
+        return no;
     }
 
     public float getAmount() {
@@ -49,6 +55,7 @@ public class OrderInfo implements Parcelable {
 
     protected OrderInfo(Parcel in) {
         id = in.readInt();
+        no = in.readString();
         amount = in.readFloat();
         orderType = in.readInt();
         purchaseType = in.readString();
@@ -58,6 +65,7 @@ public class OrderInfo implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
+        dest.writeString(no);
         dest.writeFloat(amount);
         dest.writeInt(orderType);
         dest.writeString(purchaseType);
