@@ -118,31 +118,13 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                         List<SunmiDevice> list = new ArrayList<>();
                         if (data.getFs_list() != null && data.getFs_list().size() > 0) {
                             for (IpcListResp.SsListBean bean : data.getFs_list()) {
-                                SunmiDevice device = new SunmiDevice();
-                                device.setType("IPC");
-                                device.setStatus(bean.getActive_status());
-                                device.setDeviceid(bean.getSn());
-                                device.setModel(bean.getModel());
-                                device.setName(bean.getDevice_name());
-                                device.setIp(bean.getCdn_address());
-                                device.setUid(bean.getUid());
-                                device.setShopId(bean.getShop_id());
-                                device.setId(bean.getId());
+                                SunmiDevice device = getSunmiDevice(bean);
                                 list.add(device);
                             }
                         }
                         if (data.getSs_list() != null && data.getSs_list().size() > 0) {
                             for (IpcListResp.SsListBean bean : data.getSs_list()) {
-                                SunmiDevice device = new SunmiDevice();
-                                device.setType("IPC");
-                                device.setStatus(bean.getActive_status());
-                                device.setDeviceid(bean.getSn());
-                                device.setModel(bean.getModel());
-                                device.setName(bean.getDevice_name());
-                                device.setIp(bean.getCdn_address());
-                                device.setUid(bean.getUid());
-                                device.setShopId(bean.getShop_id());
-                                device.setId(bean.getId());
+                                SunmiDevice device = getSunmiDevice(bean);
                                 list.add(device);
                             }
                         }
@@ -240,6 +222,21 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
             e.printStackTrace();
         }
         return list;
+    }
+
+    @NonNull
+    private SunmiDevice getSunmiDevice(IpcListResp.SsListBean bean) {
+        SunmiDevice device = new SunmiDevice();
+        device.setType("IPC");
+        device.setStatus(bean.getActive_status());
+        device.setDeviceid(bean.getSn());
+        device.setModel(bean.getModel());
+        device.setName(bean.getDevice_name());
+        device.setIp(bean.getCdn_address());
+        device.setUid(bean.getUid());
+        device.setShopId(bean.getShop_id());
+        device.setId(bean.getId());
+        return device;
     }
 
     @NonNull

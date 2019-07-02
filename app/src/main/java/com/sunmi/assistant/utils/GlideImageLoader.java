@@ -10,8 +10,6 @@ import com.bumptech.glide.request.RequestOptions;
 import com.sunmi.assistant.data.response.AdListResp;
 import com.youth.banner.loader.ImageLoader;
 
-import sunmi.common.utils.log.LogCat;
-
 /**
  * Description:
  * Created by bruce on 2019/7/1.
@@ -19,9 +17,9 @@ import sunmi.common.utils.log.LogCat;
 public class GlideImageLoader extends ImageLoader {
     @Override
     public void displayImage(Context context, Object path, ImageView imageView) {
-        LogCat.e("aaa","888888 "+((AdListResp.AdListBean) path).getImage_addr());
         Glide.with(context).load(((AdListResp.AdListBean) path).getImage_addr())
-                .apply(new RequestOptions().transforms(new CenterCrop(), new RoundedCorners(10))).into(imageView);
+                .apply(new RequestOptions().transforms(new CenterCrop(),
+                        new RoundedCorners(20))).into(imageView);
     }
 
 }

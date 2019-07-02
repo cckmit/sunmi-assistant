@@ -9,14 +9,10 @@ import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.contract.MineContract;
 import com.sunmi.apmanager.model.UserInfo;
 import com.sunmi.apmanager.presenter.MinePresenter;
-import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.ui.activity.store.HelpActivity;
 import com.sunmi.apmanager.ui.activity.store.MyStoreActivity;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.rpc.CloudCall;
-import com.sunmi.assistant.ui.activity.merchant.AuthDialog;
-import com.sunmi.assistant.ui.activity.merchant.SelectStoreActivity_;
 import com.sunmi.assistant.ui.activity.setting.ChangeCompanyNameActivity_;
 import com.sunmi.assistant.ui.activity.setting.SettingActivity_;
 import com.sunmi.assistant.ui.activity.setting.UserInfoActivity_;
@@ -30,11 +26,9 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseMvpFragment;
-import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StringHelper;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CircleImage;
 
 /**
@@ -91,29 +85,7 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     //商户
     @Click(R.id.rlCompany)
     public void companyClick(View v) {
-//        ChangeCompanyNameActivity_.intent(mActivity).start();
-
-//        new AuthDialog.Builder(mActivity)
-//                .setMessage("申请获取您在客无忧sass平台、收银专家sass平台、XXXX平台的门店数据。")
-//                .setAllowButton((dialog, which) -> SelectStoreActivity_.intent(this).start())
-//                .setCancelButton((dialog, which) -> {
-//                })
-//                .create().show();
-
-        CloudCall.createMerchant("aaa6464", new RetrofitCallback() {
-            @Override
-            public void onSuccess(int code, String msg, Object data) {
-                LogCat.e(TAG, "onSuccess data=" + data);
-
-            }
-
-            @Override
-            public void onFail(int code, String msg, Object data) {
-                LogCat.e(TAG, "onFail code=" + code + "," + msg);
-            }
-        });
-
-
+        ChangeCompanyNameActivity_.intent(mActivity).start();
     }
 
     @Click(R.id.rlStore)
@@ -121,8 +93,6 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
         CommonUtils.trackCommonEvent(mActivity, "myStore",
                 "主页_我的_我的店铺", Constants.EVENT_MY_INFO);
         openActivity(mActivity, MyStoreActivity.class);
-//        Intent intent = new Intent(context, cls);
-//        startActivity(intent);
     }
 
     //我的订单

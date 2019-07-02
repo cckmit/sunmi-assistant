@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rl_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -60,7 +61,7 @@
         app:leftDefaultClickEnable="true"
         app:leftText="@string/sm_cancel"
         app:leftTextColor="@color/colorText"
-        app:titleText="我的门店"
+        app:titleText="@string/str_my_shop"
         app:titleTextColor="@color/colorText" />
 
     <cn.bingoogolapple.refreshlayout.BGARefreshLayout
@@ -86,7 +87,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_20"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:text="当前门店"
+                    android:text="@string/str_current_shop"
                     android:textColor="@color/colorText_60"
                     android:textSize="@dimen/sp_14" />
 
@@ -100,7 +101,6 @@
                     android:drawablePadding="@dimen/dp_4"
                     android:ellipsize="end"
                     android:singleLine="true"
-                    android:text="dsdafsadfadfa"
                     android:textColor="@color/colorText"
                     android:textSize="@dimen/sp_20" />
             </LinearLayout>
@@ -119,9 +119,10 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="@dimen/dp_20"
                     android:paddingTop="@dimen/dp_16"
-                    android:text="其他门店"
+                    android:text="@string/str_other_shop"
                     android:textColor="@color/colorText_60"
-                    android:textSize="@dimen/sp_14" />
+                    android:textSize="@dimen/sp_14"
+                    tools:ignore="RtlSymmetry" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_choose"
@@ -141,7 +142,7 @@
                     android:drawableTop="@drawable/ic_no_store"
                     android:drawablePadding="@dimen/dp_12"
                     android:gravity="center"
-                    android:text="暂无其他门店"
+                    android:text="@string/tip_no_other_shop"
                     android:textSize="@dimen/sp_14"
                     android:visibility="gone" />
             </RelativeLayout>

@@ -71,5 +71,10 @@
     <string name="order_order_detail">支付明细</string>
     <string name="order_commodity">商品</string>
     <string name="order_quantity">数量</string>
+    <string name="tip_no_device_please_add">暂无设备, 请添加</string>
+    <string name="str_my_shop">我的门店</string>
+    <string name="str_current_shop">当前门店</string>
+    <string name="str_other_shop">其他门店</string>
+    <string name="tip_no_other_shop">暂无其他门店</string>
 
 </resources>

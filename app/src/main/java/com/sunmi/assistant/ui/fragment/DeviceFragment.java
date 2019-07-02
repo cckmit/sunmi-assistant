@@ -318,7 +318,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        } else if (NotificationConstant.storeNameChanged == id) {
+        } else if (NotificationConstant.shopNameChanged == id) {
             String shopName = (String) args[1];
             if (!TextUtils.isEmpty(shopName)) {
                 topBar.setShopName(shopName);
