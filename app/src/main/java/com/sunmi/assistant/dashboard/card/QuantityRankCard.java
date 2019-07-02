@@ -157,7 +157,7 @@ public class QuantityRankCard extends BaseRefreshCard<QuantityRankCard.Model> {
         }
     }
 
-    static class Model {
+    public static class Model {
         public String title;
         public List<Item> list;
 

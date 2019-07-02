@@ -198,7 +198,7 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
             float amount = orderType == OrderInfo.ORDER_TYPE_NORMAL ?
                     Math.abs(rawAmount) : -1 * Math.abs(rawAmount);
             list.add(new OrderInfo(item.getId(), amount, orderType,
-                    item.getPurchase_type(), item.getPurchase_time()));
+                    item.getPurchase_type(), item.getPurchase_time() * 1000));
         }
         return list;
     }

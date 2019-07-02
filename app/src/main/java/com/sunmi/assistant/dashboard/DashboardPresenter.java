@@ -4,7 +4,9 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
+import android.util.Pair;
 
+import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.card.CustomerPriceCard;
 import com.sunmi.assistant.dashboard.card.PayMethodCard;
@@ -15,6 +17,8 @@ import com.sunmi.assistant.dashboard.card.TopTabCard;
 import com.sunmi.assistant.dashboard.card.TotalCountCard;
 import com.sunmi.assistant.dashboard.card.TotalRefundsCard;
 import com.sunmi.assistant.dashboard.card.TotalSalesCard;
+import com.sunmi.assistant.order.OrderListActivity_;
+import com.sunmi.assistant.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,16 +91,84 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     private void initList(int companyId, int shopId, int period) {
-        mList = new ArrayList<>(9);
         Context context = mView.getContext();
+        Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(mPeriod);
+
+        TopTabCard tab = new TopTabCard(context, period);
+        TotalSalesCard totalSales = new TotalSalesCard(context, companyId, shopId, period);
+        CustomerPriceCard customerPrice = new CustomerPriceCard(context, companyId, shopId, period);
+        TotalCountCard totalCount = new TotalCountCard(context, companyId, shopId, period);
+        TotalRefundsCard totalRefunds = new TotalRefundsCard(context, companyId, shopId, period);
+        TimeDistributionCard timeDistribution = new TimeDistributionCard(context, companyId, shopId, period);
+        PayMethodCard payMethod = new PayMethodCard(context, companyId, shopId, period);
+
+        tab.addOnViewClickListener(R.id.tv_dashboard_today, (adapter, holder, v, model, position) -> {
+            switchPeriodTo(DashboardContract.TIME_PERIOD_TODAY);
+            adapter.notifyItemChanged(position);
+            mView.updateStickyTab(DashboardContract.TIME_PERIOD_TODAY);
+        });
+        tab.addOnViewClickListener(R.id.tv_dashboard_week, (adapter, holder, v, model, position) -> {
+            switchPeriodTo(DashboardContract.TIME_PERIOD_WEEK);
+            adapter.notifyItemChanged(position);
+            mView.updateStickyTab(DashboardContract.TIME_PERIOD_WEEK);
+        });
+        tab.addOnViewClickListener(R.id.tv_dashboard_month, (adapter, holder, v, model, position) -> {
+            switchPeriodTo(DashboardContract.TIME_PERIOD_MONTH);
+            adapter.notifyItemChanged(position);
+            mView.updateStickyTab(DashboardContract.TIME_PERIOD_MONTH);
+        });
+
+        totalSales.setOnItemClickListener((adapter, holder, model, position) ->
+                OrderListActivity_.intent(mView.getContext())
+                        .mTimeStart(periodTimestamp.first)
+                        .mTimeEnd(periodTimestamp.second)
+                        .start());
+        customerPrice.setOnItemClickListener((adapter, holder, model, position) ->
+                OrderListActivity_.intent(mView.getContext())
+                        .mTimeStart(periodTimestamp.first)
+                        .mTimeEnd(periodTimestamp.second)
+                        .start());
+        totalCount.setOnItemClickListener((adapter, holder, model, position) ->
+                OrderListActivity_.intent(mView.getContext())
+                        .mTimeStart(periodTimestamp.first)
+                        .mTimeEnd(periodTimestamp.second)
+                        .start());
+        totalRefunds.setOnItemClickListener((adapter, holder, model, position) ->
+                OrderListActivity_.intent(mView.getContext())
+                        .mTimeStart(periodTimestamp.first)
+                        .mTimeEnd(periodTimestamp.second)
+                        .start());
+
+        timeDistribution.addOnViewClickListener(R.id.tv_dashboard_radio_by_sales,
+                (adapter, holder, v, model, position) -> {
+                    model.dataSource = DashboardContract.DATA_MODE_SALES;
+                    adapter.notifyItemChanged(position);
+                });
+        timeDistribution.addOnViewClickListener(R.id.tv_dashboard_radio_by_order,
+                (adapter, holder, v, model, position) -> {
+                    model.dataSource = DashboardContract.DATA_MODE_ORDER;
+                    adapter.notifyItemChanged(position);
+                });
+        payMethod.addOnViewClickListener(R.id.tv_dashboard_radio_by_sales,
+                (adapter, holder, v, model, position) -> {
+                    model.dataSource = DashboardContract.DATA_MODE_SALES;
+                    adapter.notifyItemChanged(position);
+                });
+        payMethod.addOnViewClickListener(R.id.tv_dashboard_radio_by_order,
+                (adapter, holder, v, model, position) -> {
+                    model.dataSource = DashboardContract.DATA_MODE_ORDER;
+                    adapter.notifyItemChanged(position);
+                });
+
+        mList = new ArrayList<>(9);
         mList.add(new TitleCard(context));
-        mList.add(new TopTabCard(context, period));
-        mList.add(new TotalSalesCard(context, companyId, shopId, period));
-        mList.add(new CustomerPriceCard(context, companyId, shopId, period));
-        mList.add(new TotalCountCard(context, companyId, shopId, period));
-        mList.add(new TotalRefundsCard(context, companyId, shopId, period));
-        mList.add(new TimeDistributionCard(context, companyId, shopId, period));
-        mList.add(new PayMethodCard(context, companyId, shopId, period));
+        mList.add(tab);
+        mList.add(totalSales);
+        mList.add(customerPrice);
+        mList.add(totalCount);
+        mList.add(totalRefunds);
+        mList.add(timeDistribution);
+        mList.add(payMethod);
         mList.add(new QuantityRankCard(context, companyId, shopId, period));
         mView.initData(mList);
         mTask = new RefreshTask(mList);

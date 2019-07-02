@@ -194,7 +194,7 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
 
     }
 
-    static class Model {
+    public static class Model {
         public String title;
         public int dataSource;
         public SparseArray<List<BarEntry>> dataSets = new SparseArray<>(2);

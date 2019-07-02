@@ -51,6 +51,6 @@ public class TitleCard extends BaseRefreshCard<TitleCard.Model> {
 
     }
 
-    static class Model {
+    public static class Model {
     }
 }

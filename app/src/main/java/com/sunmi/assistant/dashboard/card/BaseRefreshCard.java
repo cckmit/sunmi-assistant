@@ -1,6 +1,7 @@
 package com.sunmi.assistant.dashboard.card;
 
 import android.content.Context;
+import android.support.annotation.IdRes;
 import android.util.Log;
 import android.util.Pair;
 
@@ -10,6 +11,10 @@ import com.sunmi.assistant.utils.Utils;
 import sunmi.common.base.recycle.BaseRecyclerAdapter;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
+import sunmi.common.base.recycle.listener.OnItemClickListener;
+import sunmi.common.base.recycle.listener.OnItemLongClickListener;
+import sunmi.common.base.recycle.listener.OnViewClickListener;
+import sunmi.common.base.recycle.listener.OnViewLongClickListener;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 
 public abstract class BaseRefreshCard<Model> {
@@ -62,21 +67,29 @@ public abstract class BaseRefreshCard<Model> {
         return mState;
     }
 
-    void setHolder(BaseViewHolder<Model> holder) {
-        mHolder = holder;
+    public int getPeriod() {
+        return mPeriod;
     }
 
     public Model getModel() {
         return mModel;
     }
 
-    public void clearHolder() {
-        mHolder = null;
+    public ItemType<Model, BaseViewHolder<Model>> getType() {
+        return mType;
     }
 
     public void registerIntoAdapter(BaseRecyclerAdapter<Object> adapter) {
         //noinspection unchecked
         adapter.register((Class<Model>) mModel.getClass(), mType);
+    }
+
+    void setHolder(BaseViewHolder<Model> holder) {
+        mHolder = holder;
+    }
+
+    public void clearHolder() {
+        mHolder = null;
     }
 
     public void setCompanyId(int companyId, int shopId) {
@@ -94,10 +107,6 @@ public abstract class BaseRefreshCard<Model> {
         }
         this.mShopId = shopId;
         refresh();
-    }
-
-    public int getPeriod() {
-        return mPeriod;
     }
 
     public void setPeriod(int period) {
@@ -133,6 +142,30 @@ public abstract class BaseRefreshCard<Model> {
 
     protected abstract void load(int companyId, int shopId,
                                  int period, Pair<Long, Long> periodTimestamp, Model model);
+
+    public void setOnItemClickListener(OnItemClickListener<Model> l) {
+        if (mType != null) {
+            mType.setOnItemClickListener(l);
+        }
+    }
+
+    public void setOnItemLongClickListener(OnItemLongClickListener<Model> l) {
+        if (mType != null) {
+            mType.setOnItemLongClickListener(l);
+        }
+    }
+
+    public void addOnViewClickListener(@IdRes int id, OnViewClickListener<Model> l) {
+        if (mType != null && l != null) {
+            mType.addOnViewClickListener(id, l);
+        }
+    }
+
+    public void addOnViewLongClickListener(@IdRes int id, OnViewLongClickListener<Model> l) {
+        if (mType != null && l != null) {
+            mType.addOnViewLongClickListener(id, l);
+        }
+    }
 
     public abstract class CardCallback<Response> extends RetrofitCallback<Response> {
 

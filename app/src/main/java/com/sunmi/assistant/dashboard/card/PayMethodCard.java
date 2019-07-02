@@ -252,10 +252,10 @@ public class PayMethodCard extends BaseRefreshCard<PayMethodCard.Model> {
 
     }
 
-    static class Model {
-        private String title;
-        private int dataSource;
-        private SparseArray<List<PieEntry>> dataSets = new SparseArray<>(2);
+    public static class Model {
+        public String title;
+        public int dataSource;
+        public SparseArray<List<PieEntry>> dataSets = new SparseArray<>(2);
 
         public Model(String title, int dataSource) {
             this.title = title;

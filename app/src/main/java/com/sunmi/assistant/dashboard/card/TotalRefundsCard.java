@@ -90,14 +90,19 @@ public class TotalRefundsCard extends BaseRefreshCard<TotalRefundsCard.Model> {
             TextView trendName = holder.getView(R.id.tv_dashboard_trend_name);
             TextView trendData = holder.getView(R.id.tv_dashboard_trend_data);
             title.setText(model.title);
+            if (!TextUtils.isEmpty(model.trendName)) {
+                trendName.setText(model.trendName);
+            }
+
             if (getState() == STATE_INIT || getState() == STATE_LOADING) {
                 Log.d(TAG, "Card data setup view skip.");
                 return;
             }
+
             data.setText(String.format(Locale.getDefault(), "%.0f", model.data));
-            trendName.setText(model.trendName);
             trendData.setText(holder.getContext().getResources().getString(R.string.dashboard_data_format,
                     format.format(model.trendData * 100)));
+
             if (model.trendData >= 0) {
                 trendData.setCompoundDrawablesRelativeWithIntrinsicBounds(
                         R.drawable.dashboard_ic_trend_up, 0, 0, 0);
@@ -113,7 +118,7 @@ public class TotalRefundsCard extends BaseRefreshCard<TotalRefundsCard.Model> {
 
     }
 
-    static class Model {
+    public static class Model {
         public String title;
         public float data;
         public String trendName;

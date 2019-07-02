@@ -61,6 +61,6 @@ public class TopTabCard extends BaseRefreshCard<TopTabCard.Model> {
 
     }
 
-    static class Model {
+    public static class Model {
     }
 }

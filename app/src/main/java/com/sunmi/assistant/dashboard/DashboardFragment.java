@@ -169,10 +169,16 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mAdapter.notifyItemChanged(1);
     }
 
-    private void updateStickyTab(int period) {
+    @Override
+    public void updateStickyTab(int period) {
         mTabToday.setSelected(period == DashboardContract.TIME_PERIOD_TODAY);
         mTabWeek.setSelected(period == DashboardContract.TIME_PERIOD_WEEK);
         mTabMonth.setSelected(period == DashboardContract.TIME_PERIOD_MONTH);
+    }
+
+    @Override
+    public void updateCard(int position) {
+        mAdapter.notifyItemChanged(position);
     }
 
     @UiThread
