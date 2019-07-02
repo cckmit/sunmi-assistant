@@ -36,7 +36,7 @@ public class TitleCard extends BaseRefreshCard<TitleCard.Model> {
     }
 
     @Override
-    public void reload(int companyId, int shopId, int period, Pair<Long, Long> periodTimestamp, Model o) {
+    protected void load(int companyId, int shopId, int period, Pair<Long, Long> periodTimestamp, Model o) {
     }
 
     private static class TitleType extends ItemType<Model, BaseViewHolder<Model>> {

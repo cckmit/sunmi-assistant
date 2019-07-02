@@ -25,8 +25,8 @@ public class TotalRefundsCard extends BaseRefreshCard<TotalRefundsCard.Model> {
 
     private static final String TAG = "CustomerPriceCard";
 
-    public TotalRefundsCard(Context context) {
-        super(context);
+    public TotalRefundsCard(Context context, int companyId, int shopId, int period) {
+        super(context, companyId, shopId, period);
     }
 
     @Override
@@ -45,8 +45,8 @@ public class TotalRefundsCard extends BaseRefreshCard<TotalRefundsCard.Model> {
     }
 
     @Override
-    public void reload(int companyId, int shopId, int period, Pair<Long, Long> periodTimestamp,
-                       Model model) {
+    protected void load(int companyId, int shopId, int period, Pair<Long, Long> periodTimestamp,
+                        Model model) {
         Log.d(TAG, "HTTP request total refunds volume.");
         SunmiStoreRemote.get().getOrderRefundCount(companyId, shopId,
                 periodTimestamp.first, periodTimestamp.second, 1,
@@ -55,10 +55,10 @@ public class TotalRefundsCard extends BaseRefreshCard<TotalRefundsCard.Model> {
                     public void success(OrderTotalRefundsResp data) {
                         Log.d(TAG, "HTTP request total refunds success.");
                         model.data = data.getRefund_count();
-                        if (period == DashboardContract.TIME_SPAN_MONTH
+                        if (period == DashboardContract.TIME_PERIOD_MONTH
                                 && !TextUtils.isEmpty(data.getMonth_rate())) {
                             model.trendData = Float.valueOf(data.getMonth_rate());
-                        } else if (period == DashboardContract.TIME_SPAN_WEEK
+                        } else if (period == DashboardContract.TIME_PERIOD_WEEK
                                 && !TextUtils.isEmpty(data.getWeek_rate())) {
                             model.trendData = Float.valueOf(data.getWeek_rate());
                         } else if (!TextUtils.isEmpty(data.getDay_rate())) {

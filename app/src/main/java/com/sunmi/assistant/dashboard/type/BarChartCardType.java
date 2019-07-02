@@ -156,9 +156,9 @@ public class BarChartCardType extends ItemType<BarChartCard, BaseViewHolder<BarC
 
         // Set the radius of bar chart based on the time span.
         RoundEdgeBarChartRenderer renderer = (RoundEdgeBarChartRenderer) chart.getRenderer();
-        if (model.timeSpan == DashboardContract.TIME_SPAN_MONTH) {
+        if (model.timeSpan == DashboardContract.TIME_PERIOD_MONTH) {
             renderer.setRadius(16);
-        } else if (model.timeSpan == DashboardContract.TIME_SPAN_WEEK) {
+        } else if (model.timeSpan == DashboardContract.TIME_PERIOD_WEEK) {
             renderer.setRadius(68);
         } else {
             renderer.setRadius(20);

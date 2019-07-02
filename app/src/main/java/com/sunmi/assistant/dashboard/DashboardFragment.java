@@ -12,19 +12,6 @@ import android.widget.TextView;
 
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.model.BarChartCard;
-import com.sunmi.assistant.dashboard.model.DataCard;
-import com.sunmi.assistant.dashboard.model.ListCard;
-import com.sunmi.assistant.dashboard.model.PieChartCard;
-import com.sunmi.assistant.dashboard.model.Tab;
-import com.sunmi.assistant.dashboard.model.Title;
-import com.sunmi.assistant.dashboard.type.BarChartCardType;
-import com.sunmi.assistant.dashboard.type.DataCardType;
-import com.sunmi.assistant.dashboard.type.ListCardType;
-import com.sunmi.assistant.dashboard.type.PieChartCardType;
-import com.sunmi.assistant.dashboard.type.TabType;
-import com.sunmi.assistant.dashboard.type.TitleType;
-import com.sunmi.assistant.order.OrderListActivity_;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -32,13 +19,11 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.base.recycle.BaseArrayAdapter;
-import sunmi.common.base.recycle.BaseRecyclerAdapter;
-import sunmi.common.base.recycle.BaseViewHolder;
-import sunmi.common.base.recycle.listener.OnItemClickListener;
 import sunmi.common.utils.CommonHelper;
 
 /**
@@ -75,8 +60,8 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         initView();
         initAdapter();
         mPresenter.loadConfig();
-        mPresenter.timeSpanSwitchTo(DashboardContract.TIME_SPAN_TODAY);
-        updateStickyTab(DashboardContract.TIME_SPAN_TODAY);
+        mPresenter.timeSpanSwitchTo(DashboardContract.TIME_PERIOD_TODAY);
+        updateStickyTab(DashboardContract.TIME_PERIOD_TODAY);
     }
 
     private void initView() {
@@ -98,71 +83,64 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     private void initAdapter() {
-        TitleType titleType = new TitleType();
-        TabType tabType = new TabType();
-        tabType.addOnViewClickListener(R.id.tv_dashboard_today,
-                (adapter, holder, v, model, position) -> {
-                    model.timeSpan = DashboardContract.TIME_SPAN_TODAY;
-                    adapter.notifyItemChanged(position);
-                    mPresenter.timeSpanSwitchTo(DashboardContract.TIME_SPAN_TODAY);
-                    updateStickyTab(model.timeSpan);
-                });
-        tabType.addOnViewClickListener(R.id.tv_dashboard_week,
-                (adapter, holder, v, model, position) -> {
-                    model.timeSpan = DashboardContract.TIME_SPAN_WEEK;
-                    adapter.notifyItemChanged(position);
-                    mPresenter.timeSpanSwitchTo(DashboardContract.TIME_SPAN_WEEK);
-                    updateStickyTab(model.timeSpan);
-                });
-        tabType.addOnViewClickListener(R.id.tv_dashboard_month,
-                (adapter, holder, v, model, position) -> {
-                    model.timeSpan = DashboardContract.TIME_SPAN_MONTH;
-                    adapter.notifyItemChanged(position);
-                    mPresenter.timeSpanSwitchTo(DashboardContract.TIME_SPAN_MONTH);
-                    updateStickyTab(model.timeSpan);
-                });
-        DataCardType dataCardType = new DataCardType();
-        dataCardType.setOnItemClickListener(new OnItemClickListener<DataCard>() {
-            @Override
-            public void onClick(BaseRecyclerAdapter<DataCard> adapter, BaseViewHolder<DataCard> holder, DataCard model, int position) {
-                OrderListActivity_.intent(DashboardFragment.this)
-                        .mTimeStart(model.timeSpanPair.first)
-                        .mTimeEnd(model.timeSpanPair.second)
-                        .start();
-            }
-        });
-        BarChartCardType barChartCardType = new BarChartCardType();
-        barChartCardType.addOnViewClickListener(R.id.tv_dashboard_radio_by_sales,
-                (adapter, holder, v, model, position) -> {
-                    model.dataSource = DashboardContract.DATA_MODE_SALES;
-                    adapter.notifyItemChanged(position);
-                });
-        barChartCardType.addOnViewClickListener(R.id.tv_dashboard_radio_by_order,
-                (adapter, holder, v, model, position) -> {
-                    model.dataSource = DashboardContract.DATA_MODE_ORDER;
-                    adapter.notifyItemChanged(position);
-                });
-        PieChartCardType pieChartCardType = new PieChartCardType();
-        pieChartCardType.addOnViewClickListener(R.id.tv_dashboard_radio_by_sales,
-                (adapter, holder, v, model, position) -> {
-                    model.dataSource = DashboardContract.DATA_MODE_SALES;
-                    adapter.notifyItemChanged(position);
-                });
-        pieChartCardType.addOnViewClickListener(R.id.tv_dashboard_radio_by_order,
-                (adapter, holder, v, model, position) -> {
-                    model.dataSource = DashboardContract.DATA_MODE_ORDER;
-                    adapter.notifyItemChanged(position);
-                });
-        ListCardType listCardType = new ListCardType();
+//        TitleType titleType = new TitleType();
+//        TabType tabType = new TabType();
+//        tabType.addOnViewClickListener(R.id.tv_dashboard_today,
+//                (adapter, holder, v, model, position) -> {
+//                    model.timeSpan = DashboardContract.TIME_PERIOD_TODAY;
+//                    adapter.notifyItemChanged(position);
+//                    mPresenter.timeSpanSwitchTo(DashboardContract.TIME_PERIOD_TODAY);
+//                    updateStickyTab(model.timeSpan);
+//                });
+//        tabType.addOnViewClickListener(R.id.tv_dashboard_week,
+//                (adapter, holder, v, model, position) -> {
+//                    model.timeSpan = DashboardContract.TIME_PERIOD_WEEK;
+//                    adapter.notifyItemChanged(position);
+//                    mPresenter.timeSpanSwitchTo(DashboardContract.TIME_PERIOD_WEEK);
+//                    updateStickyTab(model.timeSpan);
+//                });
+//        tabType.addOnViewClickListener(R.id.tv_dashboard_month,
+//                (adapter, holder, v, model, position) -> {
+//                    model.timeSpan = DashboardContract.TIME_PERIOD_MONTH;
+//                    adapter.notifyItemChanged(position);
+//                    mPresenter.timeSpanSwitchTo(DashboardContract.TIME_PERIOD_MONTH);
+//                    updateStickyTab(model.timeSpan);
+//                });
+//        DataCardType dataCardType = new DataCardType();
+//        dataCardType.setOnItemClickListener(new OnItemClickListener<DataCard>() {
+//            @Override
+//            public void onClick(BaseRecyclerAdapter<DataCard> adapter, BaseViewHolder<DataCard> holder, DataCard model, int position) {
+//                OrderListActivity_.intent(DashboardFragment.this)
+//                        .mTimeStart(model.timeSpanPair.first)
+//                        .mTimeEnd(model.timeSpanPair.second)
+//                        .start();
+//            }
+//        });
+//        BarChartCardType barChartCardType = new BarChartCardType();
+//        barChartCardType.addOnViewClickListener(R.id.tv_dashboard_radio_by_sales,
+//                (adapter, holder, v, model, position) -> {
+//                    model.dataSource = DashboardContract.DATA_MODE_SALES;
+//                    adapter.notifyItemChanged(position);
+//                });
+//        barChartCardType.addOnViewClickListener(R.id.tv_dashboard_radio_by_order,
+//                (adapter, holder, v, model, position) -> {
+//                    model.dataSource = DashboardContract.DATA_MODE_ORDER;
+//                    adapter.notifyItemChanged(position);
+//                });
+//        PieChartCardType pieChartCardType = new PieChartCardType();
+//        pieChartCardType.addOnViewClickListener(R.id.tv_dashboard_radio_by_sales,
+//                (adapter, holder, v, model, position) -> {
+//                    model.dataSource = DashboardContract.DATA_MODE_SALES;
+//                    adapter.notifyItemChanged(position);
+//                });
+//        pieChartCardType.addOnViewClickListener(R.id.tv_dashboard_radio_by_order,
+//                (adapter, holder, v, model, position) -> {
+//                    model.dataSource = DashboardContract.DATA_MODE_ORDER;
+//                    adapter.notifyItemChanged(position);
+//                });
+//        ListCardType listCardType = new ListCardType();
 
         mAdapter = new BaseArrayAdapter<>();
-        mAdapter.register(Title.class, titleType);
-        mAdapter.register(Tab.class, tabType);
-        mAdapter.register(DataCard.class, dataCardType);
-        mAdapter.register(BarChartCard.class, barChartCardType);
-        mAdapter.register(PieChartCard.class, pieChartCardType);
-        mAdapter.register(ListCard.class, listCardType);
-
         mLayoutManager = new GridLayoutManager(getContext(), 2);
         mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -178,44 +156,43 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Click(R.id.tv_dashboard_today)
     void clickTimeSpanToday() {
-        mPresenter.timeSpanSwitchTo(DashboardContract.TIME_SPAN_TODAY);
-        updateStickyTab(DashboardContract.TIME_SPAN_TODAY);
+        mPresenter.timeSpanSwitchTo(DashboardContract.TIME_PERIOD_TODAY);
+        updateStickyTab(DashboardContract.TIME_PERIOD_TODAY);
         mAdapter.notifyItemChanged(1);
     }
 
     @Click(R.id.tv_dashboard_week)
     void clickTimeSpanWeek() {
-        mPresenter.timeSpanSwitchTo(DashboardContract.TIME_SPAN_WEEK);
-        updateStickyTab(DashboardContract.TIME_SPAN_WEEK);
+        mPresenter.timeSpanSwitchTo(DashboardContract.TIME_PERIOD_WEEK);
+        updateStickyTab(DashboardContract.TIME_PERIOD_WEEK);
         mAdapter.notifyItemChanged(1);
     }
 
     @Click(R.id.tv_dashboard_month)
     void clickTimeSpanMonth() {
-        mPresenter.timeSpanSwitchTo(DashboardContract.TIME_SPAN_MONTH);
-        updateStickyTab(DashboardContract.TIME_SPAN_MONTH);
+        mPresenter.timeSpanSwitchTo(DashboardContract.TIME_PERIOD_MONTH);
+        updateStickyTab(DashboardContract.TIME_PERIOD_MONTH);
         mAdapter.notifyItemChanged(1);
     }
 
     private void updateStickyTab(int timeSpan) {
-        mTabToday.setSelected(timeSpan == DashboardContract.TIME_SPAN_TODAY);
-        mTabWeek.setSelected(timeSpan == DashboardContract.TIME_SPAN_WEEK);
-        mTabMonth.setSelected(timeSpan == DashboardContract.TIME_SPAN_MONTH);
-    }
-
-    @Override
-    public void updateTitle() {
-        if (mAdapter != null) {
-            mAdapter.notifyItemChanged(0);
-        }
+        mTabToday.setSelected(timeSpan == DashboardContract.TIME_PERIOD_TODAY);
+        mTabWeek.setSelected(timeSpan == DashboardContract.TIME_PERIOD_WEEK);
+        mTabMonth.setSelected(timeSpan == DashboardContract.TIME_PERIOD_MONTH);
     }
 
     @UiThread
     @Override
-    public void updateData(List<?> data) {
-        if (mAdapter != null) {
-            mAdapter.setData(data);
+    public void initData(List<BaseRefreshCard> data) {
+        if (mAdapter == null && data == null) {
+            return;
         }
+        List<Object> list = new ArrayList<>(data.size());
+        for (BaseRefreshCard item : data) {
+            item.registerIntoAdapter(mAdapter);
+            list.add(item.mModel);
+        }
+        mAdapter.setData(list);
     }
 
     @Override

@@ -47,8 +47,8 @@ public class PayMethodCard extends BaseRefreshCard<PayMethodCard.Model> {
             0xFF2997FF, 0xFF09E896, 0xFFED9600, 0xFFFFA100, 0xFFFC5656, 0xFF8766FF
     };
 
-    public PayMethodCard(Context context) {
-        super(context);
+    public PayMethodCard(Context context, int companyId, int shopId, int period) {
+        super(context, companyId, shopId, period);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class PayMethodCard extends BaseRefreshCard<PayMethodCard.Model> {
     }
 
     @Override
-    public void reload(int companyId, int shopId, int period, Pair<Long, Long> periodTimestamp, Model model) {
+    protected void load(int companyId, int shopId, int period, Pair<Long, Long> periodTimestamp, Model model) {
         Log.d(TAG, "HTTP request pay method rank.");
         SunmiStoreRemote.get().getOrderPurchaseTypeRank(companyId, shopId,
                 periodTimestamp.first, periodTimestamp.second,

@@ -25,24 +25,34 @@ public abstract class BaseRefreshCard<Model> {
     protected ItemType<Model, BaseViewHolder<Model>> mType;
     protected BaseViewHolder<Model> mHolder;
 
-    public int mCompanyId = -1;
-    public int mShopId = -1;
-    public int period = DashboardContract.TIME_SPAN_INIT;
+    public int mCompanyId;
+    public int mShopId;
+    public int period;
     public int mState = STATE_INIT;
 
     protected Pair<Long, Long> periodTimestamp;
 
     public BaseRefreshCard(Context context) {
+        this(context, -1, -1);
+    }
+
+    public BaseRefreshCard(Context context, int companyId, int shopId) {
+        this(context, companyId, shopId, DashboardContract.TIME_PERIOD_INIT);
+    }
+
+    public BaseRefreshCard(Context context, int companyId, int shopId, int period) {
         this.mContext = context;
+        this.mCompanyId = companyId;
+        this.mShopId = shopId;
+        this.period = period;
+        if (this.period != DashboardContract.TIME_PERIOD_INIT) {
+            this.periodTimestamp = Utils.getPeriodTimestamp(this.period);
+        }
+        mModel = createData();
+        mType = createType();
     }
 
     public void registerIntoAdapter(BaseRecyclerAdapter<Object> adapter) {
-        if (mModel == null) {
-            mModel = createData();
-        }
-        if (mType == null) {
-            mType = createType();
-        }
         //noinspection unchecked
         adapter.register((Class<Model>) mModel.getClass(), mType);
     }
@@ -53,7 +63,7 @@ public abstract class BaseRefreshCard<Model> {
         }
         this.mCompanyId = companyId;
         this.mShopId = shopId;
-        reload(mCompanyId, mShopId, period, periodTimestamp, mModel);
+        refresh();
     }
 
     public void setShopId(int shopId) {
@@ -61,18 +71,24 @@ public abstract class BaseRefreshCard<Model> {
             return;
         }
         this.mShopId = shopId;
-        reload(mCompanyId, mShopId, period, periodTimestamp, mModel);
+        refresh();
     }
 
     public void setPeriod(int period) {
-        if (this.period == period) {
+        if (this.period == period || period == DashboardContract.TIME_PERIOD_INIT) {
             return;
         }
         this.period = period;
         this.periodTimestamp = Utils.getPeriodTimestamp(this.period);
         onPeriodChange(period);
         updateView();
-        reload(mCompanyId, mShopId, this.period, periodTimestamp, mModel);
+        refresh();
+    }
+
+    public void refresh() {
+        if (mCompanyId > 0 && mShopId > 0 && period != DashboardContract.TIME_PERIOD_INIT) {
+            load(mCompanyId, mShopId, period, periodTimestamp, mModel);
+        }
     }
 
     private void updateView() {
@@ -87,8 +103,8 @@ public abstract class BaseRefreshCard<Model> {
 
     protected abstract void onPeriodChange(int period);
 
-    public abstract void reload(int companyId, int shopId,
-                                int period, Pair<Long, Long> periodTimestamp, Model model);
+    protected abstract void load(int companyId, int shopId,
+                                 int period, Pair<Long, Long> periodTimestamp, Model model);
 
     public abstract class CardCallback<Response> extends RetrofitCallback<Response> {
 

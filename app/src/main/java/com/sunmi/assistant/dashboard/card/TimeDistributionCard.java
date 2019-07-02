@@ -40,8 +40,8 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
 
     private static final String TAG = "TimeDistributionCard";
 
-    public TimeDistributionCard(Context context) {
-        super(context);
+    public TimeDistributionCard(Context context, int companyId, int shopId, int period) {
+        super(context, companyId, shopId, period);
     }
 
     @Override
@@ -60,9 +60,9 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
     }
 
     @Override
-    public void reload(int companyId, int shopId, int period, Pair<Long, Long> periodTimestamp, Model model) {
+    protected void load(int companyId, int shopId, int period, Pair<Long, Long> periodTimestamp, Model model) {
         int interval;
-        if (period == DashboardContract.TIME_SPAN_TODAY) {
+        if (period == DashboardContract.TIME_PERIOD_TODAY) {
             interval = 3600;
         } else {
             interval = 86400;
@@ -178,9 +178,9 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
 
             // Set the radius of bar chart based on the time span.
             RoundEdgeBarChartRenderer renderer = (RoundEdgeBarChartRenderer) chart.getRenderer();
-            if (period == DashboardContract.TIME_SPAN_MONTH) {
+            if (period == DashboardContract.TIME_PERIOD_MONTH) {
                 renderer.setRadius(16);
-            } else if (period == DashboardContract.TIME_SPAN_WEEK) {
+            } else if (period == DashboardContract.TIME_PERIOD_WEEK) {
                 renderer.setRadius(68);
             } else {
                 renderer.setRadius(20);

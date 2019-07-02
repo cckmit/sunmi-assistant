@@ -54,9 +54,9 @@ public class Utils {
     }
 
     public static String getTrendNameByTimeSpan(Context context, int timeSpan) {
-        if (timeSpan == DashboardContract.TIME_SPAN_MONTH) {
+        if (timeSpan == DashboardContract.TIME_PERIOD_MONTH) {
             return context.getResources().getString(R.string.dashboard_month_ratio);
-        } else if (timeSpan == DashboardContract.TIME_SPAN_WEEK) {
+        } else if (timeSpan == DashboardContract.TIME_PERIOD_WEEK) {
             return context.getResources().getString(R.string.dashboard_week_ratio);
         } else {
             return context.getResources().getString(R.string.dashboard_day_ratio);
@@ -77,13 +77,13 @@ public class Utils {
         c.clear();
         c.setFirstDayOfWeek(Calendar.MONDAY);
         c.set(year, month, date);
-        if (period == DashboardContract.TIME_SPAN_MONTH) {
+        if (period == DashboardContract.TIME_PERIOD_MONTH) {
             c.clear();
             c.set(year, month, 1);
             timeStart = c.getTimeInMillis();
             c.add(Calendar.MONTH, 1);
             timeEnd = c.getTimeInMillis();
-        } else if (period == DashboardContract.TIME_SPAN_WEEK) {
+        } else if (period == DashboardContract.TIME_PERIOD_WEEK) {
             int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
             int offset = c.getFirstDayOfWeek() - dayOfWeek;
             c.add(Calendar.DATE, offset > 0 ? offset - 7 : offset);
@@ -103,10 +103,10 @@ public class Utils {
     public static float encodeBarChartXAxisFloat(int timeSpan, long timestamp) {
         DateFormat format;
         int offset;
-        if (timeSpan == DashboardContract.TIME_SPAN_MONTH) {
+        if (timeSpan == DashboardContract.TIME_PERIOD_MONTH) {
             format = DAY_IN_MONTH_FORMAT;
             offset = 10000;
-        } else if (timeSpan == DashboardContract.TIME_SPAN_WEEK) {
+        } else if (timeSpan == DashboardContract.TIME_PERIOD_WEEK) {
             format = DAY_IN_WEEK_FORMAT;
             offset = 99;
         } else {

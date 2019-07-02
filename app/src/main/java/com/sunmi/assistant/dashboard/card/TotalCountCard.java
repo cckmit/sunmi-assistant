@@ -25,8 +25,8 @@ public class TotalCountCard extends BaseRefreshCard<TotalCountCard.Model> {
 
     private static final String TAG = "TotalCountCard";
 
-    public TotalCountCard(Context context) {
-        super(context);
+    public TotalCountCard(Context context, int companyId, int shopId, int period) {
+        super(context, companyId, shopId, period);
     }
 
     @Override
@@ -45,8 +45,8 @@ public class TotalCountCard extends BaseRefreshCard<TotalCountCard.Model> {
     }
 
     @Override
-    public void reload(int companyId, int shopId, int period, Pair<Long, Long> periodTimestamp,
-                       Model model) {
+    protected void load(int companyId, int shopId, int period, Pair<Long, Long> periodTimestamp,
+                        Model model) {
         Log.d(TAG, "HTTP request total sales volume.");
         SunmiStoreRemote.get().getOrderTotalCount(companyId, shopId,
                 periodTimestamp.first, periodTimestamp.second, 1,
@@ -55,10 +55,10 @@ public class TotalCountCard extends BaseRefreshCard<TotalCountCard.Model> {
                     public void success(OrderTotalCountResp data) {
                         Log.d(TAG, "HTTP request total sales volume success.");
                         model.data = data.getTotal_count();
-                        if (period == DashboardContract.TIME_SPAN_MONTH
+                        if (period == DashboardContract.TIME_PERIOD_MONTH
                                 && !TextUtils.isEmpty(data.getMonth_rate())) {
                             model.trendData = Float.valueOf(data.getMonth_rate());
-                        } else if (period == DashboardContract.TIME_SPAN_WEEK
+                        } else if (period == DashboardContract.TIME_PERIOD_WEEK
                                 && !TextUtils.isEmpty(data.getWeek_rate())) {
                             model.trendData = Float.valueOf(data.getWeek_rate());
                         } else if (!TextUtils.isEmpty(data.getDay_rate())) {

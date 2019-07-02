@@ -33,9 +33,9 @@ public class TabType extends ItemType<Tab, BaseViewHolder<Tab>> {
         TextView today = holder.getView(R.id.tv_dashboard_today);
         TextView week = holder.getView(R.id.tv_dashboard_week);
         TextView month = holder.getView(R.id.tv_dashboard_month);
-        today.setSelected(model.timeSpan == DashboardContract.TIME_SPAN_TODAY);
-        week.setSelected(model.timeSpan == DashboardContract.TIME_SPAN_WEEK);
-        month.setSelected(model.timeSpan == DashboardContract.TIME_SPAN_MONTH);
+        today.setSelected(model.timeSpan == DashboardContract.TIME_PERIOD_TODAY);
+        week.setSelected(model.timeSpan == DashboardContract.TIME_PERIOD_WEEK);
+        month.setSelected(model.timeSpan == DashboardContract.TIME_PERIOD_MONTH);
     }
 
 }

@@ -59,10 +59,10 @@ public interface DataRefreshHelper<T> {
                         public void success(OrderTotalAmountResp data) {
                             Log.d(TAG, "HTTP request total sales amount success.");
                             model.data = data.getTotal_amount();
-                            if (model.timeSpan == DashboardContract.TIME_SPAN_MONTH
+                            if (model.timeSpan == DashboardContract.TIME_PERIOD_MONTH
                                     && !TextUtils.isEmpty(data.getMonth_rate())) {
                                 model.trendData = Float.valueOf(data.getMonth_rate());
-                            } else if (model.timeSpan == DashboardContract.TIME_SPAN_WEEK
+                            } else if (model.timeSpan == DashboardContract.TIME_PERIOD_WEEK
                                     && !TextUtils.isEmpty(data.getWeek_rate())) {
                                 model.trendData = Float.valueOf(data.getWeek_rate());
                             } else if (!TextUtils.isEmpty(data.getDay_rate())) {
@@ -93,10 +93,10 @@ public interface DataRefreshHelper<T> {
                         public void success(OrderAvgUnitSaleResp data) {
                             Log.d(TAG, "HTTP request customer price success.");
                             model.data = data.getAus();
-                            if (model.timeSpan == DashboardContract.TIME_SPAN_MONTH
+                            if (model.timeSpan == DashboardContract.TIME_PERIOD_MONTH
                                     && !TextUtils.isEmpty(data.getMonth_rate())) {
                                 model.trendData = Float.valueOf(data.getMonth_rate());
-                            } else if (model.timeSpan == DashboardContract.TIME_SPAN_WEEK
+                            } else if (model.timeSpan == DashboardContract.TIME_PERIOD_WEEK
                                     && !TextUtils.isEmpty(data.getWeek_rate())) {
                                 model.trendData = Float.valueOf(data.getWeek_rate());
                             } else if (!TextUtils.isEmpty(data.getDay_rate())) {
@@ -127,10 +127,10 @@ public interface DataRefreshHelper<T> {
                         public void success(OrderTotalCountResp data) {
                             Log.d(TAG, "HTTP request total sales volume success.");
                             model.data = data.getTotal_count();
-                            if (model.timeSpan == DashboardContract.TIME_SPAN_MONTH
+                            if (model.timeSpan == DashboardContract.TIME_PERIOD_MONTH
                                     && !TextUtils.isEmpty(data.getMonth_rate())) {
                                 model.trendData = Float.valueOf(data.getMonth_rate());
-                            } else if (model.timeSpan == DashboardContract.TIME_SPAN_WEEK
+                            } else if (model.timeSpan == DashboardContract.TIME_PERIOD_WEEK
                                     && !TextUtils.isEmpty(data.getWeek_rate())) {
                                 model.trendData = Float.valueOf(data.getWeek_rate());
                             } else if (!TextUtils.isEmpty(data.getDay_rate())) {
@@ -161,10 +161,10 @@ public interface DataRefreshHelper<T> {
                         public void success(OrderTotalRefundsResp data) {
                             Log.d(TAG, "HTTP request total refunds success.");
                             model.data = data.getRefund_count();
-                            if (model.timeSpan == DashboardContract.TIME_SPAN_MONTH
+                            if (model.timeSpan == DashboardContract.TIME_PERIOD_MONTH
                                     && !TextUtils.isEmpty(data.getMonth_rate())) {
                                 model.trendData = Float.valueOf(data.getMonth_rate());
-                            } else if (model.timeSpan == DashboardContract.TIME_SPAN_WEEK
+                            } else if (model.timeSpan == DashboardContract.TIME_PERIOD_WEEK
                                     && !TextUtils.isEmpty(data.getWeek_rate())) {
                                 model.trendData = Float.valueOf(data.getWeek_rate());
                             } else if (!TextUtils.isEmpty(data.getDay_rate())) {
@@ -182,9 +182,9 @@ public interface DataRefreshHelper<T> {
             Log.d(TAG, "HTTP request time distribution detail.");
             model.state = BaseRefreshCard.STATE_LOADING;
             int interval;
-            if (model.timeSpan == DashboardContract.TIME_SPAN_MONTH) {
+            if (model.timeSpan == DashboardContract.TIME_PERIOD_MONTH) {
                 interval = 86400;
-            } else if (model.timeSpan == DashboardContract.TIME_SPAN_WEEK) {
+            } else if (model.timeSpan == DashboardContract.TIME_PERIOD_WEEK) {
                 interval = 86400;
             } else {
                 interval = 3600;

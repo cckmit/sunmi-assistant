@@ -8,10 +8,10 @@ import sunmi.common.base.BaseView;
 
 public interface DashboardContract {
 
-    int TIME_SPAN_INIT = 0;
-    int TIME_SPAN_TODAY = 1;
-    int TIME_SPAN_WEEK = 2;
-    int TIME_SPAN_MONTH = 3;
+    int TIME_PERIOD_INIT = 0;
+    int TIME_PERIOD_TODAY = 1;
+    int TIME_PERIOD_WEEK = 2;
+    int TIME_PERIOD_MONTH = 3;
 
     int DATA_MODE_SALES = 0;
     int DATA_MODE_ORDER = 1;
@@ -20,9 +20,7 @@ public interface DashboardContract {
 
         Context getContext();
 
-        void updateTitle();
-
-        void updateData(List<?> data);
+        void initData(List<BaseRefreshCard> data);
     }
 
     interface Presenter {

@@ -33,8 +33,8 @@ public class QuantityRankCard extends BaseRefreshCard<QuantityRankCard.Model> {
 
     private static final String TAG = "QuantityRankCard";
 
-    public QuantityRankCard(Context context) {
-        super(context);
+    public QuantityRankCard(Context context, int companyId, int shopId, int period) {
+        super(context, companyId, shopId, period);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class QuantityRankCard extends BaseRefreshCard<QuantityRankCard.Model> {
     }
 
     @Override
-    public void reload(int companyId, int shopId, int period, Pair<Long, Long> periodTimestamp, Model model) {
+    protected void load(int companyId, int shopId, int period, Pair<Long, Long> periodTimestamp, Model model) {
         SunmiStoreRemote.get().getOrderQuantityRank(companyId, shopId,
                 periodTimestamp.first, periodTimestamp.second,
                 new CardCallback<OrderQuantityRankResp>() {

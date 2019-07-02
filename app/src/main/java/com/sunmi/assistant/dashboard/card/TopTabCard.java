@@ -18,8 +18,8 @@ import sunmi.common.base.recycle.ItemType;
  */
 public class TopTabCard extends BaseRefreshCard<TopTabCard.Model> {
 
-    public TopTabCard(Context context) {
-        super(context);
+    public TopTabCard(Context context, int period) {
+        super(context, -1, -1, period);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class TopTabCard extends BaseRefreshCard<TopTabCard.Model> {
     }
 
     @Override
-    public void reload(int companyId, int shopId, int period, Pair<Long, Long> periodTimestamp, Model o) {
+    protected void load(int companyId, int shopId, int period, Pair<Long, Long> periodTimestamp, Model o) {
     }
 
     public class TopTabType extends ItemType<Model, BaseViewHolder<Model>> {
@@ -59,9 +59,9 @@ public class TopTabCard extends BaseRefreshCard<TopTabCard.Model> {
             TextView today = holder.getView(R.id.tv_dashboard_today);
             TextView week = holder.getView(R.id.tv_dashboard_week);
             TextView month = holder.getView(R.id.tv_dashboard_month);
-            today.setSelected(period == DashboardContract.TIME_SPAN_TODAY);
-            week.setSelected(period == DashboardContract.TIME_SPAN_WEEK);
-            month.setSelected(period == DashboardContract.TIME_SPAN_MONTH);
+            today.setSelected(period == DashboardContract.TIME_PERIOD_TODAY);
+            week.setSelected(period == DashboardContract.TIME_PERIOD_WEEK);
+            month.setSelected(period == DashboardContract.TIME_PERIOD_MONTH);
         }
 
     }

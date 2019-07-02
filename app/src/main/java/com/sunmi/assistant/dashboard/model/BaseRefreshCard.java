@@ -22,7 +22,7 @@ public class BaseRefreshCard<T> {
 
     public int companyId = -1;
     public int shopId = -1;
-    public int timeSpan = DashboardContract.TIME_SPAN_INIT;
+    public int timeSpan = DashboardContract.TIME_PERIOD_INIT;
     public Pair<Long, Long> timeSpanPair;
     public int state = STATE_INIT;
     public int flag = FLAG_INIT;
