@@ -60,7 +60,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         initView();
         initAdapter();
         mPresenter.loadConfig();
-        mPresenter.timeSpanSwitchTo(DashboardContract.TIME_PERIOD_TODAY);
+        mPresenter.switchPeriodTo(DashboardContract.TIME_PERIOD_TODAY);
         updateStickyTab(DashboardContract.TIME_PERIOD_TODAY);
     }
 
@@ -69,17 +69,10 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         if (animator instanceof SimpleItemAnimator) {
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         }
-        mRefreshLayout.setOnRefreshListener(() -> mPresenter.refresh(new DataRefreshCallback() {
-            @Override
-            public void onSuccess() {
-                mRefreshLayout.setRefreshing(false);
-            }
-
-            @Override
-            public void onFail() {
-                mRefreshLayout.setRefreshing(false);
-            }
-        }));
+        mRefreshLayout.setOnRefreshListener(() -> {
+            mPresenter.refresh();
+            mRefreshLayout.setRefreshing(false);
+        });
     }
 
     private void initAdapter() {
@@ -89,21 +82,21 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 //                (adapter, holder, v, model, position) -> {
 //                    model.timeSpan = DashboardContract.TIME_PERIOD_TODAY;
 //                    adapter.notifyItemChanged(position);
-//                    mPresenter.timeSpanSwitchTo(DashboardContract.TIME_PERIOD_TODAY);
+//                    mPresenter.switchPeriodTo(DashboardContract.TIME_PERIOD_TODAY);
 //                    updateStickyTab(model.timeSpan);
 //                });
 //        tabType.addOnViewClickListener(R.id.tv_dashboard_week,
 //                (adapter, holder, v, model, position) -> {
 //                    model.timeSpan = DashboardContract.TIME_PERIOD_WEEK;
 //                    adapter.notifyItemChanged(position);
-//                    mPresenter.timeSpanSwitchTo(DashboardContract.TIME_PERIOD_WEEK);
+//                    mPresenter.switchPeriodTo(DashboardContract.TIME_PERIOD_WEEK);
 //                    updateStickyTab(model.timeSpan);
 //                });
 //        tabType.addOnViewClickListener(R.id.tv_dashboard_month,
 //                (adapter, holder, v, model, position) -> {
 //                    model.timeSpan = DashboardContract.TIME_PERIOD_MONTH;
 //                    adapter.notifyItemChanged(position);
-//                    mPresenter.timeSpanSwitchTo(DashboardContract.TIME_PERIOD_MONTH);
+//                    mPresenter.switchPeriodTo(DashboardContract.TIME_PERIOD_MONTH);
 //                    updateStickyTab(model.timeSpan);
 //                });
 //        DataCardType dataCardType = new DataCardType();
@@ -155,30 +148,30 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     @Click(R.id.tv_dashboard_today)
-    void clickTimeSpanToday() {
-        mPresenter.timeSpanSwitchTo(DashboardContract.TIME_PERIOD_TODAY);
+    void clickPeriodToday() {
+        mPresenter.switchPeriodTo(DashboardContract.TIME_PERIOD_TODAY);
         updateStickyTab(DashboardContract.TIME_PERIOD_TODAY);
         mAdapter.notifyItemChanged(1);
     }
 
     @Click(R.id.tv_dashboard_week)
-    void clickTimeSpanWeek() {
-        mPresenter.timeSpanSwitchTo(DashboardContract.TIME_PERIOD_WEEK);
+    void clickPeriodWeek() {
+        mPresenter.switchPeriodTo(DashboardContract.TIME_PERIOD_WEEK);
         updateStickyTab(DashboardContract.TIME_PERIOD_WEEK);
         mAdapter.notifyItemChanged(1);
     }
 
     @Click(R.id.tv_dashboard_month)
-    void clickTimeSpanMonth() {
-        mPresenter.timeSpanSwitchTo(DashboardContract.TIME_PERIOD_MONTH);
+    void clickPeriodMonth() {
+        mPresenter.switchPeriodTo(DashboardContract.TIME_PERIOD_MONTH);
         updateStickyTab(DashboardContract.TIME_PERIOD_MONTH);
         mAdapter.notifyItemChanged(1);
     }
 
-    private void updateStickyTab(int timeSpan) {
-        mTabToday.setSelected(timeSpan == DashboardContract.TIME_PERIOD_TODAY);
-        mTabWeek.setSelected(timeSpan == DashboardContract.TIME_PERIOD_WEEK);
-        mTabMonth.setSelected(timeSpan == DashboardContract.TIME_PERIOD_MONTH);
+    private void updateStickyTab(int period) {
+        mTabToday.setSelected(period == DashboardContract.TIME_PERIOD_TODAY);
+        mTabWeek.setSelected(period == DashboardContract.TIME_PERIOD_WEEK);
+        mTabMonth.setSelected(period == DashboardContract.TIME_PERIOD_MONTH);
     }
 
     @UiThread

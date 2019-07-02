@@ -8,7 +8,6 @@ import android.util.SparseArray;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.DashboardContract;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -26,17 +25,12 @@ import sunmi.common.utils.SafeUtils;
 public class Utils {
 
     @SuppressLint("SimpleDateFormat")
-    private static final SimpleDateFormat HOUR_FORMAT = new SimpleDateFormat("HH");
-    @SuppressLint("SimpleDateFormat")
-    private static final SimpleDateFormat DAY_IN_WEEK_FORMAT = new SimpleDateFormat("u");
-    @SuppressLint("SimpleDateFormat")
-    private static final SimpleDateFormat DAY_IN_MONTH_FORMAT = new SimpleDateFormat("d");
-    @SuppressLint("SimpleDateFormat")
     private static final SimpleDateFormat HOUR_MINUTE_TIME = new SimpleDateFormat("HH:mm");
     @SuppressLint("SimpleDateFormat")
     private static final SimpleDateFormat DATE_HOUR_MINUTE_TIME = new SimpleDateFormat("yyyy.MM.dd HH:mm");
 
     private static SparseArray<Pair<Long, Long>> sPeriodCache = new SparseArray<>(3);
+    private static Calendar sTempCalendar = Calendar.getInstance();
 
     public static BaseRequest createRequestBody(String params) {
         String timeStamp = DateTimeUtils.currentTimeSecond() + "";
@@ -53,10 +47,10 @@ public class Utils {
                 .setLang("zh").createBaseRequest();
     }
 
-    public static String getTrendNameByTimeSpan(Context context, int timeSpan) {
-        if (timeSpan == DashboardContract.TIME_PERIOD_MONTH) {
+    public static String getTrendNameByPeriod(Context context, int period) {
+        if (period == DashboardContract.TIME_PERIOD_MONTH) {
             return context.getResources().getString(R.string.dashboard_month_ratio);
-        } else if (timeSpan == DashboardContract.TIME_PERIOD_WEEK) {
+        } else if (period == DashboardContract.TIME_PERIOD_WEEK) {
             return context.getResources().getString(R.string.dashboard_week_ratio);
         } else {
             return context.getResources().getString(R.string.dashboard_day_ratio);
@@ -100,20 +94,16 @@ public class Utils {
         return periodTimestamp;
     }
 
-    public static float encodeBarChartXAxisFloat(int timeSpan, long timestamp) {
-        DateFormat format;
-        int offset;
-        if (timeSpan == DashboardContract.TIME_PERIOD_MONTH) {
-            format = DAY_IN_MONTH_FORMAT;
-            offset = 10000;
-        } else if (timeSpan == DashboardContract.TIME_PERIOD_WEEK) {
-            format = DAY_IN_WEEK_FORMAT;
-            offset = 99;
+    public static float encodeBarChartXAxisFloat(int period, long timestamp) {
+        sTempCalendar.setTimeInMillis(timestamp * 1000);
+        sTempCalendar.setFirstDayOfWeek(Calendar.MONDAY);
+        if (period == DashboardContract.TIME_PERIOD_MONTH) {
+            return (float) (sTempCalendar.get(Calendar.DAY_OF_MONTH) + 10000);
+        } else if (period == DashboardContract.TIME_PERIOD_WEEK) {
+            return sTempCalendar.get(Calendar.DAY_OF_WEEK) + 99;
         } else {
-            format = HOUR_FORMAT;
-            offset = 0;
+            return sTempCalendar.get(Calendar.HOUR_OF_DAY);
         }
-        return Float.valueOf(format.format(new Date(timestamp * 1000))) + offset;
     }
 
     public static String decodeBarChartXAxisFloat(float value, String[] weekName) {

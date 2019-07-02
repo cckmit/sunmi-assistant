@@ -107,7 +107,7 @@ public class QuantityRankCard extends BaseRefreshCard<QuantityRankCard.Model> {
             TextView title = holder.getView(R.id.tv_dashboard_title);
             title.setText(model.title);
 
-            if (mState == com.sunmi.assistant.dashboard.model.BaseRefreshCard.FLAG_INIT) {
+            if (mState == STATE_INIT) {
                 Log.d(TAG, "Card data setup view skip.");
                 return;
             }

@@ -53,7 +53,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     @Override
-    public void timeSpanSwitchTo(int period) {
+    public void switchPeriodTo(int period) {
         Log.d(TAG, "Switch time span to: " + period);
         if (mPeriod == period || period == DashboardContract.TIME_PERIOD_INIT) {
             Log.d(TAG, "Switch time span skip.");
@@ -68,7 +68,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     @Override
-    public void refresh(DataRefreshCallback callback) {
+    public void refresh() {
         if (mList != null) {
             for (BaseRefreshCard card : mList) {
                 card.refresh();

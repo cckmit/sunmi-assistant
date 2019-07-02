@@ -41,7 +41,7 @@ public class TotalCountCard extends BaseRefreshCard<TotalCountCard.Model> {
 
     @Override
     protected void onPeriodChange(int period) {
-        mModel.trendName = Utils.getTrendNameByTimeSpan(mContext, this.period);
+        mModel.trendName = Utils.getTrendNameByPeriod(mContext, this.period);
     }
 
     @Override

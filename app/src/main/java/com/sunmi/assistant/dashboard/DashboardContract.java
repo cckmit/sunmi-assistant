@@ -27,8 +27,8 @@ public interface DashboardContract {
 
         void loadConfig();
 
-        void timeSpanSwitchTo(int timeSpan);
+        void switchPeriodTo(int period);
 
-        void refresh(DataRefreshCallback callback);
+        void refresh();
     }
 }

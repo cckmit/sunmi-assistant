@@ -186,7 +186,7 @@ public class PayMethodCard extends BaseRefreshCard<PayMethodCard.Model> {
             bySales.setSelected(model.dataSource == DashboardContract.DATA_MODE_SALES);
             byOrder.setSelected(model.dataSource == DashboardContract.DATA_MODE_ORDER);
 
-            if (mState == com.sunmi.assistant.dashboard.model.BaseRefreshCard.FLAG_INIT) {
+            if (mState == STATE_INIT) {
                 Log.d(TAG, "Card data setup view skip.");
                 chart.setVisibility(View.INVISIBLE);
                 return;

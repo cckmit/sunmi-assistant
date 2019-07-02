@@ -4,13 +4,13 @@ import java.util.List;
 
 public class OrderTimeDistributionResp {
 
-    private List<TimeSpanItem> order_list;
+    private List<PeriodItem> order_list;
 
-    public List<TimeSpanItem> getOrder_list() {
+    public List<PeriodItem> getOrder_list() {
         return order_list;
     }
 
-    public static class TimeSpanItem {
+    public static class PeriodItem {
 
         private long time;
         private int count;

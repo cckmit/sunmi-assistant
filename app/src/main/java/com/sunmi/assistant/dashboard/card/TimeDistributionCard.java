@@ -73,10 +73,10 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
                     @Override
                     public void success(OrderTimeDistributionResp data) {
                         Log.d(TAG, "HTTP request time distribution detail success.");
-                        List<OrderTimeDistributionResp.TimeSpanItem> list = data.getOrder_list();
+                        List<OrderTimeDistributionResp.PeriodItem> list = data.getOrder_list();
                         List<BarEntry> amountList = new ArrayList<>(list.size());
                         List<BarEntry> countList = new ArrayList<>(list.size());
-                        for (OrderTimeDistributionResp.TimeSpanItem item : list) {
+                        for (OrderTimeDistributionResp.PeriodItem item : list) {
                             float x = Utils.encodeBarChartXAxisFloat(period, item.getTime());
                             amountList.add(new BarEntry(x, item.getAmount()));
                             countList.add(new BarEntry(x, item.getCount()));
