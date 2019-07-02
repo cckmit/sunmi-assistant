@@ -1,10 +1,11 @@
 package com.sunmi.assistant.ui.activity.presenter;
 
-import com.sunmi.apmanager.rpc.merchant.MerchantApi;
+import com.sunmi.assistant.rpc.CloudCall;
 import com.sunmi.assistant.ui.activity.contract.SelectPlatformContract;
+import com.sunmi.assistant.ui.activity.model.PlatformInfo;
 
 import sunmi.common.base.BasePresenter;
-import sunmi.common.rpc.http.HttpCallback;
+import sunmi.common.rpc.retrofit.RetrofitCallback;
 
 
 /**
@@ -15,16 +16,17 @@ public class PlatformPresenter extends BasePresenter<SelectPlatformContract.View
         implements SelectPlatformContract.Presenter {
     @Override
     public void getPlatformInfo() {
-        MerchantApi.getUserInfo(new HttpCallback<String>(mView) {
-
+        CloudCall.getPlatformList(new RetrofitCallback<PlatformInfo>() {
             @Override
-            public void onFail(int code, String msg, String data) {
-                mView.getPlatformInfoFail(code, msg);
+            public void onSuccess(int code, String msg, PlatformInfo data) {
+                if (isViewAttached())
+                    mView.getPlatformInfoSuccess(data);
             }
 
             @Override
-            public void onSuccess(int code, String msg, String data) {
-                mView.getPlatformInfoSuccess(data);
+            public void onFail(int code, String msg, PlatformInfo data) {
+                if (isViewAttached())
+                    mView.getPlatformInfoFail(code, msg);
             }
         });
     }
