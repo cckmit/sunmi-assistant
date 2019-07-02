@@ -66,6 +66,10 @@
     <string name="str_platform_sms_code_error">验证码错误，请重新输入</string>
     <string name="str_button_auto_create">自动创建</string>
     <string name="str_dialog_auto_create_store">未发现与该手机号匹配的内容，是否允许系统自动为您创建门店？</string>
+    <string name="str_dialog_auth_message">申请获取您在%s的门店数据。</string>
+    <string name="str_unkunw_store">%s的门店</string>
+    <string name="str_create_store_fail">当前门店创建失败</string>
+    <string name="str_create_store_alredy_exit">门店名称已存在</string>
 
     <string name="order_list_title">详情列表</string>
     <string name="order_filter_sort">综合排序</string>

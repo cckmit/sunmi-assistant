@@ -12,23 +12,37 @@ import com.google.gson.Gson;
 import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.model.LoginDataBean;
-
-import sunmi.common.rpc.http.RpcCallback;
-
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.rpc.CloudCall;
 import com.sunmi.assistant.ui.activity.MainActivity_;
+import com.sunmi.assistant.ui.activity.merchant.AuthDialog;
+import com.sunmi.assistant.ui.activity.merchant.SelectPlatformActivity_;
+import com.sunmi.assistant.ui.activity.merchant.SelectStoreActivity_;
+import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
+import com.sunmi.ipc.rpc.IPCCloudApi;
+import com.sunmi.ipc.rpc.RetrofitClient;
+import com.sunmi.ipc.rpc.mqtt.MqttManager;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.rpc.http.RpcCallback;
+import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.RegexUtils;
+import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.ClearableEditText;
 
 /**
@@ -88,7 +102,7 @@ public class SetPasswordActivity extends BaseActivity {
                 break;
             case R.id.btnComplete:
                 if (isFastClick(1500)) return;
-                if (!RegexUtils.isValidPassword(password)&& password.length() < 8) {
+                if (!RegexUtils.isValidPassword(password) && password.length() < 8) {
                     shortTip(R.string.tip_password_non_standard);
                     return;
                 }
@@ -131,7 +145,8 @@ public class SetPasswordActivity extends BaseActivity {
                     CommonUtils.trackDurationEventEnd(context, "registerDuration",
                             "注册流程开始和结束时调用", Constants.EVENT_DURATION_REGISTER);
                     //注册成功后直接登录
-                    gotoMainActivity();
+//                    gotoMainActivity();
+                    getSsoToken();
                 }
             }
         });
@@ -154,4 +169,70 @@ public class SetPasswordActivity extends BaseActivity {
         finish();
     }
 
+    //获取ssotoken
+    private void getSsoToken() {
+        IPCCloudApi.getStoreToken(new RetrofitCallback() {
+            @Override
+            public void onSuccess(int code, String msg, Object data) {
+                try {
+                    JSONObject jsonObject = new JSONObject(data.toString());
+                    SpUtils.setSsoToken(jsonObject.getString("store_token"));
+                    RetrofitClient.createInstance();//初始化retrofit
+                    MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
+                    getSaasInfo();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, Object data) {
+
+            }
+        });
+    }
+
+    //通过手机号获取saas信息
+    private void getSaasInfo() {
+        showLoadingDialog();
+        CloudCall.getSaasUserInfo(SpUtils.getMobile(), new RetrofitCallback() {
+            @Override
+            public void onSuccess(int code, String msg, Object data) {
+                LogCat.e(TAG, "data onSuccess=" + data);
+                hideLoadingDialog();
+                AuthStoreInfo bean = new Gson().fromJson(data.toString(), AuthStoreInfo.class);
+                getSaasData(bean.getSaasUserInfoList());
+            }
+
+            @Override
+            public void onFail(int code, String msg, Object data) {
+                LogCat.e(TAG, "data onFail code=" + code + "," + msg);
+                hideLoadingDialog();
+            }
+        });
+    }
+
+    private void getSaasData(List<AuthStoreInfo.SaasUserInfoListBean> list) {
+        if (list.size() > 0) {  //匹配到平台数据
+            StringBuilder saasName = new StringBuilder();
+            if (list.size() == 1) {
+                saasName.append(list.get(0).getSaas_name());
+            } else {
+                for (AuthStoreInfo.SaasUserInfoListBean bean : list) {
+                    saasName.append(bean.getSaas_name()).append(",");
+                }
+            }
+            new AuthDialog.Builder(SetPasswordActivity.this)
+                    .setMessage(getString(R.string.str_dialog_auth_message, saasName))
+                    .setAllowButton((dialog, which) -> SelectStoreActivity_.intent(SetPasswordActivity.this)
+                            .list((ArrayList) list)
+//                            .extra("list", (Serializable) list)
+                            .start())
+                    .setCancelButton((dialog, which) -> {
+                    })
+                    .create().show();
+        } else { //未匹配平台数据
+            SelectPlatformActivity_.intent(SetPasswordActivity.this).start();
+        }
+    }
 }

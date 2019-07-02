@@ -9,9 +9,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.rpc.CloudCall;
+import com.sunmi.assistant.ui.activity.MainActivity_;
+import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
+import com.sunmi.assistant.ui.activity.model.CreateStoreInfo;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -19,7 +24,13 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
+import java.io.Serializable;
+import java.util.List;
+
 import sunmi.common.base.BaseActivity;
+import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.dialog.CommonDialog;
 
 /**
@@ -50,46 +61,140 @@ public class CheckPlatformMobileActivity extends BaseActivity {
         tvSelectPlatform.setText(getString(R.string.str_please_input_platform_mobile, platform));
     }
 
+
+    @Click({R.id.tv_get_code, R.id.btn_check})
+
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.tv_get_code:
+                String mobile = etMobile.getText().toString();
+                if (TextUtils.isEmpty(mobile)) {
+                    shortTip(R.string.str_please_input_mobile);
+                    return;
+                }
+                startDownTimer();
+                sendSmsCode();
+                break;
+            case R.id.btn_check:
+                String code = etCode.getText().toString();
+                checkSmsCode(code);
+                break;
+        }
+    }
+
+    //发送验证码
+    private void sendSmsCode() {
+        CloudCall.sendSaasVerifyCode(SpUtils.getMobile(), new RetrofitCallback() {
+            @Override
+            public void onSuccess(int code, String msg, Object data) {
+            }
+
+            @Override
+            public void onFail(int code, String msg, Object data) {
+            }
+        });
+    }
+
+    //验证码
+    private void checkSmsCode(String code) {
+        showLoadingDialog();
+        CloudCall.confirmSaasVerifyCode(SpUtils.getMobile(), code, new RetrofitCallback() {
+            @Override
+            public void onSuccess(int code, String msg, Object data) {
+                getSaasInfo();//当验证匹配成功
+            }
+
+            @Override
+            public void onFail(int code, String msg, Object data) {
+                LogCat.e(TAG, "data onFail code=" + code + "," + msg);
+                hideLoadingDialog();
+                shortTip(R.string.str_platform_sms_code_error);
+            }
+        });
+    }
+
+    //通过手机号获取saas信息
+    private void getSaasInfo() {
+        CloudCall.getSaasUserInfo(SpUtils.getMobile(), new RetrofitCallback() {
+            @Override
+            public void onSuccess(int code, String msg, Object data) {
+                hideLoadingDialog();
+                AuthStoreInfo bean = new Gson().fromJson(data.toString(), AuthStoreInfo.class);
+                getSaasData(bean.getSaasUserInfoList());
+            }
+
+            @Override
+            public void onFail(int code, String msg, Object data) {
+                LogCat.e(TAG, "data onFail code=" + code + "," + msg);
+                hideLoadingDialog();
+            }
+        });
+    }
+
+    private void getSaasData(List<AuthStoreInfo.SaasUserInfoListBean> list) {
+        if (list.size() > 0) {  //匹配到平台数据
+            StringBuilder saasName = new StringBuilder();
+            if (list.size() == 1) {
+                saasName.append(list.get(0).getSaas_name());
+            } else {
+                for (AuthStoreInfo.SaasUserInfoListBean bean : list) {
+                    saasName.append(bean.getSaas_name()).append(",");
+                }
+            }
+            new AuthDialog.Builder(this)
+                    .setMessage(getString(R.string.str_dialog_auth_message, saasName))
+                    .setAllowButton((dialog, which) -> SelectStoreActivity_.intent(this)
+                            .extra("list", (Serializable) list)
+                            .start())
+                    .setCancelButton((dialog, which) -> {
+                    })
+                    .create().show();
+        } else { //未匹配平台数据
+            createStoreDialog();
+        }
+    }
+
     private void createStoreDialog() {
         new CommonDialog.Builder(this).setTitle(getString(R.string.str_dialog_auto_create_store))
                 .setCancelButton(com.sunmi.apmanager.R.string.sm_cancel)
-                .setConfirmButton(getString(R.string.str_button_auto_create), new DialogInterface.OnClickListener() {
+                .setConfirmButton(R.string.str_button_auto_create, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        shortTip("skip login success");
-
+                        createStore();
                     }
                 }).create().show();
     }
 
-    private void authDialog() {
-        new AuthDialog.Builder(this)
-                .setMessage("申请获取您在客无忧sass平台、收银专家sass平台、XXXX平台的门店数据。")
-                .setAllowButton((dialog, which) -> SelectStoreActivity_.intent(this).start())
-                .setCancelButton((dialog, which) -> {
-                })
-                .create().show();
+    //默认创建门店
+    public void createStore() {
+        showLoadingDialog();
+        CloudCall.createShop(SpUtils.getCompanyId() + "", String.format(getString(R.string.str_unkunw_store), SpUtils.getMobile()), new RetrofitCallback<CreateStoreInfo>() {
+            @Override
+            public void onSuccess(int code, String msg, CreateStoreInfo data) {
+                hideLoadingDialog();
+                gotoMainActivity();
+            }
 
+            @Override
+            public void onFail(int code, String msg, CreateStoreInfo data) {
+                LogCat.e(TAG, "data onFail code=" + code + "," + msg);
+                hideLoadingDialog();
+                gotoMainActivity();
+            }
+        });
     }
 
-    @Click({R.id.tv_get_code, R.id.btn_check})
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.tv_get_code:
-                startDownTimer();
-                break;
-            case R.id.btn_check:
-                String code = etCode.getText().toString();
-                if (TextUtils.equals("0", code)) {
-                    createStoreDialog();
-                } else if (TextUtils.equals("1", code)) {
-                    authDialog();
-                } else {
-                    shortTip(getString(R.string.str_platform_sms_code_error));
-                }
-                break;
-        }
+    private void gotoMainActivity() {
+        MainActivity_.intent(context).start();
+        finish();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        cancelTimer();
+    }
+
     //初始化启动倒计时
     private void startDownTimer() {
         mTimer.start();
@@ -112,6 +217,7 @@ public class CheckPlatformMobileActivity extends BaseActivity {
         //计时完毕的方法
         @Override
         public void onFinish() {
+            cancelTimer();
             tvGetCode.setTextColor(getResources().getColor(R.color.common_orange));
             tvGetCode.setText(getResources().getString(R.string.str_resend));//重新给Button设置文字
             tvGetCode.setClickable(true);

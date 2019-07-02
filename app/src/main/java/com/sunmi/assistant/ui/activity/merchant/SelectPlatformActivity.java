@@ -23,7 +23,6 @@ import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.utils.StatusBarUtils;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.ViewHolder;
@@ -45,7 +44,7 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
     private String selectPlatform;
 
 
-    private List<PlatformInfo> list = new ArrayList<>();
+    private List<PlatformInfo.SaasListBean> list = new ArrayList<>();
 
     @AfterViews
     void init() {
@@ -56,7 +55,6 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
         mPresenter.attachView(this);
         mPresenter.getPlatformInfo();
 
-        showViewList();
     }
 
     private void isCanClick(boolean isClick) {
@@ -95,26 +93,32 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
         titleBar.getRightTextView().setOnClickListener(this);
     }
 
-    private void showViewList() {
-        PlatformInfo bean;
-        for (int i = 0; i < 5; i++) {
-            bean = new PlatformInfo();
-            bean.setMsg("大商新玛特");
-            list.add(bean);
-        }
-        recyclerView.setAdapter(new CommonListAdapter<PlatformInfo>(this, R.layout.item_merchant_platform, list) {
+
+    @Override
+    public void getPlatformInfoSuccess(PlatformInfo data) {
+        showViewList(data);
+    }
+
+    @Override
+    public void getPlatformInfoFail(int code, String msg) {
+
+    }
+
+    private void showViewList(PlatformInfo data) {
+        list = data.getSaasList();
+        recyclerView.setAdapter(new CommonListAdapter<PlatformInfo.SaasListBean>(this, R.layout.item_merchant_platform, list) {
             int selectedIndex = -1;
 
             @Override
-            public void convert(ViewHolder holder, final PlatformInfo bean) {
+            public void convert(ViewHolder holder, final PlatformInfo.SaasListBean bean) {
                 TextView tvPlatform = holder.getView(R.id.tv_platform);
-                tvPlatform.setText(bean.getMsg());
+                tvPlatform.setText(bean.getName());
                 ImageView ivSelect = holder.getView(R.id.iv_select);
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         selectedIndex = holder.getAdapterPosition();
-                        selectPlatform = bean.getMsg();
+                        selectPlatform = bean.getName();
                         notifyDataSetChanged();//刷新
                         isCanClick(true);
                     }
@@ -128,17 +132,6 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
                 }
             }
         });
-    }
-
-    @Override
-    public void getPlatformInfoSuccess(String data) {
-        LogCat.e(TAG, "bean=" + data);
-
-    }
-
-    @Override
-    public void getPlatformInfoFail(int code, String msg) {
-
     }
 
 }

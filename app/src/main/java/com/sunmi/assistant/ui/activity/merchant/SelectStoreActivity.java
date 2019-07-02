@@ -7,13 +7,16 @@ import android.widget.Button;
 import android.widget.CheckBox;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.ui.activity.MainActivity_;
 import com.sunmi.assistant.ui.activity.contract.AuthStoreCompleteContract;
 import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
+import com.sunmi.assistant.ui.activity.model.CreateStoreInfo;
 import com.sunmi.assistant.ui.activity.presenter.AuthStoreCompletePresenter;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
@@ -39,9 +42,15 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
     RecyclerView recyclerView;
     @ViewById(R.id.btnComplete)
     Button btnComplete;
-    private List<AuthStoreInfo> list = new ArrayList<>();
-    public Map<Integer, Boolean> checkedMap = new HashMap<>();
-    private List<AuthStoreInfo> listChecked = null;//选中列表
+
+    @Extra
+    ArrayList<AuthStoreInfo.SaasUserInfoListBean> list;
+
+    public Map<String, Boolean> checkedMap = new HashMap<>();
+    private List<AuthStoreInfo.SaasUserInfoListBean> listChecked = null;//选中列表
+    private String shopNo, saasName;
+    private int saasSource;
+    private int flagAuth;
 
     @AfterViews
     void init() {
@@ -49,8 +58,6 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
         initRecycler();
         mPresenter = new AuthStoreCompletePresenter();
         mPresenter.attachView(this);
-        mPresenter.getAuthStoreCompleteInfo();
-
         showViewList();
     }
 
@@ -59,25 +66,65 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
         recyclerView.setLayoutManager(linearLayoutManager);
     }
 
+    //先创建门店再授权
     @Click({R.id.btnComplete})
     void btnComplete() {
-//        for (int i = 0; i < listChecked.size(); i++) {
-//            LogCat.e(TAG, "getShopId=" + listChecked.get(i).getShopId());
-//        }
+        for (int i = 0; i < listChecked.size(); i++) {
+            //创建门店
+            saasSource = listChecked.get(i).getSaas_source();
+            saasName = listChecked.get(i).getSaas_name();
+            shopNo = listChecked.get(i).getShop_no();
+            mPresenter.createStore(listChecked.get(i).getShop_name());
+        }
+    }
+
+    //创建门店
+    @Override
+    public void createStoreSuccess(CreateStoreInfo data) {
+        //成功后授权
+        mPresenter.authStoreCompleteInfo(data.getShop_id() + "", saasSource + "", shopNo, saasName);
+    }
+
+    @Override
+    public void createStoreFail(int code, String msg) {
+        if (code == 5034) {
+            shortTip(getString(R.string.str_create_store_fail));
+        } else {
+            shortTip(getString(R.string.str_create_store_alredy_exit));
+        }
+    }
+
+    //授权
+    @Override
+    public void authStoreCompleteSuccess(String data) {
+        LogCat.e(TAG, "bean=" + data);
+        flagAuth++;
+        if (listChecked.size() == flagAuth) {
+            gotoMainActivity(); //跳转到首页
+        }
+    }
+
+    @Override
+    public void authStoreCompleteFail(int code, String msg) {
+    }
+
+    private void gotoMainActivity() {
+        MainActivity_.intent(context).start();
+        finish();
     }
 
     // 保存选中的数据
     public void listCheckedNotifyDataSetChanged() {
         listChecked = new ArrayList<>();
-        LogCat.e(TAG, "*=2222222222222");
-        AuthStoreInfo bean;
+        AuthStoreInfo.SaasUserInfoListBean bean;
         for (int i = 0; i < list.size(); i++) {
-            Boolean isChecked = checkedMap.get(list.get(i).getShopId());
-            bean = new AuthStoreInfo();
+            Boolean isChecked = checkedMap.get(list.get(i).getShop_no());
+            bean = new AuthStoreInfo.SaasUserInfoListBean();
             if (isChecked != null && isChecked) {
-                bean.setShopName(list.get(i).getShopName());
-                bean.setPlatform(list.get(i).getPlatform());
-                bean.setShopId(list.get(i).getShopId());
+                bean.setShop_name(list.get(i).getShop_name());
+                bean.setSaas_name(list.get(i).getSaas_name());
+                bean.setShop_no(list.get(i).getShop_no());
+                bean.setSaas_source(list.get(i).getSaas_source());
                 listChecked.add(bean);
             }
         }
@@ -85,31 +132,23 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
     }
 
     private void showViewList() {
-        AuthStoreInfo bean;
-        for (int i = 0; i < 5; i++) {
-            bean = new AuthStoreInfo();
-            bean.setShopName("安居客");
-            bean.setPlatform("11111111");
-            bean.setShopId(i);
-            list.add(bean);
-        }
         isCanClick(listChecked);
-        recyclerView.setAdapter(new CommonListAdapter<AuthStoreInfo>(this, R.layout.item_merchant_auth_store, list) {
+        recyclerView.setAdapter(new CommonListAdapter<AuthStoreInfo.SaasUserInfoListBean>(this, R.layout.item_merchant_auth_store, list) {
             @Override
-            public void convert(ViewHolder holder, final AuthStoreInfo bean) {
-                holder.setText(R.id.tvName, bean.getShopName());
-                holder.setText(R.id.tvPlatform, bean.getPlatform());
+            public void convert(ViewHolder holder, final AuthStoreInfo.SaasUserInfoListBean bean) {
+                holder.setText(R.id.tvName, bean.getShop_name());
+                holder.setText(R.id.tvPlatform, bean.getSaas_name());
                 CheckBox checkBox = holder.getView(R.id.CBox);
                 if (list.size() == 1) {
                     checkBox.setChecked(true);
-                    checkedMap.put(bean.getShopId(), true);
+                    checkedMap.put(bean.getShop_no(), true);
                     listCheckedNotifyDataSetChanged();
                 }
                 checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     if (isChecked) {
-                        checkedMap.put(bean.getShopId(), true);
+                        checkedMap.put(bean.getShop_no(), true);
                     } else {
-                        checkedMap.remove(bean.getShopId());
+                        checkedMap.remove(bean.getShop_no());
                     }
                     listCheckedNotifyDataSetChanged();
                 });
@@ -117,7 +156,7 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
         });
     }
 
-    private void isCanClick(List<AuthStoreInfo> listChecked) {
+    private void isCanClick(List<AuthStoreInfo.SaasUserInfoListBean> listChecked) {
         if (listChecked != null && listChecked.size() > 0) {
             btnComplete.setAlpha(1f);
             btnComplete.setEnabled(true);
@@ -125,16 +164,5 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
             btnComplete.setAlpha(0.5f);
             btnComplete.setEnabled(false);
         }
-    }
-
-    @Override
-    public void getAuthStoreCompleteSuccess(String data) {
-        LogCat.e(TAG, "bean=" + data);
-
-    }
-
-    @Override
-    public void getAuthStoreCompleteFail(int code, String msg) {
-
     }
 }
