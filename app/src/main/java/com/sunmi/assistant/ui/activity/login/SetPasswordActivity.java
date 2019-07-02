@@ -229,6 +229,7 @@ public class SetPasswordActivity extends BaseActivity {
 //                            .extra("list", (Serializable) list)
                             .start())
                     .setCancelButton((dialog, which) -> {
+                        gotoMainActivity();
                     })
                     .create().show();
         } else { //未匹配平台数据
