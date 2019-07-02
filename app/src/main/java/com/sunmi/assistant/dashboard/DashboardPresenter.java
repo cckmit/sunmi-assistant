@@ -93,6 +93,9 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     private void initList(int companyId, int shopId, int period) {
+        if (!isViewAttached()) {
+            return;
+        }
         Context context = mView.getContext();
         Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(mPeriod);
 

@@ -55,6 +55,10 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
         mTimeEnd = timeEnd;
         mInitOrderType = initOrderType;
 
+        if (!isViewAttached()) {
+            return;
+        }
+
         List<FilterItem> order = new ArrayList<>(2);
         order.add(new FilterItem(1,
                 mView.getContext().getString(R.string.order_amount_descending)));
