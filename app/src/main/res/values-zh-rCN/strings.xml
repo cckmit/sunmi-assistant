@@ -76,5 +76,6 @@
     <string name="str_current_shop">当前门店</string>
     <string name="str_other_shop">其他门店</string>
     <string name="tip_no_other_shop">暂无其他门店</string>
+    <string name="str_my_company">我的商户</string>
 
 </resources>
