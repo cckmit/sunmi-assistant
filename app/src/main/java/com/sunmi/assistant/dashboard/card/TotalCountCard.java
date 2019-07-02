@@ -62,6 +62,8 @@ public class TotalCountCard extends BaseRefreshCard<TotalCountCard.Model> {
                             model.trendData = Float.valueOf(data.getWeek_rate());
                         } else if (!TextUtils.isEmpty(data.getDay_rate())) {
                             model.trendData = Float.valueOf(data.getDay_rate());
+                        } else {
+                            model.trendData = 0;
                         }
                     }
                 });
@@ -100,14 +102,18 @@ public class TotalCountCard extends BaseRefreshCard<TotalCountCard.Model> {
             }
 
             data.setText(String.format(Locale.getDefault(), "%.0f", model.data));
-            trendData.setText(holder.getContext().getResources().getString(R.string.dashboard_data_format,
-                    format.format(model.trendData * 100)));
+            String number = this.format.format(Math.abs(model.trendData * 100));
+            trendData.setText(holder.getContext().getResources()
+                    .getString(R.string.dashboard_data_format, number));
 
-            if (model.trendData >= 0) {
+            if ("0".equals(number)) {
+                trendData.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null);
+                trendData.setTextColor(holder.getContext().getResources().getColor(R.color.color_333338));
+            } else if (model.trendData > 0) {
                 trendData.setCompoundDrawablesRelativeWithIntrinsicBounds(
                         R.drawable.dashboard_ic_trend_up, 0, 0, 0);
                 trendData.setTextColor(holder.getContext().getResources().getColor(R.color.color_FF0000));
-            } else {
+            } else if (model.trendData < 0) {
                 trendData.setCompoundDrawablesRelativeWithIntrinsicBounds(
                         R.drawable.dashboard_ic_trend_down, 0, 0, 0);
                 trendData.setTextColor(holder.getContext().getResources().getColor(R.color.color_00B552));
