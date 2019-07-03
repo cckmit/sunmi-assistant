@@ -33,16 +33,14 @@ public class LoginPresenter extends BasePresenter<LoginContract.View>
                 public void onSuccess(int code, String msg, String data) {
                     if (!isViewAttached()) return;
                     try {
-                        if (code == 1) {
-                            JSONObject object = new JSONObject(data);
-                            if (object.has("needMerge")) {
-                                int needMerge = object.getInt("needMerge");//是否需要合并 0-否 1-是
-                                String url = object.getString("url");
-                                if (needMerge == 1) {
-                                    mView.showMergeDialog(url);
-                                } else {
-                                    login(mobile, password);
-                                }
+                        JSONObject object = new JSONObject(data);
+                        if (object.has("needMerge")) {
+                            int needMerge = object.getInt("needMerge");//是否需要合并 0-否 1-是
+                            String url = object.getString("url");
+                            if (needMerge == 1) {
+                                mView.showMergeDialog(url);
+                            } else {
+                                login(mobile, password);
                             }
                         }
                     } catch (JSONException e) {
@@ -60,20 +58,19 @@ public class LoginPresenter extends BasePresenter<LoginContract.View>
             @Override
             public void onSuccess(int code, String msg, String data) {
                 if (!isViewAttached()) return;
-                if (code == 1) {
 //                    CommonUtils.saveLoginInfo(new Gson().fromJson(data, LoginDataBean.class));
-                    getStoreToken(new Gson().fromJson(data, LoginDataBean.class));//todo
-                } else if (code == 201) {//用户名或密码错误
-                    mView.shortTip(R.string.textView_user_password_error);
-                } else if (code == 3603) {
-                    mView.mobileNoRegister();//手机号未注册
-                }
+                getStoreToken(new Gson().fromJson(data, LoginDataBean.class));//todo
             }
 
             @Override
             public void onFail(int code, String msg, String data) {
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();
+                    if (code == 201) {//用户名或密码错误
+                        mView.shortTip(R.string.textView_user_password_error);
+                    } else if (code == 3603) {
+                        mView.mobileNoRegister();//手机号未注册
+                    }
                 }
             }
         });
@@ -84,14 +81,16 @@ public class LoginPresenter extends BasePresenter<LoginContract.View>
         CloudCall.getStoreToken(loginData, new RetrofitCallback() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
-                if (isViewAttached()) mView.hideLoadingDialog();
-                try {
-                    JSONObject jsonObject = new JSONObject(data.toString());
-                    SpUtils.setSsoToken(jsonObject.getString("store_token"));
-                    RetrofitClient.createInstance();//初始化retrofit
-                    if (isViewAttached()) mView.getStoreTokenSuccess(loginData);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                if (isViewAttached()) {
+                    mView.hideLoadingDialog();
+                    try {
+                        JSONObject jsonObject = new JSONObject(data.toString());
+                        SpUtils.setSsoToken(jsonObject.getString("store_token"));
+                        RetrofitClient.createInstance();//初始化retrofit
+                        mView.getStoreTokenSuccess(loginData);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 

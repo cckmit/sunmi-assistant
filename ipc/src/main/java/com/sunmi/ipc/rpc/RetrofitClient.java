@@ -29,6 +29,9 @@ public class RetrofitClient extends BaseRetrofitClient {
     }
 
     public static void createInstance() {
+        if (instance != null) {
+            instance = null;
+        }
         instance = new RetrofitClient();
     }
 

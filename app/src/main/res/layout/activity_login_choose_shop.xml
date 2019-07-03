@@ -14,7 +14,6 @@
         app:dividerShow="true"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@mipmap/ic_back_dark"
-        app:leftTextColor="@color/colorText"
         app:titleText="@string/str_my_shop"
         app:titleTextColor="@color/colorText" />
 
