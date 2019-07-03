@@ -133,22 +133,22 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
         timeDistribution.addOnViewClickListener(R.id.tv_dashboard_radio_by_sales,
                 (adapter, holder, v, model, position) -> {
-                    model.dataSource = DashboardContract.DATA_MODE_SALES;
+                    model.setDataSource(DashboardContract.DATA_MODE_SALES);
                     adapter.notifyItemChanged(position);
                 });
         timeDistribution.addOnViewClickListener(R.id.tv_dashboard_radio_by_order,
                 (adapter, holder, v, model, position) -> {
-                    model.dataSource = DashboardContract.DATA_MODE_ORDER;
+                    model.setDataSource(DashboardContract.DATA_MODE_ORDER);
                     adapter.notifyItemChanged(position);
                 });
         payMethod.addOnViewClickListener(R.id.tv_dashboard_radio_by_sales,
                 (adapter, holder, v, model, position) -> {
-                    model.dataSource = DashboardContract.DATA_MODE_SALES;
+                    model.setDataSource(DashboardContract.DATA_MODE_SALES);
                     adapter.notifyItemChanged(position);
                 });
         payMethod.addOnViewClickListener(R.id.tv_dashboard_radio_by_order,
                 (adapter, holder, v, model, position) -> {
-                    model.dataSource = DashboardContract.DATA_MODE_ORDER;
+                    model.setDataSource(DashboardContract.DATA_MODE_ORDER);
                     adapter.notifyItemChanged(position);
                 });
 

@@ -26,6 +26,7 @@ import java.util.List;
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.base.recycle.BaseArrayAdapter;
 import sunmi.common.utils.CommonHelper;
+import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
 
 /**
@@ -72,7 +73,11 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         }
         mRefreshLayout.setOnRefreshListener(() -> {
-            mPresenter.refresh();
+            if (!NetworkUtils.isNetworkAvailable(getContext())) {
+                shortTip(R.string.toast_networkIsExceptional);
+            } else {
+                mPresenter.refresh();
+            }
             mRefreshLayout.setRefreshing(false);
         });
     }

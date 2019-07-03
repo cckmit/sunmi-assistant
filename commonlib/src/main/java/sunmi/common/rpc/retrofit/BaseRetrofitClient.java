@@ -83,10 +83,11 @@ public class BaseRetrofitClient {
         if (service == null) {
             throw new RuntimeException("Api service is null!");
         }
-        if (!interfaceCacheList.containsKey(service.getSimpleName())) {
-            interfaceCacheList.put(service.getSimpleName(), retrofit.create(service));
+        if (!interfaceCacheList.containsKey(service.getName())) {
+            interfaceCacheList.put(service.getName(), retrofit.create(service));
         }
-        return (T) interfaceCacheList.get(service.getSimpleName());
+        //noinspection unchecked
+        return (T) interfaceCacheList.get(service.getName());
 //        return retrofit.create(service);
     }
 

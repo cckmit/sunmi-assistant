@@ -1,5 +1,6 @@
 package com.sunmi.assistant.ui.activity.contract;
 
+import com.sunmi.assistant.ui.activity.model.CreateStoreInfo;
 import com.sunmi.assistant.ui.activity.model.PlatformInfo;
 
 import sunmi.common.base.BaseView;
@@ -13,10 +14,16 @@ public interface SelectPlatformContract {
 
         void getPlatformInfoFail(int code, String msg);
 
+        void createStoreSuccess(CreateStoreInfo data);
+
+        void createStoreFail(int code, String msg);
+
     }
 
     interface Presenter {
         void getPlatformInfo();
+
+        void createStore(String shopName);
     }
 
 }

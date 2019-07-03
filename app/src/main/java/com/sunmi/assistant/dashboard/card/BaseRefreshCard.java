@@ -19,10 +19,10 @@ public abstract class BaseRefreshCard<Model> {
 
     private static final String TAG = "BaseRefreshCard";
 
-    public static final int STATE_INIT = 0;
-    public static final int STATE_LOADING = 1;
-    public static final int STATE_SUCCESS = 2;
-    public static final int STATE_FAILED = 3;
+    static final int STATE_INIT = 0;
+    static final int STATE_LOADING = 1;
+    static final int STATE_SUCCESS = 2;
+    static final int STATE_FAILED = 3;
 
     private Context mContext;
 
@@ -60,6 +60,10 @@ public abstract class BaseRefreshCard<Model> {
         return mState;
     }
 
+    void setState(int state) {
+        mState = state;
+    }
+
     public int getPeriod() {
         return mPeriod;
     }
@@ -91,7 +95,9 @@ public abstract class BaseRefreshCard<Model> {
         }
         this.mCompanyId = companyId;
         this.mShopId = shopId;
-        refresh();
+        if (mCompanyId > 0 && mShopId > 0 && mPeriod != DashboardContract.TIME_PERIOD_INIT) {
+            load(mCompanyId, mShopId, mPeriod, mModel);
+        }
     }
 
     public void setShopId(int shopId) {
@@ -99,7 +105,9 @@ public abstract class BaseRefreshCard<Model> {
             return;
         }
         this.mShopId = shopId;
-        refresh();
+        if (mCompanyId > 0 && mShopId > 0 && mPeriod != DashboardContract.TIME_PERIOD_INIT) {
+            load(mCompanyId, mShopId, mPeriod, mModel);
+        }
     }
 
     public void setPeriod(int period) {
@@ -107,13 +115,14 @@ public abstract class BaseRefreshCard<Model> {
             return;
         }
         this.mPeriod = period;
-        this.mState = STATE_LOADING;
         onPeriodChange(mModel, period);
-        updateView();
-        refresh();
+        if (mCompanyId > 0 && mShopId > 0 && mPeriod != DashboardContract.TIME_PERIOD_INIT) {
+            load(mCompanyId, mShopId, mPeriod, mModel);
+        }
     }
 
     public void refresh() {
+        onRefresh(mModel, mPeriod);
         if (mCompanyId > 0 && mShopId > 0 && mPeriod != DashboardContract.TIME_PERIOD_INIT) {
             load(mCompanyId, mShopId, mPeriod, mModel);
         }
@@ -130,6 +139,9 @@ public abstract class BaseRefreshCard<Model> {
     protected abstract ItemType<Model, BaseViewHolder<Model>> createType();
 
     protected void onPeriodChange(Model model, int period) {
+    }
+
+    protected void onRefresh(Model model, int period) {
     }
 
     protected abstract void load(int companyId, int shopId,

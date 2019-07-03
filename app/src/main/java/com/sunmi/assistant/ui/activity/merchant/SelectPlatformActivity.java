@@ -9,7 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.ui.activity.MainActivity_;
 import com.sunmi.assistant.ui.activity.contract.SelectPlatformContract;
+import com.sunmi.assistant.ui.activity.model.CreateStoreInfo;
 import com.sunmi.assistant.ui.activity.model.PlatformInfo;
 import com.sunmi.assistant.ui.activity.presenter.PlatformPresenter;
 
@@ -22,7 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.ViewHolder;
@@ -53,6 +57,7 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
         isCanClick(false);
         mPresenter = new PlatformPresenter();
         mPresenter.attachView(this);
+        showLoadingDialog();
         mPresenter.getPlatformInfo();
 
     }
@@ -74,7 +79,8 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
                 finish();
                 break;
             case R.id.txt_right:
-                shortTip("skip");
+                showLoadingDialog();
+                mPresenter.createStore(String.format(getString(R.string.str_unkunw_store), SpUtils.getMobile()));
                 break;
         }
     }
@@ -96,12 +102,33 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
 
     @Override
     public void getPlatformInfoSuccess(PlatformInfo data) {
+        hideLoadingDialog();
         showViewList(data);
     }
 
     @Override
     public void getPlatformInfoFail(int code, String msg) {
+        LogCat.e(TAG, "data onFail code=" + code + "," + msg);
+        hideLoadingDialog();
+    }
 
+    @Override
+    public void createStoreSuccess(CreateStoreInfo data) {
+        LogCat.e(TAG, "data createStoreSuccess");
+        hideLoadingDialog();
+        gotoMainActivity();
+    }
+
+    @Override
+    public void createStoreFail(int code, String msg) {
+        LogCat.e(TAG, "data onFail code=" + code + "," + msg);
+        hideLoadingDialog();
+        shortTip(R.string.str_create_store_fail);
+    }
+
+    private void gotoMainActivity() {
+        MainActivity_.intent(context).start();
+        finish();
     }
 
     private void showViewList(PlatformInfo data) {
@@ -112,13 +139,13 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
             @Override
             public void convert(ViewHolder holder, final PlatformInfo.SaasListBean bean) {
                 TextView tvPlatform = holder.getView(R.id.tv_platform);
-                tvPlatform.setText(bean.getName());
+                tvPlatform.setText(bean.getSaas_name());
                 ImageView ivSelect = holder.getView(R.id.iv_select);
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         selectedIndex = holder.getAdapterPosition();
-                        selectPlatform = bean.getName();
+                        selectPlatform = bean.getSaas_name();
                         notifyDataSetChanged();//刷新
                         isCanClick(true);
                     }
