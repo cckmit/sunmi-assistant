@@ -39,5 +39,7 @@ public interface DashboardContract {
 
         void refresh();
 
+        void refresh(int position);
+
     }
 }

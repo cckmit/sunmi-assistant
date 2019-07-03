@@ -19,19 +19,26 @@
             android:layout_marginEnd="@dimen/dp_20"
             android:textColor="@color/color_333338"
             android:textSize="@dimen/sp_16"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tv_dashboard_data"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginStart="@dimen/dp_20"
-            android:layout_marginTop="@dimen/dp_2"
             android:layout_marginEnd="@dimen/dp_20"
+            android:gravity="center_vertical"
+            android:maxLines="1"
             android:textColor="@color/color_333338"
             android:textSize="@dimen/sp_28"
+            android:textStyle="bold"
+            app:autoSizeMaxTextSize="@dimen/sp_28"
+            app:autoSizeMinTextSize="@dimen/sp_12"
+            app:autoSizeTextType="uniform"
+            app:layout_constraintBottom_toTopOf="@+id/tv_dashboard_trend_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_title" />
@@ -41,23 +48,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_20"
-            android:layout_marginTop="@dimen/dp_2"
+            android:layout_marginBottom="@dimen/dp_12"
             android:textColor="@color/color_85858A"
             android:textSize="@dimen/sp_12"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_data" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/tv_dashboard_trend_data"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_2"
             android:layout_marginEnd="@dimen/dp_20"
             android:textSize="@dimen/sp_12"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_dashboard_trend_name"
-            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_data" />
+            app:layout_constraintTop_toTopOf="@id/tv_dashboard_trend_name" />
 
         <ProgressBar
             android:id="@+id/pb_dashboard_loading"
