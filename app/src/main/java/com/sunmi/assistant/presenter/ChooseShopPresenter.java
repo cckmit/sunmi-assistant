@@ -10,7 +10,6 @@ import java.util.List;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
-import sunmi.common.utils.SpUtils;
 
 /**
  * Description: ChooseShopPresenter
@@ -24,7 +23,7 @@ public class ChooseShopPresenter extends BasePresenter<ChooseShopContract.View>
             @Override
             public void onSuccess(int code, String msg, ShopListResp data) {
                 List<ShopListResp.ShopInfo> shopList = data.getShop_list();
-                if (shopList != null && shopList.size() > 0) {
+                if (shopList != null) {
                     if (isViewAttached()) {
                         mView.getShopListSuccess(shopList);
                     }
