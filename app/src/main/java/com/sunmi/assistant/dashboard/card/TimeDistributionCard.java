@@ -55,6 +55,7 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
 
     @Override
     protected void load(int companyId, int shopId, int period, Model model) {
+        setState(STATE_LOADING);
         int interval;
         if (period == DashboardContract.TIME_PERIOD_TODAY) {
             interval = 3600;
@@ -209,12 +210,16 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
     }
 
     public static class Model {
-        public String title;
-        public int dataSource;
-        public SparseArray<List<BarEntry>> dataSets = new SparseArray<>(2);
+        private String title;
+        private int dataSource;
+        private SparseArray<List<BarEntry>> dataSets = new SparseArray<>(2);
 
-        public Model(String title, int dataSource) {
+        private Model(String title, int dataSource) {
             this.title = title;
+            this.dataSource = dataSource;
+        }
+
+        public void setDataSource(int dataSource) {
             this.dataSource = dataSource;
         }
     }

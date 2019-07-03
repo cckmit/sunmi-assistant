@@ -10,7 +10,7 @@ import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
 /**
- * 订单管理Http接口
+ * 商户管理Http接口
  *
  * @author yinhui
  * @since 2019-06-20

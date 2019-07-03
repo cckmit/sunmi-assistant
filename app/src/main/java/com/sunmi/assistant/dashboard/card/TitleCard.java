@@ -59,10 +59,10 @@ public class TitleCard extends BaseRefreshCard<TitleCard.Model> {
     }
 
     public static class Model {
-        public String companyName;
-        public String shopName;
+        private String companyName;
+        private String shopName;
 
-        public Model() {
+        private Model() {
             this.companyName = SpUtils.getCompanyName();
             this.shopName = SpUtils.getShopName();
         }

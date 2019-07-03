@@ -49,6 +49,7 @@ public class QuantityRankCard extends BaseRefreshCard<QuantityRankCard.Model> {
 
     @Override
     protected void load(int companyId, int shopId, int period, Model model) {
+        setState(STATE_LOADING);
         Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(period);
         SunmiStoreRemote.get().getOrderQuantityRank(companyId, shopId,
                 periodTimestamp.first, periodTimestamp.second,
@@ -169,11 +170,11 @@ public class QuantityRankCard extends BaseRefreshCard<QuantityRankCard.Model> {
     }
 
     static class Item {
-        public int rank;
-        public String name;
-        public String count;
+        private int rank;
+        private String name;
+        private String count;
 
-        public Item(int rank, String name, String count) {
+        private Item(int rank, String name, String count) {
             this.rank = rank;
             this.name = name;
             this.count = count;

@@ -44,27 +44,31 @@ public class TotalSalesCard extends BaseRefreshCard<TotalSalesCard.Model> {
     }
 
     @Override
+    protected void onRefresh(Model model, int period) {
+        model.needLoad = true;
+    }
+
+    @Override
     protected void load(int companyId, int shopId, int period, Model model) {
+        if (!model.needLoad) {
+            return;
+        }
         Log.d(TAG, "HTTP request total sales amount.");
-        Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(period);
+        setState(STATE_LOADING);
+        Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(DashboardContract.TIME_PERIOD_TODAY);
         SunmiStoreRemote.get().getOrderTotalAmount(companyId, shopId,
                 periodTimestamp.first, periodTimestamp.second, 1,
                 new CardCallback<OrderTotalAmountResp>() {
                     @Override
                     public void success(OrderTotalAmountResp data) {
                         Log.d(TAG, "HTTP request total sales amount success.");
-                        model.data = data.getTotal_amount();
-                        if (period == DashboardContract.TIME_PERIOD_MONTH
-                                && !TextUtils.isEmpty(data.getMonth_rate())) {
-                            model.trendData = Float.valueOf(data.getMonth_rate());
-                        } else if (period == DashboardContract.TIME_PERIOD_WEEK
-                                && !TextUtils.isEmpty(data.getWeek_rate())) {
-                            model.trendData = Float.valueOf(data.getWeek_rate());
-                        } else if (!TextUtils.isEmpty(data.getDay_rate())) {
-                            model.trendData = Float.valueOf(data.getDay_rate());
-                        } else {
-                            model.trendData = 0;
-                        }
+                        model.needLoad = false;
+                        model.dataToday = data.getDay_amount();
+                        model.dataWeek = data.getWeek_amount();
+                        model.dataMonth = data.getMonth_amount();
+                        model.trendDataToday = TextUtils.isEmpty(data.getDay_rate()) ? 0f : Float.valueOf(data.getDay_rate());
+                        model.trendDataWeek = TextUtils.isEmpty(data.getWeek_rate()) ? 0f : Float.valueOf(data.getWeek_rate());
+                        model.trendDataMonth = TextUtils.isEmpty(data.getMonth_rate()) ? 0f : Float.valueOf(data.getMonth_rate());
                     }
                 });
     }
@@ -87,13 +91,13 @@ public class TotalSalesCard extends BaseRefreshCard<TotalSalesCard.Model> {
         public void onBindViewHolder(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
             Log.d(TAG, "Setup card view.");
             setHolder(holder);
-            TextView title = holder.getView(R.id.tv_dashboard_title);
-            TextView data = holder.getView(R.id.tv_dashboard_data);
-            TextView trendName = holder.getView(R.id.tv_dashboard_trend_name);
-            TextView trendData = holder.getView(R.id.tv_dashboard_trend_data);
-            title.setText(model.title);
+            TextView tvTitle = holder.getView(R.id.tv_dashboard_title);
+            TextView tvData = holder.getView(R.id.tv_dashboard_data);
+            TextView tvTrendName = holder.getView(R.id.tv_dashboard_trend_name);
+            TextView tvTrendData = holder.getView(R.id.tv_dashboard_trend_data);
+            tvTitle.setText(model.title);
             if (!TextUtils.isEmpty(model.trendName)) {
-                trendName.setText(model.trendName);
+                tvTrendName.setText(model.trendName);
             }
 
             if (getState() == STATE_INIT || getState() == STATE_LOADING) {
@@ -101,22 +105,23 @@ public class TotalSalesCard extends BaseRefreshCard<TotalSalesCard.Model> {
                 return;
             }
 
-            data.setText(String.format(Locale.getDefault(), "%.2f", model.data));
-            String number = this.format.format(Math.abs(model.trendData * 100));
-            trendData.setText(holder.getContext().getResources()
-                    .getString(R.string.dashboard_data_format, number));
+            tvData.setText(String.format(Locale.getDefault(), "%.2f", model.getData(getPeriod())));
+            float trendData = model.getTrendData(getPeriod());
+            String trendFormatNumber = this.format.format(Math.abs(trendData * 100));
+            tvTrendData.setText(holder.getContext().getResources()
+                    .getString(R.string.dashboard_data_format, trendFormatNumber));
 
-            if (TextUtils.equals(number, "0")) {
-                trendData.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null);
-                trendData.setTextColor(holder.getContext().getResources().getColor(R.color.color_333338));
-            } else if (model.trendData > 0) {
-                trendData.setCompoundDrawablesRelativeWithIntrinsicBounds(
+            if (TextUtils.equals(trendFormatNumber, "0")) {
+                tvTrendData.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null);
+                tvTrendData.setTextColor(holder.getContext().getResources().getColor(R.color.color_333338));
+            } else if (trendData > 0) {
+                tvTrendData.setCompoundDrawablesRelativeWithIntrinsicBounds(
                         R.drawable.dashboard_ic_trend_up, 0, 0, 0);
-                trendData.setTextColor(holder.getContext().getResources().getColor(R.color.color_FF0000));
+                tvTrendData.setTextColor(holder.getContext().getResources().getColor(R.color.color_FF0000));
             } else {
-                trendData.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                tvTrendData.setCompoundDrawablesRelativeWithIntrinsicBounds(
                         R.drawable.dashboard_ic_trend_down, 0, 0, 0);
-                trendData.setTextColor(holder.getContext().getResources().getColor(R.color.color_00B552));
+                tvTrendData.setTextColor(holder.getContext().getResources().getColor(R.color.color_00B552));
             }
             holder.getView(R.id.pb_dashboard_loading).setVisibility(View.GONE);
             Log.d(TAG, "Card data setup complete.");
@@ -125,13 +130,38 @@ public class TotalSalesCard extends BaseRefreshCard<TotalSalesCard.Model> {
     }
 
     public static class Model {
-        public String title;
-        public float data;
-        public String trendName;
-        public float trendData;
+        private String title;
+        private float dataToday;
+        private float dataWeek;
+        private float dataMonth;
+        private String trendName;
+        private float trendDataToday;
+        private float trendDataWeek;
+        private float trendDataMonth;
+        private boolean needLoad = true;
 
-        public Model(String title) {
+        private Model(String title) {
             this.title = title;
+        }
+
+        private float getData(int period) {
+            if (period == DashboardContract.TIME_PERIOD_TODAY) {
+                return dataToday;
+            } else if (period == DashboardContract.TIME_PERIOD_WEEK) {
+                return dataWeek;
+            } else {
+                return dataMonth;
+            }
+        }
+
+        private float getTrendData(int period) {
+            if (period == DashboardContract.TIME_PERIOD_TODAY) {
+                return trendDataToday;
+            } else if (period == DashboardContract.TIME_PERIOD_WEEK) {
+                return trendDataWeek;
+            } else {
+                return trendDataMonth;
+            }
         }
     }
 }
