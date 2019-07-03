@@ -225,13 +225,13 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
                 mFilters.get(mCurrentShowFilter).getPopup().dismiss(false);
             }
             mCurrentShowFilter = (int) list.getTag();
-            mDropdownAnimator.startAnimationToShow(false, list, mOverlay);
+            mDropdownAnimator.startAnimationToShow(animated, list, mOverlay);
         }
 
         @Override
         public void dismiss(View list, boolean animated) {
             mCurrentShowFilter = -1;
-            mDropdownAnimator.startAnimationToDismiss(false, list, mOverlay);
+            mDropdownAnimator.startAnimationToDismiss(animated, list, mOverlay);
         }
     }
 

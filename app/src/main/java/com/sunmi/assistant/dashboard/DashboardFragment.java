@@ -146,14 +146,19 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{NotificationConstant.shopSwitched, NotificationConstant.shopNameChanged};
+        return new int[]{
+                NotificationConstant.shopSwitched,
+                NotificationConstant.shopNameChanged,
+                NotificationConstant.companyNameChanged,
+        };
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (id == NotificationConstant.shopSwitched) {
             mPresenter.switchShopTo(SpUtils.getShopId());
-        } else if (id == NotificationConstant.shopNameChanged) {
+        } else if (id == NotificationConstant.shopNameChanged
+                || id == NotificationConstant.companyNameChanged) {
             mPresenter.refresh(0);
         }
     }

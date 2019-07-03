@@ -1,6 +1,7 @@
 package com.sunmi.assistant.order;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.view.View;
@@ -30,7 +31,7 @@ class DropdownAnimation {
             set.play(menuAnim).with(overlayAnim);
             set.setDuration(250);
             set.setInterpolator(new DecelerateInterpolator());
-            set.addListener(new Animator.AnimatorListener() {
+            set.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
                     dropdownMenu.setVisibility(View.VISIBLE);
@@ -45,10 +46,6 @@ class DropdownAnimation {
                 @Override
                 public void onAnimationCancel(Animator animation) {
                     mCurrent = null;
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
                 }
             });
             set.start();
@@ -75,11 +72,7 @@ class DropdownAnimation {
             set.play(menuAnim).with(overlayAnim);
             set.setDuration(250);
             set.setInterpolator(new DecelerateInterpolator());
-            set.addListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                }
-
+            set.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     dropdownMenu.setVisibility(View.INVISIBLE);
@@ -92,10 +85,6 @@ class DropdownAnimation {
                     dropdownMenu.setVisibility(View.INVISIBLE);
                     overlay.setVisibility(View.INVISIBLE);
                     mCurrent = null;
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
                 }
             });
             set.start();
