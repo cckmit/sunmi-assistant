@@ -19,6 +19,7 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.DashboardContract;
 import com.sunmi.assistant.dashboard.ui.BarXAxisLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.RoundEdgeBarChartRenderer;
+import com.sunmi.assistant.dashboard.ui.SpecificLabelsXAxisRenderer;
 import com.sunmi.assistant.data.SunmiStoreRemote;
 import com.sunmi.assistant.data.response.OrderTimeDistributionResp;
 import com.sunmi.assistant.utils.Utils;
@@ -111,7 +112,7 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
             chart.getLegend().setEnabled(false);
             chart.getAxisRight().setEnabled(false);
             RoundEdgeBarChartRenderer renderer = new RoundEdgeBarChartRenderer(chart, chart.getAnimator(), chart.getViewPortHandler());
-            renderer.setRadius(20);
+            renderer.setRadius(18);
             chart.setFitBars(true);
             chart.setRenderer(renderer);
 
@@ -171,6 +172,8 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
                 }
             }
             chart.getAxisLeft().setAxisMaximum(max > 0 ? max * 1.2f : 5f);
+            chart.setXAxisRenderer(new SpecificLabelsXAxisRenderer(chart,
+                    Utils.getBarChartXAxisFloatLabels(getPeriod(), dataList), true));
 
             // Calculate bar width.
             float barWidthRatio;
@@ -180,6 +183,7 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
                 barWidthRatio = 0.2f;
             } else {
                 barWidthRatio = 0.65f;
+                dataList.add(new BarEntry(24f, 0f));
             }
 
             BarDataSet dataSet;
