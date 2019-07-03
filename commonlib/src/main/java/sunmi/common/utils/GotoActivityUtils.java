@@ -27,6 +27,9 @@ public class GotoActivityUtils {
                 && !className.contains("ProtocolActivity")
                 && !className.contains("UserMergeActivity")
                 && !className.contains("LoginChooseShopActivity")
+                && !className.contains("CheckPlatformMobileActivity")
+                && !className.contains("SelectPlatformActivity")
+                && !className.contains("SelectStoreActivity")
                 ) {
             LogCat.e("TAG", "gotoLoginActivity= " + className);
             gotoLoginActivity(BaseApplication.getContext(), "1"); //1 剔除多端登录
