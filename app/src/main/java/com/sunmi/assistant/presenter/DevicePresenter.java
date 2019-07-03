@@ -48,6 +48,8 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                     @Override
                     public void onFail(int code, String msg, AdListResp data) {
                         if (isViewAttached()) {
+                            mView.hideLoadingDialog();
+                            mView.shortTip(R.string.toast_network_Exception);
                             mView.endRefresh();
                         }
                     }
@@ -59,7 +61,6 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
         CloudApi.getBindDeviceList(SpUtils.getShopId(), new RpcCallback(null) {
             @Override
             public void onSuccess(int code, String msg, String data) {
-                mView.endRefresh();
                 List<SunmiDevice> list = new ArrayList<>();
                 try {
                     if (code == 1) {
@@ -87,12 +88,17 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                if (isViewAttached()) mView.getRouterListSuccess(list);
+                if (isViewAttached()) {
+                    mView.endRefresh();
+                    mView.getRouterListSuccess(list);
+                }
             }
 
             @Override
             public void onError(int code, String msg, String data) {
-                mView.endRefresh();
+                if (isViewAttached()) {
+                    mView.endRefresh();
+                }
             }
         });
     }
@@ -143,7 +149,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
 
     @Override
     public void unbindIPC(int deviceId) {
-        IPCCloudApi.unbindIPC(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId + "", new RetrofitCallback() {
+        IPCCloudApi.unbindIPC(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId, new RetrofitCallback() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
@@ -154,7 +160,9 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
 
             @Override
             public void onFail(int code, String msg, Object data) {
-                if (isViewAttached()) mView.shortTip(R.string.tip_unbind_fail);
+                if (isViewAttached()) {
+                    mView.shortTip(R.string.tip_unbind_fail);
+                }
             }
         });
     }

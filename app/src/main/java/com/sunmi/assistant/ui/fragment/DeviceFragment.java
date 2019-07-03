@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -251,29 +250,25 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{
-                NotificationConstant.shopSwitched
-        };
+        return new int[]{NotificationConstant.shopSwitched};
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (args == null) return;
-        if (id == CommonConstants.tabDevice) {
+        if (id == CommonConstants.tabDevice
+                || NotificationConstant.bindRouterChanged == id
+                || NotificationConstant.updateConnectComplete == id) {//mqtt断开重连刷新
             getDeviceList();
         } else if (id == NotificationConstant.shopSwitched) {
             topBar.setShopName(SpUtils.getShopName());
             getDeviceList();
-        } else if (NotificationConstant.netDisconnection == id) {//网络断开 todo 列表状态更新
+        } else if (NotificationConstant.netDisconnection == id) {//网络断开
         } else if (NotificationConstant.apStatusException == id) {//异常
-            LogCat.e(TAG, "exception***CURRENT_ROUTER>>>" + MyNetworkCallback.CURRENT_ROUTER);
             if (TextUtils.isEmpty(MyNetworkCallback.CURRENT_ROUTER)) return;
             devStatusChangeList(MyNetworkCallback.CURRENT_ROUTER, DeviceStatus.EXCEPTION);
-        } else if (NotificationConstant.updateConnectComplete == id) {//mqtt断开重连刷新
-            getDeviceList();
         } else if (NotificationConstant.apPostStatus == id) {//在线 离线 设备状态
             String msg = (String) args[0];
-            LogCat.e(TAG, "在线 离线 设备状态***>>>" + msg);
             if (TextUtils.isEmpty(msg)) return;
             try {
                 JSONObject object = new JSONObject(msg);
@@ -297,7 +292,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                         intent.putExtra("type", AppConfig.BROADCAST_STATUS);
                         mActivity.sendBroadcast(intent);
                     } else if (NotificationConstant.apStatusList == event) {
-                        LogCat.e(TAG, "111111111111111111 0x211e return  ok ***>>>" + msg);
                         JSONObject object1 = jsonObject.getJSONObject("param");
                         JSONArray jsonArrayList = object1.getJSONArray("device_list");//所有设备列表
                         routerList.clear();
@@ -319,15 +313,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 e.printStackTrace();
             }
         } else if (NotificationConstant.shopNameChanged == id) {
-            String shopName = (String) args[1];
-            if (!TextUtils.isEmpty(shopName)) {
-                topBar.setShopName(shopName);
-            }
-        } else if (NotificationConstant.bindRouterChanged == id) {
-            getDeviceList();
+            topBar.setShopName(SpUtils.getShopName());
         } else if (NotificationConstant.apisConfig == id) {//ap是否配置2034
             ResponseBean res = (ResponseBean) args[0];
-            LogCat.e(TAG, "apisConfig=" + res.getResult());
             checkApIsConfig(res);
         } else if (NotificationConstant.checkApPassword == id) {
             ResponseBean res = (ResponseBean) args[0];
@@ -351,32 +339,30 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             dialogPassword = null;
             return;
         }
-        dialogPassword = new Dialog(mActivity, com.sunmi.apmanager.R.style.Son_dialog);
+        dialogPassword = new Dialog(mActivity, R.style.Son_dialog);
         LayoutInflater inflater = mActivity.getLayoutInflater();
-        View view = inflater.inflate(com.sunmi.apmanager.R.layout.dialog_manger_password, null);
-        final ClearableEditText etPassword = view.findViewById(com.sunmi.apmanager.R.id.etPassword);
-        TextView tvContent = view.findViewById(com.sunmi.apmanager.R.id.tvContent);
-        Button btnCancel = view.findViewById(com.sunmi.apmanager.R.id.btnCancel);
-        Button btnSure = view.findViewById(com.sunmi.apmanager.R.id.btnSure);
+        View view = inflater.inflate(R.layout.dialog_manger_password, null);
+        final ClearableEditText etPassword = view.findViewById(R.id.etPassword);
+        TextView tvContent = view.findViewById(R.id.tvContent);
         if (TextUtils.equals(type, "0")) {
-            tvContent.setText(com.sunmi.apmanager.R.string.curr_router_manager_password);
+            tvContent.setText(R.string.curr_router_manager_password);
         } else {
-            tvContent.setText(com.sunmi.apmanager.R.string.curr_router_error_password);
+            tvContent.setText(R.string.curr_router_error_password);
         }
         password = "";
-        btnCancel.setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.btnCancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialogPassword.dismiss();
                 dialogPassword = null;
             }
         });
-        btnSure.setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.btnSure).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 password = etPassword.getText().toString().trim();
                 if (TextUtils.isEmpty(password)) {
-                    shortTip(com.sunmi.apmanager.R.string.hint_input_manger_password);
+                    shortTip(R.string.hint_input_manger_password);
                     return;
                 }
                 APCall.getInstance().checkLoginAgain(mActivity, password);//todo opcode
@@ -404,9 +390,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 checkApVersion(clickedDevice.getDeviceid(), clickedDevice.getStatus());
 //                gotoRouterManager();
             } else if (TextUtils.equals(res.getErrCode(), AppConfig.ERROR_CODE_PASSWORD_ERROR)) {// 账户密码错误
-                shortTip(getString(com.sunmi.apmanager.R.string.tip_password_error));
+                shortTip(getString(R.string.tip_password_error));
             } else if (TextUtils.equals(res.getErrCode(), AppConfig.ERROR_CODE_PASSWORD_INCORRECT_MANY)) { // 账户密码错误次数过多
-                shortTip(com.sunmi.apmanager.R.string.tip_password_fail_too_often);
+                shortTip(R.string.tip_password_fail_too_often);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -424,7 +410,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 if (TextUtils.equals("0", factory)) {
                     isComeRouterManager(clickedDevice.getDeviceid(), clickedDevice.getStatus());
                 } else {
-                    openActivity(getActivity(), PrimaryRouteStartActivity.class);
+                    openActivity(mActivity, PrimaryRouteStartActivity.class);
                 }
             }
         } catch (JSONException e) {
@@ -434,7 +420,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     //设备ap登录，检测管理密码item
     private void checkApLoginMangerPsd(ResponseBean res) {
-        LogCat.e(TAG, "what_ap_login_check_mangerPsd    ######>>>" + res);
+        LogCat.e(TAG, "checkApLoginMangerPsd res = " + res);
         try {
             if (TextUtils.equals(res.getErrCode(), "0")) {//成功
                 JSONObject object2 = res.getResult();
@@ -453,9 +439,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 dialogPassword = null;
                 saveMangerPasswordDialog("0");
             } else if (TextUtils.equals(res.getErrCode(), AppConfig.ERROR_CODE_PASSWORD_INCORRECT_MANY)) { // 账户密码错误次数过多
-                shortTip(com.sunmi.apmanager.R.string.tip_password_fail_too_often);
+                shortTip(R.string.tip_password_fail_too_often);
             } else if (TextUtils.equals(res.getErrCode(), AppConfig.ERROR_CODE_UNSET_PASSWORD)) { // 账户密码未设置
-                openActivity(getActivity(), PrimaryRouteStartActivity.class);
+                openActivity(mActivity, PrimaryRouteStartActivity.class);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -542,7 +528,12 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @Override
     public void onPullDownToRefresh(PullToRefreshBase<NestedScrollView> refreshView) {
-        getDeviceList();
+        if (NetworkUtils.isNetworkAvailable(mActivity)) {
+            endRefresh();
+            shortTip(R.string.toast_network_Exception);
+        } else {
+            getDeviceList();
+        }
     }
 
     @Override
@@ -570,7 +561,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             }
         } else if (TextUtils.equals(device.getType(), "IPC")) {
             if (TextUtils.isEmpty(device.getUid())) {
-                shortTip("播放失败");
+                shortTip(R.string.tip_play_fail);
             } else {
                 VideoPlayActivity_.intent(mActivity).UID(device.getUid())
                         .deviceId(device.getId()).ipcType(device.getModel()).start();

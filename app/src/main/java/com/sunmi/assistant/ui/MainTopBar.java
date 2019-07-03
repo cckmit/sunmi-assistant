@@ -43,6 +43,7 @@ public class MainTopBar extends LinearLayout implements BaseNotification.Notific
         mContext = context;
         BaseNotification.newInstance().addStickObserver(this, NotificationConstant.shopSwitched);
         BaseNotification.newInstance().addStickObserver(this, NotificationConstant.shopNameChanged);
+        BaseNotification.newInstance().addStickObserver(this, NotificationConstant.companyNameChanged);
         init(attrs);
     }
 
@@ -98,6 +99,7 @@ public class MainTopBar extends LinearLayout implements BaseNotification.Notific
         super.onDetachedFromWindow();
         BaseNotification.newInstance().removeObserver(this, NotificationConstant.shopSwitched);
         BaseNotification.newInstance().removeObserver(this, NotificationConstant.shopNameChanged);
+        BaseNotification.newInstance().removeObserver(this, NotificationConstant.companyNameChanged);
     }
 
     @Override
