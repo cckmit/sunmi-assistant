@@ -64,6 +64,7 @@ public class PayMethodCard extends BaseRefreshCard<PayMethodCard.Model> {
     @Override
     protected void load(int companyId, int shopId, int period, Model model) {
         Log.d(TAG, "HTTP request pay method rank.");
+        setState(STATE_LOADING);
         Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(period);
         SunmiStoreRemote.get().getOrderPurchaseTypeRank(companyId, shopId,
                 periodTimestamp.first, periodTimestamp.second,
@@ -265,12 +266,16 @@ public class PayMethodCard extends BaseRefreshCard<PayMethodCard.Model> {
     }
 
     public static class Model {
-        public String title;
-        public int dataSource;
-        public SparseArray<List<PieEntry>> dataSets = new SparseArray<>(2);
+        private String title;
+        private int dataSource;
+        private SparseArray<List<PieEntry>> dataSets = new SparseArray<>(2);
 
-        public Model(String title, int dataSource) {
+        private Model(String title, int dataSource) {
             this.title = title;
+            this.dataSource = dataSource;
+        }
+
+        public void setDataSource(int dataSource) {
             this.dataSource = dataSource;
         }
     }

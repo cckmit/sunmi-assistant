@@ -55,6 +55,7 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
 
     @Override
     protected void load(int companyId, int shopId, int period, Model model) {
+        setState(STATE_LOADING);
         int interval;
         if (period == DashboardContract.TIME_PERIOD_TODAY) {
             interval = 3600;
@@ -139,8 +140,8 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
 
         @Override
         public void onBindViewHolder(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+            Log.d(TAG, "Time distribution card setup view.");
             setHolder(holder);
-            Log.d(TAG, "onBindViewHolder.");
             TextView title = holder.getView(R.id.tv_dashboard_title);
             BarChart chart = holder.getView(R.id.chart_dashboard_bar);
             TextView bySales = holder.getView(R.id.tv_dashboard_radio_by_sales);
@@ -150,7 +151,7 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
             byOrder.setSelected(model.dataSource == DashboardContract.DATA_MODE_ORDER);
 
             if (getState() == STATE_INIT || getState() == STATE_LOADING) {
-                Log.d(TAG, "Card data setup view skip.");
+                Log.d(TAG, "Time distribution card setup view skip.");
                 return;
             }
 
@@ -209,12 +210,16 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
     }
 
     public static class Model {
-        public String title;
-        public int dataSource;
-        public SparseArray<List<BarEntry>> dataSets = new SparseArray<>(2);
+        private String title;
+        private int dataSource;
+        private SparseArray<List<BarEntry>> dataSets = new SparseArray<>(2);
 
-        public Model(String title, int dataSource) {
+        private Model(String title, int dataSource) {
             this.title = title;
+            this.dataSource = dataSource;
+        }
+
+        public void setDataSource(int dataSource) {
             this.dataSource = dataSource;
         }
     }
