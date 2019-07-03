@@ -6,6 +6,7 @@ import com.commonlibrary.R;
 import com.google.gson.Gson;
 
 import java.net.UnknownHostException;
+import java.util.concurrent.TimeoutException;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -61,8 +62,11 @@ public abstract class RetrofitCallback<T> implements Callback<BaseResponse<T>> {
 
     @Override
     public void onFailure(@NonNull Call<BaseResponse<T>> call, @NonNull Throwable t) {
-        if (t instanceof UnknownHostException) return;
-        onFail(0, t.getMessage(), null);
+        int errCode = RpcErrorCode.RPC_COMMON_ERROR;
+        if (t instanceof UnknownHostException || t instanceof TimeoutException) {
+            errCode = RpcErrorCode.RPC_ERR_TIMEOUT;
+        }
+        onFail(errCode, t.getMessage(), null);
     }
 
     public abstract void onSuccess(int code, String msg, T data);

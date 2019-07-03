@@ -461,7 +461,7 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
 //    }
 //
     void unbind(String deviceId) {
-        IPCCloudApi.unbindIPC(SpUtils.getCompanyId(), Integer.parseInt(shopId), deviceId, new RetrofitCallback() {
+        IPCCloudApi.unbindIPC(SpUtils.getCompanyId(), Integer.parseInt(shopId), Integer.parseInt(deviceId), new RetrofitCallback() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 shortTip("解绑成功");

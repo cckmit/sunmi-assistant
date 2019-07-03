@@ -77,5 +77,8 @@
     <string name="str_other_shop">其他门店</string>
     <string name="tip_no_other_shop">暂无其他门店</string>
     <string name="str_my_company">我的商户</string>
+    <string name="tip_refresh_data">请检查网络后刷新页面～</string>
+    <string name="tip_get_data_fail">数据获取失败</string>
+    <string name="tip_play_fail">播放失败</string>
 
 </resources>

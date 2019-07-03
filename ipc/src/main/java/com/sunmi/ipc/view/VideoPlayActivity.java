@@ -1345,7 +1345,6 @@ public class VideoPlayActivity extends BaseActivity
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                LogCat.e(TAG, "onScrolled22");
                 isLeftScroll = dx <= 0; //dx < 0左边滑动  dx > 0右边滑动
                 int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
                 long currTime = centerCurrentTime(firstVisibleItem);//当前中间轴时间
@@ -1355,14 +1354,12 @@ public class VideoPlayActivity extends BaseActivity
                 scrollTime = currTime * 1000;//滑动日历的时间戳毫秒
 
                 canvasHours(firstVisibleItem);//绘制时间
-                LogCat.e(TAG, "888888 isAutoScroll=" + isAutoScroll + ",isVideoLess1Minute=" + isVideoLess1Minute);
                 if (listAp == null || listAp.size() == 0) return;
                 if (isAutoScroll || isVideoLess1Minute) {
                     switch2Playback(currTime);//自动滑动时下一个视频ap还是cloud播放
                     isVideoLess1Minute = false;
                 }
                 if (isSelectedDate) {
-                    LogCat.e(TAG, "888888 88");
                     isSelectedDate = false;
                     selectedTimeIsHaveVideo(currTime);
                 }

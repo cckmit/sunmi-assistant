@@ -7,14 +7,15 @@ import java.util.List;
  * Created by YangShiJie on 2019/6/27.
  */
 public class AuthStoreInfo {
-    private List<SaasUserInfoListBean> SaasUserInfoList;
 
-    public List<SaasUserInfoListBean> getSaasUserInfoList() {
-        return SaasUserInfoList;
+    private List<SaasUserInfoListBean> saas_user_info_list;
+
+    public List<SaasUserInfoListBean> getSaas_user_info_list() {
+        return saas_user_info_list;
     }
 
-    public void setSaasUserInfoList(List<SaasUserInfoListBean> SaasUserInfoList) {
-        this.SaasUserInfoList = SaasUserInfoList;
+    public void setSaas_user_info_list(List<SaasUserInfoListBean> saas_user_info_list) {
+        this.saas_user_info_list = saas_user_info_list;
     }
 
     public static class SaasUserInfoListBean implements Serializable {
@@ -82,35 +83,4 @@ public class AuthStoreInfo {
             this.saas_source = saas_source;
         }
     }
-
-
-//    private String shopName;
-//    private String platform;
-//    private int shopId;
-//
-//    public String getShopName() {
-//        return shopName;
-//    }
-//
-//    public void setShopName(String shopName) {
-//        this.shopName = shopName;
-//    }
-//
-//    public String getPlatform() {
-//        return platform;
-//    }
-//
-//    public void setPlatform(String platform) {
-//        this.platform = platform;
-//    }
-//
-//    public int getShopId() {
-//        return shopId;
-//    }
-//
-//    public void setShopId(int shopId) {
-//        this.shopId = shopId;
-//    }
-//
-
 }
