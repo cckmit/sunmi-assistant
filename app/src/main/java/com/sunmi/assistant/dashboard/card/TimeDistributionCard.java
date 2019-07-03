@@ -140,8 +140,8 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
 
         @Override
         public void onBindViewHolder(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+            Log.d(TAG, "Time distribution card setup view.");
             setHolder(holder);
-            Log.d(TAG, "onBindViewHolder.");
             TextView title = holder.getView(R.id.tv_dashboard_title);
             BarChart chart = holder.getView(R.id.chart_dashboard_bar);
             TextView bySales = holder.getView(R.id.tv_dashboard_radio_by_sales);
@@ -151,7 +151,7 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
             byOrder.setSelected(model.dataSource == DashboardContract.DATA_MODE_ORDER);
 
             if (getState() == STATE_INIT || getState() == STATE_LOADING) {
-                Log.d(TAG, "Card data setup view skip.");
+                Log.d(TAG, "Time distribution card setup view skip.");
                 return;
             }
 

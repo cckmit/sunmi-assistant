@@ -41,6 +41,7 @@ public class TotalRefundsCard extends BaseRefreshCard<TotalRefundsCard.Model> {
     @Override
     protected void onPeriodChange(Model model, int period) {
         model.trendName = Utils.getTrendNameByPeriod(getContext(), period);
+        updateView();
     }
 
     @Override

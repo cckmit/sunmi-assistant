@@ -19,10 +19,10 @@ public abstract class BaseRefreshCard<Model> {
 
     private static final String TAG = "BaseRefreshCard";
 
-    public static final int STATE_INIT = 0;
-    public static final int STATE_LOADING = 1;
-    public static final int STATE_SUCCESS = 2;
-    public static final int STATE_FAILED = 3;
+    static final int STATE_INIT = 0;
+    static final int STATE_LOADING = 1;
+    static final int STATE_SUCCESS = 2;
+    static final int STATE_FAILED = 3;
 
     private Context mContext;
 
@@ -116,7 +116,6 @@ public abstract class BaseRefreshCard<Model> {
         }
         this.mPeriod = period;
         onPeriodChange(mModel, period);
-        updateView();
         if (mCompanyId > 0 && mShopId > 0 && mPeriod != DashboardContract.TIME_PERIOD_INIT) {
             load(mCompanyId, mShopId, mPeriod, mModel);
         }
