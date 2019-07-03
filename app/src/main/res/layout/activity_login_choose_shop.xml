@@ -48,7 +48,7 @@
             android:drawableTop="@drawable/ic_no_data"
             android:drawablePadding="@dimen/dp_16"
             android:gravity="center"
-            android:text="数据获取失败"
+            android:text="@string/tip_get_data_fail"
             android:textColor="@color/colorText"
             android:textSize="@dimen/sp_20" />
 
@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
             android:gravity="center"
-            android:text="请检查网络后刷新页面～"
+            android:text="@string/tip_refresh_data"
             android:textColor="@color/colorText_60"
             android:textSize="@dimen/sp_12" />
 
