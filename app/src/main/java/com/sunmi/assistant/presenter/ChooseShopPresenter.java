@@ -19,12 +19,16 @@ public class ChooseShopPresenter extends BasePresenter<ChooseShopContract.View>
         implements ChooseShopContract.Presenter {
     @Override
     public void getShopList(int companyId) {
+        if (isViewAttached()) {
+            mView.showLoadingDialog();
+        }
         SunmiStoreRemote.get().getShopList(companyId, new RetrofitCallback<ShopListResp>() {
             @Override
             public void onSuccess(int code, String msg, ShopListResp data) {
-                List<ShopListResp.ShopInfo> shopList = data.getShop_list();
-                if (shopList != null) {
-                    if (isViewAttached()) {
+                if (isViewAttached()) {
+                    mView.hideLoadingDialog();
+                    List<ShopListResp.ShopInfo> shopList = data.getShop_list();
+                    if (shopList != null) {
                         mView.getShopListSuccess(shopList);
                     }
                 }
@@ -32,23 +36,33 @@ public class ChooseShopPresenter extends BasePresenter<ChooseShopContract.View>
 
             @Override
             public void onFail(int code, String msg, ShopListResp data) {
+                if (isViewAttached()) {
+                    mView.hideLoadingDialog();
+                }
             }
         });
     }
 
     @Override
     public void getCompanyList() {
+        if (isViewAttached()) {
+            mView.showLoadingDialog();
+        }
         CloudCall.getCompanyList(new RetrofitCallback<CompanyListResp>() {
             @Override
             public void onSuccess(int code, String msg, CompanyListResp data) {
                 if (isViewAttached()) {
+                    mView.hideLoadingDialog();
                     mView.getCompanyListSuccess(data.getCompany_list());
                 }
             }
 
             @Override
             public void onFail(int code, String msg, CompanyListResp data) {
-//                if (isViewAttached()) mView.getCompanyListFail(code, msg);
+                if (isViewAttached()) {
+                    mView.hideLoadingDialog();
+                    mView.getCompanyListFail(code, msg, data);
+                }
             }
         });
     }

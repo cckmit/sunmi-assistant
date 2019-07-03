@@ -6,12 +6,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.sunmi.apmanager.model.LoginDataBean;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.ChooseShopContract;
 import com.sunmi.assistant.data.response.CompanyInfoResp;
+import com.sunmi.assistant.data.response.CompanyListResp;
 import com.sunmi.assistant.data.response.ShopListResp;
 import com.sunmi.assistant.presenter.ChooseShopPresenter;
 import com.sunmi.assistant.ui.activity.MainActivity_;
@@ -43,6 +45,8 @@ import sunmi.common.view.ViewHolder;
 public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter>
         implements ChooseShopContract.View, BGARefreshLayout.BGARefreshLayoutDelegate {
 
+    @ViewById(R.id.rl_root)
+    RelativeLayout rlRoot;
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
     @ViewById(R.id.bgarl_choose)
@@ -60,6 +64,8 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     int companyId;
     @Extra
     String companyName;
+    @Extra
+    int saasExist;
 
     @AfterViews
     void init() {
@@ -73,7 +79,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
         mRefreshLayout.setPullDownRefreshEnable(false);
 
         if (action == CommonConstants.ACTION_LOGIN_CHOOSE_COMPANY) {
-            titleBar.setAppTitle("选择商户");
+            titleBar.setAppTitle(R.string.str_select_company);
             mPresenter.getCompanyList();
         } else if (action == CommonConstants.ACTION_LOGIN_CHOOSE_SHOP) {
             titleBar.setAppTitle(R.string.str_select_store);
@@ -102,6 +108,26 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     }
 
     @Override
+    public void getCompanyListSuccess(List<CompanyInfoResp> companyList) {
+        if (companyList.size() == 1) {
+            companyId = companyList.get(0).getCompany_id();
+            companyName = companyList.get(0).getCompany_name();
+            saasExist = companyList.get(0).getSaas_exist();
+            LoginChooseShopActivity_.intent(context).loginData(loginData)
+                    .companyId(companyId).companyName(companyName).saasExist(saasExist)
+                    .action(CommonConstants.ACTION_LOGIN_CHOOSE_SHOP).start();
+            finish();
+        } else {
+            initCompanyList(companyList);
+        }
+    }
+
+    @Override
+    public void getCompanyListFail(int code, String msg, CompanyListResp data) {
+        rlNoData.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void getShopListSuccess(List<ShopListResp.ShopInfo> shopList) {
         int shopSize = shopList.size();
         if (shopSize == 1) {
@@ -112,18 +138,42 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     }
 
     @Override
-    public void getCompanyListSuccess(List<CompanyInfoResp> companyList) {
-        if (companyList.size() == 1) {
-            companyId = companyList.get(0).getCompany_id();
-            companyName = companyList.get(0).getCompany_name();
-            mPresenter.getShopList(loginData.getCompany_id());
-        } else {
-            initCompanyList(companyList);
+    public void getShopListFail(int code, String msg, ShopListResp data) {
+        if (action == CommonConstants.ACTION_LOGIN_CHOOSE_COMPANY) {
+            shortTip(R.string.tip_get_shop_list_fail);
+        } else if (action == CommonConstants.ACTION_LOGIN_CHOOSE_SHOP) {
+            rlNoData.setVisibility(View.VISIBLE);
         }
     }
 
     @UiThread
+    void initCompanyList(List<CompanyInfoResp> companyList) {
+        rlRoot.setVisibility(View.VISIBLE);
+        if (companyList.size() == 0) {
+            rlNoData.setVisibility(View.VISIBLE);
+            return;
+        }
+        rvChoose.setAdapter(new CommonListAdapter<CompanyInfoResp>(context,
+                R.layout.item_shop_company, companyList) {
+            @Override
+            public void convert(ViewHolder holder, final CompanyInfoResp item) {
+                ((SettingItemLayout) holder.getView(R.id.sil_item)).setLeftText(item.getCompany_name());
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        LoginChooseShopActivity_.intent(context).loginData(loginData)
+                                .companyId(item.getCompany_id()).companyName(item.getCompany_name())
+                                .saasExist(item.getSaas_exist())
+                                .action(CommonConstants.ACTION_LOGIN_CHOOSE_SHOP).start();
+                    }
+                });
+            }
+        });
+    }
+
+    @UiThread
     void initShopList(final List<ShopListResp.ShopInfo> shopList) {
+        rlRoot.setVisibility(View.VISIBLE);
         if (shopList.size() == 0) {
             rlNoData.setVisibility(View.VISIBLE);
             return;
@@ -143,35 +193,13 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
         });
     }
 
-    @UiThread
-    void initCompanyList(List<CompanyInfoResp> companyList) {
-        if (companyList.size() == 0) {
-            rlNoData.setVisibility(View.VISIBLE);
-            return;
-        }
-        rvChoose.setAdapter(new CommonListAdapter<CompanyInfoResp>(context,
-                R.layout.item_shop_company, companyList) {
-            @Override
-            public void convert(ViewHolder holder, final CompanyInfoResp item) {
-                ((SettingItemLayout) holder.getView(R.id.sil_item)).setLeftText(item.getCompany_name());
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        LoginChooseShopActivity_.intent(context).loginData(loginData)
-                                .companyId(item.getCompany_id()).companyName(item.getCompany_name())
-                                .action(CommonConstants.ACTION_LOGIN_CHOOSE_SHOP).start();
-                    }
-                });
-            }
-        });
-    }
-
     private void gotoMainActivity(int shopId, String shopName) {
         CommonUtils.saveLoginInfo(loginData);
         SpUtils.setCompanyId(companyId);
         SpUtils.setCompanyName(companyName);
         SpUtils.setShopId(shopId);
         SpUtils.setShopName(shopName);
+        SpUtils.setSaasExist(saasExist);
         MainActivity_.intent(context)
                 .flags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK).start();
         finish();

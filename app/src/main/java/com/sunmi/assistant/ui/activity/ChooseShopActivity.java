@@ -11,6 +11,7 @@ import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.ChooseShopContract;
 import com.sunmi.assistant.data.response.CompanyInfoResp;
+import com.sunmi.assistant.data.response.CompanyListResp;
 import com.sunmi.assistant.data.response.ShopListResp;
 import com.sunmi.assistant.presenter.ChooseShopPresenter;
 
@@ -73,7 +74,17 @@ public class ChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter>
     }
 
     @Override
+    public void getShopListFail(int code, String msg, ShopListResp data) {
+
+    }
+
+    @Override
     public void getCompanyListSuccess(List<CompanyInfoResp> companyList) {
+
+    }
+
+    @Override
+    public void getCompanyListFail(int code, String msg, CompanyListResp data) {
 
     }
 

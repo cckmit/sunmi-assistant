@@ -42,6 +42,6 @@ public interface PlatformInterface {
 
     //用户授权获取Saas平台数据
     @POST(path + "authorize")
-    Call<BaseResponse<JsonObject>> authorizeSaas(@Body BaseRequest request);
+    Call<BaseResponse<String>> authorizeSaas(@Body BaseRequest request);
 
 }

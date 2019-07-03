@@ -1,6 +1,7 @@
 package com.sunmi.assistant.ui.activity.login;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
@@ -17,8 +18,9 @@ import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.data.SunmiStoreRemote;
+import com.sunmi.assistant.data.response.CompanyInfoResp;
 import com.sunmi.assistant.rpc.CloudCall;
-import com.sunmi.assistant.ui.activity.MainActivity_;
 import com.sunmi.assistant.ui.activity.merchant.AuthDialog;
 import com.sunmi.assistant.ui.activity.merchant.SelectPlatformActivity_;
 import com.sunmi.assistant.ui.activity.merchant.SelectStoreActivity_;
@@ -26,7 +28,6 @@ import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
 import com.sunmi.assistant.ui.activity.model.CreateStoreInfo;
 import com.sunmi.ipc.rpc.IPCCloudApi;
 import com.sunmi.ipc.rpc.RetrofitClient;
-import com.sunmi.ipc.rpc.mqtt.MqttManager;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -153,6 +154,7 @@ public class SetPasswordActivity extends BaseActivity {
         });
     }
 
+
     private void trackFinish() {
         if (type == AppConfig.SET_PASSWORD_REGISTER) {//注册
             CommonUtils.trackCommonEvent(context, "registerPassFinish",
@@ -165,11 +167,6 @@ public class SetPasswordActivity extends BaseActivity {
         }
     }
 
-    private void gotoMainActivity() {
-        MainActivity_.intent(context).start();
-        finish();
-    }
-
     //获取ssotoken
     private void getSsoToken() {
         IPCCloudApi.getStoreToken(new RetrofitCallback() {
@@ -179,14 +176,36 @@ public class SetPasswordActivity extends BaseActivity {
                     JSONObject jsonObject = new JSONObject(data.toString());
                     SpUtils.setSsoToken(jsonObject.getString("store_token"));
                     RetrofitClient.createInstance();//初始化retrofit
-                    MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
-                    getSaasInfo();
+                    //MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
+                    getCompanyInfo();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
+
             @Override
             public void onFail(int code, String msg, Object data) {
+            }
+        });
+    }
+
+    //获取商户信息
+    private void getCompanyInfo() {
+        SunmiStoreRemote.get().getCompanyInfo(SpUtils.getCompanyId(), new RetrofitCallback<CompanyInfoResp>() {
+            @Override
+            public void onSuccess(int code, String msg, CompanyInfoResp data) {
+                LogCat.e(TAG, "data getCompanyInfo=" + data.getCompany_name() + "," + data.getCompany_id());
+                if (TextUtils.isEmpty(data.getCompany_name()))
+                    SpUtils.setCompanyName(getString(R.string.str_mine_company));
+                else
+                    SpUtils.setCompanyName(data.getCompany_name());
+                getSaasInfo();
+            }
+
+            @Override
+            public void onFail(int code, String msg, CompanyInfoResp data) {
+                SpUtils.setCompanyName(getString(R.string.str_mine_company));
+                getSaasInfo();
             }
         });
     }
@@ -214,15 +233,11 @@ public class SetPasswordActivity extends BaseActivity {
     private void getSaasData(List<AuthStoreInfo.SaasUserInfoListBean> list) {
         if (list.size() > 0) {  //匹配到平台数据
             StringBuilder saasName = new StringBuilder();
-            if (list.size() == 1) {
-                saasName.append(list.get(0).getSaas_name());
-            } else {
-                for (AuthStoreInfo.SaasUserInfoListBean bean : list) {
-                    saasName.append(bean.getSaas_name()).append(",");
-                }
+            for (AuthStoreInfo.SaasUserInfoListBean bean : list) {
+                saasName.append(bean.getSaas_name()).append(",");
             }
             new AuthDialog.Builder(SetPasswordActivity.this)
-                    .setMessage(getString(R.string.str_dialog_auth_message, saasName))
+                    .setMessage(getString(R.string.str_dialog_auth_message, saasName.replace(saasName.length() - 1, saasName.length(), "")))
                     .setAllowButton((dialog, which) -> SelectStoreActivity_.intent(SetPasswordActivity.this)
                             .list((ArrayList) list)
                             .start())
@@ -242,7 +257,7 @@ public class SetPasswordActivity extends BaseActivity {
             @Override
             public void onSuccess(int code, String msg, CreateStoreInfo data) {
                 hideLoadingDialog();
-                gotoMainActivity();
+                CommonUtils.gotoMainActivity(SetPasswordActivity.this, data.getShop_id(), data.getShop_name());
             }
 
             @Override
@@ -253,7 +268,7 @@ public class SetPasswordActivity extends BaseActivity {
                 } else {
                     shortTip(getString(R.string.str_create_store_alredy_exit));
                 }
-                gotoMainActivity();
+                CommonUtils.gotoMainActivity(SetPasswordActivity.this, 0, "");
             }
         });
     }
