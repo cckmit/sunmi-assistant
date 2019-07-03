@@ -33,14 +33,14 @@ import sunmi.common.rpc.retrofit.RetrofitCallback;
  */
 public class SunmiStoreRemote {
 
-    private CompanyManageService mCompanyService;
-    private ShopManageService mShopService;
-    private OrderManageService mOrderService;
+//    private CompanyManageService mCompanyService;
+//    private ShopManageService mShopService;
+//    private OrderManageService mOrderService;
 
     private SunmiStoreRemote() {
-        mCompanyService = RetrofitClient.getInstance().create(CompanyManageService.class);
-        mShopService = RetrofitClient.getInstance().create(ShopManageService.class);
-        mOrderService = RetrofitClient.getInstance().create(OrderManageService.class);
+//        mCompanyService = RetrofitClient.getInstance().create(CompanyManageService.class);
+//        mShopService = RetrofitClient.getInstance().create(ShopManageService.class);
+//        mOrderService = RetrofitClient.getInstance().create(OrderManageService.class);
     }
 
     private static final class Holder {
@@ -58,7 +58,8 @@ public class SunmiStoreRemote {
             String params = new JSONObject()
                     .put("company_id", companyId)
                     .toString();
-            mCompanyService.getInfo(Utils.createRequestBody(params)).enqueue(callback);
+            RetrofitClient.getInstance().create(CompanyManageService.class)
+                    .getInfo(Utils.createRequestBody(params)).enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -73,7 +74,8 @@ public class SunmiStoreRemote {
             String params = new JSONObject()
                     .put("company_id", companyId)
                     .toString();
-            mShopService.getList(Utils.createRequestBody(params)).enqueue(callback);
+            RetrofitClient.getInstance().create(ShopManageService.class)
+                    .getList(Utils.createRequestBody(params)).enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -84,7 +86,8 @@ public class SunmiStoreRemote {
             String params = new JSONObject()
                     .put("shop_id", shopId)
                     .toString();
-            mShopService.getInfo(Utils.createRequestBody(params)).enqueue(callback);
+            RetrofitClient.getInstance().create(ShopManageService.class)
+                    .getInfo(Utils.createRequestBody(params)).enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -104,7 +107,8 @@ public class SunmiStoreRemote {
                     .put("time_range_end", timeEnd)
                     .put("rate_required", rateFlag)
                     .toString();
-            mOrderService.getTotalAmount(Utils.createRequestBody(params)).enqueue(callback);
+            RetrofitClient.getInstance().create(OrderManageService.class)
+                    .getTotalAmount(Utils.createRequestBody(params)).enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -120,7 +124,8 @@ public class SunmiStoreRemote {
                     .put("time_range_end", timeEnd)
                     .put("rate_required", rateFlag)
                     .toString();
-            mOrderService.getTotalCount(Utils.createRequestBody(params)).enqueue(callback);
+            RetrofitClient.getInstance().create(OrderManageService.class)
+                    .getTotalCount(Utils.createRequestBody(params)).enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -136,7 +141,8 @@ public class SunmiStoreRemote {
                     .put("time_range_end", timeEnd)
                     .put("rate_required", rateFlag)
                     .toString();
-            mOrderService.getRefundCount(Utils.createRequestBody(params)).enqueue(callback);
+            RetrofitClient.getInstance().create(OrderManageService.class)
+                    .getRefundCount(Utils.createRequestBody(params)).enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -152,7 +158,8 @@ public class SunmiStoreRemote {
                     .put("time_range_end", timeEnd)
                     .put("rate_required", rateFlag)
                     .toString();
-            mOrderService.getAvgUnitSale(Utils.createRequestBody(params)).enqueue(callback);
+            RetrofitClient.getInstance().create(OrderManageService.class)
+                    .getAvgUnitSale(Utils.createRequestBody(params)).enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -167,18 +174,21 @@ public class SunmiStoreRemote {
                     .put("time_range_start", timeStart)
                     .put("time_range_end", timeEnd)
                     .toString();
-            mOrderService.getQuantityRank(Utils.createRequestBody(params)).enqueue(callback);
+            RetrofitClient.getInstance().create(OrderManageService.class)
+                    .getQuantityRank(Utils.createRequestBody(params)).enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
     public void getOrderTypeList(RetrofitCallback<OrderTypeListResp> callback) {
-        mOrderService.getOrderTypeList().enqueue(callback);
+        RetrofitClient.getInstance().create(OrderManageService.class)
+                .getOrderTypeList().enqueue(callback);
     }
 
     public void getOrderPurchaseTypeList(RetrofitCallback<OrderPayTypeListResp> callback) {
-        mOrderService.getPurchaseTypeList().enqueue(callback);
+        RetrofitClient.getInstance().create(OrderManageService.class)
+                .getPurchaseTypeList().enqueue(callback);
     }
 
     public void getOrderList(int companyId, int shopId, long timeStart, long timeEnd,
@@ -209,7 +219,8 @@ public class SunmiStoreRemote {
                     .put("page_num", pageNum)
                     .put("page_size", pageSize)
                     .toString();
-            mOrderService.getList(Utils.createRequestBody(params)).enqueue(callback);
+            RetrofitClient.getInstance().create(OrderManageService.class)
+                    .getList(Utils.createRequestBody(params)).enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -220,7 +231,8 @@ public class SunmiStoreRemote {
             String params = new JSONObject()
                     .put("order_id", orderId)
                     .toString();
-            mOrderService.getDetailList(Utils.createRequestBody(params)).enqueue(callback);
+            RetrofitClient.getInstance().create(OrderManageService.class)
+                    .getDetailList(Utils.createRequestBody(params)).enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -235,7 +247,8 @@ public class SunmiStoreRemote {
                     .put("start_time", timeStart)
                     .put("end_time", timeEnd)
                     .toString();
-            mOrderService.getPurchaseTypeRank(Utils.createRequestBody(params)).enqueue(callback);
+            RetrofitClient.getInstance().create(OrderManageService.class)
+                    .getPurchaseTypeRank(Utils.createRequestBody(params)).enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -251,7 +264,8 @@ public class SunmiStoreRemote {
                     .put("end_time", timeEnd)
                     .put("time_interval", interval)
                     .toString();
-            mOrderService.getTimeDistribution(Utils.createRequestBody(params)).enqueue(callback);
+            RetrofitClient.getInstance().create(OrderManageService.class)
+                    .getTimeDistribution(Utils.createRequestBody(params)).enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
         }

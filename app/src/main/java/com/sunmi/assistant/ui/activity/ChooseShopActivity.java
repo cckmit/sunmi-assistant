@@ -23,8 +23,6 @@ import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
-import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.SpUtils;
@@ -37,14 +35,12 @@ import sunmi.common.view.ViewHolder;
  */
 @EActivity(R.layout.activity_choose_shop)
 public class ChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter>
-        implements ChooseShopContract.View, BGARefreshLayout.BGARefreshLayoutDelegate {
+        implements ChooseShopContract.View {
 
     @ViewById(R.id.rl_root)
     RelativeLayout rlRoot;
     @ViewById(R.id.tv_current_shop)
     TextView tvCurrShop;
-    @ViewById(R.id.bgarl_choose)
-    BGARefreshLayout mRefreshLayout;
     @ViewById(R.id.rv_choose)
     RecyclerView rvChoose;
     @ViewById(R.id.tv_tip_no_data)
@@ -58,24 +54,11 @@ public class ChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter>
         mPresenter = new ChooseShopPresenter();
         mPresenter.attachView(this);
         tvCurrShop.setText(SpUtils.getShopName());
-        mRefreshLayout.setDelegate(this);
-        mRefreshLayout.setRefreshViewHolder(new BGANormalRefreshViewHolder(context, true));
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         rvChoose.setLayoutManager(layoutManager);
         rvChoose.addItemDecoration(new DividerItemDecoration(context,
                 DividerItemDecoration.VERTICAL));
-        mRefreshLayout.setPullDownRefreshEnable(false);
         mPresenter.getShopList(SpUtils.getCompanyId());
-    }
-
-    @Override
-    public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
-
-    }
-
-    @Override
-    public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
-        return false;
     }
 
     @Override

@@ -77,7 +77,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
             mPresenter.getCompanyList();
         } else if (action == CommonConstants.ACTION_LOGIN_CHOOSE_SHOP) {
             titleBar.setAppTitle(R.string.str_select_store);
-            mPresenter.getShopList(loginData.getCompany_id());
+            mPresenter.getShopList(companyId);
         }
     }
 
@@ -87,7 +87,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
         if (action == CommonConstants.ACTION_LOGIN_CHOOSE_COMPANY) {
             mPresenter.getCompanyList();
         } else if (action == CommonConstants.ACTION_LOGIN_CHOOSE_SHOP) {
-            mPresenter.getShopList(loginData.getCompany_id());
+            mPresenter.getShopList(companyId);
         }
     }
 
