@@ -73,12 +73,13 @@
 
     <string name="order_list_title">详情列表</string>
     <string name="order_filter_sort">综合排序</string>
+    <string name="order_filter_pay_type">支付类型</string>
+    <string name="order_filter_order_type">交易类型</string>
+    <string name="order_filter_all">全部</string>
     <string name="order_amount_ascending">金额正序</string>
     <string name="order_amount_descending">金额倒序</string>
     <string name="order_time_ascending">时间正序</string>
     <string name="order_time_descending">时间倒序</string>
-    <string name="order_pay_type">支付类型</string>
-    <string name="order_transaction_type">交易类型</string>
     <string name="order_no_colon">订单号：</string>
     <string name="order_no">订单号</string>
     <string name="order_amount">%+.2f元</string>

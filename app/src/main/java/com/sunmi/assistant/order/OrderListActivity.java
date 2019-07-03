@@ -86,9 +86,9 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
 
         CustomPopupHelper helper = new CustomPopupHelper();
 
-        createFilterDropdownMenu(getString(R.string.order_filter_sort), helper);
-        createFilterDropdownMenu(getString(R.string.order_pay_type), helper);
-        createFilterDropdownMenu(getString(R.string.order_transaction_type), helper);
+        createFilterDropdownMenu(helper);
+        createFilterDropdownMenu(helper);
+        createFilterDropdownMenu(helper);
 
         mOrderListAdapter = new BaseArrayAdapter<>();
         OrderListItemType orderItem = new OrderListItemType();
@@ -128,11 +128,10 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
         });
     }
 
-    private void createFilterDropdownMenu(String name, CustomPopupHelper helper) {
+    private void createFilterDropdownMenu(CustomPopupHelper helper) {
         int index = mFilterAdapters.size();
         DropdownMenu menu = mFilters.get(index);
         DropdownAdapter adapter = new DropdownAdapter(this);
-        adapter.setInitData(new FilterItem(-1, name));
         adapter.setOnItemClickListener(new OnFilterItemClickListener(index));
         menu.setLayoutManager(new FilterMenuLayoutManager(this));
         menu.setPopupHelper(helper);
