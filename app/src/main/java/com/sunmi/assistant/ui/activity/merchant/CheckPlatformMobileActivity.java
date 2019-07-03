@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.sunmi.apmanager.config.AppConfig;
+import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.MainActivity_;
@@ -53,6 +54,9 @@ public class CheckPlatformMobileActivity extends BaseMvpActivity<PlatformMobileP
 
     @Extra
     String platform;
+    @Extra
+    int saasSource;
+
     //倒计时对象,总共的时间,每隔多少秒更新一次时间
     final MyCountDownTimer mTimer = new MyCountDownTimer(AppConfig.SMS_TIME, 1000);
 
@@ -153,6 +157,7 @@ public class CheckPlatformMobileActivity extends BaseMvpActivity<PlatformMobileP
      */
     @Override
     public void getSaasInfoSuccess(Object data) {
+        LogCat.e(TAG, "data getSaasInfoSuccess =" + data.toString() + ", saasSource=" + saasSource);
         hideLoadingDialog();
         AuthStoreInfo bean = new Gson().fromJson(data.toString(), AuthStoreInfo.class);
         getSaasData(bean.getSaas_user_info_list());
@@ -171,37 +176,49 @@ public class CheckPlatformMobileActivity extends BaseMvpActivity<PlatformMobileP
      */
     @Override
     public void createStoreSuccess(CreateStoreInfo data) {
+        LogCat.e(TAG, "data createStoreSuccess");
         hideLoadingDialog();
-        gotoMainActivity();
+        CommonUtils.gotoMainActivity(this, data.getShop_id(), data.getShop_name());
     }
 
     @Override
     public void createStoreFail(int code, String msg) {
         LogCat.e(TAG, "data onFail code=" + code + "," + msg);
         hideLoadingDialog();
-        gotoMainActivity();
+        CommonUtils.gotoMainActivity(this, 0, "");
     }
 
+    private ArrayList<AuthStoreInfo.SaasUserInfoListBean> selectedList = new ArrayList<>();
+
     private void getSaasData(List<AuthStoreInfo.SaasUserInfoListBean> list) {
-        if (list.size() > 0) {  //匹配到平台数据
-            StringBuilder saasName = new StringBuilder();
-            if (list.size() == 1) {
-                saasName.append(list.get(0).getSaas_name());
-            } else {
-                for (AuthStoreInfo.SaasUserInfoListBean bean : list) {
-                    saasName.append(bean.getSaas_name()).append(",");
-                }
+        StringBuilder saasName = new StringBuilder();
+        for (AuthStoreInfo.SaasUserInfoListBean bean : list) {
+            if (bean.getSaas_source() == saasSource) {
+                //匹配列表
+                saasName.append(bean.getSaas_name()).append(",");
+                AuthStoreInfo.SaasUserInfoListBean b = new AuthStoreInfo.SaasUserInfoListBean();
+                b.setShop_no(bean.getShop_no());
+                b.setSaas_name(bean.getSaas_name());
+                b.setShop_name(bean.getShop_name());
+                b.setSaas_source(bean.getSaas_source());
+                b.setAddress(bean.getAddress());
+                b.setContact(bean.getContact());
+                selectedList.add(b);
             }
+        }
+        //匹配到平台数据
+        if (selectedList != null && selectedList.size() > 0) {
             new AuthDialog.Builder(this)
-                    .setMessage(getString(R.string.str_dialog_auth_message, saasName))
+                    .setMessage(getString(R.string.str_dialog_auth_message, saasName.replace(saasName.length() - 1, saasName.length(), "")))
                     .setAllowButton((dialog, which) -> SelectStoreActivity_.intent(this)
-                            .list((ArrayList) list)
+                            .list(selectedList)
                             .start())
                     .setCancelButton((dialog, which) -> {
                         createStore();
                     })
                     .create().show();
-        } else { //未匹配平台数据
+        } else {
+            //未匹配平台数据
             createStoreDialog();
         }
     }
@@ -215,11 +232,6 @@ public class CheckPlatformMobileActivity extends BaseMvpActivity<PlatformMobileP
                         createStore();
                     }
                 }).create().show();
-    }
-
-    private void gotoMainActivity() {
-        MainActivity_.intent(context).start();
-        finish();
     }
 
     @Override

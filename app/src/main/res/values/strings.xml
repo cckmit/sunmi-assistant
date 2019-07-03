@@ -101,5 +101,6 @@
     <string name="tip_refresh_data">请检查网络后刷新页面～</string>
     <string name="tip_get_data_fail">数据获取失败</string>
     <string name="tip_play_fail">播放失败</string>
+    <string name="str_mine_company">我的商户</string>
 
 </resources>

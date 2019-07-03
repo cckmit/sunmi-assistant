@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.MainActivity_;
 import com.sunmi.assistant.ui.activity.contract.SelectPlatformContract;
@@ -46,6 +47,7 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
     @ViewById(R.id.btn_next)
     Button btnNext;
     private String selectPlatform;
+    private int selectSaasSource;
 
 
     private List<PlatformInfo.SaasListBean> list = new ArrayList<>();
@@ -89,6 +91,7 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
     void btnNext() {
         CheckPlatformMobileActivity_.intent(this)
                 .extra("platform", selectPlatform)
+                .extra("saasSource", selectSaasSource)
                 .start();
     }
 
@@ -116,7 +119,7 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
     public void createStoreSuccess(CreateStoreInfo data) {
         LogCat.e(TAG, "data createStoreSuccess");
         hideLoadingDialog();
-        gotoMainActivity();
+        CommonUtils.gotoMainActivity(this, data.getShop_id(), data.getShop_name());
     }
 
     @Override
@@ -124,11 +127,6 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
         LogCat.e(TAG, "data onFail code=" + code + "," + msg);
         hideLoadingDialog();
         shortTip(R.string.str_create_store_fail);
-    }
-
-    private void gotoMainActivity() {
-        MainActivity_.intent(context).start();
-        finish();
     }
 
     private void showViewList(PlatformInfo data) {
@@ -146,6 +144,7 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
                     public void onClick(View v) {
                         selectedIndex = holder.getAdapterPosition();
                         selectPlatform = bean.getSaas_name();
+                        selectSaasSource=bean.getSaas_source();
                         notifyDataSetChanged();//刷新
                         isCanClick(true);
                     }
