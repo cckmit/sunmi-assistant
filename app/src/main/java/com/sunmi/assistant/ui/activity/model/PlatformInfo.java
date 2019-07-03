@@ -9,14 +9,14 @@ import java.util.List;
 public class PlatformInfo{
 
 
-    private List<SaasListBean> SaasList;
+    private List<SaasListBean> saas_list;
 
     public List<SaasListBean> getSaasList() {
-        return SaasList;
+        return saas_list;
     }
 
     public void setSaasList(List<SaasListBean> SaasList) {
-        this.SaasList = SaasList;
+        this.saas_list = SaasList;
     }
 
     public static class SaasListBean implements Serializable {
@@ -25,23 +25,23 @@ public class PlatformInfo{
          * source : 1
          */
 
-        private String name;
-        private int source;
+        private String saas_name;
+        private int saas_source;
 
-        public String getName() {
-            return name;
+        public String getSaas_name() {
+            return saas_name;
         }
 
-        public void setName(String name) {
-            this.name = name;
+        public void setSaas_name(String saas_name) {
+            this.saas_name = saas_name;
         }
 
-        public int getSource() {
-            return source;
+        public int getSaas_source() {
+            return saas_source;
         }
 
-        public void setSource(int source) {
-            this.source = source;
+        public void setSaas_source(int saas_source) {
+            this.saas_source = saas_source;
         }
     }
 }

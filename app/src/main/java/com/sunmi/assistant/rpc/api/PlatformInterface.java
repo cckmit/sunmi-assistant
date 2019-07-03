@@ -34,7 +34,7 @@ public interface PlatformInterface {
 
     //米商引擎手机发送验证码
     @POST(path + "sendVerifyCode")
-    Call<BaseResponse<JsonObject>> sendSaasVerifyCode(@Body BaseRequest request);
+    Call<BaseResponse<String>> sendSaasVerifyCode(@Body BaseRequest request);
 
     //米商引擎手机校验验证码
     @POST(path + "confirmVerifyCode")
