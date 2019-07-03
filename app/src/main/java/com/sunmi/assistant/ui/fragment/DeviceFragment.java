@@ -128,7 +128,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         deviceListAdapter.setClickListener(this);
         rvDevice.setAdapter(deviceListAdapter);
         showLoadingDialog();
-        getDeviceList();
+        loadData();
+        startTimer();
     }
 
     private void initRefreshLayout() {
@@ -140,7 +141,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         refreshView.setIsShowLoadingMoreView(false); // 设置正在加载更多时的文本
     }
 
-    private void getDeviceList() {
+    private void loadData() {
         mPresenter.getBannerList();
         mPresenter.getRouterList();
         mPresenter.getIpcList();
@@ -158,6 +159,12 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         ChooseDeviceDialog chooseDeviceDialog = new ChooseDeviceDialog(mActivity, SpUtils.getShopId());
         chooseDeviceDialog.show();
 //        globalDevList = devList;//todo
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        closeTimer();
     }
 
     @Override
@@ -259,10 +266,10 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         if (id == CommonConstants.tabDevice
                 || NotificationConstant.bindRouterChanged == id
                 || NotificationConstant.updateConnectComplete == id) {//mqtt断开重连刷新
-            getDeviceList();
+            loadData();
         } else if (id == NotificationConstant.shopSwitched) {
             topBar.setShopName(SpUtils.getShopName());
-            getDeviceList();
+            loadData();
         } else if (NotificationConstant.netDisconnection == id) {//网络断开
         } else if (NotificationConstant.apStatusException == id) {//异常
             if (TextUtils.isEmpty(MyNetworkCallback.CURRENT_ROUTER)) return;
@@ -480,12 +487,10 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (printerList == null || printerList.size() == 0) {
-                    closeTimer();
-                }
-                getDeviceList();
+                mPresenter.getIpcList();
+                mPresenter.getPrinterList();
             }
-        }, 30000, 30000);
+        }, 30000, 120000);
     }
 
     private void closeTimer() {
@@ -532,7 +537,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             endRefresh();
             shortTip(R.string.toast_network_Exception);
         } else {
-            getDeviceList();
+            loadData();
         }
     }
 
@@ -681,7 +686,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
-        getDeviceList();
+        loadData();
     }
 
     @Override
