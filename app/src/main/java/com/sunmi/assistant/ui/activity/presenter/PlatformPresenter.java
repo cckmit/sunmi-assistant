@@ -2,10 +2,12 @@ package com.sunmi.assistant.ui.activity.presenter;
 
 import com.sunmi.assistant.rpc.CloudCall;
 import com.sunmi.assistant.ui.activity.contract.SelectPlatformContract;
+import com.sunmi.assistant.ui.activity.model.CreateStoreInfo;
 import com.sunmi.assistant.ui.activity.model.PlatformInfo;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.SpUtils;
 
 
 /**
@@ -27,6 +29,25 @@ public class PlatformPresenter extends BasePresenter<SelectPlatformContract.View
             public void onFail(int code, String msg, PlatformInfo data) {
                 if (isViewAttached())
                     mView.getPlatformInfoFail(code, msg);
+            }
+        });
+    }
+
+    @Override
+    public void createStore(String shopName) {
+        CloudCall.createShop(SpUtils.getCompanyId() + "", shopName, new RetrofitCallback<CreateStoreInfo>() {
+            @Override
+            public void onSuccess(int code, String msg, CreateStoreInfo data) {
+                if (isViewAttached()) {
+                    mView.createStoreSuccess(data);
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, CreateStoreInfo data) {
+                if (isViewAttached()) {
+                    mView.createStoreFail(code, msg);
+                }
             }
         });
     }

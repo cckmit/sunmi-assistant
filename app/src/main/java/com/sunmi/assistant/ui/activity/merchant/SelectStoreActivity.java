@@ -50,7 +50,7 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
     private List<AuthStoreInfo.SaasUserInfoListBean> listChecked = null;//选中列表
     private String shopNo, saasName;
     private int saasSource;
-    private int flagAuth;
+    private int createFlag, authFlag;
 
     @AfterViews
     void init() {
@@ -70,10 +70,10 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
     @Click({R.id.btnComplete})
     void btnComplete() {
         for (int i = 0; i < listChecked.size(); i++) {
-            //创建门店
             saasSource = listChecked.get(i).getSaas_source();
             saasName = listChecked.get(i).getSaas_name();
             shopNo = listChecked.get(i).getShop_no();
+            //创建门店
             mPresenter.createStore(listChecked.get(i).getShop_name());
         }
     }
@@ -82,11 +82,13 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
     @Override
     public void createStoreSuccess(CreateStoreInfo data) {
         //成功后授权
+        createFlag++;
         mPresenter.authStoreCompleteInfo(data.getShop_id() + "", saasSource + "", shopNo, saasName);
     }
 
     @Override
     public void createStoreFail(int code, String msg) {
+        createFlag++;
         if (code == 5034) {
             shortTip(getString(R.string.str_create_store_fail));
         } else {
@@ -97,15 +99,16 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
     //授权
     @Override
     public void authStoreCompleteSuccess(String data) {
-        LogCat.e(TAG, "bean=" + data);
-        flagAuth++;
-        if (listChecked.size() == flagAuth) {
+        authFlag++;
+        int checkedNum = listChecked.size();
+        if (checkedNum == createFlag || checkedNum == authFlag) {
             gotoMainActivity(); //跳转到首页
         }
     }
 
     @Override
     public void authStoreCompleteFail(int code, String msg) {
+        authFlag++;
     }
 
     private void gotoMainActivity() {

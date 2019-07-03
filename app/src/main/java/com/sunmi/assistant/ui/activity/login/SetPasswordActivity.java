@@ -23,6 +23,7 @@ import com.sunmi.assistant.ui.activity.merchant.AuthDialog;
 import com.sunmi.assistant.ui.activity.merchant.SelectPlatformActivity_;
 import com.sunmi.assistant.ui.activity.merchant.SelectStoreActivity_;
 import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
+import com.sunmi.assistant.ui.activity.model.CreateStoreInfo;
 import com.sunmi.ipc.rpc.IPCCloudApi;
 import com.sunmi.ipc.rpc.RetrofitClient;
 import com.sunmi.ipc.rpc.mqtt.MqttManager;
@@ -184,10 +185,8 @@ public class SetPasswordActivity extends BaseActivity {
                     e.printStackTrace();
                 }
             }
-
             @Override
             public void onFail(int code, String msg, Object data) {
-
             }
         });
     }
@@ -201,7 +200,7 @@ public class SetPasswordActivity extends BaseActivity {
                 LogCat.e(TAG, "data onSuccess=" + data);
                 hideLoadingDialog();
                 AuthStoreInfo bean = new Gson().fromJson(data.toString(), AuthStoreInfo.class);
-                getSaasData(bean.getSaasUserInfoList());
+                getSaasData(bean.getSaas_user_info_list());
             }
 
             @Override
@@ -226,14 +225,36 @@ public class SetPasswordActivity extends BaseActivity {
                     .setMessage(getString(R.string.str_dialog_auth_message, saasName))
                     .setAllowButton((dialog, which) -> SelectStoreActivity_.intent(SetPasswordActivity.this)
                             .list((ArrayList) list)
-//                            .extra("list", (Serializable) list)
                             .start())
                     .setCancelButton((dialog, which) -> {
-                        gotoMainActivity();
+                        createStore();
                     })
                     .create().show();
         } else { //未匹配平台数据
             SelectPlatformActivity_.intent(SetPasswordActivity.this).start();
         }
+    }
+
+    //创建门店
+    private void createStore() {
+        showLoadingDialog();
+        CloudCall.createShop(SpUtils.getCompanyId() + "", String.format(getString(R.string.str_unkunw_store), SpUtils.getMobile()), new RetrofitCallback<CreateStoreInfo>() {
+            @Override
+            public void onSuccess(int code, String msg, CreateStoreInfo data) {
+                hideLoadingDialog();
+                gotoMainActivity();
+            }
+
+            @Override
+            public void onFail(int code, String msg, CreateStoreInfo data) {
+                hideLoadingDialog();
+                if (code == 5034) {
+                    shortTip(getString(R.string.str_create_store_fail));
+                } else {
+                    shortTip(getString(R.string.str_create_store_alredy_exit));
+                }
+                gotoMainActivity();
+            }
+        });
     }
 }
