@@ -1,8 +1,5 @@
 package com.sunmi.assistant.ui.activity;
 
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,6 +26,7 @@ import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
+import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.ViewHolder;
 
 /**
@@ -44,7 +42,7 @@ public class ChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter>
     @ViewById(R.id.tv_current_shop)
     TextView tvCurrShop;
     @ViewById(R.id.rv_choose)
-    RecyclerView rvChoose;
+    SmRecyclerView rvChoose;
     @ViewById(R.id.tv_tip_no_data)
     TextView tvNoData;
 
@@ -57,10 +55,7 @@ public class ChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter>
         mPresenter = new ChooseShopPresenter();
         mPresenter.attachView(this);
         tvCurrShop.setText(SpUtils.getShopName());
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
-        rvChoose.setLayoutManager(layoutManager);
-        rvChoose.addItemDecoration(new DividerItemDecoration(context,
-                DividerItemDecoration.VERTICAL));
+        rvChoose.setDivider(R.drawable.shap_line_divider);
         mPresenter.getShopList(SpUtils.getCompanyId());
     }
 

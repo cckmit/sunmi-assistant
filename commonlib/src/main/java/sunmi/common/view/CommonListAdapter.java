@@ -17,9 +17,9 @@ public abstract class CommonListAdapter<T> extends RecyclerView.Adapter<ViewHold
     protected LayoutInflater mInflater;
 
     /**
-     * @param context 上下文
+     * @param context  上下文
      * @param layoutId layout
-     * @param list 列表数据
+     * @param list     列表数据
      */
     public CommonListAdapter(Context context, int layoutId, List<T> list) {
         mContext = context;
@@ -55,10 +55,12 @@ public abstract class CommonListAdapter<T> extends RecyclerView.Adapter<ViewHold
 
     /**
      * 列表数据的数量
+     *
      * @return
      */
     @Override
     public int getItemCount() {
-        return this.mList == null?0:this.mList.size();
+        return this.mList == null ? 0 : this.mList.size();
     }
+
 }

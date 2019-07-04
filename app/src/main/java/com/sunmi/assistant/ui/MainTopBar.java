@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -72,12 +73,13 @@ public class MainTopBar extends LinearLayout implements BaseNotification.Notific
         tvShopName.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContext.getResources().getDimensionPixelSize(R.dimen.sp_28));
         tvShopName.setSingleLine();
         tvShopName.setEllipsize(TextUtils.TruncateAt.END);
+        tvShopName.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         tvShopName.setText(SpUtils.getShopName());
         Drawable drawableLeft = getResources().getDrawable(R.drawable.dashboard_ic_location);
         tvShopName.setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null);
         LayoutParams lpShop = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         lpShop.setMargins((int) mContext.getResources().getDimension(R.dimen.dp_12), 0,
-                (int) mContext.getResources().getDimension(R.dimen.dp_20), bottomMargin);
+                (int) mContext.getResources().getDimension(R.dimen.dp_12), bottomMargin);
         addView(tvShopName, lpShop);
         tvShopName.setOnClickListener(new OnClickListener() {
             @Override

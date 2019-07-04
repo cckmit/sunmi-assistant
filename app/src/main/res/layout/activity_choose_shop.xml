@@ -47,13 +47,14 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="@color/colorText"
-            android:textSize="@dimen/sp_20" />
+            android:textSize="@dimen/sp_20"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/rl_others"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/ll_current"
         android:layout_marginTop="@dimen/dp_8"
         android:background="@color/c_white"
@@ -70,7 +71,7 @@
             android:textSize="@dimen/sp_14"
             tools:ignore="RtlSymmetry" />
 
-        <android.support.v7.widget.RecyclerView
+        <sunmi.common.view.SmRecyclerView
             android:id="@+id/rv_choose"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
