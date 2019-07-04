@@ -2,6 +2,7 @@ package com.sunmi.assistant.dashboard.card;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.view.View;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
@@ -9,6 +10,7 @@ import com.sunmi.assistant.dashboard.DashboardContract;
 
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
+import sunmi.common.utils.Utils;
 
 /**
  * @author yinhui
@@ -46,6 +48,15 @@ public class TopTabCard extends BaseRefreshCard<TopTabCard.Model> {
         @Override
         public int getSpanSize() {
             return 2;
+        }
+
+        @NonNull
+        @Override
+        public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
+            int topPadding = Utils.getStatusBarHeight(view.getContext()) +
+                    (int) view.getContext().getResources().getDimension(R.dimen.dp_8);
+            view.setPaddingRelative(0, topPadding, 0, 0);
+            return super.onCreateViewHolder(view, type);
         }
 
         @Override

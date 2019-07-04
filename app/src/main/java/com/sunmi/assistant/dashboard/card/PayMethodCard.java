@@ -253,7 +253,7 @@ public class PayMethodCard extends BaseRefreshCard<PayMethodCard.Model> {
                         legend.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
                     }
                     legend.setText(entry.getLabel());
-                    legendData.setText(String.format(Locale.getDefault(), "%.0f%%", entry.getValue() * 100));
+                    legendData.setText(String.format(Locale.getDefault(), "%.1f%%", entry.getValue() * 100));
                     legend.setVisibility(View.VISIBLE);
                     legendData.setVisibility(View.VISIBLE);
                 } else {
