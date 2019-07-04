@@ -112,7 +112,7 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
             chart.getLegend().setEnabled(false);
             chart.getAxisRight().setEnabled(false);
             RoundEdgeBarChartRenderer renderer = new RoundEdgeBarChartRenderer(chart, chart.getAnimator(), chart.getViewPortHandler());
-            renderer.setRadius(18);
+            renderer.setRadius(12);
             chart.setFitBars(true);
             chart.setRenderer(renderer);
 
@@ -134,7 +134,6 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
             yAxis.setGridColor(context.getResources().getColor(R.color.black_10));
             yAxis.setAxisMinimum(0f);
             yAxis.enableGridDashedLine(dashLength, dashSpaceLength, 0f);
-            yAxis.setGridLineWidth(1f);
 
             return holder;
         }
@@ -210,7 +209,6 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
             chart.animateY(300, Easing.EaseOutCubic);
             holder.getView(R.id.pb_dashboard_loading).setVisibility(View.GONE);
         }
-
     }
 
     public static class Model {
