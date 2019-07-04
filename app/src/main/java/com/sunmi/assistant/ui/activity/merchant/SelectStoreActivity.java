@@ -120,7 +120,7 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
         LogCat.e(TAG, "111 data createStoreSuccess shopNo=");
         //成功后授权
         createFlag++;
-        mPresenter.authStoreCompleteInfo(SpUtils.getShopId() + "",
+        mPresenter.authStoreCompleteInfo(data.getShop_id() + "",
                 listChecked.get(createFlag - 1).getSaas_source() + "",
                 listChecked.get(createFlag - 1).getShop_no(),
                 listChecked.get(createFlag - 1).getSaas_name());
