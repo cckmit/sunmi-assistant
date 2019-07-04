@@ -131,7 +131,7 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
             tab.setContent(new TabHost.TabContentFactory() {
                 @Override
                 public View createTabContent(String tag) {
-                    return new View(MainActivity.this);
+                    return new View(context);
                 }
             });
             mTabHost.addTab(tab, mainTab.getClz(), null);
