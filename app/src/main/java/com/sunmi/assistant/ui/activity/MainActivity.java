@@ -27,6 +27,7 @@ import com.tencent.bugly.crashreport.CrashReport;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,7 +55,8 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
 
     private long mExitTime;
 
-    int currentTabIndex;// 当前fragment的index
+    @Extra
+    int currentTabIndex;// 要显示的fragment的index
 
     @AfterViews
     void init() {
