@@ -39,13 +39,23 @@ public class TotalRefundsCard extends BaseRefreshCard<TotalRefundsCard.Model> {
     }
 
     @Override
+    protected void onCompanyChange(Model model, int companyId, int shopId) {
+        model.needLoad = true;
+    }
+
+    @Override
+    protected void onShopChange(Model model, int shopId) {
+        model.needLoad = true;
+    }
+
+    @Override
     protected void onPeriodChange(Model model, int period) {
         model.trendName = Utils.getTrendNameByPeriod(getContext(), period);
         updateView();
     }
 
     @Override
-    protected void onRefresh(TotalRefundsCard.Model model, int period) {
+    protected void onRefresh(Model model, int period) {
         model.needLoad = true;
     }
 
