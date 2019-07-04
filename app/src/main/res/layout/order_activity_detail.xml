@@ -162,6 +162,7 @@
                 android:id="@+id/order_detail_list"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:listSelector="@android:color/transparent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/order_detail_pay_detail_title" />
@@ -169,16 +170,5 @@
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v4.widget.NestedScrollView>
-
-    <include
-        android:id="@+id/order_detail_top"
-        layout="@layout/order_activity_detail_top"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_bar" />
-
 
 </android.support.constraint.ConstraintLayout>
