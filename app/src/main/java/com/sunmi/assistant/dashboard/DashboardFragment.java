@@ -56,6 +56,9 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     private BaseArrayAdapter<Object> mAdapter;
     private GridLayoutManager mLayoutManager;
 
+    private int mStatusBarHeight;
+    private int mStatusGap;
+
     @AfterViews
     void init() {
         mPresenter = new DashboardPresenter();
@@ -68,8 +71,9 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     private void initView() {
-        int topPadding = Utils.getStatusBarHeight(mStickyTab.getContext()) +
-                (int) mStickyTab.getContext().getResources().getDimension(R.dimen.dp_8);
+        mStatusBarHeight = Utils.getStatusBarHeight(mStickyTab.getContext());
+        mStatusGap = (int) mStickyTab.getContext().getResources().getDimension(R.dimen.dp_4);
+        int topPadding = mStatusBarHeight + (int) mStickyTab.getContext().getResources().getDimension(R.dimen.dp_8);
         mStickyTab.setPaddingRelative(0, topPadding, 0, 0);
         RecyclerView.ItemAnimator animator = mCardList.getItemAnimator();
         if (animator instanceof SimpleItemAnimator) {
@@ -168,10 +172,13 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     private class ItemStickyListener extends RecyclerView.OnScrollListener {
 
+        private int offset = 0;
+
         @Override
         public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-            super.onScrolled(recyclerView, dx, dy);
-            if (mLayoutManager.findFirstVisibleItemPosition() > 0) {
+            offset += dy;
+            if (offset >= recyclerView.getChildAt(0).getMeasuredHeight()
+                    - mStatusBarHeight + mStatusGap) {
                 mStickyTab.setVisibility(View.VISIBLE);
             } else {
                 mStickyTab.setVisibility(View.INVISIBLE);

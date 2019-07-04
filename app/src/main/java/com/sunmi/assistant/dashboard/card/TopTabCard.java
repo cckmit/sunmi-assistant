@@ -10,7 +10,6 @@ import com.sunmi.assistant.dashboard.DashboardContract;
 
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
-import sunmi.common.utils.Utils;
 
 /**
  * @author yinhui
@@ -53,8 +52,7 @@ public class TopTabCard extends BaseRefreshCard<TopTabCard.Model> {
         @NonNull
         @Override
         public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
-            int topPadding = Utils.getStatusBarHeight(view.getContext()) +
-                    (int) view.getContext().getResources().getDimension(R.dimen.dp_8);
+            int topPadding = (int) view.getContext().getResources().getDimension(R.dimen.dp_12);
             view.setPaddingRelative(0, topPadding, 0, 0);
             return super.onCreateViewHolder(view, type);
         }
