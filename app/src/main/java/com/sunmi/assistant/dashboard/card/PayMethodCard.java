@@ -226,7 +226,7 @@ public class PayMethodCard extends BaseRefreshCard<PayMethodCard.Model> {
                 dataSet.setColors(Arrays.asList(PIE_COLORS));
                 dataSet.setDrawValues(false);
                 dataSet.setDrawIcons(false);
-                dataSet.setSliceSpace(0);
+                dataSet.setSliceSpace(0f);
                 PieData data = new PieData(dataSet);
                 chart.setData(data);
                 chart.invalidate();
