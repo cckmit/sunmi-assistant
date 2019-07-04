@@ -1,7 +1,5 @@
 package com.sunmi.assistant.ui.activity.contract;
 
-import com.sunmi.assistant.ui.activity.model.CreateStoreInfo;
-
 import sunmi.common.base.BaseView;
 
 /**
@@ -9,7 +7,7 @@ import sunmi.common.base.BaseView;
  */
 public interface PlatformMobileContract {
     interface View extends BaseView {
-        void sendMobileCodeSuccess(String data);
+        void sendMobileCodeSuccess(Object data);
 
         void sendMobileCodeFail(int code, String msg);
 

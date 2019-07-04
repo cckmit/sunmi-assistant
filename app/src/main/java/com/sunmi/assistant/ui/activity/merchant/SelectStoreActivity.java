@@ -27,6 +27,7 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.ViewHolder;
 
@@ -48,8 +49,6 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
 
     public Map<String, Boolean> checkedMap = new HashMap<>();
     private List<AuthStoreInfo.SaasUserInfoListBean> listChecked = null;//选中列表
-    private String shopNo, saasName;
-    private int saasSource;
     private int createFlag, authFlag;
 
     @AfterViews
@@ -71,17 +70,22 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
     void btnComplete() {
         showLoadingDialog();
         for (int i = 0; i < listChecked.size(); i++) {
-            saasSource = listChecked.get(i).getSaas_source();
-            saasName = listChecked.get(i).getSaas_name();
-            shopNo = listChecked.get(i).getShop_no();
             String shopName = listChecked.get(i).getShop_name();
             if (i == 0) {
-                SpUtils.setShopName(shopName);//默认门店名称
-                mPresenter.editStore(shopName);//第一个编辑门店
+                SpUtils.setShopName(shopName(shopName));//默认门店名称
+                mPresenter.editStore(shopName(shopName));//第一个编辑门店
             } else {
-                mPresenter.createStore(shopName);//创建门店
+                mPresenter.createStore(shopName(shopName));//创建门店
             }
         }
+    }
+
+    //门店名称
+    private String shopName(String shopName) {
+        if (SpUtils.getMobile().isEmpty()) {
+            return shopName;
+        }
+        return shopName + "_" + SpUtils.getMobile().substring(SpUtils.getMobile().length() - 4, SpUtils.getMobile().length());
     }
 
     /**
@@ -90,13 +94,18 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
      * @param data
      */
     @Override
-    public void editStoreSuccess(String data) {
+    public void editStoreSuccess(Object data) {
+        LogCat.e(TAG, "111 data editStoreSuccess shopNo=");
         createFlag++;
-        mPresenter.authStoreCompleteInfo(SpUtils.getShopId() + "", saasSource + "", shopNo, saasName);
+        mPresenter.authStoreCompleteInfo(SpUtils.getShopId() + "",
+                listChecked.get(createFlag - 1).getSaas_source() + "",
+                listChecked.get(createFlag - 1).getShop_no(),
+                listChecked.get(createFlag - 1).getSaas_name());
     }
 
     @Override
     public void editStoreFail(int code, String msg) {
+        LogCat.e(TAG, "111 data editStoreFail code=" + code + "," + msg);
         createFlag++;
         isGotoMainActivity();
     }
@@ -108,13 +117,18 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
      */
     @Override
     public void createStoreSuccess(CreateStoreInfo data) {
+        LogCat.e(TAG, "111 data createStoreSuccess shopNo=");
         //成功后授权
         createFlag++;
-        mPresenter.authStoreCompleteInfo(data.getShop_id() + "", saasSource + "", shopNo, saasName);
+        mPresenter.authStoreCompleteInfo(SpUtils.getShopId() + "",
+                listChecked.get(createFlag - 1).getSaas_source() + "",
+                listChecked.get(createFlag - 1).getShop_no(),
+                listChecked.get(createFlag - 1).getSaas_name());
     }
 
     @Override
     public void createStoreFail(int code, String msg) {
+        LogCat.e(TAG, "111 data createStoreFail msg=" + msg);
         createFlag++;
         if (code == 5034) {
             shortTip(getString(R.string.str_create_store_alredy_exit));
@@ -130,13 +144,15 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
      * @param data
      */
     @Override
-    public void authStoreCompleteSuccess(String data) {
+    public void authStoreCompleteSuccess(Object data) {
+        LogCat.e(TAG, "111 data authStoreCompleteSuccess");
         authFlag++;
         isGotoMainActivity();
     }
 
     @Override
     public void authStoreCompleteFail(int code, String msg) {
+        LogCat.e(TAG, "111 data authStoreCompleteFail code=" + code + "," + msg);
         authFlag++;
         isGotoMainActivity();
     }
@@ -144,6 +160,8 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
     private void isGotoMainActivity() {
         int checkedNum = listChecked.size();
         if (checkedNum == createFlag || checkedNum == authFlag) {
+            createFlag = 0;
+            authFlag = 0;
             hideLoadingDialog();
             GotoActivityUtils.gotoMainActivity(this);
         }

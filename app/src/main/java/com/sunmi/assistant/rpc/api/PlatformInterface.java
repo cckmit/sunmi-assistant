@@ -18,7 +18,7 @@ public interface PlatformInterface {
 
     //创建商户
     @POST("/api/company/create")
-    Call<BaseResponse<String>> createMerchant(@Body BaseRequest request);
+    Call<BaseResponse<Object>> createMerchant(@Body BaseRequest request);
 
     //创建门店
     @POST("/api/shop/create")
@@ -26,7 +26,7 @@ public interface PlatformInterface {
 
     //编辑门店
     @POST("/api/shop/update")
-    Call<BaseResponse<String>> editShop(@Body BaseRequest request);
+    Call<BaseResponse<Object>> editShop(@Body BaseRequest request);
 
     //saas信息
     @POST(path + "getUserInfo")
@@ -38,7 +38,7 @@ public interface PlatformInterface {
 
     //米商引擎手机发送验证码
     @POST(path + "sendVerifyCode")
-    Call<BaseResponse<String>> sendSaasVerifyCode(@Body BaseRequest request);
+    Call<BaseResponse<Object>> sendSaasVerifyCode(@Body BaseRequest request);
 
     //米商引擎手机校验验证码
     @POST(path + "confirmVerifyCode")
@@ -46,6 +46,6 @@ public interface PlatformInterface {
 
     //用户授权获取Saas平台数据
     @POST(path + "authorize")
-    Call<BaseResponse<String>> authorizeSaas(@Body BaseRequest request);
+    Call<BaseResponse<Object>> authorizeSaas(@Body BaseRequest request);
 
 }
