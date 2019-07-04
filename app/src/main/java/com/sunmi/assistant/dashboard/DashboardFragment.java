@@ -28,6 +28,7 @@ import sunmi.common.base.recycle.BaseArrayAdapter;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.Utils;
 
 /**
  * 首页数据Dashboard的展示
@@ -52,7 +53,6 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @ViewById(R.id.tv_dashboard_month)
     TextView mTabMonth;
 
-
     private BaseArrayAdapter<Object> mAdapter;
     private GridLayoutManager mLayoutManager;
 
@@ -68,6 +68,9 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     private void initView() {
+        int topPadding = Utils.getStatusBarHeight(mStickyTab.getContext()) +
+                (int) mStickyTab.getContext().getResources().getDimension(R.dimen.dp_8);
+        mStickyTab.setPaddingRelative(0, topPadding, 0, 0);
         RecyclerView.ItemAnimator animator = mCardList.getItemAnimator();
         if (animator instanceof SimpleItemAnimator) {
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
