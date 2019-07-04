@@ -28,6 +28,7 @@ public class SpUtils {
     private static final String COMPANY_NAME = "company_name";
     private static final String CURRENT_SHOP_ID = "current_shop_id";
     private static final String CURRENT_SHOP_NAME = "current_shop_name";
+    private static final String SAAS_EXIST = "saas_exist";
 
     SpUtils() {
     }
@@ -247,6 +248,14 @@ public class SpUtils {
 
     public static String getShopName() {
         return SharedManager.getValue(BaseApplication.getContext(), CURRENT_SHOP_NAME);
+    }
+
+    public static void setSaasExist(int exist) {
+        SharedManager.putValue(BaseApplication.getContext(), SAAS_EXIST, exist);
+    }
+
+    public static int getSaasExist() {
+        return SharedManager.getIntValue(BaseApplication.getContext(), SAAS_EXIST);
     }
 
 }

@@ -6,8 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.Button;
 import android.widget.CheckBox;
 
+import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.ui.activity.MainActivity_;
 import com.sunmi.assistant.ui.activity.contract.AuthStoreCompleteContract;
 import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
 import com.sunmi.assistant.ui.activity.model.CreateStoreInfo;
@@ -51,6 +51,8 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
     private String shopNo, saasName;
     private int saasSource;
     private int createFlag, authFlag;
+    private int shopId;
+    private String shopName = "";
 
     @AfterViews
     void init() {
@@ -69,11 +71,13 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
     //先创建门店再授权
     @Click({R.id.btnComplete})
     void btnComplete() {
+        showLoadingDialog();
         for (int i = 0; i < listChecked.size(); i++) {
             saasSource = listChecked.get(i).getSaas_source();
             saasName = listChecked.get(i).getSaas_name();
             shopNo = listChecked.get(i).getShop_no();
             //创建门店
+            LogCat.e(TAG, "data shop name=" + listChecked.get(i).getShop_name());
             mPresenter.createStore(listChecked.get(i).getShop_name());
         }
     }
@@ -83,6 +87,10 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
     public void createStoreSuccess(CreateStoreInfo data) {
         //成功后授权
         createFlag++;
+        if (createFlag == 1) {
+            shopId = data.getShop_id();
+            shopName = data.getShop_name();
+        }
         mPresenter.authStoreCompleteInfo(data.getShop_id() + "", saasSource + "", shopNo, saasName);
     }
 
@@ -90,30 +98,32 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
     public void createStoreFail(int code, String msg) {
         createFlag++;
         if (code == 5034) {
-            shortTip(getString(R.string.str_create_store_fail));
-        } else {
             shortTip(getString(R.string.str_create_store_alredy_exit));
+        } else {
+            shortTip(getString(R.string.str_create_store_fail));
         }
+        isGotoMainActivity();
     }
 
     //授权
     @Override
     public void authStoreCompleteSuccess(String data) {
         authFlag++;
-        int checkedNum = listChecked.size();
-        if (checkedNum == createFlag || checkedNum == authFlag) {
-            gotoMainActivity(); //跳转到首页
-        }
+        isGotoMainActivity();
     }
 
     @Override
     public void authStoreCompleteFail(int code, String msg) {
         authFlag++;
+        isGotoMainActivity();
     }
 
-    private void gotoMainActivity() {
-        MainActivity_.intent(context).start();
-        finish();
+    private void isGotoMainActivity() {
+        hideLoadingDialog();
+        int checkedNum = listChecked.size();
+        if (checkedNum == createFlag || checkedNum == authFlag) {
+            CommonUtils.gotoMainActivity(this, shopId, shopName); //跳转到首页
+        }
     }
 
     // 保存选中的数据

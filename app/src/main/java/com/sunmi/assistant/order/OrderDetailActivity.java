@@ -2,6 +2,10 @@ package com.sunmi.assistant.order;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.support.constraint.ConstraintLayout;
+import android.support.v4.widget.NestedScrollView;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -43,8 +47,16 @@ public class OrderDetailActivity extends BaseMvpActivity<OrderDetailPresenter>
     TextView mTvTime;
     @ViewById(R.id.order_type)
     TextView mTvType;
+
+    @ViewById(R.id.order_detail_top)
+    ConstraintLayout mPayDetailTop;
+    @ViewById(R.id.order_detail_pay_detail_title)
+    ConstraintLayout mPayDetailTitle;
+    @ViewById(R.id.order_detail_scroll)
+    NestedScrollView mScrollView;
     @ViewById(R.id.order_detail_list)
     ListView mDetailList;
+
     private DetailListAdapter mDetailListAdapter;
 
     @AfterViews
@@ -55,6 +67,7 @@ public class OrderDetailActivity extends BaseMvpActivity<OrderDetailPresenter>
         mPresenter.loadDetail(mOrderInfo.getId());
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void initViews() {
         mTvAmount.setText(getResources().getString(R.string.order_amount, mOrderInfo.getAmount()));
         mTvState.setText(mOrderInfo.isOrderNormal() ?
@@ -65,6 +78,18 @@ public class OrderDetailActivity extends BaseMvpActivity<OrderDetailPresenter>
         mDetailListAdapter = new DetailListAdapter(this);
         mDetailList.setDividerHeight(0);
         mDetailList.setAdapter(mDetailListAdapter);
+        mDetailList.setOnTouchListener((v, event) -> {
+            //  Action will not be forwarded
+            return event.getAction() == MotionEvent.ACTION_MOVE;
+        });
+        mScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
+                (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                    if (scrollY > mPayDetailTitle.getY()) {
+                        mPayDetailTop.setVisibility(View.VISIBLE);
+                    } else {
+                        mPayDetailTop.setVisibility(View.INVISIBLE);
+                    }
+                });
     }
 
     @Override

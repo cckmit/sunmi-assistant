@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rl_root"
+    android:visibility="gone"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_common">
@@ -14,7 +15,6 @@
         app:dividerShow="true"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@mipmap/ic_back_dark"
-        app:titleText="@string/str_my_shop"
         app:titleTextColor="@color/colorText" />
 
     <cn.bingoogolapple.refreshlayout.BGARefreshLayout
@@ -48,7 +48,7 @@
             android:drawableTop="@drawable/ic_no_data"
             android:drawablePadding="@dimen/dp_16"
             android:gravity="center"
-            android:text="数据获取失败"
+            android:text="@string/tip_get_data_fail"
             android:textColor="@color/colorText"
             android:textSize="@dimen/sp_20" />
 
@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
             android:gravity="center"
-            android:text="请检查网络后刷新页面～"
+            android:text="@string/tip_refresh_data"
             android:textColor="@color/colorText_60"
             android:textSize="@dimen/sp_12" />
 

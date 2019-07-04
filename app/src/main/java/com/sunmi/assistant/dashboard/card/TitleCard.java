@@ -32,6 +32,7 @@ public class TitleCard extends BaseRefreshCard<TitleCard.Model> {
 
     @Override
     protected void load(int companyId, int shopId, int period, Model model) {
+        model.companyName = SpUtils.getCompanyName();
         model.shopName = SpUtils.getShopName();
         updateView();
     }

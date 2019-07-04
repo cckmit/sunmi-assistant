@@ -45,10 +45,6 @@ import sunmi.common.view.MyFragmentTabHost;
  */
 @EActivity(R.layout.activity_main)
 public class MainActivity extends BaseActivity implements TabHost.OnTabChangeListener {
-    public static final int TAB_DATA = 0;
-    public static final int TAB_STORE = 1;
-    public static final int TAB_SUPPORT = 2;
-    public static final int TAB_MINE = 3;
 
     @ViewById(android.R.id.tabhost)
     MyFragmentTabHost mTabHost;
@@ -115,6 +111,10 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
 
         MainTab[] mainTabs = MainTab.values();
         for (MainTab mainTab : mainTabs) {
+            if (SpUtils.getSaasExist() == 0 && TextUtils.equals(getString(mainTab.getResName()),
+                    getString(R.string.ic_tab_data_title))) {//saas平台需要显示数据tab
+                continue;
+            }
             TabHost.TabSpec tab = mTabHost.newTabSpec(getString(mainTab.getResName()));
             View indicator = LayoutInflater.from(getApplicationContext())
                     .inflate(R.layout.tab_indicator, null);
@@ -135,19 +135,8 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
             mTabHost.addTab(tab, mainTab.getClz(), null);
         }
 
-        mTabHost.setCurrentTab(TAB_STORE);
-        currentTabIndex = TAB_STORE;
+        mTabHost.setCurrentTab(0);
         mTabHost.setOnTabChangedListener(this);
-        mTabHost.getTabWidget().getChildAt(0).setOnClickListener(v -> {
-            mTabHost.setCurrentTab(0);
-            if (isFastClick(1300)) return;
-            BaseNotification.newInstance().postNotificationName(CommonConstants.tabDevice, "tabDevice");
-        });
-        mTabHost.getTabWidget().getChildAt(1).setOnClickListener(v -> {
-            mTabHost.setCurrentTab(1);
-            if (isFastClick(1300)) return;
-            BaseNotification.newInstance().postNotificationName(CommonConstants.tabSupport, "tabSupport");
-        });
     }
 
     /**
@@ -175,7 +164,13 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
             View v = mTabHost.getTabWidget().getChildAt(i);
             if (i == mTabHost.getCurrentTab()) {
                 v.setSelected(true);
-                currentTabIndex = i;
+                if (TextUtils.equals(mTabHost.getCurrentTabTag(),
+                        getString(R.string.str_tab_device))) {
+                    BaseNotification.newInstance().postNotificationName(CommonConstants.tabDevice);
+                } else if (TextUtils.equals(mTabHost.getCurrentTabTag(),
+                        getString(R.string.str_support))) {
+                    BaseNotification.newInstance().postNotificationName(CommonConstants.tabSupport);
+                }
             } else {
                 v.setSelected(false);
             }
