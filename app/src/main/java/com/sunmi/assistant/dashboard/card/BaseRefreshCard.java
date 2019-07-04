@@ -95,6 +95,7 @@ public abstract class BaseRefreshCard<Model> {
         }
         this.mCompanyId = companyId;
         this.mShopId = shopId;
+        onCompanyChange(mModel, companyId, shopId);
         if (mCompanyId > 0 && mShopId > 0 && mPeriod != DashboardContract.TIME_PERIOD_INIT) {
             load(mCompanyId, mShopId, mPeriod, mModel);
         }
@@ -105,6 +106,7 @@ public abstract class BaseRefreshCard<Model> {
             return;
         }
         this.mShopId = shopId;
+        onShopChange(mModel, shopId);
         if (mCompanyId > 0 && mShopId > 0 && mPeriod != DashboardContract.TIME_PERIOD_INIT) {
             load(mCompanyId, mShopId, mPeriod, mModel);
         }
@@ -137,6 +139,12 @@ public abstract class BaseRefreshCard<Model> {
     protected abstract Model createData();
 
     protected abstract ItemType<Model, BaseViewHolder<Model>> createType();
+
+    protected void onCompanyChange(Model model, int companyId, int shopId) {
+    }
+
+    protected void onShopChange(Model model, int shopId) {
+    }
 
     protected void onPeriodChange(Model model, int period) {
     }
