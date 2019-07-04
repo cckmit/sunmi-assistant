@@ -42,7 +42,7 @@
         android:id="@+id/v_dashboard_divider"
         android:layout_width="0dp"
         android:layout_height="1px"
-        android:background="@color/color_85858A"
+        android:background="@color/black_10"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tv_dashboard_name" />

@@ -20,6 +20,7 @@
             android:layout_marginBottom="@dimen/dp_12"
             android:textColor="@color/color_333338"
             android:textSize="@dimen/sp_16"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

@@ -92,6 +92,13 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         }
     }
 
+    @Override
+    public void refresh(int position) {
+        if (mList != null && mList.size() > position) {
+            mList.get(position).refresh();
+        }
+    }
+
     private void initList(int companyId, int shopId, int period) {
         if (!isViewAttached()) {
             return;

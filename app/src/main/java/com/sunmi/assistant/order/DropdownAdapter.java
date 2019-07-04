@@ -40,9 +40,9 @@ public class DropdownAdapter extends DropdownMenu.BaseAdapter<FilterItem> {
         @Override
         public void setUpView(FilterItem model, int position) {
             TextView title = getView(R.id.order_filter_title);
-            title.setText(model.getName());
+            title.setText(model.getTitleName());
             Drawable drawable = title.getCompoundDrawablesRelative()[2].mutate();
-            if (model.isChecked()) {
+            if (model.getId() != -1) {
                 title.setTextColor(mContext.getResources().getColor(R.color.color_F35000));
                 drawable.setTint(mContext.getResources().getColor(R.color.color_F35000));
             } else {
@@ -62,7 +62,7 @@ public class DropdownAdapter extends DropdownMenu.BaseAdapter<FilterItem> {
         public void setUpView(FilterItem model, int position) {
             Resources res = mContext.getResources();
             TextView name = getView(R.id.order_filter_name);
-            name.setText(model.getName());
+            name.setText(model.getItemName());
             name.setTextColor(model.isChecked() ?
                     res.getColor(R.color.color_FF6000) : res.getColor(R.color.color_333338));
             getView(R.id.order_filter_checkbox).setVisibility(model.isChecked() ? View.VISIBLE : View.INVISIBLE);

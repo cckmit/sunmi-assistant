@@ -48,6 +48,10 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
     private int mCompanyId;
     private int mShopId;
 
+    private String mDefaultFilterAllName;
+    private String mDefaultOrderTypeFilterName;
+    private String mDefaultPayTypeFilterName;
+
     @Override
     public void loadList(long timeStart, long timeEnd, int initOrderType) {
         mCompanyId = SpUtils.getCompanyId();
@@ -59,8 +63,13 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
         if (!isViewAttached()) {
             return;
         }
+        mDefaultFilterAllName = mView.getContext().getString(R.string.order_filter_all);
+        mDefaultOrderTypeFilterName = mView.getContext().getString(R.string.order_filter_order_type);
+        mDefaultPayTypeFilterName = mView.getContext().getString(R.string.order_filter_pay_type);
 
         List<FilterItem> order = new ArrayList<>(2);
+        order.add(new FilterItem(-1,
+                mView.getContext().getString(R.string.order_filter_sort)));
         order.add(new FilterItem(1,
                 mView.getContext().getString(R.string.order_amount_descending)));
         order.add(new FilterItem(0,
@@ -69,6 +78,7 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
                 mView.getContext().getString(R.string.order_time_descending)));
         order.add(new FilterItem(10,
                 mView.getContext().getString(R.string.order_time_ascending)));
+        order.get(0).setChecked(true);
 
         mView.updateFilter(0, order);
 
@@ -77,6 +87,9 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
             public void onSuccess(int code, String msg, OrderPayTypeListResp data) {
                 List<OrderPayTypeListResp.PayType> list = data.getPurchase_type_list();
                 List<FilterItem> payType = new ArrayList<>(list.size());
+                FilterItem first = new FilterItem(-1, mDefaultPayTypeFilterName, mDefaultFilterAllName);
+                first.setChecked(true);
+                payType.add(first);
                 for (OrderPayTypeListResp.PayType type : list) {
                     payType.add(new FilterItem(type.getId(), type.getName()));
                 }
@@ -96,6 +109,9 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
             public void onSuccess(int code, String msg, OrderTypeListResp data) {
                 List<OrderTypeListResp.OrderType> list = data.getOrder_type_list();
                 List<FilterItem> orderType = new ArrayList<>(list.size());
+                FilterItem first = new FilterItem(-1, mDefaultOrderTypeFilterName, mDefaultFilterAllName);
+                first.setChecked(true);
+                orderType.add(first);
                 for (OrderTypeListResp.OrderType type : list) {
                     mOrderType.put(type.getId(), type.getTag());
                     FilterItem item = new FilterItem(type.getId(), type.getName());
@@ -104,6 +120,7 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
                                 && CommonConstants.ORDER_TYPE_NORMAL.equals(type.getTag()))
                                 || (mInitOrderType == OrderInfo.ORDER_TYPE_REFUNDS
                                 && CommonConstants.ORDER_TYPE_REFUNDS.equals(type.getTag()))) {
+                            first.setChecked(false);
                             item.setChecked(true);
                         }
                     }
@@ -137,11 +154,15 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
                 break;
             case 1:
                 mFilterPayType.clear();
-                mFilterPayType.add(model.getId());
+                if (model.getId() != -1) {
+                    mFilterPayType.add(model.getId());
+                }
                 break;
             case 2:
                 mFilterOrderType.clear();
-                mFilterOrderType.add(model.getId());
+                if (model.getId() != -1) {
+                    mFilterOrderType.add(model.getId());
+                }
                 break;
         }
         loadData(true);
