@@ -105,5 +105,7 @@
     <string name="str_mine_company">我的商户</string>
     <string name="tip_get_shop_list_fail">获取门店数据失败</string>
     <string name="str_select_company">选择商户</string>
+    <string name="str_setting_detail">查看详情</string>
+    <string name="str_setting_delete_device">删除设备</string>
 
 </resources>

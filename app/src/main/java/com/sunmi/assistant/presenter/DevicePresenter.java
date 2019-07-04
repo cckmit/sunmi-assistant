@@ -3,6 +3,7 @@ package com.sunmi.assistant.presenter;
 import android.support.annotation.NonNull;
 
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
+import com.sunmi.apmanager.utils.DBUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
 import com.sunmi.assistant.data.response.AdListResp;
@@ -105,11 +106,20 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
 
     @Override
     public void unbindRouter(String sn) {
-        CloudApi.unbind(sn, new RpcCallback(null) {
+        CloudApi.unbind(sn, new HttpCallback<String>(null) {
             @Override
             public void onSuccess(int code, String msg, String data) {
                 if (isViewAttached()) {
-                    mView.unbindRouterSuccess(sn, code, msg, data);
+                    mView.shortTip(R.string.str_delete_success);
+                    DBUtils.deleteUnBindDevLocal(sn);
+                    getRouterList();
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, String data) {
+                if (isViewAttached()) {
+                    mView.shortTip(R.string.str_delete_fail);
                 }
             }
         });
@@ -149,22 +159,23 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
 
     @Override
     public void unbindIPC(int deviceId) {
-        IPCCloudApi.unbindIPC(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId, new RetrofitCallback() {
-            @Override
-            public void onSuccess(int code, String msg, Object data) {
-                if (isViewAttached()) {
-                    mView.shortTip(R.string.tip_unbind_success);
-                    mView.unbindIpcSuccess(code, msg, data);
-                }
-            }
+        IPCCloudApi.unbindIPC(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId,
+                new RetrofitCallback() {
+                    @Override
+                    public void onSuccess(int code, String msg, Object data) {
+                        if (isViewAttached()) {
+                            mView.shortTip(R.string.tip_unbind_success);
+                            mView.unbindIpcSuccess(code, msg, data);
+                        }
+                    }
 
-            @Override
-            public void onFail(int code, String msg, Object data) {
-                if (isViewAttached()) {
-                    mView.shortTip(R.string.tip_unbind_fail);
-                }
-            }
-        });
+                    @Override
+                    public void onFail(int code, String msg, Object data) {
+                        if (isViewAttached()) {
+                            mView.shortTip(R.string.tip_unbind_fail);
+                        }
+                    }
+                });
     }
 
     @Override

@@ -199,13 +199,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @Override
     public void unbindRouterSuccess(String sn, int code, String msg, Object data) {
-        if (code == 1) {//解绑成功后发送通知
-            shortTip(R.string.str_delete_success);
-            DBUtils.deleteUnBindDevLocal(sn);
-            mPresenter.getRouterList();
-        } else {
-            shortTip(R.string.str_delete_fail);
-        }
+
     }
 
     @Override
@@ -693,4 +687,5 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
         return false;
     }
+
 }

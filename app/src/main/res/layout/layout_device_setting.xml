@@ -10,10 +10,10 @@
         android:id="@+id/tv_detail"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_48"
-        android:layout_marginStart="@dimen/dp_24"
+        android:layout_marginStart="@dimen/dp_20"
         android:gravity="center"
         android:singleLine="true"
-        android:text="查看详情"
+        android:text="@string/str_setting_detail"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/sp_14" />
 
@@ -21,10 +21,10 @@
         android:id="@+id/tv_delete"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_48"
-        android:layout_marginStart="@dimen/dp_24"
+        android:layout_marginStart="@dimen/dp_20"
         android:gravity="center"
         android:singleLine="true"
-        android:text="删除设备"
+        android:text="@string/str_setting_delete_device"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/sp_14" />
 
