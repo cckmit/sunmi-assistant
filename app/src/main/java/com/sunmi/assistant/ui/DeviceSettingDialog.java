@@ -18,7 +18,6 @@ import sunmi.common.model.SunmiDevice;
 public class DeviceSettingDialog extends PopupWindow {
 
     private Context context;
-    private int width, height;
     private OnSettingsClickListener onSettingsClickListener;
     private SunmiDevice device;
 
@@ -37,10 +36,8 @@ public class DeviceSettingDialog extends PopupWindow {
         LayoutInflater inflater = LayoutInflater.from(context);
         View viewLayout = inflater.inflate(R.layout.layout_device_setting, null);
         setContentView(viewLayout);
-        //get viewLayout
+
         viewLayout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        width = viewLayout.getWidth();
-        height = viewLayout.getHeight();
         setBackgroundDrawable(new ColorDrawable(0x00000000));
         setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
         setTouchable(true); // 设置popupwindow可点击
@@ -68,11 +65,8 @@ public class DeviceSettingDialog extends PopupWindow {
     }
 
     public void show(View parent) {
-        //set location up or down ,left right
-        int[] location = new int[2];
-        parent.getLocationOnScreen(location);
-        showAtLocation(parent, Gravity.NO_GRAVITY,
-                (location[0] + parent.getWidth() / 2) - width / 2, location[1] - height);
+        int offsetX = parent.getWidth() - getContentView().getMeasuredWidth();
+        showAsDropDown(parent, offsetX, 0, Gravity.START);
     }
 
     public interface OnSettingsClickListener {

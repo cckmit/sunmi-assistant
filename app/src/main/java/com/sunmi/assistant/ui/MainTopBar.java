@@ -1,5 +1,6 @@
 package com.sunmi.assistant.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -82,6 +83,7 @@ public class MainTopBar extends LinearLayout implements BaseNotification.Notific
             @Override
             public void onClick(View v) {
                 ChooseShopActivity_.intent(mContext).start();
+                ((Activity) mContext).overridePendingTransition(R.anim.activity_open_down_up, R.anim.bottom_silent);
             }
         });
     }
