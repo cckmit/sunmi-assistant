@@ -10,13 +10,10 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.sunmi.apmanager.config.AppConfig;
-import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.ui.activity.MainActivity_;
 import com.sunmi.assistant.ui.activity.contract.PlatformMobileContract;
 import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
-import com.sunmi.assistant.ui.activity.model.CreateStoreInfo;
 import com.sunmi.assistant.ui.activity.presenter.PlatformMobilePresenter;
 
 import org.androidannotations.annotations.AfterViews;
@@ -29,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.dialog.CommonDialog;
@@ -112,11 +109,6 @@ public class CheckPlatformMobileActivity extends BaseMvpActivity<PlatformMobileP
         mPresenter.getSaasInfo(mobile);
     }
 
-    //默认创建门店
-    public void createStore() {
-        showLoadingDialog();
-        mPresenter.createStore(String.format(getString(R.string.str_unkunw_store), SpUtils.getMobile()));
-    }
 
     /**
      * 发送验证码
@@ -169,33 +161,12 @@ public class CheckPlatformMobileActivity extends BaseMvpActivity<PlatformMobileP
         hideLoadingDialog();
     }
 
-    /**
-     * 创建门店
-     *
-     * @param data
-     */
-    @Override
-    public void createStoreSuccess(CreateStoreInfo data) {
-        LogCat.e(TAG, "data createStoreSuccess");
-        hideLoadingDialog();
-        CommonUtils.gotoMainActivity(this, data.getShop_id(), data.getShop_name());
-    }
-
-    @Override
-    public void createStoreFail(int code, String msg) {
-        LogCat.e(TAG, "data onFail code=" + code + "," + msg);
-        hideLoadingDialog();
-        CommonUtils.gotoMainActivity(this, 0, "");
-    }
-
     private ArrayList<AuthStoreInfo.SaasUserInfoListBean> selectedList = new ArrayList<>();
 
     private void getSaasData(List<AuthStoreInfo.SaasUserInfoListBean> list) {
-        StringBuilder saasName = new StringBuilder();
         for (AuthStoreInfo.SaasUserInfoListBean bean : list) {
             if (bean.getSaas_source() == saasSource) {
                 //匹配列表
-                saasName.append(bean.getSaas_name()).append(",");
                 AuthStoreInfo.SaasUserInfoListBean b = new AuthStoreInfo.SaasUserInfoListBean();
                 b.setShop_no(bean.getShop_no());
                 b.setSaas_name(bean.getSaas_name());
@@ -209,12 +180,14 @@ public class CheckPlatformMobileActivity extends BaseMvpActivity<PlatformMobileP
         //匹配到平台数据
         if (selectedList != null && selectedList.size() > 0) {
             new AuthDialog.Builder(this)
-                    .setMessage(getString(R.string.str_dialog_auth_message, saasName.replace(saasName.length() - 1, saasName.length(), "")))
+                    .setMessage(getString(R.string.str_dialog_auth_message, platform))
                     .setAllowButton((dialog, which) -> SelectStoreActivity_.intent(this)
                             .list(selectedList)
                             .start())
                     .setCancelButton((dialog, which) -> {
-                        createStore();
+                        //createStore();
+                        //注册已默认创建门店
+                        GotoActivityUtils.gotoMainActivity(CheckPlatformMobileActivity.this);
                     })
                     .create().show();
         } else {
@@ -229,7 +202,9 @@ public class CheckPlatformMobileActivity extends BaseMvpActivity<PlatformMobileP
                 .setConfirmButton(R.string.str_button_auto_create, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        createStore();
+//                        createStore();
+                        //注册已默认创建门店
+                        GotoActivityUtils.gotoMainActivity(CheckPlatformMobileActivity.this);
                     }
                 }).create().show();
     }

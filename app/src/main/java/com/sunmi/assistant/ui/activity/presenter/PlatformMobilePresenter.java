@@ -67,21 +67,21 @@ public class PlatformMobilePresenter extends BasePresenter<PlatformMobileContrac
         });
     }
 
-    //默认创建门店
-    @Override
-    public void createStore(String shopName) {
-        CloudCall.createShop(SpUtils.getCompanyId() + "", shopName, new RetrofitCallback<CreateStoreInfo>() {
-            @Override
-            public void onSuccess(int code, String msg, CreateStoreInfo data) {
-                if (isViewAttached())
-                    mView.createStoreSuccess(data);
-            }
-
-            @Override
-            public void onFail(int code, String msg, CreateStoreInfo data) {
-                if (isViewAttached())
-                    mView.createStoreFail(code, msg);
-            }
-        });
-    }
+//    //默认创建门店
+//    @Override
+//    public void createStore(String shopName) {
+//        CloudCall.createShop(SpUtils.getCompanyId() + "", shopName, new RetrofitCallback<CreateStoreInfo>() {
+//            @Override
+//            public void onSuccess(int code, String msg, CreateStoreInfo data) {
+//                if (isViewAttached())
+//                    mView.createStoreSuccess(data);
+//            }
+//
+//            @Override
+//            public void onFail(int code, String msg, CreateStoreInfo data) {
+//                if (isViewAttached())
+//                    mView.createStoreFail(code, msg);
+//            }
+//        });
+//    }
 }

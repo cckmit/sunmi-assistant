@@ -173,7 +173,7 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
             }
             chart.getAxisLeft().setAxisMaximum(max > 0 ? max * 1.2f : 5f);
             chart.setXAxisRenderer(new SpecificLabelsXAxisRenderer(chart,
-                    Utils.getBarChartXAxisFloatLabels(getPeriod(), dataList), true));
+                    Utils.getBarChartXAxisFloatLabels(getPeriod(), dataList), false));
 
             // Calculate bar width.
             float barWidthRatio;

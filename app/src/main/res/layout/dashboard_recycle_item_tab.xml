@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_28"
         android:layout_marginStart="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_30"
         android:layout_marginEnd="@dimen/dp_20"
         android:background="@drawable/dashboard_btn_bg_corner_normal"
         android:orientation="horizontal">
