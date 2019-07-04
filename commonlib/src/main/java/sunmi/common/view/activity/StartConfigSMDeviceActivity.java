@@ -101,7 +101,6 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-//            SearchSMDeviceActivity_.intent(context).deviceType(deviceType).start();
         } else if (deviceType == CommonConstants.TYPE_PRINTER) {
             try {
                 Class<?> printerSearchActivity = Class.forName("com.sunmi.cloudprinter.ui.Activity.PrinterSearchActivity_");
@@ -116,8 +115,8 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
 
     private void startPrimaryRouteSearchActivity() {
         try {
-            Class<?> mainActivity = Class.forName("com.sunmi.apmanager.ui.activity.config.PrimaryRouteSearchActivity");
-            Intent intent = new Intent(context, mainActivity);
+            Class<?> activity = Class.forName("com.sunmi.apmanager.ui.activity.config.PrimaryRouteSearchActivity");
+            Intent intent = new Intent(context, activity);
             context.startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
