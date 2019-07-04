@@ -273,7 +273,7 @@ public class InputCaptchaActivity extends BaseActivity implements ImageCaptchaDi
             cancelTimer();//登录成功后取消计时
             Gson gson = new GsonBuilder().create();
             LoginDataBean smsLogin = gson.fromJson(data, LoginDataBean.class);
-            CommonUtils.saveLoginInfo(smsLogin);
+            CommonUtils.saveLoginInfo(this,smsLogin,0);
             gotoMainActivity();
         } else {
             shortTip(R.string.login_error);

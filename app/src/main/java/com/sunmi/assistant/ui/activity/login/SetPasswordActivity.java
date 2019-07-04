@@ -25,7 +25,6 @@ import com.sunmi.assistant.ui.activity.merchant.AuthDialog;
 import com.sunmi.assistant.ui.activity.merchant.SelectPlatformActivity_;
 import com.sunmi.assistant.ui.activity.merchant.SelectStoreActivity_;
 import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
-import com.sunmi.assistant.ui.activity.model.CreateStoreInfo;
 import com.sunmi.ipc.rpc.IPCCloudApi;
 import com.sunmi.ipc.rpc.RetrofitClient;
 
@@ -42,6 +41,7 @@ import java.util.List;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.rpc.http.RpcCallback;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.RegexUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
@@ -140,7 +140,13 @@ public class SetPasswordActivity extends BaseActivity {
             public void onSuccess(int code, String msg, String data) {
                 if (code == 1) {
                     LoginDataBean bean = new Gson().fromJson(data, LoginDataBean.class);
-                    CommonUtils.saveLoginInfo(bean);
+                    try {
+                        int shopId = new JSONObject(data).getJSONObject("create_shop").getJSONObject("data").getInt("shop_id");
+                        LogCat.e(TAG, "shopId=" + shopId);
+                        CommonUtils.saveLoginInfo(SetPasswordActivity.this, bean, shopId);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     shortTip(R.string.register_success);
                     CommonUtils.trackDurationEventEnd(context, "registerPasswordDuration",
                             "注册流程_设置密码_耗时", Constants.EVENT_DURATION_REGISTER_PSW);
@@ -169,6 +175,7 @@ public class SetPasswordActivity extends BaseActivity {
 
     //获取ssotoken
     private void getSsoToken() {
+        showLoadingDialog();
         IPCCloudApi.getStoreToken(new RetrofitCallback() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
@@ -185,6 +192,7 @@ public class SetPasswordActivity extends BaseActivity {
 
             @Override
             public void onFail(int code, String msg, Object data) {
+                hideLoadingDialog();
             }
         });
     }
@@ -204,6 +212,7 @@ public class SetPasswordActivity extends BaseActivity {
 
             @Override
             public void onFail(int code, String msg, CompanyInfoResp data) {
+                hideLoadingDialog();
                 SpUtils.setCompanyName(getString(R.string.str_mine_company));
                 getSaasInfo();
             }
@@ -212,7 +221,6 @@ public class SetPasswordActivity extends BaseActivity {
 
     //通过手机号获取saas信息
     private void getSaasInfo() {
-        showLoadingDialog();
         CloudCall.getSaasUserInfo(SpUtils.getMobile(), new RetrofitCallback() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
@@ -242,7 +250,8 @@ public class SetPasswordActivity extends BaseActivity {
                             .list((ArrayList) list)
                             .start())
                     .setCancelButton((dialog, which) -> {
-                        createStore();
+                        //createStore();
+                        GotoActivityUtils.gotoMainActivity(SetPasswordActivity.this);
                     })
                     .create().show();
         } else { //未匹配平台数据
@@ -250,26 +259,26 @@ public class SetPasswordActivity extends BaseActivity {
         }
     }
 
-    //创建门店
-    private void createStore() {
-        showLoadingDialog();
-        CloudCall.createShop(SpUtils.getCompanyId() + "", String.format(getString(R.string.str_unkunw_store), SpUtils.getMobile()), new RetrofitCallback<CreateStoreInfo>() {
-            @Override
-            public void onSuccess(int code, String msg, CreateStoreInfo data) {
-                hideLoadingDialog();
-                CommonUtils.gotoMainActivity(SetPasswordActivity.this, data.getShop_id(), data.getShop_name());
-            }
-
-            @Override
-            public void onFail(int code, String msg, CreateStoreInfo data) {
-                hideLoadingDialog();
-                if (code == 5034) {
-                    shortTip(getString(R.string.str_create_store_fail));
-                } else {
-                    shortTip(getString(R.string.str_create_store_alredy_exit));
-                }
-                CommonUtils.gotoMainActivity(SetPasswordActivity.this, 0, "");
-            }
-        });
-    }
+//    //创建门店
+//    private void createStore() {
+//        showLoadingDialog();
+//        CloudCall.createShop(SpUtils.getCompanyId() + "", String.format(getString(R.string.str_unkunw_store), SpUtils.getMobile()), new RetrofitCallback<CreateStoreInfo>() {
+//            @Override
+//            public void onSuccess(int code, String msg, CreateStoreInfo data) {
+//                hideLoadingDialog();
+//                CommonUtils.gotoMainActivity(SetPasswordActivity.this, data.getShop_id(), data.getShop_name());
+//            }
+//
+//            @Override
+//            public void onFail(int code, String msg, CreateStoreInfo data) {
+//                hideLoadingDialog();
+//                if (code == 5034) {
+//                    shortTip(getString(R.string.str_create_store_fail));
+//                } else {
+//                    shortTip(getString(R.string.str_create_store_alredy_exit));
+//                }
+//                CommonUtils.gotoMainActivity(SetPasswordActivity.this, 0, "");
+//            }
+//        });
+//    }
 }

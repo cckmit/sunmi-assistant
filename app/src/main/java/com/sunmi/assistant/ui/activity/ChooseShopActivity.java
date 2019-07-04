@@ -27,6 +27,7 @@ import java.util.List;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.ViewHolder;
 
@@ -52,6 +53,7 @@ public class ChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter>
 
     @AfterViews
     void init() {
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
         mPresenter = new ChooseShopPresenter();
         mPresenter.attachView(this);
         tvCurrShop.setText(SpUtils.getShopName());
@@ -110,4 +112,9 @@ public class ChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter>
         });
     }
 
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(0, com.sunmi.apmanager.R.anim.activity_close_up_down);
+    }
 }

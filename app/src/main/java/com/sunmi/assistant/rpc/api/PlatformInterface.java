@@ -24,6 +24,10 @@ public interface PlatformInterface {
     @POST("/api/shop/create")
     Call<BaseResponse<CreateStoreInfo>> createShop(@Body BaseRequest request);
 
+    //编辑门店
+    @POST("/api/shop/update")
+    Call<BaseResponse<String>> editShop(@Body BaseRequest request);
+
     //saas信息
     @POST(path + "getUserInfo")
     Call<BaseResponse<JsonObject>> getSaasUserInfo(@Body BaseRequest request);

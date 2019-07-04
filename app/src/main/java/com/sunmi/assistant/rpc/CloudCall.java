@@ -16,6 +16,7 @@ import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.SafeUtils;
+import sunmi.common.utils.SpUtils;
 
 /**
  * Description:
@@ -105,6 +106,24 @@ public class CloudCall extends BaseHttpApi {
     }
 
     /**
+     * 创建门店
+     */
+    public static void editShop(String shopName, RetrofitCallback callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", SpUtils.getShopId())
+                    .put("shop_name", shopName)
+                    .toString();
+            RetrofitClient.getInstance().create(PlatformInterface.class)
+                    .editShop(getSignedRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * saas信息
      */
     public static void getSaasUserInfo(String phone, RetrofitCallback callback) {
@@ -123,7 +142,7 @@ public class CloudCall extends BaseHttpApi {
     /**
      * 米商引擎所支持的Saas平台信息
      */
-    public static void getPlatformList( RetrofitCallback callback) {
+    public static void getPlatformList(RetrofitCallback callback) {
         try {
             RetrofitClient.getInstance().create(PlatformInterface.class)
                     .getPlatformList(getSignedRequest(""))

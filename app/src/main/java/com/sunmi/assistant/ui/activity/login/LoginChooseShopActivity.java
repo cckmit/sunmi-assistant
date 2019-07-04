@@ -194,7 +194,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     }
 
     private void gotoMainActivity(int shopId, String shopName) {
-        CommonUtils.saveLoginInfo(loginData);
+        CommonUtils.saveLoginInfo(this, loginData, 0);
         SpUtils.setCompanyId(companyId);
         SpUtils.setCompanyName(companyName);
         SpUtils.setShopId(shopId);

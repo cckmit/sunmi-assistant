@@ -8,11 +8,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.ui.activity.MainActivity_;
 import com.sunmi.assistant.ui.activity.contract.SelectPlatformContract;
-import com.sunmi.assistant.ui.activity.model.CreateStoreInfo;
 import com.sunmi.assistant.ui.activity.model.PlatformInfo;
 import com.sunmi.assistant.ui.activity.presenter.PlatformPresenter;
 
@@ -25,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
@@ -81,8 +78,7 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
                 finish();
                 break;
             case R.id.txt_right:
-                showLoadingDialog();
-                mPresenter.createStore(String.format(getString(R.string.str_unkunw_store), SpUtils.getMobile()));
+                GotoActivityUtils.gotoMainActivity(this);
                 break;
         }
     }
@@ -115,20 +111,6 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
         hideLoadingDialog();
     }
 
-    @Override
-    public void createStoreSuccess(CreateStoreInfo data) {
-        LogCat.e(TAG, "data createStoreSuccess");
-        hideLoadingDialog();
-        CommonUtils.gotoMainActivity(this, data.getShop_id(), data.getShop_name());
-    }
-
-    @Override
-    public void createStoreFail(int code, String msg) {
-        LogCat.e(TAG, "data onFail code=" + code + "," + msg);
-        hideLoadingDialog();
-        shortTip(R.string.str_create_store_fail);
-    }
-
     private void showViewList(PlatformInfo data) {
         list = data.getSaasList();
         recyclerView.setAdapter(new CommonListAdapter<PlatformInfo.SaasListBean>(this, R.layout.item_merchant_platform, list) {
@@ -144,7 +126,7 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
                     public void onClick(View v) {
                         selectedIndex = holder.getAdapterPosition();
                         selectPlatform = bean.getSaas_name();
-                        selectSaasSource=bean.getSaas_source();
+                        selectSaasSource = bean.getSaas_source();
                         notifyDataSetChanged();//刷新
                         isCanClick(true);
                     }
