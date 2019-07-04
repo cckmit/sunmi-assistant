@@ -9,7 +9,7 @@ import sunmi.common.base.BaseView;
  */
 public interface AuthStoreCompleteContract {
     interface View extends BaseView {
-        void editStoreSuccess(String data);
+        void editStoreSuccess(Object data);
 
         void editStoreFail(int code, String msg);
 
@@ -17,7 +17,7 @@ public interface AuthStoreCompleteContract {
 
         void createStoreFail(int code, String msg);
 
-        void authStoreCompleteSuccess(String data);
+        void authStoreCompleteSuccess(Object data);
 
         void authStoreCompleteFail(int code, String msg);
 

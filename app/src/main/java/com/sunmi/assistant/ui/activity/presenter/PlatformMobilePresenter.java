@@ -16,15 +16,15 @@ public class PlatformMobilePresenter extends BasePresenter<PlatformMobileContrac
     //发送验证码
     @Override
     public void sendMobileCode(String mobile) {
-        CloudCall.sendSaasVerifyCode(mobile, new RetrofitCallback<String>() {
+        CloudCall.sendSaasVerifyCode(mobile, new RetrofitCallback<Object>() {
             @Override
-            public void onSuccess(int code, String msg, String data) {
+            public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached())
                     mView.sendMobileCodeSuccess(data);
             }
 
             @Override
-            public void onFail(int code, String msg, String data) {
+            public void onFail(int code, String msg, Object data) {
                 if (isViewAttached())
                     mView.sendMobileCodeFail(code, msg);
             }
