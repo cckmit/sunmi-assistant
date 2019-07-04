@@ -114,6 +114,7 @@ public class CloudCall extends BaseHttpApi {
                     .put("company_id", SpUtils.getCompanyId())
                     .put("shop_id", SpUtils.getShopId())
                     .put("shop_name", shopName)
+                    .put("business_status", 0)//营业状态 0:营业 1:停业
                     .toString();
             RetrofitClient.getInstance().create(PlatformInterface.class)
                     .editShop(getSignedRequest(params))

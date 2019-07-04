@@ -183,7 +183,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         //设置自动轮播，默认为true
         vpBanner.isAutoPlay(true);
         //设置轮播时间
-        vpBanner.setDelayTime(2000);
+        vpBanner.setDelayTime(4000);
         //设置指示器位置（当banner模式中有指示器时）
         vpBanner.setIndicatorGravity(BannerConfig.CENTER);
         //banner设置方法全部调用完毕时最后调用

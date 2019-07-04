@@ -116,7 +116,7 @@ public class CheckPlatformMobileActivity extends BaseMvpActivity<PlatformMobileP
      * @param data
      */
     @Override
-    public void sendMobileCodeSuccess(String data) {
+    public void sendMobileCodeSuccess(Object data) {
 
     }
 

@@ -242,7 +242,8 @@ public class SetPasswordActivity extends BaseActivity {
         if (list.size() > 0) {  //匹配到平台数据
             StringBuilder saasName = new StringBuilder();
             for (AuthStoreInfo.SaasUserInfoListBean bean : list) {
-                saasName.append(bean.getSaas_name()).append(",");
+                if (!saasName.toString().contains(bean.getSaas_name()))
+                    saasName.append(bean.getSaas_name()).append(",");
             }
             new AuthDialog.Builder(SetPasswordActivity.this)
                     .setMessage(getString(R.string.str_dialog_auth_message, saasName.replace(saasName.length() - 1, saasName.length(), "")))

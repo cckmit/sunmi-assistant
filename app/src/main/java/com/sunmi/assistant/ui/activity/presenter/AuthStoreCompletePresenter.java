@@ -19,18 +19,18 @@ public class AuthStoreCompletePresenter extends BasePresenter<AuthStoreCompleteC
 
     @Override
     public void authStoreCompleteInfo(String shop_id, String saas_source, String shop_no, String saas_name) {
-        CloudCall.authorizeSaas(SpUtils.getCompanyId() + "", shop_id, saas_source, shop_no, saas_name, new RetrofitCallback<String>() {
+        CloudCall.authorizeSaas(SpUtils.getCompanyId() + "", shop_id, saas_source, shop_no, saas_name, new RetrofitCallback<Object>() {
             @Override
-            public void onSuccess(int code, String msg, String data) {
+            public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
                     mView.authStoreCompleteSuccess(data);
                 }
             }
 
             @Override
-            public void onFail(int code, String msg, String data) {
+            public void onFail(int code, String msg, Object data) {
                 if (isViewAttached()) {
-                    mView.authStoreCompleteFail(code, data);
+                    mView.authStoreCompleteFail(code, msg);
                 }
             }
         });
@@ -57,16 +57,16 @@ public class AuthStoreCompletePresenter extends BasePresenter<AuthStoreCompleteC
 
     @Override
     public void editStore(String shopName) {
-        CloudCall.editShop(shopName, new RetrofitCallback<String>() {
+        CloudCall.editShop(shopName, new RetrofitCallback<Object>() {
             @Override
-            public void onSuccess(int code, String msg, String data) {
+            public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
                     mView.editStoreSuccess(data);
                 }
             }
 
             @Override
-            public void onFail(int code, String msg, String data) {
+            public void onFail(int code, String msg, Object data) {
                 if (isViewAttached()) {
                     mView.editStoreFail(code, msg);
                 }

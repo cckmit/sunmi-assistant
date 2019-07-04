@@ -1,9 +1,6 @@
 package com.sunmi.assistant.ui.activity.login;
 
 import android.content.Intent;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -34,6 +31,7 @@ import sunmi.common.constant.CommonConstants;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SettingItemLayout;
+import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.ViewHolder;
 
@@ -52,7 +50,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     @ViewById(R.id.bgarl_choose)
     BGARefreshLayout mRefreshLayout;
     @ViewById(R.id.rv_choose)
-    RecyclerView rvChoose;
+    SmRecyclerView rvChoose;
     @ViewById(R.id.ll_no_data)
     LinearLayout rlNoData;
 
@@ -73,10 +71,8 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
         mPresenter.attachView(this);
         mRefreshLayout.setDelegate(this);
         mRefreshLayout.setRefreshViewHolder(new BGANormalRefreshViewHolder(context, true));
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
-        rvChoose.setLayoutManager(layoutManager);
-        rvChoose.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
         mRefreshLayout.setPullDownRefreshEnable(false);
+        rvChoose.setDivider(R.drawable.shap_line_divider);
 
         if (action == CommonConstants.ACTION_LOGIN_CHOOSE_COMPANY) {
             titleBar.setAppTitle(R.string.str_select_company);

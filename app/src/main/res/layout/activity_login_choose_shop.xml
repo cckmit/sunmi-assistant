@@ -23,11 +23,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/title_bar">
 
-        <android.support.v7.widget.RecyclerView
+        <sunmi.common.view.SmRecyclerView
             android:id="@+id/rv_choose"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/c_white" />
+            android:background="@color/c_white"
+            android:overScrollMode="never" />
     </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
 
     <LinearLayout
