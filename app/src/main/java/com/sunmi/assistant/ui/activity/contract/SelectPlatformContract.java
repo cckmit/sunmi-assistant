@@ -14,16 +14,16 @@ public interface SelectPlatformContract {
 
         void getPlatformInfoFail(int code, String msg);
 
-        void createStoreSuccess(CreateStoreInfo data);
-
-        void createStoreFail(int code, String msg);
+//        void createStoreSuccess(CreateStoreInfo data);
+//
+//        void createStoreFail(int code, String msg);
 
     }
 
     interface Presenter {
         void getPlatformInfo();
 
-        void createStore(String shopName);
+//        void createStore(String shopName);
     }
 
 }

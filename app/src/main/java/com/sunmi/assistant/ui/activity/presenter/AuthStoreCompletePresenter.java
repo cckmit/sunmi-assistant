@@ -54,4 +54,23 @@ public class AuthStoreCompletePresenter extends BasePresenter<AuthStoreCompleteC
             }
         });
     }
+
+    @Override
+    public void editStore(String shopName) {
+        CloudCall.editShop(shopName, new RetrofitCallback<String>() {
+            @Override
+            public void onSuccess(int code, String msg, String data) {
+                if (isViewAttached()) {
+                    mView.editStoreSuccess(data);
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, String data) {
+                if (isViewAttached()) {
+                    mView.editStoreFail(code, msg);
+                }
+            }
+        });
+    }
 }

@@ -21,9 +21,9 @@ public interface PlatformMobileContract {
 
         void getSaasInfoFail(int code, String msg);
 
-        void createStoreSuccess(CreateStoreInfo data);
-
-        void createStoreFail(int code, String msg);
+//        void createStoreSuccess(CreateStoreInfo data);
+//
+//        void createStoreFail(int code, String msg);
 
     }
 
@@ -34,6 +34,6 @@ public interface PlatformMobileContract {
 
         void getSaasInfo(String mobile);
 
-        void createStore(String shopName);
+//        void createStore(String shopName);
     }
 }
