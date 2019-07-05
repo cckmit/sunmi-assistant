@@ -45,9 +45,6 @@ public class ChooseShopPresenter extends BasePresenter<ChooseShopContract.View>
 
     @Override
     public void getCompanyList() {
-        if (isViewAttached()) {
-            mView.showLoadingDialog();
-        }
         CloudCall.getCompanyList(new RetrofitCallback<CompanyListResp>() {
             @Override
             public void onSuccess(int code, String msg, CompanyListResp data) {
