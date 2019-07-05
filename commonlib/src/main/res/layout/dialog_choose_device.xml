@@ -22,6 +22,7 @@
         android:layout_below="@id/tv_title"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginBottom="@dimen/dp_24" />
+        android:layout_marginBottom="@dimen/dp_24"
+        android:overScrollMode="never" />
 
 </RelativeLayout>
