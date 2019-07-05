@@ -109,7 +109,6 @@ public class CheckPlatformMobileActivity extends BaseMvpActivity<PlatformMobileP
         mPresenter.getSaasInfo(mobile);
     }
 
-
     /**
      * 发送验证码
      *

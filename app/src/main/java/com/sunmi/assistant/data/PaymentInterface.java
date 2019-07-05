@@ -24,7 +24,7 @@ import sunmi.common.rpc.retrofit.BaseResponse;
  * @author yinhui
  * @since 2019-06-20
  */
-public interface OrderManageService {
+public interface PaymentInterface {
 
     /**
      * 获取总销售额信息
