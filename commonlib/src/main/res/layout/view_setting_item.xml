@@ -20,7 +20,7 @@
         android:layout_toEndOf="@+id/left_image"
         android:ellipsize="end"
         android:gravity="center_vertical"
-        android:maxEms="12"
+        android:maxEms="13"
         android:singleLine="true" />
 
     <TextView
