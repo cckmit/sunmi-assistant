@@ -2,7 +2,6 @@ package com.sunmi.assistant.dashboard;
 
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -23,10 +22,11 @@ import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
+import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.base.recycle.BaseArrayAdapter;
 import sunmi.common.utils.CommonHelper;
-import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.Utils;
 
@@ -38,10 +38,10 @@ import sunmi.common.utils.Utils;
  */
 @EFragment(R.layout.dashboard_fragment_main)
 public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
-        implements DashboardContract.View {
+        implements DashboardContract.View, BGARefreshLayout.BGARefreshLayoutDelegate {
 
-    @ViewById(R.id.srl_dashboard_refresh)
-    SwipeRefreshLayout mRefreshLayout;
+    @ViewById(R.id.layout_dashboard_refresh)
+    BGARefreshLayout mRefreshLayout;
     @ViewById(R.id.rv_dashboard_card_list)
     RecyclerView mCardList;
     @ViewById(R.id.layout_dashboard_sticky_tab)
@@ -79,14 +79,14 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         if (animator instanceof SimpleItemAnimator) {
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         }
-        mRefreshLayout.setOnRefreshListener(() -> {
-            if (!NetworkUtils.isNetworkAvailable(getContext())) {
-                shortTip(R.string.toast_networkIsExceptional);
-            } else {
-                mPresenter.refresh();
-            }
-            mRefreshLayout.setRefreshing(false);
-        });
+        mRefreshLayout.setDelegate(this);
+        BGANormalRefreshViewHolder refreshViewHolder =
+                new BGANormalRefreshViewHolder(getContext(), false);
+        View refreshHeaderView = refreshViewHolder.getRefreshHeaderView();
+        refreshHeaderView.setPadding(0, mStatusBarHeight, 0, 0);
+        mRefreshLayout.setRefreshViewHolder(refreshViewHolder);
+        mRefreshLayout.setPullDownRefreshEnable(true);
+        mRefreshLayout.setIsShowLoadingMoreView(false);
     }
 
     private void initAdapter() {
@@ -149,6 +149,17 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             list.add(item.getModel());
         }
         mAdapter.setData(list);
+    }
+
+    @Override
+    public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
+        mPresenter.refresh();
+        refreshLayout.postDelayed(refreshLayout::endRefreshing, 500);
+    }
+
+    @Override
+    public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
+        return false;
     }
 
     @Override

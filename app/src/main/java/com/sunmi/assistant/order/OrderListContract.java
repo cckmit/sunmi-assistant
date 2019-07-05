@@ -32,6 +32,6 @@ public interface OrderListContract {
 
         void setFilterCurrent(int filterIndex, FilterItem model);
 
-        void loadMore();
+        boolean loadMore();
     }
 }
