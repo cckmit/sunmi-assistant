@@ -92,17 +92,8 @@ public class BaseRetrofitClient {
     }
 
     /**
-     * /**
      * execute your customer API
-     * For example:
-     * MyApiService service =
-     * RetrofitClient.getInstance(MainActivity.this).create(MyApiService.class);
-     * <p>
-     * RetrofitClient.getInstance(MainActivity.this)
-     * .execute(service.lgon("name", "password"), subscriber)
-     * * @param subscriber
      */
-
 //    public static <T> T execute(Observable<T> observable, Observer<T> subscriber) {
 //        observable.subscribeOn(Schedulers.io())
 //                .unsubscribeOn(Schedulers.io())
