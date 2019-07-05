@@ -15,7 +15,7 @@ import sunmi.common.rpc.retrofit.BaseResponse;
  * @author yinhui
  * @since 2019-06-20
  */
-public interface CompanyManageService {
+public interface CompanyInterface {
 
     String companyPath = "api/company/";
 
@@ -28,7 +28,11 @@ public interface CompanyManageService {
     /**
      * 查看商户
      */
-    @POST("/api/company/getInfo")
+    @POST(companyPath + "getInfo")
     Call<BaseResponse<CompanyInfoResp>> getInfo(@Body BaseRequest request);
+
+    //创建商户
+    @POST(companyPath + "create")
+    Call<BaseResponse<Object>> createMerchant(@Body BaseRequest request);
 
 }
