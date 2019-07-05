@@ -19,7 +19,6 @@ public class SunmiDevice implements Serializable {
      * factory : xxxxxxxx
      * deviceid : xxxxxxxx
      */
-
     private int id;
     private String ip;
     private String mac;
@@ -35,7 +34,6 @@ public class SunmiDevice implements Serializable {
     private boolean isSelected;
     private String token;//绑定设备使用
     private String uid;
-    private int deviceType;
     private int shopId;
     private int channelId;
 

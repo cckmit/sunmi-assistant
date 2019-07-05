@@ -66,8 +66,8 @@ public class SunmiStoreRemote {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
-                    .put("page_num", 0)
-                    .put("page_size", 0)
+                    .put("page_num", 1)
+                    .put("page_size", 999)
                     .toString();
             RetrofitClient.getInstance().create(ShopInterface.class)
                     .getList(Utils.createRequestBody(params)).enqueue(callback);

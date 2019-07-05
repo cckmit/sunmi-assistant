@@ -158,7 +158,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         //选择设备
         ChooseDeviceDialog chooseDeviceDialog = new ChooseDeviceDialog(mActivity, SpUtils.getShopId());
         chooseDeviceDialog.show();
-//        globalDevList = devList;//todo
+        AppConfig.globalDevList = routerList;//todo
     }
 
     @Override

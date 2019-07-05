@@ -60,31 +60,10 @@ public class CloudCall extends BaseHttpApi {
      */
     public static void getCompanyList(RetrofitCallback callback) {
         try {
-            String params = new JSONObject()
-                    .toString();
             RetrofitClient.getInstance().create(CompanyInterface.class)
                     .getList(getSignedRequest(""))
                     .enqueue(callback);
         } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 创建商户
-     */
-    public static void createMerchant(String companyName, RetrofitCallback callback) {
-        try {
-            String params = new JSONObject()
-                    .put("company_name", companyName)
-//                    .put("contact_person", "")
-//                    .put("contact_tel", "")
-//                    .put("contact_email", "")
-                    .toString();
-            RetrofitClient.getInstance().create(CompanyInterface.class)
-                    .createMerchant(getSignedRequest(params))
-                    .enqueue(callback);
-        } catch (JSONException e) {
             e.printStackTrace();
         }
     }

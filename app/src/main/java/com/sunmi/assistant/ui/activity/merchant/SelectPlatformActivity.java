@@ -92,7 +92,7 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
     }
 
     private void initRecycler() {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(linearLayoutManager);
         titleBar.getLeftImg().setOnClickListener(this);
         titleBar.getRightTextView().setOnClickListener(this);
@@ -113,7 +113,8 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
 
     private void showViewList(PlatformInfo data) {
         list = data.getSaasList();
-        recyclerView.setAdapter(new CommonListAdapter<PlatformInfo.SaasListBean>(this, R.layout.item_merchant_platform, list) {
+        recyclerView.setAdapter(new CommonListAdapter<PlatformInfo.SaasListBean>(context,
+                R.layout.item_merchant_platform, list) {
             int selectedIndex = -1;
 
             @Override
