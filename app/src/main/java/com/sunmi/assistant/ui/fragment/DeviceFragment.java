@@ -573,8 +573,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @Override
     public void onMoreClick(SunmiDevice item, int position) {
-        if (deviceSettingDialog != null && deviceSettingDialog.isShowing()) {
+        if (deviceSettingDialog != null) {
             deviceSettingDialog.dismiss();
+            deviceSettingDialog = null;
         } else {
             deviceSettingDialog = new DeviceSettingDialog(mActivity, item);
             deviceSettingDialog.setOnSettingsClickListener(this);
