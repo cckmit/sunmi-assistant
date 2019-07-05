@@ -178,7 +178,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         //设置图片集合
         vpBanner.setImages(adList);
         //设置banner动画效果
-        vpBanner.setBannerAnimation(Transformer.Default);
+        vpBanner.setBannerAnimation(Transformer.DepthPage);
         vpBanner.setOnBannerListener(this);
         //设置自动轮播，默认为true
         vpBanner.isAutoPlay(true);
