@@ -132,7 +132,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         totalSales.setOnItemClickListener((adapter, holder, model, position) ->
                 goToOrderList(OrderInfo.ORDER_TYPE_ALL));
         customerPrice.setOnItemClickListener((adapter, holder, model, position) ->
-                goToOrderList(OrderInfo.ORDER_TYPE_ALL));
+                goToOrderList(OrderInfo.ORDER_TYPE_NORMAL));
         totalCount.setOnItemClickListener((adapter, holder, model, position) ->
                 goToOrderList(OrderInfo.ORDER_TYPE_NORMAL));
         totalRefunds.setOnItemClickListener((adapter, holder, model, position) ->
