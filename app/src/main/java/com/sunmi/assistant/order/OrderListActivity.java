@@ -47,7 +47,7 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
     BGARefreshLayout mRefreshLayout;
     @ViewById(R.id.order_list)
     RecyclerView mOrderList;
-    BaseArrayAdapter<OrderInfo> mOrderListAdapter;
+    BaseArrayAdapter<Object> mOrderListAdapter;
 
     @Extra
     long mTimeStart;
@@ -55,6 +55,7 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
     long mTimeEnd;
     @Extra
     int mInitOrderType;
+    boolean isEmptyShow = false;
 
     private DropdownAnimation mDropdownAnimator = new DropdownAnimation();
     private List<DropdownMenu> mFilters = new ArrayList<>(3);
@@ -98,7 +99,8 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
         OrderListItemType orderItem = new OrderListItemType();
         orderItem.setOnItemClickListener((adapter, holder, model, position) ->
                 OrderDetailActivity_.intent(this).mOrderInfo(model).start());
-        mOrderListAdapter.register(orderItem);
+        mOrderListAdapter.register(OrderInfo.class, orderItem);
+        mOrderListAdapter.register(Object.class, new OrderListEmptyType());
         mOrderList.setLayoutManager(new LinearLayoutManager(this));
         mOrderList.setAdapter(mOrderListAdapter);
         mRefreshLayout.setDelegate(this);
@@ -140,10 +142,13 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
     public void setData(List<OrderInfo> list) {
         if (list == null) {
             mOrderListEmpty.setVisibility(View.GONE);
+            isEmptyShow = true;
             list = new ArrayList<>();
         } else if (list.isEmpty()) {
+            isEmptyShow = true;
             mOrderListEmpty.setVisibility(View.VISIBLE);
         } else {
+            isEmptyShow = false;
             mOrderListEmpty.setVisibility(View.GONE);
         }
         mOrderListAdapter.setData(list);
@@ -176,7 +181,12 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
             shortTip(R.string.toast_networkIsExceptional);
             return false;
         }
-        return mPresenter.loadMore();
+        boolean hasMore = mPresenter.loadMore();
+        if (!hasMore && !isEmptyShow) {
+            mOrderListAdapter.add(new Object());
+            isEmptyShow = true;
+        }
+        return hasMore;
     }
 
     private class OnFilterItemClickListener implements DropdownMenu.OnItemClickListener<FilterItem> {
