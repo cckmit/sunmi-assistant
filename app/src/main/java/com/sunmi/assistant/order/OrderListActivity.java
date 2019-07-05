@@ -22,6 +22,8 @@ import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
+import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.base.recycle.BaseArrayAdapter;
 import sunmi.common.utils.NetworkUtils;
@@ -30,7 +32,7 @@ import sunmi.common.view.DropdownMenu;
 @SuppressLint("Registered")
 @EActivity(R.layout.order_activity_list)
 public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
-        implements OrderListContract.View {
+        implements OrderListContract.View, BGARefreshLayout.BGARefreshLayoutDelegate {
 
     @ViewById(R.id.order_list_content)
     ConstraintLayout mContent;
@@ -41,6 +43,8 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
     @ViewById(R.id.order_list_overlay)
     View mOverlay;
 
+    @ViewById(R.id.order_list_refresh)
+    BGARefreshLayout mRefreshLayout;
     @ViewById(R.id.order_list)
     RecyclerView mOrderList;
     BaseArrayAdapter<OrderInfo> mOrderListAdapter;
@@ -97,35 +101,12 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
         mOrderListAdapter.register(orderItem);
         mOrderList.setLayoutManager(new LinearLayoutManager(this));
         mOrderList.setAdapter(mOrderListAdapter);
-        mOrderList.addOnScrollListener(new RecyclerView.OnScrollListener() {
-
-            private int mLastPosition;
-
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-                if (layoutManager == null) {
-                    return;
-                }
-                int visibleItemCount = layoutManager.getChildCount();
-                int totalItemCount = layoutManager.getItemCount();
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if (visibleItemCount > 0 && mLastPosition >= totalItemCount - 1) {
-                        mPresenter.loadMore();
-                    }
-                }
-            }
-
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-                if (!(layoutManager instanceof LinearLayoutManager)) {
-                    return;
-                }
-                mLastPosition = ((LinearLayoutManager) layoutManager).findLastCompletelyVisibleItemPosition();
-            }
-        });
+        mRefreshLayout.setDelegate(this);
+        BGANormalRefreshViewHolder refreshViewHolder =
+                new BGANormalRefreshViewHolder(this, true);
+        mRefreshLayout.setRefreshViewHolder(refreshViewHolder);
+        mRefreshLayout.setPullDownRefreshEnable(false);
+        mRefreshLayout.setIsShowLoadingMoreView(true);
     }
 
     private void createFilterDropdownMenu(CustomPopupHelper helper) {
@@ -171,6 +152,9 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
     @Override
     public void addData(List<OrderInfo> list) {
         mOrderListAdapter.add(list);
+        if (mRefreshLayout != null) {
+            mRefreshLayout.endLoadingMore();
+        }
     }
 
     @Override
@@ -180,6 +164,19 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
+    }
+
+    @Override
+    public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
+        if (!NetworkUtils.isNetworkAvailable(this)) {
+            shortTip(R.string.toast_networkIsExceptional);
+            return false;
+        }
+        return mPresenter.loadMore();
     }
 
     private class OnFilterItemClickListener implements DropdownMenu.OnItemClickListener<FilterItem> {

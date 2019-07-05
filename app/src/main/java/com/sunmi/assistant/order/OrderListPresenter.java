@@ -45,6 +45,8 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
     private int mInitOrderType;
 
     private int mCurrentPage = PAGE_INIT;
+    private int mTotalCount = 0;
+    private int mCurrentCount = 0;
     private int mCompanyId;
     private int mShopId;
 
@@ -179,8 +181,13 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
     }
 
     @Override
-    public void loadMore() {
-        loadData(false);
+    public boolean loadMore() {
+        if (mCurrentCount >= mTotalCount) {
+            return false;
+        } else {
+            loadData(false);
+            return true;
+        }
     }
 
     private void loadData(boolean refresh) {
@@ -206,11 +213,14 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
                         if (!isViewAttached()) {
                             return;
                         }
+                        mTotalCount = data.getTotal_count();
                         List<OrderInfo> list = buildOrderList(data);
                         if (refresh) {
                             mView.setData(list);
+                            mCurrentCount = list.size();
                         } else {
                             mView.addData(list);
+                            mCurrentCount += list.size();
                         }
                     }
 

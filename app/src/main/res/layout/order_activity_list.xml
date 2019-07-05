@@ -7,15 +7,23 @@
     android:layout_height="match_parent"
     tools:context=".order.OrderListActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/order_list"
+    <cn.bingoogolapple.refreshlayout.BGARefreshLayout
+        android:id="@+id/order_list_refresh"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/c_white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/order_line_decoration" />
+        app:layout_constraintTop_toBottomOf="@id/order_line_decoration">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/order_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/c_white" />
+
+    </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
 
     <TextView
         android:id="@+id/order_list_empty"
