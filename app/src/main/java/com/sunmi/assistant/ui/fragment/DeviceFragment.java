@@ -335,7 +335,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         }
     }
 
-    private void saveMangerPasswordDialog(String type) {
+    @UiThread
+    void saveMangerPasswordDialog(String type) {
+        if (mActivity == null) return;
         hideLoadingDialog();
         if (dialogPassword != null) {
             dialogPassword = null;
