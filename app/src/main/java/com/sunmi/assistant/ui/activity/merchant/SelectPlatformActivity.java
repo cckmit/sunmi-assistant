@@ -3,6 +3,7 @@ package com.sunmi.assistant.ui.activity.merchant;
 import android.annotation.SuppressLint;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -23,6 +24,7 @@ import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.utils.GotoActivityUtils;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
@@ -52,13 +54,21 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
+        titleBar.getLeftLayout().setVisibility(View.GONE);
         initRecycler();
         isCanClick(false);
         mPresenter = new PlatformPresenter();
         mPresenter.attachView(this);
         showLoadingDialog();
         mPresenter.getPlatformInfo();
+    }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     private void isCanClick(boolean isClick) {

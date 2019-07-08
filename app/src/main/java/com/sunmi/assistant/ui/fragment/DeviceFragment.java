@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -340,6 +341,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             dialogPassword = null;
             return;
         }
+        Looper.prepare();
         dialogPassword = new Dialog(mActivity, R.style.Son_dialog);
         LayoutInflater inflater = mActivity.getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_manger_password, null);
@@ -372,6 +374,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         dialogPassword.setContentView(view);
         dialogPassword.setCancelable(false);
         dialogPassword.show();
+        Looper.loop();
     }
 
     //设备ap登录，检测管理密码item  dialogPassword
