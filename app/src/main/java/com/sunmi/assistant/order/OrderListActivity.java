@@ -207,7 +207,10 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
     private class CustomPopupHelper implements DropdownMenu.PopupHelper {
 
         @Override
-        public void initMenu(View list) {
+        public void initMenu(RecyclerView list) {
+            if (list.getAdapter() == null || list.getAdapter().getItemCount() == 0) {
+                return;
+            }
             // Add view into ConstraintLayout.
             int index = mContent.indexOfChild(mOverlay) + 1;
             if (mContent.indexOfChild(list) == -1) {
@@ -219,14 +222,14 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
             con.connect(list.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0);
             con.connect(list.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 0);
             con.connect(list.getId(), ConstraintSet.TOP, R.id.order_line_decoration, ConstraintSet.BOTTOM, 0);
-            con.constrainHeight(list.getId(), ConstraintSet.WRAP_CONTENT);
+            con.constrainHeight(list.getId(), ConstraintSet.MATCH_CONSTRAINT);
             con.constrainWidth(list.getId(), ConstraintSet.MATCH_CONSTRAINT);
             con.applyTo(mContent);
             list.measure(0, 0);
         }
 
         @Override
-        public void show(View list, boolean animated) {
+        public void show(RecyclerView list, boolean animated) {
             if (mCurrentShowFilter != -1) {
                 mFilters.get(mCurrentShowFilter).getPopup().dismiss(false);
             }
@@ -235,7 +238,7 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
         }
 
         @Override
-        public void dismiss(View list, boolean animated) {
+        public void dismiss(RecyclerView list, boolean animated) {
             mCurrentShowFilter = -1;
             mDropdownAnimator.startAnimationToDismiss(animated, list, mOverlay);
         }
@@ -249,13 +252,15 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
 
         @Override
         public void onMeasure(@NonNull RecyclerView.Recycler recycler, @NonNull RecyclerView.State state, int widthSpec, int heightSpec) {
-            if (getChildCount() > 7) {
-                View firstChildView = recycler.getViewForPosition(0);
-                measureChild(firstChildView, widthSpec, heightSpec);
-                setMeasuredDimension(View.MeasureSpec.getSize(widthSpec), firstChildView.getMeasuredHeight() * 7);
-            } else {
+            if (getChildCount() == 0) {
                 super.onMeasure(recycler, state, widthSpec, heightSpec);
+                return;
             }
+            View firstChildView = recycler.getViewForPosition(0);
+            measureChild(firstChildView, widthSpec, heightSpec);
+            int itemHeight = firstChildView.getMeasuredHeight();
+            setMeasuredDimension(View.MeasureSpec.getSize(widthSpec),
+                    getChildCount() > 9 ? itemHeight * 9 : itemHeight * getChildCount());
         }
     }
 

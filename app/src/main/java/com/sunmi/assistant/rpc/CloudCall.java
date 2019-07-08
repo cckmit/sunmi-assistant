@@ -60,8 +60,12 @@ public class CloudCall extends BaseHttpApi {
      */
     public static void getCompanyList(RetrofitCallback callback) {
         try {
+            String params = new JSONObject()
+                    .put("page_num", 1)
+                    .put("page_size", 999)
+                    .toString();
             RetrofitClient.getInstance().create(CompanyInterface.class)
-                    .getList(getSignedRequest(""))
+                    .getList(getSignedRequest(params))
                     .enqueue(callback);
         } catch (Exception e) {
             e.printStackTrace();

@@ -139,11 +139,11 @@ public class DropdownMenu extends FrameLayout implements View.OnClickListener {
     }
 
     public interface PopupHelper {
-        void initMenu(View list);
+        void initMenu(RecyclerView list);
 
-        void show(View list, boolean animated);
+        void show(RecyclerView list, boolean animated);
 
-        void dismiss(View list, boolean animated);
+        void dismiss(RecyclerView list, boolean animated);
     }
 
     public interface OnItemClickListener<T> {
@@ -158,7 +158,7 @@ public class DropdownMenu extends FrameLayout implements View.OnClickListener {
 
         @SuppressLint("InflateParams")
         private CustomPopup(Context context) {
-            mRecyclerView = new RecyclerView(context);
+            mRecyclerView = (RecyclerView) LayoutInflater.from(context).inflate(R.layout.dropdown_menu_item_rv, null);
             mRecyclerView.setId(View.generateViewId());
             mRecyclerView.setBackgroundColor(context.getResources().getColor(R.color.c_white));
         }
