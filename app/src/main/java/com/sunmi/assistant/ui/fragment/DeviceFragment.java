@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -334,7 +335,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         }
     }
 
-    private void saveMangerPasswordDialog(String type) {
+    @UiThread
+    void saveMangerPasswordDialog(String type) {
+        if (mActivity == null) return;
         hideLoadingDialog();
         if (dialogPassword != null) {
             dialogPassword = null;

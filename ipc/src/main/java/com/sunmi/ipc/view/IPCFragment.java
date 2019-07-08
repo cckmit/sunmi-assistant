@@ -111,7 +111,7 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
 
     private void showSingleChoiceDialog() {
         final String[] items = {"C3YABT1MPRV4BM6GUHXJ", "CRYUBT1WKFV4UM6GUH71", "EFKUA51CZVBW8NPGUHZJ",
-                "CVYA8T1WKFV49NPGYHRJ", "CBKA9T14URBC8MPGYHZJ", "CWT4X19FUCZ6RSRC111A"};
+                "CVYA8T1WKFV49NPGYHRJ", "CBKA9T14URBC8MPGYHZJ", "CWT4X19FUCZ6RSRC111A","B9PMFYGPLB6NWYRV111A"};
         final AlertDialog.Builder singleChoiceDialog = new AlertDialog.Builder(getActivity());
         singleChoiceDialog.setSingleChoiceItems(items, 1, new DialogInterface.OnClickListener() {
             @Override

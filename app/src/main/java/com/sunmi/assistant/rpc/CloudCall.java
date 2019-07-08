@@ -60,8 +60,12 @@ public class CloudCall extends BaseHttpApi {
      */
     public static void getCompanyList(RetrofitCallback callback) {
         try {
+            String params = new JSONObject()
+                    .put("page_num", 1)
+                    .put("page_size", 999)
+                    .toString();
             RetrofitClient.getInstance().create(CompanyInterface.class)
-                    .getList(getSignedRequest(""))
+                    .getList(getSignedRequest(params))
                     .enqueue(callback);
         } catch (Exception e) {
             e.printStackTrace();
@@ -176,7 +180,7 @@ public class CloudCall extends BaseHttpApi {
      * @param saas_name   Saas软件商名称
      * @param callback
      */
-    public static void authorizeSaas(String company_id, String shop_id, String saas_source,
+    public static void authorizeSaas(int company_id, int shop_id, int saas_source,
                                      String shop_no, String saas_name, RetrofitCallback callback) {
         try {
             String params = new JSONObject()

@@ -29,6 +29,7 @@ import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.SmRecyclerView;
@@ -67,6 +68,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
 
     @AfterViews
     void init() {
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
         mPresenter = new ChooseShopPresenter();
         mPresenter.attachView(this);
         mRefreshLayout.setDelegate(this);

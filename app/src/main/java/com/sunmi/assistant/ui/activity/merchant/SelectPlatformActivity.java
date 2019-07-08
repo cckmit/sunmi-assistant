@@ -23,6 +23,7 @@ import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.utils.GotoActivityUtils;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
@@ -46,7 +47,6 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
     private String selectPlatform;
     private int selectSaasSource;
 
-
     private List<PlatformInfo.SaasListBean> list = new ArrayList<>();
 
     @AfterViews
@@ -58,7 +58,10 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
         mPresenter.attachView(this);
         showLoadingDialog();
         mPresenter.getPlatformInfo();
+    }
 
+    @Override
+    public void onBackPressed() {
     }
 
     private void isCanClick(boolean isClick) {
@@ -78,6 +81,7 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
                 finish();
                 break;
             case R.id.txt_right:
+                SpUtils.setSaasExist(0);//没有对接saas数据Q
                 GotoActivityUtils.gotoMainActivity(this);
                 break;
         }

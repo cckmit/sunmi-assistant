@@ -6,6 +6,8 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -91,11 +93,13 @@ public class MainTopBar extends LinearLayout implements BaseNotification.Notific
     }
 
     public void setCompanyName(String companyName) {
-        tvCompanyName.setText(companyName);
+        if (tvCompanyName != null)
+            tvCompanyName.setText(companyName);
     }
 
     public void setShopName(String shopName) {
-        tvShopName.setText(shopName);
+        if (tvShopName != null)
+            tvShopName.setText(shopName);
     }
 
     @Override
@@ -108,8 +112,14 @@ public class MainTopBar extends LinearLayout implements BaseNotification.Notific
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
-        setCompanyName(SpUtils.getCompanyName());
-        setShopName(SpUtils.getShopName());
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                setCompanyName(SpUtils.getCompanyName());
+                setShopName(SpUtils.getShopName());
+            }
+        });
     }
 
 }

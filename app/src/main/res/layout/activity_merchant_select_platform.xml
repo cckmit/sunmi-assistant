@@ -12,7 +12,6 @@
         android:background="@color/c_white"
         app:dividerShow="true"
         app:leftDefaultClickEnable="true"
-        app:leftIcon="@mipmap/ic_back_dark"
         app:rightText="@string/str_platform_skip"
         app:titleText="@string/str_platform_list"
         app:titleTextColor="@color/colorText" />
@@ -26,7 +25,7 @@
         android:layout_marginEnd="@dimen/dp_20"
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_8"
-        android:text="未匹配到该手机号下的门店数据，是否从外部平台导入？"
+        android:text="@string/str_import_other_platform_data"
         android:textColor="@color/colorText_60"
         android:textSize="@dimen/sp_12" />
 
