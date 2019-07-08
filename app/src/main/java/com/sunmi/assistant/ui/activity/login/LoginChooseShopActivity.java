@@ -68,7 +68,6 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
 
     @AfterViews
     void init() {
-        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
         mPresenter = new ChooseShopPresenter();
         mPresenter.attachView(this);
         mRefreshLayout.setDelegate(this);
@@ -85,9 +84,14 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
         }
     }
 
+    @Override
+    protected boolean needLandscape() {
+        return true;
+    }
+
     @Click(R.id.btn_refresh)
     void refreshClick() {
-        rlNoData.setVisibility(View.GONE);
+        setNoDataVisible(View.GONE);
         if (action == CommonConstants.ACTION_LOGIN_CHOOSE_COMPANY) {
             mPresenter.getCompanyList();
         } else if (action == CommonConstants.ACTION_LOGIN_CHOOSE_SHOP) {
@@ -122,7 +126,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
 
     @Override
     public void getCompanyListFail(int code, String msg, CompanyListResp data) {
-        rlNoData.setVisibility(View.VISIBLE);
+        setNoDataVisible(View.VISIBLE);
     }
 
     @Override
@@ -140,15 +144,15 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
         if (action == CommonConstants.ACTION_LOGIN_CHOOSE_COMPANY) {
             shortTip(R.string.tip_get_shop_list_fail);
         } else if (action == CommonConstants.ACTION_LOGIN_CHOOSE_SHOP) {
-            rlNoData.setVisibility(View.VISIBLE);
+            setNoDataVisible(View.VISIBLE);
         }
     }
 
     @UiThread
     void initCompanyList(List<CompanyInfoResp> companyList) {
-        rlRoot.setVisibility(View.VISIBLE);
+        activityVisible();
         if (companyList.size() == 0) {
-            rlNoData.setVisibility(View.VISIBLE);
+            setNoDataVisible(View.VISIBLE);
             return;
         }
         rvChoose.setAdapter(new CommonListAdapter<CompanyInfoResp>(context,
@@ -171,9 +175,9 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
 
     @UiThread
     void initShopList(final List<ShopListResp.ShopInfo> shopList) {
-        rlRoot.setVisibility(View.VISIBLE);
+        activityVisible();
         if (shopList.size() == 0) {
-            rlNoData.setVisibility(View.VISIBLE);
+            setNoDataVisible(View.VISIBLE);
             return;
         }
         rvChoose.setAdapter(new CommonListAdapter<ShopListResp.ShopInfo>(context,
@@ -189,6 +193,17 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
                 });
             }
         });
+    }
+
+    @UiThread
+    void setNoDataVisible(int visible) {
+        rlNoData.setVisibility(visible);
+    }
+
+    @UiThread
+    void activityVisible() {
+        rlRoot.setVisibility(View.VISIBLE);
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
     }
 
     private void gotoMainActivity(int shopId, String shopName) {
