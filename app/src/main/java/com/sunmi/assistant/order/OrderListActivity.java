@@ -260,7 +260,7 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
             measureChild(firstChildView, widthSpec, heightSpec);
             int itemHeight = firstChildView.getMeasuredHeight();
             setMeasuredDimension(View.MeasureSpec.getSize(widthSpec),
-                    getChildCount() > 7 ? itemHeight * 7 : itemHeight * getChildCount());
+                    getChildCount() > 9 ? itemHeight * 9 : itemHeight * getChildCount());
         }
     }
 
