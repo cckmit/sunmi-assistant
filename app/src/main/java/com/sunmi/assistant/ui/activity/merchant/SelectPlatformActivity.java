@@ -47,7 +47,6 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
     private String selectPlatform;
     private int selectSaasSource;
 
-
     private List<PlatformInfo.SaasListBean> list = new ArrayList<>();
 
     @AfterViews
