@@ -176,7 +176,7 @@ public class CloudCall extends BaseHttpApi {
      * @param saas_name   Saas软件商名称
      * @param callback
      */
-    public static void authorizeSaas(String company_id, String shop_id, String saas_source,
+    public static void authorizeSaas(int company_id, int shop_id, int saas_source,
                                      String shop_no, String saas_name, RetrofitCallback callback) {
         try {
             String params = new JSONObject()
