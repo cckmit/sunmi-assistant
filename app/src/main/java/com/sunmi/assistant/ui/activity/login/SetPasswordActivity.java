@@ -248,10 +248,10 @@ public class SetPasswordActivity extends BaseActivity {
             new AuthDialog.Builder(SetPasswordActivity.this)
                     .setMessage(getString(R.string.str_dialog_auth_message, saasName.replace(saasName.length() - 1, saasName.length(), "")))
                     .setAllowButton((dialog, which) -> SelectStoreActivity_.intent(SetPasswordActivity.this)
+                            .isBack(false)
                             .list((ArrayList) list)
                             .start())
                     .setCancelButton((dialog, which) -> {
-                        //createStore();
                         GotoActivityUtils.gotoMainActivity(SetPasswordActivity.this);
                     })
                     .create().show();
@@ -259,27 +259,4 @@ public class SetPasswordActivity extends BaseActivity {
             SelectPlatformActivity_.intent(SetPasswordActivity.this).start();
         }
     }
-
-//    //创建门店
-//    private void createStore() {
-//        showLoadingDialog();
-//        CloudCall.createShop(SpUtils.getCompanyId() + "", String.format(getString(R.string.str_unkunw_store), SpUtils.getMobile()), new RetrofitCallback<CreateStoreInfo>() {
-//            @Override
-//            public void onSuccess(int code, String msg, CreateStoreInfo data) {
-//                hideLoadingDialog();
-//                CommonUtils.gotoMainActivity(SetPasswordActivity.this, data.getShop_id(), data.getShop_name());
-//            }
-//
-//            @Override
-//            public void onFail(int code, String msg, CreateStoreInfo data) {
-//                hideLoadingDialog();
-//                if (code == 5034) {
-//                    shortTip(getString(R.string.str_create_store_fail));
-//                } else {
-//                    shortTip(getString(R.string.str_create_store_alredy_exit));
-//                }
-//                CommonUtils.gotoMainActivity(SetPasswordActivity.this, 0, "");
-//            }
-//        });
-//    }
 }

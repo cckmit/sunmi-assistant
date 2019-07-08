@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -1449,32 +1448,26 @@ public class VideoPlayActivity extends BaseActivity
         drawableRight.setBounds(0, 0, drawableRight.getMinimumWidth(), drawableRight.getMinimumHeight());
     }
 
-    public void toastForShort(final Context context, final String msg, final boolean isLeft) {
-
-        Handler mainHandler = new Handler(Looper.getMainLooper());
-        mainHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (context == null || TextUtils.isEmpty(msg)) {
-                    return;
-                }
-                View layout = LayoutInflater.from(context).inflate(R.layout.toast_item, null);
-                TextView tvDate = layout.findViewById(R.id.tv_date);
-                tvDate.setText(msg);
-                if (isLeft)
-                    tvDate.setCompoundDrawables(drawableLeft, null, null, null);
-                else
-                    tvDate.setCompoundDrawables(null, null, drawableRight, null);
-                if (mToast == null) {
-                    mToast = new Toast(context);
-                    mToast.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL, 0, 0);
-                    mToast.setDuration(Toast.LENGTH_SHORT);
-                    mToast.setView(layout);
-                    mToast.show();
-                    mToast = null;
-                }
-            }
-        });
+    @UiThread
+    void toastForShort(final Context context, final String msg, final boolean isLeft) {
+        if (context == null || TextUtils.isEmpty(msg)) {
+            return;
+        }
+        View layout = LayoutInflater.from(context).inflate(R.layout.toast_item, null);
+        TextView tvDate = layout.findViewById(R.id.tv_date);
+        tvDate.setText(msg);
+        if (isLeft)
+            tvDate.setCompoundDrawables(drawableLeft, null, null, null);
+        else
+            tvDate.setCompoundDrawables(null, null, drawableRight, null);
+        if (mToast == null) {
+            mToast = new Toast(context);
+            mToast.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL, 0, 0);
+            mToast.setDuration(Toast.LENGTH_SHORT);
+            mToast.setView(layout);
+            mToast.show();
+            mToast = null;
+        }
     }
 
     /*
