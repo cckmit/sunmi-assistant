@@ -182,7 +182,7 @@ public class CheckPlatformMobileActivity extends BaseMvpActivity<PlatformMobileP
             new AuthDialog.Builder(this)
                     .setMessage(getString(R.string.str_dialog_auth_message, platform))
                     .setAllowButton((dialog, which) -> SelectStoreActivity_.intent(this)
-                            .extra("isBack",true)
+                            .isBack(true)
                             .list(selectedList)
                             .start())
                     .setCancelButton((dialog, which) -> {

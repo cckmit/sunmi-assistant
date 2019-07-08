@@ -248,7 +248,7 @@ public class SetPasswordActivity extends BaseActivity {
             new AuthDialog.Builder(SetPasswordActivity.this)
                     .setMessage(getString(R.string.str_dialog_auth_message, saasName.replace(saasName.length() - 1, saasName.length(), "")))
                     .setAllowButton((dialog, which) -> SelectStoreActivity_.intent(SetPasswordActivity.this)
-                            .extra("isBack",false)
+                            .isBack(false)
                             .list((ArrayList) list)
                             .start())
                     .setCancelButton((dialog, which) -> {

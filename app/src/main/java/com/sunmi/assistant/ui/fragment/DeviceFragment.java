@@ -341,7 +341,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             dialogPassword = null;
             return;
         }
-        Looper.prepare();
         dialogPassword = new Dialog(mActivity, R.style.Son_dialog);
         LayoutInflater inflater = mActivity.getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_manger_password, null);
@@ -374,7 +373,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         dialogPassword.setContentView(view);
         dialogPassword.setCancelable(false);
         dialogPassword.show();
-        Looper.loop();
     }
 
     //设备ap登录，检测管理密码item  dialogPassword
