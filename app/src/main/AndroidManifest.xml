@@ -94,7 +94,6 @@
         <activity android:name=".order.OrderDetailActivity_" />
         <activity
             android:name=".ui.activity.login.LoginChooseShopActivity_"
-            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity android:name=".ui.activity.ChooseShopActivity_" />
 
