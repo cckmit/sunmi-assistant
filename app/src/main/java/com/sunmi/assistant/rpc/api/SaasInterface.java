@@ -1,7 +1,6 @@
 package com.sunmi.assistant.rpc.api;
 
 import com.google.gson.JsonObject;
-import com.sunmi.assistant.ui.activity.model.CreateStoreInfo;
 import com.sunmi.assistant.ui.activity.model.PlatformInfo;
 
 import retrofit2.Call;
@@ -13,20 +12,8 @@ import sunmi.common.rpc.retrofit.BaseResponse;
 /**
  * Created by YangShiJie on 2019/7/1.
  */
-public interface PlatformInterface {
+public interface SaasInterface {
     String path = "/api/shop/saas/";
-
-    //创建商户
-    @POST("/api/company/create")
-    Call<BaseResponse<Object>> createMerchant(@Body BaseRequest request);
-
-    //创建门店
-    @POST("/api/shop/create")
-    Call<BaseResponse<CreateStoreInfo>> createShop(@Body BaseRequest request);
-
-    //编辑门店
-    @POST("/api/shop/update")
-    Call<BaseResponse<Object>> editShop(@Body BaseRequest request);
 
     //saas信息
     @POST(path + "getUserInfo")

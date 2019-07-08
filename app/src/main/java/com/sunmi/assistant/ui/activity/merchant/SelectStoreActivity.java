@@ -61,7 +61,7 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
     }
 
     private void initRecycler() {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(linearLayoutManager);
     }
 
@@ -85,7 +85,8 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
         if (SpUtils.getMobile().isEmpty()) {
             return shopName;
         }
-        return shopName + "_" + SpUtils.getMobile().substring(SpUtils.getMobile().length() - 4, SpUtils.getMobile().length());
+        return shopName + "_" + SpUtils.getMobile().substring(SpUtils.getMobile().length() - 4,
+                SpUtils.getMobile().length());
     }
 
     /**
@@ -187,7 +188,8 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
 
     private void showViewList() {
         isCanClick(listChecked);
-        recyclerView.setAdapter(new CommonListAdapter<AuthStoreInfo.SaasUserInfoListBean>(this, R.layout.item_merchant_auth_store, list) {
+        recyclerView.setAdapter(new CommonListAdapter<AuthStoreInfo.SaasUserInfoListBean>(context,
+                R.layout.item_merchant_auth_store, list) {
             @Override
             public void convert(ViewHolder holder, final AuthStoreInfo.SaasUserInfoListBean bean) {
                 holder.setText(R.id.tvName, bean.getShop_name());
@@ -219,4 +221,5 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
             btnComplete.setEnabled(false);
         }
     }
+
 }

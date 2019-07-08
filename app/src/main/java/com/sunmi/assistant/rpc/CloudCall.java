@@ -1,9 +1,10 @@
 package com.sunmi.assistant.rpc;
 
 import com.sunmi.apmanager.model.LoginDataBean;
-import com.sunmi.assistant.data.CompanyManageService;
+import com.sunmi.assistant.data.CompanyInterface;
+import com.sunmi.assistant.data.ShopInterface;
 import com.sunmi.assistant.rpc.api.AdInterface;
-import com.sunmi.assistant.rpc.api.PlatformInterface;
+import com.sunmi.assistant.rpc.api.SaasInterface;
 import com.sunmi.ipc.rpc.RetrofitClient;
 import com.sunmi.ipc.rpc.api.UserInterface;
 
@@ -59,31 +60,10 @@ public class CloudCall extends BaseHttpApi {
      */
     public static void getCompanyList(RetrofitCallback callback) {
         try {
-            String params = new JSONObject()
-                    .toString();
-            RetrofitClient.getInstance().create(CompanyManageService.class)
+            RetrofitClient.getInstance().create(CompanyInterface.class)
                     .getList(getSignedRequest(""))
                     .enqueue(callback);
         } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 创建商户
-     */
-    public static void createMerchant(String companyName, RetrofitCallback callback) {
-        try {
-            String params = new JSONObject()
-                    .put("company_name", companyName)
-//                    .put("contact_person", "")
-//                    .put("contact_tel", "")
-//                    .put("contact_email", "")
-                    .toString();
-            RetrofitClient.getInstance().create(PlatformInterface.class)
-                    .createMerchant(getSignedRequest(params))
-                    .enqueue(callback);
-        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
@@ -97,7 +77,7 @@ public class CloudCall extends BaseHttpApi {
                     .put("company_id", company_id)
                     .put("shop_name", shopName)
                     .toString();
-            RetrofitClient.getInstance().create(PlatformInterface.class)
+            RetrofitClient.getInstance().create(ShopInterface.class)
                     .createShop(getSignedRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
@@ -116,7 +96,7 @@ public class CloudCall extends BaseHttpApi {
                     .put("shop_name", shopName)
                     .put("business_status", 0)//营业状态 0:营业 1:停业
                     .toString();
-            RetrofitClient.getInstance().create(PlatformInterface.class)
+            RetrofitClient.getInstance().create(ShopInterface.class)
                     .editShop(getSignedRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
@@ -132,7 +112,7 @@ public class CloudCall extends BaseHttpApi {
             String params = new JSONObject()
                     .put("phone", phone)
                     .toString();
-            RetrofitClient.getInstance().create(PlatformInterface.class)
+            RetrofitClient.getInstance().create(SaasInterface.class)
                     .getSaasUserInfo(getSignedRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
@@ -145,7 +125,7 @@ public class CloudCall extends BaseHttpApi {
      */
     public static void getPlatformList(RetrofitCallback callback) {
         try {
-            RetrofitClient.getInstance().create(PlatformInterface.class)
+            RetrofitClient.getInstance().create(SaasInterface.class)
                     .getPlatformList(getSignedRequest(""))
                     .enqueue(callback);
         } catch (Exception e) {
@@ -161,7 +141,7 @@ public class CloudCall extends BaseHttpApi {
             String params = new JSONObject()
                     .put("phone", phone)
                     .toString();
-            RetrofitClient.getInstance().create(PlatformInterface.class)
+            RetrofitClient.getInstance().create(SaasInterface.class)
                     .sendSaasVerifyCode(getSignedRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
@@ -178,7 +158,7 @@ public class CloudCall extends BaseHttpApi {
                     .put("phone", phone)
                     .put("code", code)
                     .toString();
-            RetrofitClient.getInstance().create(PlatformInterface.class)
+            RetrofitClient.getInstance().create(SaasInterface.class)
                     .confirmSaasVerifyCode(getSignedRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
@@ -206,7 +186,7 @@ public class CloudCall extends BaseHttpApi {
                     .put("shop_no", shop_no)
                     .put("saas_name", saas_name)
                     .toString();
-            RetrofitClient.getInstance().create(PlatformInterface.class)
+            RetrofitClient.getInstance().create(SaasInterface.class)
                     .authorizeSaas(getSignedRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
