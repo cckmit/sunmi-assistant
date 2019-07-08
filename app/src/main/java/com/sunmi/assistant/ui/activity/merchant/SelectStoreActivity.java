@@ -114,10 +114,10 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
     public void editStoreSuccess(Object data) {
         LogCat.e(TAG, "111 data editStoreSuccess shopNo=");
         createFlag++;
-        mPresenter.authStoreCompleteInfo(SpUtils.getShopId() + "",
-                listChecked.get(createFlag - 1).getSaas_source() + "",
-                listChecked.get(createFlag - 1).getShop_no(),
-                listChecked.get(createFlag - 1).getSaas_name());
+        mPresenter.authStoreCompleteInfo(SpUtils.getShopId(),
+                listChecked.get(0).getSaas_source(),
+                listChecked.get(0).getShop_no(),
+                listChecked.get(0).getSaas_name());
     }
 
     @Override
@@ -134,11 +134,11 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
      */
     @Override
     public void createStoreSuccess(CreateStoreInfo data) {
-        LogCat.e(TAG, "111 data createStoreSuccess shopNo=");
         //成功后授权
         createFlag++;
-        mPresenter.authStoreCompleteInfo(data.getShop_id() + "",
-                listChecked.get(createFlag - 1).getSaas_source() + "",
+        LogCat.e(TAG, "111 data createStoreSuccess createFlag=" + (createFlag - 1));
+        mPresenter.authStoreCompleteInfo(data.getShop_id(),
+                listChecked.get(createFlag - 1).getSaas_source(),
                 listChecked.get(createFlag - 1).getShop_no(),
                 listChecked.get(createFlag - 1).getSaas_name());
     }

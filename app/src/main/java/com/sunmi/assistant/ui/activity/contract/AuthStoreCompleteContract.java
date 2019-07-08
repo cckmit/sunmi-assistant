@@ -25,7 +25,7 @@ public interface AuthStoreCompleteContract {
     }
 
     interface Presenter {
-        void authStoreCompleteInfo(String shop_id, String saas_source,
+        void authStoreCompleteInfo(int shop_id, int saas_source,
                                    String shop_no, String saas_name);
 
         void createStore(String shopName);

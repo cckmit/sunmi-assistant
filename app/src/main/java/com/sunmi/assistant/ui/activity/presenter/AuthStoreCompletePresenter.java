@@ -18,8 +18,8 @@ public class AuthStoreCompletePresenter extends BasePresenter<AuthStoreCompleteC
 
 
     @Override
-    public void authStoreCompleteInfo(String shop_id, String saas_source, String shop_no, String saas_name) {
-        CloudCall.authorizeSaas(SpUtils.getCompanyId() + "", shop_id, saas_source, shop_no, saas_name, new RetrofitCallback<Object>() {
+    public void authStoreCompleteInfo(int shop_id, int saas_source, String shop_no, String saas_name) {
+        CloudCall.authorizeSaas(SpUtils.getCompanyId() , shop_id, saas_source, shop_no, saas_name, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
