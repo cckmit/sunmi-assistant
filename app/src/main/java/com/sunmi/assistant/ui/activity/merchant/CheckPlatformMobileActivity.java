@@ -27,6 +27,7 @@ import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.utils.GotoActivityUtils;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.dialog.CommonDialog;
@@ -181,10 +182,10 @@ public class CheckPlatformMobileActivity extends BaseMvpActivity<PlatformMobileP
             new AuthDialog.Builder(this)
                     .setMessage(getString(R.string.str_dialog_auth_message, platform))
                     .setAllowButton((dialog, which) -> SelectStoreActivity_.intent(this)
+                            .isBack(true)
                             .list(selectedList)
                             .start())
                     .setCancelButton((dialog, which) -> {
-                        //createStore();
                         //注册已默认创建门店
                         GotoActivityUtils.gotoMainActivity(CheckPlatformMobileActivity.this);
                     })
@@ -201,7 +202,6 @@ public class CheckPlatformMobileActivity extends BaseMvpActivity<PlatformMobileP
                 .setConfirmButton(R.string.str_button_auto_create, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-//                        createStore();
                         //注册已默认创建门店
                         GotoActivityUtils.gotoMainActivity(CheckPlatformMobileActivity.this);
                     }

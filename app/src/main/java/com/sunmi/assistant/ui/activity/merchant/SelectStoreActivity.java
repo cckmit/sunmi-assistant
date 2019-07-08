@@ -3,6 +3,8 @@ package com.sunmi.assistant.ui.activity.merchant;
 import android.annotation.SuppressLint;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 
@@ -29,6 +31,7 @@ import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
+import sunmi.common.view.TitleBarView;
 import sunmi.common.view.ViewHolder;
 
 /**
@@ -39,11 +42,15 @@ import sunmi.common.view.ViewHolder;
 @EActivity(R.layout.activity_merchant_select_store)
 public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresenter>
         implements AuthStoreCompleteContract.View {
+    @ViewById(R.id.title_bar)
+    TitleBarView titleBar;
     @ViewById(R.id.recyclerView)
     RecyclerView recyclerView;
     @ViewById(R.id.btnComplete)
     Button btnComplete;
 
+    @Extra
+    boolean isBack;
     @Extra
     ArrayList<AuthStoreInfo.SaasUserInfoListBean> list;
 
@@ -54,11 +61,21 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
+        if (!isBack) titleBar.getLeftLayout().setVisibility(View.GONE);
         initRecycler();
         mPresenter = new AuthStoreCompletePresenter();
         mPresenter.attachView(this);
         showViewList();
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (!isBack && keyCode == KeyEvent.KEYCODE_BACK) {
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
 
     private void initRecycler() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
@@ -72,21 +89,20 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
         for (int i = 0; i < listChecked.size(); i++) {
             String shopName = listChecked.get(i).getShop_name();
             if (i == 0) {
-                SpUtils.setShopName(shopName(shopName));//默认门店名称
-                mPresenter.editStore(shopName(shopName));//第一个编辑门店
+                SpUtils.setShopName(shopName(shopName, i));//默认门店名称
+                mPresenter.editStore(shopName(shopName, i));//第一个编辑门店
             } else {
-                mPresenter.createStore(shopName(shopName));//创建门店
+                mPresenter.createStore(shopName(shopName, i));//创建门店
             }
         }
     }
 
     //门店名称
-    private String shopName(String shopName) {
-        if (SpUtils.getMobile().isEmpty()) {
-            return shopName;
+    private String shopName(String shopName, int i) {
+        if (i < 10) {
+            return shopName + "_0" + (i + 1);
         }
-        return shopName + "_" + SpUtils.getMobile().substring(SpUtils.getMobile().length() - 4,
-                SpUtils.getMobile().length());
+        return shopName + "_" + (i + 1);
     }
 
     /**
@@ -148,6 +164,7 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
     public void authStoreCompleteSuccess(Object data) {
         LogCat.e(TAG, "111 data authStoreCompleteSuccess");
         authFlag++;
+        SpUtils.setSaasExist(1);//对接saas数据
         isGotoMainActivity();
     }
 
