@@ -92,7 +92,13 @@
     <color name="color_FAB641">#FAB641</color>
     <color name="color_2997FF">#2997FF</color>
 
+    <color name="colorText_5">#0E333C4F</color>
+    <color name="colorText_20">#33333C4F</color>
+    <color name="colorText_40">#66333C4F</color>
+    <color name="colorText_60">#85858A</color>
+    <color name="colorText_80">#CC333C4F</color>
     <color name="pop_bg_content">#F9F9F9</color>
+
     <color name="pop_bg_translucent">#01000000</color>
     <color name="pop_item_text_normal_color">#333C4F</color>
     <color name="pop_item_text_warning_color">#FF3B30</color>

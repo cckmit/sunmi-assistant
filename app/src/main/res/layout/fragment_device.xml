@@ -20,7 +20,7 @@
         android:layout_marginRight="@dimen/dp_10"
         ptr:ptrHeaderTextColor="@color/colorText">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -35,16 +35,18 @@
                 android:id="@+id/rv_device"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/vp_banner"
                 android:layout_marginTop="@dimen/dp_8"
-                android:scrollbars="none"
-                android:overScrollMode="never"
                 android:layout_marginBottom="@dimen/dp_8"
-                android:fadingEdge="none" />
+                android:fadingEdge="none"
+                android:overScrollMode="never"
+                android:scrollbars="none" />
 
             <RelativeLayout
                 android:id="@+id/rl_empty"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_238"
+                android:layout_below="@+id/vp_banner"
                 android:layout_marginTop="@dimen/dp_8"
                 android:background="@drawable/bg_card_white_corner_rounded">
 
@@ -67,7 +69,7 @@
                     android:layout_marginBottom="@dimen/dp_36"
                     android:text="@string/str_add_device" />
             </RelativeLayout>
-        </LinearLayout>
+        </RelativeLayout>
     </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
 
     <TextView
