@@ -164,6 +164,7 @@ public class CheckPlatformMobileActivity extends BaseMvpActivity<PlatformMobileP
     private ArrayList<AuthStoreInfo.SaasUserInfoListBean> selectedList = new ArrayList<>();
 
     private void getSaasData(List<AuthStoreInfo.SaasUserInfoListBean> list) {
+        selectedList.clear();
         for (AuthStoreInfo.SaasUserInfoListBean bean : list) {
             if (bean.getSaas_source() == saasSource) {
                 //匹配列表
