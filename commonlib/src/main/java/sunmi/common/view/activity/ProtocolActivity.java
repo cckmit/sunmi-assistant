@@ -41,17 +41,21 @@ public class ProtocolActivity extends BaseActivity {
     public final static String PROTOCOL_USER = "https://account.sunmi.com/static/userAgreement.html";
     //隐私协议
     public final static String PROTOCOL_PRIVATE = "https://account.sunmi.com/static/privacyCn.html";
-    //wx
+    //微信
     public final static String WX_AUTH_HELP = "https://webapi.wap.sunmi.com/webapi/wap/app/static/wechat/index.html";
+    //平台数据协议
+    public final static String AUTH_PLATFORM = "file:///android_asset/auth_merchant.html";
 
     public static final int USER_PROTOCOL = 0;
     public static final int USER_PRIVATE = 1;
     public static final int USER_AP_PROTOCOL = 2;
     public static final int USER_AP_PRIVATE = 3;
     public static final int USER_WX_HELP = 4;
+    public static final int USER_AUTH_PLATFORM = 5;
 
     private Timer timer;//计时器
     private long timeout = 5000;//超时时间
+
 
     @AfterViews
     protected void init() {
@@ -62,12 +66,12 @@ public class ProtocolActivity extends BaseActivity {
             loadWebView(PROTOCOL_PRIVATE);
         } else if (protocolType == USER_AP_PROTOCOL) { //快速配置路由器协议
             loadWebView(PROTOCOL_USER);
-            //loadWebView("file:///android_asset/pro_sunmi.html");
         } else if (protocolType == USER_AP_PRIVATE) {
             loadWebView(PROTOCOL_PRIVATE);
-            //loadWebView("file:///android_asset/private_sunmi.html");
         } else if (protocolType == USER_WX_HELP) {
             loadWebView(WX_AUTH_HELP);
+        } else if (protocolType == USER_AUTH_PLATFORM) {//获取平台授权协议
+            loadWebView(AUTH_PLATFORM);
         }
         // 设置标题
         WebChromeClient webChrome = new WebChromeClient() {
@@ -98,7 +102,7 @@ public class ProtocolActivity extends BaseActivity {
         } else if (protocolType == USER_AP_PRIVATE) {
             loadWebView("file:///android_asset/private_sunmi.html");
         } else if (protocolType == USER_WX_HELP) {
-            loadWebView(WX_AUTH_HELP);
+            loadWebView(AUTH_PLATFORM);
         }
     }
 

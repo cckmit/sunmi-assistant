@@ -25,6 +25,10 @@ public class SpUtils {
     private static final String UDP_ROUTER = "UDP_ROUTER";    //快速配置路由的token
     private static final String BIND_TYPE_ERROR = "BIND_TYPE_ERROR";    //快速配置绑定路由 1 net异常  2 其他人绑定
     private static final String COMPANY_ID = "company_id";
+    private static final String COMPANY_NAME = "company_name";
+    private static final String CURRENT_SHOP_ID = "current_shop_id";
+    private static final String CURRENT_SHOP_NAME = "current_shop_name";
+    private static final String SAAS_EXIST = "saas_exist";
 
     SpUtils() {
     }
@@ -220,6 +224,38 @@ public class SpUtils {
 
     public static int getCompanyId() {
         return SharedManager.getIntValue(BaseApplication.getContext(), COMPANY_ID);
+    }
+
+    public static void setCompanyName(String companyName) {
+        SharedManager.putValue(BaseApplication.getContext(), COMPANY_NAME, companyName);
+    }
+
+    public static String getCompanyName() {
+        return SharedManager.getValue(BaseApplication.getContext(), COMPANY_NAME);
+    }
+
+    public static void setShopId(int shopId) {
+        SharedManager.putValue(BaseApplication.getContext(), CURRENT_SHOP_ID, shopId);
+    }
+
+    public static int getShopId() {
+        return SharedManager.getIntValue(BaseApplication.getContext(), CURRENT_SHOP_ID);
+    }
+
+    public static void setShopName(String shopName) {
+        SharedManager.putValue(BaseApplication.getContext(), CURRENT_SHOP_NAME, shopName);
+    }
+
+    public static String getShopName() {
+        return SharedManager.getValue(BaseApplication.getContext(), CURRENT_SHOP_NAME);
+    }
+
+    public static void setSaasExist(int exist) {
+        SharedManager.putValue(BaseApplication.getContext(), SAAS_EXIST, exist);
+    }
+
+    public static int getSaasExist() {
+        return SharedManager.getIntValue(BaseApplication.getContext(), SAAS_EXIST);
     }
 
 }

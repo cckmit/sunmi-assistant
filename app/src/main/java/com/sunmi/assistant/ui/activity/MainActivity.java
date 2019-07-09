@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkRequest;
 import android.os.Build;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -16,10 +15,8 @@ import android.widget.TextView;
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.receiver.MyNetworkCallback;
-import com.sunmi.apmanager.rpc.merchant.MerchantApi;
 import com.sunmi.apmanager.rpc.mqtt.MQTTManager;
 import com.sunmi.apmanager.utils.CommonUtils;
-import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.assistant.MyApplication;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.utils.MainTab;
@@ -30,6 +27,7 @@ import com.tencent.bugly.crashreport.CrashReport;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,9 +46,6 @@ import sunmi.common.view.MyFragmentTabHost;
  */
 @EActivity(R.layout.activity_main)
 public class MainActivity extends BaseActivity implements TabHost.OnTabChangeListener {
-    public static final int TAB_STORE = 0;
-    public static final int TAB_SUPPORT = 1;
-    public static final int TAB_MINE = 2;
 
     @ViewById(android.R.id.tabhost)
     MyFragmentTabHost mTabHost;
@@ -60,22 +55,34 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
 
     private long mExitTime;
 
-    int currentTabIndex;// 当前fragment的index
+    @Extra
+    int currentTabIndex;// 要显示的fragment的index
 
     @AfterViews
     void init() {
         instance = this;
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
         registerNetworkReceiver();
         CrashReport.setUserId(SpUtils.getUID());
         if (MyApplication.isCheckedToken)
             MQTTManager.getInstance().createEmqToken(true);//初始化长连接
-        initTabs();
         initIpc();
-        MerchantApi.getCompanyId();
+        if (TextUtils.isEmpty(SpUtils.getCompanyName())) {
+            CommonUtils.logout();
+            CommonUtils.gotoLoginActivity(context, "");
+        } else {
+            initTabs();
+        }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unRegisterNetworkReceiver();
+    }
+
+    //ipc初始化
     private void initIpc() {
-        //ipc初始化
         if (TextUtils.isEmpty(SpUtils.getSsoToken()))
             IPCCloudApi.getStoreToken(new RetrofitCallback() {
                 @Override
@@ -100,18 +107,16 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unRegisterNetworkReceiver();
-    }
-
     private void initTabs() {
         mTabHost.setup(context, getSupportFragmentManager(), R.id.fl_content);
         mTabHost.getTabWidget().setShowDividers(0);
 
         MainTab[] mainTabs = MainTab.values();
         for (MainTab mainTab : mainTabs) {
+            if (SpUtils.getSaasExist() == 0 && TextUtils.equals(getString(mainTab.getResName()),
+                    getString(R.string.ic_tab_data_title))) {//saas平台需要显示数据tab
+                continue;
+            }
             TabHost.TabSpec tab = mTabHost.newTabSpec(getString(mainTab.getResName()));
             View indicator = LayoutInflater.from(getApplicationContext())
                     .inflate(R.layout.tab_indicator, null);
@@ -126,25 +131,14 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
             tab.setContent(new TabHost.TabContentFactory() {
                 @Override
                 public View createTabContent(String tag) {
-                    return new View(MainActivity.this);
+                    return new View(context);
                 }
             });
             mTabHost.addTab(tab, mainTab.getClz(), null);
         }
 
-        mTabHost.setCurrentTab(TAB_STORE);
-        currentTabIndex = TAB_STORE;
+        mTabHost.setCurrentTab(0);
         mTabHost.setOnTabChangedListener(this);
-        mTabHost.getTabWidget().getChildAt(0).setOnClickListener(v -> {
-            mTabHost.setCurrentTab(0);
-            if (isFastClick(1300)) return;
-            BaseNotification.newInstance().postNotificationName(CommonConstants.tabStore, "tabStore");
-        });
-        mTabHost.getTabWidget().getChildAt(1).setOnClickListener(v -> {
-            mTabHost.setCurrentTab(1);
-            if (isFastClick(1300)) return;
-            BaseNotification.newInstance().postNotificationName(CommonConstants.tabSupport, "tabSupport");
-        });
     }
 
     /**
@@ -167,31 +161,27 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
     @Override
     public void onTabChanged(String tabId) {
         trackTabEvent(tabId);
-        initStatusBar(tabId);
         final int size = mTabHost.getTabWidget().getTabCount();
         for (int i = 0; i < size; i++) {
             View v = mTabHost.getTabWidget().getChildAt(i);
             if (i == mTabHost.getCurrentTab()) {
                 v.setSelected(true);
-                currentTabIndex = i;
+                if (TextUtils.equals(mTabHost.getCurrentTabTag(),
+                        getString(R.string.str_tab_device))) {
+                    BaseNotification.newInstance().postNotificationName(CommonConstants.tabDevice);
+                } else if (TextUtils.equals(mTabHost.getCurrentTabTag(),
+                        getString(R.string.str_support))) {
+                    BaseNotification.newInstance().postNotificationName(CommonConstants.tabSupport);
+                }
             } else {
                 v.setSelected(false);
             }
         }
     }
 
-    private void initStatusBar(String tabId) {
-        if (TextUtils.equals(getStringById(R.string.str_store), tabId)) {
-            HelpUtils.setStatusBarFullTransparent(this);//透明标题栏
-        } else {
-            StatusBarUtils.setStatusBarColor(this,
-                    StatusBarUtils.TYPE_DARK);//状态栏
-        }
-    }
-
     private void trackTabEvent(String tabId) {
         CommonUtils.trackCommonEvent(context,
-                TextUtils.equals(getStringById(R.string.str_store), tabId) ? "store" : "myinfo",
+                TextUtils.equals(getStringById(R.string.str_tab_device), tabId) ? "store" : "myinfo",
                 "主页_" + tabId, Constants.EVENT_MAIN_PAGE);
     }
 
@@ -216,10 +206,6 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
                     .getSystemService(Context.CONNECTIVITY_SERVICE);
             connectivityManager.unregisterNetworkCallback(networkCallback);
         }
-    }
-
-    private Fragment getFragment(String tag) {
-        return getSupportFragmentManager().findFragmentByTag(tag);
     }
 
     @Override

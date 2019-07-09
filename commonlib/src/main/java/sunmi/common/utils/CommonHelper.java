@@ -260,11 +260,7 @@ public class CommonHelper {
         boolean result = false;
 
         try {
-            if ((!new File("/system/bin/su").exists()) && !new File("/system/xbin/su").exists()) {
-                result = false;
-            } else {
-                result = true;
-            }
+            result = (new File("/system/bin/su").exists()) || new File("/system/xbin/su").exists();
         } catch (Exception e) {
             LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage());
         }
@@ -547,7 +543,7 @@ public class CommonHelper {
 
     private static void sendToSony(Context context, String packageName, String lancherActivityClassName, String number) {
         boolean isShow = true;
-        if ("0".equals(number)) {
+        if (TextUtils.equals(number, "0")) {
             isShow = false;
         }
         Intent localIntent = new Intent();
@@ -578,7 +574,7 @@ public class CommonHelper {
     }
 
     public static String getMIMEType(File f) {
-        String end = f.getName().substring(f.getName().lastIndexOf(".") + 1, f.getName().length()).toLowerCase();
+        String end = f.getName().substring(f.getName().lastIndexOf(".") + 1).toLowerCase();
         String type = "";
         if (end.equals("mp3") || end.equals("aac") || end.equals("aac")
                 || end.equals("amr") || end.equals("mpeg") || end.equals("mp4")

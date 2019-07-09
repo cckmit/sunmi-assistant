@@ -4,7 +4,6 @@
     <string name="str_text_lead_query_status">Check the status of your store anywhere anytime</string>
     <string name="str_text_lead_tem">Terminal Management</string>
     <string name="str_text_lead_set_perm">Accurately identify the key terminals, set up the internet access permission easily</string>
-    <string name="str_text_lead_allo">网速智能分配</string>
     <string name="str_text_lead_service">网络拥堵也能保障核心业务正常工作</string>
     <string name="str_text_lead_search_dev">Search Sunmi devices</string>
     <string name="str_text_lead_set_connected">One-Key to connect the Sunmi devices to the internet, fast and safe</string>
@@ -21,5 +20,93 @@
     <string name="tip_title_choose_device">选择您要连接的设备</string>
     <string name="tip_no_device_found">没有发现新设备</string>
     <string name="tip_keep_device_in">请确保您的设备处于路由器信号范围内</string>
+    <string name="str_auth_onclick_protocol">点击允许按钮即表示同意</string>
+    <string name="str_auth_protocol_text">《授权协议》</string>
+    <string name="str_select_store">选择门店</string>
+
+    <string name="ic_tab_data_title">数据</string>
+
+    <string name="dashboard_data_format">%s%%</string>
+    <string name="dashboard_today">今日</string>
+    <string name="dashboard_this_week">本周</string>
+    <string name="dashboard_this_month">本月</string>
+    <string name="dashboard_day_ratio">日环比</string>
+    <string name="dashboard_week_ratio">周环比</string>
+    <string name="dashboard_month_ratio">月同比</string>
+    <string name="dashboard_by_sales">按销售额</string>
+    <string name="dashboard_by_order">按订单数</string>
+    <string name="dashboard_total_sales_amount">总销售额</string>
+    <string name="dashboard_customer_price">客单价</string>
+    <string name="dashboard_total_sales_volume">总笔数</string>
+    <string name="dashboard_total_refunds">退款笔数</string>
+    <string name="dashboard_time_distribution">交易时间分布</string>
+    <string name="dashboard_purchase_rank">支付方式</string>
+    <string name="dashboard_quantity_rank">商品销量排行</string>
+    <string name="dashboard_purchase_others">其他</string>
+    <string-array name="dashboard_week_name">
+        <item>周一</item>
+        <item>周二</item>
+        <item>周三</item>
+        <item>周四</item>
+        <item>周五</item>
+        <item>周六</item>
+        <item>周日</item>
+    </string-array>
+
+    <string name="str_platform_list">平台列表</string>
+    <string name="str_platform_skip">跳过</string>
+    <string name="str_button_check">验证</string>
+    <string name="str_get_sms_code">获取验证码</string>
+    <string name="str_please_input_sms_code">请输入验证码</string>
+    <string name="str_sms_code">验证码</string>
+    <string name="str_please_input_mobile">请输入手机号码</string>
+    <string name="str_mobile">手机号</string>
+    <string name="str_check_mobile">验证手机号</string>
+    <string name="str_please_input_platform_mobile">请输入您在%s的手机号</string>
+    <string name="str_platform_sms_code_error">验证码错误，请重新输入</string>
+    <string name="str_button_auto_create">自动创建</string>
+    <string name="str_dialog_auto_create_store">未发现与该手机号匹配的内容，是否允许系统自动为您创建门店？</string>
+    <string name="str_dialog_auth_message">申请获取您在%s的门店数据。</string>
+    <string name="str_unkunw_store">%s的门店</string>
+    <string name="str_create_store_fail">门店创建失败</string>
+    <string name="str_create_store_alredy_exit">门店名称已存在</string>
+
+    <string name="order_list_title">详情列表</string>
+    <string name="order_filter_sort">综合排序</string>
+    <string name="order_filter_pay_type">支付类型</string>
+    <string name="order_filter_order_type">交易类型</string>
+    <string name="order_filter_all">全部</string>
+    <string name="order_amount_ascending">金额正序</string>
+    <string name="order_amount_descending">金额倒序</string>
+    <string name="order_time_ascending">时间正序</string>
+    <string name="order_time_descending">时间倒序</string>
+    <string name="order_no_colon">订单号：</string>
+    <string name="order_no">订单号</string>
+    <string name="order_amount">%+.2f元</string>
+    <string name="order_pay_method_colon">支付方式：%s</string>
+    <string name="order_pay_method">支付方式</string>
+    <string name="order_list_empty">暂无订单详情</string>
+    <string name="order_detail_title">订单详情</string>
+    <string name="order_success">交易成功</string>
+    <string name="order_refunds">退款</string>
+    <string name="order_time">交易时间</string>
+    <string name="order_order_detail">支付明细</string>
+    <string name="order_commodity">商品</string>
+    <string name="order_quantity">数量</string>
+    <string name="tip_no_device_please_add">暂无设备, 请添加</string>
+    <string name="str_my_shop">我的门店</string>
+    <string name="str_current_shop">当前门店</string>
+    <string name="str_other_shop">其他门店</string>
+    <string name="tip_no_other_shop">暂无其他门店</string>
+    <string name="str_my_company">我的商户</string>
+    <string name="tip_refresh_data">请检查网络后刷新页面～</string>
+    <string name="tip_get_data_fail">数据获取失败</string>
+    <string name="tip_play_fail">播放失败</string>
+    <string name="str_mine_company">我的商户</string>
+    <string name="tip_get_shop_list_fail">获取门店数据失败</string>
+    <string name="str_select_company">选择商户</string>
+    <string name="str_setting_detail">查看详情</string>
+    <string name="str_setting_delete_device">删除设备</string>
+    <string name="str_import_other_platform_data">未匹配到该手机号下的门店数据，是否从外部平台导入？</string>
 
 </resources>

@@ -72,7 +72,7 @@ public class IPCCloudApi extends BaseHttpApi {
      * @param deviceId  是	integer	设备id
      */
     public static void unbindIPC(int companyId, int shopId,
-                                 String deviceId, RetrofitCallback callback) {
+                                 int deviceId, RetrofitCallback callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -91,7 +91,7 @@ public class IPCCloudApi extends BaseHttpApi {
      * @param companyId 是	int64	商户id
      * @param shopId    是	int64	店铺id
      */
-    public static void getDetailList(int companyId, String shopId, RetrofitCallback callback) {
+    public static void getDetailList(int companyId, int shopId, RetrofitCallback callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)

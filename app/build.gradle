@@ -80,6 +80,10 @@ android {
         // but continue the build even when errors are found:
         abortOnError false
     }
+
+    packagingOptions {
+        exclude 'META-INF/proguard/androidx-annotations.pro'
+    }
 }
 
 repositories {
@@ -102,6 +106,10 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     annotationProcessor "org.androidannotations:androidannotations:${AAVersion}"
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
     implementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
+
+    implementation 'com.youth.banner:banner:1.4.10'  //最新版本
+
 }

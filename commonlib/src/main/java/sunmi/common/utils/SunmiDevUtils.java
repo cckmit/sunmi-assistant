@@ -1,5 +1,7 @@
 package sunmi.common.utils;
 
+import android.text.TextUtils;
+
 import com.commonlibrary.R;
 
 /**
@@ -9,7 +11,11 @@ import com.commonlibrary.R;
 public class SunmiDevUtils {
     // D1 ,D1s D2,L2  ,M1 ,M2,P1, P2 lite,S2,T1,T2 lite ,T2 mini, T2, UNKONWN,V1 ,V1S,V2-por
     public static int setSearchLogo(String model) {
-        if (model.equalsIgnoreCase("D1")) {
+        if (TextUtils.isEmpty(model)) {
+            return R.mipmap.unknow;
+        } else if (model.equalsIgnoreCase("W1")) {
+            return R.mipmap.ic_sunmi_w1;
+        } else if (model.equalsIgnoreCase("D1")) {
             return R.mipmap.ic_sunmi_d1;
         } else if (model.equalsIgnoreCase("D1s")) {
             return R.mipmap.ic_sunmi_d1s;

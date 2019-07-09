@@ -46,7 +46,7 @@
     <string name="str_title_printer_set">打印机设置</string>
     <string name="str_config_tip_ap">连接您要设置的路由器</string>
     <string name="str_config_tip_ap_1"><![CDATA[1. 接通电源并连接网线，待系统指示灯停止闪烁]]></string>
-    <string name="str_config_tip_ap_2"><![CDATA[3. 如使用无线连接，请将手机连接机身背面标识的无线网络<font color= \'#FF6000\'>「SUNMI_XX」</font>]]></string>
+    <string name="str_config_tip_ap_2"><![CDATA[2. 如使用无线连接，请将手机连接机身背面标识的无线网络<font color= \'#FF6000\'>「SUNMI_XX」</font>]]></string>
     <string name="str_config_tip_ipc">连接您要设置的摄像机</string>
     <string name="str_config_tip_ipc_1"><![CDATA[1. 将摄像机接通电源，待信号灯呈<font color= \'#FF6000\'>「绿色闪烁」</font>或<font color= \'#FF6000\'>「蓝色常亮」</font>状态]]></string>
     <string name="str_config_tip_ipc_2">2. 如使用有线网络连接，请为摄像机插入网线，并将手机连接至同一网络</string>
@@ -76,4 +76,6 @@
     <string name="tip_forbid_by_server">该请求被服务端拒绝</string>
     <string name="str_bind_success">绑定成功</string>
     <string name="str_bind_fail">绑定失败</string>
+    <string name="str_dev_binded">该设备已被其他用户绑定</string>
+
 </resources>

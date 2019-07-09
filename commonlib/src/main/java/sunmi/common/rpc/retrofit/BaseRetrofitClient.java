@@ -2,6 +2,7 @@ package sunmi.common.rpc.retrofit;
 
 import java.io.File;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
@@ -25,11 +26,13 @@ public class BaseRetrofitClient {
     private static final int CACHE_TIMEOUT = 10 * 1024 * 1024;
 
     private static Retrofit retrofit;
+    private static Map<String, Object> interfaceCacheList = new ConcurrentHashMap<>();
 
     private Cache cache = null;
     private File httpCacheDirectory;
 
     protected void init(String url, Map<String, String> headers) {
+        interfaceCacheList.clear();
         if (httpCacheDirectory == null) {
             httpCacheDirectory = new File(BaseApplication.getContext().getCacheDir(), "esl_cache");
         }
@@ -80,21 +83,17 @@ public class BaseRetrofitClient {
         if (service == null) {
             throw new RuntimeException("Api service is null!");
         }
-        return retrofit.create(service);
+        if (!interfaceCacheList.containsKey(service.getName())) {
+            interfaceCacheList.put(service.getName(), retrofit.create(service));
+        }
+        //noinspection unchecked
+        return (T) interfaceCacheList.get(service.getName());
+//        return retrofit.create(service);
     }
 
     /**
-     * /**
      * execute your customer API
-     * For example:
-     * MyApiService service =
-     * RetrofitClient.getInstance(MainActivity.this).create(MyApiService.class);
-     * <p>
-     * RetrofitClient.getInstance(MainActivity.this)
-     * .execute(service.lgon("name", "password"), subscriber)
-     * * @param subscriber
      */
-
 //    public static <T> T execute(Observable<T> observable, Observer<T> subscriber) {
 //        observable.subscribeOn(Schedulers.io())
 //                .unsubscribeOn(Schedulers.io())

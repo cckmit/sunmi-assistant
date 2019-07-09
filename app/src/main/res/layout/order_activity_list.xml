@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/order_list_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".order.OrderListActivity">
+
+    <cn.bingoogolapple.refreshlayout.BGARefreshLayout
+        android:id="@+id/order_list_refresh"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/order_line_decoration">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/order_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/c_white" />
+
+    </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
+
+    <TextView
+        android:id="@+id/order_list_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_132"
+        android:drawableTop="@drawable/order_list_empty"
+        android:drawablePadding="@dimen/dp_4"
+        android:gravity="center"
+        android:text="@string/order_list_empty"
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/order_line_decoration" />
+
+    <View
+        android:id="@+id/order_list_overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/c_black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/order_line_decoration" />
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/c_white"
+        app:dividerShow="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:leftDefaultClickEnable="true"
+        app:leftIcon="@mipmap/ic_back_dark"
+        app:titleText="@string/order_list_title"
+        app:titleTextColor="@color/color_333338" />
+
+    <sunmi.common.view.DropdownMenu
+        android:id="@+id/order_filter_sort"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_44"
+        android:background="@color/c_white"
+        app:layout_constraintEnd_toStartOf="@+id/order_filter_pay_type"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_bar" />
+
+    <sunmi.common.view.DropdownMenu
+        android:id="@+id/order_filter_pay_type"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_44"
+        android:background="@color/c_white"
+        app:layout_constraintEnd_toStartOf="@+id/order_filter_order_type"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/order_filter_sort"
+        app:layout_constraintTop_toBottomOf="@+id/title_bar" />
+
+    <sunmi.common.view.DropdownMenu
+        android:id="@+id/order_filter_order_type"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_44"
+        android:background="@color/c_white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/order_filter_pay_type"
+        app:layout_constraintTop_toBottomOf="@+id/title_bar" />
+
+    <View
+        android:id="@+id/order_line_decoration"
+        android:layout_width="0dp"
+        android:layout_height="1px"
+        android:background="@color/black_10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/order_filter_sort" />
+
+    <TextView
+        android:id="@+id/tv_order_list_no_network"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@mipmap/ic_no_sunmi_device"
+        android:drawablePadding="@dimen/dp_4"
+        android:text="@string/tip_check_network"
+        android:textColor="@color/color_999999"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintBottom_toTopOf="@+id/btn_order_list_no_network_refresh"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_bar"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <Button
+        android:id="@+id/btn_order_list_no_network_refresh"
+        style="@style/BtnGrayRounded"
+        android:layout_marginTop="@dimen/dp_32"
+        android:text="@string/str_refresh"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_order_list_no_network" />
+
+</android.support.constraint.ConstraintLayout>

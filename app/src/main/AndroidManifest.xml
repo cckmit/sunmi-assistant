@@ -87,6 +87,15 @@
         <activity android:name=".ui.activity.setting.ChangeUsernameActivity_" />
         <activity android:name=".ui.activity.SunmiLinkSearchActivity_" />
         <activity android:name=".ui.activity.setting.ChangeCompanyNameActivity_" />
+        <activity android:name=".ui.activity.merchant.SelectPlatformActivity_" />
+        <activity android:name=".ui.activity.merchant.SelectStoreActivity_" />
+        <activity android:name=".ui.activity.merchant.CheckPlatformMobileActivity_" />
+        <activity android:name=".order.OrderListActivity_" />
+        <activity android:name=".order.OrderDetailActivity_" />
+        <activity
+            android:name=".ui.activity.login.LoginChooseShopActivity_"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity android:name=".ui.activity.ChooseShopActivity_" />
 
         <!--百度地图-->
         <service

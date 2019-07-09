@@ -41,7 +41,7 @@ public class IOTCloudApi extends BaseHttpApi {
      *
      * @param sn 是	string	设备序列号
      */
-    public static void unbindPrinter(String shopId, String sn, StringCallback callback) {
+    public static void unbindPrinter(int shopId, String sn, StringCallback callback) {
         try {
             String params = new JSONObject()
                     .put("userId", SpUtils.getUID())
@@ -58,7 +58,7 @@ public class IOTCloudApi extends BaseHttpApi {
     /**
      * 绑定打印机到iot云端
      */
-    public static void getPrinterList(String shopId, StringCallback callback) {
+    public static void getPrinterList(int shopId, StringCallback callback) {
         try {
             String params = new JSONObject()
                     .put("userId", SpUtils.getUID())

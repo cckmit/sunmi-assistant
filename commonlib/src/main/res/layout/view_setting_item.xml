@@ -18,7 +18,10 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="11dp"
         android:layout_toEndOf="@+id/left_image"
-        android:gravity="center_vertical" />
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxEms="13"
+        android:singleLine="true" />
 
     <TextView
         android:id="@+id/right_text"

@@ -25,7 +25,13 @@ public class ViewHolder {
 		if (convertView == null) {
 			return new ViewHolder(context, parent, layoutId, position);
 		}
-		return (ViewHolder) convertView.getTag();
+		ViewHolder holder = (ViewHolder) convertView.getTag();
+		holder.setPosition(position);
+		return holder;
+	}
+
+	private void setPosition(int position) {
+		this.mPosition = position;
 	}
 
 	public int getPosition() {

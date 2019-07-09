@@ -34,6 +34,7 @@ import java.util.List;
 
 import sunmi.common.base.BaseFragment;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.IVideoPlayer;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
@@ -51,12 +52,14 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
     EditText etUid;
     @ViewById(resName = "ocv_ipc")
     OverCameraView overCameraView;
+    @ViewById(resName = "ivp_ipc")
+    IVideoPlayer iVideoPlayer;
 
     @FragmentArg("shopId")
     String shopId;
 
     //用于播放视频的mediaPlayer对象
-    private MediaPlayer firstPlayer,     //负责播放进入视频播放界面后的第一段视频
+    private MediaPlayer firstPlayer,//负责播放进入视频播放界面后的第一段视频
             nextMediaPlayer, //负责一段视频播放结束后，播放下一段视频
             cachePlayer,     //负责setNextMediaPlayer的player缓存对象
             currentPlayer;   //负责当前播放视频段落的player对象
@@ -88,11 +91,27 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         surfaceHolder = surface.getHolder();// SurfaceHolder是SurfaceView的控制接口
         surfaceHolder.addCallback(this); // 因为这个类实现了SurfaceHolder.Callback接口，所以回调参数直接this
+        List<String> list = new ArrayList<>();
+        videoListQueue.add("https://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/0_20.mp4");
+        videoListQueue.add("https://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/20_40.mp4");
+        videoListQueue.add("https://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/40_60.mp4");
+        list.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/0_25.mp4");
+        list.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/25_50.mp4");
+        list.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/abcdefghijklmn.flv");
+//        list.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/5b0549bee3a07.mp4");
+//        list.add("http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/D222066BBD2EACA182EA444D90CAF621.flv");
+//        iVideoPlayer.setUrlQueue(list);
+//        try {
+//            iVideoPlayer.startPlay();
+//        } catch (Exception e) {
+//            shortTip("播放失败");
+//            e.printStackTrace();
+//        }
     }
 
     private void showSingleChoiceDialog() {
         final String[] items = {"C3YABT1MPRV4BM6GUHXJ", "CRYUBT1WKFV4UM6GUH71", "EFKUA51CZVBW8NPGUHZJ",
-                "CVYA8T1WKFV49NPGYHRJ", "CBKA9T14URBC8MPGYHZJ", "CWT4X19FUCZ6RSRC111A"};
+                "CVYA8T1WKFV49NPGYHRJ", "CBKA9T14URBC8MPGYHZJ", "CWT4X19FUCZ6RSRC111A","B9PMFYGPLB6NWYRV111A"};
         final AlertDialog.Builder singleChoiceDialog = new AlertDialog.Builder(getActivity());
         singleChoiceDialog.setSingleChoiceItems(items, 1, new DialogInterface.OnClickListener() {
             @Override
@@ -114,13 +133,6 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
         showSingleChoiceDialog();
     }
 
-    // http://test.cdn.sunmi.com/VIDEO/IPC/4E58E60001B29C869E34C9506B9CCD23
-    // https://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4
-    // http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/D222066BBD2EACA182EA444D90CAF621.flv
-    // http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/abcdefghijklmn.flv
-    // http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/5b0549bee3a07.mp4
-    // http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/0_25.mp4
-    // http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/25_50.mp4
     @Click(resName = "btn_pause")
     void pauseClick() {
 
@@ -147,6 +159,13 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
 
     @Click(resName = "btn_video")
     void videoClick() {
+        // http://test.cdn.sunmi.com/VIDEO/IPC/4E58E60001B29C869E34C9506B9CCD23
+        // https://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4
+        // http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/D222066BBD2EACA182EA444D90CAF621.flv
+        // http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/abcdefghijklmn.flv
+        // http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/5b0549bee3a07.mp4
+        // http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/0_25.mp4
+        // http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/25_50.mp4
         getVideoList();
     }
 
@@ -188,12 +207,39 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
     public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
     }
 
+    MediaPlayer player;
+
     @Override
     public void surfaceCreated(SurfaceHolder arg0) {
         //surfaceView创建完毕后，首先获取该直播间所有视频分段的url
 //        getVideoUrls();
 //        然后初始化播放手段视频的player对象
 //        initFirstPlayer();
+
+
+        // 必须在surface创建后才能初始化MediaPlayer,否则不会显示图像
+//        player = new MediaPlayer();
+//        player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+//        player.setDisplay(surfaceHolder);
+//        // 设置显示视频显示在SurfaceView上
+//        try {
+//            String filePath =
+//                    "http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/0_25.mp4";
+////                    "http://sunmi-test.oss-cn-hangzhou.aliyuncs.com/VIDEO/IPC/SS101D8BS00088/abcdefghijklmn.flv";
+//            //Environment.getExternalStorageDirectory() + "/Sunmi/111.flv";
+//            Uri uri = Uri.parse(filePath);
+//            player.setDataSource(filePath);
+//            player.prepareAsync();
+//            player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+//                @Override
+//                public void onPrepared(MediaPlayer mp) {
+//                    player.start();
+//
+//                }
+//            });
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
@@ -415,7 +461,7 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
 //    }
 //
     void unbind(String deviceId) {
-        IPCCloudApi.unbindIPC(SpUtils.getCompanyId(), Integer.parseInt(shopId), deviceId, new RetrofitCallback() {
+        IPCCloudApi.unbindIPC(SpUtils.getCompanyId(), Integer.parseInt(shopId), Integer.parseInt(deviceId), new RetrofitCallback() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 shortTip("解绑成功");
@@ -429,7 +475,7 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
     }
 
     void getIpcList() {
-        IPCCloudApi.getDetailList(SpUtils.getCompanyId(), shopId, new RetrofitCallback() {
+        IPCCloudApi.getDetailList(SpUtils.getCompanyId(), SpUtils.getShopId(), new RetrofitCallback() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 try {
@@ -623,4 +669,5 @@ public class IPCFragment extends BaseFragment implements SurfaceHolder.Callback 
         list.addAll(tmpSet);
         return list;
     }
+
 }

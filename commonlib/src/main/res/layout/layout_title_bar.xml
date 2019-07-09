@@ -35,12 +35,13 @@
             android:gravity="center"
             android:paddingLeft="@dimen/dp_20"
             android:paddingRight="@dimen/dp_20"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorText"
+            android:textSize="@dimen/sp_17"
             android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/ll_back_layout"
-            android:layout_width="50dp"
+            android:layout_width="@dimen/dp_50"
             android:layout_height="match_parent"
             android:background="@drawable/right_image_selector"
             android:gravity="center_vertical"
@@ -56,7 +57,7 @@
 
         <LinearLayout
             android:id="@+id/ll_img_btn2"
-            android:layout_width="44dp"
+            android:layout_width="@dimen/dp_44"
             android:layout_height="match_parent"
             android:layout_toEndOf="@+id/ll_back_layout"
             android:background="@drawable/right_image_selector"
@@ -76,19 +77,19 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginRight="@dimen/dp_5"
             android:gravity="center"
-            android:maxWidth="250dp"
+            android:maxWidth="@dimen/dp_256"
             android:singleLine="true"
             android:textColor="@color/colorPrimary"
-            android:textSize="18sp"
+            android:textSize="@dimen/sp_17"
             android:textStyle="bold" />
 
         <RelativeLayout
             android:id="@+id/title_tab"
-            android:layout_width="130dp"
-            android:layout_height="27dp"
+            android:layout_width="@dimen/dp_123"
+            android:layout_height="@dimen/dp_27"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:gravity="center"
@@ -96,15 +97,15 @@
 
             <TextView
                 android:id="@+id/tv_tab_1"
-                android:layout_width="65dp"
-                android:layout_height="25dp"
+                android:layout_width="@dimen/dp_65"
+                android:layout_height="@dimen/dp_25"
                 android:gravity="center"
                 android:textSize="@dimen/sp_13" />
 
             <TextView
                 android:id="@+id/tv_tab_2"
-                android:layout_width="65dp"
-                android:layout_height="25dp"
+                android:layout_width="@dimen/dp_65"
+                android:layout_height="@dimen/dp_25"
                 android:layout_toEndOf="@+id/tv_tab_1"
                 android:gravity="center"
                 android:textSize="@dimen/sp_13" />
@@ -112,7 +113,7 @@
 
         <LinearLayout
             android:id="@+id/ll_right_layout"
-            android:layout_width="50dp"
+            android:layout_width="@dimen/dp_50"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
             android:background="@drawable/right_image_selector"
@@ -138,7 +139,7 @@
             android:paddingLeft="@dimen/dp_12"
             android:paddingRight="@dimen/dp_12"
             android:textColor="@color/colorText"
-            android:textSize="16sp"
+            android:textSize="@dimen/sp_17"
             android:visibility="gone" />
 
         <TextView
@@ -151,7 +152,7 @@
             android:paddingLeft="@dimen/dp_12"
             android:paddingRight="@dimen/dp_12"
             android:textColor="@color/colorText"
-            android:textSize="16sp"
+            android:textSize="@dimen/sp_17"
             android:visibility="gone" />
 
         <View

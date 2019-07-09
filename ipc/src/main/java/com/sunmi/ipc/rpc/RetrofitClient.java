@@ -16,19 +16,26 @@ import sunmi.common.utils.SpUtils;
  */
 public class RetrofitClient extends BaseRetrofitClient {
 
-    private static class SingletonHolder {
-        private static RetrofitClient INSTANCE = new RetrofitClient();
-    }
+    private static volatile RetrofitClient instance;
 
     public static RetrofitClient getInstance() {
-        return SingletonHolder.INSTANCE;
+        if (instance == null) {
+            synchronized (RetrofitClient.class) {
+                if (instance == null)
+                    instance = new RetrofitClient();
+            }
+        }
+        return instance;
     }
 
-    public static RetrofitClient createInstance() {
-        return new RetrofitClient();
+    public static void createInstance() {
+        if (instance != null) {
+            instance = null;
+        }
+        instance = new RetrofitClient();
     }
 
-    public RetrofitClient() {
+    private RetrofitClient() {
         init(IpcConfig.IPC_CLOUD_URL, getHeaders());
     }
 

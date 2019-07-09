@@ -93,8 +93,6 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
         CommonUtils.trackCommonEvent(mActivity, "myStore",
                 "主页_我的_我的店铺", Constants.EVENT_MY_INFO);
         openActivity(mActivity, MyStoreActivity.class);
-//        Intent intent = new Intent(context, cls);
-//        startActivity(intent);
     }
 
     //我的订单

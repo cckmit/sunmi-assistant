@@ -13,27 +13,25 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.model.LoginDataBean;
-import com.sunmi.apmanager.rpc.cloud.CloudApi;
-import com.sunmi.apmanager.rpc.sso.SSOApi;
 import com.sunmi.apmanager.ui.view.MergeDialog;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.ui.activity.MainActivity_;
+import com.sunmi.assistant.contract.LoginContract;
+import com.sunmi.assistant.presenter.LoginPresenter;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import sunmi.common.base.BaseActivity;
-import sunmi.common.rpc.http.RpcCallback;
+import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.utils.PermissionUtils;
 import sunmi.common.utils.RegexUtils;
 import sunmi.common.utils.SpUtils;
@@ -44,7 +42,7 @@ import sunmi.common.view.dialog.CommonDialog;
  * 登录
  */
 @EActivity(R.layout.activity_login)
-public class LoginActivity extends BaseActivity {
+public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements LoginContract.View {
 
     @ViewById(R.id.etUser)
     ClearableEditText etUser;
@@ -54,7 +52,7 @@ public class LoginActivity extends BaseActivity {
     TextView tvSMSLogin;
     @ViewById(R.id.tvForgetPassword)
     TextView tvForgetPassword;
-    @ViewById(R.id.passwordIsVisible)
+    @ViewById(R.id.ib_visible)
     ImageButton passwordIsVisible;
     @ViewById(R.id.btnLogin)
     Button btnLogin;
@@ -65,43 +63,44 @@ public class LoginActivity extends BaseActivity {
     @ViewById(R.id.btnLogout)
     Button btnLogout;
 
+    @Extra
+    String reason;
+    @Extra
+    String mobile;
+
     private boolean psdIsVisible;//密码是否可见
-    private String mobile;
 
     private CommonDialog kickedDialog;
 
     @AfterViews
     protected void init() {
+        mPresenter = new LoginPresenter();
+        mPresenter.attachView(this);
         PermissionUtils.checkPermissionActivity(this);//手机权限
         HelpUtils.setStatusBarFullTransparent(this);//透明标题栏
         etUser.setClearIcon(R.mipmap.ic_edit_delete_white);
         etPassword.setClearIcon(R.mipmap.ic_edit_delete_white);
-        String mobile = SpUtils.getMobile();
+        if (TextUtils.isEmpty(mobile)) {
+            mobile = SpUtils.getMobile();
+        }
         new SomeMonitorEditText().setMonitorEditText(btnLogin, etUser, etPassword);//button 是否可点击
-        initData();
         if (!TextUtils.isEmpty(mobile)) {
             etUser.setText(mobile);
         } else if (!TextUtils.isEmpty(SpUtils.getEmail())) {
             etUser.setText(SpUtils.getEmail());
         }
-
+        showTip();
     }
 
-    private void initData() {
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            String extra = bundle.getString("reason");
-            if (TextUtils.equals("1", extra)) {
-                if (kickedDialog != null && kickedDialog.isShowing()) return;
-                kickedDialog = new CommonDialog.Builder(context)
-                        .setTitle(R.string.tip_kick_off)
-                        .setConfirmButton(R.string.str_confirm).create();
-                kickedDialog.show();
-            } else if (TextUtils.equals("2", extra)) {
-                shortTip(R.string.tip_password_changed_login);
-            }
-            if (!TextUtils.isEmpty(bundle.getString("mobile")))
-                mobile = bundle.getString("mobile");
+    private void showTip() {
+        if (TextUtils.equals("1", reason)) {
+            if (kickedDialog != null && kickedDialog.isShowing()) return;
+            kickedDialog = new CommonDialog.Builder(context)
+                    .setTitle(R.string.tip_kick_off)
+                    .setConfirmButton(R.string.str_confirm).create();
+            kickedDialog.show();
+        } else if (TextUtils.equals("2", reason)) {
+            shortTip(R.string.tip_password_changed_login);
         }
     }
 
@@ -124,8 +123,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults.length <= 0) return;
@@ -134,7 +132,7 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
-    @Click({R.id.btnLogin, R.id.btnRegister, R.id.btnFixPassword, R.id.passwordIsVisible,
+    @Click({R.id.btnLogin, R.id.btnRegister, R.id.btnFixPassword, R.id.ib_visible,
             R.id.btnLogout, R.id.tvForgetPassword, R.id.tvSMSLogin})
     public void onClick(View v) {
         mobile = etUser.getText().toString().trim();
@@ -161,7 +159,7 @@ public class LoginActivity extends BaseActivity {
                         .extra("mobile", RegexUtils.isChinaPhone(mobile) ? mobile : "")
                         .start();
                 break;
-            case R.id.passwordIsVisible: //密码是否可见
+            case R.id.ib_visible: //密码是否可见
                 if (psdIsVisible) {
                     etPassword.setTransformationMethod(PasswordTransformationMethod.getInstance()); //隐藏密码
                     passwordIsVisible.setBackgroundResource(R.mipmap.ic_eye_light_hide);
@@ -170,6 +168,9 @@ public class LoginActivity extends BaseActivity {
                     etPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance()); //显示密码
                     passwordIsVisible.setBackgroundResource(R.mipmap.ic_eye_light_open);
                     psdIsVisible = true;
+                }
+                if (etPassword.getText() != null) {
+                    etPassword.setSelection(etPassword.getText().length());
                 }
                 break;
             case R.id.tvForgetPassword: //忘记密码
@@ -196,91 +197,40 @@ public class LoginActivity extends BaseActivity {
     //账号合并
     private void userMerge(final String password) {
         if (etUser.getText() == null) return;
-        showLoadingDialog();
-        String user = etUser.getText().toString();  //email test: esyzim06497@chacuo.net
-        if (RegexUtils.isChinaPhone(user) || RegexUtils.isEmail(user)) {
-            SSOApi.checkUserName(user, new RpcCallback(context, false) {
-                @Override
-                public void onSuccess(int code, String msg, String data) {
-                    userMergeSuccess(code, msg, data, password);
-                }
-            });
-        }
-    }
-
-    private void userMergeSuccess(int code, String msg, String data, String
-            password) {
-        try {
-            if (code == 1) {
-                JSONObject object = new JSONObject(data);
-                if (object.has("needMerge")) {
-                    int needMerge = object.getInt("needMerge");//是否需要合并 0-否 1-是
-                    String url = object.getString("url");
-                    if (needMerge == 1) {
-                        new MergeDialog(context, url).show();
-                    } else {
-                        login(mobile, password);
-                    }
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void login(String mobile, String password) {
         CommonUtils.trackCommonEvent(context, "login", "登录", Constants.EVENT_LOGIN);
-        CloudApi.login(mobile, password, new RpcCallback(context) {
-            @Override
-            public void onSuccess(int code, String msg, String data) {
-                if (code == 1) {
-                    LoginDataBean bean = new Gson().fromJson(data, LoginDataBean.class);
-                    CommonUtils.saveLoginInfo(bean);
-                    gotoMainActivity();
-                } else if (code == 201) {//用户名或密码错误
-                    shortTip(R.string.textView_user_password_error);
-                } else if (code == 3603) {
-                    mobileNoRegister();//手机号未注册
-                }
-            }
-        });
+        showLoadingDialog();
+        mPresenter.userMerge(etUser.getText().toString(), mobile, password);
     }
 
-    private void gotoMainActivity() {
-        MainActivity_.intent(context).start();
-        finish();
+    @UiThread
+    @Override
+    public void showMergeDialog(String url) {
+        new MergeDialog(context, url).show();
     }
 
     //手机号未注册
-    private void mobileNoRegister() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                new CommonDialog.Builder(LoginActivity.this)
-                        .setTitle(R.string.tip_unregister)
-                        .setCancelButton(R.string.sm_cancel)
-                        .setConfirmButton(R.string.str_register_now,
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        CommonUtils.trackCommonEvent(context, "loginUnRegisterDialogRegister",
-                                                "登录_未注册弹框-立即注册", Constants.EVENT_LOGIN);
-                                        RegisterActivity_.intent(context)
-                                                .extra("mobile", RegexUtils.isChinaPhone(mobile) ? mobile : "")
-                                                .start();
-                                    }
-                                }).create().show();
-            }
-        });
+    @UiThread
+    @Override
+    public void mobileNoRegister() {
+        new CommonDialog.Builder(LoginActivity.this)
+                .setTitle(R.string.tip_unregister)
+                .setCancelButton(R.string.sm_cancel)
+                .setConfirmButton(R.string.str_register_now, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        CommonUtils.trackCommonEvent(context, "loginUnRegisterDialogRegister",
+                                "登录_未注册弹框-立即注册", Constants.EVENT_LOGIN);
+                        RegisterActivity_.intent(context)
+                                .extra("mobile", RegexUtils.isChinaPhone(mobile) ? mobile : "")
+                                .start();
+                    }
+                }).create().show();
     }
 
-    private Bundle getMobileBundle() {
-        if (!RegexUtils.isChinaPhone(mobile)) {
-            return new Bundle();
-        }
-        Bundle bundle = new Bundle();
-        bundle.putString("mobile", mobile);
-        return bundle;
+    @Override
+    public void getStoreTokenSuccess(LoginDataBean loginData) {
+        LoginChooseShopActivity_.intent(context).loginData(loginData)
+                .action(CommonConstants.ACTION_LOGIN_CHOOSE_COMPANY).start();
     }
 
 }

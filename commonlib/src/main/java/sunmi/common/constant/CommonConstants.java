@@ -21,10 +21,21 @@ public class CommonConstants {
     //tab support
     public static final int tabSupport = 100000;
     //tab store
-    public static final int tabStore = 100001;
+    public static final int tabDevice = 100001;
+    public static final int tabDashBoard = 100002;
 
     public static int TYPE_AP = 0;
     public static int TYPE_IPC = 1;
     public static int TYPE_PRINTER = 2;
+
+    // 订单类型tag
+    public static final String ORDER_TYPE_NORMAL = "payment-order-type-normal";
+    public static final String ORDER_TYPE_REFUNDS = "payment-order-type-refund";
+
+    //选择商户和门店
+    public static int ACTION_LOGIN_CHOOSE_COMPANY = 0;
+    public static int ACTION_LOGIN_CHOOSE_SHOP = 1;
+    public static int ACTION_CHANGE_COMPANY = 2;
+    public static int ACTION_CHANGE_SHOP = 3;
 
 }

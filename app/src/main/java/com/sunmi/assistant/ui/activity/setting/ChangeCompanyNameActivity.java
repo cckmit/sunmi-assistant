@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 
+import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.contract.ChangeCompanyNameContract;
 import com.sunmi.apmanager.presenter.ChangeCompanyNamePresenter;
 import com.sunmi.assistant.R;
@@ -17,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.TitleBarView;
@@ -99,6 +101,8 @@ public class ChangeCompanyNameActivity extends BaseMvpActivity<ChangeCompanyName
 
     @Override
     public void updateSuccess(String bean) {
+        SpUtils.setCompanyName(name);
+        BaseNotification.newInstance().postNotificationName(NotificationConstant.companyNameChanged);
         finish();
     }
 

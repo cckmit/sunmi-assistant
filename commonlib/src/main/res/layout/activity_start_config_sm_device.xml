@@ -17,11 +17,12 @@
 
     <ImageView
         android:id="@+id/iv_image"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/title_bar"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dp_12" />
+        android:layout_marginTop="@dimen/dp_12"
+        android:scaleType="center" />
 
     <TextView
         android:id="@+id/tv_tip_1"
@@ -29,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/iv_image"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_30"
         android:textColor="@color/colorText"
         android:textSize="@dimen/sp_28" />
 

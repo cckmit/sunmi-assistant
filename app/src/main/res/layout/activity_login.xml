@@ -66,7 +66,7 @@
                 android:textSize="@dimen/sp_16" />
 
             <ImageButton
-                android:id="@+id/passwordIsVisible"
+                android:id="@+id/ib_visible"
                 android:layout_width="@dimen/dp_24"
                 android:layout_height="@dimen/dp_24"
                 android:layout_alignParentRight="true"
