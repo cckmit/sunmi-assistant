@@ -8,6 +8,7 @@ import android.support.constraint.ConstraintSet;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
@@ -39,7 +40,13 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
 
     @ViewById(R.id.order_list_empty)
     TextView mOrderListEmpty;
+    @ViewById(R.id.tv_order_list_no_network)
+    TextView mNetworkError;
+    @ViewById(R.id.btn_order_list_no_network_refresh)
+    Button mNetworkRefresh;
 
+    @ViewById(R.id.order_line_decoration)
+    View mLineDecoration;
     @ViewById(R.id.order_list_overlay)
     View mOverlay;
 
@@ -69,12 +76,24 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
         mPresenter.attachView(this);
         if (!NetworkUtils.isNetworkAvailable(this)) {
             shortTip(R.string.toast_networkIsExceptional);
-            return;
+            setSwitchContentVisible(false);
+        } else {
+            setSwitchContentVisible(true);
+            mPresenter.loadList(mTimeStart, mTimeEnd, mInitOrderType);
         }
-        mPresenter.loadList(mTimeStart, mTimeEnd, mInitOrderType);
     }
 
     private void initViews() {
+        mNetworkRefresh.setOnClickListener(v -> {
+            if (!NetworkUtils.isNetworkAvailable(OrderListActivity.this)) {
+                shortTip(R.string.toast_networkIsExceptional);
+                setSwitchContentVisible(false);
+            } else {
+                setSwitchContentVisible(true);
+                mPresenter.loadList(mTimeStart, mTimeEnd, mInitOrderType);
+            }
+        });
+
         mFilters.add(findViewById(R.id.order_filter_sort));
         mFilters.add(findViewById(R.id.order_filter_pay_type));
         mFilters.add(findViewById(R.id.order_filter_order_type));
@@ -120,6 +139,16 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
         menu.setPopupHelper(helper);
         menu.setAdapter(adapter);
         mFilterAdapters.add(adapter);
+    }
+
+    private void setSwitchContentVisible(boolean visible) {
+        mNetworkError.setVisibility(visible ? View.INVISIBLE : View.VISIBLE);
+        mNetworkRefresh.setVisibility(visible ? View.INVISIBLE : View.VISIBLE);
+        mLineDecoration.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+        mRefreshLayout.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+        for (DropdownMenu filter : mFilters) {
+            filter.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+        }
     }
 
     @Override
