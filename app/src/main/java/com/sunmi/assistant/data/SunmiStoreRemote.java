@@ -178,12 +178,12 @@ public class SunmiStoreRemote {
 
     public void getOrderTypeList(RetrofitCallback<OrderTypeListResp> callback) {
         RetrofitClient.getInstance().create(PaymentInterface.class)
-                .getOrderTypeList().enqueue(callback);
+                .getOrderTypeList(Utils.createRequestBody("")).enqueue(callback);
     }
 
     public void getOrderPurchaseTypeList(RetrofitCallback<OrderPayTypeListResp> callback) {
         RetrofitClient.getInstance().create(PaymentInterface.class)
-                .getPurchaseTypeList().enqueue(callback);
+                .getPurchaseTypeList(Utils.createRequestBody("")).enqueue(callback);
     }
 
     public void getOrderList(int companyId, int shopId, long timeStart, long timeEnd,

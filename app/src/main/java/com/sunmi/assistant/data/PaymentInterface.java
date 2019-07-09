@@ -60,13 +60,13 @@ public interface PaymentInterface {
      * 获取订单类型列表
      */
     @POST("/api/payment/getOrderTypeList")
-    Call<BaseResponse<OrderTypeListResp>> getOrderTypeList();
+    Call<BaseResponse<OrderTypeListResp>> getOrderTypeList(@Body BaseRequest request);
 
     /**
      * 获取支付方式列表
      */
     @POST("/api/payment/getPurchaseTypeList")
-    Call<BaseResponse<OrderPayTypeListResp>> getPurchaseTypeList();
+    Call<BaseResponse<OrderPayTypeListResp>> getPurchaseTypeList(@Body BaseRequest request);
 
     /**
      * 获取订单列表
