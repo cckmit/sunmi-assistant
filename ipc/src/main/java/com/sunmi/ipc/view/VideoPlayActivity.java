@@ -1054,7 +1054,6 @@ public class VideoPlayActivity extends BaseActivity
         recyclerView.setAdapter(adapter);
 
         if (!isFirstScroll && !isSelectedDate) {
-            LogCat.e(TAG, "6666666 22");
             selectedTimeIsHaveVideo(firstLeftScrollCurrentTime); //初始化左滑渲染及回放
         } else {
             if (isSelectedDate) {
@@ -1074,7 +1073,9 @@ public class VideoPlayActivity extends BaseActivity
         long time = scrollTime / 1000; //设置日期的秒数
         if (time > currentTime) {//未来时间或当前--滑动当前直播
             isSelectedDate = false;
-            tvCalender.setText(String.format("%td%n", date));
+            scrollTime = System.currentTimeMillis();
+            int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+            tvCalender.setText(day > 9 ? day + "" : "0" + day);
             switch2Live();
         } else {//回放时间
             isFirstScroll = false;//非首次滑动
@@ -1136,7 +1137,7 @@ public class VideoPlayActivity extends BaseActivity
     private void scrollSelectedDate0AM() {
         long threeDaysBeforeDate = 3 * 24 * 60;//3天分钟数
         currentItemPosition = (int) (threeDaysBeforeDate - leftToCenterMinutes());
-        //linearLayoutManager.scrollToPositionWithOffset(currentItemPosition, 0);
+        linearLayoutManager.scrollToPositionWithOffset(currentItemPosition, 0);
         openMove();
     }
 
@@ -1193,6 +1194,7 @@ public class VideoPlayActivity extends BaseActivity
     }
 
     private void rightNowScrollCurrentPosition(long currentTimeSecond) {
+        ivLive.setVisibility(View.GONE);
         //当前时间秒数
         //long currentTimeSecond = System.currentTimeMillis() / 1000;
         //初始化当前的秒数和现在的秒数时间戳对比相差的偏移量--比对分钟数
@@ -1292,9 +1294,9 @@ public class VideoPlayActivity extends BaseActivity
                     //首次向左滑动请求+渲染
                     if (isFirstScroll && isLeftScroll) {
                         firstLeftScrollCurrentTime = currTime;
-                        refreshCanvasList();//渲染
                         isFirstScroll = false;
                         isCurrentLive = false; //回放
+                        refreshCanvasList();//渲染
                         return;
                     }
                     String strDate = DateTimeUtils.secondToDate(currTime, "yyyy-MM-dd HH:mm:ss");
@@ -1302,7 +1304,6 @@ public class VideoPlayActivity extends BaseActivity
                     tvCalender.setText(String.format(" %s", day));  //滑动停止显示日期
                     scrollTime = currTime * 1000;//滑动日历的时间戳毫秒
                     String hourMinuteSecond = strDate.substring(11, strDate.length());
-                    toastForShort(VideoPlayActivity.this, hourMinuteSecond, isLeftScroll);//toast显示时间
                     canvasHours(firstVisibleItem);//绘制时间轴
                     long currentSeconds = System.currentTimeMillis() / 1000;//当前时间戳秒
                     //停止到未来时间
@@ -1310,6 +1311,7 @@ public class VideoPlayActivity extends BaseActivity
                         switch2Live();  //滚动到当前直播
                         return;
                     }
+                    toastForShort(VideoPlayActivity.this, hourMinuteSecond, isLeftScroll);//toast显示时间
                     //无回放视频跳转当前
                     if (listAp == null || listAp.size() == 0) {
                         rightNowScrollCurrentPosition(currentSeconds);
@@ -1489,7 +1491,7 @@ public class VideoPlayActivity extends BaseActivity
 
     @Override
     public void IOTCResult(String result) {
-        LogCat.e(TAG, "111111 ap get result = " + result);
+        LogCat.e(TAG, "111111 time ap get result = " + result);
         try {
             JSONObject object = new JSONObject(result);
             int errcode = object.getInt("errcode");
@@ -1533,7 +1535,7 @@ public class VideoPlayActivity extends BaseActivity
         IPCCloudApi.getTimeSlots(deviceId, startTime, endTime, new RetrofitCallback<JsonObject>() {
             @Override
             public void onSuccess(int code, String msg, JsonObject data) {
-                LogCat.e(TAG, "111111 cloud getTimeSlots==" + data.toString());
+                LogCat.e(TAG, "111111 time cloud getTimeSlots==" + data.toString());
                 if (code == 1) {
                     try {
                         JSONObject object = new JSONObject(data.toString());
@@ -1645,7 +1647,9 @@ public class VideoPlayActivity extends BaseActivity
 
     @Override
     public void onPlayComplete() {
-
+        //获取当前播放完毕时间判断是否cloud or ap
+        long currTime = centerCurrentTime(linearLayoutManager.findFirstVisibleItemPosition());//当前中间轴时间
+        selectedTimeIsHaveVideo(currTime);
     }
 
 }
