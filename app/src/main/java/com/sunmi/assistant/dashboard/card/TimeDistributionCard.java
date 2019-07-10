@@ -19,6 +19,7 @@ import com.sunmi.assistant.dashboard.DashboardContract;
 import com.sunmi.assistant.dashboard.ui.BarXAxisLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.RoundEdgeBarChartRenderer;
 import com.sunmi.assistant.dashboard.ui.SpecificLabelsXAxisRenderer;
+import com.sunmi.assistant.dashboard.ui.SpecificLabelsYAxisRenderer;
 import com.sunmi.assistant.data.SunmiStoreRemote;
 import com.sunmi.assistant.data.response.OrderTimeDistributionResp;
 import com.sunmi.assistant.utils.Utils;
@@ -87,6 +88,9 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
 
     public class TimeDistributionType extends ItemType<Model, BaseViewHolder<Model>> {
 
+        private SpecificLabelsXAxisRenderer mXAxisRenderer;
+        private SpecificLabelsYAxisRenderer mYAxisRenderer;
+
         @Override
         public int getLayoutId(int type) {
             return R.layout.dashboard_recycle_item_chart_bar;
@@ -105,6 +109,8 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
             Context context = view.getContext();
             float dashLength = CommonHelper.dp2px(context, 4f);
             float dashSpaceLength = CommonHelper.dp2px(context, 2f);
+            mXAxisRenderer = new SpecificLabelsXAxisRenderer(chart);
+            mYAxisRenderer = new SpecificLabelsYAxisRenderer(chart);
 
             chart.setTouchEnabled(false);
             chart.getDescription().setEnabled(false);
@@ -116,6 +122,8 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
             renderer.setRadius(12);
             chart.setFitBars(true);
             chart.setRenderer(renderer);
+            chart.setXAxisRenderer(mXAxisRenderer);
+            chart.setRendererLeftYAxis(mYAxisRenderer);
 
             XAxis xAxis = chart.getXAxis();
             xAxis.setDrawAxisLine(false);
@@ -189,9 +197,10 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
                     max = (int) Math.ceil(entry.getY());
                 }
             }
-            chart.getAxisLeft().setAxisMaximum(max > 0 ? max * 1.2f : 5f);
-            chart.setXAxisRenderer(new SpecificLabelsXAxisRenderer(chart,
-                    Utils.getBarChartXAxisFloatLabels(getPeriod(), newDataSet), false));
+
+            mXAxisRenderer.setPeriod(getPeriod(), newDataSet.size());
+            float maxValue = mYAxisRenderer.setMaxValue(max);
+            chart.getAxisLeft().setAxisMaximum(maxValue);
 
             // Calculate bar width.
             float barWidthRatio;
