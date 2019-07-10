@@ -1,6 +1,8 @@
 package com.sunmi.assistant.dashboard.card;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.IdRes;
 import android.util.Log;
 
@@ -27,9 +29,11 @@ public abstract class BaseRefreshCard<Model> {
     private static final int STATE_FAILED = 12;
 
     private Context mContext;
+    private Handler mHandler = new Handler(Looper.getMainLooper());
 
     private Model mModel;
     private ItemType<Model, BaseViewHolder<Model>> mType;
+
     private BaseArrayAdapter<Object> mAdapter;
     private int mPosition;
 
@@ -136,7 +140,7 @@ public abstract class BaseRefreshCard<Model> {
 
     void updateView() {
         if (mAdapter != null) {
-            mAdapter.notifyItemChanged(mPosition);
+            mHandler.post(() -> mAdapter.notifyItemChanged(mPosition));
         }
     }
 
@@ -199,13 +203,13 @@ public abstract class BaseRefreshCard<Model> {
 
         @Override
         public void onFail(int code, String msg, Response data) {
+            Log.e(TAG, "Dashboard card request Failed. " + msg);
             boolean isFirstFail = isStateInit();
             mState = STATE_FAILED;
             fail(isFirstFail, code, msg);
             if (isFirstFail) {
                 updateView();
             }
-            Log.e(TAG, "Dashboard card request Failed. " + msg);
         }
     }
 

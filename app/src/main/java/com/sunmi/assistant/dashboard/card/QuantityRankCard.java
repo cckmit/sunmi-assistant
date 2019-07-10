@@ -130,7 +130,7 @@ public class QuantityRankCard extends BaseRefreshCard<QuantityRankCard.Model> {
             RankListAdapter adapter = (RankListAdapter) listView.getAdapter();
             adapter.setDatas(model.list);
             adapter.notifyDataSetChanged();
-            listView.requestFocus();
+            listView.requestLayout();
         }
 
     }
