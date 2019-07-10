@@ -5,9 +5,9 @@
     android:pivotY="50%"
     android:toDegrees="360.0">
     <shape
-        android:innerRadius="@dimen/dp_134"
+        android:innerRadius="@dimen/dp_120"
         android:shape="ring"
-        android:thicknessRatio="78"
+        android:thicknessRatio="80"
         android:useLevel="false">
         <gradient
             android:centerColor="@color/colorLoadingCenter"

@@ -239,19 +239,19 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     @Override
     public int[] getUnStickNotificationId() {
         return new int[]{
-                NotificationConstant.netDisconnection, NotificationConstant.bindRouterChanged,
+                NotificationConstant.bindRouterChanged,
                 NotificationConstant.apPostStatus, NotificationConstant.apStatusException,
                 NotificationConstant.checkApPassword, IpcConstants.refreshIpcList,
-                NotificationConstant.updateConnectComplete, NotificationConstant.checkLogin,
+                NotificationConstant.checkLogin, NotificationConstant.apisConfig,
                 NotificationConstant.checkLoginAgain, CommonConstants.tabDevice,
-                NotificationConstant.apisConfig,
                 com.sunmi.cloudprinter.constant.Constants.NOTIFICATION_PRINTER_ADDED
         };
     }
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{NotificationConstant.shopSwitched};
+        return new int[]{NotificationConstant.shopSwitched, NotificationConstant.netConnected,
+                NotificationConstant.netDisconnection, NotificationConstant.updateConnectComplete};
     }
 
     @Override
@@ -259,7 +259,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         if (args == null) return;
         if (id == CommonConstants.tabDevice
                 || NotificationConstant.bindRouterChanged == id
-                || NotificationConstant.updateConnectComplete == id) {//mqtt断开重连刷新
+                || NotificationConstant.updateConnectComplete == id
+                || NotificationConstant.netConnected == id) {
             loadData();
         } else if (id == NotificationConstant.shopSwitched) {
             topBar.setShopName(SpUtils.getShopName());
