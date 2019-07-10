@@ -117,5 +117,6 @@ dependencies {
     api 'tv.danmaku.ijk.media:ijkplayer-x86_64:0.8.8'
     // ExoPlayer as IMediaPlayer: optional, experimental
     api 'tv.danmaku.ijk.media:ijkplayer-exo:0.8.8'
+    api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.0'
 
 }

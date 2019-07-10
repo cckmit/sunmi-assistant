@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <com.youth.banner.Banner
+        android:id="@+id/vp_banner"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_173"
+        android:background="@drawable/bg_card_white_corner_rounded" />
+
+    <RelativeLayout
+        android:id="@+id/rl_empty"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_238"
+        android:layout_below="@+id/vp_banner"
+        android:layout_marginTop="@dimen/dp_8"
+        android:background="@drawable/bg_card_white_corner_rounded">
+
+        <TextView
+            android:id="@+id/tv_no_device"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_24"
+            android:drawableTop="@mipmap/ic_no_sunmi_device"
+            android:drawablePadding="@dimen/dp_4"
+            android:text="@string/tip_no_device_please_add"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/sp_12" />
+
+        <Button
+            android:id="@+id/btn_add_device"
+            style="@style/BtnGrayRounded"
+            android:layout_below="@+id/tv_no_device"
+            android:layout_marginTop="@dimen/dp_12"
+            android:text="@string/str_add_device" />
+    </RelativeLayout>
+
+</RelativeLayout>
