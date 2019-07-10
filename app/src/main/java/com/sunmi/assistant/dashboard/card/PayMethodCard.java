@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Pair;
 import android.util.SparseArray;
 import android.view.View;
@@ -30,6 +29,7 @@ import java.util.Locale;
 
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
+import sunmi.common.utils.log.LogCat;
 
 /**
  * @author yinhui
@@ -45,6 +45,8 @@ public class PayMethodCard extends BaseRefreshCard<PayMethodCard.Model> {
     private static final Integer[] PIE_COLORS = {
             0xFF2997FF, 0xFF09E896, 0xFFED9600, 0xFFFFA100, 0xFFFC5656, 0xFF8766FF, 0xFFC0C0C0
     };
+
+    private static final String[] PAY_TYPE_NAME = {"支付宝", "微信", "现金", "银行卡刷卡", "银联二维码", "其他"};
 
     public PayMethodCard(Context context, int companyId, int shopId, int period) {
         super(context, companyId, shopId, period);
@@ -63,15 +65,15 @@ public class PayMethodCard extends BaseRefreshCard<PayMethodCard.Model> {
 
     @Override
     protected void load(int companyId, int shopId, int period, Model model) {
-        Log.d(TAG, "HTTP request pay method rank.");
-        setState(STATE_LOADING);
+        LogCat.d(TAG, "HTTP request pay method rank.");
+        toStateLoading();
         Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(period);
         SunmiStoreRemote.get().getOrderPurchaseTypeRank(companyId, shopId,
                 periodTimestamp.first, periodTimestamp.second,
                 new CardCallback<OrderPayTypeRankResp>() {
                     @Override
                     public void success(OrderPayTypeRankResp data) {
-                        Log.d(TAG, "HTTP request pay method rank success.");
+                        LogCat.d(TAG, "HTTP request pay method rank success.");
                         List<OrderPayTypeRankResp.PayTypeRankItem> list = data.getPurchase_type_list();
                         Collections.sort(list, (o1, o2) ->
                                 getIndexOfPayMethod(o1.getPurchase_type_name()) - getIndexOfPayMethod(o2.getPurchase_type_name()));
@@ -174,7 +176,14 @@ public class PayMethodCard extends BaseRefreshCard<PayMethodCard.Model> {
 
         @Override
         public void onBindViewHolder(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-            setHolder(holder);
+            if (isStateInit()) {
+                LogCat.d(TAG, "Card data setup view skip.");
+                return;
+            }
+
+            holder.getView(R.id.layout_dashboard_content).setVisibility(View.VISIBLE);
+            holder.getView(R.id.pb_dashboard_loading).setVisibility(View.GONE);
+
             TextView title = holder.getView(R.id.tv_dashboard_title);
             TextView bySales = holder.getView(R.id.tv_dashboard_radio_by_sales);
             TextView byOrder = holder.getView(R.id.tv_dashboard_radio_by_order);
@@ -183,17 +192,15 @@ public class PayMethodCard extends BaseRefreshCard<PayMethodCard.Model> {
             bySales.setSelected(model.dataSource == DashboardContract.DATA_MODE_SALES);
             byOrder.setSelected(model.dataSource == DashboardContract.DATA_MODE_ORDER);
 
-            if (getState() == STATE_INIT || getState() == STATE_LOADING) {
-                Log.d(TAG, "Card data setup view skip.");
-                return;
-            }
-
             List<PieEntry> newDataSet = model.dataSets.get(model.dataSource);
-            if (newDataSet == null || newDataSet.isEmpty()) {
-                chart.setData(null);
-                chart.invalidate();
-                holder.getView(R.id.pb_dashboard_loading).setVisibility(View.GONE);
-                return;
+            if (newDataSet == null) {
+                newDataSet = new ArrayList<>();
+                model.dataSets.put(model.dataSource, newDataSet);
+            }
+            if (newDataSet.isEmpty()) {
+                for (int i = 0; i < 6; i++) {
+                    newDataSet.add(new PieEntry(0f, PAY_TYPE_NAME[i]));
+                }
             }
 
             PieDataSet dataSet;
@@ -232,7 +239,6 @@ public class PayMethodCard extends BaseRefreshCard<PayMethodCard.Model> {
                 chart.invalidate();
             }
             chart.animateY(300, Easing.EaseOutCubic);
-            holder.getView(R.id.pb_dashboard_loading).setVisibility(View.GONE);
         }
 
         private void legendSetUp(@NonNull BaseViewHolder<Model> holder, List<PieEntry> dataList) {

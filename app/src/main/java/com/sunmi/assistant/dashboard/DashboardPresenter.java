@@ -3,7 +3,6 @@ package com.sunmi.assistant.dashboard;
 import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.util.Log;
 import android.util.Pair;
 
 import com.sunmi.assistant.R;
@@ -26,6 +25,7 @@ import java.util.List;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.log.LogCat;
 
 
 class DashboardPresenter extends BasePresenter<DashboardContract.View>
@@ -60,9 +60,9 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     @Override
     public void switchPeriodTo(int period) {
-        Log.d(TAG, "Switch time span to: " + period);
+        LogCat.d(TAG, "Switch time span to: " + period);
         if (mPeriod == period || period == DashboardContract.TIME_PERIOD_INIT) {
-            Log.d(TAG, "Switch time span skip.");
+            LogCat.d(TAG, "Switch time span skip.");
             return;
         }
         this.mPeriod = period;
@@ -187,9 +187,6 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     public void detachView() {
         super.detachView();
         sHandler.removeCallbacks(mTask);
-        for (BaseRefreshCard card : mList) {
-            card.clearHolder();
-        }
     }
 
     private static class RefreshTask implements Runnable {

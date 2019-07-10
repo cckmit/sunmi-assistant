@@ -2,7 +2,6 @@ package com.sunmi.assistant.dashboard.card;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.util.Pair;
 import android.util.SparseArray;
 import android.view.View;
@@ -20,16 +19,19 @@ import com.sunmi.assistant.dashboard.DashboardContract;
 import com.sunmi.assistant.dashboard.ui.BarXAxisLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.RoundEdgeBarChartRenderer;
 import com.sunmi.assistant.dashboard.ui.SpecificLabelsXAxisRenderer;
+import com.sunmi.assistant.dashboard.ui.SpecificLabelsYAxisRenderer;
 import com.sunmi.assistant.data.SunmiStoreRemote;
 import com.sunmi.assistant.data.response.OrderTimeDistributionResp;
 import com.sunmi.assistant.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
 import sunmi.common.utils.CommonHelper;
+import sunmi.common.utils.log.LogCat;
 
 /**
  * @author yinhui
@@ -56,7 +58,7 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
 
     @Override
     protected void load(int companyId, int shopId, int period, Model model) {
-        setState(STATE_LOADING);
+        toStateLoading();
         int interval;
         if (period == DashboardContract.TIME_PERIOD_TODAY) {
             interval = 3600;
@@ -69,7 +71,7 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
                 new CardCallback<OrderTimeDistributionResp>() {
                     @Override
                     public void success(OrderTimeDistributionResp data) {
-                        Log.d(TAG, "HTTP request time distribution detail success.");
+                        LogCat.d(TAG, "HTTP request time distribution detail success.");
                         List<OrderTimeDistributionResp.PeriodItem> list = data.getOrder_list();
                         List<BarEntry> amountList = new ArrayList<>(list.size());
                         List<BarEntry> countList = new ArrayList<>(list.size());
@@ -85,6 +87,9 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
     }
 
     public class TimeDistributionType extends ItemType<Model, BaseViewHolder<Model>> {
+
+        private SpecificLabelsXAxisRenderer mXAxisRenderer;
+        private SpecificLabelsYAxisRenderer mYAxisRenderer;
 
         @Override
         public int getLayoutId(int type) {
@@ -104,6 +109,8 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
             Context context = view.getContext();
             float dashLength = CommonHelper.dp2px(context, 4f);
             float dashSpaceLength = CommonHelper.dp2px(context, 2f);
+            mXAxisRenderer = new SpecificLabelsXAxisRenderer(chart);
+            mYAxisRenderer = new SpecificLabelsYAxisRenderer(chart);
 
             chart.setTouchEnabled(false);
             chart.getDescription().setEnabled(false);
@@ -115,6 +122,8 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
             renderer.setRadius(12);
             chart.setFitBars(true);
             chart.setRenderer(renderer);
+            chart.setXAxisRenderer(mXAxisRenderer);
+            chart.setRendererLeftYAxis(mYAxisRenderer);
 
             XAxis xAxis = chart.getXAxis();
             xAxis.setDrawAxisLine(false);
@@ -140,39 +149,58 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
 
         @Override
         public void onBindViewHolder(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-            Log.d(TAG, "Time distribution card setup view.");
-            setHolder(holder);
+            LogCat.d(TAG, "Time distribution card setup view.");
+            if (isStateInit()) {
+                LogCat.d(TAG, "Time distribution card setup view skip.");
+                return;
+            }
+
+            holder.getView(R.id.layout_dashboard_content).setVisibility(View.VISIBLE);
+            holder.getView(R.id.pb_dashboard_loading).setVisibility(View.GONE);
+
             TextView title = holder.getView(R.id.tv_dashboard_title);
             BarChart chart = holder.getView(R.id.chart_dashboard_bar);
             TextView bySales = holder.getView(R.id.tv_dashboard_radio_by_sales);
             TextView byOrder = holder.getView(R.id.tv_dashboard_radio_by_order);
+
             title.setText(model.title);
             bySales.setSelected(model.dataSource == DashboardContract.DATA_MODE_SALES);
             byOrder.setSelected(model.dataSource == DashboardContract.DATA_MODE_ORDER);
 
-            if (getState() == STATE_INIT || getState() == STATE_LOADING) {
-                Log.d(TAG, "Time distribution card setup view skip.");
-                return;
+            List<BarEntry> newDataSet = model.dataSets.get(model.dataSource);
+            if (newDataSet == null) {
+                newDataSet = new ArrayList<>();
+                model.dataSets.put(model.dataSource, newDataSet);
             }
-
-            List<BarEntry> dataList = model.dataSets.get(model.dataSource);
-            if (dataList == null || dataList.size() == 0) {
-                chart.setData(null);
-                chart.invalidate();
-                holder.getView(R.id.pb_dashboard_loading).setVisibility(View.GONE);
-                return;
+            int min, max;
+            if (newDataSet.isEmpty()) {
+                if (getPeriod() == DashboardContract.TIME_PERIOD_MONTH) {
+                    Calendar calendar = Calendar.getInstance();
+                    min = 10001;
+                    max = calendar.getActualMaximum(Calendar.DAY_OF_MONTH) + 10001;
+                } else if (getPeriod() == DashboardContract.TIME_PERIOD_WEEK) {
+                    min = 100;
+                    max = 107;
+                } else {
+                    min = 0;
+                    max = 25;
+                }
+                for (int i = min; i < max; i++) {
+                    newDataSet.add(new BarEntry(i, 0f));
+                }
             }
 
             // Calculate min & max of Y-Axis value.
-            float max = 0;
-            for (BarEntry entry : dataList) {
+            max = 0;
+            for (BarEntry entry : newDataSet) {
                 if (entry.getY() > max) {
-                    max = entry.getY();
+                    max = (int) Math.ceil(entry.getY());
                 }
             }
-            chart.getAxisLeft().setAxisMaximum(max > 0 ? max * 1.2f : 5f);
-            chart.setXAxisRenderer(new SpecificLabelsXAxisRenderer(chart,
-                    Utils.getBarChartXAxisFloatLabels(getPeriod(), dataList), false));
+
+            mXAxisRenderer.setPeriod(getPeriod(), newDataSet.size());
+            float maxValue = mYAxisRenderer.setMaxValue(max);
+            chart.getAxisLeft().setAxisMaximum(maxValue);
 
             // Calculate bar width.
             float barWidthRatio;
@@ -182,23 +210,23 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
                 barWidthRatio = 0.2f;
             } else {
                 barWidthRatio = 0.65f;
-                dataList.add(new BarEntry(24f, 0f));
+                newDataSet.add(new BarEntry(24f, 0f));
             }
 
             BarDataSet dataSet;
             BarData barData = chart.getData();
             if (barData != null && barData.getDataSetCount() > 0) {
                 dataSet = (BarDataSet) barData.getDataSetByIndex(0);
-                dataSet.setValues(dataList);
+                dataSet.setValues(newDataSet);
                 barData.setBarWidth(barWidthRatio);
                 barData.notifyDataChanged();
                 chart.notifyDataSetChanged();
                 chart.invalidate();
 //                BarChartDataUpdateAnim anim = new BarChartDataUpdateAnim(300, chart,
-//                        dataSet.getValues(), dataList);
+//                        dataSet.getValues(), newDataSet);
 //                anim.run();
             } else {
-                dataSet = new BarDataSet(dataList, "data");
+                dataSet = new BarDataSet(newDataSet, "data");
                 dataSet.setColor(holder.getContext().getResources().getColor(R.color.color_2997FF));
                 dataSet.setDrawValues(false);
                 barData = new BarData(dataSet);
@@ -207,7 +235,6 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
                 chart.invalidate();
             }
             chart.animateY(300, Easing.EaseOutCubic);
-            holder.getView(R.id.pb_dashboard_loading).setVisibility(View.GONE);
         }
     }
 
