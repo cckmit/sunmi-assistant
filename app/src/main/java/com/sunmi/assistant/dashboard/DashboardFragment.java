@@ -144,7 +144,9 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             return;
         }
         List<Object> list = new ArrayList<>(data.size());
-        for (BaseRefreshCard item : data) {
+        for (int i = 0, size = data.size(); i < size; i++) {
+            BaseRefreshCard item = data.get(i);
+            item.setAdapterWithPosition(mAdapter, i);
             item.registerIntoAdapter(mAdapter);
             list.add(item.getModel());
         }

@@ -3,7 +3,6 @@ package com.sunmi.assistant.dashboard.card;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.TextView;
@@ -19,6 +18,7 @@ import java.util.Locale;
 
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
+import sunmi.common.utils.log.LogCat;
 
 public class TotalRefundsCard extends BaseRefreshCard<TotalRefundsCard.Model> {
 
@@ -64,15 +64,15 @@ public class TotalRefundsCard extends BaseRefreshCard<TotalRefundsCard.Model> {
         if (!model.needLoad) {
             return;
         }
-        Log.d(TAG, "HTTP request total refunds volume.");
-        setState(STATE_LOADING);
+        LogCat.d(TAG, "HTTP request total refunds volume.");
+        toStateLoading();
         Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(DashboardContract.TIME_PERIOD_TODAY);
         SunmiStoreRemote.get().getOrderRefundCount(companyId, shopId,
                 periodTimestamp.first, periodTimestamp.second, 1,
                 new CardCallback<OrderTotalRefundsResp>() {
                     @Override
                     public void success(OrderTotalRefundsResp data) {
-                        Log.d(TAG, "HTTP request total refunds success.");
+                        LogCat.d(TAG, "HTTP request total refunds success.");
                         model.needLoad = false;
                         model.dataToday = data.getDay_refund();
                         model.dataWeek = data.getWeek_refund();
@@ -100,24 +100,28 @@ public class TotalRefundsCard extends BaseRefreshCard<TotalRefundsCard.Model> {
 
         @Override
         public void onBindViewHolder(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-            Log.d(TAG, "Setup card view.");
-            setHolder(holder);
+            LogCat.d(TAG, "Setup card view.");
+            if (isStateInit()) {
+                LogCat.d(TAG, "Card data setup view skip.");
+                return;
+            }
+
+            holder.getView(R.id.layout_dashboard_content).setVisibility(View.VISIBLE);
+            holder.getView(R.id.pb_dashboard_loading).setVisibility(View.GONE);
+
+            if (TextUtils.isEmpty(model.trendName)) {
+                model.trendName = Utils.getTrendNameByPeriod(getContext(), getPeriod());
+            }
+            float trendData = model.getTrendData(getPeriod());
+
             TextView tvTitle = holder.getView(R.id.tv_dashboard_title);
             TextView tvData = holder.getView(R.id.tv_dashboard_data);
             TextView tvTrendName = holder.getView(R.id.tv_dashboard_trend_name);
             TextView tvTrendData = holder.getView(R.id.tv_dashboard_trend_data);
+
             tvTitle.setText(model.title);
-            if (!TextUtils.isEmpty(model.trendName)) {
-                tvTrendName.setText(model.trendName);
-            }
-
-            if (getState() == STATE_INIT || getState() == STATE_LOADING) {
-                Log.d(TAG, "Card data setup view skip.");
-                return;
-            }
-
+            tvTrendName.setText(model.trendName);
             tvData.setText(String.format(Locale.getDefault(), "%.0f", model.getData(getPeriod())));
-            float trendData = model.getTrendData(getPeriod());
             String trendFormatNumber = this.format.format(Math.abs(trendData * 100));
             tvTrendData.setText(holder.getContext().getResources()
                     .getString(R.string.dashboard_data_format, trendFormatNumber));
@@ -134,8 +138,6 @@ public class TotalRefundsCard extends BaseRefreshCard<TotalRefundsCard.Model> {
                         R.drawable.dashboard_ic_trend_down, 0, 0, 0);
                 tvTrendData.setTextColor(holder.getContext().getResources().getColor(R.color.color_00B552));
             }
-            holder.getView(R.id.pb_dashboard_loading).setVisibility(View.GONE);
-            Log.d(TAG, "Card data setup complete.");
         }
 
     }

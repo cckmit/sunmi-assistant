@@ -108,9 +108,9 @@ public class Utils {
 
     public static float encodeBarChartXAxisFloat(int period, long timestamp) {
         sTempCalendar.setTimeInMillis(timestamp * 1000);
-        if (period == 3) {
+        if (period == DashboardContract.TIME_PERIOD_MONTH) {
             return (float) (sTempCalendar.get(Calendar.DAY_OF_MONTH) + 10000);
-        } else if (period == 2) {
+        } else if (period == DashboardContract.TIME_PERIOD_WEEK) {
             int index = sTempCalendar.get(Calendar.DAY_OF_WEEK);
             index = (index + 5) % 7;
             return index + 100;
