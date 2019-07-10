@@ -73,7 +73,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
         mRefreshLayout.setDelegate(this);
         mRefreshLayout.setRefreshViewHolder(new BGANormalRefreshViewHolder(context, true));
         mRefreshLayout.setPullDownRefreshEnable(false);
-        rvChoose.setDivider(R.drawable.shap_line_divider);
+        rvChoose.init(R.drawable.shap_line_divider);
 
         if (action == CommonConstants.ACTION_LOGIN_CHOOSE_COMPANY) {
             titleBar.setAppTitle(R.string.str_select_company);

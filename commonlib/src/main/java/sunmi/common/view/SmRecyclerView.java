@@ -25,12 +25,14 @@ public class SmRecyclerView extends RecyclerView {
         super(context, attrs, defStyle);
     }
 
-    public void setDivider(int drawableRes) {
+    public void init(int deviderDrawableRes) {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         setLayoutManager(layoutManager);
-        DividerItemDecoration decoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
-        decoration.setDrawable(getResources().getDrawable(drawableRes));
-        addItemDecoration(decoration);
+        if (deviderDrawableRes > 0) {
+            DividerItemDecoration decoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+            decoration.setDrawable(getResources().getDrawable(deviderDrawableRes));
+            addItemDecoration(decoration);
+        }
     }
 
 }

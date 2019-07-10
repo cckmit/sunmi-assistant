@@ -45,7 +45,7 @@ public class IPCListAdapter extends RecyclerView.Adapter<IPCListAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         holder.itemView.setTag(position);
-        setChecked(holder, position);
+//        setChecked(holder, position);
         holder.ivDevice.setImageResource(SunmiDevUtils.setSearchLogo(data.get(position).getModel()));
         holder.tvName.setText(data.get(position).getModel());
         holder.tvSn.setText(data.get(position).getDeviceid());
