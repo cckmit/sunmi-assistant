@@ -37,8 +37,6 @@ import sunmi.common.utils.log.LogCat;
  */
 public class PayMethodCard extends BaseRefreshCard<PayMethodCard.Model> {
 
-    private static final String TAG = "PayMethodCard";
-
     private static final String HOLDER_TAG_LEGENDS = "legends";
     private static final String HOLDER_TAG_LEGENDS_DATA = "legends_data";
 
@@ -46,10 +44,11 @@ public class PayMethodCard extends BaseRefreshCard<PayMethodCard.Model> {
             0xFF2997FF, 0xFF09E896, 0xFFED9600, 0xFFFFA100, 0xFFFC5656, 0xFF8766FF, 0xFFC0C0C0
     };
 
-    private static final String[] PAY_TYPE_NAME = {"支付宝", "微信", "现金", "银行卡刷卡", "银联二维码", "其他"};
+    private final String[] PAY_TYPE_NAME;
 
     public PayMethodCard(Context context, int companyId, int shopId, int period) {
         super(context, companyId, shopId, period);
+        PAY_TYPE_NAME = context.getResources().getStringArray(R.array.dashboard_pay_type);
     }
 
     @Override

@@ -22,8 +22,6 @@ import sunmi.common.utils.log.LogCat;
 
 public class TotalRefundsCard extends BaseRefreshCard<TotalRefundsCard.Model> {
 
-    private static final String TAG = "CustomerPriceCard";
-
     public TotalRefundsCard(Context context, int companyId, int shopId, int period) {
         super(context, companyId, shopId, period);
     }

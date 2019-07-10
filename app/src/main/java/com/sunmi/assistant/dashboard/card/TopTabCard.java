@@ -18,8 +18,6 @@ import sunmi.common.utils.log.LogCat;
  */
 public class TopTabCard extends BaseRefreshCard<TopTabCard.Model> {
 
-    private static final String TAG = "TopTabCard";
-
     public TopTabCard(Context context, int period) {
         super(context, -1, -1, period);
     }

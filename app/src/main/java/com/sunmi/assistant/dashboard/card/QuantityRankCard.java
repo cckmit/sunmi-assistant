@@ -31,8 +31,6 @@ import sunmi.common.utils.log.LogCat;
  */
 public class QuantityRankCard extends BaseRefreshCard<QuantityRankCard.Model> {
 
-    private static final String TAG = "QuantityRankCard";
-
     public QuantityRankCard(Context context, int companyId, int shopId, int period) {
         super(context, companyId, shopId, period);
     }
@@ -135,7 +133,7 @@ public class QuantityRankCard extends BaseRefreshCard<QuantityRankCard.Model> {
 
     }
 
-    private static class RankListAdapter extends CommonAdapter<Item> {
+    private class RankListAdapter extends CommonAdapter<Item> {
 
         private RankListAdapter(Context context) {
             super(context, R.layout.dashboard_recycle_item_list_item);

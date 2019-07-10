@@ -22,8 +22,6 @@ import sunmi.common.utils.log.LogCat;
 
 public class TotalCountCard extends BaseRefreshCard<TotalCountCard.Model> {
 
-    private static final String TAG = "TotalCountCard";
-
     public TotalCountCard(Context context, int companyId, int shopId, int period) {
         super(context, companyId, shopId, period);
     }
