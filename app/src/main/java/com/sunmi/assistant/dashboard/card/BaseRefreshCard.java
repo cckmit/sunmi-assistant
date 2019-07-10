@@ -1,11 +1,14 @@
 package com.sunmi.assistant.dashboard.card;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.IdRes;
 import android.util.Log;
 
 import com.sunmi.assistant.dashboard.DashboardContract;
 
+import sunmi.common.base.recycle.BaseArrayAdapter;
 import sunmi.common.base.recycle.BaseRecyclerAdapter;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
@@ -17,18 +20,22 @@ import sunmi.common.rpc.retrofit.RetrofitCallback;
 
 public abstract class BaseRefreshCard<Model> {
 
-    private static final String TAG = "BaseRefreshCard";
+    protected final String TAG = this.getClass().getSimpleName();
 
-    static final int STATE_INIT = 0;
-    static final int STATE_LOADING = 1;
-    static final int STATE_SUCCESS = 2;
-    static final int STATE_FAILED = 3;
+    private static final int STATE_INIT = 0;
+    private static final int STATE_FIRST_LOADING = 1;
+    private static final int STATE_LOADING = 10;
+    private static final int STATE_SUCCESS = 11;
+    private static final int STATE_FAILED = 12;
 
     private Context mContext;
+    private Handler mHandler = new Handler(Looper.getMainLooper());
 
     private Model mModel;
     private ItemType<Model, BaseViewHolder<Model>> mType;
-    private BaseViewHolder<Model> mHolder;
+
+    private BaseArrayAdapter<Object> mAdapter;
+    private int mPosition;
 
     private int mCompanyId;
     private int mShopId;
@@ -56,12 +63,16 @@ public abstract class BaseRefreshCard<Model> {
         return mContext;
     }
 
-    int getState() {
-        return mState;
+    void toStateLoading() {
+        if (mState == STATE_INIT) {
+            mState = STATE_FIRST_LOADING;
+        } else {
+            mState = STATE_LOADING;
+        }
     }
 
-    void setState(int state) {
-        mState = state;
+    boolean isStateInit() {
+        return mState == STATE_INIT || mState == STATE_FIRST_LOADING;
     }
 
     public int getPeriod() {
@@ -81,12 +92,9 @@ public abstract class BaseRefreshCard<Model> {
         adapter.register((Class<Model>) mModel.getClass(), mType);
     }
 
-    void setHolder(BaseViewHolder<Model> holder) {
-        mHolder = holder;
-    }
-
-    public void clearHolder() {
-        mHolder = null;
+    public void setAdapterWithPosition(BaseArrayAdapter<Object> adapter, int position) {
+        this.mAdapter = adapter;
+        this.mPosition = position;
     }
 
     public void setCompanyId(int companyId, int shopId) {
@@ -131,8 +139,8 @@ public abstract class BaseRefreshCard<Model> {
     }
 
     void updateView() {
-        if (mHolder != null) {
-            mType.onBindViewHolder(mHolder, mModel, mHolder.getAdapterPosition());
+        if (mAdapter != null) {
+            mHandler.post(() -> mAdapter.notifyItemChanged(mPosition));
         }
     }
 
@@ -183,6 +191,9 @@ public abstract class BaseRefreshCard<Model> {
 
         public abstract void success(Response data);
 
+        public void fail(boolean isFirstFail, int code, String msg) {
+        }
+
         @Override
         public void onSuccess(int code, String msg, Response data) {
             mState = STATE_SUCCESS;
@@ -192,8 +203,13 @@ public abstract class BaseRefreshCard<Model> {
 
         @Override
         public void onFail(int code, String msg, Response data) {
+            Log.e(TAG, "Dashboard card request Failed. " + msg);
+            boolean isFirstFail = isStateInit();
             mState = STATE_FAILED;
-            Log.e(TAG, "HTTP request Failed. " + msg);
+            fail(isFirstFail, code, msg);
+            if (isFirstFail) {
+                updateView();
+            }
         }
     }
 

@@ -7,7 +7,7 @@
     <shape
         android:innerRadius="@dimen/dp_120"
         android:shape="ring"
-        android:thicknessRatio="78"
+        android:thicknessRatio="80"
         android:useLevel="false">
         <gradient
             android:centerColor="@color/colorLoadingCenter"

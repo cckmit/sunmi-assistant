@@ -51,7 +51,6 @@ public class TitleCard extends BaseRefreshCard<TitleCard.Model> {
 
         @Override
         public void onBindViewHolder(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-            setHolder(holder);
             MainTopBar bar = holder.getView(R.id.dashboard_title);
             bar.setCompanyName(model.companyName);
             bar.setShopName(model.shopName);

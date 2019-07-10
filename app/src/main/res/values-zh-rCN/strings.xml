@@ -40,15 +40,6 @@
     <string name="dashboard_purchase_rank">支付方式</string>
     <string name="dashboard_quantity_rank">商品销量排行</string>
     <string name="dashboard_purchase_others">其他</string>
-    <string-array name="dashboard_week_name">
-        <item>周一</item>
-        <item>周二</item>
-        <item>周三</item>
-        <item>周四</item>
-        <item>周五</item>
-        <item>周六</item>
-        <item>周日</item>
-    </string-array>
 
     <string name="order_list_title">详情列表</string>
     <string name="order_filter_sort">综合排序</string>
@@ -72,6 +63,7 @@
     <string name="order_order_detail">支付明细</string>
     <string name="order_commodity">商品</string>
     <string name="order_quantity">数量</string>
+
     <string name="tip_no_device_please_add">暂无设备, 请添加</string>
     <string name="str_my_shop">我的门店</string>
     <string name="str_current_shop">当前门店</string>
