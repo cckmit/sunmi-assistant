@@ -20,7 +20,7 @@ import sunmi.common.rpc.retrofit.RetrofitCallback;
 
 public abstract class BaseRefreshCard<Model> {
 
-    private static final String TAG = "BaseRefreshCard";
+    protected final String TAG = this.getClass().getSimpleName();
 
     private static final int STATE_INIT = 0;
     private static final int STATE_FIRST_LOADING = 1;

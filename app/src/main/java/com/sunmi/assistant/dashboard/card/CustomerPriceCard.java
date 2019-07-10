@@ -22,8 +22,6 @@ import sunmi.common.utils.log.LogCat;
 
 public class CustomerPriceCard extends BaseRefreshCard<CustomerPriceCard.Model> {
 
-    private static final String TAG = "CustomerPriceCard";
-
     public CustomerPriceCard(Context context, int companyId, int shopId, int period) {
         super(context, companyId, shopId, period);
     }

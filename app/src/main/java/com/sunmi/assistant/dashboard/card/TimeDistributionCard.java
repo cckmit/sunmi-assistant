@@ -39,8 +39,6 @@ import sunmi.common.utils.log.LogCat;
  */
 public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.Model> {
 
-    private static final String TAG = "TimeDistributionCard";
-
     public TimeDistributionCard(Context context, int companyId, int shopId, int period) {
         super(context, companyId, shopId, period);
     }
