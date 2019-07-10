@@ -5,14 +5,12 @@ import android.content.Context;
 import android.util.Pair;
 import android.util.SparseArray;
 
-import com.github.mikephil.charting.data.BarEntry;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.DashboardContract;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import sunmi.common.constant.CommonConfig;
@@ -108,9 +106,9 @@ public class Utils {
 
     public static float encodeBarChartXAxisFloat(int period, long timestamp) {
         sTempCalendar.setTimeInMillis(timestamp * 1000);
-        if (period == 3) {
+        if (period == DashboardContract.TIME_PERIOD_MONTH) {
             return (float) (sTempCalendar.get(Calendar.DAY_OF_MONTH) + 10000);
-        } else if (period == 2) {
+        } else if (period == DashboardContract.TIME_PERIOD_WEEK) {
             int index = sTempCalendar.get(Calendar.DAY_OF_WEEK);
             index = (index + 5) % 7;
             return index + 100;
@@ -126,16 +124,6 @@ public class Utils {
             return weekName[(int) (value - 100)];
         } else {
             return String.format(Locale.getDefault(), "%02.0f:00", value);
-        }
-    }
-
-    public static float[] getBarChartXAxisFloatLabels(int period, List<BarEntry> data) {
-        if (period == DashboardContract.TIME_PERIOD_TODAY) {
-            return new float[]{0, 4, 8, 12, 16, 20, 24};
-        } else if (period == DashboardContract.TIME_PERIOD_WEEK) {
-            return new float[]{100, 101, 102, 103, 104, 105, 106};
-        } else {
-            return new float[]{10001, 10006, 10012, 10018, 10024, 10000 + data.size()};
         }
     }
 

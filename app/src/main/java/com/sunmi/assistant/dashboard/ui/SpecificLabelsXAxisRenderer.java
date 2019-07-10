@@ -3,6 +3,7 @@ package com.sunmi.assistant.dashboard.ui;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.renderer.XAxisRenderer;
+import com.sunmi.assistant.dashboard.DashboardContract;
 
 /**
  * @author yinhui
@@ -13,14 +14,26 @@ public class SpecificLabelsXAxisRenderer extends XAxisRenderer {
     private float[] labels;
     private boolean adjustLabelCountToChartWidth;
 
-    public SpecificLabelsXAxisRenderer(BarChart chart, float[] labels, boolean adjustLabelCountToChartWidth) {
+    public SpecificLabelsXAxisRenderer(BarChart chart) {
         super(chart.getViewPortHandler(), chart.getXAxis(), chart.getTransformer(YAxis.AxisDependency.LEFT));
-        this.labels = labels;
-        this.adjustLabelCountToChartWidth = adjustLabelCountToChartWidth;
+    }
+
+    public void setPeriod(int period, int maxDay) {
+        if (period == DashboardContract.TIME_PERIOD_TODAY) {
+            labels = new float[]{0, 4, 8, 12, 16, 20, 24};
+        } else if (period == DashboardContract.TIME_PERIOD_WEEK) {
+            labels = new float[]{100, 101, 102, 103, 104, 105, 106};
+        } else {
+            labels = new float[]{10001, 10006, 10012, 10018, 10024, 10000 + maxDay};
+        }
     }
 
     @Override
     protected void computeAxisValues(float min, float max) {
+        if (labels == null) {
+            super.computeAxisValues(min, max);
+            return;
+        }
         mAxis.mEntryCount = labels.length;
         mAxis.mEntries = labels;
         mAxis.setCenterAxisLabels(false);

@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.ListView;
@@ -24,14 +23,13 @@ import sunmi.common.base.adapter.CommonAdapter;
 import sunmi.common.base.adapter.ViewHolder;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
+import sunmi.common.utils.log.LogCat;
 
 /**
  * @author yinhui
  * @since 2019-07-01
  */
 public class QuantityRankCard extends BaseRefreshCard<QuantityRankCard.Model> {
-
-    private static final String TAG = "QuantityRankCard";
 
     public QuantityRankCard(Context context, int companyId, int shopId, int period) {
         super(context, companyId, shopId, period);
@@ -49,14 +47,14 @@ public class QuantityRankCard extends BaseRefreshCard<QuantityRankCard.Model> {
 
     @Override
     protected void load(int companyId, int shopId, int period, Model model) {
-        setState(STATE_LOADING);
+        toStateLoading();
         Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(period);
         SunmiStoreRemote.get().getOrderQuantityRank(companyId, shopId,
                 periodTimestamp.first, periodTimestamp.second,
                 new CardCallback<OrderQuantityRankResp>() {
                     @Override
                     public void success(OrderQuantityRankResp data) {
-                        Log.d(TAG, "HTTP request quantity rank success.");
+                        LogCat.d(TAG, "HTTP request quantity rank success.");
                         List<OrderQuantityRankResp.QuantityRankItem> list = data.getQuantity_rank();
                         Collections.sort(list, (o1, o2) -> o2.getQuantity() - o1.getQuantity());
                         int size = list.size();
@@ -100,27 +98,42 @@ public class QuantityRankCard extends BaseRefreshCard<QuantityRankCard.Model> {
 
         @Override
         public void onBindViewHolder(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-            setHolder(holder);
-            ListView listView = holder.getView(R.id.lv_dashboard_list);
+            LogCat.d(TAG, "Quantity rank CARD view setup.");
+            if (isStateInit()) {
+                LogCat.d(TAG, "CARD setup view skip...");
+                return;
+            }
+
+            holder.getView(R.id.layout_dashboard_content).setVisibility(View.VISIBLE);
+            holder.getView(R.id.pb_dashboard_loading).setVisibility(View.GONE);
+
+            if (model.list == null) {
+                model.list = new ArrayList<>(10);
+            }
+            int size = model.list.size();
+            if (model.list.isEmpty()) {
+                for (int i = 0; i < 10; i++) {
+                    model.list.add(new Item(i + 1, "--", "--"));
+                }
+            } else if (size < 10) {
+                for (int i = size; i < 10; i++) {
+                    model.list.add(new Item(i + 1, "--", "--"));
+                }
+            }
+
             TextView title = holder.getView(R.id.tv_dashboard_title);
             title.setText(model.title);
 
-            if (getState() == STATE_INIT || getState() == STATE_LOADING) {
-                Log.d(TAG, "Card data setup view skip.");
-                return;
-            }
-
-            if (model.list == null || model.list.size() == 0) {
-                return;
-            }
+            ListView listView = holder.getView(R.id.lv_dashboard_list);
             RankListAdapter adapter = (RankListAdapter) listView.getAdapter();
             adapter.setDatas(model.list);
             adapter.notifyDataSetChanged();
+            listView.requestLayout();
         }
 
     }
 
-    private static class RankListAdapter extends CommonAdapter<Item> {
+    private class RankListAdapter extends CommonAdapter<Item> {
 
         private RankListAdapter(Context context) {
             super(context, R.layout.dashboard_recycle_item_list_item);
@@ -128,6 +141,7 @@ public class QuantityRankCard extends BaseRefreshCard<QuantityRankCard.Model> {
 
         @Override
         public void convert(ViewHolder holder, Item item) {
+            LogCat.d(TAG, "Quantity rank LIST view setup.");
             TextView rank = holder.getView(R.id.tv_dashboard_rank);
             TextView name = holder.getView(R.id.tv_dashboard_name);
             TextView count = holder.getView(R.id.tv_dashboard_count);

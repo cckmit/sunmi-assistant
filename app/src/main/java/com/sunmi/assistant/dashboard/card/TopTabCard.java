@@ -10,6 +10,7 @@ import com.sunmi.assistant.dashboard.DashboardContract;
 
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
+import sunmi.common.utils.log.LogCat;
 
 /**
  * @author yinhui
@@ -37,8 +38,6 @@ public class TopTabCard extends BaseRefreshCard<TopTabCard.Model> {
 
     public class TopTabType extends ItemType<Model, BaseViewHolder<Model>> {
 
-        private static final String TAG = "TabType";
-
         @Override
         public int getLayoutId(int type) {
             return R.layout.dashboard_recycle_item_tab;
@@ -59,6 +58,7 @@ public class TopTabCard extends BaseRefreshCard<TopTabCard.Model> {
 
         @Override
         public void onBindViewHolder(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+            LogCat.d(TAG, "Top tab CARD view setup.");
             TextView today = holder.getView(R.id.tv_dashboard_today);
             TextView week = holder.getView(R.id.tv_dashboard_week);
             TextView month = holder.getView(R.id.tv_dashboard_month);
