@@ -12,7 +12,7 @@
         android:layout_marginEnd="@dimen/dp_25"
         android:ellipsize="end"
         android:maxWidth="@dimen/dp_200"
-        android:singleLine="true"
+        android:maxLines="1"
         android:textColor="@color/color_333338"
         android:textSize="@dimen/sp_14"
         app:layout_constraintBottom_toBottomOf="parent"
