@@ -1,7 +1,6 @@
 package com.sunmi.assistant.ui.fragment;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.NestedScrollView;
@@ -347,7 +346,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     @Override
     public int[] getStickNotificationId() {
         return new int[]{NotificationConstant.shopSwitched, NotificationConstant.netConnected,
-                NotificationConstant.netDisconnection, NotificationConstant.updateConnectComplete};
+                NotificationConstant.netDisconnection, NotificationConstant.updateConnectComplete,
+                NotificationConstant.connectedTosunmiDevice};
     }
 
     @Override
@@ -366,6 +366,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         } else if (NotificationConstant.apStatusException == id) {//异常
             if (TextUtils.isEmpty(MyNetworkCallback.CURRENT_ROUTER)) return;
             devStatusChangeList(MyNetworkCallback.CURRENT_ROUTER, DeviceStatus.EXCEPTION);
+        } else if (NotificationConstant.connectedTosunmiDevice == id) {//异常
+            devStatusUnknownToException();
         } else if (NotificationConstant.apPostStatus == id) {//在线 离线 设备状态
             String msg = (String) args[0];
             if (TextUtils.isEmpty(msg)) return;
@@ -396,14 +398,17 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                         routerList.clear();
                         for (int j = 0; j < jsonArrayList.length(); j++) {
                             JSONObject object2 = (JSONObject) jsonArrayList.opt(j);
-                            SunmiDevice device = new SunmiDevice();
-                            device.setDeviceid(object2.getString("Sn"));
-                            device.setShopId(object2.getInt("ShopId"));
-                            device.setName("SUNMI-W1");
-                            device.setModel("W1");
-                            device.setStatus(object2.getInt("ActiveStatus"));
-                            device.setType("ROUTER");
-                            routerList.add(device);
+                            int shopId = object2.getInt("ShopId");
+                            if (shopId == SpUtils.getShopId()) {
+                                SunmiDevice device = new SunmiDevice();
+                                device.setDeviceid(object2.getString("Sn"));
+                                device.setShopId(shopId);
+                                device.setName("SUNMI-W1");
+                                device.setModel("W1");
+                                device.setStatus(object2.getInt("ActiveStatus"));
+                                device.setType("ROUTER");
+                                routerList.add(device);
+                            }
                         }
                         refreshList();
                     }
@@ -557,6 +562,20 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         }
     }
 
+    private void devStatusUnknownToException() {
+        if (TextUtils.isEmpty(MyNetworkCallback.CURRENT_ROUTER)) return;
+        for (SunmiDevice device : deviceList) {
+            if (TextUtils.equals(device.getDeviceid(), MyNetworkCallback.CURRENT_ROUTER)) {
+                if (device.getStatus() == DeviceStatus.UNKNOWN.ordinal()
+                        || device.getStatus() == DeviceStatus.OFFLINE.ordinal()) {
+                    device.setStatus(DeviceStatus.EXCEPTION.ordinal());
+                    deviceListAdapter.notifyDataSetChanged();
+                    return;
+                }
+            }
+        }
+    }
+
     private void startTimerExceptionRefreshList() {
         timerException = new Timer();
         timerException.schedule(new TimerTask() {
@@ -635,13 +654,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     //检查ap版本
     private void checkApVersion(String sn, int status) {
-        ApCompatibleUtils.getInstance().checkVersion(mActivity, sn,
-                new ApCompatibleUtils.CompatibleCallback() {
-                    @Override
-                    public void onCheckCompatible(boolean isCompatible, String currSn) {
-                        gotoRouterManager(sn, DeviceStatus.valueOf(status).getValue());
-                    }
-                });
+        ApCompatibleUtils.getInstance().checkVersion(mActivity, sn, (isCompatible, currSn) -> {
+            gotoRouterManager(sn, DeviceStatus.valueOf(status).getValue());
+        });
     }
 
     private void gotoRouterManager(String sn, String status) {
@@ -665,28 +680,22 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             msg = getString(R.string.tip_delete_printer);
         }
         new CommonDialog.Builder(mActivity).setMessage(msg)
-                .setCancelButton(R.string.sm_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                .setCancelButton(R.string.sm_cancel, (dialog, which) -> {
 
-                    }
                 })
                 .setConfirmButton(R.string.str_delete, R.color.read_deep_more,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                if (-1 == NetworkUtils.getNetStatus(mActivity)) {
-                                    unBindNetDisConnected();
-                                    return;
-                                }
-                                if (TextUtils.equals(device.getType(), "ROUTER")) {
-                                    mPresenter.unbindRouter(device.getDeviceid());
-                                } else if (TextUtils.equals(device.getType(), "IPC")) {
-                                    mPresenter.unbindIPC(device.getId());
-                                } else if (TextUtils.equals(device.getType(), "PRINTER")) {
-                                    mPresenter.unBindPrinter(device.getDeviceid());
-                                }
+                        (dialog, which) -> {
+                            dialog.dismiss();
+                            if (-1 == NetworkUtils.getNetStatus(mActivity)) {
+                                unBindNetDisConnected();
+                                return;
+                            }
+                            if (TextUtils.equals(device.getType(), "ROUTER")) {
+                                mPresenter.unbindRouter(device.getDeviceid());
+                            } else if (TextUtils.equals(device.getType(), "IPC")) {
+                                mPresenter.unbindIPC(device.getId());
+                            } else if (TextUtils.equals(device.getType(), "PRINTER")) {
+                                mPresenter.unBindPrinter(device.getDeviceid());
                             }
                         }).create().show();
     }
@@ -695,12 +704,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     private void unBindNetDisConnected() {
         new CommonDialog.Builder(mActivity)
                 .setMessage(getString(R.string.str_dialog_net_disconnected))
-                .setCancelButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).create().show();
+                .setCancelButton(R.string.str_confirm, (dialog, which) -> dialog.dismiss()).create().show();
     }
 
 }
