@@ -134,7 +134,6 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
         int index = mFilterAdapters.size();
         DropdownMenu menu = mFilters.get(index);
         DropdownAdapter adapter = new DropdownAdapter(this);
-        adapter.setOnItemClickListener(new OnFilterItemClickListener(index));
         menu.setLayoutManager(new FilterMenuLayoutManager(this));
         menu.setPopupHelper(helper);
         menu.setAdapter(adapter);
@@ -165,6 +164,7 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
             }
         }
         mFilterAdapters.get(filterIndex).setData(list, selection);
+        mFilterAdapters.get(filterIndex).setOnItemClickListener(new OnFilterItemClickListener(filterIndex));
     }
 
     @Override

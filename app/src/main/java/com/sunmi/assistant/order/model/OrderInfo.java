@@ -3,15 +3,28 @@ package com.sunmi.assistant.order.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.HashMap;
+
 /**
  * @author yinhui
  * @since 2019-07-01
  */
 public class OrderInfo implements Parcelable {
 
+    // 订单类型tag
+    private static final String ORDER_TYPE_TAG_NORMAL = "payment-order-type-normal";
+    private static final String ORDER_TYPE_TAG_REFUNDS = "payment-order-type-refund";
+
     public static final int ORDER_TYPE_ALL = 0;
     public static final int ORDER_TYPE_NORMAL = 1;
     public static final int ORDER_TYPE_REFUNDS = 2;
+
+    public static final HashMap<String, Integer> ORDER_TYPE_MAP = new HashMap<>();
+
+    static {
+        ORDER_TYPE_MAP.put(ORDER_TYPE_TAG_NORMAL, ORDER_TYPE_NORMAL);
+        ORDER_TYPE_MAP.put(ORDER_TYPE_TAG_REFUNDS, ORDER_TYPE_REFUNDS);
+    }
 
     private int id;
     private String no;

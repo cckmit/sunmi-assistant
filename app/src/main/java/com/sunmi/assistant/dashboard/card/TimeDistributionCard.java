@@ -57,6 +57,7 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
     @Override
     protected void load(int companyId, int shopId, int period, Model model) {
         toStateLoading();
+        LogCat.d(TAG, "Start to request time distribution...");
         int interval;
         if (period == DashboardContract.TIME_PERIOD_TODAY) {
             interval = 3600;
