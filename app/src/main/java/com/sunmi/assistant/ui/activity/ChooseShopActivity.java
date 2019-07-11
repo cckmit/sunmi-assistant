@@ -55,7 +55,7 @@ public class ChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter>
         mPresenter = new ChooseShopPresenter();
         mPresenter.attachView(this);
         tvCurrShop.setText(SpUtils.getShopName());
-        rvChoose.setDivider(R.drawable.shap_line_divider);
+        rvChoose.init(R.drawable.shap_line_divider);
         mPresenter.getShopList(SpUtils.getCompanyId());
     }
 
