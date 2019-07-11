@@ -55,14 +55,14 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     public void loadConfig() {
         mCompanyId = SpUtils.getCompanyId();
         mShopId = SpUtils.getShopId();
-        initList(mCompanyId, mShopId, DashboardContract.TIME_PERIOD_INIT);
+        initList(mCompanyId, mShopId);
     }
 
     @Override
     public void switchPeriodTo(int period) {
-        LogCat.d(TAG, "Switch time span to: " + period);
+        LogCat.d(TAG, "All card switch period to: " + period + "; Current period is " + mPeriod);
         if (mPeriod == period || period == DashboardContract.TIME_PERIOD_INIT) {
-            LogCat.d(TAG, "Switch time span skip.");
+            LogCat.d(TAG, "Switch period skip.");
             return;
         }
         this.mPeriod = period;
@@ -99,10 +99,11 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         }
     }
 
-    private void initList(int companyId, int shopId, int period) {
+    private void initList(int companyId, int shopId) {
         if (!isViewAttached()) {
             return;
         }
+        int period = DashboardContract.TIME_PERIOD_INIT;
         Context context = mView.getContext();
 
         TopTabCard tab = new TopTabCard(context, period);
@@ -170,7 +171,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         mList.add(payMethod);
         mList.add(new QuantityRankCard(context, companyId, shopId, period));
         mView.initData(mList);
-        mTask = new RefreshTask(mList);
+        mTask = new RefreshTask();
         sHandler.postDelayed(mTask, REFRESH_TIME_PERIOD);
     }
 
@@ -189,19 +190,11 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         sHandler.removeCallbacks(mTask);
     }
 
-    private static class RefreshTask implements Runnable {
-
-        private final List<BaseRefreshCard> mList;
-
-        private RefreshTask(List<BaseRefreshCard> list) {
-            this.mList = list;
-        }
+    private class RefreshTask implements Runnable {
 
         @Override
         public void run() {
-            for (BaseRefreshCard card : mList) {
-                card.refresh();
-            }
+            refresh();
             sHandler.postDelayed(this, REFRESH_TIME_PERIOD);
         }
     }

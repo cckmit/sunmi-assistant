@@ -17,6 +17,7 @@ import sunmi.common.base.recycle.listener.OnItemLongClickListener;
 import sunmi.common.base.recycle.listener.OnViewClickListener;
 import sunmi.common.base.recycle.listener.OnViewLongClickListener;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.log.LogCat;
 
 public abstract class BaseRefreshCard<Model> {
 
@@ -121,12 +122,13 @@ public abstract class BaseRefreshCard<Model> {
     }
 
     public void setPeriod(int period) {
+        LogCat.d(TAG, TAG + " switch period to: " + period + "; Current period is " + mPeriod);
         if (this.mPeriod == period || period == DashboardContract.TIME_PERIOD_INIT) {
             return;
         }
         this.mPeriod = period;
         onPeriodChange(mModel, period);
-        if (mCompanyId > 0 && mShopId > 0 && mPeriod != DashboardContract.TIME_PERIOD_INIT) {
+        if (mCompanyId > 0 && mShopId > 0) {
             load(mCompanyId, mShopId, mPeriod, mModel);
         }
     }
