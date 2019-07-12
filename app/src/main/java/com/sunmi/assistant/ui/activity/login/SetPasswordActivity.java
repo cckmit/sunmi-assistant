@@ -104,7 +104,7 @@ public class SetPasswordActivity extends BaseActivity {
                 break;
             case R.id.btnComplete:
                 if (isFastClick(1500)) return;
-                if (!RegexUtils.isValidPassword(password) && password.length() < 8) {
+                if (!RegexUtils.isValidPassword(password) || password.length() < 8) {
                     shortTip(R.string.tip_password_non_standard);
                     return;
                 }

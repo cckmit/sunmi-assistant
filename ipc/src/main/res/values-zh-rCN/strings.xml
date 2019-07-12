@@ -34,7 +34,7 @@
     <string name="tip_bind_timeout">绑定超时</string>
     <string name="tip_no_play_video">当前日期无回放视频</string>
     <string name="loading_search_wifi">正在搜索Wi-Fi…</string>
-
+    <string name="str_setting_ipc_camera">摄像机设置</string>
 </resources>
 
 

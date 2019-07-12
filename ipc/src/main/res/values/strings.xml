@@ -34,6 +34,7 @@
     <string name="tip_bind_timeout">Bind timeout</string>
     <string name="tip_no_play_video">No video data</string>
     <string name="loading_search_wifi">Searching Wi-Fi…</string>
+    <string name="str_setting_ipc_camera">IPC Setting</string>
 
 </resources>
 

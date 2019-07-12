@@ -38,6 +38,7 @@ import com.sunmi.assistant.ui.adapter.DeviceListAdapter;
 import com.sunmi.assistant.utils.GlideImageLoader;
 import com.sunmi.cloudprinter.ui.Activity.PrinterManageActivity_;
 import com.sunmi.ipc.rpc.IpcConstants;
+import com.sunmi.ipc.view.IpcSettingActivity_;
 import com.sunmi.ipc.view.VideoPlayActivity_;
 import com.sunmi.sunmiservice.WebViewActivity_;
 import com.youth.banner.Banner;
@@ -313,6 +314,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             onDeviceClick(device);
         } else if (type == 1) {
             deleteDevice(device);
+        } else if (type == 2) {
+            IpcSettingActivity_.intent(mActivity).start();
         }
     }
 

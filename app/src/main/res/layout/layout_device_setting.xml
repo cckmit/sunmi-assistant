@@ -32,5 +32,20 @@
         android:text="@string/str_setting_delete_device"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/sp_14" />
+    <View
+        android:id="@+id/divider1"
+        android:layout_width="@dimen/dp_102"
+        android:layout_height="@dimen/dp_0_5"
+        android:background="@color/white_10a" />
+
+    <TextView
+        android:id="@+id/tv_setting"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_48"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="@string/str_setting_ipc_camera"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/sp_14" />
 
 </LinearLayout>
