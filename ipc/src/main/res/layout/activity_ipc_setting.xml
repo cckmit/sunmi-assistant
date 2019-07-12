@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorText_5">
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/c_white"
+        app:dividerShow="true"
+        app:leftDefaultClickEnable="true"
+        app:leftIcon="@mipmap/ic_back_dark"
+        app:titleText="@string/str_setting_ipc_camera"
+        app:titleTextColor="@color/colorText" />
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_bar">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <sunmi.common.view.SettingItemLayout
+                android:id="@+id/sil_camera_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/c_white"
+                app:imageRight="@mipmap/ic_right_arrow_small"
+                app:leftPadding="@dimen/dp_10"
+                app:leftText="摄像机名称"
+                app:parentHeight="@dimen/dp_60"
+                app:rightPadding="@dimen/dp_20"
+                app:rightText="IPC-1"
+                app:rightTextColor="@color/colorText_60" />
+
+
+            <sunmi.common.view.SettingItemLayout
+                android:id="@+id/sil_camera_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/sil_camera_name"
+                android:layout_marginTop="0.5dp"
+                android:background="@color/c_white"
+                app:imageRight="@mipmap/ic_right_arrow_small"
+                app:leftPadding="@dimen/dp_10"
+                app:leftText="摄像机详情"
+                app:parentHeight="@dimen/dp_60"
+                app:rightPadding="@dimen/dp_20"
+                app:rightTextColor="@color/colorText_60" />
+
+
+            <sunmi.common.view.SettingItemLayout
+                android:id="@+id/sil_voice_exception"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/sil_camera_detail"
+                android:layout_marginTop="16dp"
+                android:background="@color/c_white"
+                app:imageRight="@mipmap/ic_right_arrow_small"
+                app:leftPadding="@dimen/dp_10"
+                app:leftText="声音异常侦测"
+                app:parentHeight="@dimen/dp_60"
+                app:rightPadding="@dimen/dp_20"
+                app:rightText="开"
+                app:rightTextColor="@color/colorText_60" />
+
+
+            <sunmi.common.view.SettingItemLayout
+                android:id="@+id/sil_active_exception"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/sil_voice_exception"
+                android:layout_marginTop="0.5dp"
+                android:background="@color/c_white"
+                app:imageRight="@mipmap/ic_right_arrow_small"
+                app:leftPadding="@dimen/dp_10"
+                app:leftText="动态异常侦测"
+                app:parentHeight="@dimen/dp_60"
+                app:rightPadding="@dimen/dp_20"
+                app:rightText="开"
+                app:rightTextColor="@color/colorText_60" />
+
+
+            <sunmi.common.view.SettingItemLayout
+                android:id="@+id/sil_time_setting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/sil_active_exception"
+                android:layout_marginTop="0.5dp"
+                android:background="@color/c_white"
+                app:imageRight="@mipmap/ic_right_arrow_small"
+                app:leftPadding="@dimen/dp_10"
+                app:leftText="侦测时间设置"
+                app:parentHeight="@dimen/dp_60"
+                app:rightPadding="@dimen/dp_20"
+                app:rightText="开"
+                app:rightTextColor="@color/colorText_60" />
+
+
+            <sunmi.common.view.SettingItemLayout
+                android:id="@+id/sil_night_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/sil_time_setting"
+                android:layout_marginTop="16dp"
+                android:background="@color/c_white"
+                app:imageRight="@mipmap/ic_right_arrow_small"
+                app:leftPadding="@dimen/dp_10"
+                app:leftText="夜视模式"
+                app:parentHeight="@dimen/dp_60"
+                app:rightPadding="@dimen/dp_20"
+                app:rightText="自动切换"
+                app:rightTextColor="@color/colorText_60" />
+
+            <RelativeLayout
+                android:id="@+id/rl_light"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_72"
+                android:layout_below="@id/sil_night_style"
+                android:layout_marginTop="0.5dp"
+                android:background="@color/c_white">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/dp_20"
+                    android:text="状态指示灯"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/sp_16" />
+
+                <Switch
+                    android:id="@+id/switch_light"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/dp_20"
+                    android:checked="true"
+                    android:thumb="@drawable/switch_thumb"
+                    android:track="@drawable/switch_track" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_view_rotate"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_72"
+                android:layout_below="@id/rl_light"
+                android:layout_marginTop="0.5dp"
+                android:background="@color/c_white">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/dp_20"
+                    android:text="画面旋转180度"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/sp_16" />
+
+                <Switch
+                    android:id="@+id/switch_view_rotate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/dp_20"
+                    android:checked="true"
+                    android:thumb="@drawable/switch_thumb"
+                    android:track="@drawable/switch_track" />
+            </RelativeLayout>
+
+            <sunmi.common.view.SettingItemLayout
+                android:id="@+id/sil_wifi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rl_view_rotate"
+                android:layout_marginTop="16dp"
+                android:background="@color/c_white"
+                app:imageRight="@mipmap/ic_right_arrow_small"
+                app:leftPadding="@dimen/dp_10"
+                app:leftText="WiFi网络"
+                app:parentHeight="@dimen/dp_60"
+                app:rightPadding="@dimen/dp_20"
+                app:rightText="SUNMI 5G"
+                app:rightTextColor="@color/colorText_60" />
+
+
+            <sunmi.common.view.SettingItemLayout
+                android:id="@+id/sil_ipc_version"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/sil_wifi"
+                android:layout_marginTop="16dp"
+                android:background="@color/c_white"
+                app:imageRight="@mipmap/ic_right_arrow_small"
+                app:leftPadding="@dimen/dp_10"
+                app:leftText="当前版本"
+                app:parentHeight="@dimen/dp_60"
+                app:rightPadding="@dimen/dp_20"
+                app:rightText="SUNMI 5G"
+                app:rightTextColor="@color/colorText_60" />
+        </RelativeLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+</RelativeLayout>
