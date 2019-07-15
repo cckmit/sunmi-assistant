@@ -34,11 +34,19 @@
     <string name="tip_bind_timeout">Bind timeout</string>
     <string name="tip_no_play_video">No video data</string>
     <string name="loading_search_wifi">Searching Wi-Fi…</string>
+    <string name="tip_delete_ipc">Are you sure to remove the ipc?</string>
+    <string name="str_dialog_net_disconnected">Network disconnected, unable to delete</string>
+    <string name="tip_unbind_success">Unbind successfully</string>
+    <string name="tip_unbind_fail">Unbind failed</string>
     <string name="str_setting_ipc_camera">IPC Setting</string>
 
 
+    <string name="ipc_setting_success">更新成功</string>
+    <string name="ipc_setting_fail">更新失败</string>
+    <string name="ipc_setting_save">保存</string>
+    <string name="ipc_setting_delete">删除</string>
     <string name="ipc_setting_name">摄像机名称</string>
-    <string name="ipc_setting_dialog_save">保存</string>
+    <string name="ipc_setting_tip_name_length">摄像机名称不得超过36个字符</string>
     <string name="ipc_setting_detail">摄像机详情</string>
     <string name="ipc_setting_detail_model">摄像机型号</string>
     <string name="ipc_setting_detail_sn">摄像机SN</string>
