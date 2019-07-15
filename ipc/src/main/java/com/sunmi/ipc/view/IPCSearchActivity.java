@@ -108,8 +108,8 @@ public class IPCSearchActivity extends BaseActivity
     @Click(resName = "btn_refresh")
     void refreshClick() {
         ipcList.clear();
-        isApMode = false;
         ipcMap.clear();
+        isApMode = false;
         ipcListAdapter.notifyDataSetChanged();
         rlLoading.setVisibility(View.VISIBLE);
         btnRefresh.setVisibility(View.GONE);
@@ -144,8 +144,7 @@ public class IPCSearchActivity extends BaseActivity
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{IpcConstants.ipcDiscovered,
-                IpcConstants.getIpcToken, IpcConstants.getIsWire};
+        return new int[]{IpcConstants.ipcDiscovered, IpcConstants.getIpcToken, IpcConstants.getIsWire};
     }
 
     @Override

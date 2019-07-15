@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
-import sunmi.common.constant.CommonConstants;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
@@ -82,6 +81,7 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
                 mView.getContext().getString(R.string.order_time_ascending)));
         order.get(0).setChecked(true);
 
+        mFilterCurrent.put(0, order.get(0));
         mView.updateFilter(0, order);
 
         SunmiStoreRemote.get().getOrderPurchaseTypeList(new RetrofitCallback<OrderPayTypeListResp>() {
@@ -91,6 +91,7 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
                 List<FilterItem> payType = new ArrayList<>(list.size());
                 FilterItem first = new FilterItem(-1, mDefaultPayTypeFilterName, mDefaultFilterAllName);
                 first.setChecked(true);
+                mFilterCurrent.put(1, first);
                 payType.add(first);
                 for (OrderPayTypeListResp.PayType type : list) {
                     payType.add(new FilterItem(type.getId(), type.getName()));
@@ -113,17 +114,20 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
                 List<FilterItem> orderType = new ArrayList<>(list.size());
                 FilterItem first = new FilterItem(-1, mDefaultOrderTypeFilterName, mDefaultFilterAllName);
                 first.setChecked(true);
+                mFilterCurrent.put(2, first);
                 orderType.add(first);
                 for (OrderTypeListResp.OrderType type : list) {
                     mOrderType.put(type.getId(), type.getTag());
                     FilterItem item = new FilterItem(type.getId(), type.getName());
                     if (mInitOrderType != OrderInfo.ORDER_TYPE_ALL) {
-                        if ((mInitOrderType == OrderInfo.ORDER_TYPE_NORMAL
-                                && CommonConstants.ORDER_TYPE_NORMAL.equals(type.getTag()))
-                                || (mInitOrderType == OrderInfo.ORDER_TYPE_REFUNDS
-                                && CommonConstants.ORDER_TYPE_REFUNDS.equals(type.getTag()))) {
+                        Integer typeIndex = OrderInfo.ORDER_TYPE_MAP.get(type.getTag());
+                        if (typeIndex != null && mInitOrderType == typeIndex) {
                             first.setChecked(false);
                             item.setChecked(true);
+                            mFilterOrderType.clear();
+                            if (item.getId() != -1) {
+                                mFilterOrderType.add(item.getId());
+                            }
                         }
                     }
                     orderType.add(item);
@@ -241,9 +245,9 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
     private List<OrderInfo> buildOrderList(OrderListResp data) {
         List<OrderInfo> list = new ArrayList<>(data.getOrder_list().size());
         for (OrderListResp.OrderItem item : data.getOrder_list()) {
-            int orderType = CommonConstants.ORDER_TYPE_NORMAL.equals(
-                    mOrderType.get(item.getOrder_type_id())) ?
-                    OrderInfo.ORDER_TYPE_NORMAL : OrderInfo.ORDER_TYPE_REFUNDS;
+            Integer order = OrderInfo.ORDER_TYPE_MAP.get(mOrderType.get(item.getOrder_type_id()));
+            int orderType = order == null ? OrderInfo.ORDER_TYPE_NORMAL : order;
+
             float rawAmount = item.getAmount();
             float amount = orderType == OrderInfo.ORDER_TYPE_NORMAL ?
                     Math.abs(rawAmount) : -1 * Math.abs(rawAmount);

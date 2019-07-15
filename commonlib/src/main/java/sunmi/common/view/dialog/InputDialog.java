@@ -35,6 +35,7 @@ public class InputDialog extends Dialog {
     public static class Builder {
         private Context context;
         private String title;
+        private String content;
         private String backBtnText; // 对话框返回按钮文本
         private String confirmBtnText; // 对话框确定文本
         private int confirmBtnTextColor; // 对话框确定文本颜色
@@ -59,6 +60,17 @@ public class InputDialog extends Dialog {
          */
         public Builder setTitle(String title) {
             this.title = title;
+            return this;
+        }
+
+        /**
+         * 初始化输入框中的内容
+         *
+         * @param content 初始化输入框文本
+         * @return 构造器
+         */
+        public Builder setInitInputContent(String content) {
+            this.content = content;
             return this;
         }
 
@@ -178,6 +190,10 @@ public class InputDialog extends Dialog {
             }
 
             final EditText etInput = layout.findViewById(R.id.et_input);
+            if (!TextUtils.isEmpty(content)) {
+                etInput.setText(content);
+                etInput.setSelection(content.length());
+            }
 
             // 设置返回按钮事件和文本
             if (backBtnText != null) {
