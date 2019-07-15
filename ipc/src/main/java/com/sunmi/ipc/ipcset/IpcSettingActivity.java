@@ -10,6 +10,8 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
+import java.nio.charset.Charset;
+
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.utils.StatusBarUtils;
@@ -23,6 +25,8 @@ import sunmi.common.view.dialog.InputDialog;
 @EActivity(resName = "activity_ipc_setting")
 public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         implements IpcSettingContract.View {
+
+    private static final int IPC_NAME_MAX_LENGTH = 36;
 
     @Extra
     SunmiDevice mDevice;
@@ -65,6 +69,10 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 .setConfirmButton(R.string.ipc_setting_save, new InputDialog.ConfirmClickListener() {
                     @Override
                     public void onConfirmClick(InputDialog dialog, String input) {
+                        if (input.trim().getBytes(Charset.defaultCharset()).length > IPC_NAME_MAX_LENGTH) {
+                            shortTip(R.string.ipc_setting_tip_name_length);
+                            return;
+                        }
                         mPresenter.updateName(input);
                         dialog.dismiss();
                     }
