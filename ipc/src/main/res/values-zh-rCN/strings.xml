@@ -45,6 +45,7 @@
     <string name="ipc_setting_save">保存</string>
     <string name="ipc_setting_delete">删除</string>
     <string name="ipc_setting_name">摄像机名称</string>
+    <string name="ipc_setting_tip_name_length">摄像机名称不得超过36个字符</string>
     <string name="ipc_setting_detail">摄像机详情</string>
     <string name="ipc_setting_detail_model">摄像机型号</string>
     <string name="ipc_setting_detail_sn">摄像机SN</string>
