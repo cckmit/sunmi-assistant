@@ -36,6 +36,10 @@
     <string name="loading_search_wifi">Searching Wi-Fi…</string>
     <string name="str_setting_ipc_camera">IPC Setting</string>
 
+
+    <string name="ipc_setting_name">摄像机名称</string>
+    <string name="ipc_setting_save">保存</string>
+
 </resources>
 
 
