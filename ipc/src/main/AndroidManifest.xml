@@ -11,7 +11,6 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
-
     <application>
         <activity android:name=".view.WifiConfigActivity_" />
         <activity
@@ -26,6 +25,7 @@
             android:screenOrientation="landscape" />
         <activity android:name=".view.IPCSearchActivity_" />
         <activity android:name=".ipcset.IpcSettingActivity_" />
+        <activity android:name=".ipcset.IpcSettingDetailActivity_" />
     </application>
 
 </manifest>
