@@ -87,6 +87,10 @@ public class ChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter>
 
     @UiThread
     void initShopList(final List<ShopListResp.ShopInfo> data) {
+        if (data.size() <= 0) {
+            tvNoData.setVisibility(View.VISIBLE);
+            return;
+        }
         tvNoData.setVisibility(View.GONE);
         rvChoose.setAdapter(new CommonListAdapter<ShopListResp.ShopInfo>(context,
                 R.layout.item_shop_list, data) {
