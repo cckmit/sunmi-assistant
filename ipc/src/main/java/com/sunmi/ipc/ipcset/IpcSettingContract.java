@@ -3,6 +3,7 @@ package com.sunmi.ipc.ipcset;
 import android.content.Context;
 
 import sunmi.common.base.BaseView;
+import sunmi.common.model.SunmiDevice;
 
 /**
  * @author yinhui
@@ -21,7 +22,7 @@ public interface IpcSettingContract {
 
     interface Presenter {
 
-        void loadConfig();
+        void loadConfig(SunmiDevice device);
 
         void updateName(String name);
     }
