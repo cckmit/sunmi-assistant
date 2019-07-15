@@ -28,6 +28,7 @@
     <color name="colorLoadingEnd">#FFFBF8</color>
     <color name="c_text_blue">#3D76F6</color>
     <color name="color_333333_60">#99333333</color>
+    <color name="common_orange">#FF671F</color>
 
     <!--dialog-->
     <color name="color_dialog_content">#333C4F</color>
