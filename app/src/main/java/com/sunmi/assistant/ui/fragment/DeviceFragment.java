@@ -315,7 +315,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         } else if (type == 1) {
             deleteDevice(device);
         } else if (type == 2) {
-            IpcSettingActivity_.intent(mActivity).start();
+            IpcSettingActivity_.intent(mActivity).mDevice(device).start();
         }
     }
 

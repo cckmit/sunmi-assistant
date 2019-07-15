@@ -34,10 +34,17 @@
     <string name="tip_bind_timeout">绑定超时</string>
     <string name="tip_no_play_video">当前日期无回放视频</string>
     <string name="loading_search_wifi">正在搜索Wi-Fi…</string>
+    <string name="tip_delete_ipc">是否确认删除摄像机？</string>
+    <string name="str_dialog_net_disconnected">网络未连接，无法删除</string>
+    <string name="tip_unbind_success">解绑成功</string>
+    <string name="tip_unbind_fail">解绑失败</string>
     <string name="str_setting_ipc_camera">摄像机设置</string>
 
+    <string name="ipc_setting_success">更新成功</string>
+    <string name="ipc_setting_fail">更新失败</string>
+    <string name="ipc_setting_save">保存</string>
+    <string name="ipc_setting_delete">删除</string>
     <string name="ipc_setting_name">摄像机名称</string>
-    <string name="ipc_setting_dialog_save">保存</string>
     <string name="ipc_setting_detail">摄像机详情</string>
     <string name="ipc_setting_detail_model">摄像机型号</string>
     <string name="ipc_setting_detail_sn">摄像机SN</string>
