@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.rpc.IPCCloudApi;
+import com.sunmi.ipc.rpc.IpcConstants;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -13,6 +14,7 @@ import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.NetworkUtils;
@@ -89,6 +91,7 @@ public class IpcSettingDetailActivity extends BaseActivity {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
                         shortTip(R.string.tip_unbind_success);
+                        BaseNotification.newInstance().postNotificationName(IpcConstants.refreshIpcList);
                         GotoActivityUtils.gotoMainActivity(IpcSettingDetailActivity.this);
                     }
 
