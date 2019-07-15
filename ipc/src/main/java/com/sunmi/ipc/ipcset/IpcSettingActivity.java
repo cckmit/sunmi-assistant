@@ -48,7 +48,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         new InputDialog.Builder(this)
                 .setTitle(R.string.ipc_setting_name)
                 .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.ipc_setting_save, new InputDialog.ConfirmClickListener() {
+                .setConfirmButton(R.string.ipc_setting_dialog_save, new InputDialog.ConfirmClickListener() {
                     @Override
                     public void onConfirmClick(InputDialog dialog, String input) {
                         mPresenter.updateName(input);

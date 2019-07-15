@@ -23,7 +23,6 @@ public class IpcSettingDetailActivity extends AppCompatActivity {
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-
     }
 
 }
