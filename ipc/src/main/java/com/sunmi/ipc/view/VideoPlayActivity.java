@@ -1052,8 +1052,8 @@ public class VideoPlayActivity extends BaseActivity
     void timeCanvasList(final List<ApCloudTimeBean> apCloudList) {
         adapter = new DateAdapter(context, list, apCloudList);
         recyclerView.setAdapter(adapter);
-
         if (!isFirstScroll && !isSelectedDate) {
+            LogCat.e(TAG, "111111 time 11");
             selectedTimeIsHaveVideo(firstLeftScrollCurrentTime); //初始化左滑渲染及回放
         } else {
             if (isSelectedDate) {
@@ -1151,7 +1151,7 @@ public class VideoPlayActivity extends BaseActivity
     //滑动回放定位的中间 position
     private void scrollCurrentPlayBackTime(long currentTimeMinutes) {
         currentItemPosition = (int) (currentTimeMinutes / 60 - threeDaysBeforeSeconds / 60 - leftToCenterMinutes());
-        //linearLayoutManager.scrollToPositionWithOffset(currentItemPosition, 0);
+        linearLayoutManager.scrollToPositionWithOffset(currentItemPosition, 0);
         openMove();
     }
 
@@ -1207,10 +1207,12 @@ public class VideoPlayActivity extends BaseActivity
     //拖动或选择的时间是否有video（ap或cloud）
     private void selectedTimeIsHaveVideo(long currTime) {
         int apSize = listAp.size();
+        LogCat.e(TAG, "999999 444");
         if (apSize == 0) {
             switch2Live();//跳转直播
             return;
         }
+        LogCat.e(TAG, "999999 555");
         long mStartTime = threeDaysBeforeSeconds, mEndTime = currentDateSeconds;
         for (int i = 0; i < apSize + 1; i++) {
             long startOpposite = 0, endOpposite = 0, start = 0, end = 0;
@@ -1231,6 +1233,7 @@ public class VideoPlayActivity extends BaseActivity
                 end = listAp.get(i).getEndTime();
             }
             if (currTime >= startOpposite && currTime < endOpposite) {//空白区域
+                LogCat.e(TAG, "999999 666");
                 if (i == apSize) {//最后一个无视频区域跳转直播
                     switch2Live();
                     return;
@@ -1239,14 +1242,16 @@ public class VideoPlayActivity extends BaseActivity
                 //当前的视频片段是否小于一分钟
                 isVideoLess1Minute = listAp.get(i).getEndTime() - listAp.get(i).getStartTime() <= 60;
                 if (isCloud) {
-                    LogCat.e(TAG, "999999 111");
+                    LogCat.e(TAG, "999999 000");
                     switch2CloudPlayback(endOpposite, endOpposite + tenMinutes);
                 } else {
+                    LogCat.e(TAG, "999999 111");
                     switch2DevPlayback(endOpposite);
                 }
                 scrollCurrentPlayBackTime(endOpposite);//回放到拖动的时间点
                 break;
             } else if (currTime >= start && currTime < end) {//视频区域
+                LogCat.e(TAG, "999999 777");
                 boolean isCloud = !listAp.get(i).isApPlay();
                 //当前的视频片段是否小于一分钟
                 isVideoLess1Minute = listAp.get(i).getEndTime() - currTime <= 60;
@@ -1254,6 +1259,7 @@ public class VideoPlayActivity extends BaseActivity
                     LogCat.e(TAG, "999999 222");
                     switch2CloudPlayback(currTime, currTime + tenMinutes);
                 } else {
+                    LogCat.e(TAG, "999999 333");
                     switch2DevPlayback(currTime);
                 }
                 scrollCurrentPlayBackTime(currTime);//回放到拖动的时间点
@@ -1486,7 +1492,7 @@ public class VideoPlayActivity extends BaseActivity
             public void run() {
                 IOTCClient.getPlaybackList(threeDaysBeforeSeconds, currentDateSeconds); //获取AP回放时间列表
             }
-        }, 2500);
+        }, 3000);
     }
 
     @Override
@@ -1627,6 +1633,7 @@ public class VideoPlayActivity extends BaseActivity
             listAp = duplicateRemoval(listAp);//去重
             Collections.sort(listAp);//正序比较
         }
+        LogCat.e(TAG, "111111 time all list");
         timeCanvasList(listAp);//组合时间轴
         hideLoadingDialog();
     }
