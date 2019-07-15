@@ -1,5 +1,6 @@
 package com.sunmi.ipc.rpc;
 
+import com.sunmi.ipc.model.IpcNewFirmwareResp;
 import com.sunmi.ipc.rpc.api.DeviceInterface;
 import com.sunmi.ipc.rpc.api.EmqInterface;
 import com.sunmi.ipc.rpc.api.MediaInterface;
@@ -99,6 +100,54 @@ public class IPCCloudApi extends BaseHttpApi {
                     .toString();
             RetrofitClient.getInstance().create(DeviceInterface.class)
                     .getDetailList(getSignedRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 更新IPC名称
+     *
+     * @param companyId  是	int64	商户id
+     * @param shopId     是	int64	店铺id
+     * @param deviceId   是	int64	IPC设备id
+     * @param deviceName 是	string	IPC设备名称
+     */
+    public static void updateBaseInfo(int companyId, int shopId, int deviceId, String deviceName,
+                                      RetrofitCallback<Object> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("device_id", deviceId)
+                    .put("device_name", deviceName)
+                    .toString();
+            RetrofitClient.getInstance().create(DeviceInterface.class)
+                    .updateBaseInfo(getSignedRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 检测IPC新固件
+     *
+     * @param companyId 是	int64	商户id
+     * @param shopId    是	int64	店铺id
+     * @param deviceId  是	int64	IPC设备id
+     */
+    public static void newFirmware(int companyId, int shopId, int deviceId,
+                                   RetrofitCallback<IpcNewFirmwareResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("device_id", deviceId)
+                    .toString();
+            RetrofitClient.getInstance().create(DeviceInterface.class)
+                    .newFirmware(getSignedRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();

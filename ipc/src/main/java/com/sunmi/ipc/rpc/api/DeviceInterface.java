@@ -1,6 +1,7 @@
 package com.sunmi.ipc.rpc.api;
 
 import com.sunmi.ipc.model.IpcListResp;
+import com.sunmi.ipc.model.IpcNewFirmwareResp;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -32,5 +33,17 @@ public interface DeviceInterface {
      */
     @POST(path + "getDetailList")
     Call<BaseResponse<IpcListResp>> getDetailList(@Body BaseRequest request);
+
+    /**
+     * 用户更新摄像头基本信息
+     */
+    @POST(path + "updateBaseInfo")
+    Call<BaseResponse<Object>> updateBaseInfo(@Body BaseRequest request);
+
+    /**
+     * 获取最新版本
+     */
+    @POST(path + "firmware/detect")
+    Call<BaseResponse<IpcNewFirmwareResp>> newFirmware(@Body BaseRequest request);
 
 }
