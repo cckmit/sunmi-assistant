@@ -81,7 +81,7 @@
     <string name="ipc_setting_dialog_upgrade_download_time">下载时间预计需要2分钟</string>
     <string name="ipc_setting_dialog_upgrade_ok">现在更新</string>
     <string name="ipc_setting_dialog_upgrade_cancel">以后再说</string>
-    <string name="ipc_setting_dialog_upgrade_progress">下载中…%s</string>
+    <string name="ipc_setting_dialog_upgrade_progress">下载中…%s%%</string>
     <string name="ipc_setting_dialog_upgrade_fail">更新失败</string>
     <string name="ipc_setting_dialog_upgrade_fail_content">下载“版本%s”时出错</string>
     <string name="ipc_setting_dialog_upgrade_success">更新成功</string>
