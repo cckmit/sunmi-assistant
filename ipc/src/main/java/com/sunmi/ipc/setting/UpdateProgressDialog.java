@@ -1,6 +1,5 @@
 package com.sunmi.ipc.setting;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -16,10 +15,8 @@ import com.sunmi.ipc.R;
  * Created by YangShiJie on 2019/7/15.
  */
 public class UpdateProgressDialog extends Dialog {
-    @SuppressLint("StaticFieldLeak")
-    private static TextView tvProgress;
-    @SuppressLint("StaticFieldLeak")
-    private static ProgressBar showProgress;
+    TextView tvProgress;
+    ProgressBar showProgress;
 
     UpdateProgressDialog(@NonNull Context context, int themeResId) {
         super(context, themeResId);
@@ -65,10 +62,10 @@ public class UpdateProgressDialog extends Dialog {
             dialog.addContentView(layout, new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-            tvProgress = layout.findViewById(R.id.tv_progress);
-            showProgress = layout.findViewById(R.id.pBar_progress);
-            tvProgress.setText(context.getString(R.string.ipc_setting_dialog_upgrade_progress, "0"));
-            showProgress.setProgress(0);
+            dialog.tvProgress = layout.findViewById(R.id.tv_progress);
+            dialog.showProgress = layout.findViewById(R.id.pBar_progress);
+            dialog.tvProgress.setText(context.getString(R.string.ipc_setting_dialog_upgrade_progress, "0"));
+            dialog.showProgress.setProgress(0);
 
             dialog.setContentView(layout);
             dialog.setCanceledOnTouchOutside(false);
