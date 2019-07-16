@@ -8,6 +8,8 @@ import android.util.Log;
 
 import com.sunmi.assistant.dashboard.DashboardContract;
 
+import java.text.DecimalFormat;
+
 import sunmi.common.base.recycle.BaseArrayAdapter;
 import sunmi.common.base.recycle.BaseRecyclerAdapter;
 import sunmi.common.base.recycle.BaseViewHolder;
@@ -28,6 +30,12 @@ public abstract class BaseRefreshCard<Model> {
     private static final int STATE_LOADING = 10;
     private static final int STATE_SUCCESS = 11;
     private static final int STATE_FAILED = 12;
+
+    protected static final String DATA_NONE = "--";
+    protected static final String DATA_ZERO = "0";
+    protected static final String FORMAT_FLOAT_NO_DECIMAL = "%.0f";
+    protected static final String FORMAT_FLOAT_DOUBLE_DECIMAL = "%.2f";
+    protected static final DecimalFormat FORMAT_MAX_DOUBLE_DECIMAL = new DecimalFormat("#.##");
 
     private Context mContext;
     private Handler mHandler = new Handler(Looper.getMainLooper());

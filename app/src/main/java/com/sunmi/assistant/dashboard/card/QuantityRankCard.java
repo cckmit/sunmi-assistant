@@ -65,7 +65,7 @@ public class QuantityRankCard extends BaseRefreshCard<QuantityRankCard.Model> {
                                 model.list.add(new Item(i + 1, item.getName(),
                                         String.valueOf(item.getQuantity())));
                             } else {
-                                model.list.add(new Item(i + 1, "--", "--"));
+                                model.list.add(new Item(i + 1, DATA_NONE, DATA_NONE));
                             }
                         }
                     }
@@ -113,11 +113,11 @@ public class QuantityRankCard extends BaseRefreshCard<QuantityRankCard.Model> {
             int size = model.list.size();
             if (model.list.isEmpty()) {
                 for (int i = 0; i < 10; i++) {
-                    model.list.add(new Item(i + 1, "--", "--"));
+                    model.list.add(new Item(i + 1, DATA_NONE, DATA_NONE));
                 }
             } else if (size < 10) {
                 for (int i = size; i < 10; i++) {
-                    model.list.add(new Item(i + 1, "--", "--"));
+                    model.list.add(new Item(i + 1, DATA_NONE, DATA_NONE));
                 }
             }
 
