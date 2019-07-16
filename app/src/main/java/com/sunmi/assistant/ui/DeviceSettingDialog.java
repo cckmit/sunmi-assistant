@@ -62,15 +62,15 @@ public class DeviceSettingDialog extends PopupWindow {
                 }
             }
         });
-//        viewLayout.findViewById(R.id.tv_setting).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                dismiss();
-//                if (onSettingsClickListener != null) {
-//                    onSettingsClickListener.onSettingsClick(device, 2);
-//                }
-//            }
-//        });
+        viewLayout.findViewById(R.id.tv_setting).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+                if (onSettingsClickListener != null) {
+                    onSettingsClickListener.onSettingsClick(device, 2);
+                }
+            }
+        });
     }
 
     public void show(View parent) {
