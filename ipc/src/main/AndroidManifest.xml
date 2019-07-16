@@ -26,6 +26,7 @@
         <activity android:name=".view.IPCSearchActivity_" />
         <activity android:name=".ipcset.IpcSettingActivity_" />
         <activity android:name=".ipcset.IpcSettingDetailActivity_" />
+        <activity android:name=".ipcset.IpcSettingDetectionActivity_" />
     </application>
 
 </manifest>

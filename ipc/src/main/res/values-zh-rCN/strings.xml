@@ -50,7 +50,7 @@
     <string name="ipc_setting_detail_model">摄像机型号</string>
     <string name="ipc_setting_detail_sn">摄像机SN</string>
     <string name="ipc_setting_sound_abnormal_detection">声音异常侦测</string>
-    <string name="ipc_setting_dynamic_abnormal_detection">动态异常侦测</string>
+    <string name="ipc_setting_active_abnormal_detection">动态异常侦测</string>
     <string name="ipc_setting_detection_sensitivity">灵敏度</string>
     <string name="ipc_setting_detection_sensitivity_low">低</string>
     <string name="ipc_setting_detection_sensitivity_mid">中</string>

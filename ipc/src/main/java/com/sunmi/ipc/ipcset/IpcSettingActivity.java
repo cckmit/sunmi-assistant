@@ -49,17 +49,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         return this;
     }
 
-    @Override
-    public void updateAllView(IpcSettingModel info) {
-        // TODO: 更新所有View或者显示网络异常
-    }
-
-    @Override
-    public void updateNameView(String name) {
-        mDevice.setName(name);
-        mNameView.setRightText(name);
-    }
-
     @Click(resName = "sil_camera_name")
     void cameraNameClick() {
         new InputDialog.Builder(this)
@@ -86,6 +75,31 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         IpcSettingDetailActivity_.intent(this)
                 .mDevice(mDevice)
                 .start();
+    }
+
+    @Click(resName = "sil_voice_exception")
+    void soundAbnormalDetection() {
+        IpcSettingDetectionActivity_.intent(this)
+                .mType(IpcSettingDetectionActivity.TYPE_SOUND)
+                .start();
+    }
+
+    @Click(resName = "sil_active_exception")
+    void activeAbnormalDetection() {
+        IpcSettingDetectionActivity_.intent(this)
+                .mType(IpcSettingDetectionActivity.TYPE_ACTIVE)
+                .start();
+    }
+
+    @Override
+    public void updateAllView(IpcSettingModel info) {
+        // TODO: 更新所有View或者显示网络异常
+    }
+
+    @Override
+    public void updateNameView(String name) {
+        mDevice.setName(name);
+        mNameView.setRightText(name);
     }
 
 }

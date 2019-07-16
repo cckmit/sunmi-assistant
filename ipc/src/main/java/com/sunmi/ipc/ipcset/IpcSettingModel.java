@@ -6,15 +6,6 @@ package com.sunmi.ipc.ipcset;
  */
 public class IpcSettingModel {
 
-    public static final int ABNORMAL_DETECTION_DISABLE = 0;
-    public static final int ABNORMAL_DETECTION_LOW = 1;
-    public static final int ABNORMAL_DETECTION_MIDDLE = 2;
-    public static final int ABNORMAL_DETECTION_HIGH = 3;
-
-    public static final int NIGHT_VISION_AUTO = 0;
-    public static final int NIGHT_VISION_ON = 1;
-    public static final int NIGHT_VISION_OFF = 2;
-
     private String ipcName;
     private String ipcModel;
     private String ipcSn;
