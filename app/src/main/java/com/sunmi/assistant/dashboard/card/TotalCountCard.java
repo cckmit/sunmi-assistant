@@ -13,7 +13,6 @@ import com.sunmi.assistant.data.SunmiStoreRemote;
 import com.sunmi.assistant.data.response.OrderTotalCountResp;
 import com.sunmi.assistant.utils.Utils;
 
-import java.text.DecimalFormat;
 import java.util.Locale;
 
 import sunmi.common.base.recycle.BaseViewHolder;
@@ -75,16 +74,14 @@ public class TotalCountCard extends BaseRefreshCard<TotalCountCard.Model> {
                         model.dataToday = data.getDay_count();
                         model.dataWeek = data.getWeek_count();
                         model.dataMonth = data.getMonth_count();
-                        model.trendDataToday = TextUtils.isEmpty(data.getDay_rate()) ? 0f : Float.valueOf(data.getDay_rate());
-                        model.trendDataWeek = TextUtils.isEmpty(data.getWeek_rate()) ? 0f : Float.valueOf(data.getWeek_rate());
-                        model.trendDataMonth = TextUtils.isEmpty(data.getMonth_rate()) ? 0f : Float.valueOf(data.getMonth_rate());
+                        model.trendDataToday = TextUtils.isEmpty(data.getDay_rate()) ? DATA_NONE : data.getDay_rate();
+                        model.trendDataWeek = TextUtils.isEmpty(data.getWeek_rate()) ? DATA_NONE : data.getWeek_rate();
+                        model.trendDataMonth = TextUtils.isEmpty(data.getMonth_rate()) ? DATA_NONE : data.getMonth_rate();
                     }
                 });
     }
 
     private class TotalCountType extends ItemType<Model, BaseViewHolder<Model>> {
-
-        private DecimalFormat format = new DecimalFormat("#.##");
 
         @Override
         public int getLayoutId(int type) {
@@ -110,7 +107,7 @@ public class TotalCountCard extends BaseRefreshCard<TotalCountCard.Model> {
             if (TextUtils.isEmpty(model.trendName)) {
                 model.trendName = Utils.getTrendNameByPeriod(getContext(), getPeriod());
             }
-            float trendData = model.getTrendData(getPeriod());
+            String trendData = model.getTrendData(getPeriod());
 
             TextView tvTitle = holder.getView(R.id.tv_dashboard_title);
             TextView tvData = holder.getView(R.id.tv_dashboard_data);
@@ -118,16 +115,25 @@ public class TotalCountCard extends BaseRefreshCard<TotalCountCard.Model> {
             TextView tvTrendData = holder.getView(R.id.tv_dashboard_trend_data);
 
             tvTitle.setText(model.title);
+            tvData.setText(String.format(Locale.getDefault(), FORMAT_FLOAT_NO_DECIMAL, model.getData(getPeriod())));
             tvTrendName.setText(model.trendName);
-            tvData.setText(String.format(Locale.getDefault(), "%.0f", model.getData(getPeriod())));
-            String trendFormatNumber = this.format.format(Math.abs(trendData * 100));
-            tvTrendData.setText(holder.getContext().getResources()
-                    .getString(R.string.dashboard_data_format, trendFormatNumber));
 
-            if (TextUtils.equals(trendFormatNumber, "0")) {
+            if (TextUtils.equals(trendData, DATA_NONE)) {
+                tvTrendData.setText(trendData);
                 tvTrendData.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null);
                 tvTrendData.setTextColor(holder.getContext().getResources().getColor(R.color.color_333338));
-            } else if (trendData > 0) {
+                return;
+            }
+
+            float trendDataFloat = Float.valueOf(trendData);
+            String trendDataFormat = FORMAT_MAX_DOUBLE_DECIMAL.format(Math.abs(trendDataFloat * 100));
+            tvTrendData.setText(holder.getContext().getResources()
+                    .getString(R.string.dashboard_data_format, trendDataFormat));
+
+            if (TextUtils.equals(trendDataFormat, DATA_ZERO)) {
+                tvTrendData.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null);
+                tvTrendData.setTextColor(holder.getContext().getResources().getColor(R.color.color_333338));
+            } else if (trendDataFloat > 0) {
                 tvTrendData.setCompoundDrawablesRelativeWithIntrinsicBounds(
                         R.drawable.dashboard_ic_trend_up, 0, 0, 0);
                 tvTrendData.setTextColor(holder.getContext().getResources().getColor(R.color.color_FF0000));
@@ -146,9 +152,9 @@ public class TotalCountCard extends BaseRefreshCard<TotalCountCard.Model> {
         private float dataWeek;
         private float dataMonth;
         private String trendName;
-        private float trendDataToday;
-        private float trendDataWeek;
-        private float trendDataMonth;
+        private String trendDataToday;
+        private String trendDataWeek;
+        private String trendDataMonth;
         private boolean needLoad = true;
 
         private Model(String title) {
@@ -165,7 +171,7 @@ public class TotalCountCard extends BaseRefreshCard<TotalCountCard.Model> {
             }
         }
 
-        private float getTrendData(int period) {
+        private String getTrendData(int period) {
             if (period == DashboardContract.TIME_PERIOD_TODAY) {
                 return trendDataToday;
             } else if (period == DashboardContract.TIME_PERIOD_WEEK) {
