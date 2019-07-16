@@ -19,9 +19,9 @@
 
     <RelativeLayout
         android:id="@+id/rl_wifi"
-        android:layout_below="@id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_60"
+        android:layout_below="@id/title_bar"
         android:background="@color/c_white">
 
         <TextView
