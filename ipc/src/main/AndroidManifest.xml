@@ -24,8 +24,11 @@
             android:largeHeap="true"
             android:screenOrientation="landscape" />
         <activity android:name=".view.IPCSearchActivity_" />
-        <activity android:name=".ipcset.IpcSettingActivity_" />
-        <activity android:name=".ipcset.IpcSettingDetailActivity_" />
+        <activity android:name=".setting.IpcSettingActivity_" />
+        <activity android:name=".setting.IpcSettingDetailActivity_" />
+        <activity android:name=".setting.IpcSettingNightStyleActivity_" />
+        <activity android:name=".setting.IpcSettingVersionActivity_" />
+        <activity android:name=".setting.IpcSettingWiFiActivity_" />
     </application>
 
 </manifest>
