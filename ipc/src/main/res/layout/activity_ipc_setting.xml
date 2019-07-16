@@ -35,7 +35,6 @@
                 app:leftText="@string/ipc_setting_name"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
-                app:rightText="IPC-1"
                 app:rightTextColor="@color/colorText_60" />
 
 
@@ -48,7 +47,7 @@
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
                 app:leftPadding="@dimen/dp_10"
-                app:leftText="摄像机详情"
+                app:leftText="@string/ipc_setting_detail"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
                 app:rightTextColor="@color/colorText_60" />
@@ -63,7 +62,7 @@
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
                 app:leftPadding="@dimen/dp_10"
-                app:leftText="声音异常侦测"
+                app:leftText="@string/ipc_setting_sound_abnormal_detection"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
                 app:rightText="开"
@@ -79,7 +78,7 @@
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
                 app:leftPadding="@dimen/dp_10"
-                app:leftText="动态异常侦测"
+                app:leftText="@string/ipc_setting_dynamic_abnormal_detection"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
                 app:rightText="开"
@@ -95,7 +94,7 @@
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
                 app:leftPadding="@dimen/dp_10"
-                app:leftText="侦测时间设置"
+                app:leftText="@string/ipc_setting_detection_time"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
                 app:rightText="开"
@@ -111,7 +110,7 @@
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
                 app:leftPadding="@dimen/dp_10"
-                app:leftText="夜视模式"
+                app:leftText="@string/ipc_setting_night_vision_mode"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
                 app:rightText="自动切换"
@@ -130,7 +129,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/dp_20"
-                    android:text="状态指示灯"
+                    android:text="@string/ipc_setting_state_light"
                     android:textColor="@color/colorText"
                     android:textSize="@dimen/sp_16" />
 
@@ -159,7 +158,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/dp_20"
-                    android:text="画面旋转180度"
+                    android:text="@string/ipc_setting_rotate_180"
                     android:textColor="@color/colorText"
                     android:textSize="@dimen/sp_16" />
 
@@ -184,7 +183,7 @@
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
                 app:leftPadding="@dimen/dp_10"
-                app:leftText="WiFi网络"
+                app:leftText="@string/ipc_setting_wifi"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
                 app:rightText="SUNMI 5G"
@@ -200,7 +199,7 @@
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
                 app:leftPadding="@dimen/dp_10"
-                app:leftText="当前版本"
+                app:leftText="@string/ipc_setting_version_current_name"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
                 app:rightText="SUNMI 5G"

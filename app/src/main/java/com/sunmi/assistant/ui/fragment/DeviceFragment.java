@@ -30,6 +30,7 @@ import com.sunmi.apmanager.utils.EncryptUtils;
 import com.sunmi.apmanager.utils.pulltorefresh.library.PullToRefreshBase;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
+import com.sunmi.assistant.data.response.AdListBean;
 import com.sunmi.assistant.data.response.AdListResp;
 import com.sunmi.assistant.presenter.DevicePresenter;
 import com.sunmi.assistant.ui.DeviceSettingDialog;
@@ -54,6 +55,7 @@ import org.androidannotations.annotations.ViewById;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,13 +91,13 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     BGARefreshLayout refreshView;
     @ViewById(R.id.rv_device)
     RecyclerView rvDevice;
-
     @ViewById(R.id.btn_add)
     TextView btnAdd;
+
     Banner vpBanner;
     RelativeLayout rlNoDevice;
 
-    List<AdListResp.AdListBean> adList = new ArrayList<>();//广告
+    List<AdListBean> adList = new ArrayList<>();//广告
     private List<SunmiDevice> deviceList = new ArrayList<>();//设备列表全集
     List<SunmiDevice> routerList = new ArrayList<>();
     List<SunmiDevice> ipcList = new ArrayList<>();
@@ -115,13 +117,21 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     protected void init() {
         mPresenter = new DevicePresenter();
         mPresenter.attachView(this);
+        adList.addAll(DataSupport.findAll(AdListBean.class));
+        deviceList.addAll(DataSupport.findAll(SunmiDevice.class));
+        for (SunmiDevice device : deviceList) {
+            device.setStatus(DeviceStatus.UNKNOWN.ordinal());
+        }
         initViews();
+        loadData();
+        startTimer();
     }
 
     protected void initViews() {
         topBar.setCompanyName(SpUtils.getCompanyName());
         topBar.setShopName(SpUtils.getShopName());
         initRefreshLayout();
+        initBanner();
         layoutManager = new LinearLayoutManager(mActivity);
         rvDevice.setLayoutManager(layoutManager);
         deviceListAdapter = new DeviceListAdapter(mActivity, deviceList);
@@ -133,9 +143,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         headerView.findViewById(R.id.btn_add_device).setOnClickListener(this);
         deviceListAdapter.setClickListener(this);
         rvDevice.setAdapter(deviceListAdapter);
+        showEmptyView();
         showLoadingDialog();
-        loadData();
-        startTimer();
+
     }
 
     private void initRefreshLayout() {
@@ -182,6 +192,11 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     public void getAdListSuccess(AdListResp adListResp) {
         adList.clear();
         adList.addAll(adListResp.getAd_list());
+        initBanner();
+    }
+
+    @UiThread
+    void initBanner() {
         vpBanner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR);//设置banner样式
         vpBanner.setImageLoader(new GlideImageLoader());//设置图片加载器
         vpBanner.setImages(adList);//设置图片集合
@@ -191,7 +206,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         vpBanner.setDelayTime(4000);//设置轮播时间
         vpBanner.setIndicatorGravity(BannerConfig.CENTER);//设置指示器位置（当banner模式中有指示器时）
         vpBanner.start();//banner设置方法全部调用完毕时最后调用
-        deviceListAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -315,7 +329,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         } else if (type == 1) {
             deleteDevice(device);
         } else if (type == 2) {
-            IpcSettingActivity_.intent(mActivity).start();
+            IpcSettingActivity_.intent(mActivity).mDevice(device).start();
         }
     }
 
@@ -617,21 +631,28 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     @UiThread
     void refreshList() {
         hideLoadingDialog();
-        if (deviceList != null) {
-            deviceList.clear();
-            deviceList.addAll(ipcList);
-            deviceList.addAll(routerList);
-            deviceList.addAll(printerList);
-            if (deviceList.size() > 0) {
-                rlNoDevice.setVisibility(View.GONE);
-                btnAdd.setVisibility(View.VISIBLE);
-            } else {
-                rlNoDevice.setVisibility(View.VISIBLE);
-                btnAdd.setVisibility(View.GONE);
-            }
-        }
-        deviceListAdapter.notifyDataSetChanged();
+        if (deviceList == null) return;
+
         endRefresh();
+        deviceList.clear();
+        deviceList.addAll(ipcList);
+        deviceList.addAll(routerList);
+        deviceList.addAll(printerList);
+        showEmptyView();
+        deviceListAdapter.notifyDataSetChanged();
+        if (deviceList.size() > 0) {
+            DataSupport.saveAll(deviceList);
+        }
+    }
+
+    private void showEmptyView() {
+        if (deviceList.size() > 0) {
+            rlNoDevice.setVisibility(View.GONE);
+            btnAdd.setVisibility(View.VISIBLE);
+        } else {
+            rlNoDevice.setVisibility(View.VISIBLE);
+            btnAdd.setVisibility(View.GONE);
+        }
     }
 
     @UiThread

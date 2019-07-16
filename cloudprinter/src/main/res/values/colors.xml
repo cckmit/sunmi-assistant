@@ -9,9 +9,6 @@
     <color name="text_color">#333C4F</color>
     <color name="text_color_40">#66333C4F</color>
 
-    <!--<color name="common_orange">#FF6000</color>-->
-    <color name="common_orange">#FF671F</color>
-
     <!--loading-->
     <color name="colorLoadingReady">#FFAD29</color>
 

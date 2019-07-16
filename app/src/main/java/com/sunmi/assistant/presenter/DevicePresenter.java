@@ -6,6 +6,7 @@ import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.utils.DBUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
+import com.sunmi.assistant.data.response.AdListBean;
 import com.sunmi.assistant.data.response.AdListResp;
 import com.sunmi.assistant.rpc.CloudCall;
 import com.sunmi.cloudprinter.rpc.IOTCloudApi;
@@ -15,6 +16,7 @@ import com.sunmi.ipc.rpc.IPCCloudApi;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +46,8 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                             mView.endRefresh();
                             mView.getAdListSuccess(data);
                         }
+                        DataSupport.deleteAll(AdListBean.class);
+                        DataSupport.saveAll(data.getAd_list());
                     }
 
                     @Override
@@ -62,6 +66,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
         CloudApi.getBindDeviceList(SpUtils.getShopId(), new RpcCallback(null) {
             @Override
             public void onSuccess(int code, String msg, String data) {
+                DBUtils.deleteSunmiDeviceByType("ROUTER");
                 List<SunmiDevice> list = new ArrayList<>();
                 try {
                     if (code == 1) {
@@ -82,6 +87,8 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                             }
                             if (object.has("shop_id")) {
                                 device.setShopId(object.getInt("shop_id"));
+                            } else {
+                                device.setShopId(SpUtils.getShopId());
                             }
                             list.add(device);
                         }
@@ -131,6 +138,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                 new RetrofitCallback<IpcListResp>() {
                     @Override
                     public void onSuccess(int code, String msg, IpcListResp data) {
+                        DBUtils.deleteSunmiDeviceByType("IPC");
                         List<SunmiDevice> list = new ArrayList<>();
                         if (data.getFs_list() != null && data.getFs_list().size() > 0) {
                             for (IpcListResp.SsListBean bean : data.getFs_list()) {
