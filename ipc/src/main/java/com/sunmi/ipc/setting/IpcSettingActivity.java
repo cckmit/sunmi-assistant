@@ -1,6 +1,7 @@
-package com.sunmi.ipc.ipcset;
+package com.sunmi.ipc.setting;
 
 import android.content.Context;
+import android.content.DialogInterface;
 
 import com.sunmi.ipc.R;
 
@@ -16,6 +17,7 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.SettingItemLayout;
+import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.dialog.InputDialog;
 
 /**
@@ -73,7 +75,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                             shortTip(R.string.ipc_setting_tip_name_length);
                             return;
                         }
-                        mPresenter.updateName(input);
+                         mPresenter.updateName(input);
                         dialog.dismiss();
                     }
                 })
@@ -86,6 +88,86 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         IpcSettingDetailActivity_.intent(this)
                 .mDevice(mDevice)
                 .start();
+    }
+    @Click(resName = "sil_night_style")
+    void nightStyleClick() {
+        IpcSettingNightStyleActivity_.intent(this).start();
+    }
+
+    @Click(resName = "sil_ipc_version")
+    void versionClick() {
+        IpcSettingVersionActivity_.intent(this).start();
+    }
+
+    @Click(resName = "sil_wifi")
+    void wifiClick() {
+        IpcSettingWiFiActivity_.intent(this).start();
+    }
+
+    /**
+     * 有新版本
+     *
+     * @param version
+     */
+    private void newVersionDialog(String version) {
+        CommonDialog commonDialog = new CommonDialog.Builder(this)
+                .setTitle(R.string.ipc_setting_dialog_upgrade)
+                .setMessage(getString(R.string.ipc_setting_version_current, version) + "\n" +
+                        getString(R.string.ipc_setting_dialog_upgrade_download_time))
+                .setConfirmButton(R.string.ipc_setting_dialog_upgrade_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setCancelButton(R.string.ipc_setting_dialog_upgrade_cancel).create();
+        commonDialog.showWithOutTouchable(false);
+    }
+
+    /**
+     * 更新版本失败
+     *
+     * @param version
+     */
+    private void upgradeVerFailDialog(String version) {
+        CommonDialog commonDialog = new CommonDialog.Builder(this)
+                .setTitle(R.string.ipc_setting_dialog_upgrade_fail)
+                .setMessage(getString(R.string.ipc_setting_dialog_upgrade_fail_content, version))
+                .setConfirmButton(R.string.str_retry, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setCancelButton(R.string.sm_cancel).create();
+        commonDialog.showWithOutTouchable(false);
+    }
+
+    /**
+     * 更新版本成功
+     */
+    private void upgradeVerSuccessDialog() {
+        CommonDialog commonDialog = new CommonDialog.Builder(this)
+                .setTitle(R.string.ipc_setting_dialog_upgrade_fail)
+                .setMessage(getString(R.string.ipc_setting_dialog_upgrade_success_content))
+                .setConfirmButton(R.string.str_sure, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).create();
+        commonDialog.showWithOutTouchable(false);
+    }
+
+    private UpdateProgressDialog dialog;
+
+    /**
+     * 升级中
+     */
+    private void upgrading() {
+        dialog = new UpdateProgressDialog.Builder(this)
+                .create();
+        dialog.canceledOnTouchOutside(true);
     }
 
 }

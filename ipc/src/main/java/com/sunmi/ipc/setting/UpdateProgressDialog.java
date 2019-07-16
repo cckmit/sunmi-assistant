@@ -1,4 +1,4 @@
-package com.sunmi.ipc.ipcset;
+package com.sunmi.ipc.setting;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;

@@ -1,4 +1,4 @@
-package com.sunmi.ipc.ipcset;
+package com.sunmi.ipc.setting;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -7,8 +7,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;

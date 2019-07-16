@@ -11,6 +11,7 @@
     <string name="str_continue">Continue</string>
     <string name="str_exit">Exit</string>
     <string name="str_next">Next</string>
+    <string name="str_close">Close</string>
 
     <string name="str_click_consent">By clicking the button of "Start Configuration", you agree</string>
     <string name="sunmi_user_protocol">《Sunmi User Protocol》</string>

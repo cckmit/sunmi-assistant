@@ -1,4 +1,4 @@
-package com.sunmi.ipc.ipcset;
+package com.sunmi.ipc.setting;
 
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.contract.IpcSettingNightStyleContract;
@@ -9,7 +9,6 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
-import sunmi.common.base.BaseActivity;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.SettingItemLayout;

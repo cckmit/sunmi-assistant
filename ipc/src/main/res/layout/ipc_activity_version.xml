@@ -35,7 +35,7 @@
         android:layout_below="@id/iv_router"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="24dp"
-        android:textColor="@color/color_333333_90"
+        android:textColor="@color/color_333333"
         android:textSize="@dimen/sp_24" />
 
     <TextView
