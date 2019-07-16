@@ -22,8 +22,8 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.RpcErrorCode;
+import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.GotoActivityUtils;
-import sunmi.common.utils.SunmiDevUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.ViewHolder;
 import sunmi.common.view.activity.StartConfigSMDeviceActivity_;
@@ -109,11 +109,11 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                     holder.setText(R.id.tv_name, device.getName());
                 }
                 holder.getView(R.id.tv_adjust).setVisibility(View.GONE);
-                holder.setImageResource(R.id.iv_device, SunmiDevUtils.setSearchLogo(device.getModel()));
+                holder.setImageResource(R.id.iv_device, DeviceTypeUtils.getInstance().getSunmiDeviceImage(device.getModel()));
                 if (device.getStatus() == 1 || device.getStatus() == 5512) {
                     holder.setText(R.id.tv_status, getString(R.string.str_add_success));
                     holder.setImageResource(R.id.iv_status, R.mipmap.ic_done);
-                    if (TextUtils.equals("FS1", device.getModel())) {
+                    if (DeviceTypeUtils.getInstance().isFS1(device.getModel())) {
                         holder.getView(R.id.tv_adjust).setVisibility(View.VISIBLE);
                         holder.getView(R.id.tv_adjust).setOnClickListener(new View.OnClickListener() {
                             @Override

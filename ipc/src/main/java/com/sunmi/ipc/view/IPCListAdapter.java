@@ -17,7 +17,7 @@ import com.sunmi.ipc.R;
 import java.util.List;
 
 import sunmi.common.model.SunmiDevice;
-import sunmi.common.utils.SunmiDevUtils;
+import sunmi.common.utils.DeviceTypeUtils;
 
 /**
  * Description:
@@ -46,7 +46,7 @@ public class IPCListAdapter extends RecyclerView.Adapter<IPCListAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         holder.itemView.setTag(position);
         holder.checkBox.setChecked(true);
-        holder.ivDevice.setImageResource(SunmiDevUtils.setSearchLogo(data.get(position).getModel()));
+        holder.ivDevice.setImageResource(DeviceTypeUtils.getInstance().getSunmiDeviceImage(data.get(position).getModel()));
         holder.tvName.setText(data.get(position).getModel());
         holder.tvSn.setText(data.get(position).getDeviceid());
     }
