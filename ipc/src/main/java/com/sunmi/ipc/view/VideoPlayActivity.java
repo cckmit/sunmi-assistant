@@ -73,6 +73,7 @@ import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.DateTimeUtils;
+import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.IVideoPlayer;
 import sunmi.common.utils.VolumeHelper;
 import sunmi.common.utils.log.LogCat;
@@ -255,7 +256,6 @@ public class VideoPlayActivity extends BaseActivity
     @AfterViews
     void init() {
 //        deviceId = 2239;
-//        ipcType = "SS1";
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//保持屏幕常亮
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//隐藏状态栏
@@ -308,8 +308,7 @@ public class VideoPlayActivity extends BaseActivity
     }
 
     private boolean isSS1() {
-        LogCat.e(TAG, "aaaaaaaa ipctype = " + ipcType);
-        return TextUtils.equals(ipcType, "SS1");
+        return DeviceTypeUtils.getInstance().isSS1(ipcType);
     }
 
     @Override

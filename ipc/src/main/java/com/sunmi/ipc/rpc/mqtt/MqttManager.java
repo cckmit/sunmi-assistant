@@ -319,6 +319,7 @@ public class MqttManager {
     private void initSubToken() {// /APP/userid/client_id/SS1/response/sub
         tokenSS1EventSub = String.format("/APP/%s/%s/SS1/response/sub", SpUtils.getUID(), clientId);
         tokenFS1EventSub = String.format("/APP/%s/%s/FS1/response/sub", SpUtils.getUID(), clientId);
+        tokenSS1EventSub = String.format("/APP/%s/%s/FM010/response/sub", SpUtils.getUID(), clientId);
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.sunmi.ipc.ipcset;
+package com.sunmi.ipc.setting;
 
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.rpc.IPCCloudApi;
