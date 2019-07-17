@@ -130,7 +130,7 @@ public class IpcSettingWiFiActivity extends BaseActivity {
         new InputDialog.Builder(this)
                 .setTitle(R.string.ipc_setting_dialog_wifi_input_pwd)
                 .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.str_sure, new InputDialog.ConfirmClickListener() {
+                .setConfirmButton(R.string.str_confirm, new InputDialog.ConfirmClickListener() {
                     @Override
                     public void onConfirmClick(InputDialog dialog, String input) {
                         dialog.dismiss();

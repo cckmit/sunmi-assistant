@@ -19,7 +19,7 @@ import sunmi.common.view.TitleBarView;
  * @author yinhui
  * @date 2019-07-16
  */
-@EActivity(resName = "ipc_setting_activity_sound_detection")
+@EActivity(resName = "ipc_setting_activity_detection")
 public class IpcSettingDetectionActivity extends BaseActivity {
 
     static final int TYPE_SOUND = 0;

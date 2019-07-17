@@ -11,10 +11,10 @@ import sunmi.common.model.SunmiDevice;
  */
 public interface IpcSettingContract {
 
-    int ABNORMAL_DETECTION_DISABLE = -1;
-    int ABNORMAL_DETECTION_LOW = 0;
-    int ABNORMAL_DETECTION_MIDDLE = 1;
-    int ABNORMAL_DETECTION_HIGH = 2;
+    int ABNORMAL_DETECTION_DISABLE = 0;
+    int ABNORMAL_DETECTION_LOW = 1;
+    int ABNORMAL_DETECTION_MIDDLE = 2;
+    int ABNORMAL_DETECTION_HIGH = 3;
 
     int NIGHT_VISION_AUTO = 0;
     int NIGHT_VISION_ON = 1;
