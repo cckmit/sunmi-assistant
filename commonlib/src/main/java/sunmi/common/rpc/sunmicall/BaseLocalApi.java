@@ -6,6 +6,7 @@ import com.commonlibrary.R;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLSocketFactory;
 
@@ -35,7 +36,7 @@ public abstract class BaseLocalApi extends BaseApi {
     @Override
     public void post(Context context, String sn, String msgId, int opCode, String json) {
         LogCat.e(TAG, "post: sn = " + sn + ", opCode：" + opCode + "，json = " + json);
-        postRouter(json, opCode, sn);
+        postRouter(sn, opCode, json);
     }
 
     public abstract String getBaseUrl();
@@ -53,7 +54,14 @@ public abstract class BaseLocalApi extends BaseApi {
     /**
      * ap路由器接口
      */
-    public void postRouter(final String strJson, final int opCode, final String sn) {
+    public void postRouter(final String sn, final int opCode, final String strJson) {
+        postRouterTimeout(sn, opCode, strJson, 10);
+    }
+
+    /**
+     * ap路由器接口
+     */
+    public void postRouterTimeout(final String sn, final int opCode, final String strJson, long timeout) {
         //Request
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         RequestBody requestBody = RequestBody.create(JSON, strJson);//请求json内容
@@ -68,6 +76,7 @@ public abstract class BaseLocalApi extends BaseApi {
         OkHttpClient.Builder mBuilder = new OkHttpClient.Builder();
         mBuilder.sslSocketFactory(getSSLSocketFactory());
         mBuilder.hostnameVerifier(new OKHttpUtils.TrustAllHostnameVerifier());
+        mBuilder.connectTimeout(timeout, TimeUnit.SECONDS);
         OkHttpClient okHttpClient = mBuilder.build();
 
         Call call = okHttpClient.newCall(request.build());
