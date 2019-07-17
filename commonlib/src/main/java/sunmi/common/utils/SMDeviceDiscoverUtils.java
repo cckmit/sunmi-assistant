@@ -3,7 +3,6 @@ package sunmi.common.utils;
 import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.util.Base64;
-import android.util.Log;
 
 import com.google.gson.GsonBuilder;
 
@@ -133,13 +132,11 @@ public class SMDeviceDiscoverUtils {
                         CRC32 crc = new CRC32();
                         crc.update(crc_data);
                         String a = Long.toHexString(crc.getValue());
-                        Log.e("TAG", "CRC32:---" + Long.toHexString(crc.getValue()));//十六进制
 
                         //server返回的crc末尾4个字节数据
                         byte[] crc_end4 = new byte[4];
                         System.arraycopy(rd, len - 4, crc_end4, 0, 4);
                         String b = bytesToHex(crc_end4);
-                        Log.e("TAG", "server return**16-->>" + bytesToHex(crc_end4));
                         //crc验证
                         if (b.contains(a)) {//crc验证通过
                             byte[] data = new byte[len - 12];////解析数据data，截取除去data的其他12个字节

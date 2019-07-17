@@ -26,9 +26,12 @@
         <activity android:name=".view.IPCSearchActivity_" />
         <activity android:name=".setting.IpcSettingActivity_" />
         <activity android:name=".setting.IpcSettingDetailActivity_" />
+        <activity android:name=".setting.IpcSettingDetectionActivity_" />
+        <activity android:name=".setting.IpcSettingDetectionTimeActivity_" />
         <activity android:name=".setting.IpcSettingNightStyleActivity_" />
         <activity android:name=".setting.IpcSettingVersionActivity_" />
         <activity android:name=".setting.IpcSettingWiFiActivity_" />
+
     </application>
 
 </manifest>

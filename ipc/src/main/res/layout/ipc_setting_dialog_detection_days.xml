@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_144"
+    android:background="@color/c_white">
+
+    <TextView
+        android:id="@+id/detection_day_monday"
+        android:layout_width="@dimen/dp_70"
+        android:layout_height="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_32"
+        android:background="@drawable/ipc_setting_btn_bg_detection_day"
+        android:gravity="center"
+        android:text="@string/ipc_setting_detection_day_monday"
+        android:textColor="@color/ipc_setting_btn_text_detection_day"
+        app:layout_constraintEnd_toStartOf="@+id/detection_day_tuesday"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/detection_day_tuesday"
+        android:layout_width="@dimen/dp_70"
+        android:layout_height="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_32"
+        android:background="@drawable/ipc_setting_btn_bg_detection_day"
+        android:gravity="center"
+        android:text="@string/ipc_setting_detection_day_tuesday"
+        android:textColor="@color/ipc_setting_btn_text_detection_day"
+        app:layout_constraintEnd_toStartOf="@+id/detection_day_wednesday"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/detection_day_monday"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/detection_day_wednesday"
+        android:layout_width="@dimen/dp_70"
+        android:layout_height="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_32"
+        android:background="@drawable/ipc_setting_btn_bg_detection_day"
+        android:gravity="center"
+        android:text="@string/ipc_setting_detection_day_wednesday"
+        android:textColor="@color/ipc_setting_btn_text_detection_day"
+        app:layout_constraintEnd_toStartOf="@+id/detection_day_thursday"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/detection_day_tuesday"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/detection_day_thursday"
+        android:layout_width="@dimen/dp_70"
+        android:layout_height="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_32"
+        android:background="@drawable/ipc_setting_btn_bg_detection_day"
+        android:gravity="center"
+        android:text="@string/ipc_setting_detection_day_thursday"
+        android:textColor="@color/ipc_setting_btn_text_detection_day"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/detection_day_wednesday"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/detection_day_friday"
+        android:layout_width="@dimen/dp_70"
+        android:layout_height="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_80"
+        android:background="@drawable/ipc_setting_btn_bg_detection_day"
+        android:gravity="center"
+        android:text="@string/ipc_setting_detection_day_friday"
+        android:textColor="@color/ipc_setting_btn_text_detection_day"
+        app:layout_constraintStart_toStartOf="@+id/detection_day_monday"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/detection_day_saturday"
+        android:layout_width="@dimen/dp_70"
+        android:layout_height="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_80"
+        android:background="@drawable/ipc_setting_btn_bg_detection_day"
+        android:gravity="center"
+        android:text="@string/ipc_setting_detection_day_saturday"
+        android:textColor="@color/ipc_setting_btn_text_detection_day"
+        app:layout_constraintStart_toStartOf="@+id/detection_day_tuesday"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/detection_day_sunday"
+        android:layout_width="@dimen/dp_70"
+        android:layout_height="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_80"
+        android:background="@drawable/ipc_setting_btn_bg_detection_day"
+        android:gravity="center"
+        android:text="@string/ipc_setting_detection_day_sunday"
+        android:textColor="@color/ipc_setting_btn_text_detection_day"
+        app:layout_constraintStart_toStartOf="@+id/detection_day_wednesday"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

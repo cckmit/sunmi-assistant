@@ -78,7 +78,7 @@
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
                 app:leftPadding="@dimen/dp_10"
-                app:leftText="@string/ipc_setting_dynamic_abnormal_detection"
+                app:leftText="@string/ipc_setting_active_abnormal_detection"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
                 app:rightText="开"

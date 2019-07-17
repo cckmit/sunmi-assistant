@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorText_5"
     android:orientation="vertical"
     tools:context=".setting.IpcSettingDetailActivity">
 
@@ -14,9 +15,9 @@
         android:layout_height="wrap_content"
         android:background="@color/c_white"
         app:dividerShow="true"
-        app:rightText="@string/ipc_setting_delete"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@mipmap/ic_back_dark"
+        app:rightText="@string/ipc_setting_delete"
         app:titleText="@string/str_setting_ipc_camera"
         app:titleTextColor="@color/colorText" />
 
@@ -25,6 +26,7 @@
         android:id="@+id/sil_camera_model"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_0_5"
         android:background="@color/c_white"
         app:leftPadding="@dimen/dp_10"
         app:leftText="@string/ipc_setting_name"
@@ -37,6 +39,7 @@
         android:id="@+id/sil_camera_sn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_0_5"
         android:background="@color/c_white"
         app:leftPadding="@dimen/dp_10"
         app:leftText="@string/ipc_setting_name"
