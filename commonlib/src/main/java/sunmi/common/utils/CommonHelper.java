@@ -590,4 +590,13 @@ public class CommonHelper {
         return type;
     }
 
+    //根据字符串型的资源名获取对应资源id
+    public static int getResource(Context ctx, String imageName, int defResId) {
+        int resId = ctx.getResources().getIdentifier(imageName, "mipmap", ctx.getPackageName());
+        if (resId == 0) {  //如果没有在"mipmap"下找到imageName,将会返回0
+            resId = defResId;//设置默认
+        }
+        return resId;
+    }
+
 }

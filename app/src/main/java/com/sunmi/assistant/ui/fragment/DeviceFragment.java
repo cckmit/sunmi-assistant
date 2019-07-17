@@ -38,7 +38,7 @@ import com.sunmi.assistant.ui.MainTopBar;
 import com.sunmi.assistant.ui.adapter.DeviceListAdapter;
 import com.sunmi.assistant.utils.GlideImageLoader;
 import com.sunmi.cloudprinter.ui.Activity.PrinterManageActivity_;
-import com.sunmi.ipc.ipcset.IpcSettingActivity_;
+import com.sunmi.ipc.setting.IpcSettingActivity_;
 import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.view.VideoPlayActivity_;
 import com.sunmi.sunmiservice.WebViewActivity_;

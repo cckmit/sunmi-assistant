@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_60"
+    android:background="@color/c_white">
+
+    <TextView
+        android:id="@+id/tv_wifi_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/dp_25"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxEms="32"
+        android:singleLine="true"
+        android:textColor="@color/colorText"
+        android:textSize="@dimen/sp_16" />
+
+    <ImageView
+        android:id="@+id/iv_lock"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/dp_56"
+        android:background="@mipmap/ic_lock"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/iv_wifi"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/dp_25"
+        android:background="@mipmap/ic_wifi"
+        tools:ignore="ContentDescription" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorText_5" />
+</RelativeLayout>

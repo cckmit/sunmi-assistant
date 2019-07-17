@@ -10,7 +10,7 @@ import com.sunmi.assistant.R;
 import java.util.List;
 
 import sunmi.common.model.SunmiDevice;
-import sunmi.common.utils.SunmiDevUtils;
+import sunmi.common.utils.DeviceTypeUtils;
 
 /**
  * Description:
@@ -32,7 +32,7 @@ public class DeviceListAdapter extends BaseQuickAdapter<SunmiDevice, BaseViewHol
     protected void convert(BaseViewHolder holder, SunmiDevice item) {
         holder.setText(R.id.tv_name, item.getModel());
         holder.setText(R.id.tv_sn, item.getDeviceid());
-        holder.setImageResource(R.id.iv_device, SunmiDevUtils.setSearchLogo(item.getModel()));
+        holder.setImageResource(R.id.iv_device, DeviceTypeUtils.getInstance().getSunmiDeviceImage(item.getModel()));
         showStatus(holder, item);
         holder.getView(R.id.rl_device_item).setOnClickListener(v -> {
             if (clickListener != null) {
