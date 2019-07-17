@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/c_white">
+
+    <TextView
+        android:id="@+id/tv_dialog_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:textColor="@color/color_dialog_cancel"
+        android:textSize="@dimen/sp_17"
+        app:layout_constraintBottom_toBottomOf="@+id/v_dialog_line_separate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_dialog_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/color_dialog_content"
+        android:textSize="@dimen/sp_17"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/v_dialog_line_separate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_dialog_ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:textColor="@color/color_dialog_sure"
+        android:textSize="@dimen/sp_17"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/v_dialog_line_separate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/v_dialog_line_separate"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_0_5"
+        android:layout_marginTop="@dimen/dp_44"
+        android:background="@color/colorText_10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/ll_dialog_content"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/v_dialog_line_separate" />
+
+</android.support.constraint.ConstraintLayout>

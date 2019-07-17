@@ -3,19 +3,16 @@ package com.datelibrary;
 import android.content.Context;
 import android.widget.TextView;
 
-
 import com.datelibrary.bean.DateType;
 import com.datelibrary.genview.WheelGeneralAdapter;
 import com.datelibrary.view.WheelView;
 
 import java.util.Date;
 
-import static android.R.attr.data;
-
 /**
  * Created by codbking on 2016/8/10.
  */
-class DatePicker extends BaseWheelPick {
+public class DatePicker extends BaseWheelPick {
 
     private static final String TAG = "WheelPicker";
 
@@ -62,12 +59,12 @@ class DatePicker extends BaseWheelPick {
     //初始化值
     public void init() {
 
-        this.minuteView = (WheelView) findViewById(R.id.minute);
-        this.hourView = (WheelView) findViewById(R.id.hour);
-        this.weekView = (TextView) findViewById(R.id.week);
-        this.dayView = (WheelView) findViewById(R.id.day);
-        this.monthView = (WheelView) findViewById(R.id.month);
-        this.yearView = (WheelView) findViewById(R.id.year);
+        this.minuteView = findViewById(R.id.minute);
+        this.hourView = findViewById(R.id.hour);
+        this.weekView = findViewById(R.id.week);
+        this.dayView = findViewById(R.id.day);
+        this.monthView = findViewById(R.id.month);
+        this.yearView = findViewById(R.id.year);
 
         switch (type) {
             case TYPE_ALL:

@@ -75,7 +75,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                             shortTip(R.string.ipc_setting_tip_name_length);
                             return;
                         }
-                         mPresenter.updateName(input);
+                        mPresenter.updateName(input);
                         dialog.dismiss();
                     }
                 })
@@ -89,6 +89,27 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 .mDevice(mDevice)
                 .start();
     }
+
+    @Click(resName = "sil_voice_exception")
+    void soundAbnormalDetection() {
+        IpcSettingDetectionActivity_.intent(this)
+                .mType(IpcSettingDetectionActivity.TYPE_SOUND)
+                .start();
+    }
+
+    @Click(resName = "sil_active_exception")
+    void activeAbnormalDetection() {
+        IpcSettingDetectionActivity_.intent(this)
+                .mType(IpcSettingDetectionActivity.TYPE_ACTIVE)
+                .start();
+    }
+
+    @Click(resName = "sil_time_setting")
+    void detectionTimeSetting() {
+        IpcSettingDetectionTimeActivity_.intent(this)
+                .start();
+    }
+
     @Click(resName = "sil_night_style")
     void nightStyleClick() {
         IpcSettingNightStyleActivity_.intent(this).start();
@@ -150,7 +171,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         CommonDialog commonDialog = new CommonDialog.Builder(this)
                 .setTitle(R.string.ipc_setting_dialog_upgrade_fail)
                 .setMessage(getString(R.string.ipc_setting_dialog_upgrade_success_content))
-                .setConfirmButton(R.string.str_sure, new DialogInterface.OnClickListener() {
+                .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 

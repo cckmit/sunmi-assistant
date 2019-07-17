@@ -1,0 +1,431 @@
+package sunmi.common.view.dialog;
+
+import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.support.annotation.ColorInt;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.StringRes;
+import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.commonlibrary.R;
+
+/**
+ * @author yinhui
+ * @date 2019-7-17
+ */
+public class BottomDialog extends Dialog {
+
+    private BottomDialog(Context context, int theme) {
+        super(context, theme);
+    }
+
+    public void showWithOutTouchable(boolean touchable) {
+        this.setCanceledOnTouchOutside(touchable);
+        this.show();
+    }
+
+    /**
+     * builder class for creating a custom dialog
+     */
+    public static class Builder {
+        private Context context;
+        private LayoutInflater inflater;
+
+        private View contentView;
+        private int contentLayoutId = -1;
+        private ViewGroup.LayoutParams contentLayoutParams;
+
+        private CharSequence title;
+        private CharSequence cancelText;
+        private CharSequence okText;
+        private int titleTextColor = -1;
+        private int cancelTextColor = -1;
+        private int okTextColor = -1;
+        private OnClickListener cancelClickListener, okClickListener;
+
+        public Builder(Context context) {
+            this.context = context;
+            this.inflater = LayoutInflater.from(context);
+        }
+
+        /**
+         * 设置标题
+         *
+         * @param textId 标题文本资源id
+         * @return 建造者
+         */
+        public Builder setTitle(@StringRes int textId) {
+            return setTitle(context.getText(textId));
+        }
+
+        /**
+         * 设置标题
+         *
+         * @param title 标题文本字符串
+         * @return 建造者
+         */
+        public Builder setTitle(CharSequence title) {
+            return setTitle(title, -1);
+        }
+
+        /**
+         * 设置标题和标题颜色
+         *
+         * @param textId    标题文本资源id
+         * @param textColor 标题颜色值（非资源id）
+         * @return 建造者
+         */
+        public Builder setTitle(@StringRes int textId, @ColorInt int textColor) {
+            return setTitle(context.getText(textId), textColor);
+        }
+
+        /**
+         * 设置标题和标题颜色
+         *
+         * @param title     标题文本字符串
+         * @param textColor 标题颜色值（非资源id）
+         * @return 建造者
+         */
+        public Builder setTitle(CharSequence title, @ColorInt int textColor) {
+            this.title = title;
+            this.titleTextColor = textColor;
+            return this;
+        }
+
+        /**
+         * 设置对话框内容主体
+         *
+         * @param v  View对象
+         * @param lp 布局参数
+         * @return 建造者
+         */
+        public Builder setContent(View v, ViewGroup.LayoutParams lp) {
+            this.contentLayoutId = -1;
+            this.contentView = v;
+            this.contentLayoutParams = lp;
+            return this;
+        }
+
+        /**
+         * 设置对话框内容主体
+         *
+         * @param layoutId 内容布局id
+         * @return 建造者
+         */
+        public Builder setContent(@LayoutRes int layoutId) {
+            this.contentLayoutId = layoutId;
+            this.contentView = null;
+            return this;
+        }
+
+        /**
+         * 设置取消按钮文本，默认事件为dismiss
+         *
+         * @param textId 文本资源id
+         * @return 建造者
+         */
+        public Builder setCancelButton(@StringRes int textId) {
+            return setCancelButton(context.getText(textId), new OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+        }
+
+        /**
+         * 设置取消按钮文本和事件
+         *
+         * @param textId   文本资源id
+         * @param listener 事件回调
+         * @return 建造者
+         */
+        public Builder setCancelButton(@StringRes int textId, OnClickListener listener) {
+            return setCancelButton(context.getText(textId), listener);
+        }
+
+        /**
+         * 设置取消按钮文本，默认事件为dismiss
+         *
+         * @param text 文本字符串
+         * @return 建造者
+         */
+        public Builder setCancelButton(CharSequence text) {
+            return setCancelButton(text, new OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+        }
+
+        /**
+         * 设置取消按钮文本和事件
+         *
+         * @param text     文本字符串
+         * @param listener 事件回调
+         * @return 建造者
+         */
+        public Builder setCancelButton(CharSequence text, OnClickListener listener) {
+            return setCancelButton(text, -1, listener);
+        }
+
+        /**
+         * 设置取消按钮文本和颜色，默认事件为dismiss
+         *
+         * @param textId    文本资源id
+         * @param textColor 文本颜色值（非资源id）
+         * @return 建造者
+         */
+        public Builder setCancelButton(@StringRes int textId, @ColorInt int textColor) {
+            return setCancelButton(context.getText(textId), textColor, new OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+        }
+
+        /**
+         * 设置取消按钮文本，颜色和事件
+         *
+         * @param textId    文本资源id
+         * @param textColor 文本颜色值（非资源id）
+         * @param listener  事件回调
+         * @return 建造者
+         */
+        public Builder setCancelButton(@StringRes int textId, @ColorInt int textColor, OnClickListener listener) {
+            return setCancelButton(context.getText(textId), textColor, listener);
+        }
+
+        /**
+         * 设置取消按钮文本和颜色，默认事件为dismiss
+         *
+         * @param text      文本字符串
+         * @param textColor 文本颜色值（非资源id）
+         * @return 建造者
+         */
+        public Builder setCancelButton(CharSequence text, @ColorInt int textColor) {
+            return setCancelButton(text, textColor, new OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+        }
+
+        /**
+         * 设置取消按钮文本，颜色和事件
+         *
+         * @param text      文本字符串
+         * @param textColor 文本颜色值（非资源id）
+         * @param listener  事件回调
+         * @return 建造者
+         */
+        public Builder setCancelButton(CharSequence text, @ColorInt int textColor, OnClickListener listener) {
+            this.cancelText = text;
+            this.cancelTextColor = textColor;
+            this.cancelClickListener = listener;
+            return this;
+        }
+
+        /**
+         * 设置确定按钮文本，默认事件为dismiss
+         *
+         * @param textId 文本资源id
+         * @return 建造者
+         */
+        public Builder setOkButton(@StringRes int textId) {
+            return setOkButton(context.getText(textId), new OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+        }
+
+        /**
+         * 设置确定按钮文本和事件
+         *
+         * @param textId   文本资源id
+         * @param listener 事件回调
+         * @return 建造者
+         */
+        public Builder setOkButton(@StringRes int textId, OnClickListener listener) {
+            return setOkButton(context.getText(textId), listener);
+        }
+
+        /**
+         * 设置确定按钮文本，默认事件为dismiss
+         *
+         * @param text 文本字符串
+         * @return 建造者
+         */
+        public Builder setOkButton(CharSequence text) {
+            return setOkButton(text, new OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+        }
+
+        /**
+         * 设置确定按钮文本和事件
+         *
+         * @param text     文本字符串
+         * @param listener 事件回调
+         * @return 建造者
+         */
+        public Builder setOkButton(CharSequence text, OnClickListener listener) {
+            return setOkButton(text, -1, listener);
+        }
+
+        /**
+         * 设置确定按钮文本和颜色，默认事件为dismiss
+         *
+         * @param textId    文本资源id
+         * @param textColor 文本颜色值（非资源id）
+         * @return 建造者
+         */
+        public Builder setOkButton(@StringRes int textId, @ColorInt int textColor) {
+            return setOkButton(context.getText(textId), textColor, new OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+        }
+
+        /**
+         * 设置确定按钮文本，颜色和事件
+         *
+         * @param textId    文本资源id
+         * @param textColor 文本颜色值（非资源id）
+         * @param listener  事件回调
+         * @return 建造者
+         */
+        public Builder setOkButton(@StringRes int textId, @ColorInt int textColor, OnClickListener listener) {
+            return setOkButton(context.getText(textId), textColor, listener);
+        }
+
+        /**
+         * 设置确定按钮文本和颜色，默认事件为dismiss
+         *
+         * @param text      文本字符串
+         * @param textColor 文本颜色值（非资源id）
+         * @return 建造者
+         */
+        public Builder setOkButton(CharSequence text, @ColorInt int textColor) {
+            return setOkButton(text, textColor, new OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+        }
+
+        /**
+         * 设置确定按钮文本，颜色和事件
+         *
+         * @param text      文本字符串
+         * @param textColor 文本颜色值（非资源id）
+         * @param listener  事件回调
+         * @return 建造者
+         */
+        public Builder setOkButton(CharSequence text, @ColorInt int textColor, OnClickListener listener) {
+            this.okText = text;
+            this.okTextColor = textColor;
+            this.okClickListener = listener;
+            return this;
+        }
+
+        /**
+         * 创建自定义的对话框
+         */
+        public BottomDialog create() {
+            final BottomDialog dialog = new BottomDialog(context, R.style.BottomDialog);
+            @SuppressLint("InflateParams")
+            View layout = inflater.inflate(R.layout.dialog_bottom, null);
+            int width = context.getResources().getDisplayMetrics().widthPixels;
+            dialog.addContentView(layout, new ViewGroup.LayoutParams(
+                    width, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+            // 设置Title
+            TextView tvTitle = layout.findViewById(R.id.tv_dialog_title);
+            if (TextUtils.isEmpty(title)) {
+                tvTitle.setVisibility(View.GONE);
+            } else {
+                tvTitle.setText(title);
+                if (titleTextColor != -1) {
+                    tvTitle.setTextColor(titleTextColor);
+                }
+            }
+
+            // 设置Cancel按钮
+            TextView tvCancel = layout.findViewById(R.id.tv_dialog_cancel);
+            if (TextUtils.isEmpty(cancelText)) {
+                tvCancel.setVisibility(View.GONE);
+            } else {
+                tvCancel.setText(cancelText);
+                if (cancelTextColor != -1) {
+                    tvCancel.setTextColor(cancelTextColor);
+                }
+                if (cancelClickListener != null) {
+                    tvCancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.cancel();
+                            cancelClickListener.onClick(dialog, DialogInterface.BUTTON_NEGATIVE);
+                        }
+                    });
+                }
+            }
+
+            // 设置ok按钮
+            TextView tvOk = layout.findViewById(R.id.tv_dialog_ok);
+            if (TextUtils.isEmpty(okText)) {
+                tvOk.setVisibility(View.GONE);
+            } else {
+                tvOk.setText(okText);
+                if (okTextColor != -1) {
+                    tvOk.setTextColor(okTextColor);
+                }
+                if (okClickListener != null) {
+                    tvOk.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                            okClickListener.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
+                        }
+                    });
+                }
+            }
+
+            // 设置内容Layout
+            LinearLayout content = layout.findViewById(R.id.ll_dialog_content);
+            if (contentView != null) {
+                content.addView(contentView, contentLayoutParams);
+            } else if (contentLayoutId != -1) {
+                inflater.inflate(contentLayoutId, content);
+            }
+
+            Window window = dialog.getWindow();
+            if (window != null) {
+                window.setGravity(Gravity.BOTTOM);
+                window.setWindowAnimations(R.style.BottomDialog_Animation);
+            }
+            return dialog;
+        }
+    }
+
+}
