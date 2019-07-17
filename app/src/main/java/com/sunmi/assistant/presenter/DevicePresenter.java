@@ -90,6 +90,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                             } else {
                                 device.setShopId(SpUtils.getShopId());
                             }
+                            device.saveOrUpdate();
                             list.add(device);
                         }
                     }
@@ -143,12 +144,14 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                         if (data.getFs_list() != null && data.getFs_list().size() > 0) {
                             for (IpcListResp.SsListBean bean : data.getFs_list()) {
                                 SunmiDevice device = getSunmiDevice(bean);
+                                device.saveOrUpdate();
                                 list.add(device);
                             }
                         }
                         if (data.getSs_list() != null && data.getSs_list().size() > 0) {
                             for (IpcListResp.SsListBean bean : data.getSs_list()) {
                                 SunmiDevice device = getSunmiDevice(bean);
+                                device.saveOrUpdate();
                                 list.add(device);
                             }
                         }
@@ -194,6 +197,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
             public void onSuccess(int code, String msg, String data) {
                 if (isViewAttached()) {
                     mView.endRefresh();
+                    DBUtils.deleteSunmiDeviceByType("PRINTER");
                     mView.getPrinterListSuccess(getList(data));
                 }
             }
@@ -286,6 +290,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
         } else {
             bean.setChannelId(1);
         }
+        bean.saveOrUpdate();
         return bean;
     }
 

@@ -640,9 +640,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         deviceList.addAll(printerList);
         showEmptyView();
         deviceListAdapter.notifyDataSetChanged();
-        if (deviceList.size() > 0) {
-            DataSupport.saveAll(deviceList);
-        }
     }
 
     private void showEmptyView() {
