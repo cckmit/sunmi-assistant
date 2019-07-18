@@ -108,6 +108,10 @@ public class TotalSalesCard extends BaseRefreshCard<TotalSalesCard.Model> {
                 model.trendName = Utils.getTrendNameByPeriod(getContext(), getPeriod());
             }
             String trendData = model.getTrendData(getPeriod());
+            if (TextUtils.isEmpty(trendData)) {
+                LogCat.d(TAG, "First load FAIL, update view skip...");
+                return;
+            }
 
             TextView tvTitle = holder.getView(R.id.tv_dashboard_title);
             TextView tvData = holder.getView(R.id.tv_dashboard_data);
