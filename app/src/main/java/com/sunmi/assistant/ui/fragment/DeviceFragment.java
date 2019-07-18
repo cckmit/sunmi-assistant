@@ -701,9 +701,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             msg = getString(R.string.tip_delete_printer);
         }
         new CommonDialog.Builder(mActivity).setMessage(msg)
-                .setCancelButton(R.string.sm_cancel, (dialog, which) -> {
-
-                })
+                .setCancelButton(R.string.sm_cancel)
                 .setConfirmButton(R.string.str_delete, R.color.read_deep_more,
                         (dialog, which) -> {
                             dialog.dismiss();

@@ -65,7 +65,7 @@
             <RelativeLayout
                 android:id="@+id/rl_others"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/dp_8"
                 android:background="@color/c_white"
                 android:orientation="vertical">
