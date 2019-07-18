@@ -24,14 +24,23 @@
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_32" />
 
-    <ImageView
-        android:id="@+id/iv_more"
+    <LinearLayout
+        android:id="@+id/ll_more"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:src="@drawable/ic_device_more_setting" />
+        android:paddingStart="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_8">
+
+        <ImageView
+            android:id="@+id/iv_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_device_more_setting" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tv_sn"

@@ -40,7 +40,7 @@ public class DeviceListAdapter extends BaseQuickAdapter<SunmiDevice, BaseViewHol
             }
         });
 
-        holder.getView(R.id.iv_more).setOnClickListener(v -> {
+        holder.getView(R.id.ll_more).setOnClickListener(v -> {
             if (clickListener != null) {
                 clickListener.onMoreClick(item, holder.getAdapterPosition());
             }
