@@ -55,7 +55,7 @@ public class DeviceListAdapter extends BaseQuickAdapter<SunmiDevice, BaseViewHol
                 || item.getStatus() == DeviceStatus.EXCEPTION.ordinal()) {
             holder.setImageResource(R.id.iv_status, R.drawable.ic_device_status_offline);
         } else {
-            holder.setImageResource(R.id.iv_status, -1);
+            holder.setImageDrawable(R.id.iv_status, null);
         }
     }
 
