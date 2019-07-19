@@ -40,7 +40,7 @@ public class DeviceListAdapter extends BaseQuickAdapter<SunmiDevice, BaseViewHol
             }
         });
 
-        holder.getView(R.id.iv_more).setOnClickListener(v -> {
+        holder.getView(R.id.ll_more).setOnClickListener(v -> {
             if (clickListener != null) {
                 clickListener.onMoreClick(item, holder.getAdapterPosition());
             }
@@ -55,7 +55,7 @@ public class DeviceListAdapter extends BaseQuickAdapter<SunmiDevice, BaseViewHol
                 || item.getStatus() == DeviceStatus.EXCEPTION.ordinal()) {
             holder.setImageResource(R.id.iv_status, R.drawable.ic_device_status_offline);
         } else {
-            holder.setImageResource(R.id.iv_status, -1);
+            holder.setImageDrawable(R.id.iv_status, null);
         }
     }
 

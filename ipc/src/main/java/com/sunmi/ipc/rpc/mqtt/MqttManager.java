@@ -40,6 +40,11 @@ public class MqttManager {
     static String tokenRequestSub;//订阅的request token
     public static String tokenSS1EventSub;//订阅的event ipc
     public static String tokenFS1EventSub;//订阅的event ipc
+    public static String tokenFM010EventSub;//订阅的event ipc
+
+    public static String tokenWEBSS1EventSub;//订阅的event ipc
+    public static String tokenWEBFS1EventSub;//订阅的event ipc
+    public static String tokenWEBFM010EventSub;//订阅的event ipc
 
     private static Map<String, Integer> messages = new ConcurrentHashMap<>(2);
 
@@ -61,10 +66,6 @@ public class MqttManager {
             }
         }
         return mqttManager;
-    }
-
-    public boolean isConnect() {
-        return mqttClient.isConnected();
     }
 
     String getClientId() {
@@ -184,7 +185,8 @@ public class MqttManager {
     }
 
     private String[] getTokens() {
-        return new String[]{tokenSS1EventSub, tokenFS1EventSub};//初始化所有门店下的设备dev状态
+        return new String[]{tokenSS1EventSub, tokenFS1EventSub, tokenFM010EventSub,
+                tokenWEBSS1EventSub, tokenWEBFS1EventSub, tokenWEBFM010EventSub};//初始化所有门店下的设备dev状态
     }
 
     /**
@@ -198,7 +200,7 @@ public class MqttManager {
                 return;
             }
 
-            int[] qoss = new int[]{2, 2};
+            int[] qoss = new int[]{2, 2, 2, 2, 2, 2};
             //订阅1
             mqttClient.subscribe(getTokens(), qoss, null, new IMqttActionListener() {
                 @Override
@@ -309,8 +311,51 @@ public class MqttManager {
         }
     }
 
+
+    /**
+     * 发布固件升级消息
+     */
+    public void pubIpcMessage(final String msgId, final int opCode, String model, String publishMessage) {
+        LogCat.e(TAG, "pubIpcMessage : publishMessage = " + publishMessage);
+        LogCat.e(TAG, "pubIpcMessage : publishMessage topic= " + getPubIpcTopic(clientId, model));
+        if (!NetworkUtils.isNetworkAvailable(BaseApplication.getContext())
+                || mqttClient == null || !mqttClient.isConnected()) {
+            ResponseBean res = new ResponseBean();
+            res.setErrCode(RpcErrorCode.RPC_COMMON_ERROR + "");
+            return;
+        }
+        try {
+            final MqttMessage message = new MqttMessage();
+            message.setPayload(publishMessage.getBytes());
+            message.setQos(2);
+            message.setRetained(false);
+            mqttClient.publish(getPubIpcTopic(clientId, model),
+                    message, null, new IMqttActionListener() {
+                        @Override
+                        public void onSuccess(IMqttToken asyncActionToken) {
+                            if (messages.size() > 2000) messages.clear();
+                            messages.put(msgId, opCode);
+                            LogCat.e(TAG, "pubByPassMessage onSuccess");
+                        }
+
+                        @Override
+                        public void onFailure(IMqttToken asyncActionToken, Throwable ex) {
+                            LogCat.e(TAG, "pubByPassMessage fail, ", ex);
+                        }
+                    });
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     private String getPubTopic(String clientId, String type) {
         return String.format("/APP/%s/%s/%s/pub", SpUtils.getUID(), clientId, type);
+    }
+
+    ///WEB/userId/clientId/model/request/pub
+    private String getPubIpcTopic(String clientId, String model) {
+        return String.format("/WEB/%s/%s/%s/request/pub", SpUtils.getUID(), clientId, model);
     }
 
     /**
@@ -319,7 +364,10 @@ public class MqttManager {
     private void initSubToken() {// /APP/userid/client_id/SS1/response/sub
         tokenSS1EventSub = String.format("/APP/%s/%s/SS1/response/sub", SpUtils.getUID(), clientId);
         tokenFS1EventSub = String.format("/APP/%s/%s/FS1/response/sub", SpUtils.getUID(), clientId);
-        tokenSS1EventSub = String.format("/APP/%s/%s/FM010/response/sub", SpUtils.getUID(), clientId);
+        tokenFM010EventSub = String.format("/APP/%s/%s/FM010/response/sub", SpUtils.getUID(), clientId);
+        tokenWEBSS1EventSub = String.format("/WEB/%s/%s/SS1/response/sub", SpUtils.getUID(), clientId);
+        tokenWEBFS1EventSub = String.format("/WEB/%s/%s/FS1/response/sub", SpUtils.getUID(), clientId);
+        tokenWEBFM010EventSub = String.format("/WEB/%s/%s/FM010/response/sub", SpUtils.getUID(), clientId);
     }
 
     /**
@@ -341,6 +389,16 @@ public class MqttManager {
             });
         } catch (MqttException e) {
             e.printStackTrace();
+        }
+    }
+
+    public boolean isConnected() {
+        return mqttClient != null && mqttClient.isConnected();
+    }
+
+    public void reconnect() {
+        if (!isConnected()) {
+            mqttConnect();
         }
     }
 

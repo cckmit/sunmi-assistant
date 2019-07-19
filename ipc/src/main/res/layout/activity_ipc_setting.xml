@@ -65,7 +65,6 @@
                 app:leftText="@string/ipc_setting_sound_abnormal_detection"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
-                app:rightText="开"
                 app:rightTextColor="@color/colorText_60" />
 
 
@@ -81,7 +80,6 @@
                 app:leftText="@string/ipc_setting_active_abnormal_detection"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
-                app:rightText="开"
                 app:rightTextColor="@color/colorText_60" />
 
 
@@ -97,7 +95,6 @@
                 app:leftText="@string/ipc_setting_detection_time"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
-                app:rightText="开"
                 app:rightTextColor="@color/colorText_60" />
 
 
@@ -140,7 +137,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/dp_20"
-                    android:checked="true"
+                    android:checked="false"
                     android:thumb="@drawable/switch_thumb"
                     android:track="@drawable/switch_track" />
             </RelativeLayout>
@@ -169,7 +166,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/dp_20"
-                    android:checked="true"
+                    android:checked="false"
                     android:thumb="@drawable/switch_thumb"
                     android:track="@drawable/switch_track" />
             </RelativeLayout>
@@ -186,7 +183,6 @@
                 app:leftText="@string/ipc_setting_wifi"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
-                app:rightText="SUNMI 5G"
                 app:rightTextColor="@color/colorText_60" />
 
 
@@ -202,7 +198,6 @@
                 app:leftText="@string/ipc_setting_version_current_name"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
-                app:rightText="SUNMI 5G"
                 app:rightTextColor="@color/colorText_60" />
         </RelativeLayout>
 
