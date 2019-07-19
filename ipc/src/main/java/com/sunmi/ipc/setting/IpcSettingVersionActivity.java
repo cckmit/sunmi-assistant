@@ -1,5 +1,6 @@
 package com.sunmi.ipc.setting;
 
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.sunmi.ipc.contract.IpcSettingVersionContract;
@@ -8,6 +9,7 @@ import com.sunmi.ipc.presenter.IpcSettingVersionPresenter;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
@@ -15,6 +17,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.model.SunmiDevice;
 import sunmi.common.utils.StatusBarUtils;
 
 /**
@@ -28,6 +31,13 @@ public class IpcSettingVersionActivity extends BaseMvpActivity<IpcSettingVersion
     TextView tvDeviceId;
     @ViewById(resName = "tv_version")
     TextView tvVersion;
+    @ViewById(resName = "btn_upgrade")
+    Button btnUpgrade;
+
+    @Extra
+    SunmiDevice mDevice;
+//    @Extra
+//    IpcNewFirmwareResp newFirmware;
 
     private UpdateProgressDialog dialog;
     private Timer timer = null;
@@ -80,6 +90,11 @@ public class IpcSettingVersionActivity extends BaseMvpActivity<IpcSettingVersion
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
+        //upgrade_required是否需要更新，0-不需要，1-需要
+//        if (newFirmware.getUpgrade_required() == 1) {
+//            tvDeviceId.setText(mDevice.getDeviceid());
+//            tvVersion.setText(getString(R.string.ipc_setting_version_current, newFirmware.getLatest_bin_version()));
+//        }
     }
 
     @Override

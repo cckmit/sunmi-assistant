@@ -31,6 +31,7 @@ public class SettingItemLayout extends RelativeLayout {
     private TextView tvRight;
     public ImageView ivRight;
     public ImageView ivRightTip;
+    public ImageView ivToTextLeftImage;
 
     private float height;
     private String leftText = "";
@@ -61,6 +62,7 @@ public class SettingItemLayout extends RelativeLayout {
         ivLeft = view.findViewById(R.id.left_image);
         ivRight = view.findViewById(R.id.right_image);
         ivRightTip = view.findViewById(R.id.right_tip_image);
+        ivToTextLeftImage = view.findViewById(R.id.to_right_text_left_image);
 
         if (parentLayout != null) {
             ViewGroup.LayoutParams pp = parentLayout.getLayoutParams();
@@ -142,6 +144,15 @@ public class SettingItemLayout extends RelativeLayout {
     public void setRightTipImage(int resId) {
         ivRightTip.setVisibility(VISIBLE);
         ivRightTip.setImageResource(resId);
+    }
+
+    public ImageView getIvToTextLeftImage() {
+        return ivToTextLeftImage;
+    }
+
+    public void setIvToTextLeftImage(int resId) {
+        ivToTextLeftImage.setVisibility(VISIBLE);
+        ivToTextLeftImage.setImageResource(resId);
     }
 
     public void setLeftImage(Drawable drawable) {
