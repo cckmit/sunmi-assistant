@@ -291,9 +291,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             return;
         }
         ResponseBean res = (ResponseBean) args[0];
-        if (TextUtils.isEmpty(res.getResult().toString())) {
-            return;
-        }
         if (id == IpcConstants.getIpcConnectApMsg) {
             LogCat.e(TAG, "1111  11=" + res.getResult());
             getIpcConnectApMsg(res);
@@ -304,8 +301,13 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             LogCat.e(TAG, "1111 33=" + res.getResult());
             setIpcNightIdeRotation(res);
         } else if (id == IpcConstants.getIpcDetection) {
-            mDetectionConfig = new Gson().fromJson(res.getResult().toString(), IpcDetectionConfig.class);
-            updateDetectionView();
+            if (TextUtils.equals("1", res.getErrCode())) {
+                mDetectionConfig = new Gson().fromJson(res.getResult().toString(), IpcDetectionConfig.class);
+                updateDetectionView();
+            } else {
+                shortTip(R.string.toast_network_Exception);
+            }
+
         }
     }
 

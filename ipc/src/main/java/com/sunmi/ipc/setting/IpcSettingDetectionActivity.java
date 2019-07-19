@@ -173,9 +173,6 @@ public class IpcSettingDetectionActivity extends BaseActivity {
             return;
         }
         ResponseBean res = (ResponseBean) args[0];
-        if (TextUtils.isEmpty(res.getResult().toString())) {
-            return;
-        }
         if (id == IpcConstants.setIpcDetection) {
             if (TextUtils.equals("1", res.getErrCode())) {
                 shortTip(R.string.tip_set_complete);
