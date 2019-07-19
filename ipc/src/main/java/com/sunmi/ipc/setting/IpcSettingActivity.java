@@ -86,12 +86,10 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     //获取夜视模式，指示灯，画面旋转信息
     private void getIpcNightIdeRotation() {
         IPCCall.getInstance().getIpcNightIdeRotation(this, mDevice.getModel(), mDevice.getDeviceid());
-        if (!IPCCall.isRemoteCall(mDevice.getDeviceid())) {
+        SunmiDevice device = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
+        if (device != null) {
             //ipc连接wifi信息
-            if (CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
-                IPCCall.getInstance().getIpcConnectApMsg(this,
-                        CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid()).getIp());
-            }
+            IPCCall.getInstance().getIpcConnectApMsg(this, device.getIp());
         }
     }
 
@@ -204,7 +202,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Click(resName = "sil_wifi")
     void wifiClick() {
-        if (IPCCall.isRemoteCall(mDevice.getDeviceid())) {
+        //是否远程
+        if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
             shortTip(R.string.ipc_setting_tip_network_dismatch);
             return;
         }

@@ -29,7 +29,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import sunmi.common.base.BaseActivity;
-import sunmi.common.constant.CommonUdpData;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.StatusBarUtils;
@@ -113,10 +113,12 @@ public class IpcSettingWiFiActivity extends BaseActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(linearLayoutManager);
         tvStatus.setText(R.string.ipc_setting_tip_wifi_discovery);
-        ip = CommonUdpData.currentIpcIp(mDevice.getDeviceid());
+        if (CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
+            ip = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid()).getIp();
+        }
         showLoadingDialog();
         IPCCall.getInstance().getIpcConnectApMsg(this, ip);//ipc连接wifi信息
-        IPCCall.getInstance().getWifiList(this, ip);//wifi list¬
+        IPCCall.getInstance().getWifiList(this, ip);//wifi list
     }
 
     @Override

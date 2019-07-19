@@ -1,13 +1,13 @@
 package com.sunmi.ipc.rpc;
 
 import android.content.Context;
-import android.text.TextUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.BaseIpcApi;
 import sunmi.common.rpc.sunmicall.RequestBean;
 import sunmi.common.utils.Utils;
@@ -278,22 +278,13 @@ public class IPCCall extends BaseIpcApi {
         post(context, sn, requestBean.getMsgId(), opCode, requestBean.serialize());
     }
 
-    /**
-     * 是否局域网
-     *
-     * @param sn
-     * @return
-     */
-    public static boolean isRemoteCall(String sn) {
-        return TextUtils.isEmpty(CommonConstants.SUNMI_DEVICE_MAP.get(sn).getDeviceid());
-    }
-
     @Override
     public void post(Context context, String sn, String msgId, int opCode, String json) {
-        if (isRemoteCall(sn)) {
+        SunmiDevice device = CommonConstants.SUNMI_DEVICE_MAP.get(sn);
+        if (device != null) {
+            new IPCLocalApi(device.getIp()).post(context, sn, msgId, opCode, json);
+        } else {
             new IpcRemoteApApi().post(context, sn, msgId, opCode, json);
-        } else if (CommonConstants.SUNMI_DEVICE_MAP.containsKey(sn)) {
-            new IPCLocalApi(CommonConstants.SUNMI_DEVICE_MAP.get(sn).getIp()).post(context, sn, msgId, opCode, json);
         }
     }
 
@@ -309,10 +300,11 @@ public class IPCCall extends BaseIpcApi {
      */
     @Override
     public void post(Context context, String sn, String msgId, int opCode, String model, String json) {
-        if (isRemoteCall(sn)) {
-            new IpcRemoteSettingApi().post(context, sn, msgId, opCode, model, json);
-        } else if (CommonConstants.SUNMI_DEVICE_MAP.containsKey(sn)) {
+        SunmiDevice device = CommonConstants.SUNMI_DEVICE_MAP.get(sn);
+        if (device != null) {
             new IPCLocalApi(CommonConstants.SUNMI_DEVICE_MAP.get(sn).getIp()).post(context, sn, msgId, opCode, json);
+        } else {
+            new IpcRemoteSettingApi().post(context, sn, msgId, opCode, model, json);
         }
     }
 
