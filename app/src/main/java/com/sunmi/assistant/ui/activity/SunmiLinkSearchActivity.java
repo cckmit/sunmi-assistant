@@ -19,7 +19,6 @@ import com.sunmi.ipc.contract.IpcConfiguringContract;
 import com.sunmi.ipc.model.IpcListResp;
 import com.sunmi.ipc.presenter.IpcConfiguringPresenter;
 import com.sunmi.ipc.rpc.IpcConstants;
-import com.sunmi.ipc.rpc.mqtt.MqttManager;
 import com.sunmi.ipc.view.IPCListAdapter;
 import com.sunmi.ipc.view.IpcConfigCompletedActivity_;
 
@@ -142,13 +141,12 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
     }
 
     @Override
-    public void ipcBindWifiSuccess(String sn) {
-        MqttManager.getInstance().isConnect();
+    public void ipcBindSuccess(String sn) {
         setTimeout();
     }
 
     @Override
-    public void ipcBindWifiFail(String sn, int code, String msg) {
+    public void ipcBindFail(String sn, int code, String msg) {
         setDeviceStatus(sn, code);
         setTimeout();
     }

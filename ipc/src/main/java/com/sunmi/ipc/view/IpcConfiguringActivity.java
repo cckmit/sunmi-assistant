@@ -11,6 +11,7 @@ import com.sunmi.ipc.contract.IpcConfiguringContract;
 import com.sunmi.ipc.model.IpcListResp;
 import com.sunmi.ipc.presenter.IpcConfiguringPresenter;
 import com.sunmi.ipc.rpc.IpcConstants;
+import com.sunmi.ipc.rpc.mqtt.MqttManager;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -60,12 +61,7 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
         mPresenter = new IpcConfiguringPresenter();
         mPresenter.attachView(this);
         tvTip.setText(Html.fromHtml(getString(R.string.tip_keep_same_network)));
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                bind();
-            }
-        }, 5000);
+        bind();
     }
 
     private void bind() {
@@ -84,7 +80,8 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
 
     @UiThread
     @Override
-    public void ipcBindWifiSuccess(String sn) {
+    public void ipcBindSuccess(String sn) {
+        MqttManager.getInstance().reconnect();
         retryCount = 20;
         startCountDown();
     }
@@ -95,7 +92,6 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
             new Handler().postDelayed(new Runnable() {
                 public void run() {
                     if (deviceIds.isEmpty()) return;
-                    LogCat.e(TAG, "888888 getIpcList");
                     mPresenter.getIpcList(SpUtils.getCompanyId(), shopId);
                 }
             }, 30000);
@@ -104,12 +100,12 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
 
     @UiThread
     @Override
-    public void ipcBindWifiFail(final String sn, final int code, String msg) {
-        LogCat.e(TAG, "888888 ipcBindWifiFail,code=" + code);
+    public void ipcBindFail(final String sn, final int code, String msg) {
+        LogCat.e(TAG, "888888 ipcBindFail,code=" + code);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                LogCat.e(TAG, "888888 ipcBindWifiFail,retryCount = " + retryCount);
+                LogCat.e(TAG, "888888 ipcBindFail,retryCount = " + retryCount);
                 if (sunmiDevices.size() > 1 || retryCount == 20
                         || code == 5501 || code == 5508 || code == 5509 || code == 5510
                         || code == 5511 || code == 5512 || code == 5013) {
@@ -120,14 +116,13 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
                 retryCount++;
                 bind();
             }
-        }, 3000);
+        }, 2000);
     }
 
     @Override
     public void getIpcListSuccess(List<IpcListResp.SsListBean> ipcList) {
         for (IpcListResp.SsListBean bean : ipcList) {
             for (SunmiDevice device : sunmiDevices) {
-                LogCat.e(TAG, "888888 bean.getSn() = " + bean.getSn() + ",device.getDeviceid() = " + device.getDeviceid());
                 if (TextUtils.equals(bean.getSn(), device.getDeviceid())) {
                     setDeviceStatus(device.getDeviceid(), 1);
                 }
