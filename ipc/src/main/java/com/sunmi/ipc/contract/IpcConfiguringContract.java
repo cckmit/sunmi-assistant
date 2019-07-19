@@ -14,9 +14,9 @@ public interface IpcConfiguringContract {
 
     interface View extends BaseView {
 
-        void ipcBindWifiSuccess(String sn);
+        void ipcBindSuccess(String sn);
 
-        void ipcBindWifiFail(String sn, int code, String msg);
+        void ipcBindFail(String sn, int code, String msg);
 
         void getIpcListSuccess(List<IpcListResp.SsListBean> ipcList);
 

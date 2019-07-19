@@ -20,7 +20,6 @@ import com.sunmi.cloudprinter.bean.BlueDevice;
 import com.sunmi.cloudprinter.constant.BtBleContract;
 import com.sunmi.cloudprinter.constant.Constants;
 import com.sunmi.cloudprinter.presenter.BtBlePresenter;
-import com.sunmi.cloudprinter.rpc.IOTCloudApi;
 import com.sunmi.cloudprinter.ui.adaper.PrinterListAdapter;
 import com.sunmi.cloudprinter.utils.Utility;
 
@@ -36,7 +35,6 @@ import java.util.List;
 import java.util.Set;
 
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.rpc.http.HttpCallback;
 import sunmi.common.utils.PermissionUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
@@ -60,9 +58,11 @@ public class PrinterSearchActivity extends BaseMvpActivity<BtBlePresenter>
     RelativeLayout rlLoading;
     @ViewById(resName = "btn_refresh")
     Button btnRefresh;
+
     @Extra
     int shopId;
 
+    private static final long DURATION_SCAN = 30_000;
     private Set<String> macSet = new HashSet<>();
     private List<BlueDevice> list = new ArrayList<>();
     private PrinterListAdapter printerAdapter;
@@ -73,6 +73,7 @@ public class PrinterSearchActivity extends BaseMvpActivity<BtBlePresenter>
     private Handler mHandler = new Handler();
     private BluetoothClient mClient;
     String bleAddress;
+    String sn;
 
     private Runnable scanStart = new Runnable() {
         @Override
@@ -103,14 +104,14 @@ public class PrinterSearchActivity extends BaseMvpActivity<BtBlePresenter>
 
     @Click(resName = "btn_retry")
     void retryClick() {
+        tvAddPrinter.setVisibility(View.VISIBLE);
+        nsvPrinter.setVisibility(View.VISIBLE);
+        rlNoWifi.setVisibility(View.GONE);
         startScan();
     }
 
     @Click(resName = "btn_refresh")
     void refreshClick() {
-        list.clear();
-        macSet.clear();
-        printerAdapter.notifyDataSetChanged();
         rlLoading.setVisibility(View.VISIBLE);
         btnRefresh.setVisibility(View.GONE);
         startScan();
@@ -147,7 +148,20 @@ public class PrinterSearchActivity extends BaseMvpActivity<BtBlePresenter>
         mPresenter.sendData(mClient, bleAddress, Utility.cmdGetSn());
     }
 
-    String sn;
+    @Override
+    public void bindSuccess(int code, String msg, String data) {
+        gotoPrinterSet();
+    }
+
+    @Override
+    public void bindFail(int code, String msg, String data) {
+        if (code == 4402) {
+            shortTip(R.string.tip_printer_already_bound);
+            gotoPrinterSet();
+        } else {
+            shortTip(R.string.tip_printer_bind_fail);
+        }
+    }
 
     @Override
     public void onResponse(byte[] value) {
@@ -155,7 +169,7 @@ public class PrinterSearchActivity extends BaseMvpActivity<BtBlePresenter>
         if (cmd == Constants.SRV2CLI_SEND_SN) {
             sn = Utility.getSn(value);
             LogCat.e(TAG, "getsn = " + sn);//N302D94D40068 N302D94D46666
-            bindPrinter(sn);
+            mPresenter.bindPrinter(shopId, sn);
         }
     }
 
@@ -210,9 +224,9 @@ public class PrinterSearchActivity extends BaseMvpActivity<BtBlePresenter>
 
     //startLeScan 和stopLeScan 需使用同一个Callback
     private void startScan() {
-        tvAddPrinter.setVisibility(View.VISIBLE);
-        nsvPrinter.setVisibility(View.VISIBLE);
-        rlNoWifi.setVisibility(View.GONE);
+        list.clear();
+        macSet.clear();
+        printerAdapter.notifyDataSetChanged();
         if (btAdapter != null) {
             btAdapter.startLeScan(this);
         }
@@ -228,35 +242,13 @@ public class PrinterSearchActivity extends BaseMvpActivity<BtBlePresenter>
                     btnRefresh.setVisibility(View.VISIBLE);
                 }
             }
-        }, 30_000);
+        }, DURATION_SCAN);
     }
 
     private void stopScan() {
         if (btAdapter != null) {
             btAdapter.stopLeScan(this);
         }
-    }
-
-    private void bindPrinter(String sn) {
-        showLoadingDialog();
-        IOTCloudApi.bindPrinter(shopId, sn, new HttpCallback<String>(null) {
-            @Override
-            public void onSuccess(int code, String msg, String data) {
-                hideLoadingDialog();
-                gotoPrinterSet();
-            }
-
-            @Override
-            public void onFail(int code, String msg, String data) {
-                hideLoadingDialog();
-                if (code == 4402) {
-                    shortTip(R.string.tip_printer_already_bound);
-                    gotoPrinterSet();
-                } else {
-                    shortTip(R.string.tip_printer_bind_fail);
-                }
-            }
-        });
     }
 
     private void gotoPrinterSet() {

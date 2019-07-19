@@ -28,13 +28,13 @@ public class IpcConfiguringPresenter extends BasePresenter<IpcConfiguringContrac
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
                         LogCat.e("IpcConfiguringPresenter", "onSuccess 111");
-                        if (isViewAttached()) mView.ipcBindWifiSuccess(sn);
+                        if (isViewAttached()) mView.ipcBindSuccess(sn);
                     }
 
                     @Override
                     public void onFail(int code, String msg, Object data) {
                         LogCat.e("IpcConfiguringPresenter", "onFail 111");
-                        if (isViewAttached()) mView.ipcBindWifiFail(sn, code, msg);
+                        if (isViewAttached()) mView.ipcBindFail(sn, code, msg);
                     }
                 });
     }

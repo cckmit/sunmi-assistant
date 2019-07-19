@@ -68,10 +68,6 @@ public class MqttManager {
         return mqttManager;
     }
 
-    public boolean isConnect() {
-        return mqttClient.isConnected();
-    }
-
     String getClientId() {
         return clientId;
     }
@@ -393,6 +389,16 @@ public class MqttManager {
             });
         } catch (MqttException e) {
             e.printStackTrace();
+        }
+    }
+
+    public boolean isConnected() {
+        return mqttClient != null && mqttClient.isConnected();
+    }
+
+    public void reconnect() {
+        if (!isConnected()) {
+            mqttConnect();
         }
     }
 
