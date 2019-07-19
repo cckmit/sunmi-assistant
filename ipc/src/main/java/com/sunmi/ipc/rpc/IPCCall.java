@@ -243,11 +243,11 @@ public class IPCCall extends BaseIpcApi {
     }
 
     /**
-     * 获取  夜视模式 指示灯 旋转信息
+     * 获取IPC声音侦测和动态侦测相关配置信息
      *
-     * @param context
-     * @param model
-     * @param sn
+     * @param context 上下文
+     * @param model   型号
+     * @param sn      SN
      */
     public void getIpcDetection(Context context, String model, String sn) {
         try {
@@ -263,16 +263,17 @@ public class IPCCall extends BaseIpcApi {
     }
 
     /**
-     * @param context
-     * @param model       SS1 FS1
-     * @param sn
-     * @param motionLevel 动作检测级别 0-1-2-3对应关闭-低-中-高
-     * @param audioLevel  声音检测级别 0-1-2-3对应关闭-低-中-高
-     * @param weekday     每周监测日期，详见备注 按位计算，比如0x1对应周一打开，
-     *                    0x3对应周一加周二，0x7f对应周一到周日，特别的，0x80对应7*24小时。
-     * @param startTime   从0点开始的时间戳 以从0点开始的秒数表示，如28800对应8点，
-     *                    72000对应20点，若开始时间大于结束时间，表示从前一天开始到第二天结束。
-     * @param stopTime    从0点开始的时间戳
+     * 设置IPC声音侦测和动态侦测相关配置
+     *
+     * @param context     上下文
+     * @param model       型号（SS1、FS1）
+     * @param sn          SN
+     * @param motionLevel 动态侦测设置，0：关闭，1～3：低中高
+     * @param audioLevel  声音侦测设置，0：关闭，1～3：低中高
+     * @param weekday     侦测时间中每周的开启日，按位表示，从低位到高位依次表示周一到周日，0：关闭，1：开启。
+     *                    特别的，0x80表示7*24小时开启侦测。
+     * @param startTime   时间戳，表示从当天00:00开始到现在经历过的秒数，如28800表示08:00，72000表示20:00。
+     * @param stopTime    时间戳，表示从当天00:00开始到现在经历过的秒数，如果比{@param startTime}小，则表示次日。
      */
     public void setIpcDetection(Context context, String model, String sn, int motionLevel, int audioLevel,
                                 int weekday, int startTime, int stopTime) {
