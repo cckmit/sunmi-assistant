@@ -287,6 +287,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     @Click(resName = "sil_ipc_version")
     void versionClick() {
         IpcSettingVersionActivity_.intent(this)
+                .mResp(mResp)
                 .mDevice(mDevice)
                 .start();
     }
