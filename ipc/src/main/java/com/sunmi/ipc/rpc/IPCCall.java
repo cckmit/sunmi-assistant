@@ -285,15 +285,15 @@ public class IPCCall extends BaseIpcApi {
      * @return
      */
     public static boolean isRemoteCall(String sn) {
-        return TextUtils.isEmpty(CommonConstants.SUNMI_DEV_MAP.get(sn).getDeviceid());
+        return TextUtils.isEmpty(CommonConstants.SUNMI_DEVICE_MAP.get(sn).getDeviceid());
     }
 
     @Override
     public void post(Context context, String sn, String msgId, int opCode, String json) {
         if (isRemoteCall(sn)) {
             new IpcRemoteApApi().post(context, sn, msgId, opCode, json);
-        } else {
-            new IPCLocalApi(CommonConstants.SUNMI_DEV_MAP.get(sn).getIp()).post(context, sn, msgId, opCode, json);
+        } else if (CommonConstants.SUNMI_DEVICE_MAP.containsKey(sn)) {
+            new IPCLocalApi(CommonConstants.SUNMI_DEVICE_MAP.get(sn).getIp()).post(context, sn, msgId, opCode, json);
         }
     }
 
@@ -311,8 +311,8 @@ public class IPCCall extends BaseIpcApi {
     public void post(Context context, String sn, String msgId, int opCode, String model, String json) {
         if (isRemoteCall(sn)) {
             new IpcRemoteSettingApi().post(context, sn, msgId, opCode, model, json);
-        } else {
-            new IPCLocalApi(CommonConstants.SUNMI_DEV_MAP.get(sn).getIp()).post(context, sn, msgId, opCode, json);
+        } else if (CommonConstants.SUNMI_DEVICE_MAP.containsKey(sn)) {
+            new IPCLocalApi(CommonConstants.SUNMI_DEVICE_MAP.get(sn).getIp()).post(context, sn, msgId, opCode, json);
         }
     }
 

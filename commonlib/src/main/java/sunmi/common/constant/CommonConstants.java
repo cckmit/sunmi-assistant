@@ -11,7 +11,7 @@ import sunmi.common.model.SunmiDevice;
  */
 public class CommonConstants {
     public static final String FILE_PROVIDER_AUTHORITY = "com.sunmi.assistant.fileprovider";
-    public static Map<String, SunmiDevice> SUNMI_DEV_MAP = new ConcurrentHashMap<>();
+    public static Map<String, SunmiDevice> SUNMI_DEVICE_MAP = new ConcurrentHashMap<>();
 
     public static long LONGITUDE;//精度
     public static long LATITUDE;//纬度

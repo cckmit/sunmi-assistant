@@ -88,9 +88,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         IPCCall.getInstance().getIpcNightIdeRotation(this, mDevice.getModel(), mDevice.getDeviceid());
         if (!IPCCall.isRemoteCall(mDevice.getDeviceid())) {
             //ipc连接wifi信息
-            if (CommonConstants.SUNMI_DEV_MAP.containsKey(mDevice.getDeviceid())) {
+            if (CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
                 IPCCall.getInstance().getIpcConnectApMsg(this,
-                        CommonConstants.SUNMI_DEV_MAP.get(mDevice.getDeviceid()).getIp());
+                        CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid()).getIp());
             }
         }
     }
