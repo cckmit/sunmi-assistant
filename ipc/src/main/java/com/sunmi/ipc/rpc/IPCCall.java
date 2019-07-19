@@ -243,6 +243,26 @@ public class IPCCall extends BaseIpcApi {
     }
 
     /**
+     * 获取  夜视模式 指示灯 旋转信息
+     *
+     * @param context
+     * @param model
+     * @param sn
+     */
+    public void getIpcDetection(Context context, String model, String sn) {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("sn", sn);
+            int opCode = IpcConstants.getIpcDetection;
+            RequestBean requestBean = new RequestBean(Utils.getMsgId(),
+                    "0x" + Integer.toHexString(opCode), object);
+            post(context, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * @param context
      * @param model       SS1 FS1
      * @param sn
@@ -254,8 +274,8 @@ public class IPCCall extends BaseIpcApi {
      *                    72000对应20点，若开始时间大于结束时间，表示从前一天开始到第二天结束。
      * @param stopTime    从0点开始的时间戳
      */
-    public void ipcDetect(Context context, String model, String sn, String motionLevel, String audioLevel,
-                          String weekday, String startTime, String stopTime) {
+    public void setIpcDetection(Context context, String model, String sn, int motionLevel, int audioLevel,
+                                int weekday, int startTime, int stopTime) {
         try {
             JSONObject object = new JSONObject();
             object.put("sn", sn);
@@ -264,7 +284,7 @@ public class IPCCall extends BaseIpcApi {
             object.put("weekday", weekday);
             object.put("start_time", startTime);
             object.put("stop_time", stopTime);
-            int opCode = IpcConstants.ipcDetect;
+            int opCode = IpcConstants.setIpcDetection;
             RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                     "0x" + Integer.toHexString(opCode), object);
             post(context, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());

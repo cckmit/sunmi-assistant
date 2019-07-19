@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.model.IpcConnectApResp;
@@ -14,6 +15,7 @@ import com.sunmi.ipc.model.IpcNewFirmwareResp;
 import com.sunmi.ipc.model.IpcNightModeResp;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcConstants;
+import com.sunmi.ipc.setting.entity.IpcDetectionConfig;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.CheckedChange;
@@ -36,6 +38,8 @@ import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.dialog.InputDialog;
 
+import static com.sunmi.ipc.setting.entity.IpcDetectionConfig.INTENT_EXTRA_DETECTION_CONFIG;
+
 /**
  * @author YangShiJie
  * @date 2019/7/12
@@ -45,6 +49,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         implements IpcSettingContract.View {
 
     private static final int IPC_NAME_MAX_LENGTH = 36;
+    private static final int REQUEST_CODE_SOUND_DETECTION = 1001;
+    private static final int REQUEST_CODE_ACTIVE_DETECTION = 1002;
+    private static final int REQUEST_CODE_DETECTION_TIME = 1003;
     private static final int REQUEST_COMPLETE = 1000;
     private final int SWITCH_UNCHECK = 0;
     private final int SWITCH_CHECK = 1;
@@ -54,6 +61,13 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @ViewById(resName = "sil_camera_name")
     SettingItemLayout mNameView;
+    @ViewById(resName = "sil_voice_exception")
+    SettingItemLayout mSoundDetection;
+    @ViewById(resName = "sil_active_exception")
+    SettingItemLayout mActiveDetection;
+    @ViewById(resName = "sil_time_setting")
+    SettingItemLayout mDetectionTime;
+
     @ViewById(resName = "sil_night_style")
     SettingItemLayout mNightStyle;
     @ViewById(resName = "sil_wifi")
@@ -64,6 +78,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     Switch swLight;
     @ViewById(resName = "switch_view_rotate")
     Switch swRotate;
+
+    IpcDetectionConfig mDetectionConfig;
 
     //夜视模式，指示灯，画面旋转
     private int nightMode, ledIndicator, rotation;
@@ -79,28 +95,11 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         mPresenter.currentVersion();
 
         mNameView.setRightText(mDevice.getName());
-
-        getIpcNightIdeRotation();
-    }
-
-    //获取夜视模式，指示灯，画面旋转信息
-    private void getIpcNightIdeRotation() {
-        IPCCall.getInstance().getIpcNightIdeRotation(this, mDevice.getModel(), mDevice.getDeviceid());
-        SunmiDevice device = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
-        if (device != null) {
-            //ipc连接wifi信息
-            IPCCall.getInstance().getIpcConnectApMsg(this, device.getIp());
-        }
     }
 
     @Override
     public Context getContext() {
         return this;
-    }
-
-    @Override
-    public void updateAllView(IpcSettingModel info) {
-        // TODO: 更新所有View或者显示网络异常
     }
 
     @Override
@@ -157,22 +156,61 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Click(resName = "sil_voice_exception")
     void soundAbnormalDetection() {
+        if (mDetectionConfig == null) {
+            return;
+        }
         IpcSettingDetectionActivity_.intent(this)
                 .mType(IpcSettingDetectionActivity.TYPE_SOUND)
-                .start();
+                .mDevice(mDevice)
+                .mConfig(mDetectionConfig)
+                .startForResult(REQUEST_CODE_SOUND_DETECTION);
+    }
+
+    @OnActivityResult(REQUEST_CODE_SOUND_DETECTION)
+    void onSoundDetectionResult(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            mDetectionConfig = data.getParcelableExtra(INTENT_EXTRA_DETECTION_CONFIG);
+            updateDetectionView();
+        }
     }
 
     @Click(resName = "sil_active_exception")
     void activeAbnormalDetection() {
+        if (mDetectionConfig == null) {
+            return;
+        }
         IpcSettingDetectionActivity_.intent(this)
                 .mType(IpcSettingDetectionActivity.TYPE_ACTIVE)
-                .start();
+                .mDevice(mDevice)
+                .mConfig(mDetectionConfig)
+                .startForResult(REQUEST_CODE_ACTIVE_DETECTION);
+    }
+
+    @OnActivityResult(REQUEST_CODE_ACTIVE_DETECTION)
+    void onActiveDetectionResult(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            mDetectionConfig = data.getParcelableExtra(INTENT_EXTRA_DETECTION_CONFIG);
+            updateDetectionView();
+        }
     }
 
     @Click(resName = "sil_time_setting")
     void detectionTimeSetting() {
+        if (mDetectionConfig == null) {
+            return;
+        }
         IpcSettingDetectionTimeActivity_.intent(this)
-                .start();
+                .mDevice(mDevice)
+                .mConfig(mDetectionConfig)
+                .startForResult(REQUEST_CODE_DETECTION_TIME);
+    }
+
+    @OnActivityResult(REQUEST_CODE_DETECTION_TIME)
+    void onDetectionTimeResult(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            mDetectionConfig = data.getParcelableExtra(INTENT_EXTRA_DETECTION_CONFIG);
+            updateDetectionView();
+        }
     }
 
     @Click(resName = "sil_night_style")
@@ -242,15 +280,20 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     @Override
     public int[] getUnStickNotificationId() {
         return new int[]{IpcConstants.getIpcConnectApMsg, IpcConstants.getIpcNightIdeRotation,
-                IpcConstants.setIpcNightIdeRotation};
+                IpcConstants.setIpcNightIdeRotation, IpcConstants.getIpcDetection};
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
         super.didReceivedNotification(id, args);
         hideLoadingDialog();
-        if (args == null) return;
+        if (args == null) {
+            return;
+        }
         ResponseBean res = (ResponseBean) args[0];
+        if (TextUtils.isEmpty(res.getResult().toString())) {
+            return;
+        }
         if (id == IpcConstants.getIpcConnectApMsg) {
             LogCat.e(TAG, "1111  11=" + res.getResult());
             getIpcConnectApMsg(res);
@@ -260,13 +303,30 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         } else if (id == IpcConstants.setIpcNightIdeRotation) {
             LogCat.e(TAG, "1111 33=" + res.getResult());
             setIpcNightIdeRotation(res);
+        } else if (id == IpcConstants.getIpcDetection) {
+            mDetectionConfig = new Gson().fromJson(res.getResult().toString(), IpcDetectionConfig.class);
+            updateDetectionView();
         }
+    }
+
+    private void updateDetectionView() {
+        if (mDetectionConfig == null) {
+            return;
+        }
+        mSoundDetection.setRightText(mDetectionConfig.soundDetection != 0 ?
+                getString(R.string.ipc_setting_open) : getString(R.string.ipc_setting_close));
+        mActiveDetection.setRightText(mDetectionConfig.activeDetection != 0 ?
+                getString(R.string.ipc_setting_open) : getString(R.string.ipc_setting_close));
+        mDetectionTime.setRightText(mDetectionConfig.detectionDays == IpcDetectionConfig.DETECTION_ALL_TIME ?
+                getString(R.string.ipc_setting_detection_time_all_time) : getString(R.string.ipc_setting_detection_time_custom));
     }
 
     //局域网获取wifi信息
     @UiThread
     void getIpcConnectApMsg(ResponseBean res) {
-        if (TextUtils.isEmpty(res.getResult().toString())) return;
+        if (TextUtils.isEmpty(res.getResult().toString())) {
+            return;
+        }
         IpcConnectApResp device = new GsonBuilder().create().fromJson(res.getResult().toString(), IpcConnectApResp.class);
         mWifiName.setRightText(device.getWireless().getSsid());
     }
@@ -327,7 +387,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     //led_indicator   rotation设置结果
     @UiThread
     void setIpcNightIdeRotation(ResponseBean res) {
-        if (TextUtils.isEmpty(res.getResult().toString())) return;
+        if (TextUtils.isEmpty(res.getResult().toString())) {
+            return;
+        }
         if (TextUtils.equals("1", res.getErrCode())) {
             shortTip(R.string.tip_set_complete);
             setIpcNightIdeRotationSuccess();
@@ -344,7 +406,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
      */
     @UiThread
     void getIpcNightIdeRotation(ResponseBean res) {
-        if (TextUtils.isEmpty(res.getResult().toString())) return;
+        if (TextUtils.isEmpty(res.getResult().toString())) {
+            return;
+        }
         IpcNightModeResp resp = new GsonBuilder().create().fromJson(res.getResult().toString(), IpcNightModeResp.class);
         nightMode = resp.getNight_mode();
         ledIndicator = resp.getLed_indicator();

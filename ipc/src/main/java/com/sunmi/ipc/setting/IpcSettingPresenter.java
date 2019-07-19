@@ -2,9 +2,11 @@ package com.sunmi.ipc.setting;
 
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.model.IpcNewFirmwareResp;
+import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IPCCloudApi;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
@@ -23,7 +25,14 @@ public class IpcSettingPresenter extends BasePresenter<IpcSettingContract.View>
     @Override
     public void loadConfig(SunmiDevice device) {
         this.mDevice = device;
-        // TODO: api，拉取摄像头信息
+        IPCCall.getInstance().getIpcNightIdeRotation(mView.getContext(), mDevice.getModel(), mDevice.getDeviceid());
+        IPCCall.getInstance().getIpcDetection(mView.getContext(), mDevice.getModel(), mDevice.getDeviceid());
+
+        SunmiDevice localDevice = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
+        if (localDevice != null) {
+            // ipc连接wifi信息
+            IPCCall.getInstance().getIpcConnectApMsg(mView.getContext(), device.getIp());
+        }
     }
 
     @Override

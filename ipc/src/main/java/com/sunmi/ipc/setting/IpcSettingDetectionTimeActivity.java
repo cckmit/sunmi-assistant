@@ -1,9 +1,11 @@
 package com.sunmi.ipc.setting;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -12,6 +14,9 @@ import android.widget.Switch;
 import com.datelibrary.DatePicker;
 import com.datelibrary.bean.DateType;
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.rpc.IPCCall;
+import com.sunmi.ipc.rpc.IpcConstants;
+import com.sunmi.ipc.setting.entity.IpcDetectionConfig;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -24,8 +29,12 @@ import java.util.Date;
 import java.util.Locale;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.model.SunmiDevice;
+import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.dialog.BottomDialog;
+
+import static com.sunmi.ipc.setting.entity.IpcDetectionConfig.INTENT_EXTRA_DETECTION_CONFIG;
 
 /**
  * @author yinhui
@@ -54,13 +63,14 @@ public class IpcSettingDetectionTimeActivity extends BaseActivity {
     Switch mSwitchDetectionAllTime;
 
     @Extra
-    boolean mIsAllTime;
+    SunmiDevice mDevice;
     @Extra
-    int mDaySelect;
-    @Extra
-    int mTimeStart;
-    @Extra
-    int mTimeEnd;
+    IpcDetectionConfig mConfig;
+
+    private boolean mIsAllTime;
+    private int mDays;
+    private int mTimeStart;
+    private int mTimeEnd;
 
     Calendar mCalendar = Calendar.getInstance();
     int mTempDaySelect;
@@ -96,17 +106,26 @@ public class IpcSettingDetectionTimeActivity extends BaseActivity {
 
     @AfterViews
     void init() {
+        initData(mConfig);
         setViewChecked(mIsAllTime);
+        updateView(mDays, mTimeStart, mTimeEnd);
         mSwitchDetectionAllTime.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked != mIsAllTime) {
                     mIsAllTime = isChecked;
                     setViewChecked(isChecked);
-                    // TODO: API
+                    setDetectionEnable(isChecked);
                 }
             }
         });
+    }
+
+    private void initData(IpcDetectionConfig config) {
+        mIsAllTime = config.detectionDays == IpcDetectionConfig.DETECTION_ALL_TIME;
+        mDays = mIsAllTime ? 0 : config.detectionDays;
+        mTimeStart = config.detectionTimeStart;
+        mTimeEnd = config.detectionTimeEnd;
     }
 
     private void setViewChecked(boolean isAllTime) {
@@ -141,18 +160,24 @@ public class IpcSettingDetectionTimeActivity extends BaseActivity {
         }
     }
 
+    private void updateView(int days, int timeStart, int timeEnd) {
+        updateDetectionDaysView(days);
+        updateTimeStartView(timeStart);
+        updateTimeEndView(timeEnd);
+    }
+
     @Click(resName = "sil_ipc_setting_days_count")
-    void setDetectionDays() {
-        mTempDaySelect = mDaySelect;
+    void onDetectionDaysClick() {
+        mTempDaySelect = mDays;
         BottomDialog dialog = new BottomDialog.Builder(this)
                 .setTitle(R.string.ipc_setting_detection_time_day)
                 .setCancelButton(R.string.sm_cancel)
                 .setOkButton(R.string.str_complete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mDaySelect = mTempDaySelect;
-                        updateDetectionDaysView(mDaySelect);
-                        // TODO: API
+                        mDays = mTempDaySelect;
+                        updateDetectionDaysView(mDays);
+                        setDetectionDays(mDays);
                     }
                 })
                 .setContent(R.layout.ipc_setting_dialog_detection_days)
@@ -173,7 +198,7 @@ public class IpcSettingDetectionTimeActivity extends BaseActivity {
     }
 
     @Click(resName = {"sil_ipc_setting_time_start", "sil_ipc_setting_time_end"})
-    void setDetectionTime(View item) {
+    void onDetectionTimeClick(View item) {
         int id = item.getId();
         if (id == R.id.sil_ipc_setting_time_start) {
             showTimeDialog(true);
@@ -200,11 +225,11 @@ public class IpcSettingDetectionTimeActivity extends BaseActivity {
                         if (isTimeStart) {
                             mTimeStart = dateToInt(picker.getSelectDate());
                             updateTimeStartView(mTimeStart);
-                            // TODO: API
+                            setDetectionTimeStart(mTimeStart);
                         } else {
                             mTimeEnd = dateToInt(picker.getSelectDate());
                             updateTimeEndView(mTimeEnd);
-                            // TODO: API
+                            setDetectionTimeEnd(mTimeEnd);
                         }
                     }
                 })
@@ -243,9 +268,7 @@ public class IpcSettingDetectionTimeActivity extends BaseActivity {
         String hour = String.format(Locale.getDefault(), "%02d", time / 3600);
         String minute = String.format(Locale.getDefault(), "%02d", (time % 3600) / 60);
         mSilTimeStart.setRightText(hour + ":" + minute);
-        if (time > mTimeEnd) {
-            updateTimeEndView(mTimeEnd);
-        }
+        updateTimeEndView(mTimeEnd);
     }
 
     private void updateTimeEndView(int time) {
@@ -278,6 +301,60 @@ public class IpcSettingDetectionTimeActivity extends BaseActivity {
         mCalendar.set(Calendar.MINUTE, minute);
         mCalendar.set(Calendar.SECOND, 0);
         return mCalendar.getTime();
+    }
+
+    private void setDetectionEnable(boolean enable) {
+        mConfig.detectionDays = enable ? IpcDetectionConfig.DETECTION_ALL_TIME : mDays;
+        postSetConfig();
+    }
+
+    private void setDetectionDays(int detectionDays) {
+        mConfig.detectionDays = detectionDays;
+        postSetConfig();
+    }
+
+    private void setDetectionTimeStart(int start) {
+        mConfig.detectionTimeStart = start;
+        postSetConfig();
+    }
+
+    private void setDetectionTimeEnd(int end) {
+        mConfig.detectionTimeEnd = end;
+        postSetConfig();
+    }
+
+    private void postSetConfig() {
+        new IPCCall().setIpcDetection(this, mDevice.getModel(), mDevice.getDeviceid(),
+                mConfig.activeDetection, mConfig.soundDetection, mConfig.detectionDays,
+                mConfig.detectionTimeStart, mConfig.detectionTimeEnd);
+        Intent intent = getIntent();
+        intent.putExtra(INTENT_EXTRA_DETECTION_CONFIG, mConfig);
+        setResult(RESULT_OK, intent);
+    }
+
+    @Override
+    public int[] getUnStickNotificationId() {
+        return new int[]{IpcConstants.setIpcDetection};
+    }
+
+    @Override
+    public void didReceivedNotification(int id, Object... args) {
+        super.didReceivedNotification(id, args);
+        hideLoadingDialog();
+        if (args == null) {
+            return;
+        }
+        ResponseBean res = (ResponseBean) args[0];
+        if (TextUtils.isEmpty(res.getResult().toString())) {
+            return;
+        }
+        if (id == IpcConstants.setIpcDetection) {
+            if (TextUtils.equals("1", res.getErrCode())) {
+                shortTip(R.string.tip_set_complete);
+            } else {
+                shortTip(R.string.tip_set_fail);
+            }
+        }
     }
 
 }

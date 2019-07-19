@@ -28,6 +28,7 @@ public class IpcConstants {
     public static final int ipcUpgrade = 0x3140;
     public static final int getIpcNightIdeRotation = 0x305c;
     public static final int setIpcNightIdeRotation = 0x305d;
-    public static final int ipcDetect = 0x3121;
+    public static final int getIpcDetection = 0x3120;
+    public static final int setIpcDetection = 0x3121;
 
 }
