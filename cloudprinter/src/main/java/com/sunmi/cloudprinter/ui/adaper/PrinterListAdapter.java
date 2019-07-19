@@ -32,7 +32,7 @@ public class PrinterListAdapter extends RecyclerView.Adapter<PrinterListAdapter.
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, final int i) {
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.item_bluetooth, viewGroup, false);
+                .inflate(R.layout.item_printer, viewGroup, false);
         final ViewHolder viewHolder = new ViewHolder(view);
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,8 +64,8 @@ public class PrinterListAdapter extends RecyclerView.Adapter<PrinterListAdapter.
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvBlueName = itemView.findViewById(R.id.left_text);
-            tvBlueAddress = itemView.findViewById(R.id.right_text);
+            tvBlueName = itemView.findViewById(R.id.tv_name);
+            tvBlueAddress = itemView.findViewById(R.id.tv_sn);
         }
     }
 

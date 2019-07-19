@@ -4,13 +4,17 @@
     <string name="str_already_search">已搜索到的设备</string>
     <string name="str_set_link">正在建立链接</string>
     <string name="str_read_write">点击建立连接</string>
-    <string name="str_prompt">提示</string>
-    <string name="str_tip_start_blue">是否开启蓝牙？</string>
     <string name="str_tip_link_device">是否连接该设备？</string>
     <string name="str_tip_link_router">是否连接到该路由器？</string>
     <string name="hint_input_router_pwd">请输入路由器密码</string>
     <string name="str_already_search_router">已搜索到的路由器</string>
-    <string name="str_printer_manage">云打印机配置</string>
+    <string name="str_printer_manage">云打印机设置</string>
     <string name="str_get_wifi_msg_error">获取Wi-Fi信息出错</string>
     <string name="str_wifi_msg_completely">Wi-Fi信息接受完毕</string>
+    <string name="sm_enable">开启</string>
+    <string name="tip_title_add_printer">选择要添加的云打印机</string>
+    <string name="tip_no_printer_found">没有发现云打印机</string>
+    <string name="hint_retry_scan_printer">未发现打印机设备，请确认是否已长按匹配按钮，并刷新重试。（请确保手机蓝牙处于打开状态；并保证app定位授权打开</string>
+    <string name="tip_printer_already_bound">已经被绑定无须重新绑定</string>
+    <string name="tip_printer_bind_fail">设备蓝牙连接失败</string>
 </resources>

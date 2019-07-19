@@ -14,6 +14,7 @@
         <activity android:name=".ui.Activity.PrinterSearchActivity_" />
         <activity android:name=".ui.Activity.SetPrinterActivity_" />
         <activity android:name=".ui.Activity.PrinterManageActivity_" />
+        <activity android:name=".ui.Activity.StartConfigPrinterActivity_" />
     </application>
 
 </manifest>

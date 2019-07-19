@@ -573,7 +573,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         for (SunmiDevice device : deviceList) {
             if (TextUtils.equals(device.getDeviceid(), currentRouter)) {
                 device.setStatus(status.ordinal());
-                deviceListAdapter.notifyDataSetChanged();
+                deviceListRefresh();
                 return;
             }
         }
@@ -586,11 +586,16 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 if (device.getStatus() == DeviceStatus.UNKNOWN.ordinal()
                         || device.getStatus() == DeviceStatus.OFFLINE.ordinal()) {
                     device.setStatus(DeviceStatus.EXCEPTION.ordinal());
-                    deviceListAdapter.notifyDataSetChanged();
+                    deviceListRefresh();
                     return;
                 }
             }
         }
+    }
+
+    @UiThread
+    void deviceListRefresh() {
+        deviceListAdapter.notifyDataSetChanged();
     }
 
     private void startTimerExceptionRefreshList() {
@@ -639,10 +644,11 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         deviceList.addAll(routerList);
         deviceList.addAll(printerList);
         showEmptyView();
-        deviceListAdapter.notifyDataSetChanged();
+        deviceListRefresh();
     }
 
-    private void showEmptyView() {
+    @UiThread
+    void showEmptyView() {
         if (deviceList.size() > 0) {
             rlNoDevice.setVisibility(View.GONE);
             btnAdd.setVisibility(View.VISIBLE);
@@ -658,7 +664,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         for (SunmiDevice device : deviceList) {
             device.setStatus(DeviceStatus.UNKNOWN.ordinal());
         }
-        deviceListAdapter.notifyDataSetChanged();
+        deviceListRefresh();
         endRefresh();
     }
 

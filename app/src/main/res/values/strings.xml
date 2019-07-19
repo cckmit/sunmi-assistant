@@ -99,5 +99,6 @@
     <string name="str_setting_detail">查看详情</string>
     <string name="str_setting_delete_device">删除设备</string>
     <string name="str_import_other_platform_data">未匹配到该手机号下的门店数据，是否从外部平台导入？</string>
+    <string name="str_cloud_printer">云打印机</string>
 
 </resources>
