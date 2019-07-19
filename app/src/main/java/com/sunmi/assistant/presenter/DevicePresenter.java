@@ -21,6 +21,7 @@ import org.litepal.crud.DataSupport;
 import java.util.ArrayList;
 import java.util.List;
 
+import sunmi.common.base.BaseApplication;
 import sunmi.common.base.BasePresenter;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.model.SunmiDevice;
@@ -274,8 +275,8 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
     private SunmiDevice getStoreBean(JSONObject object) throws JSONException {
         SunmiDevice bean = new SunmiDevice();
         bean.setType("PRINTER");
-        bean.setName("Printer");
-        bean.setModel("Printer");
+        bean.setName(BaseApplication.getContext().getString(R.string.str_cloud_printer));
+        bean.setModel("NT211");
         if (object.has("msn")) {
             bean.setDeviceid(object.getString("msn"));
         }

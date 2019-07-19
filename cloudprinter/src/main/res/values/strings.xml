@@ -4,8 +4,6 @@
     <string name="str_already_search">Searched device</string>
     <string name="str_set_link">Creating a link now</string>
     <string name="str_read_write">Click to create a link</string>
-    <string name="str_prompt">Prompt</string>
-    <string name="str_tip_start_blue">Do you wish to enable Bluetooth?</string>
     <string name="str_tip_link_device">Are you sure to connect this device?</string>
     <string name="str_tip_link_router">Are you sure to connect to this router?</string>
     <string name="hint_input_router_pwd">Please enter the password for router password</string>
@@ -13,5 +11,11 @@
     <string name="str_printer_manage">Setup cloud printer</string>
     <string name="str_get_wifi_msg_error">Obtain Wi-Fi information error</string>
     <string name="str_wifi_msg_completely">Receive Wi-Fi information completely</string>
+    <string name="sm_enable">开启</string>
+    <string name="tip_title_add_printer">选择要添加的云打印机</string>
+    <string name="tip_no_printer_found">没有发现云打印机</string>
+    <string name="hint_retry_scan_printer">未发现打印机设备，请确认是否已长按匹配按钮，并刷新重试。（请确保手机蓝牙处于打开状态；并保证app定位授权打开</string>
+    <string name="tip_printer_already_bound">已经被绑定无须重新绑定</string>
+    <string name="tip_printer_bind_fail">设备蓝牙连接失败</string>
 </resources>
-
+

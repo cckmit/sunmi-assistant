@@ -21,7 +21,7 @@ public class IOTCloudApi extends BaseHttpApi {
      *
      * @param sn 是	string	设备序列号
      */
-    public static void bindPrinter(String shopId, String sn, StringCallback callback) {
+    public static void bindPrinter(int shopId, String sn, StringCallback callback) {
         try {
             String params = new JSONObject()
                     .put("userId", SpUtils.getUID())

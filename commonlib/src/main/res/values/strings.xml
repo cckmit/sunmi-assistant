@@ -53,8 +53,9 @@
     <string name="str_config_tip_ipc_2"><![CDATA[2. Connect your mobile phone to<font color= \'#FF6000\'>「SUNMI_XXXX」</font> Wi-Fi]]></string>
     <string name="str_config_tip_ipc_3"><![CDATA[3. 如使用无线连接，请将手机连接机身背面标识的无线网络<font color= \'#FF6000\'>「SUNMI_XXXX」</font>]]></string>
     <string name="str_config_tip_printer">Connect the printer you wish to setup</string>
-    <string name="str_config_tip_printer_1">1. 将打印机接通电源，按一下配对按钮</string>
-    <string name="str_config_tip_printer_2"><![CDATA[2. Connect your mobile phone to<font color= \'#FF6000\'>「CloudPrint_XXXX」</font> BT]]></string>
+    <string name="str_config_tip_printer_1">1. 将打印机接通电源，长按配对按钮3秒以开启配对模式；</string>
+    <string name="str_config_tip_printer_2">2. 听到提示音后，松开配对按钮；</string>
+    <string name="str_config_tip_printer_3">3. 点击下方“下一步”按钮，选择云打印机；（请确保手机蓝牙处于打开状态；并保证app定位授权打开）</string>
     <string name="tip_has_ap_already">Is there a connected Sunmi router already？</string>
     <string name="str_start_set">Start</string>
     <string name="str_config_child_tip">If you already had a connected Sunmi router, you could add more routers in「Router Management」</string>
@@ -78,5 +79,7 @@
     <string name="str_bind_success">Bind success</string>
     <string name="str_bind_fail">Bind fail</string>
     <string name="str_dev_binded">This device was bound by other user already</string>
+    <string name="str_prompt">开启蓝牙</string>
+    <string name="str_tip_start_blue">您当前尚未开启蓝牙，是否跳转蓝牙设置页面？</string>
 
 </resources>

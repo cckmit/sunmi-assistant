@@ -3,60 +3,120 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_common">
+    android:background="@color/c_white">
 
     <sunmi.common.view.TitleBarView
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/c_white"
-        app:dividerColor="@color/colorText_10"
         app:dividerShow="true"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@mipmap/ic_back_dark"
-        app:titleText="@string/str_bluetooth_list"
+        app:titleText="@string/str_printer_manage"
         app:titleTextColor="@color/colorText" />
 
     <TextView
-        android:id="@+id/tv_loading"
+        android:id="@+id/tv_top"
+        style="@style/configTitleText"
+        android:layout_below="@+id/title_bar"
+        android:text="@string/tip_title_add_printer" />
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nsv_printer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/title_bar"
-        android:layout_marginStart="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_10"
-        android:text="@string/str_already_search" />
+        android:layout_below="@id/tv_top"
+        android:layout_marginStart="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_40"
+        android:layout_marginEnd="@dimen/dp_30"
+        android:layout_marginBottom="@dimen/dp_80"
+        android:visibility="visible">
 
-    <ProgressBar
-        android:id="@+id/pb_sending"
-        android:layout_width="@dimen/dp_20"
-        android:layout_height="@dimen/dp_20"
-        android:layout_alignBottom="@+id/tv_loading"
-        android:layout_marginStart="@dimen/dp_10"
-        android:layout_toEndOf="@+id/tv_loading"
-        android:indeterminateBehavior="repeat"
-        android:indeterminateDrawable="@drawable/common_loading"
-        android:indeterminateOnly="true" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <View
-        android:id="@+id/divider_top"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@+id/tv_loading"
-        android:layout_marginTop="@dimen/dp_5"
-        android:background="@color/divider"
-        android:visibility="gone" />
+            <View
+                android:id="@+id/divider"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_0_5"
+                android:background="@color/color_divider" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_ble"
+            <sunmi.common.view.SmRecyclerView
+                android:id="@+id/rv_ble"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/c_white"
+                android:overScrollMode="never"
+                android:scrollbars="none" />
+
+            <include
+                layout="@layout/loading_text_right"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_24" />
+
+            <Button
+                android:id="@+id/btn_refresh"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_44"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_24"
+                android:background="@drawable/edittext_solid_orange"
+                android:text="@string/str_refresh"
+                android:textColor="@color/c_white"
+                android:textSize="@dimen/sp_16"
+                android:visibility="gone" />
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+    <RelativeLayout
+        android:id="@+id/rl_no_device"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/divider_top"
-        android:layout_marginBottom="@dimen/dp_45"
-        android:background="@color/c_white"
-        android:overScrollMode="never"
-        android:paddingStart="@dimen/dp_5"
-        android:paddingEnd="@dimen/dp_5"
-        android:scrollbars="none" />
+        android:layout_below="@+id/title_bar"
+        android:layout_marginTop="@dimen/dp_80"
+        android:visibility="gone">
 
+        <TextView
+            android:id="@+id/tv_no_wifi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:drawableTop="@mipmap/ic_no_printer"
+            android:drawablePadding="@dimen/dp_16"
+            android:gravity="center"
+            android:text="@string/tip_no_printer_found"
+            android:textColor="@color/color_333333"
+            android:textSize="@dimen/sp_20" />
+
+        <TextView
+            android:id="@+id/tv_check_network"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_no_wifi"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_8"
+            android:paddingLeft="@dimen/dp_20"
+            android:paddingRight="@dimen/dp_20"
+            android:text="@string/hint_retry_scan_printer"
+            android:textColor="@color/color_666666"
+            android:textSize="@dimen/sp_12" />
+
+        <Button
+            android:id="@+id/btn_retry"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_44"
+            android:layout_below="@+id/tv_check_network"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_24"
+            android:background="@drawable/edittext_solid_orange"
+            android:text="@string/str_refresh"
+            android:textColor="@color/c_white"
+            android:textSize="@dimen/sp_16" />
+    </RelativeLayout>
 
 </RelativeLayout>
