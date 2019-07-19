@@ -1,5 +1,6 @@
 package sunmi.common.constant;
 
+import android.text.TextUtils;
 import android.util.ArrayMap;
 
 import java.util.Map;
@@ -13,7 +14,7 @@ public class CommonUdpData {
     public static Map<String, SunmiDevice> sunmiDevMap = new ArrayMap<>();
 
     public static String currentRouterDeviceId(String deviceid) {
-        if (sunmiDevMap == null) {
+        if (sunmiDevMap == null || sunmiDevMap.isEmpty() || TextUtils.isEmpty(deviceid)) {
             return "";
         }
         if (CommonUdpData.sunmiDevMap.containsKey(deviceid)) {
@@ -23,7 +24,7 @@ public class CommonUdpData {
     }
 
     public static String currentFactory(String deviceid) {
-        if (sunmiDevMap == null) {
+        if (sunmiDevMap == null || sunmiDevMap.isEmpty() || TextUtils.isEmpty(deviceid)) {
             return "";
         }
         if (CommonUdpData.sunmiDevMap.containsKey(deviceid) &&
@@ -34,7 +35,7 @@ public class CommonUdpData {
     }
 
     public static String currentIpcDeviceId(String deviceid) {
-        if (sunmiDevMap == null) {
+        if (sunmiDevMap == null || sunmiDevMap.isEmpty() || TextUtils.isEmpty(deviceid)) {
             return "";
         }
         if (CommonUdpData.sunmiDevMap.containsKey(deviceid) &&
@@ -45,7 +46,7 @@ public class CommonUdpData {
     }
 
     public static String currentIpcIp(String deviceid) {
-        if (sunmiDevMap == null) {
+        if (sunmiDevMap == null || sunmiDevMap.isEmpty() || TextUtils.isEmpty(deviceid)) {
             return "";
         }
         if (CommonUdpData.sunmiDevMap.containsKey(deviceid) &&
