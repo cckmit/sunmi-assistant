@@ -1,6 +1,7 @@
 package com.sunmi.ipc.setting;
 
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.model.IpcNewFirmwareResp;
 import com.sunmi.ipc.rpc.IPCCloudApi;
 
 import sunmi.common.base.BasePresenter;
@@ -46,6 +47,26 @@ public class IpcSettingPresenter extends BasePresenter<IpcSettingContract.View>
                         }
                     }
                 });
+    }
+
+    @Override
+    public void currentVersion() {
+        IPCCloudApi.newFirmware(SpUtils.getCompanyId(), SpUtils.getShopId(), mDevice.getId(), new RetrofitCallback<IpcNewFirmwareResp>() {
+            @Override
+            public void onSuccess(int code, String msg, IpcNewFirmwareResp data) {
+                if (isViewAttached()) {
+                    mView.currentVersionView(data);
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, IpcNewFirmwareResp data) {
+                LogCat.e(TAG, "IPC currentVersion Failed. code=" + code + "; msg=" + msg);
+                if (isViewAttached()) {
+                    mView.shortTip(R.string.ipc_setting_dialog_wifi_net_error);
+                }
+            }
+        });
     }
 
 }

@@ -2,6 +2,8 @@ package com.sunmi.ipc.setting;
 
 import android.content.Context;
 
+import com.sunmi.ipc.model.IpcNewFirmwareResp;
+
 import sunmi.common.base.BaseView;
 import sunmi.common.model.SunmiDevice;
 
@@ -28,6 +30,8 @@ public interface IpcSettingContract {
 
         void updateNameView(String name);
 
+        void currentVersionView(IpcNewFirmwareResp resp);
+
     }
 
     interface Presenter {
@@ -35,5 +39,7 @@ public interface IpcSettingContract {
         void loadConfig(SunmiDevice device);
 
         void updateName(String name);
+
+        void currentVersion();
     }
 }
