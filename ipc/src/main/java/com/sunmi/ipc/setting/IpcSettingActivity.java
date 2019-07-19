@@ -3,7 +3,6 @@ package com.sunmi.ipc.setting;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.text.TextUtils;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
@@ -383,7 +382,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     //局域网获取wifi信息
     @UiThread
     void getIpcConnectApMsg(ResponseBean res) {
-        if (TextUtils.isEmpty(res.getResult().toString())) {
+        if (res.getResult() == null) {
             return;
         }
         IpcConnectApResp device = new GsonBuilder().create().fromJson(res.getResult().toString(), IpcConnectApResp.class);
@@ -462,7 +461,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
      */
     @UiThread
     void getIpcNightIdeRotation(ResponseBean res) {
-        if (TextUtils.isEmpty(res.getResult().toString())) {
+        if (res.getResult() == null) {
             return;
         }
         IpcNightModeResp resp = new GsonBuilder().create().fromJson(res.getResult().toString(), IpcNightModeResp.class);
@@ -487,6 +486,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             upgradeVerFailDialog(mResp.getLatest_bin_version());
         }
     }
+
     /**
      * 有新版本
      *
