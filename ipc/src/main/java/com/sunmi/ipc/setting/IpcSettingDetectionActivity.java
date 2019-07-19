@@ -1,11 +1,16 @@
 package com.sunmi.ipc.setting;
 
+import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.rpc.IPCCall;
+import com.sunmi.ipc.rpc.IpcConstants;
+import com.sunmi.ipc.setting.entity.DetectionConfig;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -13,7 +18,11 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.model.SunmiDevice;
+import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.view.TitleBarView;
+
+import static com.sunmi.ipc.setting.entity.DetectionConfig.INTENT_EXTRA_DETECTION_CONFIG;
 
 /**
  * @author yinhui
@@ -46,19 +55,23 @@ public class IpcSettingDetectionActivity extends BaseActivity {
     @Extra
     int mType;
     @Extra
-    boolean mEnable;
+    SunmiDevice mDevice;
     @Extra
-    int mSensitivity;
+    DetectionConfig mConfig;
+
+    private boolean mEnable;
+    private int mSensitivity;
 
     @AfterViews
     void init() {
+        initData(mType, mConfig);
         setViewType(mType);
-        setViewEnable(mEnable);
-        mSensitivitySeekBar.setProgress(mSensitivity);
+        updateView(mEnable, mSensitivity);
         mDetectionSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                setViewEnable(isChecked);
+                mEnable = isChecked;
+                updateView(isChecked, mSensitivity);
                 setEnable(isChecked);
             }
         });
@@ -73,9 +86,21 @@ public class IpcSettingDetectionActivity extends BaseActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                setSensitivity(seekBar.getProgress());
+                int sensitivity = seekBar.getProgress();
+                mSensitivity = sensitivity;
+                setSensitivity(sensitivity);
             }
         });
+    }
+
+    private void initData(int type, DetectionConfig config) {
+        if (type == TYPE_SOUND) {
+            mEnable = config.soundDetection != 0;
+            mSensitivity = Math.max(0, config.soundDetection - 1);
+        } else if (type == TYPE_ACTIVE) {
+            mEnable = config.activeDetection != 0;
+            mSensitivity = Math.max(0, config.activeDetection - 1);
+        }
     }
 
     private void setViewType(int type) {
@@ -88,37 +113,71 @@ public class IpcSettingDetectionActivity extends BaseActivity {
         }
     }
 
-    private void setViewEnable(boolean enable) {
+    private void updateView(boolean enable, int sensitivity) {
         mDetectionSwitch.setChecked(enable);
         mSensitivitySeekBar.setEnabled(enable);
+        mSensitivitySeekBar.setProgress(sensitivity);
         if (enable) {
-            mSensitivityTitle.setTextColor(getResources().getColor(R.color.colorText));
-            mSensitivityLow.setTextColor(getResources().getColor(R.color.colorText_60));
-            mSensitivityMid.setTextColor(getResources().getColor(R.color.colorText_60));
-            mSensitivityHigh.setTextColor(getResources().getColor(R.color.colorText_60));
+            mSensitivityTitle.setTextColor(ContextCompat.getColor(this, R.color.colorText));
+            mSensitivityLow.setTextColor(ContextCompat.getColor(this, R.color.colorText_60));
+            mSensitivityMid.setTextColor(ContextCompat.getColor(this, R.color.colorText_60));
+            mSensitivityHigh.setTextColor(ContextCompat.getColor(this, R.color.colorText_60));
         } else {
-            mSensitivityTitle.setTextColor(getResources().getColor(R.color.color_BBBBC7));
-            mSensitivityLow.setTextColor(getResources().getColor(R.color.color_BBBBC7));
-            mSensitivityMid.setTextColor(getResources().getColor(R.color.color_BBBBC7));
-            mSensitivityHigh.setTextColor(getResources().getColor(R.color.color_BBBBC7));
+            mSensitivityTitle.setTextColor(ContextCompat.getColor(this, R.color.color_BBBBC7));
+            mSensitivityLow.setTextColor(ContextCompat.getColor(this, R.color.color_BBBBC7));
+            mSensitivityMid.setTextColor(ContextCompat.getColor(this, R.color.color_BBBBC7));
+            mSensitivityHigh.setTextColor(ContextCompat.getColor(this, R.color.color_BBBBC7));
         }
     }
 
     private void setEnable(boolean enable) {
-        // TODO: API
+        updateView(enable, mSensitivity);
         if (mType == TYPE_SOUND) {
-
+            mConfig.soundDetection = enable ? mSensitivity + 1 : 0;
         } else if (mType == TYPE_ACTIVE) {
-
+            mConfig.activeDetection = enable ? mSensitivity + 1 : 0;
         }
+        postSetConfig();
     }
 
     private void setSensitivity(int sensitivity) {
-        // TODO: API
+        updateView(mEnable, sensitivity);
         if (mType == TYPE_SOUND) {
-
+            mConfig.soundDetection = sensitivity + 1;
         } else if (mType == TYPE_ACTIVE) {
+            mConfig.activeDetection = sensitivity + 1;
+        }
+        postSetConfig();
+    }
 
+    private void postSetConfig() {
+        new IPCCall().setIpcDetection(this, mDevice.getModel(), mDevice.getDeviceid(),
+                mConfig.activeDetection, mConfig.soundDetection, mConfig.detectionDays,
+                mConfig.detectionTimeStart, mConfig.detectionTimeEnd);
+        Intent intent = getIntent();
+        intent.putExtra(INTENT_EXTRA_DETECTION_CONFIG, mConfig);
+        setResult(RESULT_OK, intent);
+    }
+
+    @Override
+    public int[] getUnStickNotificationId() {
+        return new int[]{IpcConstants.setIpcDetection};
+    }
+
+    @Override
+    public void didReceivedNotification(int id, Object... args) {
+        super.didReceivedNotification(id, args);
+        hideLoadingDialog();
+        if (args == null) {
+            return;
+        }
+        ResponseBean res = (ResponseBean) args[0];
+        if (id == IpcConstants.setIpcDetection) {
+            if (res.getDataErrCode() == 1) {
+                shortTip(R.string.tip_set_complete);
+            } else {
+                shortTip(R.string.tip_set_fail);
+            }
         }
     }
 
