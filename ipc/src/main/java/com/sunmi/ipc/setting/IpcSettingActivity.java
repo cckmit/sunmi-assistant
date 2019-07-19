@@ -27,6 +27,9 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import java.nio.charset.Charset;
+import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
@@ -86,6 +89,56 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     private boolean isOnClickLight, isOnClickRotate, isSetLight, isSetRotate;
     private IpcNewFirmwareResp mResp;
 
+    // 升级
+    private UpdateProgressDialog progressDialog;
+    private Timer timer = null;
+    private TimerTask timerTask = null;
+    private int countdown, endNum;
+
+    //开启计时
+    private void startTimer() {
+        stopTimer();
+        timer = new Timer();
+        timer.schedule(timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                showDownloadProgress();
+            }
+        }, 0, 1000);
+    }
+
+    @UiThread
+    void showDownloadProgress() {
+        countdown++;
+        int countMinutes = 151;
+        if (countdown == countMinutes) {
+            stopTimer();
+            progressDialog.progressDismiss();
+            upgradeVerFailDialog(mResp.getLatest_bin_version());
+        } else if (countdown <= 90) {
+            progressDialog.setText(context, countdown);
+        } else if (countdown <= 150) {
+            if ((countdown - 90) % 6 == 0) {
+                endNum++;
+                progressDialog.setText(context, 90 + endNum);
+            }
+        }
+    }
+
+    // 停止计时
+    private void stopTimer() {
+        countdown = 0;
+        endNum = 0;
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+        if (timerTask != null) {
+            timerTask.cancel();
+            timerTask = null;
+        }
+    }
+
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
@@ -119,10 +172,10 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         mResp = resp;
         String version = resp.getLatest_bin_version();
         int upgradeRequired = resp.getUpgrade_required();
-        String upgradeUrl = resp.getUrl();
         mVersion.setRightText(version);
         if (upgradeRequired == 1) {
             mVersion.setIvToTextLeftImage(R.mipmap.ic_ipc_new_ver);
+            newVersionDialog(version);
         }
     }
 
@@ -226,7 +279,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     @OnActivityResult(REQUEST_COMPLETE)
     void onResult(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            nightMode = data.getExtras().getInt("nightMode");
+            nightMode = Objects.requireNonNull(data.getExtras()).getInt("nightMode");
             mNightStyle.setRightText(nightMode(nightMode));
         }
     }
@@ -234,6 +287,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     @Click(resName = "sil_ipc_version")
     void versionClick() {
         IpcSettingVersionActivity_.intent(this)
+                .mResp(mResp)
                 .mDevice(mDevice)
                 .start();
     }
@@ -280,7 +334,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     @Override
     public int[] getUnStickNotificationId() {
         return new int[]{IpcConstants.getIpcConnectApMsg, IpcConstants.getIpcNightIdeRotation,
-                IpcConstants.setIpcNightIdeRotation, IpcConstants.getIpcDetection};
+                IpcConstants.setIpcNightIdeRotation, IpcConstants.getIpcDetection,
+                IpcConstants.ipcUpgrade};
     }
 
     @Override
@@ -307,7 +362,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             } else {
                 shortTip(R.string.toast_network_Exception);
             }
-
+        } else if (id == IpcConstants.ipcUpgrade) {
+            LogCat.e(TAG, "1111 44=" + res.getDataErrCode());
+            upgradeResult(res);
         }
     }
 
@@ -389,10 +446,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     //led_indicator   rotation设置结果
     @UiThread
     void setIpcNightIdeRotation(ResponseBean res) {
-        if (TextUtils.isEmpty(res.getResult().toString())) {
-            return;
-        }
-        if (TextUtils.equals("1", res.getErrCode())) {
+        if (res.getDataErrCode() == 1) {
             shortTip(R.string.tip_set_complete);
             setIpcNightIdeRotationSuccess();
         } else {
@@ -423,6 +477,16 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         swRotate.setChecked(isSetRotate);
     }
 
+    @UiThread
+    void upgradeResult(ResponseBean res) {
+        if (res.getDataErrCode() == 1) {
+            stopTimer();
+            progressDialog.progressDismiss();
+            upgradeVerSuccessDialog();
+        } else {
+            upgradeVerFailDialog(mResp.getLatest_bin_version());
+        }
+    }
     /**
      * 有新版本
      *
@@ -436,7 +500,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 .setConfirmButton(R.string.ipc_setting_dialog_upgrade_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        upgrading();
                     }
                 })
                 .setCancelButton(R.string.ipc_setting_dialog_upgrade_cancel).create();
@@ -455,7 +519,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 .setConfirmButton(R.string.str_retry, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        upgrading();
                     }
                 })
                 .setCancelButton(R.string.sm_cancel).create();
@@ -472,21 +536,27 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        dialog.dismiss();
                     }
                 }).create();
         commonDialog.showWithOutTouchable(false);
     }
 
-    private UpdateProgressDialog dialog;
-
     /**
      * 升级中
      */
     private void upgrading() {
-        dialog = new UpdateProgressDialog.Builder(this)
+        IPCCall.getInstance().ipcUpgrade(IpcSettingActivity.this, mDevice.getModel(),
+                mDevice.getDeviceid(), mResp.getUrl(), mResp.getLatest_bin_version());
+        progressDialog = new UpdateProgressDialog.Builder(this)
                 .create();
-        dialog.canceledOnTouchOutside(true);
+        progressDialog.canceledOnTouchOutside(true);
+        startTimer();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopTimer();
+    }
 }

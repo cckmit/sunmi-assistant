@@ -1,10 +1,16 @@
 package com.sunmi.ipc.setting;
 
+import android.content.DialogInterface;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.sunmi.ipc.R;
 import com.sunmi.ipc.contract.IpcSettingVersionContract;
+import com.sunmi.ipc.model.IpcNewFirmwareResp;
 import com.sunmi.ipc.presenter.IpcSettingVersionPresenter;
+import com.sunmi.ipc.rpc.IPCCall;
+import com.sunmi.ipc.rpc.IpcConstants;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -18,7 +24,9 @@ import java.util.TimerTask;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.view.dialog.CommonDialog;
 
 /**
  * Created by YangShiJie on 2019/7/15.
@@ -36,8 +44,8 @@ public class IpcSettingVersionActivity extends BaseMvpActivity<IpcSettingVersion
 
     @Extra
     SunmiDevice mDevice;
-//    @Extra
-//    IpcNewFirmwareResp newFirmware;
+    @Extra
+    IpcNewFirmwareResp mResp;
 
     private UpdateProgressDialog dialog;
     private Timer timer = null;
@@ -59,14 +67,15 @@ public class IpcSettingVersionActivity extends BaseMvpActivity<IpcSettingVersion
     @UiThread
     void showDownloadProgress() {
         countdown++;
-        int countMinutes = 121;
+        int countMinutes = 151;
         if (countdown == countMinutes) {
             stopTimer();
             dialog.progressDismiss();
+            upgradeVerFailDialog(mResp.getLatest_bin_version());
         } else if (countdown <= 90) {
             dialog.setText(context, countdown);
-        } else if (countdown <= 120) {
-            if ((countdown - 90) % 3 == 0) {
+        } else if (countdown <= 150) {
+            if ((countdown - 90) % 6 == 0) {
                 endNum++;
                 dialog.setText(context, 90 + endNum);
             }
@@ -90,11 +99,15 @@ public class IpcSettingVersionActivity extends BaseMvpActivity<IpcSettingVersion
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
+        tvDeviceId.setText(mDevice.getDeviceid());
         //upgrade_required是否需要更新，0-不需要，1-需要
-//        if (newFirmware.getUpgrade_required() == 1) {
-//            tvDeviceId.setText(mDevice.getDeviceid());
-//            tvVersion.setText(getString(R.string.ipc_setting_version_current, newFirmware.getLatest_bin_version()));
-//        }
+        if (mResp.getUpgrade_required() == 1) {
+            tvVersion.setText(getString(R.string.ipc_setting_version_current, mResp.getLatest_bin_version()));
+            btnUpgrade.setVisibility(View.VISIBLE);
+        } else {
+            tvVersion.setText(String.format("%s\n%s", mResp.getLatest_bin_version(), getString(R.string.ipc_setting_version_no_new)));
+            btnUpgrade.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -116,11 +129,55 @@ public class IpcSettingVersionActivity extends BaseMvpActivity<IpcSettingVersion
      * 升级中
      */
     private void upgrading() {
-        startTimer();//test
-
-        dialog = new UpdateProgressDialog.Builder(this)
-                .create();
+        IPCCall.getInstance().ipcUpgrade(this, mDevice.getModel(),
+                mDevice.getDeviceid(), mResp.getUrl(), mResp.getLatest_bin_version());
+        dialog = new UpdateProgressDialog.Builder(this).create();
         dialog.canceledOnTouchOutside(false);
+        startTimer();
+    }
+
+    @Override
+    public int[] getUnStickNotificationId() {
+        return new int[]{IpcConstants.ipcUpgrade};
+    }
+
+    @Override
+    public void didReceivedNotification(int id, Object... args) {
+        if (args == null) return;
+        ResponseBean res = (ResponseBean) args[0];
+        if (id == IpcConstants.ipcUpgrade) {
+            upgradeResult(res);
+        }
+    }
+
+    @UiThread
+    void upgradeResult(ResponseBean res) {
+        if (res.getDataErrCode() == 1) {
+            stopTimer();
+            dialog.progressDismiss();
+            tvVersion.setText(String.format("%s\n%s", mResp.getLatest_bin_version(), getString(R.string.ipc_setting_version_no_new)));
+        } else {
+            upgradeVerFailDialog(mResp.getLatest_bin_version());
+        }
+    }
+
+    /**
+     * 更新版本失败
+     *
+     * @param version
+     */
+    private void upgradeVerFailDialog(String version) {
+        CommonDialog commonDialog = new CommonDialog.Builder(this)
+                .setTitle(R.string.ipc_setting_dialog_upgrade_fail)
+                .setMessage(getString(R.string.ipc_setting_dialog_upgrade_fail_content, version))
+                .setConfirmButton(R.string.str_retry, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        upgrading();
+                    }
+                })
+                .setCancelButton(R.string.sm_cancel).create();
+        commonDialog.showWithOutTouchable(false);
     }
 
     @Override

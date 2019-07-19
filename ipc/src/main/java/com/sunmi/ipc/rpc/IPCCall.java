@@ -182,7 +182,7 @@ public class IPCCall extends BaseIpcApi {
      * @param sn
      * @param version
      */
-    public void ipcUpgrade(Context context, String model, String url, String sn, String version) {
+    public void ipcUpgrade(Context context, String model, String sn, String url, String version) {
         try {
             JSONObject object = new JSONObject();
             object.put("sn", sn);
