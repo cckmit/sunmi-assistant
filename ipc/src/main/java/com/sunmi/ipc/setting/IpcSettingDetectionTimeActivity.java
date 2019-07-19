@@ -2,6 +2,7 @@ package com.sunmi.ipc.setting;
 
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import org.androidannotations.annotations.ViewById;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.view.SettingItemLayout;
@@ -32,6 +34,8 @@ import sunmi.common.view.dialog.BottomDialog;
 @EActivity(resName = "ipc_setting_activity_detection_time")
 public class IpcSettingDetectionTimeActivity extends BaseActivity {
 
+    private static final int WEEK_FIRST_DAY_MASK = 0x1;
+    private static final int WEEK_ALL_DAY_MASK = 0x7f;
     private static final int WEEK_MONDAY = 0x0001;
     private static final int WEEK_TUESDAY = 0x0002;
     private static final int WEEK_WEDNESDAY = 0x0004;
@@ -59,32 +63,33 @@ public class IpcSettingDetectionTimeActivity extends BaseActivity {
     int mTimeEnd;
 
     Calendar mCalendar = Calendar.getInstance();
+    int mTempDaySelect;
 
     private View.OnClickListener mOnWeekSelectListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             int id = v.getId();
             if (id == R.id.detection_day_monday) {
-                mDaySelect ^= WEEK_MONDAY;
-                v.setSelected(isWeekChecked(WEEK_MONDAY));
+                mTempDaySelect ^= WEEK_MONDAY;
+                v.setSelected(isWeekChecked(mTempDaySelect, WEEK_MONDAY));
             } else if (id == R.id.detection_day_tuesday) {
-                mDaySelect ^= WEEK_TUESDAY;
-                v.setSelected(isWeekChecked(WEEK_TUESDAY));
+                mTempDaySelect ^= WEEK_TUESDAY;
+                v.setSelected(isWeekChecked(mTempDaySelect, WEEK_TUESDAY));
             } else if (id == R.id.detection_day_wednesday) {
-                mDaySelect ^= WEEK_WEDNESDAY;
-                v.setSelected(isWeekChecked(WEEK_WEDNESDAY));
+                mTempDaySelect ^= WEEK_WEDNESDAY;
+                v.setSelected(isWeekChecked(mTempDaySelect, WEEK_WEDNESDAY));
             } else if (id == R.id.detection_day_thursday) {
-                mDaySelect ^= WEEK_THURSDAY;
-                v.setSelected(isWeekChecked(WEEK_THURSDAY));
+                mTempDaySelect ^= WEEK_THURSDAY;
+                v.setSelected(isWeekChecked(mTempDaySelect, WEEK_THURSDAY));
             } else if (id == R.id.detection_day_friday) {
-                mDaySelect ^= WEEK_FRIDAY;
-                v.setSelected(isWeekChecked(WEEK_FRIDAY));
+                mTempDaySelect ^= WEEK_FRIDAY;
+                v.setSelected(isWeekChecked(mTempDaySelect, WEEK_FRIDAY));
             } else if (id == R.id.detection_day_saturday) {
-                mDaySelect ^= WEEK_SATURDAY;
-                v.setSelected(isWeekChecked(WEEK_SATURDAY));
+                mTempDaySelect ^= WEEK_SATURDAY;
+                v.setSelected(isWeekChecked(mTempDaySelect, WEEK_SATURDAY));
             } else if (id == R.id.detection_day_sunday) {
-                mDaySelect ^= WEEK_SUNDAY;
-                v.setSelected(isWeekChecked(WEEK_SUNDAY));
+                mTempDaySelect ^= WEEK_SUNDAY;
+                v.setSelected(isWeekChecked(mTempDaySelect, WEEK_SUNDAY));
             }
         }
     };
@@ -95,8 +100,11 @@ public class IpcSettingDetectionTimeActivity extends BaseActivity {
         mSwitchDetectionAllTime.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                setViewChecked(isChecked);
-                // TODO: API
+                if (isChecked != mIsAllTime) {
+                    mIsAllTime = isChecked;
+                    setViewChecked(isChecked);
+                    // TODO: API
+                }
             }
         });
     }
@@ -109,38 +117,40 @@ public class IpcSettingDetectionTimeActivity extends BaseActivity {
         Drawable drawable = getResources().getDrawable(R.drawable.ic_right_arrow_24dp, getTheme());
         drawable = DrawableCompat.wrap(drawable);
         if (isAllTime) {
-            DrawableCompat.setTint(drawable, getResources().getColor(R.color.color_BBBBC7));
+            DrawableCompat.setTint(drawable, ContextCompat.getColor(this, R.color.color_BBBBC7));
             mSilDaysCount.setRightImage(drawable);
             mSilTimeStart.setRightImage(drawable);
             mSilTimeEnd.setRightImage(drawable);
-            mSilDaysCount.setLeftTextColor(getResources().getColor(R.color.color_BBBBC7));
-            mSilDaysCount.setRightTextColor(getResources().getColor(R.color.color_BBBBC7));
-            mSilTimeStart.setLeftTextColor(getResources().getColor(R.color.color_BBBBC7));
-            mSilTimeStart.setRightTextColor(getResources().getColor(R.color.color_BBBBC7));
-            mSilTimeEnd.setLeftTextColor(getResources().getColor(R.color.color_BBBBC7));
-            mSilTimeEnd.setRightTextColor(getResources().getColor(R.color.color_BBBBC7));
+            mSilDaysCount.setLeftTextColor(ContextCompat.getColor(this, R.color.color_BBBBC7));
+            mSilDaysCount.setRightTextColor(ContextCompat.getColor(this, R.color.color_BBBBC7));
+            mSilTimeStart.setLeftTextColor(ContextCompat.getColor(this, R.color.color_BBBBC7));
+            mSilTimeStart.setRightTextColor(ContextCompat.getColor(this, R.color.color_BBBBC7));
+            mSilTimeEnd.setLeftTextColor(ContextCompat.getColor(this, R.color.color_BBBBC7));
+            mSilTimeEnd.setRightTextColor(ContextCompat.getColor(this, R.color.color_BBBBC7));
         } else {
-            DrawableCompat.setTint(drawable, getResources().getColor(R.color.colorText_60));
+            DrawableCompat.setTint(drawable, ContextCompat.getColor(this, R.color.colorText_60));
             mSilDaysCount.setRightImage(drawable);
             mSilTimeStart.setRightImage(drawable);
             mSilTimeEnd.setRightImage(drawable);
-            mSilDaysCount.setLeftTextColor(getResources().getColor(R.color.colorText));
-            mSilDaysCount.setRightTextColor(getResources().getColor(R.color.colorText));
-            mSilTimeStart.setLeftTextColor(getResources().getColor(R.color.colorText));
-            mSilTimeStart.setRightTextColor(getResources().getColor(R.color.colorText));
-            mSilTimeEnd.setLeftTextColor(getResources().getColor(R.color.colorText));
-            mSilTimeEnd.setRightTextColor(getResources().getColor(R.color.colorText));
+            mSilDaysCount.setLeftTextColor(ContextCompat.getColor(this, R.color.colorText));
+            mSilDaysCount.setRightTextColor(ContextCompat.getColor(this, R.color.colorText));
+            mSilTimeStart.setLeftTextColor(ContextCompat.getColor(this, R.color.colorText));
+            mSilTimeStart.setRightTextColor(ContextCompat.getColor(this, R.color.colorText));
+            mSilTimeEnd.setLeftTextColor(ContextCompat.getColor(this, R.color.colorText));
+            mSilTimeEnd.setRightTextColor(ContextCompat.getColor(this, R.color.colorText));
         }
     }
 
     @Click(resName = "sil_ipc_setting_days_count")
     void setDetectionDays() {
+        mTempDaySelect = mDaySelect;
         BottomDialog dialog = new BottomDialog.Builder(this)
                 .setTitle(R.string.ipc_setting_detection_time_day)
                 .setCancelButton(R.string.sm_cancel)
                 .setOkButton(R.string.str_complete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        mDaySelect = mTempDaySelect;
                         updateDetectionDaysView(mDaySelect);
                         // TODO: API
                     }
@@ -159,7 +169,7 @@ public class IpcSettingDetectionTimeActivity extends BaseActivity {
 
     private void initDialogWeek(View v, int week) {
         v.setOnClickListener(mOnWeekSelectListener);
-        v.setSelected((mDaySelect & week) != 0);
+        v.setSelected((mTempDaySelect & week) != 0);
     }
 
     @Click(resName = {"sil_ipc_setting_time_start", "sil_ipc_setting_time_end"})
@@ -204,19 +214,53 @@ public class IpcSettingDetectionTimeActivity extends BaseActivity {
     }
 
     private void updateDetectionDaysView(int days) {
-        // TODO: update views
+        if ((days & WEEK_ALL_DAY_MASK) == WEEK_ALL_DAY_MASK) {
+            mSilDaysCount.setRightText(getString(R.string.ipc_setting_detection_time_day_all));
+            return;
+        }
+        if ((days & WEEK_ALL_DAY_MASK) == 0) {
+            mSilDaysCount.setRightText(getString(R.string.ipc_setting_detection_time_day_none));
+            return;
+        }
+        String[] weekName = getResources().getStringArray(R.array.week_name);
+        StringBuilder sb = new StringBuilder();
+        boolean isFirst = true;
+        for (String day : weekName) {
+            if ((days & WEEK_FIRST_DAY_MASK) != 0) {
+                if (isFirst) {
+                    sb.append(day);
+                } else {
+                    sb.append("、").append(day);
+                }
+                isFirst = false;
+            }
+            days >>= 1;
+        }
+        mSilDaysCount.setRightText(sb.toString());
     }
 
     private void updateTimeStartView(int time) {
-        // TODO: update views
+        String hour = String.format(Locale.getDefault(), "%02d", time / 3600);
+        String minute = String.format(Locale.getDefault(), "%02d", (time % 3600) / 60);
+        mSilTimeStart.setRightText(hour + ":" + minute);
+        if (time > mTimeEnd) {
+            updateTimeEndView(mTimeEnd);
+        }
     }
 
     private void updateTimeEndView(int time) {
-        // TODO: update views
+        String hour = String.format(Locale.getDefault(), "%02d", time / 3600);
+        String minute = String.format(Locale.getDefault(), "%02d", (time % 3600) / 60);
+        StringBuilder sb = new StringBuilder();
+        sb.append(hour).append(":").append(minute);
+        if (time < mTimeStart) {
+            sb.append(getString(R.string.ipc_setting_detection_time_tomorrow));
+        }
+        mSilTimeEnd.setRightText(sb.toString());
     }
 
-    private boolean isWeekChecked(int witchDay) {
-        return (mDaySelect & witchDay) != 0;
+    private boolean isWeekChecked(int daySelect, int witchDay) {
+        return (daySelect & witchDay) != 0;
     }
 
     private int dateToInt(Date time) {

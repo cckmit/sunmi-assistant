@@ -16,7 +16,7 @@ public class BarXAxisLabelFormatter extends ValueFormatter {
     private static String[] sWeekName;
 
     public BarXAxisLabelFormatter(Context context) {
-        sWeekName = context.getResources().getStringArray(R.array.dashboard_week_name);
+        sWeekName = context.getResources().getStringArray(R.array.week_name);
     }
 
     @Override

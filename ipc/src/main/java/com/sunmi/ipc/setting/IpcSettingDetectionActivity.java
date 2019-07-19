@@ -1,5 +1,6 @@
 package com.sunmi.ipc.setting;
 
+import android.support.v4.content.ContextCompat;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
@@ -73,7 +74,7 @@ public class IpcSettingDetectionActivity extends BaseActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                setSensitivity(seekBar.getProgress());
+                setSensitivity(seekBar.getProgress() + 1);
             }
         });
     }
@@ -92,15 +93,15 @@ public class IpcSettingDetectionActivity extends BaseActivity {
         mDetectionSwitch.setChecked(enable);
         mSensitivitySeekBar.setEnabled(enable);
         if (enable) {
-            mSensitivityTitle.setTextColor(getResources().getColor(R.color.colorText));
-            mSensitivityLow.setTextColor(getResources().getColor(R.color.colorText_60));
-            mSensitivityMid.setTextColor(getResources().getColor(R.color.colorText_60));
-            mSensitivityHigh.setTextColor(getResources().getColor(R.color.colorText_60));
+            mSensitivityTitle.setTextColor(ContextCompat.getColor(this, R.color.colorText));
+            mSensitivityLow.setTextColor(ContextCompat.getColor(this, R.color.colorText_60));
+            mSensitivityMid.setTextColor(ContextCompat.getColor(this, R.color.colorText_60));
+            mSensitivityHigh.setTextColor(ContextCompat.getColor(this, R.color.colorText_60));
         } else {
-            mSensitivityTitle.setTextColor(getResources().getColor(R.color.color_BBBBC7));
-            mSensitivityLow.setTextColor(getResources().getColor(R.color.color_BBBBC7));
-            mSensitivityMid.setTextColor(getResources().getColor(R.color.color_BBBBC7));
-            mSensitivityHigh.setTextColor(getResources().getColor(R.color.color_BBBBC7));
+            mSensitivityTitle.setTextColor(ContextCompat.getColor(this, R.color.color_BBBBC7));
+            mSensitivityLow.setTextColor(ContextCompat.getColor(this, R.color.color_BBBBC7));
+            mSensitivityMid.setTextColor(ContextCompat.getColor(this, R.color.color_BBBBC7));
+            mSensitivityHigh.setTextColor(ContextCompat.getColor(this, R.color.color_BBBBC7));
         }
     }
 
