@@ -3,7 +3,6 @@ package com.sunmi.ipc.setting;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.CompoundButton;
 import android.widget.Switch;
@@ -11,6 +10,7 @@ import android.widget.Switch;
 import com.google.gson.GsonBuilder;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.model.IpcConnectApResp;
+import com.sunmi.ipc.model.IpcNewFirmwareResp;
 import com.sunmi.ipc.model.IpcNightModeResp;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcConstants;
@@ -27,7 +27,7 @@ import org.androidannotations.annotations.ViewById;
 import java.nio.charset.Charset;
 
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.constant.CommonUdpData;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.StatusBarUtils;
@@ -58,6 +58,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     SettingItemLayout mNightStyle;
     @ViewById(resName = "sil_wifi")
     SettingItemLayout mWifiName;
+    @ViewById(resName = "sil_ipc_version")
+    SettingItemLayout mVersion;
     @ViewById(resName = "switch_light")
     Switch swLight;
     @ViewById(resName = "switch_view_rotate")
@@ -66,6 +68,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     //夜视模式，指示灯，画面旋转
     private int nightMode, ledIndicator, rotation;
     private boolean isOnClickLight, isOnClickRotate, isSetLight, isSetRotate;
+    private IpcNewFirmwareResp mResp;
 
     @AfterViews
     void init() {
@@ -73,6 +76,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         mPresenter = new IpcSettingPresenter();
         mPresenter.attachView(this);
         mPresenter.loadConfig(mDevice);
+        mPresenter.currentVersion();
 
         mNameView.setRightText(mDevice.getName());
 
@@ -84,7 +88,10 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         IPCCall.getInstance().getIpcNightIdeRotation(this, mDevice.getModel(), mDevice.getDeviceid());
         if (!IPCCall.isRemoteCall(mDevice.getDeviceid())) {
             //ipc连接wifi信息
-            IPCCall.getInstance().getIpcConnectApMsg(this, CommonUdpData.currentIpcIp(mDevice.getDeviceid()));
+            if (CommonConstants.SUNMI_DEV_MAP.containsKey(mDevice.getDeviceid())) {
+                IPCCall.getInstance().getIpcConnectApMsg(this,
+                        CommonConstants.SUNMI_DEV_MAP.get(mDevice.getDeviceid()).getIp());
+            }
         }
     }
 
@@ -102,6 +109,24 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     public void updateNameView(String name) {
         mDevice.setName(name);
         mNameView.setRightText(name);
+    }
+
+    /**
+     * ipc固件升级
+     * upgrade_required是否需要更新，0-不需要，1-需要
+     *
+     * @param resp
+     */
+    @Override
+    public void currentVersionView(IpcNewFirmwareResp resp) {
+        mResp = resp;
+        String version = resp.getLatest_bin_version();
+        int upgradeRequired = resp.getUpgrade_required();
+        String upgradeUrl = resp.getUrl();
+        mVersion.setRightText(version);
+        if (upgradeRequired == 1) {
+            mVersion.setIvToTextLeftImage(R.mipmap.ic_ipc_new_ver);
+        }
     }
 
     @Click(resName = "sil_camera_name")
@@ -172,7 +197,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Click(resName = "sil_ipc_version")
     void versionClick() {
-        IpcSettingVersionActivity_.intent(this).start();
+        IpcSettingVersionActivity_.intent(this)
+                .mDevice(mDevice)
+                .start();
     }
 
     @Click(resName = "sil_wifi")
@@ -211,11 +238,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         showLoadingDialog();
         IPCCall.getInstance().setIpcNightIdeRotation(context, mDevice.getModel(),
                 mDevice.getDeviceid(), nightMode, ledIndicator, isChecked ? SWITCH_CHECK : SWITCH_UNCHECK);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

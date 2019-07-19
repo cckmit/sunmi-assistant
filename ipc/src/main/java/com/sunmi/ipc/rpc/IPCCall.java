@@ -7,7 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import sunmi.common.constant.CommonUdpData;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.rpc.sunmicall.BaseIpcApi;
 import sunmi.common.rpc.sunmicall.RequestBean;
 import sunmi.common.utils.Utils;
@@ -285,7 +285,7 @@ public class IPCCall extends BaseIpcApi {
      * @return
      */
     public static boolean isRemoteCall(String sn) {
-        return TextUtils.isEmpty(CommonUdpData.currentIpcDeviceId(sn));
+        return TextUtils.isEmpty(CommonConstants.SUNMI_DEV_MAP.get(sn).getDeviceid());
     }
 
     @Override
@@ -293,7 +293,7 @@ public class IPCCall extends BaseIpcApi {
         if (isRemoteCall(sn)) {
             new IpcRemoteApApi().post(context, sn, msgId, opCode, json);
         } else {
-            new IPCLocalApi(CommonUdpData.currentIpcIp(sn)).post(context, sn, msgId, opCode, json);
+            new IPCLocalApi(CommonConstants.SUNMI_DEV_MAP.get(sn).getIp()).post(context, sn, msgId, opCode, json);
         }
     }
 
@@ -312,7 +312,7 @@ public class IPCCall extends BaseIpcApi {
         if (isRemoteCall(sn)) {
             new IpcRemoteSettingApi().post(context, sn, msgId, opCode, model, json);
         } else {
-            new IPCLocalApi(CommonUdpData.currentIpcIp(sn)).post(context, sn, msgId, opCode, json);
+            new IPCLocalApi(CommonConstants.SUNMI_DEV_MAP.get(sn).getIp()).post(context, sn, msgId, opCode, json);
         }
     }
 

@@ -6,15 +6,15 @@ package com.sunmi.ipc.model;
  */
 public class IpcNewFirmwareResp {
 
-    private String lastest_bin_version;
+    private String latest_bin_version;
     private int upgrade_required;
     private String url;
 
     /**
      * 最新版本号
      */
-    public String getLastest_bin_version() {
-        return lastest_bin_version;
+    public String getLatest_bin_version() {
+        return latest_bin_version;
     }
 
     /**
