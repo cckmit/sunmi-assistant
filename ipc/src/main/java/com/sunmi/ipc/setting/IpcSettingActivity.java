@@ -15,7 +15,7 @@ import com.sunmi.ipc.model.IpcNewFirmwareResp;
 import com.sunmi.ipc.model.IpcNightModeResp;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcConstants;
-import com.sunmi.ipc.setting.entity.IpcDetectionConfig;
+import com.sunmi.ipc.setting.entity.DetectionConfig;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.CheckedChange;
@@ -38,7 +38,7 @@ import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.dialog.InputDialog;
 
-import static com.sunmi.ipc.setting.entity.IpcDetectionConfig.INTENT_EXTRA_DETECTION_CONFIG;
+import static com.sunmi.ipc.setting.entity.DetectionConfig.INTENT_EXTRA_DETECTION_CONFIG;
 
 /**
  * @author YangShiJie
@@ -79,7 +79,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     @ViewById(resName = "switch_view_rotate")
     Switch swRotate;
 
-    IpcDetectionConfig mDetectionConfig;
+    DetectionConfig mDetectionConfig;
 
     //夜视模式，指示灯，画面旋转
     private int nightMode, ledIndicator, rotation;
@@ -301,8 +301,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             LogCat.e(TAG, "1111 33=" + res.getResult());
             setIpcNightIdeRotation(res);
         } else if (id == IpcConstants.getIpcDetection) {
-            if (TextUtils.equals("1", res.getErrCode())) {
-                mDetectionConfig = new Gson().fromJson(res.getResult().toString(), IpcDetectionConfig.class);
+            if (res.getDataErrCode() == 1) {
+                mDetectionConfig = new Gson().fromJson(res.getResult().toString(), DetectionConfig.class);
                 updateDetectionView();
             } else {
                 shortTip(R.string.toast_network_Exception);
@@ -319,7 +319,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 getString(R.string.ipc_setting_open) : getString(R.string.ipc_setting_close));
         mActiveDetection.setRightText(mDetectionConfig.activeDetection != 0 ?
                 getString(R.string.ipc_setting_open) : getString(R.string.ipc_setting_close));
-        mDetectionTime.setRightText(mDetectionConfig.detectionDays == IpcDetectionConfig.DETECTION_ALL_TIME ?
+        mDetectionTime.setRightText(mDetectionConfig.detectionDays == DetectionConfig.DETECTION_ALL_TIME ?
                 getString(R.string.ipc_setting_detection_time_all_time) : getString(R.string.ipc_setting_detection_time_custom));
     }
 

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -16,7 +15,7 @@ import com.datelibrary.bean.DateType;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcConstants;
-import com.sunmi.ipc.setting.entity.IpcDetectionConfig;
+import com.sunmi.ipc.setting.entity.DetectionConfig;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -34,7 +33,7 @@ import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.dialog.BottomDialog;
 
-import static com.sunmi.ipc.setting.entity.IpcDetectionConfig.INTENT_EXTRA_DETECTION_CONFIG;
+import static com.sunmi.ipc.setting.entity.DetectionConfig.INTENT_EXTRA_DETECTION_CONFIG;
 
 /**
  * @author yinhui
@@ -65,7 +64,7 @@ public class IpcSettingDetectionTimeActivity extends BaseActivity {
     @Extra
     SunmiDevice mDevice;
     @Extra
-    IpcDetectionConfig mConfig;
+    DetectionConfig mConfig;
 
     private boolean mIsAllTime;
     private int mDays;
@@ -121,8 +120,8 @@ public class IpcSettingDetectionTimeActivity extends BaseActivity {
         });
     }
 
-    private void initData(IpcDetectionConfig config) {
-        mIsAllTime = config.detectionDays == IpcDetectionConfig.DETECTION_ALL_TIME;
+    private void initData(DetectionConfig config) {
+        mIsAllTime = config.detectionDays == DetectionConfig.DETECTION_ALL_TIME;
         mDays = mIsAllTime ? 0 : config.detectionDays;
         mTimeStart = config.detectionTimeStart;
         mTimeEnd = config.detectionTimeEnd;
@@ -304,7 +303,7 @@ public class IpcSettingDetectionTimeActivity extends BaseActivity {
     }
 
     private void setDetectionEnable(boolean enable) {
-        mConfig.detectionDays = enable ? IpcDetectionConfig.DETECTION_ALL_TIME : mDays;
+        mConfig.detectionDays = enable ? DetectionConfig.DETECTION_ALL_TIME : mDays;
         postSetConfig();
     }
 
@@ -346,7 +345,7 @@ public class IpcSettingDetectionTimeActivity extends BaseActivity {
         }
         ResponseBean res = (ResponseBean) args[0];
         if (id == IpcConstants.setIpcDetection) {
-            if (TextUtils.equals("1", res.getErrCode())) {
+            if (res.getDataErrCode() == 1) {
                 shortTip(R.string.tip_set_complete);
             } else {
                 shortTip(R.string.tip_set_fail);

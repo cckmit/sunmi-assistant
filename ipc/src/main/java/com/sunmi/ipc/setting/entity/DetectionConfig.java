@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
  * @author yinhui
  * @date 2019-07-19
  */
-public class IpcDetectionConfig implements Parcelable {
+public class DetectionConfig implements Parcelable {
 
     public static final int DETECTION_ALL_TIME = 0x80;
     public static final String INTENT_EXTRA_DETECTION_CONFIG = "config";
@@ -25,7 +25,7 @@ public class IpcDetectionConfig implements Parcelable {
     @SerializedName("stop_time")
     public int detectionTimeEnd;
 
-    protected IpcDetectionConfig(Parcel in) {
+    protected DetectionConfig(Parcel in) {
         soundDetection = in.readInt();
         activeDetection = in.readInt();
         detectionDays = in.readInt();
@@ -47,15 +47,15 @@ public class IpcDetectionConfig implements Parcelable {
         return 0;
     }
 
-    public static final Creator<IpcDetectionConfig> CREATOR = new Creator<IpcDetectionConfig>() {
+    public static final Creator<DetectionConfig> CREATOR = new Creator<DetectionConfig>() {
         @Override
-        public IpcDetectionConfig createFromParcel(Parcel in) {
-            return new IpcDetectionConfig(in);
+        public DetectionConfig createFromParcel(Parcel in) {
+            return new DetectionConfig(in);
         }
 
         @Override
-        public IpcDetectionConfig[] newArray(int size) {
-            return new IpcDetectionConfig[size];
+        public DetectionConfig[] newArray(int size) {
+            return new DetectionConfig[size];
         }
     };
 

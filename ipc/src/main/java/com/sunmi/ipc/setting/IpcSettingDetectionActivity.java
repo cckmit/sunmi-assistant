@@ -2,7 +2,6 @@ package com.sunmi.ipc.setting;
 
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
@@ -11,7 +10,7 @@ import android.widget.TextView;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcConstants;
-import com.sunmi.ipc.setting.entity.IpcDetectionConfig;
+import com.sunmi.ipc.setting.entity.DetectionConfig;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -23,7 +22,7 @@ import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.view.TitleBarView;
 
-import static com.sunmi.ipc.setting.entity.IpcDetectionConfig.INTENT_EXTRA_DETECTION_CONFIG;
+import static com.sunmi.ipc.setting.entity.DetectionConfig.INTENT_EXTRA_DETECTION_CONFIG;
 
 /**
  * @author yinhui
@@ -58,7 +57,7 @@ public class IpcSettingDetectionActivity extends BaseActivity {
     @Extra
     SunmiDevice mDevice;
     @Extra
-    IpcDetectionConfig mConfig;
+    DetectionConfig mConfig;
 
     private boolean mEnable;
     private int mSensitivity;
@@ -94,7 +93,7 @@ public class IpcSettingDetectionActivity extends BaseActivity {
         });
     }
 
-    private void initData(int type, IpcDetectionConfig config) {
+    private void initData(int type, DetectionConfig config) {
         if (type == TYPE_SOUND) {
             mEnable = config.soundDetection != 0;
             mSensitivity = Math.max(0, config.soundDetection - 1);
@@ -174,7 +173,7 @@ public class IpcSettingDetectionActivity extends BaseActivity {
         }
         ResponseBean res = (ResponseBean) args[0];
         if (id == IpcConstants.setIpcDetection) {
-            if (TextUtils.equals("1", res.getErrCode())) {
+            if (res.getDataErrCode() == 1) {
                 shortTip(R.string.tip_set_complete);
             } else {
                 shortTip(R.string.tip_set_fail);
