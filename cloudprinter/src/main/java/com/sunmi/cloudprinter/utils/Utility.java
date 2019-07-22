@@ -84,7 +84,7 @@ public class Utility {
         } else {
             router.setHasPwd(true);
         }
-        router.setRssi(ByteUtils.byte4ToInt(bRssi));
+        router.setRssi(ByteUtils.byte4ToIntL(bRssi));
         router.setEssid(bName);
         return router;
     }

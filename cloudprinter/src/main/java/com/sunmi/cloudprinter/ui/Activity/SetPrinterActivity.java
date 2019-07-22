@@ -2,13 +2,11 @@ package com.sunmi.cloudprinter.ui.Activity;
 
 import android.app.Dialog;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.inuker.bluetooth.library.BluetoothClient;
@@ -26,6 +24,7 @@ import com.sunmi.cloudprinter.ui.adaper.RouterListAdapter;
 import com.sunmi.cloudprinter.utils.Utility;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
@@ -42,14 +41,13 @@ import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.ClearableEditText;
+import sunmi.common.view.SmRecyclerView;
 
 @EActivity(resName = "activity_set_printer")
 public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter>
         implements SetPrinterContract.View {
     @ViewById(resName = "rv_router")
-    RecyclerView rvRouter;
-    @ViewById(resName = "pb_sending")
-    ProgressBar progressBar;
+    SmRecyclerView rvRouter;
 
     @Extra
     String bleAddress;
@@ -78,8 +76,7 @@ public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter>
     @Override
     protected void onResume() {
         super.onResume();
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
-        rvRouter.setLayoutManager(layoutManager);
+        rvRouter.init(R.drawable.shap_line_divider);
         adapter = new RouterListAdapter(routers);
         adapter.setOnItemClickListener(new RouterListAdapter.OnItemClickListener() {
             @Override
@@ -120,10 +117,16 @@ public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter>
         });
     }
 
+    @Click(resName = "tv_skip")
+    void skipClick(){
+
+    }
+
     @UiThread
     @Override
     public void initRouter(Router router) {
         routers.add(router);
+        LogCat.e(TAG,router.getName()+router.getRssi());
         adapter.notifyDataSetChanged();
     }
 
