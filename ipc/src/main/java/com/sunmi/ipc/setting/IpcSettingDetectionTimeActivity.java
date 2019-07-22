@@ -323,6 +323,7 @@ public class IpcSettingDetectionTimeActivity extends BaseActivity {
     }
 
     private void postSetConfig() {
+        showLoadingDialog();
         new IPCCall().setIpcDetection(this, mDevice.getModel(), mDevice.getDeviceid(),
                 mConfig.activeDetection, mConfig.soundDetection, mConfig.detectionDays,
                 mConfig.detectionTimeStart, mConfig.detectionTimeEnd);
@@ -345,6 +346,7 @@ public class IpcSettingDetectionTimeActivity extends BaseActivity {
         }
         ResponseBean res = (ResponseBean) args[0];
         if (id == IpcConstants.setIpcDetection) {
+            hideLoadingDialog();
             if (res.getDataErrCode() == 1) {
                 shortTip(R.string.tip_set_complete);
             } else {

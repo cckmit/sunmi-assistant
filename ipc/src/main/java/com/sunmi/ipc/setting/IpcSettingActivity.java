@@ -191,6 +191,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                             shortTip(R.string.ipc_setting_tip_name_length);
                             return;
                         }
+                        showLoadingDialog();
                         mPresenter.updateName(input);
                         dialog.dismiss();
                     }
