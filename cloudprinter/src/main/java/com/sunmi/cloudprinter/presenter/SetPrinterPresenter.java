@@ -27,7 +27,7 @@ public class SetPrinterPresenter extends BasePresenter<SetPrinterContract.View> 
     @Override
     public void initNotifySuccess(byte version) {
 //        mView.onSendMessage(Utility.cmdGetSn());
-        if (isViewAttached()) mView.onSendMessage(Utility.cmdGetWifi(version));
+        if (isViewAttached()) mView.onSendMessage(Utility.cmdGetWifi());
     }
 
     @Override
@@ -57,7 +57,7 @@ public class SetPrinterPresenter extends BasePresenter<SetPrinterContract.View> 
         int cmd = Utility.getCmd(value);
         if (cmd == Constants.SRV2CLI_SEND_SN) {
 //            mView.setSn(Utility.getSn(value));
-            if (isViewAttached()) mView.onSendMessage(Utility.cmdGetWifi(version));
+            if (isViewAttached()) mView.onSendMessage(Utility.cmdGetWifi());
         } else if (cmd == Constants.SRV2CLI_SEND_WIFI_ERROR) {
             LogCat.e("spp", "222222");
             if (isViewAttached()) mView.hideLoadingDialog();

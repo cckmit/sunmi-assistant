@@ -9,17 +9,17 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.sunmi.cloudprinter.R;
-import com.sunmi.cloudprinter.bean.BlueDevice;
+import com.sunmi.cloudprinter.bean.PrinterDevice;
 
 import java.util.List;
 
 public class PrinterListAdapter extends RecyclerView.Adapter<PrinterListAdapter.ViewHolder> {
 
     private Context context;
-    private List<BlueDevice> data;
+    private List<PrinterDevice> data;
     private OnItemClickListener listener;
 
-    public PrinterListAdapter(Context context, List<BlueDevice> data) {
+    public PrinterListAdapter(Context context, List<PrinterDevice> data) {
         this.context = context;
         this.data = data;
     }
@@ -70,7 +70,7 @@ public class PrinterListAdapter extends RecyclerView.Adapter<PrinterListAdapter.
     }
 
     public interface OnItemClickListener {
-        void onItemClick(BlueDevice blueDevice);
+        void onItemClick(PrinterDevice printerDevice);
     }
 
 }
