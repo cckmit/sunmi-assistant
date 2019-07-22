@@ -3,7 +3,10 @@ package com.sunmi.ipc.setting;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v4.widget.NestedScrollView;
+import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 
 import com.google.gson.Gson;
@@ -24,6 +27,8 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.nio.charset.Charset;
 import java.util.Objects;
@@ -34,6 +39,7 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.ResponseBean;
+import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.SettingItemLayout;
@@ -69,7 +75,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     SettingItemLayout mActiveDetection;
     @ViewById(resName = "sil_time_setting")
     SettingItemLayout mDetectionTime;
-
     @ViewById(resName = "sil_night_style")
     SettingItemLayout mNightStyle;
     @ViewById(resName = "sil_wifi")
@@ -80,6 +85,11 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     Switch swLight;
     @ViewById(resName = "switch_view_rotate")
     Switch swRotate;
+    @ViewById(resName = "nsv_setting")
+    NestedScrollView nsvSetting;
+    @ViewById(resName = "rl_net_exception")
+    RelativeLayout rlNetException;
+
 
     DetectionConfig mDetectionConfig;
 
@@ -143,10 +153,23 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         mPresenter = new IpcSettingPresenter();
         mPresenter.attachView(this);
+        if (!NetworkUtils.isNetworkAvailable(context)) {
+            netExceptionView(true);
+            return;
+        }
         mPresenter.loadConfig(mDevice);
         mPresenter.currentVersion();
-
         mNameView.setRightText(mDevice.getName());
+    }
+
+    private void netExceptionView(boolean isExceptionView) {
+        if (isExceptionView) {
+            nsvSetting.setVisibility(View.GONE);
+            rlNetException.setVisibility(View.VISIBLE);
+        } else {
+            nsvSetting.setVisibility(View.VISIBLE);
+            rlNetException.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -176,6 +199,12 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             mVersion.setIvToTextLeftImage(R.mipmap.ic_ipc_new_ver);
             newVersionDialog(version);
         }
+    }
+
+    @Click(resName = "btn_refresh")
+    void btnRefreshClick() {
+        mPresenter.loadConfig(mDevice);
+        mPresenter.currentVersion();
     }
 
     @Click(resName = "sil_camera_name")
@@ -334,7 +363,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     public int[] getUnStickNotificationId() {
         return new int[]{IpcConstants.getIpcConnectApMsg, IpcConstants.getIpcNightIdeRotation,
                 IpcConstants.setIpcNightIdeRotation, IpcConstants.getIpcDetection,
-                IpcConstants.ipcUpgrade};
+                IpcConstants.ipcUpgrade, IpcConstants.getIpcSettingMessage};
     }
 
     @Override
@@ -348,23 +377,52 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         if (id == IpcConstants.getIpcConnectApMsg) {
             LogCat.e(TAG, "1111  11=" + res.getResult());
             getIpcConnectApMsg(res);
-        } else if (id == IpcConstants.getIpcNightIdeRotation) {
-            LogCat.e(TAG, "1111 22=" + res.getResult());
-            getIpcNightIdeRotation(res);
         } else if (id == IpcConstants.setIpcNightIdeRotation) {
             LogCat.e(TAG, "1111 33=" + res.getResult());
             setIpcNightIdeRotation(res);
-        } else if (id == IpcConstants.getIpcDetection) {
-            if (res.getDataErrCode() == 1) {
-                mDetectionConfig = new Gson().fromJson(res.getResult().toString(), DetectionConfig.class);
-                updateDetectionView();
-            } else {
-                shortTip(R.string.toast_network_Exception);
-            }
         } else if (id == IpcConstants.ipcUpgrade) {
             LogCat.e(TAG, "1111 44=" + res.getDataErrCode());
             upgradeResult(res);
+        } else if (id == IpcConstants.getIpcSettingMessage) {
+            LogCat.e(TAG, "1111 55=" + res.getReturnData());
+            getIpcSettingMessage(res);
         }
+    }
+
+    /**
+     * led_indicator :   0:关闭/1:开启
+     * night_mode :   夜视模式 0:始终关闭/1:始终开启/2:自动切换
+     * rotation :   0:关闭/1:开启
+     *
+     * @param res
+     */
+    @UiThread
+    void getIpcSettingMessage(ResponseBean res) {
+        try {
+            if (res.getDataErrCode() == 1) {
+                netExceptionView(false);
+                //IPC声音侦测和动态侦测相关配置信息
+                JSONObject detectionJson = res.getJsonArray().getJSONObject(0).getJSONObject("result");
+                mDetectionConfig = new Gson().fromJson(detectionJson.toString(), DetectionConfig.class);
+                updateDetectionView();
+                //夜视模式 指示灯 旋转信息
+                JSONObject nightIdeRotationJson = res.getJsonArray().getJSONObject(1).getJSONObject("result");
+                IpcNightModeResp resp = new GsonBuilder().create().fromJson(nightIdeRotationJson.toString(), IpcNightModeResp.class);
+                nightMode = resp.getNight_mode();
+                ledIndicator = resp.getLed_indicator();
+                rotation = resp.getRotation();
+                mNightStyle.setRightText(nightMode(nightMode));
+                isSetLight = ledIndicator != 0;
+                swLight.setChecked(isSetLight);
+                isSetRotate = rotation != 0;
+                swRotate.setChecked(isSetRotate);
+            } else {
+                netExceptionView(true);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void updateDetectionView() {
@@ -454,28 +512,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         }
     }
 
-    /**
-     * led_indicator :   0:关闭/1:开启
-     * night_mode :   夜视模式 0:始终关闭/1:始终开启/2:自动切换
-     * rotation :   0:关闭/1:开启
-     */
-    @UiThread
-    void getIpcNightIdeRotation(ResponseBean res) {
-        if (res.getResult() == null) {
-            return;
-        }
-        IpcNightModeResp resp = new GsonBuilder().create().fromJson(res.getResult().toString(), IpcNightModeResp.class);
-        nightMode = resp.getNight_mode();
-        ledIndicator = resp.getLed_indicator();
-        rotation = resp.getRotation();
-        mNightStyle.setRightText(nightMode(nightMode));
-
-        isSetLight = ledIndicator != 0;
-        swLight.setChecked(isSetLight);
-        isSetRotate = rotation != 0;
-        swRotate.setChecked(isSetRotate);
-    }
-
     @UiThread
     void upgradeResult(ResponseBean res) {
         if (res.getDataErrCode() == 1) {
@@ -550,7 +586,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 mDevice.getDeviceid(), mResp.getUrl(), mResp.getLatest_bin_version());
         progressDialog = new UpdateProgressDialog.Builder(this)
                 .create();
-        progressDialog.canceledOnTouchOutside(true);
+        progressDialog.canceledOnTouchOutside(false);
         startTimer();
     }
 

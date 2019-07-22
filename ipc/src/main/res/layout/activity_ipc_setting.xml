@@ -16,7 +16,10 @@
         app:titleText="@string/str_setting_ipc_camera"
         app:titleTextColor="@color/colorText" />
 
+    <include layout="@layout/include_net_exception" />
+
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nsv_setting"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/title_bar">
@@ -110,7 +113,6 @@
                 app:leftText="@string/ipc_setting_night_vision_mode"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
-                app:rightText="自动切换"
                 app:rightTextColor="@color/colorText_60" />
 
             <RelativeLayout

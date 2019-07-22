@@ -2,9 +2,14 @@ package com.sunmi.ipc.rpc;
 
 import android.content.Context;
 
+import com.sunmi.ipc.utils.JsonUtils;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
@@ -289,6 +294,28 @@ public class IPCCall extends BaseIpcApi {
             RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                     "0x" + Integer.toHexString(opCode), object);
             post(context, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取 IPC声音侦测和动态侦测相关配置信息
+     * 获取 夜视模式 指示灯 旋转信息
+     *
+     * @param context
+     * @param model
+     * @param sn
+     */
+    public void getIpcSettingMessage(Context context, String model, String sn) {
+        String msgId = Utils.getMsgId();
+        try {
+            JSONObject object = new JSONObject();
+            object.put("sn", sn);
+            List<JSONObject> list = new ArrayList<>();
+            list.add(JsonUtils.getRequest("0x" + Integer.toHexString(IpcConstants.getIpcDetection), object));
+            list.add(JsonUtils.getRequest("0x" + Integer.toHexString(IpcConstants.getIpcNightIdeRotation), object));
+            post(context, sn, msgId, IpcConstants.getIpcSettingMessage, model, JsonUtils.getMultiRequest(msgId, list));
         } catch (JSONException e) {
             e.printStackTrace();
         }
