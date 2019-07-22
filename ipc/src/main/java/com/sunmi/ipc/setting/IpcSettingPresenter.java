@@ -25,13 +25,11 @@ public class IpcSettingPresenter extends BasePresenter<IpcSettingContract.View>
     @Override
     public void loadConfig(SunmiDevice device) {
         this.mDevice = device;
-        IPCCall.getInstance().getIpcNightIdeRotation(mView.getContext(), mDevice.getModel(), mDevice.getDeviceid());
-        IPCCall.getInstance().getIpcDetection(mView.getContext(), mDevice.getModel(), mDevice.getDeviceid());
-
+        IPCCall.getInstance().getIpcSettingMessage(mView.getContext(), mDevice.getModel(), mDevice.getDeviceid());
         SunmiDevice localDevice = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
         if (localDevice != null) {
             // ipc连接wifi信息
-            IPCCall.getInstance().getIpcConnectApMsg(mView.getContext(), device.getIp());
+            IPCCall.getInstance().getIpcConnectApMsg(mView.getContext(), localDevice.getIp());
         }
     }
 
