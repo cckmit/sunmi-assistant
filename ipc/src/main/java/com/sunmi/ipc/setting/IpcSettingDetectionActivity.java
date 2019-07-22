@@ -34,6 +34,8 @@ public class IpcSettingDetectionActivity extends BaseActivity {
     static final int TYPE_SOUND = 0;
     static final int TYPE_ACTIVE = 1;
 
+    private static final int DEFAULT_SENSITIVITY = 1;
+
     @ViewById(resName = "title_bar")
     TitleBarView mTitleBar;
 
@@ -98,10 +100,10 @@ public class IpcSettingDetectionActivity extends BaseActivity {
     private void initData(int type, DetectionConfig config) {
         if (type == TYPE_SOUND) {
             mEnable = config.soundDetection != 0;
-            mSensitivity = Math.max(0, config.soundDetection - 1);
+            mSensitivity = mEnable ? config.soundDetection - 1 : DEFAULT_SENSITIVITY;
         } else if (type == TYPE_ACTIVE) {
             mEnable = config.activeDetection != 0;
-            mSensitivity = Math.max(0, config.activeDetection - 1);
+            mSensitivity = mEnable ? config.activeDetection - 1 : DEFAULT_SENSITIVITY;
         }
     }
 
