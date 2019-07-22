@@ -375,16 +375,12 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         }
         ResponseBean res = (ResponseBean) args[0];
         if (id == IpcConstants.getIpcConnectApMsg) {
-            LogCat.e(TAG, "1111  11=" + res.getResult());
             getIpcConnectApMsg(res);
         } else if (id == IpcConstants.setIpcNightIdeRotation) {
-            LogCat.e(TAG, "1111 33=" + res.getResult());
             setIpcNightIdeRotation(res);
         } else if (id == IpcConstants.ipcUpgrade) {
-            LogCat.e(TAG, "1111 44=" + res.getDataErrCode());
             upgradeResult(res);
         } else if (id == IpcConstants.getIpcSettingMessage) {
-            LogCat.e(TAG, "1111 55=" + res.getReturnData());
             getIpcSettingMessage(res);
         }
     }

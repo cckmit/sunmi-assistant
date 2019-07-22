@@ -33,7 +33,6 @@ import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.StatusBarUtils;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.ViewHolder;
 import sunmi.common.view.dialog.CommonDialog;
@@ -138,16 +137,13 @@ public class IpcSettingWiFiActivity extends BaseActivity {
         if (args == null) return;
         ResponseBean res = (ResponseBean) args[0];
         if (id == IpcConstants.getIpcConnectApMsg) {
-            LogCat.e(TAG, "1111  11=" + res.getResult());
             getIpcConnectApMsg(res);
         } else if (id == IpcConstants.getWifiList) {
-            LogCat.e(TAG, "1111  22=" + res.getResult());
             hideLoadingDialog();
             getWifiList(res);
         } else if (id == IpcConstants.setIPCWifi) {
-            LogCat.e(TAG, "1111  33=" + res.getResult());
+            //LogCat.e(TAG, "1111  33=" + res.getResult());
         } else if (id == IpcConstants.getApStatus) {
-            LogCat.e(TAG, "1111  44=" + res.getResult());
             queryConnectStatus(res);
         }
     }
