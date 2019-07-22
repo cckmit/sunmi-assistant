@@ -43,6 +43,7 @@ public class IpcSettingPresenter extends BasePresenter<IpcSettingContract.View>
                     public void onSuccess(int code, String msg, Object data) {
                         mDevice.setName(name);
                         if (isViewAttached()) {
+                            mView.hideLoadingDialog();
                             mView.updateNameView(name);
                             mView.shortTip(R.string.ipc_setting_success);
                         }
@@ -52,6 +53,7 @@ public class IpcSettingPresenter extends BasePresenter<IpcSettingContract.View>
                     public void onFail(int code, String msg, Object data) {
                         LogCat.e(TAG, "Update IPC name Failed. code=" + code + "; msg=" + msg);
                         if (isViewAttached()) {
+                            mView.hideLoadingDialog();
                             mView.shortTip(R.string.ipc_setting_fail);
                         }
                     }
