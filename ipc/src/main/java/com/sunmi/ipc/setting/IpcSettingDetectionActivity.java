@@ -34,6 +34,8 @@ public class IpcSettingDetectionActivity extends BaseActivity {
     static final int TYPE_SOUND = 0;
     static final int TYPE_ACTIVE = 1;
 
+    private static final int DEFAULT_SENSITIVITY = 1;
+
     @ViewById(resName = "title_bar")
     TitleBarView mTitleBar;
 
@@ -87,8 +89,10 @@ public class IpcSettingDetectionActivity extends BaseActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int sensitivity = seekBar.getProgress();
-                mSensitivity = sensitivity;
-                setSensitivity(sensitivity);
+                if (mSensitivity != sensitivity) {
+                    mSensitivity = sensitivity;
+                    setSensitivity(sensitivity);
+                }
             }
         });
     }
@@ -96,10 +100,10 @@ public class IpcSettingDetectionActivity extends BaseActivity {
     private void initData(int type, DetectionConfig config) {
         if (type == TYPE_SOUND) {
             mEnable = config.soundDetection != 0;
-            mSensitivity = Math.max(0, config.soundDetection - 1);
+            mSensitivity = mEnable ? config.soundDetection - 1 : DEFAULT_SENSITIVITY;
         } else if (type == TYPE_ACTIVE) {
             mEnable = config.activeDetection != 0;
-            mSensitivity = Math.max(0, config.activeDetection - 1);
+            mSensitivity = mEnable ? config.activeDetection - 1 : DEFAULT_SENSITIVITY;
         }
     }
 
@@ -151,6 +155,7 @@ public class IpcSettingDetectionActivity extends BaseActivity {
     }
 
     private void postSetConfig() {
+        showLoadingDialog();
         new IPCCall().setIpcDetection(this, mDevice.getModel(), mDevice.getDeviceid(),
                 mConfig.activeDetection, mConfig.soundDetection, mConfig.detectionDays,
                 mConfig.detectionTimeStart, mConfig.detectionTimeEnd);
@@ -173,6 +178,7 @@ public class IpcSettingDetectionActivity extends BaseActivity {
         }
         ResponseBean res = (ResponseBean) args[0];
         if (id == IpcConstants.setIpcDetection) {
+            hideLoadingDialog();
             if (res.getDataErrCode() == 1) {
                 shortTip(R.string.tip_set_complete);
             } else {

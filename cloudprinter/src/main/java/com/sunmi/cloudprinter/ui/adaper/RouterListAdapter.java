@@ -52,7 +52,7 @@ public class RouterListAdapter extends RecyclerView.Adapter<RouterListAdapter.Vi
         if (routers.get(i).isHasPwd()) {
             viewHolder.routerLocked.setVisibility(View.VISIBLE);
         }
-        showRssi(viewHolder.ivRssi,routers.get(i).getRssi());
+        showRssi(viewHolder.ivRssi, routers.get(i).getRssi());
     }
 
     /**
@@ -62,12 +62,16 @@ public class RouterListAdapter extends RecyclerView.Adapter<RouterListAdapter.Vi
      * <-80      1
      */
     private void showRssi(ImageView view, int rssi) {
-        if (rssi < -80) {
-            view.setImageResource(R.mipmap.singal_level_3);
-        } else if (rssi < -65) {
-            view.setImageResource(R.mipmap.singal_level_2);
-        } else {
-            view.setImageResource(R.mipmap.singal_level_1);
+        if (rssi == 0) {
+            view.setImageResource(R.mipmap.singal_0);
+        } else if (rssi ==1) {
+            view.setImageResource(R.mipmap.singal_1);
+        } else if(rssi==2){
+            view.setImageResource(R.mipmap.singal_2);
+        }else if (rssi ==3){
+            view.setImageResource(R.mipmap.singal_3);
+        }else if (rssi ==4){
+            view.setImageResource(R.mipmap.singal_4);
         }
     }
 
@@ -84,9 +88,9 @@ public class RouterListAdapter extends RecyclerView.Adapter<RouterListAdapter.Vi
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            routerName = itemView.findViewById(R.id.left_text);
-            routerLocked = itemView.findViewById(R.id.right_image);
-            ivRssi = itemView.findViewById(R.id.left_image);
+            routerName = itemView.findViewById(R.id.tv_ap_name);
+            routerLocked = itemView.findViewById(R.id.iv_secret);
+            ivRssi = itemView.findViewById(R.id.iv_signal);
         }
     }
 }

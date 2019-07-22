@@ -3,7 +3,10 @@ package com.sunmi.ipc.setting;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v4.widget.NestedScrollView;
+import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 
 import com.google.gson.Gson;
@@ -34,8 +37,8 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.ResponseBean;
+import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.dialog.InputDialog;
@@ -54,6 +57,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     private static final int REQUEST_CODE_SOUND_DETECTION = 1001;
     private static final int REQUEST_CODE_ACTIVE_DETECTION = 1002;
     private static final int REQUEST_CODE_DETECTION_TIME = 1003;
+    private static final int REQUEST_CODE_WIFI = 1004;
     private static final int REQUEST_COMPLETE = 1000;
     private final int SWITCH_UNCHECK = 0;
     private final int SWITCH_CHECK = 1;
@@ -69,7 +73,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     SettingItemLayout mActiveDetection;
     @ViewById(resName = "sil_time_setting")
     SettingItemLayout mDetectionTime;
-
     @ViewById(resName = "sil_night_style")
     SettingItemLayout mNightStyle;
     @ViewById(resName = "sil_wifi")
@@ -80,6 +83,11 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     Switch swLight;
     @ViewById(resName = "switch_view_rotate")
     Switch swRotate;
+    @ViewById(resName = "nsv_setting")
+    NestedScrollView nsvSetting;
+    @ViewById(resName = "rl_net_exception")
+    RelativeLayout rlNetException;
+
 
     DetectionConfig mDetectionConfig;
 
@@ -143,10 +151,23 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         mPresenter = new IpcSettingPresenter();
         mPresenter.attachView(this);
+        if (!NetworkUtils.isNetworkAvailable(context)) {
+            netExceptionView(true);
+            return;
+        }
         mPresenter.loadConfig(mDevice);
         mPresenter.currentVersion();
-
         mNameView.setRightText(mDevice.getName());
+    }
+
+    private void netExceptionView(boolean isExceptionView) {
+        if (isExceptionView) {
+            nsvSetting.setVisibility(View.GONE);
+            rlNetException.setVisibility(View.VISIBLE);
+        } else {
+            nsvSetting.setVisibility(View.VISIBLE);
+            rlNetException.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -178,8 +199,30 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         }
     }
 
+    private boolean noNetCannotClick(boolean isOnlyHttp) {
+        if (!NetworkUtils.isNetworkAvailable(context)) {
+            if (isOnlyHttp) {
+                shortTip(R.string.str_net_exception);
+                return true;
+            }
+            SunmiDevice localDevice = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
+            if (localDevice == null) {
+                shortTip(R.string.str_net_exception);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Click(resName = "btn_refresh")
+    void btnRefreshClick() {
+        mPresenter.loadConfig(mDevice);
+        mPresenter.currentVersion();
+    }
+
     @Click(resName = "sil_camera_name")
     void cameraNameClick() {
+        if (noNetCannotClick(true)) return;
         new InputDialog.Builder(this)
                 .setTitle(R.string.ipc_setting_name)
                 .setInitInputContent(mDevice.getName())
@@ -191,6 +234,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                             shortTip(R.string.ipc_setting_tip_name_length);
                             return;
                         }
+                        showLoadingDialog();
                         mPresenter.updateName(input);
                         dialog.dismiss();
                     }
@@ -201,6 +245,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Click(resName = "sil_camera_detail")
     void cameraDetailClick() {
+        if (noNetCannotClick(true)) return;
         IpcSettingDetailActivity_.intent(this)
                 .mDevice(mDevice)
                 .start();
@@ -208,6 +253,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Click(resName = "sil_voice_exception")
     void soundAbnormalDetection() {
+        if (noNetCannotClick(false)) return;
         if (mDetectionConfig == null) {
             return;
         }
@@ -228,6 +274,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Click(resName = "sil_active_exception")
     void activeAbnormalDetection() {
+        if (noNetCannotClick(false)) return;
         if (mDetectionConfig == null) {
             return;
         }
@@ -248,6 +295,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Click(resName = "sil_time_setting")
     void detectionTimeSetting() {
+        if (noNetCannotClick(false)) return;
         if (mDetectionConfig == null) {
             return;
         }
@@ -267,6 +315,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Click(resName = "sil_night_style")
     void nightStyleClick() {
+        if (noNetCannotClick(false)) return;
         IpcSettingNightStyleActivity_.intent(this)
                 .mDevice(mDevice)
                 .nightMode(nightMode)
@@ -285,6 +334,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Click(resName = "sil_ipc_version")
     void versionClick() {
+        if (noNetCannotClick(true)) return;
         IpcSettingVersionActivity_.intent(this)
                 .mResp(mResp)
                 .mDevice(mDevice)
@@ -298,13 +348,21 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             shortTip(R.string.ipc_setting_tip_network_dismatch);
             return;
         }
-        IpcSettingWiFiActivity_.intent(this).mDevice(mDevice).start();
+        IpcSettingWiFiActivity_.intent(this).mDevice(mDevice).startForResult(REQUEST_CODE_WIFI);
+    }
+
+    @OnActivityResult(REQUEST_CODE_WIFI)
+    void onWiFiResult(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            final String ssid = data.getStringExtra("ssid");
+            mWifiName.setRightText(ssid);
+        }
     }
 
     //指示灯
     @CheckedChange(resName = "switch_light")
     void setSwLight(CompoundButton buttonView, boolean isChecked) {
-        LogCat.e(TAG, "66666  22");
+        if (noNetCannotClick(false)) return;
         if (isSetLight == isChecked) {
             return;
         }
@@ -319,6 +377,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     //画面旋转
     @CheckedChange(resName = "switch_view_rotate")
     void setSwRotate(CompoundButton buttonView, boolean isChecked) {
+        if (noNetCannotClick(false)) return;
         if (isSetRotate == isChecked) {
             return;
         }
@@ -331,7 +390,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     }
 
     @Override
-    public int[] getUnStickNotificationId() {
+    public int[] getStickNotificationId() {
         return new int[]{IpcConstants.getIpcConnectApMsg, IpcConstants.getIpcNightIdeRotation,
                 IpcConstants.setIpcNightIdeRotation, IpcConstants.getIpcDetection,
                 IpcConstants.ipcUpgrade};
@@ -346,13 +405,10 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         }
         ResponseBean res = (ResponseBean) args[0];
         if (id == IpcConstants.getIpcConnectApMsg) {
-            LogCat.e(TAG, "1111  11=" + res.getResult());
             getIpcConnectApMsg(res);
         } else if (id == IpcConstants.getIpcNightIdeRotation) {
-            LogCat.e(TAG, "1111 22=" + res.getResult());
             getIpcNightIdeRotation(res);
         } else if (id == IpcConstants.setIpcNightIdeRotation) {
-            LogCat.e(TAG, "1111 33=" + res.getResult());
             setIpcNightIdeRotation(res);
         } else if (id == IpcConstants.getIpcDetection) {
             if (res.getDataErrCode() == 1) {
@@ -362,7 +418,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 shortTip(R.string.toast_network_Exception);
             }
         } else if (id == IpcConstants.ipcUpgrade) {
-            LogCat.e(TAG, "1111 44=" + res.getDataErrCode());
             upgradeResult(res);
         }
     }
@@ -550,7 +605,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 mDevice.getDeviceid(), mResp.getUrl(), mResp.getLatest_bin_version());
         progressDialog = new UpdateProgressDialog.Builder(this)
                 .create();
-        progressDialog.canceledOnTouchOutside(true);
+        progressDialog.canceledOnTouchOutside(false);
         startTimer();
     }
 

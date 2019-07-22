@@ -84,7 +84,7 @@ public class Utility {
         } else {
             router.setHasPwd(true);
         }
-        router.setRssi(ByteUtils.byte4ToInt(bRssi));
+        router.setRssi(ByteUtils.byte4ToIntL(bRssi));
         router.setEssid(bName);
         return router;
     }
@@ -106,13 +106,13 @@ public class Utility {
     /**
      * 命令码06 - 获取打印机wifi列表
      */
-    public static byte[] cmdGetWifi(byte version) {
+    public static byte[] cmdGetWifi() {
         byte[] getWifi = new byte[6];
         byte[] cmdTag = getCmdTag();
         System.arraycopy(cmdTag, 0, getWifi, 0, cmdTag.length);
         byte[] len = ByteUtils.intToByte2(6);
         System.arraycopy(len, 0, getWifi, 2, len.length);
-        getWifi[4] = version;
+        getWifi[4] = btCmdVersion;
         getWifi[5] = 6;
         return getWifi;
     }
@@ -137,7 +137,7 @@ public class Utility {
     }
 
     /**
-     * 命令码 08
+     * 命令码 08 - 收到成功连接上指定AP通知的应答
      */
     public static byte[] cmdAlreadyConnectedWifi() {
         return ByteUtils.byteMergerAll(
@@ -151,6 +151,26 @@ public class Utility {
 //        connectedWifi[4] = version;
 //        connectedWifi[5] = 8;
 //        return connectedWifi;
+    }
+
+    /**
+     * 命令码 0A - 请求退出配网过程
+     */
+    public static byte[] cmdQuitConfig() {
+        return ByteUtils.byteMergerAll(
+                getCmdTag(),
+                ByteUtils.intToByte2(6),
+                getCmd(0x0a));
+    }
+
+    /**
+     * 命令码 0B - 请求删除wifi 配置
+     */
+    public static byte[] cmdDeleteWifiInfo() {
+        return ByteUtils.byteMergerAll(
+                getCmdTag(),
+                ByteUtils.intToByte2(6),
+                getCmd(0x0b));
     }
 
     private static byte[] getCmd(int cmd) {
