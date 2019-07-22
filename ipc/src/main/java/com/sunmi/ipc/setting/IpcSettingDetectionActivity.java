@@ -98,10 +98,10 @@ public class IpcSettingDetectionActivity extends BaseActivity {
     private void initData(int type, DetectionConfig config) {
         if (type == TYPE_SOUND) {
             mEnable = config.soundDetection != 0;
-            mSensitivity = Math.max(0, config.soundDetection - 1);
+            mSensitivity = mEnable ? config.soundDetection - 1 : 1;
         } else if (type == TYPE_ACTIVE) {
             mEnable = config.activeDetection != 0;
-            mSensitivity = Math.max(0, config.activeDetection - 1);
+            mSensitivity = mEnable ? config.activeDetection - 1 : 1;
         }
     }
 
