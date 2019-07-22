@@ -3,11 +3,13 @@ package com.sunmi.ipc.setting;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -165,11 +167,24 @@ public class IpcSettingWiFiActivity extends BaseActivity {
             @Override
             public void convert(ViewHolder holder, final WifiListResp.ScanResultsBean bean) {
                 TextView tvName = holder.getView(R.id.tv_wifi_name);
+                ImageView ivLock = holder.getView(R.id.iv_lock);
                 tvName.setText(bean.getSsid());
+                final boolean isNoneKey = ("NONE".equalsIgnoreCase(bean.getKey_mgmt()));
+                if (isNoneKey) {
+                    ivLock.setVisibility(View.GONE);
+                } else {
+                    ivLock.setVisibility(View.VISIBLE);
+                }
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        inputPasswordDialog(bean.getSsid(), bean.getKey_mgmt());
+                        mSsid = bean.getSsid();
+                        String mgmt = bean.getKey_mgmt();
+                        if (isNoneKey) {
+                            connectWifi(mSsid, mgmt, "NONE");
+                        } else {
+                            inputPasswordDialog(mSsid, mgmt);
+                        }
                     }
                 });
             }
@@ -185,6 +200,10 @@ public class IpcSettingWiFiActivity extends BaseActivity {
         if (TextUtils.equals("1", status)) {
             stopTimer();
             shortTip(R.string.ipc_setting_dialog_wifi_success);
+            Intent intent = getIntent();
+            intent.putExtra("ssid", mSsid);
+            setResult(RESULT_OK, intent);
+            finish();
         } else if (TextUtils.equals("2", status)) {
             stopTimer();
             connectDialogDismiss();
@@ -193,9 +212,9 @@ public class IpcSettingWiFiActivity extends BaseActivity {
     }
 
     //连接wifi
-    private void connectWifi() {
+    private void connectWifi(String ssid, String mgmt, String password) {
         startTimer();
-        IPCCall.getInstance().setIPCWifi(context, mSsid, mMgmt, mPassword, ip);
+        IPCCall.getInstance().setIPCWifi(context, ssid, mgmt, password, ip);
         connectWifiProgress();
     }
 
@@ -217,7 +236,7 @@ public class IpcSettingWiFiActivity extends BaseActivity {
                         mMgmt = mgmt;
                         mPassword = input;
                         dialog.dismiss();
-                        connectWifi();
+                        connectWifi(mSsid, mMgmt, mPassword);
                     }
                 }).create().show();
     }
@@ -251,7 +270,7 @@ public class IpcSettingWiFiActivity extends BaseActivity {
                 .setConfirmButton(R.string.str_retry, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        connectWifi();
+                        connectWifi(mSsid, mMgmt, mPassword);
                     }
                 }).setCancelButton(R.string.str_close).create();
         commonDialog.showWithOutTouchable(false);

@@ -27,8 +27,6 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.nio.charset.Charset;
 import java.util.Objects;
@@ -41,7 +39,6 @@ import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.dialog.InputDialog;
@@ -60,6 +57,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     private static final int REQUEST_CODE_SOUND_DETECTION = 1001;
     private static final int REQUEST_CODE_ACTIVE_DETECTION = 1002;
     private static final int REQUEST_CODE_DETECTION_TIME = 1003;
+    private static final int REQUEST_CODE_WIFI = 1004;
     private static final int REQUEST_COMPLETE = 1000;
     private final int SWITCH_UNCHECK = 0;
     private final int SWITCH_CHECK = 1;
@@ -201,6 +199,21 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         }
     }
 
+    private boolean noNetCannotClick(boolean isOnlyHttp) {
+        if (!NetworkUtils.isNetworkAvailable(context)) {
+            if (isOnlyHttp) {
+                shortTip(R.string.str_net_exception);
+                return true;
+            }
+            SunmiDevice localDevice = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
+            if (localDevice == null) {
+                shortTip(R.string.str_net_exception);
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Click(resName = "btn_refresh")
     void btnRefreshClick() {
         mPresenter.loadConfig(mDevice);
@@ -209,6 +222,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Click(resName = "sil_camera_name")
     void cameraNameClick() {
+        if (noNetCannotClick(true)) return;
         new InputDialog.Builder(this)
                 .setTitle(R.string.ipc_setting_name)
                 .setInitInputContent(mDevice.getName())
@@ -231,6 +245,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Click(resName = "sil_camera_detail")
     void cameraDetailClick() {
+        if (noNetCannotClick(true)) return;
         IpcSettingDetailActivity_.intent(this)
                 .mDevice(mDevice)
                 .start();
@@ -238,6 +253,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Click(resName = "sil_voice_exception")
     void soundAbnormalDetection() {
+        if (noNetCannotClick(false)) return;
         if (mDetectionConfig == null) {
             return;
         }
@@ -258,6 +274,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Click(resName = "sil_active_exception")
     void activeAbnormalDetection() {
+        if (noNetCannotClick(false)) return;
         if (mDetectionConfig == null) {
             return;
         }
@@ -278,6 +295,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Click(resName = "sil_time_setting")
     void detectionTimeSetting() {
+        if (noNetCannotClick(false)) return;
         if (mDetectionConfig == null) {
             return;
         }
@@ -297,6 +315,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Click(resName = "sil_night_style")
     void nightStyleClick() {
+        if (noNetCannotClick(false)) return;
         IpcSettingNightStyleActivity_.intent(this)
                 .mDevice(mDevice)
                 .nightMode(nightMode)
@@ -315,6 +334,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Click(resName = "sil_ipc_version")
     void versionClick() {
+        if (noNetCannotClick(true)) return;
         IpcSettingVersionActivity_.intent(this)
                 .mResp(mResp)
                 .mDevice(mDevice)
@@ -328,13 +348,21 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             shortTip(R.string.ipc_setting_tip_network_dismatch);
             return;
         }
-        IpcSettingWiFiActivity_.intent(this).mDevice(mDevice).start();
+        IpcSettingWiFiActivity_.intent(this).mDevice(mDevice).startForResult(REQUEST_CODE_WIFI);
+    }
+
+    @OnActivityResult(REQUEST_CODE_WIFI)
+    void onWiFiResult(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            final String ssid = data.getStringExtra("ssid");
+            mWifiName.setRightText(ssid);
+        }
     }
 
     //指示灯
     @CheckedChange(resName = "switch_light")
     void setSwLight(CompoundButton buttonView, boolean isChecked) {
-        LogCat.e(TAG, "66666  22");
+        if (noNetCannotClick(false)) return;
         if (isSetLight == isChecked) {
             return;
         }
@@ -349,6 +377,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     //画面旋转
     @CheckedChange(resName = "switch_view_rotate")
     void setSwRotate(CompoundButton buttonView, boolean isChecked) {
+        if (noNetCannotClick(false)) return;
         if (isSetRotate == isChecked) {
             return;
         }
@@ -361,10 +390,10 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     }
 
     @Override
-    public int[] getUnStickNotificationId() {
+    public int[] getStickNotificationId() {
         return new int[]{IpcConstants.getIpcConnectApMsg, IpcConstants.getIpcNightIdeRotation,
                 IpcConstants.setIpcNightIdeRotation, IpcConstants.getIpcDetection,
-                IpcConstants.ipcUpgrade, IpcConstants.getIpcSettingMessage};
+                IpcConstants.ipcUpgrade};
     }
 
     @Override
@@ -377,49 +406,20 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         ResponseBean res = (ResponseBean) args[0];
         if (id == IpcConstants.getIpcConnectApMsg) {
             getIpcConnectApMsg(res);
+        } else if (id == IpcConstants.getIpcNightIdeRotation) {
+            getIpcNightIdeRotation(res);
         } else if (id == IpcConstants.setIpcNightIdeRotation) {
             setIpcNightIdeRotation(res);
+        } else if (id == IpcConstants.getIpcDetection) {
+            if (res.getDataErrCode() == 1) {
+                mDetectionConfig = new Gson().fromJson(res.getResult().toString(), DetectionConfig.class);
+                updateDetectionView();
+            } else {
+                shortTip(R.string.toast_network_Exception);
+            }
         } else if (id == IpcConstants.ipcUpgrade) {
             upgradeResult(res);
-        } else if (id == IpcConstants.getIpcSettingMessage) {
-            getIpcSettingMessage(res);
         }
-    }
-
-    /**
-     * led_indicator :   0:关闭/1:开启
-     * night_mode :   夜视模式 0:始终关闭/1:始终开启/2:自动切换
-     * rotation :   0:关闭/1:开启
-     *
-     * @param res
-     */
-    @UiThread
-    void getIpcSettingMessage(ResponseBean res) {
-        try {
-            if (res.getDataErrCode() == 1) {
-                netExceptionView(false);
-                //IPC声音侦测和动态侦测相关配置信息
-                JSONObject detectionJson = res.getJsonArray().getJSONObject(0).getJSONObject("result");
-                mDetectionConfig = new Gson().fromJson(detectionJson.toString(), DetectionConfig.class);
-                updateDetectionView();
-                //夜视模式 指示灯 旋转信息
-                JSONObject nightIdeRotationJson = res.getJsonArray().getJSONObject(1).getJSONObject("result");
-                IpcNightModeResp resp = new GsonBuilder().create().fromJson(nightIdeRotationJson.toString(), IpcNightModeResp.class);
-                nightMode = resp.getNight_mode();
-                ledIndicator = resp.getLed_indicator();
-                rotation = resp.getRotation();
-                mNightStyle.setRightText(nightMode(nightMode));
-                isSetLight = ledIndicator != 0;
-                swLight.setChecked(isSetLight);
-                isSetRotate = rotation != 0;
-                swRotate.setChecked(isSetRotate);
-            } else {
-                netExceptionView(true);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
     }
 
     private void updateDetectionView() {
@@ -507,6 +507,28 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             shortTip(R.string.tip_set_fail);
             setIpcNightIdeRotationFail();
         }
+    }
+
+    /**
+     * led_indicator :   0:关闭/1:开启
+     * night_mode :   夜视模式 0:始终关闭/1:始终开启/2:自动切换
+     * rotation :   0:关闭/1:开启
+     */
+    @UiThread
+    void getIpcNightIdeRotation(ResponseBean res) {
+        if (res.getResult() == null) {
+            return;
+        }
+        IpcNightModeResp resp = new GsonBuilder().create().fromJson(res.getResult().toString(), IpcNightModeResp.class);
+        nightMode = resp.getNight_mode();
+        ledIndicator = resp.getLed_indicator();
+        rotation = resp.getRotation();
+        mNightStyle.setRightText(nightMode(nightMode));
+
+        isSetLight = ledIndicator != 0;
+        swLight.setChecked(isSetLight);
+        isSetRotate = rotation != 0;
+        swRotate.setChecked(isSetRotate);
     }
 
     @UiThread

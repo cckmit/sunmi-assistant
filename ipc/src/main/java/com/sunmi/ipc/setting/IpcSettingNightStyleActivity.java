@@ -1,7 +1,6 @@
 package com.sunmi.ipc.setting;
 
 import android.content.Intent;
-import android.text.TextUtils;
 import android.view.View;
 
 import com.sunmi.ipc.R;
@@ -122,7 +121,7 @@ public class IpcSettingNightStyleActivity extends BaseMvpActivity<IpcSettingNigh
     }
 
     @Override
-    public int[] getUnStickNotificationId() {
+    public int[] getStickNotificationId() {
         return new int[]{IpcConstants.setIpcNightIdeRotation};
     }
 
@@ -140,8 +139,10 @@ public class IpcSettingNightStyleActivity extends BaseMvpActivity<IpcSettingNigh
     //led_indicator   rotation设置结果
     @UiThread
     void setIpcNightIdeRotation(ResponseBean res) {
-        if (TextUtils.isEmpty(res.getResult().toString())) return;
-        if (TextUtils.equals("1", res.getErrCode())) {
+        if (res.getResult() == null) {
+            return;
+        }
+        if (res.getDataErrCode() == 1) {
             shortTip(R.string.tip_set_complete);
         } else {
             shortTip(R.string.tip_set_fail);
