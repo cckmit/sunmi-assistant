@@ -87,8 +87,10 @@ public class IpcSettingDetectionActivity extends BaseActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int sensitivity = seekBar.getProgress();
-                mSensitivity = sensitivity;
-                setSensitivity(sensitivity);
+                if (mSensitivity != sensitivity) {
+                    mSensitivity = sensitivity;
+                    setSensitivity(sensitivity);
+                }
             }
         });
     }
