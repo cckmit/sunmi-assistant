@@ -26,6 +26,7 @@ import com.sunmi.cloudprinter.ui.adaper.RouterListAdapter;
 import com.sunmi.cloudprinter.utils.Utility;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
@@ -53,7 +54,7 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
     @ViewById(resName = "title_bar")
     TitleBarView titleBar;
     @ViewById(resName = "tv_top")
-    TextView tvAddPrinter;
+    TextView tvConnectWifi;
     @ViewById(resName = "nsv_router")
     NestedScrollView nsvRouter;
     @ViewById(resName = "rv_router")
@@ -75,7 +76,7 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
     private SunmiPrinterClient printerClient;
     private Dialog passwordDialog;
 
-    private List<Router> routers = new ArrayList<>();
+    private List<Router> wifiList = new ArrayList<>();
     private RouterListAdapter adapter;
 
     @AfterViews
@@ -128,6 +129,15 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
         tvSkip.setText(builder);
     }
 
+    @Click(resName = {"btn_refresh", "btn_retry"})
+    void refreshClick() {
+        rlNoWifi.setVisibility(View.GONE);
+        rlLoading.setVisibility(View.VISIBLE);
+        tvConnectWifi.setVisibility(View.VISIBLE);
+        nsvRouter.setVisibility(View.VISIBLE);
+
+    }
+
     @Override
     public void onBackPressed() {
         if (printerClient != null) {
@@ -139,7 +149,7 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
     protected void onResume() {
         super.onResume();
         rvRouter.init(R.drawable.shap_line_divider);
-        adapter = new RouterListAdapter(routers);
+        adapter = new RouterListAdapter(wifiList);
         adapter.setOnItemClickListener(new RouterListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, List<Router> data) {
@@ -172,9 +182,16 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
 
     }
 
+    @UiThread
     @Override
-    public void onGetWifiListSuccess() {
-
+    public void onGetWifiListFinish() {
+        if (wifiList.size() > 0) {
+            rlLoading.setVisibility(View.GONE);
+        } else {
+            rlNoWifi.setVisibility(View.VISIBLE);
+            tvConnectWifi.setVisibility(View.GONE);
+            nsvRouter.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -205,7 +222,7 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
     @UiThread
     @Override
     public void routerFound(Router router) {
-        routers.add(router);
+        wifiList.add(router);
         adapter.notifyDataSetChanged();
     }
 

@@ -62,31 +62,13 @@ public class PrinterSearchActivity extends BaseActivity//BaseMvpActivity<BtBlePr
     private SunmiPrinterClient sunmiPrinterClient;
 
     private boolean isSnGot;
-    //蓝牙adapter
-//    private BluetoothAdapter btAdapter;
 
-    private Handler mHandler = new Handler();
-    //    private BluetoothClient mClient;
     String bleAddress;
     String sn;
 
-    private Runnable scanStart = new Runnable() {
-        @Override
-        public void run() {
-//            if (btAdapter.getState() == BluetoothAdapter.STATE_ON) {
-//                startScan();
-//            } else {
-//                mHandler.postDelayed(this, 1000);
-//            }
-        }
-    };
-
     @AfterViews
     protected void init() {
-//        mPresenter = new BtBlePresenter();
-//        mPresenter.attachView(this);
         StatusBarUtils.StatusBarLightMode(this);//状态栏
-//        mClient = new BluetoothClient(context);
         sunmiPrinterClient = new SunmiPrinterClient(context, bleAddress, this);
         initList();
     }
@@ -126,72 +108,15 @@ public class PrinterSearchActivity extends BaseActivity//BaseMvpActivity<BtBlePr
         initBt();
     }
 
-//    @Override
-//    public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-//        if (scanRecord.length > 11) {
-//            addDevice(device);
-//        }
-//        if (btAdapter.getState() == BluetoothAdapter.STATE_OFF) {
-//            btAdapter.enable();
-//        }
-//    }
-
     @Override
     public void onItemClick(final PrinterDevice printerDevice) {
         showLoadingDialog();
         stopScan();
         bleAddress = printerDevice.getAddress();
         sunmiPrinterClient.getPrinterSn(bleAddress);
-//        mPresenter.sendData(mClient, bleAddress, Utility.cmdGetSn());
     }
 
-//    @Override
-//    public void bindSuccess(int code, String msg, String data) {
-//        gotoPrinterSet();
-//    }
-//
-//    @Override
-//    public void bindFail(int code, String msg, String data) {
-//        if (code == 4402) {
-//            shortTip(R.string.tip_printer_already_bound);
-//            gotoPrinterSet();
-//        } else {
-//            shortTip(R.string.tip_printer_bind_fail);
-//        }
-//    }
-
-//    @Override
-//    public void onResponse(byte[] value) {
-//        int cmd = Utility.getCmd(value);
-//        if (cmd == Constants.SRV2CLI_SEND_SN) {
-//            sn = Utility.getSn(value);
-//            LogCat.e(TAG, "getsn = " + sn);//N302D94D40068 N302D94D46666
-//            mPresenter.bindPrinter(shopId, sn);
-//        }
-//    }
-
     private void initBt() {
-//        final BluetoothManager bluetoothManager =
-//                (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-//        btAdapter = bluetoothManager.getAdapter();
-//        if (btAdapter.getState() == BluetoothAdapter.STATE_OFF) {
-//            new CommonDialog.Builder(this).setTitle(R.string.str_prompt)
-//                    .setMessage(R.string.str_tip_start_blue)
-//                    .setCancelButton(R.string.sm_cancel, new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            dialog.dismiss();
-//                            finish();
-//                        }
-//                    }).setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                    btAdapter.enable();
-//                    mHandler.post(scanStart);
-//                }
-//            }).create().show();
-//        }
-//        startScan();
         sunmiPrinterClient = new SunmiPrinterClient(context, bleAddress, this);
         startScan();
     }
@@ -202,19 +127,6 @@ public class PrinterSearchActivity extends BaseActivity//BaseMvpActivity<BtBlePr
         printerAdapter.setListener(this);
         rvResult.setAdapter(printerAdapter);
     }
-
-//    private void addDevice(BluetoothDevice device) {
-//        if (!macSet.contains(device.getAddress()) && !TextUtils.isEmpty(device.getName())) {
-//            if (device.getName().startsWith("cloudprint_")
-//                    || device.getName().startsWith("CloudPrint_")) {
-//                macSet.add(device.getAddress());
-//                PrinterDevice bleDevice = new PrinterDevice();
-//                bleDevice.setAddress(device.getAddress());
-//                bleDevice.setName(device.getName());
-//                listAdd(bleDevice);
-//            }
-//        }
-//    }
 
     @UiThread
     void addDevice(PrinterDevice bleDevice) {
@@ -227,9 +139,6 @@ public class PrinterSearchActivity extends BaseActivity//BaseMvpActivity<BtBlePr
         list.clear();
         macSet.clear();
         printerAdapter.notifyDataSetChanged();
-//        if (btAdapter != null) {
-//            btAdapter.startLeScan(this);
-//        }
         sunmiPrinterClient.startScan();
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -248,14 +157,7 @@ public class PrinterSearchActivity extends BaseActivity//BaseMvpActivity<BtBlePr
     }
 
     private void stopScan() {
-//        if (btAdapter != null) {
-//            btAdapter.stopLeScan(this);
-//        }
         sunmiPrinterClient.stopScan();
-    }
-
-    private void gotoPrinterSet() {
-        WifiConfigActivity_.intent(context).sn(sn).bleAddress(bleAddress).start();
     }
 
     @Override
@@ -277,7 +179,7 @@ public class PrinterSearchActivity extends BaseActivity//BaseMvpActivity<BtBlePr
     }
 
     @Override
-    public void onGetWifiListSuccess() {
+    public void onGetWifiListFinish() {
 
     }
 
@@ -315,8 +217,6 @@ public class PrinterSearchActivity extends BaseActivity//BaseMvpActivity<BtBlePr
             shortTip(R.string.tip_bind_printer_fail);
         }
         //该打印机已被182XXXX9876账号绑定，请解绑后配置。
-        //
-        //
     }
 
     @Override
@@ -329,6 +229,11 @@ public class PrinterSearchActivity extends BaseActivity//BaseMvpActivity<BtBlePr
                 .setTitle(R.string.sm_title_hint)
                 .setMessage(msgResId)
                 .setConfirmButton(R.string.str_confirm).create().show();
+    }
+
+    private void gotoPrinterSet() {
+        finish();
+        WifiConfigActivity_.intent(context).sn(sn).bleAddress(bleAddress).start();
     }
 
 }
