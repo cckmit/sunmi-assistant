@@ -81,29 +81,18 @@
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
-    <LinearLayout
+
+    <TextView
+        android:id="@+id/tv_skip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/dp_32"
-        android:orientation="horizontal">
+        android:text="@string/tip_use_2g"
+        android:textColor="@color/color_999999"
+        android:textSize="@dimen/sp_14" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tip_use_2g"
-            android:textColor="@color/color_999999"
-            android:textSize="@dimen/sp_14" />
-
-        <TextView
-            android:id="@+id/tv_skip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/str_skip"
-            android:textColor="@color/c_text_blue"
-            android:textSize="@dimen/sp_14" />
-    </LinearLayout>
 
     <include
         layout="@layout/include_no_wifi_found"

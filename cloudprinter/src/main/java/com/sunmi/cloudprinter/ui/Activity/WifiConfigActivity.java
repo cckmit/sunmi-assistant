@@ -2,8 +2,15 @@ package com.sunmi.cloudprinter.ui.Activity;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -19,7 +26,6 @@ import com.sunmi.cloudprinter.ui.adaper.RouterListAdapter;
 import com.sunmi.cloudprinter.utils.Utility;
 
 import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
@@ -58,6 +64,8 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
     RelativeLayout rlLoading;
     @ViewById(resName = "btn_refresh")
     Button btnRefresh;
+    @ViewById(resName = "tv_skip")
+    TextView tvSkip;
 
     @Extra
     String bleAddress;
@@ -73,6 +81,7 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
     @AfterViews
     protected void init() {
         StatusBarUtils.StatusBarLightMode(this);//状态栏
+        initTvSkip();
         titleBar.getLeftLayout().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,9 +100,32 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
         printerClient.getPrinterWifiList(bleAddress);
     }
 
-    @Click(resName = "tv_skip")
-    void skipClick() {
-        confirmSkipDialog();
+    private void initTvSkip() {
+        int len;
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        builder.append(tvSkip.getText());
+        len = builder.length();
+        String skip = getString(R.string.str_skip);
+        builder.append(skip);
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                confirmSkipDialog();
+            }
+
+            @Override
+            public void updateDrawState( TextPaint ds) {
+                ds.setUnderlineText(false);
+                tvSkip.postInvalidate();
+            }
+        };
+        builder.setSpan(clickableSpan, len, len + skip.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tvSkip.setText(builder);
+        builder.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.c_text_blue)),
+                len, len + skip.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tvSkip.setText(builder);
+        tvSkip.setMovementMethod(LinkMovementMethod.getInstance());
+        tvSkip.setText(builder);
     }
 
     @Override
