@@ -281,9 +281,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     @Override
     public void onDeviceClick(SunmiDevice device) {
         if (isFastClick(1500)) return;
-        if (device.getStatus() == DeviceStatus.OFFLINE.ordinal()
-                || device.getStatus() == DeviceStatus.UNKNOWN.ordinal()) {
-            shortTip(getString(R.string.str_cannot_manager_device));
+        if (cannotManagerDevice(device)) {
             return;
         }
         clickedDevice = device;
@@ -310,11 +308,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @Override
     public void onMoreClick(SunmiDevice item, int position) {
-        if (item.getStatus() == DeviceStatus.UNKNOWN.ordinal()
-                || item.getStatus() == DeviceStatus.OFFLINE.ordinal()) {
-            shortTip(getString(R.string.str_cannot_manager_device));
-            return;
-        }
         if (deviceSettingDialog != null) {
             deviceSettingDialog.dismiss();
             deviceSettingDialog = null;
@@ -326,13 +319,28 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         }
     }
 
+    private boolean cannotManagerDevice(SunmiDevice device) {
+        if (device.getStatus() == DeviceStatus.UNKNOWN.ordinal()
+                || device.getStatus() == DeviceStatus.OFFLINE.ordinal()) {
+            shortTip(getString(R.string.str_cannot_manager_device));
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void onSettingsClick(SunmiDevice device, int type) {
         if (type == 0) {
+            if (cannotManagerDevice(device)) {
+                return;
+            }
             onDeviceClick(device);
         } else if (type == 1) {
             deleteDevice(device);
         } else if (type == 2) {
+            if (cannotManagerDevice(device)) {
+                return;
+            }
             IpcSettingActivity_.intent(mActivity).mDevice(device).start();
         }
     }
