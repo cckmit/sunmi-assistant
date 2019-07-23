@@ -51,6 +51,8 @@ public class IpcSettingWiFiActivity extends BaseActivity {
     TextView tvStatus;
     @ViewById(resName = "recyclerView")
     RecyclerView recyclerView;
+    @ViewById(resName = "iv_lock")
+    ImageView ivLock;
 
     @Extra
     SunmiDevice mDevice;
@@ -152,14 +154,23 @@ public class IpcSettingWiFiActivity extends BaseActivity {
 
     @UiThread
     void getIpcConnectApMsg(ResponseBean res) {
-        if (TextUtils.isEmpty(res.getResult().toString())) return;
+        if (res.getResult() == null) {
+            return;
+        }
         IpcConnectApResp device = new GsonBuilder().create().fromJson(res.getResult().toString(), IpcConnectApResp.class);
         tvWifiNme.setText(device.getWireless().getSsid());
+        if ("NONE".equalsIgnoreCase(device.getWireless().getKey_mgmt())) {
+            ivLock.setVisibility(View.GONE);
+        } else {
+            ivLock.setVisibility(View.VISIBLE);
+        }
     }
 
     @UiThread
     void getWifiList(ResponseBean res) {
-        if (TextUtils.isEmpty(res.getResult().toString())) return;
+        if (res.getResult() == null) {
+            return;
+        }
         tvStatus.setText(R.string.ipc_setting_tip_wifi_choose);
         WifiListResp bean = new Gson().fromJson(res.getResult().toString(), WifiListResp.class);
         recyclerView.setAdapter(new CommonListAdapter<WifiListResp.ScanResultsBean>(context,
@@ -194,7 +205,9 @@ public class IpcSettingWiFiActivity extends BaseActivity {
     @UiThread
     void queryConnectStatus(ResponseBean res) {
         //0:正在关联。1：关联成功。2：关联失败
-        if (TextUtils.isEmpty(res.getResult().toString())) return;
+        if (res.getResult() == null) {
+            return;
+        }
         IpcConnectStatusResp bean = new Gson().fromJson(res.getResult().toString(), IpcConnectStatusResp.class);
         String status = bean.getWireless().getConnect_status();
         if (TextUtils.equals("1", status)) {

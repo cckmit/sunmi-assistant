@@ -38,8 +38,8 @@ import com.sunmi.assistant.ui.MainTopBar;
 import com.sunmi.assistant.ui.adapter.DeviceListAdapter;
 import com.sunmi.assistant.utils.GlideImageLoader;
 import com.sunmi.cloudprinter.ui.Activity.PrinterManageActivity_;
-import com.sunmi.ipc.setting.IpcSettingActivity_;
 import com.sunmi.ipc.rpc.IpcConstants;
+import com.sunmi.ipc.setting.IpcSettingActivity_;
 import com.sunmi.ipc.view.VideoPlayActivity_;
 import com.sunmi.sunmiservice.WebViewActivity_;
 import com.youth.banner.Banner;
@@ -281,14 +281,13 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     @Override
     public void onDeviceClick(SunmiDevice device) {
         if (isFastClick(1500)) return;
+        if (device.getStatus() == DeviceStatus.OFFLINE.ordinal()
+                || device.getStatus() == DeviceStatus.UNKNOWN.ordinal()) {
+            shortTip(getString(R.string.str_cannot_manager_device));
+            return;
+        }
         clickedDevice = device;
         if (TextUtils.equals(device.getType(), "ROUTER")) {
-
-            if (device.getStatus() == DeviceStatus.OFFLINE.ordinal()
-                    || device.getStatus() == DeviceStatus.UNKNOWN.ordinal()) {
-                shortTip(getString(R.string.str_cannot_manager_ap));
-                return;
-            }
             showLoadingDialog();
             //校验ap是已初始化配置
             if (TextUtils.equals(device.getDeviceid(), MyNetworkCallback.CURRENT_ROUTER)) {
@@ -311,6 +310,11 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @Override
     public void onMoreClick(SunmiDevice item, int position) {
+        if (item.getStatus() == DeviceStatus.UNKNOWN.ordinal()
+                || item.getStatus() == DeviceStatus.OFFLINE.ordinal()) {
+            shortTip(getString(R.string.str_cannot_manager_device));
+            return;
+        }
         if (deviceSettingDialog != null) {
             deviceSettingDialog.dismiss();
             deviceSettingDialog = null;

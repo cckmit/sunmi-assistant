@@ -78,5 +78,6 @@
     <string name="str_setting_detail">查看详情</string>
     <string name="str_setting_delete_device">删除设备</string>
     <string name="str_cloud_printer">云打印机</string>
+    <string name="str_cannot_manager_device">当前无法管理设备</string>
 
 </resources>
