@@ -5,10 +5,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -159,6 +161,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         mPresenter.loadConfig(mDevice);
         mPresenter.currentVersion();
         mNameView.setRightText(mDevice.getName());
+        TextView tvName = mNameView.getRightText();
+        tvName.setSingleLine();
+        tvName.setEllipsize(TextUtils.TruncateAt.END);
         if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
             mWifiName.setLeftTextColor(ContextCompat.getColor(this, R.color.colorText_40));
         }
@@ -232,7 +237,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Click(resName = "sil_camera_name")
     void cameraNameClick() {
-        if (noNetCannotClick(true)) return;
+        if (noNetCannotClick(true)) {
+            return;
+        }
         new InputDialog.Builder(this)
                 .setTitle(R.string.ipc_setting_name)
                 .setInitInputContent(mDevice.getName())
@@ -242,6 +249,10 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                     public void onConfirmClick(InputDialog dialog, String input) {
                         if (input.trim().getBytes(Charset.defaultCharset()).length > IPC_NAME_MAX_LENGTH) {
                             shortTip(R.string.ipc_setting_tip_name_length);
+                            return;
+                        }
+                        if (input.trim().length() == 0) {
+                            shortTip(R.string.ipc_setting_tip_name_empty);
                             return;
                         }
                         showLoadingDialog();
