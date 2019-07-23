@@ -23,7 +23,6 @@ import com.sunmi.cloudprinter.bean.Router;
 import com.sunmi.cloudprinter.constant.Constants;
 import com.sunmi.cloudprinter.presenter.SunmiPrinterClient;
 import com.sunmi.cloudprinter.ui.adaper.RouterListAdapter;
-import com.sunmi.cloudprinter.utils.Utility;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -93,7 +92,7 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
             @Override
             public void onClick(View v) {
                 if (printerClient != null) {
-                    printerClient.sendData(bleAddress, Utility.cmdDeleteWifiInfo());
+                    printerClient.deleteWifiInfo(bleAddress);
                 }
             }
         });
@@ -115,7 +114,7 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
             }
 
             @Override
-            public void updateDrawState( TextPaint ds) {
+            public void updateDrawState(TextPaint ds) {
                 ds.setUnderlineText(false);
                 tvSkip.postInvalidate();
             }
@@ -135,14 +134,14 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
         rlLoading.setVisibility(View.VISIBLE);
         tvConnectWifi.setVisibility(View.VISIBLE);
         nsvRouter.setVisibility(View.VISIBLE);
-
     }
 
     @Override
     public void onBackPressed() {
         if (printerClient != null) {
-            printerClient.sendData(bleAddress, Utility.cmdQuitConfig());
+            printerClient.quitConfig(bleAddress);
         }
+        finish();
     }
 
     @Override
@@ -178,6 +177,11 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
     }
 
     @Override
+    public void getSnRequestSuccess() {
+
+    }
+
+    @Override
     public void onSnReceived(String sn) {
 
     }
@@ -196,7 +200,9 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
 
     @Override
     public void onGetWifiListFail() {
-
+        rlNoWifi.setVisibility(View.VISIBLE);
+        tvConnectWifi.setVisibility(View.GONE);
+        nsvRouter.setVisibility(View.GONE);
     }
 
     @Override
@@ -206,7 +212,11 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
 
     @Override
     public void wifiConfigSuccess() {
-
+        hideLoadingDialog();
+        if (passwordDialog != null)
+            passwordDialog.dismiss();
+        GotoActivityUtils.gotoMainActivity(context);
+        BaseNotification.newInstance().postNotificationName(Constants.NOTIFICATION_PRINTER_ADDED);
     }
 
     @Override
@@ -224,14 +234,6 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
     public void routerFound(Router router) {
         wifiList.add(router);
         adapter.notifyDataSetChanged();
-    }
-
-    public void wifiSetSuccess() {
-        hideLoadingDialog();
-        if (passwordDialog != null)
-            passwordDialog.dismiss();
-        GotoActivityUtils.gotoMainActivity(context);
-        BaseNotification.newInstance().postNotificationName(Constants.NOTIFICATION_PRINTER_ADDED);
     }
 
     private void showMessageDialog(final Router router) {
@@ -288,8 +290,9 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 if (printerClient != null) {
-                                    printerClient.sendData(bleAddress, Utility.cmdDeleteWifiInfo());
+                                    printerClient.deleteWifiInfo(bleAddress);
                                 }
+                                finish();
                             }
                         }).create().show();
     }

@@ -174,7 +174,20 @@ public class PrinterSearchActivity extends BaseActivity//BaseMvpActivity<BtBlePr
     }
 
     @Override
+    public void getSnRequestSuccess() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (!isSnGot) {
+                    showErrorDialog(R.string.tip_get_printer_info_fail);
+                }
+            }
+        }, 10_000);
+    }
+
+    @Override
     public void onSnReceived(String sn) {
+        isSnGot = true;
         sunmiPrinterClient.bindPrinter(shopId, sn);
     }
 
@@ -205,18 +218,18 @@ public class PrinterSearchActivity extends BaseActivity//BaseMvpActivity<BtBlePr
 
     @Override
     public void bindPrinterFail(int code, String msg, String data) {
-        if (code == 4402) {//todo 被自己绑定和被别人绑定都是4402，需要iot区分
-//            showErrorDialog(R.string.tip_printer_already_bound);
-            gotoPrinterSet();
-        } else if (code == 4400) {
+        if (code == 4400) {
             showErrorDialog(R.string.tip_error_sn);
+        } else if (code == 4401) {
+            showErrorDialog(R.string.tip_printer_already_bound);
+        } else if (code == 4402) {
+            gotoPrinterSet();
         } else if (code == RpcErrorCode.RPC_COMMON_ERROR
                 || code == RpcErrorCode.RPC_ERR_TIMEOUT) {
             showErrorDialog(R.string.tip_bind_printer_error_no_net);
         } else {
             shortTip(R.string.tip_bind_printer_fail);
         }
-        //该打印机已被182XXXX9876账号绑定，请解绑后配置。
     }
 
     @Override
@@ -232,8 +245,8 @@ public class PrinterSearchActivity extends BaseActivity//BaseMvpActivity<BtBlePr
     }
 
     private void gotoPrinterSet() {
-        finish();
         WifiConfigActivity_.intent(context).sn(sn).bleAddress(bleAddress).start();
+        finish();
     }
 
 }

@@ -15,7 +15,7 @@
     <string name="tip_title_add_printer">选择要添加的云打印机</string>
     <string name="tip_no_printer_found">没有发现云打印机</string>
     <string name="hint_retry_scan_printer">未发现打印机设备，请确认是否已长按匹配按钮，并刷新重试。（请确保手机蓝牙处于打开状态；并保证app定位授权打开</string>
-    <string name="tip_printer_already_bound">已经被绑定无须重新绑定</string>
+    <string name="tip_printer_already_bound">该打印机已被其他账号绑定，请解绑后配置。</string>
     <string name="tip_printer_bind_fail">设备蓝牙连接失败</string>
     <string name="tip_choose_connect_wifi">选择需要连接的WI-FI</string>
     <string name="tip_use_2g">使用2G网络通讯，</string>
@@ -31,4 +31,5 @@
     <string name="tip_config_fail">配置失败，请重试</string>
     <string name="str_msg_clear_wifi_config">清除设备WiFi连接信息，并使用2G网络通信。</string>
     <string name="tip_bind_printer_fail">绑定失败</string>
+    <string name="tip_get_printer_info_fail">获取打印机信息失败，请重新连接。</string>
 </resources>

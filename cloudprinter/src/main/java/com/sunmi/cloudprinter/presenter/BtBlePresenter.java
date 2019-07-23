@@ -158,23 +158,4 @@ public class BtBlePresenter extends BasePresenter<BtBleContract.View>
         }
     }
 
-//    private void onResponse(byte[] value) {
-//        int cmd = Utility.getCmd(value);
-//        if (cmd == Constants.SRV2CLI_SEND_SN) {
-////            mView.setSn(Utility.getSn(value));
-////            mView.onSendMessage(Utility.cmdGetWifi((byte) 100));
-//        } else if (cmd == Constants.SRV2CLI_SEND_WIFI_ERROR) {
-//            mView.shortTip(R.string.str_get_wifi_msg_error);
-//        } else if (cmd == Constants.SRV2CLI_SEND_WIFI_AP) {
-//            Router router = Utility.getRouter(value);
-////            mView.initRouter(router);
-//        } else if (cmd == Constants.SRV2CLI_SEND_WIFI_AP_COMPLETELY) {
-//            mView.shortTip(R.string.str_wifi_msg_completely);
-//            mView.hideLoadingDialog();
-//        } else if (cmd == Constants.SRV2CLI_SEND_ALREADY_CONNECTED_WIFI) {
-////            mView.wifiSetSuccess();
-////            mView.onSendMessage(Utility.cmdAlreadyConnectedWifi());
-//        }
-//    }
-
 }
