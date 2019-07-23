@@ -105,7 +105,7 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
         SpannableStringBuilder builder = new SpannableStringBuilder();
         builder.append(tvSkip.getText());
         len = builder.length();
-        String skip = getString(R.string.str_skip);
+        String skip = getString(R.string.click_skip);
         builder.append(skip);
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override

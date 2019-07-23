@@ -47,6 +47,7 @@ public class IOTCloudApi extends BaseHttpApi {
                     .put("userId", SpUtils.getUID())
                     .put("merchantId", shopId)
                     .put("sn", sn)
+                    .put("channelId", 1)
                     .put("token", SafeUtils.md5(SpUtils.getUID()))
                     .toString();
             post(MerchantInterface.UNBIND_PRINTER, getSignedParams(params), callback);
@@ -63,6 +64,7 @@ public class IOTCloudApi extends BaseHttpApi {
             String params = new JSONObject()
                     .put("userId", SpUtils.getUID())
                     .put("merchantId", shopId)
+                    .put("channelId", 1)
                     .put("token", SafeUtils.md5(SpUtils.getUID()))
                     .toString();
             post(MerchantInterface.GET_PRINTER_LIST, getSignedParams(params), callback);

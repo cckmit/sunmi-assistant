@@ -46,6 +46,7 @@ public class IPCListAdapter extends RecyclerView.Adapter<IPCListAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         holder.itemView.setTag(position);
         holder.checkBox.setChecked(true);
+        holder.checkBox.setEnabled(data.size() != 1);
         holder.ivDevice.setImageResource(DeviceTypeUtils.getInstance()
                 .getSunmiDeviceImage(data.get(position).getModel()));
         holder.tvName.setText(data.get(position).getModel());
@@ -76,12 +77,8 @@ public class IPCListAdapter extends RecyclerView.Adapter<IPCListAdapter.ViewHold
             tvName = view.findViewById(R.id.tv_name);
             tvSn = view.findViewById(R.id.tv_sn);
             checkBox = view.findViewById(R.id.cb_item);
-            if (data.size() == 1) {
-                checkBox.setEnabled(false);
-            } else {
-                checkBox.setEnabled(true);
-                checkBox.setOnCheckedChangeListener(this);
-            }
+            checkBox.setEnabled(true);
+            checkBox.setOnCheckedChangeListener(this);
         }
 
         @Override
