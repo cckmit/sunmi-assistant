@@ -23,6 +23,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.StatusBarUtils;
@@ -121,7 +122,7 @@ public class IpcSettingVersionActivity extends BaseMvpActivity<IpcSettingVersion
      */
     @Click(resName = "btn_upgrade")
     void upgrade() {
-        upgrading();
+        newVersionDialog();
     }
 
 
@@ -159,6 +160,26 @@ public class IpcSettingVersionActivity extends BaseMvpActivity<IpcSettingVersion
         } else {
             upgradeVerFailDialog(mResp.getLatest_bin_version());
         }
+    }
+
+    /**
+     * 有新版本
+     */
+    private void newVersionDialog() {
+        SunmiDevice bean = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
+        CommonDialog commonDialog = new CommonDialog.Builder(this)
+                .setTitle(R.string.ipc_setting_dialog_upgrade)
+                .setMessage(getString(R.string.ipc_setting_version_current, bean != null ?
+                        bean.getFirmware() : "") + "\n" +
+                        getString(R.string.ipc_setting_dialog_upgrade_download_time))
+                .setConfirmButton(R.string.ipc_setting_dialog_upgrade_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        upgrading();
+                    }
+                })
+                .setCancelButton(R.string.ipc_setting_dialog_upgrade_cancel).create();
+        commonDialog.showWithOutTouchable(false);
     }
 
     /**

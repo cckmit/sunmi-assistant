@@ -69,6 +69,7 @@ public class UpdateProgressDialog extends Dialog {
 
             dialog.setContentView(layout);
             dialog.setCanceledOnTouchOutside(false);
+            dialog.setCancelable(false);
             return dialog;
         }
     }
