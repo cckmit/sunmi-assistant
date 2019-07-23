@@ -3,33 +3,31 @@ package com.sunmi.assistant.dashboard.card;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.IdRes;
-import android.util.Log;
+import android.support.annotation.NonNull;
 
 import com.sunmi.assistant.dashboard.DashboardContract;
 
 import java.text.DecimalFormat;
 
-import sunmi.common.base.recycle.BaseArrayAdapter;
 import sunmi.common.base.recycle.BaseRecyclerAdapter;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
-import sunmi.common.base.recycle.listener.OnItemClickListener;
-import sunmi.common.base.recycle.listener.OnItemLongClickListener;
-import sunmi.common.base.recycle.listener.OnViewClickListener;
-import sunmi.common.base.recycle.listener.OnViewLongClickListener;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.log.LogCat;
 
-public abstract class BaseRefreshCard<Model> {
+/**
+ * @author yinhui
+ * @date 2019-07-22
+ */
+public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, Resp>
+        extends ItemType<Model, BaseViewHolder<Model>> {
 
     protected final String TAG = this.getClass().getSimpleName();
 
     private static final int STATE_INIT = 0;
-    private static final int STATE_FIRST_LOADING = 1;
-    private static final int STATE_LOADING = 10;
-    private static final int STATE_SUCCESS = 11;
-    private static final int STATE_FAILED = 12;
+    private static final int STATE_LOADING = 1;
+    private static final int STATE_SUCCESS = 10;
+    private static final int STATE_FAILED = 11;
 
     protected static final String DATA_NONE = "--";
     protected static final String DATA_ZERO = "0";
@@ -37,85 +35,44 @@ public abstract class BaseRefreshCard<Model> {
     protected static final String FORMAT_FLOAT_DOUBLE_DECIMAL = "%.2f";
     protected static final DecimalFormat FORMAT_MAX_DOUBLE_DECIMAL = new DecimalFormat("#.##");
 
-    private Context mContext;
+    protected Context mContext;
+    protected DashboardContract.Presenter mPresenter;
+
     private Handler mHandler = new Handler(Looper.getMainLooper());
+    private CardCallback mCallback = new CardCallback();
+
+    private BaseRecyclerAdapter<Object> mAdapter;
+    private int mPosition;
 
     private Model mModel;
-    private ItemType<Model, BaseViewHolder<Model>> mType;
-
-    private BaseArrayAdapter<Object> mAdapter;
-    private int mPosition;
 
     private int mCompanyId;
     private int mShopId;
-    private int mPeriod;
+    private int mPeriod = DashboardContract.TIME_PERIOD_INIT;
     private int mState = STATE_INIT;
 
-    public BaseRefreshCard(Context context) {
-        this(context, -1, -1);
-    }
-
-    public BaseRefreshCard(Context context, int companyId, int shopId) {
-        this(context, companyId, shopId, DashboardContract.TIME_PERIOD_INIT);
-    }
-
-    public BaseRefreshCard(Context context, int companyId, int shopId, int period) {
+    public BaseRefreshCard(Context context, DashboardContract.Presenter presenter,
+                           int companyId, int shopId) {
         this.mContext = context;
+        this.mPresenter = presenter;
         this.mCompanyId = companyId;
         this.mShopId = shopId;
-        this.mPeriod = period;
-        mModel = createData();
-        mType = createType();
-    }
-
-    Context getContext() {
-        return mContext;
-    }
-
-    void toStateLoading() {
-        if (mState == STATE_INIT) {
-            mState = STATE_FIRST_LOADING;
-        } else {
-            mState = STATE_LOADING;
-        }
-    }
-
-    boolean isStateInit() {
-        return mState == STATE_INIT || mState == STATE_FIRST_LOADING;
-    }
-
-    public int getPeriod() {
-        return mPeriod;
+        mModel = createModel(context);
     }
 
     public Model getModel() {
         return mModel;
     }
 
-    public ItemType<Model, BaseViewHolder<Model>> getType() {
-        return mType;
+    public int getPeriod() {
+        return mPeriod;
     }
 
-    public void registerIntoAdapter(BaseRecyclerAdapter<Object> adapter) {
-        //noinspection unchecked
-        adapter.register((Class<Model>) mModel.getClass(), mType);
-    }
-
-    public void setAdapterWithPosition(BaseArrayAdapter<Object> adapter, int position) {
+    public void registerIntoAdapter(BaseRecyclerAdapter<Object> adapter, int position) {
         this.mAdapter = adapter;
         this.mPosition = position;
-    }
-
-    public void setCompanyId(int companyId, int shopId) {
-        if (this.mCompanyId == companyId) {
-            return;
-        }
-        this.mCompanyId = companyId;
-        this.mShopId = shopId;
-        onCompanyChange(mModel, companyId, shopId);
-        if (mCompanyId > 0 && mShopId > 0 && mPeriod != DashboardContract.TIME_PERIOD_INIT) {
-            load(mCompanyId, mShopId, mPeriod, mModel);
-        }
+        //noinspection unchecked
+        adapter.register((Class<Model>) mModel.getClass(), this);
     }
 
     public void setShopId(int shopId) {
@@ -123,28 +80,47 @@ public abstract class BaseRefreshCard<Model> {
             return;
         }
         this.mShopId = shopId;
-        onShopChange(mModel, shopId);
-        if (mCompanyId > 0 && mShopId > 0 && mPeriod != DashboardContract.TIME_PERIOD_INIT) {
-            load(mCompanyId, mShopId, mPeriod, mModel);
+        mModel.skipLoad = false;
+        onPreShopChange(mModel, shopId);
+        if (!mModel.skipLoad) {
+            load(mCompanyId, mShopId, mPeriod, mCallback);
         }
     }
 
     public void setPeriod(int period) {
-        LogCat.d(TAG, TAG + " switch period to: " + period + "; Current period is " + mPeriod);
         if (this.mPeriod == period || period == DashboardContract.TIME_PERIOD_INIT) {
             return;
         }
         this.mPeriod = period;
-        onPeriodChange(mModel, period);
-        if (mCompanyId > 0 && mShopId > 0) {
-            load(mCompanyId, mShopId, mPeriod, mModel);
+        this.mModel.period = period;
+        mModel.skipLoad = false;
+        onPrePeriodChange(mModel, period);
+        if (!mModel.skipLoad) {
+            load(mCompanyId, mShopId, mPeriod, mCallback);
         }
     }
 
     public void refresh() {
-        onRefresh(mModel, mPeriod);
-        if (mCompanyId > 0 && mShopId > 0 && mPeriod != DashboardContract.TIME_PERIOD_INIT) {
-            load(mCompanyId, mShopId, mPeriod, mModel);
+        mModel.skipLoad = false;
+        load(mCompanyId, mShopId, mPeriod, mCallback);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+        boolean isLoading = (mState == STATE_INIT || mState == STATE_LOADING);
+        if (mState == STATE_FAILED) {
+            mPresenter.showFailedTip();
+        }
+        if (model.isValid) {
+            setupView(holder, model, position);
+        } else {
+            if (isLoading) {
+                LogCat.d(TAG, "Skip set up view before first loading.");
+                showLoading(holder, model, position);
+            } else {
+                LogCat.e(TAG, "Load data Failed.");
+                showError(holder, model, position);
+            }
         }
     }
 
@@ -154,73 +130,109 @@ public abstract class BaseRefreshCard<Model> {
         }
     }
 
-    protected abstract Model createData();
+    /**
+     * 创建ViewModel数据
+     *
+     * @param context 上下文
+     * @return ViewModel
+     */
+    protected abstract Model createModel(Context context);
 
-    protected abstract ItemType<Model, BaseViewHolder<Model>> createType();
-
-    protected void onCompanyChange(Model model, int companyId, int shopId) {
+    /**
+     * 切换店铺时，于加载数据前调用
+     *
+     * @param model  ViewModel
+     * @param shopId 店铺ID
+     */
+    protected void onPreShopChange(Model model, int shopId) {
     }
 
-    protected void onShopChange(Model model, int shopId) {
+    /**
+     * 切换日期时，于加载数据前调用
+     *
+     * @param model  ViewModel
+     * @param period 时间枚举
+     */
+    protected void onPrePeriodChange(Model model, int period) {
     }
 
-    protected void onPeriodChange(Model model, int period) {
+    /**
+     * 加载数据，如果有API请求，请使用callback回调；如果无需网络请求，直接使用callback.success();
+     *
+     * @param companyId 商户ID
+     * @param shopId    店铺ID
+     * @param period    时间枚举
+     * @param callback  接口回调
+     */
+    protected abstract void load(int companyId, int shopId, int period, CardCallback callback);
+
+    /**
+     * 对ViewModel进行更新，一般用于接口回调成功时
+     *
+     * @param model    ViewModel
+     * @param response 接口响应数据
+     */
+    protected abstract void setupModel(Model model, Resp response);
+
+    /**
+     * 对View进行更新，一般在ViewModel更新后被调用
+     *
+     * @param holder   ViewHolder
+     * @param model    ViewModel
+     * @param position 在列表中的位置index
+     */
+    protected abstract void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position);
+
+    /**
+     * 显示Loading状态，在第一次ViewModel更新前接口请求时调用
+     *
+     * @param holder   ViewHolder
+     * @param model    ViewModel
+     * @param position 在列表中的位置index
+     */
+    protected void showLoading(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
     }
 
-    protected void onRefresh(Model model, int period) {
+    /**
+     * 显示Error状态，在第一次数据加载失败时调用
+     *
+     * @param holder   ViewHolder
+     * @param model    ViewModel
+     * @param position 在列表中的位置index
+     */
+    protected void showError(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
     }
 
-    protected abstract void load(int companyId, int shopId,
-                                 int period, Model model);
+    protected class CardCallback extends RetrofitCallback<Resp> {
 
-    public void setOnItemClickListener(OnItemClickListener<Model> l) {
-        if (mType != null) {
-            mType.setOnItemClickListener(l);
-        }
-    }
-
-    public void setOnItemLongClickListener(OnItemLongClickListener<Model> l) {
-        if (mType != null) {
-            mType.setOnItemLongClickListener(l);
-        }
-    }
-
-    public void addOnViewClickListener(@IdRes int id, OnViewClickListener<Model> l) {
-        if (mType != null && l != null) {
-            mType.addOnViewClickListener(id, l);
-        }
-    }
-
-    public void addOnViewLongClickListener(@IdRes int id, OnViewLongClickListener<Model> l) {
-        if (mType != null && l != null) {
-            mType.addOnViewLongClickListener(id, l);
-        }
-    }
-
-    public abstract class CardCallback<Response> extends RetrofitCallback<Response> {
-
-        public abstract void success(Response data);
-
-        public void fail(boolean isFirstFail, int code, String msg) {
-        }
-
-        @Override
-        public void onSuccess(int code, String msg, Response data) {
+        public void onSuccess() {
+            LogCat.d(TAG, "Dashboard card load Success. ");
             mState = STATE_SUCCESS;
-            success(data);
+            mModel.isValid = true;
+            setupModel(mModel, null);
             updateView();
         }
 
         @Override
-        public void onFail(int code, String msg, Response data) {
-            Log.e(TAG, "Dashboard card request Failed. " + msg);
-            boolean isFirstFail = isStateInit();
+        public void onSuccess(int code, String msg, Resp data) {
+            LogCat.d(TAG, "Dashboard card load Success. " + msg);
+            mState = STATE_SUCCESS;
+            mModel.isValid = true;
+            setupModel(mModel, data);
+            updateView();
+        }
+
+        @Override
+        public void onFail(int code, String msg, Resp data) {
+            LogCat.e(TAG, "Dashboard card load Failed. " + msg);
             mState = STATE_FAILED;
-            fail(isFirstFail, code, msg);
-            if (isFirstFail) {
-                updateView();
-            }
+            updateView();
         }
     }
 
+    static abstract class BaseModel {
+        boolean isValid = false;
+        boolean skipLoad = false;
+        int period = DashboardContract.TIME_PERIOD_INIT;
+    }
 }

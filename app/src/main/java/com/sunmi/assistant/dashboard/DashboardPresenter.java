@@ -3,12 +3,11 @@ package com.sunmi.assistant.dashboard;
 import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.util.Pair;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.card.CustomerPriceCard;
-import com.sunmi.assistant.dashboard.card.PayMethodCard;
+import com.sunmi.assistant.dashboard.card.PurchaseTypeCard;
 import com.sunmi.assistant.dashboard.card.QuantityRankCard;
 import com.sunmi.assistant.dashboard.card.TimeDistributionCard;
 import com.sunmi.assistant.dashboard.card.TitleCard;
@@ -16,9 +15,6 @@ import com.sunmi.assistant.dashboard.card.TopTabCard;
 import com.sunmi.assistant.dashboard.card.TotalCountCard;
 import com.sunmi.assistant.dashboard.card.TotalRefundsCard;
 import com.sunmi.assistant.dashboard.card.TotalSalesCard;
-import com.sunmi.assistant.order.OrderListActivity_;
-import com.sunmi.assistant.order.model.OrderInfo;
-import com.sunmi.assistant.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,12 +30,12 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     private static final String TAG = "DashboardPresenter";
 
     private static final int REFRESH_TIME_PERIOD = 120_000;
-    private static final HandlerThread sThread = new HandlerThread("RefreshTask");
-    private static final Handler sHandler;
+    private static final HandlerThread WORK_THREAD = new HandlerThread("RefreshTask");
+    private static final Handler WORK_HANDLER;
 
     static {
-        sThread.start();
-        sHandler = new Handler(sThread.getLooper());
+        WORK_THREAD.start();
+        WORK_HANDLER = new Handler(WORK_THREAD.getLooper());
     }
 
     private int mCompanyId;
@@ -71,6 +67,9 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 card.setPeriod(period);
             }
         }
+        if (isViewAttached()) {
+            mView.updateStickyTab(period);
+        }
     }
 
     @Override
@@ -99,95 +98,39 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         }
     }
 
+    @Override
+    public void showFailedTip() {
+        if (isViewAttached()) {
+            mView.shortTip(R.string.toast_network_Exception);
+        }
+    }
+
     private void initList(int companyId, int shopId) {
         if (!isViewAttached()) {
             return;
         }
-        int period = DashboardContract.TIME_PERIOD_INIT;
         Context context = mView.getContext();
-
-        TopTabCard tab = new TopTabCard(context, period);
-        TotalSalesCard totalSales = new TotalSalesCard(context, companyId, shopId, period);
-        CustomerPriceCard customerPrice = new CustomerPriceCard(context, companyId, shopId, period);
-        TotalCountCard totalCount = new TotalCountCard(context, companyId, shopId, period);
-        TotalRefundsCard totalRefunds = new TotalRefundsCard(context, companyId, shopId, period);
-        TimeDistributionCard timeDistribution = new TimeDistributionCard(context, companyId, shopId, period);
-        PayMethodCard payMethod = new PayMethodCard(context, companyId, shopId, period);
-
-        tab.addOnViewClickListener(R.id.tv_dashboard_today, (adapter, holder, v, model, position) -> {
-            switchPeriodTo(DashboardContract.TIME_PERIOD_TODAY);
-            adapter.notifyItemChanged(position);
-            mView.updateStickyTab(DashboardContract.TIME_PERIOD_TODAY);
-        });
-        tab.addOnViewClickListener(R.id.tv_dashboard_week, (adapter, holder, v, model, position) -> {
-            switchPeriodTo(DashboardContract.TIME_PERIOD_WEEK);
-            adapter.notifyItemChanged(position);
-            mView.updateStickyTab(DashboardContract.TIME_PERIOD_WEEK);
-        });
-        tab.addOnViewClickListener(R.id.tv_dashboard_month, (adapter, holder, v, model, position) -> {
-            switchPeriodTo(DashboardContract.TIME_PERIOD_MONTH);
-            adapter.notifyItemChanged(position);
-            mView.updateStickyTab(DashboardContract.TIME_PERIOD_MONTH);
-        });
-
-        totalSales.setOnItemClickListener((adapter, holder, model, position) ->
-                goToOrderList(OrderInfo.ORDER_TYPE_ALL));
-        customerPrice.setOnItemClickListener((adapter, holder, model, position) ->
-                goToOrderList(OrderInfo.ORDER_TYPE_NORMAL));
-        totalCount.setOnItemClickListener((adapter, holder, model, position) ->
-                goToOrderList(OrderInfo.ORDER_TYPE_NORMAL));
-        totalRefunds.setOnItemClickListener((adapter, holder, model, position) ->
-                goToOrderList(OrderInfo.ORDER_TYPE_REFUNDS));
-
-        timeDistribution.addOnViewClickListener(R.id.tv_dashboard_radio_by_sales,
-                (adapter, holder, v, model, position) -> {
-                    model.setDataSource(DashboardContract.DATA_MODE_SALES);
-                    adapter.notifyItemChanged(position);
-                });
-        timeDistribution.addOnViewClickListener(R.id.tv_dashboard_radio_by_order,
-                (adapter, holder, v, model, position) -> {
-                    model.setDataSource(DashboardContract.DATA_MODE_ORDER);
-                    adapter.notifyItemChanged(position);
-                });
-        payMethod.addOnViewClickListener(R.id.tv_dashboard_radio_by_sales,
-                (adapter, holder, v, model, position) -> {
-                    model.setDataSource(DashboardContract.DATA_MODE_SALES);
-                    adapter.notifyItemChanged(position);
-                });
-        payMethod.addOnViewClickListener(R.id.tv_dashboard_radio_by_order,
-                (adapter, holder, v, model, position) -> {
-                    model.setDataSource(DashboardContract.DATA_MODE_ORDER);
-                    adapter.notifyItemChanged(position);
-                });
-
         mList = new ArrayList<>(9);
-        mList.add(new TitleCard(context, companyId, shopId, period));
-        mList.add(tab);
-        mList.add(totalSales);
-        mList.add(customerPrice);
-        mList.add(totalCount);
-        mList.add(totalRefunds);
-        mList.add(timeDistribution);
-        mList.add(payMethod);
-        mList.add(new QuantityRankCard(context, companyId, shopId, period));
+        mList.add(new TitleCard(context, this, companyId, shopId));
+        mList.add(new TopTabCard(context, this));
+
+        mList.add(new TotalSalesCard(context, this, companyId, shopId));
+        mList.add(new CustomerPriceCard(context, this, companyId, shopId));
+        mList.add(new TotalCountCard(context, this, companyId, shopId));
+        mList.add(new TotalRefundsCard(context, this, companyId, shopId));
+
+        mList.add(new TimeDistributionCard(context, this, companyId, shopId));
+        mList.add(new PurchaseTypeCard(context, this, companyId, shopId));
+        mList.add(new QuantityRankCard(context, this, companyId, shopId));
         mView.initData(mList);
         mTask = new RefreshTask();
-        sHandler.postDelayed(mTask, REFRESH_TIME_PERIOD);
-    }
-
-    private void goToOrderList(int orderType) {
-        Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(mPeriod);
-        OrderListActivity_.intent(mView.getContext())
-                .mTimeStart(periodTimestamp.first)
-                .mTimeEnd(periodTimestamp.second)
-                .mInitOrderType(orderType)
-                .start();
+        WORK_HANDLER.postDelayed(mTask, REFRESH_TIME_PERIOD);
     }
 
     @Override
     public void detachView() {
         super.detachView();
-        sHandler.removeCallbacks(mTask);
+        WORK_HANDLER.removeCallbacks(mTask);
     }
 
     private class RefreshTask implements Runnable {
@@ -195,7 +138,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         @Override
         public void run() {
             refresh();
-            sHandler.postDelayed(this, REFRESH_TIME_PERIOD);
+            WORK_HANDLER.postDelayed(this, REFRESH_TIME_PERIOD);
         }
     }
 
