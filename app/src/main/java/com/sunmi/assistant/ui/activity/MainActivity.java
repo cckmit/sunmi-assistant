@@ -128,12 +128,7 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
             }
             title.setText(getString(mainTab.getResName()));
             tab.setIndicator(indicator);
-            tab.setContent(new TabHost.TabContentFactory() {
-                @Override
-                public View createTabContent(String tag) {
-                    return new View(context);
-                }
-            });
+            tab.setContent(tag -> new View(context));
             mTabHost.addTab(tab, mainTab.getClz(), null);
         }
 
@@ -169,9 +164,6 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
                 if (TextUtils.equals(mTabHost.getCurrentTabTag(),
                         getString(R.string.str_tab_device))) {
                     BaseNotification.newInstance().postNotificationName(CommonConstants.tabDevice);
-                } else if (TextUtils.equals(mTabHost.getCurrentTabTag(),
-                        getString(R.string.str_support))) {
-                    BaseNotification.newInstance().postNotificationName(CommonConstants.tabSupport);
                 }
             } else {
                 v.setSelected(false);

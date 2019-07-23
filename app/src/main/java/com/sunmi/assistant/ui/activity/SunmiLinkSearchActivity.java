@@ -198,6 +198,7 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
         }
         rlNoWifi.setVisibility(View.GONE);
         rlSearch.setVisibility(View.VISIBLE);
+        rlLoading.setVisibility(View.VISIBLE);
         APCall.getInstance().searchStart(context, sn);//开始搜索商米设备
         new Handler().postDelayed(new Runnable() {
             public void run() {
@@ -205,6 +206,8 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
                 if (devList.size() <= 0) {
                     rlSearch.setVisibility(View.GONE);
                     rlNoWifi.setVisibility(View.VISIBLE);
+                } else {
+                    rlLoading.setVisibility(View.GONE);
                 }
             }
         }, 120000);
@@ -279,19 +282,17 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
     void setTimeout() {
         if (!isTimeoutStart) {
             isTimeoutStart = true;
-            new Handler().postDelayed(new Runnable() {
-                public void run() {
-                    if (devSet.isEmpty()) return;
-                    for (SunmiDevice device : devList) {
-                        if (devSet.contains(device.getDeviceid())) {
-                            if (isIpc(device)) {
-                                device.setStatus(RpcErrorCode.RPC_ERR_TIMEOUT);
-                            }
-                            devSet.remove(device.getDeviceid());
+            new Handler().postDelayed(() -> {
+                if (devSet.isEmpty()) return;
+                for (SunmiDevice device : devList) {
+                    if (devSet.contains(device.getDeviceid())) {
+                        if (isIpc(device)) {
+                            device.setStatus(RpcErrorCode.RPC_ERR_TIMEOUT);
                         }
+                        devSet.remove(device.getDeviceid());
                     }
-                    configComplete();
                 }
+                configComplete();
             }, 30000);
         }
     }
@@ -371,12 +372,7 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
     void addDevice(SunmiDevice device) {
         devList.add(device);
         if (devListAdapter != null) devListAdapter.notifyDataSetChanged();
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
-            }
-        });
+        new Handler().post(() -> scrollView.fullScroll(ScrollView.FOCUS_DOWN));
     }
 
 }
