@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
+import com.sunmi.ipc.R;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcConstants;
 
@@ -118,7 +119,20 @@ public class IPCSearchActivity extends BaseActivity
 
     @Click(resName = "btn_config")
     void configClick() {
-        if (ipcList == null || ipcList.size() < 1) return;
+        if (isFastClick(1000) || ipcList == null || ipcList.size() < 1) {
+            return;
+        }
+        boolean isSelectNone = true;
+        for (SunmiDevice device : ipcList) {
+            if (device.isSelected()) {
+                isSelectNone = false;
+                break;
+            }
+        }
+        if (isSelectNone) {
+            shortTip(R.string.tip_please_select_ipc);
+            return;
+        }
         if (isApMode) {
             showLoadingDialog();
             getIsWire();

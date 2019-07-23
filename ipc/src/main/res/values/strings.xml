@@ -108,6 +108,7 @@
     <string name="ipc_setting_detection_day_sunday">周日</string>
     <string name="ipc_setting_data_get_fail">数据获取失败</string>
     <string name="ipc_setting_check_net_refresh">请检查网络后刷新页面～</string>
+    <string name="tip_please_select_ipc">请选择一个摄像头</string>
 
 
 </resources>

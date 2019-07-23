@@ -9,8 +9,7 @@
         android:id="@+id/iv_device"
         android:layout_width="@dimen/dp_48"
         android:layout_height="@dimen/dp_48"
-        android:layout_centerVertical="true"
-        app:srcCompat="@mipmap/ic_lock" />
+        android:layout_centerVertical="true" />
 
     <ImageView
         android:id="@+id/iv_status"
@@ -54,10 +53,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="-16dp"
+        android:layout_marginEnd="-15dp"
         android:button="@drawable/checkbox_dev_selector"
         android:checked="true"
-        android:scaleX="0.35"
-        android:scaleY="0.35" />
+        android:scaleX="0.4"
+        android:scaleY="0.4" />
 
 </RelativeLayout>

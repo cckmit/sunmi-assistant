@@ -278,26 +278,18 @@ public class SunmiPrinterClient implements BluetoothAdapter.LeScanCallback {
                 System.arraycopy(value, 0, receivedData, receivedLen, value.length);
             }
             receivedLen += value.length;
-            if (receivedData.length == receivedLen) {
+            if (receivedData.length == receivedLen && iPrinterClient != null) {
                 int cmd = Utility.getCmd(receivedData);
                 if (cmd == Constants.SRV2CLI_SEND_SN) {
-                    if (iPrinterClient != null) {
-                        iPrinterClient.onSnReceived(Utility.getSn(receivedData));
-                    }
+                    iPrinterClient.onSnReceived(Utility.getSn(receivedData));
                 } else if (cmd == Constants.SRV2CLI_SEND_WIFI_ERROR) {
-                    if (iPrinterClient != null) {
-                        iPrinterClient.onGetWifiListFail();
-                    }
+                    iPrinterClient.onGetWifiListFail();
                 } else if (cmd == Constants.SRV2CLI_SEND_WIFI_AP) {
-                    if (iPrinterClient != null) {
-                        iPrinterClient.routerFound(Utility.getRouter(receivedData));
-                    }
-                } else if (cmd == Constants.SRV2CLI_SEND_WIFI_AP_COMPLETELY) {
-                    //TODO Wi-Fi信息接受完毕
+                    iPrinterClient.routerFound(Utility.getRouter(receivedData));
+                } else if (cmd == Constants.SRV2CLI_SEND_WIFI_AP_COMPLETELY) {// Wi-Fi信息接收完毕
+                    iPrinterClient.onGetWifiListFinish();
                 } else if (cmd == Constants.SRV2CLI_SEND_ALREADY_CONNECTED_WIFI) {
-                    if (iPrinterClient != null) {
-                        iPrinterClient.wifiConfigSuccess();
-                    }
+                    iPrinterClient.wifiConfigSuccess();
                     sendData(bleAddress, Utility.cmdAlreadyConnectedWifi());
                 }
             }
@@ -314,7 +306,7 @@ public class SunmiPrinterClient implements BluetoothAdapter.LeScanCallback {
 
         void onSnReceived(String sn);
 
-        void onGetWifiListSuccess();
+        void onGetWifiListFinish();
 
         void onGetWifiListFail();
 

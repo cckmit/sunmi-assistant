@@ -46,7 +46,8 @@ public class IPCListAdapter extends RecyclerView.Adapter<IPCListAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         holder.itemView.setTag(position);
         holder.checkBox.setChecked(true);
-        holder.ivDevice.setImageResource(DeviceTypeUtils.getInstance().getSunmiDeviceImage(data.get(position).getModel()));
+        holder.ivDevice.setImageResource(DeviceTypeUtils.getInstance()
+                .getSunmiDeviceImage(data.get(position).getModel()));
         holder.tvName.setText(data.get(position).getModel());
         holder.tvSn.setText(data.get(position).getDeviceid());
     }
@@ -58,7 +59,8 @@ public class IPCListAdapter extends RecyclerView.Adapter<IPCListAdapter.ViewHold
         return 0;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements CompoundButton.OnCheckedChangeListener {
+    class ViewHolder extends RecyclerView.ViewHolder
+            implements CompoundButton.OnCheckedChangeListener {
         RelativeLayout rootView;
         ImageView ivDevice;
         ImageView ivStatus;
@@ -74,12 +76,18 @@ public class IPCListAdapter extends RecyclerView.Adapter<IPCListAdapter.ViewHold
             tvName = view.findViewById(R.id.tv_name);
             tvSn = view.findViewById(R.id.tv_sn);
             checkBox = view.findViewById(R.id.cb_item);
-            checkBox.setOnCheckedChangeListener(this);
+            if (data.size() == 1) {
+                checkBox.setEnabled(false);
+            } else {
+                checkBox.setEnabled(true);
+                checkBox.setOnCheckedChangeListener(this);
+            }
         }
 
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             data.get(getAdapterPosition()).setSelected(isChecked);
+
         }
     }
 
