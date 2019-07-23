@@ -39,7 +39,7 @@
     <string name="dashboard_time_distribution">交易时间分布</string>
     <string name="dashboard_purchase_rank">支付方式</string>
     <string name="dashboard_quantity_rank">商品销量排行</string>
-    <string name="dashboard_purchase_others">其他</string>
+    <string name="dashboard_purchase_type_other">其他</string>
 
     <string name="order_list_title">详情列表</string>
     <string name="order_filter_sort">综合排序</string>
@@ -78,5 +78,6 @@
     <string name="str_setting_detail">查看详情</string>
     <string name="str_setting_delete_device">删除设备</string>
     <string name="str_cloud_printer">云打印机</string>
+    <string name="str_cannot_manager_device">当前无法管理设备</string>
 
 </resources>

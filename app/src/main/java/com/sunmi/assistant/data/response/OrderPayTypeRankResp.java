@@ -22,9 +22,14 @@ public class OrderPayTypeRankResp {
 
     public static class PayTypeRankItem {
 
+        private String purchase_type_tag;
         private String purchase_type_name;
         private int count;
         private float amount;
+
+        public String getPurchase_type_tag() {
+            return purchase_type_tag;
+        }
 
         public String getPurchase_type_name() {
             return purchase_type_name;

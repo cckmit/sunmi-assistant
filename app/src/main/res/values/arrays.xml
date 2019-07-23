@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="dashboard_pay_type">
+    <string-array name="dashboard_purchase_type">
         <item>支付宝</item>
         <item>微信</item>
         <item>现金</item>

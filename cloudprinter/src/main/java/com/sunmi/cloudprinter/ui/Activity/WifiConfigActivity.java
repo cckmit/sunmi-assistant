@@ -2,8 +2,15 @@ package com.sunmi.cloudprinter.ui.Activity;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -16,7 +23,6 @@ import com.sunmi.cloudprinter.bean.Router;
 import com.sunmi.cloudprinter.constant.Constants;
 import com.sunmi.cloudprinter.presenter.SunmiPrinterClient;
 import com.sunmi.cloudprinter.ui.adaper.RouterListAdapter;
-import com.sunmi.cloudprinter.utils.Utility;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -47,7 +53,7 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
     @ViewById(resName = "title_bar")
     TitleBarView titleBar;
     @ViewById(resName = "tv_top")
-    TextView tvAddPrinter;
+    TextView tvConnectWifi;
     @ViewById(resName = "nsv_router")
     NestedScrollView nsvRouter;
     @ViewById(resName = "rv_router")
@@ -58,6 +64,8 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
     RelativeLayout rlLoading;
     @ViewById(resName = "btn_refresh")
     Button btnRefresh;
+    @ViewById(resName = "tv_skip")
+    TextView tvSkip;
 
     @Extra
     String bleAddress;
@@ -67,12 +75,13 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
     private SunmiPrinterClient printerClient;
     private Dialog passwordDialog;
 
-    private List<Router> routers = new ArrayList<>();
+    private List<Router> wifiList = new ArrayList<>();
     private RouterListAdapter adapter;
 
     @AfterViews
     protected void init() {
         StatusBarUtils.StatusBarLightMode(this);//状态栏
+        initTvSkip();
         titleBar.getLeftLayout().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,7 +92,7 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
             @Override
             public void onClick(View v) {
                 if (printerClient != null) {
-                    printerClient.sendData(bleAddress, Utility.cmdDeleteWifiInfo());
+                    printerClient.deleteWifiInfo(bleAddress);
                 }
             }
         });
@@ -91,23 +100,55 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
         printerClient.getPrinterWifiList(bleAddress);
     }
 
-    @Click(resName = "tv_skip")
-    void skipClick() {
-        confirmSkipDialog();
+    private void initTvSkip() {
+        int len;
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        builder.append(tvSkip.getText());
+        len = builder.length();
+        String skip = getString(R.string.str_skip);
+        builder.append(skip);
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                confirmSkipDialog();
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                ds.setUnderlineText(false);
+                tvSkip.postInvalidate();
+            }
+        };
+        builder.setSpan(clickableSpan, len, len + skip.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tvSkip.setText(builder);
+        builder.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.c_text_blue)),
+                len, len + skip.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tvSkip.setText(builder);
+        tvSkip.setMovementMethod(LinkMovementMethod.getInstance());
+        tvSkip.setText(builder);
+    }
+
+    @Click(resName = {"btn_refresh", "btn_retry"})
+    void refreshClick() {
+        rlNoWifi.setVisibility(View.GONE);
+        rlLoading.setVisibility(View.VISIBLE);
+        tvConnectWifi.setVisibility(View.VISIBLE);
+        nsvRouter.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onBackPressed() {
         if (printerClient != null) {
-            printerClient.sendData(bleAddress, Utility.cmdQuitConfig());
+            printerClient.quitConfig(bleAddress);
         }
+        finish();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         rvRouter.init(R.drawable.shap_line_divider);
-        adapter = new RouterListAdapter(routers);
+        adapter = new RouterListAdapter(wifiList);
         adapter.setOnItemClickListener(new RouterListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, List<Router> data) {
@@ -136,18 +177,32 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
     }
 
     @Override
+    public void getSnRequestSuccess() {
+
+    }
+
+    @Override
     public void onSnReceived(String sn) {
 
     }
 
+    @UiThread
     @Override
-    public void onGetWifiListSuccess() {
-
+    public void onGetWifiListFinish() {
+        if (wifiList.size() > 0) {
+            rlLoading.setVisibility(View.GONE);
+        } else {
+            rlNoWifi.setVisibility(View.VISIBLE);
+            tvConnectWifi.setVisibility(View.GONE);
+            nsvRouter.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void onGetWifiListFail() {
-
+        rlNoWifi.setVisibility(View.VISIBLE);
+        tvConnectWifi.setVisibility(View.GONE);
+        nsvRouter.setVisibility(View.GONE);
     }
 
     @Override
@@ -157,7 +212,11 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
 
     @Override
     public void wifiConfigSuccess() {
-
+        hideLoadingDialog();
+        if (passwordDialog != null)
+            passwordDialog.dismiss();
+        GotoActivityUtils.gotoMainActivity(context);
+        BaseNotification.newInstance().postNotificationName(Constants.NOTIFICATION_PRINTER_ADDED);
     }
 
     @Override
@@ -173,16 +232,8 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
     @UiThread
     @Override
     public void routerFound(Router router) {
-        routers.add(router);
+        wifiList.add(router);
         adapter.notifyDataSetChanged();
-    }
-
-    public void wifiSetSuccess() {
-        hideLoadingDialog();
-        if (passwordDialog != null)
-            passwordDialog.dismiss();
-        GotoActivityUtils.gotoMainActivity(context);
-        BaseNotification.newInstance().postNotificationName(Constants.NOTIFICATION_PRINTER_ADDED);
     }
 
     private void showMessageDialog(final Router router) {
@@ -239,8 +290,9 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 if (printerClient != null) {
-                                    printerClient.sendData(bleAddress, Utility.cmdDeleteWifiInfo());
+                                    printerClient.deleteWifiInfo(bleAddress);
                                 }
+                                finish();
                             }
                         }).create().show();
     }

@@ -3,11 +3,14 @@ package com.sunmi.ipc.setting;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -158,6 +161,12 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         mPresenter.loadConfig(mDevice);
         mPresenter.currentVersion();
         mNameView.setRightText(mDevice.getName());
+        TextView tvName = mNameView.getRightText();
+        tvName.setSingleLine();
+        tvName.setEllipsize(TextUtils.TruncateAt.END);
+        if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
+            mWifiName.setLeftTextColor(ContextCompat.getColor(this, R.color.colorText_40));
+        }
     }
 
     private void netExceptionView(boolean isExceptionView) {
@@ -167,6 +176,13 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         } else {
             nsvSetting.setVisibility(View.VISIBLE);
             rlNetException.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (countdown == 0) {
+            super.onBackPressed();
         }
     }
 
@@ -195,7 +211,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         mVersion.setRightText(version);
         if (upgradeRequired == 1) {
             mVersion.setIvToTextLeftImage(R.mipmap.ic_ipc_new_ver);
-            newVersionDialog(version);
+            newVersionDialog();
         }
     }
 
@@ -205,8 +221,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 shortTip(R.string.str_net_exception);
                 return true;
             }
-            SunmiDevice localDevice = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
-            if (localDevice == null) {
+            if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
                 shortTip(R.string.str_net_exception);
                 return true;
             }
@@ -222,7 +237,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Click(resName = "sil_camera_name")
     void cameraNameClick() {
-        if (noNetCannotClick(true)) return;
+        if (noNetCannotClick(true)) {
+            return;
+        }
         new InputDialog.Builder(this)
                 .setTitle(R.string.ipc_setting_name)
                 .setInitInputContent(mDevice.getName())
@@ -232,6 +249,10 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                     public void onConfirmClick(InputDialog dialog, String input) {
                         if (input.trim().getBytes(Charset.defaultCharset()).length > IPC_NAME_MAX_LENGTH) {
                             shortTip(R.string.ipc_setting_tip_name_length);
+                            return;
+                        }
+                        if (input.trim().length() == 0) {
+                            shortTip(R.string.ipc_setting_tip_name_empty);
                             return;
                         }
                         showLoadingDialog();
@@ -335,6 +356,10 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     @Click(resName = "sil_ipc_version")
     void versionClick() {
         if (noNetCannotClick(true)) return;
+        if (mResp == null) {
+            mPresenter.currentVersion();
+            return;
+        }
         IpcSettingVersionActivity_.intent(this)
                 .mResp(mResp)
                 .mDevice(mDevice)
@@ -544,13 +569,13 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     /**
      * 有新版本
-     *
-     * @param version
      */
-    private void newVersionDialog(String version) {
+    private void newVersionDialog() {
+        SunmiDevice bean = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
         CommonDialog commonDialog = new CommonDialog.Builder(this)
                 .setTitle(R.string.ipc_setting_dialog_upgrade)
-                .setMessage(getString(R.string.ipc_setting_version_current, version) + "\n" +
+                .setMessage(getString(R.string.ipc_setting_version_current, bean != null ?
+                        bean.getFirmware() : "") + "\n" +
                         getString(R.string.ipc_setting_dialog_upgrade_download_time))
                 .setConfirmButton(R.string.ipc_setting_dialog_upgrade_ok, new DialogInterface.OnClickListener() {
                     @Override

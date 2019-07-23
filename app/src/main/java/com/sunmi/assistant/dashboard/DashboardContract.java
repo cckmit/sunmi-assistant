@@ -25,8 +25,6 @@ public interface DashboardContract {
         void initData(List<BaseRefreshCard> data);
 
         void updateStickyTab(int period);
-
-        void updateCard(int position);
     }
 
     interface Presenter {
@@ -40,6 +38,8 @@ public interface DashboardContract {
         void refresh();
 
         void refresh(int position);
+
+        void showFailedTip();
 
     }
 }

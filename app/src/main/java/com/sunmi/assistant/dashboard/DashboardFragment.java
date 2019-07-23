@@ -67,7 +67,6 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         initAdapter();
         mPresenter.loadConfig();
         mPresenter.switchPeriodTo(DashboardContract.TIME_PERIOD_TODAY);
-        updateStickyTab(DashboardContract.TIME_PERIOD_TODAY);
     }
 
     private void initView() {
@@ -107,22 +106,16 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @Click(R.id.tv_dashboard_today)
     void clickPeriodToday() {
         mPresenter.switchPeriodTo(DashboardContract.TIME_PERIOD_TODAY);
-        updateStickyTab(DashboardContract.TIME_PERIOD_TODAY);
-        mAdapter.notifyItemChanged(1);
     }
 
     @Click(R.id.tv_dashboard_week)
     void clickPeriodWeek() {
         mPresenter.switchPeriodTo(DashboardContract.TIME_PERIOD_WEEK);
-        updateStickyTab(DashboardContract.TIME_PERIOD_WEEK);
-        mAdapter.notifyItemChanged(1);
     }
 
     @Click(R.id.tv_dashboard_month)
     void clickPeriodMonth() {
         mPresenter.switchPeriodTo(DashboardContract.TIME_PERIOD_MONTH);
-        updateStickyTab(DashboardContract.TIME_PERIOD_MONTH);
-        mAdapter.notifyItemChanged(1);
     }
 
     @Override
@@ -130,11 +123,6 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mTabToday.setSelected(period == DashboardContract.TIME_PERIOD_TODAY);
         mTabWeek.setSelected(period == DashboardContract.TIME_PERIOD_WEEK);
         mTabMonth.setSelected(period == DashboardContract.TIME_PERIOD_MONTH);
-    }
-
-    @Override
-    public void updateCard(int position) {
-        mAdapter.notifyItemChanged(position);
     }
 
     @UiThread
@@ -146,8 +134,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         List<Object> list = new ArrayList<>(data.size());
         for (int i = 0, size = data.size(); i < size; i++) {
             BaseRefreshCard item = data.get(i);
-            item.setAdapterWithPosition(mAdapter, i);
-            item.registerIntoAdapter(mAdapter);
+            item.registerIntoAdapter(mAdapter, i);
             list.add(item.getModel());
         }
         mAdapter.setData(list);
@@ -186,12 +173,16 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     private class ItemStickyListener extends RecyclerView.OnScrollListener {
 
         private int offset = 0;
+        private int topHeight = 0;
 
         @Override
         public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
             offset += dy;
-            if (offset >= recyclerView.getChildAt(0).getMeasuredHeight()
-                    - mStatusBarHeight + mStatusGap) {
+            if (topHeight == 0) {
+                topHeight = recyclerView.getChildAt(0).getMeasuredHeight()
+                        - mStatusBarHeight + mStatusGap;
+            }
+            if (offset >= topHeight) {
                 mStickyTab.setVisibility(View.VISIBLE);
             } else {
                 mStickyTab.setVisibility(View.INVISIBLE);

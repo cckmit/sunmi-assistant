@@ -45,6 +45,7 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/dp_56"
             android:background="@mipmap/ic_lock"
+            android:visibility="gone"
             tools:ignore="ContentDescription" />
 
         <ImageView

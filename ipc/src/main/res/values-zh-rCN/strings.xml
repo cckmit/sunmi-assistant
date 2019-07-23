@@ -48,6 +48,7 @@
     <string name="ipc_setting_close">关</string>
     <string name="ipc_setting_name">摄像机名称</string>
     <string name="ipc_setting_tip_name_length">摄像机名称不得超过36个字符</string>
+    <string name="ipc_setting_tip_name_empty">摄像机名称不能是空或者空格</string>
     <string name="ipc_setting_detail">摄像机详情</string>
     <string name="ipc_setting_detail_model">摄像机型号</string>
     <string name="ipc_setting_detail_sn">摄像机SN</string>
@@ -107,6 +108,7 @@
     <string name="ipc_setting_detection_day_sunday">周日</string>
     <string name="ipc_setting_data_get_fail">数据获取失败</string>
     <string name="ipc_setting_check_net_refresh">请检查网络后刷新页面～</string>
+    <string name="tip_please_select_ipc">请选择一个摄像头</string>
 </resources>
 
 
