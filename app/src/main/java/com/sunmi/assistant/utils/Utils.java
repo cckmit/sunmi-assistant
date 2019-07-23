@@ -49,12 +49,12 @@ public class Utils {
     }
 
     public static String getTrendNameByPeriod(Context context, int period) {
-        if (period == DashboardContract.TIME_PERIOD_MONTH) {
-            return context.getResources().getString(R.string.dashboard_month_ratio);
+        if (period == DashboardContract.TIME_PERIOD_TODAY) {
+            return context.getResources().getString(R.string.dashboard_day_ratio);
         } else if (period == DashboardContract.TIME_PERIOD_WEEK) {
             return context.getResources().getString(R.string.dashboard_week_ratio);
         } else {
-            return context.getResources().getString(R.string.dashboard_day_ratio);
+            return context.getResources().getString(R.string.dashboard_month_ratio);
         }
     }
 
