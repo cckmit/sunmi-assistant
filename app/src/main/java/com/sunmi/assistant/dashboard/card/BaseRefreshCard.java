@@ -51,8 +51,8 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
     private int mPeriod = DashboardContract.TIME_PERIOD_INIT;
     private int mState = STATE_INIT;
 
-    public BaseRefreshCard(Context context, DashboardContract.Presenter presenter,
-                           int companyId, int shopId) {
+    protected BaseRefreshCard(Context context, DashboardContract.Presenter presenter,
+                              int companyId, int shopId) {
         this.mContext = context;
         this.mPresenter = presenter;
         this.mCompanyId = companyId;
@@ -206,7 +206,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
     protected class CardCallback extends RetrofitCallback<Resp> {
 
         public void onSuccess() {
-            LogCat.d(TAG, "Dashboard card load Success. ");
+            LogCat.d(TAG, "Dashboard card load data pass. ");
             mState = STATE_SUCCESS;
             mModel.isValid = true;
             setupModel(mModel, null);

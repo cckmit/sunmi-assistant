@@ -16,7 +16,6 @@ import com.sunmi.assistant.utils.Utils;
 import java.util.Locale;
 
 import sunmi.common.base.recycle.BaseViewHolder;
-import sunmi.common.utils.log.LogCat;
 
 /**
  * @author yinhui
@@ -25,8 +24,8 @@ import sunmi.common.utils.log.LogCat;
 public abstract class BaseSmallCard<Model extends BaseSmallCard.BaseSmallModel, Resp>
         extends BaseRefreshCard<Model, Resp> {
 
-    public BaseSmallCard(Context context, DashboardContract.Presenter presenter,
-                         int companyId, int shopId, int orderType) {
+    protected BaseSmallCard(Context context, DashboardContract.Presenter presenter,
+                            int companyId, int shopId, int orderType) {
         super(context, presenter, companyId, shopId);
         setOnItemClickListener((adapter, holder, model, position) -> goToOrderList(context, orderType));
     }
@@ -56,10 +55,6 @@ public abstract class BaseSmallCard<Model extends BaseSmallCard.BaseSmallModel, 
 
         model.trendName = Utils.getTrendNameByPeriod(mContext, model.period);
         String trendData = model.getTrendData(getPeriod());
-        if (TextUtils.isEmpty(trendData)) {
-            LogCat.d(TAG, "First load FAIL, update view skip...");
-            return;
-        }
 
         TextView tvTitle = holder.getView(R.id.tv_dashboard_title);
         TextView tvData = holder.getView(R.id.tv_dashboard_data);
