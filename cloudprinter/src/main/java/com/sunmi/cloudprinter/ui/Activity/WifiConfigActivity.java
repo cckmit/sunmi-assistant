@@ -38,6 +38,7 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.ToastUtils;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.TitleBarView;
@@ -219,6 +220,7 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
         if (passwordDialog != null) {
             passwordDialog.dismiss();
         }
+        ToastUtils.toastCenter(context, getString(R.string.tip_config_success), R.mipmap.ic_toast_success);
         BaseNotification.newInstance().postNotificationName(Constants.NOTIFICATION_PRINTER_ADDED);
         GotoActivityUtils.gotoMainActivity(context);
     }

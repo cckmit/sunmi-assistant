@@ -32,5 +32,6 @@
     <string name="str_msg_clear_wifi_config">清除设备WiFi连接信息，并使用2G网络通信。</string>
     <string name="tip_bind_printer_fail">绑定失败</string>
     <string name="tip_get_printer_info_fail">获取云打印机信息失败，请重新连接。</string>
+    <string name="tip_config_success">设置成功</string>
 </resources>
 
