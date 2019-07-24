@@ -7,7 +7,9 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.DashboardContract;
 import com.sunmi.assistant.ui.MainTopBar;
 
+import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
+import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.utils.SpUtils;
 
 /**
@@ -36,8 +38,9 @@ public class TitleCard extends BaseRefreshCard<TitleCard.Model, Object> {
     }
 
     @Override
-    protected void load(int companyId, int shopId, int period, CardCallback callback) {
+    protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, CardCallback callback) {
         callback.onSuccess();
+        return null;
     }
 
     @Override

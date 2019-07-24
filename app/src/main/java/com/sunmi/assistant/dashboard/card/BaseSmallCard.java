@@ -44,8 +44,8 @@ public abstract class BaseSmallCard<Model extends BaseSmallCard.BaseSmallModel, 
     protected void onPrePeriodChange(Model model, int period) {
         if (model.isValid) {
             model.skipLoad = true;
+            updateView();
         }
-        updateView();
     }
 
     @Override
@@ -99,8 +99,22 @@ public abstract class BaseSmallCard<Model extends BaseSmallCard.BaseSmallModel, 
 
     @Override
     protected void showError(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-        holder.getView(R.id.layout_dashboard_content).setVisibility(View.GONE);
+        holder.getView(R.id.layout_dashboard_content).setVisibility(View.VISIBLE);
         holder.getView(R.id.pb_dashboard_loading).setVisibility(View.GONE);
+
+        model.trendName = Utils.getTrendNameByPeriod(mContext, model.period);
+
+        TextView tvTitle = holder.getView(R.id.tv_dashboard_title);
+        TextView tvData = holder.getView(R.id.tv_dashboard_data);
+        TextView tvTrendName = holder.getView(R.id.tv_dashboard_trend_name);
+        TextView tvTrendData = holder.getView(R.id.tv_dashboard_trend_data);
+
+        tvTitle.setText(model.title);
+        tvData.setText(DATA_NONE);
+        tvTrendName.setText(model.trendName);
+        tvTrendData.setText(DATA_NONE);
+        tvTrendData.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null);
+        tvTrendData.setTextColor(ContextCompat.getColor(holder.getContext(), R.color.color_333338));
     }
 
     private void goToOrderList(Context context, int orderType) {

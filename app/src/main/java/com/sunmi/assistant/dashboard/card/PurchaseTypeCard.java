@@ -29,8 +29,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
+import sunmi.common.rpc.retrofit.BaseResponse;
 
 /**
  * @author yinhui
@@ -124,9 +126,9 @@ public class PurchaseTypeCard extends BaseRefreshCard<PurchaseTypeCard.Model, Or
     }
 
     @Override
-    protected void load(int companyId, int shopId, int period, CardCallback callback) {
+    protected Call<BaseResponse<OrderPayTypeRankResp>> load(int companyId, int shopId, int period, CardCallback callback) {
         Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(period);
-        SunmiStoreRemote.get().getOrderPurchaseTypeRank(companyId, shopId,
+        return SunmiStoreRemote.get().getOrderPurchaseTypeRank(companyId, shopId,
                 periodTimestamp.first, periodTimestamp.second, callback);
     }
 
@@ -231,8 +233,7 @@ public class PurchaseTypeCard extends BaseRefreshCard<PurchaseTypeCard.Model, Or
 
     @Override
     protected void showError(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-        holder.getView(R.id.layout_dashboard_content).setVisibility(View.GONE);
-        holder.getView(R.id.pb_dashboard_loading).setVisibility(View.GONE);
+        setupView(holder, model, position);
     }
 
     private int getIndexOfPayMethod(String tag) {
