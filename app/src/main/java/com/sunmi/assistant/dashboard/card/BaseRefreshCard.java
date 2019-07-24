@@ -9,9 +9,11 @@ import com.sunmi.assistant.dashboard.DashboardContract;
 
 import java.text.DecimalFormat;
 
+import retrofit2.Call;
 import sunmi.common.base.recycle.BaseRecyclerAdapter;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
+import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.log.LogCat;
 
@@ -28,6 +30,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
     private static final int STATE_LOADING = 1;
     private static final int STATE_SUCCESS = 10;
     private static final int STATE_FAILED = 11;
+    private static final int STATE_CANCEL = 12;
 
     protected static final String DATA_NONE = "--";
     protected static final String DATA_ZERO = "0";
@@ -40,6 +43,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private CardCallback mCallback = new CardCallback();
+    private Call<BaseResponse<Resp>> mCall;
 
     private BaseRecyclerAdapter<Object> mAdapter;
     private int mPosition;
@@ -80,11 +84,9 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
             return;
         }
         this.mShopId = shopId;
-        mModel.skipLoad = false;
+        this.mModel.skipLoad = false;
         onPreShopChange(mModel, shopId);
-        if (!mModel.skipLoad) {
-            load(mCompanyId, mShopId, mPeriod, mCallback);
-        }
+        requestLoad(false);
     }
 
     public void setPeriod(int period) {
@@ -93,16 +95,26 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         }
         this.mPeriod = period;
         this.mModel.period = period;
-        mModel.skipLoad = false;
+        this.mModel.skipLoad = false;
         onPrePeriodChange(mModel, period);
-        if (!mModel.skipLoad) {
-            load(mCompanyId, mShopId, mPeriod, mCallback);
-        }
+        requestLoad(false);
     }
 
     public void refresh() {
-        mModel.skipLoad = false;
-        load(mCompanyId, mShopId, mPeriod, mCallback);
+        requestLoad(true);
+    }
+
+    public void cancelLoad() {
+        if (mCall != null) {
+            mCall.cancel();
+        }
+    }
+
+    public void updateView() {
+        if (mAdapter != null) {
+            LogCat.d(TAG, "Update view.");
+            mHandler.post(() -> mAdapter.notifyItemChanged(mPosition));
+        }
     }
 
     @Override
@@ -124,9 +136,12 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         }
     }
 
-    void updateView() {
-        if (mAdapter != null) {
-            mHandler.post(() -> mAdapter.notifyItemChanged(mPosition));
+    private void requestLoad(boolean forceLoad) {
+        if (forceLoad || !mModel.skipLoad) {
+            LogCat.d(TAG, "Start to load data.");
+            cancelLoad();
+            mState = STATE_LOADING;
+            mCall = load(mCompanyId, mShopId, mPeriod, mCallback);
         }
     }
 
@@ -163,8 +178,9 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
      * @param shopId    店铺ID
      * @param period    时间枚举
      * @param callback  接口回调
+     * @return API请求Call，用于取消
      */
-    protected abstract void load(int companyId, int shopId, int period, CardCallback callback);
+    protected abstract Call<BaseResponse<Resp>> load(int companyId, int shopId, int period, CardCallback callback);
 
     /**
      * 对ViewModel进行更新，一般用于接口回调成功时
@@ -208,6 +224,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         public void onSuccess() {
             LogCat.d(TAG, "Dashboard card load data pass. ");
             mState = STATE_SUCCESS;
+            mCall = null;
             mModel.isValid = true;
             setupModel(mModel, null);
             updateView();
@@ -217,6 +234,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         public void onSuccess(int code, String msg, Resp data) {
             LogCat.d(TAG, "Dashboard card load Success. " + msg);
             mState = STATE_SUCCESS;
+            mCall = null;
             mModel.isValid = true;
             setupModel(mModel, data);
             updateView();
@@ -225,7 +243,12 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         @Override
         public void onFail(int code, String msg, Resp data) {
             LogCat.e(TAG, "Dashboard card load Failed. " + msg);
-            mState = STATE_FAILED;
+            if (mCall != null && mCall.isCanceled()) {
+                mState = STATE_CANCEL;
+            } else {
+                mState = STATE_FAILED;
+            }
+            mCall = null;
             updateView();
         }
     }

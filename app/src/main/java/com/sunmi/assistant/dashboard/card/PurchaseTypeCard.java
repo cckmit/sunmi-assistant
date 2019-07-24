@@ -29,8 +29,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
+import sunmi.common.rpc.retrofit.BaseResponse;
 
 /**
  * @author yinhui
@@ -124,9 +126,9 @@ public class PurchaseTypeCard extends BaseRefreshCard<PurchaseTypeCard.Model, Or
     }
 
     @Override
-    protected void load(int companyId, int shopId, int period, CardCallback callback) {
+    protected Call<BaseResponse<OrderPayTypeRankResp>> load(int companyId, int shopId, int period, CardCallback callback) {
         Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(period);
-        SunmiStoreRemote.get().getOrderPurchaseTypeRank(companyId, shopId,
+        return SunmiStoreRemote.get().getOrderPurchaseTypeRank(companyId, shopId,
                 periodTimestamp.first, periodTimestamp.second, callback);
     }
 

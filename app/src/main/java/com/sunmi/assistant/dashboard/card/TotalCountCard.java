@@ -11,6 +11,9 @@ import com.sunmi.assistant.data.response.OrderTotalCountResp;
 import com.sunmi.assistant.order.model.OrderInfo;
 import com.sunmi.assistant.utils.Utils;
 
+import retrofit2.Call;
+import sunmi.common.rpc.retrofit.BaseResponse;
+
 /**
  * @author yinhui
  * @date 2019-07-23
@@ -28,9 +31,9 @@ public class TotalCountCard extends BaseSmallCard<TotalCountCard.Model, OrderTot
     }
 
     @Override
-    protected void load(int companyId, int shopId, int period, CardCallback callback) {
+    protected Call<BaseResponse<OrderTotalCountResp>> load(int companyId, int shopId, int period, CardCallback callback) {
         Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(DashboardContract.TIME_PERIOD_TODAY);
-        SunmiStoreRemote.get().getOrderTotalCount(companyId, shopId,
+        return SunmiStoreRemote.get().getOrderTotalCount(companyId, shopId,
                 periodTimestamp.first, periodTimestamp.second, 1, callback);
     }
 

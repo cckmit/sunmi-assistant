@@ -29,8 +29,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
+import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.utils.CommonHelper;
 
 /**
@@ -124,7 +126,7 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
     }
 
     @Override
-    protected void load(int companyId, int shopId, int period, CardCallback callback) {
+    protected Call<BaseResponse<OrderTimeDistributionResp>> load(int companyId, int shopId, int period, CardCallback callback) {
         int interval;
         if (period == DashboardContract.TIME_PERIOD_TODAY) {
             interval = INTERVAL_HOUR_SECOND;
@@ -132,7 +134,7 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
             interval = INTERVAL_DAY_SECOND;
         }
         Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(period);
-        SunmiStoreRemote.get().getOrderTimeDistribution(companyId, shopId,
+        return SunmiStoreRemote.get().getOrderTimeDistribution(companyId, shopId,
                 periodTimestamp.first, periodTimestamp.second, interval, callback);
     }
 

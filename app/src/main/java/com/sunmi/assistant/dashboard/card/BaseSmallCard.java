@@ -44,8 +44,8 @@ public abstract class BaseSmallCard<Model extends BaseSmallCard.BaseSmallModel, 
     protected void onPrePeriodChange(Model model, int period) {
         if (model.isValid) {
             model.skipLoad = true;
+            updateView();
         }
-        updateView();
     }
 
     @Override
