@@ -142,6 +142,7 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
     protected void setupModel(Model model, OrderTimeDistributionResp response) {
         List<OrderTimeDistributionResp.PeriodItem> list = response.getOrder_list();
         int size = list.size();
+        model.period = calcPeriodByDataSize(size);
         List<BarEntry> amountList = new ArrayList<>(size);
         List<BarEntry> countList = new ArrayList<>(size);
         for (OrderTimeDistributionResp.PeriodItem item : list) {
@@ -173,21 +174,14 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
             model.dataSets.put(model.dataSource, newDataSet);
         }
 
-        int size = newDataSet.size();
-        if (size <= PERIOD_WEEK_DATA_COUNT) {
-            model.period = DashboardContract.TIME_PERIOD_WEEK;
-        } else if (size <= PERIOD_TODAY_DATA_COUNT + 1) {
-            model.period = DashboardContract.TIME_PERIOD_TODAY;
-        } else {
-            model.period = DashboardContract.TIME_PERIOD_MONTH;
-        }
-
         if (!model.isValid || newDataSet.isEmpty()) {
             newDataSet.clear();
             Pair<Integer, Integer> result = calcRangeOfxAxis(model.period);
             for (int i = result.first; i < result.second; i++) {
                 newDataSet.add(new BarEntry(i, 0f));
             }
+        } else {
+            model.period = calcPeriodByDataSize(newDataSet.size());
         }
 
         if (model.period == DashboardContract.TIME_PERIOD_TODAY
@@ -238,6 +232,16 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
     @Override
     protected void showError(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         setupView(holder, model, position);
+    }
+
+    private int calcPeriodByDataSize(int size) {
+        if (size <= PERIOD_WEEK_DATA_COUNT) {
+            return DashboardContract.TIME_PERIOD_WEEK;
+        } else if (size <= PERIOD_TODAY_DATA_COUNT + 1) {
+            return DashboardContract.TIME_PERIOD_TODAY;
+        } else {
+            return DashboardContract.TIME_PERIOD_MONTH;
+        }
     }
 
     private Pair<Integer, Integer> calcRangeOfxAxis(int period) {
