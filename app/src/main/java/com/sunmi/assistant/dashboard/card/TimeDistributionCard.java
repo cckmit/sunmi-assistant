@@ -142,13 +142,6 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
     protected void setupModel(Model model, OrderTimeDistributionResp response) {
         List<OrderTimeDistributionResp.PeriodItem> list = response.getOrder_list();
         int size = list.size();
-        if (size == PERIOD_TODAY_DATA_COUNT) {
-            model.period = DashboardContract.TIME_PERIOD_TODAY;
-        } else if (size == PERIOD_WEEK_DATA_COUNT) {
-            model.period = DashboardContract.TIME_PERIOD_WEEK;
-        } else {
-            model.period = DashboardContract.TIME_PERIOD_MONTH;
-        }
         List<BarEntry> amountList = new ArrayList<>(size);
         List<BarEntry> countList = new ArrayList<>(size);
         for (OrderTimeDistributionResp.PeriodItem item : list) {
@@ -179,6 +172,16 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
             newDataSet = new ArrayList<>();
             model.dataSets.put(model.dataSource, newDataSet);
         }
+
+        int size = newDataSet.size();
+        if (size <= PERIOD_WEEK_DATA_COUNT) {
+            model.period = DashboardContract.TIME_PERIOD_WEEK;
+        } else if (size <= PERIOD_TODAY_DATA_COUNT + 1) {
+            model.period = DashboardContract.TIME_PERIOD_TODAY;
+        } else {
+            model.period = DashboardContract.TIME_PERIOD_MONTH;
+        }
+
         if (!model.isValid || newDataSet.isEmpty()) {
             newDataSet.clear();
             Pair<Integer, Integer> result = calcRangeOfxAxis(model.period);
