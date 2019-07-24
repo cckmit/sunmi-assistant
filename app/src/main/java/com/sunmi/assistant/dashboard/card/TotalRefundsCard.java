@@ -24,7 +24,7 @@ public class TotalRefundsCard extends BaseSmallCard<TotalRefundsCard.Model, Orde
 
     @Override
     protected Model createModel(Context context) {
-        return new Model(context.getString(R.string.dashboard_customer_price));
+        return new Model(context.getString(R.string.dashboard_total_refunds));
     }
 
     @Override
