@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.sunmi.assistant.dashboard.DashboardContract;
 
@@ -43,7 +44,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private CardCallback mCallback = new CardCallback();
-    private Call<BaseResponse<Resp>> mCall;
+    private RequestCall<Resp> mCall = new RequestCall<>();
 
     private BaseRecyclerAdapter<Object> mAdapter;
     private int mPosition;
@@ -105,7 +106,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
     }
 
     public void cancelLoad() {
-        if (mCall != null) {
+        if (mCall.isLoading()) {
             mCall.cancel();
         }
     }
@@ -135,10 +136,13 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
 
     private void requestLoad(boolean forceLoad) {
         if (forceLoad || !mModel.skipLoad) {
+            if (mCall.isLoading() && mCall.isRequestSame(mCompanyId, mShopId, mPeriod)) {
+                LogCat.d(TAG, "Data is loading, skip.");
+                return;
+            }
             LogCat.d(TAG, "Start to load data.");
-            cancelLoad();
             mState = STATE_LOADING;
-            mCall = load(mCompanyId, mShopId, mPeriod, mCallback);
+            mCall.set(load(mCompanyId, mShopId, mPeriod, mCallback), mCompanyId, mShopId, mPeriod);
         }
     }
 
@@ -216,12 +220,57 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
     protected void showError(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
     }
 
+    private static class RequestCall<Resp> {
+        @Nullable
+        private Call<BaseResponse<Resp>> call;
+        private int companyId;
+        private int shopId;
+        private int period;
+
+        public void set(Call<BaseResponse<Resp>> call, int companyId, int shopId, int period) {
+            this.call = call;
+            this.companyId = companyId;
+            this.shopId = shopId;
+            this.period = period;
+        }
+
+        public void clear() {
+            this.call = null;
+            this.companyId = -1;
+            this.shopId = -1;
+            this.period = DashboardContract.TIME_PERIOD_INIT;
+        }
+
+        public Call<BaseResponse<Resp>> get() {
+            return this.call;
+        }
+
+        public void cancel() {
+            if (this.call != null) {
+                this.call.cancel();
+            }
+        }
+
+        public boolean isRequestSame(int companyId, int shopId, int period) {
+            return this.companyId == companyId && this.shopId == shopId && this.period == period;
+        }
+
+        public boolean isLoading() {
+            return this.call != null && !this.call.isCanceled();
+        }
+
+        public boolean isCanceled() {
+            return this.call != null && this.call.isCanceled();
+        }
+
+    }
+
     protected class CardCallback extends RetrofitCallback<Resp> {
 
         public void onSuccess() {
             LogCat.d(TAG, "Dashboard card load data pass. ");
             mState = STATE_SUCCESS;
-            mCall = null;
+            mCall.clear();
             mModel.isValid = true;
             setupModel(mModel, null);
             updateView();
@@ -231,7 +280,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         public void onSuccess(int code, String msg, Resp data) {
             LogCat.d(TAG, "Dashboard card load Success. " + msg);
             mState = STATE_SUCCESS;
-            mCall = null;
+            mCall.clear();
             mModel.isValid = true;
             setupModel(mModel, data);
             updateView();
@@ -240,13 +289,13 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         @Override
         public void onFail(int code, String msg, Resp data) {
             LogCat.e(TAG, "Dashboard card load Failed. " + msg);
-            if (mCall != null && mCall.isCanceled()) {
+            if (mCall.isCanceled()) {
                 mState = STATE_CANCEL;
             } else {
                 mState = STATE_FAILED;
                 mPresenter.showFailedTip();
             }
-            mCall = null;
+            mCall.clear();
             updateView();
         }
     }

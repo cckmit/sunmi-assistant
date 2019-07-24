@@ -151,11 +151,12 @@ public class QuantityRankCard extends BaseRefreshCard<QuantityRankCard.Model, Or
             View divider = holder.getView(R.id.v_dashboard_divider);
 
             rank.setText(String.valueOf(item.rank));
-            Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.dashboard_rank_bg_circle);
             name.setText(item.name);
             count.setText(item.count);
             int position = holder.getPosition();
             divider.setVisibility(position == getCount() - 1 ? View.GONE : View.VISIBLE);
+
+            Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.dashboard_rank_bg_circle);
             if (drawable == null) {
                 return;
             }
