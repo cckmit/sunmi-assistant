@@ -45,22 +45,16 @@ public class DeviceSettingDialog extends PopupWindow {
         setOutsideTouchable(true); // 设置popupwindow外部可点击
         setFocusable(false); // 获取焦点
 
-        viewLayout.findViewById(R.id.tv_detail).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-                if (onSettingsClickListener != null) {
-                    onSettingsClickListener.onSettingsClick(device, 0);
-                }
+        viewLayout.findViewById(R.id.tv_detail).setOnClickListener(v -> {
+            dismiss();
+            if (onSettingsClickListener != null) {
+                onSettingsClickListener.onSettingsClick(device, 0);
             }
         });
-        viewLayout.findViewById(R.id.tv_delete).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-                if (onSettingsClickListener != null) {
-                    onSettingsClickListener.onSettingsClick(device, 1);
-                }
+        viewLayout.findViewById(R.id.tv_delete).setOnClickListener(v -> {
+            dismiss();
+            if (onSettingsClickListener != null) {
+                onSettingsClickListener.onSettingsClick(device, 1);
             }
         });
         View divider1 = viewLayout.findViewById(R.id.divider1);
@@ -68,13 +62,10 @@ public class DeviceSettingDialog extends PopupWindow {
         if ("IPC".equalsIgnoreCase(device.getType())) {
             divider1.setVisibility(View.GONE);
             tvSetting.setVisibility(View.GONE);
-            tvSetting.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dismiss();
-                    if (onSettingsClickListener != null) {
-                        onSettingsClickListener.onSettingsClick(device, 2);
-                    }
+            tvSetting.setOnClickListener(v -> {
+                dismiss();
+                if (onSettingsClickListener != null) {
+                    onSettingsClickListener.onSettingsClick(device, 2);
                 }
             });
         } else {
