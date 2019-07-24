@@ -117,6 +117,7 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
         yAxis.setTextColor(ContextCompat.getColor(context, R.color.color_333338));
         yAxis.setGridColor(ContextCompat.getColor(context, R.color.black_10));
         yAxis.setAxisMinimum(0f);
+        yAxis.setMinWidth(36f);
         yAxis.enableGridDashedLine(dashLength, dashSpaceLength, 0f);
 
         return holder;
