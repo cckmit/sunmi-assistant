@@ -141,6 +141,7 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
         if (printerClient != null) {
             printerClient.quitConfig(bleAddress);
         }
+        GotoActivityUtils.gotoMainActivity(context);
         finish();
     }
 
@@ -213,8 +214,9 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
     @Override
     public void wifiConfigSuccess() {
         hideLoadingDialog();
-        if (passwordDialog != null)
+        if (passwordDialog != null) {
             passwordDialog.dismiss();
+        }
         GotoActivityUtils.gotoMainActivity(context);
         BaseNotification.newInstance().postNotificationName(Constants.NOTIFICATION_PRINTER_ADDED);
     }
@@ -258,6 +260,7 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
             @Override
             public void onClick(View v) {
                 showLoadingDialog();
+                passwordDialog.dismiss();
                 String psw = etPassword.getText().toString().trim();
                 if (router.isHasPwd() && TextUtils.isEmpty(psw)) {
                     shortTip(R.string.hint_input_router_pwd);

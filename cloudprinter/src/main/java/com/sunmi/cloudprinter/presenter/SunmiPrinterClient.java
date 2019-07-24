@@ -190,15 +190,19 @@ public class SunmiPrinterClient implements BluetoothAdapter.LeScanCallback {
         if (mClient == null) return;
         BleConnectOptions options = new BleConnectOptions.Builder()
                 .setConnectRetry(3)
-                .setConnectTimeout(20000)
+                .setConnectTimeout(20_000)
                 .setServiceDiscoverRetry(3)
-                .setServiceDiscoverTimeout(10000)
+                .setServiceDiscoverTimeout(20_000)
                 .build();
         mClient.connect(btAddress, options, new BleConnectResponse() {
             @Override
             public void onResponse(int code, BleGattProfile profile) {
                 if (code == 0) {
+                    Log.e("BtBlePresenter", "555555 connect success ");
                     initNotify(mClient, btAddress, cmd, data);
+                } else {
+                    Log.e("BtBlePresenter", "555555 connect code = " + code);
+                    iPrinterClient.sendDataFail(0, context.getString(R.string.tip_config_fail));
                 }
             }
         });
@@ -216,15 +220,16 @@ public class SunmiPrinterClient implements BluetoothAdapter.LeScanCallback {
 
             @Override
             public void onResponse(int code) {//注册notify返回的结果
-                Log.e("BtBlePresenter", "initNotify onResponse, code = " + code);
                 if (code == 0) {
                     retryCount = 0;
+                    Log.e("BtBlePresenter", "555555 initNotify success ");
                     sendCmd(mClient, btAddress, cmd, data);
                 } else {
+                    Log.e("BtBlePresenter", "initNotify onResponse, code = " + code);
                     if (retryCount > 3) {
                         retryCount = 0;
                         if (iPrinterClient != null) {
-                            iPrinterClient.sendDataFail(0, context.getString(R.string.tip_config_fail));
+                            iPrinterClient.sendDataFail(1, context.getString(R.string.tip_config_fail));
                         }
                         return;
                     }

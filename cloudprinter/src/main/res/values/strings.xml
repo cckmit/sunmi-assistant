@@ -17,10 +17,10 @@
     <string name="hint_retry_scan_printer">未发现打印机设备，请确认是否已长按匹配按钮，并刷新重试。（请确保手机蓝牙处于打开状态；并保证app定位授权打开</string>
     <string name="tip_printer_already_bound">该打印机已被其他账号绑定，请解绑后配置。</string>
     <string name="tip_printer_bind_fail">设备蓝牙连接失败</string>
-    <string name="tip_choose_connect_wifi">选择需要连接的WI-FI</string>
+    <string name="tip_choose_connect_wifi">选择需要连接的Wi-Fi</string>
     <string name="tip_use_2g">使用2G网络通讯，</string>
     <string name="click_skip">点击跳过</string>
-    <string name="str_tip_no_wifi">没有可连接的WI-FI</string>
+    <string name="str_tip_no_wifi">没有可连接的Wi-Fi</string>
     <string name="str_tip_check_network">请检查网络后重试</string>
     <string name="tip_printer_connect_fail">设备蓝牙连接失败</string>
     <string name="tip_bind_printer_error_no_net">绑定打印机失败，请检查手机网络是否正常。</string>
