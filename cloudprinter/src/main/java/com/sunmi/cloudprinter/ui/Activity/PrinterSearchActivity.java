@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Set;
 
 import sunmi.common.base.BaseActivity;
-import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.utils.PermissionUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.SmRecyclerView;
@@ -223,11 +222,8 @@ public class PrinterSearchActivity extends BaseActivity
             showErrorDialog(R.string.tip_printer_already_bound);
         } else if (code == 4402) {
             gotoPrinterSet();
-        } else if (code == RpcErrorCode.RPC_COMMON_ERROR
-                || code == RpcErrorCode.RPC_ERR_TIMEOUT) {
-            showErrorDialog(R.string.tip_bind_printer_error_no_net);
         } else {
-            shortTip(R.string.tip_bind_printer_fail);
+            showErrorDialog(R.string.tip_bind_printer_error_no_net);
         }
     }
 
