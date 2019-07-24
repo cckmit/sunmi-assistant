@@ -228,6 +228,9 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         private int period;
 
         public void set(Call<BaseResponse<Resp>> call, int companyId, int shopId, int period) {
+            if (this.call != null) {
+                this.call.cancel();
+            }
             this.call = call;
             this.companyId = companyId;
             this.shopId = shopId;
@@ -248,6 +251,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         public void cancel() {
             if (this.call != null) {
                 this.call.cancel();
+                clear();
             }
         }
 
