@@ -8,8 +8,10 @@ import android.widget.TextView;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.DashboardContract;
 
+import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
+import sunmi.common.rpc.retrofit.BaseResponse;
 
 /**
  * @author yinhui
@@ -20,15 +22,12 @@ public class TopTabCard extends BaseRefreshCard<TopTabCard.Model, Object> {
 
     public TopTabCard(Context context, DashboardContract.Presenter presenter) {
         super(context, presenter, -1, -1);
-        addOnViewClickListener(R.id.tv_dashboard_today, (adapter, holder, v, model, position) -> {
-            mPresenter.switchPeriodTo(DashboardContract.TIME_PERIOD_TODAY);
-        });
-        addOnViewClickListener(R.id.tv_dashboard_week, (adapter, holder, v, model, position) -> {
-            mPresenter.switchPeriodTo(DashboardContract.TIME_PERIOD_WEEK);
-        });
-        addOnViewClickListener(R.id.tv_dashboard_month, (adapter, holder, v, model, position) -> {
-            mPresenter.switchPeriodTo(DashboardContract.TIME_PERIOD_MONTH);
-        });
+        addOnViewClickListener(R.id.tv_dashboard_today, (adapter, holder, v, model, position) ->
+                mPresenter.switchPeriodTo(DashboardContract.TIME_PERIOD_TODAY));
+        addOnViewClickListener(R.id.tv_dashboard_week, (adapter, holder, v, model, position) ->
+                mPresenter.switchPeriodTo(DashboardContract.TIME_PERIOD_WEEK));
+        addOnViewClickListener(R.id.tv_dashboard_month, (adapter, holder, v, model, position) ->
+                mPresenter.switchPeriodTo(DashboardContract.TIME_PERIOD_MONTH));
     }
 
     @Override
@@ -56,8 +55,9 @@ public class TopTabCard extends BaseRefreshCard<TopTabCard.Model, Object> {
     }
 
     @Override
-    protected void load(int companyId, int shopId, int period, CardCallback callback) {
+    protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, CardCallback callback) {
         callback.onSuccess();
+        return null;
     }
 
     @Override
