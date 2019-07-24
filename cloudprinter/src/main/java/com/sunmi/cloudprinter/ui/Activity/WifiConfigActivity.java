@@ -274,6 +274,7 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
     }
 
     private void showErrorDialog(int msgResId) {
+        hideLoadingDialog();
         new CommonDialog.Builder(context)
                 .setTitle(R.string.sm_title_hint)
                 .setMessage(msgResId)
@@ -281,6 +282,7 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
     }
 
     private void confirmSkipDialog() {
+        hideLoadingDialog();
         new CommonDialog.Builder(context)
                 .setTitle(R.string.sm_title_hint)
                 .setMessage(R.string.str_msg_clear_wifi_config)

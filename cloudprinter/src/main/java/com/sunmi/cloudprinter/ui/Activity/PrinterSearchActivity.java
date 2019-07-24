@@ -34,9 +34,8 @@ import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.dialog.CommonDialog;
 
 @EActivity(resName = "activity_search_printer")
-public class PrinterSearchActivity extends BaseActivity//BaseMvpActivity<BtBlePresenter>
-        implements //BtBleContract.View, BluetoothAdapter.LeScanCallback,
-        PrinterListAdapter.OnItemClickListener, SunmiPrinterClient.IPrinterClient {
+public class PrinterSearchActivity extends BaseActivity
+        implements PrinterListAdapter.OnItemClickListener, SunmiPrinterClient.IPrinterClient {
 
     @ViewById(resName = "rv_ble")
     SmRecyclerView rvResult;
@@ -186,7 +185,7 @@ public class PrinterSearchActivity extends BaseActivity//BaseMvpActivity<BtBlePr
     }
 
     @Override
-    public void onSnReceived(String sn) {
+    public void onSnReceived(String sn) {//N302D96D40077
         isSnGot = true;
         sunmiPrinterClient.bindPrinter(shopId, sn);
     }
@@ -238,6 +237,7 @@ public class PrinterSearchActivity extends BaseActivity//BaseMvpActivity<BtBlePr
     }
 
     private void showErrorDialog(int msgResId) {
+        hideLoadingDialog();
         new CommonDialog.Builder(context)
                 .setTitle(R.string.sm_title_hint)
                 .setMessage(msgResId)
