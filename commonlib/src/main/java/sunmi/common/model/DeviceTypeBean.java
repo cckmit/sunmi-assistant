@@ -7,6 +7,11 @@ import java.util.List;
  * Created by bruce on 2019/7/15.
  */
 public class DeviceTypeBean {
+    /**
+     * brand : w1
+     * model : W1
+     * mac : ["0C:25:76"]
+     */
 
     private String brand;
     private String model;
@@ -20,6 +25,14 @@ public class DeviceTypeBean {
         this.brand = brand;
     }
 
+    public String getModel() {
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
     public List<String> getMac() {
         return mac;
     }
@@ -28,11 +41,4 @@ public class DeviceTypeBean {
         this.mac = mac;
     }
 
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
 }
