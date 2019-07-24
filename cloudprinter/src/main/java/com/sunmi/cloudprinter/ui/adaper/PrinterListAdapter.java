@@ -33,21 +33,14 @@ public class PrinterListAdapter extends RecyclerView.Adapter<PrinterListAdapter.
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, final int i) {
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.item_printer, viewGroup, false);
-        final ViewHolder viewHolder = new ViewHolder(view);
-        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null)
-                    listener.onItemClick(data.get(viewHolder.getAdapterPosition()));
-            }
-        });
-        return viewHolder;
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         viewHolder.tvBlueName.setText(data.get(i).getName());
         viewHolder.tvBlueAddress.setText(data.get(i).getAddress());
+
     }
 
     @Override
@@ -57,7 +50,7 @@ public class PrinterListAdapter extends RecyclerView.Adapter<PrinterListAdapter.
         return 0;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView tvBlueName;
         TextView tvBlueAddress;
@@ -66,6 +59,14 @@ public class PrinterListAdapter extends RecyclerView.Adapter<PrinterListAdapter.
             super(itemView);
             tvBlueName = itemView.findViewById(R.id.tv_name);
             tvBlueAddress = itemView.findViewById(R.id.tv_sn);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (listener != null) {
+                listener.onItemClick(data.get(getAdapterPosition()));
+            }
         }
     }
 

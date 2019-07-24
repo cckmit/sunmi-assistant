@@ -66,8 +66,8 @@ public class DeviceSettingDialog extends PopupWindow {
         View divider1 = viewLayout.findViewById(R.id.divider1);
         TextView tvSetting = viewLayout.findViewById(R.id.tv_setting);
         if ("IPC".equalsIgnoreCase(device.getType())) {
-            divider1.setVisibility(View.VISIBLE);
-            tvSetting.setVisibility(View.VISIBLE);
+            divider1.setVisibility(View.GONE);
+            tvSetting.setVisibility(View.GONE);
             tvSetting.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

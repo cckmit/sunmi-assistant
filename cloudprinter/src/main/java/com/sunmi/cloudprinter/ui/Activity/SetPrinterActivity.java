@@ -1,7 +1,6 @@
 package com.sunmi.cloudprinter.ui.Activity;
 
 import android.app.Dialog;
-import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,7 +34,6 @@ import java.util.List;
 import java.util.UUID;
 
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.ByteUtils;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -271,7 +269,6 @@ public class SetPrinterActivity extends BaseMvpActivity<SetPrinterPresenter>
         if (routerDialog != null)
             routerDialog.dismiss();
         GotoActivityUtils.gotoMainActivity(context);
-        BaseNotification.newInstance().postNotificationName(Constants.NOTIFICATION_PRINTER_ADDED);
     }
 
 }

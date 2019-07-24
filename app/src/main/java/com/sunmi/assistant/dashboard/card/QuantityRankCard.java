@@ -21,10 +21,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import retrofit2.Call;
 import sunmi.common.base.adapter.CommonAdapter;
 import sunmi.common.base.adapter.ViewHolder;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
+import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.utils.log.LogCat;
 
 /**
@@ -70,9 +72,9 @@ public class QuantityRankCard extends BaseRefreshCard<QuantityRankCard.Model, Or
     }
 
     @Override
-    protected void load(int companyId, int shopId, int period, CardCallback callback) {
+    protected Call<BaseResponse<OrderQuantityRankResp>> load(int companyId, int shopId, int period, CardCallback callback) {
         Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(period);
-        SunmiStoreRemote.get().getOrderQuantityRank(companyId, shopId,
+        return SunmiStoreRemote.get().getOrderQuantityRank(companyId, shopId,
                 periodTimestamp.first, periodTimestamp.second, callback);
     }
 
@@ -129,8 +131,7 @@ public class QuantityRankCard extends BaseRefreshCard<QuantityRankCard.Model, Or
 
     @Override
     protected void showError(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-        holder.getView(R.id.layout_dashboard_content).setVisibility(View.GONE);
-        holder.getView(R.id.pb_dashboard_loading).setVisibility(View.GONE);
+        setupView(holder, model, position);
     }
 
     private static class RankListAdapter extends CommonAdapter<QuantityRankCard.Item> {
@@ -150,9 +151,16 @@ public class QuantityRankCard extends BaseRefreshCard<QuantityRankCard.Model, Or
             View divider = holder.getView(R.id.v_dashboard_divider);
 
             rank.setText(String.valueOf(item.rank));
-            Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.dashboard_rank_bg_circle);
-            drawable = DrawableCompat.wrap(drawable);
+            name.setText(item.name);
+            count.setText(item.count);
             int position = holder.getPosition();
+            divider.setVisibility(position == getCount() - 1 ? View.GONE : View.VISIBLE);
+
+            Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.dashboard_rank_bg_circle);
+            if (drawable == null) {
+                return;
+            }
+            drawable = DrawableCompat.wrap(drawable);
             if (position == RANK_FIRST) {
                 DrawableCompat.setTint(drawable, ContextCompat.getColor(mContext, R.color.color_FC5656));
                 rank.setBackground(drawable);
@@ -169,9 +177,6 @@ public class QuantityRankCard extends BaseRefreshCard<QuantityRankCard.Model, Or
                 rank.setBackground(null);
                 rank.setTextColor(ContextCompat.getColor(mContext, R.color.color_85858A));
             }
-            name.setText(item.name);
-            count.setText(item.count);
-            divider.setVisibility(position == getCount() - 1 ? View.GONE : View.VISIBLE);
         }
     }
 

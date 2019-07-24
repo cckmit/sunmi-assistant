@@ -89,7 +89,6 @@ public class ToastUtils {
                     mToast.setDuration(Toast.LENGTH_SHORT);
                 }
                 mToast.show();
-                mToast = null;
             }
         });
     }

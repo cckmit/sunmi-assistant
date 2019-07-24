@@ -29,7 +29,7 @@
     <string name="tip_video_quality_fhd">Switch to Super definition</string>
     <string name="tip_video_quality_hd">Switch to high definition</string>
     <string name="tip_device_not_exist">Device not exist</string>
-    <string name="tip_already_bound">Already bound</string>
+    <string name="tip_already_bound">添加失败，已绑定其他账号</string>
     <string name="tip_device_offline">Device offline</string>
     <string name="tip_bind_timeout">Bind timeout</string>
     <string name="tip_no_play_video">No video data</string>
