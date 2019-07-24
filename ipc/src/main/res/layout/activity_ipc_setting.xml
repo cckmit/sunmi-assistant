@@ -16,7 +16,10 @@
         app:titleText="@string/str_setting_ipc_camera"
         app:titleTextColor="@color/colorText" />
 
+    <include layout="@layout/include_net_exception" />
+
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nsv_setting"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/title_bar">
@@ -65,7 +68,6 @@
                 app:leftText="@string/ipc_setting_sound_abnormal_detection"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
-                app:rightText="开"
                 app:rightTextColor="@color/colorText_60" />
 
 
@@ -78,10 +80,9 @@
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
                 app:leftPadding="@dimen/dp_10"
-                app:leftText="@string/ipc_setting_dynamic_abnormal_detection"
+                app:leftText="@string/ipc_setting_active_abnormal_detection"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
-                app:rightText="开"
                 app:rightTextColor="@color/colorText_60" />
 
 
@@ -97,7 +98,6 @@
                 app:leftText="@string/ipc_setting_detection_time"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
-                app:rightText="开"
                 app:rightTextColor="@color/colorText_60" />
 
 
@@ -113,7 +113,6 @@
                 app:leftText="@string/ipc_setting_night_vision_mode"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
-                app:rightText="自动切换"
                 app:rightTextColor="@color/colorText_60" />
 
             <RelativeLayout
@@ -140,7 +139,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/dp_20"
-                    android:checked="true"
+                    android:checked="false"
                     android:thumb="@drawable/switch_thumb"
                     android:track="@drawable/switch_track" />
             </RelativeLayout>
@@ -169,7 +168,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/dp_20"
-                    android:checked="true"
+                    android:checked="false"
                     android:thumb="@drawable/switch_thumb"
                     android:track="@drawable/switch_track" />
             </RelativeLayout>
@@ -186,7 +185,6 @@
                 app:leftText="@string/ipc_setting_wifi"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
-                app:rightText="SUNMI 5G"
                 app:rightTextColor="@color/colorText_60" />
 
 
@@ -202,7 +200,6 @@
                 app:leftText="@string/ipc_setting_version_current_name"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
-                app:rightText="SUNMI 5G"
                 app:rightTextColor="@color/colorText_60" />
         </RelativeLayout>
 

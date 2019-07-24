@@ -1,5 +1,6 @@
 package com.sunmi.ipc.view;
 
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -60,10 +61,15 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
     @Extra
     SunmiDevice sunmiDevice;
 
-    private int connectStatus = -1;
+    private static int TIMEOUT_GET_WIFI = 15_000;
+    private static int TIMEOUT_GET_IPC_STATUS_FAIL = 10_000;
+    private static int DURATION_STATUS_GOT = 20_000;
+    private int connectStatus = -1, online = -1;
     private Timer timer = new Timer();
+    private CountDownTimer countDownTimer;//获取online状态后超时等待
     private int retryCount;
     private boolean alreadyFinish;
+    private int failGetStatusCount;
 
     private List<WifiListResp.ScanResultsBean> wifiList = new ArrayList<>();
 
@@ -99,7 +105,7 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
 
     @Override
     public void onItemClick(String ssid, String mgmt) {
-        if (TextUtils.equals(mgmt, "NONE")) {
+        if (TextUtils.equals(mgmt, "NONE")) {//无密码
             showLoadingDialog();
             IPCCall.getInstance().setIPCWifi(context, ssid, mgmt, "", sunmiDevice.getIp());
         } else if (TextUtils.equals(mgmt, "WPA-PSK")) {
@@ -134,7 +140,7 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
                     setNoWifiVisible(View.VISIBLE);
                 }
             }
-        }, 10000);
+        }, TIMEOUT_GET_WIFI);
     }
 
     @UiThread
@@ -152,33 +158,43 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
     @UiThread
     void setIpcWifiSuccess() {
         startGetStatusTimer();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                hideLoadingDialog();
-                stopTimer();
-                if (connectStatus != 1) {
-                    gotoBind();
-                }
-            }
-        }, 20000);
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                hideLoadingDialog();
+//                stopTimer();
+//                if (connectStatus != 1) {
+//                    gotoBind();
+//                }
+//            }
+//        }, 20000);
     }
 
-    //{"data":[{"opcode":"0x3119","result":{"wireless":{"connect_status":"0"}},"errcode":0}],"msg_id":"11111","errcode":0}
+    //{"data":[{"opcode":"0x3119","result":{"online":0,"wireless":{"connect_status":"0"}},"errcode":0}],"msg_id":"11111","errcode":0}
     @UiThread
     void wifiStatusGetSuccess(ResponseBean res) {
+        if (!TextUtils.equals("0", res.getErrCode())) {
+            countGetStatusFail();
+            return;
+        }
         if (res.getResult() != null && res.getResult().has("wireless")) {
             try {
                 JSONObject jsonObject = res.getResult().getJSONObject("wireless");
                 if (jsonObject.has("connect_status")) {//是否成功关联上前端AP(0:正在关联。1：关联成功。2：关联失败)
                     connectStatus = jsonObject.getInt("connect_status");
-                    if (0 == connectStatus) {
-                        return;
-                    }
-                    stopTimer();
-                    if (1 == connectStatus) {
-                        gotoBind();
-                    } else {
+                    if (1 == connectStatus) {//返回1，继续判断online状态
+                        if (res.getResult().has("online")) {
+                            online = res.getResult().getInt("online");
+                            if (1 == online) {
+                                stopTimer();
+                                gotoBind();
+                            } else if (0 == online) {
+                                startWaitCountTimer();
+                            }
+                        }
+                    } else if (2 == connectStatus) {
+                        stopTimer();
+                        cancelWaitCountTimer();
                         hideLoadingDialog();
                         shortTip(R.string.tip_wifi_psw_error);
                     }
@@ -189,16 +205,31 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
         }
     }
 
+    private void countGetStatusFail() {
+        failGetStatusCount++;
+        if (failGetStatusCount > 2) {
+            cancelWaitCountTimer();
+            stopTimer();
+            failGetStatusCount = 0;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    hideLoadingDialog();
+                    gotoBind();
+                }
+            }, TIMEOUT_GET_IPC_STATUS_FAIL);
+        }
+    }
+
     private void startGetStatusTimer() {
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (retryCount == 30) stopTimer();
                 retryCount++;
                 IPCCall.getInstance().getApStatus(context, sunmiDevice.getIp());
             }
-        }, 0, 3000);
+        }, 0, 1000);
     }
 
     // 停止定时器
@@ -206,6 +237,29 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
         if (timer != null) {
             timer.cancel();
             timer = null;
+        }
+    }
+
+    private void startWaitCountTimer() {
+        if (countDownTimer != null) return;
+        countDownTimer = new CountDownTimer(DURATION_STATUS_GOT, DURATION_STATUS_GOT) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                gotoBind();
+            }
+        };
+        countDownTimer.start();
+    }
+
+    private void cancelWaitCountTimer() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
         }
     }
 

@@ -1,19 +1,19 @@
 <resources>
 
-    <style name="configTitleText">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginStart">@dimen/dp_30</item>
-        <item name="android:layout_marginTop">@dimen/dp_24</item>
-        <item name="android:textColor">@color/color_333333</item>
-        <item name="android:textSize">@dimen/sp_28</item>
-        <item name="android:textStyle">bold</item>
-    </style>
     <style name="ProgressBarVertical">
         <item name="android:indeterminateOnly">false</item>
         <item name="android:progressDrawable">@mipmap/ic_add</item>
         <item name="android:indeterminateDrawable">@android:drawable/progress_indeterminate_horizontal</item>
         <item name="android:minWidth">1dip</item>
         <item name="android:maxWidth">12dip</item>
+    </style>
+
+    <style name="ProgressHorizontal">
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:progressDrawable">@drawable/progress_horizontal_color</item>
+        <item name="android:indeterminateDrawable">@android:drawable/progress_indeterminate_horizontal</item>
+        <item name="android:minHeight">12dip</item>
+        <item name="android:maxHeight">12dip</item>
+        <item name="android:mirrorForRtl">true</item>
     </style>
 </resources>

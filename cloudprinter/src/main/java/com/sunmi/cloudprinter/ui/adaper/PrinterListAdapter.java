@@ -9,17 +9,17 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.sunmi.cloudprinter.R;
-import com.sunmi.cloudprinter.bean.BlueDevice;
+import com.sunmi.cloudprinter.bean.PrinterDevice;
 
 import java.util.List;
 
 public class PrinterListAdapter extends RecyclerView.Adapter<PrinterListAdapter.ViewHolder> {
 
     private Context context;
-    private List<BlueDevice> data;
+    private List<PrinterDevice> data;
     private OnItemClickListener listener;
 
-    public PrinterListAdapter(Context context, List<BlueDevice> data) {
+    public PrinterListAdapter(Context context, List<PrinterDevice> data) {
         this.context = context;
         this.data = data;
     }
@@ -32,22 +32,15 @@ public class PrinterListAdapter extends RecyclerView.Adapter<PrinterListAdapter.
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, final int i) {
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.item_bluetooth, viewGroup, false);
-        final ViewHolder viewHolder = new ViewHolder(view);
-        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null)
-                    listener.onItemClick(data.get(viewHolder.getAdapterPosition()));
-            }
-        });
-        return viewHolder;
+                .inflate(R.layout.item_printer, viewGroup, false);
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         viewHolder.tvBlueName.setText(data.get(i).getName());
         viewHolder.tvBlueAddress.setText(data.get(i).getAddress());
+
     }
 
     @Override
@@ -57,20 +50,28 @@ public class PrinterListAdapter extends RecyclerView.Adapter<PrinterListAdapter.
         return 0;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView tvBlueName;
         TextView tvBlueAddress;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvBlueName = itemView.findViewById(R.id.left_text);
-            tvBlueAddress = itemView.findViewById(R.id.right_text);
+            tvBlueName = itemView.findViewById(R.id.tv_name);
+            tvBlueAddress = itemView.findViewById(R.id.tv_sn);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (listener != null) {
+                listener.onItemClick(data.get(getAdapterPosition()));
+            }
         }
     }
 
     public interface OnItemClickListener {
-        void onItemClick(BlueDevice blueDevice);
+        void onItemClick(PrinterDevice printerDevice);
     }
 
 }

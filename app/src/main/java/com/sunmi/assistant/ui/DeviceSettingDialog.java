@@ -6,6 +6,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 
@@ -62,15 +63,24 @@ public class DeviceSettingDialog extends PopupWindow {
                 }
             }
         });
-        viewLayout.findViewById(R.id.tv_setting).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-                if (onSettingsClickListener != null) {
-                    onSettingsClickListener.onSettingsClick(device, 2);
+        View divider1 = viewLayout.findViewById(R.id.divider1);
+        TextView tvSetting = viewLayout.findViewById(R.id.tv_setting);
+        if ("IPC".equalsIgnoreCase(device.getType())) {
+            divider1.setVisibility(View.GONE);
+            tvSetting.setVisibility(View.GONE);
+            tvSetting.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismiss();
+                    if (onSettingsClickListener != null) {
+                        onSettingsClickListener.onSettingsClick(device, 2);
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            divider1.setVisibility(View.GONE);
+            tvSetting.setVisibility(View.GONE);
+        }
     }
 
     public void show(View parent) {

@@ -1,20 +1,22 @@
 package com.sunmi.ipc.model;
 
+import java.io.Serializable;
+
 /**
  * @author yinhui
  * @date 2019-07-15
  */
-public class IpcNewFirmwareResp {
+public class IpcNewFirmwareResp implements Serializable {
 
-    private String lastest_bin_version;
+    private String latest_bin_version;
     private int upgrade_required;
     private String url;
 
     /**
      * 最新版本号
      */
-    public String getLastest_bin_version() {
-        return lastest_bin_version;
+    public String getLatest_bin_version() {
+        return latest_bin_version;
     }
 
     /**

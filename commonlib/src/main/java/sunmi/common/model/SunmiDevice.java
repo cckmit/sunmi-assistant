@@ -22,6 +22,7 @@ public class SunmiDevice extends DataSupport implements Serializable {
      * factory : xxxxxxxx
      * deviceid : xxxxxxxx
      */
+    @Column(unique = true)
     private String deviceid;
     private int serverId;
     private String ip;//设备的ip

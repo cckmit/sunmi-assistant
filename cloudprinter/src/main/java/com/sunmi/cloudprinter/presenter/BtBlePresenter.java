@@ -11,11 +11,13 @@ import com.inuker.bluetooth.library.connect.response.BleWriteResponse;
 import com.inuker.bluetooth.library.model.BleGattProfile;
 import com.sunmi.cloudprinter.constant.BtBleContract;
 import com.sunmi.cloudprinter.constant.Constants;
+import com.sunmi.cloudprinter.rpc.IOTCloudApi;
 import com.sunmi.cloudprinter.utils.Utility;
 
 import java.util.UUID;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.rpc.http.HttpCallback;
 import sunmi.common.utils.ByteUtils;
 
 /**
@@ -27,7 +29,29 @@ public class BtBlePresenter extends BasePresenter<BtBleContract.View>
 
     private byte[] receivedData;
     private int receivedLen;
-    String bleAddr;
+    private int retryCount;
+
+    @Override
+    public void bindPrinter(int shopId, String sn) {
+        mView.showLoadingDialog();
+        IOTCloudApi.bindPrinter(shopId, sn, new HttpCallback<String>(null) {
+            @Override
+            public void onSuccess(int code, String msg, String data) {
+                if (isViewAttached()) {
+                    mView.hideLoadingDialog();
+                    mView.bindSuccess(code, msg, data);
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, String data) {
+                if (isViewAttached()) {
+                    mView.hideLoadingDialog();
+                    mView.bindFail(code, msg, data);
+                }
+            }
+        });
+    }
 
     @Override
     public void sendData(final BluetoothClient client, final String bleAddress, final byte[] data) {
@@ -52,8 +76,6 @@ public class BtBlePresenter extends BasePresenter<BtBleContract.View>
             }
         });
     }
-
-    int retryCount;
 
     private void initNotify(final BluetoothClient mClient, final String btAddress, final byte[] data) {
         if (mClient == null) return;
@@ -135,24 +157,5 @@ public class BtBlePresenter extends BasePresenter<BtBleContract.View>
             }
         }
     }
-
-//    private void onResponse(byte[] value) {
-//        int cmd = Utility.getCmd(value);
-//        if (cmd == Constants.SRV2CLI_SEND_SN) {
-////            mView.setSn(Utility.getSn(value));
-////            mView.onSendMessage(Utility.cmdGetWifi((byte) 100));
-//        } else if (cmd == Constants.SRV2CLI_SEND_WIFI_ERROR) {
-//            mView.shortTip(R.string.str_get_wifi_msg_error);
-//        } else if (cmd == Constants.SRV2CLI_SEND_WIFI_AP) {
-//            Router router = Utility.getRouter(value);
-////            mView.initRouter(router);
-//        } else if (cmd == Constants.SRV2CLI_SEND_WIFI_AP_COMPLETELY) {
-//            mView.shortTip(R.string.str_wifi_msg_completely);
-//            mView.hideLoadingDialog();
-//        } else if (cmd == Constants.SRV2CLI_SEND_ALREADY_CONNECTED_WIFI) {
-////            mView.wifiSetSuccess();
-////            mView.onSendMessage(Utility.cmdAlreadyConnectedWifi());
-//        }
-//    }
 
 }

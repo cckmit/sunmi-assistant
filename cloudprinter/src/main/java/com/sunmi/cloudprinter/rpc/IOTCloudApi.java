@@ -21,7 +21,7 @@ public class IOTCloudApi extends BaseHttpApi {
      *
      * @param sn 是	string	设备序列号
      */
-    public static void bindPrinter(String shopId, String sn, StringCallback callback) {
+    public static void bindPrinter(int shopId, String sn, StringCallback callback) {
         try {
             String params = new JSONObject()
                     .put("userId", SpUtils.getUID())
@@ -47,6 +47,7 @@ public class IOTCloudApi extends BaseHttpApi {
                     .put("userId", SpUtils.getUID())
                     .put("merchantId", shopId)
                     .put("sn", sn)
+                    .put("channelId", 1)
                     .put("token", SafeUtils.md5(SpUtils.getUID()))
                     .toString();
             post(MerchantInterface.UNBIND_PRINTER, getSignedParams(params), callback);
@@ -63,6 +64,7 @@ public class IOTCloudApi extends BaseHttpApi {
             String params = new JSONObject()
                     .put("userId", SpUtils.getUID())
                     .put("merchantId", shopId)
+                    .put("channelId", 1)
                     .put("token", SafeUtils.md5(SpUtils.getUID()))
                     .toString();
             post(MerchantInterface.GET_PRINTER_LIST, getSignedParams(params), callback);

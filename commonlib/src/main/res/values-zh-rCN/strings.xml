@@ -10,6 +10,7 @@
     <string name="str_continue">继续</string>
     <string name="str_exit">退出</string>
     <string name="str_next">下一步</string>
+    <string name="str_close">关闭</string>
 
     <string name="str_click_consent">点击“开始配置”代表你同意</string>
     <string name="sunmi_user_protocol">《商米用户协议》</string>
@@ -43,7 +44,7 @@
 
     <string name="str_title_ap_set">路由器设置</string>
     <string name="str_title_ipc_set">摄像机设置</string>
-    <string name="str_title_printer_set">打印机设置</string>
+    <string name="str_title_printer_set">云打印机设置</string>
     <string name="str_config_tip_ap">连接您要设置的路由器</string>
     <string name="str_config_tip_ap_1"><![CDATA[1. 接通电源并连接网线，待系统指示灯停止闪烁]]></string>
     <string name="str_config_tip_ap_2"><![CDATA[2. 如使用无线连接，请将手机连接机身背面标识的无线网络<font color= \'#FF6000\'>「SUNMI_XX」</font>]]></string>
@@ -51,9 +52,10 @@
     <string name="str_config_tip_ipc_1"><![CDATA[1. 将摄像机接通电源，待信号灯呈<font color= \'#FF6000\'>「绿色闪烁」</font>或<font color= \'#FF6000\'>「蓝色常亮」</font>状态]]></string>
     <string name="str_config_tip_ipc_2">2. 如使用有线网络连接，请为摄像机插入网线，并将手机连接至同一网络</string>
     <string name="str_config_tip_ipc_3"><![CDATA[3. 如使用无线连接，请将手机连接机身背面标识的无线网络<font color= \'#FF6000\'>「SUNMI_XXXX」</font>]]></string>
-    <string name="str_config_tip_printer">连接您要设置的打印机</string>
-    <string name="str_config_tip_printer_1">1. 将打印机接通电源，按一下配对按钮</string>
-    <string name="str_config_tip_printer_2"><![CDATA[2. 手机连接到<font color= \'#FF6000\'>「CloudPrint_XXXX」</font> 蓝牙]]></string>
+    <string name="str_config_tip_printer">连接您要设置的云打印机</string>
+    <string name="str_config_tip_printer_1">1. 将云打印机接通电源，长按配对按钮3秒以开启配对模式；</string>
+    <string name="str_config_tip_printer_2">2. 听到提示音后，松开配对按钮；</string>
+    <string name="str_config_tip_printer_3">3. 点击下方“下一步”按钮，选择云打印机；（请确保手机蓝牙处于打开状态；并保证app定位授权打开）</string>
     <string name="tip_has_ap_already">已经有连网的商米路由器？</string>
     <string name="str_start_set">开始设置</string>
     <string name="str_config_child_tip">如果您已经有一台连网的商米路由器，您可以在「路由器管理」中添加更多路由器</string>
@@ -77,5 +79,7 @@
     <string name="str_bind_success">绑定成功</string>
     <string name="str_bind_fail">绑定失败</string>
     <string name="str_dev_binded">该设备已被其他用户绑定</string>
+    <string name="str_prompt">开启蓝牙</string>
+    <string name="str_tip_start_blue">您当前尚未开启蓝牙，是否跳转蓝牙设置页面？</string>
 
 </resources>

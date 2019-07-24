@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorText_5">
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/c_white"
+        app:dividerShow="true"
+        app:leftDefaultClickEnable="true"
+        app:leftIcon="@mipmap/ic_back_dark"
+        app:titleText="@string/ipc_setting_wifi"
+        app:titleTextColor="@color/colorText" />
+
+    <RelativeLayout
+        android:id="@+id/rl_wifi"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_60"
+        android:layout_below="@id/title_bar"
+        android:background="@color/c_white">
+
+        <TextView
+            android:id="@+id/tv_wifi_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dp_25"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxEms="32"
+            android:singleLine="true"
+            android:textColor="@color/common_orange"
+            android:textSize="@dimen/sp_16" />
+
+        <ImageView
+            android:id="@+id/iv_lock"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_56"
+            android:background="@mipmap/ic_lock"
+            android:visibility="gone"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/iv_wifi"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_25"
+            android:background="@mipmap/ic_wifi"
+            tools:ignore="ContentDescription" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_status"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_40"
+        android:layout_below="@id/rl_wifi"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/dp_25"
+        android:layout_marginStart="@dimen/dp_25"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:singleLine="true"
+        android:textColor="@color/colorText_60"
+        android:textSize="@dimen/sp_14" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_status"
+        android:background="@color/c_white" />
+
+
+</RelativeLayout>

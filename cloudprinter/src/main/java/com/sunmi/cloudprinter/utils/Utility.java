@@ -1,6 +1,7 @@
 package com.sunmi.cloudprinter.utils;
 
 import com.sunmi.cloudprinter.bean.Router;
+import com.sunmi.cloudprinter.constant.Constants;
 
 import sunmi.common.utils.ByteUtils;
 import sunmi.common.utils.log.LogCat;
@@ -9,8 +10,6 @@ import static com.sunmi.cloudprinter.constant.Constants.PRINTER_CMD_TAG1;
 import static com.sunmi.cloudprinter.constant.Constants.PRINTER_CMD_TAG2;
 
 public class Utility {
-
-    private static byte btCmdVersion = 100;
 
     public static boolean isFirstPac(byte[] data) {
         int aa = data[0] & 0xFF;
@@ -45,7 +44,7 @@ public class Utility {
      * @param data
      * @return
      */
-    public static int getCmd(byte[] data) {
+    public static int getCmdId(byte[] data) {
         return (int) data[5];
     }
 
@@ -84,7 +83,7 @@ public class Utility {
         } else {
             router.setHasPwd(true);
         }
-        router.setRssi(ByteUtils.byte4ToInt(bRssi));
+        router.setRssi(ByteUtils.byte4ToIntL(bRssi));
         router.setEssid(bName);
         return router;
     }
@@ -93,28 +92,36 @@ public class Utility {
      * 命令码 05 - 获取打印机的sn
      */
     public static byte[] cmdGetSn() {
-        byte[] getSn = new byte[6];
-        byte[] cmdTag = getCmdTag();
-        System.arraycopy(cmdTag, 0, getSn, 0, cmdTag.length);
-        byte[] len = ByteUtils.intToByte2(6);
-        System.arraycopy(len, 0, getSn, 2, len.length);
-        getSn[4] = btCmdVersion;
-        getSn[5] = 5;
-        return getSn;
+        return ByteUtils.byteMergerAll(
+                getCmdTag(),
+                ByteUtils.intToByte2(6),
+                getCmd(Constants.CMD_REQ_SN));
+//        byte[] getSn = new byte[6];
+//        byte[] cmdTag = getCmdTag();
+//        System.arraycopy(cmdTag, 0, getSn, 0, cmdTag.length);
+//        byte[] len = ByteUtils.intToByte2(6);
+//        System.arraycopy(len, 0, getSn, 2, len.length);
+//        getSn[4] = Constants.PRINTER_CMD_VERSION;
+//        getSn[5] = 5;
+//        return getSn;
     }
 
     /**
      * 命令码06 - 获取打印机wifi列表
      */
-    public static byte[] cmdGetWifi(byte version) {
-        byte[] getWifi = new byte[6];
-        byte[] cmdTag = getCmdTag();
-        System.arraycopy(cmdTag, 0, getWifi, 0, cmdTag.length);
-        byte[] len = ByteUtils.intToByte2(6);
-        System.arraycopy(len, 0, getWifi, 2, len.length);
-        getWifi[4] = version;
-        getWifi[5] = 6;
-        return getWifi;
+    public static byte[] cmdGetWifi() {
+        return ByteUtils.byteMergerAll(
+                getCmdTag(),
+                ByteUtils.intToByte2(6),
+                getCmd(Constants.CMD_REQ_WIFI_LIST));
+//        byte[] getWifi = new byte[6];
+//        byte[] cmdTag = getCmdTag();
+//        System.arraycopy(cmdTag, 0, getWifi, 0, cmdTag.length);
+//        byte[] len = ByteUtils.intToByte2(6);
+//        System.arraycopy(len, 0, getWifi, 2, len.length);
+//        getWifi[4] = Constants.PRINTER_CMD_VERSION;
+//        getWifi[5] = 6;
+//        return getWifi;
     }
 
     /**
@@ -124,37 +131,42 @@ public class Utility {
         return ByteUtils.byteMergerAll(
                 getCmdTag(),
                 ByteUtils.intToByte2(134),
-                getCmd(7),
+                getCmd(Constants.CMD_REQ_CONNECT_WIFI),
                 ssid, pwd);
-//        byte[] connectWifi = new byte[134];
-//        byte[] len = ByteUtils.intToByte4(134);
-//        System.arraycopy(len, 0, connectWifi, 0, len.length);
-//        connectWifi[4] = version;
-//        connectWifi[5] = 7;
-//        System.arraycopy(ssid, 0, connectWifi, 6, ssid.length);
-//        System.arraycopy(pwd, 0, connectWifi, 6 + ssid.length, pwd.length);
-//        return connectWifi;
     }
 
     /**
-     * 命令码 08
+     * 命令码 08 - 收到成功连接上指定AP通知的应答
      */
     public static byte[] cmdAlreadyConnectedWifi() {
         return ByteUtils.byteMergerAll(
                 getCmdTag(),
                 ByteUtils.intToByte2(6),
-                getCmd(8));
+                getCmd(Constants.CMD_REQ_WIFI_CONNECTED));
+    }
 
-//        byte[] connectedWifi = new byte[6];
-//        byte[] len = ByteUtils.intToByte4(6);
-//        System.arraycopy(len, 0, connectedWifi, 0, len.length);
-//        connectedWifi[4] = version;
-//        connectedWifi[5] = 8;
-//        return connectedWifi;
+    /**
+     * 命令码 0A - 请求退出配网过程
+     */
+    public static byte[] cmdQuitConfig() {
+        return ByteUtils.byteMergerAll(
+                getCmdTag(),
+                ByteUtils.intToByte2(6),
+                getCmd(Constants.CMD_REQ_QUIT_CONFIG));
+    }
+
+    /**
+     * 命令码 0B - 请求删除wifi 配置
+     */
+    public static byte[] cmdDeleteWifiInfo() {
+        return ByteUtils.byteMergerAll(
+                getCmdTag(),
+                ByteUtils.intToByte2(6),
+                getCmd(Constants.CMD_REQ_DELETE_WIFI_INFO));
     }
 
     private static byte[] getCmd(int cmd) {
-        return new byte[]{btCmdVersion, (byte) cmd};
+        return new byte[]{Constants.PRINTER_CMD_VERSION, (byte) cmd};
     }
 
 }

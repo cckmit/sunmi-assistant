@@ -1,31 +1,25 @@
 package com.sunmi.cloudprinter.ui.Activity;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
+import android.support.v4.widget.NestedScrollView;
 import android.view.View;
+import android.widget.Button;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
-import com.inuker.bluetooth.library.BluetoothClient;
 import com.sunmi.cloudprinter.R;
-import com.sunmi.cloudprinter.bean.BlueDevice;
-import com.sunmi.cloudprinter.constant.BtBleContract;
+import com.sunmi.cloudprinter.bean.PrinterDevice;
+import com.sunmi.cloudprinter.bean.Router;
 import com.sunmi.cloudprinter.constant.Constants;
-import com.sunmi.cloudprinter.presenter.BtBlePresenter;
-import com.sunmi.cloudprinter.rpc.IOTCloudApi;
+import com.sunmi.cloudprinter.presenter.SunmiPrinterClient;
 import com.sunmi.cloudprinter.ui.adaper.PrinterListAdapter;
-import com.sunmi.cloudprinter.utils.Utility;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
@@ -33,56 +27,49 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.base.BaseActivity;
 import sunmi.common.notification.BaseNotification;
-import sunmi.common.rpc.http.HttpCallback;
-import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.PermissionUtils;
 import sunmi.common.utils.StatusBarUtils;
-import sunmi.common.utils.log.LogCat;
+import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.dialog.CommonDialog;
 
 @EActivity(resName = "activity_search_printer")
-public class PrinterSearchActivity extends BaseMvpActivity<BtBlePresenter>
-        implements BtBleContract.View, BluetoothAdapter.LeScanCallback,
-        PrinterListAdapter.OnItemClickListener {
+public class PrinterSearchActivity extends BaseActivity
+        implements PrinterListAdapter.OnItemClickListener, SunmiPrinterClient.IPrinterClient {
 
     @ViewById(resName = "rv_ble")
-    RecyclerView rvResult;
-    @ViewById(resName = "divider_top")
-    View dividerTop;
+    SmRecyclerView rvResult;
+    @ViewById(resName = "tv_top")
+    TextView tvAddPrinter;
+    @ViewById(resName = "nsv_printer")
+    NestedScrollView nsvPrinter;
+    @ViewById(resName = "rl_no_device")
+    RelativeLayout rlNoWifi;
+    @ViewById(resName = "rl_loading")
+    RelativeLayout rlLoading;
+    @ViewById(resName = "btn_refresh")
+    Button btnRefresh;
 
     @Extra
-    String shopId;
+    int shopId;
 
+    private static final long DURATION_SCAN = 30_000;
     private Set<String> macSet = new HashSet<>();
-    private List<BlueDevice> list = new ArrayList<>();
-    private PrinterListAdapter adapter;
+    private List<PrinterDevice> list = new ArrayList<>();
+    private PrinterListAdapter printerAdapter;
 
-    //蓝牙adapter
-    private BluetoothAdapter btAdapter;
+    private SunmiPrinterClient sunmiPrinterClient;
 
-    private Handler mHandler = new Handler();
-    private BluetoothClient mClient;
+    private boolean isSnGot;
+
     String bleAddress;
-
-    private Runnable scanStart = new Runnable() {
-        @Override
-        public void run() {
-            if (btAdapter.getState() == BluetoothAdapter.STATE_ON) {
-                startScan();
-            } else {
-                mHandler.postDelayed(this, 1000);
-            }
-        }
-    };
+    String sn;
 
     @AfterViews
     protected void init() {
-        mPresenter = new BtBlePresenter();
-        mPresenter.attachView(this);
         StatusBarUtils.StatusBarLightMode(this);//状态栏
-        mClient = new BluetoothClient(context);
+        sunmiPrinterClient = new SunmiPrinterClient(context, bleAddress, this);
         initList();
     }
 
@@ -93,14 +80,25 @@ public class PrinterSearchActivity extends BaseMvpActivity<BtBlePresenter>
             initBt();
     }
 
+    @Click(resName = "btn_retry")
+    void retryClick() {
+        tvAddPrinter.setVisibility(View.VISIBLE);
+        nsvPrinter.setVisibility(View.VISIBLE);
+        rlNoWifi.setVisibility(View.GONE);
+        startScan();
+    }
+
+    @Click(resName = "btn_refresh")
+    void refreshClick() {
+        rlLoading.setVisibility(View.VISIBLE);
+        btnRefresh.setVisibility(View.GONE);
+        startScan();
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
         stopScan();
-//        if (mClient != null) {
-//            mClient.disconnect(bleAddress);
-//            mClient = null;
-//        }
     }
 
     @Override
@@ -111,151 +109,143 @@ public class PrinterSearchActivity extends BaseMvpActivity<BtBlePresenter>
     }
 
     @Override
-    public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-        if (scanRecord.length > 11) {
-            addDevice(device);
-        }
-        if (btAdapter.getState() == BluetoothAdapter.STATE_OFF) {
-            btAdapter.enable();
-        }
-    }
-
-    @Override
-    public void onItemClick(final BlueDevice blueDevice) {
-        new CommonDialog.Builder(context).setTitle(R.string.str_prompt)
-                .setMessage(R.string.str_tip_link_device)
-                .setCancelButton(R.string.sm_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        stopScan();
-                        bleAddress = blueDevice.getAddress();
-                        mPresenter.sendData(mClient, bleAddress, Utility.cmdGetSn());
-                    }
-                }).create().show();
-    }
-
-    String sn;
-
-    @Override
-    public void onResponse(byte[] value) {
-        int cmd = Utility.getCmd(value);
-        if (cmd == Constants.SRV2CLI_SEND_SN) {
-            sn = Utility.getSn(value);
-            LogCat.e(TAG, "222222 ffff sn = " + sn);//N302D94D40068 N302D94D46666
-            bindPrinter(sn);
-        }
+    public void onItemClick(final PrinterDevice printerDevice) {
+        showLoadingDialog();
+        stopScan();
+        bleAddress = printerDevice.getAddress();
+        sunmiPrinterClient.getPrinterSn(bleAddress);
     }
 
     private void initBt() {
-        final BluetoothManager bluetoothManager =
-                (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        btAdapter = bluetoothManager.getAdapter();
-        if (btAdapter.getState() == BluetoothAdapter.STATE_OFF) {
-            new CommonDialog.Builder(this).setTitle(R.string.str_prompt)
-                    .setMessage(R.string.str_tip_start_blue)
-                    .setCancelButton(R.string.sm_cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            finish();
-                        }
-                    }).setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    btAdapter.enable();
-                    mHandler.post(scanStart);
-                }
-            }).create().show();
-        }
+        sunmiPrinterClient = new SunmiPrinterClient(context, bleAddress, this);
         startScan();
     }
 
     private void initList() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
-        rvResult.setLayoutManager(layoutManager);
-        rvResult.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
-        adapter = new PrinterListAdapter(context, list);
-        adapter.setListener(this);
-        rvResult.setAdapter(adapter);
+        rvResult.init(R.drawable.shap_line_divider);
+        printerAdapter = new PrinterListAdapter(context, list);
+        printerAdapter.setListener(this);
+        rvResult.setAdapter(printerAdapter);
     }
 
-    private void addDevice(BluetoothDevice device) {
-        if (!macSet.contains(device.getAddress()) && !TextUtils.isEmpty(device.getName())) {
-            if (device.getName().startsWith("cloudprint_") || device.getName().startsWith("CloudPrint_")) {
-                macSet.add(device.getAddress());
-                BlueDevice bleDevice = new BlueDevice();
-                bleDevice.setAddress(device.getAddress());
-                bleDevice.setName(device.getName());
-                listAdd(bleDevice);
-            }
-        }
-    }
-
-    private void listAdd(BlueDevice bleDevice) {
-        if (!dividerTop.isShown()) dividerTop.setVisibility(View.VISIBLE);
+    @UiThread
+    void addDevice(PrinterDevice bleDevice) {
         list.add(bleDevice);
-        adapter.notifyDataSetChanged();
+        printerAdapter.notifyDataSetChanged();
     }
 
     //startLeScan 和stopLeScan 需使用同一个Callback
     private void startScan() {
-        if (btAdapter != null) btAdapter.startLeScan(this);
+        list.clear();
+        macSet.clear();
+        printerAdapter.notifyDataSetChanged();
+        sunmiPrinterClient.startScan();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                stopScan();
+                if (list.size() <= 0) {
+                    tvAddPrinter.setVisibility(View.GONE);
+                    nsvPrinter.setVisibility(View.GONE);
+                    rlNoWifi.setVisibility(View.VISIBLE);
+                } else {
+                    rlLoading.setVisibility(View.GONE);
+                    btnRefresh.setVisibility(View.VISIBLE);
+                }
+            }
+        }, DURATION_SCAN);
     }
 
     private void stopScan() {
-        if (btAdapter != null) btAdapter.stopLeScan(this);
+        sunmiPrinterClient.stopScan();
     }
 
-    private void bindPrinter(String sn) {
-        showLoadingDialog();
-        IOTCloudApi.bindPrinter(shopId, sn, new HttpCallback<String>(null) {
-            @Override
-            public void onSuccess(int code, String msg, String data) {
-                hideLoadingDialog();
-                gotoPrinterSet();
-            }
+    @Override
+    public void onPrinterFount(PrinterDevice printerDevice) {
+        if (!macSet.contains(printerDevice.getAddress())) {
+            macSet.add(printerDevice.getAddress());
+            addDevice(printerDevice);
+        }
+    }
 
+    @Override
+    public void sendDataFail(int code, String msg) {
+        showErrorDialog(R.string.tip_printer_connect_fail);
+    }
+
+    @Override
+    public void getSnRequestSuccess() {
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public void onFail(int code, String msg, String data) {
-                hideLoadingDialog();
-                if (code == 4402) {
-                    shortTip("已经被绑定无须重新绑定");
-                    gotoPrinterSet();
-                } else {
-                    shortTip("配置失败，请重试");
+            public void run() {
+                if (!isSnGot) {
+                    showErrorDialog(R.string.tip_get_printer_info_fail);
                 }
             }
-        });
+        }, 10_000);
+    }
+
+    @Override
+    public void onSnReceived(String sn) {//N302D96D40077
+        isSnGot = true;
+        sunmiPrinterClient.bindPrinter(shopId, sn);
+    }
+
+    @Override
+    public void onGetWifiListFinish() {
+
+    }
+
+    @Override
+    public void onGetWifiListFail() {
+
+    }
+
+    @Override
+    public void onSetWifiSuccess() {
+
+    }
+
+    @Override
+    public void wifiConfigSuccess() {
+
+    }
+
+    @Override
+    public void bindPrinterSuccess(int code, String msg, String data) {
+        BaseNotification.newInstance().postNotificationName(Constants.NOTIFICATION_PRINTER_ADDED);
+        gotoPrinterSet();
+    }
+
+    @Override
+    public void bindPrinterFail(int code, String msg, String data) {
+        if (code == 4400) {
+            showErrorDialog(R.string.tip_error_sn);
+        } else if (code == 4401) {
+            showErrorDialog(R.string.tip_printer_already_bound);
+        } else if (code == 4402) {
+            gotoPrinterSet();
+        } else {
+            showErrorDialog(R.string.tip_bind_printer_error_no_net);
+        }
+    }
+
+    @Override
+    public void routerFound(Router router) {
+
+    }
+
+    private void showErrorDialog(int msgResId) {
+        hideLoadingDialog();
+        new CommonDialog.Builder(context)
+                .setTitle(R.string.sm_title_hint)
+                .setMessage(msgResId)
+                .setConfirmButton(R.string.str_confirm).create().show();
     }
 
     private void gotoPrinterSet() {
-        new CommonDialog.Builder(this)
-                .setMessage("已完成绑定，是否要继续给打印机配置无线网络？")
-                .setCancelButton(R.string.str_skip, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        GotoActivityUtils.gotoMainActivity(context);
-                        BaseNotification.newInstance().postNotificationName(Constants.NOTIFICATION_PRINTER_ADDED);
-                        finish();
-                    }
-                }).setConfirmButton(R.string.str_continue, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-//                if (mClient != null) {
-//                    mClient.disconnect(bleAddress);
-//                    mClient = null;
-//                }
-                dialog.dismiss();
-                SetPrinterActivity_.intent(context).sn(sn).bleAddress(bleAddress).start();
-            }
-        }).create().show();
+        WifiConfigActivity_.intent(context).sn(sn).bleAddress(bleAddress).start();
+        finish();
     }
 
 }

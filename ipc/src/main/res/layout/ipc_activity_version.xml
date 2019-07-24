@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/c_white">
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/c_white"
+        app:dividerShow="true"
+        app:leftDefaultClickEnable="true"
+        app:leftIcon="@mipmap/ic_back_dark"
+        app:titleText="@string/ipc_setting_version_current_name"
+        app:titleTextColor="@color/colorText" />
+
+    <ImageView
+        android:id="@+id/iv_ipc"
+        android:layout_width="@dimen/dp_255"
+        android:layout_height="@dimen/dp_255"
+        android:layout_below="@id/title_bar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_80"
+        android:src="@mipmap/ic_ipc_setting"
+        android:visibility="visible"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/tv_device_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_ipc"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_24"
+        android:textColor="@color/color_333333"
+        android:textSize="@dimen/sp_24" />
+
+    <TextView
+        android:id="@+id/tv_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_device_id"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="@dimen/dp_4"
+        android:textColor="@color/color_333333_60"
+        android:textSize="@dimen/sp_18" />
+
+
+    <Button
+        android:id="@+id/btn_upgrade"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_44"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@id/ctv_privacy"
+        android:layout_margin="@dimen/dp_20"
+        android:layout_marginBottom="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@drawable/edittext_solid_orange"
+        android:text="@string/ipc_setting_version_get_new"
+        android:textColor="@color/c_white"
+        android:textSize="@dimen/sp_16" />
+
+</RelativeLayout>

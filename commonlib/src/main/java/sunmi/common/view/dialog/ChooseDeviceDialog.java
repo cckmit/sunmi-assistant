@@ -2,6 +2,7 @@ package sunmi.common.view.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +14,7 @@ import android.view.WindowManager;
 import com.commonlibrary.R;
 
 import sunmi.common.constant.CommonConfig;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.view.SimpleRecyclerViewAdapter;
 import sunmi.common.view.activity.StartConfigSMDeviceActivity_;
 
@@ -22,7 +24,7 @@ import sunmi.common.view.activity.StartConfigSMDeviceActivity_;
  */
 public class ChooseDeviceDialog extends Dialog {
 
-    int shopId;
+    private int shopId;
 
     public ChooseDeviceDialog(Context context, int shopId) {
         super(context);
@@ -45,7 +47,6 @@ public class ChooseDeviceDialog extends Dialog {
         getWindow().setBackgroundDrawableResource(R.drawable.bg_rounded_corner_top_white);
         getWindow().setAttributes(lp);//设置宽度适应屏幕
         getWindow().setGravity(Gravity.BOTTOM);
-//        getWindow().setWindowAnimations(R.style.BottomDialog_Animation);
     }
 
     /**
@@ -66,11 +67,27 @@ public class ChooseDeviceDialog extends Dialog {
             @Override
             public void onItemClick(int pos) {
                 dismiss();
-                StartConfigSMDeviceActivity_.intent(getContext())
-                        .deviceType(pos).shopId(shopId + "").start();
+                if (pos == CommonConstants.TYPE_PRINTER) {
+                    gotoPrinterConfig();
+                } else {
+                    StartConfigSMDeviceActivity_.intent(getContext())
+                            .deviceType(pos).shopId(shopId + "").start();
+                }
             }
         });
         return adapter;
+    }
+
+    private void gotoPrinterConfig() {
+        try {
+            Class<?> printerSearchActivity =
+                    Class.forName("com.sunmi.cloudprinter.ui.Activity.StartConfigPrinterActivity_");
+            Intent intent = new Intent(getContext(), printerSearchActivity);
+            intent.putExtra("shopId", shopId);
+            getContext().startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -109,7 +109,9 @@ public class ResponseBean {
                 msgId = object.getString("msg_id");
             }
             try {
-                errCode = object.getInt("errcode") + "";
+                if (object.has("errcode")) {
+                    errCode = object.getInt("errcode") + "";
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }

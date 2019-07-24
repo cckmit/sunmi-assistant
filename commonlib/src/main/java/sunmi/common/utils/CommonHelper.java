@@ -18,7 +18,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.LocaleList;
 import android.support.v4.app.NotificationCompat;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.Display;
 import android.view.View;
@@ -83,17 +82,7 @@ public class CommonHelper {
                         "IllegalArgumentException:" + e.getMessage(), true);
             }
         }
-
         return deviceInfo;
-    }
-
-    public static String getIMEI(Context context) {
-        TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        String imei = tm.getDeviceId();
-        return imei;
-//		WifiManager wifiManager = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
-//		String address = wifiManager.getConnectionInfo().getMacAddress().replace(":", "");
-//		return address;
     }
 
     /**
@@ -588,6 +577,15 @@ public class CommonHelper {
         }
         type += "/*";
         return type;
+    }
+
+    //根据字符串型的资源名获取对应资源id
+    public static int getResource(Context ctx, String imageName, int defResId) {
+        int resId = ctx.getResources().getIdentifier(imageName, "mipmap", ctx.getPackageName());
+        if (resId == 0) {  //如果没有在"mipmap"下找到imageName,将会返回0
+            resId = defResId;//设置默认
+        }
+        return resId;
     }
 
 }

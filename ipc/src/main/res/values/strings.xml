@@ -29,7 +29,7 @@
     <string name="tip_video_quality_fhd">Switch to Super definition</string>
     <string name="tip_video_quality_hd">Switch to high definition</string>
     <string name="tip_device_not_exist">Device not exist</string>
-    <string name="tip_already_bound">Already bound</string>
+    <string name="tip_already_bound">添加失败，已绑定其他账号</string>
     <string name="tip_device_offline">Device offline</string>
     <string name="tip_bind_timeout">Bind timeout</string>
     <string name="tip_no_play_video">No video data</string>
@@ -45,22 +45,28 @@
     <string name="ipc_setting_fail">更新失败</string>
     <string name="ipc_setting_save">保存</string>
     <string name="ipc_setting_delete">删除</string>
+    <string name="ipc_setting_open">开</string>
+    <string name="ipc_setting_close">关</string>
     <string name="ipc_setting_name">摄像机名称</string>
     <string name="ipc_setting_tip_name_length">摄像机名称不得超过36个字符</string>
+    <string name="ipc_setting_tip_name_empty">摄像机名称不能是空或者空格</string>
     <string name="ipc_setting_detail">摄像机详情</string>
     <string name="ipc_setting_detail_model">摄像机型号</string>
     <string name="ipc_setting_detail_sn">摄像机SN</string>
     <string name="ipc_setting_sound_abnormal_detection">声音异常侦测</string>
-    <string name="ipc_setting_dynamic_abnormal_detection">动态异常侦测</string>
+    <string name="ipc_setting_active_abnormal_detection">动态异常侦测</string>
     <string name="ipc_setting_detection_sensitivity">灵敏度</string>
     <string name="ipc_setting_detection_sensitivity_low">低</string>
     <string name="ipc_setting_detection_sensitivity_mid">中</string>
     <string name="ipc_setting_detection_sensitivity_high">高</string>
     <string name="ipc_setting_detection_time">侦测时间设置</string>
+    <string name="ipc_setting_detection_time_custom">自定义</string>
     <string name="ipc_setting_detection_time_day">天数选择</string>
     <string name="ipc_setting_detection_time_day_all">全部</string>
+    <string name="ipc_setting_detection_time_day_none">无</string>
     <string name="ipc_setting_detection_time_start">开启时间</string>
     <string name="ipc_setting_detection_time_end">关闭时间</string>
+    <string name="ipc_setting_detection_time_tomorrow">（次日）</string>
     <string name="ipc_setting_detection_time_all_time">7*24小时自动侦测</string>
     <string name="ipc_setting_night_vision_mode">夜视模式</string>
     <string name="ipc_setting_night_vision_mode_auto">自动切换</string>
@@ -89,11 +95,21 @@
     <string name="ipc_setting_dialog_upgrade_download_time">下载时间预计需要2分钟</string>
     <string name="ipc_setting_dialog_upgrade_ok">现在更新</string>
     <string name="ipc_setting_dialog_upgrade_cancel">以后再说</string>
-    <string name="ipc_setting_dialog_upgrade_progress">下载中…%s</string>
+    <string name="ipc_setting_dialog_upgrade_progress">下载中…%s%%</string>
     <string name="ipc_setting_dialog_upgrade_fail">更新失败</string>
     <string name="ipc_setting_dialog_upgrade_fail_content">下载“版本%s”时出错</string>
     <string name="ipc_setting_dialog_upgrade_success">更新成功</string>
     <string name="ipc_setting_dialog_upgrade_success_content">目前已更新至最新版本</string>
+    <string name="ipc_setting_detection_day_monday">周一</string>
+    <string name="ipc_setting_detection_day_tuesday">周二</string>
+    <string name="ipc_setting_detection_day_wednesday">周三</string>
+    <string name="ipc_setting_detection_day_thursday">周四</string>
+    <string name="ipc_setting_detection_day_friday">周五</string>
+    <string name="ipc_setting_detection_day_saturday">周六</string>
+    <string name="ipc_setting_detection_day_sunday">周日</string>
+    <string name="ipc_setting_data_get_fail">数据获取失败</string>
+    <string name="ipc_setting_check_net_refresh">请检查网络后刷新页面～</string>
+    <string name="tip_please_select_ipc">请选择一个摄像头</string>
 
 
 </resources>
