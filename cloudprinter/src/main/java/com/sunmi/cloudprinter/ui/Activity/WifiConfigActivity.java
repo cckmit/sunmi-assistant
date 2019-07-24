@@ -94,6 +94,8 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
                 if (printerClient != null) {
                     printerClient.deleteWifiInfo(bleAddress);
                 }
+                BaseNotification.newInstance().postNotificationName(Constants.NOTIFICATION_PRINTER_ADDED);
+                GotoActivityUtils.gotoMainActivity(context);
             }
         });
         printerClient = new SunmiPrinterClient(context, bleAddress, this);
@@ -217,8 +219,8 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
         if (passwordDialog != null) {
             passwordDialog.dismiss();
         }
-        GotoActivityUtils.gotoMainActivity(context);
         BaseNotification.newInstance().postNotificationName(Constants.NOTIFICATION_PRINTER_ADDED);
+        GotoActivityUtils.gotoMainActivity(context);
     }
 
     @Override

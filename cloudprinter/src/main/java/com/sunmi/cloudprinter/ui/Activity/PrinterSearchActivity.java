@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.sunmi.cloudprinter.R;
 import com.sunmi.cloudprinter.bean.PrinterDevice;
 import com.sunmi.cloudprinter.bean.Router;
+import com.sunmi.cloudprinter.constant.Constants;
 import com.sunmi.cloudprinter.presenter.SunmiPrinterClient;
 import com.sunmi.cloudprinter.ui.adaper.PrinterListAdapter;
 
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.PermissionUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.SmRecyclerView;
@@ -211,6 +213,7 @@ public class PrinterSearchActivity extends BaseActivity
 
     @Override
     public void bindPrinterSuccess(int code, String msg, String data) {
+        BaseNotification.newInstance().postNotificationName(Constants.NOTIFICATION_PRINTER_ADDED);
         gotoPrinterSet();
     }
 
