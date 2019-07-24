@@ -120,9 +120,6 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         boolean isLoading = (mState == STATE_INIT || mState == STATE_LOADING);
-        if (mState == STATE_FAILED) {
-            mPresenter.showFailedTip();
-        }
         if (model.isValid) {
             setupView(holder, model, position);
         } else {
@@ -247,6 +244,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
                 mState = STATE_CANCEL;
             } else {
                 mState = STATE_FAILED;
+                mPresenter.showFailedTip();
             }
             mCall = null;
             updateView();

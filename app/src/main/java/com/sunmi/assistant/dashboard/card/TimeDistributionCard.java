@@ -179,12 +179,17 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
             newDataSet = new ArrayList<>();
             model.dataSets.put(model.dataSource, newDataSet);
         }
-
-        if (newDataSet.isEmpty()) {
+        if (!model.isValid || newDataSet.isEmpty()) {
+            newDataSet.clear();
             Pair<Integer, Integer> result = calcRangeOfxAxis(model.period);
             for (int i = result.first; i < result.second; i++) {
                 newDataSet.add(new BarEntry(i, 0f));
             }
+        }
+
+        if (model.period == DashboardContract.TIME_PERIOD_TODAY
+                && newDataSet.size() <= PERIOD_TODAY_DATA_COUNT) {
+            newDataSet.add(new BarEntry(24f, 0f));
         }
 
         // Calculate min & max of Y-Axis value.
@@ -201,9 +206,6 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
 
         // Calculate bar width.
         float barWidthRatio = calcBarWidth(model.period);
-        if (model.period == DashboardContract.TIME_PERIOD_TODAY) {
-            newDataSet.add(new BarEntry(24f, 0f));
-        }
 
         BarDataSet dataSet;
         BarData barData = chart.getData();
@@ -232,8 +234,7 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
 
     @Override
     protected void showError(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-        holder.getView(R.id.layout_dashboard_content).setVisibility(View.GONE);
-        holder.getView(R.id.pb_dashboard_loading).setVisibility(View.GONE);
+        setupView(holder, model, position);
     }
 
     private Pair<Integer, Integer> calcRangeOfxAxis(int period) {

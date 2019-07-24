@@ -131,8 +131,7 @@ public class QuantityRankCard extends BaseRefreshCard<QuantityRankCard.Model, Or
 
     @Override
     protected void showError(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-        holder.getView(R.id.layout_dashboard_content).setVisibility(View.GONE);
-        holder.getView(R.id.pb_dashboard_loading).setVisibility(View.GONE);
+        setupView(holder, model, position);
     }
 
     private static class RankListAdapter extends CommonAdapter<QuantityRankCard.Item> {
