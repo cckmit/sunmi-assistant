@@ -41,6 +41,7 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.ResponseBean;
+import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.SettingItemLayout;
@@ -545,7 +546,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     private void rotateDegree(int rotation) {
         String degree = "";
-        if ("SS1".equalsIgnoreCase(mDevice.getModel()) || "FM010".equalsIgnoreCase(mDevice.getModel())) {
+        if (DeviceTypeUtils.getInstance().isSS1(mDevice.getModel())) {
             if (rotation == 0) {
                 degree = "0";
             } else if (rotation == 1) {
@@ -555,7 +556,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             } else if (rotation == 3) {
                 degree = "270";
             }
-        } else if ("FS1".equalsIgnoreCase(mDevice.getModel())) {
+        } else if (DeviceTypeUtils.getInstance().isFS1(mDevice.getModel())) {
             if (rotation == 0) {
                 degree = "0";
             } else if (rotation == 1) {

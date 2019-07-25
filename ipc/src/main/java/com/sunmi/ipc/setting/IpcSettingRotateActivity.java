@@ -17,6 +17,7 @@ import org.androidannotations.annotations.ViewById;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.ResponseBean;
+import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.TitleBarView;
@@ -57,10 +58,10 @@ public class IpcSettingRotateActivity extends BaseActivity implements View.OnCli
     }
 
     private void initRotateView() {
-        if ("SS1".equalsIgnoreCase(mDevice.getModel()) || "FM010".equalsIgnoreCase(mDevice.getModel())) {
+        if (DeviceTypeUtils.getInstance().isSS1(mDevice.getModel())) {
             silDegree90.setVisibility(View.VISIBLE);
             silDegree270.setVisibility(View.VISIBLE);
-        } else if ("FS1".equalsIgnoreCase(mDevice.getModel())) {
+        } else if (DeviceTypeUtils.getInstance().isFS1(mDevice.getModel())) {
             silDegree90.setVisibility(View.GONE);
             silDegree270.setVisibility(View.GONE);
         }
@@ -158,7 +159,7 @@ public class IpcSettingRotateActivity extends BaseActivity implements View.OnCli
             rotation = ROTATE_DEGREE0;
             return;
         }
-        if ("SS1".equalsIgnoreCase(mDevice.getModel()) || "FM010".equalsIgnoreCase(mDevice.getModel())) {
+        if (DeviceTypeUtils.getInstance().isSS1(mDevice.getModel())) {
             if (type == ROTATE_DEGREE1) {
                 rotation = ROTATE_DEGREE1;
             } else if (type == ROTATE_DEGREE2) {
@@ -166,7 +167,7 @@ public class IpcSettingRotateActivity extends BaseActivity implements View.OnCli
             } else if (type == ROTATE_DEGREE3) {
                 rotation = ROTATE_DEGREE3;
             }
-        } else if ("FS1".equalsIgnoreCase(mDevice.getModel())) {
+        } else if (DeviceTypeUtils.getInstance().isFS1(mDevice.getModel())) {
             if (type == ROTATE_DEGREE2) {
                 rotation = ROTATE_DEGREE1;
             }
