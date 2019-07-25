@@ -38,6 +38,7 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.ToastUtils;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.TitleBarView;
@@ -94,6 +95,8 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
                 if (printerClient != null) {
                     printerClient.deleteWifiInfo(bleAddress);
                 }
+                BaseNotification.newInstance().postNotificationName(Constants.NOTIFICATION_PRINTER_ADDED);
+                GotoActivityUtils.gotoMainActivity(context);
             }
         });
         printerClient = new SunmiPrinterClient(context, bleAddress, this);
@@ -141,6 +144,7 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
         if (printerClient != null) {
             printerClient.quitConfig(bleAddress);
         }
+        GotoActivityUtils.gotoMainActivity(context);
         finish();
     }
 
@@ -213,10 +217,12 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
     @Override
     public void wifiConfigSuccess() {
         hideLoadingDialog();
-        if (passwordDialog != null)
+        if (passwordDialog != null) {
             passwordDialog.dismiss();
-        GotoActivityUtils.gotoMainActivity(context);
+        }
+        ToastUtils.toastCenter(context, getString(R.string.tip_config_success), R.mipmap.ic_toast_success);
         BaseNotification.newInstance().postNotificationName(Constants.NOTIFICATION_PRINTER_ADDED);
+        GotoActivityUtils.gotoMainActivity(context);
     }
 
     @Override
@@ -258,6 +264,7 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
             @Override
             public void onClick(View v) {
                 showLoadingDialog();
+                passwordDialog.dismiss();
                 String psw = etPassword.getText().toString().trim();
                 if (router.isHasPwd() && TextUtils.isEmpty(psw)) {
                     shortTip(R.string.hint_input_router_pwd);

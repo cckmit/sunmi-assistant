@@ -44,11 +44,10 @@ public class DeviceTypeUtils {
 
     public int getBrandImage(String mac) {
         int resourceId = R.mipmap.unknow;//设置默认
-
         for (DeviceTypeBean object : list) {
             if (object.getMac() != null)
                 for (String s : object.getMac()) {
-                    if (s.substring(0, 8).equalsIgnoreCase(mac)) {
+                    if (s.substring(0, 8).equalsIgnoreCase(mac.substring(0, 8))) {
                         resourceId = CommonHelper.getResource(BaseApplication.getContext(),
                                 object.getBrand(), R.mipmap.unknow);
                         break;
