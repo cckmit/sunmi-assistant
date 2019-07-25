@@ -101,5 +101,8 @@
     <string name="str_import_other_platform_data">未匹配到该手机号下的门店数据，是否从外部平台导入？</string>
     <string name="str_cloud_printer">云打印机</string>
     <string name="str_cannot_manager_device">当前无法管理设备</string>
+    <string name="tip_image_captcha_refresh_fail">图片验证码刷新失败</string>
+    <string name="tip_get_captcha_too_often">发送短信验证码太频繁，请稍后再试</string>
+    <string name="tip_get_captcha_fail">发送短信验证码失败</string>
 
 </resources>

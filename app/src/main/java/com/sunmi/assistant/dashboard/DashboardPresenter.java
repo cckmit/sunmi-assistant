@@ -131,6 +131,9 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     public void detachView() {
         super.detachView();
         WORK_HANDLER.removeCallbacks(mTask);
+        for (BaseRefreshCard card : mList) {
+            card.cancelLoad();
+        }
     }
 
     private class RefreshTask implements Runnable {
