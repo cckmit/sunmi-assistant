@@ -13,6 +13,7 @@ import com.sunmi.assistant.R;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -83,12 +84,17 @@ public class ChangeCompanyNameActivity extends BaseMvpActivity<ChangeCompanyName
         }
     }
 
+    @UiThread
     @Override
     public void getInfoSuccess(String bean) {
         try {
             JSONObject jsonObject = new JSONObject(bean);
             if (jsonObject.has("full_name")) {
-                cetUserName.setText(jsonObject.getString("full_name"));
+                String name = jsonObject.getString("full_name");
+                if (!TextUtils.isEmpty(name)) {
+                    cetUserName.setText(name);
+                    cetUserName.setSelection(name.length());
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
