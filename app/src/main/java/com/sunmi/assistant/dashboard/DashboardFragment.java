@@ -175,24 +175,20 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     private class ItemStickyListener extends RecyclerView.OnScrollListener {
 
-        private int offset = 0;
-        private int topHeight = 0;
+        private View topBar = null;
 
         @Override
         public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-            int position = mLayoutManager.findFirstVisibleItemPosition();
-            if (topHeight == 0 && position == 0) {
-                topHeight = recyclerView.getChildAt(0).getMeasuredHeight()
-                        - mStatusBarHeight + mStatusGap;
+            int position = -1;
+            if (topBar == null) {
+                topBar = recyclerView.getChildAt(1);
             }
-            if (recyclerView.canScrollVertically(-1) && position == 0) {
-                offset += dy;
-            } else {
-                offset = 0;
+            if (topBar != null) {
+                int[] coordinate = new int[2];
+                topBar.getLocationInWindow(coordinate);
+                position = coordinate[1];
             }
-            boolean scrollDownShow = offset > 0 && offset >= topHeight;
-            boolean scrollUpShow = offset < 0 && Math.abs(offset) <= mStatusBarHeight;
-            if (position != 0 || scrollDownShow || scrollUpShow) {
+            if (position < mStatusBarHeight - mStatusGap) {
                 mStickyTab.setVisibility(View.VISIBLE);
             } else {
                 mStickyTab.setVisibility(View.INVISIBLE);
