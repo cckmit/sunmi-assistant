@@ -381,12 +381,13 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     @Click(resName = "sil_wifi")
     void wifiClick() {
         //是否远程
-        if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
+        SunmiDevice bean = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
+        if (bean == null) {
             shortTip(R.string.ipc_setting_tip_network_dismatch);
             return;
         }
         showLoadingDialog();
-        IPCCall.getInstance().getIsWire(context, CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid()).getIp());
+        IPCCall.getInstance().getIsWire(context, bean.getIp());
     }
 
     private void gotoIpcSettingWiFiActivity() {
