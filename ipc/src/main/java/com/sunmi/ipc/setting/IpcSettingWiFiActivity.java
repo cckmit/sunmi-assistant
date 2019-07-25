@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -45,6 +46,7 @@ import sunmi.common.view.dialog.InputDialog;
  */
 @EActivity(resName = "ipc_activity_wifi")
 public class IpcSettingWiFiActivity extends BaseActivity {
+    private static final int COUNTDOWN_CONFIG_WIFI = 60;
     @ViewById(resName = "tv_wifi_name")
     TextView tvWifiNme;
     @ViewById(resName = "tv_status")
@@ -53,6 +55,10 @@ public class IpcSettingWiFiActivity extends BaseActivity {
     RecyclerView recyclerView;
     @ViewById(resName = "iv_lock")
     ImageView ivLock;
+    @ViewById(resName = "rl_wifi")
+    RelativeLayout rlWifi;
+    @ViewById(resName = "rl_net_exception")
+    RelativeLayout rlNetException;
 
     @Extra
     SunmiDevice mDevice;
@@ -62,7 +68,7 @@ public class IpcSettingWiFiActivity extends BaseActivity {
 
     private Timer timer = null;
     private TimerTask timerTask = null;
-    private int countdown = 30;
+    private int countdown = COUNTDOWN_CONFIG_WIFI;
     private String ip, mSsid, mMgmt, mPassword;
 
 
@@ -98,7 +104,7 @@ public class IpcSettingWiFiActivity extends BaseActivity {
 
     // 停止计时
     private void stopTimer() {
-        countdown = 30;
+        countdown = COUNTDOWN_CONFIG_WIFI;
         connectDialogDismiss();
         if (timer != null) {
             timer.cancel();
@@ -119,10 +125,25 @@ public class IpcSettingWiFiActivity extends BaseActivity {
         if (CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
             ip = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid()).getIp();
         }
-        showLoadingDialog();
+        showLoadingDialog(getString(R.string.ipc_setting_search_wifi));
         IPCCall.getInstance().getIpcConnectApMsg(this, ip);//ipc连接wifi信息
         IPCCall.getInstance().getWifiList(this, ip);//wifi list
     }
+
+    private void netExceptionView(boolean isExceptionView) {
+        if (isExceptionView) {
+            tvStatus.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
+            rlWifi.setVisibility(View.GONE);
+            rlNetException.setVisibility(View.VISIBLE);
+        } else {
+            tvStatus.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
+            rlWifi.setVisibility(View.VISIBLE);
+            rlNetException.setVisibility(View.GONE);
+        }
+    }
+
 
     @Override
     protected void onDestroy() {
@@ -140,7 +161,9 @@ public class IpcSettingWiFiActivity extends BaseActivity {
     public void didReceivedNotification(int id, Object... args) {
         if (args == null) return;
         ResponseBean res = (ResponseBean) args[0];
-        if (id == IpcConstants.getIpcConnectApMsg) {
+        if (TextUtils.equals(res.getErrCode(), CommonConstants.WHAT_ERROR + "")) {
+            netExceptionView(true);
+        } else if (id == IpcConstants.getIpcConnectApMsg) {
             getIpcConnectApMsg(res);
         } else if (id == IpcConstants.getWifiList) {
             hideLoadingDialog();
@@ -205,22 +228,24 @@ public class IpcSettingWiFiActivity extends BaseActivity {
     @UiThread
     void queryConnectStatus(ResponseBean res) {
         //0:正在关联。1：关联成功。2：关联失败
-        if (res.getResult() == null) {
-            return;
-        }
-        IpcConnectStatusResp bean = new Gson().fromJson(res.getResult().toString(), IpcConnectStatusResp.class);
-        String status = bean.getWireless().getConnect_status();
-        if (TextUtils.equals("1", status)) {
-            stopTimer();
-            shortTip(R.string.ipc_setting_dialog_wifi_success);
-            Intent intent = getIntent();
-            intent.putExtra("ssid", mSsid);
-            setResult(RESULT_OK, intent);
-            finish();
-        } else if (TextUtils.equals("2", status)) {
-            stopTimer();
-            connectDialogDismiss();
-            netExceptionDialog();
+        if (res.getResult() != null && res.getDataErrCode() == 1) {
+            netExceptionView(false);
+            IpcConnectStatusResp bean = new Gson().fromJson(res.getResult().toString(), IpcConnectStatusResp.class);
+            String status = bean.getWireless().getConnect_status();
+            if (TextUtils.equals("1", status)) {
+                stopTimer();
+                shortTip(R.string.ipc_setting_dialog_wifi_success);
+                Intent intent = getIntent();
+                intent.putExtra("ssid", mSsid);
+                setResult(RESULT_OK, intent);
+                finish();
+            } else if (TextUtils.equals("2", status)) {
+                stopTimer();
+                connectDialogDismiss();
+                netExceptionDialog();
+            }
+        } else {
+            netExceptionView(true);
         }
     }
 

@@ -268,6 +268,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
         device.setUid(bean.getUid());
         device.setShopId(bean.getShop_id());
         device.setId(bean.getId());
+        device.setFirmware(bean.getBin_version());
         return device;
     }
 

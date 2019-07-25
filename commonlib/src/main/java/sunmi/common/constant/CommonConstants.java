@@ -20,7 +20,7 @@ public class CommonConstants {
     public final static String SEND_IP = "255.255.255.255";
     //UDP发送端口号
     public final static int SEND_PORT = 10001;
-
+    public static final int WHAT_ERROR = 997; //访问失败或无网络
     public static final int WHAT_UDP = 998; //发送udp报文
     public static final int WHAT_UDP_GET_SN = 9988; //发送udp报文获取sn
 

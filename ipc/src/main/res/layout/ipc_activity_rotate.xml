@@ -13,46 +13,58 @@
         app:dividerShow="true"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@mipmap/ic_back_dark"
-        app:titleText="@string/ipc_setting_night_vision_mode"
+        app:titleText="@string/ipc_setting_rotate"
         app:titleTextColor="@color/colorText" />
 
     <sunmi.common.view.SettingItemLayout
-        android:id="@+id/sil_auto_switch"
+        android:id="@+id/sil_degree0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/title_bar"
         android:background="@color/c_white"
         app:leftPadding="@dimen/dp_10"
-        app:leftText="@string/ipc_setting_night_vision_mode_auto"
+        app:leftText="@string/ipc_setting_degree0"
         app:leftTextColor="@color/colorText"
         app:parentHeight="@dimen/dp_60"
         app:rightPadding="@dimen/dp_20" />
 
     <sunmi.common.view.SettingItemLayout
-        android:id="@+id/sil_open"
+        android:id="@+id/sil_degree90"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/sil_auto_switch"
+        android:layout_below="@id/sil_degree0"
         android:layout_marginTop="@dimen/dp_0_5"
         android:background="@color/c_white"
         app:leftPadding="@dimen/dp_10"
-        app:leftText="@string/ipc_setting_night_vision_mode_on"
+        app:leftText="@string/ipc_setting_degree90"
         app:leftTextColor="@color/colorText"
         app:parentHeight="@dimen/dp_60"
         app:rightPadding="@dimen/dp_20" />
 
     <sunmi.common.view.SettingItemLayout
-        android:id="@+id/sil_close"
+        android:id="@+id/sil_degree180"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/sil_open"
+        android:layout_below="@id/sil_degree90"
         android:layout_marginTop="@dimen/dp_0_5"
         android:background="@color/c_white"
         app:leftPadding="@dimen/dp_10"
-        app:leftText="@string/ipc_setting_night_vision_mode_off"
+        app:leftText="@string/ipc_setting_degree180"
         app:leftTextColor="@color/colorText"
         app:parentHeight="@dimen/dp_60"
         app:rightPadding="@dimen/dp_20" />
 
+    <sunmi.common.view.SettingItemLayout
+        android:id="@+id/sil_degree270"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/sil_degree180"
+        android:layout_marginTop="@dimen/dp_0_5"
+        android:background="@color/c_white"
+        app:leftPadding="@dimen/dp_10"
+        app:leftText="@string/ipc_setting_degree270"
+        app:leftTextColor="@color/colorText"
+        app:parentHeight="@dimen/dp_60"
+        app:rightPadding="@dimen/dp_20" />
 
 </RelativeLayout>

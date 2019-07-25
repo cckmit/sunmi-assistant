@@ -30,6 +30,7 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.json.JSONException;
 
 import java.nio.charset.Charset;
 import java.util.Objects;
@@ -40,6 +41,7 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.ResponseBean;
+import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.SettingItemLayout;
@@ -61,6 +63,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     private static final int REQUEST_CODE_ACTIVE_DETECTION = 1002;
     private static final int REQUEST_CODE_DETECTION_TIME = 1003;
     private static final int REQUEST_CODE_WIFI = 1004;
+    private static final int REQUEST_CODE_ROTATE = 1005;
     private static final int REQUEST_COMPLETE = 1000;
     private final int SWITCH_UNCHECK = 0;
     private final int SWITCH_CHECK = 1;
@@ -78,14 +81,14 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     SettingItemLayout mDetectionTime;
     @ViewById(resName = "sil_night_style")
     SettingItemLayout mNightStyle;
+    @ViewById(resName = "sil_view_rotate")
+    SettingItemLayout silViewRotate;
     @ViewById(resName = "sil_wifi")
     SettingItemLayout mWifiName;
     @ViewById(resName = "sil_ipc_version")
     SettingItemLayout mVersion;
     @ViewById(resName = "switch_light")
     Switch swLight;
-    @ViewById(resName = "switch_view_rotate")
-    Switch swRotate;
     @ViewById(resName = "nsv_setting")
     NestedScrollView nsvSetting;
     @ViewById(resName = "rl_net_exception")
@@ -96,7 +99,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     //夜视模式，指示灯，画面旋转
     private int nightMode, ledIndicator, rotation;
-    private boolean isOnClickLight, isOnClickRotate, isSetLight, isSetRotate;
+    private boolean isOnClickLight, isSetLight;
     private IpcNewFirmwareResp mResp;
 
     // 升级
@@ -164,8 +167,19 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         TextView tvName = mNameView.getRightText();
         tvName.setSingleLine();
         tvName.setEllipsize(TextUtils.TruncateAt.END);
-        if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SunmiDevice bean = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
+        if (bean == null) {
             mWifiName.setLeftTextColor(ContextCompat.getColor(this, R.color.colorText_40));
+            mWifiName.setRightTextColor(ContextCompat.getColor(this, R.color.colorText_40));
+        } else {
+            IPCCall.getInstance().getIpcConnectApMsg(this, bean.getIp());
+            mWifiName.setLeftTextColor(ContextCompat.getColor(this, R.color.colorText));
+            mWifiName.setRightTextColor(ContextCompat.getColor(this, R.color.colorText_60));
         }
     }
 
@@ -206,9 +220,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     @Override
     public void currentVersionView(IpcNewFirmwareResp resp) {
         mResp = resp;
-        String version = resp.getLatest_bin_version();
         int upgradeRequired = resp.getUpgrade_required();
-        mVersion.setRightText(version);
+        mVersion.setRightText(mDevice.getFirmware());
         if (upgradeRequired == 1) {
             mVersion.setIvToTextLeftImage(R.mipmap.ic_ipc_new_ver);
             newVersionDialog();
@@ -369,10 +382,16 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     @Click(resName = "sil_wifi")
     void wifiClick() {
         //是否远程
-        if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
+        SunmiDevice bean = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
+        if (bean == null) {
             shortTip(R.string.ipc_setting_tip_network_dismatch);
             return;
         }
+        showLoadingDialog();
+        IPCCall.getInstance().getIsWire(context, bean.getIp());
+    }
+
+    private void gotoIpcSettingWiFiActivity() {
         IpcSettingWiFiActivity_.intent(this).mDevice(mDevice).startForResult(REQUEST_CODE_WIFI);
     }
 
@@ -393,32 +412,38 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         }
         isSetLight = isChecked;
         isOnClickLight = true;
-        isOnClickRotate = false;
         showLoadingDialog();
         IPCCall.getInstance().setIpcNightIdeRotation(context, mDevice.getModel(),
                 mDevice.getDeviceid(), nightMode, isChecked ? SWITCH_CHECK : SWITCH_UNCHECK, rotation);
     }
 
     //画面旋转
-    @CheckedChange(resName = "switch_view_rotate")
-    void setSwRotate(CompoundButton buttonView, boolean isChecked) {
-        if (noNetCannotClick(false)) return;
-        if (isSetRotate == isChecked) {
+    @Click(resName = "sil_view_rotate")
+    void rotateClick() {
+        if (noNetCannotClick(false)) {
             return;
         }
-        isSetRotate = isChecked;
-        isOnClickLight = false;
-        isOnClickRotate = true;
-        showLoadingDialog();
-        IPCCall.getInstance().setIpcNightIdeRotation(context, mDevice.getModel(),
-                mDevice.getDeviceid(), nightMode, ledIndicator, isChecked ? SWITCH_CHECK : SWITCH_UNCHECK);
+        IpcSettingRotateActivity_.intent(this)
+                .mDevice(mDevice)
+                .nightMode(nightMode)
+                .ledIndicator(ledIndicator)
+                .rotation(rotation)
+                .startForResult(REQUEST_CODE_ROTATE);
+    }
+
+    @OnActivityResult(REQUEST_CODE_ROTATE)
+    void onRotateResult(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            rotation = data.getIntExtra("rotate", 0);
+            rotateDegree(rotation);
+        }
     }
 
     @Override
     public int[] getStickNotificationId() {
         return new int[]{IpcConstants.getIpcConnectApMsg, IpcConstants.getIpcNightIdeRotation,
                 IpcConstants.setIpcNightIdeRotation, IpcConstants.getIpcDetection,
-                IpcConstants.ipcUpgrade};
+                IpcConstants.ipcUpgrade, IpcConstants.getIsWire};
     }
 
     @Override
@@ -444,6 +469,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             }
         } else if (id == IpcConstants.ipcUpgrade) {
             upgradeResult(res);
+        } else if (id == IpcConstants.getIsWire) {
+            checkWire(res);
         }
     }
 
@@ -483,41 +510,24 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     private void setIpcNightIdeRotationSuccess() {
         //指示灯
-        if (isOnClickLight && !isOnClickRotate) {
+        if (isOnClickLight) {
             if (ledIndicator == 0) {
                 ledIndicator = 1;
             } else {
                 ledIndicator = 0;
             }
         }
-        //画面
-        if (!isOnClickLight && isOnClickRotate) {
-            if (rotation == 0) {
-                rotation = 1;
-            } else {
-                rotation = 0;
-            }
-        }
     }
 
     //请求error
     private void setIpcNightIdeRotationFail() {
-        if (isOnClickLight && !isOnClickRotate) {
+        if (isOnClickLight) {
             if (swLight.isChecked()) {
                 isSetLight = !swLight.isChecked();
                 swLight.setChecked(isSetLight);
             } else {
                 isSetLight = swLight.isChecked();
                 swLight.setChecked(isSetLight);
-            }
-        }
-        if (!isOnClickLight && isOnClickRotate) {
-            if (swRotate.isChecked()) {
-                isSetRotate = !swRotate.isChecked();
-                swRotate.setChecked(isSetRotate);
-            } else {
-                isSetRotate = swRotate.isChecked();
-                swRotate.setChecked(isSetRotate);
             }
         }
     }
@@ -532,6 +542,28 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             shortTip(R.string.tip_set_fail);
             setIpcNightIdeRotationFail();
         }
+    }
+
+    private void rotateDegree(int rotation) {
+        String degree = "";
+        if (DeviceTypeUtils.getInstance().isSS1(mDevice.getModel())) {
+            if (rotation == 0) {
+                degree = "0";
+            } else if (rotation == 1) {
+                degree = "90";
+            } else if (rotation == 2) {
+                degree = "180";
+            } else if (rotation == 3) {
+                degree = "270";
+            }
+        } else if (DeviceTypeUtils.getInstance().isFS1(mDevice.getModel())) {
+            if (rotation == 0) {
+                degree = "0";
+            } else if (rotation == 1) {
+                degree = "180";
+            }
+        }
+        silViewRotate.setRightText(getString(R.string.ipc_setting_degree, degree));
     }
 
     /**
@@ -552,8 +584,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
         isSetLight = ledIndicator != 0;
         swLight.setChecked(isSetLight);
-        isSetRotate = rotation != 0;
-        swRotate.setChecked(isSetRotate);
+        rotateDegree(rotation);
     }
 
     @UiThread
@@ -568,14 +599,32 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     }
 
     /**
+     * wire	int	有线口物理连接状态 0:未连接, 1:已连接
+     * wireless	int	无线配置状态 0:未配置过无线连接, 1:已配置过无线（之前无线连接至少成功过一次）
+     * online	int	网络连接状态 0:不能访问internet, 1:可以访问internet
+     */
+    @UiThread
+    void checkWire(ResponseBean res) {
+        try {
+            if (res.getResult() != null && res.getResult().has("wire")
+                    && res.getResult().getInt("wire") == 1) {
+                checkWirelessDialog();
+            } else {
+                gotoIpcSettingWiFiActivity();
+            }
+        } catch (JSONException e) {
+            hideLoadingDialog();
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * 有新版本
      */
     private void newVersionDialog() {
-        SunmiDevice bean = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
         CommonDialog commonDialog = new CommonDialog.Builder(this)
                 .setTitle(R.string.ipc_setting_dialog_upgrade)
-                .setMessage(getString(R.string.ipc_setting_version_current, bean != null ?
-                        bean.getFirmware() : "") + "\n" +
+                .setMessage(getString(R.string.ipc_setting_version_current, mDevice.getFirmware()) + "\n" +
                         getString(R.string.ipc_setting_dialog_upgrade_download_time))
                 .setConfirmButton(R.string.ipc_setting_dialog_upgrade_ok, new DialogInterface.OnClickListener() {
                     @Override
@@ -632,6 +681,24 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 .create();
         progressDialog.canceledOnTouchOutside(false);
         startTimer();
+    }
+
+
+    /**
+     * 检测wifi是否有线连接
+     */
+    private void checkWirelessDialog() {
+        CommonDialog commonDialog = new CommonDialog.Builder(this)
+                .setTitle(getString(R.string.ipc_setting_tip))
+                .setMessage(getString(R.string.ipc_setting_check_wireless))
+                .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        gotoIpcSettingWiFiActivity();
+                    }
+                }).setCancelButton(R.string.sm_cancel).create();
+        commonDialog.showWithOutTouchable(false);
     }
 
     @Override

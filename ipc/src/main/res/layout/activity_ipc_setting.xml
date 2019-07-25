@@ -46,7 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/sil_camera_name"
-                android:layout_marginTop="0.5dp"
+                android:layout_marginTop="@dimen/dp_0_5"
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
                 app:leftPadding="@dimen/dp_10"
@@ -76,7 +76,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/sil_voice_exception"
-                android:layout_marginTop="0.5dp"
+                android:layout_marginTop="@dimen/dp_0_5"
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
                 app:leftPadding="@dimen/dp_10"
@@ -91,7 +91,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/sil_active_exception"
-                android:layout_marginTop="0.5dp"
+                android:layout_marginTop="@dimen/dp_0_5"
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
                 app:leftPadding="@dimen/dp_10"
@@ -120,7 +120,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_72"
                 android:layout_below="@id/sil_night_style"
-                android:layout_marginTop="0.5dp"
+                android:layout_marginTop="@dimen/dp_0_5"
                 android:background="@color/c_white">
 
                 <TextView
@@ -144,40 +144,26 @@
                     android:track="@drawable/switch_track" />
             </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/rl_view_rotate"
+            <sunmi.common.view.SettingItemLayout
+                android:id="@+id/sil_view_rotate"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_72"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/rl_light"
-                android:layout_marginTop="0.5dp"
-                android:background="@color/c_white">
+                android:layout_marginTop="@dimen/dp_0_5"
+                android:background="@color/c_white"
+                app:imageRight="@mipmap/ic_right_arrow_small"
+                app:leftPadding="@dimen/dp_10"
+                app:leftText="@string/ipc_setting_rotate"
+                app:parentHeight="@dimen/dp_60"
+                app:rightPadding="@dimen/dp_20"
+                app:rightTextColor="@color/colorText_60" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/dp_20"
-                    android:text="@string/ipc_setting_rotate_180"
-                    android:textColor="@color/colorText"
-                    android:textSize="@dimen/sp_16" />
-
-                <Switch
-                    android:id="@+id/switch_view_rotate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="@dimen/dp_20"
-                    android:checked="false"
-                    android:thumb="@drawable/switch_thumb"
-                    android:track="@drawable/switch_track" />
-            </RelativeLayout>
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_wifi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/rl_view_rotate"
+                android:layout_below="@id/sil_view_rotate"
                 android:layout_marginTop="16dp"
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
