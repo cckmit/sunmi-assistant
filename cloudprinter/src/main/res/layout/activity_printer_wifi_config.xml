@@ -15,7 +15,6 @@
         app:dividerShow="true"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@mipmap/ic_back_dark"
-        app:rightText="@string/sm_clear"
         app:titleText="@string/str_printer_manage"
         app:titleTextColor="@color/colorText" />
 

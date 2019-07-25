@@ -40,19 +40,20 @@ public class Utility {
 
     /**
      * 获取命令码
-     *
-     * @param data
-     * @return
      */
     public static int getCmdId(byte[] data) {
         return (int) data[5];
     }
 
     /**
+     * cmd = 1 返回的错误码
+     */
+    public static int getErrorCode(byte[] data) {
+        return (int) data[6];
+    }
+
+    /**
      * 获取版本号
-     *
-     * @param data
-     * @return
      */
     public static byte getVersion(byte[] data) {
         return data[4];
