@@ -33,5 +33,6 @@
     <string name="tip_bind_printer_fail">绑定失败</string>
     <string name="tip_get_printer_info_fail">获取云打印机信息失败，请重新连接。</string>
     <string name="tip_config_success">设置成功</string>
+    <string name="dialog_msg_input_password">输入“%s”的密码</string>
 </resources>
 
