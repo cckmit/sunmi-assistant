@@ -17,6 +17,8 @@
         app:titleText="@string/ipc_setting_wifi"
         app:titleTextColor="@color/colorText" />
 
+    <include layout="@layout/include_net_exception" />
+
     <RelativeLayout
         android:id="@+id/rl_wifi"
         android:layout_width="match_parent"

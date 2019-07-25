@@ -225,11 +225,11 @@ public class ImageUtils {
                                  boolean forceRefresh, int failureImgId) {
         if (TextUtils.isEmpty(url)) return;
         if (forceRefresh) {
-            Glide.with(context).load(url).error(failureImgId)
+            Glide.with(context).load(url).placeholder(failureImgId)
                     .signature(new ObjectKey(String.valueOf(System.currentTimeMillis())))
                     .diskCacheStrategy(DiskCacheStrategy.ALL).into(view);
         } else {
-            Glide.with(context).load(url).error(failureImgId)
+            Glide.with(context).load(url).placeholder(failureImgId)
                     .diskCacheStrategy(DiskCacheStrategy.ALL).into(view);
         }
     }
