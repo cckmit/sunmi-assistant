@@ -23,7 +23,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.StatusBarUtils;
@@ -103,10 +102,10 @@ public class IpcSettingVersionActivity extends BaseMvpActivity<IpcSettingVersion
         tvDeviceId.setText(mDevice.getDeviceid());
         //upgrade_required是否需要更新，0-不需要，1-需要
         if (mResp.getUpgrade_required() == 1) {
-            tvVersion.setText(getString(R.string.ipc_setting_version_current, mResp.getLatest_bin_version()));
+            tvVersion.setText(getString(R.string.ipc_setting_version_find_new, mResp.getLatest_bin_version()));
             btnUpgrade.setVisibility(View.VISIBLE);
         } else {
-            tvVersion.setText(String.format("%s\n%s", mResp.getLatest_bin_version(), getString(R.string.ipc_setting_version_no_new)));
+            tvVersion.setText(String.format("%s\n%s", mDevice.getFirmware(), getString(R.string.ipc_setting_version_no_new)));
             btnUpgrade.setVisibility(View.GONE);
         }
     }
@@ -122,7 +121,7 @@ public class IpcSettingVersionActivity extends BaseMvpActivity<IpcSettingVersion
      */
     @Click(resName = "btn_upgrade")
     void upgrade() {
-        newVersionDialog();
+        upgrading();
     }
 
 
@@ -160,26 +159,6 @@ public class IpcSettingVersionActivity extends BaseMvpActivity<IpcSettingVersion
         } else {
             upgradeVerFailDialog(mResp.getLatest_bin_version());
         }
-    }
-
-    /**
-     * 有新版本
-     */
-    private void newVersionDialog() {
-        SunmiDevice bean = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
-        CommonDialog commonDialog = new CommonDialog.Builder(this)
-                .setTitle(R.string.ipc_setting_dialog_upgrade)
-                .setMessage(getString(R.string.ipc_setting_version_current, bean != null ?
-                        bean.getFirmware() : "") + "\n" +
-                        getString(R.string.ipc_setting_dialog_upgrade_download_time))
-                .setConfirmButton(R.string.ipc_setting_dialog_upgrade_ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        upgrading();
-                    }
-                })
-                .setCancelButton(R.string.ipc_setting_dialog_upgrade_cancel).create();
-        commonDialog.showWithOutTouchable(false);
     }
 
     /**

@@ -376,7 +376,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     public int[] getStickNotificationId() {
         return new int[]{NotificationConstant.shopSwitched, NotificationConstant.netConnected,
                 NotificationConstant.netDisconnection, NotificationConstant.updateConnectComplete,
-                NotificationConstant.connectedTosunmiDevice};
+                NotificationConstant.connectedTosunmiDevice, NotificationConstant.unBindRouterChanged};
     }
 
     @Override
@@ -385,7 +385,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         if (id == CommonConstants.tabDevice
                 || NotificationConstant.bindRouterChanged == id
                 || NotificationConstant.updateConnectComplete == id
-                || NotificationConstant.netConnected == id) {
+                || NotificationConstant.netConnected == id
+                || NotificationConstant.unBindRouterChanged == id) {
             loadData();
         } else if (id == NotificationConstant.shopSwitched) {
             topBar.setShopName(SpUtils.getShopName());
@@ -490,6 +491,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             dialogPassword = null;
         });
         view.findViewById(R.id.btnSure).setOnClickListener(v -> {
+            if (isFastClick(1500)) return;
             password = etPassword.getText().toString().trim();
             if (TextUtils.isEmpty(password)) {
                 shortTip(R.string.hint_input_manger_password);

@@ -38,6 +38,7 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.ToastUtils;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.TitleBarView;
@@ -219,6 +220,7 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
         if (passwordDialog != null) {
             passwordDialog.dismiss();
         }
+        ToastUtils.toastCenter(context, getString(R.string.tip_config_success), R.mipmap.ic_toast_success);
         BaseNotification.newInstance().postNotificationName(Constants.NOTIFICATION_PRINTER_ADDED);
         GotoActivityUtils.gotoMainActivity(context);
     }
@@ -245,20 +247,20 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
         LayoutInflater inflater = this.getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_router_message, null);
         final ClearableEditText etPassword = view.findViewById(R.id.etPassword);
-        Button btnCancel = view.findViewById(R.id.btnCancel);
-        Button btnSure = view.findViewById(R.id.btnSure);
-        RelativeLayout rlPassword = view.findViewById(R.id.rlPassword);
         if (!router.isHasPwd()) {
-            rlPassword.setVisibility(View.GONE);
+            view.findViewById(R.id.rl_password).setVisibility(View.GONE);
+        } else {
+            ((TextView) view.findViewById(R.id.tv_msg))
+                    .setText(getString(R.string.dialog_msg_input_password, router.getName()));
         }
-        btnCancel.setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.btnCancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 passwordDialog.dismiss();
                 passwordDialog = null;
             }
         });
-        btnSure.setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.btnSure).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showLoadingDialog();

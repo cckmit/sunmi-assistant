@@ -121,6 +121,7 @@ public class QuantityRankCard extends BaseRefreshCard<QuantityRankCard.Model, Or
         QuantityRankCard.RankListAdapter adapter = (QuantityRankCard.RankListAdapter) listView.getAdapter();
         adapter.setDatas(model.list);
         adapter.notifyDataSetChanged();
+        listView.requestLayout();
     }
 
     @Override

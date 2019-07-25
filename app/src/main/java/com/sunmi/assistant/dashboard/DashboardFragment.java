@@ -40,6 +40,9 @@ import sunmi.common.utils.Utils;
 public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         implements DashboardContract.View, BGARefreshLayout.BGARefreshLayoutDelegate {
 
+    private static final int POSITION_TOP_TITLE_AND_BAR = 2;
+    private static final int BIG_CARD_SPAN = 2;
+
     @ViewById(R.id.layout_dashboard_refresh)
     BGARefreshLayout mRefreshLayout;
     @ViewById(R.id.rv_dashboard_card_list)
@@ -172,17 +175,20 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     private class ItemStickyListener extends RecyclerView.OnScrollListener {
 
-        private int offset = 0;
-        private int topHeight = 0;
+        private View topBar = null;
 
         @Override
         public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-            offset += dy;
-            if (topHeight == 0) {
-                topHeight = recyclerView.getChildAt(0).getMeasuredHeight()
-                        - mStatusBarHeight + mStatusGap;
+            int position = -1;
+            if (topBar == null) {
+                topBar = recyclerView.getChildAt(1);
             }
-            if (offset >= topHeight) {
+            if (topBar != null) {
+                int[] coordinate = new int[2];
+                topBar.getLocationInWindow(coordinate);
+                position = coordinate[1];
+            }
+            if (position < mStatusBarHeight - mStatusGap) {
                 mStickyTab.setVisibility(View.VISIBLE);
             } else {
                 mStickyTab.setVisibility(View.INVISIBLE);
@@ -196,19 +202,19 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         public void getItemOffsets(@NonNull Rect outRect, @NonNull View view,
                                    @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
             int position = parent.getChildAdapterPosition(view);
-            if (getContext() == null || position < 2) {
+            if (getContext() == null || position < POSITION_TOP_TITLE_AND_BAR) {
                 super.getItemOffsets(outRect, view, parent, state);
                 return;
             }
             int space = CommonHelper.dp2px(getContext(), 10.0f);
             int spanSize = mAdapter.getItemType(position).getSpanSize();
-            if (spanSize == 2) {
+            if (spanSize == BIG_CARD_SPAN) {
                 outRect.left = space;
                 outRect.right = space;
             } else {
                 int posPoint = position - 1;
                 boolean isFirst = true;
-                while (posPoint >= 2) {
+                while (posPoint >= POSITION_TOP_TITLE_AND_BAR) {
                     if (mAdapter.getItemType(posPoint).getSpanSize() == 1) {
                         isFirst = !isFirst;
                     } else {
