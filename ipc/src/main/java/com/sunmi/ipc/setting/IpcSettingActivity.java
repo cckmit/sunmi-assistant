@@ -99,7 +99,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     private Timer timer = null;
     private TimerTask timerTask = null;
     private int countdown, endNum;
-
     private boolean isRun;
 
     //开启计时
