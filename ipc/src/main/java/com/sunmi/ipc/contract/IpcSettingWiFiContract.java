@@ -9,9 +9,7 @@ public interface IpcSettingWiFiContract {
     interface View extends BaseView {
 
         /**
-         * 0离线 1在线
-         *
-         * @param ipcStatus
+         * @param ipcStatus 0离线 1在线
          */
         void ipcStatusSuccessView(int ipcStatus);
     }
