@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/c_black">
+
+    <com.sunmi.ipc.view.IpcVideoView
+        android:id="@+id/content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/v_setting_top_mask"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_64"
+        android:background="@mipmap/setting_recognition_top_mask"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageView
+        android:id="@+id/iv_setting_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_20"
+        android:src="@mipmap/ic_back_white"
+        app:layout_constraintBottom_toBottomOf="@+id/v_setting_top_mask"
+        app:layout_constraintStart_toStartOf="@+id/v_setting_top_mask"
+        app:layout_constraintTop_toTopOf="@+id/v_setting_top_mask" />
+
+    <TextView
+        android:id="@+id/tv_setting_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:gravity="center"
+        android:lines="1"
+        android:textColor="@color/c_white"
+        android:textSize="@dimen/sp_17"
+        app:layout_constraintBottom_toBottomOf="@+id/v_setting_top_mask"
+        app:layout_constraintEnd_toStartOf="@+id/tv_setting_next"
+        app:layout_constraintStart_toEndOf="@+id/iv_setting_back"
+        app:layout_constraintTop_toTopOf="@+id/v_setting_top_mask" />
+
+    <TextView
+        android:id="@+id/tv_setting_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:text="@string/str_next"
+        android:textColor="@color/c_white"
+        android:textSize="@dimen/sp_17"
+        app:layout_constraintBottom_toBottomOf="@+id/v_setting_top_mask"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/v_setting_top_mask" />
+
+    <View
+        android:id="@+id/v_setting_tip_mask"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/black_60"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/iv_setting_btn_plus"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
+        android:layout_marginEnd="@dimen/dp_24"
+        app:layout_constraintBottom_toTopOf="@+id/iv_setting_btn_minus"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <Button
+        android:id="@+id/iv_setting_btn_minus"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_24"
+        app:layout_constraintBottom_toTopOf="@+id/iv_setting_btn_reset"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_setting_btn_plus" />
+
+    <Button
+        android:id="@+id/iv_setting_btn_reset"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_setting_btn_minus" />
+
+    <TextView
+        android:id="@+id/tv_setting_tip_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/setting_bg_tip_text"
+        android:paddingStart="@dimen/dp_20"
+        android:paddingTop="@dimen/dp_3"
+        android:paddingEnd="@dimen/dp_20"
+        android:paddingBottom="@dimen/dp_3"
+        android:textColor="@color/c_white"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintBottom_toTopOf="@+id/btn_setting_tip_ok"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <Button
+        android:id="@+id/btn_setting_tip_ok"
+        android:layout_width="@dimen/dp_108"
+        android:layout_height="@dimen/dp_44"
+        android:layout_marginTop="@dimen/dp_23"
+        android:background="@drawable/setting_bg_tip_btn"
+        android:textColor="@color/c_white"
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_setting_tip_content" />
+
+
+</android.support.constraint.ConstraintLayout>

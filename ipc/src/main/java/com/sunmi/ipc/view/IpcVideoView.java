@@ -1,44 +1,33 @@
 package com.sunmi.ipc.view;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
-import android.support.v4.content.ContextCompat;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 
-import com.sunmi.ipc.R;
 import com.sunmi.ipc.utils.AACDecoder;
 import com.sunmi.ipc.utils.H264Decoder;
 import com.sunmi.ipc.utils.IOTCClient;
 
+import org.androidannotations.api.BackgroundExecutor;
+
 import sunmi.common.utils.log.LogCat;
 
 /**
- * IPC直播组件
+ * IPC设备播放组件
  *
  * @author yinhui
  * @date 2019-07-25
  */
-public class IpcVideoView extends ConstraintLayout
+public class IpcVideoView extends SurfaceView
         implements SurfaceHolder.Callback, IOTCClient.Callback {
 
     private static final String TAG = IpcVideoView.class.getSimpleName();
-    private static HandlerThread sThread = new HandlerThread("LiveVideo");
-    private static Handler sHandler;
 
-    static {
-        sThread.start();
-        sHandler = new Handler(sThread.getLooper());
-    }
-
-    private SurfaceView mVideoView;
     private SurfaceHolder mVideoHolder;
     private String mUid;
+    private float mWidthHeightRatio = -1;
 
     private H264Decoder mVideoDecoder = null;
     private AACDecoder mAudioDecoder = null;
@@ -53,40 +42,26 @@ public class IpcVideoView extends ConstraintLayout
 
     public IpcVideoView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setBackgroundColor(ContextCompat.getColor(context, R.color.c_black));
-        mVideoView = new SurfaceView(context);
-        mVideoView.setId(View.generateViewId());
-        addView(mVideoView, 0);
-        ConstraintSet con = new ConstraintSet();
-        con.clone(this);
-        con.connect(mVideoView.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0);
-        con.connect(mVideoView.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 0);
-        con.connect(mVideoView.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 0);
-        con.connect(mVideoView.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0);
-        con.constrainHeight(mVideoView.getId(), ConstraintSet.MATCH_CONSTRAINT);
-        con.constrainWidth(mVideoView.getId(), ConstraintSet.MATCH_CONSTRAINT);
-        con.applyTo(this);
     }
 
-    public void init(String uid) {
+    public void init(String uid, int widthRatio, int heightRatio) {
+        if (widthRatio <= 0 || heightRatio <= 0) {
+            LogCat.e(TAG, "Width : height ratio must be above zero.");
+        } else {
+            mWidthHeightRatio = (float) widthRatio / (float) heightRatio;
+        }
         this.mUid = uid;
-        mVideoHolder = mVideoView.getHolder();
+        mVideoHolder = getHolder();
         mVideoHolder.addCallback(this);
         IOTCClient.setCallback(this);
     }
 
-    public void setVideoRatio(int widthRatio, int heightRatio) {
-        if (widthRatio <= 0 || heightRatio <= 0) {
-            LogCat.e(TAG, "Width : height ratio must be above zero.");
-        }
-        ConstraintSet con = new ConstraintSet();
-        con.clone(this);
-        con.setDimensionRatio(mVideoView.getId(), widthRatio + ":" + heightRatio);
-        con.applyTo(this);
+    public Rect getRect() {
+        return new Rect(getLeft(), getTop(), getRight(), getBottom());
     }
 
     void initLive() {
-        sHandler.post(new Runnable() {
+        BackgroundExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 IOTCClient.init(mUid);
@@ -117,6 +92,7 @@ public class IpcVideoView extends ConstraintLayout
             mAudioDecoder.stop();
             mAudioDecoder = null;
         }
+        IOTCClient.close();
     }
 
     @Override
@@ -135,6 +111,19 @@ public class IpcVideoView extends ConstraintLayout
 
     @Override
     public void IOTCResult(String result) {
+    }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        int height = MeasureSpec.getSize(heightMeasureSpec);
+        if (mWidthHeightRatio < 0 || width == 0 || height == 0) {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            return;
+        }
+        float ratio = (float) width / (float) height;
+        int newWidth = ratio > mWidthHeightRatio ? (int) (height * mWidthHeightRatio) : width;
+        int newHeight = ratio > mWidthHeightRatio ? height : (int) (width / mWidthHeightRatio);
+        setMeasuredDimension(newWidth, newHeight);
     }
 }
