@@ -246,18 +246,18 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
 
     @Override
     public void wifiConfigSuccess() {
-        hideLoadingDialog();
-        if (passwordDialog != null) {
-            passwordDialog.dismiss();
-        }
-        ToastUtils.toastCenter(context, getString(R.string.tip_config_success), R.mipmap.ic_toast_success);
-        BaseNotification.newInstance().postNotificationName(Constants.NOTIFICATION_PRINTER_ADDED);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                hideLoadingDialog();
+                if (passwordDialog != null) {
+                    passwordDialog.dismiss();
+                }
+                ToastUtils.toastCenter(context, getString(R.string.tip_config_success), R.mipmap.ic_toast_success);
+                BaseNotification.newInstance().postNotificationName(Constants.NOTIFICATION_PRINTER_ADDED);
                 GotoActivityUtils.gotoMainActivity(context);
             }
-        }, 1000);
+        }, 1500);
     }
 
     @Override
