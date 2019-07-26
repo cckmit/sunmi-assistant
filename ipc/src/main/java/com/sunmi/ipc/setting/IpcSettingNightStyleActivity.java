@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.view.View;
 
 import com.sunmi.ipc.R;
-import com.sunmi.ipc.contract.IpcSettingNightStyleContract;
-import com.sunmi.ipc.presenter.IpcSettingNightStylePresenter;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcConstants;
 
@@ -16,7 +14,7 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
-import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.base.BaseActivity;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.StatusBarUtils;
@@ -27,8 +25,8 @@ import sunmi.common.view.TitleBarView;
  * Created by YangShiJie on 2019/7/12.
  */
 @EActivity(resName = "ipc_activity_night_style")
-public class IpcSettingNightStyleActivity extends BaseMvpActivity<IpcSettingNightStylePresenter>
-        implements IpcSettingNightStyleContract.View, View.OnClickListener {
+public class IpcSettingNightStyleActivity extends BaseActivity
+        implements View.OnClickListener {
     //夜视模式 0:始终关闭/1:始终开启/2:自动切换
     private final int NIGHT_MODE_OFF = 0;
     private final int NIGHT_MODE_ON = 1;
@@ -56,11 +54,16 @@ public class IpcSettingNightStyleActivity extends BaseMvpActivity<IpcSettingNigh
     }
 
     @Override
-    public void onClick(View v) {
+    public void onBackPressed() {
         Intent intent = getIntent();
         intent.putExtra("nightMode", nightMode);
         setResult(RESULT_OK, intent);
-        finish();
+        super.onBackPressed();
+    }
+
+    @Override
+    public void onClick(View v) {
+        onBackPressed();
     }
 
     @Click(resName = "sil_auto_switch")
@@ -147,16 +150,6 @@ public class IpcSettingNightStyleActivity extends BaseMvpActivity<IpcSettingNigh
         } else {
             shortTip(R.string.tip_set_fail);
         }
-    }
-
-    @Override
-    public void setNightStyleSuccess(Object data) {
-
-    }
-
-    @Override
-    public void setNightStyleFail(int code, String msg) {
-
     }
 
 }
