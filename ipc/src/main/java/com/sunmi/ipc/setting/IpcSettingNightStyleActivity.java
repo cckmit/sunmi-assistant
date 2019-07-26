@@ -54,11 +54,16 @@ public class IpcSettingNightStyleActivity extends BaseActivity
     }
 
     @Override
-    public void onClick(View v) {
+    public void onBackPressed() {
         Intent intent = getIntent();
         intent.putExtra("nightMode", nightMode);
         setResult(RESULT_OK, intent);
-        finish();
+        super.onBackPressed();
+    }
+
+    @Override
+    public void onClick(View v) {
+        onBackPressed();
     }
 
     @Click(resName = "sil_auto_switch")
