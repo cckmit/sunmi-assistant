@@ -39,9 +39,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_tip_1"
-        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginStart="@dimen/dp_25"
         android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_30"
+        android:layout_marginEnd="@dimen/dp_25"
         android:textSize="@dimen/sp_14" />
 
     <TextView
@@ -49,9 +49,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_tip_2"
-        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginStart="@dimen/dp_25"
         android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_30"
+        android:layout_marginEnd="@dimen/dp_25"
         android:textSize="@dimen/sp_14" />
 
     <TextView
@@ -59,9 +59,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_tip_3"
-        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginStart="@dimen/dp_25"
         android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_30"
+        android:layout_marginEnd="@dimen/dp_25"
         android:textSize="@dimen/sp_14"
         android:visibility="gone" />
 

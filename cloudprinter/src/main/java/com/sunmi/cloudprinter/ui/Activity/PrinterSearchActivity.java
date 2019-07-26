@@ -99,13 +99,13 @@ public class PrinterSearchActivity extends BaseActivity
     protected void onStop() {
         super.onStop();
         stopScan();
-//        sunmiPrinterClient = null;
     }
 
-//    @Override
-//    protected void onDestroy() {
-//        super.onDestroy();
-//    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+//        sunmiPrinterClient = null;
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,

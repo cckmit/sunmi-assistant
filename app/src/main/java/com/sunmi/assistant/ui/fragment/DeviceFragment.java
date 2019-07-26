@@ -478,7 +478,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         dialogPassword = new Dialog(mActivity, R.style.Son_dialog);
         LayoutInflater inflater = mActivity.getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_manger_password, null);
-        final ClearableEditText etPassword = view.findViewById(R.id.etPassword);
+        final ClearableEditText etPassword = view.findViewById(R.id.et_password);
         TextView tvContent = view.findViewById(R.id.tvContent);
         if (TextUtils.equals(type, "0")) {
             tvContent.setText(R.string.curr_router_manager_password);

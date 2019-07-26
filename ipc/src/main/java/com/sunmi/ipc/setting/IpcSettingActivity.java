@@ -4,11 +4,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -89,11 +86,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     SettingItemLayout mVersion;
     @ViewById(resName = "switch_light")
     Switch swLight;
-    @ViewById(resName = "nsv_setting")
-    NestedScrollView nsvSetting;
-    @ViewById(resName = "rl_net_exception")
-    RelativeLayout rlNetException;
-
 
     DetectionConfig mDetectionConfig;
 
@@ -107,6 +99,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     private Timer timer = null;
     private TimerTask timerTask = null;
     private int countdown, endNum;
+    private boolean isRun;
 
     //开启计时
     private void startTimer() {
@@ -157,10 +150,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         mPresenter = new IpcSettingPresenter();
         mPresenter.attachView(this);
-        if (!NetworkUtils.isNetworkAvailable(context)) {
-            netExceptionView(true);
-            return;
-        }
         mPresenter.loadConfig(mDevice);
         mPresenter.currentVersion();
         mNameView.setRightText(mDevice.getName());
@@ -172,6 +161,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     @Override
     protected void onResume() {
         super.onResume();
+        isRun = true;
         SunmiDevice bean = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
         if (bean == null) {
             mWifiName.setLeftTextColor(ContextCompat.getColor(this, R.color.colorText_40));
@@ -183,14 +173,10 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         }
     }
 
-    private void netExceptionView(boolean isExceptionView) {
-        if (isExceptionView) {
-            nsvSetting.setVisibility(View.GONE);
-            rlNetException.setVisibility(View.VISIBLE);
-        } else {
-            nsvSetting.setVisibility(View.VISIBLE);
-            rlNetException.setVisibility(View.GONE);
-        }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        isRun = false;
     }
 
     @Override
@@ -406,7 +392,10 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     //指示灯
     @CheckedChange(resName = "switch_light")
     void setSwLight(CompoundButton buttonView, boolean isChecked) {
-        if (noNetCannotClick(false)) return;
+        if (noNetCannotClick(false)) {
+            swLight.setChecked(!isChecked);
+            return;
+        }
         if (isSetLight == isChecked) {
             return;
         }
@@ -450,7 +439,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     public void didReceivedNotification(int id, Object... args) {
         super.didReceivedNotification(id, args);
         hideLoadingDialog();
-        if (args == null) {
+        if (!isRun || args == null) {
             return;
         }
         ResponseBean res = (ResponseBean) args[0];

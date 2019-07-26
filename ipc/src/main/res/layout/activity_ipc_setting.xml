@@ -16,8 +16,6 @@
         app:titleText="@string/str_setting_ipc_camera"
         app:titleTextColor="@color/colorText" />
 
-    <include layout="@layout/include_net_exception" />
-
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/nsv_setting"
         android:layout_width="match_parent"

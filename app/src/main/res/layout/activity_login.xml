@@ -51,7 +51,7 @@
             android:background="@drawable/edittext_edge_white">
 
             <sunmi.common.view.ClearableEditText
-                android:id="@+id/etPassword"
+                android:id="@+id/et_password"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_35"
                 android:layout_centerVertical="true"

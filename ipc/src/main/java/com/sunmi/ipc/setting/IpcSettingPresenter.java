@@ -74,7 +74,8 @@ public class IpcSettingPresenter extends BasePresenter<IpcSettingContract.View>
             public void onFail(int code, String msg, IpcNewFirmwareResp data) {
                 LogCat.e(TAG, "IPC currentVersion Failed. code=" + code + "; msg=" + msg);
                 if (isViewAttached()) {
-                    mView.shortTip(R.string.ipc_setting_dialog_wifi_net_error);
+                    mView.hideLoadingDialog();
+                    mView.shortTip(R.string.str_net_exception);
                 }
             }
         });
