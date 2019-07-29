@@ -93,6 +93,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     private int nightMode, ledIndicator, rotation;
     private boolean isOnClickLight, isSetLight;
     private IpcNewFirmwareResp mResp;
+    private String wifiSsid, wifiMgmt;
 
     // 升级
     private UpdateProgressDialog progressDialog;
@@ -152,6 +153,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         mPresenter.attachView(this);
         mPresenter.loadConfig(mDevice);
         mPresenter.currentVersion();
+        mVersion.setRightText(mDevice.getFirmware());
         mNameView.setRightText(mDevice.getName());
         TextView tvName = mNameView.getRightText();
         tvName.setSingleLine();
@@ -164,6 +166,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         isRun = true;
         SunmiDevice bean = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
         if (bean == null) {
+            mWifiName.setRightText(getString(R.string.ipc_setting_unknown));
             mWifiName.setLeftTextColor(ContextCompat.getColor(this, R.color.colorText_40));
             mWifiName.setRightTextColor(ContextCompat.getColor(this, R.color.colorText_40));
         } else {
@@ -207,7 +210,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     public void currentVersionView(IpcNewFirmwareResp resp) {
         mResp = resp;
         int upgradeRequired = resp.getUpgrade_required();
-        mVersion.setRightText(mDevice.getFirmware());
         if (upgradeRequired == 1) {
             mVersion.setIvToTextLeftImage(R.mipmap.ic_ipc_new_ver);
             newVersionDialog();
@@ -378,14 +380,19 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     }
 
     private void gotoIpcSettingWiFiActivity() {
-        IpcSettingWiFiActivity_.intent(this).mDevice(mDevice).startForResult(REQUEST_CODE_WIFI);
+        IpcSettingWiFiActivity_.intent(this)
+                .mDevice(mDevice)
+                .wifiSsid(wifiSsid)
+                .wifiMgmt(wifiMgmt)
+                .startForResult(REQUEST_CODE_WIFI);
     }
 
     @OnActivityResult(REQUEST_CODE_WIFI)
     void onWiFiResult(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            final String ssid = data.getStringExtra("ssid");
-            mWifiName.setRightText(ssid);
+            wifiSsid = data.getStringExtra("ssid");
+            wifiMgmt = data.getStringExtra("mgmt");
+            mWifiName.setRightText(wifiSsid);
         }
     }
 
@@ -482,6 +489,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             return;
         }
         IpcConnectApResp device = new GsonBuilder().create().fromJson(res.getResult().toString(), IpcConnectApResp.class);
+        wifiSsid = device.getWireless().getSsid();
+        wifiMgmt = device.getWireless().getKey_mgmt();
         mWifiName.setRightText(device.getWireless().getSsid());
     }
 
@@ -597,6 +606,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         try {
             if (res.getResult() != null && res.getResult().has("wire")
                     && res.getResult().getInt("wire") == 1) {
+                wifiSsid = getString(R.string.ipc_setting_wire_net);
+                mWifiName.setRightText(wifiSsid);
                 checkWirelessDialog();
             } else {
                 gotoIpcSettingWiFiActivity();
