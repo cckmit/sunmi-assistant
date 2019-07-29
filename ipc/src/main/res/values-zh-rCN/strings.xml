@@ -92,7 +92,7 @@
     <string name="ipc_setting_tip_network_detection">正在检测网络环境，请稍后…</string>
     <string name="ipc_setting_tip_network_dismatch">当前设备与手机不在同一路由器下</string>
     <string name="ipc_setting_dialog_upgrade">版本更新</string>
-    <string name="ipc_setting_dialog_upgrade_download_time">下载时间预计需要2分钟</string>
+    <string name="ipc_setting_dialog_upgrade_download_time">下载时间预计需要%s分钟</string>
     <string name="ipc_setting_dialog_upgrade_ok">现在更新</string>
     <string name="ipc_setting_dialog_upgrade_cancel">以后再说</string>
     <string name="ipc_setting_dialog_upgrade_progress">下载中…%s%%</string>
@@ -110,7 +110,7 @@
     <string name="ipc_setting_data_get_fail">数据获取失败</string>
     <string name="ipc_setting_check_net_refresh">请检查网络后刷新页面～</string>
     <string name="tip_please_select_ipc">请选择一个摄像头</string>
-    <string name="ipc_setting_check_wireless">当前属于有线连接状态，若要使用Wi-Fi网络，请先断开有线连接后再切换Wi-Fi网络。</string>
+    <string name="ipc_setting_check_wireless">当前属于有线连接状态，若要使用Wi-Fi网络，请切换为无线网络后断开有线连接。</string>
     <string name="ipc_setting_tip">提示</string>
     <string name="ipc_setting_search_wifi">正在搜索Wi-Fi...</string>
     <string name="ipc_setting_degree0">0度</string>

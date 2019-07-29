@@ -68,6 +68,8 @@ public class IpcSettingWiFiActivity extends BaseMvpActivity<IpcSettingWifiPresen
     SunmiDevice mDevice;
     @Extra
     String wifiSsid, wifiMgmt;
+    @Extra
+    int wifiIsWire;
 
     private TextView tvProgress;
     private Dialog connectDialog;
@@ -155,7 +157,8 @@ public class IpcSettingWiFiActivity extends BaseMvpActivity<IpcSettingWifiPresen
         loadingWifiMessage();
     }
 
-    private void netExceptionView(boolean isExceptionView) {
+    @UiThread
+    void netExceptionView(boolean isExceptionView) {
         if (isExceptionView) {
             tvStatus.setVisibility(View.GONE);
             recyclerView.setVisibility(View.GONE);
@@ -187,6 +190,7 @@ public class IpcSettingWiFiActivity extends BaseMvpActivity<IpcSettingWifiPresen
             Intent intent = getIntent();
             intent.putExtra("ssid", mSsid);
             intent.putExtra("mgmt", mMgmt);
+            intent.putExtra("isWire", wifiIsWire);
             setResult(RESULT_OK, intent);
             finish();
         }

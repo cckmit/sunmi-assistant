@@ -6,9 +6,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;
-import com.sunmi.ipc.contract.IpcSettingVersionContract;
 import com.sunmi.ipc.model.IpcNewFirmwareResp;
-import com.sunmi.ipc.presenter.IpcSettingVersionPresenter;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcConstants;
 
@@ -22,18 +20,21 @@ import org.androidannotations.annotations.ViewById;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.base.BaseActivity;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.ResponseBean;
+import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.dialog.CommonDialog;
+
+import static com.sunmi.ipc.config.IpcConstants.FS_UPGRADE_TIME;
+import static com.sunmi.ipc.config.IpcConstants.SS_UPGRADE_TIME;
 
 /**
  * Created by YangShiJie on 2019/7/15.
  */
 @EActivity(resName = "ipc_activity_version")
-public class IpcSettingVersionActivity extends BaseMvpActivity<IpcSettingVersionPresenter> implements
-        IpcSettingVersionContract.View {
+public class IpcSettingVersionActivity extends BaseActivity {
 
     @ViewById(resName = "tv_device_id")
     TextView tvDeviceId;
@@ -67,18 +68,24 @@ public class IpcSettingVersionActivity extends BaseMvpActivity<IpcSettingVersion
     @UiThread
     void showDownloadProgress() {
         countdown++;
-        int countMinutes = 151;
+        int countMinutes = DeviceTypeUtils.getInstance().isSS1(mDevice.getModel()) ? SS_UPGRADE_TIME : FS_UPGRADE_TIME;
         if (countdown == countMinutes) {
             stopTimer();
             dialog.progressDismiss();
             upgradeVerFailDialog(mResp.getLatest_bin_version());
         } else if (countdown <= 90) {
             dialog.setText(context, countdown);
-        } else if (countdown <= 150) {
-            if ((countdown - 90) % 6 == 0) {
-                endNum++;
-                dialog.setText(context, 90 + endNum);
+        } else {
+            if (DeviceTypeUtils.getInstance().isSS1(mDevice.getModel()) && countdown <= SS_UPGRADE_TIME) {
+                if ((countdown - 90) % 6 == 0) {
+                    endNum++;
+                }
+            } else if (DeviceTypeUtils.getInstance().isFS1(mDevice.getModel()) && countdown <= FS_UPGRADE_TIME) {
+                if ((countdown - 90) % 37 == 0) {
+                    endNum++;
+                }
             }
+            dialog.setText(context, 90 + endNum);
         }
     }
 
@@ -178,16 +185,6 @@ public class IpcSettingVersionActivity extends BaseMvpActivity<IpcSettingVersion
                 })
                 .setCancelButton(R.string.sm_cancel).create();
         commonDialog.showWithOutTouchable(false);
-    }
-
-    @Override
-    public void getUpgradeSuccess(Object data) {
-
-    }
-
-    @Override
-    public void getUpgradeFail(int code, String msg) {
-
     }
 
 }
