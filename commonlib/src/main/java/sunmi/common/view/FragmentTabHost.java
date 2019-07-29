@@ -60,7 +60,7 @@ public class FragmentTabHost extends TabHost implements TabHost.OnTabChangeListe
     static class DummyTabFactory implements TabContentFactory {
         private final Context mContext;
 
-        public DummyTabFactory(Context context) {
+        DummyTabFactory(Context context) {
             mContext = context;
         }
 
@@ -195,7 +195,7 @@ public class FragmentTabHost extends TabHost implements TabHost.OnTabChangeListe
 
     private void ensureContent() {
         if (mRealTabContent == null) {
-            mRealTabContent = (FrameLayout) findViewById(mContainerId);
+            mRealTabContent = findViewById(mContainerId);
             if (mRealTabContent == null) {
                 throw new IllegalStateException(
                         "No tab content FrameLayout found for id " + mContainerId);

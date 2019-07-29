@@ -97,14 +97,6 @@ public class Utility {
                 getCmdTag(),
                 ByteUtils.intToByte2(6),
                 getCmd(Constants.CMD_REQ_SN));
-//        byte[] getSn = new byte[6];
-//        byte[] cmdTag = getCmdTag();
-//        System.arraycopy(cmdTag, 0, getSn, 0, cmdTag.length);
-//        byte[] len = ByteUtils.intToByte2(6);
-//        System.arraycopy(len, 0, getSn, 2, len.length);
-//        getSn[4] = Constants.PRINTER_CMD_VERSION;
-//        getSn[5] = 5;
-//        return getSn;
     }
 
     /**
@@ -115,14 +107,6 @@ public class Utility {
                 getCmdTag(),
                 ByteUtils.intToByte2(6),
                 getCmd(Constants.CMD_REQ_WIFI_LIST));
-//        byte[] getWifi = new byte[6];
-//        byte[] cmdTag = getCmdTag();
-//        System.arraycopy(cmdTag, 0, getWifi, 0, cmdTag.length);
-//        byte[] len = ByteUtils.intToByte2(6);
-//        System.arraycopy(len, 0, getWifi, 2, len.length);
-//        getWifi[4] = Constants.PRINTER_CMD_VERSION;
-//        getWifi[5] = 6;
-//        return getWifi;
     }
 
     /**
