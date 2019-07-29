@@ -36,6 +36,7 @@ import java.util.TimerTask;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.constant.CommonNotificationConstant;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DeviceTypeUtils;
@@ -45,9 +46,9 @@ import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.dialog.InputDialog;
 
+import static com.sunmi.ipc.config.IpcConstants.FS_UPGRADE_TIME;
+import static com.sunmi.ipc.config.IpcConstants.SS_UPGRADE_TIME;
 import static com.sunmi.ipc.setting.entity.DetectionConfig.INTENT_EXTRA_DETECTION_CONFIG;
-import static sunmi.common.constant.CommonConstants.FS_UPGRADE_TIME;
-import static sunmi.common.constant.CommonConstants.SS_UPGRADE_TIME;
 
 /**
  * @author YangShiJie
@@ -455,23 +456,20 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     public int[] getStickNotificationId() {
         return new int[]{IpcConstants.getIpcConnectApMsg, IpcConstants.getIpcNightIdeRotation,
                 IpcConstants.setIpcNightIdeRotation, IpcConstants.getIpcDetection,
-                IpcConstants.ipcUpgrade, IpcConstants.getIsWire, CommonConstants.netConnected,
-                CommonConstants.netDisconnection};
+                IpcConstants.ipcUpgrade, IpcConstants.getIsWire, CommonNotificationConstant.netConnected,
+                CommonNotificationConstant.netDisconnection};
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
         super.didReceivedNotification(id, args);
         hideLoadingDialog();
-        if (args == null) {
-            return;
-        }
-        if (id == CommonConstants.netDisconnection) { //网络断开
+        if (id == CommonNotificationConstant.netDisconnection) { //网络断开
             setWifiUnknown();
-        } else if (id == CommonConstants.netConnected) { //网络连接
+        } else if (id == CommonNotificationConstant.netConnected) { //网络连接
             connectedNet();
         }
-        if (!isRun) {
+        if (!isRun || args == null) {
             return;
         }
         ResponseBean res;

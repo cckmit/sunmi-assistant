@@ -27,8 +27,8 @@ import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.dialog.CommonDialog;
 
-import static sunmi.common.constant.CommonConstants.FS_UPGRADE_TIME;
-import static sunmi.common.constant.CommonConstants.SS_UPGRADE_TIME;
+import static com.sunmi.ipc.config.IpcConstants.FS_UPGRADE_TIME;
+import static com.sunmi.ipc.config.IpcConstants.SS_UPGRADE_TIME;
 
 /**
  * Created by YangShiJie on 2019/7/15.
