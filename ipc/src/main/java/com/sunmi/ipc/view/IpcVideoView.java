@@ -26,6 +26,8 @@ public class IpcVideoView extends SurfaceView
     private static final String TAG = IpcVideoView.class.getSimpleName();
 
     private SurfaceHolder mVideoHolder;
+    private ResultCallback mCallback;
+
     private String mUid;
     private float mWidthHeightRatio = -1;
 
@@ -44,7 +46,7 @@ public class IpcVideoView extends SurfaceView
         super(context, attrs, defStyleAttr);
     }
 
-    public void init(String uid, int widthRatio, int heightRatio) {
+    public void init(String uid, int widthRatio, int heightRatio, ResultCallback callback) {
         if (widthRatio <= 0 || heightRatio <= 0) {
             LogCat.e(TAG, "Width : height ratio must be above zero.");
         } else {
@@ -53,6 +55,7 @@ public class IpcVideoView extends SurfaceView
         this.mUid = uid;
         mVideoHolder = getHolder();
         mVideoHolder.addCallback(this);
+        mCallback = callback;
         IOTCClient.setCallback(this);
     }
 
@@ -111,6 +114,9 @@ public class IpcVideoView extends SurfaceView
 
     @Override
     public void IOTCResult(String result) {
+        if (mCallback != null) {
+            mCallback.onResult(result);
+        }
     }
 
     @Override
@@ -125,5 +131,14 @@ public class IpcVideoView extends SurfaceView
         int newWidth = ratio > mWidthHeightRatio ? (int) (height * mWidthHeightRatio) : width;
         int newHeight = ratio > mWidthHeightRatio ? height : (int) (width / mWidthHeightRatio);
         setMeasuredDimension(newWidth, newHeight);
+    }
+
+    public interface ResultCallback {
+        /**
+         * IPC设备结果回调
+         *
+         * @param result 设备端返回的结果
+         */
+        void onResult(String result);
     }
 }

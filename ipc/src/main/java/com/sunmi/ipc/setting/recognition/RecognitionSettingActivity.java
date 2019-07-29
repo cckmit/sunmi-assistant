@@ -60,8 +60,10 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        video.init(mDevice.getUid(), 16, 9);
-        stepTo(RecognitionSettingContract.STEP_1_POSITION, true);
+        mPresenter = new RecognitionSettingPresenter();
+        mPresenter.attachView(this);
+        mPresenter.init();
+        video.init(mDevice.getUid(), 16, 9, mPresenter.getCallback());
     }
 
     @Override
@@ -75,7 +77,7 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
     }
 
     @Override
-    public void stepTo(int step, boolean showTip) {
+    public void updateViewStepTo(int step, boolean showTip) {
         mStepIndex = step;
         switch (step) {
             case RecognitionSettingContract.STEP_1_POSITION:
@@ -97,32 +99,49 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
 
     @Click(resName = "btn_setting_tip_ok")
     void onTipOkClick() {
-        stepTo(mStepIndex, false);
+        updateViewStepTo(mStepIndex, false);
     }
 
-    @Click(resName = "iv_setting_back")
-    void onBack() {
-
-    }
+//    @Click(resName = "iv_setting_back")
+//    void onBack() {
+//    }
 
     @Click(resName = "tv_setting_next")
     void onNext() {
-        stepTo(++mStepIndex, true);
+        updateViewStepTo(++mStepIndex, true);
     }
 
     @Click(resName = "btn_setting_btn_plus")
     void onPlusClick() {
-
+        if (mStepIndex == RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM) {
+            mPresenter.zoomIn();
+        } else if (mStepIndex == RecognitionSettingContract.STEP_3_FOCUS) {
+            mPresenter.focus(true);
+        } else {
+            LogCat.e(TAG, "Step of recognition ERROR when plus clicked.");
+        }
     }
 
     @Click(resName = "btn_setting_btn_minus")
     void onMinusClick() {
-
+        if (mStepIndex == RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM) {
+            mPresenter.zoomOut();
+        } else if (mStepIndex == RecognitionSettingContract.STEP_3_FOCUS) {
+            mPresenter.focus(false);
+        } else {
+            LogCat.e(TAG, "Step of recognition ERROR when minus clicked.");
+        }
     }
 
     @Click(resName = "btn_setting_btn_reset")
     void onResetClick() {
-
+        if (mStepIndex == RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM) {
+            mPresenter.zoomReset();
+        } else if (mStepIndex == RecognitionSettingContract.STEP_3_FOCUS) {
+            mPresenter.focusReset();
+        } else {
+            LogCat.e(TAG, "Step of recognition ERROR when plus clicked.");
+        }
     }
 
     private void updateViewPosition(boolean showTip) {
