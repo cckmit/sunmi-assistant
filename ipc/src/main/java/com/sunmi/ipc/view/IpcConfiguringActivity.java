@@ -33,7 +33,6 @@ import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.dialog.CommonDialog;
 
 /**
@@ -101,11 +100,9 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
     @UiThread
     @Override
     public void ipcBindFail(final String sn, final int code, String msg) {
-        LogCat.e(TAG, "888888 ipcBindFail,code=" + code);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                LogCat.e(TAG, "888888 ipcBindFail,retryCount = " + retryCount);
                 if (sunmiDevices.size() > 1 || retryCount == 20
                         || code == 5501 || code == 5508 || code == 5509 || code == 5510
                         || code == 5511 || code == 5512 || code == 5013) {
