@@ -12,6 +12,7 @@ import com.inuker.bluetooth.library.BluetoothClient;
 import com.inuker.bluetooth.library.connect.options.BleConnectOptions;
 import com.inuker.bluetooth.library.connect.response.BleConnectResponse;
 import com.inuker.bluetooth.library.connect.response.BleNotifyResponse;
+import com.inuker.bluetooth.library.connect.response.BleUnnotifyResponse;
 import com.inuker.bluetooth.library.connect.response.BleWriteResponse;
 import com.inuker.bluetooth.library.model.BleGattProfile;
 import com.sunmi.cloudprinter.R;
@@ -191,9 +192,9 @@ public class SunmiPrinterClient implements BluetoothAdapter.LeScanCallback {
         if (mClient == null) return;
         BleConnectOptions options = new BleConnectOptions.Builder()
                 .setConnectRetry(3)
-                .setConnectTimeout(20_000)
+                .setConnectTimeout(15_000)
                 .setServiceDiscoverRetry(3)
-                .setServiceDiscoverTimeout(20_000)
+                .setServiceDiscoverTimeout(15_000)
                 .build();
         mClient.connect(btAddress, options, new BleConnectResponse() {
             @Override
@@ -244,7 +245,12 @@ public class SunmiPrinterClient implements BluetoothAdapter.LeScanCallback {
             }
         };
         try {
-            mClient.unnotify(btAddress, Constants.SERVICE_UUID, Constants.CHARACTER_UUID, null);
+            mClient.unnotify(btAddress, Constants.SERVICE_UUID, Constants.CHARACTER_UUID, new BleUnnotifyResponse() {
+                @Override
+                public void onResponse(int i) {
+
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -277,9 +283,15 @@ public class SunmiPrinterClient implements BluetoothAdapter.LeScanCallback {
                             if (code == 0) {
                                 if (cmd == Constants.CMD_REQ_SN) {
                                     iPrinterClient.getSnRequestSuccess();
+                                } else if (cmd == Constants.CMD_REQ_WIFI_LIST) {
+                                    iPrinterClient.getSnRequestSuccess();
+                                } else if (cmd == Constants.CMD_REQ_CONNECT_WIFI) {
+                                    iPrinterClient.onSetWifiSuccess();
                                 }
                             } else {
-                                iPrinterClient.sendDataFail(code, context.getString(R.string.tip_send_fail));
+                                if (cmd != Constants.CMD_REQ_WIFI_CONNECTED) {
+                                    iPrinterClient.sendDataFail(code, context.getString(R.string.tip_send_fail));
+                                }
                             }
                         }
                     }
@@ -287,6 +299,7 @@ public class SunmiPrinterClient implements BluetoothAdapter.LeScanCallback {
     }
 
     private void onDataReceived(byte[] value, String btAddress) {
+        if (context == null) return;
         if (value.length > 0) {
             if (Utility.isFirstPac(value)) {
                 receivedLen = 0;
