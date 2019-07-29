@@ -40,4 +40,12 @@ public class CommonConstants {
     public static int ACTION_CHANGE_COMPANY = 2;
     public static int ACTION_CHANGE_SHOP = 3;
 
+    //ipc 升级时间
+    public static final int SS_UPGRADE_TIME = 150; //ss升级150秒
+    public static final int FS_UPGRADE_TIME = 360; //ss升级360秒
+
+    //common notice
+    public static int totalEvents = 0x0001;
+    public static final int netDisconnection = totalEvents++;    //网络断开
+    public static final int netConnected = totalEvents++;    //网络连接
 }

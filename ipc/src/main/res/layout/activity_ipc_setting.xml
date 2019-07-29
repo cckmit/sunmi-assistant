@@ -169,6 +169,7 @@
                 app:leftText="@string/ipc_setting_wifi"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
+                app:rightText="@string/ipc_setting_unknown"
                 app:rightTextColor="@color/colorText_60" />
 
 

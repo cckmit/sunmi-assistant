@@ -33,7 +33,7 @@ public class CommonDialog extends Dialog {
         private String message; // 对话框内容
         private String backBtnText; // 对话框返回按钮文本
         private String confirmBtnText; // 对话框确定文本
-        private int confirmBtnTextColor; // 对话框确定文本颜色
+        private int cancelBtnTextColor, confirmBtnTextColor; // 对话框确定文本颜色
         // 对话框按钮监听事件
         private OnClickListener cancelButtonClickListener, confirmButtonClickListener;
 
@@ -87,6 +87,18 @@ public class CommonDialog extends Dialog {
          */
         public Builder setCancelButton(int text) {
             this.backBtnText = (String) context.getText(text);
+            this.cancelButtonClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            };
+            return this;
+        }
+
+        public Builder setCancelButton(int text, int textColor) {
+            this.backBtnText = (String) context.getText(text);
+            this.cancelBtnTextColor = textColor;
             this.cancelButtonClickListener = new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -200,7 +212,9 @@ public class CommonDialog extends Dialog {
             if (backBtnText != null) {
                 Button bckButton = layout.findViewById(R.id.btn_cancel);
                 bckButton.setText(backBtnText);
-
+                if (cancelBtnTextColor > 0) {
+                    bckButton.setTextColor(context.getResources().getColor(cancelBtnTextColor));
+                }
                 if (cancelButtonClickListener != null) {
                     bckButton.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View v) {
