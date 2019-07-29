@@ -1,7 +1,10 @@
 package com.sunmi.ipc.setting.recognition;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Rect;
 import android.support.v4.content.ContextCompat;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -16,6 +19,8 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
+
+import java.util.Locale;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.SunmiDevice;
@@ -50,6 +55,10 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
     @ViewById(resName = "btn_setting_tip_ok")
     Button mBtnTipOk;
 
+    @ViewById(resName = "iv_setting_face_case")
+    ImageView mFaceCase;
+    private Rect mFacePos = new Rect();
+
     @Extra
     SunmiDevice mDevice;
 
@@ -64,6 +73,7 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
         mPresenter.attachView(this);
         mPresenter.init();
         video.init(mDevice.getUid(), 16, 9, mPresenter.getCallback());
+        initFaceCase();
     }
 
     @Override
@@ -102,9 +112,10 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
         updateViewStepTo(mStepIndex, false);
     }
 
-//    @Click(resName = "iv_setting_back")
-//    void onBack() {
-//    }
+    @Click(resName = "iv_setting_back")
+    void onBack() {
+        finish();
+    }
 
     @Click(resName = "tv_setting_next")
     void onNext() {
@@ -144,97 +155,132 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
         }
     }
 
-    private void updateViewPosition(boolean showTip) {
+    private void updateViewPosition(boolean isTipShow) {
         mTvNext.setText(getString(R.string.str_next));
-        if (showTip) {
-            mTvTitle.setVisibility(View.INVISIBLE);
-            mBtnPlus.setVisibility(View.INVISIBLE);
-            mBtnMinus.setVisibility(View.INVISIBLE);
-            mBtnReset.setVisibility(View.INVISIBLE);
-            mTipMask.setVisibility(View.VISIBLE);
-            mBtnTipOk.setVisibility(View.VISIBLE);
-            mTvTipContent.setVisibility(View.VISIBLE);
-            mTvTipContent.setText(getString(R.string.ipc_recognition_tip_position));
-        } else {
-            mTvTitle.setVisibility(View.VISIBLE);
-            mBtnPlus.setVisibility(View.INVISIBLE);
-            mBtnMinus.setVisibility(View.INVISIBLE);
-            mBtnReset.setVisibility(View.INVISIBLE);
-            mTipMask.setVisibility(View.INVISIBLE);
-            mBtnTipOk.setVisibility(View.INVISIBLE);
-            mTvTipContent.setVisibility(View.INVISIBLE);
-            mTvTitle.setText(getString(R.string.ipc_recognition_tip_position));
-        }
+        mTvTitle.setText(getString(R.string.ipc_recognition_tip_position));
+        mTvTitle.setVisibility(isTipShow ? View.INVISIBLE : View.VISIBLE);
+        mFaceCase.setVisibility(View.INVISIBLE);
+        showControlBtn(false, false);
+        showTip(isTipShow, getString(R.string.ipc_recognition_tip_position));
     }
 
-    private void updateViewZoom(boolean showTip) {
+    private void updateViewZoom(boolean isTipShow) {
         mTvNext.setText(getString(R.string.str_next));
-        if (showTip) {
-            mTvTitle.setVisibility(View.INVISIBLE);
-            mBtnPlus.setVisibility(View.INVISIBLE);
-            mBtnMinus.setVisibility(View.INVISIBLE);
-            mBtnReset.setVisibility(View.INVISIBLE);
-            mTipMask.setVisibility(View.VISIBLE);
-            mBtnTipOk.setVisibility(View.VISIBLE);
-            mTvTipContent.setVisibility(View.VISIBLE);
-            mTvTipContent.setText(getString(R.string.ipc_recognition_tip_zoom));
-        } else {
-            mTvTitle.setVisibility(View.INVISIBLE);
-            mTipMask.setVisibility(View.INVISIBLE);
-            mBtnTipOk.setVisibility(View.INVISIBLE);
-            mTvTipContent.setVisibility(View.INVISIBLE);
+        mTvTitle.setVisibility(View.INVISIBLE);
+        mFaceCase.setVisibility(isTipShow ? View.INVISIBLE : View.VISIBLE);
+        showControlBtn(!isTipShow, true);
+        showTip(isTipShow, getString(R.string.ipc_recognition_tip_zoom));
+    }
+
+    private void updateViewFocus(boolean isTipShow) {
+        mTvNext.setText(getString(R.string.str_next));
+        mTvTitle.setVisibility(View.INVISIBLE);
+        mFaceCase.setVisibility(isTipShow ? View.INVISIBLE : View.VISIBLE);
+        showControlBtn(!isTipShow, false);
+        showTip(isTipShow, getString(R.string.ipc_recognition_tip_focus));
+    }
+
+    private void updateViewLine(boolean isTipShow) {
+        mTvNext.setText(getString(R.string.str_complete));
+        mTvTitle.setText(getString(R.string.ipc_recognition_line_start));
+        mTvTitle.setVisibility(isTipShow ? View.INVISIBLE : View.VISIBLE);
+        mFaceCase.setVisibility(View.INVISIBLE);
+        showControlBtn(false, false);
+        showTip(isTipShow, getString(R.string.ipc_recognition_tip_line));
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void initFaceCase() {
+        mFaceCase.setOnTouchListener(new FaceCaseTouch());
+    }
+
+    private void showControlBtn(boolean enable, boolean isZoom) {
+        if (enable) {
             mBtnPlus.setVisibility(View.VISIBLE);
             mBtnMinus.setVisibility(View.VISIBLE);
             mBtnReset.setVisibility(View.VISIBLE);
-            mBtnPlus.setBackground(ContextCompat.getDrawable(this, R.mipmap.setting_recognition_zoom_in));
-            mBtnMinus.setBackground(ContextCompat.getDrawable(this, R.mipmap.setting_recognition_zoom_out));
+            if (isZoom) {
+                mBtnPlus.setBackground(ContextCompat.getDrawable(this, R.mipmap.setting_recognition_zoom_in));
+                mBtnMinus.setBackground(ContextCompat.getDrawable(this, R.mipmap.setting_recognition_zoom_out));
+            } else {
+                mBtnPlus.setBackground(ContextCompat.getDrawable(this, R.mipmap.setting_recognition_focus_plus));
+                mBtnMinus.setBackground(ContextCompat.getDrawable(this, R.mipmap.setting_recognition_focus_minus));
+            }
+        } else {
+            mBtnPlus.setVisibility(View.INVISIBLE);
+            mBtnMinus.setVisibility(View.INVISIBLE);
+            mBtnReset.setVisibility(View.INVISIBLE);
         }
     }
 
-    private void updateViewFocus(boolean showTip) {
-        mTvNext.setText(getString(R.string.str_next));
-        if (showTip) {
-            mTvTitle.setVisibility(View.INVISIBLE);
-            mBtnPlus.setVisibility(View.INVISIBLE);
-            mBtnMinus.setVisibility(View.INVISIBLE);
-            mBtnReset.setVisibility(View.INVISIBLE);
+    private void showTip(boolean enable, String content) {
+        if (enable) {
             mTipMask.setVisibility(View.VISIBLE);
             mBtnTipOk.setVisibility(View.VISIBLE);
             mTvTipContent.setVisibility(View.VISIBLE);
-            mTvTipContent.setText(getString(R.string.ipc_recognition_tip_focus));
+            mTvTipContent.setText(content);
         } else {
-            mTvTitle.setVisibility(View.INVISIBLE);
             mTipMask.setVisibility(View.INVISIBLE);
             mBtnTipOk.setVisibility(View.INVISIBLE);
             mTvTipContent.setVisibility(View.INVISIBLE);
-            mBtnPlus.setVisibility(View.VISIBLE);
-            mBtnMinus.setVisibility(View.VISIBLE);
-            mBtnReset.setVisibility(View.VISIBLE);
-            mBtnPlus.setBackground(ContextCompat.getDrawable(this, R.mipmap.setting_recognition_focus_plus));
-            mBtnMinus.setBackground(ContextCompat.getDrawable(this, R.mipmap.setting_recognition_focus_minus));
         }
     }
 
-    private void updateViewLine(boolean showTip) {
-        mTvNext.setText(getString(R.string.str_next));
-        if (showTip) {
-            mTvTitle.setVisibility(View.INVISIBLE);
-            mBtnPlus.setVisibility(View.INVISIBLE);
-            mBtnMinus.setVisibility(View.INVISIBLE);
-            mBtnReset.setVisibility(View.INVISIBLE);
-            mTipMask.setVisibility(View.VISIBLE);
-            mBtnTipOk.setVisibility(View.VISIBLE);
-            mTvTipContent.setVisibility(View.VISIBLE);
-            mTvTipContent.setText(getString(R.string.ipc_recognition_tip_line));
-        } else {
-            mTvTitle.setVisibility(View.VISIBLE);
-            mBtnPlus.setVisibility(View.INVISIBLE);
-            mBtnMinus.setVisibility(View.INVISIBLE);
-            mBtnReset.setVisibility(View.INVISIBLE);
-            mTipMask.setVisibility(View.INVISIBLE);
-            mBtnTipOk.setVisibility(View.INVISIBLE);
-            mTvTipContent.setVisibility(View.INVISIBLE);
-            mTvTitle.setText(getString(R.string.ipc_recognition_line_start));
+    private class FaceCaseTouch implements View.OnTouchListener {
+
+        private Rect boundary = new Rect();
+        private int width;
+        private int height;
+        private float x;
+        private float y;
+        private long downTime;
+
+        @SuppressLint("ClickableViewAccessibility")
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    boundary.set(video.getLeft(), video.getTop(), video.getRight(), video.getBottom());
+                    width = v.getMeasuredWidth();
+                    height = v.getMeasuredHeight();
+                    x = event.getX();
+                    y = event.getY();
+                    downTime = System.currentTimeMillis();
+                    LogCat.d(TAG, "Boundary: " + boundary + "; Down: x=" + x + "; y=" + y);
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    float dx = event.getX() - x;
+                    float dy = event.getY() - y;
+                    int l = (int) (v.getX() + dx);
+                    int r = l + width;
+                    int t = (int) (v.getY() + dy);
+                    int b = t + height;
+                    if (l < boundary.left) {
+                        l = boundary.left;
+                        r = boundary.left + width;
+                    }
+                    if (r > boundary.right) {
+                        r = boundary.right;
+                        l = boundary.right - width;
+                    }
+                    if (t < boundary.top) {
+                        t = boundary.top;
+                        b = boundary.top + height;
+                    }
+                    if (b > boundary.bottom) {
+                        b = boundary.bottom;
+                        t = boundary.bottom - height;
+                    }
+                    LogCat.d(TAG, String.format(Locale.getDefault(), "Move: ┌ %3d ┐", t));
+                    LogCat.d(TAG, String.format(Locale.getDefault(), "    %3d   %3d", l, r));
+                    LogCat.d(TAG, String.format(Locale.getDefault(), "      └ %3d ┘", b));
+                    v.setX(l);
+                    v.setY(t);
+                    break;
+                default:
+                    break;
+            }
+            return true;
         }
     }
 
