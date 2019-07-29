@@ -153,6 +153,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         mPresenter.attachView(this);
         mPresenter.loadConfig(mDevice);
         mPresenter.currentVersion();
+        mVersion.setRightText(mDevice.getFirmware());
         mNameView.setRightText(mDevice.getName());
         TextView tvName = mNameView.getRightText();
         tvName.setSingleLine();
@@ -209,7 +210,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     public void currentVersionView(IpcNewFirmwareResp resp) {
         mResp = resp;
         int upgradeRequired = resp.getUpgrade_required();
-        mVersion.setRightText(mDevice.getFirmware());
         if (upgradeRequired == 1) {
             mVersion.setIvToTextLeftImage(R.mipmap.ic_ipc_new_ver);
             newVersionDialog();
