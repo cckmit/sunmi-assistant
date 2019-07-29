@@ -33,9 +33,10 @@
         <activity android:name=".setting.IpcSettingWiFiActivity_" />
         <activity android:name=".setting.IpcSettingRotateActivity_" />
         <activity
-            android:name=".view.RecognitionSettingActivity_"
+            android:name=".setting.recognition.RecognitionSettingActivity_"
             android:hardwareAccelerated="false"
-            android:largeHeap="true" />
+            android:largeHeap="true"
+            android:screenOrientation="landscape" />
 
     </application>
 

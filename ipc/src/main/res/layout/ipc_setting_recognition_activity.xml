@@ -6,7 +6,7 @@
     android:background="@color/c_black">
 
     <com.sunmi.ipc.view.IpcVideoView
-        android:id="@+id/content"
+        android:id="@+id/sv_setting_video"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -22,7 +22,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
     <ImageView
         android:id="@+id/iv_setting_back"
@@ -61,6 +60,37 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/v_setting_top_mask" />
 
+    <Button
+        android:id="@+id/btn_setting_btn_plus"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
+        android:layout_marginEnd="@dimen/dp_24"
+        app:layout_constraintBottom_toTopOf="@+id/btn_setting_btn_minus"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <Button
+        android:id="@+id/btn_setting_btn_minus"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_24"
+        app:layout_constraintBottom_toTopOf="@+id/btn_setting_btn_reset"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_setting_btn_plus" />
+
+    <Button
+        android:id="@+id/btn_setting_btn_reset"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_24"
+        android:background="@mipmap/setting_recognition_reset"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_setting_btn_minus" />
+
     <View
         android:id="@+id/v_setting_tip_mask"
         android:layout_width="0dp"
@@ -71,44 +101,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/iv_setting_btn_plus"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
-        android:layout_marginEnd="@dimen/dp_24"
-        app:layout_constraintBottom_toTopOf="@+id/iv_setting_btn_minus"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <Button
-        android:id="@+id/iv_setting_btn_minus"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_24"
-        app:layout_constraintBottom_toTopOf="@+id/iv_setting_btn_reset"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_setting_btn_plus" />
-
-    <Button
-        android:id="@+id/iv_setting_btn_reset"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_24"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_setting_btn_minus" />
-
     <TextView
         android:id="@+id/tv_setting_tip_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/setting_bg_tip_text"
-        android:paddingStart="@dimen/dp_20"
+        android:paddingStart="@dimen/dp_8"
         android:paddingTop="@dimen/dp_3"
-        android:paddingEnd="@dimen/dp_20"
+        android:paddingEnd="@dimen/dp_8"
         android:paddingBottom="@dimen/dp_3"
         android:textColor="@color/c_white"
         android:textSize="@dimen/sp_12"
@@ -124,6 +124,7 @@
         android:layout_height="@dimen/dp_44"
         android:layout_marginTop="@dimen/dp_23"
         android:background="@drawable/setting_bg_tip_btn"
+        android:text="@string/ipc_recognition_tip_ok"
         android:textColor="@color/c_white"
         android:textSize="@dimen/sp_16"
         app:layout_constraintBottom_toBottomOf="parent"

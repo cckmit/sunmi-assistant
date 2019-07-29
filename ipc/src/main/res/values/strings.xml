@@ -120,6 +120,14 @@
     <string name="ipc_setting_degree270">270度</string>
     <string name="ipc_setting_degree">%s度</string>
 
+    <string name="ipc_recognition_tip_ok">知道了</string>
+    <string name="ipc_recognition_tip_position">请安排人员面向摄像头，站在需要识别人脸的位置</string>
+    <string name="ipc_recognition_tip_zoom">调整画面大小并移动人脸框的位置，使人脸刚好填充整个人脸框</string>
+    <string name="ipc_recognition_tip_focus">若自动对焦不清晰，可以手动对焦调整人脸清晰</string>
+    <string name="ipc_recognition_tip_line">拖拽直线端点，以设置客流统计的进店门槛</string>
+    <string name="ipc_recognition_line_start">设置门槛起点</string>
+    <string name="ipc_recognition_line_end">设置门槛终点</string>
+
 
 </resources>
 
