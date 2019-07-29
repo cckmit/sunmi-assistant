@@ -31,7 +31,7 @@ import sunmi.common.utils.log.LogCat;
  * Created by bruce on 2019/3/29.
  */
 public abstract class BaseLocalApi extends BaseApi {
-    private static final String TAG = "LocalApApi";
+    private static final String TAG = "BaseLocalApi";
 
     @Override
     public void post(Context context, String sn, String msgId, int opCode, String json) {
