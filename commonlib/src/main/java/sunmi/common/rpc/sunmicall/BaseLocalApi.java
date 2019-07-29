@@ -5,9 +5,11 @@ import android.content.Context;
 import com.commonlibrary.R;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSocketFactory;
 
 import okhttp3.Call;
@@ -84,7 +86,9 @@ public abstract class BaseLocalApi extends BaseApi {
             @Override
             public void onFailure(Call call, IOException e) {
                 LogCat.e(TAG, "execute fail: e = " + e);
-                errorTip(BaseApplication.getContext());
+                if (!(e instanceof ConnectException || e instanceof SSLHandshakeException)) {
+                    errorTip(BaseApplication.getContext());
+                }
                 ResponseBean res = new ResponseBean();
                 res.setErrCode(RpcErrorCode.RPC_COMMON_ERROR + "");
                 BaseNotification.newInstance().postNotificationName(opCode, res);

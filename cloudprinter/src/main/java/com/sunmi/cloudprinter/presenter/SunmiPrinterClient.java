@@ -22,7 +22,6 @@ import com.sunmi.cloudprinter.constant.Constants;
 import com.sunmi.cloudprinter.rpc.IOTCloudApi;
 import com.sunmi.cloudprinter.utils.Utility;
 
-import java.util.Arrays;
 import java.util.UUID;
 
 import sunmi.common.rpc.http.HttpCallback;
@@ -320,9 +319,6 @@ public class SunmiPrinterClient implements BluetoothAdapter.LeScanCallback {
                 } else if (cmd == Constants.CMD_RESP_WIFI_AP_COMPLETELY) {// Wi-Fi信息接收完毕
                     iPrinterClient.onGetWifiListFinish();
                 } else if (cmd == Constants.CMD_RESP_WIFI_CONNECTED) {
-                    Log.e("BtBlePresenter", " 666666 mClient," + mClient);
-                    Log.e("BtBlePresenter", " 666666 bleAddress," + btAddress);
-                    Log.e("BtBlePresenter", " 666666 Utility.cmdAlreadyConnectedWifi()," + Arrays.toString(Utility.cmdAlreadyConnectedWifi()));
                     writeData(mClient, btAddress, cmd, Utility.cmdAlreadyConnectedWifi());
                     iPrinterClient.wifiConfigSuccess();
                 }
