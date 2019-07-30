@@ -169,7 +169,6 @@ public class IOTCClient {
 
     private static void cmdCall(IotcCmdBean cmd) {
         String json = new Gson().toJson(cmd);
-        LogCat.e(TAG, "111111 cmdCall json = " + json);
         byte[] req = json.getBytes();
         IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
         getCmdResponse();
@@ -183,7 +182,6 @@ public class IOTCClient {
             System.arraycopy(buf, 0, data, 0, actualLen);
             String result = ByteUtils.byte2String(data);
             if (callback != null) callback.IOTCResult(result);
-            LogCat.e(TAG, "111111 getCmdResponse data = " + ByteUtils.byte2String(data));
         }
     }
 
@@ -286,7 +284,7 @@ public class IOTCClient {
                     LogCat.e(TAG, "AudioThread - AV_ER_LOSED_THIS_FRAME");
                     continue;
                 }
-//                LogCat.e(TAG, "555555aaa AUDIO received ret = " + ret);
+//                LogCat.e(TAG, "888888aaa AUDIO received ret = " + ret);
                 if (ret < 0) return;
                 byte[] data = new byte[ret];
                 System.arraycopy(audioBuffer, 0, data, 0, ret);

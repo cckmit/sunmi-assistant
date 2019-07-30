@@ -90,14 +90,14 @@ public class IpcSettingDetailActivity extends BaseActivity {
                 new RetrofitCallback() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
-                        shortTip(R.string.tip_unbind_success);
+                        shortTip(R.string.str_delete_success);
                         BaseNotification.newInstance().postNotificationName(IpcConstants.refreshIpcList);
                         GotoActivityUtils.gotoMainActivity(IpcSettingDetailActivity.this);
                     }
 
                     @Override
                     public void onFail(int code, String msg, Object data) {
-                        shortTip(R.string.tip_unbind_fail);
+                        shortTip(R.string.str_delete_fail);
                     }
                 });
     }

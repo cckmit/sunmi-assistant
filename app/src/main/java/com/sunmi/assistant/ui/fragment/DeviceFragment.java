@@ -66,6 +66,7 @@ import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.constant.CommonNotificationConstant;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.NetworkUtils;
@@ -374,8 +375,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{NotificationConstant.shopSwitched, NotificationConstant.netConnected,
-                NotificationConstant.netDisconnection, NotificationConstant.updateConnectComplete,
+        return new int[]{NotificationConstant.shopSwitched, CommonNotificationConstant.netConnected,
+                CommonNotificationConstant.netDisconnection, NotificationConstant.updateConnectComplete,
                 NotificationConstant.connectedTosunmiDevice, NotificationConstant.unBindRouterChanged};
     }
 
@@ -385,13 +386,13 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         if (id == CommonConstants.tabDevice
                 || NotificationConstant.bindRouterChanged == id
                 || NotificationConstant.updateConnectComplete == id
-                || NotificationConstant.netConnected == id
+                || CommonNotificationConstant.netConnected == id
                 || NotificationConstant.unBindRouterChanged == id) {
             loadData();
         } else if (id == NotificationConstant.shopSwitched) {
             topBar.setShopName(SpUtils.getShopName());
             loadData();
-        } else if (NotificationConstant.netDisconnection == id) {//网络断开
+        } else if (CommonNotificationConstant.netDisconnection == id) {//网络断开
             networkDisconnected();
         } else if (NotificationConstant.apStatusException == id) {//异常
             if (TextUtils.isEmpty(MyNetworkCallback.CURRENT_ROUTER)) return;
@@ -663,6 +664,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @UiThread
     void showEmptyView() {
+        if (rlNoDevice == null) return;
         if (deviceList.size() > 0) {
             rlNoDevice.setVisibility(View.GONE);
             btnAdd.setVisibility(View.VISIBLE);

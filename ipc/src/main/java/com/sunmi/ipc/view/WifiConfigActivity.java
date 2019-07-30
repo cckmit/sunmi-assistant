@@ -41,7 +41,8 @@ import sunmi.common.view.dialog.InputDialog;
  * Created by bruce on 2019/3/29.
  */
 @EActivity(resName = "activity_wifi_config")
-public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.OnItemClickListener {
+public class WifiConfigActivity extends BaseActivity
+        implements WifiListAdapter.OnItemClickListener {
 
     @ViewById(resName = "rl_main")
     RelativeLayout rlMain;
@@ -64,7 +65,7 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
     private static int TIMEOUT_GET_WIFI = 15_000;
     private static int TIMEOUT_GET_IPC_STATUS_FAIL = 10_000;
     private static int DURATION_STATUS_GOT = 20_000;
-    private int connectStatus = -1, online = -1;
+
     private Timer timer = new Timer();
     private CountDownTimer countDownTimer;//获取online状态后超时等待
     private int retryCount;
@@ -154,20 +155,9 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
         rlLoading.setVisibility(visibility);
     }
 
-    //{"data":[{"opcode":"0x3116","result":{},"errcode":0}],"msg_id":"11111","errcode":0}
     @UiThread
     void setIpcWifiSuccess() {
         startGetStatusTimer();
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                hideLoadingDialog();
-//                stopTimer();
-//                if (connectStatus != 1) {
-//                    gotoBind();
-//                }
-//            }
-//        }, 20000);
     }
 
     //{"data":[{"opcode":"0x3119","result":{"online":0,"wireless":{"connect_status":"0"}},"errcode":0}],"msg_id":"11111","errcode":0}
@@ -181,10 +171,10 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
             try {
                 JSONObject jsonObject = res.getResult().getJSONObject("wireless");
                 if (jsonObject.has("connect_status")) {//是否成功关联上前端AP(0:正在关联。1：关联成功。2：关联失败)
-                    connectStatus = jsonObject.getInt("connect_status");
+                    int connectStatus = jsonObject.getInt("connect_status");
                     if (1 == connectStatus) {//返回1，继续判断online状态
                         if (res.getResult().has("online")) {
-                            online = res.getResult().getInt("online");
+                            int online = res.getResult().getInt("online");
                             if (1 == online) {
                                 stopTimer();
                                 gotoBind();
@@ -221,6 +211,9 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
         }
     }
 
+    /**
+     * 主动轮询获取设备联网状态
+     */
     private void startGetStatusTimer() {
         timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -302,19 +295,18 @@ public class WifiConfigActivity extends BaseActivity implements WifiListAdapter.
         new InputDialog.Builder(context)
                 .setTitle(R.string.str_input_psw)
                 .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.str_confirm,
-                        new InputDialog.ConfirmClickListener() {
-                            @Override
-                            public void onConfirmClick(InputDialog dialog, String input) {
-                                if (TextUtils.isEmpty(input)) {
-                                    shortTip(R.string.str_text_password_no_null);
-                                    return;
-                                }
-                                dialog.dismiss();
-                                showLoadingDialog();
-                                IPCCall.getInstance().setIPCWifi(context, ssid, mgmt, input, sunmiDevice.getIp());
-                            }
-                        }).create().show();
+                .setConfirmButton(R.string.str_confirm, new InputDialog.ConfirmClickListener() {
+                    @Override
+                    public void onConfirmClick(InputDialog dialog, String input) {
+                        if (TextUtils.isEmpty(input)) {
+                            shortTip(R.string.str_text_password_no_null);
+                            return;
+                        }
+                        dialog.dismiss();
+                        showLoadingDialog();
+                        IPCCall.getInstance().setIPCWifi(context, ssid, mgmt, input, sunmiDevice.getIp());
+                    }
+                }).create().show();
     }
 
 }

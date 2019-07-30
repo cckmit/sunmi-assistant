@@ -23,7 +23,7 @@
         android:layout_height="@dimen/dp_24"
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/dp_10"
-        android:layout_toLeftOf="@+id/iv_signal"
+        android:layout_toStartOf="@+id/iv_signal"
         android:src="@mipmap/ic_lock"
         android:visibility="gone" />
 

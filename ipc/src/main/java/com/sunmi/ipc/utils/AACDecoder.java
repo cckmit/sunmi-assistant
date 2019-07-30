@@ -137,7 +137,7 @@ public class AACDecoder {
                 outputBuffer.clear(); //清空缓存
 
                 audioTrack.playAudioTrack(outData, 0, info.size);//播放
-//                LogCat.e(TAG, "555555aaa AUDIO play");
+//                LogCat.e(TAG, "888888aaa AUDIO play");
 
                 mDecoder.releaseOutputBuffer(outputBufferIndex, false);//释放已经解码的buffer
                 outputBufferIndex = mDecoder.dequeueOutputBuffer(info, kTimeOutUs);//解码未解完的数据
@@ -175,16 +175,16 @@ public class AACDecoder {
                 //循环读取数据
                 while (isRunning) {
                     if (!audioDataQueue.isEmpty()) {
-//                        LogCat.e(TAG, "555555aaa AUDIO play 111");
+//                        LogCat.e(TAG, "888888aaa AUDIO play 111");
                         readData = audioDataQueue.take();
-//                        LogCat.e(TAG, "555555aaa AUDIO play 222");
+//                        LogCat.e(TAG, "888888aaa AUDIO play 222");
                         int readLen = readData.length;
                         if (!isHeader(readData)) {
                             byte[] data = new byte[readLen - 13 - 4];
                             System.arraycopy(readData, 13, data, 0, data.length);
-//                            LogCat.e(TAG, "555555aaa AUDIO play 333");
+//                            LogCat.e(TAG, "888888aaa AUDIO play 333");
                             decode(data, 0, data.length);
-//                            LogCat.e(TAG, "555555aaa AUDIO play 444");
+//                            LogCat.e(TAG, "888888aaa AUDIO play 444");
                         }
                     }
                 }

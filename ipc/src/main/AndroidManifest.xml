@@ -17,7 +17,6 @@
             android:name=".view.IpcConfiguringActivity_"
             android:launchMode="singleTask" />
         <activity android:name=".view.IpcConfigCompletedActivity_" />
-        <activity android:name=".view.IpcTestActivity_" />
         <activity
             android:name=".view.VideoPlayActivity_"
             android:hardwareAccelerated="false"
