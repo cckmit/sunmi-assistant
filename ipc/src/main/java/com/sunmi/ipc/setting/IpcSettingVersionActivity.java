@@ -165,7 +165,7 @@ public class IpcSettingVersionActivity extends BaseActivity {
             stopTimer();
             dialog.progressDismiss();
             tvVersion.setText(String.format("%s\n%s", mResp.getLatest_bin_version(), getString(R.string.ipc_setting_version_no_new)));
-            BaseNotification.newInstance().postNotificationName(CommonNotificationConstant.ipcUpgrade, "ipcUpgrade");
+            BaseNotification.newInstance().postNotificationName(CommonNotificationConstant.ipcUpgrade);
         } else {
             upgradeVerFailDialog(mResp.getLatest_bin_version());
         }
