@@ -23,9 +23,6 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
 
     @Override
     public void init() {
-        if (isViewAttached()) {
-            mView.updateViewStepTo(RecognitionSettingContract.STEP_1_POSITION, true);
-        }
     }
 
     @Override

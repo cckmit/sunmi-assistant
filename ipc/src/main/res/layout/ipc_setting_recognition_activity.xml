@@ -142,5 +142,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.sunmi.ipc.view.DoorLineView
+        android:id="@+id/v_line_draw"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/sv_setting_video"
+        app:layout_constraintEnd_toEndOf="@+id/sv_setting_video"
+        app:layout_constraintStart_toStartOf="@id/sv_setting_video"
+        app:layout_constraintTop_toBottomOf="@id/v_setting_top_mask" />
 
 </android.support.constraint.ConstraintLayout>

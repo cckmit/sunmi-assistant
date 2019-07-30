@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.view.DoorLineView;
 import com.sunmi.ipc.view.IpcVideoView;
 
 import org.androidannotations.annotations.AfterViews;
@@ -59,10 +60,14 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
     ImageView mFaceCase;
     private Rect mFacePos = new Rect();
 
+    @ViewById(resName = "v_line_draw")
+    DoorLineView mLineView;
+
     @Extra
     SunmiDevice mDevice;
 
     private int mStepIndex;
+    private int mLineState;
 
     @AfterViews
     void init() {
@@ -73,7 +78,13 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
         mPresenter.attachView(this);
         mPresenter.init();
         video.init(mDevice.getUid(), 16, 9, mPresenter.getCallback());
+        updateViewStepTo(RecognitionSettingContract.STEP_1_POSITION, true);
         initFaceCase();
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void initFaceCase() {
+        mFaceCase.setOnTouchListener(new FaceCaseTouch());
     }
 
     @Override
@@ -157,41 +168,47 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
 
     private void updateViewPosition(boolean isTipShow) {
         mTvNext.setText(getString(R.string.str_next));
-        mTvTitle.setText(getString(R.string.ipc_recognition_tip_position));
-        mTvTitle.setVisibility(isTipShow ? View.INVISIBLE : View.VISIBLE);
         mFaceCase.setVisibility(View.INVISIBLE);
+        mLineView.setVisibility(View.INVISIBLE);
+        showTitle(!isTipShow, getString(R.string.ipc_recognition_tip_position));
         showControlBtn(false, false);
         showTip(isTipShow, getString(R.string.ipc_recognition_tip_position));
     }
 
     private void updateViewZoom(boolean isTipShow) {
         mTvNext.setText(getString(R.string.str_next));
-        mTvTitle.setVisibility(View.INVISIBLE);
         mFaceCase.setVisibility(isTipShow ? View.INVISIBLE : View.VISIBLE);
+        mLineView.setVisibility(View.INVISIBLE);
+        showTitle(false, null);
         showControlBtn(!isTipShow, true);
         showTip(isTipShow, getString(R.string.ipc_recognition_tip_zoom));
     }
 
     private void updateViewFocus(boolean isTipShow) {
         mTvNext.setText(getString(R.string.str_next));
-        mTvTitle.setVisibility(View.INVISIBLE);
         mFaceCase.setVisibility(isTipShow ? View.INVISIBLE : View.VISIBLE);
+        mLineView.setVisibility(View.INVISIBLE);
+        showTitle(false, null);
         showControlBtn(!isTipShow, false);
         showTip(isTipShow, getString(R.string.ipc_recognition_tip_focus));
     }
 
     private void updateViewLine(boolean isTipShow) {
         mTvNext.setText(getString(R.string.str_complete));
-        mTvTitle.setText(getString(R.string.ipc_recognition_line_start));
-        mTvTitle.setVisibility(isTipShow ? View.INVISIBLE : View.VISIBLE);
         mFaceCase.setVisibility(View.INVISIBLE);
+        mLineView.setVisibility(isTipShow ? View.INVISIBLE : View.VISIBLE);
+        showTitle(!isTipShow, getString(R.string.ipc_recognition_line_start));
         showControlBtn(false, false);
         showTip(isTipShow, getString(R.string.ipc_recognition_tip_line));
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    private void initFaceCase() {
-        mFaceCase.setOnTouchListener(new FaceCaseTouch());
+    private void showTitle(boolean enable, String title) {
+        if (enable) {
+            mTvTitle.setVisibility(View.VISIBLE);
+            mTvTitle.setText(title);
+        } else {
+            mTvTitle.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void showControlBtn(boolean enable, boolean isZoom) {

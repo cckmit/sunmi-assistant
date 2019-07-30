@@ -127,6 +127,7 @@
     <string name="ipc_recognition_tip_line">拖拽直线端点，以设置客流统计的进店门槛</string>
     <string name="ipc_recognition_line_start">设置门槛起点</string>
     <string name="ipc_recognition_line_end">设置门槛终点</string>
+    <string name="ipc_recognition_line_cancel">撤销</string>
 
 
 </resources>
