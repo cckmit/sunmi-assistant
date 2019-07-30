@@ -21,7 +21,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.CommonNotificationConstant;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -163,6 +165,7 @@ public class IpcSettingVersionActivity extends BaseActivity {
             stopTimer();
             dialog.progressDismiss();
             tvVersion.setText(String.format("%s\n%s", mResp.getLatest_bin_version(), getString(R.string.ipc_setting_version_no_new)));
+            BaseNotification.newInstance().postNotificationName(CommonNotificationConstant.ipcUpgrade, "ipcUpgrade");
         } else {
             upgradeVerFailDialog(mResp.getLatest_bin_version());
         }

@@ -175,6 +175,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     protected void onResume() {
         super.onResume();
         isRun = true;
+        connectedNet();
     }
 
     @Override
@@ -214,6 +215,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         if (upgradeRequired == 1) {
             mVersion.setIvToTextLeftImage(R.mipmap.ic_ipc_new_ver);
             newVersionDialog();
+        } else {
+            mVersion.setRightText(resp.getLatest_bin_version());
         }
     }
 
@@ -457,7 +460,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         return new int[]{IpcConstants.getIpcConnectApMsg, IpcConstants.getIpcNightIdeRotation,
                 IpcConstants.setIpcNightIdeRotation, IpcConstants.getIpcDetection,
                 IpcConstants.ipcUpgrade, IpcConstants.getIsWire, CommonNotificationConstant.netConnected,
-                CommonNotificationConstant.netDisconnection};
+                CommonNotificationConstant.netDisconnection, CommonNotificationConstant.ipcUpgrade};
     }
 
     @Override
@@ -468,6 +471,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             setWifiUnknown();
         } else if (id == CommonNotificationConstant.netConnected) { //网络连接
             connectedNet();
+        } else if (id == CommonNotificationConstant.ipcUpgrade) { //ipc升级
+            mPresenter.currentVersion();
         }
         if (!isRun || args == null) {
             return;
@@ -711,12 +716,13 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
      */
     private void upgradeVerSuccessDialog() {
         CommonDialog commonDialog = new CommonDialog.Builder(this)
-                .setTitle(R.string.ipc_setting_dialog_upgrade_fail)
+                .setTitle(R.string.ipc_setting_dialog_upgrade_success)
                 .setMessage(getString(R.string.ipc_setting_dialog_upgrade_success_content))
                 .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
+                        mPresenter.currentVersion();
                     }
                 }).create();
         commonDialog.showWithOutTouchable(false);

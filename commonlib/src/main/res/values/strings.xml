@@ -81,5 +81,7 @@
     <string name="str_dev_binded">This device was bound by other user already</string>
     <string name="str_prompt">开启蓝牙</string>
     <string name="str_tip_start_blue">您当前尚未开启蓝牙，是否跳转蓝牙设置页面？</string>
+    <string name="str_delete_success">Delete successfully</string>
+    <string name="str_delete_fail">Delete failed</string>
 
 </resources>
