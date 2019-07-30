@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -45,7 +44,6 @@ import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.SettingItemLayout;
-import sunmi.common.view.TitleBarView;
 import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.dialog.InputDialog;
 
@@ -59,7 +57,7 @@ import static com.sunmi.ipc.setting.entity.DetectionConfig.INTENT_EXTRA_DETECTIO
  */
 @EActivity(resName = "activity_ipc_setting")
 public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
-        implements IpcSettingContract.View, View.OnClickListener {
+        implements IpcSettingContract.View {
 
     private static final int IPC_NAME_MAX_LENGTH = 36;
     private static final int REQUEST_CODE_SOUND_DETECTION = 1001;
@@ -75,8 +73,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     @Extra
     SunmiDevice mDevice;
 
-    @ViewById(resName = "title_bar")
-    TitleBarView titleBar;
     @ViewById(resName = "sil_camera_name")
     SettingItemLayout mNameView;
     @ViewById(resName = "sil_voice_exception")
@@ -104,7 +100,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     private IpcNewFirmwareResp mResp;
     private String wifiSsid, wifiMgmt;
     private int wifiIsWire = WIFI_WIRE_DEFAULT; //-1默认 0无线 1有线
-    private boolean isAlreadyUpgrade;
 
     // 升级
     private UpdateProgressDialog progressDialog;
@@ -166,7 +161,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        titleBar.getLeftImg().setOnClickListener(this);
         mPresenter = new IpcSettingPresenter();
         mPresenter.attachView(this);
         mPresenter.loadConfig(mDevice);
@@ -192,16 +186,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     }
 
     @Override
-    public void onClick(View v) {
-        onBackPressed();
-    }
-
-    @Override
     public void onBackPressed() {
         if (countdown == 0) {
-            if (isAlreadyUpgrade) {
-                BaseNotification.newInstance().postNotificationName(CommonNotificationConstant.ipcUpgradeComplete);
-            }
             super.onBackPressed();
         }
     }
@@ -489,7 +475,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             connectedNet();
         } else if (id == CommonNotificationConstant.ipcUpgrade) { //ipc升级
             mDevice.setFirmware(mResp.getLatest_bin_version());
-            isAlreadyUpgrade = true;
+            BaseNotification.newInstance().postNotificationName(CommonNotificationConstant.ipcUpgradeComplete);
             mPresenter.currentVersion();
         }
         if (!isRun || args == null) {
@@ -662,7 +648,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             stopTimer();
             progressDialog.progressDismiss();
             mDevice.setFirmware(mResp.getLatest_bin_version());
-            isAlreadyUpgrade = true;
+            BaseNotification.newInstance().postNotificationName(CommonNotificationConstant.ipcUpgradeComplete);
             upgradeVerSuccessDialog();
         } else {
             upgradeVerFailDialog(mResp.getLatest_bin_version());
