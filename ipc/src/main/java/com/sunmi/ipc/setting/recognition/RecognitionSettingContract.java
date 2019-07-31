@@ -5,6 +5,7 @@ import android.content.Context;
 import com.sunmi.ipc.view.IpcVideoView;
 
 import sunmi.common.base.BaseView;
+import sunmi.common.model.SunmiDevice;
 
 /**
  * @author jacob
@@ -32,6 +33,24 @@ public interface RecognitionSettingContract {
          * @param showTip 是否显示Tips
          */
         void updateViewStepTo(int step, boolean showTip);
+
+        /**
+         * 设置按钮是否可用
+         *
+         * @param isPlus True：+按钮，False：-按钮
+         * @param enable 是否可用
+         */
+        void enableControlBtn(boolean isPlus, boolean enable);
+
+        /**
+         * 显示网络错误对话框
+         */
+        void showErrorDialog();
+
+        /**
+         * 取消网络错误对话框
+         */
+        void dismissErrorDialog();
     }
 
     interface Presenter {
@@ -45,15 +64,23 @@ public interface RecognitionSettingContract {
 
         /**
          * 初始化设置步骤
+         *
+         * @param device 设备信息
          */
-        void init();
+        void init(SunmiDevice device);
+
+        /**
+         * 获取IPC状态
+         */
+        void updateState();
 
         /**
          * 设置人脸位置
          *
-         * @param coordinate 人脸坐标
+         * @param x 人脸坐标x
+         * @param y 人脸坐标y
          */
-        void face(int[] coordinate);
+        void face(int x, int y);
 
         /**
          * 放大画面大小（变焦）

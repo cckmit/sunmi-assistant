@@ -19,6 +19,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.Locale;
@@ -26,6 +27,7 @@ import java.util.Locale;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.utils.log.LogCat;
+import sunmi.common.view.dialog.CommonDialog;
 
 /**
  * @author yinhui
@@ -63,11 +65,13 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
     @ViewById(resName = "v_line_draw")
     DoorLineView mLineView;
 
+    private CommonDialog mNetworkDialog;
+
     @Extra
     SunmiDevice mDevice;
 
     private int mStepIndex;
-    private int mLineState;
+    private boolean mIsTipShow;
 
     @AfterViews
     void init() {
@@ -76,7 +80,7 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         mPresenter = new RecognitionSettingPresenter();
         mPresenter.attachView(this);
-        mPresenter.init();
+        mPresenter.init(mDevice);
         video.init(mDevice.getUid(), 16, 9, mPresenter.getCallback());
         updateViewStepTo(RecognitionSettingContract.STEP_1_POSITION, true);
         initFaceCase();
@@ -98,6 +102,7 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
     }
 
     @Override
+    @UiThread
     public void updateViewStepTo(int step, boolean showTip) {
         mStepIndex = step;
         switch (step) {
@@ -125,43 +130,67 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
 
     @Click(resName = "iv_setting_back")
     void onBack() {
-        finish();
+        if (mIsTipShow) {
+            return;
+        }
+        if (mStepIndex == RecognitionSettingContract.STEP_1_POSITION) {
+            finish();
+        } else {
+            updateViewStepTo(--mStepIndex, true);
+        }
     }
 
     @Click(resName = "tv_setting_next")
     void onNext() {
-        updateViewStepTo(++mStepIndex, true);
+        if (mIsTipShow) {
+            return;
+        }
+        if (mStepIndex == RecognitionSettingContract.STEP_1_POSITION) {
+            showLoadingDialog();
+            mPresenter.updateState();
+        } else if (mStepIndex == RecognitionSettingContract.STEP_4_LINE) {
+            showLoadingDialog();
+//            mPresenter.line();
+        } else {
+            updateViewStepTo(++mStepIndex, true);
+        }
     }
 
     @Click(resName = "btn_setting_btn_plus")
     void onPlusClick() {
+        showLoadingDialog(getString(R.string.ipc_recognition_loading));
         if (mStepIndex == RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM) {
             mPresenter.zoomIn();
         } else if (mStepIndex == RecognitionSettingContract.STEP_3_FOCUS) {
             mPresenter.focus(true);
         } else {
+            hideLoadingDialog();
             LogCat.e(TAG, "Step of recognition ERROR when plus clicked.");
         }
     }
 
     @Click(resName = "btn_setting_btn_minus")
     void onMinusClick() {
+        showLoadingDialog(getString(R.string.ipc_recognition_loading));
         if (mStepIndex == RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM) {
             mPresenter.zoomOut();
         } else if (mStepIndex == RecognitionSettingContract.STEP_3_FOCUS) {
             mPresenter.focus(false);
         } else {
+            hideLoadingDialog();
             LogCat.e(TAG, "Step of recognition ERROR when minus clicked.");
         }
     }
 
     @Click(resName = "btn_setting_btn_reset")
     void onResetClick() {
+        showLoadingDialog(getString(R.string.ipc_recognition_loading));
         if (mStepIndex == RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM) {
             mPresenter.zoomReset();
         } else if (mStepIndex == RecognitionSettingContract.STEP_3_FOCUS) {
             mPresenter.focusReset();
         } else {
+            hideLoadingDialog();
             LogCat.e(TAG, "Step of recognition ERROR when plus clicked.");
         }
     }
@@ -211,6 +240,16 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
         }
     }
 
+    @Override
+    @UiThread
+    public void enableControlBtn(boolean isPlus, boolean enable) {
+        if (isPlus) {
+            mBtnPlus.setEnabled(enable);
+        } else {
+            mBtnMinus.setEnabled(enable);
+        }
+    }
+
     private void showControlBtn(boolean enable, boolean isZoom) {
         if (enable) {
             mBtnPlus.setVisibility(View.VISIBLE);
@@ -231,6 +270,7 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
     }
 
     private void showTip(boolean enable, String content) {
+        mIsTipShow = enable;
         if (enable) {
             mTipMask.setVisibility(View.VISIBLE);
             mBtnTipOk.setVisibility(View.VISIBLE);
@@ -243,9 +283,33 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
         }
     }
 
+    @Override
+    @UiThread
+    public void showErrorDialog() {
+        if (mNetworkDialog == null) {
+            mNetworkDialog = new CommonDialog.Builder(this)
+                    .setTitle(R.string.ipc_setting_tip)
+                    .setMessage(R.string.ipc_recognition_network_error)
+                    .setConfirmButton(R.string.str_confirm)
+                    .create();
+        }
+        mNetworkDialog.show();
+    }
+
+    @Override
+    @UiThread
+    public void dismissErrorDialog() {
+        if (mNetworkDialog != null) {
+            mNetworkDialog.dismiss();
+        }
+    }
+
     private class FaceCaseTouch implements View.OnTouchListener {
 
+        private static final int TOUCH_DELAY = 500;
+
         private Rect boundary = new Rect();
+        private Rect current = new Rect();
         private int width;
         private int height;
         private float x;
@@ -255,6 +319,9 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
         @SuppressLint("ClickableViewAccessibility")
         @Override
         public boolean onTouch(View v, MotionEvent event) {
+            if (mStepIndex != RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM) {
+                return false;
+            }
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     boundary.set(video.getLeft(), video.getTop(), video.getRight(), video.getBottom());
@@ -288,12 +355,22 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
                         b = boundary.bottom;
                         t = boundary.bottom - height;
                     }
+                    current.set(l, t, r, b);
                     LogCat.d(TAG, String.format(Locale.getDefault(), "Move: ┌ %3d ┐", t));
                     LogCat.d(TAG, String.format(Locale.getDefault(), "    %3d   %3d", l, r));
                     LogCat.d(TAG, String.format(Locale.getDefault(), "      └ %3d ┘", b));
                     v.setX(l);
                     v.setY(t);
                     break;
+                case MotionEvent.ACTION_UP:
+                    if (System.currentTimeMillis() - downTime > TOUCH_DELAY) {
+                        int x = (current.left + current.right) >> 1;
+                        int y = (current.top + current.bottom) >> 1;
+                        int xRelative = (x - video.getLeft()) * 100 / video.getWidth();
+                        int yRelative = (x - video.getTop()) * 100 / video.getHeight();
+                        mPresenter.face(xRelative, yRelative);
+                        showLoadingDialog(getString(R.string.ipc_recognition_loading));
+                    }
                 default:
                     break;
             }
