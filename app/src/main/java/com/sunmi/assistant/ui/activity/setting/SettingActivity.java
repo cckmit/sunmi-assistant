@@ -1,14 +1,7 @@
 package com.sunmi.assistant.ui.activity.setting;
 
-import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
-import android.util.DisplayMetrics;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.sunmi.apmanager.constant.Constants;
@@ -26,6 +19,8 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.rpc.http.RpcCallback;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.view.bottompopmenu.BottomPopMenu;
+import sunmi.common.view.bottompopmenu.PopItemAction;
 
 /**
  * 设置
@@ -54,71 +49,28 @@ public class SettingActivity extends BaseActivity {
             case R.id.rlAbout://关于
                 AboutActivity_.intent(context).start();
                 break;
-            case R.id.rlClearCash://缓存
-                showDialog(this, 0);
-                break;
             case R.id.btnLogout://退出
                 CommonUtils.trackCommonEvent(context, "settingLogout",
                         "主页_设置_退出登录", Constants.EVENT_MY_INFO);
-                showDialog(this, 1);
+                showChoosePhoto();
                 break;
         }
     }
 
-    public void showDialog(final Context getActivity, final int Type) {
-        final Dialog dialog = new Dialog(getActivity, R.style.BottomDialog);
-        View inflate = LayoutInflater.from(getActivity).inflate(R.layout.dialog_factory_reset, null);
-        //将布局设置给Dialog
-        dialog.setContentView(inflate);
-        //获取当前Activity所在的窗体
-        Window dialogWindow = dialog.getWindow();
-        if (dialogWindow == null) {
-            return;
-        }
-        //设置Dialog从窗体底部弹出
-        dialogWindow.setGravity(Gravity.BOTTOM);
-        // 屏幕宽度（像素）
-        WindowManager wm = (WindowManager) getActivity.getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics dm = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(dm);
-        int width = dm.widthPixels;
-        //int height = dm.heightPixels;
-        //获得窗体的属性
-        WindowManager.LayoutParams lp = dialogWindow.getAttributes();
-        lp.width = width;
-        dialogWindow.setAttributes(lp);
+    BottomPopMenu choosePhotoMenu;
 
-        TextView textTip = inflate.findViewById(R.id.tvTip);
-        TextView textReCover = inflate.findViewById(R.id.tvSure);
-        TextView textCancel = inflate.findViewById(R.id.tvCancel);
-        if (Type == 0) {
-            textTip.setText(R.string.msg_clear_cache_confirm);
-            textReCover.setText(R.string.str_confirm);
-        } else if (Type == 1) {
-            textTip.setText(R.string.msg_quit_confirm);
-            textReCover.setText(R.string.str_confirm);
-        }
-        textReCover.setTextColor(getResources().getColor(R.color.common_orange));
-
-        View.OnClickListener listener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                switch (v.getId()) {
-                    case R.id.tvSure:
-                        if (Type == 0) {
-                            tvCash.setText("0 M");
-                        } else if (Type == 1) {
-                            logout();
-                        }
-                        break;
-                }
-            }
-        };
-        textReCover.setOnClickListener(listener);
-        textCancel.setOnClickListener(listener);
-        dialog.setCancelable(true);
-        dialog.show();//显示对话框
+    void showChoosePhoto() {
+        if (choosePhotoMenu == null)
+            choosePhotoMenu = new BottomPopMenu.Builder(this)
+                    .setTitle(R.string.msg_quit_confirm)
+                    .setIsShowCircleBackground(true)
+                    .addItemAction(new PopItemAction(R.string.str_confirm,
+                            PopItemAction.PopItemStyle.Warning,
+                            this::logout))
+                    .addItemAction(new PopItemAction(R.string.sm_cancel,
+                            PopItemAction.PopItemStyle.Cancel))
+                    .create();
+        choosePhotoMenu.show();
     }
 
     /**

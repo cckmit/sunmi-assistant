@@ -150,7 +150,7 @@ public class JSCall {
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("userId", SpUtils.getUID());
-            jsonObject.put("token", SpUtils.getToken());
+            jsonObject.put("token", SpUtils.getSsoToken());
             jsonObject.put("source", "5");
             JSONObject jsonObject1 = new JSONObject();
             jsonObject1.put("appId", SunmiServiceConfig.FUMINBAO_APP_ID);

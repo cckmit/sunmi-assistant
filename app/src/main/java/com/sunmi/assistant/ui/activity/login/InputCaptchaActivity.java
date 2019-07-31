@@ -28,7 +28,6 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.constant.CommonConstants;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.TitleBarView;
 
@@ -215,8 +214,8 @@ public class InputCaptchaActivity extends BaseMvpActivity<InputCaptchaPresenter>
         CommonUtils.trackDurationEventEnd(context, "quickLoginDuration",
                 "登录流程开始到结束", Constants.EVENT_DURATION_LOGIN_BY_SMS);
         cancelTimer();//登录成功后取消计时
-        LoginChooseShopActivity_.intent(context).loginData(loginData)
-                .action(CommonConstants.ACTION_LOGIN_CHOOSE_COMPANY).start();
+//        LoginChooseShopActivity_.intent(context).loginData(loginData)//todo login
+//                .action(CommonConstants.ACTION_LOGIN_CHOOSE_COMPANY).start();
     }
 
     private void getImgCaptcha() {

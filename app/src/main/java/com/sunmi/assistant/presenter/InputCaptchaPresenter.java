@@ -6,13 +6,13 @@ import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.rpc.sso.SSOApi;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.InputCaptchaContract;
-import com.sunmi.assistant.rpc.CloudCall;
-import com.sunmi.ipc.rpc.RetrofitClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.rpc.cloud.SunmiStoreApi;
+import sunmi.common.rpc.cloud.SunmiStoreRetrofitClient;
 import sunmi.common.rpc.http.HttpCallback;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
@@ -115,31 +115,31 @@ public class InputCaptchaPresenter extends BasePresenter<InputCaptchaContract.Vi
 //                });
     }
 
-
     public void getStoreToken(LoginDataBean loginData) {
-        CloudCall.getStoreToken(loginData, new RetrofitCallback() {
-            @Override
-            public void onSuccess(int code, String msg, Object data) {
-                if (isViewAttached()) {
-                    mView.hideLoadingDialog();
-                    try {
-                        JSONObject jsonObject = new JSONObject(data.toString());
-                        SpUtils.setSsoToken(jsonObject.getString("store_token"));
-                        RetrofitClient.createInstance();//初始化retrofit
-                        mView.getStoreTokenSuccess(loginData);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+        SunmiStoreApi.getStoreToken(loginData.getUid() + "", loginData.getToken(),
+                loginData.getMerchant_uid(), new RetrofitCallback() {
+                    @Override
+                    public void onSuccess(int code, String msg, Object data) {
+                        if (isViewAttached()) {
+                            mView.hideLoadingDialog();
+                            try {
+                                JSONObject jsonObject = new JSONObject(data.toString());
+                                SpUtils.setStoreToken(jsonObject.getString("store_token"));
+                                SunmiStoreRetrofitClient.createInstance();//初始化retrofit
+                                mView.getStoreTokenSuccess(loginData);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
-                }
-            }
 
-            @Override
-            public void onFail(int code, String msg, Object data) {
-                if (isViewAttached()) {
-                    mView.hideLoadingDialog();
-                }
-            }
-        });
+                    @Override
+                    public void onFail(int code, String msg, Object data) {
+                        if (isViewAttached()) {
+                            mView.hideLoadingDialog();
+                        }
+                    }
+                });
     }
 
 }

@@ -5,7 +5,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.sunmi.apmanager.model.LoginDataBean;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.ChooseShopContract;
@@ -28,6 +27,7 @@ import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.model.UserInfoBean;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
@@ -58,7 +58,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     @Extra
     int action;
     @Extra
-    LoginDataBean loginData;
+    UserInfoBean loginData;
     @Extra
     int companyId;
     @Extra
@@ -160,15 +160,11 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
             @Override
             public void convert(ViewHolder holder, final CompanyInfoResp item) {
                 ((SettingItemLayout) holder.getView(R.id.sil_item)).setLeftText(item.getCompany_name());
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        LoginChooseShopActivity_.intent(context).loginData(loginData)
+                holder.itemView.setOnClickListener(
+                        v -> LoginChooseShopActivity_.intent(context).loginData(loginData)
                                 .companyId(item.getCompany_id()).companyName(item.getCompany_name())
                                 .saasExist(item.getSaas_exist())
-                                .action(CommonConstants.ACTION_LOGIN_CHOOSE_SHOP).start();
-                    }
-                });
+                                .action(CommonConstants.ACTION_LOGIN_CHOOSE_SHOP).start());
             }
         });
     }
@@ -185,12 +181,8 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
             @Override
             public void convert(ViewHolder holder, final ShopListResp.ShopInfo item) {
                 ((SettingItemLayout) holder.getView(R.id.sil_item)).setLeftText(item.getShop_name());
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        gotoMainActivity(item.getShop_id(), item.getShop_name());
-                    }
-                });
+                holder.itemView.setOnClickListener(v ->
+                        gotoMainActivity(item.getShop_id(), item.getShop_name()));
             }
         });
     }
@@ -207,7 +199,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     }
 
     private void gotoMainActivity(int shopId, String shopName) {
-        CommonUtils.saveLoginInfo(this, loginData, 0);
+        CommonUtils.saveLoginInfo(context, loginData, 0);
         SpUtils.setCompanyId(companyId);
         SpUtils.setCompanyName(companyName);
         SpUtils.setShopId(shopId);

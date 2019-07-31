@@ -25,8 +25,6 @@ import com.sunmi.assistant.ui.activity.merchant.AuthDialog;
 import com.sunmi.assistant.ui.activity.merchant.SelectPlatformActivity_;
 import com.sunmi.assistant.ui.activity.merchant.SelectStoreActivity_;
 import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
-import com.sunmi.ipc.rpc.IPCCloudApi;
-import com.sunmi.ipc.rpc.RetrofitClient;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -39,6 +37,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.rpc.cloud.SunmiStoreApi;
+import sunmi.common.rpc.cloud.SunmiStoreRetrofitClient;
 import sunmi.common.rpc.http.RpcCallback;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.GotoActivityUtils;
@@ -176,25 +176,26 @@ public class SetPasswordActivity extends BaseActivity {
     //获取ssotoken
     private void getSsoToken() {
         showLoadingDialog();
-        IPCCloudApi.getStoreToken(new RetrofitCallback() {
-            @Override
-            public void onSuccess(int code, String msg, Object data) {
-                try {
-                    JSONObject jsonObject = new JSONObject(data.toString());
-                    SpUtils.setSsoToken(jsonObject.getString("store_token"));
-                    RetrofitClient.createInstance();//初始化retrofit
-                    //MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
-                    getCompanyInfo();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
+        SunmiStoreApi.getStoreToken(SpUtils.getUID(), SpUtils.getSsoToken(),
+                SpUtils.getCompanyId() + "", new RetrofitCallback() {
+                    @Override
+                    public void onSuccess(int code, String msg, Object data) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(data.toString());
+                            SpUtils.setStoreToken(jsonObject.getString("store_token"));
+                            SunmiStoreRetrofitClient.createInstance();//初始化retrofit
+                            //MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
+                            getCompanyInfo();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
 
-            @Override
-            public void onFail(int code, String msg, Object data) {
-                hideLoadingDialog();
-            }
-        });
+                    @Override
+                    public void onFail(int code, String msg, Object data) {
+                        hideLoadingDialog();
+                    }
+                });
     }
 
     //获取商户信息

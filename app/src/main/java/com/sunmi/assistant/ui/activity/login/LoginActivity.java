@@ -14,7 +14,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.sunmi.apmanager.constant.Constants;
-import com.sunmi.apmanager.model.LoginDataBean;
 import com.sunmi.apmanager.ui.view.MergeDialog;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
@@ -32,6 +31,7 @@ import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.model.UserInfoBean;
 import sunmi.common.utils.PermissionUtils;
 import sunmi.common.utils.RegexUtils;
 import sunmi.common.utils.SpUtils;
@@ -211,7 +211,7 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
     //手机号未注册
     @UiThread
     @Override
-    public void mobileNoRegister() {
+    public void mobileUnregister() {
         new CommonDialog.Builder(LoginActivity.this)
                 .setTitle(R.string.tip_unregister)
                 .setCancelButton(R.string.sm_cancel)
@@ -228,7 +228,7 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
     }
 
     @Override
-    public void getStoreTokenSuccess(LoginDataBean loginData) {
+    public void getStoreTokenSuccess(UserInfoBean loginData) {
         LoginChooseShopActivity_.intent(context).loginData(loginData)
                 .action(CommonConstants.ACTION_LOGIN_CHOOSE_COMPANY).start();
     }

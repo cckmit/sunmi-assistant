@@ -4,40 +4,22 @@ import com.sunmi.ipc.model.IpcNewFirmwareResp;
 import com.sunmi.ipc.rpc.api.DeviceInterface;
 import com.sunmi.ipc.rpc.api.EmqInterface;
 import com.sunmi.ipc.rpc.api.MediaInterface;
-import com.sunmi.ipc.rpc.api.UserInterface;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import sunmi.common.constant.CommonConfig;
-import sunmi.common.rpc.http.BaseHttpApi;
+import sunmi.common.rpc.cloud.SunmiStoreRetrofitClient;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.SafeUtils;
-import sunmi.common.utils.SpUtils;
 
 /**
  * Description: IPCCloudApi
  * Created by Bruce on 2019/3/31.
  */
-public class IPCCloudApi extends BaseHttpApi {
-
-    public static void getStoreToken(RetrofitCallback callback) {
-        try {
-            String params = new JSONObject()
-                    .put("user_id", SpUtils.getUID())
-                    .put("token", SpUtils.getToken())
-                    .put("merchant_id", SpUtils.getCompanyId())
-                    .put("app_type", 2)//1代表web, 2 代表app
-                    .toString();
-            RetrofitClient.getInstance().create(UserInterface.class)
-                    .getStoreToken(getSignedRequest(params))
-                    .enqueue(callback);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
+public class IPCCloudApi {
 
     /**
      * @param shopId    是	integer	店铺id
@@ -59,7 +41,7 @@ public class IPCCloudApi extends BaseHttpApi {
                     .put("longitude", longitude)
                     .put("latitude", latitude)
                     .toString();
-            RetrofitClient.getInstance().create(DeviceInterface.class)
+            SunmiStoreRetrofitClient.getInstance().create(DeviceInterface.class)
                     .bind(getSignedRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
@@ -80,7 +62,7 @@ public class IPCCloudApi extends BaseHttpApi {
                     .put("shop_id", shopId)
                     .put("device_id", deviceId)
                     .toString();
-            RetrofitClient.getInstance().create(DeviceInterface.class)
+            SunmiStoreRetrofitClient.getInstance().create(DeviceInterface.class)
                     .unbind(getSignedRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
@@ -98,7 +80,7 @@ public class IPCCloudApi extends BaseHttpApi {
                     .put("company_id", companyId)
                     .put("shop_id", shopId)
                     .toString();
-            RetrofitClient.getInstance().create(DeviceInterface.class)
+            SunmiStoreRetrofitClient.getInstance().create(DeviceInterface.class)
                     .getDetailList(getSignedRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
@@ -123,7 +105,7 @@ public class IPCCloudApi extends BaseHttpApi {
                     .put("device_id", deviceId)
                     .put("device_name", deviceName)
                     .toString();
-            RetrofitClient.getInstance().create(DeviceInterface.class)
+            SunmiStoreRetrofitClient.getInstance().create(DeviceInterface.class)
                     .updateBaseInfo(getSignedRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
@@ -146,7 +128,7 @@ public class IPCCloudApi extends BaseHttpApi {
                     .put("shop_id", shopId)
                     .put("device_id", deviceId)
                     .toString();
-            RetrofitClient.getInstance().create(DeviceInterface.class)
+            SunmiStoreRetrofitClient.getInstance().create(DeviceInterface.class)
                     .newFirmware(getSignedRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
@@ -165,7 +147,7 @@ public class IPCCloudApi extends BaseHttpApi {
             String params = new JSONObject()
                     .put("source", "APP")
                     .toString();
-            RetrofitClient.getInstance().create(EmqInterface.class)
+            SunmiStoreRetrofitClient.getInstance().create(EmqInterface.class)
                     .create(getSignedRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
@@ -188,7 +170,7 @@ public class IPCCloudApi extends BaseHttpApi {
                     .put("start_time", startTime)
                     .put("end_time", endTime)
                     .toString();
-            RetrofitClient.getInstance().create(MediaInterface.class)
+            SunmiStoreRetrofitClient.getInstance().create(MediaInterface.class)
                     .getTimeSlots(getSignedRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
@@ -212,7 +194,7 @@ public class IPCCloudApi extends BaseHttpApi {
                     .put("start_time", startTime)
                     .put("end_time", endTime)
                     .toString();
-            RetrofitClient.getInstance().create(MediaInterface.class)
+            SunmiStoreRetrofitClient.getInstance().create(MediaInterface.class)
                     .getVideoList(getSignedRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {

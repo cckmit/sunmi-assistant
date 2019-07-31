@@ -282,6 +282,11 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     @Override
     public void onDeviceClick(SunmiDevice device) {
         if (isFastClick(1500)) return;
+        if (TextUtils.equals(device.getType(), "PRINTER")) {
+            PrinterManageActivity_.intent(mActivity).sn(device.getDeviceid()).userId(SpUtils.getUID())
+                    .merchantId(SpUtils.getShopId() + "").channelId(device.getChannelId()).start();
+            return;
+        }
         if (cannotManagerDevice(device)) {
             return;
         }
@@ -301,9 +306,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 VideoPlayActivity_.intent(mActivity).UID(device.getUid())
                         .deviceId(device.getId()).ipcType(device.getModel()).start();
             }
-        } else if (TextUtils.equals(device.getType(), "PRINTER")) {
-            PrinterManageActivity_.intent(mActivity).sn(device.getDeviceid()).userId(SpUtils.getUID())
-                    .merchantId(SpUtils.getShopId() + "").channelId(device.getChannelId()).start();
         }
     }
 

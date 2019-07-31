@@ -232,7 +232,7 @@ public class IOTCClient {
                     LogCat.e(TAG, "Session cant be used anymore");
                     break;
                 }
-//                LogCat.e(TAG, "555555vvv VIDEO received ret = " + ret);
+                LogCat.e(TAG, "888888vvv VIDEO received ret = " + ret);
                 if (ret > 0) {
                     byte[] data = new byte[ret];
                     System.arraycopy(videoBuffer, 0, data, 0, ret);
