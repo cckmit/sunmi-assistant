@@ -7,7 +7,6 @@ import android.widget.TextView;
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.contract.MineContract;
-import com.sunmi.apmanager.model.UserInfo;
 import com.sunmi.apmanager.presenter.MinePresenter;
 import com.sunmi.apmanager.ui.activity.store.HelpActivity;
 import com.sunmi.apmanager.ui.activity.store.MyStoreActivity;
@@ -26,6 +25,7 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseMvpFragment;
+import sunmi.common.model.UserInfoBean;
 import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StringHelper;
@@ -150,8 +150,7 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     }
 
     @Override
-    public void getUserInfoSuccess(UserInfo bean) {
-        mPresenter.saveUserInfo(bean);
+    public void getUserInfoSuccess(UserInfoBean bean) {
         initView();
     }
 

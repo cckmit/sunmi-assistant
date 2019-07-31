@@ -2,6 +2,10 @@ package sunmi.common.rpc.retrofit;
 
 import java.io.Serializable;
 
+import sunmi.common.constant.CommonConfig;
+import sunmi.common.utils.DateTimeUtils;
+import sunmi.common.utils.SafeUtils;
+
 /**
  * Description:请求基类
  * Created by bruce on 2019/2/26.
@@ -23,6 +27,16 @@ public class BaseRequest implements Serializable {
         this.params = params;
         this.sign = sign;
         this.lang = lang;
+    }
+
+    public BaseRequest(String params) {
+        this.params = params;
+        timeStamp = DateTimeUtils.currentTimeSecond() + "";
+        randomNum = (int) ((Math.random() * 9 + 1) * 100000) + "";
+        isEncrypted = "0";
+        this.lang = "zh";
+        sign = SafeUtils.md5(params + isEncrypted +
+                timeStamp + randomNum + SafeUtils.md5(CommonConfig.CLOUD_TOKEN));
     }
 
     public String getTimeStamp() {

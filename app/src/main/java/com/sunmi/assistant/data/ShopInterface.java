@@ -17,25 +17,26 @@ import sunmi.common.rpc.retrofit.BaseResponse;
  * @since 2019-06-20
  */
 public interface ShopInterface {
+    String shopPath = "api/shop/";
 
     /**
      * 根据companyId获取所有的门店列表
      */
-    @POST("/api/shop/getList")
+    @POST(shopPath + "getList")
     Call<BaseResponse<ShopListResp>> getList(@Body BaseRequest request);
 
     /**
      * 根据shopId获取门店信息
      */
-    @POST("/api/shop/getInfo")
+    @POST(shopPath + "getInfo")
     Call<BaseResponse<ShopInfoResp>> getInfo(@Body BaseRequest request);
 
     //创建门店
-    @POST("/api/shop/create")
+    @POST(shopPath + "create")
     Call<BaseResponse<CreateStoreInfo>> createShop(@Body BaseRequest request);
 
     //编辑门店
-    @POST("/api/shop/update")
+    @POST(shopPath + "update")
     Call<BaseResponse<Object>> editShop(@Body BaseRequest request);
 
 }

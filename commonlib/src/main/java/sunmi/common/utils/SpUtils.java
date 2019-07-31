@@ -16,8 +16,8 @@ public class SpUtils {
     private static final String AVATAR_URL = "avatar_url";
     private static final String MERCHANT_UID = "MERCHANT_UID";
     private static final String UID = "UID";
-    private static final String TOKEN = "TOKEN";
     private static final String SSO_TOKEN = "SSO_TOKEN";
+    private static final String STORE_TOKEN = "STORE_TOKEN";
     private static final String LEAD_PAGES = "LEAD_PAGES";
     private static final String WEB_WIDTH = "WEB_WIDTH";
     private static final String WEB_HEIGHT = "WEB_HEIGHT";
@@ -92,21 +92,21 @@ public class SpUtils {
     }
 
     //用户Token
-    public static String getToken() {
-        return SharedManager.getValue(BaseApplication.getContext(), TOKEN);
-    }
-
-    public static void setToken(String token) {
-        SharedManager.putValue(BaseApplication.getContext(), TOKEN, token);
-    }
-
-    //sso Token
     public static String getSsoToken() {
         return SharedManager.getValue(BaseApplication.getContext(), SSO_TOKEN);
     }
 
-    public static void setSsoToken(String token) {
-        SharedManager.putValue(BaseApplication.getContext(), SSO_TOKEN, token);
+    public static void setSsoToken(String ssoToken) {
+        SharedManager.putValue(BaseApplication.getContext(), SSO_TOKEN, ssoToken);
+    }
+
+    //sunmi store Token
+    public static String getStoreToken() {
+        return SharedManager.getValue(BaseApplication.getContext(), STORE_TOKEN);
+    }
+
+    public static void setStoreToken(String token) {
+        SharedManager.putValue(BaseApplication.getContext(), STORE_TOKEN, token);
     }
 
     //登录状态
