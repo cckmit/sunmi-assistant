@@ -3,6 +3,7 @@ package com.sunmi.ipc.setting;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.widget.CompoundButton;
@@ -38,6 +39,7 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotificationConstant;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.NetworkUtils;
@@ -99,6 +101,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     private IpcNewFirmwareResp mResp;
     private String wifiSsid, wifiMgmt;
     private int wifiIsWire = WIFI_WIRE_DEFAULT; //-1默认 0无线 1有线
+    private boolean isShowWireDialog;//是否显示有线dialog
 
     // 升级
     private UpdateProgressDialog progressDialog;
@@ -169,13 +172,15 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         TextView tvName = mNameView.getRightText();
         tvName.setSingleLine();
         tvName.setEllipsize(TextUtils.TruncateAt.END);
+        if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
+            setWifiUnknown();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         isRun = true;
-        connectedNet();
     }
 
     @Override
@@ -217,6 +222,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             newVersionDialog();
         } else {
             mVersion.setRightText(resp.getLatest_bin_version());
+            mVersion.setIvToTextLeftImage(0);
         }
     }
 
@@ -232,6 +238,19 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             }
         }
         return false;
+    }
+
+    /**
+     * 获取wifi信息 有线时显示有线  无线时获取无线wifi name
+     * 是否远程
+     */
+    private void getWifiMessage() {
+        SunmiDevice bean = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
+        if (bean == null) {
+            setWifiUnknown();
+        } else {
+            IPCCall.getInstance().getIpcConnectApMsg(IpcSettingActivity.this, bean.getIp());
+        }
     }
 
     @Click(resName = "btn_refresh")
@@ -376,6 +395,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         if (noNetCannotClick(true)) {
             return;
         }
+        isShowWireDialog = true;
         shortTip(R.string.ipc_setting_tip_network_detection);
         new android.os.Handler().postDelayed(new Runnable() {
             @Override
@@ -383,6 +403,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 //是否远程
                 SunmiDevice bean = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
                 if (bean == null) {
+                    setWifiUnknown();
                     shortTip(R.string.ipc_setting_tip_network_dismatch);
                     return;
                 }
@@ -391,6 +412,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             }
         }, 2000);
     }
+
 
     private void gotoIpcSettingWiFiActivity() {
         IpcSettingWiFiActivity_.intent(this)
@@ -468,10 +490,13 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         super.didReceivedNotification(id, args);
         hideLoadingDialog();
         if (id == CommonNotificationConstant.netDisconnection) { //网络断开
+            isShowWireDialog = false;
             setWifiUnknown();
         } else if (id == CommonNotificationConstant.netConnected) { //网络连接
+            isShowWireDialog = false;
             connectedNet();
         } else if (id == CommonNotificationConstant.ipcUpgrade) { //ipc升级
+            mDevice.setFirmware(mResp.getLatest_bin_version());
             mPresenter.currentVersion();
         }
         if (!isRun || args == null) {
@@ -524,13 +549,26 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     }
 
     @UiThread
+    void showWifiName(String ssid) {
+        mWifiName.setRightText(ssid);
+        mWifiName.setLeftTextColor(ContextCompat.getColor(this, R.color.colorText));
+        mWifiName.setRightTextColor(ContextCompat.getColor(this, R.color.colorText_60));
+    }
+
+    @UiThread
     void connectedNet() {
-        SunmiDevice bean = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
-        if (bean == null) {
-            setWifiUnknown();
-        } else {
-            IPCCall.getInstance().getIpcConnectApMsg(this, bean.getIp());
-        }
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                SunmiDevice bean = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
+                if (bean == null) {
+                    setWifiUnknown();
+                } else {
+                    IPCCall.getInstance().getIsWire(IpcSettingActivity.this, bean.getIp());
+                }
+            }
+        }, 1200);
+
     }
 
     //局域网获取wifi信息
@@ -542,9 +580,36 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         IpcConnectApResp device = new GsonBuilder().create().fromJson(res.getResult().toString(), IpcConnectApResp.class);
         wifiSsid = device.getWireless().getSsid();
         wifiMgmt = device.getWireless().getKey_mgmt();
-        mWifiName.setRightText(device.getWireless().getSsid());
-        mWifiName.setLeftTextColor(ContextCompat.getColor(this, R.color.colorText));
-        mWifiName.setRightTextColor(ContextCompat.getColor(this, R.color.colorText_60));
+        showWifiName(device.getWireless().getSsid());
+        if (isShowWireDialog) {
+            gotoIpcSettingWiFiActivity();
+        }
+    }
+
+    /**
+     * wire	int	有线口物理连接状态 0:未连接, 1:已连接
+     * wireless	int	无线配置状态 0:未配置过无线连接, 1:已配置过无线（之前无线连接至少成功过一次）
+     * online	int	网络连接状态 0:不能访问internet, 1:可以访问internet
+     */
+    @UiThread
+    void checkWire(ResponseBean res) {
+        try {
+            if (res.getResult() != null && res.getResult().has("wire")) {
+                wifiIsWire = res.getResult().getInt("wire");
+                if (wifiIsWire == 1) {
+                    wifiSsid = getString(R.string.ipc_setting_wire_net);
+                    showWifiName(wifiSsid);
+                    if (isShowWireDialog) {
+                        checkWirelessDialog();
+                    }
+                } else {
+                    getWifiMessage();
+                }
+            }
+        } catch (JSONException e) {
+            hideLoadingDialog();
+            e.printStackTrace();
+        }
     }
 
     //夜视模式
@@ -640,36 +705,14 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @UiThread
     void upgradeResult(ResponseBean res) {
-        if (res.getDataErrCode() == 1) {
+        if (res.getDataErrCode() == 1) {//升级成功
             stopTimer();
             progressDialog.progressDismiss();
+            mDevice.setFirmware(mResp.getLatest_bin_version());
+            BaseNotification.newInstance().postNotificationName(CommonNotificationConstant.ipcUpgradeComplete);
             upgradeVerSuccessDialog();
         } else {
             upgradeVerFailDialog(mResp.getLatest_bin_version());
-        }
-    }
-
-    /**
-     * wire	int	有线口物理连接状态 0:未连接, 1:已连接
-     * wireless	int	无线配置状态 0:未配置过无线连接, 1:已配置过无线（之前无线连接至少成功过一次）
-     * online	int	网络连接状态 0:不能访问internet, 1:可以访问internet
-     */
-    @UiThread
-    void checkWire(ResponseBean res) {
-        try {
-            if (res.getResult() != null && res.getResult().has("wire")) {
-                wifiIsWire = res.getResult().getInt("wire");
-                if (wifiIsWire == 1) {
-                    wifiSsid = getString(R.string.ipc_setting_wire_net);
-                    mWifiName.setRightText(wifiSsid);
-                    checkWirelessDialog();
-                } else {
-                    gotoIpcSettingWiFiActivity();
-                }
-            }
-        } catch (JSONException e) {
-            hideLoadingDialog();
-            e.printStackTrace();
         }
     }
 
@@ -763,4 +806,5 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         super.onDestroy();
         stopTimer();
     }
+
 }
