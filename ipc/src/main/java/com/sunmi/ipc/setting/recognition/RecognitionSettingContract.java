@@ -30,9 +30,8 @@ public interface RecognitionSettingContract {
          * 根据步骤切换视图
          *
          * @param step    步骤Index
-         * @param showTip 是否显示Tips
          */
-        void updateViewStepTo(int step, boolean showTip);
+        void updateViewsStepTo(int step);
 
         /**
          * 设置按钮是否可用
@@ -40,7 +39,7 @@ public interface RecognitionSettingContract {
          * @param isPlus True：+按钮，False：-按钮
          * @param enable 是否可用
          */
-        void enableControlBtn(boolean isPlus, boolean enable);
+        void updateControlBtnEnable(boolean isPlus, boolean enable);
 
         /**
          * 显示网络错误对话框
@@ -84,8 +83,9 @@ public interface RecognitionSettingContract {
 
         /**
          * 放大画面大小（变焦）
+         * @param isZoomIn
          */
-        void zoomIn();
+        void zoom(boolean isZoomIn);
 
         /**
          * 缩小画面大小（变焦）

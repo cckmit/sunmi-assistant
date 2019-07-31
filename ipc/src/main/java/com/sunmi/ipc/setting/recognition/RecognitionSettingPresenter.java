@@ -5,7 +5,6 @@ import com.sunmi.ipc.R;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.setting.entity.CameraConfig;
-import com.sunmi.ipc.view.DoorLineView;
 import com.sunmi.ipc.view.IpcVideoView;
 
 import sunmi.common.base.BasePresenter;
@@ -65,7 +64,7 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
     }
 
     @Override
-    public void zoomIn() {
+    public void zoom(boolean isZoomIn) {
         SunmiDevice device = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
         if (device != null) {
             int gear = mConfig.getCurrentZoom() / mZoomGap + 1;
@@ -145,13 +144,13 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
         mZoomGap = mConfig.getMaxZoom() / 10;
         if (isViewAttached()) {
             if (id == IpcConstants.fsGetStatus) {
-                mView.updateViewStepTo(RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM, true);
+                mView.updateViewsStepTo(RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM);
             } else if (id == IpcConstants.fsZoom) {
-                mView.enableControlBtn(true, mConfig.getCurrentZoom() != mConfig.getMaxZoom());
-                mView.enableControlBtn(false, mConfig.getCurrentZoom() != 0);
+                mView.updateControlBtnEnable(true, mConfig.getCurrentZoom() != mConfig.getMaxZoom());
+                mView.updateControlBtnEnable(false, mConfig.getCurrentZoom() != 0);
             } else if (id == IpcConstants.fsFocus) {
-                mView.enableControlBtn(true, mConfig.getCurrentFocus() != mConfig.getMaxFocus());
-                mView.enableControlBtn(false, mConfig.getCurrentFocus() != 0);
+                mView.updateControlBtnEnable(true, mConfig.getCurrentFocus() != mConfig.getMaxFocus());
+                mView.updateControlBtnEnable(false, mConfig.getCurrentFocus() != 0);
             }
         }
     }
@@ -171,22 +170,6 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
         @Override
         public void onResult(String result) {
             LogCat.d(TAG, result);
-        }
-    }
-
-    private class DoorLineStateChangeListener implements DoorLineView.OnStateChangeListener {
-
-        @Override
-        public void onStateChanged(int state) {
-            switch (state) {
-                case DoorLineView.STATE_INIT:
-                    break;
-                case DoorLineView.STATE_START:
-                    break;
-                case DoorLineView.STATE_END:
-                    break;
-                default:
-            }
         }
     }
 

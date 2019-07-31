@@ -3,7 +3,9 @@ package com.sunmi.ipc.setting.recognition;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
+import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -21,8 +23,6 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
-
-import java.util.Locale;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.SunmiDevice;
@@ -71,7 +71,18 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
     SunmiDevice mDevice;
 
     private int mStepIndex;
-    private boolean mIsTipShow;
+    private float[] mLineStart;
+    private float[] mLineEnd;
+
+    private SparseArray<String> mResTitle = new SparseArray<>(4);
+    private SparseArray<String> mResNext = new SparseArray<>(4);
+    private SparseArray<String> mResTip = new SparseArray<>(4);
+    private SparseArray<String> mResLineTitle = new SparseArray<>(3);
+    private Drawable mResZoomIn;
+    private Drawable mResZoomOut;
+    private Drawable mResFocusPlus;
+    private Drawable mResFocusMinus;
+    private String mResLoading;
 
     @AfterViews
     void init() {
@@ -81,14 +92,36 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
         mPresenter = new RecognitionSettingPresenter();
         mPresenter.attachView(this);
         mPresenter.init(mDevice);
-        video.init(mDevice.getUid(), 16, 9, mPresenter.getCallback());
-        updateViewStepTo(RecognitionSettingContract.STEP_1_POSITION, true);
-        initFaceCase();
+        initViews();
+        updateViewsStepTo(RecognitionSettingContract.STEP_1_POSITION);
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private void initFaceCase() {
+    private void initViews() {
+        video.init(mDevice.getUid(), 16, 9, mPresenter.getCallback());
         mFaceCase.setOnTouchListener(new FaceCaseTouch());
+        mLineView.setStateChangeListener(new DoorLineStateChangeListener());
+        mResTitle.put(RecognitionSettingContract.STEP_1_POSITION, getString(R.string.ipc_recognition_tip_position));
+        mResTitle.put(RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM, "");
+        mResTitle.put(RecognitionSettingContract.STEP_3_FOCUS, "");
+        mResTitle.put(RecognitionSettingContract.STEP_4_LINE, getString(R.string.ipc_recognition_line_start));
+        String next = getString(R.string.str_next);
+        mResNext.put(RecognitionSettingContract.STEP_1_POSITION, next);
+        mResNext.put(RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM, next);
+        mResNext.put(RecognitionSettingContract.STEP_3_FOCUS, next);
+        mResNext.put(RecognitionSettingContract.STEP_4_LINE, getString(R.string.str_complete));
+        mResTip.put(RecognitionSettingContract.STEP_1_POSITION, getString(R.string.ipc_recognition_tip_position));
+        mResTip.put(RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM, getString(R.string.ipc_recognition_tip_zoom));
+        mResTip.put(RecognitionSettingContract.STEP_3_FOCUS, getString(R.string.ipc_recognition_tip_focus));
+        mResTip.put(RecognitionSettingContract.STEP_4_LINE, getString(R.string.ipc_recognition_tip_line));
+        mResLineTitle.put(DoorLineView.STATE_INIT, getString(R.string.ipc_recognition_line_start));
+        mResLineTitle.put(DoorLineView.STATE_START, getString(R.string.ipc_recognition_line_end));
+        mResLineTitle.put(DoorLineView.STATE_END, getString(R.string.ipc_recognition_line_end));
+        mResZoomIn = ContextCompat.getDrawable(this, R.mipmap.setting_recognition_zoom_in);
+        mResZoomOut = ContextCompat.getDrawable(this, R.mipmap.setting_recognition_zoom_out);
+        mResFocusPlus = ContextCompat.getDrawable(this, R.mipmap.setting_recognition_focus_plus);
+        mResFocusMinus = ContextCompat.getDrawable(this, R.mipmap.setting_recognition_focus_minus);
+        mResLoading = getString(R.string.ipc_recognition_loading);
     }
 
     @Override
@@ -103,165 +136,134 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
 
     @Override
     @UiThread
-    public void updateViewStepTo(int step, boolean showTip) {
+    public void updateViewsStepTo(int step) {
         mStepIndex = step;
+        updateTitle(mResTitle.get(step), mResNext.get(step));
+        updateTip(mResTip.get(step));
+        updateTipShow(true);
+        updateControlBtnShow(false);
+        mFaceCase.setVisibility(View.INVISIBLE);
+        mLineView.setVisibility(View.INVISIBLE);
         switch (step) {
-            case RecognitionSettingContract.STEP_1_POSITION:
-                updateViewPosition(showTip);
-                break;
             case RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM:
-                updateViewZoom(showTip);
+                updateControlBtn(mResZoomIn, mResZoomOut);
                 break;
             case RecognitionSettingContract.STEP_3_FOCUS:
-                updateViewFocus(showTip);
-                break;
-            case RecognitionSettingContract.STEP_4_LINE:
-                updateViewLine(showTip);
+                updateControlBtn(mResFocusPlus, mResFocusMinus);
                 break;
             default:
-                LogCat.e(TAG, "Unsupported step code:" + step);
         }
     }
 
     @Click(resName = "btn_setting_tip_ok")
     void onTipOkClick() {
-        updateViewStepTo(mStepIndex, false);
+        dismissTip(mStepIndex);
     }
 
     @Click(resName = "iv_setting_back")
     void onBack() {
-        if (mIsTipShow) {
-            return;
-        }
         if (mStepIndex == RecognitionSettingContract.STEP_1_POSITION) {
             finish();
         } else {
-            updateViewStepTo(--mStepIndex, true);
+            updateViewsStepTo(--mStepIndex);
         }
     }
 
     @Click(resName = "tv_setting_next")
     void onNext() {
-        if (mIsTipShow) {
-            return;
-        }
         if (mStepIndex == RecognitionSettingContract.STEP_1_POSITION) {
             showLoadingDialog();
             mPresenter.updateState();
         } else if (mStepIndex == RecognitionSettingContract.STEP_4_LINE) {
             showLoadingDialog();
-//            mPresenter.line();
+            // TODO: API
+            mPresenter.line(null, null);
         } else {
-            updateViewStepTo(++mStepIndex, true);
+            updateViewsStepTo(++mStepIndex);
         }
     }
 
     @Click(resName = "btn_setting_btn_plus")
     void onPlusClick() {
-        showLoadingDialog(getString(R.string.ipc_recognition_loading));
         if (mStepIndex == RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM) {
-            mPresenter.zoomIn();
+            showLoadingDialog(mResLoading);
+            mPresenter.zoom(true);
         } else if (mStepIndex == RecognitionSettingContract.STEP_3_FOCUS) {
+            showLoadingDialog(mResLoading);
             mPresenter.focus(true);
         } else {
-            hideLoadingDialog();
             LogCat.e(TAG, "Step of recognition ERROR when plus clicked.");
         }
     }
 
     @Click(resName = "btn_setting_btn_minus")
     void onMinusClick() {
-        showLoadingDialog(getString(R.string.ipc_recognition_loading));
         if (mStepIndex == RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM) {
-            mPresenter.zoomOut();
+            showLoadingDialog(mResLoading);
+            mPresenter.zoom(false);
         } else if (mStepIndex == RecognitionSettingContract.STEP_3_FOCUS) {
+            showLoadingDialog(mResLoading);
             mPresenter.focus(false);
         } else {
-            hideLoadingDialog();
             LogCat.e(TAG, "Step of recognition ERROR when minus clicked.");
         }
     }
 
     @Click(resName = "btn_setting_btn_reset")
     void onResetClick() {
-        showLoadingDialog(getString(R.string.ipc_recognition_loading));
         if (mStepIndex == RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM) {
+            showLoadingDialog(mResLoading);
             mPresenter.zoomReset();
         } else if (mStepIndex == RecognitionSettingContract.STEP_3_FOCUS) {
+            showLoadingDialog(mResLoading);
             mPresenter.focusReset();
         } else {
-            hideLoadingDialog();
             LogCat.e(TAG, "Step of recognition ERROR when plus clicked.");
         }
     }
 
-    private void updateViewPosition(boolean isTipShow) {
-        mTvNext.setText(getString(R.string.str_next));
+    private void dismissTip(int step) {
+        updateTipShow(false);
+        updateControlBtnShow(false);
         mFaceCase.setVisibility(View.INVISIBLE);
         mLineView.setVisibility(View.INVISIBLE);
-        showTitle(!isTipShow, getString(R.string.ipc_recognition_tip_position));
-        showControlBtn(false, false);
-        showTip(isTipShow, getString(R.string.ipc_recognition_tip_position));
-    }
-
-    private void updateViewZoom(boolean isTipShow) {
-        mTvNext.setText(getString(R.string.str_next));
-        mFaceCase.setVisibility(isTipShow ? View.INVISIBLE : View.VISIBLE);
-        mLineView.setVisibility(View.INVISIBLE);
-        showTitle(false, null);
-        showControlBtn(!isTipShow, true);
-        showTip(isTipShow, getString(R.string.ipc_recognition_tip_zoom));
-    }
-
-    private void updateViewFocus(boolean isTipShow) {
-        mTvNext.setText(getString(R.string.str_next));
-        mFaceCase.setVisibility(isTipShow ? View.INVISIBLE : View.VISIBLE);
-        mLineView.setVisibility(View.INVISIBLE);
-        showTitle(false, null);
-        showControlBtn(!isTipShow, false);
-        showTip(isTipShow, getString(R.string.ipc_recognition_tip_focus));
-    }
-
-    private void updateViewLine(boolean isTipShow) {
-        mTvNext.setText(getString(R.string.str_complete));
-        mFaceCase.setVisibility(View.INVISIBLE);
-        mLineView.setVisibility(isTipShow ? View.INVISIBLE : View.VISIBLE);
-        showTitle(!isTipShow, getString(R.string.ipc_recognition_line_start));
-        showControlBtn(false, false);
-        showTip(isTipShow, getString(R.string.ipc_recognition_tip_line));
-    }
-
-    private void showTitle(boolean enable, String title) {
-        if (enable) {
-            mTvTitle.setVisibility(View.VISIBLE);
-            mTvTitle.setText(title);
-        } else {
-            mTvTitle.setVisibility(View.INVISIBLE);
+        switch (step) {
+            case RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM:
+            case RecognitionSettingContract.STEP_3_FOCUS:
+                mFaceCase.setVisibility(View.VISIBLE);
+                updateControlBtnShow(true);
+                break;
+            case RecognitionSettingContract.STEP_4_LINE:
+                mLineView.init();
+                mLineView.setVisibility(View.VISIBLE);
+                break;
+            default:
         }
     }
 
-    @Override
-    @UiThread
-    public void enableControlBtn(boolean isPlus, boolean enable) {
-        if (isPlus) {
-            mBtnPlus.setEnabled(enable);
-        } else {
-            mBtnMinus.setEnabled(enable);
-        }
+    private void updateTitle(String title, String nextText) {
+        mTvTitle.setText(title);
+        mTvNext.setText(nextText);
     }
 
-    private void showControlBtn(boolean enable, boolean isZoom) {
-        if (enable) {
+    private void updateTip(String content) {
+        mTvTipContent.setText(content);
+    }
+
+    private void updateControlBtn(Drawable plus, Drawable minus) {
+        mBtnPlus.setBackground(plus);
+        mBtnMinus.setBackground(minus);
+    }
+
+    private void updateTitleShow(boolean show) {
+        mTvTitle.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    private void updateControlBtnShow(boolean show) {
+        if (show) {
             mBtnPlus.setVisibility(View.VISIBLE);
             mBtnMinus.setVisibility(View.VISIBLE);
             mBtnReset.setVisibility(View.VISIBLE);
-            if (isZoom) {
-                mBtnPlus.setBackground(ContextCompat.getDrawable(this, R.mipmap.setting_recognition_zoom_in));
-                mBtnMinus.setBackground(ContextCompat.getDrawable(this, R.mipmap.setting_recognition_zoom_out));
-            } else {
-                mBtnPlus.setBackground(ContextCompat.getDrawable(this, R.mipmap.setting_recognition_focus_plus));
-                mBtnMinus.setBackground(ContextCompat.getDrawable(this, R.mipmap.setting_recognition_focus_minus));
-            }
         } else {
             mBtnPlus.setVisibility(View.INVISIBLE);
             mBtnMinus.setVisibility(View.INVISIBLE);
@@ -269,17 +271,36 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
         }
     }
 
-    private void showTip(boolean enable, String content) {
-        mIsTipShow = enable;
-        if (enable) {
+    private void updateTipShow(boolean show) {
+        updateBackEnable(!show);
+        updateNextEnable(!show);
+        updateTitleShow(!show);
+        if (show) {
             mTipMask.setVisibility(View.VISIBLE);
             mBtnTipOk.setVisibility(View.VISIBLE);
             mTvTipContent.setVisibility(View.VISIBLE);
-            mTvTipContent.setText(content);
         } else {
             mTipMask.setVisibility(View.INVISIBLE);
             mBtnTipOk.setVisibility(View.INVISIBLE);
             mTvTipContent.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void updateBackEnable(boolean enable) {
+        mIvBack.setEnabled(enable);
+    }
+
+    private void updateNextEnable(boolean enable) {
+        mTvNext.setEnabled(enable);
+    }
+
+    @Override
+    @UiThread
+    public void updateControlBtnEnable(boolean isPlus, boolean enable) {
+        if (isPlus) {
+            mBtnPlus.setEnabled(enable);
+        } else {
+            mBtnMinus.setEnabled(enable);
         }
     }
 
@@ -304,9 +325,18 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (loadingDialog.isShowing()) {
+            hideLoadingDialog();
+        } else {
+            onBack();
+        }
+    }
+
     private class FaceCaseTouch implements View.OnTouchListener {
 
-        private static final int TOUCH_DELAY = 500;
+        private static final int TOUCH_DELAY = 50;
 
         private Rect boundary = new Rect();
         private Rect current = new Rect();
@@ -356,9 +386,9 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
                         t = boundary.bottom - height;
                     }
                     current.set(l, t, r, b);
-                    LogCat.d(TAG, String.format(Locale.getDefault(), "Move: ┌ %3d ┐", t));
-                    LogCat.d(TAG, String.format(Locale.getDefault(), "    %3d   %3d", l, r));
-                    LogCat.d(TAG, String.format(Locale.getDefault(), "      └ %3d ┘", b));
+//                    LogCat.d(TAG, String.format(Locale.getDefault(), "Move: ┌ %3d ┐", t));
+//                    LogCat.d(TAG, String.format(Locale.getDefault(), "    %3d   %3d", l, r));
+//                    LogCat.d(TAG, String.format(Locale.getDefault(), "      └ %3d ┘", b));
                     v.setX(l);
                     v.setY(t);
                     break;
@@ -375,6 +405,26 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
                     break;
             }
             return true;
+        }
+    }
+
+    private class DoorLineStateChangeListener implements DoorLineView.OnStateChangeListener {
+
+        @Override
+        public void onStateChanged(int state, float[] lineStart, float[] lineEnd) {
+            updateTitle(mResLineTitle.get(state), mResNext.get(RecognitionSettingContract.STEP_4_LINE));
+            switch (state) {
+                case DoorLineView.STATE_INIT:
+                case DoorLineView.STATE_START:
+                    updateNextEnable(false);
+                    break;
+                case DoorLineView.STATE_END:
+                    mLineStart = lineStart;
+                    mLineEnd = lineEnd;
+                    updateNextEnable(true);
+                    break;
+                default:
+            }
         }
     }
 

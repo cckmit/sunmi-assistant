@@ -94,6 +94,14 @@ public class DoorLineView extends ViewGroup {
         setWillNotDraw(false);
     }
 
+    public void init() {
+        mState = STATE_INIT;
+        mTipView.setVisibility(GONE);
+        if (mListener != null) {
+            mListener.onStateChanged(mState, mLineStart, mLineEnd);
+        }
+    }
+
     public void setStateChangeListener(OnStateChangeListener l) {
         mListener = l;
     }
@@ -168,7 +176,7 @@ public class DoorLineView extends ViewGroup {
             int top = mTipSize[1];
             int bottom = getHeight();
             boolean isInvalidPoint = x < left || x > right || y < top;
-            boolean isNotInTip = x < mTipRect.left || x > mTipRect.right || y < mTipRect.top || y > mTipRect.bottom;
+            boolean isInTip = x >= mTipRect.left && x <= mTipRect.right && y >= mTipRect.top && y <= mTipRect.bottom;
             switch (mState) {
                 case STATE_INIT:
                     if (isInvalidPoint) {
@@ -182,7 +190,7 @@ public class DoorLineView extends ViewGroup {
                     mLineStart[1] = e.getY();
                     mState = STATE_START;
                     if (mListener != null) {
-                        mListener.onStateChanged(mState);
+                        mListener.onStateChanged(mState, mLineStart, mLineEnd);
                     }
                     invalidate();
                     return true;
@@ -198,21 +206,34 @@ public class DoorLineView extends ViewGroup {
                     mLineEnd[1] = e.getY();
                     mState = STATE_END;
                     if (mListener != null) {
-                        mListener.onStateChanged(mState);
+                        mListener.onStateChanged(mState, mLineStart, mLineEnd);
                     }
                     requestLayout();
                     return true;
                 case STATE_END:
-                    if (isNotInTip) {
-                        LogCat.d(TAG, "Click: not click in tip. x=" + x + "; y=" + y + "; tip:" + mTipRect);
+                    if (isInTip) {
+                        mState = STATE_INIT;
+                        if (mListener != null) {
+                            mListener.onStateChanged(mState, mLineStart, mLineEnd);
+                        }
+                        requestLayout();
+                        return true;
+                    } else if (isInvalidPoint) {
+                        String msg = String.format(Locale.getDefault(), "Click: out of area." +
+                                        " x(%f) must in [%d, %d], y(%f) must in [%d, %d]",
+                                x, left, right, y, top, getHeight());
+                        LogCat.e(TAG, msg);
                         return false;
+                    } else {
+                        mLineEnd[0] = e.getX();
+                        mLineEnd[1] = e.getY();
+                        if (mListener != null) {
+                            mListener.onStateChanged(mState, mLineStart, mLineEnd);
+                        }
+                        requestLayout();
+                        invalidate();
+                        return true;
                     }
-                    mState = STATE_INIT;
-                    if (mListener != null) {
-                        mListener.onStateChanged(mState);
-                    }
-                    requestLayout();
-                    return true;
                 default:
             }
             return false;
@@ -225,8 +246,10 @@ public class DoorLineView extends ViewGroup {
         /**
          * 划线状态切换时调用，表明正在处于的划线步骤
          *
-         * @param state 状态
+         * @param state     状态
+         * @param lineStart 划线起点坐标
+         * @param lineEnd   划线终点坐标
          */
-        void onStateChanged(int state);
+        void onStateChanged(int state, float[] lineStart, float[] lineEnd);
     }
 }
