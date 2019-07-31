@@ -709,6 +709,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             stopTimer();
             progressDialog.progressDismiss();
             mDevice.setFirmware(mResp.getLatest_bin_version());
+            mVersion.setRightText(mResp.getLatest_bin_version());
             BaseNotification.newInstance().postNotificationName(CommonNotificationConstant.ipcUpgradeComplete);
             upgradeVerSuccessDialog();
         } else {
