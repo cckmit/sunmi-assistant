@@ -378,7 +378,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         return new int[]{NotificationConstant.shopSwitched, CommonNotificationConstant.netConnected,
                 CommonNotificationConstant.netDisconnection, NotificationConstant.updateConnectComplete,
                 NotificationConstant.connectedTosunmiDevice, NotificationConstant.unBindRouterChanged,
-                CommonNotificationConstant.ipcUpgradeComplete};
+                CommonNotificationConstant.ipcUpgradeComplete, CommonNotificationConstant.ipcUpgrade};
     }
 
     @Override
@@ -389,7 +389,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 || NotificationConstant.updateConnectComplete == id
                 || CommonNotificationConstant.netConnected == id
                 || NotificationConstant.unBindRouterChanged == id
-                || CommonNotificationConstant.ipcUpgradeComplete == id) {
+                || CommonNotificationConstant.ipcUpgradeComplete == id
+                || CommonNotificationConstant.ipcUpgrade == id) {
             loadData();
         } else if (id == NotificationConstant.shopSwitched) {
             topBar.setShopName(SpUtils.getShopName());
