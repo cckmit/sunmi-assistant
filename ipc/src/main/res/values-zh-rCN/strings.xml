@@ -121,7 +121,6 @@
     <string name="ipc_setting_wire_net">有线网络</string>
     <string name="ipc_setting_unknown">未知</string>
 
-
     <string name="ipc_recognition_tip_ok">知道了</string>
     <string name="ipc_recognition_loading">画面调整中…</string>
     <string name="ipc_recognition_network_error">网络异常，请检查网络</string>
@@ -132,6 +131,8 @@
     <string name="ipc_recognition_line_start">设置门槛起点</string>
     <string name="ipc_recognition_line_end">设置门槛终点</string>
     <string name="ipc_recognition_line_cancel">撤销</string>
+    <string name="ipc_recognition_complete">摄像机画面调整完成</string>
+
 </resources>
 
 

@@ -197,6 +197,31 @@ public class IPCCall extends BaseIpcApi {
     }
 
     /**
+     * 设置进店绊线
+     *
+     * @param ip    IPC的局域网IP地址
+     * @param start 起始点坐标，统一按1920*1080范围定义
+     * @param end   终止点坐标，统一按1920*1080范围定义
+     */
+    public void fsLine(String ip, int[] start, int[] end) {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("start_x", String.valueOf(start[0]));
+            object.put("start_y", String.valueOf(start[1]));
+            object.put("end_x", String.valueOf(end[0]));
+            object.put("end_y", String.valueOf(end[1]));
+            object.put("resolution", "0");
+            int opCode = IpcConstants.fsSetLine;
+            RequestBean requestBean = new RequestBean(Utils.getMsgId(),
+                    "0x" + Integer.toHexString(opCode), object);
+            new IPCLocalApi(ip).post(null, "", requestBean.getMsgId(),
+                    opCode, requestBean.serialize());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * 夜间模式
      *
      * @param set 1-夜间

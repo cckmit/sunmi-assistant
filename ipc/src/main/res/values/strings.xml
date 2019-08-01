@@ -132,7 +132,7 @@
     <string name="ipc_recognition_line_start">设置门槛起点</string>
     <string name="ipc_recognition_line_end">设置门槛终点</string>
     <string name="ipc_recognition_line_cancel">撤销</string>
-
+    <string name="ipc_recognition_complete">摄像机画面调整完成</string>
 
 </resources>
 

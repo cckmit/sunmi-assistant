@@ -41,6 +41,7 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
         BaseNotification.newInstance().addStickObserver(this, IpcConstants.fsZoom);
         BaseNotification.newInstance().addStickObserver(this, IpcConstants.fsFocus);
         BaseNotification.newInstance().addStickObserver(this, IpcConstants.fsReset);
+        BaseNotification.newInstance().addStickObserver(this, IpcConstants.fsSetLine);
     }
 
     @Override
@@ -121,8 +122,13 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
 
     @Override
     public void line(int[] start, int[] end) {
-        // TODO: API
-        mView.hideLoadingDialog();
+        SunmiDevice device = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
+        if (device != null) {
+            LogCat.d(TAG, "Line set: [" + start[0] + ", " + start[1] + "] -> [" + end[0] + ", " + end[1] + "]");
+            IPCCall.getInstance().fsLine(device.getIp(), start, end);
+        } else if (isViewAttached()) {
+            mView.showErrorDialog();
+        }
     }
 
     @Override
@@ -159,6 +165,10 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
             }
         } else if (id == IpcConstants.fsAutoFocus) {
             this.mBaseFocus = mConfig.getCurrentFocus();
+        } else if (id == IpcConstants.fsSetLine) {
+            if (isViewAttached()) {
+                mView.complete();
+            }
         }
     }
 
@@ -170,6 +180,7 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
         BaseNotification.newInstance().removeObserver(this, IpcConstants.fsZoom);
         BaseNotification.newInstance().removeObserver(this, IpcConstants.fsFocus);
         BaseNotification.newInstance().removeObserver(this, IpcConstants.fsReset);
+        BaseNotification.newInstance().removeObserver(this, IpcConstants.fsSetLine);
     }
 
     private class Callback implements IpcVideoView.ResultCallback {

@@ -170,7 +170,12 @@ public class DoorLineView extends ViewGroup {
 
         @Override
         public boolean onDown(MotionEvent e) {
-            return true;
+            float x = e.getX();
+            float y = e.getY();
+            boolean isInvalidPoint = x < mBoundary.left || x > mBoundary.right
+                    || y < mBoundary.top || y > mBoundary.bottom;
+            boolean isInTip = x >= mTipRect.left && x <= mTipRect.right && y >= mTipRect.top && y <= mTipRect.bottom;
+            return !isInvalidPoint || (isInTip && mState == STATE_END);
         }
 
         @Override

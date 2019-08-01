@@ -42,9 +42,9 @@ public interface RecognitionSettingContract {
         void updateControlBtnEnable(boolean isPlus, boolean enable);
 
         /**
-         * 显示完成对话框
+         * 完成设置
          */
-        void showCompleteDialog();
+        void complete();
 
         /**
          * 显示网络错误对话框

@@ -2,7 +2,6 @@ package com.sunmi.ipc.setting.recognition;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
@@ -185,10 +184,10 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
             showLoadingDialog();
             int[] start = new int[2];
             int[] end = new int[2];
-            start[0] = (int) (mLineStart[0] * 100 / mVideoView.getWidth());
-            start[1] = (int) (mLineStart[1] * 100 / mVideoView.getHeight());
-            end[0] = (int) (mLineEnd[0] * 100 / mVideoView.getWidth());
-            end[1] = (int) (mLineEnd[1] * 100 / mVideoView.getHeight());
+            start[0] = (int) (mLineStart[0] * 1920 / mVideoView.getWidth());
+            start[1] = (int) (mLineStart[1] * 1080 / mVideoView.getHeight());
+            end[0] = (int) (mLineEnd[0] * 1920 / mVideoView.getWidth());
+            end[1] = (int) (mLineEnd[1] * 1080 / mVideoView.getHeight());
             mPresenter.line(start, end);
         } else {
             updateViewsStepTo(++mStepIndex);
@@ -319,16 +318,9 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
     }
 
     @Override
-    public void showCompleteDialog() {
-        new CommonDialog.Builder(this)
-                .setMessage(R.string.tip_ipc_config_complete)
-                .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
-                })
-                .create().show();
+    public void complete() {
+        shortTip(R.string.ipc_recognition_complete);
+        finish();
     }
 
     @Override
