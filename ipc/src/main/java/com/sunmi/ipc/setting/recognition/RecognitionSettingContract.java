@@ -1,6 +1,7 @@
 package com.sunmi.ipc.setting.recognition;
 
 import android.content.Context;
+import android.support.annotation.StringRes;
 
 import com.sunmi.ipc.view.IpcVideoView;
 
@@ -29,7 +30,7 @@ public interface RecognitionSettingContract {
         /**
          * 根据步骤切换视图
          *
-         * @param step    步骤Index
+         * @param step 步骤Index
          */
         void updateViewsStepTo(int step);
 
@@ -48,13 +49,11 @@ public interface RecognitionSettingContract {
 
         /**
          * 显示网络错误对话框
+         *
+         * @param content 对话框显示内容
          */
-        void showErrorDialog();
+        void showErrorDialog(@StringRes int content);
 
-        /**
-         * 取消网络错误对话框
-         */
-        void dismissErrorDialog();
     }
 
     interface Presenter {
@@ -88,6 +87,7 @@ public interface RecognitionSettingContract {
 
         /**
          * 放大画面大小（变焦）
+         *
          * @param isZoomIn 是否放大
          */
         void zoom(boolean isZoomIn);

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.util.SparseArray;
 import android.view.MotionEvent;
@@ -64,8 +65,6 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
 
     @ViewById(resName = "v_line_draw")
     DoorLineView mLineView;
-
-    private CommonDialog mNetworkDialog;
 
     @Extra
     SunmiDevice mDevice;
@@ -325,24 +324,13 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
 
     @Override
     @UiThread
-    public void showErrorDialog() {
+    public void showErrorDialog(@StringRes int content) {
         hideLoadingDialog();
-        if (mNetworkDialog == null) {
-            mNetworkDialog = new CommonDialog.Builder(this)
-                    .setTitle(R.string.ipc_setting_tip)
-                    .setMessage(R.string.ipc_setting_tip_network_dismatch)
-                    .setConfirmButton(R.string.str_confirm)
-                    .create();
-        }
-        mNetworkDialog.show();
-    }
-
-    @Override
-    @UiThread
-    public void dismissErrorDialog() {
-        if (mNetworkDialog != null) {
-            mNetworkDialog.dismiss();
-        }
+        new CommonDialog.Builder(this)
+                .setTitle(R.string.ipc_setting_tip)
+                .setMessage(content)
+                .setConfirmButton(R.string.str_confirm)
+                .create().show();
     }
 
     @Override

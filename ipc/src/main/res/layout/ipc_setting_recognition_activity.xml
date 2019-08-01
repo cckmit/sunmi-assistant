@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_20"
         android:text="@string/str_next"
-        android:textColor="@color/c_white"
+        android:textColor="@color/ipc_recognition_btn"
         android:textSize="@dimen/sp_17"
         app:layout_constraintBottom_toBottomOf="@+id/v_setting_top_mask"
         app:layout_constraintEnd_toEndOf="parent"
@@ -134,8 +134,9 @@
 
     <ImageView
         android:id="@+id/iv_setting_face_case"
-        android:layout_width="@dimen/dp_80"
-        android:layout_height="@dimen/dp_80"
+        android:layout_width="@dimen/dp_140"
+        android:layout_height="@dimen/dp_140"
+        android:scaleType="centerCrop"
         android:src="@mipmap/setting_recognition_face_case"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

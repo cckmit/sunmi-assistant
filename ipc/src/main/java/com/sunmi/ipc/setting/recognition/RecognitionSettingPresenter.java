@@ -50,7 +50,7 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
         if (device != null) {
             IPCCall.getInstance().fsGetStatus(device.getIp());
         } else if (isViewAttached()) {
-            mView.showErrorDialog();
+            mView.showErrorDialog(R.string.ipc_setting_tip_network_dismatch);
         }
     }
 
@@ -61,7 +61,7 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
             LogCat.d(TAG, "Move face case, auto focus: x=" + x + "; y=" + y);
             IPCCall.getInstance().fsAutoFocus(device.getIp(), x, y);
         } else if (isViewAttached()) {
-            mView.showErrorDialog();
+            mView.showErrorDialog(R.string.ipc_setting_tip_network_dismatch);
         }
     }
 
@@ -81,7 +81,7 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
             LogCat.d(TAG, "Zoom: " + zoom);
             IPCCall.getInstance().fsZoom(device.getIp(), zoom);
         } else if (isViewAttached()) {
-            mView.showErrorDialog();
+            mView.showErrorDialog(R.string.ipc_setting_tip_network_dismatch);
         }
     }
 
@@ -92,7 +92,7 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
             LogCat.d(TAG, "Zoom reset.");
             IPCCall.getInstance().fsReset(device.getIp(), 1);
         } else if (isViewAttached()) {
-            mView.showErrorDialog();
+            mView.showErrorDialog(R.string.ipc_setting_tip_network_dismatch);
         }
     }
 
@@ -105,7 +105,7 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
             LogCat.d(TAG, "Focus: " + focus);
             IPCCall.getInstance().fsFocus(device.getIp(), focus);
         } else if (isViewAttached()) {
-            mView.showErrorDialog();
+            mView.showErrorDialog(R.string.ipc_setting_tip_network_dismatch);
         }
     }
 
@@ -116,7 +116,7 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
             LogCat.d(TAG, "Focus reset: " + mBaseFocus);
             IPCCall.getInstance().fsFocus(device.getIp(), mBaseFocus);
         } else if (isViewAttached()) {
-            mView.showErrorDialog();
+            mView.showErrorDialog(R.string.ipc_setting_tip_network_dismatch);
         }
     }
 
@@ -127,7 +127,7 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
             LogCat.d(TAG, "Line set: [" + start[0] + ", " + start[1] + "] -> [" + end[0] + ", " + end[1] + "]");
             IPCCall.getInstance().fsLine(device.getIp(), start, end);
         } else if (isViewAttached()) {
-            mView.showErrorDialog();
+            mView.showErrorDialog(R.string.ipc_setting_tip_network_dismatch);
         }
     }
 
@@ -143,7 +143,7 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
         ResponseBean res = (ResponseBean) args[0];
         if (res.getDataErrCode() != 1) {
             if (isViewAttached()) {
-                mView.shortTip(R.string.ipc_recognition_network_error);
+                mView.showErrorDialog(R.string.ipc_recognition_network_error);
             }
             return;
         }
@@ -153,15 +153,16 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
             if (isViewAttached()) {
                 mView.updateViewsStepTo(RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM);
             }
-        } else if (id == IpcConstants.fsZoom) {
+        } else if (id == IpcConstants.fsZoom || id == IpcConstants.fsReset) {
             if (isViewAttached()) {
                 mView.updateControlBtnEnable(true, mConfig.getCurrentZoom() != mConfig.getMaxZoom());
                 mView.updateControlBtnEnable(false, mConfig.getCurrentZoom() != 0);
             }
         } else if (id == IpcConstants.fsFocus) {
             if (isViewAttached()) {
-                mView.updateControlBtnEnable(true, mConfig.getCurrentFocus() != mConfig.getMaxFocus());
-                mView.updateControlBtnEnable(false, mConfig.getCurrentFocus() != 0);
+                int offset = mConfig.getCurrentFocus() - mBaseFocus;
+                mView.updateControlBtnEnable(true, offset < 10 && mConfig.getCurrentFocus() < mConfig.getMaxFocus());
+                mView.updateControlBtnEnable(false, offset > -10 && mConfig.getCurrentFocus() > 0);
             }
         } else if (id == IpcConstants.fsAutoFocus) {
             this.mBaseFocus = mConfig.getCurrentFocus();
