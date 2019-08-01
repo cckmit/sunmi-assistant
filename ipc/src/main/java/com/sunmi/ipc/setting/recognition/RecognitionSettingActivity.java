@@ -2,6 +2,7 @@ package com.sunmi.ipc.setting.recognition;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
@@ -38,7 +39,7 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
         implements RecognitionSettingContract.View {
 
     @ViewById(resName = "sv_setting_video")
-    IpcVideoView video;
+    IpcVideoView mVideoView;
     @ViewById(resName = "iv_setting_back")
     ImageView mIvBack;
     @ViewById(resName = "tv_setting_title")
@@ -69,6 +70,8 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
 
     @Extra
     SunmiDevice mDevice;
+    @Extra
+    int[] mVideoRatio = new int[2];
 
     private int mStepIndex;
     private float[] mLineStart;
@@ -98,7 +101,11 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
 
     @SuppressLint("ClickableViewAccessibility")
     private void initViews() {
-        video.init(mDevice.getUid(), 16, 9, mPresenter.getCallback());
+        if (mVideoRatio[0] <= 0 || mVideoRatio[1] <= 0) {
+            mVideoRatio[0] = 16;
+            mVideoRatio[1] = 9;
+        }
+        mVideoView.init(mDevice.getUid(), mVideoRatio[0], mVideoRatio[1], mPresenter.getCallback());
         mFaceCase.setOnTouchListener(new FaceCaseTouch());
         mLineView.setStateChangeListener(new DoorLineStateChangeListener());
         mResTitle.put(RecognitionSettingContract.STEP_1_POSITION, getString(R.string.ipc_recognition_tip_position));
@@ -178,10 +185,10 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
             showLoadingDialog();
             int[] start = new int[2];
             int[] end = new int[2];
-            start[0] = (int) (mLineStart[0] * 100 / video.getWidth());
-            start[1] = (int) (mLineStart[1] * 100 / video.getHeight());
-            end[0] = (int) (mLineEnd[0] * 100 / video.getWidth());
-            end[1] = (int) (mLineEnd[1] * 100 / video.getHeight());
+            start[0] = (int) (mLineStart[0] * 100 / mVideoView.getWidth());
+            start[1] = (int) (mLineStart[1] * 100 / mVideoView.getHeight());
+            end[0] = (int) (mLineEnd[0] * 100 / mVideoView.getWidth());
+            end[1] = (int) (mLineEnd[1] * 100 / mVideoView.getHeight());
             mPresenter.line(start, end);
         } else {
             updateViewsStepTo(++mStepIndex);
@@ -239,8 +246,8 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
                 updateControlBtnShow(true);
                 break;
             case RecognitionSettingContract.STEP_4_LINE:
-                Rect boundary = new Rect(0, Math.max(0, mTvTitle.getBottom() - video.getTop()),
-                        video.getWidth(), video.getHeight());
+                Rect boundary = new Rect(0, Math.max(0, mTvTitle.getBottom() - mVideoView.getTop()),
+                        mVideoView.getWidth(), mVideoView.getHeight());
                 mLineView.init(boundary);
                 mLineView.setVisibility(View.VISIBLE);
                 break;
@@ -313,11 +320,15 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
 
     @Override
     public void showCompleteDialog() {
-//        new CommonDialog.Builder(this)
-//                .setTitle(R.string.ipc_setting_tip)
-//                .setMessage(R.string.ipc_recognition_network_error)
-//                .setConfirmButton(R.string.str_confirm, )
-//                .create().show();
+        new CommonDialog.Builder(this)
+                .setMessage(R.string.tip_ipc_config_complete)
+                .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .create().show();
     }
 
     @Override
@@ -371,8 +382,8 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
             }
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    boundary.set(video.getLeft(), Math.max(video.getTop(), mTvTitle.getBottom()),
-                            Math.min(video.getRight(), mBtnReset.getLeft()), video.getBottom());
+                    boundary.set(mVideoView.getLeft(), Math.max(mVideoView.getTop(), mTvTitle.getBottom()),
+                            Math.min(mVideoView.getRight(), mBtnReset.getLeft()), mVideoView.getBottom());
                     width = v.getMeasuredWidth();
                     height = v.getMeasuredHeight();
                     x = event.getX();
@@ -404,9 +415,6 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
                         t = boundary.bottom - height;
                     }
                     current.set(l, t, r, b);
-//                    LogCat.d(TAG, String.format(Locale.getDefault(), "Move: ┌ %3d ┐", t));
-//                    LogCat.d(TAG, String.format(Locale.getDefault(), "    %3d   %3d", l, r));
-//                    LogCat.d(TAG, String.format(Locale.getDefault(), "      └ %3d ┘", b));
                     v.setX(l);
                     v.setY(t);
                     break;
@@ -414,8 +422,8 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
                     if (System.currentTimeMillis() - downTime > TOUCH_DELAY) {
                         int x = (current.left + current.right) >> 1;
                         int y = (current.top + current.bottom) >> 1;
-                        int xRelative = (x - video.getLeft()) * 100 / video.getWidth();
-                        int yRelative = (x - video.getTop()) * 100 / video.getHeight();
+                        int xRelative = (x - mVideoView.getLeft()) * 100 / mVideoView.getWidth();
+                        int yRelative = (x - mVideoView.getTop()) * 100 / mVideoView.getHeight();
                         mPresenter.face(xRelative, yRelative);
                         showLoadingDialog(mResLoading);
                     }

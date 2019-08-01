@@ -127,6 +127,7 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
+        LogCat.d(TAG, "Request back. id=" + id);
         if (isViewAttached()) {
             mView.hideLoadingDialog();
         }
