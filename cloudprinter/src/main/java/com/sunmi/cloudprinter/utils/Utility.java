@@ -82,7 +82,7 @@ public class Utility {
         byte bHasPwd = data[6 + bName.length];
         System.arraycopy(data, 7 + bName.length, bRssi, 0, bRssi.length);
         Router router = new Router();
-        router.setName(getSSID(bName));
+        router.setName(new String(bName));
         if (bHasPwd == 0) {
             router.setHasPwd(false);
         } else {
