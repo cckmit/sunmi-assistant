@@ -3,7 +3,6 @@ package com.sunmi.assistant.ui.fragment;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -27,7 +26,6 @@ import com.sunmi.apmanager.utils.ApIsNewVersionUtils;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.DBUtils;
 import com.sunmi.apmanager.utils.EncryptUtils;
-import com.sunmi.apmanager.utils.pulltorefresh.library.PullToRefreshBase;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
 import com.sunmi.assistant.data.response.AdListBean;
@@ -82,9 +80,9 @@ import sunmi.common.view.dialog.CommonDialog;
  */
 @EFragment(R.layout.fragment_device)
 public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
-        implements DeviceContract.View, PullToRefreshBase.OnRefreshListener2<NestedScrollView>,
-        DeviceListAdapter.OnDeviceClickListener, DeviceSettingDialog.OnSettingsClickListener,
-        OnBannerListener, BGARefreshLayout.BGARefreshLayoutDelegate, View.OnClickListener {
+        implements DeviceContract.View, DeviceListAdapter.OnDeviceClickListener,
+        DeviceSettingDialog.OnSettingsClickListener, OnBannerListener,
+        BGARefreshLayout.BGARefreshLayoutDelegate, View.OnClickListener {
 
     @ViewById(R.id.shop_title)
     MainTopBar topBar;
@@ -262,21 +260,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         if (refreshView != null) {
             refreshView.endRefreshing();
         }
-    }
-
-    @Override
-    public void onPullDownToRefresh(PullToRefreshBase<NestedScrollView> refreshView) {
-        if (NetworkUtils.isNetworkAvailable(mActivity)) {
-            endRefresh();
-            shortTip(R.string.toast_network_Exception);
-        } else {
-            loadData();
-        }
-    }
-
-    @Override
-    public void onPullUpToRefresh(PullToRefreshBase<NestedScrollView> refreshView) {
-
     }
 
     @Override
