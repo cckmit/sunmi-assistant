@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.sunmi.assistant.R;
 
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.utils.DeviceTypeUtils;
 
 /**
  * Description:
@@ -70,6 +71,11 @@ public class DeviceSettingDialog extends PopupWindow {
                     onSettingsClickListener.onSettingsClick(device, 2);
                 }
             });
+        } else {
+            divider1.setVisibility(View.GONE);
+            tvSetting.setVisibility(View.GONE);
+        }
+        if ("IPC".equalsIgnoreCase(device.getType()) && DeviceTypeUtils.getInstance().isFS1(device.getModel())) {
             divider2.setVisibility(View.VISIBLE);
             tvRecognition.setVisibility(View.VISIBLE);
             tvRecognition.setOnClickListener(v -> {
@@ -79,8 +85,6 @@ public class DeviceSettingDialog extends PopupWindow {
                 }
             });
         } else {
-            divider1.setVisibility(View.GONE);
-            tvSetting.setVisibility(View.GONE);
             divider2.setVisibility(View.GONE);
             tvRecognition.setVisibility(View.GONE);
         }
