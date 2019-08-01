@@ -14,15 +14,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sunmi.ipc.R;
-import com.sunmi.ipc.model.IpcConnectApResp;
-import com.sunmi.ipc.model.IpcConnectStatusResp;
+import com.sunmi.ipc.contract.IpcSettingWiFiContract;
 import com.sunmi.ipc.model.WifiListResp;
+import com.sunmi.ipc.presenter.IpcSettingWifiPresenter;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcConstants;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
@@ -31,11 +31,13 @@ import org.androidannotations.annotations.ViewById;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import sunmi.common.base.BaseActivity;
+import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.ViewHolder;
 import sunmi.common.view.dialog.CommonDialog;
@@ -45,8 +47,10 @@ import sunmi.common.view.dialog.InputDialog;
  * Created by YangShiJie on 2019/7/16.
  */
 @EActivity(resName = "ipc_activity_wifi")
-public class IpcSettingWiFiActivity extends BaseActivity {
-    private static final int COUNTDOWN_CONFIG_WIFI = 60;
+public class IpcSettingWiFiActivity extends BaseMvpActivity<IpcSettingWifiPresenter>
+        implements IpcSettingWiFiContract.View {
+    private static final int COUNTDOWN_CONFIG_WIFI = 150;
+    private static final int COUNTDOWN_CONFIG_SEARCHING = 100;
     @ViewById(resName = "tv_wifi_name")
     TextView tvWifiNme;
     @ViewById(resName = "tv_status")
@@ -62,6 +66,10 @@ public class IpcSettingWiFiActivity extends BaseActivity {
 
     @Extra
     SunmiDevice mDevice;
+    @Extra
+    String wifiSsid, wifiMgmt;
+    @Extra
+    int wifiIsWire;
 
     private TextView tvProgress;
     private Dialog connectDialog;
@@ -80,7 +88,6 @@ public class IpcSettingWiFiActivity extends BaseActivity {
             @Override
             public void run() {
                 showDownloadProgress();
-                IPCCall.getInstance().getApStatus(IpcSettingWiFiActivity.this, ip);
             }
         }, 0, 1000);
     }
@@ -92,6 +99,8 @@ public class IpcSettingWiFiActivity extends BaseActivity {
         if (countdown == 0) {
             stopTimer();
             netExceptionDialog();
+        } else if (countdown <= COUNTDOWN_CONFIG_SEARCHING && countdown % 5 == 0) {
+            mPresenter.getIpcStatus(mDevice.getDeviceid(), mDevice.getModel());
         }
     }
 
@@ -119,18 +128,37 @@ public class IpcSettingWiFiActivity extends BaseActivity {
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
+        mPresenter = new IpcSettingWifiPresenter();
+        mPresenter.attachView(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(linearLayoutManager);
+        tvWifiNme.setText(wifiSsid);
+        if ("NONE".equalsIgnoreCase(wifiMgmt)) {
+            ivLock.setVisibility(View.GONE);
+        } else {
+            ivLock.setVisibility(View.VISIBLE);
+        }
+        loadingWifiMessage();
+    }
+
+    private void loadingWifiMessage() {
         tvStatus.setText(R.string.ipc_setting_tip_wifi_discovery);
         if (CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
             ip = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid()).getIp();
+            showLoadingDialog(getString(R.string.ipc_setting_search_wifi));
+            IPCCall.getInstance().getWifiList(this, ip);//wifi list
+        } else {
+            shortTip(R.string.ipc_setting_tip_network_dismatch);
         }
-        showLoadingDialog(getString(R.string.ipc_setting_search_wifi));
-        IPCCall.getInstance().getIpcConnectApMsg(this, ip);//ipc连接wifi信息
-        IPCCall.getInstance().getWifiList(this, ip);//wifi list
     }
 
-    private void netExceptionView(boolean isExceptionView) {
+    @Click(resName = "btn_refresh")
+    void btnRefreshClick() {
+        loadingWifiMessage();
+    }
+
+    @UiThread
+    void netExceptionView(boolean isExceptionView) {
         if (isExceptionView) {
             tvStatus.setVisibility(View.GONE);
             recyclerView.setVisibility(View.GONE);
@@ -144,56 +172,56 @@ public class IpcSettingWiFiActivity extends BaseActivity {
         }
     }
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         stopTimer();
     }
 
+    /**
+     * @param ipcStatus 0离线 1在线
+     */
+    @Override
+    public void ipcStatusSuccessView(int ipcStatus) {
+        LogCat.e(TAG, "ipc status=" + ipcStatus);
+        if (ipcStatus == 1) {
+            stopTimer();
+            shortTip(R.string.ipc_setting_dialog_wifi_success);
+            Intent intent = getIntent();
+            intent.putExtra("ssid", mSsid);
+            intent.putExtra("mgmt", mMgmt);
+            intent.putExtra("isWire", wifiIsWire);
+            setResult(RESULT_OK, intent);
+            finish();
+        }
+    }
+
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{IpcConstants.getIpcConnectApMsg, IpcConstants.getWifiList,
-                IpcConstants.setIPCWifi, IpcConstants.getApStatus};
+        return new int[]{IpcConstants.getWifiList, IpcConstants.setIPCWifi};
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
+        hideLoadingDialog();
         if (args == null) return;
         ResponseBean res = (ResponseBean) args[0];
-        if (TextUtils.equals(res.getErrCode(), CommonConstants.WHAT_ERROR + "")) {
+        if (TextUtils.equals(res.getErrCode(), RpcErrorCode.RPC_COMMON_ERROR + "")) {
             netExceptionView(true);
-        } else if (id == IpcConstants.getIpcConnectApMsg) {
-            getIpcConnectApMsg(res);
         } else if (id == IpcConstants.getWifiList) {
-            hideLoadingDialog();
             getWifiList(res);
         } else if (id == IpcConstants.setIPCWifi) {
             //LogCat.e(TAG, "1111  33=" + res.getResult());
-        } else if (id == IpcConstants.getApStatus) {
-            queryConnectStatus(res);
-        }
-    }
-
-    @UiThread
-    void getIpcConnectApMsg(ResponseBean res) {
-        if (res.getResult() == null) {
-            return;
-        }
-        IpcConnectApResp device = new GsonBuilder().create().fromJson(res.getResult().toString(), IpcConnectApResp.class);
-        tvWifiNme.setText(device.getWireless().getSsid());
-        if ("NONE".equalsIgnoreCase(device.getWireless().getKey_mgmt())) {
-            ivLock.setVisibility(View.GONE);
-        } else {
-            ivLock.setVisibility(View.VISIBLE);
         }
     }
 
     @UiThread
     void getWifiList(ResponseBean res) {
-        if (res.getResult() == null) {
+        if (res.getResult() == null || res.getDataErrCode() != 0) {
+            netExceptionView(true);
             return;
         }
+        netExceptionView(false);
         tvStatus.setText(R.string.ipc_setting_tip_wifi_choose);
         WifiListResp bean = new Gson().fromJson(res.getResult().toString(), WifiListResp.class);
         recyclerView.setAdapter(new CommonListAdapter<WifiListResp.ScanResultsBean>(context,
@@ -213,11 +241,11 @@ public class IpcSettingWiFiActivity extends BaseActivity {
                     @Override
                     public void onClick(View v) {
                         mSsid = bean.getSsid();
-                        String mgmt = bean.getKey_mgmt();
+                        mMgmt = bean.getKey_mgmt();
                         if (isNoneKey) {
-                            connectWifi(mSsid, mgmt, "NONE");
+                            connectWifi(mSsid, mMgmt, "NONE");
                         } else {
-                            inputPasswordDialog(mSsid, mgmt);
+                            inputPasswordDialog();
                         }
                     }
                 });
@@ -225,29 +253,6 @@ public class IpcSettingWiFiActivity extends BaseActivity {
         });
     }
 
-    @UiThread
-    void queryConnectStatus(ResponseBean res) {
-        //0:正在关联。1：关联成功。2：关联失败
-        if (res.getResult() != null && res.getDataErrCode() == 1) {
-            netExceptionView(false);
-            IpcConnectStatusResp bean = new Gson().fromJson(res.getResult().toString(), IpcConnectStatusResp.class);
-            String status = bean.getWireless().getConnect_status();
-            if (TextUtils.equals("1", status)) {
-                stopTimer();
-                shortTip(R.string.ipc_setting_dialog_wifi_success);
-                Intent intent = getIntent();
-                intent.putExtra("ssid", mSsid);
-                setResult(RESULT_OK, intent);
-                finish();
-            } else if (TextUtils.equals("2", status)) {
-                stopTimer();
-                connectDialogDismiss();
-                netExceptionDialog();
-            }
-        } else {
-            netExceptionView(true);
-        }
-    }
 
     //连接wifi
     private void connectWifi(String ssid, String mgmt, String password) {
@@ -259,7 +264,7 @@ public class IpcSettingWiFiActivity extends BaseActivity {
     /**
      * 输入wifi密码
      */
-    private void inputPasswordDialog(final String ssid, final String mgmt) {
+    private void inputPasswordDialog() {
         new InputDialog.Builder(this)
                 .setTitle(R.string.ipc_setting_dialog_wifi_input_pwd)
                 .setCancelButton(R.string.sm_cancel)
@@ -270,30 +275,12 @@ public class IpcSettingWiFiActivity extends BaseActivity {
                             shortTip(R.string.str_text_password_no_null);
                             return;
                         }
-                        mSsid = ssid;
-                        mMgmt = mgmt;
                         mPassword = input;
                         dialog.dismiss();
                         connectWifi(mSsid, mMgmt, mPassword);
                     }
                 }).create().show();
     }
-
-//    /**
-//     * wifi密码error
-//     */
-//    private void passwordErrorDialog() {
-//        CommonDialog commonDialog = new CommonDialog.Builder(this)
-//                .setTitle(R.string.ipc_setting_dialog_wifi_pwd_error)
-//                .setMessage(getString(R.string.ipc_setting_dialog_wifi_pwd_error_content))
-//                .setConfirmButton(R.string.ipc_setting_dialog_wifi_pwd_retry, new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        connectWifi();
-//                    }
-//                }).setCancelButton(R.string.str_close).create();
-//        commonDialog.showWithOutTouchable(false);
-//    }
 
     /**
      * 网络异常

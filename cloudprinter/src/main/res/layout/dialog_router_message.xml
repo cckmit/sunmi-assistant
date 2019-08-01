@@ -6,7 +6,6 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:id="@+id/rlDialog"
         style="@style/marginLeftRight20"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,7 +15,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tvContent"
+            android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -27,42 +26,50 @@
             android:textSize="@dimen/sp_18"
             android:textStyle="bold" />
 
-        <RelativeLayout
-            android:id="@+id/rlPassword"
+        <TextView
+            android:id="@+id/tv_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_16"
+            android:gravity="center"
+            android:paddingLeft="@dimen/dp_24"
+            android:paddingRight="@dimen/dp_24"
+            android:textColor="@color/color_85858A"
+            android:textSize="@dimen/sp_14" />
+
+        <sunmi.common.view.ClearableEditText
+            android:id="@+id/et_password"
             android:layout_width="@dimen/dp_230"
             android:layout_height="@dimen/dp_45"
-            android:layout_below="@+id/tvContent"
+            android:layout_below="@+id/tv_msg"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/dp_20"
-            android:background="@drawable/edittext_edge_grey2">
-
-            <sunmi.common.view.ClearableEditText
-                android:id="@+id/etPassword"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_35"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/dp_20"
-                android:layout_marginRight="@dimen/dp_20"
-                android:background="@null"
-                android:hint="@string/hint_input_router_pwd"
-                android:inputType="textPassword"
-                android:maxLines="1"
-                android:textColor="@color/colorText"
-                android:textColorHint="@color/colorText_40"
-                android:textSize="@dimen/sp_16" />
-        </RelativeLayout>
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_20"
+            android:background="@drawable/edittext_edge_grey2"
+            android:hint="@string/hint_input_router_pwd"
+            android:inputType="textPassword"
+            android:maxLines="1"
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingRight="@dimen/dp_10"
+            android:textColor="@color/colorText"
+            android:textColorHint="@color/colorText_40"
+            android:textSize="@dimen/sp_16" />
 
         <RelativeLayout
             android:id="@+id/rl_bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/rlPassword"
+            android:layout_below="@id/et_password"
             android:layout_marginTop="@dimen/dp_28"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="0.3dp"
+                android:layout_height="@dimen/dp_0_5"
                 android:background="@color/dialog_divider" />
 
             <LinearLayout
@@ -84,7 +91,7 @@
 
                 <View
                     android:id="@+id/vLine"
-                    android:layout_width="0.3dp"
+                    android:layout_width="@dimen/dp_0_5"
                     android:layout_height="match_parent"
                     android:background="@color/dialog_divider"
                     android:visibility="visible" />
@@ -101,7 +108,6 @@
                     android:textSize="@dimen/sp_14"
                     android:textStyle="bold"
                     android:visibility="visible" />
-
             </LinearLayout>
         </RelativeLayout>
     </RelativeLayout>

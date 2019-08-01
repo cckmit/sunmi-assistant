@@ -176,7 +176,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
                         if (isViewAttached()) {
-                            mView.shortTip(R.string.tip_unbind_success);
+                            mView.shortTip(R.string.str_delete_success);
                             mView.unbindIpcSuccess(code, msg, data);
                         }
                     }
@@ -184,7 +184,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                     @Override
                     public void onFail(int code, String msg, Object data) {
                         if (isViewAttached()) {
-                            mView.shortTip(R.string.tip_unbind_fail);
+                            mView.shortTip(R.string.str_delete_fail);
                         }
                     }
                 });

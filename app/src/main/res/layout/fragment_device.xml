@@ -16,7 +16,6 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/shop_title"
         android:layout_marginLeft="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_10"
         ptr:ptrHeaderTextColor="@color/colorText">
 

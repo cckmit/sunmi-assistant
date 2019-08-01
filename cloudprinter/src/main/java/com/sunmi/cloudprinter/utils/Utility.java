@@ -3,8 +3,14 @@ package com.sunmi.cloudprinter.utils;
 import com.sunmi.cloudprinter.bean.Router;
 import com.sunmi.cloudprinter.constant.Constants;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CoderResult;
+import java.nio.charset.CodingErrorAction;
+
 import sunmi.common.utils.ByteUtils;
-import sunmi.common.utils.log.LogCat;
 
 import static com.sunmi.cloudprinter.constant.Constants.PRINTER_CMD_TAG1;
 import static com.sunmi.cloudprinter.constant.Constants.PRINTER_CMD_TAG2;
@@ -14,7 +20,6 @@ public class Utility {
     public static boolean isFirstPac(byte[] data) {
         int aa = data[0] & 0xFF;
         int bb = data[1] & 0xFF;
-        LogCat.e("util", "555555 isFirstPac{" + aa + "," + bb + "}");
         return aa == 0xAA && bb == 0x55;
     }
 
@@ -34,25 +39,25 @@ public class Utility {
         byte[] len = new byte[2];
         System.arraycopy(data, 2, len, 0, 2);
         int aa = ByteUtils.byte2ToInt(len);
-        LogCat.e("util", "555555 getPacLength aa = " + aa);
         return aa;
     }
 
     /**
      * 获取命令码
-     *
-     * @param data
-     * @return
      */
     public static int getCmdId(byte[] data) {
         return (int) data[5];
     }
 
     /**
+     * cmd = 1 返回的错误码
+     */
+    public static int getErrorCode(byte[] data) {
+        return (int) data[6];
+    }
+
+    /**
      * 获取版本号
-     *
-     * @param data
-     * @return
      */
     public static byte getVersion(byte[] data) {
         return data[4];
@@ -96,14 +101,6 @@ public class Utility {
                 getCmdTag(),
                 ByteUtils.intToByte2(6),
                 getCmd(Constants.CMD_REQ_SN));
-//        byte[] getSn = new byte[6];
-//        byte[] cmdTag = getCmdTag();
-//        System.arraycopy(cmdTag, 0, getSn, 0, cmdTag.length);
-//        byte[] len = ByteUtils.intToByte2(6);
-//        System.arraycopy(len, 0, getSn, 2, len.length);
-//        getSn[4] = Constants.PRINTER_CMD_VERSION;
-//        getSn[5] = 5;
-//        return getSn;
     }
 
     /**
@@ -114,14 +111,6 @@ public class Utility {
                 getCmdTag(),
                 ByteUtils.intToByte2(6),
                 getCmd(Constants.CMD_REQ_WIFI_LIST));
-//        byte[] getWifi = new byte[6];
-//        byte[] cmdTag = getCmdTag();
-//        System.arraycopy(cmdTag, 0, getWifi, 0, cmdTag.length);
-//        byte[] len = ByteUtils.intToByte2(6);
-//        System.arraycopy(len, 0, getWifi, 2, len.length);
-//        getWifi[4] = Constants.PRINTER_CMD_VERSION;
-//        getWifi[5] = 6;
-//        return getWifi;
     }
 
     /**
@@ -167,6 +156,21 @@ public class Utility {
 
     private static byte[] getCmd(int cmd) {
         return new byte[]{Constants.PRINTER_CMD_VERSION, (byte) cmd};
+    }
+
+    public static String getSSID(byte[] data) {
+        Charset charset = Charset.forName("UTF-8");
+        CharsetDecoder decoder = charset.newDecoder()
+                .onMalformedInput(CodingErrorAction.REPLACE)
+                .onUnmappableCharacter(CodingErrorAction.REPLACE);
+        CharBuffer out = CharBuffer.allocate(32);
+
+        CoderResult result = decoder.decode(ByteBuffer.wrap(data), out, true);
+        out.flip();
+        if (result.isError()) {
+            return "";
+        }
+        return out.toString();
     }
 
 }

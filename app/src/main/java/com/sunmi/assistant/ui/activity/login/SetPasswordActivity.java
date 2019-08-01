@@ -55,7 +55,7 @@ public class SetPasswordActivity extends BaseActivity {
 
     @ViewById(R.id.llTitleLine)
     LinearLayout llTitleLine;
-    @ViewById(R.id.etPassword)
+    @ViewById(R.id.et_password)
     ClearableEditText etPassword;
     @ViewById(R.id.passwordIsVisible)
     ImageButton passwordIsVisible;

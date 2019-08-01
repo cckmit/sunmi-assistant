@@ -24,6 +24,12 @@ public class Constants {
     public static final byte CMD_REQ_QUIT_CONFIG = 0x0a;     //请求退出配网过程
     public static final byte CMD_REQ_DELETE_WIFI_INFO = 0x0b;     //请求删除wifi 配置
 
+    public static final int WIFI_START_ERROR = 2;
+    public static final int WIFI_SCAN_ERROR = 3;
+    public static final int WIFI_PAIRING_TIMEOUT = 4;
+    public static final int WIFI_CONNECT_AP_ERROR = 5;
+    public static final int WIFI_CONNECT_AP_TIMEOUT = 6;
+
     public static final int NOTIFICATION_PRINTER_ADDED = 600;     //添加打印机成功
 
 }

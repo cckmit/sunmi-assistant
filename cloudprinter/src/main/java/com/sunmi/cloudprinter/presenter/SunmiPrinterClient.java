@@ -182,7 +182,7 @@ public class SunmiPrinterClient implements BluetoothAdapter.LeScanCallback {
         }
     }
 
-    public void sendData(final String bleAddress, final int cmd, byte[] data) {
+    private void sendData(final String bleAddress, final int cmd, byte[] data) {
         connectBle(mClient, bleAddress, cmd, data);
     }
 
@@ -191,9 +191,9 @@ public class SunmiPrinterClient implements BluetoothAdapter.LeScanCallback {
         if (mClient == null) return;
         BleConnectOptions options = new BleConnectOptions.Builder()
                 .setConnectRetry(3)
-                .setConnectTimeout(20_000)
+                .setConnectTimeout(15_000)
                 .setServiceDiscoverRetry(3)
-                .setServiceDiscoverTimeout(20_000)
+                .setServiceDiscoverTimeout(15_000)
                 .build();
         mClient.connect(btAddress, options, new BleConnectResponse() {
             @Override
@@ -215,8 +215,7 @@ public class SunmiPrinterClient implements BluetoothAdapter.LeScanCallback {
         BleNotifyResponse notifyResponse = new BleNotifyResponse() {
             @Override
             public void onNotify(UUID service, UUID character, byte[] value) {//收到设备发来的数据
-                Log.e("BtBlePresenter", "555555 onNotify value = " + value.length);
-                onDataReceived(value);
+                onDataReceived(value, btAddress);
             }
 
             @Override
@@ -244,12 +243,16 @@ public class SunmiPrinterClient implements BluetoothAdapter.LeScanCallback {
                 }
             }
         };
-        mClient.unnotify(btAddress, Constants.SERVICE_UUID, Constants.CHARACTER_UUID, new BleUnnotifyResponse() {
-            @Override
-            public void onResponse(int code) {
-                Log.e("BtBlePresenter", "unnotify, code = " + code);
-            }
-        });
+        try {
+            mClient.unnotify(btAddress, Constants.SERVICE_UUID, Constants.CHARACTER_UUID, new BleUnnotifyResponse() {
+                @Override
+                public void onResponse(int i) {
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         mClient.notify(btAddress, Constants.SERVICE_UUID, Constants.CHARACTER_UUID, notifyResponse);
     }
 
@@ -279,16 +282,23 @@ public class SunmiPrinterClient implements BluetoothAdapter.LeScanCallback {
                             if (code == 0) {
                                 if (cmd == Constants.CMD_REQ_SN) {
                                     iPrinterClient.getSnRequestSuccess();
+                                } else if (cmd == Constants.CMD_REQ_WIFI_LIST) {
+                                    iPrinterClient.getSnRequestSuccess();
+                                } else if (cmd == Constants.CMD_REQ_CONNECT_WIFI) {
+                                    iPrinterClient.onSetWifiSuccess();
                                 }
                             } else {
-                                iPrinterClient.sendDataFail(code, context.getString(R.string.tip_send_fail));
+                                if (cmd != Constants.CMD_REQ_WIFI_CONNECTED) {
+                                    iPrinterClient.sendDataFail(code, context.getString(R.string.tip_send_fail));
+                                }
                             }
                         }
                     }
                 });
     }
 
-    private void onDataReceived(byte[] value) {
+    private void onDataReceived(byte[] value, String btAddress) {
+        if (context == null) return;
         if (value.length > 0) {
             if (Utility.isFirstPac(value)) {
                 receivedLen = 0;
@@ -303,17 +313,30 @@ public class SunmiPrinterClient implements BluetoothAdapter.LeScanCallback {
                 if (cmd == Constants.CMD_RESP_SN) {
                     iPrinterClient.onSnReceived(Utility.getSn(receivedData));
                 } else if (cmd == Constants.CMD_RESP_GET_WIFI_ERROR) {
-                    //todo
-                    iPrinterClient.onGetWifiListFail();
+                    onResponseError(Utility.getErrorCode(receivedData));
                 } else if (cmd == Constants.CMD_RESP_GET_WIFI_SUCCESS) {
                     iPrinterClient.routerFound(Utility.getRouter(receivedData));
                 } else if (cmd == Constants.CMD_RESP_WIFI_AP_COMPLETELY) {// Wi-Fi信息接收完毕
                     iPrinterClient.onGetWifiListFinish();
                 } else if (cmd == Constants.CMD_RESP_WIFI_CONNECTED) {
+                    writeData(mClient, btAddress, cmd, Utility.cmdAlreadyConnectedWifi());
                     iPrinterClient.wifiConfigSuccess();
-                    sendData(bleAddress, Constants.CMD_REQ_WIFI_CONNECTED, Utility.cmdAlreadyConnectedWifi());
                 }
             }
+        }
+    }
+
+    private void onResponseError(int errorCode) {
+        switch (errorCode) {
+            case Constants.WIFI_START_ERROR:
+            case Constants.WIFI_SCAN_ERROR:
+                iPrinterClient.onGetWifiListFail();
+                break;
+            case Constants.WIFI_PAIRING_TIMEOUT:
+            case Constants.WIFI_CONNECT_AP_ERROR:
+            case Constants.WIFI_CONNECT_AP_TIMEOUT:
+                iPrinterClient.onWifiConfigFail();
+                break;
         }
     }
 
@@ -334,6 +357,8 @@ public class SunmiPrinterClient implements BluetoothAdapter.LeScanCallback {
         void onSetWifiSuccess();
 
         void wifiConfigSuccess();
+
+        void onWifiConfigFail();
 
         void bindPrinterSuccess(int code, String msg, String data);
 
