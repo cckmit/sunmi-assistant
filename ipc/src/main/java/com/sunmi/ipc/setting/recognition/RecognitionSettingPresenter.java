@@ -26,6 +26,7 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
     private CameraConfig mConfig;
 
     private int mZoomGap;
+    private int mBaseFocus;
 
     @Override
     public IpcVideoView.ResultCallback getCallback() {
@@ -67,22 +68,16 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
     public void zoom(boolean isZoomIn) {
         SunmiDevice device = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
         if (device != null) {
-            int gear = mConfig.getCurrentZoom() / mZoomGap + 1;
-            int zoom = Math.min(mZoomGap * gear, mConfig.getMaxZoom());
-            LogCat.d(TAG, "Zoom in: " + zoom);
-            IPCCall.getInstance().fsZoom(device.getIp(), zoom);
-        } else if (isViewAttached()) {
-            mView.showErrorDialog();
-        }
-    }
-
-    @Override
-    public void zoomOut() {
-        SunmiDevice device = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
-        if (device != null) {
-            int gear = (int) Math.ceil((double) mConfig.getCurrentZoom() / mZoomGap) - 1;
-            int zoom = Math.max(mZoomGap * gear, 0);
-            LogCat.d(TAG, "Zoom out: " + zoom);
+            int gear;
+            int zoom;
+            if (isZoomIn) {
+                gear = mConfig.getCurrentZoom() / mZoomGap + 1;
+                zoom = Math.min(mZoomGap * gear, mConfig.getMaxZoom());
+            } else {
+                gear = (int) Math.ceil((double) mConfig.getCurrentZoom() / mZoomGap) - 1;
+                zoom = Math.max(mZoomGap * gear, 0);
+            }
+            LogCat.d(TAG, "Zoom: " + zoom);
             IPCCall.getInstance().fsZoom(device.getIp(), zoom);
         } else if (isViewAttached()) {
             mView.showErrorDialog();
@@ -115,8 +110,13 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
 
     @Override
     public void focusReset() {
-        // TODO: API
-        mView.hideLoadingDialog();
+        SunmiDevice device = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
+        if (device != null) {
+            LogCat.d(TAG, "Focus reset: " + mBaseFocus);
+            IPCCall.getInstance().fsFocus(device.getIp(), mBaseFocus);
+        } else if (isViewAttached()) {
+            mView.showErrorDialog();
+        }
     }
 
     @Override
@@ -142,16 +142,22 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
         }
         mConfig = new Gson().fromJson(res.getResult().toString(), CameraConfig.class);
         mZoomGap = mConfig.getMaxZoom() / 10;
-        if (isViewAttached()) {
-            if (id == IpcConstants.fsGetStatus) {
+        if (id == IpcConstants.fsGetStatus) {
+            if (isViewAttached()) {
                 mView.updateViewsStepTo(RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM);
-            } else if (id == IpcConstants.fsZoom) {
+            }
+        } else if (id == IpcConstants.fsZoom) {
+            if (isViewAttached()) {
                 mView.updateControlBtnEnable(true, mConfig.getCurrentZoom() != mConfig.getMaxZoom());
                 mView.updateControlBtnEnable(false, mConfig.getCurrentZoom() != 0);
-            } else if (id == IpcConstants.fsFocus) {
+            }
+        } else if (id == IpcConstants.fsFocus) {
+            if (isViewAttached()) {
                 mView.updateControlBtnEnable(true, mConfig.getCurrentFocus() != mConfig.getMaxFocus());
                 mView.updateControlBtnEnable(false, mConfig.getCurrentFocus() != 0);
             }
+        } else if (id == IpcConstants.fsAutoFocus) {
+            this.mBaseFocus = mConfig.getCurrentFocus();
         }
     }
 

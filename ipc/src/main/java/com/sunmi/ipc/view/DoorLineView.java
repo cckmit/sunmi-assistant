@@ -51,7 +51,8 @@ public class DoorLineView extends ViewGroup {
     private final int[] mTipSize = new int[2];
 
     private OnStateChangeListener mListener;
-    private int mState = STATE_INIT;
+    private int mState;
+    private Rect mBoundary = new Rect();
 
     private int mSmallRadius;
     private int mBigRadius;
@@ -94,8 +95,13 @@ public class DoorLineView extends ViewGroup {
         setWillNotDraw(false);
     }
 
-    public void init() {
+    public void init(Rect boundary) {
         mState = STATE_INIT;
+        int tipHalfWidth = mTipSize[0] >> 1;
+        int tipHeight = mTipSize[1];
+        mBoundary.set(boundary.left + tipHalfWidth, boundary.top + tipHeight,
+                boundary.right - tipHalfWidth, boundary.bottom);
+        LogCat.d(TAG, "Boundary: " + mBoundary);
         mTipView.setVisibility(GONE);
         if (mListener != null) {
             mListener.onStateChanged(mState, mLineStart, mLineEnd);
@@ -123,12 +129,10 @@ public class DoorLineView extends ViewGroup {
         int top = Math.max(0, (int) (mLineEnd[1] - mTipSize[1] - mGap - mBigRadius));
         mTipView.layout(left, top, left + mTipSize[0], top + mTipSize[1]);
         mTipRect.set(left, top, left + mTipSize[0], top + mTipSize[1]);
-        LogCat.d(TAG, "Layout cancel tip: " + mTipRect);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        LogCat.d(TAG, "Draw: " + mSmallPoint.getBounds() + "; " + mBigPoint.getBounds());
         switch (mState) {
             case STATE_START:
                 canvas.save();
@@ -162,6 +166,8 @@ public class DoorLineView extends ViewGroup {
 
     private class ClickEvent extends GestureDetector.SimpleOnGestureListener {
 
+        private static final String LOG_MSG = "Click: out of area. x(%f) must in [%d, %d], y(%f) must in [%d, %d]";
+
         @Override
         public boolean onDown(MotionEvent e) {
             return true;
@@ -175,41 +181,38 @@ public class DoorLineView extends ViewGroup {
             int right = getWidth() - left;
             int top = mTipSize[1];
             int bottom = getHeight();
-            boolean isInvalidPoint = x < left || x > right || y < top;
+            boolean isInvalidPoint = x < mBoundary.left || x > mBoundary.right
+                    || y < mBoundary.top || y > mBoundary.bottom;
             boolean isInTip = x >= mTipRect.left && x <= mTipRect.right && y >= mTipRect.top && y <= mTipRect.bottom;
             switch (mState) {
                 case STATE_INIT:
                     if (isInvalidPoint) {
-                        String msg = String.format(Locale.getDefault(), "Click: out of area." +
-                                        " x(%f) must in [%d, %d], y(%f) must in [%d, %d]",
-                                x, left, right, y, top, getHeight());
+                        String msg = String.format(Locale.getDefault(), LOG_MSG, x, left, right, y, top, getHeight());
                         LogCat.e(TAG, msg);
                         return false;
                     }
-                    mLineStart[0] = e.getX();
-                    mLineStart[1] = e.getY();
+                    mLineStart[0] = x;
+                    mLineStart[1] = y;
                     mState = STATE_START;
                     if (mListener != null) {
                         mListener.onStateChanged(mState, mLineStart, mLineEnd);
                     }
                     invalidate();
-                    return true;
+                    break;
                 case STATE_START:
                     if (isInvalidPoint) {
-                        String msg = String.format(Locale.getDefault(), "Click: out of area." +
-                                        " x(%f) must in [%d, %d], y(%f) must in [%d, %d]",
-                                x, left, right, y, top, getHeight());
+                        String msg = String.format(Locale.getDefault(), LOG_MSG, x, left, right, y, top, getHeight());
                         LogCat.e(TAG, msg);
                         return false;
                     }
-                    mLineEnd[0] = e.getX();
-                    mLineEnd[1] = e.getY();
+                    mLineEnd[0] = x;
+                    mLineEnd[1] = y;
                     mState = STATE_END;
                     if (mListener != null) {
                         mListener.onStateChanged(mState, mLineStart, mLineEnd);
                     }
                     requestLayout();
-                    return true;
+                    break;
                 case STATE_END:
                     if (isInTip) {
                         mState = STATE_INIT;
@@ -217,26 +220,25 @@ public class DoorLineView extends ViewGroup {
                             mListener.onStateChanged(mState, mLineStart, mLineEnd);
                         }
                         requestLayout();
-                        return true;
                     } else if (isInvalidPoint) {
-                        String msg = String.format(Locale.getDefault(), "Click: out of area." +
-                                        " x(%f) must in [%d, %d], y(%f) must in [%d, %d]",
-                                x, left, right, y, top, getHeight());
+                        String msg = String.format(Locale.getDefault(), LOG_MSG, x, left, right, y, top, getHeight());
                         LogCat.e(TAG, msg);
                         return false;
                     } else {
-                        mLineEnd[0] = e.getX();
-                        mLineEnd[1] = e.getY();
+                        mLineEnd[0] = x;
+                        mLineEnd[1] = y;
                         if (mListener != null) {
                             mListener.onStateChanged(mState, mLineStart, mLineEnd);
                         }
                         requestLayout();
                         invalidate();
-                        return true;
                     }
+                    break;
                 default:
+                    return false;
             }
-            return false;
+            LogCat.d(TAG, "Point: x=" + x + "; y=" + y);
+            return true;
         }
 
     }

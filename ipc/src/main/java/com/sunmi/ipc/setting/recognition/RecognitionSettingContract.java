@@ -42,6 +42,11 @@ public interface RecognitionSettingContract {
         void updateControlBtnEnable(boolean isPlus, boolean enable);
 
         /**
+         * 显示完成对话框
+         */
+        void showCompleteDialog();
+
+        /**
          * 显示网络错误对话框
          */
         void showErrorDialog();
@@ -83,14 +88,9 @@ public interface RecognitionSettingContract {
 
         /**
          * 放大画面大小（变焦）
-         * @param isZoomIn
+         * @param isZoomIn 是否放大
          */
         void zoom(boolean isZoomIn);
-
-        /**
-         * 缩小画面大小（变焦）
-         */
-        void zoomOut();
 
         /**
          * 重置画面大小（变焦）

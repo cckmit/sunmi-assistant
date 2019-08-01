@@ -176,8 +176,13 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
             mPresenter.updateState();
         } else if (mStepIndex == RecognitionSettingContract.STEP_4_LINE) {
             showLoadingDialog();
-            // TODO: API
-            mPresenter.line(null, null);
+            int[] start = new int[2];
+            int[] end = new int[2];
+            start[0] = (int) (mLineStart[0] * 100 / video.getWidth());
+            start[1] = (int) (mLineStart[1] * 100 / video.getHeight());
+            end[0] = (int) (mLineEnd[0] * 100 / video.getWidth());
+            end[1] = (int) (mLineEnd[1] * 100 / video.getHeight());
+            mPresenter.line(start, end);
         } else {
             updateViewsStepTo(++mStepIndex);
         }
@@ -234,7 +239,9 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
                 updateControlBtnShow(true);
                 break;
             case RecognitionSettingContract.STEP_4_LINE:
-                mLineView.init();
+                Rect boundary = new Rect(0, Math.max(0, mTvTitle.getBottom() - video.getTop()),
+                        video.getWidth(), video.getHeight());
+                mLineView.init(boundary);
                 mLineView.setVisibility(View.VISIBLE);
                 break;
             default:
@@ -305,12 +312,22 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
     }
 
     @Override
+    public void showCompleteDialog() {
+//        new CommonDialog.Builder(this)
+//                .setTitle(R.string.ipc_setting_tip)
+//                .setMessage(R.string.ipc_recognition_network_error)
+//                .setConfirmButton(R.string.str_confirm, )
+//                .create().show();
+    }
+
+    @Override
     @UiThread
     public void showErrorDialog() {
+        hideLoadingDialog();
         if (mNetworkDialog == null) {
             mNetworkDialog = new CommonDialog.Builder(this)
                     .setTitle(R.string.ipc_setting_tip)
-                    .setMessage(R.string.ipc_recognition_network_error)
+                    .setMessage(R.string.ipc_setting_tip_network_dismatch)
                     .setConfirmButton(R.string.str_confirm)
                     .create();
         }
@@ -354,7 +371,8 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
             }
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    boundary.set(video.getLeft(), video.getTop(), video.getRight(), video.getBottom());
+                    boundary.set(video.getLeft(), Math.max(video.getTop(), mTvTitle.getBottom()),
+                            Math.min(video.getRight(), mBtnReset.getLeft()), video.getBottom());
                     width = v.getMeasuredWidth();
                     height = v.getMeasuredHeight();
                     x = event.getX();
@@ -399,7 +417,7 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
                         int xRelative = (x - video.getLeft()) * 100 / video.getWidth();
                         int yRelative = (x - video.getTop()) * 100 / video.getHeight();
                         mPresenter.face(xRelative, yRelative);
-                        showLoadingDialog(getString(R.string.ipc_recognition_loading));
+                        showLoadingDialog(mResLoading);
                     }
                 default:
                     break;

@@ -149,6 +149,6 @@
         app:layout_constraintBottom_toBottomOf="@id/sv_setting_video"
         app:layout_constraintEnd_toEndOf="@+id/sv_setting_video"
         app:layout_constraintStart_toStartOf="@id/sv_setting_video"
-        app:layout_constraintTop_toBottomOf="@id/v_setting_top_mask" />
+        app:layout_constraintTop_toTopOf="@id/sv_setting_video" />
 
 </android.support.constraint.ConstraintLayout>
