@@ -59,6 +59,8 @@ public class DeviceSettingDialog extends PopupWindow {
         });
         View divider1 = viewLayout.findViewById(R.id.divider1);
         TextView tvSetting = viewLayout.findViewById(R.id.tv_setting);
+        View divider2 = viewLayout.findViewById(R.id.divider2);
+        TextView tvRecognition = viewLayout.findViewById(R.id.tv_recognition);
         if ("IPC".equalsIgnoreCase(device.getType())) {
             divider1.setVisibility(View.VISIBLE);
             tvSetting.setVisibility(View.VISIBLE);
@@ -68,9 +70,19 @@ public class DeviceSettingDialog extends PopupWindow {
                     onSettingsClickListener.onSettingsClick(device, 2);
                 }
             });
+            divider2.setVisibility(View.VISIBLE);
+            tvRecognition.setVisibility(View.VISIBLE);
+            tvRecognition.setOnClickListener(v -> {
+                dismiss();
+                if (onSettingsClickListener != null) {
+                    onSettingsClickListener.onSettingsClick(device, 3);
+                }
+            });
         } else {
             divider1.setVisibility(View.GONE);
             tvSetting.setVisibility(View.GONE);
+            divider2.setVisibility(View.GONE);
+            tvRecognition.setVisibility(View.GONE);
         }
     }
 
