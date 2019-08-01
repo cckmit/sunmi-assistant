@@ -103,4 +103,28 @@
     <string name="tip_get_captcha_too_often">发送短信验证码太频繁，请稍后再试</string>
     <string name="tip_get_captcha_fail">发送短信验证码失败</string>
 
+    <string name="company_select">您已所属以下商户，选择进入一家商户</string>
+    <string name="company_shop_select">您已所属以下门店，选择进入一家门店</string>
+    <string name="company_create">创建商户</string>
+    <string name="company_new_create">新建商户</string>
+    <string name="company_create_hint">请输入商户名称（最多20个汉字）</string>
+    <string name="company_shop_create_hint">请输入门店名称（最多20个汉字）</string>
+    <string name="company_new_try_create">您可以尝试创建新商户</string>
+    <string name="company_shop_enter_main">进入首页</string>
+    <string name="company_create_tip">商户一般为企业或个体经营主体，例如：星巴克</string>
+    <string name="company_shop_create_tip">门店一般为商户旗下的店铺经营场所：例如：五角场店</string>
+    <string name="company_shop_select_auth_tip">您可以选择一家或多家门店</string>
+    <string name="company_create_check_length">商户名超过字数限制，请重新输入</string>
+    <string name="company_create_check_name">商户名重名，请重新输入</string>
+    <string name="company_create_success">商户创建成功</string>
+    <string name="company_create_fail">商户创建失败</string>
+    <string name="company_shop_new_create_or_import">您可以选择新建一家门店，或从其他软件平台导入已有门店。</string>
+    <string name="company_shop_new_create">新建门店</string>
+    <string name="company_shop_import">导入门店</string>
+    <string name="company_shop_create_name">门店名称</string>
+    <string name="company_shop_contact">联系人</string>
+    <string name="company_shop_mobile">联系方式</string>
+    <string name="company_shop_check_mobile">请输入正确手机号码</string>
+
+
 </resources>

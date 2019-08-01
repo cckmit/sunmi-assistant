@@ -19,7 +19,6 @@ import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.data.SunmiStoreRemote;
-import com.sunmi.assistant.data.response.CompanyInfoResp;
 import com.sunmi.assistant.rpc.CloudCall;
 import com.sunmi.assistant.ui.activity.merchant.AuthDialog;
 import com.sunmi.assistant.ui.activity.merchant.SelectPlatformActivity_;
@@ -37,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.cloud.SunmiStoreRetrofitClient;
 import sunmi.common.rpc.http.RpcCallback;

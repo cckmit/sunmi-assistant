@@ -1,7 +1,5 @@
 package com.sunmi.assistant.rpc;
 
-import com.sunmi.assistant.data.CompanyInterface;
-import com.sunmi.assistant.data.ShopInterface;
 import com.sunmi.assistant.rpc.api.AdInterface;
 import com.sunmi.assistant.rpc.api.SaasInterface;
 
@@ -9,6 +7,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import sunmi.common.constant.CommonConfig;
+import sunmi.common.rpc.cloud.CompanyInterface;
+import sunmi.common.rpc.cloud.ShopInterface;
 import sunmi.common.rpc.cloud.SunmiStoreRetrofitClient;
 import sunmi.common.rpc.http.BaseHttpApi;
 import sunmi.common.rpc.retrofit.BaseRequest;
@@ -56,12 +56,20 @@ public class CloudCall extends BaseHttpApi {
 
     /**
      * 创建门店
+     *
+     * @param company_id 是
+     * @param shopName   是
+     * @param contact    否
+     * @param tel        否
+     * @param callback
      */
-    public static void createShop(String company_id, String shopName, RetrofitCallback callback) {
+    public static void createShop(String company_id, String shopName, String contact, String tel, RetrofitCallback callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", company_id)
                     .put("shop_name", shopName)
+                    .put("contact_person", contact)
+                    .put("contact_tel", tel)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
                     .createShop(getSignedRequest(params))
@@ -72,7 +80,7 @@ public class CloudCall extends BaseHttpApi {
     }
 
     /**
-     * 创建门店
+     * 编辑门店
      */
     public static void editShop(String shopName, RetrofitCallback callback) {
         try {

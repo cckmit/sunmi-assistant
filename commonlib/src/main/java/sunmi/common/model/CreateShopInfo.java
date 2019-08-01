@@ -1,9 +1,9 @@
-package com.sunmi.assistant.ui.activity.model;
+package sunmi.common.model;
 
 /**
  * Created by YangShiJie on 2019/7/2.
  */
-public class CreateStoreInfo {
+public class CreateShopInfo {
 
     /**
      * shop_id : 8814

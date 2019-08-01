@@ -1,4 +1,4 @@
-package com.sunmi.assistant.data.response;
+package sunmi.common.model;
 
 import java.util.List;
 

@@ -30,23 +30,4 @@ public class PlatformPresenter extends BasePresenter<SelectPlatformContract.View
             }
         });
     }
-
-//    @Override
-//    public void createStore(String shopName) {
-//        CloudCall.createShop(SpUtils.getCompanyId() + "", shopName, new RetrofitCallback<CreateStoreInfo>() {
-//            @Override
-//            public void onSuccess(int code, String msg, CreateStoreInfo data) {
-//                if (isViewAttached()) {
-//                    mView.createStoreSuccess(data);
-//                }
-//            }
-//
-//            @Override
-//            public void onFail(int code, String msg, CreateStoreInfo data) {
-//                if (isViewAttached()) {
-//                    mView.createStoreFail(code, msg);
-//                }
-//            }
-//        });
-//    }
 }
