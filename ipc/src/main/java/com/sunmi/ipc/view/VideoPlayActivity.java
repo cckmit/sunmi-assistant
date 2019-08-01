@@ -91,6 +91,8 @@ public class VideoPlayActivity extends BaseActivity
     SurfaceView videoView;
     @ViewById(resName = "ivp_cloud")
     IVideoPlayer ivpCloud;
+    @ViewById(resName = "rl_control_panel")
+    RelativeLayout rlController;
     @ViewById(resName = "rl_top")
     RelativeLayout rlTopBar;
     @ViewById(resName = "rl_bottom")
@@ -247,15 +249,30 @@ public class VideoPlayActivity extends BaseActivity
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//保持屏幕常亮
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//隐藏状态栏
         initData();
-        sbZoom.setOnSeekBarChangeListener(this);
-        rlScreen.setOnTouchListener(this);
-        initVolume();
+        if (loadingDialog != null && !loadingDialog.isShowing()) {
+            loadingDialog.setLoadingContent(null);
+            loadingDialog.show();
+        }
         initSurfaceView();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                initControllerPanel();
+            }
+        }, 200);
+    }
+
+    @UiThread
+    void initControllerPanel() {
+        rlScreen.setOnTouchListener(this);
+        sbZoom.setOnSeekBarChangeListener(this);
+        initVolume();
         setTextViewTimeDrawable();
         initRecyclerView();
         recyclerViewAddOnScrollListener();
         showTimeList(false, listAp);
         scrollCurrentTime(); //滚动到当前时间
+        rlController.setVisibility(View.VISIBLE);
     }
 
     void initData() {
@@ -287,10 +304,10 @@ public class VideoPlayActivity extends BaseActivity
         } else {
             if (aspectRatio > 1920 / 1080) {
                 height = screenH;
-                width = 1920;
+                width = 1920 * screenH / screenW;
             } else {
                 width = screenW;
-                height = 1080;
+                height = 1080 * screenH / screenW;
             }
         }
         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
@@ -724,6 +741,7 @@ public class VideoPlayActivity extends BaseActivity
     public void onVideoReceived(byte[] videoBuffer) {
         if (videoDecoder != null)
             videoDecoder.setVideoData(videoBuffer);
+        hideLoadingDialog();
     }
 
     @Override
