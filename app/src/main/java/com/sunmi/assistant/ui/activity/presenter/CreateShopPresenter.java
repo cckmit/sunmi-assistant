@@ -16,6 +16,7 @@ import sunmi.common.utils.log.LogCat;
  */
 public class CreateShopPresenter extends BasePresenter<CreateShopContract.View>
         implements CreateShopContract.Presenter {
+    private static final int CREATE_SHOP_ALREADY_EXIST = 5035;
     private static final String TAG = CreateShopPresenter.class.getSimpleName();
 
     @Override
@@ -36,7 +37,11 @@ public class CreateShopPresenter extends BasePresenter<CreateShopContract.View>
                         LogCat.e(TAG, "getSaas  Failed code=" + code + "; msg=" + msg);
                         if (isViewAttached()) {
                             mView.hideLoadingDialog();
-                            mView.shortTip(R.string.str_create_store_fail);
+                            if (code == CREATE_SHOP_ALREADY_EXIST) {
+                                mView.shortTip(R.string.str_create_store_alredy_exit);
+                            } else {
+                                mView.shortTip(R.string.str_create_store_fail);
+                            }
                         }
                     }
                 });

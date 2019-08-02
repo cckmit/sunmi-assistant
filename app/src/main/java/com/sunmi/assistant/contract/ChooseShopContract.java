@@ -1,5 +1,7 @@
 package com.sunmi.assistant.contract;
 
+import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
+
 import java.util.List;
 
 import sunmi.common.base.BaseView;
@@ -21,11 +23,17 @@ public interface ChooseShopContract {
         void getCompanyListSuccess(List<CompanyInfoResp> companyList);
 
         void getCompanyListFail(int code, String msg, CompanyListResp data);
+
+        void getSaasSuccessView(AuthStoreInfo data);
+
+        void getSaasFailView(int code, String msg);
     }
 
     interface Presenter {
         void getShopList(int companyId);
 
         void getCompanyList();
+
+        void getSaas(String mobile);
     }
 }

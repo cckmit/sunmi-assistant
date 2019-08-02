@@ -36,7 +36,9 @@ import sunmi.common.view.ViewHolder;
 
 /**
  * 选择门店
- * Created by YangShiJie on 2019/6/26.
+ *
+ * @author YangShiJie
+ * @date 2019/6/26
  */
 @SuppressLint("Registered")
 @EActivity(R.layout.activity_merchant_select_store)
@@ -61,7 +63,9 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
-        if (!isBack) titleBar.getLeftLayout().setVisibility(View.GONE);
+        if (!isBack) {
+            titleBar.getLeftLayout().setVisibility(View.GONE);
+        }
         initRecycler();
         mPresenter = new AuthStoreCompletePresenter();
         mPresenter.attachView(this);
@@ -88,12 +92,7 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
         showLoadingDialog();
         for (int i = 0; i < listChecked.size(); i++) {
             String shopName = listChecked.get(i).getShop_name();
-            if (i == 0) {
-                SpUtils.setShopName(shopName(shopName, i));//默认门店名称
-                mPresenter.editStore(shopName(shopName, i));//第一个编辑门店
-            } else {
-                mPresenter.createStore(shopName(shopName, i));//创建门店
-            }
+            mPresenter.createStore(shopName(shopName, i));
         }
     }
 
@@ -103,28 +102,6 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
             return shopName + "_0" + (i + 1);
         }
         return shopName + "_" + (i + 1);
-    }
-
-    /**
-     * 编辑店铺-选择一个或多个店铺第一个店铺为初始化注册默认创建的
-     *
-     * @param data
-     */
-    @Override
-    public void editStoreSuccess(Object data) {
-        LogCat.e(TAG, "111 data editStoreSuccess shopNo=");
-        createFlag++;
-        mPresenter.authStoreCompleteInfo(SpUtils.getShopId(),
-                listChecked.get(0).getSaas_source(),
-                listChecked.get(0).getShop_no(),
-                listChecked.get(0).getSaas_name());
-    }
-
-    @Override
-    public void editStoreFail(int code, String msg) {
-        LogCat.e(TAG, "111 data editStoreFail code=" + code + "," + msg);
-        createFlag++;
-        isGotoMainActivity();
     }
 
     /**

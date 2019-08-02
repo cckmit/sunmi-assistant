@@ -2,6 +2,7 @@ package com.sunmi.assistant.ui.activity.presenter;
 
 import com.sunmi.assistant.rpc.CloudCall;
 import com.sunmi.assistant.ui.activity.contract.PlatformMobileContract;
+import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -17,14 +18,16 @@ public class PlatformMobilePresenter extends BasePresenter<PlatformMobileContrac
         CloudCall.sendSaasVerifyCode(mobile, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
-                if (isViewAttached())
+                if (isViewAttached()) {
                     mView.sendMobileCodeSuccess(data);
+                }
             }
 
             @Override
             public void onFail(int code, String msg, Object data) {
-                if (isViewAttached())
+                if (isViewAttached()) {
                     mView.sendMobileCodeFail(code, msg);
+                }
             }
         });
     }
@@ -35,14 +38,16 @@ public class PlatformMobilePresenter extends BasePresenter<PlatformMobileContrac
         CloudCall.confirmSaasVerifyCode(mobile, code, new RetrofitCallback() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
-                if (isViewAttached())
+                if (isViewAttached()) {
                     mView.checkMobileCodeSuccess(data);
+                }
             }
 
             @Override
             public void onFail(int code, String msg, Object data) {
-                if (isViewAttached())
+                if (isViewAttached()) {
                     mView.checkMobileCodeFail(code, msg);
+                }
             }
         });
     }
@@ -50,17 +55,19 @@ public class PlatformMobilePresenter extends BasePresenter<PlatformMobileContrac
     //通过手机号获取saas信息
     @Override
     public void getSaasInfo(String mobile) {
-        CloudCall.getSaasUserInfo(mobile, new RetrofitCallback() {
+        CloudCall.getSaasUserInfo(mobile, new RetrofitCallback<AuthStoreInfo>() {
             @Override
-            public void onSuccess(int code, String msg, Object data) {
-                if (isViewAttached())
+            public void onSuccess(int code, String msg, AuthStoreInfo data) {
+                if (isViewAttached()) {
                     mView.getSaasInfoSuccess(data);
+                }
             }
 
             @Override
-            public void onFail(int code, String msg, Object data) {
-                if (isViewAttached())
+            public void onFail(int code, String msg, AuthStoreInfo data) {
+                if (isViewAttached()) {
                     mView.getSaasInfoFail(code, msg);
+                }
             }
         });
     }
