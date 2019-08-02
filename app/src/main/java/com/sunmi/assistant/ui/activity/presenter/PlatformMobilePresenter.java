@@ -2,11 +2,9 @@ package com.sunmi.assistant.ui.activity.presenter;
 
 import com.sunmi.assistant.rpc.CloudCall;
 import com.sunmi.assistant.ui.activity.contract.PlatformMobileContract;
-import com.sunmi.assistant.ui.activity.model.CreateStoreInfo;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
-import sunmi.common.utils.SpUtils;
 
 /**
  * Created by YangShiJie on 2019/7/3.
@@ -70,15 +68,15 @@ public class PlatformMobilePresenter extends BasePresenter<PlatformMobileContrac
 //    //默认创建门店
 //    @Override
 //    public void createStore(String shopName) {
-//        CloudCall.createShop(SpUtils.getCompanyId() + "", shopName, new RetrofitCallback<CreateStoreInfo>() {
+//        CloudCall.createShop(SpUtils.getCompanyId() + "", shopName, new RetrofitCallback<CreateShopInfo>() {
 //            @Override
-//            public void onSuccess(int code, String msg, CreateStoreInfo data) {
+//            public void onSuccess(int code, String msg, CreateShopInfo data) {
 //                if (isViewAttached())
 //                    mView.createStoreSuccess(data);
 //            }
 //
 //            @Override
-//            public void onFail(int code, String msg, CreateStoreInfo data) {
+//            public void onFail(int code, String msg, CreateShopInfo data) {
 //                if (isViewAttached())
 //                    mView.createStoreFail(code, msg);
 //            }

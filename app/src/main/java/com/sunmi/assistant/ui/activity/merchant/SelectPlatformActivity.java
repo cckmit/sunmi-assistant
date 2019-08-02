@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -53,26 +54,16 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
         initRecycler();
-        isCanClick(false);
+        CommonHelper.isCanClick(btnNext, false);
         mPresenter = new PlatformPresenter();
         mPresenter.attachView(this);
         showLoadingDialog();
         mPresenter.getPlatformInfo();
     }
 
-    @Override
-    public void onBackPressed() {
-    }
-
-    private void isCanClick(boolean isClick) {
-        if (isClick) {
-            btnNext.setAlpha(1f);
-            btnNext.setEnabled(true);
-        } else {
-            btnNext.setAlpha(0.5f);
-            btnNext.setEnabled(false);
-        }
-    }
+//    @Override
+//    public void onBackPressed() {
+//    }
 
     @Override
     public void onClick(View v) {
@@ -133,7 +124,7 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
                         selectPlatform = bean.getSaas_name();
                         selectSaasSource = bean.getSaas_source();
                         notifyDataSetChanged();//刷新
-                        isCanClick(true);
+                        CommonHelper.isCanClick(btnNext, true);
                     }
                 });
                 if (selectedIndex == holder.getAdapterPosition()) {

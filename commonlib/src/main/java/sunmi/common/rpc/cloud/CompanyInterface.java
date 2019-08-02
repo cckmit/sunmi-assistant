@@ -1,11 +1,11 @@
-package com.sunmi.assistant.data;
+package sunmi.common.rpc.cloud;
 
-import com.sunmi.assistant.data.response.CompanyInfoResp;
-import com.sunmi.assistant.data.response.CompanyListResp;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
+import sunmi.common.model.CompanyInfoResp;
+import sunmi.common.model.CompanyListResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
@@ -33,6 +33,6 @@ public interface CompanyInterface {
 
     //创建商户
     @POST(companyPath + "create")
-    Call<BaseResponse<Object>> createMerchant(@Body BaseRequest request);
+    Call<BaseResponse<CompanyInfoResp>> createCompany(@Body BaseRequest request);
 
 }

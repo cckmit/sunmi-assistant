@@ -1,18 +1,19 @@
 package com.sunmi.assistant.ui.activity.login;
 
 import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.ChooseShopContract;
-import com.sunmi.assistant.data.response.CompanyInfoResp;
-import com.sunmi.assistant.data.response.CompanyListResp;
-import com.sunmi.assistant.data.response.ShopListResp;
 import com.sunmi.assistant.presenter.ChooseShopPresenter;
 import com.sunmi.assistant.ui.activity.MainActivity_;
+import com.sunmi.assistant.ui.activity.merchant.CreateCompanyActivity_;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -27,7 +28,11 @@ import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.model.CompanyInfoResp;
+import sunmi.common.model.CompanyListResp;
+import sunmi.common.model.ShopListResp;
 import sunmi.common.model.UserInfoBean;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
@@ -42,7 +47,8 @@ import sunmi.common.view.ViewHolder;
  */
 @EActivity(R.layout.activity_login_choose_shop)
 public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter>
-        implements ChooseShopContract.View, BGARefreshLayout.BGARefreshLayoutDelegate {
+        implements ChooseShopContract.View, BGARefreshLayout.BGARefreshLayoutDelegate,
+        View.OnClickListener {
 
     @ViewById(R.id.rl_root)
     RelativeLayout rlRoot;
@@ -54,6 +60,10 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     SmRecyclerView rvChoose;
     @ViewById(R.id.ll_no_data)
     LinearLayout rlNoData;
+    @ViewById(R.id.tv_select_type)
+    TextView tvSelectType;
+    @ViewById(R.id.btn_enter_main)
+    Button btnEnterMain;
 
     @Extra
     int action;
@@ -66,6 +76,9 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     @Extra
     int saasExist;
 
+    private int shopId;
+    private String shopName;
+
     @AfterViews
     void init() {
         mPresenter = new ChooseShopPresenter();
@@ -77,9 +90,16 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
 
         if (action == CommonConstants.ACTION_LOGIN_CHOOSE_COMPANY) {
             titleBar.setAppTitle(R.string.str_select_company);
+            tvSelectType.setText(R.string.company_select);
+            titleBar.setRightTextViewText(R.string.company_create);
+            titleBar.getRightText().setOnClickListener(this);
+            btnEnterMain.setVisibility(View.GONE);
             mPresenter.getCompanyList();
         } else if (action == CommonConstants.ACTION_LOGIN_CHOOSE_SHOP) {
+            CommonHelper.isCanClick(btnEnterMain, false);
             titleBar.setAppTitle(R.string.str_select_store);
+            tvSelectType.setText(R.string.company_shop_select);
+            btnEnterMain.setVisibility(View.VISIBLE);
             mPresenter.getShopList(companyId);
         }
     }
@@ -87,6 +107,16 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     @Override
     protected boolean needLandscape() {
         return true;
+    }
+
+    @Override
+    public void onClick(View v) {
+        CreateCompanyActivity_.intent(context).start();
+    }
+
+    @Click(R.id.btn_enter_main)
+    void enterMainClick() {
+        gotoMainActivity(shopId, shopName);
     }
 
     @Click(R.id.btn_refresh)
@@ -111,17 +141,18 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
 
     @Override
     public void getCompanyListSuccess(List<CompanyInfoResp> companyList) {
-        if (companyList.size() == 1) {
-            companyId = companyList.get(0).getCompany_id();
-            companyName = companyList.get(0).getCompany_name();
-            saasExist = companyList.get(0).getSaas_exist();
-            LoginChooseShopActivity_.intent(context).loginData(loginData)
-                    .companyId(companyId).companyName(companyName).saasExist(saasExist)
-                    .action(CommonConstants.ACTION_LOGIN_CHOOSE_SHOP).start();
-            finish();
-        } else {
-            initCompanyList(companyList);
-        }
+//        if (companyList.size() == 1) {
+//            companyId = companyList.get(0).getCompany_id();
+//            companyName = companyList.get(0).getCompany_name();
+//            saasExist = companyList.get(0).getSaas_exist();
+//            LoginChooseShopActivity_.intent(context).loginData(loginData)
+//                    .companyId(companyId).companyName(companyName).saasExist(saasExist)
+//                    .action(CommonConstants.ACTION_LOGIN_CHOOSE_SHOP).start();
+//            finish();
+//        } else {
+//            initCompanyList(companyList);
+//        }
+        initCompanyList(companyList);
     }
 
     @Override
@@ -178,11 +209,29 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
         }
         rvChoose.setAdapter(new CommonListAdapter<ShopListResp.ShopInfo>(context,
                 R.layout.item_shop_company, shopList) {
+            int selectedIndex = -1;
+
             @Override
             public void convert(ViewHolder holder, final ShopListResp.ShopInfo item) {
-                ((SettingItemLayout) holder.getView(R.id.sil_item)).setLeftText(item.getShop_name());
-                holder.itemView.setOnClickListener(v ->
-                        gotoMainActivity(item.getShop_id(), item.getShop_name()));
+                SettingItemLayout shopItem = holder.getView(R.id.sil_item);
+                shopItem.setLeftText(item.getShop_name());
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        selectedIndex = holder.getAdapterPosition();
+                        shopId = item.getShop_id();
+                        shopName = item.getShop_name();
+                        notifyDataSetChanged();
+                        CommonHelper.isCanClick(btnEnterMain, true);
+                    }
+                });
+                if (selectedIndex == holder.getAdapterPosition()) {
+                    shopItem.setRightImage(ContextCompat.getDrawable(context, com.sunmi.ipc.R.mipmap.ic_yes));
+                    shopItem.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.common_orange));
+                } else {
+                    shopItem.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.colorText));
+                    shopItem.setRightImage(null);
+                }
             }
         });
     }

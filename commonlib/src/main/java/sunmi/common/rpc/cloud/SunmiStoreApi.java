@@ -252,4 +252,18 @@ public class SunmiStoreApi {
         }
     }
 
+    //创建商户
+    public static void createCompany(String companyName, RetrofitCallback callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_name", companyName)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CompanyInterface.class)
+                    .createCompany(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

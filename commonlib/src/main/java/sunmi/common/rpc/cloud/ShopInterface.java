@@ -1,12 +1,13 @@
-package com.sunmi.assistant.data;
+package sunmi.common.rpc.cloud;
 
-import com.sunmi.assistant.data.response.ShopInfoResp;
-import com.sunmi.assistant.data.response.ShopListResp;
-import com.sunmi.assistant.ui.activity.model.CreateStoreInfo;
+
 
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
+import sunmi.common.model.CreateShopInfo;
+import sunmi.common.model.ShopInfoResp;
+import sunmi.common.model.ShopListResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
@@ -33,7 +34,7 @@ public interface ShopInterface {
 
     //创建门店
     @POST(shopPath + "create")
-    Call<BaseResponse<CreateStoreInfo>> createShop(@Body BaseRequest request);
+    Call<BaseResponse<CreateShopInfo>> createShop(@Body BaseRequest request);
 
     //编辑门店
     @POST(shopPath + "update")

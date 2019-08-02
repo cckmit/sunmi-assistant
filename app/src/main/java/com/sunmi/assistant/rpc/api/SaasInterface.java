@@ -1,6 +1,7 @@
 package com.sunmi.assistant.rpc.api;
 
 import com.google.gson.JsonObject;
+import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
 import com.sunmi.assistant.ui.activity.model.PlatformInfo;
 
 import retrofit2.Call;
@@ -17,7 +18,7 @@ public interface SaasInterface {
 
     //saas信息
     @POST(path + "getUserInfo")
-    Call<BaseResponse<JsonObject>> getSaasUserInfo(@Body BaseRequest request);
+    Call<BaseResponse<AuthStoreInfo>> getSaasUserInfo(@Body BaseRequest request);
 
     //米商引擎所支持的Saas平台信息l
     @POST(path + "getList")

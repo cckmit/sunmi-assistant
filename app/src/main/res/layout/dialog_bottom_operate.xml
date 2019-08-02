@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_shap_top_radus_left_right"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/tv_tip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_32"
+        android:text="@string/company_shop_new_create_or_import"
+        android:layout_marginEnd="@dimen/dp_25"
+        android:layout_marginStart="@dimen/dp_25"
+        android:textColor="@color/text_color"
+        android:textSize="@dimen/sp_18"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btn_create_shop"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_44"
+        android:layout_marginEnd="@dimen/dp_25"
+        android:layout_marginStart="@dimen/dp_25"
+        android:layout_marginTop="@dimen/dp_20"
+        android:background="@drawable/edittext_solid_orange"
+        android:text="@string/company_shop_new_create"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/sp_16" />
+
+    <Button
+        android:id="@+id/btn_shop_import"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_44"
+        android:layout_marginBottom="@dimen/dp_32"
+        android:layout_marginEnd="@dimen/dp_25"
+        android:layout_marginStart="@dimen/dp_25"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@drawable/edittext_edge_orange"
+        android:text="@string/company_shop_import"
+        android:textColor="@color/colorOrange"
+        android:textSize="@dimen/sp_16" />
+</LinearLayout>

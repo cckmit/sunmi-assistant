@@ -1,12 +1,11 @@
 package com.sunmi.assistant.contract;
 
-import com.sunmi.assistant.data.response.CompanyInfoResp;
-import com.sunmi.assistant.data.response.CompanyListResp;
-import com.sunmi.assistant.data.response.ShopListResp;
-
 import java.util.List;
 
 import sunmi.common.base.BaseView;
+import sunmi.common.model.CompanyInfoResp;
+import sunmi.common.model.CompanyListResp;
+import sunmi.common.model.ShopListResp;
 
 /**
  * Description: ChooseShopContract

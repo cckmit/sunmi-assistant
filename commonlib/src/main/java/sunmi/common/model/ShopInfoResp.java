@@ -1,4 +1,4 @@
-package com.sunmi.assistant.data.response;
+package sunmi.common.model;
 
 public class ShopInfoResp {
 
