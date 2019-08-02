@@ -25,6 +25,7 @@ public class IpcConstants {
     public static final int fsReset = 0x3107;
     public static final int fsIrMode = 0x3108;
     public static final int fsGetStatus = 0x3109;
+    public static final int fsSetLine = 0x3162;
     public static final int ipcUpgrade = 0x3140;
     public static final int getIpcNightIdeRotation = 0x305c;
     public static final int setIpcNightIdeRotation = 0x305d;

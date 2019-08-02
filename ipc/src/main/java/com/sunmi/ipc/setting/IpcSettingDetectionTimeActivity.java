@@ -333,7 +333,7 @@ public class IpcSettingDetectionTimeActivity extends BaseActivity {
     }
 
     @Override
-    public int[] getUnStickNotificationId() {
+    public int[] getStickNotificationId() {
         return new int[]{IpcConstants.setIpcDetection};
     }
 

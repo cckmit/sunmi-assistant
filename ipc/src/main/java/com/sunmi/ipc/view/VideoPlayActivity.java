@@ -365,7 +365,7 @@ public class VideoPlayActivity extends BaseActivity
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-        IPCCall.getInstance().fsZoom(seekBar.getProgress(), context);
+//        IPCCall.getInstance().fsZoom(seekBar.getProgress());
     }
 
     @Click(resName = "tv_add")
@@ -374,7 +374,7 @@ public class VideoPlayActivity extends BaseActivity
             shortTip("已到最大焦距");
             return;
         }
-        IPCCall.getInstance().fsFocus(currFocus += 5, context);
+//        IPCCall.getInstance().fsFocus(currFocus += 5, context);
     }
 
     @Click(resName = "tv_minus")
@@ -383,12 +383,12 @@ public class VideoPlayActivity extends BaseActivity
             shortTip("已到最小焦距");
             return;
         }
-        IPCCall.getInstance().fsFocus(currFocus -= 5, context);
+//        IPCCall.getInstance().fsFocus(currFocus -= 5, context);
     }
 
     @Click(resName = "tv_auto")
     void autoFocusClick() {
-        IPCCall.getInstance().fsAutoFocus(context);
+//        IPCCall.getInstance().fsAutoFocus(context);
     }
 
     @Click(resName = "btn_next")
@@ -404,8 +404,8 @@ public class VideoPlayActivity extends BaseActivity
         shortTip("x = " + (int) currX * 100 / screenW);
         float currY = 860;
         shortTip("y = " + (int) currY * 100 / screenH);
-        IPCCall.getInstance().fsSetFocusPoint((int) currX * 100 / screenW,
-                (int) currY * 100 / screenH, context);
+//        IPCCall.getInstance().fsSetFocusPoint((int) currX * 100 / screenW,
+//                (int) currY * 100 / screenH, context);
     }
 
     @Click(resName = "rl_video_back")
@@ -1179,7 +1179,7 @@ public class VideoPlayActivity extends BaseActivity
                     String day = strDate.substring(8, 11);
                     tvCalender.setText(String.format(" %s", day));  //滑动停止显示日期
                     scrollTime = currTime * 1000;//滑动日历的时间戳毫秒
-                    String hourMinuteSecond = strDate.substring(11, strDate.length());
+                    String hourMinuteSecond = strDate.substring(11);
                     canvasHours(firstVisibleItem);//绘制时间轴
                     long currentSeconds = System.currentTimeMillis() / 1000;//当前时间戳秒
                     //停止到未来时间

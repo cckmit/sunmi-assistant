@@ -38,6 +38,7 @@ import com.sunmi.assistant.utils.GlideImageLoader;
 import com.sunmi.cloudprinter.ui.Activity.PrinterManageActivity_;
 import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.setting.IpcSettingActivity_;
+import com.sunmi.ipc.setting.recognition.RecognitionSettingActivity_;
 import com.sunmi.ipc.view.VideoPlayActivity_;
 import com.sunmi.sunmiservice.WebViewActivity_;
 import com.youth.banner.Banner;
@@ -327,6 +328,15 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 return;
             }
             IpcSettingActivity_.intent(mActivity).mDevice(device).start();
+        } else if (type == 3) {
+            if (cannotManagerDevice(device)) {
+                return;
+            }
+            if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(device.getDeviceid())) {
+                shortTip(R.string.ipc_setting_tip_network_dismatch);
+                return;
+            }
+            RecognitionSettingActivity_.intent(mActivity).mDevice(device).mVideoRatio(new int[]{16, 9}).start();
         }
     }
 
