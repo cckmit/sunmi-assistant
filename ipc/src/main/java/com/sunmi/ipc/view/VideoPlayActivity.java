@@ -34,9 +34,7 @@ import com.sunmi.ipc.R;
 import com.sunmi.ipc.model.ApCloudTimeBean;
 import com.sunmi.ipc.model.TimeBean;
 import com.sunmi.ipc.model.VideoListResp;
-import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IPCCloudApi;
-import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.utils.AACDecoder;
 import com.sunmi.ipc.utils.H264Decoder;
 import com.sunmi.ipc.utils.IOTCClient;
@@ -68,7 +66,6 @@ import java.util.TimerTask;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
-import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.DeviceTypeUtils;
@@ -84,7 +81,7 @@ import sunmi.common.view.VerticalSeekBar;
 @EActivity(resName = "activity_video_play")
 public class VideoPlayActivity extends BaseActivity
         implements SurfaceHolder.Callback, IOTCClient.Callback,
-        SeekBar.OnSeekBarChangeListener, View.OnTouchListener, IVideoPlayer.VideoPlayListener {
+        View.OnTouchListener, IVideoPlayer.VideoPlayListener {
     @ViewById(resName = "rl_screen")
     RelativeLayout rlScreen;
     @ViewById(resName = "vv_ipc")
@@ -133,8 +130,6 @@ public class VideoPlayActivity extends BaseActivity
     TimeView timeView;//时间绘制
     @ViewById(resName = "iv_setting")
     ImageView ivSetting;//设置
-    @ViewById(resName = "sb_zoom")
-    SeekBar sbZoom;
 
     @Extra
     String UID;
@@ -266,7 +261,6 @@ public class VideoPlayActivity extends BaseActivity
     @UiThread
     void initControllerPanel() {
         rlScreen.setOnTouchListener(this);
-        sbZoom.setOnSeekBarChangeListener(this);
         initVolume();
         setTextViewTimeDrawable();
         initRecyclerView();
@@ -353,61 +347,6 @@ public class VideoPlayActivity extends BaseActivity
     @Background
     void initP2pLive() {
         iotcClient.init(UID);
-    }
-
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-    }
-
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
-
-    }
-
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
-        IPCCall.getInstance().fsZoom(seekBar.getProgress(), context);
-    }
-
-    @Click(resName = "tv_add")
-    void addClick() {
-        if (currFocus > 775) {
-            shortTip("已到最大焦距");
-            return;
-        }
-        IPCCall.getInstance().fsFocus(currFocus += 5, context);
-    }
-
-    @Click(resName = "tv_minus")
-    void minusClick() {
-        if (currFocus < 5) {
-            shortTip("已到最小焦距");
-            return;
-        }
-        IPCCall.getInstance().fsFocus(currFocus -= 5, context);
-    }
-
-    @Click(resName = "tv_auto")
-    void autoFocusClick() {
-        IPCCall.getInstance().fsAutoFocus(context);
-    }
-
-    @Click(resName = "btn_next")
-    void nextClick() {
-        LogCat.e(TAG, "addClick");
-        if (screenH <= 0 || screenW <= 0) {
-            shortTip("已到最小焦距");
-            return;
-        }
-        //        IPCCall.getInstance().fsReset(context);
-        IPCCall.getInstance().fsIrMode(0, context);
-        float currX = 540;
-        shortTip("x = " + (int) currX * 100 / screenW);
-        float currY = 860;
-        shortTip("y = " + (int) currY * 100 / screenH);
-        IPCCall.getInstance().fsSetFocusPoint((int) currX * 100 / screenW,
-                (int) currY * 100 / screenH, context);
     }
 
     @Click(resName = "rl_video_back")
@@ -751,43 +690,6 @@ public class VideoPlayActivity extends BaseActivity
         audioDecoder.setAudioData(audioBuffer);
     }
 
-    @Override
-    public int[] getStickNotificationId() {
-        return new int[]{IpcConstants.fsAutoFocus, IpcConstants.fsFocus, IpcConstants.fsGetStatus,
-                IpcConstants.fsIrMode, IpcConstants.fsReset, IpcConstants.fsZoom};
-    }
-
-    @UiThread
-    void setSeekBarProgress(int progress) {
-        sbZoom.setProgress(progress);
-    }
-
-    @Override
-    public void didReceivedNotification(int id, Object... args) {
-        if (args == null) return;
-        ResponseBean res = (ResponseBean) args[0];
-        if (res == null) return;
-        if (id == IpcConstants.fsGetStatus) {
-            //{"data":[{"opcode":"0x3109","result":{"zoom":0,"max_zoom":500,"max_focus":780,
-            // "irmode":0,"auto_focus_start":0,"focus":389},"errcode":1}],"msg_id":"11111","errcode":1}
-            try {
-                JSONObject jsonObject = res.getResult();
-                if (jsonObject.has("zoom")) {
-                    int currZoom = jsonObject.getInt("zoom");
-                    setSeekBarProgress(currZoom);
-                }
-                if (jsonObject.has("focus")) {
-                    currFocus = jsonObject.getInt("focus");
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        } else if (id == IpcConstants.fsAutoFocus) {
-            LogCat.e(TAG, "666666,222res = " + res.toString());
-        } else if (id == IpcConstants.fsReset) {
-        }
-    }
-
     /**
      * 调节音量
      */
@@ -824,6 +726,7 @@ public class VideoPlayActivity extends BaseActivity
     }
 
     //按键控制音量，return true时不显示系统音量 return false时显示系统音量
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
             llChangeVolume.setVisibility(View.GONE);
@@ -1180,7 +1083,7 @@ public class VideoPlayActivity extends BaseActivity
                     String day = strDate.substring(8, 11);
                     tvCalender.setText(String.format(" %s", day));  //滑动停止显示日期
                     scrollTime = currTime * 1000;//滑动日历的时间戳毫秒
-                    String hourMinuteSecond = strDate.substring(11, strDate.length());
+                    String hourMinuteSecond = strDate.substring(11);
                     canvasHours(firstVisibleItem);//绘制时间轴
                     long currentSeconds = System.currentTimeMillis() / 1000;//当前时间戳秒
                     //停止到未来时间

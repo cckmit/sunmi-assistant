@@ -113,7 +113,7 @@
     <string name="tip_please_select_ipc">请选择一个摄像头</string>
     <string name="ipc_setting_check_wireless">当前属于有线连接状态，若要使用Wi-Fi网络，请切换为无线网络后断开有线连接。</string>
     <string name="ipc_setting_tip">提示</string>
-    <string name="ipc_setting_search_wifi">正在搜索Wi-Fi...</string>
+    <string name="ipc_setting_search_wifi">正在搜索Wi-Fi…</string>
     <string name="ipc_setting_degree0">0度</string>
     <string name="ipc_setting_degree90">90度</string>
     <string name="ipc_setting_degree180">180度</string>
@@ -121,6 +121,18 @@
     <string name="ipc_setting_degree">%s度</string>
     <string name="ipc_setting_wire_net">有线网络</string>
     <string name="ipc_setting_unknown">未知</string>
+
+    <string name="ipc_recognition_tip_ok">知道了</string>
+    <string name="ipc_recognition_loading">画面调整中…</string>
+    <string name="ipc_recognition_network_error">网络异常，请检查网络</string>
+    <string name="ipc_recognition_tip_position">请安排人员面向摄像头，站在需要识别人脸的位置</string>
+    <string name="ipc_recognition_tip_zoom">调整画面大小并移动人脸框的位置，使人脸刚好填充整个人脸框</string>
+    <string name="ipc_recognition_tip_focus">若自动对焦不清晰，可以手动对焦调整人脸清晰</string>
+    <string name="ipc_recognition_tip_line">拖拽直线端点，以设置客流统计的进店门槛</string>
+    <string name="ipc_recognition_line_start">设置门槛起点</string>
+    <string name="ipc_recognition_line_end">设置门槛终点</string>
+    <string name="ipc_recognition_line_cancel">撤销</string>
+    <string name="ipc_recognition_complete">摄像机画面调整完成</string>
 
 </resources>
 

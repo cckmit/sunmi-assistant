@@ -1,11 +1,14 @@
 package sunmi.common.rpc.sunmicall;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.commonlibrary.R;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -79,6 +82,8 @@ public abstract class BaseLocalApi extends BaseApi {
         mBuilder.sslSocketFactory(getSSLSocketFactory());
         mBuilder.hostnameVerifier(new OKHttpUtils.TrustAllHostnameVerifier());
         mBuilder.connectTimeout(timeout, TimeUnit.SECONDS);
+        mBuilder.readTimeout(timeout, TimeUnit.SECONDS);
+        mBuilder.writeTimeout(timeout, TimeUnit.SECONDS);
         OkHttpClient okHttpClient = mBuilder.build();
 
         Call call = okHttpClient.newCall(request.build());
@@ -96,13 +101,29 @@ public abstract class BaseLocalApi extends BaseApi {
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 //注意此处必须new 一个string 不然的话直接调用response.body().string()会崩溃，因为此处流只调用一次然后关闭了
-                String result = response.body().string();
-                LogCat.e(TAG, "local execute success: opCode = " + opCode + ", result = " + result);
-                ResponseBean res = new ResponseBean(result);
-                BaseNotification.newInstance().postNotificationName(opCode, res);
-                onSuccess(result, sn);
+                String result = "";
+                if (response.body() != null) {
+                    try {
+                        result = response.body().string();
+                    } catch (SocketTimeoutException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (TextUtils.isEmpty(result)) {
+                    LogCat.e(TAG, "execute fail.");
+                    ResponseBean res = new ResponseBean();
+                    res.setErrCode(RpcErrorCode.RPC_ERR_TIMEOUT + "");
+                    res.setDataErrCode(RpcErrorCode.RPC_ERR_TIMEOUT);
+                    BaseNotification.newInstance().postNotificationName(opCode, res);
+                    onFail(res);
+                } else {
+                    LogCat.e(TAG, "local execute success: opCode = " + opCode + ", result = " + result);
+                    ResponseBean res = new ResponseBean(result);
+                    BaseNotification.newInstance().postNotificationName(opCode, res);
+                    onSuccess(result, sn);
+                }
             }
         });
     }
