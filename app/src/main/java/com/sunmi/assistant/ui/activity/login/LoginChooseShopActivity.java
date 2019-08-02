@@ -1,6 +1,7 @@
 package com.sunmi.assistant.ui.activity.login;
 
 import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -31,6 +32,7 @@ import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.model.CompanyListResp;
 import sunmi.common.model.ShopListResp;
 import sunmi.common.model.UserInfoBean;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
@@ -94,6 +96,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
             btnEnterMain.setVisibility(View.GONE);
             mPresenter.getCompanyList();
         } else if (action == CommonConstants.ACTION_LOGIN_CHOOSE_SHOP) {
+            CommonHelper.isCanClick(btnEnterMain, false);
             titleBar.setAppTitle(R.string.str_select_store);
             tvSelectType.setText(R.string.company_shop_select);
             btnEnterMain.setVisibility(View.VISIBLE);
@@ -216,16 +219,17 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
                     @Override
                     public void onClick(View v) {
                         selectedIndex = holder.getAdapterPosition();
-                        notifyDataSetChanged();
                         shopId = item.getShop_id();
                         shopName = item.getShop_name();
+                        notifyDataSetChanged();
+                        CommonHelper.isCanClick(btnEnterMain, true);
                     }
                 });
                 if (selectedIndex == holder.getAdapterPosition()) {
-                    shopItem.setRightImage(getResources().getDrawable(com.sunmi.ipc.R.mipmap.ic_yes));
-                    shopItem.setLeftTextColor(getResources().getColor(com.sunmi.ipc.R.color.common_orange));
+                    shopItem.setRightImage(ContextCompat.getDrawable(context, com.sunmi.ipc.R.mipmap.ic_yes));
+                    shopItem.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.common_orange));
                 } else {
-                    shopItem.setLeftTextColor(getResources().getColor(com.sunmi.ipc.R.color.colorText));
+                    shopItem.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.colorText));
                     shopItem.setRightImage(null);
                 }
             }

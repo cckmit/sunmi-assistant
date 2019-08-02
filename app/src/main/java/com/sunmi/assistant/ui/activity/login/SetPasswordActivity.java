@@ -222,17 +222,15 @@ public class SetPasswordActivity extends BaseActivity {
 
     //通过手机号获取saas信息
     private void getSaasInfo() {
-        CloudCall.getSaasUserInfo(SpUtils.getMobile(), new RetrofitCallback() {
+        CloudCall.getSaasUserInfo(SpUtils.getMobile(), new RetrofitCallback<AuthStoreInfo>() {
             @Override
-            public void onSuccess(int code, String msg, Object data) {
-                LogCat.e(TAG, "data onSuccess=" + data);
+            public void onSuccess(int code, String msg, AuthStoreInfo bean) {
                 hideLoadingDialog();
-                AuthStoreInfo bean = new Gson().fromJson(data.toString(), AuthStoreInfo.class);
                 getSaasData(bean.getSaas_user_info_list());
             }
 
             @Override
-            public void onFail(int code, String msg, Object data) {
+            public void onFail(int code, String msg, AuthStoreInfo data) {
                 LogCat.e(TAG, "data onFail code=" + code + "," + msg);
                 hideLoadingDialog();
             }

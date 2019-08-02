@@ -1,6 +1,5 @@
 package com.sunmi.assistant.ui.activity.presenter;
 
-import com.google.gson.Gson;
 import com.sunmi.assistant.rpc.CloudCall;
 import com.sunmi.assistant.ui.activity.contract.CreateCompanyContract;
 import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
@@ -56,18 +55,17 @@ public class CreateCompanyPresenter extends BasePresenter<CreateCompanyContract.
     @Override
     public void getSaas(String mobile) {
         mView.showLoadingDialog();
-        CloudCall.getSaasUserInfo(mobile, new RetrofitCallback() {
+        CloudCall.getSaasUserInfo(mobile, new RetrofitCallback<AuthStoreInfo>() {
             @Override
-            public void onSuccess(int code, String msg, Object data) {
+            public void onSuccess(int code, String msg, AuthStoreInfo bean) {
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();
-                    AuthStoreInfo bean = new Gson().fromJson(data.toString(), AuthStoreInfo.class);
                     mView.getSaasSuccessView(bean);
                 }
             }
 
             @Override
-            public void onFail(int code, String msg, Object data) {
+            public void onFail(int code, String msg, AuthStoreInfo data) {
                 LogCat.e(TAG, "getSaas  Failed code=" + code + "; msg=" + msg);
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();

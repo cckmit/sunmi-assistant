@@ -25,7 +25,7 @@
         android:layout_width="@dimen/dp_226"
         android:layout_height="@dimen/dp_226"
         android:layout_marginTop="@dimen/dp_36"
-        android:background="@mipmap/ic_new_merchant"
+        android:background="@mipmap/ic_company_create_new"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_bar"

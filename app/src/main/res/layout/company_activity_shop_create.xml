@@ -64,8 +64,8 @@
             android:layout_toRightOf="@id/tv_shop"
             android:background="@null"
             android:hint="@string/company_shop_create_hint"
-            android:inputType="phone"
-            android:maxLength="11"
+            android:inputType="text"
+            android:maxLength="20"
             android:paddingLeft="@dimen/dp_20"
             android:textSize="@dimen/sp_16" />
     </RelativeLayout>
@@ -99,8 +99,8 @@
             android:layout_toRightOf="@id/tv_contact"
             android:background="@null"
             android:hint="@string/company_shop_contact_really_name"
-            android:inputType="phone"
-            android:maxLength="11"
+            android:inputType="text"
+            android:maxLength="20"
             android:paddingLeft="@dimen/dp_20"
             android:textSize="@dimen/sp_16" />
     </RelativeLayout>
