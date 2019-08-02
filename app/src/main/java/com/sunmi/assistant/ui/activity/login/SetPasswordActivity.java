@@ -9,38 +9,29 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
-import com.google.gson.Gson;
 import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.constant.Constants;
-import com.sunmi.apmanager.model.LoginDataBean;
-import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.data.SunmiStoreRemote;
-import com.sunmi.assistant.rpc.CloudCall;
+import com.sunmi.assistant.ui.activity.contract.SetPasswordContract;
 import com.sunmi.assistant.ui.activity.merchant.AuthDialog;
 import com.sunmi.assistant.ui.activity.merchant.SelectPlatformActivity_;
 import com.sunmi.assistant.ui.activity.merchant.SelectStoreActivity_;
 import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
+import com.sunmi.assistant.ui.activity.presenter.SetPasswordPresenter;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import sunmi.common.base.BaseActivity;
+import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.CompanyInfoResp;
-import sunmi.common.rpc.cloud.SunmiStoreApi;
-import sunmi.common.rpc.cloud.SunmiStoreRetrofitClient;
-import sunmi.common.rpc.http.RpcCallback;
-import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.RegexUtils;
 import sunmi.common.utils.SpUtils;
@@ -51,10 +42,9 @@ import sunmi.common.view.ClearableEditText;
  * set password
  */
 @EActivity(R.layout.activity_set_password)
-public class SetPasswordActivity extends BaseActivity {
+public class SetPasswordActivity extends BaseMvpActivity<SetPasswordPresenter>
+        implements SetPasswordContract.View {
 
-    @ViewById(R.id.llTitleLine)
-    LinearLayout llTitleLine;
     @ViewById(R.id.et_password)
     ClearableEditText etPassword;
     @ViewById(R.id.passwordIsVisible)
@@ -70,17 +60,13 @@ public class SetPasswordActivity extends BaseActivity {
     @AfterViews
     protected void init() {
         HelpUtils.setStatusBarFullTransparent(this);//透明标题栏
+        mPresenter = new SetPasswordPresenter();
+        mPresenter.attachView(this);
         etPassword.setClearIcon(R.mipmap.ic_edit_delete_white);
         Bundle bundle = getIntent().getExtras();
         type = bundle.getInt(AppConfig.SET_PASSWORD);
         smsCode = bundle.getString(AppConfig.SET_PASSWORD_SMS);
         mobile = bundle.getString("mobile");
-
-        if (type == AppConfig.SET_PASSWORD_REGISTER) {//注册
-            llTitleLine.setVisibility(View.VISIBLE);
-        } else if (type == AppConfig.SET_PASSWORD_RESET) {//找回密码
-            llTitleLine.setVisibility(View.GONE);
-        }
         //button是否可点击
         new SomeMonitorEditText().setMonitorEditText(btnComplete, etPassword);
         CommonUtils.trackDurationEventBegin(context, "registerPasswordDuration",
@@ -103,22 +89,26 @@ public class SetPasswordActivity extends BaseActivity {
                 }
                 break;
             case R.id.btnComplete:
-                if (isFastClick(1500)) return;
+                if (isFastClick(1500)) {
+                    return;
+                }
                 if (!RegexUtils.isValidPassword(password) || password.length() < 8) {
                     shortTip(R.string.tip_password_non_standard);
                     return;
                 }
                 trackFinish();
                 if (type == AppConfig.SET_PASSWORD_REGISTER) {//注册
-                    register(password);
+                    mPresenter.register(mobile, password, smsCode);
                 } else if (type == AppConfig.SET_PASSWORD_RESET) {//找回密码
-                    reSetPassword(password);
+                    mPresenter.resetPassword(mobile, password, smsCode);
                 }
+                break;
+            default:
                 break;
         }
     }
 
-    //忘记密码后重置密码
+/*    //忘记密码后重置密码
     private void reSetPassword(String password) {
         CloudApi.resetPassword(mobile, password, smsCode, new RpcCallback(context) {
             @Override
@@ -131,10 +121,10 @@ public class SetPasswordActivity extends BaseActivity {
                 }
             }
         });
-    }
+    }*/
 
     //注册成功后设置密码
-    private void register(String password) {
+    /*private void register(String password) {
         CloudApi.register(mobile, password, new RpcCallback(context) {
             @Override
             public void onSuccess(int code, String msg, String data) {
@@ -158,7 +148,7 @@ public class SetPasswordActivity extends BaseActivity {
                 }
             }
         });
-    }
+    }*/
 
 
     private void trackFinish() {
@@ -173,7 +163,7 @@ public class SetPasswordActivity extends BaseActivity {
         }
     }
 
-    //获取ssotoken
+   /* //获取ssotoken
     private void getSsoToken() {
         showLoadingDialog();
         SunmiStoreApi.getStoreToken(SpUtils.getUID(), SpUtils.getSsoToken(),
@@ -218,11 +208,11 @@ public class SetPasswordActivity extends BaseActivity {
                 getSaasInfo();
             }
         });
-    }
+    }*/
 
     //通过手机号获取saas信息
     private void getSaasInfo() {
-        CloudCall.getSaasUserInfo(SpUtils.getMobile(), new RetrofitCallback<AuthStoreInfo>() {
+        /*CloudCall.getSaasUserInfo(SpUtils.getMobile(), new RetrofitCallback<AuthStoreInfo>() {
             @Override
             public void onSuccess(int code, String msg, AuthStoreInfo bean) {
                 hideLoadingDialog();
@@ -234,15 +224,73 @@ public class SetPasswordActivity extends BaseActivity {
                 LogCat.e(TAG, "data onFail code=" + code + "," + msg);
                 hideLoadingDialog();
             }
-        });
+        });*/
+        mPresenter.getSaasUserInfo(mobile);
+    }
+
+    @Override
+    public void registerSuccess() {
+        shortTip(R.string.register_success);
+        CommonUtils.trackDurationEventEnd(context, "registerPasswordDuration",
+                "注册流程_设置密码_耗时", Constants.EVENT_DURATION_REGISTER_PSW);
+        CommonUtils.trackDurationEventEnd(context, "registerDuration",
+                "注册流程开始和结束时调用", Constants.EVENT_DURATION_REGISTER);
+        mPresenter.getCompanyInfo(SpUtils.getCompanyId());
+    }
+
+    @Override
+    public void registerFail(int code, String msg) {
+
+    }
+
+    @Override
+    public void resetPasswordSuccess() {
+        shortTip(R.string.textView_reset_password_success);
+        LoginActivity_.intent(context).start();
+    }
+
+    @Override
+    public void reSetPasswordFail(int code, String msg) {
+        shortTip(R.string.textView_reset_password_error);
+    }
+
+    @Override
+    public void getCompanyInfoSuccess(CompanyInfoResp data) {
+        LogCat.e(TAG, "data getCompanyInfo=" + data.getCompany_name() + "," + data.getCompany_id());
+        if (TextUtils.isEmpty(data.getCompany_name())) {
+            SpUtils.setCompanyName(getString(R.string.str_mine_company));
+        } else {
+            SpUtils.setCompanyName(data.getCompany_name());
+        }
+        getSaasInfo();
+    }
+
+    @Override
+    public void getCompanyInfoFail(int code, String msg) {
+        hideLoadingDialog();
+        SpUtils.setCompanyName(getString(R.string.str_mine_company));
+        getSaasInfo();
+    }
+
+    @Override
+    public void getSaasUserInfoSuccess(AuthStoreInfo data) {
+        hideLoadingDialog();
+        getSaasData(data.getSaas_user_info_list());
+    }
+
+    @Override
+    public void getSaasUserInfoFail(int code, String msg) {
+        LogCat.e(TAG, "data onFail code=" + code + "," + msg);
+        hideLoadingDialog();
     }
 
     private void getSaasData(List<AuthStoreInfo.SaasUserInfoListBean> list) {
         if (list.size() > 0) {  //匹配到平台数据
             StringBuilder saasName = new StringBuilder();
             for (AuthStoreInfo.SaasUserInfoListBean bean : list) {
-                if (!saasName.toString().contains(bean.getSaas_name()))
+                if (!saasName.toString().contains(bean.getSaas_name())) {
                     saasName.append(bean.getSaas_name()).append(",");
+                }
             }
             new AuthDialog.Builder(SetPasswordActivity.this)
                     .setMessage(getString(R.string.str_dialog_auth_message, saasName.replace(saasName.length() - 1, saasName.length(), "")))

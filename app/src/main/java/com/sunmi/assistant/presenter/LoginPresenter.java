@@ -8,7 +8,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import sunmi.common.base.BasePresenter;
-import sunmi.common.model.UserInfoBean;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.cloud.SunmiStoreRetrofitClient;
 import sunmi.common.rpc.http.HttpCallback;
@@ -29,7 +28,9 @@ public class LoginPresenter extends BasePresenter<LoginContract.View>
             SSOApi.checkUserName(user, new HttpCallback<String>(null) {
                 @Override
                 public void onSuccess(int code, String msg, String data) {
-                    if (!isViewAttached()) return;
+                    if (!isViewAttached()) {
+                        return;
+                    }
                     try {
                         JSONObject object = new JSONObject(data);
                         if (object.has("needMerge")) {
@@ -60,7 +61,7 @@ public class LoginPresenter extends BasePresenter<LoginContract.View>
                 if (isViewAttached()) {
                     SpUtils.setStoreToken(data.toString());
                     SunmiStoreRetrofitClient.createInstance();//初始化retrofit
-                    getUserInfo();
+                    mView.loginSuccess(null);
                 }
             }
 
@@ -75,26 +76,6 @@ public class LoginPresenter extends BasePresenter<LoginContract.View>
                     } else {
                         mView.shortTip(R.string.login_error);
                     }
-                }
-            }
-        });
-    }
-
-    @Override
-    public void getUserInfo() {
-        SunmiStoreApi.getUserInfo(new RetrofitCallback<UserInfoBean>() {
-            @Override
-            public void onSuccess(int code, String msg, UserInfoBean data) {
-                if (isViewAttached()) {
-                    mView.hideLoadingDialog();
-                    mView.getStoreTokenSuccess(data);
-                }
-            }
-
-            @Override
-            public void onFail(int code, String msg, UserInfoBean data) {
-                if (isViewAttached()) {
-                    mView.hideLoadingDialog();
                 }
             }
         });

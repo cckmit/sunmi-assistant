@@ -34,6 +34,8 @@ public interface ChooseShopContract {
 
         void getCompanyList();
 
+        void getUserInfo();
+
         void getSaas(String mobile);
     }
 }

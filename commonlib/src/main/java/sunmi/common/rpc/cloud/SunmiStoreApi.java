@@ -70,26 +70,6 @@ public class SunmiStoreApi {
     }
 
     /**
-     * 发送验证码
-     *
-     * @param username 是	string	手机号
-     * @param type     是	string	1-注册时发送验证码 2-找回密码、修改邮箱和手机号发送验证码
-     */
-    public static void sendVerifyCode(String username, int type, RetrofitCallback callback) {
-        try {
-            String params = new JSONObject()
-                    .put("username", username)
-                    .put("type", type)
-                    .toString();
-            SunmiStoreRetrofitClient.getInstance().create(UserInterface.class)
-                    .sendVerifyCode(new BaseRequest(params))
-                    .enqueue(callback);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * 登录
      *
      * @param mobile   是	string	手机号
@@ -124,7 +104,7 @@ public class SunmiStoreApi {
                     .put("app_type", 2)//来源 1-web 2-app
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(UserInterface.class)
-                    .login(new BaseRequest(params))
+                    .quickLogin(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -175,7 +155,7 @@ public class SunmiStoreApi {
         try {
             String params = new JSONObject()
                     .put("username", username)
-                    .put("password", password)
+                    .put("password", SafeUtils.EncryptDES_CBC(password))
                     .put("code", code)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(UserInterface.class)

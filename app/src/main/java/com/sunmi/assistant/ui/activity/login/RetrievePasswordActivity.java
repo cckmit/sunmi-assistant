@@ -14,6 +14,8 @@ import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.ui.activity.contract.InputMobileContract;
+import com.sunmi.assistant.ui.activity.presenter.InputMobilePresenter;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -22,7 +24,7 @@ import org.androidannotations.annotations.ViewById;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import sunmi.common.base.BaseActivity;
+import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.rpc.http.RpcCallback;
 import sunmi.common.utils.RegexUtils;
 import sunmi.common.view.ClearableEditText;
@@ -32,7 +34,8 @@ import sunmi.common.view.dialog.CommonDialog;
  * Forget Password
  */
 @EActivity(R.layout.activity_forget_psd)
-public class RetrievePasswordActivity extends BaseActivity {
+public class RetrievePasswordActivity extends BaseMvpActivity<InputMobilePresenter>
+        implements InputMobileContract.View {
 
     @ViewById(R.id.etMobile)
     ClearableEditText etMobile;
@@ -43,6 +46,8 @@ public class RetrievePasswordActivity extends BaseActivity {
 
     @AfterViews
     protected void init() {
+        mPresenter = new InputMobilePresenter();
+        mPresenter.attachView(this);
         etMobile.setClearIcon(R.mipmap.ic_edit_delete_white);
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -58,7 +63,9 @@ public class RetrievePasswordActivity extends BaseActivity {
 
     @Click(R.id.btn_next)
     public void onClick(View v) {
-        if (isFastClick(1500)) return;
+        if (isFastClick(1500)) {
+            return;
+        }
         mobile = etMobile.getText().toString().trim();
         if (!RegexUtils.isChinaPhone(mobile)) {
             shortTip(R.string.str_invalid_phone);
@@ -71,17 +78,7 @@ public class RetrievePasswordActivity extends BaseActivity {
 
     private void invalidAccount() {
         showLoadingDialog();
-        CloudApi.isUserExist(mobile, new RpcCallback(context) {
-            @Override
-            public void onSuccess(int code, String msg, String data) {
-                hideLoadingDialog();
-                if (code == 1) {
-                    userMerge();
-                } else {
-                    mobileUnregister();
-                }
-            }
-        });
+        mPresenter.isUserExist(mobile);
     }
 
     //手机号未注册
@@ -116,20 +113,29 @@ public class RetrievePasswordActivity extends BaseActivity {
 
     //账号合并
     public void userMerge() {
-        if (etMobile.getText() == null) return;
+        if (etMobile.getText() == null) {
+            return;
+        }
         String user = etMobile.getText().toString();//email test: esyzim06497@chacuo.net
         if (RegexUtils.isChinaPhone(user) || RegexUtils.isEmail(user)) {
             showLoadingDialog();
-            SSOApi.checkUserName(user, new RpcCallback(context, false) {
-                @Override
-                public void onSuccess(int code, String msg, String data) {
-                    checkSuccess(code, data);
-                }
-            });
+            mPresenter.checkUserName(user);
         }
     }
 
-    private void checkSuccess(int code, String data) {
+    @Override
+    public void isUserExistSuccess() {
+        hideLoadingDialog();
+        userMerge();
+    }
+
+    @Override
+    public void isUserExistFail(int code, String msg) {
+        mobileUnregister();
+    }
+
+    @Override
+    public void checkSuccess(int code, String data) {
         try {
             if (code == 1) {
                 JSONObject object = new JSONObject(data);

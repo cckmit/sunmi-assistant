@@ -91,22 +91,28 @@ public class InputCaptchaPresenter extends BasePresenter<InputCaptchaContract.Vi
     @Override
     public void captchaLogin(String mobile, String captcha) {
         mView.showLoadingDialog();
-        CloudApi.quickLogin(mobile, captcha, new HttpCallback<String>(null) {
+        SunmiStoreApi.quickLogin(mobile, captcha, new RetrofitCallback<Object>() {
             @Override
-            public void onSuccess(int code, String msg, String data) {
+            public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
-                    getStoreToken(new Gson().fromJson(data, LoginDataBean.class));
+                    SpUtils.setStoreToken(data.toString());
+                    SunmiStoreRetrofitClient.createInstance();//初始化retrofit
+                    mView.captchaLoginSuccess();
                 }
             }
 
             @Override
-            public void onFail(int code, String msg, String data) {
-                if (isViewAttached()) {
-                    mView.hideLoadingDialog();
-                    mView.shortTip(R.string.login_error);
-                }
+            public void onFail(int code, String msg, Object data) {
+              if (isViewAttached()){
+                  if (code == 208) {
+                      mView.shortTip(R.string.sms_invalid);
+                  }else {
+                      mView.shortTip(R.string.login_error);
+                  }
+              }
             }
         });
+
 //                new RpcCallback(context) {
 //                    @Override
 //                    public void onSuccess(int code, String msg, String data) {
@@ -115,9 +121,9 @@ public class InputCaptchaPresenter extends BasePresenter<InputCaptchaContract.Vi
 //                });
     }
 
-    public void getStoreToken(LoginDataBean loginData) {
-        SunmiStoreApi.getStoreToken(loginData.getUid() + "", loginData.getToken(),
-                loginData.getMerchant_uid(), new RetrofitCallback() {
+  /*  public void getStoreToken(LoginDataBean loginData) {
+        SunmiStoreApi.getStoreToken(SpUtils.getUID(), SpUtils.getSsoToken(),
+                SpUtils.getCompanyId() + "", new RetrofitCallback() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
                         if (isViewAttached()) {
@@ -126,7 +132,7 @@ public class InputCaptchaPresenter extends BasePresenter<InputCaptchaContract.Vi
                                 JSONObject jsonObject = new JSONObject(data.toString());
                                 SpUtils.setStoreToken(jsonObject.getString("store_token"));
                                 SunmiStoreRetrofitClient.createInstance();//初始化retrofit
-                                mView.getStoreTokenSuccess(loginData);
+                                mView.captchaLoginSuccess();
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -140,6 +146,6 @@ public class InputCaptchaPresenter extends BasePresenter<InputCaptchaContract.Vi
                         }
                     }
                 });
-    }
+    }*/
 
 }

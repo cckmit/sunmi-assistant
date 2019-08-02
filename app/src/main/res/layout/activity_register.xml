@@ -17,36 +17,13 @@
         app:titleText="@string/str_register"
         app:titleTextColor="@color/colorWhite" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_below="@+id/title_bar">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/white_60a" />
-
-        <TextView
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/white_20a" />
-
-        <TextView
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/white_20a" />
-    </LinearLayout>
-
     <TextView
         android:id="@+id/tv"
         style="@style/marginLeftRight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_157"
+        android:layout_below="@id/title_bar"
+        android:layout_marginTop="@dimen/dp_96"
         android:text="@string/tip_input_phone_number"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/sp_28" />

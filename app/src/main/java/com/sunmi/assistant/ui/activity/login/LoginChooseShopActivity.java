@@ -8,7 +8,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.ChooseShopContract;
 import com.sunmi.assistant.presenter.ChooseShopPresenter;
@@ -33,7 +32,6 @@ import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.model.CompanyListResp;
 import sunmi.common.model.ShopListResp;
-import sunmi.common.model.UserInfoBean;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -70,8 +68,6 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     @Extra
     int action;
     @Extra
-    UserInfoBean loginData;
-    @Extra
     int companyId;
     @Extra
     String companyName;
@@ -97,6 +93,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
             titleBar.getRightText().setOnClickListener(this);
             btnEnterMain.setVisibility(View.GONE);
             mPresenter.getCompanyList();
+            mPresenter.getUserInfo();
         } else if (action == CommonConstants.ACTION_LOGIN_CHOOSE_SHOP) {
             CommonHelper.isCanClick(btnEnterMain, false);
             titleBar.setAppTitle(R.string.str_select_store);
@@ -193,7 +190,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
             public void convert(ViewHolder holder, final CompanyInfoResp item) {
                 ((SettingItemLayout) holder.getView(R.id.sil_item)).setLeftText(item.getCompany_name());
                 holder.itemView.setOnClickListener(
-                        v -> LoginChooseShopActivity_.intent(context).loginData(loginData)
+                        v -> LoginChooseShopActivity_.intent(context)
                                 .companyId(item.getCompany_id()).companyName(item.getCompany_name())
                                 .saasExist(item.getSaas_exist())
                                 .action(CommonConstants.ACTION_LOGIN_CHOOSE_SHOP).start());
@@ -251,7 +248,6 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     }
 
     private void gotoMainActivity(int shopId, String shopName) {
-        CommonUtils.saveLoginInfo(context, loginData, 0);
         SpUtils.setCompanyId(companyId);
         SpUtils.setCompanyName(companyName);
         SpUtils.setShopId(shopId);

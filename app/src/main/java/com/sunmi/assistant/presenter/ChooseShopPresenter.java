@@ -1,5 +1,6 @@
 package com.sunmi.assistant.presenter;
 
+import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.contract.ChooseShopContract;
 import com.sunmi.assistant.data.SunmiStoreRemote;
 import com.sunmi.assistant.rpc.CloudCall;
@@ -10,6 +11,8 @@ import java.util.List;
 import sunmi.common.base.BasePresenter;
 import sunmi.common.model.CompanyListResp;
 import sunmi.common.model.ShopListResp;
+import sunmi.common.model.UserInfoBean;
+import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.log.LogCat;
 
@@ -69,6 +72,22 @@ public class ChooseShopPresenter extends BasePresenter<ChooseShopContract.View>
     }
 
     @Override
+    public void getUserInfo() {
+        SunmiStoreApi.getUserInfo(new RetrofitCallback<UserInfoBean>() {
+            @Override
+            public void onSuccess(int code, String msg, UserInfoBean data) {
+                CommonUtils.saveLoginInfo(data);
+            }
+
+            @Override
+            public void onFail(int code, String msg, UserInfoBean data) {
+
+
+            }
+        });
+    }
+
+    @Override
     public void getSaas(String mobile) {
         mView.showLoadingDialog();
         CloudCall.getSaasUserInfo(mobile, new RetrofitCallback<AuthStoreInfo>() {
@@ -90,5 +109,4 @@ public class ChooseShopPresenter extends BasePresenter<ChooseShopContract.View>
             }
         });
     }
-
 }
