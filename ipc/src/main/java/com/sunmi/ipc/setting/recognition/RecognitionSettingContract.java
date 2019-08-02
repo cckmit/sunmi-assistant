@@ -1,6 +1,5 @@
 package com.sunmi.ipc.setting.recognition;
 
-import android.content.Context;
 import android.support.annotation.StringRes;
 
 import com.sunmi.ipc.view.IpcVideoView;
@@ -19,13 +18,6 @@ public interface RecognitionSettingContract {
     int STEP_4_LINE = 3;
 
     interface View extends BaseView {
-
-        /**
-         * 获取Context
-         *
-         * @return 上下文
-         */
-        Context getContext();
 
         /**
          * 根据步骤切换视图
@@ -71,6 +63,13 @@ public interface RecognitionSettingContract {
          * @param device 设备信息
          */
         void init(SunmiDevice device);
+
+        /**
+         * 更新控制按钮是否可用
+         *
+         * @param isZoom true：变焦，false：对焦
+         */
+        void updateControlBtnEnable(boolean isZoom);
 
         /**
          * 获取IPC状态

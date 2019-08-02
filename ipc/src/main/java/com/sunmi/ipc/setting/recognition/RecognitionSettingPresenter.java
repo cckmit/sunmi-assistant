@@ -45,9 +45,19 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
     }
 
     @Override
+    public void updateControlBtnEnable(boolean isZoom) {
+        if (isZoom) {
+            updateZoomBtnEnable();
+        } else {
+            updateFocusBtnEnable();
+        }
+    }
+
+    @Override
     public void updateState() {
         SunmiDevice device = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
         if (device != null) {
+            LogCat.d(TAG, "Get status: " + device.getIp());
             IPCCall.getInstance().fsGetStatus(device.getIp());
         } else if (isViewAttached()) {
             mView.showErrorDialog(R.string.ipc_setting_tip_network_dismatch);
@@ -102,7 +112,7 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
         if (device != null) {
             int focus = mConfig.getCurrentFocus();
             focus = isPlus ? Math.min(focus + 2, mConfig.getMaxFocus()) : Math.max(focus - 2, 0);
-            LogCat.d(TAG, "Focus: " + focus);
+            LogCat.d(TAG, "Focus: " + focus + "; Base=" + mBaseFocus);
             IPCCall.getInstance().fsFocus(device.getIp(), focus);
         } else if (isViewAttached()) {
             mView.showErrorDialog(R.string.ipc_setting_tip_network_dismatch);
@@ -147,29 +157,41 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
             }
             return;
         }
+        if (id == IpcConstants.fsSetLine) {
+            if (isViewAttached()) {
+                mView.complete();
+            }
+            return;
+        }
         mConfig = new Gson().fromJson(res.getResult().toString(), CameraConfig.class);
         mZoomGap = mConfig.getMaxZoom() / 10;
         if (id == IpcConstants.fsGetStatus) {
+            this.mBaseFocus = mConfig.getCurrentFocus();
             if (isViewAttached()) {
                 mView.updateViewsStepTo(RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM);
             }
         } else if (id == IpcConstants.fsZoom || id == IpcConstants.fsReset) {
-            if (isViewAttached()) {
-                mView.updateControlBtnEnable(true, mConfig.getCurrentZoom() != mConfig.getMaxZoom());
-                mView.updateControlBtnEnable(false, mConfig.getCurrentZoom() != 0);
-            }
+            this.mBaseFocus = mConfig.getCurrentFocus();
+            updateZoomBtnEnable();
         } else if (id == IpcConstants.fsFocus) {
-            if (isViewAttached()) {
-                int offset = mConfig.getCurrentFocus() - mBaseFocus;
-                mView.updateControlBtnEnable(true, offset < 10 && mConfig.getCurrentFocus() < mConfig.getMaxFocus());
-                mView.updateControlBtnEnable(false, offset > -10 && mConfig.getCurrentFocus() > 0);
-            }
+            updateFocusBtnEnable();
         } else if (id == IpcConstants.fsAutoFocus) {
             this.mBaseFocus = mConfig.getCurrentFocus();
-        } else if (id == IpcConstants.fsSetLine) {
-            if (isViewAttached()) {
-                mView.complete();
-            }
+        }
+    }
+
+    private void updateZoomBtnEnable() {
+        if (isViewAttached()) {
+            mView.updateControlBtnEnable(true, mConfig.getCurrentZoom() < mConfig.getMaxZoom());
+            mView.updateControlBtnEnable(false, mConfig.getCurrentZoom() > 0);
+        }
+    }
+
+    private void updateFocusBtnEnable() {
+        if (isViewAttached()) {
+            int offset = mConfig.getCurrentFocus() - mBaseFocus;
+            mView.updateControlBtnEnable(true, offset < 10 && mConfig.getCurrentFocus() < mConfig.getMaxFocus());
+            mView.updateControlBtnEnable(false, offset > -10 && mConfig.getCurrentFocus() > 0);
         }
     }
 
