@@ -106,8 +106,7 @@ public class IPCCall extends BaseIpcApi {
             int opCode = IpcConstants.fsZoom;
             RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                     "0x" + Integer.toHexString(opCode), object);
-            new IPCLocalApi(ip).post(null, "", requestBean.getMsgId(),
-                    opCode, requestBean.serialize());
+            new IPCLocalApi(ip).postRouterTimeout("", opCode, requestBean.serialize(), 20);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -125,8 +124,7 @@ public class IPCCall extends BaseIpcApi {
             int opCode = IpcConstants.fsFocus;
             RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                     "0x" + Integer.toHexString(opCode), object);
-            new IPCLocalApi(ip).post(null, "", requestBean.getMsgId(),
-                    opCode, requestBean.serialize());
+            new IPCLocalApi(ip).postRouterTimeout("", opCode, requestBean.serialize(), 20);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -156,8 +154,7 @@ public class IPCCall extends BaseIpcApi {
             int opCode = IpcConstants.fsAutoFocus;
             RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                     "0x" + Integer.toHexString(opCode), object);
-            new IPCLocalApi(ip).post(null, "", requestBean.getMsgId(),
-                    opCode, requestBean.serialize());
+            new IPCLocalApi(ip).postRouterTimeout("", opCode, requestBean.serialize(), 20);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -178,8 +175,7 @@ public class IPCCall extends BaseIpcApi {
             int opCode = IpcConstants.fsReset;
             RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                     "0x" + Integer.toHexString(opCode), object);
-            new IPCLocalApi(ip).post(null, "", requestBean.getMsgId(),
-                    opCode, requestBean.serialize());
+            new IPCLocalApi(ip).postRouterTimeout("", opCode, requestBean.serialize(), 20);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -192,8 +188,7 @@ public class IPCCall extends BaseIpcApi {
         int opCode = IpcConstants.fsGetStatus;
         RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                 "0x" + Integer.toHexString(opCode), new JSONObject());
-        new IPCLocalApi(ip).post(null, "", requestBean.getMsgId(),
-                opCode, requestBean.serialize());
+        new IPCLocalApi(ip).postRouterTimeout("", opCode, requestBean.serialize(), 20);
     }
 
     /**
@@ -214,8 +209,7 @@ public class IPCCall extends BaseIpcApi {
             int opCode = IpcConstants.fsSetLine;
             RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                     "0x" + Integer.toHexString(opCode), object);
-            new IPCLocalApi(ip).post(null, "", requestBean.getMsgId(),
-                    opCode, requestBean.serialize());
+            new IPCLocalApi(ip).postRouterTimeout("", opCode, requestBean.serialize(), 20);
         } catch (JSONException e) {
             e.printStackTrace();
         }

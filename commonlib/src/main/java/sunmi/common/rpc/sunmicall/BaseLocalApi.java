@@ -82,6 +82,8 @@ public abstract class BaseLocalApi extends BaseApi {
         mBuilder.sslSocketFactory(getSSLSocketFactory());
         mBuilder.hostnameVerifier(new OKHttpUtils.TrustAllHostnameVerifier());
         mBuilder.connectTimeout(timeout, TimeUnit.SECONDS);
+        mBuilder.readTimeout(timeout, TimeUnit.SECONDS);
+        mBuilder.writeTimeout(timeout, TimeUnit.SECONDS);
         OkHttpClient okHttpClient = mBuilder.build();
 
         Call call = okHttpClient.newCall(request.build());

@@ -65,6 +65,13 @@ public interface RecognitionSettingContract {
         void init(SunmiDevice device);
 
         /**
+         * 更新控制按钮是否可用
+         *
+         * @param isZoom true：变焦，false：对焦
+         */
+        void updateControlBtnEnable(boolean isZoom);
+
+        /**
          * 获取IPC状态
          */
         void updateState();

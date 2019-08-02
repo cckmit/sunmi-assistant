@@ -68,7 +68,7 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
     @Extra
     SunmiDevice mDevice;
     @Extra
-    int[] mVideoRatio = new int[2];
+    float mVideoRatio;
 
     private int mStepIndex;
     private float[] mLineStart;
@@ -98,11 +98,10 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
 
     @SuppressLint("ClickableViewAccessibility")
     private void initViews() {
-        if (mVideoRatio[0] <= 0 || mVideoRatio[1] <= 0) {
-            mVideoRatio[0] = 16;
-            mVideoRatio[1] = 9;
+        if (mVideoRatio <= 0) {
+            mVideoRatio = 16f / 9f;
         }
-        mVideoView.init(mDevice.getUid(), mVideoRatio[0], mVideoRatio[1], mPresenter.getCallback());
+        mVideoView.init(mDevice.getUid(), mVideoRatio, mPresenter.getCallback());
         mFaceCase.setOnTouchListener(new FaceCaseTouch());
         mLineView.setStateChangeListener(new DoorLineStateChangeListener());
         mResTitle.put(RecognitionSettingContract.STEP_1_POSITION, getString(R.string.ipc_recognition_tip_position));
@@ -121,10 +120,10 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
         mResLineTitle.put(DoorLineView.STATE_INIT, getString(R.string.ipc_recognition_line_start));
         mResLineTitle.put(DoorLineView.STATE_START, getString(R.string.ipc_recognition_line_end));
         mResLineTitle.put(DoorLineView.STATE_END, getString(R.string.ipc_recognition_line_end));
-        mResZoomIn = ContextCompat.getDrawable(this, R.mipmap.setting_recognition_zoom_in);
-        mResZoomOut = ContextCompat.getDrawable(this, R.mipmap.setting_recognition_zoom_out);
-        mResFocusPlus = ContextCompat.getDrawable(this, R.mipmap.setting_recognition_focus_plus);
-        mResFocusMinus = ContextCompat.getDrawable(this, R.mipmap.setting_recognition_focus_minus);
+        mResZoomIn = ContextCompat.getDrawable(this, R.drawable.setting_recognition_zoom_in);
+        mResZoomOut = ContextCompat.getDrawable(this, R.drawable.setting_recognition_zoom_out);
+        mResFocusPlus = ContextCompat.getDrawable(this, R.drawable.setting_recognition_focus_plus);
+        mResFocusMinus = ContextCompat.getDrawable(this, R.drawable.setting_recognition_focus_minus);
         mResLoading = getString(R.string.ipc_recognition_loading);
     }
 
@@ -146,9 +145,11 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
         switch (step) {
             case RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM:
                 updateControlBtn(mResZoomIn, mResZoomOut);
+                mPresenter.updateControlBtnEnable(true);
                 break;
             case RecognitionSettingContract.STEP_3_FOCUS:
                 updateControlBtn(mResFocusPlus, mResFocusMinus);
+                mPresenter.updateControlBtnEnable(false);
                 break;
             default:
         }

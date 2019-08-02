@@ -318,7 +318,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         }
         RecognitionSettingActivity_.intent(this)
                 .mDevice(mDevice)
-                .mVideoRatio(new int[]{16, 9})
+                .mVideoRatio(16f / 9f)
                 .start();
     }
 
