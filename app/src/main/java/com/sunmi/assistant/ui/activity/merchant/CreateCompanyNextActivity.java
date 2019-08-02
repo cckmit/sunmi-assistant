@@ -16,12 +16,9 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.CompanyInfoResp;
-import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
@@ -67,9 +64,7 @@ public class CreateCompanyNextActivity extends BaseMvpActivity<CreateCompanyPres
                     .setMessage(getString(R.string.company_shop_new_create_or_import))
                     .setTopButton((dialog, which) -> {
                         //新建门店
-                        CreateShopActivity_.intent(context)
-                                .companyId(resp.getCompany_id())
-                                .start();
+                        CommonSaasUtils.gotoCreateShopActivity(context, resp.getCompany_id());
                     })
                     .setBottomButton((dialog, which) -> {
                         //导入门店
@@ -98,37 +93,12 @@ public class CreateCompanyNextActivity extends BaseMvpActivity<CreateCompanyPres
     //通过手机号获取saas信息
     @Override
     public void getSaasSuccessView(AuthStoreInfo bean) {
-        getSaasData(bean.getSaas_user_info_list());
+        CommonSaasUtils.getSaasData(context, bean.getSaas_user_info_list());
     }
 
     @Override
     public void getSaasFailView(int code, String msg) {
 
-    }
-
-    //创建完商户匹配saas数据
-    private void getSaasData(List<AuthStoreInfo.SaasUserInfoListBean> list) {
-        if (list.size() > 0) {  //匹配到平台数据
-            StringBuilder saasName = new StringBuilder();
-            for (AuthStoreInfo.SaasUserInfoListBean bean : list) {
-                if (!saasName.toString().contains(bean.getSaas_name())) {
-                    saasName.append(bean.getSaas_name()).append(",");
-                }
-            }
-            new AuthDialog.Builder(this)
-                    .setMessage(getString(R.string.str_dialog_auth_message,
-                            saasName.replace(saasName.length() - 1, saasName.length(), "")))
-                    .setAllowButton((dialog, which) -> SelectStoreActivity_.intent(CreateCompanyNextActivity.this)
-                            .isBack(false)
-                            .list((ArrayList) list)
-                            .start())
-                    .setCancelButton((dialog, which) -> {
-                        GotoActivityUtils.gotoMainActivity(CreateCompanyNextActivity.this);
-                    })
-                    .create().show();
-        } else { //未匹配平台数据
-            SelectPlatformActivity_.intent(CreateCompanyNextActivity.this).start();
-        }
     }
 
     private void companyAddTextChangedListener(ClearableEditText editText) {

@@ -1,5 +1,7 @@
 package com.sunmi.assistant.ui.activity.contract;
 
+import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
+
 import sunmi.common.base.BaseView;
 
 /**
@@ -15,7 +17,7 @@ public interface PlatformMobileContract {
 
         void checkMobileCodeFail(int code, String msg);
 
-        void getSaasInfoSuccess(Object data);
+        void getSaasInfoSuccess(AuthStoreInfo data);
 
         void getSaasInfoFail(int code, String msg);
 

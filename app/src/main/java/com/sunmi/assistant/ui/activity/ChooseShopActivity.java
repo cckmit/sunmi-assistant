@@ -8,6 +8,7 @@ import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.ChooseShopContract;
 import com.sunmi.assistant.presenter.ChooseShopPresenter;
+import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -82,6 +83,16 @@ public class ChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter>
 
     @Override
     public void getCompanyListFail(int code, String msg, CompanyListResp data) {
+
+    }
+
+    @Override
+    public void getSaasSuccessView(AuthStoreInfo data) {
+
+    }
+
+    @Override
+    public void getSaasFailView(int code, String msg) {
 
     }
 

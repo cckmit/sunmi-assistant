@@ -86,7 +86,9 @@ public class ShopListActivity extends BaseActivity {
 
     //导入门店
     private void importShop() {
-        SelectPlatformActivity_.intent(context).start();
+        SelectPlatformActivity_.intent(context)
+                .isCanBack(true)
+                .start();
     }
 
     private void getShopList() {
