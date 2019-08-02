@@ -1,6 +1,5 @@
 package com.sunmi.ipc.setting.recognition;
 
-import android.content.Context;
 import android.support.annotation.StringRes;
 
 import com.sunmi.ipc.view.IpcVideoView;
@@ -19,13 +18,6 @@ public interface RecognitionSettingContract {
     int STEP_4_LINE = 3;
 
     interface View extends BaseView {
-
-        /**
-         * 获取Context
-         *
-         * @return 上下文
-         */
-        Context getContext();
 
         /**
          * 根据步骤切换视图

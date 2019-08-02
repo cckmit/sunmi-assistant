@@ -1,7 +1,6 @@
 package com.sunmi.ipc.setting.recognition;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.StringRes;
@@ -132,11 +131,6 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
     @Override
     protected boolean needLandscape() {
         return true;
-    }
-
-    @Override
-    public Context getContext() {
-        return this;
     }
 
     @Override

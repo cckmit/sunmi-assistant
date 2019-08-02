@@ -206,11 +206,11 @@ public class IPCCall extends BaseIpcApi {
     public void fsLine(String ip, int[] start, int[] end) {
         try {
             JSONObject object = new JSONObject();
-            object.put("start_x", String.valueOf(start[0]));
-            object.put("start_y", String.valueOf(start[1]));
-            object.put("end_x", String.valueOf(end[0]));
-            object.put("end_y", String.valueOf(end[1]));
-            object.put("resolution", "0");
+            object.put("start_x", start[0]);
+            object.put("start_y", start[1]);
+            object.put("end_x", end[0]);
+            object.put("end_y", end[1]);
+            object.put("resolution", 0);
             int opCode = IpcConstants.fsSetLine;
             RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                     "0x" + Integer.toHexString(opCode), object);
