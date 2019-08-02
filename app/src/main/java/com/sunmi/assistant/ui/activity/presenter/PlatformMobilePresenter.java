@@ -2,11 +2,9 @@ package com.sunmi.assistant.ui.activity.presenter;
 
 import com.sunmi.assistant.rpc.CloudCall;
 import com.sunmi.assistant.ui.activity.contract.PlatformMobileContract;
-import com.sunmi.assistant.ui.activity.model.CreateStoreInfo;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
-import sunmi.common.utils.SpUtils;
 
 /**
  * Created by YangShiJie on 2019/7/3.

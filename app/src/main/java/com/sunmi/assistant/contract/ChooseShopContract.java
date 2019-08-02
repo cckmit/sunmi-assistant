@@ -1,8 +1,8 @@
 package com.sunmi.assistant.contract;
 
-import com.sunmi.assistant.data.response.CompanyInfoResp;
-import com.sunmi.assistant.data.response.CompanyListResp;
-import com.sunmi.assistant.data.response.ShopListResp;
+import sunmi.common.model.CompanyInfoResp;
+import sunmi.common.model.CompanyListResp;
+import sunmi.common.model.ShopListResp;
 
 import java.util.List;
 
@@ -28,5 +28,7 @@ public interface ChooseShopContract {
         void getShopList(int companyId);
 
         void getCompanyList();
+
+        void getUserInfo();
     }
 }

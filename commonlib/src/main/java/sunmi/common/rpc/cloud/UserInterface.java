@@ -28,11 +28,6 @@ public interface UserInterface {
     @POST(userPath + "register")
     Call<BaseResponse<RegisterResp>> register(@Body BaseRequest request);
 
-    /**
-     * 发送验证码
-     */
-    @POST(userPath + "sendVerifyCode")
-    Call<BaseResponse<RegisterResp>> sendVerifyCode(@Body BaseRequest request);
 
     /**
      * 用户登录

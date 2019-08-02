@@ -1,7 +1,7 @@
 package com.sunmi.assistant.rpc;
 
-import com.sunmi.assistant.data.CompanyInterface;
-import com.sunmi.assistant.data.ShopInterface;
+import sunmi.common.rpc.cloud.CompanyInterface;
+import sunmi.common.rpc.cloud.ShopInterface;
 import com.sunmi.assistant.rpc.api.AdInterface;
 import com.sunmi.assistant.rpc.api.SaasInterface;
 

@@ -1,6 +1,6 @@
 package com.sunmi.assistant.data;
 
-import com.sunmi.assistant.data.response.CompanyInfoResp;
+import sunmi.common.model.CompanyInfoResp;
 import com.sunmi.assistant.data.response.OrderAvgUnitSaleResp;
 import com.sunmi.assistant.data.response.OrderDetailListResp;
 import com.sunmi.assistant.data.response.OrderListResp;
@@ -12,8 +12,8 @@ import com.sunmi.assistant.data.response.OrderTotalAmountResp;
 import com.sunmi.assistant.data.response.OrderTotalCountResp;
 import com.sunmi.assistant.data.response.OrderTotalRefundsResp;
 import com.sunmi.assistant.data.response.OrderTypeListResp;
-import com.sunmi.assistant.data.response.ShopInfoResp;
-import com.sunmi.assistant.data.response.ShopListResp;
+import sunmi.common.model.ShopInfoResp;
+import sunmi.common.model.ShopListResp;
 import com.sunmi.assistant.utils.Utils;
 
 import org.json.JSONArray;
@@ -23,6 +23,8 @@ import org.json.JSONObject;
 import java.util.List;
 
 import retrofit2.Call;
+import sunmi.common.rpc.cloud.CompanyInterface;
+import sunmi.common.rpc.cloud.ShopInterface;
 import sunmi.common.rpc.cloud.SunmiStoreRetrofitClient;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;

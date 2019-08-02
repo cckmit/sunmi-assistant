@@ -155,9 +155,11 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
                 CommonUtils.trackCommonEvent(context, "register", "注册按钮", Constants.EVENT_LOGIN);
                 CommonUtils.trackDurationEventBegin(context, "registerDuration",
                         "注册流程开始和结束时调用", Constants.EVENT_DURATION_REGISTER);
-                RegisterActivity_.intent(context)
+                /*RegisterActivity_.intent(context)
                         .extra("mobile", RegexUtils.isChinaPhone(mobile) ? mobile : "")
-                        .start();
+                        .start();*/
+                InputMobileActivity_.intent(context).mobile(RegexUtils.isChinaPhone(mobile) ? mobile : "")
+                        .checkSource(InputMobileActivity.SOURCE_REGISTER).start();
                 break;
             case R.id.ib_visible: //密码是否可见
                 if (psdIsVisible) {
@@ -178,25 +180,33 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
                 CommonUtils.trackCommonEvent(context, "forgetPassword", "忘记密码按钮", Constants.EVENT_LOGIN);
                 CommonUtils.trackDurationEventBegin(context, "retrievePasswordDuration",
                         "找回密码流程开始和结束", Constants.EVENT_DURATION_FORGET_PSW);
-                RetrievePasswordActivity_.intent(context)
+               /* RetrievePasswordActivity_.intent(context)
                         .extra("mobile", RegexUtils.isChinaPhone(mobile) ? mobile : "")
-                        .start();
+                        .start();*/
+                InputMobileActivity_.intent(context).mobile(RegexUtils.isChinaPhone(mobile) ? mobile : "")
+                        .checkSource(InputMobileActivity.SOURCE_RETRIEVE_PWD).start();
                 break;
             case R.id.tvSMSLogin:  //短信登录
                 if (isFastClick(1500)) return;
                 CommonUtils.trackCommonEvent(context, "loginBySms", "短信验证码登录", Constants.EVENT_LOGIN);
                 CommonUtils.trackDurationEventBegin(context, "quickLoginDuration",
                         "登录流程开始到结束", Constants.EVENT_DURATION_LOGIN_BY_SMS);
-                SendSmsLoginActivity_.intent(context)
+                /*SendSmsLoginActivity_.intent(context)
                         .extra("mobile", RegexUtils.isChinaPhone(mobile) ? mobile : "")
-                        .start();
+                        .start();*/
+                InputMobileActivity_.intent(context).mobile(RegexUtils.isChinaPhone(mobile) ? mobile : "")
+                        .checkSource(InputMobileActivity.SOURCE_SMS_LOGIN).start();
+                break;
+            default:
                 break;
         }
     }
 
     //账号合并
     private void userMerge(final String password) {
-        if (etUser.getText() == null) return;
+        if (etUser.getText() == null) {
+            return;
+        }
         CommonUtils.trackCommonEvent(context, "login", "登录", Constants.EVENT_LOGIN);
         showLoadingDialog();
         mPresenter.userMerge(etUser.getText().toString(), mobile, password);
@@ -228,8 +238,8 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
     }
 
     @Override
-    public void getStoreTokenSuccess(UserInfoBean loginData) {
-        LoginChooseShopActivity_.intent(context).loginData(loginData)
+    public void loginSuccess(UserInfoBean loginData) {
+        LoginChooseShopActivity_.intent(context)
                 .action(CommonConstants.ACTION_LOGIN_CHOOSE_COMPANY).start();
     }
 

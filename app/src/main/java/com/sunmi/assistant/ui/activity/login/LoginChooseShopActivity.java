@@ -5,12 +5,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.ChooseShopContract;
-import com.sunmi.assistant.data.response.CompanyInfoResp;
-import com.sunmi.assistant.data.response.CompanyListResp;
-import com.sunmi.assistant.data.response.ShopListResp;
 import com.sunmi.assistant.presenter.ChooseShopPresenter;
 import com.sunmi.assistant.ui.activity.MainActivity_;
 
@@ -27,7 +23,9 @@ import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
-import sunmi.common.model.UserInfoBean;
+import sunmi.common.model.CompanyInfoResp;
+import sunmi.common.model.CompanyListResp;
+import sunmi.common.model.ShopListResp;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
@@ -58,8 +56,6 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     @Extra
     int action;
     @Extra
-    UserInfoBean loginData;
-    @Extra
     int companyId;
     @Extra
     String companyName;
@@ -78,6 +74,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
         if (action == CommonConstants.ACTION_LOGIN_CHOOSE_COMPANY) {
             titleBar.setAppTitle(R.string.str_select_company);
             mPresenter.getCompanyList();
+
         } else if (action == CommonConstants.ACTION_LOGIN_CHOOSE_SHOP) {
             titleBar.setAppTitle(R.string.str_select_store);
             mPresenter.getShopList(companyId);
@@ -115,7 +112,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
             companyId = companyList.get(0).getCompany_id();
             companyName = companyList.get(0).getCompany_name();
             saasExist = companyList.get(0).getSaas_exist();
-            LoginChooseShopActivity_.intent(context).loginData(loginData)
+            LoginChooseShopActivity_.intent(context)
                     .companyId(companyId).companyName(companyName).saasExist(saasExist)
                     .action(CommonConstants.ACTION_LOGIN_CHOOSE_SHOP).start();
             finish();
@@ -161,7 +158,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
             public void convert(ViewHolder holder, final CompanyInfoResp item) {
                 ((SettingItemLayout) holder.getView(R.id.sil_item)).setLeftText(item.getCompany_name());
                 holder.itemView.setOnClickListener(
-                        v -> LoginChooseShopActivity_.intent(context).loginData(loginData)
+                        v -> LoginChooseShopActivity_.intent(context)
                                 .companyId(item.getCompany_id()).companyName(item.getCompany_name())
                                 .saasExist(item.getSaas_exist())
                                 .action(CommonConstants.ACTION_LOGIN_CHOOSE_SHOP).start());
@@ -199,7 +196,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     }
 
     private void gotoMainActivity(int shopId, String shopName) {
-        CommonUtils.saveLoginInfo(context, loginData, 0);
+        mPresenter.getUserInfo();
         SpUtils.setCompanyId(companyId);
         SpUtils.setCompanyName(companyName);
         SpUtils.setShopId(shopId);

@@ -19,7 +19,9 @@ import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.data.SunmiStoreRemote;
-import com.sunmi.assistant.data.response.CompanyInfoResp;
+
+import sunmi.common.model.CompanyInfoResp;
+
 import com.sunmi.assistant.rpc.CloudCall;
 import com.sunmi.assistant.ui.activity.merchant.AuthDialog;
 import com.sunmi.assistant.ui.activity.merchant.SelectPlatformActivity_;
@@ -103,7 +105,9 @@ public class SetPasswordActivity extends BaseActivity {
                 }
                 break;
             case R.id.btnComplete:
-                if (isFastClick(1500)) return;
+                if (isFastClick(1500)) {
+                    return;
+                }
                 if (!RegexUtils.isValidPassword(password) || password.length() < 8) {
                     shortTip(R.string.tip_password_non_standard);
                     return;
@@ -114,6 +118,8 @@ public class SetPasswordActivity extends BaseActivity {
                 } else if (type == AppConfig.SET_PASSWORD_RESET) {//找回密码
                     reSetPassword(password);
                 }
+                break;
+            default:
                 break;
         }
     }

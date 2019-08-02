@@ -1,6 +1,6 @@
 package com.sunmi.assistant.ui.activity.contract;
 
-import com.sunmi.assistant.ui.activity.model.CreateStoreInfo;
+import sunmi.common.model.CreateStoreInfo;
 
 import sunmi.common.base.BaseView;
 

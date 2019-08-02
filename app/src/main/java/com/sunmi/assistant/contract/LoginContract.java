@@ -14,11 +14,10 @@ public interface LoginContract {
 
         void mobileUnregister();
 
-        void getStoreTokenSuccess(UserInfoBean loginData);
+        void loginSuccess(UserInfoBean loginData);
     }
 
     interface Presenter {
-        void getUserInfo();
 
         void userMerge(String user, String mobile, String password);
 

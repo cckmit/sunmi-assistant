@@ -11,7 +11,7 @@ import android.widget.CheckBox;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.contract.AuthStoreCompleteContract;
 import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
-import com.sunmi.assistant.ui.activity.model.CreateStoreInfo;
+import sunmi.common.model.CreateStoreInfo;
 import com.sunmi.assistant.ui.activity.presenter.AuthStoreCompletePresenter;
 
 import org.androidannotations.annotations.AfterViews;

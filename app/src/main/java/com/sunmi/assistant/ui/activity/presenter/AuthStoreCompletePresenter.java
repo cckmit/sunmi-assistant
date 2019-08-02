@@ -2,7 +2,7 @@ package com.sunmi.assistant.ui.activity.presenter;
 
 import com.sunmi.assistant.rpc.CloudCall;
 import com.sunmi.assistant.ui.activity.contract.AuthStoreCompleteContract;
-import com.sunmi.assistant.ui.activity.model.CreateStoreInfo;
+import sunmi.common.model.CreateStoreInfo;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
