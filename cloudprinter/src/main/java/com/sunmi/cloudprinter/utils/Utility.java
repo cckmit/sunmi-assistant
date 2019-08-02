@@ -3,12 +3,7 @@ package com.sunmi.cloudprinter.utils;
 import com.sunmi.cloudprinter.bean.Router;
 import com.sunmi.cloudprinter.constant.Constants;
 
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.CoderResult;
-import java.nio.charset.CodingErrorAction;
+import java.io.UnsupportedEncodingException;
 
 import sunmi.common.utils.ByteUtils;
 
@@ -76,20 +71,24 @@ public class Utility {
      * 命令码 02
      */
     public static Router getRouter(byte[] data) {
-        byte[] bName = new byte[64];
-        byte[] bRssi = new byte[4];
-        System.arraycopy(data, 6, bName, 0, bName.length);
-        byte bHasPwd = data[6 + bName.length];
-        System.arraycopy(data, 7 + bName.length, bRssi, 0, bRssi.length);
         Router router = new Router();
-        router.setName(new String(bName));
-        if (bHasPwd == 0) {
-            router.setHasPwd(false);
-        } else {
-            router.setHasPwd(true);
+        try {
+            byte[] bName = new byte[64];
+            byte[] bRssi = new byte[4];
+            System.arraycopy(data, 6, bName, 0, bName.length);
+            byte bHasPwd = data[6 + bName.length];
+            System.arraycopy(data, 7 + bName.length, bRssi, 0, bRssi.length);
+            router.setName(new String(bName, "utf-8"));
+            if (bHasPwd == 0) {
+                router.setHasPwd(false);
+            } else {
+                router.setHasPwd(true);
+            }
+            router.setRssi(ByteUtils.byte4ToIntL(bRssi));
+            router.setEssid(bName);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
-        router.setRssi(ByteUtils.byte4ToIntL(bRssi));
-        router.setEssid(bName);
         return router;
     }
 
@@ -156,21 +155,6 @@ public class Utility {
 
     private static byte[] getCmd(int cmd) {
         return new byte[]{Constants.PRINTER_CMD_VERSION, (byte) cmd};
-    }
-
-    public static String getSSID(byte[] data) {
-        Charset charset = Charset.forName("UTF-8");
-        CharsetDecoder decoder = charset.newDecoder()
-                .onMalformedInput(CodingErrorAction.REPLACE)
-                .onUnmappableCharacter(CodingErrorAction.REPLACE);
-        CharBuffer out = CharBuffer.allocate(32);
-
-        CoderResult result = decoder.decode(ByteBuffer.wrap(data), out, true);
-        out.flip();
-        if (result.isError()) {
-            return "";
-        }
-        return out.toString();
     }
 
 }

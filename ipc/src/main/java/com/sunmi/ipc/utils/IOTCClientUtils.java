@@ -10,33 +10,27 @@ import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 
 /**
- * Description:
- * Created by bruce on 2019/8/1.
+ * iotc
  */
-public class IOTCClient {
-    private String TAG = "IOTCClient";
+public class IOTCClientUtils {
+    private static String TAG = "IOTCClientUtils";
 
-    private Callback callback;
-    private String uid;
-    private int SID = -1;
-    private int avIndex = -1;
-    private int CMD_LIVE_START = 0x10;
-    private int CMD_LIVE_STOP = 0x11;
-    private int CMD_LIVE_START_AUDIO = 0x12;
-    private int CMD_LIVE_STOP_AUDIO = 0x13;
-    private int CMD_PLAYBACK_LIST = 0x20;
-    private int CMD_PLAYBACK_START = 0x21;
-    private int CMD_PLAYBACK_STOP = 0x22;
-    private int CMD_PLAYBACK_PAUSE = 0x23;
+    private static Callback callback;
+    private static int SID = -1;
+    private static int avIndex = -1;
+    private static int CMD_LIVE_START = 0x10;
+    private static int CMD_LIVE_STOP = 0x11;
+    private static int CMD_LIVE_START_AUDIO = 0x12;
+    private static int CMD_LIVE_STOP_AUDIO = 0x13;
+    private static int CMD_PLAYBACK_LIST = 0x20;
+    private static int CMD_PLAYBACK_START = 0x21;
+    private static int CMD_PLAYBACK_STOP = 0x22;
+    private static int CMD_PLAYBACK_PAUSE = 0x23;
 
-    private boolean isRunning = true;
-    Thread videoThread, audioThread;
+    private static boolean isRunning;
+    static Thread videoThread, audioThread;
 
-    public IOTCClient(String uid) {
-        this.uid = uid;
-    }
-
-    public void init(String uid) {
+    public static void init(String uid) {
         LogCat.e(TAG, "StreamClient init...");
         int ret = IOTCAPIs.IOTC_Initialize2(0);
         LogCat.e(TAG, "IOTC_Initialize() ret = " + ret);
@@ -76,6 +70,7 @@ public class IOTCClient {
         }
         LogCat.e(TAG, "Step 3: call avClientStartEx, avIndex = " + avIndex);
         startPlay();
+//        isRunning = true;
         videoThread = new Thread(new VideoThread(avIndex), "Video Thread");
         audioThread = new Thread(new AudioThread(avIndex), "Audio Thread");
         videoThread.start();
@@ -83,34 +78,36 @@ public class IOTCClient {
         try {
             videoThread.join();
         } catch (InterruptedException e) {
-            LogCat.e(TAG, "videoThread:" + e.getMessage());
+            LogCat.e("IOTCClientUtils - videoThread:", e.getMessage());
             return;
         }
         try {
             audioThread.join();
         } catch (InterruptedException e) {
-            LogCat.e(TAG, "audioThread:" + e.getMessage());
+            LogCat.e("IOTCClientUtils - audioThread:", e.getMessage());
+            return;
         }
+        close();
     }
 
-    public void close() {
+    public static void close() {
         if (avIndex < 0) return;
         AVAPIs.avClientStop(avIndex);
-        AVAPIs.avClientExit(SID, 1);
         LogCat.e(TAG, "avClientStop OK");
         IOTCAPIs.IOTC_Session_Close(SID);
-        IOTCAPIs.IOTC_Connect_Stop();
+        IOTCAPIs.IOTC_DeInitialize();
         LogCat.e(TAG, "IOTC_Session_Close OK");
         AVAPIs.avDeInitialize();
-        IOTCAPIs.IOTC_DeInitialize();
-        isRunning = false;
+        if (videoThread != null) videoThread.interrupt();
+        if (audioThread != null) audioThread.interrupt();
+//        isRunning = false;
         LogCat.e(TAG, "StreamClient exit...");
     }
 
     /**
      * 开始直播
      */
-    public void startPlay() {
+    public static void startPlay() {
         changeValue(0);
     }
 
@@ -119,7 +116,7 @@ public class IOTCClient {
      *
      * @param type 分辨率，0：超清，1：高清，2：标清
      */
-    public void changeValue(int type) {
+    public static void changeValue(int type) {
         IotcCmdBean cmd = new IotcCmdBean.Builder()
                 .setMsg_id(Utils.getMsgId())
                 .setCmd(CMD_LIVE_START)
@@ -131,7 +128,7 @@ public class IOTCClient {
     /**
      * 停止直播参数
      */
-    public void stopLive() {
+    public static void stopLive() {
         IotcCmdBean cmd = new IotcCmdBean.Builder()
                 .setMsg_id(Utils.getMsgId())
                 .setCmd(CMD_LIVE_STOP)
@@ -139,7 +136,7 @@ public class IOTCClient {
         cmdCall(cmd);
     }
 
-    public void getPlaybackList(long start, long end) {
+    public static void getPlaybackList(long start, long end) {
         IotcCmdBean cmd = new IotcCmdBean.Builder()
                 .setMsg_id(Utils.getMsgId())
                 .setCmd(CMD_PLAYBACK_LIST)
@@ -149,7 +146,7 @@ public class IOTCClient {
         cmdCall(cmd);
     }
 
-    public void startPlayback(long startTime) {
+    public static void startPlayback(long startTime) {
         IotcCmdBean cmd = new IotcCmdBean.Builder()
                 .setMsg_id(Utils.getMsgId())
                 .setCmd(CMD_PLAYBACK_START)
@@ -158,7 +155,7 @@ public class IOTCClient {
         cmdCall(cmd);
     }
 
-    public void stopPlayback() {
+    public static void stopPlayback() {
         IotcCmdBean cmd = new IotcCmdBean.Builder()
                 .setMsg_id(Utils.getMsgId())
                 .setCmd(CMD_PLAYBACK_STOP)
@@ -166,7 +163,7 @@ public class IOTCClient {
         cmdCall(cmd);
     }
 
-    public void pausePlayback(boolean isPause) {
+    public static void pausePlayback(boolean isPause) {
         IotcCmdBean cmd = new IotcCmdBean.Builder()
                 .setMsg_id(Utils.getMsgId())
                 .setCmd(CMD_PLAYBACK_PAUSE)
@@ -175,14 +172,14 @@ public class IOTCClient {
         cmdCall(cmd);
     }
 
-    private void cmdCall(IotcCmdBean cmd) {
+    private static void cmdCall(IotcCmdBean cmd) {
         String json = new Gson().toJson(cmd);
         byte[] req = json.getBytes();
         IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
         getCmdResponse();
     }
 
-    private void getCmdResponse() {
+    private static void getCmdResponse() {
         byte[] buf = new byte[1024];
         int actualLen = IOTCAPIs.IOTC_Session_Read(SID, buf, 1024, 10000, 0);
         if (actualLen > 0) {
@@ -193,9 +190,9 @@ public class IOTCClient {
         }
     }
 
-    public class VideoThread implements Runnable {
-        final int VIDEO_BUF_SIZE = 2000000;
-        final int FRAME_INFO_SIZE = 16;
+    public static class VideoThread implements Runnable {
+        static final int VIDEO_BUF_SIZE = 2000000;
+        static final int FRAME_INFO_SIZE = 16;
 
         private int avIndex;
 
@@ -210,8 +207,9 @@ public class IOTCClient {
             int[] outBufSize = new int[1];
             int[] outFrameSize = new int[1];
             int[] outFrmInfoBufSize = new int[1];
-            while (isRunning) {
+            while (true) {
                 int[] frameNumber = new int[1];
+                LogCat.e(TAG, "555555vvv VIDEO received ret = " + frameNumber.length);
                 int ret = AVAPIs.avRecvFrameData2(avIndex, videoBuffer, VIDEO_BUF_SIZE, outBufSize,
                         outFrameSize, frameInfo, FRAME_INFO_SIZE, outFrmInfoBufSize, frameNumber);
                 if (ret == AVAPIs.AV_ER_DATA_NOREADY) {//缓存没数据等待10ms再读
@@ -248,9 +246,9 @@ public class IOTCClient {
         }
     }
 
-    public class AudioThread implements Runnable {
-        final int AUDIO_BUF_SIZE = 1024 * 4;
-        final int FRAME_INFO_SIZE = 16;
+    public static class AudioThread implements Runnable {
+        static final int AUDIO_BUF_SIZE = 1024 * 4;
+        static final int FRAME_INFO_SIZE = 16;
 
         private int avIndex;
 
@@ -262,7 +260,7 @@ public class IOTCClient {
         public void run() {
             byte[] frameInfo = new byte[FRAME_INFO_SIZE];
             byte[] audioBuffer = new byte[AUDIO_BUF_SIZE];
-            while (isRunning) {
+            while (true) {
                 int[] frameNumber = new int[1];
                 int ret = AVAPIs.avRecvAudioData(avIndex, audioBuffer,
                         AUDIO_BUF_SIZE, frameInfo, FRAME_INFO_SIZE, frameNumber);
@@ -297,8 +295,8 @@ public class IOTCClient {
         }
     }
 
-    public void setCallback(Callback callback) {
-        this.callback = callback;
+    public static void setCallback(Callback callback) {
+        IOTCClientUtils.callback = callback;
     }
 
     public interface Callback {
