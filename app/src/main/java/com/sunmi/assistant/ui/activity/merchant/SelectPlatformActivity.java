@@ -35,7 +35,9 @@ import sunmi.common.view.ViewHolder;
 
 /**
  * 选择平台
- * Created by YangShiJie on 2019/6/26.
+ *
+ * @author YangShiJie
+ * @date 2019/6/26
  */
 @SuppressLint("Registered")
 @EActivity(R.layout.activity_merchant_select_platform)
@@ -68,7 +70,6 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
         mPresenter.attachView(this);
         showLoadingDialog();
         mPresenter.getPlatformInfo();
-
     }
 
     @Override
