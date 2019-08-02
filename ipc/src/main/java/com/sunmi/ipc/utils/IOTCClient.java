@@ -206,7 +206,7 @@ public class IOTCClient {
             int[] outFrmInfoBufSize = new int[1];
             while (true) {
                 int[] frameNumber = new int[1];
-                int ret = av.avRecvFrameData2(avIndex, videoBuffer, VIDEO_BUF_SIZE, outBufSize,
+                int ret = AVAPIs.avRecvFrameData2(avIndex, videoBuffer, VIDEO_BUF_SIZE, outBufSize,
                         outFrameSize, frameInfo, FRAME_INFO_SIZE, outFrmInfoBufSize, frameNumber);
                 if (ret == AVAPIs.AV_ER_DATA_NOREADY) {//缓存没数据等待10ms再读
                     try {
@@ -261,7 +261,7 @@ public class IOTCClient {
             byte[] audioBuffer = new byte[AUDIO_BUF_SIZE];
             while (true) {
                 int[] frameNumber = new int[1];
-                int ret = av.avRecvAudioData(avIndex, audioBuffer,
+                int ret = AVAPIs.avRecvAudioData(avIndex, audioBuffer,
                         AUDIO_BUF_SIZE, frameInfo, FRAME_INFO_SIZE, frameNumber);
                 if (ret == AVAPIs.AV_ER_DATA_NOREADY) {//缓存没数据等待10ms再读
                     try {

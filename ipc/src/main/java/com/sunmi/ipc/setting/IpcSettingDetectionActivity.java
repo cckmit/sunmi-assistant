@@ -165,7 +165,7 @@ public class IpcSettingDetectionActivity extends BaseActivity {
     }
 
     @Override
-    public int[] getUnStickNotificationId() {
+    public int[] getStickNotificationId() {
         return new int[]{IpcConstants.setIpcDetection};
     }
 

@@ -99,11 +99,15 @@ public class IPCCall extends BaseIpcApi {
      *
      * @param zoom 0-500
      */
-    public void fsZoom(int zoom, Context context) {
+    public void fsZoom(String ip, int zoom) {
         try {
             JSONObject object = new JSONObject();
-            object.put("set", zoom);
-            post(context, "", IpcConstants.fsZoom, object);
+            object.put("zoom", zoom);
+            int opCode = IpcConstants.fsZoom;
+            RequestBean requestBean = new RequestBean(Utils.getMsgId(),
+                    "0x" + Integer.toHexString(opCode), object);
+            new IPCLocalApi(ip).post(null, "", requestBean.getMsgId(),
+                    opCode, requestBean.serialize());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -114,47 +118,107 @@ public class IPCCall extends BaseIpcApi {
      *
      * @param focus 0-780
      */
-    public void fsFocus(int focus, Context context) {
+    public void fsFocus(String ip, int focus) {
         try {
             JSONObject object = new JSONObject();
-            object.put("set", focus);
-            post(context, "", IpcConstants.fsFocus, object);
+            object.put("focus", focus);
+            int opCode = IpcConstants.fsFocus;
+            RequestBean requestBean = new RequestBean(Utils.getMsgId(),
+                    "0x" + Integer.toHexString(opCode), object);
+            new IPCLocalApi(ip).post(null, "", requestBean.getMsgId(),
+                    opCode, requestBean.serialize());
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * 设置对焦点
-     *
-     * @param x 0-100
-     * @param y 0-100
+     * 自动对焦（中心区域）
      */
-    public void fsSetFocusPoint(int x, int y, Context context) {
+    public void fsAutoFocus(String ip) {
+        fsAutoFocus(ip, 101, 101);
+    }
+
+    /**
+     * 自动对焦
+     *
+     * @param ip IPC的局域网IP地址
+     * @param x  0-100
+     * @param y  0-100
+     */
+    public void fsAutoFocus(String ip, int x, int y) {
         try {
             JSONObject object = new JSONObject();
             JSONArray jsonArray = new JSONArray();
             jsonArray.put(x);
             jsonArray.put(y);
             object.put("area", jsonArray);
-            post(context, "", IpcConstants.fsAutoFocus, object);
+            int opCode = IpcConstants.fsAutoFocus;
+            RequestBean requestBean = new RequestBean(Utils.getMsgId(),
+                    "0x" + Integer.toHexString(opCode), object);
+            new IPCLocalApi(ip).post(null, "", requestBean.getMsgId(),
+                    opCode, requestBean.serialize());
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * 自动对焦
+     * 重置变焦和对焦
+     *
+     * @param ip     IPC的局域网IP地址
+     * @param target 重置对象
+     *               target = 0, 缩放电机和对焦电机均复位，画面可能会很模糊
+     *               target = 1, 缩放电机复位，同时自动对焦(若缩放电机本来在复位位置，则直接退出)
      */
-    public void fsAutoFocus(Context context) {
-        fsSetFocusPoint(101, 101, context);
+    public void fsReset(String ip, int target) {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("target", target);
+            int opCode = IpcConstants.fsReset;
+            RequestBean requestBean = new RequestBean(Utils.getMsgId(),
+                    "0x" + Integer.toHexString(opCode), object);
+            new IPCLocalApi(ip).post(null, "", requestBean.getMsgId(),
+                    opCode, requestBean.serialize());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
-     * 重置
+     * 获取设备信息
      */
-    public void fsReset(Context context) {
-        post(context, "", IpcConstants.fsReset, new JSONObject());
+    public void fsGetStatus(String ip) {
+        int opCode = IpcConstants.fsGetStatus;
+        RequestBean requestBean = new RequestBean(Utils.getMsgId(),
+                "0x" + Integer.toHexString(opCode), new JSONObject());
+        new IPCLocalApi(ip).post(null, "", requestBean.getMsgId(),
+                opCode, requestBean.serialize());
+    }
+
+    /**
+     * 设置进店绊线
+     *
+     * @param ip    IPC的局域网IP地址
+     * @param start 起始点坐标，统一按1920*1080范围定义
+     * @param end   终止点坐标，统一按1920*1080范围定义
+     */
+    public void fsLine(String ip, int[] start, int[] end) {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("start_x", String.valueOf(start[0]));
+            object.put("start_y", String.valueOf(start[1]));
+            object.put("end_x", String.valueOf(end[0]));
+            object.put("end_y", String.valueOf(end[1]));
+            object.put("resolution", "0");
+            int opCode = IpcConstants.fsSetLine;
+            RequestBean requestBean = new RequestBean(Utils.getMsgId(),
+                    "0x" + Integer.toHexString(opCode), object);
+            new IPCLocalApi(ip).post(null, "", requestBean.getMsgId(),
+                    opCode, requestBean.serialize());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -170,13 +234,6 @@ public class IPCCall extends BaseIpcApi {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * 获取设备信息
-     */
-    public void fsGetStatus(Context context) {
-        post(context, "", IpcConstants.fsGetStatus, new JSONObject());
     }
 
     /**
@@ -350,7 +407,7 @@ public class IPCCall extends BaseIpcApi {
     public void post(Context context, String sn, String msgId, int opCode, String model, String json) {
         SunmiDevice device = CommonConstants.SUNMI_DEVICE_MAP.get(sn);
         if (device != null) {
-            new IPCLocalApi(CommonConstants.SUNMI_DEVICE_MAP.get(sn).getIp()).post(context, sn, msgId, opCode, json);
+            new IPCLocalApi(device.getIp()).post(context, sn, msgId, opCode, json);
         } else {
             new IpcRemoteSettingApi().post(context, sn, msgId, opCode, model, json);
         }
