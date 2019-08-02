@@ -144,7 +144,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         rvDevice.setAdapter(deviceListAdapter);
         showEmptyView();
         showLoadingDialog();
-
     }
 
     private void initRefreshLayout() {

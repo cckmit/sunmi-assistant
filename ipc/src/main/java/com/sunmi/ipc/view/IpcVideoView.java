@@ -33,6 +33,7 @@ public class IpcVideoView extends SurfaceView
 
     private H264Decoder mVideoDecoder = null;
     private AACDecoder mAudioDecoder = null;
+    IOTCClient iotcClient;
 
     public IpcVideoView(Context context) {
         this(context, null);
@@ -59,7 +60,8 @@ public class IpcVideoView extends SurfaceView
         mVideoHolder = getHolder();
         mVideoHolder.addCallback(this);
         mCallback = callback;
-        IOTCClient.setCallback(this);
+        iotcClient = new IOTCClient(uid);
+        iotcClient.setCallback(this);
     }
 
     public Rect getRect() {
@@ -70,7 +72,7 @@ public class IpcVideoView extends SurfaceView
         BackgroundExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                IOTCClient.init(mUid);
+                iotcClient.init(mUid);
             }
         });
     }
@@ -98,7 +100,7 @@ public class IpcVideoView extends SurfaceView
             mAudioDecoder.stop();
             mAudioDecoder = null;
         }
-        IOTCClient.close();
+        iotcClient.close();
     }
 
     @Override
