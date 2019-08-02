@@ -3,13 +3,13 @@ package com.sunmi.assistant.presenter;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.contract.ChooseShopContract;
 import com.sunmi.assistant.data.SunmiStoreRemote;
-import sunmi.common.model.CompanyListResp;
-import sunmi.common.model.ShopListResp;
 import com.sunmi.assistant.rpc.CloudCall;
 
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.model.CompanyListResp;
+import sunmi.common.model.ShopListResp;
 import sunmi.common.model.UserInfoBean;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;

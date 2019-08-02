@@ -31,10 +31,8 @@ public interface CompanyInterface {
     @POST(companyPath + "getInfo")
     Call<BaseResponse<CompanyInfoResp>> getInfo(@Body BaseRequest request);
 
-    /**
-     * 创建商户
-     */
+    //创建商户
     @POST(companyPath + "create")
-    Call<BaseResponse<Object>> createMerchant(@Body BaseRequest request);
+    Call<BaseResponse<CompanyInfoResp>> createCompany(@Body BaseRequest request);
 
 }

@@ -96,6 +96,10 @@
             android:name=".ui.activity.login.LoginChooseShopActivity_"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity android:name=".ui.activity.ChooseShopActivity_" />
+        <activity android:name=".ui.activity.merchant.CreateCompanyActivity_" />
+        <activity android:name=".ui.activity.merchant.CreateCompanyNextActivity_" />
+        <activity android:name=".ui.activity.merchant.CreateShopActivity_" />
+        <activity android:name=".ui.activity.merchant.ShopListActivity_" />
 
         <!--百度地图-->
         <service

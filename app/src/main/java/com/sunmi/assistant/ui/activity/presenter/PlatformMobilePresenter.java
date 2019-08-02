@@ -68,15 +68,15 @@ public class PlatformMobilePresenter extends BasePresenter<PlatformMobileContrac
 //    //默认创建门店
 //    @Override
 //    public void createStore(String shopName) {
-//        CloudCall.createShop(SpUtils.getCompanyId() + "", shopName, new RetrofitCallback<CreateStoreInfo>() {
+//        CloudCall.createShop(SpUtils.getCompanyId() + "", shopName, new RetrofitCallback<CreateShopInfo>() {
 //            @Override
-//            public void onSuccess(int code, String msg, CreateStoreInfo data) {
+//            public void onSuccess(int code, String msg, CreateShopInfo data) {
 //                if (isViewAttached())
 //                    mView.createStoreSuccess(data);
 //            }
 //
 //            @Override
-//            public void onFail(int code, String msg, CreateStoreInfo data) {
+//            public void onFail(int code, String msg, CreateShopInfo data) {
 //                if (isViewAttached())
 //                    mView.createStoreFail(code, msg);
 //            }

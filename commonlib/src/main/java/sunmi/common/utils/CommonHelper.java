@@ -23,6 +23,7 @@ import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -586,6 +587,20 @@ public class CommonHelper {
             resId = defResId;//设置默认
         }
         return resId;
+    }
+
+    /**
+     * @param button  button
+     * @param isClick 按钮是否可点击
+     */
+    public static void isCanClick(Button button, boolean isClick) {
+        if (isClick) {
+            button.setAlpha(1f);
+            button.setEnabled(true);
+        } else {
+            button.setAlpha(0.5f);
+            button.setEnabled(false);
+        }
     }
 
 }

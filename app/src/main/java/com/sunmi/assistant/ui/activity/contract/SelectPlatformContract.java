@@ -13,7 +13,7 @@ public interface SelectPlatformContract {
 
         void getPlatformInfoFail(int code, String msg);
 
-//        void createStoreSuccess(CreateStoreInfo data);
+//        void createStoreSuccess(CreateShopInfo data);
 //
 //        void createStoreFail(int code, String msg);
 

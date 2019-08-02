@@ -1,8 +1,7 @@
 package com.sunmi.assistant.ui.activity.contract;
 
-import sunmi.common.model.CreateStoreInfo;
-
 import sunmi.common.base.BaseView;
+import sunmi.common.model.CreateShopInfo;
 
 /**
  * Created by YangShiJie on 2019/6/26.
@@ -13,7 +12,7 @@ public interface AuthStoreCompleteContract {
 
         void editStoreFail(int code, String msg);
 
-        void createStoreSuccess(CreateStoreInfo data);
+        void createStoreSuccess(CreateShopInfo data);
 
         void createStoreFail(int code, String msg);
 

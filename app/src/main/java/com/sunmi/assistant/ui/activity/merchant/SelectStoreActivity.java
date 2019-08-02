@@ -11,7 +11,6 @@ import android.widget.CheckBox;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.contract.AuthStoreCompleteContract;
 import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
-import sunmi.common.model.CreateStoreInfo;
 import com.sunmi.assistant.ui.activity.presenter.AuthStoreCompletePresenter;
 
 import org.androidannotations.annotations.AfterViews;
@@ -26,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.model.CreateShopInfo;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -133,7 +133,7 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
      * @param data
      */
     @Override
-    public void createStoreSuccess(CreateStoreInfo data) {
+    public void createStoreSuccess(CreateShopInfo data) {
         //成功后授权
         createFlag++;
         LogCat.e(TAG, "111 data createStoreSuccess createFlag=" + (createFlag - 1));

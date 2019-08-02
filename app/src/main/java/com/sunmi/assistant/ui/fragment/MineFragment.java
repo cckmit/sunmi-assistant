@@ -1,5 +1,7 @@
 package com.sunmi.assistant.ui.fragment;
 
+import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -9,7 +11,6 @@ import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.contract.MineContract;
 import com.sunmi.apmanager.presenter.MinePresenter;
 import com.sunmi.apmanager.ui.activity.store.HelpActivity;
-import com.sunmi.apmanager.ui.activity.store.MyStoreActivity;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.setting.ChangeCompanyNameActivity_;
@@ -92,7 +93,17 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     public void storeClick(View v) {
         CommonUtils.trackCommonEvent(mActivity, "myStore",
                 "主页_我的_我的店铺", Constants.EVENT_MY_INFO);
-        openActivity(mActivity, MyStoreActivity.class);
+        gotoShopListActivity(mActivity);
+    }
+
+    public static void gotoShopListActivity(Context context) {
+        try {
+            Class<?> mainActivity = Class.forName("com.sunmi.assistant.ui.activity.merchant.ShopListActivity_");
+            Intent intent = new Intent(context, mainActivity);
+            context.startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //我的订单

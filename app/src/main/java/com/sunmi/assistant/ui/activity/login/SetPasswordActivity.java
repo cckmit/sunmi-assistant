@@ -19,9 +19,6 @@ import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.data.SunmiStoreRemote;
-
-import sunmi.common.model.CompanyInfoResp;
-
 import com.sunmi.assistant.rpc.CloudCall;
 import com.sunmi.assistant.ui.activity.merchant.AuthDialog;
 import com.sunmi.assistant.ui.activity.merchant.SelectPlatformActivity_;
@@ -39,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.cloud.SunmiStoreRetrofitClient;
 import sunmi.common.rpc.http.RpcCallback;
@@ -105,9 +103,7 @@ public class SetPasswordActivity extends BaseActivity {
                 }
                 break;
             case R.id.btnComplete:
-                if (isFastClick(1500)) {
-                    return;
-                }
+                if (isFastClick(1500)) return;
                 if (!RegexUtils.isValidPassword(password) || password.length() < 8) {
                     shortTip(R.string.tip_password_non_standard);
                     return;
@@ -118,8 +114,6 @@ public class SetPasswordActivity extends BaseActivity {
                 } else if (type == AppConfig.SET_PASSWORD_RESET) {//找回密码
                     reSetPassword(password);
                 }
-                break;
-            default:
                 break;
         }
     }
@@ -228,17 +222,15 @@ public class SetPasswordActivity extends BaseActivity {
 
     //通过手机号获取saas信息
     private void getSaasInfo() {
-        CloudCall.getSaasUserInfo(SpUtils.getMobile(), new RetrofitCallback() {
+        CloudCall.getSaasUserInfo(SpUtils.getMobile(), new RetrofitCallback<AuthStoreInfo>() {
             @Override
-            public void onSuccess(int code, String msg, Object data) {
-                LogCat.e(TAG, "data onSuccess=" + data);
+            public void onSuccess(int code, String msg, AuthStoreInfo bean) {
                 hideLoadingDialog();
-                AuthStoreInfo bean = new Gson().fromJson(data.toString(), AuthStoreInfo.class);
                 getSaasData(bean.getSaas_user_info_list());
             }
 
             @Override
-            public void onFail(int code, String msg, Object data) {
+            public void onFail(int code, String msg, AuthStoreInfo data) {
                 LogCat.e(TAG, "data onFail code=" + code + "," + msg);
                 hideLoadingDialog();
             }
