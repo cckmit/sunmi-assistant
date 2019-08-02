@@ -8,9 +8,6 @@ import sunmi.common.model.CreateShopInfo;
  */
 public interface AuthStoreCompleteContract {
     interface View extends BaseView {
-        void editStoreSuccess(Object data);
-
-        void editStoreFail(int code, String msg);
 
         void createStoreSuccess(CreateShopInfo data);
 
@@ -29,7 +26,6 @@ public interface AuthStoreCompleteContract {
 
         void createStore(String shopName);
 
-        void editStore(String shopName);
     }
 
 }

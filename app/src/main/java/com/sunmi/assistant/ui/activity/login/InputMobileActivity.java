@@ -19,6 +19,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -132,45 +133,37 @@ public class InputMobileActivity extends BaseMvpActivity<InputMobilePresenter>
     }
 
     //手机号未注册
-    private void mobileUnregister() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                new CommonDialog.Builder(context)
-                        .setTitle(R.string.tip_unregister)
-                        .setCancelButton(R.string.sm_cancel)
-                        .setConfirmButton(R.string.str_register_now, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                initRegister();
-                                checkSource = SOURCE_REGISTER;
-                            }
-                        }).create().show();
-            }
-        });
+    @UiThread
+    void mobileUnregister() {
+        new CommonDialog.Builder(context)
+                .setTitle(R.string.tip_unregister)
+                .setCancelButton(R.string.sm_cancel)
+                .setConfirmButton(R.string.str_register_now, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        initRegister();
+                        checkSource = SOURCE_REGISTER;
+                    }
+                }).create().show();
     }
 
     //手机号已注册
-    private void mobileRegistered() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                new CommonDialog.Builder(context)
-                        .setTitle(R.string.tip_register_already)
-                        .setCancelButton(R.string.sm_cancel)
-                        .setConfirmButton(R.string.str_goto_register, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                CommonUtils.trackCommonEvent(context, "registerDialogLogin",
-                                        "注册_账号已注册_弹窗_立即登录", Constants.EVENT_REGISTER);
-                                LoginActivity_.intent(context)
-                                        .extra("mobile", mobile)
-                                        .start();
-                                finish();
-                            }
-                        }).create().show();
-            }
-        });
+    @UiThread
+    void mobileRegistered() {
+        new CommonDialog.Builder(context)
+                .setTitle(R.string.tip_register_already)
+                .setCancelButton(R.string.sm_cancel)
+                .setConfirmButton(R.string.str_goto_register, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        CommonUtils.trackCommonEvent(context, "registerDialogLogin",
+                                "注册_账号已注册_弹窗_立即登录", Constants.EVENT_REGISTER);
+                        LoginActivity_.intent(context)
+                                .extra("mobile", mobile)
+                                .start();
+                        finish();
+                    }
+                }).create().show();
     }
 
     @Override

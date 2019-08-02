@@ -12,7 +12,9 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.ChooseShopContract;
 import com.sunmi.assistant.presenter.ChooseShopPresenter;
 import com.sunmi.assistant.ui.activity.MainActivity_;
+import com.sunmi.assistant.ui.activity.merchant.CommonSaasUtils;
 import com.sunmi.assistant.ui.activity.merchant.CreateCompanyActivity_;
+import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -138,23 +140,22 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
 
     @Override
     public void getCompanyListSuccess(List<CompanyInfoResp> companyList) {
-//        if (companyList.size() == 1) {
-//            companyId = companyList.get(0).getCompany_id();
-//            companyName = companyList.get(0).getCompany_name();
-//            saasExist = companyList.get(0).getSaas_exist();
-//            LoginChooseShopActivity_.intent(context).loginData(loginData)
-//                    .companyId(companyId).companyName(companyName).saasExist(saasExist)
-//                    .action(CommonConstants.ACTION_LOGIN_CHOOSE_SHOP).start();
-//            finish();
-//        } else {
-//            initCompanyList(companyList);
-//        }
         initCompanyList(companyList);
     }
 
     @Override
     public void getCompanyListFail(int code, String msg, CompanyListResp data) {
         setNoDataVisible(View.VISIBLE);
+    }
+
+    @Override
+    public void getSaasSuccessView(AuthStoreInfo data) {
+        CommonSaasUtils.getSaasData(context, data.getSaas_user_info_list());
+    }
+
+    @Override
+    public void getSaasFailView(int code, String msg) {
+
     }
 
     @Override
@@ -201,7 +202,9 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     void initShopList(final List<ShopListResp.ShopInfo> shopList) {
         activityVisible();
         if (shopList.size() == 0) {
-            setNoDataVisible(View.VISIBLE);
+            //setNoDataVisible(View.VISIBLE);
+            //当商户下没有门店检测是否有saas门店数据
+            mPresenter.getSaas(SpUtils.getMobile());
             return;
         }
         rvChoose.setAdapter(new CommonListAdapter<ShopListResp.ShopInfo>(context,

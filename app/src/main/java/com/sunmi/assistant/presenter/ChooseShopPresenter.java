@@ -4,6 +4,7 @@ import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.contract.ChooseShopContract;
 import com.sunmi.assistant.data.SunmiStoreRemote;
 import com.sunmi.assistant.rpc.CloudCall;
+import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import sunmi.common.model.ShopListResp;
 import sunmi.common.model.UserInfoBean;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.log.LogCat;
 
 /**
  * Description: ChooseShopPresenter
@@ -20,6 +22,8 @@ import sunmi.common.rpc.retrofit.RetrofitCallback;
  */
 public class ChooseShopPresenter extends BasePresenter<ChooseShopContract.View>
         implements ChooseShopContract.Presenter {
+    private static final String TAG = ChooseShopPresenter.class.getSimpleName();
+
     @Override
     public void getShopList(int companyId) {
         if (isViewAttached()) {
@@ -78,8 +82,31 @@ public class ChooseShopPresenter extends BasePresenter<ChooseShopContract.View>
             @Override
             public void onFail(int code, String msg, UserInfoBean data) {
 
+
             }
         });
     }
 
+    @Override
+    public void getSaas(String mobile) {
+        mView.showLoadingDialog();
+        CloudCall.getSaasUserInfo(mobile, new RetrofitCallback<AuthStoreInfo>() {
+            @Override
+            public void onSuccess(int code, String msg, AuthStoreInfo bean) {
+                if (isViewAttached()) {
+                    mView.hideLoadingDialog();
+                    mView.getSaasSuccessView(bean);
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, AuthStoreInfo data) {
+                LogCat.e(TAG, "getSaas  Failed code=" + code + "; msg=" + msg);
+                if (isViewAttached()) {
+                    mView.hideLoadingDialog();
+                    mView.getSaasFailView(code, msg);
+                }
+            }
+        });
+    }
 }

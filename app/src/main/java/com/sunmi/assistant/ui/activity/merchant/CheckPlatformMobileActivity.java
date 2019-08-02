@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
@@ -33,7 +32,8 @@ import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.dialog.CommonDialog;
 
 /**
- * Created by YangShiJie on 2019/6/27.
+ * @author YangShiJie
+ * @date 2019/6/27
  */
 @SuppressLint("Registered")
 @EActivity(R.layout.activity_merchant_check_mobile)
@@ -148,11 +148,10 @@ public class CheckPlatformMobileActivity extends BaseMvpActivity<PlatformMobileP
      * @param data
      */
     @Override
-    public void getSaasInfoSuccess(Object data) {
+    public void getSaasInfoSuccess(AuthStoreInfo data) {
         LogCat.e(TAG, "data getSaasInfoSuccess =" + data.toString() + ", saasSource=" + saasSource);
         hideLoadingDialog();
-        AuthStoreInfo bean = new Gson().fromJson(data.toString(), AuthStoreInfo.class);
-        getSaasData(bean.getSaas_user_info_list());
+        getSaasData(data.getSaas_user_info_list());
     }
 
     @Override
@@ -200,11 +199,10 @@ public class CheckPlatformMobileActivity extends BaseMvpActivity<PlatformMobileP
     private void createStoreDialog() {
         new CommonDialog.Builder(this).setTitle(getString(R.string.str_dialog_auto_create_store))
                 .setCancelButton(com.sunmi.apmanager.R.string.sm_cancel)
-                .setConfirmButton(R.string.str_button_auto_create, new DialogInterface.OnClickListener() {
+                .setConfirmButton(R.string.company_shop_new_create, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //注册已默认创建门店
-                        GotoActivityUtils.gotoMainActivity(CheckPlatformMobileActivity.this);
+                        CommonSaasUtils.gotoCreateShopActivity(context, SpUtils.getCompanyId());
                     }
                 }).create().show();
     }

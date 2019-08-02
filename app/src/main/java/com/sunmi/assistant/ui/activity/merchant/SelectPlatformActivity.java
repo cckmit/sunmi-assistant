@@ -1,6 +1,7 @@
 package com.sunmi.assistant.ui.activity.merchant;
 
 import android.annotation.SuppressLint;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.sunmi.assistant.ui.activity.presenter.PlatformPresenter;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
@@ -33,7 +35,9 @@ import sunmi.common.view.ViewHolder;
 
 /**
  * 选择平台
- * Created by YangShiJie on 2019/6/26.
+ *
+ * @author YangShiJie
+ * @date 2019/6/26
  */
 @SuppressLint("Registered")
 @EActivity(R.layout.activity_merchant_select_platform)
@@ -48,11 +52,18 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
     private String selectPlatform;
     private int selectSaasSource;
 
+    @Extra
+    boolean isCanBack;
+
     private List<PlatformInfo.SaasListBean> list = new ArrayList<>();
 
     @AfterViews
     void init() {
-        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
+        //状态栏
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
+        if (isCanBack) {
+            titleBar.setLeftImageDrawable(ContextCompat.getDrawable(this, R.mipmap.ic_back_dark));
+        }
         initRecycler();
         CommonHelper.isCanClick(btnNext, false);
         mPresenter = new PlatformPresenter();
@@ -61,19 +72,24 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
         mPresenter.getPlatformInfo();
     }
 
-//    @Override
-//    public void onBackPressed() {
-//    }
+    @Override
+    public void onBackPressed() {
+        if (isCanBack) {
+            super.onBackPressed();
+        }
+    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.img_back:
-                finish();
+                onBackPressed();
                 break;
             case R.id.txt_right:
                 SpUtils.setSaasExist(0);//没有对接saas数据Q
                 GotoActivityUtils.gotoMainActivity(this);
+                break;
+            default:
                 break;
         }
     }
