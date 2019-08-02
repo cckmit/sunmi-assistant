@@ -155,7 +155,7 @@ public class SunmiStoreApi {
         try {
             String params = new JSONObject()
                     .put("username", username)
-                    .put("password", password)
+                    .put("password", SafeUtils.EncryptDES_CBC(password))
                     .put("code", code)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(UserInterface.class)

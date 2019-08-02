@@ -234,7 +234,7 @@ public class InputCaptchaActivity extends BaseMvpActivity<InputCaptchaPresenter>
                     "注册流程_输入验证码_耗时", Constants.EVENT_DURATION_REGISTER_CODE);
             SetPasswordActivity_.intent(context)
                     .extra("mobile", mobile)
-                    .extra(AppConfig.SET_PASSWORD_SMS, "")
+                    .extra(AppConfig.SET_PASSWORD_SMS, etSmsCode.getText().toString().trim())
                     .extra(AppConfig.SET_PASSWORD, AppConfig.SET_PASSWORD_REGISTER).start();
         } else if (TextUtils.equals("password", source)) {
             SetPasswordActivity_.intent(context)

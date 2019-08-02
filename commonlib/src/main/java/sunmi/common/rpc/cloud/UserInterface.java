@@ -26,8 +26,7 @@ public interface UserInterface {
      * 用户注册
      */
     @POST(userPath + "register")
-    Call<BaseResponse<RegisterResp>> register(@Body BaseRequest request);
-
+    Call<BaseResponse<Object>> register(@Body BaseRequest request);
 
     /**
      * 用户登录
