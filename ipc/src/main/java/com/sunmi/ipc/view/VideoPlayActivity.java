@@ -201,6 +201,7 @@ public class VideoPlayActivity extends BaseActivity
     private Timer screenHideTimer = null;
     private TimerTask screenHideTimerTask = null;
     private int countdown;
+    private IOTCClient iotcClient;
 
     //重置倒计时
     private void resetCountdown() {
@@ -286,8 +287,9 @@ public class VideoPlayActivity extends BaseActivity
         //当前分钟走的秒数
         currentSecond = calendar.get(Calendar.SECOND);
 
+        iotcClient = new IOTCClient(UID);
         //直播回调
-        IOTCClient.setCallback(this);
+        iotcClient.setCallback(this);
         audioDecoder = new AACDecoder();
     }
 
@@ -332,7 +334,7 @@ public class VideoPlayActivity extends BaseActivity
     protected void onStop() {
         super.onStop();
         cloudPlayDestroy();//关闭云端视频
-        IOTCClient.close();
+        iotcClient.close();
         if (videoDecoder != null) {
             videoDecoder.release();
         }
@@ -344,7 +346,7 @@ public class VideoPlayActivity extends BaseActivity
     //开始直播
     @Background
     void initP2pLive() {
-        IOTCClient.init(UID);
+        iotcClient.init(UID);
     }
 
     @Click(resName = "rl_video_back")
@@ -421,7 +423,7 @@ public class VideoPlayActivity extends BaseActivity
         ivPlay.setBackgroundResource(isPaused ? R.mipmap.pause_normal : R.mipmap.play_normal);
         isPaused = !isPaused;
         if (isDevPlayBack) {
-            IOTCClient.pausePlayback(isPaused);
+            iotcClient.pausePlayback(isPaused);
         } else if (isCloudPlayBack) {
             if (isPaused) {
                 ivpCloud.pause();
@@ -524,7 +526,7 @@ public class VideoPlayActivity extends BaseActivity
             videoView.setVisibility(View.VISIBLE);
             isCloudPlayBack = false;
         }
-        IOTCClient.startPlay();
+        iotcClient.startPlay();
         scrollCurrentLive();
         isDevPlayBack = false;
         hideLoadingDialog();
@@ -542,7 +544,7 @@ public class VideoPlayActivity extends BaseActivity
             videoView.setVisibility(View.VISIBLE);
             isCloudPlayBack = false;
         }
-        IOTCClient.startPlayback(start);
+        iotcClient.startPlayback(start);
         isCurrentLive = false;
         isDevPlayBack = true;
         ivLive.setVisibility(View.VISIBLE);
@@ -553,10 +555,10 @@ public class VideoPlayActivity extends BaseActivity
         showLoadingDialog();
         if (!isCloudPlayBack) {
             if (isDevPlayBack) {
-                IOTCClient.stopPlayback();//先停止设备回放
+                iotcClient.stopPlayback();//先停止设备回放
                 isDevPlayBack = false;
             } else {
-                IOTCClient.stopLive();//先停止直播
+                iotcClient.stopLive();//先停止直播
             }
             LogCat.e(TAG, "6666666 switch2CloudPlayback");
             ivpCloud.setVisibility(View.VISIBLE);
@@ -594,7 +596,7 @@ public class VideoPlayActivity extends BaseActivity
         llVideoQuality.setVisibility(View.GONE);
         if (type == qualityType) return;
         qualityType = qualityType == 0 ? 1 : 0;
-        IOTCClient.changeValue(qualityType);
+        iotcClient.changeValue(qualityType);
         if (qualityType == 0) {
             shortTip(R.string.tip_video_quality_fhd);
         } else if (qualityType == 1) {
@@ -1262,7 +1264,7 @@ public class VideoPlayActivity extends BaseActivity
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                IOTCClient.getPlaybackList(threeDaysBeforeSeconds, currentDateSeconds); //获取AP回放时间列表
+                iotcClient.getPlaybackList(threeDaysBeforeSeconds, currentDateSeconds); //获取AP回放时间列表
             }
         }, 3000);
     }

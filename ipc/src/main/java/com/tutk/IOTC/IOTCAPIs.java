@@ -468,12 +468,6 @@ public class IOTCAPIs {
 
     public native static int IOTC_IsDeviceSecureMode(int SID);
 
-    @Deprecated
-    public native static st_LanSearchInfo[] IOTC_Lan_Search(int[] arrNum, int nWaitTimeMs);
-
-    @Deprecated
-    public native static st_LanSearchInfo2[] IOTC_Lan_Search2(int[] arrNum, int nWaitTimeMs);
-
     public native static st_LanSearchInfo2[] IOTC_Lan_Search2_Ex(int[] arrNum, int nWaitTimeMs, int nSendIntervalMs);
 
     public native static int IOTC_Search_Device_Start(int nWaitTimeMs, int nSendIntervalMs);
@@ -505,44 +499,12 @@ public class IOTCAPIs {
 
     public native static void IOTC_Setup_P2PConnection_Timeout(int Timeout_ms);
 
-    @Deprecated
-    public native static void IOTC_Setup_DetectNetwork_Timeout(int Timeout_ms);
-
     public native static void IOTC_Setup_Session_Alive_Timeout(int Timeout_sec);
-
-    @Deprecated
-    public native static void IOTC_Setup_ErrorUpload(int bEnable);
-
-    @Deprecated
-    public native static int IOTC_Session_Write_Reliable(int SID, byte[] Buf, int Size, int ChID, int nTimeout);
-
-    @Deprecated
-    public native static int IOTC_Session_Write_Reliable_Abort(int SID, int ChID);
 
     /* WakeUp API for client to wake device up*/
     public native static int IOTC_WakeUp_WakeDevice(String sUID);
 
     public native static int IOTC_Set_LanSearchPort(int nPort);
-
-    /* Callback function. When connection mode is changed, callback will be invoked. */
-    @Deprecated
-    public native static void IOTC_ConnModeChange_CallBack(Object obj);
-
-    @Deprecated
-    public native static int IOTC_Device_LoginNB(String cszUID, String cszDeviceName,
-                                                 String cszDevicePWD, byte[] userData, Object obj);
-
-    @Deprecated
-    public native static int IOTC_Get_Device_Status(st_DeviceStInfo pDevStInfo);
-
-    @Deprecated
-    public native static int IOTC_Accept(int[] SID);
-
-    @Deprecated
-    public native static int IOTC_Connect_ByUIDNB(String cszUID, byte[] userData, Object obj);
-
-    @Deprecated
-    public native static int IOTC_Connect_ByUID_ParallelNB(String cszUID, int SID, byte[] userData, Object obj);
 
     public native static int IOTC_Sessioin_Channel_Check_ON_OFF(int nIOTCSessionID, int nIOTCChannelID);
 
@@ -563,6 +525,44 @@ public class IOTCAPIs {
     public native static int IOTC_DebugTool_Initialize(String pwd);
 
     public native static int IOTC_Get_DebugTool_Info(String uid, String pwd, String[] json, int timeout_sec);
+
+    @Deprecated
+    public native static st_LanSearchInfo[] IOTC_Lan_Search(int[] arrNum, int nWaitTimeMs);
+
+    @Deprecated
+    public native static st_LanSearchInfo2[] IOTC_Lan_Search2(int[] arrNum, int nWaitTimeMs);
+
+    @Deprecated
+    public native static void IOTC_Setup_DetectNetwork_Timeout(int Timeout_ms);
+
+    @Deprecated
+    public native static void IOTC_Setup_ErrorUpload(int bEnable);
+
+    @Deprecated
+    public native static int IOTC_Session_Write_Reliable(int SID, byte[] Buf, int Size, int ChID, int nTimeout);
+
+    @Deprecated
+    public native static int IOTC_Session_Write_Reliable_Abort(int SID, int ChID);
+
+    /* Callback function. When connection mode is changed, callback will be invoked. */
+    @Deprecated
+    public native static void IOTC_ConnModeChange_CallBack(Object obj);
+
+    @Deprecated
+    public native static int IOTC_Device_LoginNB(String cszUID, String cszDeviceName,
+                                                 String cszDevicePWD, byte[] userData, Object obj);
+
+    @Deprecated
+    public native static int IOTC_Get_Device_Status(st_DeviceStInfo pDevStInfo);
+
+    @Deprecated
+    public native static int IOTC_Accept(int[] SID);
+
+    @Deprecated
+    public native static int IOTC_Connect_ByUIDNB(String cszUID, byte[] userData, Object obj);
+
+    @Deprecated
+    public native static int IOTC_Connect_ByUID_ParallelNB(String cszUID, int SID, byte[] userData, Object obj);
 
     private OnLineResultCBListener mListener;
 

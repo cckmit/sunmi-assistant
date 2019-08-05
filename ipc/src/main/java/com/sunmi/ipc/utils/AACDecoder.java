@@ -54,7 +54,9 @@ public class AACDecoder {
     }
 
     public void stopRunning() {
-        if (audioDataQueue != null) audioDataQueue.clear();
+        if (audioDataQueue != null) {
+            audioDataQueue.clear();
+        }
     }
 
     /**
@@ -152,6 +154,7 @@ public class AACDecoder {
      * 释放资源
      */
     public void stop() {
+        isRunning = false;
         stopRunning();
         try {
             if (audioTrack != null) {

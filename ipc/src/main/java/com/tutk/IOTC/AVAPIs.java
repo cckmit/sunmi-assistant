@@ -190,7 +190,7 @@ public class AVAPIs {
     public static final int AV_ER_DASA_CLEAN_BUFFER = -20032;
 
     /**
-     * Function is not support, need to using correct AV Server and AV IOTCClient
+     * Function is not support, need to using correct AV Server and AV IotcClient
      */
     public static final int AV_ER_NOT_SUPPORT = -20033;
 
@@ -281,7 +281,6 @@ public class AVAPIs {
     public native static int avSendAudioData(int avIndex, byte[] data, int dataSize,
                                              byte[] pFrmInfo, int FrmInfoSize);
 
-    //IOTCClient Side
     public static int avClientStart(int nSID, byte[] viewAcc, byte[] viewPwd, int timeout_sec,
                                     int[] pservType, int ChID) {
         return avClientStart(nSID, new String(viewAcc), new String(viewPwd), timeout_sec, pservType, ChID);
