@@ -171,6 +171,7 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
         }
         ResponseBean res = (ResponseBean) args[0];
         if (res.getDataErrCode() != 1) {
+            LogCat.e(TAG, res.getReturnData());
             if (isViewAttached()) {
                 mView.showErrorDialog(R.string.ipc_recognition_network_error);
             }
