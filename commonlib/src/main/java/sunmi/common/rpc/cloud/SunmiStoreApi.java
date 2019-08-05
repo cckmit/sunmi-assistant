@@ -3,6 +3,12 @@ package sunmi.common.rpc.cloud;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import sunmi.common.model.UserAvatarResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SafeUtils;
@@ -188,7 +194,7 @@ public class SunmiStoreApi {
     }
 
     // 修改用户昵称
-    public static void updateUsername(String username, RetrofitCallback callback) {
+    public static void updateUsername(String username, RetrofitCallback<Object> callback) {
         try {
             String params = new JSONObject()
                     .put("username", username)
@@ -201,18 +207,18 @@ public class SunmiStoreApi {
         }
     }
 
-    // 修改用户昵称 todo icon是文件
-    public static void updateIcon(String icon, RetrofitCallback callback) {
-        try {
-            String params = new JSONObject()
-                    .put("username", icon)
-                    .toString();
-            SunmiStoreRetrofitClient.getInstance().create(UserInterface.class)
-                    .updateIcon(new BaseRequest(params))
-                    .enqueue(callback);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    /**
+     * 修改用户头像
+     *
+     * @param avatar   头像文件
+     * @param callback 回调
+     */
+    public static void updateIcon(File avatar, RetrofitCallback<UserAvatarResp> callback) {
+        RequestBody file = RequestBody.create(MediaType.parse("image/*"), avatar);
+        MultipartBody.Part part = MultipartBody.Part.createFormData("icon", avatar.getName(), file);
+        SunmiStoreRetrofitClient.getInstance().create(UserInterface.class)
+                .updateIcon(part)
+                .enqueue(callback);
     }
 
     public static void getStoreToken(String userId, String token, String companyId,
@@ -222,7 +228,8 @@ public class SunmiStoreApi {
                     .put("user_id", userId)
                     .put("token", token)
                     .put("merchant_id", companyId)
-                    .put("app_type", 2)//1代表web, 2 代表app
+                    //1代表web, 2 代表app
+                    .put("app_type", 2)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(UserInterface.class)
                     .getStoreToken(new BaseRequest(params))

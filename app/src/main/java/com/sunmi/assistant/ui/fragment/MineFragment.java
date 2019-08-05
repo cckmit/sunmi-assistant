@@ -3,7 +3,6 @@ package com.sunmi.assistant.ui.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.TextView;
 
 import com.sunmi.apmanager.constant.Constants;
@@ -26,14 +25,15 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseMvpFragment;
-import sunmi.common.model.UserInfoBean;
 import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StringHelper;
 import sunmi.common.view.CircleImage;
 
 /**
- * 我的
+ * 我的页面
+ *
+ * @author bruce
  */
 @EFragment(R.layout.fragment_mime)
 public class MineFragment extends BaseMvpFragment<MinePresenter>
@@ -54,7 +54,7 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
         initView();
     }
 
-    void initView() {
+    private void initView() {
         initAvatar(false);
         initUsername();
         initAccount();
@@ -83,20 +83,33 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
         }
     }
 
-    //商户
+    /**
+     * 顶部头像和用户名
+     */
+    @Click(R.id.rl_head)
+    public void userInfoClick() {
+        UserInfoActivity_.intent(mActivity).start();
+    }
+
+    /**
+     * 当前商户
+     */
     @Click(R.id.rlCompany)
-    public void companyClick(View v) {
+    public void companyClick() {
         ChangeCompanyNameActivity_.intent(mActivity).start();
     }
 
+    /**
+     * 门店管理
+     */
     @Click(R.id.rlStore)
-    public void storeClick(View v) {
+    public void storeClick() {
         CommonUtils.trackCommonEvent(mActivity, "myStore",
                 "主页_我的_我的店铺", Constants.EVENT_MY_INFO);
         gotoShopListActivity(mActivity);
     }
 
-    public static void gotoShopListActivity(Context context) {
+    private void gotoShopListActivity(Context context) {
         try {
             Class<?> mainActivity = Class.forName("com.sunmi.assistant.ui.activity.merchant.ShopListActivity_");
             Intent intent = new Intent(context, mainActivity);
@@ -106,43 +119,50 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
         }
     }
 
-    //我的订单
+    /**
+     * 我的订单
+     */
     @Click(R.id.rlOrder)
-    public void orderClick(View v) {
+    public void orderClick() {
         WebViewSunmiMallActivity_.intent(mActivity).mUrl(SunmiServiceConfig.SUNMI_MALL_HOST
                 + "my-order?channel=2&subchannel=4").start();
     }
 
-    //收货地址
+    /**
+     * 收货地址
+     */
     @Click(R.id.rlAddress)
-    public void addressClick(View v) {
+    public void addressClick() {
         WebViewSunmiMallActivity_.intent(mActivity).mUrl(SunmiServiceConfig.SUNMI_MALL_HOST
                 + "select-address?channel=2&subchannel=4").start();
 
     }
 
-    //优惠券
+    /**
+     * 优惠券
+     */
     @Click(R.id.rlCoupon)
-    public void couponClick(View v) {
+    public void couponClick() {
         WebViewSunmiMallActivity_.intent(mActivity).mUrl(SunmiServiceConfig.SUNMI_MALL_HOST
                 + "my-coupon?channel=2&subchannel=4").start();
     }
 
+    /**
+     * 帮助与反馈
+     */
     @Click(R.id.rlHelp)
-    public void helpClick(View v) {
+    public void helpClick() {
         CommonUtils.trackCommonEvent(mActivity, "feedback",
                 "主页_我的_帮助与反馈", Constants.EVENT_MY_INFO);
         openActivity(mActivity, HelpActivity.class);
     }
 
+    /**
+     * 我的设置
+     */
     @Click(R.id.rlSetting)
-    public void settingClick(View v) {
+    public void settingClick() {
         SettingActivity_.intent(mActivity).start();
-    }
-
-    @Click(R.id.rl_head)
-    public void userInfoClick(View v) {
-        UserInfoActivity_.intent(mActivity).start();
     }
 
     @Override
@@ -161,13 +181,8 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     }
 
     @Override
-    public void getUserInfoSuccess(UserInfoBean bean) {
+    public void updateUserInfo() {
         initView();
-    }
-
-    @Override
-    public void getUserInfoFail(int code, String msg) {
-
     }
 
 }

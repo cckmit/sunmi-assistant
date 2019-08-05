@@ -11,7 +11,6 @@ import android.view.View;
 
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.contract.UserInfoContract;
-import com.sunmi.apmanager.model.UserInfo;
 import com.sunmi.apmanager.presenter.UserInfoPresenter;
 import com.sunmi.apmanager.utils.FileHelper;
 import com.sunmi.apmanager.utils.PhotoUtils;
@@ -22,8 +21,6 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 
@@ -43,7 +40,9 @@ import sunmi.common.view.bottompopmenu.PopItemAction;
 
 /**
  * Description:
- * Created by bruce on 2019/1/24.
+ *
+ * @author bruce
+ * @date 2019/1/24
  */
 @EActivity(R.layout.activity_user_info)
 public class UserInfoActivity extends BaseMvpActivity<UserInfoPresenter>
@@ -63,18 +62,18 @@ public class UserInfoActivity extends BaseMvpActivity<UserInfoPresenter>
     private static final int REQUEST_CROP_RESULT = 0xa2;
     private static final int IMAGE_DIMENSION = 480;
 
-    private String cropPath;//裁剪后图片的本地地址
-    private Uri imageUri;
+    private String localAvatarPath;
+    private Uri localPhotoUri;
+
     private BottomPopMenu choosePhotoMenu;
 
     @AfterViews
     void init() {
-        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
-        cropPath = FileHelper.SDCARD_CACHE_IMAGE_PATH + SpUtils.getUID() + "_avatar.jpg";
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         initViews();
         mPresenter = new UserInfoPresenter();
         mPresenter.attachView(this);
-        mPresenter.getUserInfo();
+        localAvatarPath = FileHelper.SDCARD_CACHE_IMAGE_PATH + SpUtils.getUID() + "_avatar.jpg";
     }
 
     @UiThread
@@ -104,7 +103,7 @@ public class UserInfoActivity extends BaseMvpActivity<UserInfoPresenter>
 
     @Click(R.id.rl_avatar)
     void avatarClick() {
-        showChoosePhoto();
+        chooseImage();
     }
 
     @Click(R.id.sil_nickname)
@@ -113,44 +112,12 @@ public class UserInfoActivity extends BaseMvpActivity<UserInfoPresenter>
     }
 
     @Override
-    public void updateSuccess(String bean) {
+    public void updateAvatarView(String url) {
         shortTip(R.string.tip_set_complete);
-        try {
-            JSONObject jsonObject = new JSONObject(bean);
-            if (jsonObject.has("origin_icon")) {
-                String imgUrl = jsonObject.getString("origin_icon");
-                SpUtils.setAvatarUrl(imgUrl);
-                initAvatar(true);
-                BaseNotification.newInstance().postNotificationName(
-                        NotificationConstant.updateAvatarSuccess, imgUrl);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void updateFail(int code, String msg) {
-        shortTip(R.string.tip_set_fail);
-    }
-
-    @Override
-    public void getUserInfoSuccess(UserInfo bean) {
-        if (!TextUtils.equals(SpUtils.getUsername(), bean.getUsername())) {
-            BaseNotification.newInstance().postNotificationName(
-                    NotificationConstant.updateUsernameSuccess, bean.getUsername());
-        }
-        if (!TextUtils.equals(SpUtils.getAvatarUrl(), bean.getOrigin_icon())) {
-            BaseNotification.newInstance().postNotificationName(
-                    NotificationConstant.updateAvatarSuccess, bean.getOrigin_icon());
-        }
-        mPresenter.saveUserInfo(bean);
-        initViews();
-    }
-
-    @Override
-    public void getUserInfoFail(int code, String msg) {
-
+        SpUtils.setAvatarUrl(url);
+        initAvatar(true);
+        BaseNotification.newInstance().postNotificationName(
+                NotificationConstant.updateAvatarSuccess, url);
     }
 
     @Override
@@ -170,7 +137,7 @@ public class UserInfoActivity extends BaseMvpActivity<UserInfoPresenter>
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
-            case PermissionUtils.REQ_PERMISSIONS_CAMERA_STORAGE: //调用系统相机申请拍照权限回调
+            case PermissionUtils.REQ_PERMISSIONS_CAMERA_STORAGE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if (FileUtils.isSDExist()) {
                         takePhoto();
@@ -181,7 +148,7 @@ public class UserInfoActivity extends BaseMvpActivity<UserInfoPresenter>
                     shortTip(getString(R.string.str_please_open_camera));
                 }
                 break;
-            case PermissionUtils.REQ_PERMISSIONS_STORAGE: //调用系统相册申请Sdcard权限回调
+            case PermissionUtils.REQ_PERMISSIONS_STORAGE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     PhotoUtils.openPic(this, REQUEST_GALLERY);
                 } else {
@@ -192,28 +159,17 @@ public class UserInfoActivity extends BaseMvpActivity<UserInfoPresenter>
         }
     }
 
-    void showChoosePhoto() {
-        if (choosePhotoMenu == null)
+    private void chooseImage() {
+        if (choosePhotoMenu == null) {
             choosePhotoMenu = new BottomPopMenu.Builder(this)
                     .addItemAction(new PopItemAction(R.string.str_take_photo,
-                            PopItemAction.PopItemStyle.Normal,
-                            new PopItemAction.OnClickListener() {
-                                @Override
-                                public void onClick() {
-                                    takePhoto();
-                                }
-                            }))
+                            PopItemAction.PopItemStyle.Normal, this::takePhoto))
                     .addItemAction(new PopItemAction(R.string.str_choose_from_album,
-                            PopItemAction.PopItemStyle.Normal,
-                            new PopItemAction.OnClickListener() {
-                                @Override
-                                public void onClick() {
-                                    openAlbum();
-                                }
-                            }))
+                            PopItemAction.PopItemStyle.Normal, this::openGallery))
                     .addItemAction(new PopItemAction(R.string.sm_cancel,
                             PopItemAction.PopItemStyle.Cancel))
                     .create();
+        }
         choosePhotoMenu.show();
     }
 
@@ -226,14 +182,16 @@ public class UserInfoActivity extends BaseMvpActivity<UserInfoPresenter>
             return;
         }
         File fileUri = new File(FileHelper.SDCARD_CACHE_IMAGE_PATH + "avatar.jpg");
-        imageUri = Uri.fromFile(fileUri);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            imageUri = FileProvider.getUriForFile(UserInfoActivity.this,
-                    CommonConstants.FILE_PROVIDER_AUTHORITY, fileUri);//通过FileProvider创建一个content类型的Uri
-        PhotoUtils.takePicture(this, imageUri, REQUEST_CAMERA);
+        localPhotoUri = Uri.fromFile(fileUri);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            //通过FileProvider创建一个content类型的Uri
+            localPhotoUri = FileProvider.getUriForFile(UserInfoActivity.this,
+                    CommonConstants.FILE_PROVIDER_AUTHORITY, fileUri);
+        }
+        PhotoUtils.takePicture(this, localPhotoUri, REQUEST_CAMERA);
     }
 
-    private void openAlbum() {
+    private void openGallery() {
         if (!PermissionUtils.checkStoragePermission(UserInfoActivity.this)) {
             return;
         }
@@ -244,16 +202,16 @@ public class UserInfoActivity extends BaseMvpActivity<UserInfoPresenter>
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            File fileCropUri = new File(cropPath);
+            File imageFile = new File(localAvatarPath);
             switch (requestCode) {
-                case REQUEST_CAMERA://拍照完成回调
-                    Uri cropImageUri = Uri.fromFile(fileCropUri);
-                    PhotoUtils.cropImageUri(this, imageUri, cropImageUri, 1, 1,
+                case REQUEST_CAMERA:
+                    Uri cropImageUri = Uri.fromFile(imageFile);
+                    PhotoUtils.cropImageUri(this, localPhotoUri, cropImageUri, 1, 1,
                             IMAGE_DIMENSION, IMAGE_DIMENSION, REQUEST_CROP_RESULT);
                     break;
-                case REQUEST_GALLERY://访问相册完成回调
+                case REQUEST_GALLERY:
                     if (FileUtils.isSDExist()) {
-                        cropImageUri = Uri.fromFile(fileCropUri);
+                        cropImageUri = Uri.fromFile(imageFile);
                         Uri newUri = Uri.parse(PhotoUtils.getPath(this, data.getData()));
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                             newUri = FileProvider.getUriForFile(this,
@@ -265,9 +223,8 @@ public class UserInfoActivity extends BaseMvpActivity<UserInfoPresenter>
                         shortTip(R.string.str_no_sd);
                     }
                     break;
-                //裁剪后图片回调
                 case REQUEST_CROP_RESULT:
-                    mPresenter.updateIcon("avatar.png", fileCropUri);
+                    mPresenter.updateAvatar(imageFile);
                     break;
                 default:
             }

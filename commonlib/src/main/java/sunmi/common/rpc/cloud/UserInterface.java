@@ -1,9 +1,12 @@
 package sunmi.common.rpc.cloud;
 
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
-import sunmi.common.model.RegisterResp;
+import retrofit2.http.Part;
+import sunmi.common.model.UserAvatarResp;
 import sunmi.common.model.UserInfoBean;
 import sunmi.common.rpc.mqtt.EmqTokenResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
@@ -85,8 +88,9 @@ public interface UserInterface {
     /**
      * 修改账号头像
      */
+    @Multipart
     @POST(userPath + "updateIcon")
-    Call<BaseResponse<Object>> updateIcon(@Body BaseRequest request);
+    Call<BaseResponse<UserAvatarResp>> updateIcon(@Part MultipartBody.Part file);
 
     /**
      * 获取token

@@ -5,25 +5,24 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 
-import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.contract.ChangeUsernameContract;
 import com.sunmi.apmanager.presenter.ChangeUsernamePresenter;
-import sunmi.common.utils.SpUtils;
 import com.sunmi.assistant.R;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.notification.BaseNotification;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.TitleBarView;
 
 /**
- * Description:
- * Created by bruce on 2019/1/29.
+ * 设置昵称页面
+ *
+ * @author bruce
+ * @date 2019/1/29
  */
 @EActivity(R.layout.activity_change_username)
 public class ChangeUsernameActivity extends BaseMvpActivity<ChangeUsernamePresenter>
@@ -44,43 +43,33 @@ public class ChangeUsernameActivity extends BaseMvpActivity<ChangeUsernamePresen
         titleBar.setRightTextViewColor(R.color.colorText);
         titleBar.getRightTextView().setOnClickListener(this);
         cetUserName.addTextChangedListener(this);
-        if (!TextUtils.isEmpty(SpUtils.getUsername()))
+        if (!TextUtils.isEmpty(SpUtils.getUsername())) {
             cetUserName.setText(SpUtils.getUsername());
-    }
-
-    @Override
-    @UiThread
-    public void updateSuccess(String bean) {
-        shortTip(R.string.tip_set_complete);
-        SpUtils.setUsername(userName);
-        BaseNotification.newInstance().postNotificationName(
-                NotificationConstant.updateUsernameSuccess, userName);
-        finish();
-    }
-
-    @Override
-    public void updateFail(int code, String msg) {
-        shortTip(R.string.tip_set_fail);
+        }
     }
 
     @Override
     public void onClick(View v) {
-        userName = cetUserName.getText().toString().trim();
-        if (TextUtils.isEmpty(userName)) {
+        Editable text = cetUserName.getText();
+        if (text == null || TextUtils.isEmpty(userName = text.toString().trim())) {
             shortTip(R.string.tip_input_username);
             return;
         }
-        mPresenter.updateUserName(userName);
+        mPresenter.updateUsername(userName);
+    }
+
+    @Override
+    public void updateSuccess() {
+        shortTip(R.string.tip_set_complete);
+        finish();
     }
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
     }
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-
     }
 
     @Override
