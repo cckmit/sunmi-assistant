@@ -175,6 +175,7 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
             case IpcConstants.fsGetStatus:
                 this.mConfig = new Gson().fromJson(res.getResult().toString(), CameraConfig.class);
                 this.mBaseFocus = mConfig.getCurrentFocus();
+                this.mZoomGap = mConfig.getMaxZoom() / 10;
                 if (isViewAttached()) {
                     mView.updateViewsStepTo(RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM);
                 }
