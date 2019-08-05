@@ -38,25 +38,37 @@ public class IOTCClient {
 
     public void init(String uid) {
         LogCat.e(TAG, "StreamClient init...");
-        int ret = IOTCAPIs.IOTC_Initialize2(0);
+        int ret = IOTCAPIs.IOTC_Initialize2(0);//step 1
         LogCat.e(TAG, "IOTC_Initialize() ret = " + ret);
         if (ret != IOTCAPIs.IOTC_ER_NoERROR) {
             LogCat.e(TAG, "IOTCAPIs_Device exit...!!");
+            if (callback != null) {
+                callback.initFail();
+            }
             return;
         }
 
         // alloc 3 sessions for video and two-way audio
-        AVAPIs.avInitialize(3);
+        AVAPIs.avInitialize(3);//step 2
 
-        SID = IOTCAPIs.IOTC_Get_SessionID();
+        SID = IOTCAPIs.IOTC_Get_SessionID();//step 3
         if (SID < 0) {
             LogCat.e(TAG, "IOTC_Get_SessionID error code, sid = " + SID);
+            IOTCAPIs.IOTC_DeInitialize();
+            if (callback != null) {
+                callback.initFail();
+            }
             return;
         }
         LogCat.e(TAG, "Step 1: call IOTC_Get_SessionID, uid = " + uid);
-        ret = IOTCAPIs.IOTC_Connect_ByUID_Parallel(uid, SID);
+        ret = IOTCAPIs.IOTC_Connect_ByUID_Parallel(uid, SID);//step 4
         if (ret < 0) {
             LogCat.e(TAG, "IOTC_Connect_ByUID_Parallel failed ret = " + ret);
+            IOTCAPIs.IOTC_DeInitialize();
+            IOTCAPIs.IOTC_Session_Close(SID);
+            if (callback != null) {
+                callback.initFail();
+            }
             return;
         }
         LogCat.e(TAG, "Step 2: call IOTC_Connect_ByUID_Parallel, uid = " + uid);
@@ -64,14 +76,21 @@ public class IOTCClient {
         String account = "admin";
         String password = "12345678";
         int timeoutSec = 20;
-        int channelId = 1;
+        int channelId = 1;//chid用来传输音视频
         int[] pservType = new int[100];
         int[] bResend1 = new int[100];
 
         avIndex = AVAPIs.avClientStart2(SID, account, password,
-                timeoutSec, pservType, channelId, bResend1);//chid用来传输音视频
+                timeoutSec, pservType, channelId, bResend1);//step 5
         if (avIndex < 0) {
             LogCat.e(TAG, "avClientStartEx failed avIndex = " + avIndex);
+            AVAPIs.avDeInitialize();
+            IOTCAPIs.IOTC_Session_Close(SID);
+            IOTCAPIs.IOTC_Connect_Stop();
+            IOTCAPIs.IOTC_DeInitialize();
+            if (callback != null) {
+                callback.initFail();
+            }
             return;
         }
         LogCat.e(TAG, "Step 3: call avClientStartEx, avIndex = " + avIndex);
@@ -302,6 +321,8 @@ public class IOTCClient {
     }
 
     public interface Callback {
+        void initFail();
+
         void onVideoReceived(byte[] videoBuffer);
 
         void onAudioReceived(byte[] audioBuffer);

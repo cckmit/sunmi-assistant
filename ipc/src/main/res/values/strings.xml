@@ -136,6 +136,7 @@
     <string name="ipc_recognition_line_end">设置门槛终点</string>
     <string name="ipc_recognition_line_cancel">撤销</string>
     <string name="ipc_recognition_complete">摄像机画面调整完成</string>
+    <string name="tip_network_fail_retry">当前网络状况不佳，请刷新重试</string>
 
 </resources>
 
