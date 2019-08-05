@@ -1,4 +1,4 @@
-package com.sunmi.assistant.ui.activity.setting;
+package com.sunmi.assistant.mine;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,8 +10,6 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.sunmi.apmanager.constant.NotificationConstant;
-import com.sunmi.apmanager.contract.UserInfoContract;
-import com.sunmi.apmanager.presenter.UserInfoPresenter;
 import com.sunmi.apmanager.utils.FileHelper;
 import com.sunmi.apmanager.utils.PhotoUtils;
 import com.sunmi.assistant.R;

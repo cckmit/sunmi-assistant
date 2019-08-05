@@ -1,4 +1,4 @@
-package com.sunmi.assistant.ui.fragment;
+package com.sunmi.assistant.mine;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,14 +7,10 @@ import android.widget.TextView;
 
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.constant.NotificationConstant;
-import com.sunmi.apmanager.contract.MineContract;
-import com.sunmi.apmanager.presenter.MinePresenter;
 import com.sunmi.apmanager.ui.activity.store.HelpActivity;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.ui.activity.setting.ChangeCompanyNameActivity_;
 import com.sunmi.assistant.ui.activity.setting.SettingActivity_;
-import com.sunmi.assistant.ui.activity.setting.UserInfoActivity_;
 import com.sunmi.sunmiservice.SunmiServiceConfig;
 import com.sunmi.sunmiservice.WebViewSunmiMallActivity_;
 

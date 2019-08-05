@@ -8,6 +8,7 @@ import java.io.File;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.model.UserAvatarResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -213,9 +214,9 @@ public class SunmiStoreApi {
      * @param avatar   头像文件
      * @param callback 回调
      */
-    public static void updateIcon(File avatar, RetrofitCallback<UserAvatarResp> callback) {
+    public static void updateIcon(String name, File avatar, RetrofitCallback<UserAvatarResp> callback) {
         RequestBody file = RequestBody.create(MediaType.parse("image/*"), avatar);
-        MultipartBody.Part part = MultipartBody.Part.createFormData("icon", avatar.getName(), file);
+        MultipartBody.Part part = MultipartBody.Part.createFormData("icon", name, file);
         SunmiStoreRetrofitClient.getInstance().create(UserInterface.class)
                 .updateIcon(part)
                 .enqueue(callback);
@@ -247,6 +248,20 @@ public class SunmiStoreApi {
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(CompanyInterface.class)
                     .createCompany(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void updateCompanyName(int companyId, String companyName, RetrofitCallback<CompanyInfoResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("company_name", companyName)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CompanyInterface.class)
+                    .updateCompany(new BaseRequest(params))
                     .enqueue(callback);
         } catch (Exception e) {
             e.printStackTrace();

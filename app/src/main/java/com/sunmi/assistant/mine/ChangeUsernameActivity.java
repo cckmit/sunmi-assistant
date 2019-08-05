@@ -1,12 +1,10 @@
-package com.sunmi.assistant.ui.activity.setting;
+package com.sunmi.assistant.mine;
 
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 
-import com.sunmi.apmanager.contract.ChangeUsernameContract;
-import com.sunmi.apmanager.presenter.ChangeUsernamePresenter;
 import com.sunmi.assistant.R;
 
 import org.androidannotations.annotations.AfterViews;
@@ -39,6 +37,7 @@ public class ChangeUsernameActivity extends BaseMvpActivity<ChangeUsernamePresen
     void init() {
         mPresenter = new ChangeUsernamePresenter();
         mPresenter.attachView(this);
+        mPresenter.getUsername();
         titleBar.setRightTextViewText(R.string.str_complete);
         titleBar.setRightTextViewColor(R.color.colorText);
         titleBar.getRightTextView().setOnClickListener(this);
@@ -56,6 +55,19 @@ public class ChangeUsernameActivity extends BaseMvpActivity<ChangeUsernamePresen
             return;
         }
         mPresenter.updateUsername(userName);
+    }
+
+    @Override
+    public void updateUsernameView(String name) {
+        if (!TextUtils.isEmpty(name)) {
+            cetUserName.setText(name);
+            cetUserName.setSelection(name.length());
+        }
+    }
+
+    @Override
+    public void getNameFailed() {
+        finish();
     }
 
     @Override

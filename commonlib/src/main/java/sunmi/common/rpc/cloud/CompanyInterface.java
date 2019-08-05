@@ -31,8 +31,22 @@ public interface CompanyInterface {
     @POST(companyPath + "getInfo")
     Call<BaseResponse<CompanyInfoResp>> getInfo(@Body BaseRequest request);
 
-    //创建商户
+    /**
+     * 创建商户
+     */
     @POST(companyPath + "create")
     Call<BaseResponse<CompanyInfoResp>> createCompany(@Body BaseRequest request);
 
+    /**
+     * 更新商户信息
+     *
+     * @param request company_id	是	int	商户编号
+     *                company_name	是	string	商户名称
+     *                contact_person否	string	联系人
+     *                contact_tel	否	string	联系电话
+     *                contact_email	否	string	联系邮箱
+     * @return Call
+     */
+    @POST(companyPath + "update")
+    Call<BaseResponse<CompanyInfoResp>> updateCompany(@Body BaseRequest request);
 }

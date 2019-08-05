@@ -83,10 +83,10 @@
         <activity android:name=".ui.activity.setting.SecurityActivity_" />
         <activity android:name=".ui.activity.setting.ChangePasswordActivity_" />
         <activity android:name=".ui.activity.setting.AboutActivity_" />
-        <activity android:name=".ui.activity.setting.UserInfoActivity_" />
-        <activity android:name=".ui.activity.setting.ChangeUsernameActivity_" />
+        <activity android:name=".mine.UserInfoActivity_" />
+        <activity android:name=".mine.ChangeUsernameActivity_" />
         <activity android:name=".ui.activity.SunmiLinkSearchActivity_" />
-        <activity android:name=".ui.activity.setting.ChangeCompanyNameActivity_" />
+        <activity android:name=".mine.ChangeCompanyNameActivity_" />
         <activity android:name=".ui.activity.merchant.SelectPlatformActivity_" />
         <activity android:name=".ui.activity.merchant.SelectStoreActivity_" />
         <activity android:name=".ui.activity.merchant.CheckPlatformMobileActivity_" />

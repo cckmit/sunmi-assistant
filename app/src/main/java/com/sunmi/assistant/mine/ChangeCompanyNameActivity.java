@@ -1,4 +1,4 @@
-package com.sunmi.assistant.ui.activity.setting;
+package com.sunmi.assistant.mine;
 
 import android.text.Editable;
 import android.text.InputFilter;
@@ -6,27 +6,21 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 
-import com.sunmi.apmanager.constant.NotificationConstant;
-import com.sunmi.apmanager.contract.ChangeCompanyNameContract;
-import com.sunmi.apmanager.presenter.ChangeCompanyNamePresenter;
 import com.sunmi.assistant.R;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.notification.BaseNotification;
-import sunmi.common.utils.SpUtils;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.TitleBarView;
 
 /**
- * Description:
- * Created by bruce on 2019/6/6.
+ * 更改商户名称页面
+ *
+ * @author bruce
+ * @date 2019/6/6
  */
 @EActivity(R.layout.activity_change_username)
 public class ChangeCompanyNameActivity extends BaseMvpActivity<ChangeCompanyNamePresenter>
@@ -37,13 +31,11 @@ public class ChangeCompanyNameActivity extends BaseMvpActivity<ChangeCompanyName
     @ViewById(R.id.cet_username)
     ClearableEditText cetUserName;
 
-    private String name;
-
     @AfterViews
     void init() {
         mPresenter = new ChangeCompanyNamePresenter();
         mPresenter.attachView(this);
-        mPresenter.getCompanyInfo(SpUtils.getCompanyId());
+        mPresenter.getCompanyInfo();
         titleBar.setAppTitle(R.string.str_change_company_name);
         titleBar.setRightTextViewText(R.string.str_save);
         titleBar.setRightTextViewColor(R.color.colorText);
@@ -55,12 +47,31 @@ public class ChangeCompanyNameActivity extends BaseMvpActivity<ChangeCompanyName
 
     @Override
     public void onClick(View v) {
-        name = cetUserName.getText().toString().trim();
-        if (TextUtils.isEmpty(name)) {
+        String name;
+        if (cetUserName.getText() == null
+                || TextUtils.isEmpty(name = cetUserName.getText().toString().trim())) {
             shortTip(R.string.tip_input_company_name);
             return;
         }
-        mPresenter.updateCompanyName(SpUtils.getCompanyId(), name);
+        mPresenter.updateCompanyName(name);
+    }
+
+    @Override
+    public void updateNameView(String name) {
+        if (!TextUtils.isEmpty(name)) {
+            cetUserName.setText(name);
+            cetUserName.setSelection(name.length());
+        }
+    }
+
+    @Override
+    public void getNameFailed() {
+        finish();
+    }
+
+    @Override
+    public void updateSuccess() {
+        finish();
     }
 
     @Override
@@ -82,40 +93,6 @@ public class ChangeCompanyNameActivity extends BaseMvpActivity<ChangeCompanyName
             titleBar.setRightTextViewColor(com.sunmi.assistant.R.color.colorText);
             titleBar.getRightTextView().setClickable(true);
         }
-    }
-
-    @UiThread
-    @Override
-    public void getInfoSuccess(String bean) {
-        try {
-            JSONObject jsonObject = new JSONObject(bean);
-            if (jsonObject.has("full_name")) {
-                String name = jsonObject.getString("full_name");
-                if (!TextUtils.isEmpty(name)) {
-                    cetUserName.setText(name);
-                    cetUserName.setSelection(name.length());
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void getInfoFail(int code, String msg) {
-        finish();
-    }
-
-    @Override
-    public void updateSuccess(String bean) {
-        SpUtils.setCompanyName(name);
-        BaseNotification.newInstance().postNotificationName(NotificationConstant.companyNameChanged);
-        finish();
-    }
-
-    @Override
-    public void updateFail(int code, String msg) {
-        shortTip("");
     }
 
 }
