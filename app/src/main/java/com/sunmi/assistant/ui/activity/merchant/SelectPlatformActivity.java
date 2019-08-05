@@ -20,7 +20,6 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
@@ -54,8 +53,8 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
 
     @Extra
     boolean isCanBack;
-
-    private List<PlatformInfo.SaasListBean> list = new ArrayList<>();
+    @Extra
+    boolean isLoginSuccess;
 
     @AfterViews
     void init() {
@@ -97,8 +96,9 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
     @Click({R.id.btn_next})
     void btnNext() {
         CheckPlatformMobileActivity_.intent(this)
-                .extra("platform", selectPlatform)
-                .extra("saasSource", selectSaasSource)
+                .platform(selectPlatform)
+                .saasSource(selectSaasSource)
+                .isLoginSuccess(isLoginSuccess)
                 .start();
     }
 
@@ -123,7 +123,7 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
     }
 
     private void showViewList(PlatformInfo data) {
-        list = data.getSaasList();
+        List<PlatformInfo.SaasListBean> list = data.getSaasList();
         recyclerView.setAdapter(new CommonListAdapter<PlatformInfo.SaasListBean>(context,
                 R.layout.item_merchant_platform, list) {
             int selectedIndex = -1;

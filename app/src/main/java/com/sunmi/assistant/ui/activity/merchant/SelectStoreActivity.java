@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 
+import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.contract.AuthStoreCompleteContract;
 import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
@@ -44,6 +45,7 @@ import sunmi.common.view.ViewHolder;
 @EActivity(R.layout.activity_merchant_select_store)
 public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresenter>
         implements AuthStoreCompleteContract.View {
+    private static final int SHOP_NAME_CONTAINS_MAX = 10;
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
     @ViewById(R.id.recyclerView)
@@ -53,6 +55,9 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
 
     @Extra
     boolean isBack;
+    @Extra
+    boolean isLoginSuccess;
+
     @Extra
     ArrayList<AuthStoreInfo.SaasUserInfoListBean> list;
 
@@ -86,7 +91,9 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
         recyclerView.setLayoutManager(linearLayoutManager);
     }
 
-    //先创建门店再授权
+    /**
+     * 先创建门店再授权
+     */
     @Click({R.id.btnComplete})
     void btnComplete() {
         showLoadingDialog();
@@ -96,9 +103,15 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
         }
     }
 
-    //门店名称
+    /**
+     * 门店名称
+     *
+     * @param shopName name
+     * @param i        i
+     * @return
+     */
     private String shopName(String shopName, int i) {
-        if (i < 10) {
+        if (i < SHOP_NAME_CONTAINS_MAX) {
             return shopName + "_0" + (i + 1);
         }
         return shopName + "_" + (i + 1);
@@ -111,9 +124,11 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
      */
     @Override
     public void createStoreSuccess(CreateShopInfo data) {
-        //成功后授权
-        createFlag++;
         LogCat.e(TAG, "111 data createStoreSuccess createFlag=" + (createFlag - 1));
+        createFlag++;
+        if (createFlag == 1) {
+            CommonUtils.saveSelectShop(data.getShop_id(), data.getShop_name());
+        }
         mPresenter.authStoreCompleteInfo(data.getShop_id(),
                 listChecked.get(createFlag - 1).getSaas_source(),
                 listChecked.get(createFlag - 1).getShop_no(),
@@ -153,6 +168,10 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
     }
 
     private void isGotoMainActivity() {
+        if (isLoginSuccess) {
+            finish();
+            return;
+        }
         int checkedNum = listChecked.size();
         if (checkedNum == createFlag || checkedNum == authFlag) {
             createFlag = 0;
@@ -162,7 +181,9 @@ public class SelectStoreActivity extends BaseMvpActivity<AuthStoreCompletePresen
         }
     }
 
-    // 保存选中的数据
+    /**
+     * 保存选中的数据
+     */
     public void listCheckedNotifyDataSetChanged() {
         listChecked = new ArrayList<>();
         AuthStoreInfo.SaasUserInfoListBean bean;

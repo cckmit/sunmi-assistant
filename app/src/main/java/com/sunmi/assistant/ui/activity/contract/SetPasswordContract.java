@@ -1,6 +1,6 @@
 package com.sunmi.assistant.ui.activity.contract;
 
-import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
+import java.util.List;
 
 import sunmi.common.base.BaseView;
 import sunmi.common.model.CompanyInfoResp;
@@ -21,13 +21,9 @@ public interface SetPasswordContract {
 
         void reSetPasswordFail(int code, String msg);
 
-        void getCompanyInfoSuccess(CompanyInfoResp data);
+        void getCompanyListSuccess(List<CompanyInfoResp> companyList);
 
-        void getCompanyInfoFail(int code, String msg);
-
-        void getSaasUserInfoSuccess(AuthStoreInfo data);
-
-        void getSaasUserInfoFail(int code, String msg);
+        void getCompanyListFail(int code, String msg);
     }
 
     interface Presenter {
@@ -35,8 +31,8 @@ public interface SetPasswordContract {
 
         void resetPassword(String username, String password, String code);
 
-        void getCompanyInfo(int companyId);
+        void getUserInfo();
 
-        void getSaasUserInfo(String phone);
+        void getCompanyList();
     }
 }
