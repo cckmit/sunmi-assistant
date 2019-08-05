@@ -19,4 +19,36 @@
 
     <include layout="@layout/view_video_controller" />
 
+    <!--播放错误-->
+    <LinearLayout
+        android:id="@+id/ll_play_fail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_104"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableTop="@mipmap/ic_video_play_error"
+            android:drawablePadding="@dimen/dp_10"
+            android:text="@string/tip_network_fail_retry"
+            android:textColor="@color/color_666666"
+            android:textSize="@dimen/sp_12" />
+
+        <TextView
+            android:id="@+id/tv_retry"
+            android:layout_width="@dimen/dp_96"
+            android:layout_height="@dimen/dp_32"
+            android:layout_marginTop="@dimen/dp_16"
+            android:background="@drawable/setting_bg_tip_btn"
+            android:gravity="center"
+            android:text="@string/str_refresh"
+            android:textColor="@color/c_white"
+            android:textSize="@dimen/sp_12" />
+    </LinearLayout>
+
 </RelativeLayout>

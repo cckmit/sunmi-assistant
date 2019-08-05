@@ -83,5 +83,6 @@
     <string name="str_tip_start_blue">您当前尚未开启蓝牙，是否跳转蓝牙设置页面？</string>
     <string name="str_delete_success">Delete successfully</string>
     <string name="str_delete_fail">Delete failed</string>
+    <string name="tip_play_fail">播放失败</string>
 
 </resources>

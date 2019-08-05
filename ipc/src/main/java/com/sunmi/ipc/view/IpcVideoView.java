@@ -104,6 +104,11 @@ public class IpcVideoView extends SurfaceView
     }
 
     @Override
+    public void initFail() {
+
+    }
+
+    @Override
     public void onVideoReceived(byte[] videoBuffer) {
         if (mVideoDecoder != null) {
             mVideoDecoder.setVideoData(videoBuffer);

@@ -3,6 +3,7 @@ package com.sunmi.ipc.view;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -130,6 +131,8 @@ public class VideoPlayActivity extends BaseActivity
     TimeView timeView;//时间绘制
     @ViewById(resName = "iv_setting")
     ImageView ivSetting;//设置
+    @ViewById(resName = "ll_play_fail")
+    LinearLayout llPlayFail;
 
     @Extra
     String UID;
@@ -141,8 +144,6 @@ public class VideoPlayActivity extends BaseActivity
     //手机屏幕的宽高
     private int screenW, screenH;
     private float aspectRatio;//宽高比
-
-    private int currFocus;
 
     //获取recyclerView width
     private int rvWidth;
@@ -159,6 +160,8 @@ public class VideoPlayActivity extends BaseActivity
     private boolean isPaused;//回放是否暂停
     private boolean isCurrentLive;//当前是否直播
     private int qualityType = 0;//0-超清，1-高清
+
+    private IOTCClient iotcClient;
 
     //adapter
     private DateAdapter adapter;
@@ -198,45 +201,7 @@ public class VideoPlayActivity extends BaseActivity
     private List<VideoListResp.VideoBean> videoListQueue = new ArrayList<>();
 
     //屏幕控件自动隐藏计时器
-    private Timer screenHideTimer = null;
-    private TimerTask screenHideTimerTask = null;
-    private int countdown;
-    private IOTCClient iotcClient;
-
-    //重置倒计时
-    private void resetCountdown() {
-        countdown = 0;
-    }
-
-    //开启计时
-    private void startScreenHideTimer() {
-        stopScreenHideTimer();
-        screenHideTimer = new Timer();
-        screenHideTimer.schedule(screenHideTimerTask = new TimerTask() {
-            @Override
-            public void run() {
-                countdown++;
-                if (countdown == 8) {
-                    hideControlBar();
-                    isControlPanelShow = false;
-                    stopScreenHideTimer();
-                }
-            }
-        }, 0, 1000);
-    }
-
-    // 停止计时
-    private void stopScreenHideTimer() {
-        resetCountdown();
-        if (screenHideTimer != null) {
-            screenHideTimer.cancel();
-            screenHideTimer = null;
-        }
-        if (screenHideTimerTask != null) {
-            screenHideTimerTask.cancel();
-            screenHideTimerTask = null;
-        }
-    }
+    CountDownTimer hideControllerPanelTimer;
 
     @AfterViews
     void init() {
@@ -258,7 +223,6 @@ public class VideoPlayActivity extends BaseActivity
         }, 200);
     }
 
-    @UiThread
     void initControllerPanel() {
         rlScreen.setOnTouchListener(this);
         initVolume();
@@ -343,10 +307,120 @@ public class VideoPlayActivity extends BaseActivity
         }
     }
 
-    //开始直播
-    @Background
-    void initP2pLive() {
-        iotcClient.init(UID);
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        removeCallbacks();
+        closeMove();//关闭时间抽的timer
+        cancelTimer();//关闭屏幕控件自动hide计时器
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                if (!isControlPanelShow) {
+                    startTimer();
+                }
+                break;
+        }
+        return false;
+    }
+
+    //按键控制音量，return true时不显示系统音量 return false时显示系统音量
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            llChangeVolume.setVisibility(View.GONE);
+            ivVolume.setBackgroundResource(volumeHelper.get100CurrentVolume() == 0 ?//获取当前音量
+                    R.mipmap.ic_muse : R.mipmap.ic_volume);
+            return false;
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        videoDecoder = new H264Decoder(holder.getSurface(), 0);
+        initP2pLive();
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        if (videoDecoder != null) {//关闭操作
+            videoDecoder.stopRunning();
+            videoDecoder = null;
+        }
+    }
+
+    @Override
+    @UiThread
+    public void initFail() {
+        hideLoadingDialog();
+        llPlayFail.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onVideoReceived(byte[] videoBuffer) {
+        if (videoDecoder != null)
+            videoDecoder.setVideoData(videoBuffer);
+        hideLoadingDialog();
+    }
+
+    @Override
+    public void onAudioReceived(byte[] audioBuffer) {
+        audioDecoder.setAudioData(audioBuffer);
+    }
+
+    @Override
+    public void onStartPlay() {
+        hideLoadingDialog();
+    }
+
+    @Override
+    public void onPlayComplete() {
+        //获取当前播放完毕时间判断是否cloud or ap
+        long currTime = centerCurrentTime(linearLayoutManager.findFirstVisibleItemPosition());//当前中间轴时间
+        selectedTimeIsHaveVideo(currTime);
+    }
+
+    @Override
+    public void IOTCResult(String result) {
+        LogCat.e(TAG, "888888 time ap get result = " + result);
+        try {
+            JSONObject object = new JSONObject(result);
+            int errcode = object.getInt("errcode");
+            if (errcode == 0) {
+                JSONArray array = object.getJSONArray("data");
+                JSONObject object1 = (JSONObject) array.opt(0);
+                int cmd = object1.getInt("cmd");
+                if (cmd == 32) {//ap回放时间轴
+                    if (!object1.has("result")) return;
+                    JSONArray array1 = object1.getJSONArray("result");
+                    ApCloudTimeBean ap;
+                    listAp.clear();
+                    for (int i = 0; i < array1.length(); i++) {
+                        JSONObject object2 = (JSONObject) array1.opt(i);
+                        ap = new ApCloudTimeBean();
+                        ap.setStartTime(object2.getLong("start_time"));
+                        ap.setEndTime(object2.getLong("end_time"));
+                        ap.setApPlay(true);
+                        listAp.add(ap);
+                    }
+                    ///获取cloud回放时间轴
+                    getTimeList(deviceId, threeDaysBeforeSeconds, currentDateSeconds);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Click(resName = "rl_video_back")
@@ -478,7 +552,7 @@ public class VideoPlayActivity extends BaseActivity
     @Click(resName = "rl_screen")
     void screenClick() {
         if (isControlPanelShow) {
-            hideControlBar();
+            hideControllerBar();
             isControlPanelShow = false;
         } else {
             rlTopBar.setVisibility(View.VISIBLE);
@@ -487,23 +561,31 @@ public class VideoPlayActivity extends BaseActivity
         }
     }
 
+    //点击屏幕 todo test
+    @Click(resName = "test_cloud_back")
+    void cloudClick() {
+        switch2CloudPlayback(1560096000, 1560100000);
+    }
+
+    @Click(resName = "tv_retry")
+    void retryClick() {
+        llPlayFail.setVisibility(View.GONE);
+        showLoadingDialog();
+        initP2pLive();
+    }
+
+    //开始直播
+    @Background
+    void initP2pLive() {
+        iotcClient.init(UID);
+    }
+
     @UiThread
-    void hideControlBar() {
+    void hideControllerBar() {
         rlTopBar.setVisibility(View.GONE);
         rlBottomBar.setVisibility(View.GONE);
         llChangeVolume.setVisibility(View.GONE);//音量
         llVideoQuality.setVisibility(View.GONE);//画质
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                if (!isControlPanelShow) startScreenHideTimer();
-                break;
-        }
-        return false;
     }
 
     /**
@@ -551,6 +633,9 @@ public class VideoPlayActivity extends BaseActivity
         hideLoadingDialog();
     }
 
+    /**
+     * 切到云端回放
+     */
     void switch2CloudPlayback(long start, long end) {
         showLoadingDialog();
         if (!isCloudPlayBack) {
@@ -568,12 +653,6 @@ public class VideoPlayActivity extends BaseActivity
         isCurrentLive = false;
         ivLive.setVisibility(View.VISIBLE);
         getCloudVideoUrls(start, end);
-    }
-
-    //点击屏幕
-    @Click(resName = "test_cloud_back")
-    void cloudClick() {
-        switch2CloudPlayback(1560096000, 1560100000);
     }
 
     //开始计时录制
@@ -604,9 +683,7 @@ public class VideoPlayActivity extends BaseActivity
         }
     }
 
-    //*********************************************************************
-    //***********************云端回放***************************************
-    //*********************************************************************
+    //********************************* 云端回放 ***********************************
 
     private void getCloudVideoUrls(long start, long end) {
         if (deviceId <= 0) {
@@ -632,18 +709,23 @@ public class VideoPlayActivity extends BaseActivity
         });
     }
 
+    /**
+     * 播放云端回放
+     *
+     * @param urlList
+     */
     private void cloudPlay(List<String> urlList) {
         ivpCloud.setUrlQueue(urlList);
         try {
             ivpCloud.startPlay();
         } catch (Exception e) {
-            shortTip("播放失败");
+            shortTip(R.string.tip_play_fail);
             e.printStackTrace();
         }
     }
 
     /*
-     * 负责界面销毁时，release各个mediaPlayer
+     * 云端回放销毁
      */
     private void cloudPlayDestroy() {
         try {
@@ -657,38 +739,6 @@ public class VideoPlayActivity extends BaseActivity
 
     //***********************云端回放***************************************!
     //*********************************************************************
-
-    @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-        videoDecoder = new H264Decoder(holder.getSurface(), 0);
-        initP2pLive();
-    }
-
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-    }
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-        //关闭操作
-        if (videoDecoder != null) {
-            videoDecoder.stopRunning();
-            videoDecoder = null;
-        }
-    }
-
-    @Override
-    public void onVideoReceived(byte[] videoBuffer) {
-        if (videoDecoder != null)
-            videoDecoder.setVideoData(videoBuffer);
-        hideLoadingDialog();
-    }
-
-    @Override
-    public void onAudioReceived(byte[] audioBuffer) {
-        audioDecoder.setAudioData(audioBuffer);
-    }
 
     /**
      * 调节音量
@@ -723,30 +773,6 @@ public class VideoPlayActivity extends BaseActivity
         } else {
             ivVolume.setBackgroundResource(R.mipmap.ic_volume);
         }
-    }
-
-    //按键控制音量，return true时不显示系统音量 return false时显示系统音量
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-            llChangeVolume.setVisibility(View.GONE);
-            //获取当前音量
-            int currentVolume100 = volumeHelper.get100CurrentVolume();
-            if (currentVolume100 == 0) {
-                ivVolume.setBackgroundResource(R.mipmap.ic_muse);
-            } else {
-                ivVolume.setBackgroundResource(R.mipmap.ic_volume);
-            }
-            return false;
-        } else return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        removeCallbacks();
-        closeMove();//关闭时间抽的timer
-        stopScreenHideTimer();//关闭屏幕控件自动hide计时器
     }
 
     /**
@@ -821,7 +847,7 @@ public class VideoPlayActivity extends BaseActivity
         if (isSelectedDate) scrollSelectedDate0AM();
 
         //开启控件隐藏倒计时
-        startScreenHideTimer();
+        startTimer();
     }
 
     @UiThread
@@ -1269,38 +1295,6 @@ public class VideoPlayActivity extends BaseActivity
         }, 3000);
     }
 
-    @Override
-    public void IOTCResult(String result) {
-        LogCat.e(TAG, "888888 time ap get result = " + result);
-        try {
-            JSONObject object = new JSONObject(result);
-            int errcode = object.getInt("errcode");
-            if (errcode == 0) {
-                JSONArray array = object.getJSONArray("data");
-                JSONObject object1 = (JSONObject) array.opt(0);
-                int cmd = object1.getInt("cmd");
-                if (cmd == 32) {//ap回放时间轴
-                    if (!object1.has("result")) return;
-                    JSONArray array1 = object1.getJSONArray("result");
-                    ApCloudTimeBean ap;
-                    listAp.clear();
-                    for (int i = 0; i < array1.length(); i++) {
-                        JSONObject object2 = (JSONObject) array1.opt(i);
-                        ap = new ApCloudTimeBean();
-                        ap.setStartTime(object2.getLong("start_time"));
-                        ap.setEndTime(object2.getLong("end_time"));
-                        ap.setApPlay(true);
-                        listAp.add(ap);
-                    }
-                    ///获取cloud回放时间轴
-                    getTimeList(deviceId, threeDaysBeforeSeconds, currentDateSeconds);
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
     private void cloudListNullOrFail() {
         if (listAp == null || listAp.size() == 0) {
             switch2Live();//无ap且无cloud的时间列表
@@ -1421,16 +1415,34 @@ public class VideoPlayActivity extends BaseActivity
         return list;
     }
 
-    @Override
-    public void onStartPlay() {
-        hideLoadingDialog();
+    private void startTimer() {
+        if (hideControllerPanelTimer == null) {
+            hideControllerPanelTimer = new CountDownTimer(8000, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+
+                }
+
+                @Override
+                public void onFinish() {
+                    hideControllerBar();
+                    isControlPanelShow = false;
+                }
+            };
+        }
+        hideControllerPanelTimer.start();
     }
 
-    @Override
-    public void onPlayComplete() {
-        //获取当前播放完毕时间判断是否cloud or ap
-        long currTime = centerCurrentTime(linearLayoutManager.findFirstVisibleItemPosition());//当前中间轴时间
-        selectedTimeIsHaveVideo(currTime);
+    private void cancelTimer() {
+        if (hideControllerPanelTimer != null) {
+            hideControllerPanelTimer.cancel();
+        }
+    }
+
+    //重置倒计时
+    private void resetCountdown() {
+        cancelTimer();
+        startTimer();
     }
 
 }
