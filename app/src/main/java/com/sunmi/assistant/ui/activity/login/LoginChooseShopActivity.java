@@ -74,6 +74,8 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     String companyName;
     @Extra
     int saasExist;
+    @Extra
+    boolean isCreateCompany;
 
     private int shopId;
     private String shopName;
@@ -91,7 +93,9 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
         if (action == CommonConstants.ACTION_LOGIN_CHOOSE_COMPANY) {
             titleBar.setAppTitle(R.string.str_select_company);
             tvSelectType.setText(R.string.company_select);
-            titleBar.setRightTextViewText(R.string.company_create);
+            if (isCreateCompany) {
+                titleBar.setRightTextViewText(R.string.company_create);
+            }
             titleBar.getRightText().setOnClickListener(this);
             btnEnterMain.setVisibility(View.GONE);
             mPresenter.getUserInfo();
