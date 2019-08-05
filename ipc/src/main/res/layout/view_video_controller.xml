@@ -2,9 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rl_control_panel"
     android:layout_width="match_parent"
-    android:visibility="gone"
     android:layout_height="match_parent"
-    android:background="@color/transparent">
+    android:background="@color/transparent"
+    android:visibility="gone">
 
     <RelativeLayout
         android:id="@+id/rl_top"
@@ -87,38 +87,6 @@
         android:textColor="@color/c_white"
         android:textSize="@dimen/sp_12"
         android:visibility="gone" />
-
-    <!--播放错误-->
-    <LinearLayout
-        android:id="@+id/error"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/black"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="播放错误，请重试。"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/sp_13" />
-
-        <TextView
-            android:id="@+id/retry"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
-            android:background="@drawable/bg_shap_green"
-            android:paddingLeft="@dimen/dp_12"
-            android:paddingTop="@dimen/dp_4"
-            android:paddingRight="@dimen/dp_12"
-            android:paddingBottom="@dimen/dp_5"
-            android:text="点击重试"
-            android:textColor="@android:color/white"
-            android:textSize="13sp" />
-    </LinearLayout>
 
     <!--改变声音-->
     <LinearLayout

@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.Button;
 
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.model.IpcListResp;
+import com.sunmi.ipc.rpc.IPCCloudApi;
+import com.sunmi.ipc.setting.recognition.RecognitionSettingActivity_;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -22,8 +25,10 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.RpcErrorCode;
+import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.GotoActivityUtils;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.ViewHolder;
 import sunmi.common.view.activity.StartConfigSMDeviceActivity_;
@@ -118,7 +123,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                         holder.getView(R.id.tv_adjust).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                //TODO 摄像头校准
+                                startCameraAdjust(device.getDeviceid());
                             }
                         });
                     }
@@ -140,6 +145,62 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    public void startCameraAdjust(final String deviceId) {
+        showLoadingDialog();
+        IPCCloudApi.getDetailList(SpUtils.getCompanyId(), SpUtils.getShopId(),
+                new RetrofitCallback<IpcListResp>() {
+                    @Override
+                    public void onSuccess(int code, String msg, IpcListResp data) {
+                        hideLoadingDialog();
+                        boolean success = false;
+                        List<SunmiDevice> list = new ArrayList<>();
+                        if (data.getFs_list() != null && data.getFs_list().size() > 0) {
+                            for (IpcListResp.SsListBean bean : data.getFs_list()) {
+                                if (deviceId.equalsIgnoreCase(bean.getSn())) {
+                                    startCameraAdjustActivity(getSunmiDevice(bean));
+                                    success = true;
+                                }
+                            }
+                        }
+                        if (!success) {
+                            shortTip(R.string.tip_device_not_exist);
+                        }
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg, IpcListResp data) {
+                        hideLoadingDialog();
+                        shortTip(R.string.str_net_exception);
+                    }
+                });
+    }
+
+    private SunmiDevice getSunmiDevice(IpcListResp.SsListBean bean) {
+        SunmiDevice device = new SunmiDevice();
+        device.setType("IPC");
+        device.setStatus(bean.getActive_status());
+        device.setDeviceid(bean.getSn());
+        device.setModel(bean.getModel());
+        device.setName(bean.getDevice_name());
+        device.setIp(bean.getCdn_address());
+        device.setUid(bean.getUid());
+        device.setShopId(bean.getShop_id());
+        device.setId(bean.getId());
+        device.setFirmware(bean.getBin_version());
+        return device;
+    }
+
+    private void startCameraAdjustActivity(SunmiDevice device) {
+        if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(device.getDeviceid())) {
+            shortTip(R.string.ipc_setting_tip_network_dismatch);
+            return;
+        }
+        RecognitionSettingActivity_.intent(this)
+                .mDevice(device)
+                .mVideoRatio(16f / 9f)
+                .start();
     }
 
 }

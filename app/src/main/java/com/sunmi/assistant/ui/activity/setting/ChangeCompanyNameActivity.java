@@ -48,6 +48,7 @@ public class ChangeCompanyNameActivity extends BaseMvpActivity<ChangeCompanyName
         titleBar.setRightTextViewText(R.string.str_save);
         titleBar.setRightTextViewColor(R.color.colorText);
         titleBar.getRightTextView().setOnClickListener(this);
+        cetUserName.setHint(R.string.tip_input_company_name);
         cetUserName.setFilters(new InputFilter[]{new InputFilter.LengthFilter(40)});
         cetUserName.addTextChangedListener(this);
         cetUserName.requestFocus();

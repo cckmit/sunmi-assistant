@@ -33,6 +33,7 @@ public class IpcVideoView extends SurfaceView
 
     private H264Decoder mVideoDecoder = null;
     private AACDecoder mAudioDecoder = null;
+    IOTCClient iotcClient;
 
     public IpcVideoView(Context context) {
         this(context, null);
@@ -46,17 +47,21 @@ public class IpcVideoView extends SurfaceView
         super(context, attrs, defStyleAttr);
     }
 
-    public void init(String uid, int widthRatio, int heightRatio, ResultCallback callback) {
-        if (widthRatio <= 0 || heightRatio <= 0) {
-            LogCat.e(TAG, "Width : height ratio must be above zero.");
-        } else {
-            mWidthHeightRatio = (float) widthRatio / (float) heightRatio;
-        }
+    /**
+     * 直播View初始化
+     *
+     * @param uid        IPC的UID
+     * @param videoRatio 视频长宽比（width / height）
+     * @param callback   IOTCResult回调
+     */
+    public void init(String uid, float videoRatio, ResultCallback callback) {
+        this.mWidthHeightRatio = videoRatio;
         this.mUid = uid;
         mVideoHolder = getHolder();
         mVideoHolder.addCallback(this);
         mCallback = callback;
-        IOTCClient.setCallback(this);
+        iotcClient = new IOTCClient(uid);
+        iotcClient.setCallback(this);
     }
 
     public Rect getRect() {
@@ -67,7 +72,7 @@ public class IpcVideoView extends SurfaceView
         BackgroundExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                IOTCClient.init(mUid);
+                iotcClient.init(mUid);
             }
         });
     }
@@ -95,7 +100,12 @@ public class IpcVideoView extends SurfaceView
             mAudioDecoder.stop();
             mAudioDecoder = null;
         }
-        IOTCClient.close();
+        iotcClient.close();
+    }
+
+    @Override
+    public void initFail() {
+
     }
 
     @Override
@@ -123,7 +133,7 @@ public class IpcVideoView extends SurfaceView
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
-        if (mWidthHeightRatio < 0 || width == 0 || height == 0) {
+        if (mWidthHeightRatio <= 0 || width == 0 || height == 0) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             return;
         }

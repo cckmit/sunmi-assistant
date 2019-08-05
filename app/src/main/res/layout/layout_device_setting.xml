@@ -49,20 +49,4 @@
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/sp_14" />
 
-    <View
-        android:id="@+id/divider2"
-        android:layout_width="@dimen/dp_102"
-        android:layout_height="@dimen/dp_0_5"
-        android:background="@color/white_10a" />
-
-    <TextView
-        android:id="@+id/tv_recognition"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_48"
-        android:gravity="center"
-        android:singleLine="true"
-        android:text="调整画面(临)"
-        android:textColor="@color/colorWhite"
-        android:textSize="@dimen/sp_14" />
-
 </LinearLayout>

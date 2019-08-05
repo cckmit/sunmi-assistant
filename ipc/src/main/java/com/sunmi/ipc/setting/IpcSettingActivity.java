@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ import com.sunmi.ipc.model.IpcNightModeResp;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.setting.entity.DetectionConfig;
+import com.sunmi.ipc.setting.recognition.RecognitionSettingActivity_;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.CheckedChange;
@@ -76,6 +78,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @ViewById(resName = "sil_camera_name")
     SettingItemLayout mNameView;
+    @ViewById(resName = "sil_camera_adjust")
+    SettingItemLayout mAdjustScreen;
     @ViewById(resName = "sil_voice_exception")
     SettingItemLayout mSoundDetection;
     @ViewById(resName = "sil_active_exception")
@@ -174,6 +178,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         tvName.setEllipsize(TextUtils.TruncateAt.END);
         if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
             setWifiUnknown();
+        }
+        if (!DeviceTypeUtils.getInstance().isFS1(mDevice.getModel())) {
+            mAdjustScreen.setVisibility(View.GONE);
         }
     }
 
@@ -293,6 +300,25 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         if (noNetCannotClick(true)) return;
         IpcSettingDetailActivity_.intent(this)
                 .mDevice(mDevice)
+                .start();
+    }
+
+    @Click(resName = "sil_camera_adjust")
+    void cameraAdjust() {
+        if (!NetworkUtils.isNetworkAvailable(this)) {
+            shortTip(R.string.str_net_exception);
+            return;
+        }
+        if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
+            shortTip(R.string.ipc_setting_tip_network_dismatch);
+            return;
+        }
+        if (!DeviceTypeUtils.getInstance().isFS1(mDevice.getModel())) {
+            return;
+        }
+        RecognitionSettingActivity_.intent(this)
+                .mDevice(mDevice)
+                .mVideoRatio(16f / 9f)
                 .start();
     }
 

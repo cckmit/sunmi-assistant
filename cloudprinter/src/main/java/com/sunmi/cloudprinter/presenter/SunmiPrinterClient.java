@@ -288,7 +288,9 @@ public class SunmiPrinterClient implements BluetoothAdapter.LeScanCallback {
                                     iPrinterClient.onSetWifiSuccess();
                                 }
                             } else {
-                                if (cmd != Constants.CMD_REQ_WIFI_CONNECTED) {
+                                if (cmd != Constants.CMD_REQ_WIFI_CONNECTED
+                                        && cmd != Constants.CMD_REQ_DELETE_WIFI_INFO
+                                        && cmd != Constants.CMD_REQ_QUIT_CONFIG) {
                                     iPrinterClient.sendDataFail(code, context.getString(R.string.tip_send_fail));
                                 }
                             }
