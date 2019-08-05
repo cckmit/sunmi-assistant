@@ -125,7 +125,9 @@
     <string name="ipc_recognition_tip_ok">知道了</string>
     <string name="ipc_recognition_loading">画面调整中…</string>
     <string name="ipc_recognition_network_error">网络异常，请检查网络</string>
-    <string name="ipc_recognition_sd_error">设备SD卡异常</string>
+    <string name="ipc_recognition_sd_none">存储卡未插入，无法使用该功能，请先插入存储卡</string>
+    <string name="ipc_recognition_sd_uninitialized">检测到存储卡，需要格式化才可使用，请提前保存重要资料</string>
+    <string name="ipc_recognition_sd_unknown">存储卡无法识别，请更换新的存储卡</string>
     <string name="ipc_recognition_tip_position">请安排人员面向摄像头，站在需要识别人脸的位置</string>
     <string name="ipc_recognition_tip_zoom">调整画面大小并移动人脸框的位置，使人脸刚好填充整个人脸框</string>
     <string name="ipc_recognition_tip_focus">若自动对焦不清晰，可以手动对焦调整人脸清晰</string>

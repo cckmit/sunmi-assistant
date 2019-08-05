@@ -176,7 +176,7 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
             mPresenter.updateState();
         } else if (mStepIndex == RecognitionSettingContract.STEP_3_FOCUS) {
             showLoadingDialog();
-            mPresenter.checkSdState();
+            mPresenter.checkSdStatus();
         } else if (mStepIndex == RecognitionSettingContract.STEP_4_LINE) {
             showLoadingDialog();
             int[] start = new int[2];

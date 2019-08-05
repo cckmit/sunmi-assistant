@@ -98,7 +98,7 @@ public class IPCCall extends BaseIpcApi {
      * 获取SD卡状态信息
      */
     public void getSdState(String ip) {
-        int opCode = IpcConstants.getSdState;
+        int opCode = IpcConstants.getSdStatus;
         RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                 "0x" + Integer.toHexString(opCode), new JSONObject());
         new IPCLocalApi(ip).postRouterTimeout("", opCode, requestBean.serialize(), 20);

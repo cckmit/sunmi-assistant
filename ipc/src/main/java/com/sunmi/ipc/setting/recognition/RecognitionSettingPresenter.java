@@ -22,6 +22,11 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
 
     private static final String TAG = RecognitionSettingPresenter.class.getSimpleName();
 
+    private static final int SD_STATUS_NONE = 0;
+    private static final int SD_STATUS_UNINITIALIZED = 1;
+    private static final int SD_STATUS_FINE = 2;
+    private static final int SD_STATUS_UNKNOWN = 3;
+
     private Callback mCallback = new Callback();
 
     private SunmiDevice mDevice;
@@ -44,7 +49,7 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
         BaseNotification.newInstance().addStickObserver(this, IpcConstants.fsFocus);
         BaseNotification.newInstance().addStickObserver(this, IpcConstants.fsReset);
         BaseNotification.newInstance().addStickObserver(this, IpcConstants.fsSetLine);
-        BaseNotification.newInstance().addStickObserver(this, IpcConstants.getSdState);
+        BaseNotification.newInstance().addStickObserver(this, IpcConstants.getSdStatus);
     }
 
     @Override
@@ -68,7 +73,7 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
     }
 
     @Override
-    public void checkSdState() {
+    public void checkSdStatus() {
         SunmiDevice device = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
         if (device != null) {
             LogCat.d(TAG, "Get sd state: " + device.getIp());
@@ -180,15 +185,25 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
                     mView.updateViewsStepTo(RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM);
                 }
                 break;
-            case IpcConstants.getSdState:
+            case IpcConstants.getSdStatus:
                 try {
-                    int state = res.getResult().getInt("sd_status_code");
-                    LogCat.d(TAG, "SD State: " + state);
+                    int status = res.getResult().getInt("sd_status_code");
+                    LogCat.d(TAG, "SD State: " + status);
                     if (isViewAttached()) {
-                        if (state != 2) {
-                            mView.showErrorDialog(R.string.ipc_recognition_sd_error);
-                        } else {
-                            mView.updateViewsStepTo(RecognitionSettingContract.STEP_4_LINE);
+                        switch (status) {
+                            case SD_STATUS_NONE:
+                                mView.showErrorDialog(R.string.ipc_recognition_sd_none);
+                                break;
+                            case SD_STATUS_UNINITIALIZED:
+                                mView.showErrorDialog(R.string.ipc_recognition_sd_uninitialized);
+                                break;
+                            case SD_STATUS_FINE:
+                                mView.updateViewsStepTo(RecognitionSettingContract.STEP_4_LINE);
+                                break;
+                            case SD_STATUS_UNKNOWN:
+                                mView.showErrorDialog(R.string.ipc_recognition_sd_unknown);
+                                break;
+                            default:
                         }
                     }
                 } catch (JSONException e) {
@@ -241,7 +256,7 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
         BaseNotification.newInstance().removeObserver(this, IpcConstants.fsFocus);
         BaseNotification.newInstance().removeObserver(this, IpcConstants.fsReset);
         BaseNotification.newInstance().removeObserver(this, IpcConstants.fsSetLine);
-        BaseNotification.newInstance().removeObserver(this, IpcConstants.getSdState);
+        BaseNotification.newInstance().removeObserver(this, IpcConstants.getSdStatus);
     }
 
     private class Callback implements IpcVideoView.ResultCallback {
