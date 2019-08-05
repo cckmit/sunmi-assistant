@@ -7,6 +7,8 @@ import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.setting.entity.CameraConfig;
 import com.sunmi.ipc.view.IpcVideoView;
 
+import org.json.JSONException;
+
 import sunmi.common.base.BasePresenter;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
@@ -19,6 +21,11 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
         implements RecognitionSettingContract.Presenter, BaseNotification.NotificationCenterDelegate {
 
     private static final String TAG = RecognitionSettingPresenter.class.getSimpleName();
+
+    private static final int SD_STATUS_NONE = 0;
+    private static final int SD_STATUS_UNINITIALIZED = 1;
+    private static final int SD_STATUS_FINE = 2;
+    private static final int SD_STATUS_UNKNOWN = 3;
 
     private Callback mCallback = new Callback();
 
@@ -42,6 +49,7 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
         BaseNotification.newInstance().addStickObserver(this, IpcConstants.fsFocus);
         BaseNotification.newInstance().addStickObserver(this, IpcConstants.fsReset);
         BaseNotification.newInstance().addStickObserver(this, IpcConstants.fsSetLine);
+        BaseNotification.newInstance().addStickObserver(this, IpcConstants.getSdStatus);
     }
 
     @Override
@@ -59,6 +67,17 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
         if (device != null) {
             LogCat.d(TAG, "Get status: " + device.getIp());
             IPCCall.getInstance().fsGetStatus(device.getIp());
+        } else if (isViewAttached()) {
+            mView.showErrorDialog(R.string.ipc_setting_tip_network_dismatch);
+        }
+    }
+
+    @Override
+    public void checkSdStatus() {
+        SunmiDevice device = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
+        if (device != null) {
+            LogCat.d(TAG, "Get sd state: " + device.getIp());
+            IPCCall.getInstance().getSdState(device.getIp());
         } else if (isViewAttached()) {
             mView.showErrorDialog(R.string.ipc_setting_tip_network_dismatch);
         }
@@ -157,26 +176,59 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
             }
             return;
         }
-        if (id == IpcConstants.fsSetLine) {
-            if (isViewAttached()) {
-                mView.complete();
-            }
-            return;
-        }
-        mConfig = new Gson().fromJson(res.getResult().toString(), CameraConfig.class);
-        mZoomGap = mConfig.getMaxZoom() / 10;
-        if (id == IpcConstants.fsGetStatus) {
-            this.mBaseFocus = mConfig.getCurrentFocus();
-            if (isViewAttached()) {
-                mView.updateViewsStepTo(RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM);
-            }
-        } else if (id == IpcConstants.fsZoom || id == IpcConstants.fsReset) {
-            this.mBaseFocus = mConfig.getCurrentFocus();
-            updateZoomBtnEnable();
-        } else if (id == IpcConstants.fsFocus) {
-            updateFocusBtnEnable();
-        } else if (id == IpcConstants.fsAutoFocus) {
-            this.mBaseFocus = mConfig.getCurrentFocus();
+        switch (id) {
+            case IpcConstants.fsGetStatus:
+                this.mConfig = new Gson().fromJson(res.getResult().toString(), CameraConfig.class);
+                this.mBaseFocus = mConfig.getCurrentFocus();
+                this.mZoomGap = mConfig.getMaxZoom() / 10;
+                if (isViewAttached()) {
+                    mView.updateViewsStepTo(RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM);
+                }
+                break;
+            case IpcConstants.getSdStatus:
+                try {
+                    int status = res.getResult().getInt("sd_status_code");
+                    LogCat.d(TAG, "SD State: " + status);
+                    if (isViewAttached()) {
+                        switch (status) {
+                            case SD_STATUS_NONE:
+                                mView.showErrorDialog(R.string.ipc_recognition_sd_none);
+                                break;
+                            case SD_STATUS_UNINITIALIZED:
+                                mView.showErrorDialog(R.string.ipc_recognition_sd_uninitialized);
+                                break;
+                            case SD_STATUS_FINE:
+                                mView.updateViewsStepTo(RecognitionSettingContract.STEP_4_LINE);
+                                break;
+                            case SD_STATUS_UNKNOWN:
+                                mView.showErrorDialog(R.string.ipc_recognition_sd_unknown);
+                                break;
+                            default:
+                        }
+                    }
+                } catch (JSONException e) {
+                    LogCat.e(TAG, "Parse json ERROR: " + res.getResult());
+                }
+                break;
+            case IpcConstants.fsAutoFocus:
+                this.mConfig = new Gson().fromJson(res.getResult().toString(), CameraConfig.class);
+                this.mBaseFocus = mConfig.getCurrentFocus();
+                break;
+            case IpcConstants.fsZoom:
+            case IpcConstants.fsReset:
+                this.mConfig = new Gson().fromJson(res.getResult().toString(), CameraConfig.class);
+                this.mBaseFocus = mConfig.getCurrentFocus();
+                updateZoomBtnEnable();
+                break;
+            case IpcConstants.fsFocus:
+                this.mConfig = new Gson().fromJson(res.getResult().toString(), CameraConfig.class);
+                updateFocusBtnEnable();
+                break;
+            case IpcConstants.fsSetLine:
+                if (isViewAttached()) {
+                    mView.complete();
+                }
+            default:
         }
     }
 
@@ -204,6 +256,7 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
         BaseNotification.newInstance().removeObserver(this, IpcConstants.fsFocus);
         BaseNotification.newInstance().removeObserver(this, IpcConstants.fsReset);
         BaseNotification.newInstance().removeObserver(this, IpcConstants.fsSetLine);
+        BaseNotification.newInstance().removeObserver(this, IpcConstants.getSdStatus);
     }
 
     private class Callback implements IpcVideoView.ResultCallback {
