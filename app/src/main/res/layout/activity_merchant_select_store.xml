@@ -44,7 +44,7 @@
         android:layout_height="@dimen/dp_44"
         android:layout_alignParentBottom="true"
         android:layout_margin="@dimen/dp_20"
-        android:background="@drawable/edittext_solid_orange"
+        android:background="@drawable/button_corners_solid_orange"
         android:text="@string/str_complete"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/sp_16" />
