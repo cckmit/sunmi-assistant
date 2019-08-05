@@ -119,7 +119,7 @@
         android:layout_height="@dimen/dp_44"
         android:layout_below="@id/rl_code"
         android:layout_margin="@dimen/dp_20"
-        android:background="@drawable/edittext_solid_orange"
+        android:background="@drawable/button_corners_solid_orange"
         android:text="@string/str_button_check"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/sp_16" />

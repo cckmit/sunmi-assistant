@@ -1,12 +1,12 @@
 package com.sunmi.assistant.ui.activity.presenter;
 
-import com.sunmi.assistant.data.SunmiStoreRemote;
+import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.rpc.CloudCall;
 import com.sunmi.assistant.ui.activity.contract.SetPasswordContract;
-import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
 
 import sunmi.common.base.BasePresenter;
-import sunmi.common.model.CompanyInfoResp;
+import sunmi.common.model.CompanyListResp;
+import sunmi.common.model.UserInfoBean;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.cloud.SunmiStoreRetrofitClient;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -27,7 +27,8 @@ public class SetPasswordPresenter extends BasePresenter<SetPasswordContract.View
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
                     SpUtils.setStoreToken(data.toString());
-                    SunmiStoreRetrofitClient.createInstance();//初始化retrofit
+                    //初始化retrofit
+                    SunmiStoreRetrofitClient.createInstance();
                     mView.registerSuccess();
                 }
             }
@@ -61,40 +62,45 @@ public class SetPasswordPresenter extends BasePresenter<SetPasswordContract.View
     }
 
     @Override
-    public void getCompanyInfo(int companyId) {
-        SunmiStoreRemote.get().getCompanyInfo(companyId, new RetrofitCallback<CompanyInfoResp>() {
+    public void getUserInfo() {
+        mView.showLoadingDialog();
+        SunmiStoreApi.getUserInfo(new RetrofitCallback<UserInfoBean>() {
             @Override
-            public void onSuccess(int code, String msg, CompanyInfoResp data) {
+            public void onSuccess(int code, String msg, UserInfoBean data) {
                 if (isViewAttached()) {
-                    mView.getCompanyInfoSuccess(data);
+                    CommonUtils.saveLoginInfo(data);
+                    getCompanyList();
                 }
             }
 
             @Override
-            public void onFail(int code, String msg, CompanyInfoResp data) {
+            public void onFail(int code, String msg, UserInfoBean data) {
                 if (isViewAttached()) {
-                    mView.getCompanyInfoFail(code, msg);
+                    mView.hideLoadingDialog();
                 }
             }
         });
     }
 
     @Override
-    public void getSaasUserInfo(String phone) {
-        CloudCall.getSaasUserInfo(phone, new RetrofitCallback<AuthStoreInfo>() {
+    public void getCompanyList() {
+        CloudCall.getCompanyList(new RetrofitCallback<CompanyListResp>() {
             @Override
-            public void onSuccess(int code, String msg, AuthStoreInfo data) {
+            public void onSuccess(int code, String msg, CompanyListResp data) {
                 if (isViewAttached()) {
-                    mView.getSaasUserInfoSuccess(data);
+                    mView.hideLoadingDialog();
+                    mView.getCompanyListSuccess(data.getCompany_list());
                 }
             }
 
             @Override
-            public void onFail(int code, String msg, AuthStoreInfo data) {
+            public void onFail(int code, String msg, CompanyListResp data) {
                 if (isViewAttached()) {
-                    mView.getSaasUserInfoFail(code, msg);
+                    mView.hideLoadingDialog();
+                    mView.getCompanyListFail(code, msg);
                 }
             }
         });
+
     }
 }

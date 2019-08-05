@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.widget.Button;
 
+import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.contract.CreateShopContract;
@@ -24,9 +25,7 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.CreateShopInfo;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.RegexUtils;
-import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.ClearableEditText;
 
 /**
@@ -49,6 +48,9 @@ public class CreateShopActivity extends BaseMvpActivity<CreateShopPresenter>
     Button btnComplete;
     @Extra
     int companyId;
+    @Extra
+    boolean isLoginSuccess;
+
     private String shopName;
 
     @AfterViews
@@ -73,10 +75,15 @@ public class CreateShopActivity extends BaseMvpActivity<CreateShopPresenter>
 
     @Override
     public void createShopSuccessView(CreateShopInfo resp) {
-        LogCat.e(TAG, "resp=" + resp.getShop_name() + ", " + resp.getShop_id());
-        SpUtils.setShopId(resp.getShop_id());
-        SpUtils.setShopName(resp.getShop_name());
-        GotoActivityUtils.gotoMainActivity(this);
+        shortTip(R.string.company_create_success);
+        if (isLoginSuccess) {
+            //登录成功后设置--创建门店
+            finish();
+        } else {
+            //初始化创建门店
+            CommonUtils.saveSelectShop(resp.getShop_id(), resp.getShop_name());
+            GotoActivityUtils.gotoMainActivity(this);
+        }
     }
 
     private void shopAddTextChangedListener(ClearableEditText editText) {

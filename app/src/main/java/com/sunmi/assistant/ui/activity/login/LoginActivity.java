@@ -94,7 +94,9 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
 
     private void showTip() {
         if (TextUtils.equals("1", reason)) {
-            if (kickedDialog != null && kickedDialog.isShowing()) return;
+            if (kickedDialog != null && kickedDialog.isShowing()) {
+                return;
+            }
             kickedDialog = new CommonDialog.Builder(context)
                     .setTitle(R.string.tip_kick_off)
                     .setConfirmButton(R.string.str_confirm).create();
@@ -126,7 +128,9 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults.length <= 0) return;
+        if (grantResults.length <= 0) {
+            return;
+        }
         if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {//用户拒绝
             shortTip(R.string.tip_permission_ungranted);
         }
@@ -139,7 +143,9 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
         String password = etPassword.getText().toString();
         switch (v.getId()) {
             case R.id.btnLogin: //密码登录
-                if (isFastClick(1500)) return;
+                if (isFastClick(1500)) {
+                    return;
+                }
                 if (!RegexUtils.isChinaPhone(mobile) && !RegexUtils.isEmail(mobile)) {
                     shortTip(R.string.tip_invalid_phone_number);
                     return;
@@ -151,7 +157,9 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
                 userMerge(password);
                 break;
             case R.id.btnRegister: //注册
-                if (isFastClick(1500)) return;
+                if (isFastClick(1500)) {
+                    return;
+                }
                 CommonUtils.trackCommonEvent(context, "register", "注册按钮", Constants.EVENT_LOGIN);
                 CommonUtils.trackDurationEventBegin(context, "registerDuration",
                         "注册流程开始和结束时调用", Constants.EVENT_DURATION_REGISTER);
@@ -176,7 +184,9 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
                 }
                 break;
             case R.id.tvForgetPassword: //忘记密码
-                if (isFastClick(1500)) return;
+                if (isFastClick(1500)) {
+                    return;
+                }
                 CommonUtils.trackCommonEvent(context, "forgetPassword", "忘记密码按钮", Constants.EVENT_LOGIN);
                 CommonUtils.trackDurationEventBegin(context, "retrievePasswordDuration",
                         "找回密码流程开始和结束", Constants.EVENT_DURATION_FORGET_PSW);
@@ -187,7 +197,9 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
                         .checkSource(InputMobileActivity.SOURCE_RETRIEVE_PWD).start();
                 break;
             case R.id.tvSMSLogin:  //短信登录
-                if (isFastClick(1500)) return;
+                if (isFastClick(1500)) {
+                    return;
+                }
                 CommonUtils.trackCommonEvent(context, "loginBySms", "短信验证码登录", Constants.EVENT_LOGIN);
                 CommonUtils.trackDurationEventBegin(context, "quickLoginDuration",
                         "登录流程开始到结束", Constants.EVENT_DURATION_LOGIN_BY_SMS);

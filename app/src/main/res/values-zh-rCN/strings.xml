@@ -116,12 +116,14 @@
     <string name="company_shop_select_auth_tip">您可以选择一家或多家门店</string>
     <string name="company_create_check_length">商户名超过字数限制，请重新输入</string>
     <string name="company_create_check_name">商户名重名，请重新输入</string>
+    <string name="company_create_shop_success">门店创建成功</string>
     <string name="company_create_success">商户创建成功</string>
     <string name="company_create_fail">商户创建失败</string>
     <string name="company_shop_create_name">门店名称</string>
     <string name="company_shop_contact">联系人</string>
     <string name="company_shop_mobile">联系方式</string>
     <string name="company_shop_check_mobile">请输入正确手机号码</string>
+    <string name="company_shop_select_one_or_more">您可以选择一家或多家门店</string>
 
 
 </resources>
