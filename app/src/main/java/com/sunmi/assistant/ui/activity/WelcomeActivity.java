@@ -15,7 +15,9 @@ import com.sunmi.apmanager.update.AppUpdate;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.MyApplication;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.ui.activity.contract.WelcomeContract;
 import com.sunmi.assistant.ui.activity.login.LoginActivity_;
+import com.sunmi.assistant.ui.activity.presenter.WelcomePresenter;
 import com.tencent.stat.MtaSDkException;
 import com.tencent.stat.StatService;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -27,8 +29,8 @@ import org.json.JSONObject;
 
 import okhttp3.Call;
 import okhttp3.Response;
-import sunmi.common.base.BaseActivity;
 import sunmi.common.base.BaseApplication;
+import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.ThreadPool;
@@ -39,13 +41,15 @@ import sunmi.common.view.dialog.CommonDialog;
  * 欢迎页
  */
 @EActivity(R.layout.activity_welcome)
-public class WelcomeActivity extends BaseActivity {
+public class WelcomeActivity extends BaseMvpActivity<WelcomePresenter> implements WelcomeContract.View {
     private static final int INSTALL_PERMISS_CODE = 900;
     private String appUrl = "";
 
     @AfterViews
     protected void init() {
         SpUtils.saveHeightPixel(this);//手机像素高度
+        mPresenter = new WelcomePresenter();
+        mPresenter.attachView(this);
         launch();
         initMTA();
     }
@@ -76,7 +80,8 @@ public class WelcomeActivity extends BaseActivity {
                     }
                 } else {
                     LogCat.e(TAG, "ping time -- 333");
-                    checkUpdate();
+//                    checkUpdate();
+                    mPresenter.checkUpgrade();
                 }
             }
         });
@@ -88,7 +93,8 @@ public class WelcomeActivity extends BaseActivity {
             if (!NetworkUtils.isNetworkAvailable(this)) {
                 gotoMainActivity();
             } else {
-                checkToken();
+//                checkToken();
+                mPresenter.checkToken();
             }
         } else {
             gotoLoginActivity();
@@ -119,7 +125,7 @@ public class WelcomeActivity extends BaseActivity {
         }, delayMillis);
     }
 
-    private void checkToken() {
+    /*private void checkToken() {
         CloudApi.checkToken(new StringCallback() {
             @Override
             public void onError(Call call, Response response, Exception e, int id) {
@@ -144,14 +150,14 @@ public class WelcomeActivity extends BaseActivity {
                 }
             }
         });
-    }
+    }*/
 
     private void logout() {
         CommonUtils.logout();
         gotoLoginActivity();
     }
 
-    private void checkUpdate() {
+    /*private void checkUpdate() {
         CloudApi.checkUpgrade(new StringCallback() {
             @Override
             public void onError(Call call, Response response, Exception e, int id) {
@@ -188,6 +194,66 @@ public class WelcomeActivity extends BaseActivity {
                 handleLaunch();
             }
         });
+    }*/
+
+    @Override
+    public void checkTokenSuccess(String response) {
+        /*try {
+            if (response != null) {
+                JSONObject jsonObject = new JSONObject(response);
+                if (jsonObject.has("code") && jsonObject.getInt("code") == 1) {
+                    MyApplication.isCheckedToken = true;
+                    gotoMainActivity();
+                    return;
+                }
+            }
+            logout();
+        } catch (Exception e) {
+            e.printStackTrace();
+            logout();
+        }*/
+        MyApplication.isCheckedToken = true;
+        gotoMainActivity();
+    }
+
+    @Override
+    public void checkTokenFail(int code, String msg) {
+        logout();
+    }
+
+    @Override
+    public void chekUpgradeSuccess(String response) {
+        try {
+            if (response != null) {
+                JSONObject jsonObject = new JSONObject(response);
+                if (jsonObject.has("code") && jsonObject.getInt("code") == 1) {
+                    JSONObject object = (JSONObject) jsonObject.getJSONArray("data").opt(0);
+                    if (object.has("is_force_upgrade")) {
+                        // 是否需要强制升级 0-否 1-是
+                        int needMerge = object.getInt("is_force_upgrade");
+                        if (needMerge == 1) {
+                            appUrl = object.getString("url");
+                            forceUpdate(appUrl);
+                            return;
+                        } else {
+                            //首次安装或清空数据时
+                            if (!TextUtils.equals(SpUtils.getLead(), "TRUE")) {
+                                gotoLeadPagesActivity();
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        handleLaunch();
+    }
+
+    @Override
+    public void chekUpgradeFail() {
+        handleLaunch();
     }
 
     @UiThread

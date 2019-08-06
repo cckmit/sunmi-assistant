@@ -20,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.SSLSocketFactoryGenerator;
+import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.mqtt.EmqTokenResp;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.rpc.sunmicall.RequestBean;
@@ -83,7 +84,7 @@ public class MqttManager {
 
     public void createEmqToken(final boolean isInit) {
         LogCat.e(TAG, "mqtt createEmqToken start");
-        IPCCloudApi.createEmqToken(new RetrofitCallback<EmqTokenResp>() {
+        /*IPCCloudApi.createEmqToken(new RetrofitCallback<EmqTokenResp>() {
             @Override
             public void onSuccess(int code, String msg, EmqTokenResp response) {
                 LogCat.e(TAG, "mqtt createEmqToken success");
@@ -101,6 +102,24 @@ public class MqttManager {
             @Override
             public void onFail(int code, String msg, EmqTokenResp data) {
 //                LogCat.e(TAG, "mqtt createEmqToken " + response + e.getMessage());
+            }
+        });*/
+        SunmiStoreApi.createEmqToken(new RetrofitCallback<EmqTokenResp>() {
+            @Override
+            public void onSuccess(int code, String msg, EmqTokenResp data) {
+                if (data == null) {
+                    ToastUtils.toastForShort(BaseApplication.getContext(), "network error");
+                }
+                if (isInit) {
+                    initMQTT(data);
+                } else {
+                    mqttConnect();
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, EmqTokenResp data) {
+
             }
         });
     }

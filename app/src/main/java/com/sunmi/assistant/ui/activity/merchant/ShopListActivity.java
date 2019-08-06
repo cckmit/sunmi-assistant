@@ -37,10 +37,10 @@ import sunmi.common.view.bottompopmenu.PopItemAction;
  * 我的店铺
  */
 @SuppressLint("Registered")
-@EActivity(R.layout.activity_mine_my_store)
+@EActivity(resName = "activity_mine_my_store")
 public class ShopListActivity extends BaseActivity {
 
-    @ViewById(R.id.recyclerView)
+    @ViewById(resName = "recyclerView")
     RecyclerView recyclerView;
 
     private List<MineStoreBean> list = new ArrayList<>();
@@ -58,7 +58,7 @@ public class ShopListActivity extends BaseActivity {
         getShopList();
     }
 
-    @Click(R.id.btnAdd)
+    @Click(resName = "btnAdd")
     void onAddClick(View v) {//添加店铺
         CommonUtils.trackCommonEvent(context, "addStore",
                 "主页_我的_我的店铺_添加店铺", Constants.EVENT_MY_INFO);

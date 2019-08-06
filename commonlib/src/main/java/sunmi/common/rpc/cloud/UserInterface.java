@@ -3,7 +3,6 @@ package sunmi.common.rpc.cloud;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
-import sunmi.common.model.RegisterResp;
 import sunmi.common.model.UserInfoBean;
 import sunmi.common.rpc.mqtt.EmqTokenResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
@@ -93,6 +92,42 @@ public interface UserInterface {
      */
     @POST(userPath + "getStoreToken")
     Call<BaseResponse<Object>> getStoreToken(@Body BaseRequest request);
+
+    /**
+     * 根据jwt token反解出sso token返回给app
+     *
+     * @param request
+     * @return
+     */
+    @POST(userPath + "getSsoToken")
+    Call<BaseResponse<Object>> getSsoToken(@Body BaseRequest request);
+
+    /**
+     * 邮箱找回密码
+     *
+     * @param request
+     * @return
+     */
+    @POST(userPath + "sendRecoveryEmail")
+    Call<BaseResponse<Object>> sendRecoveryEmail(@Body BaseRequest request);
+
+    /**
+     * 修改账号绑定手机号
+     *
+     * @param request
+     * @return
+     */
+    @POST(userPath + "updatePhone")
+    Call<BaseResponse<Object>> updatePhone(@Body BaseRequest request);
+
+    /**
+     * 更改邮箱
+     *
+     * @param request
+     * @return
+     */
+    @POST(userPath + "updateEmail")
+    Call<BaseResponse<Object>> updateEmail(@Body BaseRequest request);
 
     /**
      * 创建emq token去连mqtt,以后用，暂时用emqInterface里的create
