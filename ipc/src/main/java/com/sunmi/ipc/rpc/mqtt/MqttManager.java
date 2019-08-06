@@ -171,7 +171,6 @@ public class MqttManager {
                             == MqttException.REASON_CODE_CLIENT_EXCEPTION) {
                         LogCat.e(TAG, "mqtt Connect fail,code = " + asyncActionToken.getException().getReasonCode()
                                 + ", cause = " + asyncActionToken.getException().getCause());
-                        isConnecting = false;
                         isRegister = false;
                         createEmqToken(true);
                     }
