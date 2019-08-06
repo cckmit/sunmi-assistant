@@ -74,6 +74,7 @@
 
     <string name="str_check_net">请检查网络</string>
     <string name="str_net_exception">网络连接异常，请检查后重试</string>
+    <string name="str_server_exception">服务器连接异常，请检查后重试</string>
     <string name="str_btn_try_again">点击重试</string>
     <string name="tip_forbid_by_server">该请求被服务端拒绝</string>
     <string name="str_bind_success">绑定成功</string>
