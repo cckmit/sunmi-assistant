@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.mine.CreateShopActivity_;
+import com.sunmi.assistant.mine.SelectPlatformActivity_;
+import com.sunmi.assistant.mine.SelectStoreActivity_;
 import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
 
 import java.util.ArrayList;

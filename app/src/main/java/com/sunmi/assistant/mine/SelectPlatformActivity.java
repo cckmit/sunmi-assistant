@@ -1,6 +1,7 @@
-package com.sunmi.assistant.ui.activity.merchant;
+package com.sunmi.assistant.mine;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,9 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.ui.activity.contract.SelectPlatformContract;
+import com.sunmi.assistant.rpc.CloudCall;
 import com.sunmi.assistant.ui.activity.model.PlatformInfo;
-import com.sunmi.assistant.ui.activity.presenter.PlatformPresenter;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -20,10 +20,10 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.base.BaseActivity;
+import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.SpUtils;
@@ -41,35 +41,47 @@ import sunmi.common.view.ViewHolder;
  */
 @SuppressLint("Registered")
 @EActivity(R.layout.activity_merchant_select_platform)
-public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
-        implements SelectPlatformContract.View, View.OnClickListener {
+public class SelectPlatformActivity extends BaseActivity implements View.OnClickListener {
+
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
     @ViewById(R.id.recyclerView)
     RecyclerView recyclerView;
     @ViewById(R.id.btn_next)
     Button btnNext;
+
     private String selectPlatform;
     private int selectSaasSource;
 
     @Extra
     boolean isCanBack;
 
-    private List<PlatformInfo.SaasListBean> list = new ArrayList<>();
-
     @AfterViews
     void init() {
-        //状态栏
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         if (isCanBack) {
             titleBar.setLeftImageDrawable(ContextCompat.getDrawable(this, R.mipmap.ic_back_dark));
         }
         initRecycler();
         CommonHelper.isCanClick(btnNext, false);
-        mPresenter = new PlatformPresenter();
-        mPresenter.attachView(this);
+        getPlatformList();
+    }
+
+    private void getPlatformList() {
         showLoadingDialog();
-        mPresenter.getPlatformInfo();
+        CloudCall.getPlatformList(new RetrofitCallback<PlatformInfo>() {
+            @Override
+            public void onSuccess(int code, String msg, PlatformInfo data) {
+                hideLoadingDialog();
+                showViewList(data.getSaasList());
+            }
+
+            @Override
+            public void onFail(int code, String msg, PlatformInfo data) {
+                hideLoadingDialog();
+                LogCat.e(TAG, "data onFail code=" + code + "," + msg);
+            }
+        });
     }
 
     @Override
@@ -86,7 +98,8 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
                 onBackPressed();
                 break;
             case R.id.txt_right:
-                SpUtils.setSaasExist(0);//没有对接saas数据Q
+                //没有对接saas数据Q
+                SpUtils.setSaasExist(0);
                 GotoActivityUtils.gotoMainActivity(this);
                 break;
             default:
@@ -96,7 +109,7 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
 
     @Click({R.id.btn_next})
     void btnNext() {
-        CheckPlatformMobileActivity_.intent(this)
+        PlatformMobileActivity_.intent(this)
                 .extra("platform", selectPlatform)
                 .extra("saasSource", selectSaasSource)
                 .start();
@@ -109,49 +122,38 @@ public class SelectPlatformActivity extends BaseMvpActivity<PlatformPresenter>
         titleBar.getRightTextView().setOnClickListener(this);
     }
 
-
-    @Override
-    public void getPlatformInfoSuccess(PlatformInfo data) {
-        hideLoadingDialog();
-        showViewList(data);
+    private void showViewList(List<PlatformInfo.SaasListBean> list) {
+        recyclerView.setAdapter(new PlatformListAdapter(this, list));
     }
 
-    @Override
-    public void getPlatformInfoFail(int code, String msg) {
-        LogCat.e(TAG, "data onFail code=" + code + "," + msg);
-        hideLoadingDialog();
-    }
+    private class PlatformListAdapter extends CommonListAdapter<PlatformInfo.SaasListBean> {
 
-    private void showViewList(PlatformInfo data) {
-        list = data.getSaasList();
-        recyclerView.setAdapter(new CommonListAdapter<PlatformInfo.SaasListBean>(context,
-                R.layout.item_merchant_platform, list) {
-            int selectedIndex = -1;
+        int selectedIndex;
 
-            @Override
-            public void convert(ViewHolder holder, final PlatformInfo.SaasListBean bean) {
-                TextView tvPlatform = holder.getView(R.id.tv_platform);
-                tvPlatform.setText(bean.getSaas_name());
-                ImageView ivSelect = holder.getView(R.id.iv_select);
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        selectedIndex = holder.getAdapterPosition();
-                        selectPlatform = bean.getSaas_name();
-                        selectSaasSource = bean.getSaas_source();
-                        notifyDataSetChanged();//刷新
-                        CommonHelper.isCanClick(btnNext, true);
-                    }
-                });
-                if (selectedIndex == holder.getAdapterPosition()) {
-                    tvPlatform.setTextColor(getResources().getColor(R.color.common_orange));
-                    ivSelect.setVisibility(View.VISIBLE);
-                } else {
-                    tvPlatform.setTextColor(getResources().getColor(R.color.text_color));
-                    ivSelect.setVisibility(View.GONE);
-                }
+        private PlatformListAdapter(Context context, List<PlatformInfo.SaasListBean> list) {
+            super(context, R.layout.item_merchant_platform, list);
+            selectedIndex = -1;
+        }
+
+        @Override
+        public void convert(ViewHolder holder, final PlatformInfo.SaasListBean bean) {
+            TextView tvPlatform = holder.getView(R.id.tv_platform);
+            tvPlatform.setText(bean.getSaas_name());
+            ImageView ivSelect = holder.getView(R.id.iv_select);
+            holder.itemView.setOnClickListener(v -> {
+                selectedIndex = holder.getAdapterPosition();
+                selectPlatform = bean.getSaas_name();
+                selectSaasSource = bean.getSaas_source();
+                notifyDataSetChanged();
+                CommonHelper.isCanClick(btnNext, true);
+            });
+            if (selectedIndex == holder.getAdapterPosition()) {
+                tvPlatform.setTextColor(ContextCompat.getColor(mContext, R.color.common_orange));
+                ivSelect.setVisibility(View.VISIBLE);
+            } else {
+                tvPlatform.setTextColor(ContextCompat.getColor(mContext, R.color.text_color));
+                ivSelect.setVisibility(View.GONE);
             }
-        });
+        }
     }
-
 }

@@ -20,7 +20,8 @@
     <string name="tip_title_choose_device">选择您要连接的设备</string>
     <string name="tip_no_device_found">没有发现新设备</string>
     <string name="tip_keep_device_in">请确保您的设备处于路由器信号范围内</string>
-
+    <string name="str_my_store">我的店铺</string>
+    <string name="btn_add_store">添加店铺</string>
     <string name="ic_tab_data_title">数据</string>
 
     <string name="dashboard_data_format">%s%%</string>

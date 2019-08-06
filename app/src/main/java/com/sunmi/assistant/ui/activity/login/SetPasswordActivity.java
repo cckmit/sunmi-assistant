@@ -7,7 +7,6 @@ import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 
 import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.constant.Constants;
@@ -15,10 +14,10 @@ import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.mine.SelectPlatformActivity_;
+import com.sunmi.assistant.mine.SelectStoreActivity_;
 import com.sunmi.assistant.ui.activity.contract.SetPasswordContract;
 import com.sunmi.assistant.ui.activity.merchant.AuthDialog;
-import com.sunmi.assistant.ui.activity.merchant.SelectPlatformActivity_;
-import com.sunmi.assistant.ui.activity.merchant.SelectStoreActivity_;
 import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
 import com.sunmi.assistant.ui.activity.presenter.SetPasswordPresenter;
 

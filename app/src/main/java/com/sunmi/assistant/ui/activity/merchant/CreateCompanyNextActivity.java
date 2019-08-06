@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.mine.SelectPlatformActivity_;
 import com.sunmi.assistant.ui.activity.contract.CreateCompanyContract;
 import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
 import com.sunmi.assistant.ui.activity.presenter.CreateCompanyPresenter;

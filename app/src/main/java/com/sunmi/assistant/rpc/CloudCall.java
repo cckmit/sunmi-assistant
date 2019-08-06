@@ -2,11 +2,13 @@ package com.sunmi.assistant.rpc;
 
 import com.sunmi.assistant.rpc.api.AdInterface;
 import com.sunmi.assistant.rpc.api.SaasInterface;
+import com.sunmi.assistant.ui.activity.model.PlatformInfo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import sunmi.common.constant.CommonConfig;
+import sunmi.common.model.CreateShopInfo;
 import sunmi.common.rpc.cloud.CompanyInterface;
 import sunmi.common.rpc.cloud.ShopInterface;
 import sunmi.common.rpc.cloud.SunmiStoreRetrofitClient;
@@ -57,18 +59,19 @@ public class CloudCall extends BaseHttpApi {
     /**
      * 创建门店
      *
-     * @param company_id 是
-     * @param shopName   是
-     * @param contact    否
-     * @param tel        否
-     * @param callback
+     * @param companyId 是
+     * @param shopName  是
+     * @param person     否
+     * @param tel       否
+     * @param callback 回调
      */
-    public static void createShop(String company_id, String shopName, String contact, String tel, RetrofitCallback callback) {
+    public static void createShop(int companyId, String shopName, String person, String tel,
+                                  RetrofitCallback<CreateShopInfo> callback) {
         try {
             String params = new JSONObject()
-                    .put("company_id", company_id)
+                    .put("company_id", companyId)
                     .put("shop_name", shopName)
-                    .put("contact_person", contact)
+                    .put("contact_person", person)
                     .put("contact_tel", tel)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
@@ -88,7 +91,8 @@ public class CloudCall extends BaseHttpApi {
                     .put("company_id", SpUtils.getCompanyId())
                     .put("shop_id", SpUtils.getShopId())
                     .put("shop_name", shopName)
-                    .put("business_status", 0)//营业状态 0:营业 1:停业
+                    //营业状态 0:营业 1:停业
+                    .put("business_status", 0)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
                     .editShop(getSignedRequest(params))
@@ -117,7 +121,7 @@ public class CloudCall extends BaseHttpApi {
     /**
      * 米商引擎所支持的Saas平台信息
      */
-    public static void getPlatformList(RetrofitCallback callback) {
+    public static void getPlatformList(RetrofitCallback<PlatformInfo> callback) {
         try {
             SunmiStoreRetrofitClient.getInstance().create(SaasInterface.class)
                     .getPlatformList(getSignedRequest(""))
@@ -146,7 +150,7 @@ public class CloudCall extends BaseHttpApi {
     /**
      * 米商引擎手机校验验证码
      */
-    public static void confirmSaasVerifyCode(String phone, String code, RetrofitCallback callback) {
+    public static void confirmSaasVerifyCode(String phone, String code, RetrofitCallback<Object> callback) {
         try {
             String params = new JSONObject()
                     .put("phone", phone)
@@ -163,22 +167,22 @@ public class CloudCall extends BaseHttpApi {
     /**
      * 用户授权获取Saas平台数据
      *
-     * @param company_id
-     * @param shop_id
-     * @param saas_source Saas来源标识id
-     * @param shop_no     店铺在商米引擎的唯一标识
-     * @param saas_name   Saas软件商名称
+     * @param companyId
+     * @param shopId
+     * @param saasSource Saas来源标识id
+     * @param shopNo     店铺在商米引擎的唯一标识
+     * @param saasName   Saas软件商名称
      * @param callback
      */
-    public static void authorizeSaas(int company_id, int shop_id, int saas_source,
-                                     String shop_no, String saas_name, RetrofitCallback callback) {
+    public static void authorizeSaas(int companyId, int shopId, int saasSource,
+                                     String shopNo, String saasName, RetrofitCallback<Object> callback) {
         try {
             String params = new JSONObject()
-                    .put("company_id", company_id)
-                    .put("shop_id", shop_id)
-                    .put("saas_source", saas_source)
-                    .put("shop_no", shop_no)
-                    .put("saas_name", saas_name)
+                    .put("companyId", companyId)
+                    .put("shopId", shopId)
+                    .put("saasSource", saasSource)
+                    .put("shopNo", shopNo)
+                    .put("saasName", saasName)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(SaasInterface.class)
                     .authorizeSaas(getSignedRequest(params))

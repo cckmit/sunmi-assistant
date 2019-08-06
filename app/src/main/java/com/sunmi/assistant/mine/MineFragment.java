@@ -1,7 +1,5 @@
 package com.sunmi.assistant.mine;
 
-import android.content.Context;
-import android.content.Intent;
 import android.text.TextUtils;
 import android.widget.TextView;
 
@@ -102,17 +100,7 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     public void storeClick() {
         CommonUtils.trackCommonEvent(mActivity, "myStore",
                 "主页_我的_我的店铺", Constants.EVENT_MY_INFO);
-        gotoShopListActivity(mActivity);
-    }
-
-    private void gotoShopListActivity(Context context) {
-        try {
-            Class<?> mainActivity = Class.forName("com.sunmi.assistant.ui.activity.merchant.ShopListActivity_");
-            Intent intent = new Intent(context, mainActivity);
-            context.startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        ShopListActivity_.intent(this).start();
     }
 
     /**

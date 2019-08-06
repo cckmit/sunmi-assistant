@@ -23,7 +23,8 @@
     <string name="str_auth_onclick_protocol">点击允许按钮即表示同意</string>
     <string name="str_auth_protocol_text">《授权协议》</string>
     <string name="str_select_store">选择门店</string>
-
+    <string name="str_my_store">My store</string>
+    <string name="btn_add_store">Add store</string>
     <string name="ic_tab_data_title">数据</string>
 
     <string name="dashboard_data_format">%s%%</string>
