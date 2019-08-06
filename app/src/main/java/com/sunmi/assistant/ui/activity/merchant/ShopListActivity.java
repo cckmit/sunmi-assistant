@@ -35,6 +35,9 @@ import sunmi.common.view.bottompopmenu.PopItemAction;
 
 /**
  * 我的店铺
+ *
+ * @author YangShiJie
+ * @date 2019/8/5
  */
 @SuppressLint("Registered")
 @EActivity(resName = "activity_mine_my_store")
@@ -62,7 +65,6 @@ public class ShopListActivity extends BaseActivity {
     void onAddClick(View v) {//添加店铺
         CommonUtils.trackCommonEvent(context, "addStore",
                 "主页_我的_我的店铺_添加店铺", Constants.EVENT_MY_INFO);
-        //openActivity(this, AddStorePoiActivity.class, false);
         BottomPopMenu choosePhotoMenu = new BottomPopMenu.Builder(this)
                 .setTitle(R.string.company_shop_new_create_or_import)
                 .setIsShowCircleBackground(true)
@@ -81,6 +83,7 @@ public class ShopListActivity extends BaseActivity {
     private void createShop() {
         CreateShopActivity_.intent(context)
                 .companyId(SpUtils.getCompanyId())
+                .isLoginSuccess(true)
                 .start();
     }
 
@@ -88,6 +91,7 @@ public class ShopListActivity extends BaseActivity {
     private void importShop() {
         SelectPlatformActivity_.intent(context)
                 .isCanBack(true)
+                .isLoginSuccess(true)
                 .start();
     }
 

@@ -1,7 +1,6 @@
 package com.sunmi.assistant.ui.activity.merchant;
 
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.view.View;
@@ -25,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.ClearableEditText;
@@ -54,8 +52,12 @@ public class CheckPlatformMobileActivity extends BaseMvpActivity<PlatformMobileP
     String platform;
     @Extra
     int saasSource;
+    @Extra
+    boolean isLoginSuccess;
 
-    //倒计时对象,总共的时间,每隔多少秒更新一次时间
+    /**
+     * 倒计时对象,总共的时间,每隔多少秒更新一次时间
+     */
     final MyCountDownTimer mTimer = new MyCountDownTimer(AppConfig.SMS_TIME, 1000);
 
     @AfterViews
@@ -90,7 +92,9 @@ public class CheckPlatformMobileActivity extends BaseMvpActivity<PlatformMobileP
                     return;
                 }
                 checkSmsCode(mobile, code);
+            default:
                 break;
+
         }
     }
 
@@ -186,8 +190,10 @@ public class CheckPlatformMobileActivity extends BaseMvpActivity<PlatformMobileP
                             .list(selectedList)
                             .start())
                     .setCancelButton((dialog, which) -> {
-                        //注册已默认创建门店
-                        GotoActivityUtils.gotoMainActivity(CheckPlatformMobileActivity.this);
+                        CreateShopActivity_.intent(context)
+                                .companyId(SpUtils.getCompanyId())
+                                .isLoginSuccess(isLoginSuccess)
+                                .start();
                     })
                     .create().show();
         } else {
@@ -199,11 +205,11 @@ public class CheckPlatformMobileActivity extends BaseMvpActivity<PlatformMobileP
     private void createStoreDialog() {
         new CommonDialog.Builder(this).setTitle(getString(R.string.str_dialog_auto_create_store))
                 .setCancelButton(com.sunmi.apmanager.R.string.sm_cancel)
-                .setConfirmButton(R.string.company_shop_new_create, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        CommonSaasUtils.gotoCreateShopActivity(context, SpUtils.getCompanyId());
-                    }
+                .setConfirmButton(R.string.company_shop_new_create, (dialog, which) -> {
+                    CreateShopActivity_.intent(context)
+                            .companyId(SpUtils.getCompanyId())
+                            .isLoginSuccess(isLoginSuccess)
+                            .start();
                 }).create().show();
     }
 

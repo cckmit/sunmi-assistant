@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.ChooseShopContract;
 import com.sunmi.assistant.presenter.ChooseShopPresenter;
@@ -73,12 +74,15 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     String companyName;
     @Extra
     int saasExist;
+    @Extra
+    boolean isCreateCompany;
 
     private int shopId;
     private String shopName;
 
     @AfterViews
     void init() {
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         mPresenter = new ChooseShopPresenter();
         mPresenter.attachView(this);
         mRefreshLayout.setDelegate(this);
@@ -89,10 +93,11 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
         if (action == CommonConstants.ACTION_LOGIN_CHOOSE_COMPANY) {
             titleBar.setAppTitle(R.string.str_select_company);
             tvSelectType.setText(R.string.company_select);
-            titleBar.setRightTextViewText(R.string.company_create);
+            if (isCreateCompany) {
+                titleBar.setRightTextViewText(R.string.company_create);
+            }
             titleBar.getRightText().setOnClickListener(this);
             btnEnterMain.setVisibility(View.GONE);
-            mPresenter.getCompanyList();
             mPresenter.getUserInfo();
             mPresenter.getSsoToken();
         } else if (action == CommonConstants.ACTION_LOGIN_CHOOSE_SHOP) {
@@ -161,12 +166,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
 
     @Override
     public void getShopListSuccess(List<ShopListResp.ShopInfo> shopList) {
-        int shopSize = shopList.size();
-        if (shopSize == 1) {
-            gotoMainActivity(shopList.get(0).getShop_id(), shopList.get(0).getShop_name());
-        } else {
-            initShopList(shopList);
-        }
+        initShopList(shopList);
     }
 
     @Override
@@ -182,7 +182,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     void initCompanyList(List<CompanyInfoResp> companyList) {
         activityVisible();
         if (companyList.size() == 0) {
-            setNoDataVisible(View.VISIBLE);
+            CreateCompanyActivity_.intent(context).start();
             return;
         }
         rvChoose.setAdapter(new CommonListAdapter<CompanyInfoResp>(context,
@@ -190,11 +190,14 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
             @Override
             public void convert(ViewHolder holder, final CompanyInfoResp item) {
                 ((SettingItemLayout) holder.getView(R.id.sil_item)).setLeftText(item.getCompany_name());
-                holder.itemView.setOnClickListener(
-                        v -> LoginChooseShopActivity_.intent(context)
-                                .companyId(item.getCompany_id()).companyName(item.getCompany_name())
-                                .saasExist(item.getSaas_exist())
-                                .action(CommonConstants.ACTION_LOGIN_CHOOSE_SHOP).start());
+                holder.itemView.setOnClickListener(v -> {
+                    CommonUtils.saveSelectCompany(item.getCompany_id(), item.getCompany_name(), item.getSaas_exist());
+                    LoginChooseShopActivity_.intent(context)
+                            .companyId(item.getCompany_id())
+                            .companyName(item.getCompany_name())
+                            .saasExist(item.getSaas_exist())
+                            .action(CommonConstants.ACTION_LOGIN_CHOOSE_SHOP).start();
+                });
             }
         });
     }
@@ -216,15 +219,12 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
             public void convert(ViewHolder holder, final ShopListResp.ShopInfo item) {
                 SettingItemLayout shopItem = holder.getView(R.id.sil_item);
                 shopItem.setLeftText(item.getShop_name());
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        selectedIndex = holder.getAdapterPosition();
-                        shopId = item.getShop_id();
-                        shopName = item.getShop_name();
-                        notifyDataSetChanged();
-                        CommonHelper.isCanClick(btnEnterMain, true);
-                    }
+                holder.itemView.setOnClickListener(v -> {
+                    selectedIndex = holder.getAdapterPosition();
+                    shopId = item.getShop_id();
+                    shopName = item.getShop_name();
+                    notifyDataSetChanged();
+                    CommonHelper.isCanClick(btnEnterMain, true);
                 });
                 if (selectedIndex == holder.getAdapterPosition()) {
                     shopItem.setRightImage(ContextCompat.getDrawable(context, com.sunmi.ipc.R.mipmap.ic_yes));
@@ -251,9 +251,9 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     private void gotoMainActivity(int shopId, String shopName) {
         SpUtils.setCompanyId(companyId);
         SpUtils.setCompanyName(companyName);
+        SpUtils.setSaasExist(saasExist);
         SpUtils.setShopId(shopId);
         SpUtils.setShopName(shopName);
-        SpUtils.setSaasExist(saasExist);
         MainActivity_.intent(context)
                 .flags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK).start();
         finish();

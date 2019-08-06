@@ -78,16 +78,19 @@ public class ChooseShopPresenter extends BasePresenter<ChooseShopContract.View>
 
     @Override
     public void getUserInfo() {
+        mView.showLoadingDialog();
         SunmiStoreApi.getUserInfo(new RetrofitCallback<UserInfoBean>() {
             @Override
             public void onSuccess(int code, String msg, UserInfoBean data) {
                 CommonUtils.saveLoginInfo(data);
+                getCompanyList();
             }
 
             @Override
             public void onFail(int code, String msg, UserInfoBean data) {
-
-
+                if (isViewAttached()) {
+                    mView.hideLoadingDialog();
+                }
             }
         });
     }
