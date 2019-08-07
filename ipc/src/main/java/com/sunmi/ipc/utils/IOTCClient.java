@@ -20,6 +20,7 @@ public class IOTCClient {
     private String uid;
     private int SID = -1;
     private int avIndex = -1;
+    private int IOTC_CONNECT_RESULT = -1000;
     private int CMD_LIVE_START = 0x10;
     private int CMD_LIVE_STOP = 0x11;
     private int CMD_LIVE_START_AUDIO = 0x12;
@@ -29,8 +30,8 @@ public class IOTCClient {
     private int CMD_PLAYBACK_STOP = 0x22;
     private int CMD_PLAYBACK_PAUSE = 0x23;
 
+    private boolean alreadyQuit;
     private boolean isRunning = true;
-    Thread videoThread, audioThread;
 
     public IOTCClient(String uid) {
         this.uid = uid;
@@ -42,6 +43,9 @@ public class IOTCClient {
         LogCat.e(TAG, "IOTC_Initialize() ret = " + ret);
         if (ret != IOTCAPIs.IOTC_ER_NoERROR) {
             LogCat.e(TAG, "IOTCAPIs_Device exit...!!");
+//            if (IOTCAPIs.IOTC_ER_ALREADY_INITIALIZED == ret) {
+//                IOTCAPIs.IOTC_DeInitialize();
+//            }//todo
             if (callback != null) {
                 callback.initFail();
             }
@@ -61,9 +65,9 @@ public class IOTCClient {
             return;
         }
         LogCat.e(TAG, "Step 1: call IOTC_Get_SessionID, uid = " + uid);
-        ret = IOTCAPIs.IOTC_Connect_ByUID_Parallel(uid, SID);//step 4
-        if (ret < 0) {
-            LogCat.e(TAG, "IOTC_Connect_ByUID_Parallel failed ret = " + ret);
+        IOTC_CONNECT_RESULT = IOTCAPIs.IOTC_Connect_ByUID_Parallel(uid, SID);//step 4
+        if (IOTC_CONNECT_RESULT < 0) {
+            LogCat.e(TAG, "IOTC_Connect_ByUID_Parallel failed ret = " + IOTC_CONNECT_RESULT);
             IOTCAPIs.IOTC_DeInitialize();
             IOTCAPIs.IOTC_Session_Close(SID);
             if (callback != null) {
@@ -72,9 +76,12 @@ public class IOTCClient {
             return;
         }
         LogCat.e(TAG, "Step 2: call IOTC_Connect_ByUID_Parallel, uid = " + uid);
+        if (alreadyQuit) {
+            return;
+        }
 
         String account = "admin";
-        String password = "12345678";
+        String password = "12345678";//8Qi0ZLkwv3VP0W
         int timeoutSec = 20;
         int channelId = 1;//chid用来传输音视频
         int[] pservType = new int[100];
@@ -95,8 +102,8 @@ public class IOTCClient {
         }
         LogCat.e(TAG, "Step 3: call avClientStartEx, avIndex = " + avIndex);
         startPlay();
-        videoThread = new Thread(new VideoThread(avIndex), "Video Thread");
-        audioThread = new Thread(new AudioThread(avIndex), "Audio Thread");
+        Thread videoThread = new Thread(new VideoThread(avIndex), "Video Thread");
+        Thread audioThread = new Thread(new AudioThread(avIndex), "Audio Thread");
         videoThread.start();
         audioThread.start();
         try {
@@ -113,6 +120,13 @@ public class IOTCClient {
     }
 
     public void close() {
+//        if (IOTC_CONNECT_RESULT == -1000) {
+//            alreadyQuit = true;
+//            IOTCAPIs.IOTC_Connect_Stop_BySID(SID);
+//            IOTCAPIs.IOTC_Session_Close(SID);
+//            IOTCAPIs.IOTC_DeInitialize();
+//            return;
+//        }
         if (avIndex < 0) return;
         AVAPIs.avClientStop(avIndex);
         AVAPIs.avClientExit(SID, 1);
@@ -235,7 +249,7 @@ public class IOTCClient {
                         outFrameSize, frameInfo, FRAME_INFO_SIZE, outFrmInfoBufSize, frameNumber);
                 if (ret == AVAPIs.AV_ER_DATA_NOREADY) {//缓存没数据等待10ms再读
                     try {
-                        Thread.sleep(10);
+                        Thread.sleep(20);
                         continue;
                     } catch (InterruptedException e) {
                         LogCat.e(TAG, e.getMessage());

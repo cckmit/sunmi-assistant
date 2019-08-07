@@ -133,6 +133,8 @@ public class VideoPlayActivity extends BaseActivity
     ImageView ivSetting;//设置
     @ViewById(resName = "ll_play_fail")
     LinearLayout llPlayFail;
+    @ViewById(resName = "scale_panel")
+    ZFTimeLine scalePanel;//todo 替换旧的时间轴
 
     @Extra
     String UID;
@@ -206,6 +208,7 @@ public class VideoPlayActivity extends BaseActivity
     @AfterViews
     void init() {
 //        deviceId = 2239;
+//        UID = "ZTEBT7S3WFR5EMCX111A";//"ACVVZ17BHPGWZU3L111A";//todo test
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//保持屏幕常亮
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//隐藏状态栏
@@ -262,19 +265,18 @@ public class VideoPlayActivity extends BaseActivity
         if (isSS1()) {
             width = height = screenH;
         } else {
-            if (aspectRatio > 1920 / 1080) {
+            if (aspectRatio > 16 / 9) {
                 height = screenH;
-                width = 1920 * screenH / screenW;
+                width = screenH * 16 / 9;
             } else {
                 width = screenW;
-                height = 1080 * screenH / screenW;
+                height = 1080 * screenW / 1920;
             }
         }
         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
         lp.width = width;
         lp.height = height;
         videoView.setLayoutParams(lp);
-        //, shCloud;
         SurfaceHolder surfaceHolder = videoView.getHolder();
         surfaceHolder.addCallback(this); // 因为这个类实现了SurfaceHolder.Callback接口，所以回调参数直接this
 
@@ -369,6 +371,7 @@ public class VideoPlayActivity extends BaseActivity
 
     @Override
     public void onVideoReceived(byte[] videoBuffer) {
+        llPlayFail.setVisibility(View.GONE);
         if (videoDecoder != null)
             videoDecoder.setVideoData(videoBuffer);
         hideLoadingDialog();
@@ -699,6 +702,7 @@ public class VideoPlayActivity extends BaseActivity
                 for (VideoListResp.VideoBean bean : data.getVideo_list()) {
                     urlList.add(bean.getUrl());
                 }
+//                scalePanel.setVideoData(videoListQueue);
                 cloudPlay(urlList);
             }
 
