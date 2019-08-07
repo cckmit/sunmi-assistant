@@ -42,8 +42,11 @@ public class ChangeUsernameActivity extends BaseMvpActivity<ChangeUsernamePresen
         titleBar.setRightTextViewColor(R.color.colorText);
         titleBar.getRightTextView().setOnClickListener(this);
         cetUserName.addTextChangedListener(this);
-        if (!TextUtils.isEmpty(SpUtils.getUsername())) {
-            cetUserName.setText(SpUtils.getUsername());
+        String username = SpUtils.getUsername();
+        if (!TextUtils.isEmpty(username)) {
+            cetUserName.setText(username);
+            cetUserName.requestFocus();
+            cetUserName.setSelection(username.length());
         }
     }
 

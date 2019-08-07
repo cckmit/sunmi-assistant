@@ -87,9 +87,9 @@
         <activity android:name=".mine.ChangeUsernameActivity_" />
         <activity android:name=".ui.activity.SunmiLinkSearchActivity_" />
         <activity android:name=".mine.ChangeCompanyNameActivity_" />
-        <activity android:name=".mine.SelectPlatformActivity_" />
-        <activity android:name=".mine.SelectStoreActivity_" />
-        <activity android:name=".mine.PlatformMobileActivity_" />
+        <activity android:name=".mine.platform.SelectPlatformActivity_" />
+        <activity android:name=".mine.platform.SelectStoreActivity_" />
+        <activity android:name=".mine.platform.PlatformMobileActivity_" />
         <activity android:name=".order.OrderListActivity_" />
         <activity android:name=".order.OrderDetailActivity_" />
         <activity

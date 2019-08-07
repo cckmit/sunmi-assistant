@@ -1,4 +1,4 @@
-package com.sunmi.assistant.mine;
+package com.sunmi.assistant.mine.platform;
 
 import com.sunmi.assistant.mine.model.SelectShopModel;
 import com.sunmi.assistant.rpc.CloudCall;
