@@ -134,7 +134,9 @@
     <string name="ipc_recognition_line_start">设置门槛起点</string>
     <string name="ipc_recognition_line_end">设置门槛终点</string>
     <string name="ipc_recognition_line_cancel">撤销</string>
+    <string name="ipc_recognition_line_error">当前划线不符合要求，请重新操作</string>
     <string name="ipc_recognition_complete">摄像机画面调整完成</string>
+
     <string name="tip_network_fail_retry">当前网络状况不佳，请刷新重试</string>
     <string name="str_enter_uid">请输入摄像头的uid</string>
     <string name="str_ipc_play">播放</string>
