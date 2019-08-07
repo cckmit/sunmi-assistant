@@ -47,7 +47,7 @@
         android:layout_height="@dimen/dp_45"
         android:layout_below="@+id/ivp_ipc"
         android:layout_margin="@dimen/dp_10"
-        android:hint="请输入摄像头的uid" />
+        android:hint="@string/str_enter_uid" />
 
     <RelativeLayout
         android:id="@+id/rl_video"
@@ -62,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_45"
             android:layout_marginStart="@dimen/dp_20"
-            android:text="播放" />
+            android:text="@string/str_ipc_play" />
 
         <Button
             android:id="@+id/btn_pause"
@@ -70,7 +70,7 @@
             android:layout_height="@dimen/dp_45"
             android:layout_marginStart="@dimen/dp_20"
             android:layout_toEndOf="@+id/btn_play"
-            android:text="暂停" />
+            android:text="@string/str_ipc_pause" />
 
         <Button
             android:id="@+id/btn_stop"
@@ -78,7 +78,7 @@
             android:layout_height="@dimen/dp_45"
             android:layout_marginStart="@dimen/dp_20"
             android:layout_toEndOf="@+id/btn_pause"
-            android:text="停止" />
+            android:text="@string/str_ipc_stop" />
 
     </RelativeLayout>
 
@@ -89,7 +89,7 @@
         android:layout_below="@+id/rl_video"
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_15"
-        android:text="配置IPC" />
+        android:text="@string/str_set_ipc" />
 
     <Button
         android:id="@+id/btn_unbind"
@@ -99,7 +99,7 @@
         android:layout_marginStart="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_15"
         android:layout_toEndOf="@+id/btn_config"
-        android:text="解绑IPC" />
+        android:text="@string/str_unbind_ipc" />
 
 
     <Button
@@ -110,7 +110,7 @@
         android:layout_marginStart="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_15"
         android:layout_toRightOf="@id/btn_unbind"
-        android:text="视频" />
+        android:text="@string/str_video" />
 
     <Button
         android:id="@+id/btn_time"
@@ -119,7 +119,7 @@
         android:layout_below="@+id/btn_config"
         android:layout_marginStart="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_15"
-        android:text="Cloud时间轴" />
+        android:text="@string/str_cloud_time_shaft" />
 
     <Button
         android:id="@+id/btn_time_ap"
@@ -129,7 +129,7 @@
         android:layout_marginStart="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_15"
         android:layout_toRightOf="@id/btn_time"
-        android:text="Ap时间轴" />
+        android:text="@string/str_ap_time_shaft" />
 
     <Button
         android:id="@+id/btn_canvas"
@@ -139,6 +139,6 @@
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_15"
         android:layout_toRightOf="@id/btn_time_ap"
-        android:text="时间组合" />
+        android:text="@string/str_time_group" />
 
 </RelativeLayout>

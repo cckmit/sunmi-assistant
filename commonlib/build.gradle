@@ -63,8 +63,8 @@ dependencies {
     api "com.android.support:cardview-v7:${SUPPORT_VERSION}"
 
     //注解
-    api 'com.jakewharton:butterknife:8.5.1'
-    implementation 'com.jakewharton:butterknife-compiler:8.5.1'
+    api 'com.jakewharton:butterknife:9.0.0'
+    implementation 'com.jakewharton:butterknife-compiler:9.0.0'
     api "org.androidannotations:androidannotations-api:${AAVersion}"
     annotationProcessor "org.androidannotations:androidannotations:${AAVersion}"
 

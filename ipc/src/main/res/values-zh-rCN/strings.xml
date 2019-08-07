@@ -136,6 +136,17 @@
     <string name="ipc_recognition_line_cancel">撤销</string>
     <string name="ipc_recognition_complete">摄像机画面调整完成</string>
     <string name="tip_network_fail_retry">当前网络状况不佳，请刷新重试</string>
+    <string name="str_enter_uid">请输入摄像头的uid</string>
+    <string name="str_ipc_play">播放</string>
+    <string name="str_ipc_pause">暂停</string>
+    <string name="str_ipc_stop">停止</string>
+    <string name="str_set_ipc">配置IPC</string>
+    <string name="str_unbind_ipc">解绑IPC</string>
+    <string name="str_video">视频</string>
+    <string name="str_cloud_time_shaft">Cloud时间轴</string>
+    <string name="str_ap_time_shaft">Ap时间轴</string>
+    <string name="str_time_group">时间组合</string>
+    <string name="str_cloud_back">云回</string>
 
 </resources>
 
