@@ -40,7 +40,6 @@ public abstract class BaseLocalApi extends BaseApi {
 
     @Override
     public void post(Context context, String sn, String msgId, int opCode, String json) {
-        LogCat.e(TAG, "post: sn = " + sn + ", opCode：" + opCode + "，json = " + json);
         postRouter(sn, opCode, json);
     }
 
@@ -68,6 +67,7 @@ public abstract class BaseLocalApi extends BaseApi {
      */
     public void postRouterTimeout(final String sn, final int opCode, final String strJson, long timeout) {
         //Request
+        LogCat.e(TAG, "post: sn = " + sn + ", opCode：" + opCode + "，json = " + strJson);
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         RequestBody requestBody = RequestBody.create(JSON, strJson);//请求json内容
         Request.Builder request = new Request.Builder().url(getBaseUrl()).post(requestBody);

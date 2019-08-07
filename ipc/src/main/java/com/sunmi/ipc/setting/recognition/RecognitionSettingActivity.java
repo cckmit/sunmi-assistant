@@ -71,8 +71,8 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
     float mVideoRatio;
 
     private int mStepIndex;
-    private float[] mLineStart;
-    private float[] mLineEnd;
+    private int[] mLineStart = new int[2];
+    private int[] mLineEnd = new int[2];
 
     private SparseArray<String> mResTitle = new SparseArray<>(4);
     private SparseArray<String> mResNext = new SparseArray<>(4);
@@ -179,13 +179,7 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
             mPresenter.checkSdStatus();
         } else if (mStepIndex == RecognitionSettingContract.STEP_4_LINE) {
             showLoadingDialog();
-            int[] start = new int[2];
-            int[] end = new int[2];
-            start[0] = (int) (mLineStart[0] * 1920 / mVideoView.getWidth());
-            start[1] = (int) (mLineStart[1] * 1080 / mVideoView.getHeight());
-            end[0] = (int) (mLineEnd[0] * 1920 / mVideoView.getWidth());
-            end[1] = (int) (mLineEnd[1] * 1080 / mVideoView.getHeight());
-            mPresenter.line(start, end);
+            mPresenter.line(mLineStart, mLineEnd);
         } else {
             updateViewsStepTo(++mStepIndex);
         }
@@ -423,12 +417,31 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
                     updateNextEnable(false);
                     break;
                 case DoorLineView.STATE_END:
-                    mLineStart = lineStart;
-                    mLineEnd = lineEnd;
+                    if (lineEnd[0] > lineStart[0]) {
+                        mLineStart[0] = (int) (lineStart[0] * 1920 / mVideoView.getWidth());
+                        mLineStart[1] = (int) (lineStart[1] * 1080 / mVideoView.getHeight());
+                        mLineEnd[0] = (int) (lineEnd[0] * 1920 / mVideoView.getWidth());
+                        mLineEnd[1] = (int) (lineEnd[1] * 1080 / mVideoView.getHeight());
+                    } else {
+                        mLineStart[0] = (int) (lineEnd[0] * 1920 / mVideoView.getWidth());
+                        mLineStart[1] = (int) (lineEnd[1] * 1080 / mVideoView.getHeight());
+                        mLineEnd[0] = (int) (lineStart[0] * 1920 / mVideoView.getWidth());
+                        mLineEnd[1] = (int) (lineStart[1] * 1080 / mVideoView.getHeight());
+                    }
                     updateNextEnable(true);
-                    break;
                 default:
             }
+        }
+
+        @Override
+        public boolean isLineInvalid(float start, float end) {
+            start = start * 1920 / mVideoView.getWidth();
+            end = end * 1920 / mVideoView.getWidth();
+            boolean invalid = Math.abs(end - start) < 100;
+            if (invalid) {
+                shortTip(R.string.ipc_recognition_line_error);
+            }
+            return invalid;
         }
     }
 
