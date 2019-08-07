@@ -39,15 +39,15 @@ public class WelcomePresenter extends BasePresenter<WelcomeContract.View>
         SunmiStoreApi.checkToken(new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
-                if (isViewAttached()){
+                if (isViewAttached()) {
                     mView.checkTokenSuccess(null);
                 }
             }
 
             @Override
             public void onFail(int code, String msg, Object data) {
-                if (isViewAttached()){
-                    mView.checkTokenFail(code,msg);
+                if (isViewAttached()) {
+                    mView.checkTokenFail(code, msg);
                 }
             }
         });

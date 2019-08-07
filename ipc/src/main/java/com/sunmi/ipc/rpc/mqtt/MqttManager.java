@@ -2,8 +2,6 @@ package com.sunmi.ipc.rpc.mqtt;
 
 import android.os.Build;
 
-import com.sunmi.ipc.rpc.IPCCloudApi;
-
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;

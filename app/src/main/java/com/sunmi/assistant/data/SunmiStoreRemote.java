@@ -271,8 +271,9 @@ public class SunmiStoreRemote {
         return call;
     }
 
-    public Call<BaseResponse<OrderPayTypeRankResp>> getOrderPurchaseTypeRank(int companyId, int shopId, long timeStart, long timeEnd,
-                                                                             RetrofitCallback<OrderPayTypeRankResp> callback) {
+    public Call<BaseResponse<OrderPayTypeRankResp>> getOrderPurchaseTypeRank(
+            int companyId, int shopId, long timeStart, long timeEnd,
+            RetrofitCallback<OrderPayTypeRankResp> callback) {
         Call<BaseResponse<OrderPayTypeRankResp>> call = null;
         try {
             String params = new JSONObject()
@@ -290,8 +291,9 @@ public class SunmiStoreRemote {
         return call;
     }
 
-    public Call<BaseResponse<OrderTimeDistributionResp>> getOrderTimeDistribution(int companyId, int shopId, long timeStart, long timeEnd,
-                                                                                  int interval, RetrofitCallback<OrderTimeDistributionResp> callback) {
+    public Call<BaseResponse<OrderTimeDistributionResp>> getOrderTimeDistribution(
+            int companyId, int shopId, long timeStart, long timeEnd,
+            int interval, RetrofitCallback<OrderTimeDistributionResp> callback) {
         Call<BaseResponse<OrderTimeDistributionResp>> call = null;
         try {
             String params = new JSONObject()

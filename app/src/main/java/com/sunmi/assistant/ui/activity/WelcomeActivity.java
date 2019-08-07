@@ -10,7 +10,6 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.update.AppUpdate;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.MyApplication;
@@ -20,15 +19,12 @@ import com.sunmi.assistant.ui.activity.login.LoginActivity_;
 import com.sunmi.assistant.ui.activity.presenter.WelcomePresenter;
 import com.tencent.stat.MtaSDkException;
 import com.tencent.stat.StatService;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
 import org.json.JSONObject;
 
-import okhttp3.Call;
-import okhttp3.Response;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.utils.NetworkUtils;

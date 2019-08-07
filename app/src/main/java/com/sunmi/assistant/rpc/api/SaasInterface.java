@@ -1,6 +1,5 @@
 package com.sunmi.assistant.rpc.api;
 
-import com.google.gson.JsonObject;
 import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
 import com.sunmi.assistant.ui.activity.model.PlatformInfo;
 
@@ -30,7 +29,7 @@ public interface SaasInterface {
 
     //米商引擎手机校验验证码
     @POST(path + "confirmVerifyCode")
-    Call<BaseResponse<JsonObject>> confirmSaasVerifyCode(@Body BaseRequest request);
+    Call<BaseResponse<Object>> confirmSaasVerifyCode(@Body BaseRequest request);
 
     //用户授权获取Saas平台数据
     @POST(path + "authorize")

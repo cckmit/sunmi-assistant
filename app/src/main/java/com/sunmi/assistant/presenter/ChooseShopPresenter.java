@@ -49,7 +49,7 @@ public class ChooseShopPresenter extends BasePresenter<ChooseShopContract.View>
             public void onFail(int code, String msg, ShopListResp data) {
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();
-                    mView.getShopListFail(code,msg,data);
+                    mView.getShopListFail(code, msg, data);
                 }
             }
         });
@@ -123,11 +123,11 @@ public class ChooseShopPresenter extends BasePresenter<ChooseShopContract.View>
         SunmiStoreApi.getSsoToken(new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
-                if (isViewAttached()){
+                if (isViewAttached()) {
                     try {
                         JSONObject jsonObject = new JSONObject(data.toString());
                         String ssoToken = jsonObject.getString("sso_token");
-                        LogCat.e(TAG,"sso_token:"+ssoToken);
+                        LogCat.e(TAG, "sso_token:" + ssoToken);
                         SpUtils.setSsoToken(ssoToken);
                     } catch (JSONException e) {
                         e.printStackTrace();

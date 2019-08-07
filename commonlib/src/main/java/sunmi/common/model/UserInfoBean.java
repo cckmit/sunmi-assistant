@@ -82,4 +82,16 @@ public class UserInfoBean  implements Serializable {
         this.resize_icon = resize_icon;
     }
 
+    @Override
+    public String toString() {
+        return "UserInfoBean{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", merchant_id=" + merchant_id +
+                ", username='" + username + '\'' +
+                ", origin_icon='" + origin_icon + '\'' +
+                ", resize_icon='" + resize_icon + '\'' +
+                '}';
+    }
 }

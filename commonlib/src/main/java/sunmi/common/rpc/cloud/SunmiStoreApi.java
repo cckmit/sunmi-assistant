@@ -3,7 +3,13 @@ package sunmi.common.rpc.cloud;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import sunmi.common.model.CompanyInfoResp;
+import sunmi.common.model.UserAvatarResp;
 import sunmi.common.model.UserInfoBean;
 import sunmi.common.rpc.mqtt.EmqTokenResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
@@ -204,18 +210,18 @@ public class SunmiStoreApi {
         }
     }
 
-    // 修改用户昵称 todo icon是文件
-    public static void updateIcon(String icon, RetrofitCallback callback) {
-        try {
-            String params = new JSONObject()
-                    .put("username", icon)
-                    .toString();
-            SunmiStoreRetrofitClient.getInstance().create(UserInterface.class)
-                    .updateIcon(new BaseRequest(params))
-                    .enqueue(callback);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    /**
+     * 修改用户头像
+     *
+     * @param avatar   头像文件
+     * @param callback 回调
+     */
+    public static void updateIcon(String name, File avatar, RetrofitCallback<UserAvatarResp> callback) {
+        RequestBody file = RequestBody.create(MediaType.parse("image/*"), avatar);
+        MultipartBody.Part part = MultipartBody.Part.createFormData("icon", name, file);
+        SunmiStoreRetrofitClient.getInstance().create(UserInterface.class)
+                .updateIcon(part)
+                .enqueue(callback);
     }
 
     public static void getStoreToken(String userId, String token, String companyId,
@@ -225,7 +231,8 @@ public class SunmiStoreApi {
                     .put("user_id", userId)
                     .put("token", token)
                     .put("merchant_id", companyId)
-                    .put("app_type", 2)//1代表web, 2 代表app
+                    //1代表web, 2 代表app
+                    .put("app_type", 2)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(UserInterface.class)
                     .getStoreToken(new BaseRequest(params))
@@ -256,14 +263,15 @@ public class SunmiStoreApi {
 
     /**
      * 重置账号密码
+     *
      * @param email
      * @param callback
      */
-    public static void sendRecoveryEmail(String email,RetrofitCallback<Object> callback){
+    public static void sendRecoveryEmail(String email, RetrofitCallback<Object> callback) {
         try {
             String params = new JSONObject()
                     .put("email", email)
-                    .put("country_code",1)   //1-国内 2-国外，默认为1
+                    .put("country_code", 1)   //1-国内 2-国外，默认为1
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(UserInterface.class)
                     .sendRecoveryEmail(new BaseRequest(params))
@@ -275,18 +283,19 @@ public class SunmiStoreApi {
 
     /**
      * 更改邮箱
+     *
      * @param password
      * @param email
      * @param code
      * @param callback
      */
-    public static void updateEmail(String password ,String email, int code,RetrofitCallback<Object> callback){
+    public static void updateEmail(String password, String email, int code, RetrofitCallback<Object> callback) {
         try {
             String params = new JSONObject()
-                    .put("password",password)
+                    .put("password", password)
                     .put("email", email)
-                    .put("code",code)
-                    .put("country_code",1)   //1-国内 2-国外，默认为1
+                    .put("code", code)
+                    .put("country_code", 1)   //1-国内 2-国外，默认为1
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(UserInterface.class)
                     .updateEmail(new BaseRequest(params))
@@ -298,17 +307,18 @@ public class SunmiStoreApi {
 
     /**
      * 修改账号绑定手机号
+     *
      * @param password
      * @param phone
      * @param code
      * @param callback
      */
-    public static void updatePhone(String password ,String phone, int code,RetrofitCallback<Object> callback){
+    public static void updatePhone(String password, String phone, int code, RetrofitCallback<Object> callback) {
         try {
             String params = new JSONObject()
-                    .put("password",password)
+                    .put("password", password)
                     .put("phone", phone)
-                    .put("code",code)
+                    .put("code", code)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(UserInterface.class)
                     .updatePhone(new BaseRequest(params))
@@ -326,6 +336,20 @@ public class SunmiStoreApi {
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(CompanyInterface.class)
                     .createCompany(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void updateCompanyName(int companyId, String companyName, RetrofitCallback<CompanyInfoResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("company_name", companyName)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CompanyInterface.class)
+                    .updateCompany(new BaseRequest(params))
                     .enqueue(callback);
         } catch (Exception e) {
             e.printStackTrace();
