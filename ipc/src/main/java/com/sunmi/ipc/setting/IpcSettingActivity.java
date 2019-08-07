@@ -21,6 +21,7 @@ import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.setting.entity.DetectionConfig;
 import com.sunmi.ipc.setting.recognition.RecognitionSettingActivity_;
+import com.sunmi.ipc.utils.TimeoutTimer;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.CheckedChange;
@@ -167,6 +168,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
+        TimeoutTimer.getInstance().start();
         mPresenter = new IpcSettingPresenter();
         mPresenter.attachView(this);
         mPresenter.loadConfig(mDevice);
@@ -194,6 +196,17 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     protected void onStop() {
         super.onStop();
         isRun = false;
+    }
+
+    private void timeoutStop() {
+        TimeoutTimer.getInstance().stop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopTimer();
+        timeoutStop();
     }
 
     @Override
@@ -297,7 +310,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Click(resName = "sil_camera_detail")
     void cameraDetailClick() {
-        if (noNetCannotClick(true)) return;
+        if (noNetCannotClick(true)) {
+            return;
+        }
         IpcSettingDetailActivity_.intent(this)
                 .mDevice(mDevice)
                 .start();
@@ -324,7 +339,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Click(resName = "sil_voice_exception")
     void soundAbnormalDetection() {
-        if (noNetCannotClick(false)) return;
+        if (noNetCannotClick(false)) {
+            return;
+        }
         if (mDetectionConfig == null) {
             return;
         }
@@ -345,7 +362,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Click(resName = "sil_active_exception")
     void activeAbnormalDetection() {
-        if (noNetCannotClick(false)) return;
+        if (noNetCannotClick(false)) {
+            return;
+        }
         if (mDetectionConfig == null) {
             return;
         }
@@ -366,7 +385,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Click(resName = "sil_time_setting")
     void detectionTimeSetting() {
-        if (noNetCannotClick(false)) return;
+        if (noNetCannotClick(false)) {
+            return;
+        }
         if (mDetectionConfig == null) {
             return;
         }
@@ -386,7 +407,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Click(resName = "sil_night_style")
     void nightStyleClick() {
-        if (noNetCannotClick(false)) return;
+        if (noNetCannotClick(false)) {
+            return;
+        }
         IpcSettingNightStyleActivity_.intent(this)
                 .mDevice(mDevice)
                 .nightMode(nightMode)
@@ -405,7 +428,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Click(resName = "sil_ipc_version")
     void versionClick() {
-        if (noNetCannotClick(true)) return;
+        if (noNetCannotClick(true)) {
+            return;
+        }
         if (mResp == null) {
             mPresenter.currentVersion();
             return;
@@ -508,7 +533,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         return new int[]{IpcConstants.getIpcConnectApMsg, IpcConstants.getIpcNightIdeRotation,
                 IpcConstants.setIpcNightIdeRotation, IpcConstants.getIpcDetection,
                 IpcConstants.ipcUpgrade, IpcConstants.getIsWire, CommonNotificationConstant.netConnected,
-                CommonNotificationConstant.netDisconnection, CommonNotificationConstant.ipcUpgrade};
+                CommonNotificationConstant.netDisconnection, CommonNotificationConstant.ipcUpgrade,
+                CommonNotificationConstant.netConnectException};
     }
 
     @Override
@@ -524,6 +550,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         } else if (id == CommonNotificationConstant.ipcUpgrade) { //ipc升级
             mDevice.setFirmware(mResp.getLatest_bin_version());
             mPresenter.currentVersion();
+        } else if (id == CommonNotificationConstant.netConnectException) { //连接超时
+            shortTip(R.string.str_server_exception);
         }
         if (!isRun || args == null) {
             return;
@@ -533,6 +561,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             res = (ResponseBean) args[0];
             getIpcConnectApMsg(res);
         } else if (id == IpcConstants.getIpcNightIdeRotation) {
+            timeoutStop();
             res = (ResponseBean) args[0];
             getIpcNightIdeRotation(res);
         } else if (id == IpcConstants.setIpcNightIdeRotation) {
@@ -826,12 +855,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                     }
                 }).setCancelButton(R.string.sm_cancel, R.color.common_orange).create();
         commonDialog.showWithOutTouchable(false);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        stopTimer();
     }
 
 }
