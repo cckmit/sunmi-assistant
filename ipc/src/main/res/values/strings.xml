@@ -132,22 +132,13 @@
     <string name="ipc_recognition_line_start">Setting the beginning threshold</string>
     <string name="ipc_recognition_line_end">Setting the ending thrreshold</string>
     <string name="ipc_recognition_line_cancel">Cancel</string>
+    <string name="ipc_recognition_line_error">当前划线不符合要求，请重新操作</string>
     <string name="ipc_recognition_complete">Picture adjustment completed</string>
     <string name="ipc_recognition_sd_none">The memory card is not inserted. This function cannot be used. Please insert the memory card first.</string>
     <string name="ipc_recognition_sd_uninitialized">The memory card is detected and needs to be formatted before use. Please save important information in advance.</string>
     <string name="ipc_recognition_sd_unknown">The memory card is not recognized. Please replace it with a new one.</string>
     <string name="tip_network_fail_retry">The current network is not in good condition, please refresh and try again.</string>
-    <string name="str_enter_uid">Please enter the uid of the camera</string>
-    <string name="str_ipc_play">Play</string>
-    <string name="str_ipc_pause">Pause</string>
-    <string name="str_ipc_stop">Stop</string>
-    <string name="str_set_ipc">Set IPC</string>
-    <string name="str_unbind_ipc">Unbind IPC</string>
-    <string name="str_video">Video</string>
-    <string name="str_cloud_time_shaft">Cloud timeline</string>
-    <string name="str_ap_time_shaft">Ap timeline</string>
-    <string name="str_time_group">Time combination</string>
-    <string name="str_cloud_back">Cloud back</string>
+    <string name="str_cloud_back">云回</string>
 </resources>
 
 
