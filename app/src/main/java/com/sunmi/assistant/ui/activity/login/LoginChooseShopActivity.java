@@ -99,6 +99,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
             titleBar.getRightText().setOnClickListener(this);
             btnEnterMain.setVisibility(View.GONE);
             mPresenter.getUserInfo();
+            mPresenter.getSsoToken();
         } else if (action == CommonConstants.ACTION_LOGIN_CHOOSE_SHOP) {
             CommonHelper.isCanClick(btnEnterMain, false);
             titleBar.setAppTitle(R.string.str_select_store);

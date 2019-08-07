@@ -37,5 +37,7 @@ public interface ChooseShopContract {
         void getUserInfo();
 
         void getSaas(String mobile);
+
+        void getSsoToken();
     }
 }
