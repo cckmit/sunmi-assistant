@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import com.sunmi.apmanager.config.ApConfig;
 import com.sunmi.apmanager.rpc.mqtt.MQTTManager;
 import com.sunmi.assistant.config.BootLoader;
-import com.sunmi.ipc.rpc.mqtt.MqttManager;
 import com.tencent.stat.StatConfig;
 import com.tencent.stat.StatService;
 
@@ -67,7 +66,7 @@ public class MyApplication extends BaseApplication {
                 LogCat.e("HhActivityLifecycleCB", "onActivityStarted : hasLogin = "
                         + SpUtils.getLoginStatus() + ", activity = " + activity.getClass().getName());
                 if (TextUtils.equals(SpUtils.getLoginStatus(), "Y")) {
-                    MqttManager.getInstance().reconnect();
+                    MQTTManager.getInstance().reconnect();
                 }
             }
             startedActivityCount++;
