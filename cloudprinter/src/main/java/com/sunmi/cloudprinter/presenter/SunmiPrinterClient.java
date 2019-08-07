@@ -244,12 +244,13 @@ public class SunmiPrinterClient implements BluetoothAdapter.LeScanCallback {
             }
         };
         try {
-            mClient.unnotify(btAddress, Constants.SERVICE_UUID, Constants.CHARACTER_UUID, new BleUnnotifyResponse() {
-                @Override
-                public void onResponse(int i) {
+            mClient.unnotify(btAddress, Constants.SERVICE_UUID,
+                    Constants.CHARACTER_UUID, new BleUnnotifyResponse() {
+                        @Override
+                        public void onResponse(int i) {
 
-                }
-            });
+                        }
+                    });
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -271,7 +272,8 @@ public class SunmiPrinterClient implements BluetoothAdapter.LeScanCallback {
         }
     }
 
-    private void writeData(final BluetoothClient mClient, final String btAddress, final int cmd, final byte[] data) {
+    private void writeData(final BluetoothClient mClient, final String btAddress,
+                           final int cmd, final byte[] data) {
         if (mClient == null) return;
         mClient.write(btAddress, Constants.SERVICE_UUID, Constants.CHARACTER_UUID, data,
                 new BleWriteResponse() {
