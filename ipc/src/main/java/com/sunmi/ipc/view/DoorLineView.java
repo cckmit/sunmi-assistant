@@ -166,7 +166,8 @@ public class DoorLineView extends ViewGroup {
 
     private class ClickEvent extends GestureDetector.SimpleOnGestureListener {
 
-        private static final String LOG_MSG = "Click: out of area. x(%f) must in [%d, %d], y(%f) must in [%d, %d]";
+        private static final String LOG_MSG_RANGE = "Click: out of area. x(%f) must in [%d, %d], y(%f) must in [%d, %d]";
+        private static final String LOG_MSG_LIMIT = "Click: line limit. Gap between Ax(%f) and Bx(%f) must enough.";
 
         @Override
         public boolean onDown(MotionEvent e) {
@@ -192,13 +193,13 @@ public class DoorLineView extends ViewGroup {
             switch (mState) {
                 case STATE_INIT:
                     if (isInvalidPoint) {
-                        String msg = String.format(Locale.getDefault(), LOG_MSG, x, left, right, y, top, getHeight());
+                        String msg = String.format(Locale.getDefault(), LOG_MSG_RANGE, x, left, right, y, top, getHeight());
                         LogCat.e(TAG, msg);
                         return false;
                     }
+                    mState = STATE_START;
                     mLineStart[0] = x;
                     mLineStart[1] = y;
-                    mState = STATE_START;
                     if (mListener != null) {
                         mListener.onStateChanged(mState, mLineStart, mLineEnd);
                     }
@@ -206,13 +207,17 @@ public class DoorLineView extends ViewGroup {
                     break;
                 case STATE_START:
                     if (isInvalidPoint) {
-                        String msg = String.format(Locale.getDefault(), LOG_MSG, x, left, right, y, top, getHeight());
+                        String msg = String.format(Locale.getDefault(), LOG_MSG_RANGE, x, left, right, y, top, getHeight());
+                        LogCat.e(TAG, msg);
+                        return false;
+                    } else if (mListener != null && mListener.isLineInvalid(mLineStart[0], x)) {
+                        String msg = String.format(Locale.getDefault(), LOG_MSG_LIMIT, mLineStart[0], x);
                         LogCat.e(TAG, msg);
                         return false;
                     }
+                    mState = STATE_END;
                     mLineEnd[0] = x;
                     mLineEnd[1] = y;
-                    mState = STATE_END;
                     if (mListener != null) {
                         mListener.onStateChanged(mState, mLineStart, mLineEnd);
                     }
@@ -222,22 +227,25 @@ public class DoorLineView extends ViewGroup {
                     if (isInTip) {
                         mState = STATE_INIT;
                         if (mListener != null) {
-                            mListener.onStateChanged(mState, mLineStart, mLineEnd);
+                            mListener.onStateChanged(STATE_INIT, mLineStart, mLineEnd);
                         }
                         requestLayout();
                     } else if (isInvalidPoint) {
-                        String msg = String.format(Locale.getDefault(), LOG_MSG, x, left, right, y, top, getHeight());
+                        String msg = String.format(Locale.getDefault(), LOG_MSG_RANGE, x, left, right, y, top, getHeight());
                         LogCat.e(TAG, msg);
                         return false;
-                    } else {
-                        mLineEnd[0] = x;
-                        mLineEnd[1] = y;
-                        if (mListener != null) {
-                            mListener.onStateChanged(mState, mLineStart, mLineEnd);
-                        }
-                        requestLayout();
-                        invalidate();
+                    } else if (mListener != null && mListener.isLineInvalid(mLineStart[0], x)) {
+                        String msg = String.format(Locale.getDefault(), LOG_MSG_LIMIT, mLineStart[0], x);
+                        LogCat.e(TAG, msg);
+                        return false;
                     }
+                    mLineEnd[0] = x;
+                    mLineEnd[1] = y;
+                    if (mListener != null) {
+                        mListener.onStateChanged(mState, mLineStart, mLineEnd);
+                    }
+                    requestLayout();
+                    invalidate();
                     break;
                 default:
                     return false;
@@ -258,5 +266,14 @@ public class DoorLineView extends ViewGroup {
          * @param lineEnd   划线终点坐标
          */
         void onStateChanged(int state, float[] lineStart, float[] lineEnd);
+
+        /**
+         * 判断线段坐标是否有效
+         *
+         * @param lineStart 划线起点X坐标
+         * @param lineEnd   划线终点X坐标
+         * @return 是否有效
+         */
+        boolean isLineInvalid(float lineStart, float lineEnd);
     }
 }
