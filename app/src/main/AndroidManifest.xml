@@ -79,10 +79,10 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".ui.activity.setting.SettingActivity_" />
-        <activity android:name=".ui.activity.setting.SecurityActivity_" />
-        <activity android:name=".ui.activity.setting.ChangePasswordActivity_" />
-        <activity android:name=".ui.activity.setting.AboutActivity_" />
+        <activity android:name=".mine.setting.SettingActivity_" />
+        <activity android:name=".mine.setting.SecurityActivity_" />
+        <activity android:name=".mine.setting.ChangePasswordActivity_" />
+        <activity android:name=".mine.setting.AboutActivity_" />
         <activity android:name=".mine.UserInfoActivity_" />
         <activity android:name=".mine.ChangeUsernameActivity_" />
         <activity android:name=".ui.activity.SunmiLinkSearchActivity_" />
@@ -100,6 +100,7 @@
         <activity android:name=".ui.activity.merchant.CreateCompanyNextActivity_" />
         <activity android:name=".mine.CreateShopActivity_" />
         <activity android:name=".mine.ShopListActivity_" />
+        <activity android:name=".mine.HelpActivity_" />
 
         <!--百度地图-->
         <service

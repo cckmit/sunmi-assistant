@@ -1,4 +1,4 @@
-package com.sunmi.assistant.ui.activity.contract;
+package com.sunmi.assistant.mine.setting;
 
 import sunmi.common.base.BaseView;
 

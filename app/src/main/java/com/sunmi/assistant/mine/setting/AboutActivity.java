@@ -1,4 +1,4 @@
-package com.sunmi.assistant.ui.activity.setting;
+package com.sunmi.assistant.mine.setting;
 
 import android.app.Activity;
 import android.view.View;
@@ -28,6 +28,7 @@ import sunmi.common.view.dialog.CommonDialog;
 
 /**
  * 关于
+ * @author yangshijie
  */
 @EActivity(R.layout.activity_setting_about)
 public class AboutActivity extends BaseActivity {
@@ -39,8 +40,7 @@ public class AboutActivity extends BaseActivity {
 
     @AfterViews
     void init() {
-        StatusBarUtils.setStatusBarColor(this,
-                StatusBarUtils.TYPE_DARK);//状态栏
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         ViewUtils.setPrivacy(this, ctvPrivacy, R.color.colorOrange, false);
         tvVersion.setText(getString(R.string.str_version, CommonHelper.getAppVersionName(this)));
     }
@@ -70,7 +70,6 @@ public class AboutActivity extends BaseActivity {
                                 if (needUpdate == 1) {
                                     String url = object.getString("url");
                                     forceUpdate(url);
-                                    return;
                                 } else {
                                     shortTip(getString(R.string.tip_now_new_version));
                                 }

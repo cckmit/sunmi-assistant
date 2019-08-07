@@ -26,6 +26,8 @@
     <string name="str_my_store">My store</string>
     <string name="btn_add_store">Add store</string>
     <string name="ic_tab_data_title">数据</string>
+    <string name="str_help_feedback">Help and feedback</string>
+    <string name="str_me">我</string>
 
     <string name="dashboard_data_format">%s%%</string>
     <string name="dashboard_today">今日</string>

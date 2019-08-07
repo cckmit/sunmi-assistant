@@ -5,10 +5,9 @@ import android.widget.TextView;
 
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.constant.NotificationConstant;
-import com.sunmi.apmanager.ui.activity.store.HelpActivity;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.ui.activity.setting.SettingActivity_;
+import com.sunmi.assistant.mine.setting.SettingActivity_;
 import com.sunmi.sunmiservice.SunmiServiceConfig;
 import com.sunmi.sunmiservice.WebViewSunmiMallActivity_;
 
@@ -138,7 +137,7 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     public void helpClick() {
         CommonUtils.trackCommonEvent(mActivity, "feedback",
                 "主页_我的_帮助与反馈", Constants.EVENT_MY_INFO);
-        openActivity(mActivity, HelpActivity.class);
+        HelpActivity_.intent(this).start();
     }
 
     /**

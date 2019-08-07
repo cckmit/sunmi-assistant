@@ -1,4 +1,4 @@
-package com.sunmi.assistant.ui.activity.contract;
+package com.sunmi.assistant.mine.setting;
 
 import sunmi.common.base.BaseView;
 
@@ -10,6 +10,7 @@ import sunmi.common.base.BaseView;
 public interface SettingContract {
 
     interface View extends BaseView {
+
         void logoutSuccess();
 
         void logoutFail(int code, String msg);
