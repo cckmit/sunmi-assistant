@@ -68,11 +68,16 @@ public class IpcSettingRotateActivity extends BaseActivity implements View.OnCli
     }
 
     @Override
-    public void onClick(View v) {
+    public void onBackPressed() {
         Intent intent = getIntent();
         intent.putExtra("rotate", rotation);
         setResult(RESULT_OK, intent);
-        finish();
+        super.onBackPressed();
+    }
+
+    @Override
+    public void onClick(View v) {
+        onBackPressed();
     }
 
     private void setRotationCall() {

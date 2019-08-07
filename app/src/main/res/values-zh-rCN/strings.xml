@@ -20,6 +20,9 @@
     <string name="tip_title_choose_device">选择您要连接的设备</string>
     <string name="tip_no_device_found">没有发现新设备</string>
     <string name="tip_keep_device_in">请确保您的设备处于路由器信号范围内</string>
+    <string name="str_auth_onclick_protocol">点击允许按钮即表示同意</string>
+    <string name="str_auth_protocol_text">《授权协议》</string>
+    <string name="str_select_store">选择门店</string>
 
     <string name="ic_tab_data_title">数据</string>
 
@@ -40,6 +43,24 @@
     <string name="dashboard_purchase_rank">支付方式</string>
     <string name="dashboard_quantity_rank">商品销量排行</string>
     <string name="dashboard_purchase_type_other">其他</string>
+
+    <string name="str_platform_list">平台列表</string>
+    <string name="str_platform_skip">跳过</string>
+    <string name="str_button_check">验证</string>
+    <string name="str_get_sms_code">获取验证码</string>
+    <string name="str_please_input_sms_code">请输入验证码</string>
+    <string name="str_sms_code">验证码</string>
+    <string name="str_please_input_mobile">请输入手机号码</string>
+    <string name="str_mobile">手机号</string>
+    <string name="str_check_mobile">验证手机号</string>
+    <string name="str_please_input_platform_mobile">请输入您在%s的手机号</string>
+    <string name="str_platform_sms_code_error">验证码错误，请重新输入</string>
+    <string name="str_button_auto_create">自动创建</string>
+    <string name="str_dialog_auto_create_store">未发现与该手机号匹配的内容，是否允许系统自动为您创建门店？</string>
+    <string name="str_dialog_auth_message">申请获取您在%s的门店数据。</string>
+    <string name="str_unkunw_store">%s的门店</string>
+    <string name="str_create_store_fail">门店创建失败</string>
+    <string name="str_create_store_alredy_exit">门店名称已存在</string>
 
     <string name="order_list_title">详情列表</string>
     <string name="order_filter_sort">综合排序</string>
@@ -72,11 +93,12 @@
     <string name="str_my_company">我的商户</string>
     <string name="tip_refresh_data">请检查网络后刷新页面～</string>
     <string name="tip_get_data_fail">数据获取失败</string>
-    <string name="tip_play_fail">播放失败</string>
+    <string name="str_mine_company">我的商户</string>
     <string name="tip_get_shop_list_fail">获取门店数据失败</string>
     <string name="str_select_company">选择商户</string>
     <string name="str_setting_detail">查看详情</string>
     <string name="str_setting_delete_device">删除设备</string>
+    <string name="str_import_other_platform_data">未匹配到该手机号下的门店数据，是否从外部平台导入？</string>
     <string name="str_cloud_printer">云打印机</string>
     <string name="str_cannot_manager_device">当前无法管理设备</string>
     <string name="tip_image_captcha_refresh_fail">图片验证码刷新失败</string>

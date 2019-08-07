@@ -275,7 +275,7 @@ public class IpcSettingDetectionTimeActivity extends BaseActivity {
         String minute = String.format(Locale.getDefault(), "%02d", (time % 3600) / 60);
         StringBuilder sb = new StringBuilder();
         sb.append(hour).append(":").append(minute);
-        if (time < mTimeStart) {
+        if (time <= mTimeStart) {
             sb.append(getString(R.string.ipc_setting_detection_time_tomorrow));
         }
         mSilTimeEnd.setRightText(sb.toString());
@@ -333,7 +333,7 @@ public class IpcSettingDetectionTimeActivity extends BaseActivity {
     }
 
     @Override
-    public int[] getUnStickNotificationId() {
+    public int[] getStickNotificationId() {
         return new int[]{IpcConstants.setIpcDetection};
     }
 

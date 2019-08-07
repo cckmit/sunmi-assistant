@@ -102,6 +102,12 @@ public class PrinterSearchActivity extends BaseActivity
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+//        sunmiPrinterClient = null;
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -208,6 +214,11 @@ public class PrinterSearchActivity extends BaseActivity
 
     @Override
     public void wifiConfigSuccess() {
+
+    }
+
+    @Override
+    public void onWifiConfigFail() {
 
     }
 

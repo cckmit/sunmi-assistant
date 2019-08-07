@@ -10,65 +10,98 @@ import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 
 /**
- * iotc
+ * Description:
+ * Created by bruce on 2019/8/1.
  */
 public class IOTCClient {
-    private static String TAG = "IOTCClient";
+    private String TAG = "IOTCClient";
 
-    private static Callback callback;
-    private static int SID = -1;
-    private static int avIndex = -1;
-    private static int CMD_LIVE_START = 0x10;
-    private static int CMD_LIVE_STOP = 0x11;
-    private static int CMD_LIVE_START_AUDIO = 0x12;
-    private static int CMD_LIVE_STOP_AUDIO = 0x13;
-    private static int CMD_PLAYBACK_LIST = 0x20;
-    private static int CMD_PLAYBACK_START = 0x21;
-    private static int CMD_PLAYBACK_STOP = 0x22;
-    private static int CMD_PLAYBACK_PAUSE = 0x23;
+    private Callback callback;
+    private String uid;
+    private int SID = -1;
+    private int avIndex = -1;
+    private int IOTC_CONNECT_RESULT = -1000;
+    private int CMD_LIVE_START = 0x10;
+    private int CMD_LIVE_STOP = 0x11;
+    private int CMD_LIVE_START_AUDIO = 0x12;
+    private int CMD_LIVE_STOP_AUDIO = 0x13;
+    private int CMD_PLAYBACK_LIST = 0x20;
+    private int CMD_PLAYBACK_START = 0x21;
+    private int CMD_PLAYBACK_STOP = 0x22;
+    private int CMD_PLAYBACK_PAUSE = 0x23;
 
+    private boolean alreadyQuit;
+    private boolean isRunning = true;
 
-    public static void init(String uid) {
+    public IOTCClient(String uid) {
+        this.uid = uid;
+    }
+
+    public void init(String uid) {
         LogCat.e(TAG, "StreamClient init...");
-        int ret = IOTCAPIs.IOTC_Initialize2(0);
+        int ret = IOTCAPIs.IOTC_Initialize2(0);//step 1
         LogCat.e(TAG, "IOTC_Initialize() ret = " + ret);
         if (ret != IOTCAPIs.IOTC_ER_NoERROR) {
             LogCat.e(TAG, "IOTCAPIs_Device exit...!!");
+//            if (IOTCAPIs.IOTC_ER_ALREADY_INITIALIZED == ret) {
+//                IOTCAPIs.IOTC_DeInitialize();
+//            }//todo
+            if (callback != null) {
+                callback.initFail();
+            }
             return;
         }
 
         // alloc 3 sessions for video and two-way audio
-        AVAPIs.avInitialize(3);
+        AVAPIs.avInitialize(3);//step 2
 
-        SID = IOTCAPIs.IOTC_Get_SessionID();
+        SID = IOTCAPIs.IOTC_Get_SessionID();//step 3
         if (SID < 0) {
             LogCat.e(TAG, "IOTC_Get_SessionID error code, sid = " + SID);
+            IOTCAPIs.IOTC_DeInitialize();
+            if (callback != null) {
+                callback.initFail();
+            }
             return;
         }
         LogCat.e(TAG, "Step 1: call IOTC_Get_SessionID, uid = " + uid);
-        ret = IOTCAPIs.IOTC_Connect_ByUID_Parallel(uid, SID);
-        if (ret < 0) {
-            LogCat.e(TAG, "IOTC_Connect_ByUID_Parallel failed ret = " + ret);
+        IOTC_CONNECT_RESULT = IOTCAPIs.IOTC_Connect_ByUID_Parallel(uid, SID);//step 4
+        if (IOTC_CONNECT_RESULT < 0) {
+            LogCat.e(TAG, "IOTC_Connect_ByUID_Parallel failed ret = " + IOTC_CONNECT_RESULT);
+            IOTCAPIs.IOTC_DeInitialize();
+            IOTCAPIs.IOTC_Session_Close(SID);
+            if (callback != null) {
+                callback.initFail();
+            }
             return;
         }
         LogCat.e(TAG, "Step 2: call IOTC_Connect_ByUID_Parallel, uid = " + uid);
+        if (alreadyQuit) {
+            return;
+        }
 
         String account = "admin";
-        String password = "12345678";
+        String password = "12345678";//8Qi0ZLkwv3VP0W
         int timeoutSec = 20;
-        int channelId = 1;
+        int channelId = 1;//chid用来传输音视频
         int[] pservType = new int[100];
         int[] bResend1 = new int[100];
 
         avIndex = AVAPIs.avClientStart2(SID, account, password,
-                timeoutSec, pservType, channelId, bResend1);//chid用来传输音视频
+                timeoutSec, pservType, channelId, bResend1);//step 5
         if (avIndex < 0) {
             LogCat.e(TAG, "avClientStartEx failed avIndex = " + avIndex);
+            AVAPIs.avDeInitialize();
+            IOTCAPIs.IOTC_Session_Close(SID);
+            IOTCAPIs.IOTC_Connect_Stop();
+            IOTCAPIs.IOTC_DeInitialize();
+            if (callback != null) {
+                callback.initFail();
+            }
             return;
         }
         LogCat.e(TAG, "Step 3: call avClientStartEx, avIndex = " + avIndex);
         startPlay();
-
         Thread videoThread = new Thread(new VideoThread(avIndex), "Video Thread");
         Thread audioThread = new Thread(new AudioThread(avIndex), "Audio Thread");
         videoThread.start();
@@ -76,33 +109,41 @@ public class IOTCClient {
         try {
             videoThread.join();
         } catch (InterruptedException e) {
-            LogCat.e("IOTCClient - videoThread:", e.getMessage());
+            LogCat.e(TAG, "videoThread:" + e.getMessage());
             return;
         }
         try {
             audioThread.join();
         } catch (InterruptedException e) {
-            LogCat.e("IOTCClient - audioThread:", e.getMessage());
-            return;
+            LogCat.e(TAG, "audioThread:" + e.getMessage());
         }
-        close();
     }
 
-    public static void close() {
+    public void close() {
+//        if (IOTC_CONNECT_RESULT == -1000) {
+//            alreadyQuit = true;
+//            IOTCAPIs.IOTC_Connect_Stop_BySID(SID);
+//            IOTCAPIs.IOTC_Session_Close(SID);
+//            IOTCAPIs.IOTC_DeInitialize();
+//            return;
+//        }
         if (avIndex < 0) return;
         AVAPIs.avClientStop(avIndex);
+        AVAPIs.avClientExit(SID, 1);
         LogCat.e(TAG, "avClientStop OK");
         IOTCAPIs.IOTC_Session_Close(SID);
+        IOTCAPIs.IOTC_Connect_Stop();
         LogCat.e(TAG, "IOTC_Session_Close OK");
         AVAPIs.avDeInitialize();
         IOTCAPIs.IOTC_DeInitialize();
+        isRunning = false;
         LogCat.e(TAG, "StreamClient exit...");
     }
 
     /**
      * 开始直播
      */
-    public static void startPlay() {
+    public void startPlay() {
         changeValue(0);
     }
 
@@ -111,7 +152,7 @@ public class IOTCClient {
      *
      * @param type 分辨率，0：超清，1：高清，2：标清
      */
-    public static void changeValue(int type) {
+    public void changeValue(int type) {
         IotcCmdBean cmd = new IotcCmdBean.Builder()
                 .setMsg_id(Utils.getMsgId())
                 .setCmd(CMD_LIVE_START)
@@ -123,7 +164,7 @@ public class IOTCClient {
     /**
      * 停止直播参数
      */
-    public static void stopLive() {
+    public void stopLive() {
         IotcCmdBean cmd = new IotcCmdBean.Builder()
                 .setMsg_id(Utils.getMsgId())
                 .setCmd(CMD_LIVE_STOP)
@@ -131,7 +172,7 @@ public class IOTCClient {
         cmdCall(cmd);
     }
 
-    public static void getPlaybackList(long start, long end) {
+    public void getPlaybackList(long start, long end) {
         IotcCmdBean cmd = new IotcCmdBean.Builder()
                 .setMsg_id(Utils.getMsgId())
                 .setCmd(CMD_PLAYBACK_LIST)
@@ -141,7 +182,7 @@ public class IOTCClient {
         cmdCall(cmd);
     }
 
-    public static void startPlayback(long startTime) {
+    public void startPlayback(long startTime) {
         IotcCmdBean cmd = new IotcCmdBean.Builder()
                 .setMsg_id(Utils.getMsgId())
                 .setCmd(CMD_PLAYBACK_START)
@@ -150,7 +191,7 @@ public class IOTCClient {
         cmdCall(cmd);
     }
 
-    public static void stopPlayback() {
+    public void stopPlayback() {
         IotcCmdBean cmd = new IotcCmdBean.Builder()
                 .setMsg_id(Utils.getMsgId())
                 .setCmd(CMD_PLAYBACK_STOP)
@@ -158,7 +199,7 @@ public class IOTCClient {
         cmdCall(cmd);
     }
 
-    public static void pausePlayback(boolean isPause) {
+    public void pausePlayback(boolean isPause) {
         IotcCmdBean cmd = new IotcCmdBean.Builder()
                 .setMsg_id(Utils.getMsgId())
                 .setCmd(CMD_PLAYBACK_PAUSE)
@@ -167,15 +208,14 @@ public class IOTCClient {
         cmdCall(cmd);
     }
 
-    private static void cmdCall(IotcCmdBean cmd) {
+    private void cmdCall(IotcCmdBean cmd) {
         String json = new Gson().toJson(cmd);
-        LogCat.e(TAG, "111111 cmdCall json = " + json);
         byte[] req = json.getBytes();
         IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
         getCmdResponse();
     }
 
-    private static void getCmdResponse() {
+    private void getCmdResponse() {
         byte[] buf = new byte[1024];
         int actualLen = IOTCAPIs.IOTC_Session_Read(SID, buf, 1024, 10000, 0);
         if (actualLen > 0) {
@@ -183,13 +223,12 @@ public class IOTCClient {
             System.arraycopy(buf, 0, data, 0, actualLen);
             String result = ByteUtils.byte2String(data);
             if (callback != null) callback.IOTCResult(result);
-            LogCat.e(TAG, "111111 getCmdResponse data = " + ByteUtils.byte2String(data));
         }
     }
 
-    public static class VideoThread implements Runnable {
-        static final int VIDEO_BUF_SIZE = 2000000;
-        static final int FRAME_INFO_SIZE = 16;
+    public class VideoThread implements Runnable {
+        final int VIDEO_BUF_SIZE = 2000000;
+        final int FRAME_INFO_SIZE = 16;
 
         private int avIndex;
 
@@ -199,20 +238,18 @@ public class IOTCClient {
 
         @Override
         public void run() {
-            LogCat.e(TAG, Thread.currentThread().getName() + " VideoThread Start");
-            AVAPIs av = new AVAPIs();
             byte[] frameInfo = new byte[FRAME_INFO_SIZE];
             byte[] videoBuffer = new byte[VIDEO_BUF_SIZE];
             int[] outBufSize = new int[1];
             int[] outFrameSize = new int[1];
             int[] outFrmInfoBufSize = new int[1];
-            while (true) {
+            while (isRunning) {
                 int[] frameNumber = new int[1];
-                int ret = av.avRecvFrameData2(avIndex, videoBuffer, VIDEO_BUF_SIZE, outBufSize,
+                int ret = AVAPIs.avRecvFrameData2(avIndex, videoBuffer, VIDEO_BUF_SIZE, outBufSize,
                         outFrameSize, frameInfo, FRAME_INFO_SIZE, outFrmInfoBufSize, frameNumber);
                 if (ret == AVAPIs.AV_ER_DATA_NOREADY) {//缓存没数据等待10ms再读
                     try {
-                        Thread.sleep(10);
+                        Thread.sleep(20);
                         continue;
                     } catch (InterruptedException e) {
                         LogCat.e(TAG, e.getMessage());
@@ -244,9 +281,9 @@ public class IOTCClient {
         }
     }
 
-    public static class AudioThread implements Runnable {
-        static final int AUDIO_BUF_SIZE = 1024 * 4;
-        static final int FRAME_INFO_SIZE = 16;
+    public class AudioThread implements Runnable {
+        final int AUDIO_BUF_SIZE = 1024 * 4;
+        final int FRAME_INFO_SIZE = 16;
 
         private int avIndex;
 
@@ -256,14 +293,11 @@ public class IOTCClient {
 
         @Override
         public void run() {
-            LogCat.e(TAG, Thread.currentThread().getName() + " AudioThread Start");
-
-            AVAPIs av = new AVAPIs();
             byte[] frameInfo = new byte[FRAME_INFO_SIZE];
             byte[] audioBuffer = new byte[AUDIO_BUF_SIZE];
-            while (true) {
+            while (isRunning) {
                 int[] frameNumber = new int[1];
-                int ret = av.avRecvAudioData(avIndex, audioBuffer,
+                int ret = AVAPIs.avRecvAudioData(avIndex, audioBuffer,
                         AUDIO_BUF_SIZE, frameInfo, FRAME_INFO_SIZE, frameNumber);
                 if (ret == AVAPIs.AV_ER_DATA_NOREADY) {//缓存没数据等待10ms再读
                     try {
@@ -286,7 +320,7 @@ public class IOTCClient {
                     LogCat.e(TAG, "AudioThread - AV_ER_LOSED_THIS_FRAME");
                     continue;
                 }
-//                LogCat.e(TAG, "555555aaa AUDIO received ret = " + ret);
+//                LogCat.e(TAG, "888888aaa AUDIO received ret = " + ret);
                 if (ret < 0) return;
                 byte[] data = new byte[ret];
                 System.arraycopy(audioBuffer, 0, data, 0, ret);
@@ -296,11 +330,13 @@ public class IOTCClient {
         }
     }
 
-    public static void setCallback(Callback callback) {
-        IOTCClient.callback = callback;
+    public void setCallback(Callback callback) {
+        this.callback = callback;
     }
 
     public interface Callback {
+        void initFail();
+
         void onVideoReceived(byte[] videoBuffer);
 
         void onAudioReceived(byte[] audioBuffer);

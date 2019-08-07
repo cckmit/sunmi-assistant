@@ -137,7 +137,7 @@ public class H264Decoder {
                 ToastUtils.toastForShort(BaseApplication.getContext(), "播放失败，清重试");
                 return;
             }
-            LogCat.e("h264", "99999999 surface view = " + surface.isValid());
+            LogCat.e("h264", "888888 surface view = " + surface.isValid());
             mediaCodec.configure(format, surface, null, 0);
             mediaCodec.start();
             inputBuffers = mediaCodec.getInputBuffers();
@@ -191,7 +191,7 @@ public class H264Decoder {
                     }
 
                     int outIndex = mediaCodec.dequeueOutputBuffer(info, 0);
-                    //LogCat.e("H264Decoder", "555555vvv VIDEO play");
+                    //LogCat.e("H264Decoder", "888888vvv VIDEO play");
                     switch (outIndex) {
                         case MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED:
                             outputBuffers = mediaCodec.getOutputBuffers();

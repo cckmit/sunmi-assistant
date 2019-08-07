@@ -16,17 +16,16 @@
         app:titleText="@string/str_setting_ipc_camera"
         app:titleTextColor="@color/colorText" />
 
-    <include layout="@layout/include_net_exception" />
-
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/nsv_setting"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/title_bar">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_camera_name"
@@ -40,12 +39,10 @@
                 app:rightPadding="@dimen/dp_20"
                 app:rightTextColor="@color/colorText_60" />
 
-
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_camera_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/sil_camera_name"
                 android:layout_marginTop="@dimen/dp_0_5"
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
@@ -57,11 +54,23 @@
 
 
             <sunmi.common.view.SettingItemLayout
+                android:id="@+id/sil_camera_adjust"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:background="@color/c_white"
+                app:imageRight="@mipmap/ic_right_arrow_small"
+                app:leftPadding="@dimen/dp_10"
+                app:leftText="@string/str_adjust_screen"
+                app:parentHeight="@dimen/dp_60"
+                app:rightPadding="@dimen/dp_20"
+                app:rightTextColor="@color/colorText_60" />
+
+            <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_voice_exception"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/sil_camera_detail"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/dp_0_5"
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
                 app:leftPadding="@dimen/dp_10"
@@ -70,12 +79,10 @@
                 app:rightPadding="@dimen/dp_20"
                 app:rightTextColor="@color/colorText_60" />
 
-
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_active_exception"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/sil_voice_exception"
                 android:layout_marginTop="@dimen/dp_0_5"
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
@@ -85,12 +92,10 @@
                 app:rightPadding="@dimen/dp_20"
                 app:rightTextColor="@color/colorText_60" />
 
-
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_time_setting"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/sil_active_exception"
                 android:layout_marginTop="@dimen/dp_0_5"
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
@@ -105,7 +110,6 @@
                 android:id="@+id/sil_night_style"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/sil_time_setting"
                 android:layout_marginTop="16dp"
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
@@ -119,7 +123,6 @@
                 android:id="@+id/rl_light"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_72"
-                android:layout_below="@id/sil_night_style"
                 android:layout_marginTop="@dimen/dp_0_5"
                 android:background="@color/c_white">
 
@@ -148,7 +151,6 @@
                 android:id="@+id/sil_view_rotate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/rl_light"
                 android:layout_marginTop="@dimen/dp_0_5"
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
@@ -163,7 +165,6 @@
                 android:id="@+id/sil_wifi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/sil_view_rotate"
                 android:layout_marginTop="16dp"
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
@@ -171,6 +172,7 @@
                 app:leftText="@string/ipc_setting_wifi"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
+                app:rightText="@string/ipc_setting_unknown"
                 app:rightTextColor="@color/colorText_60" />
 
 
@@ -178,7 +180,6 @@
                 android:id="@+id/sil_ipc_version"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/sil_wifi"
                 android:layout_marginTop="16dp"
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
@@ -187,7 +188,8 @@
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
                 app:rightTextColor="@color/colorText_60" />
-        </RelativeLayout>
+
+        </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
 </RelativeLayout>

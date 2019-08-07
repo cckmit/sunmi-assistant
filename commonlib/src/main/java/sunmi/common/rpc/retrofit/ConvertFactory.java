@@ -13,7 +13,6 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
-import sunmi.common.utils.log.LogCat;
 
 /**
  * Description: 请求和响应的转换器
@@ -40,9 +39,6 @@ public class ConvertFactory extends Converter.Factory {
     public Converter<ResponseBody, ?> responseBodyConverter(Type type, Annotation[] annotations,
                                                             Retrofit retrofit) {
         TypeAdapter<?> adapter = gson.getAdapter(TypeToken.get(type));
-        if (type instanceof BaseResponse) {
-            LogCat.e("111", "222222 type instanceof BaseResponse");
-        }
         return new RespBodyConverter<>(adapter);
     }
 

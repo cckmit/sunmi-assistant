@@ -71,7 +71,7 @@
 
     <!-- EditText ids -->
     <item name="etUserName" type="id"></item>
-    <item name="etPassword" type="id"></item>
+    <item name="et_password" type="id" />
     <item name="etIdcode" type="id"></item>
     <item name="etStorageLocation" type="id"></item>
     <item name="etInfo" type="id"></item>

@@ -46,7 +46,7 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
 
     @ViewById(R.id.etUser)
     ClearableEditText etUser;
-    @ViewById(R.id.etPassword)
+    @ViewById(R.id.et_password)
     ClearableEditText etPassword;
     @ViewById(R.id.tvSMSLogin)
     TextView tvSMSLogin;

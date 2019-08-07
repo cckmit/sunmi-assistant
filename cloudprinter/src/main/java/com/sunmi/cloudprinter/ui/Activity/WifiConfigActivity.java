@@ -2,6 +2,8 @@ package com.sunmi.cloudprinter.ui.Activity;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.text.Spannable;
@@ -48,7 +50,7 @@ import sunmi.common.view.dialog.CommonDialog;
  * Description:
  * Created by bruce on 2019/5/23.
  */
-@EActivity(resName = "activity_set_printer")
+@EActivity(resName = "activity_printer_wifi_config")
 public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClient.IPrinterClient {
 
     @ViewById(resName = "title_bar")
@@ -73,8 +75,13 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
     @Extra
     String sn;
 
+    private static int TIMEOUT_GET_LIST = 46_000;
+    private static int TIMEOUT_GET_WIFI_CONFIG = 30_000;
+    private static int INTERVAL_COUNTDOWN = 2_000;
     private SunmiPrinterClient printerClient;
     private Dialog passwordDialog;
+    private CountDownTimer wifiListTimer, wifiConfigTimer;
+    private CommonDialog getWifiConfigTimeoutDialog;
 
     private List<Router> wifiList = new ArrayList<>();
     private RouterListAdapter adapter;
@@ -89,25 +96,30 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
                 onBackPressed();
             }
         });
-        titleBar.getRightLayout().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (printerClient != null) {
-                    printerClient.deleteWifiInfo(bleAddress);
-                }
-                BaseNotification.newInstance().postNotificationName(Constants.NOTIFICATION_PRINTER_ADDED);
-                GotoActivityUtils.gotoMainActivity(context);
-            }
-        });
         printerClient = new SunmiPrinterClient(context, bleAddress, this);
+        getWifiList();
+    }
+
+    private void getWifiList() {
+        wifiListTimer = new CountDownTimer(TIMEOUT_GET_LIST, INTERVAL_COUNTDOWN) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                onGetWifiListFinish();
+            }
+        };
+        wifiListTimer.start();
         printerClient.getPrinterWifiList(bleAddress);
     }
 
     private void initTvSkip() {
-        int len;
         SpannableStringBuilder builder = new SpannableStringBuilder();
         builder.append(tvSkip.getText());
-        len = builder.length();
+        int len = builder.length();
         String skip = getString(R.string.click_skip);
         builder.append(skip);
         ClickableSpan clickableSpan = new ClickableSpan() {
@@ -133,10 +145,14 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
 
     @Click(resName = {"btn_refresh", "btn_retry"})
     void refreshClick() {
+        if (wifiListTimer != null) {
+            wifiListTimer.cancel();
+        }
         rlNoWifi.setVisibility(View.GONE);
         rlLoading.setVisibility(View.VISIBLE);
         tvConnectWifi.setVisibility(View.VISIBLE);
         nsvRouter.setVisibility(View.VISIBLE);
+        getWifiList();
     }
 
     @Override
@@ -195,15 +211,16 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
     public void onGetWifiListFinish() {
         if (wifiList.size() > 0) {
             rlLoading.setVisibility(View.GONE);
+            tvConnectWifi.setVisibility(View.VISIBLE);
+            nsvRouter.setVisibility(View.VISIBLE);
         } else {
-            rlNoWifi.setVisibility(View.VISIBLE);
-            tvConnectWifi.setVisibility(View.GONE);
-            nsvRouter.setVisibility(View.GONE);
+            onGetWifiListFail();
         }
     }
 
     @Override
     public void onGetWifiListFail() {
+        hideLoadingDialog();
         rlNoWifi.setVisibility(View.VISIBLE);
         tvConnectWifi.setVisibility(View.GONE);
         nsvRouter.setVisibility(View.GONE);
@@ -211,18 +228,42 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
 
     @Override
     public void onSetWifiSuccess() {
+        if (getWifiConfigTimeoutDialog != null && getWifiConfigTimeoutDialog.isShowing()) {
+            return;
+        }
+        wifiConfigTimer = new CountDownTimer(INTERVAL_COUNTDOWN, TIMEOUT_GET_WIFI_CONFIG) {
+            @Override
+            public void onTick(long millisUntilFinished) {
 
+            }
+
+            @Override
+            public void onFinish() {
+                showGetWifiConfigTimeout();
+            }
+        };
     }
 
     @Override
     public void wifiConfigSuccess() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                hideLoadingDialog();
+                if (passwordDialog != null) {
+                    passwordDialog.dismiss();
+                }
+                ToastUtils.toastCenter(context, getString(R.string.tip_config_success), R.mipmap.ic_toast_success);
+                BaseNotification.newInstance().postNotificationName(Constants.NOTIFICATION_PRINTER_ADDED);
+                GotoActivityUtils.gotoMainActivity(context);
+            }
+        }, 1500);
+    }
+
+    @Override
+    public void onWifiConfigFail() {
         hideLoadingDialog();
-        if (passwordDialog != null) {
-            passwordDialog.dismiss();
-        }
-        ToastUtils.toastCenter(context, getString(R.string.tip_config_success), R.mipmap.ic_toast_success);
-        BaseNotification.newInstance().postNotificationName(Constants.NOTIFICATION_PRINTER_ADDED);
-        GotoActivityUtils.gotoMainActivity(context);
+        showErrorDialog(R.string.tip_connect_wifi_fail);
     }
 
     @Override
@@ -246,10 +287,13 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
         passwordDialog = new Dialog(context, R.style.Son_dialog);
         LayoutInflater inflater = this.getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_router_message, null);
-        final ClearableEditText etPassword = view.findViewById(R.id.etPassword);
+        TextView title = view.findViewById(R.id.tv_title);
+        final ClearableEditText etPassword = view.findViewById(R.id.et_password);
         if (!router.isHasPwd()) {
-            view.findViewById(R.id.rl_password).setVisibility(View.GONE);
+            title.setText(getString(R.string.title_confirm_connect_to_wifi, router.getName()));
+            view.findViewById(R.id.et_password).setVisibility(View.GONE);
         } else {
+            title.setText(R.string.title_input_wifi_password);
             ((TextView) view.findViewById(R.id.tv_msg))
                     .setText(getString(R.string.dialog_msg_input_password, router.getName()));
         }
@@ -288,22 +332,55 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
                 .setConfirmButton(R.string.str_confirm).create().show();
     }
 
+    private void showGetWifiConfigTimeout() {
+        hideLoadingDialog();
+        getWifiConfigTimeoutDialog = new CommonDialog.Builder(context)
+                .setTitle(R.string.sm_title_hint)
+                .setMessage(R.string.tip_get_wifi_config_timeout)
+                .setCancelButton(R.string.sm_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        if (wifiConfigTimer != null) {
+                            wifiConfigTimer.cancel();
+                        }
+                        GotoActivityUtils.gotoMainActivity(context);
+                    }
+                }).setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        if (wifiConfigTimer != null) {
+                            wifiConfigTimer.cancel();
+                        }
+                    }
+                }).create();
+        getWifiConfigTimeoutDialog.show();
+    }
+
     private void confirmSkipDialog() {
         hideLoadingDialog();
         new CommonDialog.Builder(context)
                 .setTitle(R.string.sm_title_hint)
                 .setMessage(R.string.str_msg_clear_wifi_config)
                 .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.str_confirm,
-                        new DialogInterface.OnClickListener() {
+                .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        new Handler().postDelayed(new Runnable() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                            public void run() {
+                                hideLoadingDialog();
                                 if (printerClient != null) {
                                     printerClient.deleteWifiInfo(bleAddress);
                                 }
+                                BaseNotification.newInstance().postNotificationName(Constants.NOTIFICATION_PRINTER_ADDED);
+                                GotoActivityUtils.gotoMainActivity(context);
                                 finish();
                             }
-                        }).create().show();
+                        }, 1500);
+                    }
+                }).create().show();
     }
 
 }

@@ -3,14 +3,15 @@
     android:id="@+id/rl_control_panel"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/transparent">
+    android:background="@color/transparent"
+    android:visibility="gone">
 
     <RelativeLayout
         android:id="@+id/rl_top"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_64"
         android:animateLayoutChanges="true"
-        android:background="@mipmap/bg_video_title">
+        android:background="@mipmap/bg_video_controller_top">
         <!--返回-->
         <RelativeLayout
             android:id="@+id/rl_video_back"
@@ -87,38 +88,6 @@
         android:textSize="@dimen/sp_12"
         android:visibility="gone" />
 
-    <!--播放错误-->
-    <LinearLayout
-        android:id="@+id/error"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/black"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="播放错误，请重试。"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/sp_13" />
-
-        <TextView
-            android:id="@+id/retry"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
-            android:background="@drawable/bg_shap_green"
-            android:paddingLeft="@dimen/dp_12"
-            android:paddingTop="@dimen/dp_4"
-            android:paddingRight="@dimen/dp_12"
-            android:paddingBottom="@dimen/dp_5"
-            android:text="点击重试"
-            android:textColor="@android:color/white"
-            android:textSize="13sp" />
-    </LinearLayout>
-
     <!--改变声音-->
     <LinearLayout
         android:id="@+id/ll_change_volume"
@@ -184,7 +153,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_56"
         android:layout_alignParentBottom="true"
-        android:animateLayoutChanges="true">
+        android:animateLayoutChanges="true"
+        android:background="@mipmap/bg_video_controller_bottom">
 
         <ImageView
             android:id="@+id/iv_play"
@@ -195,6 +165,17 @@
             android:layout_marginEnd="@dimen/dp_24"
             android:background="@mipmap/play_disable" />
 
+        <com.sunmi.ipc.view.ZFTimeLine
+            android:id="@+id/scale_panel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_24"
+            android:layout_toStartOf="@+id/tv_calender"
+            android:layout_toEndOf="@+id/iv_play"
+            android:background="@color/transparent"
+            android:visibility="gone" />
+
         <RelativeLayout
             android:id="@+id/ll_date_view"
             android:layout_width="match_parent"
@@ -203,7 +184,8 @@
             android:layout_marginEnd="@dimen/dp_24"
             android:layout_toStartOf="@+id/tv_calender"
             android:layout_toEndOf="@+id/iv_play"
-            android:background="@color/transparent">
+            android:background="@color/transparent"
+            android:visibility="visible">
 
             <RelativeLayout
                 android:id="@+id/rl_recyclerView"

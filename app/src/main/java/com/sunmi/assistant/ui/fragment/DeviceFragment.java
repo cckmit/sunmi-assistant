@@ -3,7 +3,6 @@ package com.sunmi.assistant.ui.fragment;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -27,7 +26,6 @@ import com.sunmi.apmanager.utils.ApIsNewVersionUtils;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.DBUtils;
 import com.sunmi.apmanager.utils.EncryptUtils;
-import com.sunmi.apmanager.utils.pulltorefresh.library.PullToRefreshBase;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
 import com.sunmi.assistant.data.response.AdListBean;
@@ -66,6 +64,7 @@ import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.constant.CommonNotificationConstant;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.NetworkUtils;
@@ -81,9 +80,9 @@ import sunmi.common.view.dialog.CommonDialog;
  */
 @EFragment(R.layout.fragment_device)
 public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
-        implements DeviceContract.View, PullToRefreshBase.OnRefreshListener2<NestedScrollView>,
-        DeviceListAdapter.OnDeviceClickListener, DeviceSettingDialog.OnSettingsClickListener,
-        OnBannerListener, BGARefreshLayout.BGARefreshLayoutDelegate, View.OnClickListener {
+        implements DeviceContract.View, DeviceListAdapter.OnDeviceClickListener,
+        DeviceSettingDialog.OnSettingsClickListener, OnBannerListener,
+        BGARefreshLayout.BGARefreshLayoutDelegate, View.OnClickListener {
 
     @ViewById(R.id.shop_title)
     MainTopBar topBar;
@@ -145,7 +144,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         rvDevice.setAdapter(deviceListAdapter);
         showEmptyView();
         showLoadingDialog();
-
     }
 
     private void initRefreshLayout() {
@@ -264,23 +262,12 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     }
 
     @Override
-    public void onPullDownToRefresh(PullToRefreshBase<NestedScrollView> refreshView) {
-        if (NetworkUtils.isNetworkAvailable(mActivity)) {
-            endRefresh();
-            shortTip(R.string.toast_network_Exception);
-        } else {
-            loadData();
-        }
-    }
-
-    @Override
-    public void onPullUpToRefresh(PullToRefreshBase<NestedScrollView> refreshView) {
-
-    }
-
-    @Override
     public void onDeviceClick(SunmiDevice device) {
         if (isFastClick(1500)) return;
+        if (TextUtils.equals(device.getType(), "PRINTER")) {
+            PrinterManageActivity_.intent(mActivity).sn(device.getDeviceid()).userId(SpUtils.getUID())
+                    .merchantId(SpUtils.getShopId() + "").channelId(device.getChannelId()).start();
+        }
         if (cannotManagerDevice(device)) {
             return;
         }
@@ -300,9 +287,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 VideoPlayActivity_.intent(mActivity).UID(device.getUid())
                         .deviceId(device.getId()).ipcType(device.getModel()).start();
             }
-        } else if (TextUtils.equals(device.getType(), "PRINTER")) {
-            PrinterManageActivity_.intent(mActivity).sn(device.getDeviceid()).userId(SpUtils.getUID())
-                    .merchantId(SpUtils.getShopId() + "").channelId(device.getChannelId()).start();
         }
     }
 
@@ -374,9 +358,10 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{NotificationConstant.shopSwitched, NotificationConstant.netConnected,
-                NotificationConstant.netDisconnection, NotificationConstant.updateConnectComplete,
-                NotificationConstant.connectedTosunmiDevice, NotificationConstant.unBindRouterChanged};
+        return new int[]{NotificationConstant.shopSwitched, CommonNotificationConstant.netConnected,
+                CommonNotificationConstant.netDisconnection, NotificationConstant.updateConnectComplete,
+                NotificationConstant.connectedTosunmiDevice, NotificationConstant.unBindRouterChanged,
+                CommonNotificationConstant.ipcUpgradeComplete, CommonNotificationConstant.ipcUpgrade};
     }
 
     @Override
@@ -385,13 +370,15 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         if (id == CommonConstants.tabDevice
                 || NotificationConstant.bindRouterChanged == id
                 || NotificationConstant.updateConnectComplete == id
-                || NotificationConstant.netConnected == id
-                || NotificationConstant.unBindRouterChanged == id) {
+                || CommonNotificationConstant.netConnected == id
+                || NotificationConstant.unBindRouterChanged == id
+                || CommonNotificationConstant.ipcUpgradeComplete == id
+                || CommonNotificationConstant.ipcUpgrade == id) {
             loadData();
         } else if (id == NotificationConstant.shopSwitched) {
             topBar.setShopName(SpUtils.getShopName());
             loadData();
-        } else if (NotificationConstant.netDisconnection == id) {//网络断开
+        } else if (CommonNotificationConstant.netDisconnection == id) {//网络断开
             networkDisconnected();
         } else if (NotificationConstant.apStatusException == id) {//异常
             if (TextUtils.isEmpty(MyNetworkCallback.CURRENT_ROUTER)) return;
@@ -478,7 +465,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         dialogPassword = new Dialog(mActivity, R.style.Son_dialog);
         LayoutInflater inflater = mActivity.getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_manger_password, null);
-        final ClearableEditText etPassword = view.findViewById(R.id.etPassword);
+        final ClearableEditText etPassword = view.findViewById(R.id.et_password);
         TextView tvContent = view.findViewById(R.id.tvContent);
         if (TextUtils.equals(type, "0")) {
             tvContent.setText(R.string.curr_router_manager_password);
@@ -663,6 +650,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @UiThread
     void showEmptyView() {
+        if (rlNoDevice == null) return;
         if (deviceList.size() > 0) {
             rlNoDevice.setVisibility(View.GONE);
             btnAdd.setVisibility(View.VISIBLE);

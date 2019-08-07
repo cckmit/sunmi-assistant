@@ -29,9 +29,10 @@ public class IpcSettingPresenter extends BasePresenter<IpcSettingContract.View>
         IPCCall.getInstance().getIpcNightIdeRotation(mView.getContext(), mDevice.getModel(), mDevice.getDeviceid());
         IPCCall.getInstance().getIpcDetection(mView.getContext(), mDevice.getModel(), mDevice.getDeviceid());
         SunmiDevice localDevice = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
+        SunmiDevice bean = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
         if (localDevice != null) {
-            // ipc连接wifi信息
-            IPCCall.getInstance().getIpcConnectApMsg(mView.getContext(), localDevice.getIp());
+            // ipc连接wifi信息 有线.无线
+            IPCCall.getInstance().getIsWire(mView.getContext(), bean.getIp());
         }
     }
 
@@ -74,7 +75,8 @@ public class IpcSettingPresenter extends BasePresenter<IpcSettingContract.View>
             public void onFail(int code, String msg, IpcNewFirmwareResp data) {
                 LogCat.e(TAG, "IPC currentVersion Failed. code=" + code + "; msg=" + msg);
                 if (isViewAttached()) {
-                    mView.shortTip(R.string.ipc_setting_dialog_wifi_net_error);
+                    mView.hideLoadingDialog();
+                    mView.shortTip(R.string.str_net_exception);
                 }
             }
         });
