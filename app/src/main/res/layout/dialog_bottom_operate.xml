@@ -25,7 +25,7 @@
         android:layout_marginEnd="@dimen/dp_25"
         android:layout_marginStart="@dimen/dp_25"
         android:layout_marginTop="@dimen/dp_20"
-        android:background="@drawable/edittext_solid_orange"
+        android:background="@drawable/button_corners_solid_orange"
         android:text="@string/company_shop_new_create"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/sp_16" />
@@ -38,7 +38,7 @@
         android:layout_marginEnd="@dimen/dp_25"
         android:layout_marginStart="@dimen/dp_25"
         android:layout_marginTop="@dimen/dp_16"
-        android:background="@drawable/edittext_edge_orange"
+        android:background="@drawable/button_corners_edge_orange"
         android:text="@string/company_shop_import"
         android:textColor="@color/colorOrange"
         android:textSize="@dimen/sp_16" />

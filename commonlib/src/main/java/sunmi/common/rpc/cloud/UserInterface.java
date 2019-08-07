@@ -99,6 +99,42 @@ public interface UserInterface {
     Call<BaseResponse<Object>> getStoreToken(@Body BaseRequest request);
 
     /**
+     * 根据jwt token反解出sso token返回给app
+     *
+     * @param request
+     * @return
+     */
+    @POST(userPath + "getSsoToken")
+    Call<BaseResponse<Object>> getSsoToken(@Body BaseRequest request);
+
+    /**
+     * 邮箱找回密码
+     *
+     * @param request
+     * @return
+     */
+    @POST(userPath + "sendRecoveryEmail")
+    Call<BaseResponse<Object>> sendRecoveryEmail(@Body BaseRequest request);
+
+    /**
+     * 修改账号绑定手机号
+     *
+     * @param request
+     * @return
+     */
+    @POST(userPath + "updatePhone")
+    Call<BaseResponse<Object>> updatePhone(@Body BaseRequest request);
+
+    /**
+     * 更改邮箱
+     *
+     * @param request
+     * @return
+     */
+    @POST(userPath + "updateEmail")
+    Call<BaseResponse<Object>> updateEmail(@Body BaseRequest request);
+
+    /**
      * 创建emq token去连mqtt,以后用，暂时用emqInterface里的create
      */
     @POST(userPath + "createEmqToken")

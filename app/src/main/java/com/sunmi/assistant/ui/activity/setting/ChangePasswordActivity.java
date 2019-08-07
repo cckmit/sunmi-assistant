@@ -7,21 +7,20 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageButton;
 
-import sunmi.common.rpc.http.RpcCallback;
-
-import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.DialogUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.ui.activity.contract.ChangePasswordContract;
 import com.sunmi.assistant.ui.activity.login.LoginActivity_;
+import com.sunmi.assistant.ui.activity.presenter.ChangePasswordPresenter;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
-import sunmi.common.base.BaseActivity;
+import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.TitleBarView;
@@ -30,7 +29,8 @@ import sunmi.common.view.TitleBarView;
  * 修改密码
  */
 @EActivity(R.layout.activity_setting_fixpsd)
-public class ChangePasswordActivity extends BaseActivity implements View.OnClickListener {
+public class ChangePasswordActivity extends BaseMvpActivity<ChangePasswordPresenter>
+        implements ChangePasswordContract.View, View.OnClickListener {
 
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
@@ -55,6 +55,8 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
     void init() {
         StatusBarUtils.setStatusBarColor(this,
                 StatusBarUtils.TYPE_DARK);//状态栏
+        mPresenter = new ChangePasswordPresenter();
+        mPresenter.attachView(this);
         titleBar.getLeftImg().setOnClickListener(this);
         titleBar.getRightText().setOnClickListener(this);
     }
@@ -94,6 +96,8 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
                     passwordIsVisibleSureNew.setBackgroundResource(R.mipmap.ic_eye_dark_open);
                     psdIsVisibleSure = true;
                 }
+                break;
+            default:
                 break;
         }
     }
@@ -139,11 +143,36 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
                 shortTip(R.string.tip_two_password_not_same);
                 return;
             }
-            changePassword(old, new_psd);
+            // changePassword(old, new_psd);
+            mPresenter.changePassword(old, new_psd);
+            showLoadingDialog();
         }
     }
 
-    private void changePassword(String old, String new_psd) {
+    @Override
+    public void changePasswordSuccess() {
+        hideLoadingDialog();
+        shortTip(R.string.tip_password_change_success);
+        CommonUtils.logout();
+        LoginActivity_.intent(context).start();
+        finish();
+    }
+
+    @Override
+    public void changePasswordFail(int code, String msg) {
+        hideLoadingDialog();
+        if (code == 201) {
+            shortTip(R.string.tip_old_password_error);
+        } else if (code == 3604) {
+            shortTip(R.string.tip_old_and_new_psw_same);
+        } else if (code == 2066) {
+            shortTip(getString(R.string.str_password_fomat_error));
+        } else {
+            shortTip(R.string.tip_password_change_fail);
+        }
+    }
+
+    /*private void changePassword(String old, String new_psd) {
         showLoadingDialog();
         CloudApi.changePassword(old, new_psd, new RpcCallback(context) {
             @Override
@@ -165,6 +194,6 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
                 }
             }
         });
-    }
+    }*/
 
 }

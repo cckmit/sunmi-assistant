@@ -2,11 +2,10 @@ package com.sunmi.assistant.ui.activity.merchant;
 
 import android.annotation.SuppressLint;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 
+import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.mine.SelectPlatformActivity_;
 import com.sunmi.assistant.ui.activity.contract.CreateCompanyContract;
 import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
 import com.sunmi.assistant.ui.activity.presenter.CreateCompanyPresenter;
@@ -22,7 +21,6 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.ClearableEditText;
 
 /**
@@ -54,32 +52,10 @@ public class CreateCompanyNextActivity extends BaseMvpActivity<CreateCompanyPres
 
     @Override
     public void createCompanySuccessView(CompanyInfoResp resp) {
-        LogCat.e(TAG, "resp=" + resp.getSaas_exist() + ", " + resp.getCompany_id() + " ," + resp.getContact_tel());
         shortTip(R.string.company_create_success);
-        SpUtils.setCompanyId(resp.getCompany_id());
-        SpUtils.setCompanyName(resp.getCompany_name());
-        SpUtils.setSaasExist(resp.getSaas_exist());
-        //无匹配saas数据
-        if (resp.getSaas_exist() == 0) {
-            new BottomDialog.Builder(CreateCompanyNextActivity.this)
-                    .setMessage(getString(R.string.company_shop_new_create_or_import))
-                    .setTopButton((dialog, which) -> {
-                        //新建门店
-                        CommonSaasUtils.gotoCreateShopActivity(context, resp.getCompany_id());
-                    })
-                    .setBottomButton((dialog, which) -> {
-                        //导入门店
-                        SelectPlatformActivity_.intent(context).start();
-                    })
-                    .create()
-                    .show();
-            return;
-        }
-        if (!TextUtils.isEmpty(resp.getContact_tel())) {
-            mPresenter.getSaas(resp.getContact_tel());
-        } else {
-            mPresenter.getSaas(SpUtils.getMobile());
-        }
+        CommonUtils.saveSelectCompany(resp.getCompany_id(), resp.getCompany_name(), resp.getSaas_exist());
+        //获取saas数据
+        mPresenter.getSaas(SpUtils.getMobile());
     }
 
     @Override
@@ -91,7 +67,9 @@ public class CreateCompanyNextActivity extends BaseMvpActivity<CreateCompanyPres
         }
     }
 
-    //通过手机号获取saas信息
+    /**
+     * @param bean saas数据
+     */
     @Override
     public void getSaasSuccessView(AuthStoreInfo bean) {
         CommonSaasUtils.getSaasData(context, bean.getSaas_user_info_list());
