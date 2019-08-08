@@ -1,17 +1,15 @@
-package com.sunmi.assistant.mine;
+package com.sunmi.assistant.mine.shop;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.sunmi.apmanager.constant.Constants;
-import com.sunmi.apmanager.ui.activity.store.MyStoreDetailsActivity;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.data.SunmiStoreRemote;
+import com.sunmi.assistant.mine.CreateShopActivity_;
 import com.sunmi.assistant.mine.platform.SelectPlatformActivity_;
 
 import org.androidannotations.annotations.AfterViews;
@@ -111,11 +109,7 @@ public class ShopListActivity extends BaseActivity {
             holder.itemView.setOnClickListener(v -> {
                 CommonUtils.trackCommonEvent(mContext, "defaultStore",
                         "主页_我的_我的店铺_默认店铺", Constants.EVENT_MY_INFO);
-                Bundle bundle = new Bundle();
-                bundle.putString("shop_id", String.valueOf(info.getShop_id()));
-                Intent intent = new Intent(mContext, MyStoreDetailsActivity.class);
-                intent.putExtras(bundle);
-                mContext.startActivity(intent);
+                ShopDetailActivity_.intent(mContext).shopId(info.getShop_id()).start();
             });
         }
     }

@@ -1,8 +1,7 @@
 package com.sunmi.assistant.ui.activity.contract;
 
-import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
-
 import sunmi.common.base.BaseView;
+import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.model.CompanyInfoResp;
 
 /**

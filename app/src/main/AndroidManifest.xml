@@ -99,7 +99,10 @@
         <activity android:name=".ui.activity.merchant.CreateCompanyActivity_" />
         <activity android:name=".ui.activity.merchant.CreateCompanyNextActivity_" />
         <activity android:name=".mine.CreateShopActivity_" />
-        <activity android:name=".mine.ShopListActivity_" />
+        <activity android:name=".mine.shop.ShopListActivity_" />
+        <activity android:name=".mine.shop.ShopDetailActivity_" />
+        <activity android:name=".mine.shop.ShopNameActivity_" />
+        <activity android:name=".mine.shop.ShopCategoryActivity_" />
         <activity android:name=".mine.HelpActivity_" />
 
         <!--百度地图-->

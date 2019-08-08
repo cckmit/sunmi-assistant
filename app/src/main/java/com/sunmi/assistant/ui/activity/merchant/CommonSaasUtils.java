@@ -7,11 +7,11 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.CreateShopActivity_;
 import com.sunmi.assistant.mine.platform.SelectPlatformActivity_;
 import com.sunmi.assistant.mine.platform.SelectStoreActivity_;
-import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.utils.SpUtils;
 
 /**

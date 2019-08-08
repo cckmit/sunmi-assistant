@@ -1,11 +1,10 @@
 package com.sunmi.assistant.mine.platform;
 
-import com.sunmi.assistant.rpc.CloudCall;
-import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
-
 import java.util.ArrayList;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.model.AuthStoreInfo;
+import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.log.LogCat;
 
@@ -21,7 +20,7 @@ public class PlatformMobilePresenter extends BasePresenter<PlatformMobileContrac
 
     @Override
     public void sendMobileCode(String mobile) {
-        CloudCall.sendSaasVerifyCode(mobile, new RetrofitCallback<Object>() {
+        SunmiStoreApi.sendSaasVerifyCode(mobile, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
             }
@@ -38,7 +37,7 @@ public class PlatformMobilePresenter extends BasePresenter<PlatformMobileContrac
 
     @Override
     public void checkMobileCode(String mobile, String code, int saas) {
-        CloudCall.confirmSaasVerifyCode(mobile, code, new RetrofitCallback<Object>() {
+        SunmiStoreApi.confirmSaasVerifyCode(mobile, code, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 getSaasInfo(mobile, saas);
@@ -56,7 +55,7 @@ public class PlatformMobilePresenter extends BasePresenter<PlatformMobileContrac
     }
 
     private void getSaasInfo(String mobile, int saas) {
-        CloudCall.getSaasUserInfo(mobile, new RetrofitCallback<AuthStoreInfo>() {
+        SunmiStoreApi.getSaasUserInfo(mobile, new RetrofitCallback<AuthStoreInfo>() {
             @Override
             public void onSuccess(int code, String msg, AuthStoreInfo data) {
                 ArrayList<AuthStoreInfo.SaasUserInfoListBean> target = new ArrayList<>();

@@ -10,7 +10,6 @@ import android.widget.CheckBox;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.model.SelectShopModel;
-import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -22,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;

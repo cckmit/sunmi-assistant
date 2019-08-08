@@ -1,14 +1,14 @@
 package com.sunmi.assistant.mine.platform;
 
 import com.sunmi.assistant.mine.model.SelectShopModel;
-import com.sunmi.assistant.rpc.CloudCall;
-import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.model.CreateShopInfo;
+import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
@@ -65,7 +65,7 @@ public class SelectStorePresenter extends BasePresenter<SelectStoreContract.View
     }
 
     private void createShop(SelectShopModel item) {
-        CloudCall.createShop(SpUtils.getCompanyId(), item.getShopName(), "", "", new RetrofitCallback<CreateShopInfo>() {
+        SunmiStoreApi.createShop(SpUtils.getCompanyId(), item.getShopName(), "", "", new RetrofitCallback<CreateShopInfo>() {
             @Override
             public void onSuccess(int code, String msg, CreateShopInfo data) {
                 item.setShopId(data.getShop_id());
@@ -84,7 +84,7 @@ public class SelectStorePresenter extends BasePresenter<SelectStoreContract.View
     }
 
     private void authorizeSaas(SelectShopModel item) {
-        CloudCall.authorizeSaas(SpUtils.getCompanyId(), item.getShopId(),
+        SunmiStoreApi.authorizeSaas(SpUtils.getCompanyId(), item.getShopId(),
                 item.getSaasSource(), item.getShopNo(), item.getSaasName(), new RetrofitCallback<Object>() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {

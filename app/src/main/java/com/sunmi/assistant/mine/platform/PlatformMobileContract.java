@@ -1,10 +1,9 @@
 package com.sunmi.assistant.mine.platform;
 
-import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
-
 import java.util.ArrayList;
 
 import sunmi.common.base.BaseView;
+import sunmi.common.model.AuthStoreInfo;
 
 /**
  * Created by YangShiJie on 2019/7/3.
