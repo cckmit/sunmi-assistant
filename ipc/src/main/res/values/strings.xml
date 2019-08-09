@@ -111,7 +111,7 @@
     <string name="ipc_setting_data_get_fail">Data acquisition failed</string>
     <string name="ipc_setting_check_net_refresh">Please check the Internet first and refresh the page</string>
     <string name="tip_please_select_ipc">Please select one IPC</string>
-    <string name="ipc_setting_check_wireless">Currently in the wired connection state, if you want to use a Wi-Fi network, please switch to the wireless network and disconnect the wired connection.。</string>
+    <string name="ipc_setting_check_wireless">当前为有线网络连接状态，确认要切换为Wi-Fi网络吗，切换后，需断开有线连接</string>
     <string name="ipc_setting_tip">Tips</string>
     <string name="ipc_setting_search_wifi">Searching the Wi-Fi…</string>
     <string name="ipc_setting_degree0">0 degree</string>
@@ -128,7 +128,7 @@
     <string name="ipc_recognition_tip_position">Please arrange for the person to face the camera and stand where you need to recognize the face.</string>
     <string name="ipc_recognition_tip_zoom">Resize the screen and move the position of the face frame so that the face just fills the entire face frame</string>
     <string name="ipc_recognition_tip_focus">If the auto focus is not clear, you can adjust the face clearly by manual focus.</string>
-    <string name="ipc_recognition_tip_line">Drag the end points of the line to set the entry threshold for passenger flow statistics</string>
+    <string name="ipc_recognition_tip_line">点击画面任意两点，即可设置进店门槛线\n（为保证识别率，门槛线需画在门的下方位置）</string>
     <string name="ipc_recognition_line_start">Setting the beginning threshold</string>
     <string name="ipc_recognition_line_end">Setting the ending thrreshold</string>
     <string name="ipc_recognition_line_cancel">Cancel</string>

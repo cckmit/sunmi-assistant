@@ -106,6 +106,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/setting_bg_tip_text"
+        android:gravity="center"
         android:paddingStart="@dimen/dp_8"
         android:paddingTop="@dimen/dp_3"
         android:paddingEnd="@dimen/dp_8"
