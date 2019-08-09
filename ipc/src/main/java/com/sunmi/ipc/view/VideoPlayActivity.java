@@ -766,7 +766,6 @@ public class VideoPlayActivity extends BaseActivity
         try {
             if (ivpCloud != null) {
                 ivpCloud.release();
-                ivpCloud = null;
             }
         } catch (Exception e) {
             e.printStackTrace();
