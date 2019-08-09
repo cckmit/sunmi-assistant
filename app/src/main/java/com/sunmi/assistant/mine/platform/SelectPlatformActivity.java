@@ -11,8 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.rpc.CloudCall;
-import com.sunmi.assistant.ui.activity.model.PlatformInfo;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -23,6 +21,8 @@ import org.androidannotations.annotations.ViewById;
 import java.util.List;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.model.PlatformInfo;
+import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.GotoActivityUtils;
@@ -55,6 +55,8 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
 
     @Extra
     boolean isCanBack;
+    @Extra
+    boolean isLogin;
 
     @AfterViews
     void init() {
@@ -69,7 +71,7 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
 
     private void getPlatformList() {
         showLoadingDialog();
-        CloudCall.getPlatformList(new RetrofitCallback<PlatformInfo>() {
+        SunmiStoreApi.getPlatformList(new RetrofitCallback<PlatformInfo>() {
             @Override
             public void onSuccess(int code, String msg, PlatformInfo data) {
                 hideLoadingDialog();
@@ -110,8 +112,9 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
     @Click({R.id.btn_next})
     void btnNext() {
         PlatformMobileActivity_.intent(this)
-                .extra("platform", selectPlatform)
-                .extra("saasSource", selectSaasSource)
+                .platform(selectPlatform)
+                .saasSource(selectSaasSource)
+                .isLogin(isLogin)
                 .start();
     }
 

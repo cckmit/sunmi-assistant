@@ -27,7 +27,13 @@
     <string name="btn_add_store">Add store</string>
     <string name="ic_tab_data_title">数据</string>
     <string name="str_help_feedback">Help and feedback</string>
-    <string name="str_me">我</string>
+    <string name="str_me">me</string>
+    <string name="str_edit_store_name">Edit store name</string>
+    <string name="tip_input_name">Please enter the name</string>
+    <string name="tip_save_fail">Save failed</string>
+    <string name="str_choose_please">Please choose</string>
+    <string name="str_selected">Please select</string>
+    <string name="tip_addr_empty">Please enter the detailed address</string>
 
     <string name="dashboard_data_format">%s%%</string>
     <string name="dashboard_today">今日</string>

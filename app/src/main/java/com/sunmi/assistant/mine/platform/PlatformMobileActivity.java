@@ -10,9 +10,8 @@ import android.widget.TextView;
 import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.mine.CreateShopActivity_;
 import com.sunmi.assistant.ui.activity.merchant.AuthDialog;
-import com.sunmi.assistant.ui.activity.merchant.CommonSaasUtils;
-import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -24,7 +23,7 @@ import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.utils.GotoActivityUtils;
+import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.dialog.CommonDialog;
@@ -53,6 +52,8 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
     String platform;
     @Extra
     int saasSource;
+    @Extra
+    boolean isLogin;
 
     /**
      * 倒计时对象,总共的时间,每隔多少秒更新一次时间
@@ -114,7 +115,10 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
                                 .list(target)
                                 .start())
                 .setCancelButton((dialog, which) ->
-                        GotoActivityUtils.gotoMainActivity(PlatformMobileActivity.this))
+                        CreateShopActivity_.intent(context)
+                                .companyId(SpUtils.getCompanyId())
+                                .isLogin(isLogin)
+                                .start())
                 .create().show();
     }
 
@@ -122,7 +126,10 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
         new CommonDialog.Builder(this).setTitle(getString(R.string.str_dialog_auto_create_store))
                 .setCancelButton(com.sunmi.apmanager.R.string.sm_cancel)
                 .setConfirmButton(R.string.company_shop_new_create, (dialog, which) ->
-                        CommonSaasUtils.gotoCreateShopActivity(context, SpUtils.getCompanyId())).create().show();
+                        CreateShopActivity_.intent(context)
+                                .companyId(SpUtils.getCompanyId())
+                                .isLogin(isLogin)
+                                .start());
     }
 
     private void startDownTimer() {

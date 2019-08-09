@@ -8,7 +8,6 @@ import android.widget.Button;
 
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.rpc.CloudCall;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -21,6 +20,7 @@ import java.util.Objects;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.model.CreateShopInfo;
+import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.RegexUtils;
@@ -53,6 +53,8 @@ public class CreateShopActivity extends BaseActivity {
 
     @Extra
     int companyId;
+    @Extra
+    boolean isLogin;
     private String shopName;
 
     @AfterViews
@@ -71,7 +73,7 @@ public class CreateShopActivity extends BaseActivity {
             return;
         }
         showLoadingDialog();
-        CloudCall.createShop(SpUtils.getCompanyId(), shopName, contact, mobile,
+        SunmiStoreApi.createShop(SpUtils.getCompanyId(), shopName, contact, mobile,
                 new RetrofitCallback<CreateShopInfo>() {
                     @Override
                     public void onSuccess(int code, String msg, CreateShopInfo data) {
@@ -93,10 +95,14 @@ public class CreateShopActivity extends BaseActivity {
     }
 
     private void createShopSuccessView(CreateShopInfo resp) {
-        LogCat.d(TAG, "resp=" + resp.getShop_name() + ", " + resp.getShop_id());
-        SpUtils.setShopId(resp.getShop_id());
-        SpUtils.setShopName(resp.getShop_name());
-        GotoActivityUtils.gotoMainActivity(this);
+        shortTip(R.string.company_create_success);
+        if (isLogin) {
+            finish();
+        } else {
+            SpUtils.setShopId(resp.getShop_id());
+            SpUtils.setShopName(resp.getShop_name());
+            GotoActivityUtils.gotoMainActivity(this);
+        }
     }
 
     private void shopAddTextChangedListener(ClearableEditText editText) {

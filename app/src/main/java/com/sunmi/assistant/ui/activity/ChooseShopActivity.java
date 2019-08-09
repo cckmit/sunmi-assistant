@@ -8,7 +8,6 @@ import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.ChooseShopContract;
 import com.sunmi.assistant.presenter.ChooseShopPresenter;
-import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -20,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.model.CompanyListResp;
 import sunmi.common.model.ShopListResp;

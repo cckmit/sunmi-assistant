@@ -1,10 +1,9 @@
 package com.sunmi.assistant.ui.activity.presenter;
 
-import com.sunmi.assistant.rpc.CloudCall;
 import com.sunmi.assistant.ui.activity.contract.CreateCompanyContract;
-import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -55,7 +54,7 @@ public class CreateCompanyPresenter extends BasePresenter<CreateCompanyContract.
     @Override
     public void getSaas(String mobile) {
         mView.showLoadingDialog();
-        CloudCall.getSaasUserInfo(mobile, new RetrofitCallback<AuthStoreInfo>() {
+        SunmiStoreApi.getSaasUserInfo(mobile, new RetrofitCallback<AuthStoreInfo>() {
             @Override
             public void onSuccess(int code, String msg, AuthStoreInfo bean) {
                 if (isViewAttached()) {

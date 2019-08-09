@@ -1,8 +1,8 @@
 package com.sunmi.assistant.mine.model;
 
-import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
-
 import java.util.Locale;
+
+import sunmi.common.model.AuthStoreInfo;
 
 /**
  * @author yinhui
@@ -24,6 +24,10 @@ public class SelectShopModel {
 
     public SelectShopModel(AuthStoreInfo.SaasUserInfoListBean bean, boolean isChecked) {
         this.isChecked = isChecked;
+        this.shopName = bean.getShop_name();
+        this.shopNo = bean.getShop_no();
+        this.saasSource = bean.getSaas_source();
+        this.saasName = bean.getSaas_name();
     }
 
     public int getShopId() {

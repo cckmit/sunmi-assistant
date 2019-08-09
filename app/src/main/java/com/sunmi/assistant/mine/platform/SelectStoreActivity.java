@@ -10,7 +10,6 @@ import android.widget.CheckBox;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.model.SelectShopModel;
-import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -22,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
@@ -51,6 +51,8 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
     @Extra
     boolean isBack;
     @Extra
+    boolean isLogin;
+    @Extra
     ArrayList<AuthStoreInfo.SaasUserInfoListBean> list;
 
     private ShopListAdapter mAdapter;
@@ -70,12 +72,16 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
 
     @Click({R.id.btnComplete})
     void btnComplete() {
-        mPresenter.createShops(mAdapter.getSelect());
+        mPresenter.createShops(mAdapter.getData());
     }
 
     @Override
     public void complete() {
-        GotoActivityUtils.gotoMainActivity(this);
+        if (isLogin) {
+            finish();
+        } else {
+            GotoActivityUtils.gotoMainActivity(this);
+        }
     }
 
     @Override
@@ -106,8 +112,6 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
 
     private class ShopListAdapter extends CommonListAdapter<SelectShopModel> {
 
-        private List<SelectShopModel> mSelect = new ArrayList<>();
-
         private ShopListAdapter(Context context, List<SelectShopModel> list) {
             super(context, R.layout.item_merchant_auth_store, list);
         }
@@ -118,21 +122,9 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
             holder.setText(R.id.tvPlatform, info.getSaasName());
             CheckBox checkBox = holder.getView(R.id.CBox);
             checkBox.setChecked(info.isChecked());
-            if (info.isChecked()) {
-                mSelect.add(info);
-            }
             checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if (isChecked) {
-                    mSelect.add(info);
-                } else {
-                    mSelect.remove(info);
-                }
-                enableCompleteBtn(!mSelect.isEmpty());
+                info.setChecked(isChecked);
             });
-        }
-
-        private List<SelectShopModel> getSelect() {
-            return mSelect;
         }
     }
 

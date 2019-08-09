@@ -13,6 +13,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.TitleBarView;
 
@@ -43,6 +44,11 @@ public class ChangeCompanyNameActivity extends BaseMvpActivity<ChangeCompanyName
         cetUserName.setFilters(new InputFilter[]{new InputFilter.LengthFilter(40)});
         cetUserName.addTextChangedListener(this);
         cetUserName.requestFocus();
+        String companyName = SpUtils.getCompanyName();
+        if (!TextUtils.isEmpty(companyName)) {
+            cetUserName.setText(companyName);
+            cetUserName.setSelection(companyName.length());
+        }
     }
 
     @Override

@@ -27,7 +27,7 @@ public class GotoActivityUtils {
                 && !className.contains("ProtocolActivity")
                 && !className.contains("UserMergeActivity")
                 && !className.contains("LoginChooseShopActivity")
-                && !className.contains("CheckPlatformMobileActivity")
+                && !className.contains("PlatformMobileActivity")
                 && !className.contains("SelectPlatformActivity")
                 && !className.contains("SelectStoreActivity")
                 && !className.contains("CreateCompanyActivity")

@@ -3,8 +3,6 @@ package com.sunmi.assistant.presenter;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.contract.ChooseShopContract;
 import com.sunmi.assistant.data.SunmiStoreRemote;
-import com.sunmi.assistant.rpc.CloudCall;
-import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,6 +10,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.model.CompanyListResp;
 import sunmi.common.model.ShopListResp;
 import sunmi.common.model.UserInfoBean;
@@ -57,7 +56,7 @@ public class ChooseShopPresenter extends BasePresenter<ChooseShopContract.View>
 
     @Override
     public void getCompanyList() {
-        CloudCall.getCompanyList(new RetrofitCallback<CompanyListResp>() {
+        SunmiStoreApi.getCompanyList(new RetrofitCallback<CompanyListResp>() {
             @Override
             public void onSuccess(int code, String msg, CompanyListResp data) {
                 if (isViewAttached()) {
@@ -98,7 +97,7 @@ public class ChooseShopPresenter extends BasePresenter<ChooseShopContract.View>
     @Override
     public void getSaas(String mobile) {
         mView.showLoadingDialog();
-        CloudCall.getSaasUserInfo(mobile, new RetrofitCallback<AuthStoreInfo>() {
+        SunmiStoreApi.getSaasUserInfo(mobile, new RetrofitCallback<AuthStoreInfo>() {
             @Override
             public void onSuccess(int code, String msg, AuthStoreInfo bean) {
                 if (isViewAttached()) {

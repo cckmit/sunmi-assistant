@@ -1,7 +1,6 @@
 package com.sunmi.assistant.ui.activity.presenter;
 
 import com.sunmi.apmanager.utils.CommonUtils;
-import com.sunmi.assistant.rpc.CloudCall;
 import com.sunmi.assistant.ui.activity.contract.SetPasswordContract;
 
 import sunmi.common.base.BasePresenter;
@@ -84,7 +83,7 @@ public class SetPasswordPresenter extends BasePresenter<SetPasswordContract.View
 
     @Override
     public void getCompanyList() {
-        CloudCall.getCompanyList(new RetrofitCallback<CompanyListResp>() {
+        SunmiStoreApi.getCompanyList(new RetrofitCallback<CompanyListResp>() {
             @Override
             public void onSuccess(int code, String msg, CompanyListResp data) {
                 if (isViewAttached()) {

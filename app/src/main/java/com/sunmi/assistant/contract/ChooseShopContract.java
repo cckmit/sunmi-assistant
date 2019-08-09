@@ -1,10 +1,9 @@
 package com.sunmi.assistant.contract;
 
-import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
-
 import java.util.List;
 
 import sunmi.common.base.BaseView;
+import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.model.CompanyListResp;
 import sunmi.common.model.ShopListResp;

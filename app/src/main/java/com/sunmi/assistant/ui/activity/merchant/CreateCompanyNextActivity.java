@@ -7,7 +7,6 @@ import android.text.TextWatcher;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.contract.CreateCompanyContract;
-import com.sunmi.assistant.ui.activity.model.AuthStoreInfo;
 import com.sunmi.assistant.ui.activity.presenter.CreateCompanyPresenter;
 
 import org.androidannotations.annotations.AfterViews;
@@ -18,6 +17,7 @@ import org.androidannotations.annotations.ViewById;
 import java.nio.charset.Charset;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
