@@ -75,6 +75,12 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
         }
     }
 
+    public synchronized static MainActivity getInstance(){
+        if (instance == null){
+            instance = new MainActivity();
+        }
+        return instance;
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();

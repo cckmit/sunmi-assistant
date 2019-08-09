@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+
 /**
  * Toast统一处理工具类
  */
@@ -121,6 +123,7 @@ public class ToastUtils {
                     ImageView image = new ImageView(context);
                     image.setImageResource(resId);
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(100, 100);
+                    params.gravity = Gravity.CENTER_HORIZONTAL;
                     params.setMargins(50, 40, 50, 40);
                     image.setLayoutParams(params);
                     toastView.addView(image, 0);

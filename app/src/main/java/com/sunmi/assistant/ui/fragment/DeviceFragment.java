@@ -265,8 +265,10 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     public void onDeviceClick(SunmiDevice device) {
         if (isFastClick(1500)) return;
         if (TextUtils.equals(device.getType(), "PRINTER")) {
-            PrinterManageActivity_.intent(mActivity).sn(device.getDeviceid()).userId(SpUtils.getUID())
-                    .merchantId(SpUtils.getShopId() + "").channelId(device.getChannelId()).start();
+            if (device.getStatus() != DeviceStatus.UNKNOWN.ordinal()) {
+                PrinterManageActivity_.intent(mActivity).sn(device.getDeviceid()).userId(SpUtils.getUID())
+                        .merchantId(SpUtils.getShopId() + "").channelId(device.getChannelId()).start();
+            }
         }
         if (cannotManagerDevice(device)) {
             return;

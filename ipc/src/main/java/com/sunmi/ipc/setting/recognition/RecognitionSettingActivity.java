@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -36,6 +37,10 @@ import sunmi.common.view.dialog.CommonDialog;
 @EActivity(resName = "ipc_setting_recognition_activity")
 public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSettingPresenter>
         implements RecognitionSettingContract.View {
+
+    private static final int STANDARD_VIDEO_WIDTH = 1920;
+    private static final int STANDARD_VIDEO_HEIGHT = 1080;
+    private static final int FACE_CASE_SIZE = 140;
 
     @ViewById(resName = "sv_setting_video")
     IpcVideoView mVideoView;
@@ -232,6 +237,7 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
         switch (step) {
             case RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM:
             case RecognitionSettingContract.STEP_3_FOCUS:
+                updateFaceCaseSize();
                 mFaceCase.setVisibility(View.VISIBLE);
                 updateControlBtnShow(true);
                 break;
@@ -243,6 +249,15 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
                 break;
             default:
         }
+    }
+
+    private void updateFaceCaseSize() {
+        ViewGroup.LayoutParams lp = mFaceCase.getLayoutParams();
+        int width = mVideoView.getWidth();
+        int realSize = width * FACE_CASE_SIZE / STANDARD_VIDEO_WIDTH;
+        lp.width = realSize;
+        lp.height = realSize;
+        mFaceCase.setLayoutParams(lp);
     }
 
     private void updateTitle(String title, String nextText) {
@@ -418,15 +433,15 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
                     break;
                 case DoorLineView.STATE_END:
                     if (lineEnd[0] > lineStart[0]) {
-                        mLineStart[0] = (int) (lineStart[0] * 1920 / mVideoView.getWidth());
-                        mLineStart[1] = (int) (lineStart[1] * 1080 / mVideoView.getHeight());
-                        mLineEnd[0] = (int) (lineEnd[0] * 1920 / mVideoView.getWidth());
-                        mLineEnd[1] = (int) (lineEnd[1] * 1080 / mVideoView.getHeight());
+                        mLineStart[0] = (int) (lineStart[0] * STANDARD_VIDEO_WIDTH / mVideoView.getWidth());
+                        mLineStart[1] = (int) (lineStart[1] * STANDARD_VIDEO_HEIGHT / mVideoView.getHeight());
+                        mLineEnd[0] = (int) (lineEnd[0] * STANDARD_VIDEO_WIDTH / mVideoView.getWidth());
+                        mLineEnd[1] = (int) (lineEnd[1] * STANDARD_VIDEO_HEIGHT / mVideoView.getHeight());
                     } else {
-                        mLineStart[0] = (int) (lineEnd[0] * 1920 / mVideoView.getWidth());
-                        mLineStart[1] = (int) (lineEnd[1] * 1080 / mVideoView.getHeight());
-                        mLineEnd[0] = (int) (lineStart[0] * 1920 / mVideoView.getWidth());
-                        mLineEnd[1] = (int) (lineStart[1] * 1080 / mVideoView.getHeight());
+                        mLineStart[0] = (int) (lineEnd[0] * STANDARD_VIDEO_WIDTH / mVideoView.getWidth());
+                        mLineStart[1] = (int) (lineEnd[1] * STANDARD_VIDEO_HEIGHT / mVideoView.getHeight());
+                        mLineEnd[0] = (int) (lineStart[0] * STANDARD_VIDEO_WIDTH / mVideoView.getWidth());
+                        mLineEnd[1] = (int) (lineStart[1] * STANDARD_VIDEO_HEIGHT / mVideoView.getHeight());
                     }
                     updateNextEnable(true);
                 default:
@@ -435,8 +450,8 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
 
         @Override
         public boolean isLineInvalid(float start, float end) {
-            start = start * 1920 / mVideoView.getWidth();
-            end = end * 1920 / mVideoView.getWidth();
+            start = start * STANDARD_VIDEO_WIDTH / mVideoView.getWidth();
+            end = end * STANDARD_VIDEO_WIDTH / mVideoView.getWidth();
             boolean invalid = Math.abs(end - start) < 100;
             if (invalid) {
                 shortTip(R.string.ipc_recognition_line_error);
