@@ -3,14 +3,13 @@
     android:id="@+id/pop_view"
     android:layout_width="@dimen/dp_102"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_device_setting"
+    android:background="@drawable/bg_device_setting_down"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/tv_detail"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_48"
-        android:layout_marginTop="@dimen/dp_5"
         android:gravity="center"
         android:singleLine="true"
         android:text="@string/str_setting_detail"

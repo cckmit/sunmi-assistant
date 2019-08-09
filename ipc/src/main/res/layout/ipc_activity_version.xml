@@ -24,7 +24,7 @@
         android:layout_below="@id/title_bar"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_80"
-        android:src="@mipmap/ic_ipc_setting"
+        android:src="@mipmap/ic_ipc_setting_ss"
         android:visibility="visible"
         tools:ignore="ContentDescription" />
 
