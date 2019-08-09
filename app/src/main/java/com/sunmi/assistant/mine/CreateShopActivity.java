@@ -53,6 +53,8 @@ public class CreateShopActivity extends BaseActivity {
 
     @Extra
     int companyId;
+    @Extra
+    boolean isLogin;
     private String shopName;
 
     @AfterViews
@@ -93,10 +95,14 @@ public class CreateShopActivity extends BaseActivity {
     }
 
     private void createShopSuccessView(CreateShopInfo resp) {
-        LogCat.d(TAG, "resp=" + resp.getShop_name() + ", " + resp.getShop_id());
-        SpUtils.setShopId(resp.getShop_id());
-        SpUtils.setShopName(resp.getShop_name());
-        GotoActivityUtils.gotoMainActivity(this);
+        shortTip(R.string.company_create_success);
+        if (isLogin) {
+            finish();
+        } else {
+            SpUtils.setShopId(resp.getShop_id());
+            SpUtils.setShopName(resp.getShop_name());
+            GotoActivityUtils.gotoMainActivity(this);
+        }
     }
 
     private void shopAddTextChangedListener(ClearableEditText editText) {

@@ -28,6 +28,10 @@ public abstract class CommonListAdapter<T> extends RecyclerView.Adapter<ViewHold
         mList = list;
     }
 
+    public List<T> getData() {
+        return mList;
+    }
+
     public void setData(List<T> list) {
         mList = list;
         notifyDataSetChanged();

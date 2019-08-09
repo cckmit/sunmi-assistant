@@ -24,6 +24,10 @@ public class SelectShopModel {
 
     public SelectShopModel(AuthStoreInfo.SaasUserInfoListBean bean, boolean isChecked) {
         this.isChecked = isChecked;
+        this.shopName = bean.getShop_name();
+        this.shopNo = bean.getShop_no();
+        this.saasSource = bean.getSaas_source();
+        this.saasName = bean.getSaas_name();
     }
 
     public int getShopId() {

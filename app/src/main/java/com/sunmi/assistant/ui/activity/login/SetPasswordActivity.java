@@ -41,7 +41,7 @@ public class SetPasswordActivity extends BaseMvpActivity<SetPasswordPresenter>
 
     @ViewById(R.id.et_password)
     ClearableEditText etPassword;
-    @ViewById(R.id.ibOldPasswordShow)
+    @ViewById(R.id.ibPasswordShow)
     ImageButton passwordIsVisible;
     @ViewById(R.id.btnComplete)
     Button btnComplete;
@@ -67,11 +67,11 @@ public class SetPasswordActivity extends BaseMvpActivity<SetPasswordPresenter>
                 "注册流程_设置密码_耗时", Constants.EVENT_DURATION_REGISTER_PSW);
     }
 
-    @Click({R.id.ibOldPasswordShow, R.id.btnComplete})
+    @Click({R.id.ibPasswordShow, R.id.btnComplete})
     public void onClick(View v) {
         String password = etPassword.getText().toString();
         switch (v.getId()) {
-            case R.id.ibOldPasswordShow: //密码是否可见
+            case R.id.ibPasswordShow: //密码是否可见
                 if (psdIsVisible) {
                     etPassword.setTransformationMethod(PasswordTransformationMethod.getInstance()); //隐藏密码
                     passwordIsVisible.setBackgroundResource(R.mipmap.ic_eye_light_hide);

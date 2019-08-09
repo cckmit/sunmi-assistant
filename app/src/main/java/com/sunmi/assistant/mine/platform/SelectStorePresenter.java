@@ -52,15 +52,17 @@ public class SelectStorePresenter extends BasePresenter<SelectStoreContract.View
         }
         mSelectCount = 0;
         mCompleteCount = 0;
+        List<SelectShopModel> selected = new ArrayList<>();
         for (SelectShopModel item : list) {
             if (item.isChecked()) {
-                mSelectCount++;
+                selected.add(item);
             }
         }
-        for (SelectShopModel item : list) {
-            if (item.isChecked()) {
-                createShop(item);
-            }
+        mSelectCount = selected.size();
+        for (int i = 0; i < mSelectCount; i++) {
+            SelectShopModel item = selected.get(i);
+            item.updateName(i + 1);
+            createShop(item);
         }
     }
 
@@ -96,8 +98,8 @@ public class SelectStorePresenter extends BasePresenter<SelectStoreContract.View
                     public void onFail(int code, String msg, Object data) {
                         LogCat.e(TAG, "Authorize shop Failed. " + msg);
                         createShopAdd();
-            }
-        });
+                    }
+                });
     }
 
     private void createShopAdd() {
