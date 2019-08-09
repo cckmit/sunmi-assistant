@@ -208,7 +208,8 @@ public class VideoPlayActivity extends BaseActivity
     @AfterViews
     void init() {
 //        deviceId = 2239;
-//        UID = "ZTEBT7S3WFR5EMCX111A";//"ACVVZ17BHPGWZU3L111A";//todo test
+//        UID = "ZTEBT7S3WFR5EMCX111A";//todo test yuanfeng
+//        UID = "ACVVZ17BHPGWZU3L111A";//todo test tutk
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//保持屏幕常亮
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//隐藏状态栏
@@ -299,19 +300,29 @@ public class VideoPlayActivity extends BaseActivity
     @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    private void stopPlay() {
         cloudPlayDestroy();//关闭云端视频
-        iotcClient.close();
+        if (iotcClient != null) {
+            iotcClient.close();
+            iotcClient = null;
+        }
         if (videoDecoder != null) {
             videoDecoder.release();
+            videoDecoder = null;
         }
         if (audioDecoder != null) {
             audioDecoder.stop();
+            audioDecoder = null;
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        LogCat.e(TAG, "999999999 333");
+        stopPlay();
         removeCallbacks();
         closeMove();//关闭时间抽的timer
         cancelTimer();//关闭屏幕控件自动hide计时器
@@ -345,8 +356,15 @@ public class VideoPlayActivity extends BaseActivity
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        videoDecoder = new H264Decoder(holder.getSurface(), 0);
-        initP2pLive();
+        if (videoDecoder == null) {
+            videoDecoder = new H264Decoder(holder.getSurface(), 0);
+            initP2pLive();
+        } else {
+            if (isCurrentLive && iotcClient != null) {
+                showLoadingDialog();
+                iotcClient.startPlay();
+            }
+        }
     }
 
     @Override
@@ -356,9 +374,12 @@ public class VideoPlayActivity extends BaseActivity
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        if (videoDecoder != null) {//关闭操作
-            videoDecoder.stopRunning();
-            videoDecoder = null;
+        LogCat.e(TAG, "9999999999 2222");
+        if (isCurrentLive && iotcClient != null) {
+            iotcClient.stopLive();
+            if (audioDecoder != null) {
+                audioDecoder.stopRunning();
+            }
         }
     }
 
@@ -396,7 +417,6 @@ public class VideoPlayActivity extends BaseActivity
 
     @Override
     public void IOTCResult(String result) {
-        LogCat.e(TAG, "888888 time ap get result = " + result);
         try {
             JSONObject object = new JSONObject(result);
             int errcode = object.getInt("errcode");
@@ -429,6 +449,17 @@ public class VideoPlayActivity extends BaseActivity
     @Click(resName = "rl_video_back")
     void backClick() {
         onBackPressed();
+    }
+
+    @Override
+    public void onBackPressed() {
+        stopPlay();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                finish();
+            }
+        }, 400);
     }
 
     //视频录制
@@ -735,6 +766,7 @@ public class VideoPlayActivity extends BaseActivity
         try {
             if (ivpCloud != null) {
                 ivpCloud.release();
+                ivpCloud = null;
             }
         } catch (Exception e) {
             e.printStackTrace();

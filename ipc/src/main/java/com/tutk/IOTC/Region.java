@@ -1,8 +1,13 @@
+/**
+ * Region.java
+ *
+ * Copyright (c) by TUTK Co.LTD. All Rights Reserved.
+ */
 package com.tutk.IOTC;
 
 /**
- * Enum the master region type that IOTCAPI supports.
- */
+* Enum the master region type that IOTCAPI supports.
+*/
 public enum Region {
     REGION_ALL(0),
     REGION_CN(1),

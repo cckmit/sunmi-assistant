@@ -1,9 +1,14 @@
 package com.sunmi.ipc.utils;
 
+import android.os.Process;
+
 import com.google.gson.Gson;
 import com.sunmi.ipc.model.IotcCmdBean;
 import com.tutk.IOTC.AVAPIs;
 import com.tutk.IOTC.IOTCAPIs;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import sunmi.common.utils.ByteUtils;
 import sunmi.common.utils.Utils;
@@ -16,7 +21,7 @@ import sunmi.common.utils.log.LogCat;
 public class IOTCClient {
     private String TAG = "IOTCClient";
 
-    private Callback callback;
+    private static int IOTC_CONNECT_TIMEOUT = 4000;
     private String uid;
     private int SID = -1;
     private int avIndex = -1;
@@ -30,8 +35,10 @@ public class IOTCClient {
     private int CMD_PLAYBACK_STOP = 0x22;
     private int CMD_PLAYBACK_PAUSE = 0x23;
 
+    private Callback callback;
     private boolean alreadyQuit;
     private boolean isRunning = true;
+    private Timer timer;
 
     public IOTCClient(String uid) {
         this.uid = uid;
@@ -43,9 +50,9 @@ public class IOTCClient {
         LogCat.e(TAG, "IOTC_Initialize() ret = " + ret);
         if (ret != IOTCAPIs.IOTC_ER_NoERROR) {
             LogCat.e(TAG, "IOTCAPIs_Device exit...!!");
-//            if (IOTCAPIs.IOTC_ER_ALREADY_INITIALIZED == ret) {
-//                IOTCAPIs.IOTC_DeInitialize();
-//            }//todo
+            if (IOTCAPIs.IOTC_ER_ALREADY_INITIALIZED == ret) {
+                IOTCAPIs.IOTC_DeInitialize();
+            }//todo
             if (callback != null) {
                 callback.initFail();
             }
@@ -65,20 +72,31 @@ public class IOTCClient {
             return;
         }
         LogCat.e(TAG, "Step 1: call IOTC_Get_SessionID, uid = " + uid);
-        IOTC_CONNECT_RESULT = IOTCAPIs.IOTC_Connect_ByUID_Parallel(uid, SID);//step 4
-        if (IOTC_CONNECT_RESULT < 0) {
-            LogCat.e(TAG, "IOTC_Connect_ByUID_Parallel failed ret = " + IOTC_CONNECT_RESULT);
-            IOTCAPIs.IOTC_DeInitialize();
-            IOTCAPIs.IOTC_Session_Close(SID);
-            if (callback != null) {
-                callback.initFail();
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                LogCat.e(TAG, "Step 2: call IOTC_Connect_ByUID_Parallel timeout,ret = " + IOTC_CONNECT_RESULT);
+                timer.cancel();
+                if (alreadyQuit) {
+                    return;
+                }
+                if (IOTC_CONNECT_RESULT < 0) {
+                    IOTCAPIs.IOTC_Connect_Stop_BySID(SID);
+                    AVAPIs.avDeInitialize();
+                    if (callback != null) {
+                        callback.initFail();
+                    }
+                }
             }
+        }, IOTC_CONNECT_TIMEOUT, 1000);
+
+        IOTC_CONNECT_RESULT = IOTCAPIs.IOTC_Connect_ByUID_Parallel(uid, SID);//step 4
+        if (IOTC_CONNECT_RESULT < 0 || alreadyQuit) {
+            LogCat.e(TAG, "IOTC_Connect_ByUID_Parallel failed ret = " + IOTC_CONNECT_RESULT);
             return;
         }
         LogCat.e(TAG, "Step 2: call IOTC_Connect_ByUID_Parallel, uid = " + uid);
-        if (alreadyQuit) {
-            return;
-        }
 
         String account = "admin";
         String password = "12345678";//8Qi0ZLkwv3VP0W
@@ -93,11 +111,11 @@ public class IOTCClient {
             LogCat.e(TAG, "avClientStartEx failed avIndex = " + avIndex);
             AVAPIs.avDeInitialize();
             IOTCAPIs.IOTC_Session_Close(SID);
-            IOTCAPIs.IOTC_Connect_Stop();
             IOTCAPIs.IOTC_DeInitialize();
             if (callback != null) {
                 callback.initFail();
             }
+            IOTC_CONNECT_RESULT = -1000;
             return;
         }
         LogCat.e(TAG, "Step 3: call avClientStartEx, avIndex = " + avIndex);
@@ -120,19 +138,16 @@ public class IOTCClient {
     }
 
     public void close() {
-//        if (IOTC_CONNECT_RESULT == -1000) {
-//            alreadyQuit = true;
-//            IOTCAPIs.IOTC_Connect_Stop_BySID(SID);
-//            IOTCAPIs.IOTC_Session_Close(SID);
-//            IOTCAPIs.IOTC_DeInitialize();
-//            return;
-//        }
+        if (IOTC_CONNECT_RESULT == -1000) {
+            alreadyQuit = true;
+            IOTCAPIs.IOTC_Connect_Stop_BySID(SID);
+            return;
+        }
         if (avIndex < 0) return;
         AVAPIs.avClientStop(avIndex);
         AVAPIs.avClientExit(SID, 1);
         LogCat.e(TAG, "avClientStop OK");
         IOTCAPIs.IOTC_Session_Close(SID);
-        IOTCAPIs.IOTC_Connect_Stop();
         LogCat.e(TAG, "IOTC_Session_Close OK");
         AVAPIs.avDeInitialize();
         IOTCAPIs.IOTC_DeInitialize();
@@ -271,7 +286,7 @@ public class IOTCClient {
                     LogCat.e(TAG, "Session cant be used anymore");
                     break;
                 }
-//                LogCat.e(TAG, "555555vvv VIDEO received ret = " + ret);
+                LogCat.e(TAG, "555555vvv - " + Process.myTid() + ", VIDEO received = " + ret);
                 if (ret > 0) {
                     byte[] data = new byte[ret];
                     System.arraycopy(videoBuffer, 0, data, 0, ret);

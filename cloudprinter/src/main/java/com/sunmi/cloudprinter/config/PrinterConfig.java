@@ -26,8 +26,8 @@ public class PrinterConfig extends BaseConfig {
 
     @Override
     protected void initRelease(Context context, String env) {
-        IOT_CLOUD_URL = "http://webapi.sunmi.com/webapi/iot/web/merchant/1.0/?service=";
-        IOT_H5_URL = "http://h5.sunmi.com/cloud-print/index.html";
+        IOT_CLOUD_URL = "https://webapi.sunmi.com/webapi/cloudprinter-h5/web/shop/1.0/?service=";
+        IOT_H5_URL = "https://cph5.sunmi.com/";
     }
 
     @Override
