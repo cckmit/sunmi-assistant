@@ -5,12 +5,14 @@ import android.graphics.drawable.ColorDrawable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.utils.CommonHelper;
 
 /**
  * Description:
@@ -18,9 +20,11 @@ import sunmi.common.model.SunmiDevice;
  */
 public class DeviceSettingDialog extends PopupWindow {
 
+    private LinearLayout llRoot;
     private Context context;
     private OnSettingsClickListener onSettingsClickListener;
     private SunmiDevice device;
+    private int height, width;
 
     public DeviceSettingDialog(Context context, SunmiDevice device) {
         super(context);
@@ -36,6 +40,7 @@ public class DeviceSettingDialog extends PopupWindow {
     private void init() {
         LayoutInflater inflater = LayoutInflater.from(context);
         View viewLayout = inflater.inflate(R.layout.layout_device_setting, null);
+        llRoot = viewLayout.findViewById(R.id.pop_view);
         setContentView(viewLayout);
 
         viewLayout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
@@ -75,8 +80,22 @@ public class DeviceSettingDialog extends PopupWindow {
     }
 
     public void show(View parent) {
-        int offsetX = parent.getWidth() - getContentView().getMeasuredWidth();
-        showAsDropDown(parent, offsetX, 0, Gravity.START);
+        width = llRoot.getMeasuredWidth();
+        height = llRoot.getMeasuredHeight();
+        if (!"IPC".equalsIgnoreCase(device.getType())) {
+            height = height - CommonHelper.dp2px(context, 48);
+        }
+        int[] outLocation = new int[2];//锚点view的位置
+        parent.getLocationInWindow(outLocation);
+        if (CommonHelper.getScreenHeight(context) - parent.getHeight() - outLocation[1] < height) {//上方
+            llRoot.setBackgroundResource(R.drawable.bg_device_setting_up);
+            showAtLocation(parent, Gravity.TOP, CommonHelper.getScreenWidth(context) / 2 - width
+                    + CommonHelper.dp2px(context, 30), outLocation[1] - height);
+        } else {
+            llRoot.setBackgroundResource(R.drawable.bg_device_setting_down);
+            showAsDropDown(parent, parent.getWidth() - getContentView().getMeasuredWidth(),
+                    0, Gravity.START);
+        }
     }
 
     public interface OnSettingsClickListener {
