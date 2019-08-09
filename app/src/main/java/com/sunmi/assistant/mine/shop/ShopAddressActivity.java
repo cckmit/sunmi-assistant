@@ -49,7 +49,7 @@ public class ShopAddressActivity extends BaseActivity {
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
-        titleBar.getRightLayout().setOnClickListener(this::save);
+        titleBar.getRightText().setOnClickListener(this::save);
         etAddress.addTextChangedListener(new TextChecker());
         etAddress.setText(mInfo.getAddress());
         etAddress.requestFocus();
@@ -118,13 +118,9 @@ public class ShopAddressActivity extends BaseActivity {
         @Override
         public void afterTextChanged(Editable s) {
             tvCounts.setText(String.format(Locale.getDefault(), "%d/%d", s.length(), MAX_LENGTH));
-            int selectionStart = etAddress.getSelectionStart();
-            int selectionEnd = etAddress.getSelectionEnd();
             if (s.length() > MAX_LENGTH) {
                 shortTip(R.string.tip_over_limit_words);
-                s.delete(selectionStart - 1, selectionEnd);
-                etAddress.setText(s);
-                etAddress.setSelection(selectionEnd);
+                s.delete(MAX_LENGTH, s.length());
             }
         }
     }

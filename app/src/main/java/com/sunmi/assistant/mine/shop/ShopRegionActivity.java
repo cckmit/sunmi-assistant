@@ -9,13 +9,18 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.mine.model.RegionProvince;
 import com.sunmi.assistant.mine.model.ShopInfo;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.List;
@@ -24,9 +29,8 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.base.recycle.BaseArrayAdapter;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
-import sunmi.common.model.ShopRegionResp;
+import sunmi.common.utils.FileUtils;
 import sunmi.common.utils.StatusBarUtils;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 
 /**
@@ -52,7 +56,7 @@ public class ShopRegionActivity extends BaseMvpActivity<ShopRegionPresenter>
 
     @Extra
     ShopInfo mInfo;
-    private List<ShopRegionResp.Province> mList;
+    private List<RegionProvince> mList;
 
     private int mProvinceId;
     private int mProvinceIndex;
@@ -64,9 +68,9 @@ public class ShopRegionActivity extends BaseMvpActivity<ShopRegionPresenter>
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         titleBar.getRightText().setOnClickListener(this::save);
         mAdapter = new BaseArrayAdapter<>();
-        mAdapter.register(ShopRegionResp.Province.class, new ProvinceType());
-        mAdapter.register(ShopRegionResp.City.class, new CityType());
-        mAdapter.register(ShopRegionResp.Area.class, new AreaType());
+        mAdapter.register(RegionProvince.class, new ProvinceType());
+        mAdapter.register(RegionProvince.City.class, new CityType());
+        mAdapter.register(RegionProvince.Area.class, new AreaType());
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mAdapter);
 
@@ -81,7 +85,7 @@ public class ShopRegionActivity extends BaseMvpActivity<ShopRegionPresenter>
 
         mPresenter = new ShopRegionPresenter(mInfo);
         mPresenter.attachView(this);
-        mPresenter.getRegion();
+        getRegion();
         showLoadingDialog();
     }
 
@@ -101,16 +105,21 @@ public class ShopRegionActivity extends BaseMvpActivity<ShopRegionPresenter>
         mAdapter.setData(mList.get(mProvinceIndex).getChildren());
     }
 
+    @Background
+    void getRegion() {
+        mList = new Gson().fromJson(FileUtils.getStringFromAssets(context, "region.json"),
+                new TypeToken<List<RegionProvince>>() {
+                }.getType());
+        showRegionList(mList);
+    }
+
     @Override
-    public void showRegionList(List<ShopRegionResp.Province> list) {
+    @UiThread
+    public void showRegionList(List<RegionProvince> list) {
         hideLoadingDialog();
-        mList = list;
         mAdapter.setData(list);
         for (int i = 0, size1 = list.size(); i < size1; i++) {
-            ShopRegionResp.Province province = list.get(i);
-            if (province.getProvince() <= 0) {
-                LogCat.d(TAG, "----" + province.getName());
-            }
+            RegionProvince province = list.get(i);
             if (mProvinceId == province.getProvince()) {
                 mProvinceIndex = i;
                 recyclerView.scrollToPosition(i);
@@ -119,23 +128,17 @@ public class ShopRegionActivity extends BaseMvpActivity<ShopRegionPresenter>
                 btnArea2.setText(R.string.str_choose_please);
                 btnArea2.setTextColor(ContextCompat.getColor(context, R.color.colorText));
             }
-            for (ShopRegionResp.City city : province.getChildren()) {
-                if (city.getCity() <= 0) {
-                    LogCat.d(TAG, "----" + province.getName());
-                }
+            for (RegionProvince.City city : province.getChildren()) {
                 if (mCityId == city.getCity()) {
                     btnArea2.setText(city.getName());
                     btnArea2.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
                     btnArea3.setText(R.string.str_choose_please);
                     btnArea3.setTextColor(ContextCompat.getColor(context, R.color.colorText));
                 }
-                for (ShopRegionResp.Area area : city.getChildren()) {
-                    if (area.getCounty() <= 0) {
-                        LogCat.d(TAG, "----" + province.getName());
-                    }
+                for (RegionProvince.Area area : city.getChildren()) {
                     if (mAreaId == area.getCounty()) {
-                        btnArea2.setText(area.getName());
-                        btnArea2.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
+                        btnArea3.setText(area.getName());
+                        btnArea3.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
                     }
                 }
             }
@@ -168,9 +171,10 @@ public class ShopRegionActivity extends BaseMvpActivity<ShopRegionPresenter>
     @Override
     public void updateRegionFailed() {
         hideLoadingDialog();
+        shortTip(R.string.tip_save_fail);
     }
 
-    private class ProvinceType extends ItemType<ShopRegionResp.Province, BaseViewHolder<ShopRegionResp.Province>> {
+    private class ProvinceType extends ItemType<RegionProvince, BaseViewHolder<RegionProvince>> {
 
         private ProvinceType() {
             setOnItemClickListener((adapter, holder, model, position) -> {
@@ -192,7 +196,7 @@ public class ShopRegionActivity extends BaseMvpActivity<ShopRegionPresenter>
         }
 
         @Override
-        public void onBindViewHolder(@NonNull BaseViewHolder<ShopRegionResp.Province> holder, ShopRegionResp.Province model, int position) {
+        public void onBindViewHolder(@NonNull BaseViewHolder<RegionProvince> holder, RegionProvince model, int position) {
             TextView tvArea = holder.getView(R.id.tvArea);
             ImageView imageView = holder.getView(R.id.ivImg);
             final String name = model.getName();
@@ -207,7 +211,7 @@ public class ShopRegionActivity extends BaseMvpActivity<ShopRegionPresenter>
         }
     }
 
-    private class CityType extends ItemType<ShopRegionResp.City, BaseViewHolder<ShopRegionResp.City>> {
+    private class CityType extends ItemType<RegionProvince.City, BaseViewHolder<RegionProvince.City>> {
 
         private CityType() {
             setOnItemClickListener((adapter, holder, model, position) -> {
@@ -227,7 +231,7 @@ public class ShopRegionActivity extends BaseMvpActivity<ShopRegionPresenter>
         }
 
         @Override
-        public void onBindViewHolder(@NonNull BaseViewHolder<ShopRegionResp.City> holder, ShopRegionResp.City model, int position) {
+        public void onBindViewHolder(@NonNull BaseViewHolder<RegionProvince.City> holder, RegionProvince.City model, int position) {
             TextView tvArea = holder.getView(R.id.tvArea);
             ImageView imageView = holder.getView(R.id.ivImg);
             final String name = model.getName();
@@ -242,14 +246,14 @@ public class ShopRegionActivity extends BaseMvpActivity<ShopRegionPresenter>
         }
     }
 
-    private class AreaType extends ItemType<ShopRegionResp.Area, BaseViewHolder<ShopRegionResp.Area>> {
+    private class AreaType extends ItemType<RegionProvince.Area, BaseViewHolder<RegionProvince.Area>> {
 
         private AreaType() {
             setOnItemClickListener((adapter, holder, model, position) -> {
                 mAreaId = model.getCounty();
                 btnArea3.setText(model.getName());
                 btnArea3.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
-                onBindViewHolder(holder, model, position);
+                adapter.notifyDataSetChanged();
             });
         }
 
@@ -259,7 +263,7 @@ public class ShopRegionActivity extends BaseMvpActivity<ShopRegionPresenter>
         }
 
         @Override
-        public void onBindViewHolder(@NonNull BaseViewHolder<ShopRegionResp.Area> holder, ShopRegionResp.Area model, int position) {
+        public void onBindViewHolder(@NonNull BaseViewHolder<RegionProvince.Area> holder, RegionProvince.Area model, int position) {
             TextView tvArea = holder.getView(R.id.tvArea);
             ImageView imageView = holder.getView(R.id.ivImg);
             final String name = model.getName();

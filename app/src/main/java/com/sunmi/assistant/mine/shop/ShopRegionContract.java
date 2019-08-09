@@ -1,9 +1,10 @@
 package com.sunmi.assistant.mine.shop;
 
+import com.sunmi.assistant.mine.model.RegionProvince;
+
 import java.util.List;
 
 import sunmi.common.base.BaseView;
-import sunmi.common.model.ShopRegionResp;
 
 /**
  * @author yinhui
@@ -13,7 +14,7 @@ public interface ShopRegionContract {
 
     interface View extends BaseView {
 
-        void showRegionList(List<ShopRegionResp.Province> list);
+        void showRegionList(List<RegionProvince> list);
 
         void complete();
 
@@ -23,8 +24,6 @@ public interface ShopRegionContract {
     }
 
     interface Presenter {
-
-        void getRegion();
 
         void updateRegion(int province, int city, int area);
     }
