@@ -52,7 +52,7 @@
         android:layout_marginStart="@dimen/dp_25"
         android:layout_marginTop="@dimen/dp_20"
         android:background="@drawable/edittext_solid_orange"
-        android:text="允许授权"
+        android:text="@string/str_authorization_permission"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/sp_16" />
 
@@ -65,7 +65,7 @@
         android:layout_marginStart="@dimen/dp_25"
         android:layout_marginTop="@dimen/dp_16"
         android:background="@drawable/edittext_edge_orange"
-        android:text="尚不授权"
+        android:text="@string/str_authorization_deny"
         android:textColor="@color/colorOrange"
         android:textSize="@dimen/sp_16" />
 </LinearLayout>

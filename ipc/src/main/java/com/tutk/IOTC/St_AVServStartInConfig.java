@@ -1,7 +1,21 @@
+/******************************************************************************
+ *                                                                            *
+ * Copyright (c) 2011 by TUTK Co.LTD. All Rights Reserved.                    *
+ *                                                                            *
+ *                                                                            *
+ * Class: St_AVServStartInConfig                                                    *
+ *                                                                            *
+ * Author: Roger                                                              *
+ *                                                                            *
+ * Date: 2018/05/28                                                           *
+ *                                                                            *
+ ******************************************************************************/
+
 package com.tutk.IOTC;
 
 //base on the struct _AVServStartInConfig in AVAPIs.h
-public class St_AVServStartInConfig {
+public class St_AVServStartInConfig
+{
     public int iotc_session_id;
     public int iotc_channel_id;
     public int timeout_sec;
