@@ -119,7 +119,7 @@
         android:layout_below="@+id/btn_config"
         android:layout_marginStart="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_15"
-        android:text="Cloud时间轴" />
+        android:text="Ap时间轴" />
 
     <Button
         android:id="@+id/btn_time_ap"
@@ -129,7 +129,7 @@
         android:layout_marginStart="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_15"
         android:layout_toRightOf="@id/btn_time"
-        android:text="Ap时间轴" />
+        android:text="时间组合" />
 
     <Button
         android:id="@+id/btn_canvas"
@@ -139,6 +139,6 @@
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_15"
         android:layout_toRightOf="@id/btn_time_ap"
-        android:text="时间组合" />
+        android:text="云回" />
 
 </RelativeLayout>

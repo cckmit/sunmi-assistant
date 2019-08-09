@@ -84,6 +84,6 @@
     <string name="str_tip_start_blue">Bluetooth is not currently enabled. Do you want to jump to the Bluetooth settings page?</string>
     <string name="str_delete_success">Delete successfully</string>
     <string name="str_delete_fail">Delete failed</string>
-    <string name="tip_play_fail">播放失败</string>
+    <string name="tip_play_fail">Playback failed</string>
 
 </resources>

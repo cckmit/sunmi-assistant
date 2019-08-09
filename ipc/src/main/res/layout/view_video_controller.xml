@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_64"
         android:animateLayoutChanges="true"
-        android:background="@mipmap/bg_video_title">
+        android:background="@mipmap/bg_video_controller_top">
         <!--返回-->
         <RelativeLayout
             android:id="@+id/rl_video_back"
@@ -83,7 +83,7 @@
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_25"
         android:gravity="center"
-        android:text="云回"
+        android:text="@string/str_cloud_back"
         android:textColor="@color/c_white"
         android:textSize="@dimen/sp_12"
         android:visibility="gone" />
@@ -153,7 +153,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_56"
         android:layout_alignParentBottom="true"
-        android:animateLayoutChanges="true">
+        android:animateLayoutChanges="true"
+        android:background="@mipmap/bg_video_controller_bottom">
 
         <ImageView
             android:id="@+id/iv_play"
@@ -164,6 +165,17 @@
             android:layout_marginEnd="@dimen/dp_24"
             android:background="@mipmap/play_disable" />
 
+        <com.sunmi.ipc.view.ZFTimeLine
+            android:id="@+id/scale_panel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_24"
+            android:layout_toStartOf="@+id/tv_calender"
+            android:layout_toEndOf="@+id/iv_play"
+            android:background="@color/transparent"
+            android:visibility="gone" />
+
         <RelativeLayout
             android:id="@+id/ll_date_view"
             android:layout_width="match_parent"
@@ -172,7 +184,8 @@
             android:layout_marginEnd="@dimen/dp_24"
             android:layout_toStartOf="@+id/tv_calender"
             android:layout_toEndOf="@+id/iv_play"
-            android:background="@color/transparent">
+            android:background="@color/transparent"
+            android:visibility="visible">
 
             <RelativeLayout
                 android:id="@+id/rl_recyclerView"
