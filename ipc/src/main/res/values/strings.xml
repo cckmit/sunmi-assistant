@@ -98,7 +98,7 @@
     <string name="ipc_setting_dialog_upgrade_cancel">Update later</string>
     <string name="ipc_setting_dialog_upgrade_progress">Downloading…%s%%</string>
     <string name="ipc_setting_dialog_upgrade_fail">Update failed</string>
-    <string name="ipc_setting_dialog_upgrade_fail_content">Download failed</string>
+    <string name="ipc_setting_dialog_upgrade_fail_content">Download v-%s failed</string>
     <string name="ipc_setting_dialog_upgrade_success">Update successfully</string>
     <string name="ipc_setting_dialog_upgrade_success_content">The version is the latest</string>
     <string name="ipc_setting_detection_day_monday">Monday</string>

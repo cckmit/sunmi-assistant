@@ -141,11 +141,11 @@ public class MqttManager {
      * 建立连接
      */
     public void mqttConnect() {
-        if (isConnecting) return;
-        isConnecting = true;
         if (mqttClient == null) {
             return;
         }
+        if (isConnecting) return;
+        isConnecting = true;
         try {
             mqttClient.connect(options, BaseApplication.getContext(), new IMqttActionListener() {
                 @Override
@@ -158,6 +158,7 @@ public class MqttManager {
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                     isConnecting = false;
+                    LogCat.e(TAG, "mqtt Connect FAIL");
                     if (!NetworkUtils.isNetworkAvailable(BaseApplication.getContext())) {
                         LogCat.e(TAG, "mqtt Connect fail no net");
                         mqttClient = null;

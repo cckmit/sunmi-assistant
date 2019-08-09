@@ -3,6 +3,7 @@ package com.sunmi.ipc.setting;
 import android.content.DialogInterface;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;
@@ -44,6 +45,8 @@ public class IpcSettingVersionActivity extends BaseActivity {
     TextView tvVersion;
     @ViewById(resName = "btn_upgrade")
     Button btnUpgrade;
+    @ViewById(resName = "iv_ipc")
+    ImageView ivIpc;
 
     @Extra
     SunmiDevice mDevice;
@@ -54,6 +57,8 @@ public class IpcSettingVersionActivity extends BaseActivity {
     private Timer timer = null;
     private TimerTask timerTask = null;
     private int countdown, endNum;
+
+    private boolean isSS;
 
     //开启计时
     private void startTimer() {
@@ -70,7 +75,7 @@ public class IpcSettingVersionActivity extends BaseActivity {
     @UiThread
     void showDownloadProgress() {
         countdown++;
-        int countMinutes = DeviceTypeUtils.getInstance().isSS1(mDevice.getModel()) ? SS_UPGRADE_TIME : FS_UPGRADE_TIME;
+        int countMinutes = isSS ? SS_UPGRADE_TIME : FS_UPGRADE_TIME;
         if (countdown == countMinutes) {
             stopTimer();
             dialog.progressDismiss();
@@ -78,13 +83,17 @@ public class IpcSettingVersionActivity extends BaseActivity {
         } else if (countdown <= 90) {
             dialog.setText(context, countdown);
         } else {
-            if (DeviceTypeUtils.getInstance().isSS1(mDevice.getModel()) && countdown <= SS_UPGRADE_TIME) {
-                if ((countdown - 90) % 6 == 0) {
-                    endNum++;
+            if (isSS) {
+                if (countdown <= SS_UPGRADE_TIME) {
+                    if ((countdown - 90) % 6 == 0) {
+                        endNum++;
+                    }
                 }
-            } else if (DeviceTypeUtils.getInstance().isFS1(mDevice.getModel()) && countdown <= FS_UPGRADE_TIME) {
-                if ((countdown - 90) % 37 == 0) {
-                    endNum++;
+            } else {
+                if (countdown <= FS_UPGRADE_TIME) {
+                    if ((countdown - 90) % 37 == 0) {
+                        endNum++;
+                    }
                 }
             }
             dialog.setText(context, 90 + endNum);
@@ -108,6 +117,10 @@ public class IpcSettingVersionActivity extends BaseActivity {
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
+        isSS = DeviceTypeUtils.getInstance().isSS1(mDevice.getModel());
+        if (!isSS) {
+            ivIpc.setImageResource(R.mipmap.ic_ipc_setting_fs);
+        }
         tvDeviceId.setText(mDevice.getDeviceid());
         //upgrade_required是否需要更新，0-不需要，1-需要
         if (mResp.getUpgrade_required() == 1) {
