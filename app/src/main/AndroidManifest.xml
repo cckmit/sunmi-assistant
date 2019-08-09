@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.sunmi.assistant">
 
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -14,13 +16,24 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
 
+        <receiver
+            android:name=".receiver.LanuageReceive"
+            android:enabled="true"
+            android:exported="true">
+
+            <intent-filter android:priority="1000">
+                <action android:name="android.intent.action.LOCALE_CHANGED" />
+            </intent-filter>
+
+        </receiver>
+
         <activity
             android:name=".ui.activity.LeadPagesActivity_"
             android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.activity.WelcomeActivity_"
-            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:configChanges="orientation|keyboardHidden|screenSize|locale"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme"
             android:windowSoftInputMode="adjustResize|adjustPan">

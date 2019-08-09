@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 
 import com.commonlibrary.R;
@@ -36,6 +37,10 @@ public class ChooseDeviceDialog extends Dialog {
         super.onCreate(savedInstanceState);
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_choose_device, null);
         setContentView(contentView);
+        Window window = getWindow();
+        if (window != null) {
+            window.setWindowAnimations(R.style.BottomDialog_Animation);
+        }
         RecyclerView recyclerView = findViewById(R.id.rv_devices);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
