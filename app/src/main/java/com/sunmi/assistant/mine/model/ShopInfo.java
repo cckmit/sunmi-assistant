@@ -36,19 +36,6 @@ public class ShopInfo implements Parcelable {
         address = response.getAddress();
     }
 
-    public void setInfo(ShopInfoResp response) {
-        shopId = response.getShopId();
-        shopName = response.getShopName();
-        typeOne = response.getTypeOne();
-        typeTwo = response.getTypeTwo();
-        typeName = response.getTypeName();
-        province = response.getProvince();
-        city = response.getCity();
-        area = response.getArea();
-        region = response.getRegion();
-        address = response.getAddress();
-    }
-
     public int getShopId() {
         return shopId;
     }

@@ -11,6 +11,7 @@ import sunmi.common.model.PlatformInfo;
 import sunmi.common.model.ShopCategoryResp;
 import sunmi.common.model.ShopInfoResp;
 import sunmi.common.model.ShopListResp;
+import sunmi.common.model.ShopRegionResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
@@ -47,6 +48,9 @@ public interface ShopInterface {
 
     @POST(shopPath + "getShopTypeList")
     Call<BaseResponse<ShopCategoryResp>> getShopCategory(@Body BaseRequest request);
+
+    @POST(shopPath + "getRegionList")
+    Call<BaseResponse<ShopRegionResp>> getShopRegion(@Body BaseRequest request);
 
 
     //saas信息

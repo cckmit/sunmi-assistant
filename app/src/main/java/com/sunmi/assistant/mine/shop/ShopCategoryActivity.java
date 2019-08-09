@@ -21,6 +21,7 @@ import java.util.List;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.ShopCategoryResp;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.ViewHolder;
@@ -77,11 +78,17 @@ public class ShopCategoryActivity extends BaseMvpActivity<ShopCategoryPresenter>
         mLeftAdapter.setData(list);
         for (int i = 0, size1 = list.size(); i < size1; i++) {
             ShopCategoryResp.ShopTypeListBean type1 = list.get(i);
+            if (type1.getId() <= 0) {
+                LogCat.d(TAG, "----" + type1.getName());
+            }
             if (mCategory1 == type1.getId()) {
                 recyclerViewLeft.scrollToPosition(i);
                 List<ShopCategoryResp.ShopTypeListBean.ChildBean> subList = type1.getChild();
                 for (int j = 0, size2 = subList.size(); j < size2; j++) {
                     ShopCategoryResp.ShopTypeListBean.ChildBean type2 = subList.get(j);
+                    if (type2.getId() <= 0) {
+                        LogCat.d(TAG, "----" + type2.getName());
+                    }
                     if (mCategory2 == type2.getId()) {
                         mRightAdapter.setData(subList);
                         recyclerViewRight.scrollToPosition(j);
@@ -99,7 +106,9 @@ public class ShopCategoryActivity extends BaseMvpActivity<ShopCategoryPresenter>
     }
 
     private void save(View v) {
-        if (mInfo.getTypeOne() == mCategory1 && mInfo.getTypeTwo() == mCategory2) {
+        if (mCategory1 <= 0 || mCategory2 <= 0) {
+            shortTip(R.string.str_selected);
+        } else if (mInfo.getTypeOne() == mCategory1 && mInfo.getTypeTwo() == mCategory2) {
             setResult(RESULT_CANCELED);
             finish();
         } else {
@@ -136,6 +145,7 @@ public class ShopCategoryActivity extends BaseMvpActivity<ShopCategoryPresenter>
             textView.setText(name);
             holder.itemView.setOnClickListener(v -> {
                 mCategory1 = model.getId();
+                mCategory2 = -1;
                 notifyDataSetChanged();
                 mRightAdapter.setData(model.getChild());
             });

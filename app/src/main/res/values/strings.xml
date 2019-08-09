@@ -32,6 +32,8 @@
     <string name="tip_input_name">Please enter the name</string>
     <string name="tip_save_fail">Save failed</string>
     <string name="str_choose_please">Please choose</string>
+    <string name="str_selected">Please select</string>
+    <string name="tip_addr_empty">Please enter the detailed address</string>
 
     <string name="dashboard_data_format">%s%%</string>
     <string name="dashboard_today">今日</string>

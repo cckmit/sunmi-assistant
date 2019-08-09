@@ -103,6 +103,8 @@
         <activity android:name=".mine.shop.ShopDetailActivity_" />
         <activity android:name=".mine.shop.ShopNameActivity_" />
         <activity android:name=".mine.shop.ShopCategoryActivity_" />
+        <activity android:name=".mine.shop.ShopRegionActivity_" />
+        <activity android:name=".mine.shop.ShopAddressActivity_" />
         <activity android:name=".mine.HelpActivity_" />
 
         <!--百度地图-->

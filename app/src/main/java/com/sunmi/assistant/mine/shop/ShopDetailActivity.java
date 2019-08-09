@@ -32,13 +32,6 @@ import sunmi.common.view.SettingItemLayout;
 public class ShopDetailActivity extends BaseActivity {
 
     static final String INTENT_EXTRA_NAME = "name";
-    static final String INTENT_EXTRA_CATEGORY = "category";
-    static final String INTENT_EXTRA_TYPE_ONE = "type_one";
-    static final String INTENT_EXTRA_TYPE_TWO = "type_two";
-    static final String INTENT_EXTRA_REGION = "region";
-    static final String INTENT_EXTRA_REGION_PROVINCE = "region_province";
-    static final String INTENT_EXTRA_REGION_CITY = "region_city";
-    static final String INTENT_EXTRA_REGION_AREA = "region_area";
     static final String INTENT_EXTRA_ADDRESS = "address";
 
     private static final int REQUEST_CODE_NAME = 100;
@@ -106,14 +99,14 @@ public class ShopDetailActivity extends BaseActivity {
     public void toModifyRegion() {
         CommonUtils.trackCommonEvent(context, "defaultStoreAddress",
                 "主页_我的_我的店铺_默认店铺_门店地址", Constants.EVENT_MY_INFO);
-
+        ShopRegionActivity_.intent(this).mInfo(mInfo).startForResult(REQUEST_CODE_REGION);
     }
 
     @Click(R.id.sil_shop_address)
     public void toModifyAddress() {
         CommonUtils.trackCommonEvent(context, "defaultStoreAddressDetail",
                 "主页_我的_我的店铺_默认店铺_详细地址", Constants.EVENT_MY_INFO);
-
+        ShopAddressActivity_.intent(this).mInfo(mInfo).startForResult(REQUEST_CODE_ADDRESS);
     }
 
     @OnActivityResult(REQUEST_CODE_NAME)
@@ -134,13 +127,7 @@ public class ShopDetailActivity extends BaseActivity {
     @OnActivityResult(REQUEST_CODE_REGION)
     public void onRegionResult(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
-            mInfo.setRegionName(data.getStringExtra(INTENT_EXTRA_REGION));
-            mInfo.setRegion(
-                    data.getIntExtra(INTENT_EXTRA_REGION_PROVINCE, 0),
-                    data.getIntExtra(INTENT_EXTRA_REGION_CITY, 0),
-                    data.getIntExtra(INTENT_EXTRA_REGION_AREA, 0)
-            );
-            silShopRegion.setRightText(mInfo.getRegionName());
+            getShopInfo(shopId);
         }
     }
 

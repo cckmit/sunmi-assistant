@@ -12,6 +12,7 @@ import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.model.CreateShopInfo;
 import sunmi.common.model.PlatformInfo;
 import sunmi.common.model.ShopCategoryResp;
+import sunmi.common.model.ShopRegionResp;
 import sunmi.common.model.UserAvatarResp;
 import sunmi.common.model.UserInfoBean;
 import sunmi.common.rpc.mqtt.EmqTokenResp;
@@ -432,7 +433,7 @@ public class SunmiStoreApi {
     }
 
     /**
-     * 更改门店名称
+     * 更新门店名称
      */
     public static void updateShopName(int shopId, String shopName, RetrofitCallback<Object> callback) {
         try {
@@ -452,7 +453,7 @@ public class SunmiStoreApi {
     }
 
     /**
-     * 更改门店名称
+     * 更新门店经营品类
      */
     public static void updateShopCategory(int shopId, String shopName, int type1, int type2,
                                           RetrofitCallback<Object> callback) {
@@ -474,11 +475,64 @@ public class SunmiStoreApi {
         }
     }
 
+    /**
+     * 更新门店地区
+     */
+    public static void updateShopRegion(int shopId, String shopName, int province, int city, int area,
+                                        RetrofitCallback<Object> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", shopId)
+                    .put("shop_name", shopName)
+                    //营业状态 0:营业 1:停业
+                    .put("business_status", 0)
+                    .put("province", province)
+                    .put("city", city)
+                    .put("area", area)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
+                    .editShop(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 更新门店详细地址
+     */
+    public static void updateShopAddress(int shopId, String shopName, String address,
+                                         RetrofitCallback<Object> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", shopId)
+                    .put("shop_name", shopName)
+                    //营业状态 0:营业 1:停业
+                    .put("business_status", 0)
+                    .put("address", address)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
+                    .editShop(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void getShopCategory(RetrofitCallback<ShopCategoryResp> callback) {
         SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
                 .getShopCategory(new BaseRequest(""))
                 .enqueue(callback);
     }
+
+    public static void getShopRegion(RetrofitCallback<ShopRegionResp> callback) {
+        SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
+                .getShopRegion(new BaseRequest(""))
+                .enqueue(callback);
+    }
+
 
     /**
      * saas信息
