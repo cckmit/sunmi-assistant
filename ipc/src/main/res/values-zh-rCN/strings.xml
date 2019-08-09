@@ -110,7 +110,7 @@
     <string name="ipc_setting_data_get_fail">数据获取失败</string>
     <string name="ipc_setting_check_net_refresh">请检查网络后刷新页面～</string>
     <string name="tip_please_select_ipc">请选择一个摄像机</string>
-    <string name="ipc_setting_check_wireless">当前属于有线连接状态，若要使用Wi-Fi网络，请切换为无线网络后断开有线连接。</string>
+    <string name="ipc_setting_check_wireless">当前为有线网络连接状态，确认要切换为Wi-Fi网络吗，切换后，需断开有线连接</string>
     <string name="ipc_setting_tip">提示</string>
     <string name="ipc_setting_search_wifi">正在搜索Wi-Fi…</string>
     <string name="ipc_setting_degree0">0度</string>
@@ -130,7 +130,7 @@
     <string name="ipc_recognition_tip_position">请安排人员面向摄像机，站在需要识别人脸的位置</string>
     <string name="ipc_recognition_tip_zoom">调整画面大小并移动人脸框的位置，使人脸刚好填充整个人脸框</string>
     <string name="ipc_recognition_tip_focus">若自动对焦不清晰，可以手动对焦调整人脸清晰</string>
-    <string name="ipc_recognition_tip_line">拖拽直线端点，以设置客流统计的进店门槛</string>
+    <string name="ipc_recognition_tip_line">点击画面任意两点，即可设置进店门槛线\n（为保证识别率，门槛线需画在门的下方位置）</string>
     <string name="ipc_recognition_line_start">设置门槛起点</string>
     <string name="ipc_recognition_line_end">设置门槛终点</string>
     <string name="ipc_recognition_line_cancel">撤销</string>
