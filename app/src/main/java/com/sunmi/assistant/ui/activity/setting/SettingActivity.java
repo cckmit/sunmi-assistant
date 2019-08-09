@@ -42,7 +42,7 @@ public class SettingActivity extends BaseActivity {
     void init() {
         StatusBarUtils.setStatusBarColor(this,
                 StatusBarUtils.TYPE_DARK);//状态栏
-        tvVersion.setText("版本" + CommonHelper.getAppVersionName(this));
+        tvVersion.setText(getString(R.string.str_text_version_placeholder,CommonHelper.getAppVersionName(this)));
     }
 
     @Click({R.id.rlAccountSafe, R.id.rlAbout, R.id.rlClearCash, R.id.btnLogout})

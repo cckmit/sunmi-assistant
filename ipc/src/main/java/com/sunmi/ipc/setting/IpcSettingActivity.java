@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -183,6 +184,11 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         }
         if (!DeviceTypeUtils.getInstance().isFS1(mDevice.getModel())) {
             mAdjustScreen.setVisibility(View.GONE);
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) mSoundDetection.getLayoutParams();
+            lp.topMargin = (int) getResources().getDimension(R.dimen.dp_16);
+            mSoundDetection.setLayoutParams(lp);
+        } else if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
+            mAdjustScreen.setLeftTextColor(ContextCompat.getColor(this, R.color.colorText_40));
         }
     }
 

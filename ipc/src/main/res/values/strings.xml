@@ -134,11 +134,11 @@
     <string name="ipc_recognition_line_cancel">Cancel</string>
     <string name="ipc_recognition_line_error">当前划线不符合要求，请重新操作</string>
     <string name="ipc_recognition_complete">Picture adjustment completed</string>
-    <string name="ipc_recognition_sd_none">存储卡未插入，无法使用该功能，请先插入存储卡</string>
-    <string name="ipc_recognition_sd_uninitialized">检测到存储卡，需要格式化才可使用，请提前保存重要资料</string>
-    <string name="ipc_recognition_sd_unknown">存储卡无法识别，请更换新的存储卡</string>
-
-    <string name="tip_network_fail_retry">当前网络状况不佳，请刷新重试</string>
+    <string name="ipc_recognition_sd_none">The memory card is not inserted. This function cannot be used. Please insert the memory card first.</string>
+    <string name="ipc_recognition_sd_uninitialized">The memory card is detected and needs to be formatted before use. Please save important information in advance.</string>
+    <string name="ipc_recognition_sd_unknown">The memory card is not recognized. Please replace it with a new one.</string>
+    <string name="tip_network_fail_retry">The current network is not in good condition, please refresh and try again.</string>
+    <string name="str_cloud_back">云回</string>
 </resources>
 
 
