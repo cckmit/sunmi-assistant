@@ -82,6 +82,7 @@ public class IOTCClient {
                     return;
                 }
                 if (IOTC_CONNECT_RESULT < 0) {
+                    LogCat.e(TAG, "Step 2: call IOTC_Connect_ByUID_Parallel timeout, quit");
                     IOTCAPIs.IOTC_Connect_Stop_BySID(SID);
                     AVAPIs.avDeInitialize();
                     if (callback != null) {

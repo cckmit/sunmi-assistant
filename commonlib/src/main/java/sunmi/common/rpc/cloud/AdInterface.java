@@ -1,10 +1,9 @@
-package com.sunmi.assistant.rpc.api;
-
-import com.sunmi.assistant.data.response.AdListResp;
+package sunmi.common.rpc.cloud;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
+import sunmi.common.model.AdListResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.BaseResponse;
 

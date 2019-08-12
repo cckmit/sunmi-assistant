@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.Button;
 
 import com.sunmi.apmanager.constant.Constants;
-import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.rpc.sso.SSOApi;
 import com.sunmi.apmanager.ui.view.MergeDialog;
 import com.sunmi.apmanager.utils.CommonUtils;
@@ -31,6 +30,7 @@ import sunmi.common.view.dialog.CommonDialog;
 /**
  * sms login
  */
+@Deprecated
 @EActivity(R.layout.activity_login_sms)
 public class SendSmsLoginActivity extends BaseActivity {
     @ViewById(R.id.btnGetSMS)
@@ -69,16 +69,16 @@ public class SendSmsLoginActivity extends BaseActivity {
     }
 
     private void invalidAccount() {
-        CloudApi.isUserExist(mobile, new RpcCallback(context) {
-            @Override
-            public void onSuccess(int code, String msg, String data) {
-                if (code == 1) {
-                    userMerge();
-                } else {
-                    mobileUnregister();
-                }
-            }
-        });
+//        SunmiStoreApi.isUserExist(mobile, new RpcCallback(context) {
+//            @Override
+//            public void onSuccess(int code, String msg, String data) {
+//                if (code == 1) {
+//                    userMerge();
+//                } else {
+//                    mobileUnregister();
+//                }
+//            }
+//        });
     }
 
     //手机号未注册

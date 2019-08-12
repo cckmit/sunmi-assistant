@@ -89,43 +89,4 @@ public class IOTCloudApi extends BaseHttpApi {
         }
     }
 
-//    /**
-//     * 绑定打印机到iot云端
-//     *
-//     * @param sn 是	string	设备序列号
-//     */
-//    public static void bindPrinter(String sn, RetrofitCallback callback) {
-//        try {
-//            String params = new JSONObject()
-//                    .put("userId", SpUtils.getUID())
-//                    .put("merchantId", SpUtils.getMerchantUid())
-//                    .put("sn", sn)
-//                    .put("token", SafeUtils.md5(SpUtils.getUID()))
-//                    .toString();
-//            PrinterRetrofitClient.getInstance().create(MerchantInterface.class)
-//                    .bind(getSignedRequest(params))
-//                    .enqueue(callback);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    /**
-//     * 参数加签
-//     */
-//    private static BaseRequest getSignedRequest(String params) {
-//        String timeStamp = DateTimeUtils.currentTimeSecond() + "";
-//        String randomNum = (int) ((Math.random() * 9 + 1) * 100000) + "";
-//        String isEncrypted = "0";
-//        String sign = SafeUtils.md5(params + isEncrypted +
-//                timeStamp + randomNum + SafeUtils.md5(CommonConfig.CLOUD_TOKEN));
-//        return new BaseRequest.Builder()
-//                .setTimeStamp(timeStamp)
-//                .setRandomNum(randomNum)
-//                .setIsEncrypted(isEncrypted)
-//                .setParams(URLEncoder.encode(params))
-//                .setSign(sign)
-//                .setLang("zh").createBaseRequest();
-//    }
-
 }
