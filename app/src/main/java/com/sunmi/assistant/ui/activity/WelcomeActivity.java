@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Handler;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.widget.Toast;
@@ -76,7 +75,6 @@ public class WelcomeActivity extends BaseMvpActivity<WelcomePresenter> implement
                     }
                 } else {
                     LogCat.e(TAG, "ping time -- 333");
-//                    checkUpdate();
                     mPresenter.checkUpgrade();
                 }
             }
@@ -89,8 +87,8 @@ public class WelcomeActivity extends BaseMvpActivity<WelcomePresenter> implement
             if (!NetworkUtils.isNetworkAvailable(this)) {
                 gotoMainActivity();
             } else {
-//                checkToken();
-                mPresenter.checkToken();
+//                mPresenter.checkToken();
+                checkTokenSuccess("");//todo
             }
         } else {
             gotoLoginActivity();
@@ -112,88 +110,13 @@ public class WelcomeActivity extends BaseMvpActivity<WelcomePresenter> implement
         finish();
     }
 
-    private void handlerDelay(long delayMillis, final Class<?> mClass) {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                openActivity(context, mClass, true);
-            }
-        }, delayMillis);
-    }
-
-    /*private void checkToken() {
-        CloudApi.checkToken(new StringCallback() {
-            @Override
-            public void onError(Call call, Response response, Exception e, int id) {
-                logout();
-            }
-
-            @Override
-            public void onResponse(String response, int id) {
-                try {
-                    if (response != null) {
-                        JSONObject jsonObject = new JSONObject(response);
-                        if (jsonObject.has("code") && jsonObject.getInt("code") == 1) {
-                            MyApplication.isCheckedToken = true;
-                            gotoMainActivity();
-                            return;
-                        }
-                    }
-                    logout();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    logout();
-                }
-            }
-        });
-    }*/
-
     private void logout() {
         CommonUtils.logout();
         gotoLoginActivity();
     }
 
-    /*private void checkUpdate() {
-        CloudApi.checkUpgrade(new StringCallback() {
-            @Override
-            public void onError(Call call, Response response, Exception e, int id) {
-                handleLaunch();
-            }
-
-            @Override
-            public void onResponse(String response, int id) {
-                try {
-                    if (response != null) {
-                        JSONObject jsonObject = new JSONObject(response);
-                        if (jsonObject.has("code") && jsonObject.getInt("code") == 1) {
-                            JSONObject object = (JSONObject) jsonObject.getJSONArray("data").opt(0);
-                            if (object.has("is_force_upgrade")) {
-                                // 是否需要强制升级 0-否 1-是
-                                int needMerge = object.getInt("is_force_upgrade");
-                                if (needMerge == 1) {
-                                    appUrl = object.getString("url");
-                                    forceUpdate(appUrl);
-                                    return;
-                                } else {
-                                    //首次安装或清空数据时
-                                    if (!TextUtils.equals(SpUtils.getLead(), "TRUE")) {
-                                        gotoLeadPagesActivity();
-                                        return;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                handleLaunch();
-            }
-        });
-    }*/
-
     @Override
-    public void checkTokenSuccess(String response) {
+    public void checkTokenSuccess(String response) {//todo 云端接口有问题，先不校验token，允许多端登录
         /*try {
             if (response != null) {
                 JSONObject jsonObject = new JSONObject(response);
@@ -280,9 +203,7 @@ public class WelcomeActivity extends BaseMvpActivity<WelcomePresenter> implement
                 TextUtils.equals("ZUK", android.os.Build.BRAND) ||
                 haveInstallPermission()) {
             AppUpdate.versionUpdate((Activity) context, appUrl);
-            LogCat.e(TAG, "2222");
         } else {
-            LogCat.e(TAG, "22221111");
             Toast.makeText(context, R.string.str_open_permission_to_update, Toast.LENGTH_LONG).show();
             //跳转设置开启允许安装
             Uri packageURI = Uri.parse("package:" + context.getPackageName());
@@ -309,5 +230,80 @@ public class WelcomeActivity extends BaseMvpActivity<WelcomePresenter> implement
             BaseApplication.getInstance().quit();
         }
     }
+
+//    private void handlerDelay(long delayMillis, final Class<?> mClass) {
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                openActivity(context, mClass, true);
+//            }
+//        }, delayMillis);
+//    }
+
+    /*private void checkToken() {
+        CloudApi.checkToken(new StringCallback() {
+            @Override
+            public void onError(Call call, Response response, Exception e, int id) {
+                logout();
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                try {
+                    if (response != null) {
+                        JSONObject jsonObject = new JSONObject(response);
+                        if (jsonObject.has("code") && jsonObject.getInt("code") == 1) {
+                            MyApplication.isCheckedToken = true;
+                            gotoMainActivity();
+                            return;
+                        }
+                    }
+                    logout();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    logout();
+                }
+            }
+        });
+    }*/
+
+    /*private void checkUpdate() {
+        CloudApi.checkUpgrade(new StringCallback() {
+            @Override
+            public void onError(Call call, Response response, Exception e, int id) {
+                handleLaunch();
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                try {
+                    if (response != null) {
+                        JSONObject jsonObject = new JSONObject(response);
+                        if (jsonObject.has("code") && jsonObject.getInt("code") == 1) {
+                            JSONObject object = (JSONObject) jsonObject.getJSONArray("data").opt(0);
+                            if (object.has("is_force_upgrade")) {
+                                // 是否需要强制升级 0-否 1-是
+                                int needMerge = object.getInt("is_force_upgrade");
+                                if (needMerge == 1) {
+                                    appUrl = object.getString("url");
+                                    forceUpdate(appUrl);
+                                    return;
+                                } else {
+                                    //首次安装或清空数据时
+                                    if (!TextUtils.equals(SpUtils.getLead(), "TRUE")) {
+                                        gotoLeadPagesActivity();
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                handleLaunch();
+            }
+        });
+    }*/
 
 }
