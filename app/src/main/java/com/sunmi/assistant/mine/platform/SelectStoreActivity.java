@@ -117,6 +117,10 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
 
         private ShopListAdapter(Context context, List<SelectShopModel> list) {
             super(context, R.layout.item_merchant_auth_store, list);
+            if (list.size() == 1 && list.get(0).isChecked()) {
+                selectedCount = 1;
+                enableCompleteBtn(true);
+            }
         }
 
         @Override

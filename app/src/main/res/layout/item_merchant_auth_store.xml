@@ -7,14 +7,13 @@
 
     <CheckBox
         android:id="@+id/CBox"
-        style="@style/CustomCheckBoxTheme"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:button="@null"
+        android:background="@drawable/checkbox_dev_selector"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
         android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:padding="@dimen/dp_10"
-        android:scaleX="0.3"
-        android:scaleY="0.3" />
+        android:layout_marginEnd="@dimen/dp_25"
+        android:layout_centerVertical="true" />
 
     <TextView
         android:id="@+id/tvName"
