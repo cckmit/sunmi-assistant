@@ -23,9 +23,17 @@
     <string name="str_auth_onclick_protocol">Click the button to agree</string>
     <string name="str_auth_protocol_text">《License agreement》</string>
     <string name="str_select_store">Select a store</string>
-
+    <string name="str_my_store">My store</string>
+    <string name="btn_add_store">Add store</string>
     <string name="ic_tab_data_title">Data</string>
-
+    <string name="str_help_feedback">Help and feedback</string>
+    <string name="str_me">me</string>
+    <string name="str_edit_store_name">Edit store name</string>
+    <string name="tip_input_name">Please enter the name</string>
+    <string name="tip_save_fail">Save failed</string>
+    <string name="str_choose_please">Please choose</string>
+    <string name="str_selected">Please select</string>
+    <string name="tip_addr_empty">Please enter the detailed address</string>
     <string name="dashboard_data_format">%s%%</string>
     <string name="dashboard_today">Today</string>
     <string name="dashboard_this_week">Week</string>
@@ -43,7 +51,6 @@
     <string name="dashboard_purchase_rank">Payment method</string>
     <string name="dashboard_quantity_rank">Product sales ranking</string>
     <string name="dashboard_purchase_type_other">Others</string>
-
     <string name="str_platform_list">Platform list</string>
     <string name="str_platform_skip">Skip</string>
     <string name="str_button_check">Verification</string>
@@ -61,7 +68,6 @@
     <string name="str_unkunw_store">%s store</string>
     <string name="str_create_store_fail">Store creation failed</string>
     <string name="str_create_store_alredy_exit">Store name already exists</string>
-
     <string name="order_list_title">List of details</string>
     <string name="order_filter_sort">Integrated sort</string>
     <string name="order_filter_pay_type">Payment Types</string>
@@ -92,7 +98,6 @@
     <string name="str_my_company">My Company</string>
     <string name="tip_refresh_data">Please check your Internet and refresh</string>
     <string name="tip_get_data_fail">Data acquisition failed</string>
-    <string name="tip_play_fail">Playback failed</string>
     <string name="str_mine_company">My Company</string>
     <string name="tip_get_shop_list_fail">Store data acquisition failed</string>
     <string name="str_select_company">Select a store</string>
@@ -107,5 +112,28 @@
     <string name="str_authorization_permission">Allow authorization</string>
     <string name="str_authorization_deny">Not yet authorized</string>
     <string name="str_text_version_placeholder">v%s</string>
+
+    <string name="company_select">您已所属以下商户，选择进入一家商户</string>
+    <string name="company_shop_select">您已所属以下门店，选择进入一家门店</string>
+    <string name="company_create">创建商户</string>
+    <string name="company_new_create">新建商户</string>
+    <string name="company_create_hint">请输入商户名称（最多20个汉字）</string>
+    <string name="company_shop_create_hint">门店名称（最多20个汉字）</string>
+    <string name="company_new_try_create">您可以尝试创建新商户</string>
+    <string name="company_shop_enter_main">进入首页</string>
+    <string name="company_create_tip">商户一般为企业或个体经营主体，例如：星巴克</string>
+    <string name="company_shop_create_tip">门店一般为商户旗下的店铺经营场所：例如：五角场店</string>
+    <string name="company_shop_select_auth_tip">您可以选择一家或多家门店</string>
+    <string name="company_create_check_length">商户名超过字数限制，请重新输入</string>
+    <string name="company_create_check_name">商户名重名，请重新输入</string>
+    <string name="company_create_shop_success">门店创建成功</string>
+    <string name="company_create_success">商户创建成功</string>
+    <string name="company_create_fail">商户创建失败</string>
+    <string name="company_shop_create_name">门店名称</string>
+    <string name="company_shop_contact">联系人</string>
+    <string name="company_shop_contact_really_name">联系人真实姓名</string>
+    <string name="company_shop_mobile">联系方式</string>
+    <string name="company_shop_check_mobile">请输入正确手机号码</string>
+    <string name="company_shop_select_one_or_more">您可以选择一家或多家门店</string>
 
 </resources>

@@ -85,5 +85,8 @@
     <string name="str_delete_success">删除成功</string>
     <string name="str_delete_fail">删除失败</string>
     <string name="tip_play_fail">播放失败</string>
+    <string name="company_shop_new_create_or_import">您可以选择新建一家门店，或从其他软件平台导入已有门店。</string>
+    <string name="company_shop_new_create">新建门店</string>
+    <string name="company_shop_import">导入门店</string>
 
 </resources>

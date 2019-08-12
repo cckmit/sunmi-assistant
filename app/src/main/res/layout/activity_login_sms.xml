@@ -35,7 +35,7 @@
         android:layout_height="@dimen/dp_54"
         android:layout_below="@+id/tv"
         android:layout_marginTop="@dimen/dp_24"
-        android:background="@drawable/edittext_edge_white">
+        android:background="@drawable/button_corners_edge_white">
 
         <TextView
             android:id="@+id/tv86"
@@ -79,7 +79,7 @@
         android:layout_height="@dimen/dp_54"
         android:layout_below="@+id/rl"
         android:layout_marginTop="@dimen/dp_24"
-        android:background="@drawable/edittext_solid_orange"
+        android:background="@drawable/button_corners_solid_orange"
         android:text="@string/str_get_captcha"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/sp_18" />

@@ -1,15 +1,23 @@
 package com.sunmi.assistant.presenter;
 
+import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.contract.ChooseShopContract;
 import com.sunmi.assistant.data.SunmiStoreRemote;
-import com.sunmi.assistant.data.response.CompanyListResp;
-import com.sunmi.assistant.data.response.ShopListResp;
-import com.sunmi.assistant.rpc.CloudCall;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.model.AuthStoreInfo;
+import sunmi.common.model.CompanyListResp;
+import sunmi.common.model.ShopListResp;
+import sunmi.common.model.UserInfoBean;
+import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.log.LogCat;
 
 /**
  * Description: ChooseShopPresenter
@@ -17,6 +25,8 @@ import sunmi.common.rpc.retrofit.RetrofitCallback;
  */
 public class ChooseShopPresenter extends BasePresenter<ChooseShopContract.View>
         implements ChooseShopContract.Presenter {
+    private static final String TAG = ChooseShopPresenter.class.getSimpleName();
+
     @Override
     public void getShopList(int companyId) {
         if (isViewAttached()) {
@@ -38,6 +48,7 @@ public class ChooseShopPresenter extends BasePresenter<ChooseShopContract.View>
             public void onFail(int code, String msg, ShopListResp data) {
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();
+                    mView.getShopListFail(code, msg, data);
                 }
             }
         });
@@ -45,7 +56,7 @@ public class ChooseShopPresenter extends BasePresenter<ChooseShopContract.View>
 
     @Override
     public void getCompanyList() {
-        CloudCall.getCompanyList(new RetrofitCallback<CompanyListResp>() {
+        SunmiStoreApi.getCompanyList(new RetrofitCallback<CompanyListResp>() {
             @Override
             public void onSuccess(int code, String msg, CompanyListResp data) {
                 if (isViewAttached()) {
@@ -64,4 +75,69 @@ public class ChooseShopPresenter extends BasePresenter<ChooseShopContract.View>
         });
     }
 
+    @Override
+    public void getUserInfo() {
+        mView.showLoadingDialog();
+        SunmiStoreApi.getUserInfo(new RetrofitCallback<UserInfoBean>() {
+            @Override
+            public void onSuccess(int code, String msg, UserInfoBean data) {
+                CommonUtils.saveLoginInfo(data);
+                getCompanyList();
+            }
+
+            @Override
+            public void onFail(int code, String msg, UserInfoBean data) {
+                if (isViewAttached()) {
+                    mView.hideLoadingDialog();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void getSaas(String mobile) {
+        mView.showLoadingDialog();
+        SunmiStoreApi.getSaasUserInfo(mobile, new RetrofitCallback<AuthStoreInfo>() {
+            @Override
+            public void onSuccess(int code, String msg, AuthStoreInfo bean) {
+                if (isViewAttached()) {
+                    mView.hideLoadingDialog();
+                    mView.getSaasSuccessView(bean);
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, AuthStoreInfo data) {
+                LogCat.e(TAG, "getSaas  Failed code=" + code + "; msg=" + msg);
+                if (isViewAttached()) {
+                    mView.hideLoadingDialog();
+                    mView.getSaasFailView(code, msg);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void getSsoToken() {
+        SunmiStoreApi.getSsoToken(new RetrofitCallback<Object>() {
+            @Override
+            public void onSuccess(int code, String msg, Object data) {
+                if (isViewAttached()) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(data.toString());
+                        String ssoToken = jsonObject.getString("sso_token");
+                        LogCat.e(TAG, "sso_token:" + ssoToken);
+                        SpUtils.setSsoToken(ssoToken);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, Object data) {
+
+            }
+        });
+    }
 }

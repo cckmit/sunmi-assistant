@@ -2,8 +2,8 @@ package com.sunmi.assistant.utils;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.DashboardFragment_;
+import com.sunmi.assistant.mine.MineFragment_;
 import com.sunmi.assistant.ui.fragment.DeviceFragment_;
-import com.sunmi.assistant.ui.fragment.MineFragment_;
 import com.sunmi.sunmiservice.SupportFragment_;
 
 public enum MainTab {

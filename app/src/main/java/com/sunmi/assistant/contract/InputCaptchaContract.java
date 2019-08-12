@@ -19,7 +19,7 @@ public interface InputCaptchaContract {
 
         void getImgCaptchaSuccess(int code, String msg, String data);
 
-        void getStoreTokenSuccess(LoginDataBean loginData);
+        void captchaLoginSuccess();
 
     }
 

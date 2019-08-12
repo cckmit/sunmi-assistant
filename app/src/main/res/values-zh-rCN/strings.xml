@@ -23,9 +23,17 @@
     <string name="str_auth_onclick_protocol">点击允许按钮即表示同意</string>
     <string name="str_auth_protocol_text">《授权协议》</string>
     <string name="str_select_store">选择门店</string>
-
+    <string name="str_my_store">我的店铺</string>
+    <string name="btn_add_store">添加店铺</string>
     <string name="ic_tab_data_title">数据</string>
-
+    <string name="str_help_feedback">帮助与反馈</string>
+    <string name="str_me">我</string>
+    <string name="str_edit_store_name">编辑店铺</string>
+    <string name="tip_input_name">请输入名称</string>
+    <string name="tip_save_fail">保存失败</string>
+    <string name="str_choose_please">请选择</string>
+    <string name="str_selected">请选择</string>
+    <string name="tip_addr_empty">请输入详细地址</string>
     <string name="dashboard_data_format">%s%%</string>
     <string name="dashboard_today">今日</string>
     <string name="dashboard_this_week">本周</string>
@@ -43,7 +51,6 @@
     <string name="dashboard_purchase_rank">支付方式</string>
     <string name="dashboard_quantity_rank">商品销量排行</string>
     <string name="dashboard_purchase_type_other">其他</string>
-
     <string name="str_platform_list">平台列表</string>
     <string name="str_platform_skip">跳过</string>
     <string name="str_button_check">验证</string>
@@ -56,12 +63,11 @@
     <string name="str_please_input_platform_mobile">请输入您在%s的手机号</string>
     <string name="str_platform_sms_code_error">验证码错误，请重新输入</string>
     <string name="str_button_auto_create">自动创建</string>
-    <string name="str_dialog_auto_create_store">未发现与该手机号匹配的内容，是否允许系统自动为您创建门店？</string>
+    <string name="str_dialog_auto_create_store">该手机号暂时未发现门店信息，您可以更换手机号重试或手动新建门店</string>
     <string name="str_dialog_auth_message">申请获取您在%s的门店数据。</string>
     <string name="str_unkunw_store">%s的门店</string>
     <string name="str_create_store_fail">门店创建失败</string>
     <string name="str_create_store_alredy_exit">门店名称已存在</string>
-
     <string name="order_list_title">详情列表</string>
     <string name="order_filter_sort">综合排序</string>
     <string name="order_filter_pay_type">支付类型</string>
@@ -84,7 +90,6 @@
     <string name="order_order_detail">支付明细</string>
     <string name="order_commodity">商品</string>
     <string name="order_quantity">数量</string>
-
     <string name="tip_no_device_please_add">暂无设备, 请添加</string>
     <string name="str_my_shop">我的门店</string>
     <string name="str_current_shop">当前门店</string>
@@ -107,5 +112,28 @@
     <string name="str_authorization_permission">允许授权</string>
     <string name="str_authorization_deny">尚不授权</string>
     <string name="str_text_version_placeholder">版本%s</string>
+
+    <string name="company_select">您已所属以下商户，选择进入一家商户</string>
+    <string name="company_shop_select">您已所属以下门店，选择进入一家门店</string>
+    <string name="company_create">创建商户</string>
+    <string name="company_new_create">新建商户</string>
+    <string name="company_create_hint">请输入商户名称（最多20个汉字）</string>
+    <string name="company_shop_create_hint">门店名称（最多20个汉字）</string>
+    <string name="company_new_try_create">您可以尝试创建新商户</string>
+    <string name="company_shop_enter_main">进入首页</string>
+    <string name="company_create_tip">商户一般为企业或个体经营主体，例如：星巴克</string>
+    <string name="company_shop_create_tip">门店一般为商户旗下的店铺经营场所：例如：五角场店</string>
+    <string name="company_shop_select_auth_tip">您可以选择一家或多家门店</string>
+    <string name="company_create_check_length">商户名超过字数限制，请重新输入</string>
+    <string name="company_create_check_name">商户名重名，请重新输入</string>
+    <string name="company_create_shop_success">门店创建成功</string>
+    <string name="company_create_success">商户创建成功</string>
+    <string name="company_create_fail">商户创建失败</string>
+    <string name="company_shop_create_name">门店名称</string>
+    <string name="company_shop_contact">联系人</string>
+    <string name="company_shop_contact_really_name">联系人真实姓名</string>
+    <string name="company_shop_mobile">联系方式</string>
+    <string name="company_shop_check_mobile">请输入正确手机号码</string>
+    <string name="company_shop_select_one_or_more">您可以选择一家或多家门店</string>
 
 </resources>

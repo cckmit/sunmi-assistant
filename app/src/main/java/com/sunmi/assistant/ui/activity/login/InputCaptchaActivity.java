@@ -5,14 +5,12 @@ import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.model.ImgSmsBean;
-import com.sunmi.apmanager.model.LoginDataBean;
 import com.sunmi.apmanager.ui.view.ImageCaptchaDialog;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
@@ -38,8 +36,6 @@ public class InputCaptchaActivity extends BaseMvpActivity<InputCaptchaPresenter>
 
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
-    @ViewById(R.id.ll_register_step)
-    LinearLayout llRegisterStep;
     @ViewById(R.id.tv_mobile)
     TextView tvMobile;
     @ViewById(R.id.cet_captcha)
@@ -71,7 +67,6 @@ public class InputCaptchaActivity extends BaseMvpActivity<InputCaptchaPresenter>
             tvMobile.setText(String.format(getString(R.string.str_captcha_sent), mobile));
             source = bundle.getString("source");
             if (TextUtils.equals("register", source)) {
-                llRegisterStep.setVisibility(View.VISIBLE);
                 titleBar.setAppTitle(R.string.str_register);
             } else if (TextUtils.equals("login", source)) {
                 titleBar.setAppTitle(R.string.str_sms_login);
@@ -99,7 +94,13 @@ public class InputCaptchaActivity extends BaseMvpActivity<InputCaptchaPresenter>
             case R.id.btn_confirm:
                 if (isFastClick(1500)) return;
                 trackNext();
-                mPresenter.checkSmsCode(mobile, etSmsCode.getText().toString());
+                if (TextUtils.equals("login", source)){
+                    mPresenter.captchaLogin(mobile, etSmsCode.getText().toString());
+                }else {
+                    mPresenter.checkSmsCode(mobile, etSmsCode.getText().toString());
+                }
+                break;
+            default:
                 break;
         }
     }
@@ -211,11 +212,11 @@ public class InputCaptchaActivity extends BaseMvpActivity<InputCaptchaPresenter>
     }
 
     @Override
-    public void getStoreTokenSuccess(LoginDataBean loginData) {
+    public void captchaLoginSuccess() {
         CommonUtils.trackDurationEventEnd(context, "quickLoginDuration",
                 "登录流程开始到结束", Constants.EVENT_DURATION_LOGIN_BY_SMS);
         cancelTimer();//登录成功后取消计时
-        LoginChooseShopActivity_.intent(context).loginData(loginData)
+        LoginChooseShopActivity_.intent(context)
                 .action(CommonConstants.ACTION_LOGIN_CHOOSE_COMPANY).start();
     }
 
@@ -231,16 +232,17 @@ public class InputCaptchaActivity extends BaseMvpActivity<InputCaptchaPresenter>
                     "注册流程_输入验证码_耗时", Constants.EVENT_DURATION_REGISTER_CODE);
             SetPasswordActivity_.intent(context)
                     .extra("mobile", mobile)
-                    .extra(AppConfig.SET_PASSWORD_SMS, "")
+                    .extra(AppConfig.SET_PASSWORD_SMS, etSmsCode.getText().toString().trim())
                     .extra(AppConfig.SET_PASSWORD, AppConfig.SET_PASSWORD_REGISTER).start();
-        } else if (TextUtils.equals("login", source)) { //验证码登录
-            mPresenter.captchaLogin(mobile, etSmsCode.getText().toString());
         } else if (TextUtils.equals("password", source)) {
             SetPasswordActivity_.intent(context)
                     .extra("mobile", mobile)
                     .extra(AppConfig.SET_PASSWORD_SMS, etSmsCode.getText().toString().trim())
                     .extra(AppConfig.SET_PASSWORD, AppConfig.SET_PASSWORD_RESET).start();
         }
+        /*else if (TextUtils.equals("login", source)) { //验证码登录
+            mPresenter.captchaLogin(mobile, etSmsCode.getText().toString());
+        }*/
     }
 
     @UiThread
