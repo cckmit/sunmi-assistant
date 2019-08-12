@@ -43,7 +43,7 @@ public class ShopNameActivity extends BaseActivity {
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
-        titleBar.getRightLayout().setOnClickListener(v -> save());
+        titleBar.getRightText().setOnClickListener(v -> save());
         etName.requestFocus();
         if (!TextUtils.isEmpty(mInfo.getShopName())) {
             etName.setText(mInfo.getShopName());
