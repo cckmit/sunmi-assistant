@@ -1,6 +1,6 @@
 package com.sunmi.assistant.contract;
 
-import com.sunmi.assistant.data.response.AdListResp;
+import sunmi.common.model.AdListResp;
 
 import java.util.List;
 

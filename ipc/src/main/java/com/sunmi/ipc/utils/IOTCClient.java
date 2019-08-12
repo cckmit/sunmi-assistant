@@ -21,7 +21,7 @@ import sunmi.common.utils.log.LogCat;
 public class IOTCClient {
     private String TAG = "IOTCClient";
 
-    private static int IOTC_CONNECT_TIMEOUT = 4000;
+    private static int IOTC_CONNECT_TIMEOUT = 8000;
     private String uid;
     private int SID = -1;
     private int avIndex = -1;
@@ -82,6 +82,7 @@ public class IOTCClient {
                     return;
                 }
                 if (IOTC_CONNECT_RESULT < 0) {
+                    LogCat.e(TAG, "Step 2: call IOTC_Connect_ByUID_Parallel timeout, quit");
                     IOTCAPIs.IOTC_Connect_Stop_BySID(SID);
                     AVAPIs.avDeInitialize();
                     if (callback != null) {
