@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.model.CompanyListResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.cloud.SunmiStoreRetrofitClient;
 import sunmi.common.rpc.http.HttpCallback;
@@ -55,13 +56,13 @@ public class LoginPresenter extends BasePresenter<LoginContract.View>
         if (!isViewAttached()) {
             return;
         }
-        SunmiStoreApi.login(mobile, password, new RetrofitCallback() {
+        SunmiStoreApi.login(mobile, password, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
                     SpUtils.setStoreToken(data.toString());
                     SunmiStoreRetrofitClient.createInstance();//初始化retrofit
-                    mView.loginSuccess(null);
+                    mView.loginSuccess();
                 }
             }
 
@@ -79,6 +80,28 @@ public class LoginPresenter extends BasePresenter<LoginContract.View>
                 }
             }
         });
+    }
+
+    @Override
+    public void getCompanyList() {
+        SunmiStoreApi.getCompanyList(new RetrofitCallback<CompanyListResp>() {
+            @Override
+            public void onSuccess(int code, String msg, CompanyListResp data) {
+                if (isViewAttached()) {
+                    mView.hideLoadingDialog();
+                    mView.getCompanyListSuccess(data.getCompany_list());
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, CompanyListResp data) {
+                if (isViewAttached()) {
+                    mView.hideLoadingDialog();
+                    mView.getCompanyListFail(code, msg);
+                }
+            }
+        });
+
     }
 
 }
