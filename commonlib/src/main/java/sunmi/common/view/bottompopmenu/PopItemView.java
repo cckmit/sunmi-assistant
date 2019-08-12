@@ -1,6 +1,7 @@
 package sunmi.common.view.bottompopmenu;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -12,8 +13,7 @@ import com.commonlibrary.R;
 /**
  * Created by HMY on 2016/9/10.
  */
-public class PopItemView extends android.support.v7.widget.AppCompatTextView
-        implements View.OnClickListener {
+public class PopItemView extends AppCompatTextView implements View.OnClickListener {
 
     private PopItemAction mPopItemAction;
     private BottomPopMenu mPopWindow;
@@ -33,7 +33,7 @@ public class PopItemView extends android.support.v7.widget.AppCompatTextView
                 setTextColor(getResources().getColor(R.color.pop_item_text_normal_color));
                 getPaint().setFakeBoldText(true);
             } else if (popItemAction.getStyle() == PopItemAction.PopItemStyle.Warning) {
-                setTextColor(getResources().getColor(R.color.pop_item_text_warning_color));
+                setTextColor(getResources().getColor(R.color.common_orange));
             }
         }
         setGravity(Gravity.CENTER);

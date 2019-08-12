@@ -1,12 +1,12 @@
 package com.sunmi.assistant.contract;
 
-import com.sunmi.assistant.data.response.CompanyInfoResp;
-import com.sunmi.assistant.data.response.CompanyListResp;
-import com.sunmi.assistant.data.response.ShopListResp;
-
 import java.util.List;
 
 import sunmi.common.base.BaseView;
+import sunmi.common.model.AuthStoreInfo;
+import sunmi.common.model.CompanyInfoResp;
+import sunmi.common.model.CompanyListResp;
+import sunmi.common.model.ShopListResp;
 
 /**
  * Description: ChooseShopContract
@@ -22,11 +22,21 @@ public interface ChooseShopContract {
         void getCompanyListSuccess(List<CompanyInfoResp> companyList);
 
         void getCompanyListFail(int code, String msg, CompanyListResp data);
+
+        void getSaasSuccessView(AuthStoreInfo data);
+
+        void getSaasFailView(int code, String msg);
     }
 
     interface Presenter {
         void getShopList(int companyId);
 
         void getCompanyList();
+
+        void getUserInfo();
+
+        void getSaas(String mobile);
+
+        void getSsoToken();
     }
 }

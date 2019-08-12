@@ -34,7 +34,7 @@
         android:layout_below="@+id/tv_check_network"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_24"
-        android:background="@drawable/edittext_solid_orange"
+        android:background="@drawable/button_corners_solid_orange"
         android:text="@string/str_refresh"
         android:textColor="@color/c_white"
         android:textSize="@dimen/sp_16" />

@@ -39,7 +39,8 @@ public class PopUpWindow extends Dialog
     private View mCustomView;
 
     public PopUpWindow(Activity activity, int titleResId, int messageResId, BottomPopMenu popWindow) {
-        this(activity, titleResId == 0 ? null : activity.getString(titleResId), messageResId == 0 ? null : activity.getString(messageResId), popWindow);
+        this(activity, titleResId == 0 ? null : activity.getString(titleResId),
+                messageResId == 0 ? null : activity.getString(messageResId), popWindow);
     }
 
     public PopUpWindow(Activity activity, CharSequence title, CharSequence message, BottomPopMenu popWindow) {

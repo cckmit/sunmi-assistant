@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_common"
-    android:visibility="gone">
+    android:visibility="visible">
 
     <sunmi.common.view.TitleBarView
         android:id="@+id/title_bar"
@@ -17,11 +17,23 @@
         app:leftIcon="@mipmap/ic_back_dark"
         app:titleTextColor="@color/colorText" />
 
+    <TextView
+        android:id="@+id/tv_select_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_bar"
+        android:paddingBottom="@dimen/dp_8"
+        android:paddingEnd="@dimen/dp_25"
+        android:paddingStart="@dimen/dp_25"
+        android:paddingTop="@dimen/dp_8"
+        android:textSize="@dimen/sp_12" />
+
     <cn.bingoogolapple.refreshlayout.BGARefreshLayout
+        android:layout_above="@id/btn_enter_main"
         android:id="@+id/bgarl_choose"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title_bar">
+        android:layout_below="@id/tv_select_type">
 
         <sunmi.common.view.SmRecyclerView
             android:id="@+id/rv_choose"
@@ -29,7 +41,19 @@
             android:layout_height="wrap_content"
             android:background="@color/c_white"
             android:overScrollMode="never" />
+
     </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
+
+    <Button
+        android:id="@+id/btn_enter_main"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_44"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/dp_20"
+        android:background="@drawable/button_corners_solid_orange"
+        android:text="@string/company_shop_enter_main"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/sp_16" />
 
     <LinearLayout
         android:id="@+id/ll_no_data"
@@ -46,8 +70,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_80"
-            android:drawableTop="@drawable/ic_no_data"
             android:drawablePadding="@dimen/dp_16"
+            android:drawableTop="@drawable/ic_no_data"
             android:gravity="center"
             android:text="@string/tip_get_data_fail"
             android:textColor="@color/colorText"

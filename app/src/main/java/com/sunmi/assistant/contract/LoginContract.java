@@ -1,8 +1,7 @@
 package com.sunmi.assistant.contract;
 
-import com.sunmi.apmanager.model.LoginDataBean;
-
 import sunmi.common.base.BaseView;
+import sunmi.common.model.UserInfoBean;
 
 /**
  * Description:
@@ -13,13 +12,12 @@ public interface LoginContract {
     interface View extends BaseView {
         void showMergeDialog(String url);
 
-        void mobileNoRegister();
+        void mobileUnregister();
 
-        void getStoreTokenSuccess(LoginDataBean loginData);
+        void loginSuccess(UserInfoBean loginData);
     }
 
     interface Presenter {
-        void getStoreToken(LoginDataBean loginData);
 
         void userMerge(String user, String mobile, String password);
 

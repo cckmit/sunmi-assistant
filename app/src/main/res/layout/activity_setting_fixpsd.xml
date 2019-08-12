@@ -35,7 +35,7 @@
             android:textSize="@dimen/sp_16" />
 
         <sunmi.common.view.ClearableEditText
-            android:id="@+id/tvOriPassword"
+            android:id="@+id/etOldPassword"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_40"
             android:layout_centerVertical="true"
@@ -50,7 +50,7 @@
             android:textSize="@dimen/sp_16" />
 
         <ImageButton
-            android:id="@+id/passwordIsVisible"
+            android:id="@+id/ibOldPasswordShow"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
             android:layout_alignParentEnd="true"
@@ -78,7 +78,7 @@
             android:textSize="@dimen/sp_16" />
 
         <sunmi.common.view.ClearableEditText
-            android:id="@+id/tvNewPassword"
+            android:id="@+id/etNewPassword"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_40"
             android:layout_centerVertical="true"
@@ -94,7 +94,7 @@
             android:textSize="@dimen/sp_16" />
 
         <ImageButton
-            android:id="@+id/passwordIsVisibleNew"
+            android:id="@+id/ibNewPasswordShow"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
             android:layout_alignParentEnd="true"
@@ -123,7 +123,7 @@
             android:textSize="@dimen/sp_16" />
 
         <sunmi.common.view.ClearableEditText
-            android:id="@+id/tvSureNewPassword"
+            android:id="@+id/etConfirmPassword"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_40"
             android:layout_centerVertical="true"
@@ -138,7 +138,7 @@
             android:textSize="@dimen/sp_16" />
 
         <ImageButton
-            android:id="@+id/passwordIsVisibleSureNew"
+            android:id="@+id/ibConfirmPasswordShow"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
             android:layout_alignParentEnd="true"

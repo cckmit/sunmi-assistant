@@ -34,8 +34,8 @@ public class PrinterRetrofitClient extends BaseRetrofitClient {
 
     private Map<String, String> getHeaders() {
         Map<String, String> headers = new HashMap<>();
-        if (!TextUtils.isEmpty(SpUtils.getSsoToken())) {
-//            headers.put("Authorization", "Bearer " + SpUtils.getSsoToken());
+        if (!TextUtils.isEmpty(SpUtils.getStoreToken())) {
+//            headers.put("Authorization", "Bearer " + SpUtils.getStoreToken());
         }
         return headers;
     }

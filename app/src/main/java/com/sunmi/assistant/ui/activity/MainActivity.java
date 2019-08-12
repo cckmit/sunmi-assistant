@@ -20,8 +20,6 @@ import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.MyApplication;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.utils.MainTab;
-import com.sunmi.ipc.rpc.IPCCloudApi;
-import com.sunmi.ipc.rpc.RetrofitClient;
 import com.sunmi.ipc.rpc.mqtt.MqttManager;
 import com.tencent.bugly.crashreport.CrashReport;
 
@@ -29,14 +27,11 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.notification.BaseNotification;
-import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.MyFragmentTabHost;
@@ -68,7 +63,6 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
             MQTTManager.getInstance().createEmqToken(true);//初始化长连接
         initIpc();
         if (TextUtils.isEmpty(SpUtils.getCompanyName())) {
-            CommonUtils.logout();
             CommonUtils.gotoLoginActivity(context, "");
         } else {
             initTabs();
@@ -89,28 +83,30 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
 
     //ipc初始化
     private void initIpc() {
-        if (TextUtils.isEmpty(SpUtils.getSsoToken()))
-            IPCCloudApi.getStoreToken(new RetrofitCallback() {
-                @Override
-                public void onSuccess(int code, String msg, Object data) {
-                    try {
-                        JSONObject jsonObject = new JSONObject(data.toString());
-                        SpUtils.setSsoToken(jsonObject.getString("store_token"));
-                        RetrofitClient.createInstance();//初始化retrofit
-                        MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFail(int code, String msg, Object data) {
-
-                }
-            });
-        else {
-            MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
-        }
+//        if (TextUtils.isEmpty(SpUtils.getStoreToken()))
+//            SunmiStoreApi.getStoreToken(SpUtils.getUID(), SpUtils.getSsoToken(),
+//                    SpUtils.getCompanyId() + "", new RetrofitCallback() {
+//                        @Override
+//                        public void onSuccess(int code, String msg, Object data) {
+//                            try {
+//                                JSONObject jsonObject = new JSONObject(data.toString());
+//                                SpUtils.setStoreToken(jsonObject.getString("store_token"));
+//                                SunmiStoreRetrofitClient.createInstance();//初始化retrofit
+//                                MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onFail(int code, String msg, Object data) {
+//
+//                        }
+//                    });
+//        else {
+//            MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
+//        }
+        MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
     }
 
     private void initTabs() {

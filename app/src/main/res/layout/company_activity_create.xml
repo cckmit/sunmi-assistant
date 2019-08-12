@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/c_white">
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorWhite"
+        app:dividerShow="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:leftDefaultClickEnable="true"
+        app:leftIcon="@mipmap/ic_back_dark"
+        app:titleText="@string/company_new_create"
+        app:titleTextColor="@color/colorText" />
+
+    <ImageView
+        android:id="@+id/iv_introduce"
+        android:layout_width="@dimen/dp_226"
+        android:layout_height="@dimen/dp_226"
+        android:layout_marginTop="@dimen/dp_36"
+        android:background="@mipmap/ic_company_create_new"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_bar"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:text="@string/company_new_try_create"
+        android:textColor="@color/colorText"
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_introduce" />
+
+    <Button
+        android:id="@+id/btn_create_company"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_44"
+        android:layout_margin="@dimen/dp_20"
+        android:background="@drawable/button_corners_solid_orange"
+        android:text="@string/company_new_create"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+
+</android.support.constraint.ConstraintLayout>
