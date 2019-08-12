@@ -21,7 +21,7 @@ import sunmi.common.utils.log.LogCat;
 public class IOTCClient {
     private String TAG = "IOTCClient";
 
-    private static int IOTC_CONNECT_TIMEOUT = 8000;
+    private static int IOTC_CONNECT_TIMEOUT = 4000;
     private String uid;
     private int SID = -1;
     private int avIndex = -1;
