@@ -20,7 +20,7 @@
     <string name="tip_title_choose_device">选择您要连接的设备</string>
     <string name="tip_no_device_found">没有发现新设备</string>
     <string name="tip_keep_device_in">请确保您的设备处于路由器信号范围内</string>
-    <string name="str_auth_onclick_protocol">点击允许按钮即表示同意</string>
+    <string name="str_auth_onclick_protocol">同意授权表示使用此数据创建门店；暂不授权表示创建新门店。点击查看</string>
     <string name="str_auth_protocol_text">《授权协议》</string>
     <string name="str_select_store">选择门店</string>
     <string name="str_my_store">我的店铺</string>
