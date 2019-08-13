@@ -19,7 +19,6 @@ import sunmi.common.utils.SpUtils;
  */
 public class GetUserInfo {
 
-
     public static void userInfo(Context context) {
         SunmiStoreApi.getUserInfo(new RetrofitCallback<UserInfoBean>() {
             @Override
@@ -33,7 +32,6 @@ public class GetUserInfo {
             }
         });
     }
-
 
     private static void ssoToken(Context context) {
         SunmiStoreApi.getSsoToken(new RetrofitCallback<Object>() {
@@ -55,4 +53,5 @@ public class GetUserInfo {
             }
         });
     }
+
 }
