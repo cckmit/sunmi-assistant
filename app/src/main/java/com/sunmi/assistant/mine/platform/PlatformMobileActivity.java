@@ -1,6 +1,7 @@
 package com.sunmi.assistant.mine.platform;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.view.View;
@@ -54,6 +55,8 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
     String platform;
     @Extra
     int saasSource;
+    @Extra
+    boolean isMineFragmentEnter;
 
     /**
      * 倒计时对象,总共的时间,每隔多少秒更新一次时间
@@ -109,11 +112,19 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
     private void showSelectShopDialog(ArrayList<AuthStoreInfo.SaasUserInfoListBean> target) {
         new AuthDialog.Builder(this)
                 .setMessage(getString(R.string.str_dialog_auth_message, platform))
-                .setAllowButton((dialog, which) ->
-                        SelectStoreActivity_.intent(this)
+                .setAllowButton(new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        SelectStoreActivity_.intent(context)
                                 .isBack(true)
                                 .list(target)
-                                .start())
+                                .isMineFragmentEnter(isMineFragmentEnter)
+                                .start();
+                        if (isMineFragmentEnter) {
+                            finish();
+                        }
+                    }
+                })
                 .setCancelButton((dialog, which) ->
                         CreateShopActivity_.intent(context)
                                 .companyId(SpUtils.getCompanyId())
@@ -182,7 +193,6 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
         super.onDestroy();
         stopDownTimer();
     }
-
 
 
 }
