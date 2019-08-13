@@ -2,6 +2,7 @@ package com.sunmi.assistant.mine.shop;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.utils.CommonUtils;
@@ -31,6 +32,7 @@ import sunmi.common.view.SettingItemLayout;
 @EActivity(R.layout.activity_mine_store_detatils)
 public class ShopDetailActivity extends BaseActivity {
 
+    private static final String BUNDLE_STATE_SHOP = "shop";
     static final String INTENT_EXTRA_NAME = "name";
     static final String INTENT_EXTRA_ADDRESS = "address";
 
@@ -140,4 +142,15 @@ public class ShopDetailActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mInfo = savedInstanceState.getParcelable(BUNDLE_STATE_SHOP);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(BUNDLE_STATE_SHOP, mInfo);
+    }
 }
