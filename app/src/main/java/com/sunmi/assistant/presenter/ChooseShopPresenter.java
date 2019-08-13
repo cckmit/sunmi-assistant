@@ -56,6 +56,7 @@ public class ChooseShopPresenter extends BasePresenter<ChooseShopContract.View>
 
     @Override
     public void getCompanyList() {
+        mView.showLoadingDialog();
         SunmiStoreApi.getCompanyList(new RetrofitCallback<CompanyListResp>() {
             @Override
             public void onSuccess(int code, String msg, CompanyListResp data) {
@@ -82,7 +83,7 @@ public class ChooseShopPresenter extends BasePresenter<ChooseShopContract.View>
             @Override
             public void onSuccess(int code, String msg, UserInfoBean data) {
                 CommonUtils.saveLoginInfo(data);
-                getCompanyList();
+                getSsoToken();
             }
 
             @Override
@@ -128,6 +129,7 @@ public class ChooseShopPresenter extends BasePresenter<ChooseShopContract.View>
                         String ssoToken = jsonObject.getString("sso_token");
                         LogCat.e(TAG, "sso_token:" + ssoToken);
                         SpUtils.setSsoToken(ssoToken);
+                        mView.getUserInfoSuccessView();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
