@@ -113,7 +113,7 @@ public class CreateShopActivity extends BaseActivity {
         shortTip(R.string.company_create_success);
         if (SpUtils.isLoginSuccess()) {
             Intent intent = getIntent();
-            intent.putExtra(ShopListActivity.INTENT_EXTRA_CREATE_SUCCESS, true);
+            intent.putExtra(ShopListActivity.INTENT_EXTRA_SUCCESS, true);
             setResult(RESULT_OK, intent);
             finish();
         } else {

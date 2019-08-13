@@ -29,6 +29,8 @@ import sunmi.common.view.TitleBarView;
 public class ChangeCompanyNameActivity extends BaseMvpActivity<ChangeCompanyNamePresenter>
         implements ChangeCompanyNameContract.View, View.OnClickListener, TextWatcher {
 
+    private static final int COMPANY_NAME_MAX_LENGTH = 40;
+
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
     @ViewById(R.id.cet_username)
