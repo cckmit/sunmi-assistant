@@ -23,8 +23,9 @@
     <string name="str_auth_onclick_protocol">同意授权表示使用此数据创建门店；暂不授权表示创建新门店。点击查看</string>
     <string name="str_auth_protocol_text">《授权协议》</string>
     <string name="str_select_store">选择门店</string>
-    <string name="str_my_store">我的店铺</string>
-    <string name="btn_add_store">添加店铺</string>
+    <string name="str_my_store">我的门店</string>
+    <string name="btn_add_store">添加门店</string>
+    <string name="str_store_info">门店信息</string>
     <string name="ic_tab_data_title">数据</string>
     <string name="str_help_feedback">帮助与反馈</string>
     <string name="str_me">我</string>
