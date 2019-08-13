@@ -64,14 +64,14 @@ public class CreateShopActivity extends BaseActivity {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         new SomeMonitorEditText().setMonitorEditText(btnComplete, etShop);
         shopAddTextChangedListener(etShop);
-        if (!TextUtils.equals(SpUtils.getLoginStatus(), "Y")) {
+        if (!SpUtils.isLoginSuccess()) {
             titleBar.setLeftImageVisibility(View.GONE);
         }
     }
 
     @Override
     public void onBackPressed() {
-        if (!TextUtils.equals(SpUtils.getLoginStatus(), "Y")) {
+        if (!SpUtils.isLoginSuccess()) {
             return;
         }
         super.onBackPressed();
@@ -109,7 +109,7 @@ public class CreateShopActivity extends BaseActivity {
 
     private void createShopSuccessView(CreateShopInfo resp) {
         shortTip(R.string.company_create_success);
-        if (TextUtils.equals(SpUtils.getLoginStatus(), "Y")) {
+        if (SpUtils.isLoginSuccess()) {
             finish();
         } else {
             SpUtils.setShopId(resp.getShop_id());
