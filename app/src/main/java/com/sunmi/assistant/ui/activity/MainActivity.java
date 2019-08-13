@@ -26,11 +26,13 @@ import com.tencent.bugly.crashreport.CrashReport;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.constant.CommonNotificationConstant;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -87,15 +89,14 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
         MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
     }
 
-    private void initTabs() {
+    @UiThread
+    void initTabs() {
         mTabHost.setup(context, getSupportFragmentManager(), R.id.fl_content);
         mTabHost.getTabWidget().setShowDividers(0);
-
         MainTab[] mainTabs = MainTab.values();
         for (MainTab mainTab : mainTabs) {
             if (SpUtils.getSaasExist() == 0 && TextUtils.equals(getString(mainTab.getResName()),
                     getString(R.string.ic_tab_data_title))) {//saas平台需要显示数据tab
-                CommonConstants.TAB_SHOW_ALL = false;
                 continue;
             }
             TabHost.TabSpec tab = mTabHost.newTabSpec(getString(mainTab.getResName()));
@@ -183,13 +184,19 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
 
     @Override
     public int[] getUnStickNotificationId() {
-        return new int[]{NotificationConstant.netConnectedMainActivity};
+        return new int[]{NotificationConstant.netConnectedMainActivity,
+                CommonNotificationConstant.refreshMainTabView};
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (NotificationConstant.netConnectedMainActivity == id) {
             MqttManager.getInstance().createEmqToken(true);
+        } else if (CommonNotificationConstant.refreshMainTabView == id) {
+            if (mTabHost.getChildCount() == 4) {
+                return;
+            }
+            initTabs();
         }
     }
 

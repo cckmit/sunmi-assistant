@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.constant.CommonConstants;
+import sunmi.common.constant.CommonNotificationConstant;
 import sunmi.common.model.AuthStoreInfo;
-import sunmi.common.utils.GotoActivityUtils;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
@@ -82,11 +82,8 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
     @Override
     public void complete() {
         if (SpUtils.isLoginSuccess()) {
-            if (!CommonConstants.TAB_SHOW_ALL && SpUtils.getSaasExist() == 1) {
-                GotoActivityUtils.gotoMainActivity(context);
-            } else {
-                finish();
-            }
+            finish();
+            BaseNotification.newInstance().postNotificationName(CommonNotificationConstant.refreshMainTabView);
         } else {
             GetUserInfoUtils.userInfo(this);
         }
