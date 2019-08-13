@@ -66,7 +66,7 @@ public class MyApplication extends BaseApplication {
             if (startedActivityCount == 0) {
                 LogCat.e("HhActivityLifecycleCB", "onActivityStarted : hasLogin = "
                         + SpUtils.getLoginStatus() + ", activity = " + activity.getClass().getName());
-                if (TextUtils.equals(SpUtils.getLoginStatus(), "Y")) {
+                if (SpUtils.isLoginSuccess()) {
                     MQTTManager.getInstance().reconnect();
                     MqttManager.getInstance().reconnect();
                 }

@@ -120,7 +120,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
 
     @Click(R.id.btn_enter_main)
     void enterMainClick() {
-        gotoMainActivity(shopId, shopName);
+        mPresenter.getUserInfo();
     }
 
     @Click(R.id.btn_refresh)
@@ -161,6 +161,14 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     @Override
     public void getSaasFailView(int code, String msg) {
 
+    }
+
+    /**
+     * 选择完商户，门店，获取用户信息成功
+     */
+    @Override
+    public void getUserInfoSuccessView() {
+        gotoMainActivity(shopId, shopName);
     }
 
     @Override

@@ -2,6 +2,7 @@ package sunmi.common.utils;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 
 import sunmi.common.base.BaseApplication;
@@ -35,6 +36,10 @@ public class SpUtils {
 
     private static SharedPreferences getSharedPreference() {
         return SharedManager.getSharedPreference(BaseApplication.getContext());
+    }
+
+    public static boolean isLoginSuccess() {
+        return TextUtils.equals(SpUtils.getLoginStatus(), "Y");
     }
 
     //用户名称

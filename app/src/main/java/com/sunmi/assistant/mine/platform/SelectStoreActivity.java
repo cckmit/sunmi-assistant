@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -78,7 +77,7 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
 
     @Override
     public void complete() {
-        if (TextUtils.equals(SpUtils.getLoginStatus(), "Y")) {
+        if (SpUtils.isLoginSuccess()) {
             finish();
         } else {
             GetUserInfo.userInfo(this);
