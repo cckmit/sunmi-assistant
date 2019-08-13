@@ -92,6 +92,22 @@
     "model": "V2_PRO"
   },
   {
+    "brand": "h1",
+    "model": "H1"
+  },
+  {
+    "brand": "k1",
+    "model": "K1"
+  },
+  {
+    "brand": "l2k",
+    "model": "L2K"
+  },
+  {
+    "brand": "p2pro",
+    "model": "P2PRO"
+  },
+  {
     "mac": [
       "0C:25:76"
     ],
