@@ -1,9 +1,8 @@
 package com.sunmi.assistant.ui.activity.merchant;
 
 import android.annotation.SuppressLint;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
@@ -17,14 +16,13 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
-import java.nio.charset.Charset;
-
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.ClearableEditText;
+import sunmi.common.view.TextLengthWatcher;
 import sunmi.common.view.TitleBarView;
 
 /**
@@ -35,8 +33,9 @@ import sunmi.common.view.TitleBarView;
 @EActivity(R.layout.company_activity_create_next)
 public class CreateCompanyNextActivity extends BaseMvpActivity<CreateCompanyPresenter>
         implements CreateCompanyContract.View {
+
     private static final int COMPANY_NAME_MAX_LENGTH = 40;
-    private static final int COMPANY_STR_MAX_LENGTH = 40;
+
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
     @ViewById(R.id.et_company)
@@ -54,7 +53,12 @@ public class CreateCompanyNextActivity extends BaseMvpActivity<CreateCompanyPres
         new SomeMonitorEditText().setMonitorEditText(btnCreateCompany, etCompany);
         mPresenter = new CreateCompanyPresenter();
         mPresenter.attachView(this);
-        companyAddTextChangedListener(etCompany);
+        etCompany.addTextChangedListener(new TextLengthWatcher(etCompany, COMPANY_NAME_MAX_LENGTH) {
+            @Override
+            public void onLengthExceed(EditText view, String content) {
+                shortTip(R.string.company_create_check_length);
+            }
+        });
     }
 
     @Click(R.id.btn_create_company)
@@ -97,35 +101,4 @@ public class CreateCompanyNextActivity extends BaseMvpActivity<CreateCompanyPres
 
     }
 
-    private void companyAddTextChangedListener(ClearableEditText editText) {
-        editText.addTextChangedListener(new TextWatcher() {
-            private CharSequence temp;
-            private int editStart;
-            private int editEnd;
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                temp = s;
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                companyName = s.toString().trim();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                editStart = editText.getSelectionStart();
-                editEnd = editText.getSelectionEnd();
-                if (temp.toString().trim().getBytes(Charset.defaultCharset()).length > COMPANY_NAME_MAX_LENGTH
-                        || temp.length() > COMPANY_STR_MAX_LENGTH) {
-                    s.delete(Math.max(editStart - 1, 0), editEnd);
-                    shortTip(R.string.company_create_check_length);
-                    int tempSelection = editStart;
-                    editText.setText(s);
-                    editText.setSelection(tempSelection);
-                }
-            }
-        });
-    }
 }
