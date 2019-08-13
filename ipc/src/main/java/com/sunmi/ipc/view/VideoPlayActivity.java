@@ -393,8 +393,9 @@ public class VideoPlayActivity extends BaseActivity
     @Override
     public void onVideoReceived(byte[] videoBuffer) {
         llPlayFail.setVisibility(View.GONE);
-        if (videoDecoder != null)
+        if (videoDecoder != null) {
             videoDecoder.setVideoData(videoBuffer);
+        }
         hideLoadingDialog();
     }
 
@@ -425,7 +426,9 @@ public class VideoPlayActivity extends BaseActivity
                 JSONObject object1 = (JSONObject) array.opt(0);
                 int cmd = object1.getInt("cmd");
                 if (cmd == 32) {//ap回放时间轴
-                    if (!object1.has("result")) return;
+                    if (!object1.has("result")) {
+                        return;
+                    }
                     JSONArray array1 = object1.getJSONArray("result");
                     ApCloudTimeBean ap;
                     listAp.clear();
@@ -498,7 +501,9 @@ public class VideoPlayActivity extends BaseActivity
     //画质
     @Click(resName = "tv_quality")
     void qualityClick() {
-        if (isDevPlayBack) return;
+        if (isDevPlayBack) {
+            return;
+        }
         llVideoQuality.setVisibility(llVideoQuality.isShown() ? View.GONE : View.VISIBLE);
         if (qualityType == 0) {
             tvHDQuality.setTextColor(getResources().getColor(R.color.colorOrange));
@@ -526,8 +531,12 @@ public class VideoPlayActivity extends BaseActivity
     //开始，暂停
     @Click(resName = "iv_play")
     void playLiveClick() {
-        if (!isDevPlayBack && !isCloudPlayBack && isCurrentLive) return;
-        if (isFastClick(1000)) return;
+        if (!isDevPlayBack && !isCloudPlayBack && isCurrentLive) {
+            return;
+        }
+        if (isFastClick(1000)) {
+            return;
+        }
         ivPlay.setBackgroundResource(isPaused ? R.mipmap.pause_normal : R.mipmap.play_normal);
         isPaused = !isPaused;
         if (isDevPlayBack) {
@@ -550,7 +559,9 @@ public class VideoPlayActivity extends BaseActivity
     //显示日历
     @Click(resName = "tv_calender")
     void calenderClick() {
-        if (isFastClick(1000)) return;
+        if (isFastClick(1000)) {
+            return;
+        }
         DatePickDialog dialog = new DatePickDialog(this);
         if (scrollTime > 0) {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
@@ -707,7 +718,9 @@ public class VideoPlayActivity extends BaseActivity
 
     private void changeQuality(int type) {
         llVideoQuality.setVisibility(View.GONE);
-        if (type == qualityType) return;
+        if (type == qualityType) {
+            return;
+        }
         qualityType = qualityType == 0 ? 1 : 0;
         iotcClient.changeValue(qualityType);
         if (qualityType == 0) {
@@ -833,7 +846,9 @@ public class VideoPlayActivity extends BaseActivity
     void moveTo() {
         isAutoScroll = true;
         int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
-        if (firstVisibleItem < 0) return;
+        if (firstVisibleItem < 0) {
+            return;
+        }
         linearLayoutManager.scrollToPositionWithOffset(currentItemPosition++, 0);
         canvasHours(firstVisibleItem); //绘制时间点和偏移量
     }
@@ -877,10 +892,10 @@ public class VideoPlayActivity extends BaseActivity
         //日历DateAdapter
         adapter = new DateAdapter(context, list, apCloudList);
         recyclerView.setAdapter(adapter);
-
         //滑动到选择日期的0.00点
-        if (isSelectedDate) scrollSelectedDate0AM();
-
+        if (isSelectedDate) {
+            scrollSelectedDate0AM();
+        }
         //开启控件隐藏倒计时
         startTimer();
     }
@@ -1196,7 +1211,9 @@ public class VideoPlayActivity extends BaseActivity
                 scrollTime = currTime * 1000;//滑动日历的时间戳毫秒
 
                 canvasHours(firstVisibleItem);//绘制时间
-                if (listAp == null || listAp.size() == 0) return;
+                if (listAp == null || listAp.size() == 0) {
+                    return;
+                }
                 if (isAutoScroll || isVideoLess1Minute) {
                     switch2Playback(currTime);//自动滑动时下一个视频ap还是cloud播放
                     isVideoLess1Minute = false;
@@ -1210,7 +1227,9 @@ public class VideoPlayActivity extends BaseActivity
     }
 
     private void switch2Playback(long currTime) {
-        if (!isCloudPlayBack && !isDevPlayBack && isCurrentLive) return;
+        if (!isCloudPlayBack && !isDevPlayBack && isCurrentLive) {
+            return;
+        }
         int availableVideoSize = listAp.size();
         for (int i = 0; i < availableVideoSize; i++) {
             ApCloudTimeBean bean = listAp.get(i);
@@ -1255,7 +1274,9 @@ public class VideoPlayActivity extends BaseActivity
 
     //绘制时间
     private void canvasHours(int firstVisibleItem) {
-        if (firstVisibleItem < 0) return;
+        if (firstVisibleItem < 0) {
+            return;
+        }
         TimeBean bs = list.get(firstVisibleItem);
         String str = DateTimeUtils.secondToDate(bs.getDate(), "HH:mm:ss");
         int hour = Integer.valueOf(str.substring(0, 2));
@@ -1299,10 +1320,11 @@ public class VideoPlayActivity extends BaseActivity
         View layout = LayoutInflater.from(context).inflate(R.layout.toast_item, null);
         TextView tvDate = layout.findViewById(R.id.tv_date);
         tvDate.setText(msg);
-        if (isLeft)
+        if (isLeft) {
             tvDate.setCompoundDrawables(drawableLeft, null, null, null);
-        else
+        } else {
             tvDate.setCompoundDrawables(null, null, drawableRight, null);
+        }
         if (mToast == null) {
             mToast = new Toast(context);
             mToast.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL, 0, 0);
@@ -1348,8 +1370,8 @@ public class VideoPlayActivity extends BaseActivity
                 if (code == 1) {
                     try {
                         JSONObject object = new JSONObject(data.toString());
-                        int total_count = object.getInt("total_count");
-                        if (total_count == 0) {
+                        int totalCount = object.getInt("total_count");
+                        if (totalCount == 0) {
                             cloudListNullOrFail();
                             return;
                         }

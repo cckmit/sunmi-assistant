@@ -1,7 +1,9 @@
 package com.sunmi.assistant.contract;
 
+import java.util.List;
+
 import sunmi.common.base.BaseView;
-import sunmi.common.model.UserInfoBean;
+import sunmi.common.model.CompanyInfoResp;
 
 /**
  * Description:
@@ -14,7 +16,11 @@ public interface LoginContract {
 
         void mobileUnregister();
 
-        void loginSuccess(UserInfoBean loginData);
+        void loginSuccess();
+
+        void getCompanyListSuccess(List<CompanyInfoResp> companyList);
+
+        void getCompanyListFail(int code, String msg);
     }
 
     interface Presenter {
@@ -22,6 +28,8 @@ public interface LoginContract {
         void userMerge(String user, String mobile, String password);
 
         void login(String mobile, String password);
+
+        void getCompanyList();
 
     }
 

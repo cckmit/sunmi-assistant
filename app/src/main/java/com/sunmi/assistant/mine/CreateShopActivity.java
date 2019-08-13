@@ -4,10 +4,12 @@ import android.annotation.SuppressLint;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.Button;
 
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.utils.GetUserInfo;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -22,12 +24,12 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.model.CreateShopInfo;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
-import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.RegexUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.ClearableEditText;
+import sunmi.common.view.TitleBarView;
 
 /**
  * @author yangShiJie
@@ -40,8 +42,10 @@ public class CreateShopActivity extends BaseActivity {
     private static final int CREATE_SHOP_ALREADY_EXIST = 5035;
 
     private static final int COMPANY_NAME_MAX_LENGTH = 20;
-    private static final int COMPANY_STR_MAX_LENGTH = 36;
+    private static final int COMPANY_STR_MAX_LENGTH = 20;
 
+    @ViewById(R.id.title_bar)
+    TitleBarView titleBar;
     @ViewById(R.id.et_shop)
     ClearableEditText etShop;
     @ViewById(R.id.et_contact)
@@ -53,8 +57,6 @@ public class CreateShopActivity extends BaseActivity {
 
     @Extra
     int companyId;
-    @Extra
-    boolean isLogin;
     private String shopName;
 
     @AfterViews
@@ -62,6 +64,17 @@ public class CreateShopActivity extends BaseActivity {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         new SomeMonitorEditText().setMonitorEditText(btnComplete, etShop);
         shopAddTextChangedListener(etShop);
+        if (!TextUtils.equals(SpUtils.getLoginStatus(), "Y")) {
+            titleBar.setLeftImageVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!TextUtils.equals(SpUtils.getLoginStatus(), "Y")) {
+            return;
+        }
+        super.onBackPressed();
     }
 
     @Click(R.id.btn_complete)
@@ -96,12 +109,12 @@ public class CreateShopActivity extends BaseActivity {
 
     private void createShopSuccessView(CreateShopInfo resp) {
         shortTip(R.string.company_create_success);
-        if (isLogin) {
+        if (TextUtils.equals(SpUtils.getLoginStatus(), "Y")) {
             finish();
         } else {
             SpUtils.setShopId(resp.getShop_id());
             SpUtils.setShopName(resp.getShop_name());
-            GotoActivityUtils.gotoMainActivity(this);
+            GetUserInfo.userInfo(this);
         }
     }
 

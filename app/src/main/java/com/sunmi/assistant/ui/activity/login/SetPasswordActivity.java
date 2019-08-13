@@ -81,6 +81,9 @@ public class SetPasswordActivity extends BaseMvpActivity<SetPasswordPresenter>
                     passwordIsVisible.setBackgroundResource(R.mipmap.ic_eye_light_open);
                     psdIsVisible = true;
                 }
+                if (etPassword.getText() != null) {
+                    etPassword.setSelection(etPassword.getText().length());
+                }
                 break;
             case R.id.btnComplete:
                 if (isFastClick(1500)) {
@@ -121,7 +124,7 @@ public class SetPasswordActivity extends BaseMvpActivity<SetPasswordPresenter>
                 "注册流程_设置密码_耗时", Constants.EVENT_DURATION_REGISTER_PSW);
         CommonUtils.trackDurationEventEnd(context, "registerDuration",
                 "注册流程开始和结束时调用", Constants.EVENT_DURATION_REGISTER);
-        mPresenter.getUserInfo();
+        mPresenter.getCompanyList();
     }
 
     @Override
@@ -150,7 +153,9 @@ public class SetPasswordActivity extends BaseMvpActivity<SetPasswordPresenter>
     @Override
     public void getCompanyListSuccess(List<CompanyInfoResp> companyList) {
         if (companyList.size() == 0) {
-            CreateCompanyActivity_.intent(context).start();
+            CreateCompanyActivity_.intent(context)
+                    .createCompanyCannotBack(true)
+                    .start();
             return;
         }
         LoginChooseShopActivity_.intent(context)

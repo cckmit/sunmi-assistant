@@ -55,8 +55,6 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
 
     @Extra
     boolean isCanBack;
-    @Extra
-    boolean isLogin;
 
     @AfterViews
     void init() {
@@ -114,7 +112,6 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
         PlatformMobileActivity_.intent(this)
                 .platform(selectPlatform)
                 .saasSource(selectSaasSource)
-                .isLogin(isLogin)
                 .start();
     }
 
