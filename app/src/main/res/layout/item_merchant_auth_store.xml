@@ -7,13 +7,13 @@
 
     <CheckBox
         android:id="@+id/CBox"
-        android:button="@null"
-        android:background="@drawable/checkbox_dev_selector"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/dp_25"
-        android:layout_centerVertical="true" />
+        android:background="@null"
+        android:button="@drawable/checkbox_dev_selector" />
 
     <TextView
         android:id="@+id/tvName"
@@ -44,8 +44,8 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="@dimen/dp_20"
         android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_20"
         android:background="@color/colorBlack_10" />
 
 </RelativeLayout>
