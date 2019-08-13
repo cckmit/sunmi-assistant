@@ -9,7 +9,7 @@ import android.widget.EditText;
 
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.utils.GetUserInfo;
+import com.sunmi.assistant.utils.GetUserInfoUtils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -121,7 +121,7 @@ public class CreateShopActivity extends BaseActivity {
         } else {
             SpUtils.setShopId(resp.getShop_id());
             SpUtils.setShopName(resp.getShop_name());
-            GetUserInfo.userInfo(this);
+            GetUserInfoUtils.userInfo(this);
         }
     }
 

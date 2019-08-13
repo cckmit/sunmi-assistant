@@ -29,6 +29,7 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.utils.RegexUtils;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.view.ClearableEditText;
 
 /**
@@ -124,6 +125,7 @@ public class SetPasswordActivity extends BaseMvpActivity<SetPasswordPresenter>
                 "注册流程_设置密码_耗时", Constants.EVENT_DURATION_REGISTER_PSW);
         CommonUtils.trackDurationEventEnd(context, "registerDuration",
                 "注册流程开始和结束时调用", Constants.EVENT_DURATION_REGISTER);
+        SpUtils.setMobile(mobile);
         mPresenter.getCompanyList();
     }
 
