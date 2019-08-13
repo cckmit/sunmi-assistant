@@ -45,8 +45,6 @@ public class CreateCompanyNextActivity extends BaseMvpActivity<CreateCompanyPres
     @Extra
     boolean createCompanyCannotBack;
 
-    private String companyName;
-
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
@@ -63,6 +61,7 @@ public class CreateCompanyNextActivity extends BaseMvpActivity<CreateCompanyPres
 
     @Click(R.id.btn_create_company)
     void newCreateCompany() {
+        String companyName = etCompany.getText() == null ? null : etCompany.getText().toString().trim();
         mPresenter.createCompany(companyName);
     }
 
@@ -98,7 +97,6 @@ public class CreateCompanyNextActivity extends BaseMvpActivity<CreateCompanyPres
 
     @Override
     public void getSaasFailView(int code, String msg) {
-
     }
 
 }
