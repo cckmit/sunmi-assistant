@@ -1,4 +1,4 @@
-package com.sunmi.assistant.mine.shop;
+package com.sunmi.assistant.mine.presenter;
 
 import com.sunmi.assistant.mine.contract.ShopRegionContract;
 import com.sunmi.assistant.mine.model.ShopInfo;
@@ -19,7 +19,7 @@ public class ShopRegionPresenter extends BasePresenter<ShopRegionContract.View>
 
     private ShopInfo mInfo;
 
-    ShopRegionPresenter(ShopInfo info) {
+    public ShopRegionPresenter(ShopInfo info) {
         this.mInfo = info;
     }
 

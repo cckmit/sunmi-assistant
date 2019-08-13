@@ -126,6 +126,7 @@
     <string name="company_shop_create_tip">门店一般为商户旗下的店铺经营场所：例如：五角场店</string>
     <string name="company_shop_select_auth_tip">您可以选择一家或多家门店</string>
     <string name="company_create_check_length">商户名超过字数限制，请重新输入</string>
+    <string name="company_create_shop_max_length">门店名超过字数限制，请重新输入</string>
     <string name="company_create_check_name">商户名重名，请重新输入</string>
     <string name="company_create_shop_success">门店创建成功</string>
     <string name="company_create_success">商户创建成功</string>
