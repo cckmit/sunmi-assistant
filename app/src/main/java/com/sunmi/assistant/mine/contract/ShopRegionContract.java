@@ -1,4 +1,4 @@
-package com.sunmi.assistant.mine.shop;
+package com.sunmi.assistant.mine.contract;
 
 import com.sunmi.assistant.mine.model.RegionProvince;
 

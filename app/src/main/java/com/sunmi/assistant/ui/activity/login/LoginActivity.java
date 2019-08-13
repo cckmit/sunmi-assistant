@@ -254,6 +254,7 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
 
     @Override
     public void loginSuccess() {
+        SpUtils.setMobile(mobile);
         mPresenter.getCompanyList();
     }
 

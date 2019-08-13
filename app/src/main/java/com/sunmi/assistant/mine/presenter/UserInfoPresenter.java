@@ -1,4 +1,6 @@
-package com.sunmi.assistant.mine;
+package com.sunmi.assistant.mine.presenter;
+
+import com.sunmi.assistant.mine.contract.UserInfoContract;
 
 import java.io.File;
 

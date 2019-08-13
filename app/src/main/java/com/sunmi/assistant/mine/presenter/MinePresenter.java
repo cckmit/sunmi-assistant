@@ -1,6 +1,7 @@
-package com.sunmi.assistant.mine;
+package com.sunmi.assistant.mine.presenter;
 
 import com.sunmi.apmanager.utils.CommonUtils;
+import com.sunmi.assistant.mine.contract.MineContract;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.model.UserInfoBean;

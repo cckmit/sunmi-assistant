@@ -2,9 +2,9 @@ package com.sunmi.assistant.mine.shop;
 
 import android.content.Intent;
 import android.text.TextUtils;
+import android.widget.EditText;
 
 import com.sunmi.apmanager.constant.NotificationConstant;
-import com.sunmi.apmanager.model.CardItem;
 import com.sunmi.apmanager.utils.DialogUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.model.ShopInfo;
@@ -22,6 +22,7 @@ import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.ClearableEditText;
+import sunmi.common.view.TextLengthWatcher;
 import sunmi.common.view.TitleBarView;
 
 /**
@@ -30,6 +31,8 @@ import sunmi.common.view.TitleBarView;
  */
 @EActivity(R.layout.activity_mine_add_store)
 public class ShopNameActivity extends BaseActivity {
+
+    private static final int SHOP_NAME_MAX_LENGTH = 20;
 
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
@@ -49,6 +52,12 @@ public class ShopNameActivity extends BaseActivity {
             etName.setText(mInfo.getShopName());
             etName.setSelection(mInfo.getShopName().length());
         }
+        etName.addTextChangedListener(new TextLengthWatcher(etName, SHOP_NAME_MAX_LENGTH) {
+            @Override
+            public void onLengthExceed(EditText view, String content) {
+                shortTip(R.string.company_create_shop_max_length);
+            }
+        });
     }
 
     private void save() {
@@ -70,7 +79,6 @@ public class ShopNameActivity extends BaseActivity {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 hideLoadingDialog();
-                updateDatabase(name);//更新数据库
                 if (mInfo.getShopId() == SpUtils.getShopId()) {
                     SpUtils.setShopName(name);
                 }
@@ -89,12 +97,6 @@ public class ShopNameActivity extends BaseActivity {
                 shortTip(R.string.tip_save_fail);
             }
         });
-    }
-
-    private void updateDatabase(String name) {
-        CardItem item = new CardItem();
-        item.setShopName(name);
-        item.updateAll("shopId = ?", String.valueOf(mInfo.getShopId()));
     }
 
     @Override

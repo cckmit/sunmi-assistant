@@ -26,11 +26,13 @@ import com.tencent.bugly.crashreport.CrashReport;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.constant.CommonNotificationConstant;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -69,12 +71,13 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
         }
     }
 
-    public synchronized static MainActivity getInstance(){
-        if (instance == null){
+    public synchronized static MainActivity getInstance() {
+        if (instance == null) {
             instance = new MainActivity();
         }
         return instance;
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -83,36 +86,13 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
 
     //ipc初始化
     private void initIpc() {
-//        if (TextUtils.isEmpty(SpUtils.getStoreToken()))
-//            SunmiStoreApi.getStoreToken(SpUtils.getUID(), SpUtils.getSsoToken(),
-//                    SpUtils.getCompanyId() + "", new RetrofitCallback() {
-//                        @Override
-//                        public void onSuccess(int code, String msg, Object data) {
-//                            try {
-//                                JSONObject jsonObject = new JSONObject(data.toString());
-//                                SpUtils.setStoreToken(jsonObject.getString("store_token"));
-//                                SunmiStoreRetrofitClient.createInstance();//初始化retrofit
-//                                MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
-//                            } catch (JSONException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onFail(int code, String msg, Object data) {
-//
-//                        }
-//                    });
-//        else {
-//            MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
-//        }
         MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
     }
 
-    private void initTabs() {
+    @UiThread
+    void initTabs() {
         mTabHost.setup(context, getSupportFragmentManager(), R.id.fl_content);
         mTabHost.getTabWidget().setShowDividers(0);
-
         MainTab[] mainTabs = MainTab.values();
         for (MainTab mainTab : mainTabs) {
             if (SpUtils.getSaasExist() == 0 && TextUtils.equals(getString(mainTab.getResName()),
@@ -204,13 +184,19 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
 
     @Override
     public int[] getUnStickNotificationId() {
-        return new int[]{NotificationConstant.netConnectedMainActivity};
+        return new int[]{NotificationConstant.netConnectedMainActivity,
+                CommonNotificationConstant.refreshMainTabView};
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (NotificationConstant.netConnectedMainActivity == id) {
             MqttManager.getInstance().createEmqToken(true);
+        } else if (CommonNotificationConstant.refreshMainTabView == id) {
+            if (mTabHost.getChildCount() == 4) {
+                return;
+            }
+            initTabs();
         }
     }
 

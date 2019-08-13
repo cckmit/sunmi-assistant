@@ -6,9 +6,6 @@ import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.utils.DBUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
-import sunmi.common.model.AdListBean;
-import sunmi.common.model.AdListResp;
-
 import com.sunmi.cloudprinter.rpc.IOTCloudApi;
 import com.sunmi.ipc.model.IpcListResp;
 import com.sunmi.ipc.rpc.IPCCloudApi;
@@ -24,6 +21,8 @@ import java.util.List;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.base.BasePresenter;
 import sunmi.common.constant.CommonConfig;
+import sunmi.common.model.AdListBean;
+import sunmi.common.model.AdListResp;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.http.HttpCallback;
@@ -92,7 +91,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                             } else {
                                 device.setShopId(SpUtils.getShopId());
                             }
-                            device.saveOrUpdate();
+                            saveDevice(device);
                             list.add(device);
                         }
                     }
@@ -121,7 +120,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
             public void onSuccess(int code, String msg, String data) {
                 if (isViewAttached()) {
                     mView.shortTip(R.string.str_delete_success);
-                    DBUtils.deleteUnBindDevLocal(sn);
+                    DBUtils.deleteSunmiDevice(sn);
                     getRouterList();
                 }
             }
@@ -146,14 +145,14 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                         if (data.getFs_list() != null && data.getFs_list().size() > 0) {
                             for (IpcListResp.SsListBean bean : data.getFs_list()) {
                                 SunmiDevice device = getSunmiDevice(bean);
-                                device.saveOrUpdate();
+                                saveDevice(device);
                                 list.add(device);
                             }
                         }
                         if (data.getSs_list() != null && data.getSs_list().size() > 0) {
                             for (IpcListResp.SsListBean bean : data.getSs_list()) {
                                 SunmiDevice device = getSunmiDevice(bean);
-                                device.saveOrUpdate();
+                                saveDevice(device);
                                 list.add(device);
                             }
                         }
@@ -275,26 +274,30 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
 
     @NonNull
     private SunmiDevice getStoreBean(JSONObject object) throws JSONException {
-        SunmiDevice bean = new SunmiDevice();
-        bean.setType("PRINTER");
-        bean.setName(BaseApplication.getContext().getString(R.string.str_cloud_printer));
-        bean.setModel("NT211");
+        SunmiDevice device = new SunmiDevice();
+        device.setType("PRINTER");
+        device.setName(BaseApplication.getContext().getString(R.string.str_cloud_printer));
+        device.setModel("NT211");
         if (object.has("msn")) {
-            bean.setDeviceid(object.getString("msn"));
+            device.setDeviceid(object.getString("msn"));
         }
         if (object.has("isOnline")) {
-            bean.setStatus(object.getInt("isOnline"));
+            device.setStatus(object.getInt("isOnline"));
         }
         if (object.has("merchantId")) {
-            bean.setShopId(object.getInt("merchantId"));
+            device.setShopId(object.getInt("merchantId"));
         }
         if (object.has("channelId")) {
-            bean.setChannelId(object.getInt("channelId"));
+            device.setChannelId(object.getInt("channelId"));
         } else {
-            bean.setChannelId(1);
+            device.setChannelId(1);
         }
-        bean.saveOrUpdate();
-        return bean;
+        saveDevice(device);
+        return device;
+    }
+
+    private void saveDevice(SunmiDevice device) {
+        device.saveOrUpdate("deviceid=?", device.getDeviceid());
     }
 
 }
