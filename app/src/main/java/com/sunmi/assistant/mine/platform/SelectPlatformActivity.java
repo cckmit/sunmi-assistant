@@ -55,6 +55,8 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
 
     @Extra
     boolean isCanBack;
+    @Extra
+    boolean isMineFragmentEnter;
 
     @AfterViews
     void init() {
@@ -112,7 +114,11 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
         PlatformMobileActivity_.intent(this)
                 .platform(selectPlatform)
                 .saasSource(selectSaasSource)
+                .isMineFragmentEnter(isMineFragmentEnter)
                 .start();
+        if (isMineFragmentEnter) {
+            finish();
+        }
     }
 
     private void initRecycler() {

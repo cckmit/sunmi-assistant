@@ -82,6 +82,7 @@ public class ShopListActivity extends BaseActivity {
     private void importShop() {
         SelectPlatformActivity_.intent(context)
                 .isCanBack(true)
+                .isMineFragmentEnter(true)
                 .start();
     }
 

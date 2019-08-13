@@ -57,6 +57,8 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
     boolean isBack;
     @Extra
     ArrayList<AuthStoreInfo.SaasUserInfoListBean> list;
+    @Extra
+    boolean isMineFragmentEnter;
 
     private ShopListAdapter mAdapter;
 
@@ -81,8 +83,11 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
     @Override
     public void complete() {
         if (SpUtils.isLoginSuccess()) {
-            BaseNotification.newInstance().postNotificationName(CommonNotificationConstant.refreshMainTabView);
-            finish();
+            if (isMineFragmentEnter) {
+                finish();
+            } else {
+                BaseNotification.newInstance().postNotificationName(CommonNotificationConstant.refreshMainTabView);
+            }
         } else {
             GetUserInfoUtils.userInfo(this);
         }
