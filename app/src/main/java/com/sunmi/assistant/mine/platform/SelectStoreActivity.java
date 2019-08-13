@@ -81,8 +81,8 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
     @Override
     public void complete() {
         if (SpUtils.isLoginSuccess()) {
-            finish();
             BaseNotification.newInstance().postNotificationName(CommonNotificationConstant.refreshMainTabView);
+            finish();
         } else {
             GetUserInfoUtils.userInfo(this);
         }
