@@ -55,6 +55,7 @@ public class ShopDetailActivity extends BaseActivity {
     @AfterViews
     protected void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
+        silShopName.getRightText().setSingleLine();
         getShopInfo(shopId);
     }
 
