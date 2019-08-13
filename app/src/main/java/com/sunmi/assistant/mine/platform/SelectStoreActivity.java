@@ -4,12 +4,14 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.model.SelectShopModel;
+import com.sunmi.assistant.utils.GetUserInfo;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -22,7 +24,7 @@ import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.AuthStoreInfo;
-import sunmi.common.utils.GotoActivityUtils;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.TitleBarView;
@@ -51,8 +53,6 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
     @Extra
     boolean isBack;
     @Extra
-    boolean isLogin;
-    @Extra
     ArrayList<AuthStoreInfo.SaasUserInfoListBean> list;
 
     private ShopListAdapter mAdapter;
@@ -68,6 +68,7 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
         mAdapter = new ShopListAdapter(this, mPresenter.getList());
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(mAdapter);
+        enableCompleteBtn(false);
     }
 
     @Click({R.id.btnComplete})
@@ -77,10 +78,10 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
 
     @Override
     public void complete() {
-        if (isLogin) {
+        if (TextUtils.equals(SpUtils.getLoginStatus(), "Y")) {
             finish();
         } else {
-            GotoActivityUtils.gotoMainActivity(this);
+            GetUserInfo.userInfo(this);
         }
     }
 
@@ -112,8 +113,14 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
 
     private class ShopListAdapter extends CommonListAdapter<SelectShopModel> {
 
+        private int selectedCount = 0;
+
         private ShopListAdapter(Context context, List<SelectShopModel> list) {
             super(context, R.layout.item_merchant_auth_store, list);
+            if (list.size() == 1 && list.get(0).isChecked()) {
+                selectedCount = 1;
+                enableCompleteBtn(true);
+            }
         }
 
         @Override
@@ -124,6 +131,8 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
             checkBox.setChecked(info.isChecked());
             checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 info.setChecked(isChecked);
+                selectedCount = isChecked ? selectedCount + 1 : selectedCount - 1;
+                enableCompleteBtn(selectedCount > 0);
             });
         }
     }

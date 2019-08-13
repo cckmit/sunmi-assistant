@@ -52,8 +52,6 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
     String platform;
     @Extra
     int saasSource;
-    @Extra
-    boolean isLogin;
 
     /**
      * 倒计时对象,总共的时间,每隔多少秒更新一次时间
@@ -117,7 +115,6 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
                 .setCancelButton((dialog, which) ->
                         CreateShopActivity_.intent(context)
                                 .companyId(SpUtils.getCompanyId())
-                                .isLogin(isLogin)
                                 .start())
                 .create().show();
     }
@@ -128,7 +125,6 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
                 .setConfirmButton(R.string.company_shop_new_create, (dialog, which) ->
                         CreateShopActivity_.intent(context)
                                 .companyId(SpUtils.getCompanyId())
-                                .isLogin(isLogin)
                                 .start());
     }
 

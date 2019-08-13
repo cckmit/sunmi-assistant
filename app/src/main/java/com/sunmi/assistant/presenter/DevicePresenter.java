@@ -6,9 +6,9 @@ import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.utils.DBUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
-import com.sunmi.assistant.data.response.AdListBean;
-import com.sunmi.assistant.data.response.AdListResp;
-import com.sunmi.assistant.rpc.CloudCall;
+import sunmi.common.model.AdListBean;
+import sunmi.common.model.AdListResp;
+
 import com.sunmi.cloudprinter.rpc.IOTCloudApi;
 import com.sunmi.ipc.model.IpcListResp;
 import com.sunmi.ipc.rpc.IPCCloudApi;
@@ -25,6 +25,7 @@ import sunmi.common.base.BaseApplication;
 import sunmi.common.base.BasePresenter;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.http.HttpCallback;
 import sunmi.common.rpc.http.RpcCallback;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -39,7 +40,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
 
     @Override
     public void getBannerList() {
-        CloudCall.getAdList(SpUtils.getCompanyId(), SpUtils.getShopId(),
+        SunmiStoreApi.getAdList(SpUtils.getCompanyId(), SpUtils.getShopId(),
                 new RetrofitCallback<AdListResp>() {
                     @Override
                     public void onSuccess(int code, String msg, AdListResp data) {

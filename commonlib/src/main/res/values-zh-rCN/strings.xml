@@ -88,5 +88,6 @@
     <string name="company_shop_new_create_or_import">您可以选择新建一家门店，或从其他软件平台导入已有门店。</string>
     <string name="company_shop_new_create">新建门店</string>
     <string name="company_shop_import">导入门店</string>
+    <string name="update_app_exception">版本更新异常,请检查网络连接状态是否良好。</string>
 
 </resources>

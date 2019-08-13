@@ -69,14 +69,12 @@ public class ShopListActivity extends BaseActivity {
     private void createShop() {
         CreateShopActivity_.intent(context)
                 .companyId(SpUtils.getCompanyId())
-                .isLogin(true)
                 .start();
     }
 
     private void importShop() {
         SelectPlatformActivity_.intent(context)
                 .isCanBack(true)
-                .isLogin(true)
                 .start();
     }
 

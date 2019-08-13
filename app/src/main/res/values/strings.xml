@@ -117,8 +117,8 @@
     <string name="company_shop_select">您已所属以下门店，选择进入一家门店</string>
     <string name="company_create">创建商户</string>
     <string name="company_new_create">新建商户</string>
-    <string name="company_create_hint">请输入商户名称（最多20个汉字）</string>
-    <string name="company_shop_create_hint">门店名称（最多20个汉字）</string>
+    <string name="company_create_hint">请输入商户名称）</string>
+    <string name="company_shop_create_hint">请输入门店名称</string>
     <string name="company_new_try_create">您可以尝试创建新商户</string>
     <string name="company_shop_enter_main">进入首页</string>
     <string name="company_create_tip">商户一般为企业或个体经营主体，例如：星巴克</string>
@@ -135,5 +135,6 @@
     <string name="company_shop_mobile">联系方式</string>
     <string name="company_shop_check_mobile">请输入正确手机号码</string>
     <string name="company_shop_select_one_or_more">您可以选择一家或多家门店</string>
+    <string name="company_create_invalid_character">请输入有效的字符</string>
 
 </resources>

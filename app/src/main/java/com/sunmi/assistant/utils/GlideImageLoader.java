@@ -8,7 +8,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.data.response.AdListBean;
+import sunmi.common.model.AdListBean;
 import com.youth.banner.loader.ImageLoader;
 
 /**

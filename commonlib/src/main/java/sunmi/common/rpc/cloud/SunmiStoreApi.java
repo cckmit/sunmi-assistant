@@ -29,6 +29,20 @@ public class SunmiStoreApi {
 
     public static final String TAG = "SunmiStoreApi";
 
+    public static void getAdList(int companyId, int shopId, RetrofitCallback callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(AdInterface.class)
+                    .getAdList(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static final class Singleton {
         private static final SunmiStoreApi INSTANCE = new SunmiStoreApi();
     }
@@ -610,11 +624,11 @@ public class SunmiStoreApi {
                                      String shopNo, String saasName, RetrofitCallback<Object> callback) {
         try {
             String params = new JSONObject()
-                    .put("companyId", companyId)
-                    .put("shopId", shopId)
-                    .put("saasSource", saasSource)
-                    .put("shopNo", shopNo)
-                    .put("saasName", saasName)
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("saas_source", saasSource)
+                    .put("shop_no", shopNo)
+                    .put("saas_name", saasName)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
                     .authorizeSaas(new BaseRequest(params))
