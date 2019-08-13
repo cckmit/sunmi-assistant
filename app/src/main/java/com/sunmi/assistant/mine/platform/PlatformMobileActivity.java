@@ -127,7 +127,8 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
                 .setConfirmButton(R.string.company_shop_new_create, (dialog, which) ->
                         CreateShopActivity_.intent(context)
                                 .companyId(SpUtils.getCompanyId())
-                                .start());
+                                .start())
+                .create().show();
     }
 
     private void startDownTimer() {
