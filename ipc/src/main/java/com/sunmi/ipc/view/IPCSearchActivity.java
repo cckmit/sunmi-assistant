@@ -230,7 +230,7 @@ public class IPCSearchActivity extends BaseActivity
     //1 udp搜索到设备
     private synchronized void ipcFound(SunmiDevice ipc) {
         if (!ipcMap.containsKey(ipc.getDeviceid())) {
-            ipc.setSelected(true);
+            ipc.setSelected(false);
             ipcMap.put(ipc.getDeviceid(), ipc);
             isApMode = TextUtils.equals("AP", ipc.getNetwork());
             getToken(ipc);
