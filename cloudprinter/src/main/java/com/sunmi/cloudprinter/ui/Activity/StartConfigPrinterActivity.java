@@ -26,7 +26,6 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.utils.PermissionUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.ViewUtils;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.dialog.CommonDialog;
 
@@ -55,7 +54,6 @@ public class StartConfigPrinterActivity extends BaseActivity {
     int shopId;
 
     BluetoothAdapter btAdapter;
-    private BluetoothClient mClient;
 
     BroadcastReceiver blueToothValueReceiver = new BroadcastReceiver() {
         @Override
@@ -68,7 +66,7 @@ public class StartConfigPrinterActivity extends BaseActivity {
                         gotoPrinterConfig();
                         break;
                     default:
-                        LogCat.e(TAG, "bt state = " + state);
+                        break;
                 }
             }
         }
@@ -85,7 +83,7 @@ public class StartConfigPrinterActivity extends BaseActivity {
 //        tvTip3.setText(Html.fromHtml(getString(R.string.str_config_tip_printer_2)));
 //        tvTip4.setVisibility(View.VISIBLE);
         ViewUtils.setPrivacy(this, ctvPrivacy, R.color.white_40a, false);
-        mClient = new BluetoothClient(context);
+        BluetoothClient mClient = new BluetoothClient(context);
         registerReceiver(blueToothValueReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
     }
 
