@@ -69,12 +69,13 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
         }
     }
 
-    public synchronized static MainActivity getInstance(){
-        if (instance == null){
+    public synchronized static MainActivity getInstance() {
+        if (instance == null) {
             instance = new MainActivity();
         }
         return instance;
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -83,29 +84,6 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
 
     //ipc初始化
     private void initIpc() {
-//        if (TextUtils.isEmpty(SpUtils.getStoreToken()))
-//            SunmiStoreApi.getStoreToken(SpUtils.getUID(), SpUtils.getSsoToken(),
-//                    SpUtils.getCompanyId() + "", new RetrofitCallback() {
-//                        @Override
-//                        public void onSuccess(int code, String msg, Object data) {
-//                            try {
-//                                JSONObject jsonObject = new JSONObject(data.toString());
-//                                SpUtils.setStoreToken(jsonObject.getString("store_token"));
-//                                SunmiStoreRetrofitClient.createInstance();//初始化retrofit
-//                                MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
-//                            } catch (JSONException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onFail(int code, String msg, Object data) {
-//
-//                        }
-//                    });
-//        else {
-//            MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
-//        }
         MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
     }
 
