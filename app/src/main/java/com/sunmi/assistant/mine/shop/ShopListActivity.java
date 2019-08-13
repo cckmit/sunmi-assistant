@@ -39,8 +39,8 @@ import sunmi.common.view.bottompopmenu.PopItemAction;
 @EActivity(R.layout.activity_mine_my_store)
 public class ShopListActivity extends BaseActivity {
 
-    public static final String INTENT_EXTRA_CREATE_SUCCESS = "create_success";
-    private static final int REQUEST_CODE_CREATE_SHOP = 100;
+    public static final String INTENT_EXTRA_SUCCESS = "success";
+    public static final int REQUEST_CODE_SHOP = 100;
 
     @ViewById(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -76,20 +76,19 @@ public class ShopListActivity extends BaseActivity {
     private void createShop() {
         CreateShopActivity_.intent(context)
                 .companyId(SpUtils.getCompanyId())
-                .startForResult(REQUEST_CODE_CREATE_SHOP);
+                .startForResult(REQUEST_CODE_SHOP);
     }
 
     private void importShop() {
         SelectPlatformActivity_.intent(context)
                 .isCanBack(true)
-                .isMineFragmentEnter(true)
-                .start();
+                .startForResult(REQUEST_CODE_SHOP);
     }
 
-    @OnActivityResult(REQUEST_CODE_CREATE_SHOP)
+    @OnActivityResult(REQUEST_CODE_SHOP)
     void onResult(int resultCode, @Nullable Intent data) {
         if (resultCode == Activity.RESULT_OK && data != null
-                && data.getBooleanExtra(INTENT_EXTRA_CREATE_SUCCESS, false)) {
+                && data.getBooleanExtra(INTENT_EXTRA_SUCCESS, false)) {
             getShopList();
         }
     }

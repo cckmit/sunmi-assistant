@@ -1,7 +1,10 @@
 package com.sunmi.assistant.mine.platform;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +19,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.List;
@@ -32,6 +36,9 @@ import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.ViewHolder;
+
+import static com.sunmi.assistant.mine.shop.ShopListActivity.INTENT_EXTRA_SUCCESS;
+import static com.sunmi.assistant.mine.shop.ShopListActivity.REQUEST_CODE_SHOP;
 
 /**
  * 选择平台
@@ -55,8 +62,6 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
 
     @Extra
     boolean isCanBack;
-    @Extra
-    boolean isMineFragmentEnter;
 
     @AfterViews
     void init() {
@@ -114,9 +119,16 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
         PlatformMobileActivity_.intent(this)
                 .platform(selectPlatform)
                 .saasSource(selectSaasSource)
-                .isMineFragmentEnter(isMineFragmentEnter)
-                .start();
-        if (isMineFragmentEnter) {
+                .startForResult(REQUEST_CODE_SHOP);
+    }
+
+    @OnActivityResult(REQUEST_CODE_SHOP)
+    void onResult(int resultCode, @Nullable Intent data) {
+        if (resultCode == Activity.RESULT_OK && data != null
+                && data.getBooleanExtra(INTENT_EXTRA_SUCCESS, false)) {
+            Intent intent = getIntent();
+            intent.putExtra(INTENT_EXTRA_SUCCESS, true);
+            setResult(RESULT_OK, intent);
             finish();
         }
     }
