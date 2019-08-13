@@ -109,11 +109,6 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     }
 
     @Override
-    protected boolean needLandscape() {
-        return true;
-    }
-
-    @Override
     public void onClick(View v) {
         CreateCompanyActivity_.intent(context).start();
     }

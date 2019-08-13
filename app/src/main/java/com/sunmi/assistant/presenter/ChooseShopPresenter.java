@@ -142,4 +142,5 @@ public class ChooseShopPresenter extends BasePresenter<ChooseShopContract.View>
             }
         });
     }
+
 }
