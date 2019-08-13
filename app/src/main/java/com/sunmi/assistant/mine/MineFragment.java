@@ -7,6 +7,8 @@ import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.mine.contract.MineContract;
+import com.sunmi.assistant.mine.presenter.MinePresenter;
 import com.sunmi.assistant.mine.setting.SettingActivity_;
 import com.sunmi.assistant.mine.shop.ShopListActivity_;
 import com.sunmi.sunmiservice.SunmiServiceConfig;

@@ -9,7 +9,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.mine.contract.SelectStoreContract;
 import com.sunmi.assistant.mine.model.SelectShopModel;
+import com.sunmi.assistant.mine.presenter.SelectStorePresenter;
 import com.sunmi.assistant.utils.GetUserInfo;
 
 import org.androidannotations.annotations.AfterViews;

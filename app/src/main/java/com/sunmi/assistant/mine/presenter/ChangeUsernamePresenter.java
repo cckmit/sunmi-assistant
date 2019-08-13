@@ -1,8 +1,9 @@
-package com.sunmi.assistant.mine;
+package com.sunmi.assistant.mine.presenter;
 
 import com.sunmi.apmanager.R;
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.utils.CommonUtils;
+import com.sunmi.assistant.mine.contract.ChangeUsernameContract;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.model.UserInfoBean;

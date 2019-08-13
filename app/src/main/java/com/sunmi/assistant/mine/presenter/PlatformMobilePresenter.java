@@ -1,4 +1,6 @@
-package com.sunmi.assistant.mine.platform;
+package com.sunmi.assistant.mine.presenter;
+
+import com.sunmi.assistant.mine.contract.PlatformMobileContract;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,6 @@
-package com.sunmi.assistant.mine.setting;
+package com.sunmi.assistant.mine.presenter;
+
+import com.sunmi.assistant.mine.contract.SettingContract;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
@@ -9,23 +11,23 @@ import sunmi.common.rpc.retrofit.RetrofitCallback;
  *
  * @author linyuanpeng on 2019-08-05.
  */
-public class ChangePasswordPresenter extends BasePresenter<ChangePasswordContract.View>
-        implements ChangePasswordContract.Presenter {
+public class SettingPresenter extends BasePresenter<SettingContract.View>
+        implements SettingContract.Presenter {
 
     @Override
-    public void changePassword(String oldPsw, String newPsw) {
-        SunmiStoreApi.changePassword(oldPsw, newPsw, new RetrofitCallback<Object>() {
+    public void logout() {
+        SunmiStoreApi.logout(new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
-                    mView.changePasswordSuccess();
+                    mView.logoutSuccess();
                 }
             }
 
             @Override
             public void onFail(int code, String msg, Object data) {
                 if (isViewAttached()) {
-                    mView.changePasswordFail(code, msg);
+                    mView.logoutFail(code, msg);
                 }
             }
         });

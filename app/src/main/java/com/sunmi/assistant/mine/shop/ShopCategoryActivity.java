@@ -9,7 +9,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.mine.contract.ShopCategoryContract;
 import com.sunmi.assistant.mine.model.ShopInfo;
+import com.sunmi.assistant.mine.presenter.ShopCategoryPresenter;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;

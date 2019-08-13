@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.mine.contract.ShopRegionContract;
 import com.sunmi.assistant.mine.model.RegionProvince;
 import com.sunmi.assistant.mine.model.ShopInfo;
 

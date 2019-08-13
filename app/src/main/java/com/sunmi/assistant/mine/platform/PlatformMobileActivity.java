@@ -10,7 +10,9 @@ import android.widget.TextView;
 import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.mine.CreateShopActivity_;
+import com.sunmi.assistant.mine.contract.PlatformMobileContract;
+import com.sunmi.assistant.mine.presenter.PlatformMobilePresenter;
+import com.sunmi.assistant.mine.shop.CreateShopActivity_;
 import com.sunmi.assistant.ui.activity.merchant.AuthDialog;
 
 import org.androidannotations.annotations.AfterViews;
