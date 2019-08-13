@@ -40,4 +40,9 @@ public class CommonConstants {
     public static int ACTION_CHANGE_COMPANY = 2;
     public static int ACTION_CHANGE_SHOP = 3;
 
+    /**
+     * 是否显示全部的tab
+     */
+    public static boolean TAB_SHOW_ALL = true;
+
 }

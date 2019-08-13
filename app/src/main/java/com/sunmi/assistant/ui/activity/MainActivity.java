@@ -95,6 +95,7 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
         for (MainTab mainTab : mainTabs) {
             if (SpUtils.getSaasExist() == 0 && TextUtils.equals(getString(mainTab.getResName()),
                     getString(R.string.ic_tab_data_title))) {//saas平台需要显示数据tab
+                CommonConstants.TAB_SHOW_ALL = false;
                 continue;
             }
             TabHost.TabSpec tab = mTabHost.newTabSpec(getString(mainTab.getResName()));

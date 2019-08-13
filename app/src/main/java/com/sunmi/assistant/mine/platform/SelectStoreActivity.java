@@ -12,7 +12,7 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.SelectStoreContract;
 import com.sunmi.assistant.mine.model.SelectShopModel;
 import com.sunmi.assistant.mine.presenter.SelectStorePresenter;
-import com.sunmi.assistant.utils.GetUserInfo;
+import com.sunmi.assistant.utils.GetUserInfoUtils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -24,7 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.AuthStoreInfo;
+import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
@@ -80,9 +82,13 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
     @Override
     public void complete() {
         if (SpUtils.isLoginSuccess()) {
-            finish();
+            if (!CommonConstants.TAB_SHOW_ALL && SpUtils.getSaasExist() == 1) {
+                GotoActivityUtils.gotoMainActivity(context);
+            } else {
+                finish();
+            }
         } else {
-            GetUserInfo.userInfo(this);
+            GetUserInfoUtils.userInfo(this);
         }
     }
 
