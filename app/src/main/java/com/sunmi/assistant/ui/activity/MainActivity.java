@@ -26,7 +26,6 @@ import com.tencent.bugly.crashreport.CrashReport;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
-import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
@@ -89,10 +88,12 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
         MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
     }
 
-    @UiThread
     void initTabs() {
         mTabHost.setup(context, getSupportFragmentManager(), R.id.fl_content);
         mTabHost.getTabWidget().setShowDividers(0);
+        if (mTabHost.getChildCount() > 0) {
+            mTabHost.clearAllTabs();
+        }
         MainTab[] mainTabs = MainTab.values();
         for (MainTab mainTab : mainTabs) {
             if (SpUtils.getSaasExist() == 0 && TextUtils.equals(getString(mainTab.getResName()),
