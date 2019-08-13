@@ -3,7 +3,9 @@ package sunmi.common.view.dialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +44,7 @@ public class InputDialog extends Dialog {
         // 对话框按钮监听事件
         private DialogInterface.OnClickListener cancelButtonClickListener;
         private ConfirmClickListener confirmClickListener;
+        private TextChangeListener watcher;
 
         public Builder(Context context) {
             this.context = context;
@@ -71,6 +74,11 @@ public class InputDialog extends Dialog {
          */
         public Builder setInitInputContent(String content) {
             this.content = content;
+            return this;
+        }
+
+        public Builder setInputWatcher(TextChangeListener watcher) {
+            this.watcher = watcher;
             return this;
         }
 
@@ -194,6 +202,10 @@ public class InputDialog extends Dialog {
                 etInput.setText(content);
                 etInput.setSelection(content.length());
             }
+            if (watcher != null) {
+                watcher.setView(etInput);
+                etInput.addTextChangedListener(watcher);
+            }
 
             // 设置返回按钮事件和文本
             if (backBtnText != null) {
@@ -239,6 +251,32 @@ public class InputDialog extends Dialog {
 
     public interface ConfirmClickListener {
         void onConfirmClick(InputDialog dialog, String input);
+    }
+
+    public static abstract class TextChangeListener implements TextWatcher {
+
+        private EditText view;
+
+        public void setView(EditText view) {
+            this.view = view;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            onTextChange(view, s);
+        }
+
+        public abstract void onTextChange(EditText view, Editable s);
     }
 
 }

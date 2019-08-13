@@ -15,6 +15,7 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.ShopRegionContract;
 import com.sunmi.assistant.mine.model.RegionProvince;
 import com.sunmi.assistant.mine.model.ShopInfo;
+import com.sunmi.assistant.mine.presenter.ShopRegionPresenter;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;

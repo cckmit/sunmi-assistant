@@ -5,10 +5,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -48,6 +50,7 @@ import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.dialog.InputDialog;
@@ -293,6 +296,24 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         new InputDialog.Builder(this)
                 .setTitle(R.string.ipc_setting_name)
                 .setInitInputContent(mDevice.getName())
+                .setInputWatcher(new InputDialog.TextChangeListener() {
+                    @Override
+                    public void onTextChange(EditText view, Editable s) {
+                        if (TextUtils.isEmpty(s.toString())) {
+                            return;
+                        }
+                        String name = s.toString().trim();
+                        if (name.getBytes(Charset.defaultCharset()).length > IPC_NAME_MAX_LENGTH) {
+                            shortTip(R.string.ipc_setting_tip_name_length);
+                            do {
+                                LogCat.d(TAG, "name=\"" + name + "\"");
+                                name = name.substring(0, name.length() - 1);
+                            } while (name.getBytes(Charset.defaultCharset()).length > IPC_NAME_MAX_LENGTH);
+                            view.setText(name);
+                            view.setSelection(name.length());
+                        }
+                    }
+                })
                 .setCancelButton(R.string.sm_cancel)
                 .setConfirmButton(R.string.ipc_setting_save, new InputDialog.ConfirmClickListener() {
                     @Override
