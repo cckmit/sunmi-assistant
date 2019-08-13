@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.text.TextUtils;
 
 import com.sunmi.apmanager.constant.NotificationConstant;
-import com.sunmi.apmanager.model.CardItem;
 import com.sunmi.apmanager.utils.DialogUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.model.ShopInfo;
@@ -70,7 +69,6 @@ public class ShopNameActivity extends BaseActivity {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 hideLoadingDialog();
-                updateDatabase(name);//更新数据库
                 if (mInfo.getShopId() == SpUtils.getShopId()) {
                     SpUtils.setShopName(name);
                 }
@@ -89,12 +87,6 @@ public class ShopNameActivity extends BaseActivity {
                 shortTip(R.string.tip_save_fail);
             }
         });
-    }
-
-    private void updateDatabase(String name) {
-        CardItem item = new CardItem();
-        item.setShopName(name);
-        item.updateAll("shopId = ?", String.valueOf(mInfo.getShopId()));
     }
 
     @Override
