@@ -124,7 +124,7 @@ public class SetPasswordActivity extends BaseMvpActivity<SetPasswordPresenter>
                 "注册流程_设置密码_耗时", Constants.EVENT_DURATION_REGISTER_PSW);
         CommonUtils.trackDurationEventEnd(context, "registerDuration",
                 "注册流程开始和结束时调用", Constants.EVENT_DURATION_REGISTER);
-        mPresenter.getUserInfo();
+        mPresenter.getCompanyList();
     }
 
     @Override

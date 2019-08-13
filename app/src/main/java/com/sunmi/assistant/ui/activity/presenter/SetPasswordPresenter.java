@@ -1,11 +1,9 @@
 package com.sunmi.assistant.ui.activity.presenter;
 
-import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.ui.activity.contract.SetPasswordContract;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.model.CompanyListResp;
-import sunmi.common.model.UserInfoBean;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.cloud.SunmiStoreRetrofitClient;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -61,28 +59,8 @@ public class SetPasswordPresenter extends BasePresenter<SetPasswordContract.View
     }
 
     @Override
-    public void getUserInfo() {
-        mView.showLoadingDialog();
-        SunmiStoreApi.getUserInfo(new RetrofitCallback<UserInfoBean>() {
-            @Override
-            public void onSuccess(int code, String msg, UserInfoBean data) {
-                if (isViewAttached()) {
-                    CommonUtils.saveLoginInfo(data);
-                    getCompanyList();
-                }
-            }
-
-            @Override
-            public void onFail(int code, String msg, UserInfoBean data) {
-                if (isViewAttached()) {
-                    mView.hideLoadingDialog();
-                }
-            }
-        });
-    }
-
-    @Override
     public void getCompanyList() {
+        mView.showLoadingDialog();
         SunmiStoreApi.getCompanyList(new RetrofitCallback<CompanyListResp>() {
             @Override
             public void onSuccess(int code, String msg, CompanyListResp data) {

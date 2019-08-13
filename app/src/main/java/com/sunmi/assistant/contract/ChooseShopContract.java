@@ -26,6 +26,8 @@ public interface ChooseShopContract {
         void getSaasSuccessView(AuthStoreInfo data);
 
         void getSaasFailView(int code, String msg);
+
+        void getUserInfoSuccessView();
     }
 
     interface Presenter {

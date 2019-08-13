@@ -10,6 +10,7 @@ import android.widget.CheckBox;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.model.SelectShopModel;
+import com.sunmi.assistant.utils.GetUserInfo;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -22,7 +23,7 @@ import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.AuthStoreInfo;
-import sunmi.common.utils.GotoActivityUtils;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.TitleBarView;
@@ -51,8 +52,6 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
     @Extra
     boolean isBack;
     @Extra
-    boolean isLogin;
-    @Extra
     ArrayList<AuthStoreInfo.SaasUserInfoListBean> list;
 
     private ShopListAdapter mAdapter;
@@ -78,10 +77,10 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
 
     @Override
     public void complete() {
-        if (isLogin) {
+        if (SpUtils.isLoginSuccess()) {
             finish();
         } else {
-            GotoActivityUtils.gotoMainActivity(this);
+            GetUserInfo.userInfo(this);
         }
     }
 

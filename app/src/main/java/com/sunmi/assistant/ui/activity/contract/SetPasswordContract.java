@@ -31,8 +31,6 @@ public interface SetPasswordContract {
 
         void resetPassword(String username, String password, String code);
 
-        void getUserInfo();
-
         void getCompanyList();
     }
 }

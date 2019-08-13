@@ -68,8 +68,7 @@ public class WelcomeActivity extends BaseMvpActivity<WelcomePresenter> implement
                 LogCat.e(TAG, "ping time -- 111");
                 if (!NetworkUtils.isNetPingUsable()) {
                     LogCat.e(TAG, "ping time -- 222");
-                    if (TextUtils.equals(SpUtils.getLoginStatus(), "Y") &&
-                            !TextUtils.isEmpty(SpUtils.getShopName())) {
+                    if (SpUtils.isLoginSuccess()) {
                         gotoMainActivity();
                     } else {
                         gotoLoginActivity();
@@ -84,8 +83,7 @@ public class WelcomeActivity extends BaseMvpActivity<WelcomePresenter> implement
 
     private void handleLaunch() {
         //状态登录保存，退出登录置空，检查token是否有效
-        if (TextUtils.equals(SpUtils.getLoginStatus(), "Y") &&
-                !TextUtils.isEmpty(SpUtils.getShopName())) {
+        if (SpUtils.isLoginSuccess()) {
             if (!NetworkUtils.isNetworkAvailable(this)) {
                 gotoMainActivity();
             } else {
