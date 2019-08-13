@@ -17,8 +17,6 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
-import java.util.Objects;
-
 import sunmi.common.base.BaseActivity;
 import sunmi.common.model.CreateShopInfo;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
@@ -56,7 +54,6 @@ public class CreateShopActivity extends BaseActivity {
 
     @Extra
     int companyId;
-    private String shopName;
 
     @AfterViews
     void init() {
@@ -83,8 +80,9 @@ public class CreateShopActivity extends BaseActivity {
 
     @Click(R.id.btn_complete)
     void completeClick() {
-        String contact = Objects.requireNonNull(etContact.getText()).toString().trim();
-        String mobile = Objects.requireNonNull(etMobile.getText()).toString().trim();
+        String shopName = etShop.getText() == null ? null : etShop.getText().toString().trim();
+        String contact = etContact.getText() == null ? null : etContact.getText().toString().trim();
+        String mobile = etMobile.getText() == null ? null : etMobile.getText().toString().trim();
         if (!TextUtils.isEmpty(mobile) && !RegexUtils.isChinaPhone(mobile)) {
             shortTip(getString(R.string.company_shop_check_mobile));
             return;
