@@ -1,5 +1,6 @@
 package com.sunmi.assistant.mine.platform;
 
+import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.mine.model.SelectShopModel;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class SelectStorePresenter extends BasePresenter<SelectStoreContract.View
     private List<SelectShopModel> mList;
     private int mSelectCount = 0;
     private int mCompleteCount = 0;
+    private boolean hasSuccess = false;
 
     SelectStorePresenter(ArrayList<AuthStoreInfo.SaasUserInfoListBean> list) {
         mList = new ArrayList<>(list.size());
@@ -71,6 +73,10 @@ public class SelectStorePresenter extends BasePresenter<SelectStoreContract.View
             @Override
             public void onSuccess(int code, String msg, CreateShopInfo data) {
                 item.setShopId(data.getShop_id());
+                if (SpUtils.getShopId() < 0) {
+                    CommonUtils.saveSelectShop(item.getShopId(), item.getShopName());
+                }
+                hasSuccess = true;
                 authorizeSaas(item);
             }
 
@@ -106,7 +112,9 @@ public class SelectStorePresenter extends BasePresenter<SelectStoreContract.View
         mCompleteCount++;
         if (mCompleteCount >= mSelectCount && isViewAttached()) {
             mView.hideLoadingDialog();
-            mView.complete();
+            if (hasSuccess) {
+                mView.complete();
+            }
         }
     }
 
