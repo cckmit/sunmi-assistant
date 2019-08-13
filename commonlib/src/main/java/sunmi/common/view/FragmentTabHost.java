@@ -222,7 +222,7 @@ public class FragmentTabHost extends TabHost implements TabHost.OnTabChangeListe
             if (info.fragment != null && !info.fragment.isDetached()) {
                 FragmentTransaction ft = mFragmentManager.beginTransaction();
                 ft.hide(info.fragment);
-                ft.commit();
+                ft.commitAllowingStateLoss();
             }
         }
 

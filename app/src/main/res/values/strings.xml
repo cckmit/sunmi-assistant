@@ -25,6 +25,7 @@
     <string name="str_select_store">Select a store</string>
     <string name="str_my_store">My store</string>
     <string name="btn_add_store">Add store</string>
+    <string name="str_store_info">Store Information</string>
     <string name="ic_tab_data_title">Data</string>
     <string name="str_help_feedback">Help and feedback</string>
     <string name="str_me">me</string>
