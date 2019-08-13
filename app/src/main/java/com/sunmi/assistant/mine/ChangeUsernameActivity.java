@@ -6,6 +6,8 @@ import android.text.TextWatcher;
 import android.view.View;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.mine.contract.ChangeUsernameContract;
+import com.sunmi.assistant.mine.presenter.ChangeUsernamePresenter;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;

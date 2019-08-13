@@ -13,6 +13,8 @@ import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.utils.FileHelper;
 import com.sunmi.apmanager.utils.PhotoUtils;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.mine.contract.UserInfoContract;
+import com.sunmi.assistant.mine.presenter.UserInfoPresenter;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;

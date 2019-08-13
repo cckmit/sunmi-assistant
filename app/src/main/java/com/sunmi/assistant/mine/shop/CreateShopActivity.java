@@ -1,4 +1,4 @@
-package com.sunmi.assistant.mine;
+package com.sunmi.assistant.mine.shop;
 
 import android.annotation.SuppressLint;
 import android.text.Editable;

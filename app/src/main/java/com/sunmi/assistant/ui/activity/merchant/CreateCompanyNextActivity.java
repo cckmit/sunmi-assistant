@@ -3,7 +3,6 @@ package com.sunmi.assistant.ui.activity.merchant;
 import android.annotation.SuppressLint;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
 import android.widget.Button;
 
 import com.sunmi.apmanager.utils.CommonUtils;
@@ -35,8 +34,8 @@ import sunmi.common.view.TitleBarView;
 @SuppressLint("Registered")
 @EActivity(R.layout.company_activity_create_next)
 public class CreateCompanyNextActivity extends BaseMvpActivity<CreateCompanyPresenter>
-        implements CreateCompanyContract.View, View.OnClickListener {
-    private static final int COMPANY_NAME_MAX_LENGTH = 20;
+        implements CreateCompanyContract.View {
+    private static final int COMPANY_NAME_MAX_LENGTH = 40;
     private static final int COMPANY_STR_MAX_LENGTH = 40;
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
@@ -52,10 +51,6 @@ public class CreateCompanyNextActivity extends BaseMvpActivity<CreateCompanyPres
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        titleBar.getLeftLayout().setOnClickListener(this);
-        if (createCompanyCannotBack) {
-            titleBar.setLeftImageVisibility(View.GONE);
-        }
         new SomeMonitorEditText().setMonitorEditText(btnCreateCompany, etCompany);
         mPresenter = new CreateCompanyPresenter();
         mPresenter.attachView(this);
@@ -67,18 +62,6 @@ public class CreateCompanyNextActivity extends BaseMvpActivity<CreateCompanyPres
         mPresenter.createCompany(companyName);
     }
 
-    @Override
-    public void onBackPressed() {
-        if (createCompanyCannotBack) {
-            return;
-        }
-        super.onBackPressed();
-    }
-
-    @Override
-    public void onClick(View v) {
-        onBackPressed();
-    }
 
     @Override
     public void createCompanySuccessView(CompanyInfoResp resp) {

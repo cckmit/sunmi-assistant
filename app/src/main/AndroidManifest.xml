@@ -111,7 +111,7 @@
         <activity android:name=".ui.activity.ChooseShopActivity_" />
         <activity android:name=".ui.activity.merchant.CreateCompanyActivity_" />
         <activity android:name=".ui.activity.merchant.CreateCompanyNextActivity_" />
-        <activity android:name=".mine.CreateShopActivity_" />
+        <activity android:name=".mine.shop.CreateShopActivity_" />
         <activity android:name=".mine.shop.ShopListActivity_" />
         <activity android:name=".mine.shop.ShopDetailActivity_" />
         <activity android:name=".mine.shop.ShopNameActivity_" />

@@ -7,6 +7,8 @@ import android.text.TextWatcher;
 import android.view.View;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.mine.contract.ChangeCompanyNameContract;
+import com.sunmi.assistant.mine.presenter.ChangeCompanyNamePresenter;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;

@@ -9,7 +9,6 @@ import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.data.SunmiStoreRemote;
-import com.sunmi.assistant.mine.CreateShopActivity_;
 import com.sunmi.assistant.mine.platform.SelectPlatformActivity_;
 
 import org.androidannotations.annotations.AfterViews;

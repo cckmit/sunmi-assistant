@@ -1,5 +1,6 @@
-package com.sunmi.assistant.mine.shop;
+package com.sunmi.assistant.mine.presenter;
 
+import com.sunmi.assistant.mine.contract.ShopCategoryContract;
 import com.sunmi.assistant.mine.model.ShopInfo;
 
 import sunmi.common.base.BasePresenter;

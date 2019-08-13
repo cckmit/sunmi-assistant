@@ -10,6 +10,8 @@ import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.DialogUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.mine.contract.ChangePasswordContract;
+import com.sunmi.assistant.mine.presenter.ChangePasswordPresenter;
 import com.sunmi.assistant.ui.activity.login.LoginActivity_;
 
 import org.androidannotations.annotations.AfterViews;
