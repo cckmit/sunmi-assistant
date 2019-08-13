@@ -12,7 +12,7 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.SelectStoreContract;
 import com.sunmi.assistant.mine.model.SelectShopModel;
 import com.sunmi.assistant.mine.presenter.SelectStorePresenter;
-import com.sunmi.assistant.utils.GetUserInfo;
+import com.sunmi.assistant.utils.GetUserInfoUtils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -24,7 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.constant.CommonNotificationConstant;
 import sunmi.common.model.AuthStoreInfo;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
@@ -80,8 +82,9 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
     public void complete() {
         if (SpUtils.isLoginSuccess()) {
             finish();
+            BaseNotification.newInstance().postNotificationName(CommonNotificationConstant.refreshMainTabView);
         } else {
-            GetUserInfo.userInfo(this);
+            GetUserInfoUtils.userInfo(this);
         }
     }
 
