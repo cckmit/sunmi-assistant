@@ -236,6 +236,8 @@ public class PrinterSearchActivity extends BaseActivity
             showErrorDialog(R.string.tip_printer_already_bound);
         } else if (code == 4402) {
             gotoPrinterSet();
+        } else if (code == 4404) {
+            showErrorDialog(R.string.tip_bound_to_other_shop);
         } else {
             showErrorDialog(R.string.tip_bind_printer_error_no_net);
         }
