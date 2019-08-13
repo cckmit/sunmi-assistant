@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.Button;
 
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
@@ -28,6 +29,7 @@ import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.ClearableEditText;
+import sunmi.common.view.TitleBarView;
 
 /**
  * @author yangShiJie
@@ -40,8 +42,10 @@ public class CreateShopActivity extends BaseActivity {
     private static final int CREATE_SHOP_ALREADY_EXIST = 5035;
 
     private static final int COMPANY_NAME_MAX_LENGTH = 20;
-    private static final int COMPANY_STR_MAX_LENGTH = 36;
+    private static final int COMPANY_STR_MAX_LENGTH = 20;
 
+    @ViewById(R.id.title_bar)
+    TitleBarView titleBar;
     @ViewById(R.id.et_shop)
     ClearableEditText etShop;
     @ViewById(R.id.et_contact)
@@ -62,6 +66,17 @@ public class CreateShopActivity extends BaseActivity {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         new SomeMonitorEditText().setMonitorEditText(btnComplete, etShop);
         shopAddTextChangedListener(etShop);
+        if (!isLogin) {
+            titleBar.setLeftImageVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!isLogin) {
+            return;
+        }
+        super.onBackPressed();
     }
 
     @Click(R.id.btn_complete)

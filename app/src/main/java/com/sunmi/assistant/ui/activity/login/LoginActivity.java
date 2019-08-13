@@ -21,6 +21,7 @@ import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.LoginContract;
 import com.sunmi.assistant.presenter.LoginPresenter;
+import com.sunmi.assistant.ui.activity.merchant.CreateCompanyActivity_;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -29,9 +30,11 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
+import java.util.List;
+
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
-import sunmi.common.model.UserInfoBean;
+import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.utils.PermissionUtils;
 import sunmi.common.utils.RegexUtils;
 import sunmi.common.utils.SpUtils;
@@ -250,9 +253,25 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
     }
 
     @Override
-    public void loginSuccess(UserInfoBean loginData) {
+    public void loginSuccess() {
+        mPresenter.getCompanyList();
+    }
+
+    @Override
+    public void getCompanyListSuccess(List<CompanyInfoResp> companyList) {
+        if (companyList.size() == 0) {
+            CreateCompanyActivity_.intent(context)
+                    .createCompanyCannotBack(true)
+                    .start();
+            return;
+        }
         LoginChooseShopActivity_.intent(context)
                 .action(CommonConstants.ACTION_LOGIN_CHOOSE_COMPANY).start();
+    }
+
+    @Override
+    public void getCompanyListFail(int code, String msg) {
+
     }
 
 }

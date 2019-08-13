@@ -41,7 +41,7 @@
         android:background="@color/c_white"
         android:imeOptions="actionSearch"
         android:inputType="text"
-        android:maxLength="36"
+        android:maxLength="40"
         android:paddingRight="@dimen/dp_25"
         android:paddingStart="@dimen/dp_25"
         android:singleLine="true"
