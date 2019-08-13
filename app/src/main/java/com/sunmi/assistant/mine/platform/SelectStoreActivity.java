@@ -127,7 +127,7 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
         @Override
         public void convert(ViewHolder holder, SelectShopModel info) {
             holder.setText(R.id.tvName, info.getShopName());
-            holder.setText(R.id.tvPlatform, info.getSaasName());
+            holder.setText(R.id.tvPlatform, getString(R.string.str_shop_platform_from, info.getSaasName()));
             CheckBox checkBox = holder.getView(R.id.CBox);
             checkBox.setChecked(info.isChecked());
             checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {

@@ -104,6 +104,7 @@
     <string name="str_setting_detail">View</string>
     <string name="str_setting_delete_device">Delete</string>
     <string name="str_import_other_platform_data">Didn\'t match the store data under the phone number, will you import from an external platform?</string>
+    <string name="str_shop_platform_from">本数据由%s提供</string>
     <string name="str_cloud_printer">Cloud Printer</string>
     <string name="str_cannot_manager_device">Cannot manage the device now</string>
     <string name="tip_image_captcha_refresh_fail">Image verification code refresh failed</string>
