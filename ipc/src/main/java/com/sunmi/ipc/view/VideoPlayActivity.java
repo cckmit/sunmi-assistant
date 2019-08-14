@@ -1315,14 +1315,13 @@ public class VideoPlayActivity extends BaseActivity
         if (timeSlotsDialog == null) {
             timeSlotsDialog = new LoadingDialog(this);
             timeSlotsDialog.setLoadingContent(null);
-            timeSlotsDialog.show();
         }
+        timeSlotsDialog.show();
     }
 
     private void timeSlotsHideProgress() {
         if (timeSlotsDialog != null) {
             timeSlotsDialog.dismiss();
-            timeSlotsDialog = null;
         }
         //开启控件隐藏倒计时
         startTimer();
