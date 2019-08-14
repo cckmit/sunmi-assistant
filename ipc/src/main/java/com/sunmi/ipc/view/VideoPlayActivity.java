@@ -416,39 +416,6 @@ public class VideoPlayActivity extends BaseActivity
         selectedTimeIsHaveVideo(currTime);
     }
 
-    @Override
-    public void IOTCResult(String result) {
-        try {
-            JSONObject object = new JSONObject(result);
-            int errcode = object.getInt("errcode");
-            if (errcode == 0) {
-                JSONArray array = object.getJSONArray("data");
-                JSONObject object1 = (JSONObject) array.opt(0);
-                int cmd = object1.getInt("cmd");
-                if (cmd == 32) {//ap回放时间轴
-                    if (!object1.has("result")) {
-                        return;
-                    }
-                    JSONArray array1 = object1.getJSONArray("result");
-                    ApCloudTimeBean ap;
-                    listAp.clear();
-                    for (int i = 0; i < array1.length(); i++) {
-                        JSONObject object2 = (JSONObject) array1.opt(i);
-                        ap = new ApCloudTimeBean();
-                        ap.setStartTime(object2.getLong("start_time"));
-                        ap.setEndTime(object2.getLong("end_time"));
-                        ap.setApPlay(true);
-                        listAp.add(ap);
-                    }
-                    ///获取cloud回放时间轴
-                    getTimeList(deviceId, threeDaysBeforeSeconds, currentDateSeconds);
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Click(resName = "rl_video_back")
     void backClick() {
         onBackPressed();
@@ -1202,6 +1169,7 @@ public class VideoPlayActivity extends BaseActivity
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+                LogCat.e(TAG, "onScrolled22");
                 isLeftScroll = dx <= 0; //dx < 0左边滑动  dx > 0右边滑动
                 int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
                 long currTime = centerCurrentTime(firstVisibleItem);//当前中间轴时间
@@ -1347,9 +1315,48 @@ public class VideoPlayActivity extends BaseActivity
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                listAp.clear();
                 iotcClient.getPlaybackList(threeDaysBeforeSeconds, currentDateSeconds); //获取AP回放时间列表
             }
         }, 3000);
+    }
+
+    @Override
+    public void IOTCResult(String result) {
+        try {
+            JSONObject object = new JSONObject(result);
+            int errcode = object.getInt("errcode");
+            if (errcode == 0) {
+                JSONArray array = object.getJSONArray("data");
+                JSONObject object1 = (JSONObject) array.opt(0);
+                int cmd = object1.getInt("cmd");
+                if (cmd == 32) {//ap回放时间轴
+                    LogCat.e(TAG, "888888 time ap getTimeSlots==" + object1.toString());
+                    if (!object1.has("result")) {
+                        return;
+                    }
+                    JSONArray array1 = object1.getJSONArray("result");
+                    ApCloudTimeBean ap;
+                    for (int i = 0; i < array1.length(); i++) {
+                        JSONObject object2 = (JSONObject) array1.opt(i);
+                        ap = new ApCloudTimeBean();
+                        ap.setStartTime(object2.getLong("start_time"));
+                        ap.setEndTime(object2.getLong("end_time"));
+                        ap.setApPlay(true);
+                        listAp.add(ap);
+                    }
+                    if (array1.length() > 0) {
+                        //获取AP回放时间列表
+                        iotcClient.getPlaybackList(listAp.get(array1.length() - 1).getEndTime(), currentDateSeconds);
+                        return;
+                    }
+                    ///获取cloud回放时间轴
+                    getTimeList(deviceId, threeDaysBeforeSeconds, currentDateSeconds);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void cloudListNullOrFail() {
