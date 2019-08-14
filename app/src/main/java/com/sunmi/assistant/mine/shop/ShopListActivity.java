@@ -1,7 +1,10 @@
 package com.sunmi.assistant.mine.shop;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -9,15 +12,13 @@ import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.data.SunmiStoreRemote;
-import com.sunmi.assistant.mine.CreateShopActivity_;
 import com.sunmi.assistant.mine.platform.SelectPlatformActivity_;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.ViewById;
-
-import java.util.List;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.model.ShopListResp;
@@ -38,13 +39,19 @@ import sunmi.common.view.bottompopmenu.PopItemAction;
 @EActivity(R.layout.activity_mine_my_store)
 public class ShopListActivity extends BaseActivity {
 
+    public static final String INTENT_EXTRA_SUCCESS = "success";
+    public static final int REQUEST_CODE_SHOP = 100;
+
     @ViewById(R.id.recyclerView)
     RecyclerView recyclerView;
+    private ShopListAdapter mAdapter;
 
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        mAdapter = new ShopListAdapter(this);
+        recyclerView.setAdapter(mAdapter);
         getShopList();
     }
 
@@ -69,20 +76,28 @@ public class ShopListActivity extends BaseActivity {
     private void createShop() {
         CreateShopActivity_.intent(context)
                 .companyId(SpUtils.getCompanyId())
-                .start();
+                .startForResult(REQUEST_CODE_SHOP);
     }
 
     private void importShop() {
         SelectPlatformActivity_.intent(context)
                 .isCanBack(true)
-                .start();
+                .startForResult(REQUEST_CODE_SHOP);
+    }
+
+    @OnActivityResult(REQUEST_CODE_SHOP)
+    void onResult(int resultCode, @Nullable Intent data) {
+        if (resultCode == Activity.RESULT_OK && data != null
+                && data.getBooleanExtra(INTENT_EXTRA_SUCCESS, false)) {
+            getShopList();
+        }
     }
 
     private void getShopList() {
         SunmiStoreRemote.get().getShopList(SpUtils.getCompanyId(), new RetrofitCallback<ShopListResp>() {
             @Override
             public void onSuccess(int code, String msg, ShopListResp data) {
-                updateList(data.getShop_list());
+                mAdapter.setData(data.getShop_list());
             }
 
             @Override
@@ -93,14 +108,10 @@ public class ShopListActivity extends BaseActivity {
         });
     }
 
-    private void updateList(List<ShopListResp.ShopInfo> list) {
-        recyclerView.setAdapter(new ShopListAdapter(this, R.layout.item_mine_store, list));
-    }
-
     private static class ShopListAdapter extends CommonListAdapter<ShopListResp.ShopInfo> {
 
-        private ShopListAdapter(Context context, int layoutId, List<ShopListResp.ShopInfo> list) {
-            super(context, layoutId, list);
+        private ShopListAdapter(Context context) {
+            super(context, R.layout.item_mine_store, null);
         }
 
         @Override

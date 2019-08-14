@@ -1,4 +1,4 @@
-package com.sunmi.assistant.mine.platform;
+package com.sunmi.assistant.mine.contract;
 
 import com.sunmi.assistant.mine.model.SelectShopModel;
 

@@ -1,8 +1,9 @@
-package com.sunmi.assistant.mine;
+package com.sunmi.assistant.mine.presenter;
 
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.data.SunmiStoreRemote;
+import com.sunmi.assistant.mine.contract.ChangeCompanyNameContract;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.model.CompanyInfoResp;

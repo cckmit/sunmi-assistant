@@ -1,6 +1,7 @@
-package com.sunmi.assistant.mine.platform;
+package com.sunmi.assistant.mine.presenter;
 
 import com.sunmi.apmanager.utils.CommonUtils;
+import com.sunmi.assistant.mine.contract.SelectStoreContract;
 import com.sunmi.assistant.mine.model.SelectShopModel;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class SelectStorePresenter extends BasePresenter<SelectStoreContract.View
     private int mCompleteCount = 0;
     private boolean hasSuccess = false;
 
-    SelectStorePresenter(ArrayList<AuthStoreInfo.SaasUserInfoListBean> list) {
+    public SelectStorePresenter(ArrayList<AuthStoreInfo.SaasUserInfoListBean> list) {
         mList = new ArrayList<>(list.size());
         for (AuthStoreInfo.SaasUserInfoListBean bean : list) {
             mList.add(new SelectShopModel(bean));

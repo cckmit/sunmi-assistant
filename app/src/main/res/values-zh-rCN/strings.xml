@@ -20,11 +20,12 @@
     <string name="tip_title_choose_device">选择您要连接的设备</string>
     <string name="tip_no_device_found">没有发现新设备</string>
     <string name="tip_keep_device_in">请确保您的设备处于路由器信号范围内</string>
-    <string name="str_auth_onclick_protocol">点击允许按钮即表示同意</string>
+    <string name="str_auth_onclick_protocol">同意授权表示使用此数据创建门店；暂不授权表示创建新门店。点击查看</string>
     <string name="str_auth_protocol_text">《授权协议》</string>
     <string name="str_select_store">选择门店</string>
-    <string name="str_my_store">我的店铺</string>
-    <string name="btn_add_store">添加店铺</string>
+    <string name="str_my_store">我的门店</string>
+    <string name="btn_add_store">添加门店</string>
+    <string name="str_store_info">门店信息</string>
     <string name="ic_tab_data_title">数据</string>
     <string name="str_help_feedback">帮助与反馈</string>
     <string name="str_me">我</string>
@@ -104,6 +105,7 @@
     <string name="str_setting_detail">查看详情</string>
     <string name="str_setting_delete_device">删除设备</string>
     <string name="str_import_other_platform_data">未匹配到该手机号下的门店数据，是否从外部平台导入？</string>
+    <string name="str_shop_platform_from">本数据由%s提供</string>
     <string name="str_cloud_printer">云打印机</string>
     <string name="str_cannot_manager_device">当前无法管理设备</string>
     <string name="tip_image_captcha_refresh_fail">图片验证码刷新失败</string>
@@ -125,6 +127,7 @@
     <string name="company_shop_create_tip">门店一般为商户旗下的店铺经营场所：例如：五角场店</string>
     <string name="company_shop_select_auth_tip">您可以选择一家或多家门店</string>
     <string name="company_create_check_length">商户名超过字数限制，请重新输入</string>
+    <string name="company_create_shop_max_length">门店名超过字数限制，请重新输入</string>
     <string name="company_create_check_name">商户名重名，请重新输入</string>
     <string name="company_create_shop_success">门店创建成功</string>
     <string name="company_create_success">商户创建成功</string>

@@ -1,7 +1,11 @@
 package com.sunmi.assistant.mine.platform;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.CountDownTimer;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -10,13 +14,16 @@ import android.widget.TextView;
 import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.mine.CreateShopActivity_;
+import com.sunmi.assistant.mine.contract.PlatformMobileContract;
+import com.sunmi.assistant.mine.presenter.PlatformMobilePresenter;
+import com.sunmi.assistant.mine.shop.CreateShopActivity_;
 import com.sunmi.assistant.ui.activity.merchant.AuthDialog;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
@@ -27,6 +34,9 @@ import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.dialog.CommonDialog;
+
+import static com.sunmi.assistant.mine.shop.ShopListActivity.INTENT_EXTRA_SUCCESS;
+import static com.sunmi.assistant.mine.shop.ShopListActivity.REQUEST_CODE_SHOP;
 
 /**
  * @author YangShiJie
@@ -107,15 +117,19 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
     private void showSelectShopDialog(ArrayList<AuthStoreInfo.SaasUserInfoListBean> target) {
         new AuthDialog.Builder(this)
                 .setMessage(getString(R.string.str_dialog_auth_message, platform))
-                .setAllowButton((dialog, which) ->
-                        SelectStoreActivity_.intent(this)
+                .setAllowButton(new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        SelectStoreActivity_.intent(context)
                                 .isBack(true)
                                 .list(target)
-                                .start())
+                                .startForResult(REQUEST_CODE_SHOP);
+                    }
+                })
                 .setCancelButton((dialog, which) ->
                         CreateShopActivity_.intent(context)
                                 .companyId(SpUtils.getCompanyId())
-                                .start())
+                                .startForResult(REQUEST_CODE_SHOP))
                 .create().show();
     }
 
@@ -125,7 +139,8 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
                 .setConfirmButton(R.string.company_shop_new_create, (dialog, which) ->
                         CreateShopActivity_.intent(context)
                                 .companyId(SpUtils.getCompanyId())
-                                .start());
+                                .startForResult(REQUEST_CODE_SHOP))
+                .create().show();
     }
 
     private void startDownTimer() {
@@ -137,6 +152,17 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
         mTimer.cancel();
         tvGetCode.setText(getResources().getString(R.string.str_resend));
         tvGetCode.setClickable(true);
+    }
+
+    @OnActivityResult(REQUEST_CODE_SHOP)
+    void onResult(int resultCode, @Nullable Intent data) {
+        if (resultCode == Activity.RESULT_OK && data != null
+                && data.getBooleanExtra(INTENT_EXTRA_SUCCESS, false)) {
+            Intent intent = getIntent();
+            intent.putExtra(INTENT_EXTRA_SUCCESS, true);
+            setResult(RESULT_OK, intent);
+            finish();
+        }
     }
 
     @Override
@@ -179,7 +205,6 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
         super.onDestroy();
         stopDownTimer();
     }
-
 
 
 }

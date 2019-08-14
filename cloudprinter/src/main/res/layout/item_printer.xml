@@ -52,11 +52,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="-16dp"
+        android:background="@null"
         android:button="@drawable/checkbox_dev_selector"
         android:checked="true"
-        android:scaleX="0.35"
-        android:scaleY="0.35"
         android:visibility="gone" />
 
 </RelativeLayout>

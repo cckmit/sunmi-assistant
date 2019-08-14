@@ -7,6 +7,8 @@ import android.widget.TextView;
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.mine.contract.SettingContract;
+import com.sunmi.assistant.mine.presenter.SettingPresenter;
 import com.sunmi.assistant.ui.activity.login.LoginActivity_;
 
 import org.androidannotations.annotations.AfterViews;

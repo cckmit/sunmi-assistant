@@ -25,6 +25,7 @@
     <string name="str_select_store">Select a store</string>
     <string name="str_my_store">My store</string>
     <string name="btn_add_store">Add store</string>
+    <string name="str_store_info">Store Information</string>
     <string name="ic_tab_data_title">Data</string>
     <string name="str_help_feedback">Help and feedback</string>
     <string name="str_me">me</string>
@@ -104,6 +105,7 @@
     <string name="str_setting_detail">View</string>
     <string name="str_setting_delete_device">Delete</string>
     <string name="str_import_other_platform_data">Didn\'t match the store data under the phone number, will you import from an external platform?</string>
+    <string name="str_shop_platform_from">本数据由%s提供</string>
     <string name="str_cloud_printer">Cloud Printer</string>
     <string name="str_cannot_manager_device">Cannot manage the device now</string>
     <string name="tip_image_captcha_refresh_fail">Image verification code refresh failed</string>
@@ -125,6 +127,7 @@
     <string name="company_shop_create_tip">门店一般为商户旗下的店铺经营场所：例如：五角场店</string>
     <string name="company_shop_select_auth_tip">您可以选择一家或多家门店</string>
     <string name="company_create_check_length">商户名超过字数限制，请重新输入</string>
+    <string name="company_create_shop_max_length">门店名超过字数限制，请重新输入</string>
     <string name="company_create_check_name">商户名重名，请重新输入</string>
     <string name="company_create_shop_success">门店创建成功</string>
     <string name="company_create_success">商户创建成功</string>
