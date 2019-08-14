@@ -74,6 +74,7 @@ import sunmi.common.utils.IVideoPlayer;
 import sunmi.common.utils.VolumeHelper;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.VerticalSeekBar;
+import sunmi.common.view.dialog.LoadingDialog;
 
 /**
  * Description:
@@ -863,8 +864,6 @@ public class VideoPlayActivity extends BaseActivity
         if (isSelectedDate) {
             scrollSelectedDate0AM();
         }
-        //开启控件隐藏倒计时
-        startTimer();
     }
 
     @UiThread
@@ -887,6 +886,8 @@ public class VideoPlayActivity extends BaseActivity
                 scrollCurrentTime(); //滚动到当前时间
             }
         }
+        //渲染完成
+        timeSlotsHideProgress();
     }
 
     //选择日历日期回调
@@ -1308,10 +1309,28 @@ public class VideoPlayActivity extends BaseActivity
      */
     private List<ApCloudTimeBean> listAp = new ArrayList<>();
     private List<ApCloudTimeBean> listCloud = new ArrayList<>();
+    private LoadingDialog timeSlotsDialog;
+
+    private void timeSlotsShowProgress() {
+        if (timeSlotsDialog == null) {
+            timeSlotsDialog = new LoadingDialog(this);
+            timeSlotsDialog.setLoadingContent(null);
+            timeSlotsDialog.show();
+        }
+    }
+
+    private void timeSlotsHideProgress() {
+        if (timeSlotsDialog != null) {
+            timeSlotsDialog.dismiss();
+            timeSlotsDialog = null;
+        }
+        //开启控件隐藏倒计时
+        startTimer();
+    }
 
     //发送请求获取组合时间轴
     private void refreshCanvasList() {
-        showLoadingDialog();
+        timeSlotsShowProgress();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -1361,11 +1380,11 @@ public class VideoPlayActivity extends BaseActivity
 
     private void cloudListNullOrFail() {
         if (listAp == null || listAp.size() == 0) {
+            timeSlotsHideProgress();
             switch2Live();//无ap且无cloud的时间列表
         } else {
             timeCanvasList(listAp); //ap时间列表>0且cloud列表=0
         }
-        hideLoadingDialog();
     }
 
     //获取cloud回放时间轴
@@ -1413,8 +1432,7 @@ public class VideoPlayActivity extends BaseActivity
         int cloudSize = listCloud.size();
         if (apSize == 0 && cloudSize > 0) {
             listAp = listCloud;
-            timeCanvasList(listAp);//组合时间轴
-            hideLoadingDialog();
+            timeCanvasList(listAp);//组合时间轴渲染
             return;
         }
         ApCloudTimeBean bean;
@@ -1466,8 +1484,7 @@ public class VideoPlayActivity extends BaseActivity
             Collections.sort(listAp);//正序比较
         }
         LogCat.e(TAG, "888888 time all list");
-        timeCanvasList(listAp);//组合时间轴
-        hideLoadingDialog();
+        timeCanvasList(listAp);//组合时间轴渲染
     }
 
     //去重

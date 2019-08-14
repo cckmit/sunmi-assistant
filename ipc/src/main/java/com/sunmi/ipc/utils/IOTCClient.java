@@ -2,6 +2,7 @@ package com.sunmi.ipc.utils;
 
 import android.os.Process;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
 import com.sunmi.ipc.model.IotcCmdBean;
 import com.tutk.IOTC.AVAPIs;
@@ -9,6 +10,11 @@ import com.tutk.IOTC.IOTCAPIs;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import sunmi.common.utils.ByteUtils;
 import sunmi.common.utils.Utils;
@@ -224,11 +230,23 @@ public class IOTCClient {
         cmdCall(cmd);
     }
 
-    private void cmdCall(IotcCmdBean cmd) {
-        String json = new Gson().toJson(cmd);
-        byte[] req = json.getBytes();
-        IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
-        getCmdResponse();
+    private void cmdCall(final IotcCmdBean cmd) {
+        ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("demo-pool-%d").build();
+        ExecutorService singleThreadPool = new ThreadPoolExecutor(1, 1,
+                0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<Runnable>(1024),
+                namedThreadFactory,
+                new ThreadPoolExecutor.AbortPolicy());
+        singleThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                String json = new Gson().toJson(cmd);
+                byte[] req = json.getBytes();
+                IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
+                getCmdResponse();
+            }
+        });
+        singleThreadPool.shutdown();
     }
 
     private void getCmdResponse() {
