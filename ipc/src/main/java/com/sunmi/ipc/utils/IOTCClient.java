@@ -11,6 +11,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import sunmi.common.utils.ByteUtils;
+import sunmi.common.utils.ThreadPool;
 import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 
@@ -224,11 +225,16 @@ public class IOTCClient {
         cmdCall(cmd);
     }
 
-    private void cmdCall(IotcCmdBean cmd) {
-        String json = new Gson().toJson(cmd);
-        byte[] req = json.getBytes();
-        IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
-        getCmdResponse();
+    private void cmdCall(final IotcCmdBean cmd) {
+        ThreadPool.getSingleThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                String json = new Gson().toJson(cmd);
+                byte[] req = json.getBytes();
+                IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
+                getCmdResponse();
+            }
+        });
     }
 
     private void getCmdResponse() {
