@@ -1,6 +1,7 @@
 package com.sunmi.assistant.ui.activity;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkRequest;
@@ -10,7 +11,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TabHost;
-import android.widget.TextView;
 
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.constant.NotificationConstant;
@@ -19,6 +19,7 @@ import com.sunmi.apmanager.rpc.mqtt.MQTTManager;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.MyApplication;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.mine.MineFragment_;
 import com.sunmi.assistant.utils.MainTab;
 import com.sunmi.ipc.rpc.mqtt.MqttManager;
 import com.tencent.bugly.crashreport.CrashReport;
@@ -28,6 +29,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
+import cn.bingoogolapple.badgeview.BGABadgeTextView;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.constant.CommonConstants;
@@ -69,12 +71,13 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
         }
     }
 
-    public synchronized static MainActivity getInstance(){
-        if (instance == null){
+    public synchronized static MainActivity getInstance() {
+        if (instance == null) {
             instance = new MainActivity();
         }
         return instance;
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -122,13 +125,17 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
             TabHost.TabSpec tab = mTabHost.newTabSpec(getString(mainTab.getResName()));
             View indicator = LayoutInflater.from(getApplicationContext())
                     .inflate(R.layout.tab_indicator, null);
-            TextView title = indicator.findViewById(R.id.tab_title);
+            BGABadgeTextView title = indicator.findViewById(R.id.tab_title);
 
             if (mainTab.getResIcon() != -1) {
                 Drawable drawable = this.getResources().getDrawable(mainTab.getResIcon());
                 title.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
             }
             title.setText(getString(mainTab.getResName()));
+            if (mainTab.getClz() == MineFragment_.class) {
+                title.showTextBadge("9");
+//                title.showCirclePointBadge();
+            }
             tab.setIndicator(indicator);
             tab.setContent(tag -> new View(context));
             mTabHost.addTab(tab, mainTab.getClz(), null);

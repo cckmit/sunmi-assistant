@@ -18,6 +18,7 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
+import cn.bingoogolapple.badgeview.BGABadgeRelativeLayout;
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.SpUtils;
@@ -39,6 +40,9 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     TextView tvName;
     @ViewById(R.id.tv_account)
     TextView tvAccount;
+    @ViewById(R.id.rlMsg)
+    BGABadgeRelativeLayout rlMsg;
+
 
     @AfterViews
     void init() {
@@ -50,6 +54,7 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
 
     private void initView() {
         initAvatar(false);
+        rlMsg.showCirclePointBadge();
         initUsername();
         initAccount();
     }

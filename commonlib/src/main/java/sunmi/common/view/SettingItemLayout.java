@@ -47,8 +47,16 @@ public class SettingItemLayout extends RelativeLayout {
     private float rightPadding;
     private int defaultColor = 0xff000000;
 
+    public SettingItemLayout(Context context) {
+       this(context,null);
+    }
+
     public SettingItemLayout(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context,attrs,0);
+    }
+
+    public SettingItemLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
         mContext = context;
         setCustomAttributes(attrs);
         initLayout();

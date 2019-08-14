@@ -15,22 +15,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".mine.message.MsgCenterActivity"></activity>
 
         <receiver
             android:name=".receiver.LanuageReceive"
             android:enabled="true"
             android:exported="true">
-
             <intent-filter android:priority="1000">
                 <action android:name="android.intent.action.LOCALE_CHANGED" />
             </intent-filter>
-
         </receiver>
 
         <activity
             android:name=".ui.activity.LeadPagesActivity_"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".ui.activity.WelcomeActivity_"
             android:configChanges="orientation|keyboardHidden|screenSize|locale"
@@ -38,60 +36,47 @@
             android:theme="@style/SplashTheme"
             android:windowSoftInputMode="adjustResize|adjustPan">
             <intent-filter>
-
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <intent-filter>
-                <!--web或js打开本地APP 协议部分，自定义设置-->
+
+                <!-- web或js打开本地APP 协议部分，自定义设置 -->
                 <data
                     android:host="sunmi"
                     android:path="/androidapp"
                     android:port="8080"
                     android:scheme="xl" />
+
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
             </intent-filter>
-        </activity>
-
-        <!--登录-->
+        </activity> <!-- 登录 -->
         <activity
             android:name=".ui.activity.login.LoginActivity_"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-
-        <!--登录发送验证码 -->
+            android:screenOrientation="portrait" /> <!-- 登录发送验证码 -->
         <activity
             android:name=".ui.activity.login.SendSmsLoginActivity_"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|adjustPan" />
-        <!-- 登录获取验证码-->
-        <!-- 注册-->
+            android:windowSoftInputMode="adjustResize|adjustPan" /> <!-- 登录获取验证码 -->
+        <!-- 注册 -->
         <activity
             android:name=".ui.activity.login.RegisterActivity_"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustResize|adjustPan" />
-        <!-- 注册获取验证码-->
-        <activity android:name=".ui.activity.login.InputCaptchaActivity_" />
-        <!-- 设置密码-->
-        <activity android:name=".ui.activity.login.SetPasswordActivity_" />
-
-        <!-- 找回密码发送验证码-->
+            android:windowSoftInputMode="adjustResize|adjustPan" /> <!-- 注册获取验证码 -->
+        <activity android:name=".ui.activity.login.InputCaptchaActivity_" /> <!-- 设置密码 -->
+        <activity android:name=".ui.activity.login.SetPasswordActivity_" /> <!-- 找回密码发送验证码 -->
         <activity android:name=".ui.activity.login.RetrievePasswordActivity_" />
-        <activity android:name=".ui.activity.login.InputMobileActivity_" />
-
-        <!-- 首页-->
+        <activity android:name=".ui.activity.login.InputMobileActivity_" /> <!-- 首页 -->
         <activity
             android:name=".ui.activity.MainActivity_"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-
         <activity android:name=".mine.setting.SettingActivity_" />
         <activity android:name=".mine.setting.SecurityActivity_" />
         <activity android:name=".mine.setting.ChangePasswordActivity_" />
@@ -118,14 +103,11 @@
         <activity android:name=".mine.shop.ShopCategoryActivity_" />
         <activity android:name=".mine.shop.ShopRegionActivity_" />
         <activity android:name=".mine.shop.ShopAddressActivity_" />
-        <activity android:name=".mine.HelpActivity_" />
-
-        <!--百度地图-->
+        <activity android:name=".mine.HelpActivity_" /> <!-- 百度地图 -->
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
-            android:process=":remote" />
-        <!-- 百度AK鉴权 -->
+            android:process=":remote" /> <!-- 百度AK鉴权 -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="${BAIDU_KEY}" />
