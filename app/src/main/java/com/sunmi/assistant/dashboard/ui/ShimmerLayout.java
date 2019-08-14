@@ -27,6 +27,10 @@ import com.sunmi.assistant.R;
 
 import sunmi.common.utils.log.LogCat;
 
+/**
+ * @author yinhui
+ * @date 2019-08-14
+ */
 public class ShimmerLayout extends FrameLayout {
 
     private static final String TAG = ShimmerLayout.class.getSimpleName();
@@ -156,6 +160,17 @@ public class ShimmerLayout extends FrameLayout {
         shimmerEnd();
     }
 
+    public void clear() {
+        shimmerEnd();
+        if (maskAnimator != null) {
+            maskAnimator.removeAllUpdateListeners();
+        }
+        maskAnimator = null;
+        gradientTexturePaint = null;
+
+        releaseBitMaps();
+    }
+
     public boolean isAnimationStarted() {
         return isAnimationStarted;
     }
@@ -267,21 +282,10 @@ public class ShimmerLayout extends FrameLayout {
     }
 
     private void resetIfStarted() {
-        reset();
+        clear();
         if (isAnimationStarted) {
             shimmerStart();
         }
-    }
-
-    private void reset() {
-        shimmerEnd();
-        if (maskAnimator != null) {
-            maskAnimator.removeAllUpdateListeners();
-        }
-        maskAnimator = null;
-        gradientTexturePaint = null;
-
-        releaseBitMaps();
     }
 
     private void dispatchDrawShimmer(Canvas canvas) {
