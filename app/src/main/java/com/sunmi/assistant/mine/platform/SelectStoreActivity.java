@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 
@@ -136,16 +137,23 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
         }
 
         @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            ViewHolder holder = super.onCreateViewHolder(parent, viewType);
+            holder.getView(R.id.CBox).setOnClickListener(v -> {
+                SelectShopModel info = getData().get(holder.getAdapterPosition());
+                info.setChecked(!info.isChecked());
+                selectedCount = info.isChecked() ? selectedCount + 1 : selectedCount - 1;
+                enableCompleteBtn(selectedCount > 0);
+            });
+            return holder;
+        }
+
+        @Override
         public void convert(ViewHolder holder, SelectShopModel info) {
             holder.setText(R.id.tvName, info.getShopName());
             holder.setText(R.id.tvPlatform, getString(R.string.str_shop_platform_from, info.getSaasName()));
             CheckBox checkBox = holder.getView(R.id.CBox);
             checkBox.setChecked(info.isChecked());
-            checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                info.setChecked(isChecked);
-                selectedCount = isChecked ? selectedCount + 1 : selectedCount - 1;
-                enableCompleteBtn(selectedCount > 0);
-            });
         }
     }
 
