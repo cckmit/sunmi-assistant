@@ -3,6 +3,7 @@ package com.sunmi.assistant.dashboard.ui;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -16,6 +17,7 @@ import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.Shader;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -23,8 +25,11 @@ import android.widget.FrameLayout;
 
 import com.sunmi.assistant.R;
 
+import sunmi.common.utils.log.LogCat;
+
 public class ShimmerLayout extends FrameLayout {
 
+    private static final String TAG = ShimmerLayout.class.getSimpleName();
     private static final int DEFAULT_ANIMATION_DURATION = 1500;
 
     private static final byte DEFAULT_ANGLE = 20;
@@ -45,10 +50,10 @@ public class ShimmerLayout extends FrameLayout {
     private Bitmap localMaskBitmap;
     private Bitmap maskBitmap;
     private Canvas canvasForShimmerMask;
+    private boolean isRealStarted;
 
     private boolean isAnimationReversed;
     private boolean isAnimationStarted;
-    private boolean autoStart;
     private int shimmerAnimationDuration;
     private int shimmerColor;
     private int shimmerAngle;
@@ -78,8 +83,8 @@ public class ShimmerLayout extends FrameLayout {
         try {
             shimmerAngle = a.getInteger(R.styleable.ShimmerLayout_shimmer_angle, DEFAULT_ANGLE);
             shimmerAnimationDuration = a.getInteger(R.styleable.ShimmerLayout_shimmer_animation_duration, DEFAULT_ANIMATION_DURATION);
-            shimmerColor = a.getColor(R.styleable.ShimmerLayout_shimmer_color, getColor(R.color.shimmer_color));
-            autoStart = a.getBoolean(R.styleable.ShimmerLayout_shimmer_auto_start, false);
+            shimmerColor = a.getColor(R.styleable.ShimmerLayout_shimmer_color, ContextCompat.getColor(context, R.color.shimmer_color));
+            isAnimationStarted = a.getBoolean(R.styleable.ShimmerLayout_shimmer_auto_start, false);
             maskWidth = a.getFloat(R.styleable.ShimmerLayout_shimmer_mask_width, 0.5F);
             gradientCenterColorWidth = a.getFloat(R.styleable.ShimmerLayout_shimmer_gradient_center_color_width, 0.1F);
             isAnimationReversed = a.getBoolean(R.styleable.ShimmerLayout_shimmer_reverse_animation, false);
@@ -93,20 +98,28 @@ public class ShimmerLayout extends FrameLayout {
 
         enableForcedSoftwareLayerIfNeeded();
 
-        if (autoStart && getVisibility() == VISIBLE) {
-            startShimmerAnimation();
+        if (isAnimationStarted && getVisibility() == VISIBLE) {
+            shimmerStart();
         }
     }
 
     @Override
+    protected void onAttachedToWindow() {
+        if (isAnimationStarted && getVisibility() == VISIBLE) {
+            shimmerStart();
+        }
+        super.onAttachedToWindow();
+    }
+
+    @Override
     protected void onDetachedFromWindow() {
-        resetShimmering();
+        shimmerEnd();
         super.onDetachedFromWindow();
     }
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        if (!isAnimationStarted || getWidth() <= 0 || getHeight() <= 0) {
+        if (!isRealStarted || getWidth() <= 0 || getHeight() <= 0) {
             super.dispatchDraw(canvas);
         } else {
             dispatchDrawShimmer(canvas);
@@ -117,46 +130,30 @@ public class ShimmerLayout extends FrameLayout {
     public void setVisibility(int visibility) {
         super.setVisibility(visibility);
         if (visibility == VISIBLE) {
-            if (autoStart) {
-                startShimmerAnimation();
+            if (isAnimationStarted) {
+                shimmerStart();
             }
         } else {
-            stopShimmerAnimation();
+            shimmerEnd();
         }
     }
 
-    public void startShimmerAnimation() {
+    public void start() {
         if (isAnimationStarted) {
             return;
         }
-
-        if (getWidth() == 0) {
-            startAnimationPreDrawListener = new ViewTreeObserver.OnPreDrawListener() {
-                @Override
-                public boolean onPreDraw() {
-                    getViewTreeObserver().removeOnPreDrawListener(this);
-                    startShimmerAnimation();
-
-                    return true;
-                }
-            };
-
-            getViewTreeObserver().addOnPreDrawListener(startAnimationPreDrawListener);
-
-            return;
-        }
-
-        Animator animator = getShimmerAnimation();
-        animator.start();
         isAnimationStarted = true;
+        if (getVisibility() == VISIBLE && isAttachedToWindow()) {
+            shimmerStart();
+        }
     }
 
-    public void stopShimmerAnimation() {
-        if (startAnimationPreDrawListener != null) {
-            getViewTreeObserver().removeOnPreDrawListener(startAnimationPreDrawListener);
+    public void stop() {
+        if (!isAnimationStarted) {
+            return;
         }
-
-        resetShimmering();
+        isAnimationStarted = false;
+        shimmerEnd();
     }
 
     public boolean isAnimationStarted() {
@@ -229,11 +226,62 @@ public class ShimmerLayout extends FrameLayout {
         resetIfStarted();
     }
 
-    private void resetIfStarted() {
-        if (isAnimationStarted) {
-            resetShimmering();
-            startShimmerAnimation();
+    private void shimmerStart() {
+        if (isRealStarted) {
+            return;
         }
+        LogCat.d(TAG, "shimmerStart");
+        if (getWidth() == 0) {
+            startAnimationPreDrawListener = new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    getViewTreeObserver().removeOnPreDrawListener(this);
+                    shimmerStart();
+
+                    return true;
+                }
+            };
+
+            getViewTreeObserver().addOnPreDrawListener(startAnimationPreDrawListener);
+
+            return;
+        }
+        isRealStarted = true;
+        Animator animator = getShimmerAnimation();
+        animator.start();
+    }
+
+    private void shimmerEnd() {
+        if (!isRealStarted) {
+            return;
+        }
+        LogCat.d(TAG, "shimmerEnd");
+        isRealStarted = false;
+        if (startAnimationPreDrawListener != null) {
+            getViewTreeObserver().removeOnPreDrawListener(startAnimationPreDrawListener);
+        }
+
+        if (maskAnimator != null) {
+            maskAnimator.end();
+        }
+    }
+
+    private void resetIfStarted() {
+        reset();
+        if (isAnimationStarted) {
+            shimmerStart();
+        }
+    }
+
+    private void reset() {
+        shimmerEnd();
+        if (maskAnimator != null) {
+            maskAnimator.removeAllUpdateListeners();
+        }
+        maskAnimator = null;
+        gradientTexturePaint = null;
+
+        releaseBitMaps();
     }
 
     private void dispatchDrawShimmer(Canvas canvas) {
@@ -273,19 +321,6 @@ public class ShimmerLayout extends FrameLayout {
         destinationCanvas.restore();
     }
 
-    private void resetShimmering() {
-        if (maskAnimator != null) {
-            maskAnimator.end();
-            maskAnimator.removeAllUpdateListeners();
-        }
-
-        maskAnimator = null;
-        gradientTexturePaint = null;
-        isAnimationStarted = false;
-
-        releaseBitMaps();
-    }
-
     private void releaseBitMaps() {
         canvasForShimmerMask = null;
 
@@ -309,7 +344,7 @@ public class ShimmerLayout extends FrameLayout {
         }
 
         final int edgeColor = reduceColorAlphaValueToZero(shimmerColor);
-        final float shimmerLineWidth = getWidth() / 2 * maskWidth;
+        final float shimmerLineWidth = (float) getWidth() / 2 * maskWidth;
         final float yPosition = (0 <= shimmerAngle) ? getHeight() : 0;
 
         LinearGradient gradient = new LinearGradient(
@@ -357,14 +392,11 @@ public class ShimmerLayout extends FrameLayout {
         maskAnimator.setDuration(shimmerAnimationDuration);
         maskAnimator.setRepeatCount(ObjectAnimator.INFINITE);
 
-        maskAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                maskOffsetX = animationFromX + (int) animation.getAnimatedValue();
+        maskAnimator.addUpdateListener(animation -> {
+            maskOffsetX = animationFromX + (int) animation.getAnimatedValue();
 
-                if (maskOffsetX + shimmerBitmapWidth >= 0) {
-                    invalidate();
-                }
+            if (maskOffsetX + shimmerBitmapWidth >= 0) {
+                invalidate();
             }
         });
 
@@ -381,15 +413,6 @@ public class ShimmerLayout extends FrameLayout {
         }
     }
 
-    private int getColor(int id) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return getContext().getColor(id);
-        } else {
-            //noinspection deprecation
-            return getResources().getColor(id);
-        }
-    }
-
     private int reduceColorAlphaValueToZero(int actualColor) {
         return Color.argb(0, Color.red(actualColor), Color.green(actualColor), Color.blue(actualColor));
     }
@@ -399,7 +422,7 @@ public class ShimmerLayout extends FrameLayout {
     }
 
     private int calculateMaskWidth() {
-        final double shimmerLineBottomWidth = (getWidth() / 2 * maskWidth) / Math.cos(Math.toRadians(Math.abs(shimmerAngle)));
+        final double shimmerLineBottomWidth = ((double) getWidth() / 2 * maskWidth) / Math.cos(Math.toRadians(Math.abs(shimmerAngle)));
         final double shimmerLineRemainingTopWidth = getHeight() * Math.tan(Math.toRadians(Math.abs(shimmerAngle)));
 
         return (int) (shimmerLineBottomWidth + shimmerLineRemainingTopWidth);
@@ -422,6 +445,7 @@ public class ShimmerLayout extends FrameLayout {
      *
      * @see <a href="https://stackoverflow.com/questions/12445583/issue-with-composeshader-on-android-4-1-1">StackOverflow</a>
      */
+    @SuppressLint("ObsoleteSdkInt")
     private void enableForcedSoftwareLayerIfNeeded() {
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
             setLayerType(View.LAYER_TYPE_SOFTWARE, null);
