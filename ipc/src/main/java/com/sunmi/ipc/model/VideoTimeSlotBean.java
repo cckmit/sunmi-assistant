@@ -1,14 +1,22 @@
 package com.sunmi.ipc.model;
 
-import android.support.annotation.NonNull;
+import com.google.gson.annotations.SerializedName;
 
 /**
- * ap和云端时间组合
- * Created by YangShiJie on 2019/5/25.
+ * Description:
+ * Created by bruce on 2019/8/14.
  */
-public class ApCloudTimeBean implements Comparable<ApCloudTimeBean> {
+public class VideoTimeSlotBean implements Comparable<VideoTimeSlotBean> {
+
+    /**
+     * start_time : 1565512348
+     * end_time : 1565539176
+     */
+    @SerializedName("start_time")
     private long startTime;
+    @SerializedName("end_time")
     private long endTime;
+
     private boolean isApPlay;
 
     public long getStartTime() {
@@ -36,10 +44,20 @@ public class ApCloudTimeBean implements Comparable<ApCloudTimeBean> {
     }
 
     @Override
-    public int compareTo(@NonNull ApCloudTimeBean o) {
+    public int compareTo(VideoTimeSlotBean o) {
         if (this.startTime >= o.getStartTime()) {
             return 1;
         }
         return -1;
     }
+
+    @Override
+    public String toString() {
+        return "VideoTimeSlotBean{" +
+                "startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", isApPlay=" + isApPlay +
+                '}';
+    }
+
 }

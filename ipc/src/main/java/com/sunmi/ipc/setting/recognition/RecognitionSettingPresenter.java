@@ -5,7 +5,6 @@ import com.sunmi.ipc.R;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.setting.entity.CameraConfig;
-import com.sunmi.ipc.view.IpcVideoView;
 
 import org.json.JSONException;
 
@@ -27,18 +26,11 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
     private static final int SD_STATUS_FINE = 2;
     private static final int SD_STATUS_UNKNOWN = 3;
 
-    private Callback mCallback = new Callback();
-
     private SunmiDevice mDevice;
     private CameraConfig mConfig;
 
     private int mZoomGap;
     private int mBaseFocus;
-
-    @Override
-    public IpcVideoView.ResultCallback getCallback() {
-        return mCallback;
-    }
 
     @Override
     public void init(SunmiDevice device) {
@@ -259,14 +251,5 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
         BaseNotification.newInstance().removeObserver(this, IpcConstants.fsSetLine);
         BaseNotification.newInstance().removeObserver(this, IpcConstants.getSdStatus);
     }
-
-    private class Callback implements IpcVideoView.ResultCallback {
-
-        @Override
-        public void onResult(String result) {
-            LogCat.d(TAG, result);
-        }
-    }
-
 
 }

@@ -1,7 +1,7 @@
 package com.sunmi.ipc.utils;
 
 import com.google.gson.Gson;
-import com.sunmi.ipc.model.IotcCmdBean;
+import com.sunmi.ipc.model.IotcCmdReq;
 import com.tutk.IOTC.AVAPIs;
 import com.tutk.IOTC.IOTCAPIs;
 
@@ -117,7 +117,7 @@ public class IOTCClientUtils {
      * @param type 分辨率，0：超清，1：高清，2：标清
      */
     public static void changeValue(int type) {
-        IotcCmdBean cmd = new IotcCmdBean.Builder()
+        IotcCmdReq cmd = new IotcCmdReq.Builder()
                 .setMsg_id(Utils.getMsgId())
                 .setCmd(CMD_LIVE_START)
                 .setChannel(1)
@@ -129,7 +129,7 @@ public class IOTCClientUtils {
      * 停止直播参数
      */
     public static void stopLive() {
-        IotcCmdBean cmd = new IotcCmdBean.Builder()
+        IotcCmdReq cmd = new IotcCmdReq.Builder()
                 .setMsg_id(Utils.getMsgId())
                 .setCmd(CMD_LIVE_STOP)
                 .setChannel(1).builder();
@@ -137,7 +137,7 @@ public class IOTCClientUtils {
     }
 
     public static void getPlaybackList(long start, long end) {
-        IotcCmdBean cmd = new IotcCmdBean.Builder()
+        IotcCmdReq cmd = new IotcCmdReq.Builder()
                 .setMsg_id(Utils.getMsgId())
                 .setCmd(CMD_PLAYBACK_LIST)
                 .setChannel(1)
@@ -147,7 +147,7 @@ public class IOTCClientUtils {
     }
 
     public static void startPlayback(long startTime) {
-        IotcCmdBean cmd = new IotcCmdBean.Builder()
+        IotcCmdReq cmd = new IotcCmdReq.Builder()
                 .setMsg_id(Utils.getMsgId())
                 .setCmd(CMD_PLAYBACK_START)
                 .setChannel(1)
@@ -156,7 +156,7 @@ public class IOTCClientUtils {
     }
 
     public static void stopPlayback() {
-        IotcCmdBean cmd = new IotcCmdBean.Builder()
+        IotcCmdReq cmd = new IotcCmdReq.Builder()
                 .setMsg_id(Utils.getMsgId())
                 .setCmd(CMD_PLAYBACK_STOP)
                 .setChannel(1).builder();
@@ -164,7 +164,7 @@ public class IOTCClientUtils {
     }
 
     public static void pausePlayback(boolean isPause) {
-        IotcCmdBean cmd = new IotcCmdBean.Builder()
+        IotcCmdReq cmd = new IotcCmdReq.Builder()
                 .setMsg_id(Utils.getMsgId())
                 .setCmd(CMD_PLAYBACK_PAUSE)
                 .setChannel(1)
@@ -172,7 +172,7 @@ public class IOTCClientUtils {
         cmdCall(cmd);
     }
 
-    private static void cmdCall(IotcCmdBean cmd) {
+    private static void cmdCall(IotcCmdReq cmd) {
         String json = new Gson().toJson(cmd);
         byte[] req = json.getBytes();
         IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);

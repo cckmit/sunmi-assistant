@@ -1,7 +1,10 @@
 package com.sunmi.assistant.presenter;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
+import com.sunmi.apmanager.constant.enums.DeviceStatus;
+import com.sunmi.apmanager.receiver.MyNetworkCallback;
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.utils.DBUtils;
 import com.sunmi.assistant.R;
@@ -76,11 +79,16 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                             JSONObject object = (JSONObject) jsonArray.opt(i);
                             SunmiDevice device = new SunmiDevice();
                             device.setType("ROUTER");
+                            if (object.has("sn")) {
+                                device.setDeviceid(object.getString("sn"));
+                            }
                             if (object.has("active_status")) {
                                 device.setStatus(object.getInt("active_status"));
                             }
-                            if (object.has("sn")) {
-                                device.setDeviceid(object.getString("sn"));
+                            if (TextUtils.equals(device.getDeviceid(), MyNetworkCallback.CURRENT_ROUTER)) {
+                                if (device.getStatus() == DeviceStatus.OFFLINE.ordinal()) {
+                                    device.setStatus(DeviceStatus.EXCEPTION.ordinal());
+                                }
                             }
                             if (object.has("model")) {
                                 device.setModel(object.getString("model"));
