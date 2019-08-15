@@ -243,24 +243,6 @@ public class SunmiStoreApi {
                 .enqueue(callback);
     }
 
-    public static void getStoreToken(String userId, String token, String companyId,
-                                     RetrofitCallback<Object> callback) {
-        try {
-            String params = new JSONObject()
-                    .put("user_id", userId)
-                    .put("token", token)
-                    .put("merchant_id", companyId)
-                    //1代表web, 2 代表app
-                    .put("app_type", 2)
-                    .toString();
-            SunmiStoreRetrofitClient.getInstance().create(UserInterface.class)
-                    .getStoreToken(new BaseRequest(params))
-                    .enqueue(callback);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void getSsoToken(RetrofitCallback<Object> callback) {
         SunmiStoreRetrofitClient.getInstance().create(UserInterface.class)
                 .getSsoToken(new BaseRequest(""))

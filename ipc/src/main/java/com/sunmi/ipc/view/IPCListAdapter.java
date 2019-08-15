@@ -84,7 +84,6 @@ public class IPCListAdapter extends RecyclerView.Adapter<IPCListAdapter.ViewHold
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             data.get(getAdapterPosition()).setSelected(isChecked);
-
         }
     }
 

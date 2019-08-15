@@ -93,12 +93,6 @@ public interface UserInterface {
     Call<BaseResponse<UserAvatarResp>> updateIcon(@Part MultipartBody.Part file);
 
     /**
-     * 获取token
-     */
-    @POST(userPath + "getStoreToken")
-    Call<BaseResponse<Object>> getStoreToken(@Body BaseRequest request);
-
-    /**
      * 根据jwt token反解出sso token返回给app
      *
      * @param request
