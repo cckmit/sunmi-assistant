@@ -1,5 +1,6 @@
 package com.sunmi.cloudprinter.rpc;
 
+import com.sunmi.cloudprinter.config.PrinterConfig;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.json.JSONException;
@@ -16,6 +17,11 @@ import sunmi.common.utils.log.LogCat;
  */
 public class IOTCloudApi extends BaseHttpApi {
 
+    private static final String BIND_PRINTER = PrinterConfig.IOT_CLOUD_URL + "Machine.bindMachine";//绑定打印机
+    private static final String GET_PRINTER_LIST = PrinterConfig.IOT_CLOUD_URL + "Machine.getMerchantInfo";//获取打印机列表
+    private static final String GET_PRINTER_STATUS = PrinterConfig.IOT_CLOUD_URL + "Machine.getMachineIsOnLine";//获取打印机状态
+    private static final String UNBIND_PRINTER = PrinterConfig.IOT_CLOUD_URL + "Machine.untiedMachine";//解绑打印机
+
     /**
      * 绑定打印机到iot云端
      *
@@ -30,7 +36,7 @@ public class IOTCloudApi extends BaseHttpApi {
                     .put("channelId", 1)
                     .put("token", SafeUtils.md5(SpUtils.getUID()))
                     .toString();
-            post(MerchantInterface.BIND_PRINTER, getSignedParams(params), callback);
+            post(BIND_PRINTER, getSignedParams(params), callback);
         } catch (JSONException e) {
             LogCat.e(TAG, "register -> get params error,", e);
         }
@@ -50,7 +56,7 @@ public class IOTCloudApi extends BaseHttpApi {
                     .put("channelId", 1)
                     .put("token", SafeUtils.md5(SpUtils.getUID()))
                     .toString();
-            post(MerchantInterface.UNBIND_PRINTER, getSignedParams(params), callback);
+            post(UNBIND_PRINTER, getSignedParams(params), callback);
         } catch (JSONException e) {
             LogCat.e(TAG, "register -> get params error,", e);
         }
@@ -67,7 +73,7 @@ public class IOTCloudApi extends BaseHttpApi {
                     .put("channelId", 1)
                     .put("token", SafeUtils.md5(SpUtils.getUID()))
                     .toString();
-            post(MerchantInterface.GET_PRINTER_LIST, getSignedParams(params), callback);
+            post(GET_PRINTER_LIST, getSignedParams(params), callback);
         } catch (JSONException e) {
             LogCat.e(TAG, "register -> get params error,", e);
         }
@@ -83,7 +89,7 @@ public class IOTCloudApi extends BaseHttpApi {
             String params = new JSONObject()
                     .put("sn", sn)
                     .toString();
-            post(MerchantInterface.GET_PRINTER_STATUS, getSignedParams(params), callback);
+            post(GET_PRINTER_STATUS, getSignedParams(params), callback);
         } catch (JSONException e) {
             LogCat.e(TAG, "register -> get params error,", e);
         }

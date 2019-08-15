@@ -9,7 +9,7 @@ import java.util.Map;
  * Description:
  * Created by bruce on 2019/5/25.
  */
-public class IotcCmdBean {
+public class IotcCmdReq {
     /**
      * msg_id : 1000
      * params : [{"cmd":22,"channel ":1,"param":{}}]
@@ -18,7 +18,7 @@ public class IotcCmdBean {
     private String msg_id;
     private List<Params> params;
 
-    private IotcCmdBean(String msg_id, List<Params> params) {
+    private IotcCmdReq(String msg_id, List<Params> params) {
         this.msg_id = msg_id;
         this.params = params;
     }
@@ -113,11 +113,11 @@ public class IotcCmdBean {
             return this;
         }
 
-        public IotcCmdBean builder() {
+        public IotcCmdReq builder() {
             Params params1 = new Params(cmd, channel, param);
             List<Params> params = new ArrayList<>();
             params.add(params1);
-            return new IotcCmdBean(msg_id, params);
+            return new IotcCmdReq(msg_id, params);
         }
     }
 
