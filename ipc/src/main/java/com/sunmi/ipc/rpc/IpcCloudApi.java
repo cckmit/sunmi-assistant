@@ -1,6 +1,9 @@
 package com.sunmi.ipc.rpc;
 
+import com.sunmi.ipc.model.CloudTimeSlotResp;
+import com.sunmi.ipc.model.IpcListResp;
 import com.sunmi.ipc.model.IpcNewFirmwareResp;
+import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.rpc.api.DeviceInterface;
 import com.sunmi.ipc.rpc.api.EmqInterface;
 import com.sunmi.ipc.rpc.api.MediaInterface;
@@ -10,16 +13,19 @@ import org.json.JSONObject;
 
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.rpc.cloud.SunmiStoreRetrofitClient;
+import sunmi.common.rpc.mqtt.EmqTokenResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.SafeUtils;
 
 /**
- * Description: IPCCloudApi
- * Created by Bruce on 2019/3/31.
+ * Description: IpcCloudApi
+ *
+ * @author Bruce
+ * @date 2019/3/31
  */
-public class IPCCloudApi {
+public class IpcCloudApi {
 
     /**
      * @param shopId    是	integer	店铺id
@@ -29,8 +35,8 @@ public class IPCCloudApi {
      * @param longitude 是	float	经度
      * @param latitude  是	float	纬度
      */
-    public static void bindIPC(String companyId, String shopId, String sn, int bindMode, String bindToken,
-                               float longitude, float latitude, RetrofitCallback callback) {
+    public static void bindIpc(String companyId, String shopId, String sn, int bindMode, String bindToken,
+                               float longitude, float latitude, RetrofitCallback<Object> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -54,8 +60,8 @@ public class IPCCloudApi {
      * @param shopId    是	integer	店铺id
      * @param deviceId  是	integer	设备id
      */
-    public static void unbindIPC(int companyId, int shopId,
-                                 int deviceId, RetrofitCallback callback) {
+    public static void unbindIpc(int companyId, int shopId,
+                                 int deviceId, RetrofitCallback<Object> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -74,7 +80,7 @@ public class IPCCloudApi {
      * @param companyId 是	int64	商户id
      * @param shopId    是	int64	店铺id
      */
-    public static void getDetailList(int companyId, int shopId, RetrofitCallback callback) {
+    public static void getDetailList(int companyId, int shopId, RetrofitCallback<IpcListResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -142,7 +148,7 @@ public class IPCCloudApi {
      * user_id 是	int	sso uId，登录后包含在jwt token中，无需显示传参
      * source  是	string	用户来源， APP或WEB
      */
-    public static void createEmqToken(RetrofitCallback callback) {
+    public static void createEmqToken(RetrofitCallback<EmqTokenResp> callback) {
         try {
             String params = new JSONObject()
                     .put("source", "APP")
@@ -163,7 +169,7 @@ public class IPCCloudApi {
      * @param endTime   是	int	结束时间戳
      */
     public static void getTimeSlots(int deviceId, long startTime, long endTime,
-                                    RetrofitCallback callback) {
+                                    RetrofitCallback<CloudTimeSlotResp> callback) {
         try {
             String params = new JSONObject()
                     .put("device_id", deviceId)
@@ -181,13 +187,13 @@ public class IPCCloudApi {
     /**
      * 获取设备录制视频列表
      *
-     * @param deviceId
-     * @param startTime
-     * @param endTime
-     * @param callback
+     * @param deviceId  DeviceID
+     * @param startTime 开始时间
+     * @param endTime   结束时间
+     * @param callback  回调
      */
     public static void getVideoList(int deviceId, long startTime, long endTime,
-                                    RetrofitCallback callback) {
+                                    RetrofitCallback<VideoListResp> callback) {
         try {
             String params = new JSONObject()
                     .put("device_id", deviceId)
@@ -201,7 +207,6 @@ public class IPCCloudApi {
             e.printStackTrace();
         }
     }
-
 
     /**
      * 参数加签

@@ -36,7 +36,7 @@ import com.sunmi.ipc.model.TimeBean;
 import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.model.VideoTimeSlotBean;
 import com.sunmi.ipc.presenter.VideoPlayPresenter;
-import com.sunmi.ipc.rpc.IPCCloudApi;
+import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.ipc.utils.AACDecoder;
 import com.sunmi.ipc.utils.H264Decoder;
 import com.sunmi.ipc.utils.IOTCClient;
@@ -684,7 +684,7 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
             shortTip("设备信息不完整");
             return;
         }
-        IPCCloudApi.getVideoList(deviceId, start, end, new RetrofitCallback<VideoListResp>() {
+        IpcCloudApi.getVideoList(deviceId, start, end, new RetrofitCallback<VideoListResp>() {
             @Override
             public void onSuccess(int code, String msg, VideoListResp data) {
                 videoListQueue.clear();

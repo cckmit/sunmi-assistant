@@ -82,7 +82,7 @@ public class MqttManager {
 
     public void createEmqToken(final boolean isInit) {
         LogCat.e(TAG, "mqtt createEmqToken start");
-        /*IPCCloudApi.createEmqToken(new RetrofitCallback<EmqTokenResp>() {
+        /*IpcCloudApi.createEmqToken(new RetrofitCallback<EmqTokenResp>() {
             @Override
             public void onSuccess(int code, String msg, EmqTokenResp response) {
                 LogCat.e(TAG, "mqtt createEmqToken success");

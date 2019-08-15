@@ -4,7 +4,7 @@ import com.sunmi.ipc.contract.VideoPlayContract;
 import com.sunmi.ipc.model.CloudTimeSlotResp;
 import com.sunmi.ipc.model.IotcCmdResp;
 import com.sunmi.ipc.model.VideoTimeSlotBean;
-import com.sunmi.ipc.rpc.IPCCloudApi;
+import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.ipc.utils.IOTCClient;
 import com.tutk.IOTC.P2pCmdCallback;
 
@@ -22,7 +22,7 @@ public class VideoPlayPresenter extends BasePresenter<VideoPlayContract.View>
         implements VideoPlayContract.Presenter {
     @Override
     public void getTimeSlots(int deviceId, final long startTime, final long endTime) {
-        IPCCloudApi.getTimeSlots(deviceId, startTime, endTime, new RetrofitCallback<CloudTimeSlotResp>() {
+        IpcCloudApi.getTimeSlots(deviceId, startTime, endTime, new RetrofitCallback<CloudTimeSlotResp>() {
             @Override
             public void onSuccess(int code, String msg, CloudTimeSlotResp data) {
                 if (!isViewAttached()) {
