@@ -1313,15 +1313,19 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
             @Override
             public void run() {
                 listAp.clear();
-                mPresenter.getPlaybackList(iotcClient, threeDaysBeforeSeconds, currentDateSeconds);
-//                iotcClient.getPlaybackList(threeDaysBeforeSeconds, currentDateSeconds); //获取AP回放时间列表
+                getDeviceTimeSlots(threeDaysBeforeSeconds, currentDateSeconds);
             }
         }, 3000);
     }
 
     //获取cloud回放时间轴
-    public void getTimeList(int deviceId, final long startTime, final long endTime) {
+    public void getCloudTimeSlots(int deviceId, long startTime, long endTime) {
         mPresenter.getTimeSlots(deviceId, startTime, endTime);
+    }
+
+    //获取设备sd卡回放时间轴
+    public void getDeviceTimeSlots(long startTime, long endTime) {
+        mPresenter.getPlaybackList(iotcClient, startTime, endTime);
     }
 
     //时间轴组合
@@ -1381,7 +1385,6 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
             listAp = duplicateRemoval(listAp);//去重
             Collections.sort(listAp);//正序比较
         }
-        LogCat.e(TAG, "888888 time all list");
         timeCanvasList(listAp);//组合时间轴渲染
     }
 
@@ -1444,11 +1447,10 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     @Override
     public void getDeviceTimeSlotSuccess(List<VideoTimeSlotBean> slots) {
         if (slots != null && slots.size() > 0) {
-            mPresenter.getPlaybackList(iotcClient,
-                    slots.get(slots.size() - 1).getEndTime(),
-                    currentDateSeconds);
+            listAp.addAll(slots);
+            getDeviceTimeSlots(slots.get(slots.size() - 1).getEndTime(), currentDateSeconds);
         } else {
-            getTimeList(deviceId, threeDaysBeforeSeconds, currentDateSeconds);
+            getCloudTimeSlots(deviceId, threeDaysBeforeSeconds, currentDateSeconds);
         }
     }
 
