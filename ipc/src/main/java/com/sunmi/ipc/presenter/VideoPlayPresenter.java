@@ -46,6 +46,9 @@ public class VideoPlayPresenter extends BasePresenter<VideoPlayContract.View>
 
     @Override
     public void getPlaybackList(IOTCClient iotcClient, long start, long end) {
+        if (iotcClient == null) {
+            return;
+        }
         iotcClient.getPlaybackList(start, end, new P2pCmdCallback<List<VideoTimeSlotBean>>() {
             @Override
             public void onResponse(int cmd, IotcCmdResp<List<VideoTimeSlotBean>> result) {
