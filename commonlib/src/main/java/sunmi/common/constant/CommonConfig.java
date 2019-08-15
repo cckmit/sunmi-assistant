@@ -18,7 +18,7 @@ public class CommonConfig extends BaseConfig {
 
     @Override
     protected void initDev(Context context, String env) {
-        SUNMI_STORE_URL = "http://dev-store.sunmi.com:30301/";
+        SUNMI_STORE_URL = "http://store.dev.sunmi.com/";
         CLOUD_TOKEN = "Woyouxinxi666";
         DES_IV = "12345678";
         DES_KEY = "wywmxxkj";
