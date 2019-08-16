@@ -4,4 +4,5 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="color_FAFAFA">#FAFAFA</color>
+    <color name="shimmer_color">#a2878787</color>
 </resources>
