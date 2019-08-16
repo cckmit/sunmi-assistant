@@ -9,9 +9,12 @@ import com.sunmi.ipc.model.FaceHistoryResp;
 import com.sunmi.ipc.model.FaceListResp;
 import com.sunmi.ipc.model.FaceSaveResp;
 
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
@@ -60,7 +63,7 @@ public interface FaceInterface {
      * @return Response
      */
     @POST(URL + "group/update")
-    Call<BaseResponse<Object>> updateDetail(@Body BaseRequest request);
+    Call<BaseResponse<Object>> update(@Body BaseRequest request);
 
     /**
      * 人脸删除
@@ -81,10 +84,12 @@ public interface FaceInterface {
      *                shop_id	是	integer	店铺id
      *                group_id	是	integer	人脸分组id
      *                file	是	file	人员照片
+     * @param file 人员照片
      * @return Response
      */
+    @Multipart
     @POST(URL + "group/uploadFace")
-    Call<BaseResponse<FaceCheckResp>> uploadAndCheck(@Body BaseRequest request);
+    Call<BaseResponse<FaceCheckResp>> uploadAndCheck(@Body BaseRequest request, @Part MultipartBody.Part file);
 
     /**
      * 保存人脸
@@ -155,7 +160,7 @@ public interface FaceInterface {
      * @return Response
      */
     @POST(URL + "group/update")
-    Call<BaseResponse<Object>> updateGroupDetail(@Body BaseRequest request);
+    Call<BaseResponse<Object>> updateGroup(@Body BaseRequest request);
 
     /**
      * 删除人脸库
