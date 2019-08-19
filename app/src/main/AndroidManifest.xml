@@ -105,9 +105,7 @@
         <activity android:name=".mine.platform.PlatformMobileActivity_" />
         <activity android:name=".order.OrderListActivity_" />
         <activity android:name=".order.OrderDetailActivity_" />
-        <activity
-            android:name=".ui.activity.login.LoginChooseShopActivity_"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity android:name=".ui.activity.login.LoginChooseShopActivity_" />
         <activity android:name=".ui.activity.ChooseShopActivity_" />
         <activity android:name=".ui.activity.merchant.CreateCompanyActivity_" />
         <activity android:name=".ui.activity.merchant.CreateCompanyNextActivity_" />
