@@ -100,12 +100,14 @@ public class ShopListActivity extends BaseActivity {
         SunmiStoreRemote.get().getShopList(SpUtils.getCompanyId(), new RetrofitCallback<ShopListResp>() {
             @Override
             public void onSuccess(int code, String msg, ShopListResp data) {
+                hideLoadingDialog();
                 mAdapter.setData(data.getShop_list());
             }
 
             @Override
             public void onFail(int code, String msg, ShopListResp data) {
                 LogCat.e(TAG, "Get shop list Failed. " + msg);
+                hideLoadingDialog();
                 shortTip(getString(R.string.str_store_load_error));
             }
         });
