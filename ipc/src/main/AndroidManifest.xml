@@ -37,6 +37,9 @@
             android:largeHeap="true"
             android:screenOrientation="landscape" />
 
+        <activity android:name=".face.FaceGroupListActivity_" />
+        <activity android:name=".face.FaceGroupCreateActivity_" />
+
     </application>
 
 </manifest>

@@ -23,6 +23,7 @@
     <string name="toast_serverNoResponse">Please detect the network anomalies</string>
     <string name="network_connected">Network connected</string>
     <string name="server_noreponse">No response from the server</string>
+    <string name="toast_network_error">网络异常，请检查网络设置</string>
 
     <string name="tip_granted">Authoized</string>
     <string name="tip_permission_ungranted">Deny authorization may influence the use of some functions</string>

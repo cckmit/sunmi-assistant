@@ -1,7 +1,9 @@
 package com.sunmi.ipc.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.sunmi.ipc.face.model.FaceGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,10 +24,11 @@ public class FaceGroupCreateReq {
     @SerializedName("facedb_list")
     private List<Face> faceList;
 
-    public FaceGroupCreateReq(int companyId, int shopId, List<Face> faceList) {
+    public FaceGroupCreateReq(int companyId, int shopId, String name, String mark, int capacity) {
         this.companyId = companyId;
         this.shopId = shopId;
-        this.faceList = faceList;
+        this.faceList = new ArrayList<>(1);
+        this.faceList.add(new Face(name, mark, capacity));
     }
 
     public static class Face {
@@ -54,14 +57,14 @@ public class FaceGroupCreateReq {
         @SerializedName("target_id")
         private int targetId;
 
-        public Face(String name, int type, int threshold, int period, String mark, int capacity, int targetId) {
+        public Face(String name, String mark, int capacity) {
             this.name = name;
-            this.type = type;
-            this.threshold = threshold;
-            this.period = period;
+            this.type = FaceGroup.FACE_GROUP_TYPE_CUSTOM;
+            this.threshold = 0;
+            this.period = 0;
             this.mark = mark;
             this.capacity = capacity;
-            this.targetId = targetId;
+            this.targetId = 0;
         }
     }
 }
