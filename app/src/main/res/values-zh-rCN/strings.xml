@@ -139,5 +139,25 @@
     <string name="company_shop_check_mobile">请输入正确手机号码</string>
     <string name="company_shop_select_one_or_more">您可以选择一家或多家门店</string>
     <string name="company_create_invalid_character">请输入有效的字符</string>
+    <string name="company_shop_area">门店面积</string>
+    <string name="company_shop_contact_tip">请输入联系人</string>
+    <string name="company_shop_contact_tel_tip">请输入联系方式</string>
+    <string name="company_shop_area_tip">请输入门店面积</string>
+    <string name="company_name">商户名称</string>
+    <string name="company_id">商户编号</string>
+    <string name="company_create_time">创建时间</string>
+    <string name="company_switch">切换商户</string>
+    <string name="company_email">联系邮箱</string>
+    <string name="company_square">㎡</string>
+    <string name="company_show_now">当前商户</string>
+    <string name="str_change_company_contact">更改联系人</string>
+    <string name="str_change_company_tel">更改联系方式</string>
+    <string name="str_change_company_email">更改联系邮箱</string>
+    <string name="tip_input_company_contact">请输入联系人</string>
+    <string name="tip_input_company_tel">请输入联系方式</string>
+    <string name="tip_input_company_email">请输入联系邮箱</string>
+    <string name="tip_input_company_correct_email">请输入正确的邮箱格式</string>
+    <string name="company_now_selected">当前商户</string>
+    <string name="company_can_switch">可切换商户</string>
 
 </resources>

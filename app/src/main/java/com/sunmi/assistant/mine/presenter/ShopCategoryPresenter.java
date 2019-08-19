@@ -1,10 +1,10 @@
 package com.sunmi.assistant.mine.presenter;
 
 import com.sunmi.assistant.mine.contract.ShopCategoryContract;
-import com.sunmi.assistant.mine.model.ShopInfo;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.model.ShopCategoryResp;
+import sunmi.common.model.ShopInfo;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.log.LogCat;
@@ -46,22 +46,22 @@ public class ShopCategoryPresenter extends BasePresenter<ShopCategoryContract.Vi
 
     @Override
     public void updateCategory(int type1, int type2) {
-        SunmiStoreApi.updateShopCategory(mInfo.getShopId(), mInfo.getShopName(), type1, type2,
-                new RetrofitCallback<Object>() {
-                    @Override
-                    public void onSuccess(int code, String msg, Object data) {
-                        if (isViewAttached()) {
-                            mView.complete();
-                        }
-                    }
+        mInfo.setType(type1, type2);
+        SunmiStoreApi.updateShopMessage(mInfo, new RetrofitCallback<Object>() {
+            @Override
+            public void onSuccess(int code, String msg, Object data) {
+                if (isViewAttached()) {
+                    mView.complete();
+                }
+            }
 
-                    @Override
-                    public void onFail(int code, String msg, Object data) {
-                        if (isViewAttached()) {
-                            mView.updateCategoryFailed();
-                        }
-                    }
-                });
+            @Override
+            public void onFail(int code, String msg, Object data) {
+                if (isViewAttached()) {
+                    mView.updateCategoryFailed();
+                }
+            }
+        });
     }
 
 }

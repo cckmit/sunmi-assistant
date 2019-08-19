@@ -7,7 +7,6 @@ import android.widget.EditText;
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.utils.DialogUtils;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.mine.model.ShopInfo;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -15,6 +14,7 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.model.ShopInfo;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -75,7 +75,7 @@ public class ShopNameActivity extends BaseActivity {
         }
         showLoadingDialog();
         mInfo.setShopName(name);
-        SunmiStoreApi.updateShopName(mInfo.getShopId(), name, new RetrofitCallback<Object>() {
+        SunmiStoreApi.updateShopMessage(mInfo, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 hideLoadingDialog();
@@ -101,7 +101,8 @@ public class ShopNameActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (TextUtils.isEmpty(etName.getText())) {
+        if (TextUtils.equals(mInfo.getShopName(),
+                etName.getText() == null ? null : etName.getText().toString().trim())) {
             super.onBackPressed();
         } else {
             DialogUtils.isCancelSetting(this);

@@ -12,6 +12,7 @@ import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.model.CreateShopInfo;
 import sunmi.common.model.PlatformInfo;
 import sunmi.common.model.ShopCategoryResp;
+import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopRegionResp;
 import sunmi.common.model.UserAvatarResp;
 import sunmi.common.model.UserInfoBean;
@@ -366,6 +367,30 @@ public class SunmiStoreApi {
     }
 
     /**
+     * 更新商户信息
+     *
+     * @param info
+     * @param callback
+     */
+    public static void updateCompanyMessage(CompanyInfoResp info, RetrofitCallback<CompanyInfoResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("company_name", info.getCompany_name())
+                    .put("contact_person", info.getContact_person())
+                    .put("contact_tel", info.getContact_tel())
+                    .put("contact_email", info.getContact_email())
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CompanyInterface.class)
+                    .updateCompany(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
      * 获取商户列表
      */
     public static void getCompanyList(RetrofitCallback callback) {
@@ -516,6 +541,81 @@ public class SunmiStoreApi {
             e.printStackTrace();
         }
     }
+
+    /**
+     * 更新门店联系人
+     */
+    public static void updateShopContact(int shopId, String shopName, String contactPerson, String contactTel,
+                                         RetrofitCallback<Object> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", shopId)
+                    .put("shop_name", shopName)
+                    //营业状态 0:营业 1:停业
+                    .put("business_status", 0)
+                    .put("contact_person", contactPerson)
+                    .put("contact_tel", contactTel)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
+                    .editShop(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 更新门店门店面积
+     */
+    public static void updateShopBusinessArea(int shopId, String shopName, float businessArea,
+                                              RetrofitCallback<Object> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", shopId)
+                    .put("shop_name", shopName)
+                    //营业状态 0:营业 1:停业
+                    .put("business_status", 0)
+                    .put("business_area", businessArea)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
+                    .editShop(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 更新门店信息
+     */
+    public static void updateShopMessage(ShopInfo shopInfo, RetrofitCallback<Object> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", shopInfo.getShopId())
+                    .put("shop_name", shopInfo.getShopName())
+                    //营业状态 0:营业 1:停业
+                    .put("business_status", 0)
+                    .put("type_one", shopInfo.getTypeOne())
+                    .put("type_two", shopInfo.getTypeTwo())
+                    .put("province", shopInfo.getProvince())
+                    .put("city", shopInfo.getCity())
+                    .put("area", shopInfo.getArea())
+                    .put("address", shopInfo.getAddress())
+                    .put("contact_person", shopInfo.getContactPerson())
+                    .put("contact_tel", shopInfo.getContactTel())
+                    .put("business_area", shopInfo.getBusinessArea())
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
+                    .editShop(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public static void getShopCategory(RetrofitCallback<ShopCategoryResp> callback) {
         SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)

@@ -99,7 +99,7 @@
         <activity android:name=".mine.UserInfoActivity_" />
         <activity android:name=".mine.ChangeUsernameActivity_" />
         <activity android:name=".ui.activity.SunmiLinkSearchActivity_" />
-        <activity android:name=".mine.ChangeCompanyNameActivity_" />
+        <activity android:name=".mine.company.CompanyUpdateActivity_" />
         <activity android:name=".mine.platform.SelectPlatformActivity_" />
         <activity android:name=".mine.platform.SelectStoreActivity_" />
         <activity android:name=".mine.platform.PlatformMobileActivity_" />
@@ -117,6 +117,8 @@
         <activity android:name=".mine.shop.ShopRegionActivity_" />
         <activity android:name=".mine.shop.ShopAddressActivity_" />
         <activity android:name=".mine.HelpActivity_" />
+        <activity android:name=".mine.shop.ShopContactAreaActivity_" />
+        <activity android:name=".mine.company.CompanyDetailActivity_" />
 
         <!--百度地图-->
         <service

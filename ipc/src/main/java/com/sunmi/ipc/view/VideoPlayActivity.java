@@ -59,8 +59,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -182,7 +183,7 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     //当前分钟走的秒数
     private int currentSecond;
     //刻度尺移动定时器
-    private Timer moveTimer;
+    private ScheduledExecutorService executorService;
     //滑动停止的时间戳
     private long scrollTime;
     //当前的itemPosition
@@ -774,19 +775,20 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
      * *******************时间滑动条***************************
      */
 
-    //开始移动
+    /**
+     * 一分钟轮询一次
+     * 开始移动
+     */
     public void openMove() {
-        if (moveTimer != null) {
-            moveTimer.cancel();
-            moveTimer = null;
+        if (executorService == null) {
+            executorService = Executors.newSingleThreadScheduledExecutor();
         }
-        moveTimer = new Timer();
-        moveTimer.schedule(new TimerTask() {
+        executorService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
                 moveTo();
             }
-        }, 0, 1000 * 60);//一分钟轮询一次
+        }, 0, 60, TimeUnit.SECONDS);
     }
 
     @UiThread
@@ -796,15 +798,15 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
         if (firstVisibleItem < 0) {
             return;
         }
-        linearLayoutManager.scrollToPositionWithOffset(currentItemPosition++, 0);
+        linearLayoutManager.scrollToPositionWithOffset(currentItemPosition, 0);
+        currentItemPosition++;
         canvasHours(firstVisibleItem); //绘制时间点和偏移量
     }
 
     //结束移动
     public void closeMove() {
-        if (moveTimer != null) {
-            moveTimer.cancel();
-            moveTimer = null;
+        if (executorService != null) {
+            executorService.shutdown();
         }
     }
 
