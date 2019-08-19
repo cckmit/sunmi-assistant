@@ -151,21 +151,21 @@ public class ShopDetailActivity extends BaseActivity {
 
     @Click(R.id.sil_shop_contact)
     public void toModifyContact() {
-        ShopContactAreaActivity_.intent(this).mInfo(mInfo)
+        ShopContactsAreaActivity_.intent(this).mInfo(mInfo)
                 .type(TYPE_CONTACT)
                 .startForResult(REQUEST_CODE_CONTACT);
     }
 
     @Click(R.id.sil_shop_mobile)
     public void toModifyContactTel() {
-        ShopContactAreaActivity_.intent(this).mInfo(mInfo)
+        ShopContactsAreaActivity_.intent(this).mInfo(mInfo)
                 .type(TYPE_CONTACT_TEL)
                 .startForResult(REQUEST_CODE_CONTACT_TEL);
     }
 
     @Click(R.id.sil_shop_area)
     public void toModifyArea() {
-        ShopContactAreaActivity_.intent(this).mInfo(mInfo)
+        ShopContactsAreaActivity_.intent(this).mInfo(mInfo)
                 .type(TYPE_AREA)
                 .startForResult(REQUEST_CODE_AREA);
     }
