@@ -1,10 +1,8 @@
-package com.sunmi.assistant.mine.model;
+package sunmi.common.model;
 
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import sunmi.common.model.ShopInfoResp;
 
 /**
  * @author yinhui
@@ -22,6 +20,9 @@ public class ShopInfo implements Parcelable {
     private int area;
     private String region;
     private String address;
+    private float businessArea;
+    private String contactPerson;
+    private String contactTel;
 
     public ShopInfo(ShopInfoResp response) {
         shopId = response.getShopId();
@@ -34,6 +35,9 @@ public class ShopInfo implements Parcelable {
         area = response.getArea();
         region = response.getRegion();
         address = response.getAddress();
+        businessArea = response.getBusinessArea();
+        contactPerson = response.getContactPerson();
+        contactTel = response.getContactTel();
     }
 
     public int getShopId() {
@@ -103,6 +107,30 @@ public class ShopInfo implements Parcelable {
         this.address = address;
     }
 
+    public float getBusinessArea() {
+        return businessArea;
+    }
+
+    public void setBusinessArea(float businessArea) {
+        this.businessArea = businessArea;
+    }
+
+    public String getContactPerson() {
+        return contactPerson;
+    }
+
+    public void setContactPerson(String contactPerson) {
+        this.contactPerson = contactPerson;
+    }
+
+    public String getContactTel() {
+        return contactTel;
+    }
+
+    public void setContactTel(String contactTel) {
+        this.contactTel = contactTel;
+    }
+
     @Override
     public String toString() {
         return "ShopInfo{" +
@@ -130,6 +158,9 @@ public class ShopInfo implements Parcelable {
         area = in.readInt();
         region = in.readString();
         address = in.readString();
+        businessArea = in.readFloat();
+        contactPerson = in.readString();
+        contactTel = in.readString();
     }
 
     @Override
@@ -144,6 +175,9 @@ public class ShopInfo implements Parcelable {
         dest.writeInt(area);
         dest.writeString(region);
         dest.writeString(address);
+        dest.writeFloat(businessArea);
+        dest.writeString(contactPerson);
+        dest.writeString(contactTel);
     }
 
     @Override
