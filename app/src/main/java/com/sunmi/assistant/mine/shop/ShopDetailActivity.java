@@ -25,8 +25,6 @@ import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.TitleBarView;
 
-import static com.sunmi.assistant.mine.shop.ShopListActivity.INTENT_EXTRA_SUCCESS;
-
 /**
  * 我的店铺详情
  *
@@ -89,7 +87,6 @@ public class ShopDetailActivity extends BaseActivity {
     public void onBackPressed() {
         if (isUpdateShopInfo) {
             Intent intent = getIntent();
-            intent.putExtra(INTENT_EXTRA_SUCCESS, true);
             setResult(RESULT_OK, intent);
         }
         super.onBackPressed();

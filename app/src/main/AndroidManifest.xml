@@ -119,6 +119,7 @@
         <activity android:name=".mine.HelpActivity_" />
         <activity android:name=".mine.shop.ShopContactsAreaActivity_" />
         <activity android:name=".mine.company.CompanyDetailActivity_" />
+        <activity android:name=".mine.shop.ShopDetailGroupActivity_" />
 
         <!--百度地图-->
         <service

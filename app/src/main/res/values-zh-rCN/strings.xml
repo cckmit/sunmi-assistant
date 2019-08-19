@@ -159,5 +159,7 @@
     <string name="tip_input_company_correct_email">请输入正确的邮箱格式</string>
     <string name="company_now_selected">当前商户</string>
     <string name="company_can_switch">可切换商户</string>
+    <string name="company_shop_details">门店详情</string>
+    <string name="company_shop_face_group">人脸分组</string>
 
 </resources>

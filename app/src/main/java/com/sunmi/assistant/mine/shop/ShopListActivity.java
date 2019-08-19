@@ -121,16 +121,12 @@ public class ShopListActivity extends BaseActivity {
 
         @Override
         public void convert(ViewHolder holder, ShopListResp.ShopInfo info) {
-            holder.setText(R.id.tvName, info.getShop_name());
-            SettingItemLayout silCompanyDetail = holder.getView(R.id.sil_shop_detail);
-            SettingItemLayout silCompanyFace = holder.getView(R.id.sil_shop_face);
-            silCompanyDetail.setOnClickListener(v -> {
+            SettingItemLayout silCompanyDetail = holder.getView(R.id.tvName);
+            silCompanyDetail.setLeftText(info.getShop_name());
+            holder.itemView.setOnClickListener(v -> {
                 CommonUtils.trackCommonEvent(mContext, "defaultStore",
                         "主页_我的_我的店铺_默认店铺", Constants.EVENT_MY_INFO);
-                ShopDetailActivity_.intent(mContext).shopId(info.getShop_id()).startForResult(REQUEST_CODE_SHOP);
-            });
-            silCompanyFace.setOnClickListener(v -> {
-                //TODO
+                ShopDetailGroupActivity_.intent(mContext).shopId(info.getShop_id()).startForResult(REQUEST_CODE_SHOP);
             });
         }
     }
