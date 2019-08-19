@@ -372,7 +372,7 @@ public class SunmiStoreApi {
      * @param info
      * @param callback
      */
-    public static void updateCompanyMessage(CompanyInfoResp info, RetrofitCallback<CompanyInfoResp> callback) {
+    public static void updateCompanyInfo(CompanyInfoResp info, RetrofitCallback<CompanyInfoResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", SpUtils.getCompanyId())
@@ -433,164 +433,11 @@ public class SunmiStoreApi {
         }
     }
 
-    /**
-     * 更改门店名称
-     */
-    public static void updateShopName(String shopName, RetrofitCallback<Object> callback) {
-        try {
-            String params = new JSONObject()
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId())
-                    .put("shop_name", shopName)
-                    //营业状态 0:营业 1:停业
-                    .put("business_status", 0)
-                    .toString();
-            SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
-                    .editShop(new BaseRequest(params))
-                    .enqueue(callback);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 更新门店名称
-     */
-    public static void updateShopName(int shopId, String shopName, RetrofitCallback<Object> callback) {
-        try {
-            String params = new JSONObject()
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", shopId)
-                    .put("shop_name", shopName)
-                    //营业状态 0:营业 1:停业
-                    .put("business_status", 0)
-                    .toString();
-            SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
-                    .editShop(new BaseRequest(params))
-                    .enqueue(callback);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 更新门店经营品类
-     */
-    public static void updateShopCategory(int shopId, String shopName, int type1, int type2,
-                                          RetrofitCallback<Object> callback) {
-        try {
-            String params = new JSONObject()
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", shopId)
-                    .put("shop_name", shopName)
-                    //营业状态 0:营业 1:停业
-                    .put("business_status", 0)
-                    .put("type_one", type1)
-                    .put("type_two", type2)
-                    .toString();
-            SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
-                    .editShop(new BaseRequest(params))
-                    .enqueue(callback);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 更新门店地区
-     */
-    public static void updateShopRegion(int shopId, String shopName, int province, int city, int area,
-                                        RetrofitCallback<Object> callback) {
-        try {
-            String params = new JSONObject()
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", shopId)
-                    .put("shop_name", shopName)
-                    //营业状态 0:营业 1:停业
-                    .put("business_status", 0)
-                    .put("province", province)
-                    .put("city", city)
-                    .put("area", area)
-                    .toString();
-            SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
-                    .editShop(new BaseRequest(params))
-                    .enqueue(callback);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 更新门店详细地址
-     */
-    public static void updateShopAddress(int shopId, String shopName, String address,
-                                         RetrofitCallback<Object> callback) {
-        try {
-            String params = new JSONObject()
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", shopId)
-                    .put("shop_name", shopName)
-                    //营业状态 0:营业 1:停业
-                    .put("business_status", 0)
-                    .put("address", address)
-                    .toString();
-            SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
-                    .editShop(new BaseRequest(params))
-                    .enqueue(callback);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 更新门店联系人
-     */
-    public static void updateShopContact(int shopId, String shopName, String contactPerson, String contactTel,
-                                         RetrofitCallback<Object> callback) {
-        try {
-            String params = new JSONObject()
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", shopId)
-                    .put("shop_name", shopName)
-                    //营业状态 0:营业 1:停业
-                    .put("business_status", 0)
-                    .put("contact_person", contactPerson)
-                    .put("contact_tel", contactTel)
-                    .toString();
-            SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
-                    .editShop(new BaseRequest(params))
-                    .enqueue(callback);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 更新门店门店面积
-     */
-    public static void updateShopBusinessArea(int shopId, String shopName, float businessArea,
-                                              RetrofitCallback<Object> callback) {
-        try {
-            String params = new JSONObject()
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", shopId)
-                    .put("shop_name", shopName)
-                    //营业状态 0:营业 1:停业
-                    .put("business_status", 0)
-                    .put("business_area", businessArea)
-                    .toString();
-            SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
-                    .editShop(new BaseRequest(params))
-                    .enqueue(callback);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 
     /**
      * 更新门店信息
      */
-    public static void updateShopMessage(ShopInfo shopInfo, RetrofitCallback<Object> callback) {
+    public static void updateShopInfo(ShopInfo shopInfo, RetrofitCallback<Object> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", SpUtils.getCompanyId())

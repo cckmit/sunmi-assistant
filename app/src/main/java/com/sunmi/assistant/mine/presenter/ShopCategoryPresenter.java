@@ -47,7 +47,7 @@ public class ShopCategoryPresenter extends BasePresenter<ShopCategoryContract.Vi
     @Override
     public void updateCategory(int type1, int type2) {
         mInfo.setType(type1, type2);
-        SunmiStoreApi.updateShopMessage(mInfo, new RetrofitCallback<Object>() {
+        SunmiStoreApi.updateShopInfo(mInfo, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
