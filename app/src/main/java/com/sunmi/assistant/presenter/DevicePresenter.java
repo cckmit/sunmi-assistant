@@ -227,9 +227,6 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
             public void onSuccess(int code, String msg, String data) {
                 try {
                     SunmiDevice device = getStoreBean(new JSONObject(data));
-                    if (isViewAttached()) {
-                        mView.getPrinterStatusSuccess(device);
-                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
