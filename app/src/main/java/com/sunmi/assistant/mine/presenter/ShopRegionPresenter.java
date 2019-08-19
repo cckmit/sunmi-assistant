@@ -1,9 +1,9 @@
 package com.sunmi.assistant.mine.presenter;
 
 import com.sunmi.assistant.mine.contract.ShopRegionContract;
-import com.sunmi.assistant.mine.model.ShopInfo;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.model.ShopInfo;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.log.LogCat;
@@ -25,22 +25,22 @@ public class ShopRegionPresenter extends BasePresenter<ShopRegionContract.View>
 
     @Override
     public void updateRegion(int province, int city, int area) {
-        SunmiStoreApi.updateShopRegion(mInfo.getShopId(), mInfo.getShopName(), province, city, area,
-                new RetrofitCallback<Object>() {
-                    @Override
-                    public void onSuccess(int code, String msg, Object data) {
-                        if (isViewAttached()) {
-                            mView.complete();
-                        }
-                    }
+        mInfo.setRegion(province, city, area);
+        SunmiStoreApi.updateShopInfo(mInfo, new RetrofitCallback<Object>() {
+            @Override
+            public void onSuccess(int code, String msg, Object data) {
+                if (isViewAttached()) {
+                    mView.complete();
+                }
+            }
 
-                    @Override
-                    public void onFail(int code, String msg, Object data) {
-                        LogCat.e(TAG, "Update shop region Failed. " + msg);
-                        if (isViewAttached()) {
-                            mView.updateRegionFailed();
-                        }
-                    }
-                });
+            @Override
+            public void onFail(int code, String msg, Object data) {
+                LogCat.e(TAG, "Update shop region Failed. " + msg);
+                if (isViewAttached()) {
+                    mView.updateRegionFailed();
+                }
+            }
+        });
     }
 }

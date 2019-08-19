@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.sunmi.apmanager.utils.DialogUtils;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.mine.model.ShopInfo;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -20,6 +19,7 @@ import org.androidannotations.annotations.ViewById;
 import java.util.Locale;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.model.ShopInfo;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.StatusBarUtils;
@@ -76,24 +76,24 @@ public class ShopAddressActivity extends BaseActivity {
 
     private void updateShopAddress(String address) {
         showLoadingDialog();
-        SunmiStoreApi.updateShopAddress(mInfo.getShopId(), mInfo.getShopName(), address,
-                new RetrofitCallback<Object>() {
-                    @Override
-                    public void onSuccess(int code, String msg, Object data) {
-                        hideLoadingDialog();
-                        Intent intent = getIntent();
-                        intent.putExtra(ShopDetailActivity.INTENT_EXTRA_ADDRESS, address);
-                        setResult(RESULT_OK, intent);
-                        finish();
-                    }
+        mInfo.setAddress(address);
+        SunmiStoreApi.updateShopInfo(mInfo, new RetrofitCallback<Object>() {
+            @Override
+            public void onSuccess(int code, String msg, Object data) {
+                hideLoadingDialog();
+                Intent intent = getIntent();
+                intent.putExtra(ShopDetailActivity.INTENT_EXTRA_ADDRESS, address);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
 
-                    @Override
-                    public void onFail(int code, String msg, Object data) {
-                        hideLoadingDialog();
-                        LogCat.e(TAG, "Update shop address Failed. " + msg);
-                        shortTip(R.string.tip_save_fail);
-                    }
-                });
+            @Override
+            public void onFail(int code, String msg, Object data) {
+                hideLoadingDialog();
+                LogCat.e(TAG, "Update shop address Failed. " + msg);
+                shortTip(R.string.tip_save_fail);
+            }
+        });
     }
 
     @Override

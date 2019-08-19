@@ -3,6 +3,7 @@ package com.sunmi.ipc.presenter;
 import com.sunmi.ipc.contract.VideoPlayContract;
 import com.sunmi.ipc.model.CloudTimeSlotResp;
 import com.sunmi.ipc.model.IotcCmdResp;
+import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.model.VideoTimeSlotBean;
 import com.sunmi.ipc.rpc.IPCCloudApi;
 import com.sunmi.ipc.utils.IOTCClient;
@@ -20,6 +21,7 @@ import sunmi.common.rpc.retrofit.RetrofitCallback;
  */
 public class VideoPlayPresenter extends BasePresenter<VideoPlayContract.View>
         implements VideoPlayContract.Presenter {
+
     @Override
     public void getTimeSlots(int deviceId, final long startTime, final long endTime) {
         IPCCloudApi.getTimeSlots(deviceId, startTime, endTime, new RetrofitCallback<CloudTimeSlotResp>() {
@@ -61,6 +63,74 @@ public class VideoPlayPresenter extends BasePresenter<VideoPlayContract.View>
                 }
                 if (isViewAttached()) {
                     mView.getDeviceTimeSlotSuccess(slots);
+                }
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
+    }
+
+    @Override
+    public void startLive(IOTCClient iotcClient) {
+        if (iotcClient == null) {
+            return;
+        }
+        iotcClient.startPlay(new P2pCmdCallback<List<VideoTimeSlotBean>>() {
+            @Override
+            public void onResponse(int cmd, IotcCmdResp<List<VideoTimeSlotBean>> result) {
+                if (isViewAttached()) {
+                    mView.startLiveSuccess();
+                }
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
+    }
+
+    @Override
+    public void startPlayback(IOTCClient iotcClient, long start) {
+        if (iotcClient == null) {
+            return;
+        }
+        iotcClient.startPlayback(start, new P2pCmdCallback<List<VideoTimeSlotBean>>() {
+            @Override
+            public void onResponse(int cmd, IotcCmdResp<List<VideoTimeSlotBean>> result) {
+                if (isViewAttached()) {
+                    mView.startPlaybackSuccess();
+                }
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
+    }
+
+    @Override
+    public void getCloudVideoList(int deviceId, long start, long end) {
+        if (deviceId <= 0) {
+            mView.shortTip("设备信息不完整");
+            return;
+        }
+        IPCCloudApi.getVideoList(deviceId, start, end, new RetrofitCallback<VideoListResp>() {
+            @Override
+            public void onSuccess(int code, String msg, VideoListResp data) {
+                if (isViewAttached()) {
+                    mView.getCloudVideosSuccess(data.getVideo_list());
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, VideoListResp data) {
+                if (isViewAttached()) {
+                    mView.hideLoadingDialog();
                 }
             }
         });

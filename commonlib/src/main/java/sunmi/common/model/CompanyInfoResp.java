@@ -1,6 +1,9 @@
 package sunmi.common.model;
 
-public class CompanyInfoResp {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class CompanyInfoResp implements Parcelable {
 
     private int company_id;
     private String company_name;
@@ -10,6 +13,29 @@ public class CompanyInfoResp {
     private long created_time;
     private long modified_time;
     private int saas_exist;
+
+    protected CompanyInfoResp(Parcel in) {
+        company_id = in.readInt();
+        company_name = in.readString();
+        contact_tel = in.readString();
+        contact_person = in.readString();
+        contact_email = in.readString();
+        created_time = in.readLong();
+        modified_time = in.readLong();
+        saas_exist = in.readInt();
+    }
+
+    public static final Creator<CompanyInfoResp> CREATOR = new Creator<CompanyInfoResp>() {
+        @Override
+        public CompanyInfoResp createFromParcel(Parcel in) {
+            return new CompanyInfoResp(in);
+        }
+
+        @Override
+        public CompanyInfoResp[] newArray(int size) {
+            return new CompanyInfoResp[size];
+        }
+    };
 
     public int getCompany_id() {
         return company_id;
@@ -73,5 +99,22 @@ public class CompanyInfoResp {
 
     public void setModified_time(long modified_time) {
         this.modified_time = modified_time;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(company_id);
+        dest.writeString(company_name);
+        dest.writeString(contact_tel);
+        dest.writeString(contact_person);
+        dest.writeString(contact_email);
+        dest.writeLong(created_time);
+        dest.writeLong(modified_time);
+        dest.writeInt(saas_exist);
     }
 }

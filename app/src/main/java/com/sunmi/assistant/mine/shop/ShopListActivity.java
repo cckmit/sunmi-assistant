@@ -27,12 +27,14 @@ import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
+import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.ViewHolder;
 import sunmi.common.view.bottompopmenu.BottomPopMenu;
 import sunmi.common.view.bottompopmenu.PopItemAction;
 
 /**
  * 我的店铺
+ *
  * @author yangshijie
  */
 @SuppressLint("Registered")
@@ -94,15 +96,18 @@ public class ShopListActivity extends BaseActivity {
     }
 
     private void getShopList() {
+        showLoadingDialog();
         SunmiStoreRemote.get().getShopList(SpUtils.getCompanyId(), new RetrofitCallback<ShopListResp>() {
             @Override
             public void onSuccess(int code, String msg, ShopListResp data) {
+                hideLoadingDialog();
                 mAdapter.setData(data.getShop_list());
             }
 
             @Override
             public void onFail(int code, String msg, ShopListResp data) {
                 LogCat.e(TAG, "Get shop list Failed. " + msg);
+                hideLoadingDialog();
                 shortTip(getString(R.string.str_store_load_error));
             }
         });
@@ -116,11 +121,12 @@ public class ShopListActivity extends BaseActivity {
 
         @Override
         public void convert(ViewHolder holder, ShopListResp.ShopInfo info) {
-            holder.setText(R.id.tvName, info.getShop_name());
+            SettingItemLayout silCompanyDetail = holder.getView(R.id.tvName);
+            silCompanyDetail.setLeftText(info.getShop_name());
             holder.itemView.setOnClickListener(v -> {
                 CommonUtils.trackCommonEvent(mContext, "defaultStore",
                         "主页_我的_我的店铺_默认店铺", Constants.EVENT_MY_INFO);
-                ShopDetailActivity_.intent(mContext).shopId(info.getShop_id()).start();
+                ShopDetailGroupActivity_.intent(mContext).shopId(info.getShop_id()).startForResult(REQUEST_CODE_SHOP);
             });
         }
     }
