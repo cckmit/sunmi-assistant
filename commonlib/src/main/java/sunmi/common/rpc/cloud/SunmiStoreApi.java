@@ -250,19 +250,6 @@ public class SunmiStoreApi {
                 .enqueue(callback);
     }
 
-    public static void createEmqToken(RetrofitCallback<EmqTokenResp> callback) {
-        try {
-            String params = new JSONObject()
-                    .put("source", "APP")
-                    .toString();
-            SunmiStoreRetrofitClient.getInstance().create(UserInterface.class)
-                    .createEmqToken(new BaseRequest(params))
-                    .enqueue(callback);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
     /**
      * 重置账号密码
      *
