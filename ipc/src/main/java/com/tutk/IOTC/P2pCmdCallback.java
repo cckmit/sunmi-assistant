@@ -8,4 +8,6 @@ import com.sunmi.ipc.model.IotcCmdResp;
  */
 public interface P2pCmdCallback<T> {
     void onResponse(int cmd, IotcCmdResp<T> result);
+
+    void onError();
 }
