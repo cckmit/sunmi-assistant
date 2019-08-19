@@ -34,7 +34,7 @@ import sunmi.common.view.TitleBarView;
  */
 @SuppressLint("Registered")
 @EActivity(R.layout.activity_mine_shop_modify_message)
-public class ShopContactAreaActivity extends BaseMvpActivity<ShopContactAreaPresenter>
+public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPresenter>
         implements ShopContactAreaContract.View {
 
     private static final int SHOP_NAME_MAX_LENGTH = 20;

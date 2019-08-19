@@ -87,9 +87,11 @@ public class ShopDetailActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = getIntent();
-        intent.putExtra(INTENT_EXTRA_SUCCESS, true);
-        setResult(RESULT_OK, intent);
+        if (isUpdateShopInfo) {
+            Intent intent = getIntent();
+            intent.putExtra(INTENT_EXTRA_SUCCESS, true);
+            setResult(RESULT_OK, intent);
+        }
         super.onBackPressed();
     }
 

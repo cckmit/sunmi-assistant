@@ -117,7 +117,7 @@
         <activity android:name=".mine.shop.ShopRegionActivity_" />
         <activity android:name=".mine.shop.ShopAddressActivity_" />
         <activity android:name=".mine.HelpActivity_" />
-        <activity android:name=".mine.shop.ShopContactAreaActivity_" />
+        <activity android:name=".mine.shop.ShopContactsAreaActivity_" />
         <activity android:name=".mine.company.CompanyDetailActivity_" />
 
         <!--百度地图-->
