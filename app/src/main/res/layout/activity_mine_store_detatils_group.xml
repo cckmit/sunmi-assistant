@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/c_white"
+        app:dividerShow="true"
+        app:leftDefaultClickEnable="true"
+        app:leftIcon="@mipmap/ic_back_dark"
+        app:titleText="@string/str_store_info"
+        app:titleTextColor="@color/colorText" />
+
+    <sunmi.common.view.SettingItemLayout
+        android:id="@+id/sil_shop_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvName"
+        android:background="@color/c_white"
+        app:imageRight="@mipmap/ic_right_arrow_small"
+        app:layout_constraintTop_toBottomOf="@id/title_bar"
+        app:leftPadding="@dimen/dp_15"
+        app:leftText="@string/company_shop_details"
+        app:leftTextSize="@dimen/sp_16"
+        app:parentHeight="@dimen/dp_60"
+        app:rightPadding="@dimen/dp_20" />
+
+    <sunmi.common.view.SettingItemLayout
+        android:id="@+id/sil_shop_face"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/sil_shop_detail"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_1"
+        android:background="@color/c_white"
+        app:imageRight="@mipmap/ic_right_arrow_small"
+        app:layout_constraintTop_toBottomOf="@id/sil_shop_detail"
+        app:leftPadding="@dimen/dp_15"
+        app:leftText="@string/company_shop_face_group"
+        app:leftTextSize="@dimen/sp_16"
+        app:parentHeight="@dimen/dp_60"
+        app:rightPadding="@dimen/dp_20" />
+
+
+</android.support.constraint.ConstraintLayout>

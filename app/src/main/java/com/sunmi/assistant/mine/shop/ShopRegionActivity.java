@@ -14,7 +14,6 @@ import com.google.gson.reflect.TypeToken;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.ShopRegionContract;
 import com.sunmi.assistant.mine.model.RegionProvince;
-import com.sunmi.assistant.mine.model.ShopInfo;
 import com.sunmi.assistant.mine.presenter.ShopRegionPresenter;
 
 import org.androidannotations.annotations.AfterViews;
@@ -31,6 +30,7 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.base.recycle.BaseArrayAdapter;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
+import sunmi.common.model.ShopInfo;
 import sunmi.common.utils.FileUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.TitleBarView;
