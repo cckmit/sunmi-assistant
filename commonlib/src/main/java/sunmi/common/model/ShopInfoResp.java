@@ -40,6 +40,8 @@ public class ShopInfoResp {
     private String typeName;
     @SerializedName("business_status")
     private int businessStatus;
+    @SerializedName("business_area")
+    private float businessArea;
     @SerializedName("province")
     private int province;
     @SerializedName("city")
@@ -157,6 +159,14 @@ public class ShopInfoResp {
 
     public void setBusinessHours(String businessHours) {
         this.businessHours = businessHours;
+    }
+
+    public float getBusinessArea() {
+        return businessArea;
+    }
+
+    public void setBusinessArea(float businessArea) {
+        this.businessArea = businessArea;
     }
 
     public String getContactPerson() {
