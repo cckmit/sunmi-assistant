@@ -33,7 +33,6 @@ public class SMMqttCallback implements MqttCallbackExtended {
     public void connectionLost(Throwable cause) {
         Log.e(TAG, "mqtt connectionLost");
 //        checkToken();
-        MqttManager.getInstance().createEmqToken(true);
     }
 
     @Override
