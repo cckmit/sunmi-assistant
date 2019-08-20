@@ -32,7 +32,6 @@ public class ShopDetailGroupActivity extends BaseActivity {
     int shopId;
     @Extra
     String shopName;
-    private boolean isUpdateShopInfo;
 
     @AfterViews
     void init() {
@@ -41,15 +40,6 @@ public class ShopDetailGroupActivity extends BaseActivity {
         titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
     }
 
-    @Override
-    public void onBackPressed() {
-        if (isUpdateShopInfo) {
-            Intent intent = getIntent();
-            intent.putExtra(INTENT_EXTRA_SUCCESS, true);
-            setResult(RESULT_OK, intent);
-        }
-        super.onBackPressed();
-    }
 
     @Click(R.id.sil_shop_detail)
     public void toShopDetail() {
