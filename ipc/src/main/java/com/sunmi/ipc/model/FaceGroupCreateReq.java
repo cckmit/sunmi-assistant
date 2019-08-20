@@ -22,16 +22,16 @@ public class FaceGroupCreateReq {
     @SerializedName("shop_id")
     private int shopId;
     @SerializedName("facedb_list")
-    private List<Face> faceList;
+    private List<Group> faceList;
 
     public FaceGroupCreateReq(int companyId, int shopId, String name, String mark, int capacity) {
         this.companyId = companyId;
         this.shopId = shopId;
         this.faceList = new ArrayList<>(1);
-        this.faceList.add(new Face(name, mark, capacity));
+        this.faceList.add(new Group(name, mark, capacity));
     }
 
-    public static class Face {
+    public static class Group {
         /**
          * name : 生客
          * type : 1
@@ -41,7 +41,6 @@ public class FaceGroupCreateReq {
          * capacity : 1000
          * target_id : 0
          */
-
         @SerializedName("name")
         private String name;
         @SerializedName("type")
@@ -57,7 +56,7 @@ public class FaceGroupCreateReq {
         @SerializedName("target_id")
         private int targetId;
 
-        public Face(String name, String mark, int capacity) {
+        public Group(String name, String mark, int capacity) {
             this.name = name;
             this.type = FaceGroup.FACE_GROUP_TYPE_CUSTOM;
             this.threshold = 0;

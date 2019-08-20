@@ -94,17 +94,17 @@ public class FaceGroupListActivity extends BaseActivity {
             @Override
             public void onSuccess(int code, String msg, FaceGroupListResp data) {
                 hideLoadingDialog();
-                List<FaceGroupListResp.Group> list = data.getGroupList();
-                Collections.sort(list, new Comparator<FaceGroupListResp.Group>() {
+                List<FaceGroup> list = data.getGroupList();
+                Collections.sort(list, new Comparator<FaceGroup>() {
                     @Override
-                    public int compare(FaceGroupListResp.Group o1, FaceGroupListResp.Group o2) {
+                    public int compare(FaceGroup o1, FaceGroup o2) {
                         return o1.getType() - o2.getType();
                     }
                 });
                 mFaceGroup.clear();
                 mCurrentCapacity = 0;
-                for (FaceGroupListResp.Group group : list) {
-                    mFaceGroup.add(new FaceGroup(group));
+                mFaceGroup.addAll(list);
+                for (FaceGroup group : list) {
                     mCurrentCapacity += group.getCapacity();
                 }
                 mFaceGroup.add(0, context.getString(R.string.ipc_face_group_default));
@@ -169,7 +169,7 @@ public class FaceGroupListActivity extends BaseActivity {
         public void onBindViewHolder(@NonNull BaseViewHolder<FaceGroup> holder, FaceGroup model, int position) {
             SettingItemLayout itemView = (SettingItemLayout) holder.itemView;
             itemView.setLeftText(Utils.getGroupName(holder.getContext(),
-                    model.getType(), model.getName(), false));
+                    model.getType(), model.getGroupName(), false));
             itemView.setRightText(holder.getContext().getString(R.string.ipc_face_group_count, model.getCount()));
         }
     }

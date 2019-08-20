@@ -4,7 +4,7 @@ package com.sunmi.ipc.face.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.sunmi.ipc.model.FaceGroupListResp;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * @author yinhui
@@ -20,122 +20,131 @@ public class FaceGroup implements Parcelable {
 
     public static final int MAX_CAPACITY_ALL_GROUP = 10000;
 
-    private String name;
+    /**
+     * company_id : 6759
+     * shop_id : 8699
+     * group_name : stranger
+     * mark : stranger
+     * target_group_id : 483
+     * group_id : 484
+     * type : 1
+     * threshold : 5
+     * period : 86400
+     * capacity : 10000
+     * count : 0
+     * last_modified_time : 1561656491
+     * alarm_notified : 0
+     */
+
+    @SerializedName("company_id")
+    private int companyId;
+    @SerializedName("shop_id")
+    private int shopId;
+    @SerializedName("group_name")
+    private String groupName;
+    @SerializedName("mark")
     private String mark;
+    @SerializedName("target_group_id")
+    private int targetGroupId;
+    @SerializedName("group_id")
     private int groupId;
+    @SerializedName("type")
     private int type;
+    @SerializedName("threshold")
     private int threshold;
+    @SerializedName("period")
     private int period;
+    @SerializedName("capacity")
     private int capacity;
+    @SerializedName("count")
     private int count;
+    @SerializedName("last_modified_time")
+    private int lastModifiedTime;
+    @SerializedName("alarm_notified")
     private int alarmNotified;
 
-    public FaceGroup(FaceGroupListResp.Group group) {
-        this.name = group.getGroupName();
-        this.mark = group.getMark();
-        this.groupId = group.getGroupId();
-        this.type = group.getType();
-        this.threshold = group.getThreshold();
-        this.period = group.getPeriod();
-        this.capacity = group.getCapacity();
-        this.count = group.getCount();
-        this.alarmNotified = group.getAlarmNotified();
+    public int getCompanyId() {
+        return companyId;
     }
 
-    public String getName() {
-        return name;
+    public int getShopId() {
+        return shopId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getGroupName() {
+        return groupName;
     }
 
     public String getMark() {
         return mark;
     }
 
-    public void setMark(String mark) {
-        this.mark = mark;
+    public int getTargetGroupId() {
+        return targetGroupId;
     }
 
     public int getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(int groupId) {
-        this.groupId = groupId;
-    }
-
     public int getType() {
         return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
     }
 
     public int getThreshold() {
         return threshold;
     }
 
-    public void setThreshold(int threshold) {
-        this.threshold = threshold;
-    }
-
     public int getPeriod() {
         return period;
-    }
-
-    public void setPeriod(int period) {
-        this.period = period;
     }
 
     public int getCapacity() {
         return capacity;
     }
 
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
-    }
-
     public int getCount() {
         return count;
     }
 
-    public void setCount(int count) {
-        this.count = count;
+    public int getLastModifiedTime() {
+        return lastModifiedTime;
     }
 
     public int getAlarmNotified() {
         return alarmNotified;
     }
 
-    public void setAlarmNotified(int alarmNotified) {
-        this.alarmNotified = alarmNotified;
-    }
-
     protected FaceGroup(Parcel in) {
-        name = in.readString();
+        companyId = in.readInt();
+        shopId = in.readInt();
+        groupName = in.readString();
         mark = in.readString();
+        targetGroupId = in.readInt();
         groupId = in.readInt();
         type = in.readInt();
         threshold = in.readInt();
         period = in.readInt();
         capacity = in.readInt();
         count = in.readInt();
+        lastModifiedTime = in.readInt();
         alarmNotified = in.readInt();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
+        dest.writeInt(companyId);
+        dest.writeInt(shopId);
+        dest.writeString(groupName);
         dest.writeString(mark);
+        dest.writeInt(targetGroupId);
         dest.writeInt(groupId);
         dest.writeInt(type);
         dest.writeInt(threshold);
         dest.writeInt(period);
         dest.writeInt(capacity);
         dest.writeInt(count);
+        dest.writeInt(lastModifiedTime);
         dest.writeInt(alarmNotified);
     }
 
@@ -155,4 +164,5 @@ public class FaceGroup implements Parcelable {
             return new FaceGroup[size];
         }
     };
+
 }
