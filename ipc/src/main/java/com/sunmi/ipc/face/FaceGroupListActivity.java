@@ -80,7 +80,7 @@ public class FaceGroupListActivity extends BaseActivity {
         groupType.setOnItemClickListener(new OnItemClickListener<FaceGroup>() {
             @Override
             public void onClick(BaseRecyclerAdapter<FaceGroup> adapter, BaseViewHolder<FaceGroup> holder, FaceGroup model, int position) {
-                openGroupDetail();
+                openGroupDetail(model);
             }
         });
         mAdapter.register(String.class, titleType);
@@ -134,8 +134,9 @@ public class FaceGroupListActivity extends BaseActivity {
                 .startForResult(REQUEST_CODE_CREATE);
     }
 
-    private void openGroupDetail() {
-        LogCat.d(TAG, "Adapter:" + mAdapter.getData().size());
+    private void openGroupDetail(FaceGroup model) {
+        FaceGroupDetailActivity_.intent(this)
+                .start();
     }
 
     @OnActivityResult(REQUEST_CODE_CREATE)

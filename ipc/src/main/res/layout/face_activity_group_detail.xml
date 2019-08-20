@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_FAFAFA"
+    android:orientation="vertical"
+    tools:context=".setting.IpcSettingDetailActivity">
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/c_white"
+        app:dividerShow="true"
+        app:leftDefaultClickEnable="true"
+        app:leftIcon="@mipmap/ic_back_dark"
+        app:titleTextColor="@color/colorText" />
+
+    <TextView
+        android:id="@+id/tv_face_group_tip"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_44"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/dp_20"
+        android:paddingEnd="@dimen/dp_20"
+        android:text="@string/ipc_face_group_new_desc"
+        android:textColor="@color/colorText_60"
+        android:textSize="@dimen/sp_14" />
+
+    <sunmi.common.view.SettingItemLayout
+        android:id="@+id/sil_face_group_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/c_white"
+        app:dividerShow="true"
+        app:imageRight="@mipmap/ic_right_arrow_small"
+        app:leftPadding="@dimen/dp_10"
+        app:leftText="@string/ipc_face_group_name"
+        app:leftTextSize="@dimen/sp_16"
+        app:parentHeight="@dimen/dp_60"
+        app:rightPadding="@dimen/dp_20"
+        app:rightTextColor="@color/colorText_60"
+        app:rightTextSize="@dimen/sp_14" />
+
+    <sunmi.common.view.SettingItemLayout
+        android:id="@+id/sil_face_group_capacity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/c_white"
+        app:dividerShow="true"
+        app:imageRight="@mipmap/ic_right_arrow_small"
+        app:leftPadding="@dimen/dp_10"
+        app:leftText="@string/ipc_face_group_capacity"
+        app:leftTextSize="@dimen/sp_16"
+        app:parentHeight="@dimen/dp_60"
+        app:rightPadding="@dimen/dp_20"
+        app:rightTextColor="@color/colorText_60"
+        app:rightTextSize="@dimen/sp_14" />
+
+    <sunmi.common.view.SettingItemLayout
+        android:id="@+id/sil_face_group_threshold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/c_white"
+        app:dividerShow="true"
+        app:imageRight="@mipmap/ic_right_arrow_small"
+        app:leftPadding="@dimen/dp_10"
+        app:leftText="@string/ipc_face_group_threshold"
+        app:leftTextSize="@dimen/sp_16"
+        app:parentHeight="@dimen/dp_60"
+        app:rightPadding="@dimen/dp_20"
+        app:rightTextColor="@color/colorText_60"
+        app:rightTextSize="@dimen/sp_14" />
+
+    <sunmi.common.view.SettingItemLayout
+        android:id="@+id/sil_face_group_mark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/c_white"
+        app:dividerShow="true"
+        app:imageRight="@mipmap/ic_right_arrow_small"
+        app:leftPadding="@dimen/dp_10"
+        app:leftText="@string/ipc_face_group_mark"
+        app:leftTextSize="@dimen/sp_16"
+        app:parentHeight="@dimen/dp_60"
+        app:rightPadding="@dimen/dp_20"
+        app:rightTextColor="@color/colorText_60"
+        app:rightTextSize="@dimen/sp_14" />
+
+    <sunmi.common.view.SettingItemLayout
+        android:id="@+id/sil_face_group_notification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/c_white"
+        app:imageRight="@mipmap/ic_right_arrow_small"
+        app:leftPadding="@dimen/dp_10"
+        app:leftText="@string/ipc_face_group_notification"
+        app:leftTextSize="@dimen/sp_16"
+        app:parentHeight="@dimen/dp_60"
+        app:rightPadding="@dimen/dp_20"
+        app:rightTextColor="@color/colorText_60"
+        app:rightTextSize="@dimen/sp_14" />
+
+    <sunmi.common.view.SettingItemLayout
+        android:id="@+id/sil_face_group_manage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@color/c_white"
+        app:imageRight="@mipmap/ic_right_arrow_small"
+        app:leftPadding="@dimen/dp_10"
+        app:leftText="@string/ipc_face_group_manage"
+        app:leftTextSize="@dimen/sp_16"
+        app:parentHeight="@dimen/dp_60"
+        app:rightPadding="@dimen/dp_20"
+        app:rightTextColor="@color/colorText_60"
+        app:rightTextSize="@dimen/sp_14" />
+
+</LinearLayout>
