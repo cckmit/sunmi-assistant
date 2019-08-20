@@ -4,7 +4,7 @@ import android.content.DialogInterface;
 import android.view.View;
 
 import com.sunmi.ipc.R;
-import com.sunmi.ipc.rpc.IPCCloudApi;
+import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.ipc.rpc.IpcConstants;
 
 import org.androidannotations.annotations.AfterViews;
@@ -86,8 +86,8 @@ public class IpcSettingDetailActivity extends BaseActivity {
     }
 
     private void unbindIpc(int deviceId) {
-        IPCCloudApi.unbindIPC(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId,
-                new RetrofitCallback() {
+        IpcCloudApi.unbindIpc(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId,
+                new RetrofitCallback<Object>() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
                         shortTip(R.string.str_delete_success);

@@ -41,7 +41,6 @@ import sunmi.common.view.bottompopmenu.PopItemAction;
 @EActivity(R.layout.activity_mine_my_store)
 public class ShopListActivity extends BaseActivity {
 
-    public static final String INTENT_EXTRA_SUCCESS = "success";
     public static final int REQUEST_CODE_SHOP = 100;
 
     @ViewById(R.id.recyclerView)
@@ -89,8 +88,7 @@ public class ShopListActivity extends BaseActivity {
 
     @OnActivityResult(REQUEST_CODE_SHOP)
     void onResult(int resultCode, @Nullable Intent data) {
-        if (resultCode == Activity.RESULT_OK && data != null
-                && data.getBooleanExtra(INTENT_EXTRA_SUCCESS, false)) {
+        if (resultCode == Activity.RESULT_OK) {
             getShopList();
         }
     }

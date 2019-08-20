@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.sunmi.ipc.contract.IpcConfiguringContract;
 import com.sunmi.ipc.model.IpcListResp;
-import com.sunmi.ipc.rpc.IPCCloudApi;
+import com.sunmi.ipc.rpc.IpcCloudApi;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +23,8 @@ public class IpcConfiguringPresenter extends BasePresenter<IpcConfiguringContrac
 
     @Override
     public void ipcBind(String shopId, final String sn, String token, float longitude, float latitude) {
-        IPCCloudApi.bindIPC(SpUtils.getCompanyId() + "", shopId, sn, TextUtils.isEmpty(token) ? 1 : 0,
-                token, longitude, latitude, new RetrofitCallback() {
+        IpcCloudApi.bindIpc(SpUtils.getCompanyId() + "", shopId, sn, TextUtils.isEmpty(token) ? 1 : 0,
+                token, longitude, latitude, new RetrofitCallback<Object>() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
                         LogCat.e("IpcConfiguringPresenter", "onSuccess 111");
@@ -41,7 +41,7 @@ public class IpcConfiguringPresenter extends BasePresenter<IpcConfiguringContrac
 
     @Override
     public void getIpcList(int companyId, String shopId) {
-        IPCCloudApi.getDetailList(companyId, SpUtils.getShopId(), new RetrofitCallback<IpcListResp>() {
+        IpcCloudApi.getDetailList(companyId, SpUtils.getShopId(), new RetrofitCallback<IpcListResp>() {
             @Override
             public void onSuccess(int code, String msg, IpcListResp data) {
                 LogCat.e("111111", "666666 getIpcList onResponse response = " + data.toString());
