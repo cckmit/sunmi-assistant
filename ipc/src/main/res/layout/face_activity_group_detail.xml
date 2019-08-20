@@ -25,7 +25,6 @@
         android:gravity="center_vertical"
         android:paddingStart="@dimen/dp_20"
         android:paddingEnd="@dimen/dp_20"
-        android:text="@string/ipc_face_group_new_desc"
         android:textColor="@color/colorText_60"
         android:textSize="@dimen/sp_14" />
 
@@ -38,6 +37,7 @@
         app:imageRight="@mipmap/ic_right_arrow_small"
         app:leftPadding="@dimen/dp_10"
         app:leftText="@string/ipc_face_group_name"
+        app:leftTextColor="@color/colorText"
         app:leftTextSize="@dimen/sp_16"
         app:parentHeight="@dimen/dp_60"
         app:rightPadding="@dimen/dp_20"
@@ -53,6 +53,7 @@
         app:imageRight="@mipmap/ic_right_arrow_small"
         app:leftPadding="@dimen/dp_10"
         app:leftText="@string/ipc_face_group_capacity"
+        app:leftTextColor="@color/colorText"
         app:leftTextSize="@dimen/sp_16"
         app:parentHeight="@dimen/dp_60"
         app:rightPadding="@dimen/dp_20"
@@ -68,6 +69,7 @@
         app:imageRight="@mipmap/ic_right_arrow_small"
         app:leftPadding="@dimen/dp_10"
         app:leftText="@string/ipc_face_group_threshold"
+        app:leftTextColor="@color/colorText"
         app:leftTextSize="@dimen/sp_16"
         app:parentHeight="@dimen/dp_60"
         app:rightPadding="@dimen/dp_20"
@@ -83,25 +85,42 @@
         app:imageRight="@mipmap/ic_right_arrow_small"
         app:leftPadding="@dimen/dp_10"
         app:leftText="@string/ipc_face_group_mark"
+        app:leftTextColor="@color/colorText"
         app:leftTextSize="@dimen/sp_16"
         app:parentHeight="@dimen/dp_60"
         app:rightPadding="@dimen/dp_20"
         app:rightTextColor="@color/colorText_60"
         app:rightTextSize="@dimen/sp_14" />
 
-    <sunmi.common.view.SettingItemLayout
-        android:id="@+id/sil_face_group_notification"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/layout_face_group_notification"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/c_white"
-        app:imageRight="@mipmap/ic_right_arrow_small"
-        app:leftPadding="@dimen/dp_10"
-        app:leftText="@string/ipc_face_group_notification"
-        app:leftTextSize="@dimen/sp_16"
-        app:parentHeight="@dimen/dp_60"
-        app:rightPadding="@dimen/dp_20"
-        app:rightTextColor="@color/colorText_60"
-        app:rightTextSize="@dimen/sp_14" />
+        android:layout_height="@dimen/dp_60"
+        android:background="@color/c_white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_20"
+            android:text="@string/ipc_face_group_notification"
+            android:textColor="@color/colorText"
+            android:textSize="@dimen/sp_16"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Switch
+            android:id="@+id/switch_face_group_notification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:thumb="@drawable/switch_thumb"
+            android:track="@drawable/switch_track"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_face_group_manage"
@@ -112,6 +131,7 @@
         app:imageRight="@mipmap/ic_right_arrow_small"
         app:leftPadding="@dimen/dp_10"
         app:leftText="@string/ipc_face_group_manage"
+        app:leftTextColor="@color/colorText"
         app:leftTextSize="@dimen/sp_16"
         app:parentHeight="@dimen/dp_60"
         app:rightPadding="@dimen/dp_20"

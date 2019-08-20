@@ -5,11 +5,11 @@ import android.util.Pair;
 import android.util.SparseArray;
 
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.face.model.FaceGroup;
 
 import sunmi.common.utils.log.LogCat;
 
 import static com.sunmi.ipc.face.model.FaceGroup.FACE_GROUP_TYPE_BLACK;
-import static com.sunmi.ipc.face.model.FaceGroup.FACE_GROUP_TYPE_CUSTOM;
 import static com.sunmi.ipc.face.model.FaceGroup.FACE_GROUP_TYPE_NEW;
 import static com.sunmi.ipc.face.model.FaceGroup.FACE_GROUP_TYPE_OLD;
 import static com.sunmi.ipc.face.model.FaceGroup.FACE_GROUP_TYPE_STAFF;
@@ -28,18 +28,18 @@ public class Utils {
      */
     private static SparseArray<Pair<String, String>> mGroupNameCache = new SparseArray<>(4);
 
-    public static String getGroupName(Context context, int type, String name, boolean isRole) {
-        Pair<String, String> model = mGroupNameCache.get(type);
+    public static String getGroupName(Context context, FaceGroup faceGroup, boolean isRole) {
+        Pair<String, String> model = mGroupNameCache.get(faceGroup.getType());
         if (model != null) {
             return isRole ? model.first : model.second;
         }
         String group = context.getString(R.string.ipc_face_group_suffix);
-        if (type == FACE_GROUP_TYPE_CUSTOM) {
-            return isRole ? name : name + group;
+        if (faceGroup.isCustomType()) {
+            return isRole ? faceGroup.getGroupName() : faceGroup.getGroupName() + group;
         }
 
         String role;
-        switch (type) {
+        switch (faceGroup.getType()) {
             case FACE_GROUP_TYPE_NEW:
                 role = context.getString(R.string.ipc_face_group_new);
                 model = new Pair<>(role, role + group);
@@ -61,7 +61,7 @@ public class Utils {
                 mGroupNameCache.put(FACE_GROUP_TYPE_BLACK, model);
                 return isRole ? model.first : model.second;
             default:
-                LogCat.e(TAG, "Face group type ERROR. " + type);
+                LogCat.e(TAG, "Face group type ERROR. " + faceGroup.getType());
         }
         return "";
     }

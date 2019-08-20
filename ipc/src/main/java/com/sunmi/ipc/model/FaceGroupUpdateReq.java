@@ -1,6 +1,7 @@
 package com.sunmi.ipc.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.sunmi.ipc.face.model.FaceGroup;
 
 /**
  * @author yinhui
@@ -38,15 +39,36 @@ public class FaceGroupUpdateReq {
     @SerializedName("alarm_notified")
     private int alarmNotified;
 
-    public FaceGroupUpdateReq(int companyId, int shopId, int groupId, String name, String mark, int capacity, int threshold, int period, int alarmNotified) {
+    public FaceGroupUpdateReq(int companyId, int shopId, FaceGroup model) {
         this.companyId = companyId;
         this.shopId = shopId;
-        this.groupId = groupId;
+        this.groupId = model.getGroupId();
+        this.name = model.getGroupName();
+        this.mark = model.getMark();
+        this.capacity = model.getCapacity();
+        this.threshold = model.getThreshold();
+        this.period = model.getPeriod();
+        this.alarmNotified = model.getAlarmNotified();
+    }
+
+    public void setName(String name) {
         this.name = name;
+    }
+
+    public void setMark(String mark) {
         this.mark = mark;
+    }
+
+    public void setCapacity(int capacity) {
         this.capacity = capacity;
-        this.threshold = threshold;
-        this.period = period;
+    }
+
+    public void setThreshold(int times, int days) {
+        this.threshold = times;
+        this.period = days * FaceGroup.SECONDS_PER_DAY;
+    }
+
+    public void setAlarmNotified(int alarmNotified) {
         this.alarmNotified = alarmNotified;
     }
 }

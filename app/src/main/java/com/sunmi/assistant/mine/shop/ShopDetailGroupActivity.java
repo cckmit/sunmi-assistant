@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 
 import com.sunmi.assistant.R;
+import com.sunmi.ipc.face.FaceGroupListActivity_;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -18,8 +19,6 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.TitleBarView;
 
-import static com.sunmi.assistant.mine.shop.ShopListActivity.INTENT_EXTRA_SUCCESS;
-
 /**
  * @author yangShiJie
  * @date 2019/8/19
@@ -31,22 +30,10 @@ public class ShopDetailGroupActivity extends BaseActivity {
     TitleBarView titleBar;
     @Extra
     int shopId;
-    private boolean isUpdateShopInfo;
 
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (isUpdateShopInfo) {
-            Intent intent = getIntent();
-            intent.putExtra(INTENT_EXTRA_SUCCESS, true);
-            setResult(RESULT_OK, intent);
-        }
-        super.onBackPressed();
     }
 
     @Click(R.id.sil_shop_detail)
@@ -56,13 +43,13 @@ public class ShopDetailGroupActivity extends BaseActivity {
 
     @Click(R.id.sil_shop_face)
     public void toShopFace() {
-        //TODO
+        FaceGroupListActivity_.intent(this).mShopId(shopId).start();
     }
 
     @OnActivityResult(ShopListActivity.REQUEST_CODE_SHOP)
     void onResult(int resultCode, @Nullable Intent data) {
         if (resultCode == Activity.RESULT_OK) {
-            isUpdateShopInfo = true;
+            setResult(RESULT_OK);
         }
     }
 }

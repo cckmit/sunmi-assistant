@@ -159,6 +159,7 @@
     <string name="ipc_face_group_capacity_dialog_error">输入的照片数量超过分组上限</string>
     <string name="ipc_face_group_threshold">移库分组规则</string>
     <string name="ipc_face_group_threshold_content">%d天%d次</string>
+    <string name="ipc_face_group_threshold_error">移库分组规则设定错误或超过上限</string>
     <string name="ipc_face_group_mark">备注</string>
     <string name="ipc_face_group_mark_hint">请输入备注</string>
     <string name="ipc_face_group_mark_error">备注为空或超过100个字符</string>

@@ -44,7 +44,7 @@ import sunmi.common.view.TitleBarView;
 @EActivity(resName = "face_activity_group_list")
 public class FaceGroupListActivity extends BaseActivity {
 
-    private static final int REQUEST_CODE_CREATE = 100;
+    private static final int REQUEST_CODE_UPDATE = 100;
     private static final int GROUP_LIST_MAX_COUNT = 12;
 
     @ViewById(resName = "title_bar")
@@ -54,7 +54,7 @@ public class FaceGroupListActivity extends BaseActivity {
 
     @Extra
     int mShopId;
-    int mCurrentCapacity;
+    int mOccupiedCapacity;
 
     private BaseArrayAdapter<Object> mAdapter;
     private List<Object> mFaceGroup = new ArrayList<>();
@@ -102,10 +102,10 @@ public class FaceGroupListActivity extends BaseActivity {
                     }
                 });
                 mFaceGroup.clear();
-                mCurrentCapacity = 0;
+                mOccupiedCapacity = 0;
                 mFaceGroup.addAll(list);
                 for (FaceGroup group : list) {
-                    mCurrentCapacity += group.getCapacity();
+                    mOccupiedCapacity += group.getCapacity();
                 }
                 mFaceGroup.add(0, context.getString(R.string.ipc_face_group_default));
                 if (mFaceGroup.size() > FaceGroup.FACE_GROUP_TYPE_CUSTOM) {
@@ -130,16 +130,19 @@ public class FaceGroupListActivity extends BaseActivity {
         }
         FaceGroupCreateActivity_.intent(this)
                 .mShopId(mShopId)
-                .mCurrentCapacity(mCurrentCapacity)
-                .startForResult(REQUEST_CODE_CREATE);
+                .mOccupiedCapacity(mOccupiedCapacity)
+                .startForResult(REQUEST_CODE_UPDATE);
     }
 
     private void openGroupDetail(FaceGroup model) {
         FaceGroupDetailActivity_.intent(this)
-                .start();
+                .mShopId(mShopId)
+                .mFaceGroup(model)
+                .mOccupiedCapacity(mOccupiedCapacity)
+                .startForResult(REQUEST_CODE_UPDATE);
     }
 
-    @OnActivityResult(REQUEST_CODE_CREATE)
+    @OnActivityResult(REQUEST_CODE_UPDATE)
     void onCreateResult(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             getGroup();
@@ -169,8 +172,7 @@ public class FaceGroupListActivity extends BaseActivity {
         @Override
         public void onBindViewHolder(@NonNull BaseViewHolder<FaceGroup> holder, FaceGroup model, int position) {
             SettingItemLayout itemView = (SettingItemLayout) holder.itemView;
-            itemView.setLeftText(Utils.getGroupName(holder.getContext(),
-                    model.getType(), model.getGroupName(), false));
+            itemView.setLeftText(Utils.getGroupName(holder.getContext(), model, false));
             itemView.setRightText(holder.getContext().getString(R.string.ipc_face_group_count, model.getCount()));
         }
     }

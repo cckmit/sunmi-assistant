@@ -32,9 +32,6 @@ import sunmi.common.view.TitleBarView;
 @EActivity(resName = "face_activity_group_create")
 public class FaceGroupCreateActivity extends BaseActivity {
 
-    private static final int MAX_LENGTH_NAME = 20;
-    private static final int MAX_LENGTH_MARK = 100;
-
     @ViewById(resName = "title_bar")
     TitleBarView mTitleBar;
     @ViewById(resName = "cet_face_group_name")
@@ -49,7 +46,7 @@ public class FaceGroupCreateActivity extends BaseActivity {
     @Extra
     int mShopId;
     @Extra
-    int mCurrentCapacity;
+    int mOccupiedCapacity;
 
     @AfterViews
     void init() {
@@ -73,17 +70,17 @@ public class FaceGroupCreateActivity extends BaseActivity {
         }
         String mark = mEtMark.getText() == null ? null : mEtMark.getText().toString().trim();
 
-        if (name == null || name.length() == 0 || name.length() > MAX_LENGTH_NAME) {
+        if (name == null || name.length() == 0 || name.length() > FaceGroup.MAX_LENGTH_NAME) {
             shortTip(R.string.ipc_face_group_name_error);
             return;
         }
 
-        if (capacity < 0 || capacity > FaceGroup.MAX_CAPACITY_ALL_GROUP - mCurrentCapacity) {
+        if (capacity <= 0 || capacity > FaceGroup.MAX_CAPACITY_ALL_GROUP - mOccupiedCapacity) {
             shortTip(R.string.ipc_face_group_capacity_error);
             return;
         }
 
-        if (mark == null || mark.length() == 0 || mark.length() > MAX_LENGTH_NAME) {
+        if (mark == null || mark.length() == 0 || mark.length() > FaceGroup.MAX_LENGTH_NAME) {
             shortTip(R.string.ipc_face_group_mark_error);
             return;
         }

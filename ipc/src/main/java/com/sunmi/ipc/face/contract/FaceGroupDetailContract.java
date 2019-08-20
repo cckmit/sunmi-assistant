@@ -14,9 +14,11 @@ public interface FaceGroupDetailContract {
 
         void updateCapacityView(int capacity);
 
-        void updateRegularView(int times, int days);
+        void updateThresholdView(int times, int days);
 
         void updateMarkView(String mark);
+
+        void deleteSuccess();
     }
 
     interface Presenter {
@@ -25,8 +27,10 @@ public interface FaceGroupDetailContract {
 
         void updateCapacity(int capacity);
 
-        void updateRegular(int times, int days);
+        void updateThreshold(int times, int days);
 
         void updateMark(String mark);
+
+        void delete();
     }
 }

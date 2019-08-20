@@ -18,7 +18,11 @@ public class FaceGroup implements Parcelable {
     public static final int FACE_GROUP_TYPE_BLACK = 4;
     public static final int FACE_GROUP_TYPE_CUSTOM = 5;
 
+    public static final int SECONDS_PER_DAY = 86400;
     public static final int MAX_CAPACITY_ALL_GROUP = 10000;
+    public static final int MAX_THRESHOLD = 100;
+    public static final int MAX_LENGTH_NAME = 20;
+    public static final int MAX_LENGTH_MARK = 100;
 
     /**
      * company_id : 6759
@@ -63,6 +67,14 @@ public class FaceGroup implements Parcelable {
     @SerializedName("alarm_notified")
     private int alarmNotified;
 
+    public boolean isSystemType() {
+        return type >= FACE_GROUP_TYPE_NEW && type <= FACE_GROUP_TYPE_BLACK;
+    }
+
+    public boolean isCustomType() {
+        return type == FACE_GROUP_TYPE_CUSTOM;
+    }
+
     public int getCompanyId() {
         return companyId;
     }
@@ -99,6 +111,10 @@ public class FaceGroup implements Parcelable {
         return period;
     }
 
+    public int getPeriodDays() {
+        return period / SECONDS_PER_DAY;
+    }
+
     public int getCapacity() {
         return capacity;
     }
@@ -113,6 +129,31 @@ public class FaceGroup implements Parcelable {
 
     public int getAlarmNotified() {
         return alarmNotified;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public void setMark(String mark) {
+        this.mark = mark;
+    }
+
+    public void setThreshold(int times, int days) {
+        this.threshold = times;
+        this.period = days * SECONDS_PER_DAY;
+    }
+
+    public void setPeriod(int period) {
+        this.period = period;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
+    public void setAlarmNotified(int alarmNotified) {
+        this.alarmNotified = alarmNotified;
     }
 
     protected FaceGroup(Parcel in) {

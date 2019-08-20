@@ -39,6 +39,7 @@
 
         <activity android:name=".face.FaceGroupListActivity_" />
         <activity android:name=".face.FaceGroupCreateActivity_" />
+        <activity android:name=".face.FaceGroupDetailActivity_" />
 
     </application>
 
