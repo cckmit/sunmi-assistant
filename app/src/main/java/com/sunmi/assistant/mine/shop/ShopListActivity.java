@@ -77,7 +77,6 @@ public class ShopListActivity extends BaseActivity {
 
     private void createShop() {
         CreateShopActivity_.intent(context)
-                .companyId(SpUtils.getCompanyId())
                 .startForResult(REQUEST_CODE_SHOP);
     }
 
@@ -126,7 +125,10 @@ public class ShopListActivity extends BaseActivity {
             holder.itemView.setOnClickListener(v -> {
                 CommonUtils.trackCommonEvent(mContext, "defaultStore",
                         "主页_我的_我的店铺_默认店铺", Constants.EVENT_MY_INFO);
-                ShopDetailGroupActivity_.intent(mContext).shopId(info.getShop_id()).startForResult(REQUEST_CODE_SHOP);
+                ShopDetailGroupActivity_.intent(mContext)
+                        .shopId(info.getShop_id())
+                        .shopName(info.getShop_name())
+                        .startForResult(REQUEST_CODE_SHOP);
             });
         }
     }

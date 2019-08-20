@@ -1,7 +1,6 @@
 package com.sunmi.assistant.ui.activity.contract;
 
 import sunmi.common.base.BaseView;
-import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.model.CompanyInfoResp;
 
 /**
@@ -15,9 +14,9 @@ public interface CreateCompanyContract {
 
         void createCompanyFailView(int code, String msg);
 
-        void getSaasSuccessView(AuthStoreInfo bean);
-
-        void getSaasFailView(int code, String msg);
+//        void getSaasSuccessView(AuthStoreInfo bean);
+//
+//        void getSaasFailView(int code, String msg);
 
     }
 
@@ -25,7 +24,7 @@ public interface CreateCompanyContract {
 
         void createCompany(String name);
 
-        void getSaas(String mobile);
+//        void getSaas(String mobile);
 
     }
 }

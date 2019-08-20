@@ -2,11 +2,12 @@ package com.sunmi.assistant.mine.shop;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.support.constraint.ConstraintLayout;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.RelativeLayout;
 
 import com.sunmi.apmanager.utils.DialogUtils;
 import com.sunmi.assistant.R;
@@ -43,8 +44,8 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
     TitleBarView titleBar;
     @ViewById(R.id.et_shop_message)
     ClearableEditText etShopMessage;
-    @ViewById(R.id.tv_square)
-    TextView tvSquare;
+    @ViewById(R.id.rl_square)
+    RelativeLayout rlSquare;
 
     @Extra
     ShopInfo mInfo;
@@ -71,12 +72,14 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
     private void initShopMessage() {
         if (type == ShopDetailActivity.TYPE_CONTACT) {
             titleBar.setAppTitle(R.string.company_shop_contact);
+            etShopMessage.setHint(R.string.company_shop_contact_tip);
             if (!TextUtils.isEmpty(mInfo.getContactPerson())) {
                 etShopMessage.setText(mInfo.getContactPerson());
                 etShopMessage.setSelection(mInfo.getContactPerson().length());
             }
         } else if (type == ShopDetailActivity.TYPE_CONTACT_TEL) {
             titleBar.setAppTitle(R.string.company_shop_mobile);
+            etShopMessage.setHint(R.string.company_shop_contact_tel_tip);
             etShopMessage.setInputType(InputType.TYPE_CLASS_PHONE);
             if (!TextUtils.isEmpty(mInfo.getContactTel())) {
                 etShopMessage.setText(mInfo.getContactTel());
@@ -84,7 +87,13 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
             }
         } else if (type == ShopDetailActivity.TYPE_AREA) {
             titleBar.setAppTitle(R.string.company_shop_area);
-            tvSquare.setVisibility(View.VISIBLE);
+            ConstraintLayout.LayoutParams viewGroup = (ConstraintLayout.LayoutParams) etShopMessage.getLayoutParams();
+            viewGroup.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
+            viewGroup.rightMargin = 150;
+            etShopMessage.setLayoutParams(viewGroup);
+
+            etShopMessage.setHint(R.string.company_shop_area_tip);
+            rlSquare.setVisibility(View.VISIBLE);
             etShopMessage.setInputType(InputType.TYPE_CLASS_PHONE);
             etShopMessage.setText(String.valueOf(mInfo.getBusinessArea()));
             etShopMessage.setSelection(String.valueOf(mInfo.getBusinessArea()).length());

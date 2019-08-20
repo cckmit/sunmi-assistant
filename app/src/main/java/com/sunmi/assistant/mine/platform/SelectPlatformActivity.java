@@ -29,8 +29,6 @@ import sunmi.common.model.PlatformInfo;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.CommonHelper;
-import sunmi.common.utils.GotoActivityUtils;
-import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
@@ -62,6 +60,12 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
 
     @Extra
     boolean isCanBack;
+    @Extra
+    int companyId;
+    @Extra
+    String companyName;
+    @Extra
+    int saasExist;
 
     @AfterViews
     void init() {
@@ -104,11 +108,6 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
             case R.id.img_back:
                 onBackPressed();
                 break;
-            case R.id.txt_right:
-                //没有对接saas数据Q
-                SpUtils.setSaasExist(0);
-                GotoActivityUtils.gotoMainActivity(this);
-                break;
             default:
                 break;
         }
@@ -119,6 +118,9 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
         PlatformMobileActivity_.intent(this)
                 .platform(selectPlatform)
                 .saasSource(selectSaasSource)
+                .companyId(companyId)
+                .companyName(companyName)
+                .saasExist(saasExist)
                 .startForResult(REQUEST_CODE_SHOP);
     }
 

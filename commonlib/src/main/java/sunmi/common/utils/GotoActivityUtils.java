@@ -33,6 +33,7 @@ public class GotoActivityUtils {
                 && !className.contains("CreateCompanyActivity")
                 && !className.contains("CreateCompanyNextActivity")
                 && !className.contains("CreateShopActivity")
+                && !className.contains("CreateShopPreviewActivity")
                 ) {
             LogCat.e("TAG", "gotoLoginActivity= " + className);
             gotoLoginActivity(BaseApplication.getContext(), "1"); //1 剔除多端登录

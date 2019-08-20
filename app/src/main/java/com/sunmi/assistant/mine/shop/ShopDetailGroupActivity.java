@@ -31,11 +31,14 @@ public class ShopDetailGroupActivity extends BaseActivity {
     TitleBarView titleBar;
     @Extra
     int shopId;
+    @Extra
+    String shopName;
     private boolean isUpdateShopInfo;
 
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
+        titleBar.setAppTitle(shopName);
         titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
     }
 

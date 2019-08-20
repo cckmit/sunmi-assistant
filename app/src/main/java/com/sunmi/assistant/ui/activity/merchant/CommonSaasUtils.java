@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.model.AuthStoreInfo;
-import sunmi.common.utils.SpUtils;
 
 /**
  * @author yangShiJie
@@ -42,7 +41,7 @@ public class CommonSaasUtils {
                             .list((ArrayList) list)
                             .start())
                     .setCancelButton((dialog, which) -> {
-                        gotoCreateShopActivity(context, SpUtils.getCompanyId());
+                        gotoCreateShopActivity(context);
                     })
                     .create().show();
         } else {
@@ -51,7 +50,7 @@ public class CommonSaasUtils {
                     .setMessage(context.getString(R.string.company_shop_new_create_or_import))
                     .setTopButton((dialog, which) -> {
                         //新建门店
-                        gotoCreateShopActivity(context, SpUtils.getCompanyId());
+                        gotoCreateShopActivity(context);
                     })
                     .setBottomButton((dialog, which) -> {
                         //导入门店
@@ -66,11 +65,9 @@ public class CommonSaasUtils {
      * 新建门店
      *
      * @param context   context
-     * @param companyId 商户id
      */
-    public static void gotoCreateShopActivity(Context context, int companyId) {
+    public static void gotoCreateShopActivity(Context context) {
         CreateShopActivity_.intent(context)
-                .companyId(companyId)
                 .start();
     }
 
