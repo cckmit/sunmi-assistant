@@ -22,6 +22,7 @@
     <string name="toast_serverNoResponse">请检查网络是否有异常</string>
     <string name="network_connected">网络已恢复</string>
     <string name="server_noreponse">服务器无响应</string>
+    <string name="toast_network_error">网络异常，请检查网络设置</string>
 
     <string name="tip_granted">已授权</string>
     <string name="tip_permission_ungranted">拒绝授权会影响部分功能使用</string>

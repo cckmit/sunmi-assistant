@@ -9,7 +9,7 @@ import android.widget.Button;
 
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.model.IpcListResp;
-import com.sunmi.ipc.rpc.IPCCloudApi;
+import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.ipc.setting.recognition.RecognitionSettingActivity_;
 
 import org.androidannotations.annotations.AfterViews;
@@ -149,7 +149,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
 
     public void startCameraAdjust(final String deviceId) {
         showLoadingDialog();
-        IPCCloudApi.getDetailList(SpUtils.getCompanyId(), SpUtils.getShopId(),
+        IpcCloudApi.getDetailList(SpUtils.getCompanyId(), SpUtils.getShopId(),
                 new RetrofitCallback<IpcListResp>() {
                     @Override
                     public void onSuccess(int code, String msg, IpcListResp data) {

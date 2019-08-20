@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sunmi.common.view.SettingItemLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp_0_5"
+    android:background="@color/c_white"
+    app:imageRight="@mipmap/ic_right_arrow_small"
+    app:leftPadding="@dimen/dp_10"
+    app:parentHeight="@dimen/dp_60"
+    app:rightPadding="@dimen/dp_20"
+    app:rightTextColor="@color/colorText_60" />

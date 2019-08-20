@@ -11,7 +11,7 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
 import com.sunmi.cloudprinter.rpc.IOTCloudApi;
 import com.sunmi.ipc.model.IpcListResp;
-import com.sunmi.ipc.rpc.IPCCloudApi;
+import com.sunmi.ipc.rpc.IpcCloudApi;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -144,7 +144,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
 
     @Override
     public void getIpcList() {
-        IPCCloudApi.getDetailList(SpUtils.getCompanyId(), SpUtils.getShopId(),
+        IpcCloudApi.getDetailList(SpUtils.getCompanyId(), SpUtils.getShopId(),
                 new RetrofitCallback<IpcListResp>() {
                     @Override
                     public void onSuccess(int code, String msg, IpcListResp data) {
@@ -179,8 +179,8 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
 
     @Override
     public void unbindIPC(int deviceId) {
-        IPCCloudApi.unbindIPC(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId,
-                new RetrofitCallback() {
+        IpcCloudApi.unbindIpc(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId,
+                new RetrofitCallback<Object>() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
                         if (isViewAttached()) {

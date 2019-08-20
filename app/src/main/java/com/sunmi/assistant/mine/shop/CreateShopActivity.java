@@ -1,7 +1,6 @@
 package com.sunmi.assistant.mine.shop;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -114,9 +113,7 @@ public class CreateShopActivity extends BaseActivity {
     private void createShopSuccessView(CreateShopInfo resp) {
         shortTip(R.string.company_create_success);
         if (SpUtils.isLoginSuccess()) {
-            Intent intent = getIntent();
-            intent.putExtra(ShopListActivity.INTENT_EXTRA_SUCCESS, true);
-            setResult(RESULT_OK, intent);
+            setResult(RESULT_OK);
             finish();
         } else {
             GetUserInfoUtils.userInfo(this, companyId, companyName, saasExist, resp.getShop_id(), resp.getShop_name());

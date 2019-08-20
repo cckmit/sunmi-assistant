@@ -34,7 +34,6 @@ import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.dialog.CommonDialog;
 
-import static com.sunmi.assistant.mine.shop.ShopListActivity.INTENT_EXTRA_SUCCESS;
 import static com.sunmi.assistant.mine.shop.ShopListActivity.REQUEST_CODE_SHOP;
 
 /**
@@ -168,11 +167,8 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
 
     @OnActivityResult(REQUEST_CODE_SHOP)
     void onResult(int resultCode, @Nullable Intent data) {
-        if (resultCode == Activity.RESULT_OK && data != null
-                && data.getBooleanExtra(INTENT_EXTRA_SUCCESS, false)) {
-            Intent intent = getIntent();
-            intent.putExtra(INTENT_EXTRA_SUCCESS, true);
-            setResult(RESULT_OK, intent);
+        if (resultCode == Activity.RESULT_OK) {
+            setResult(RESULT_OK);
             finish();
         }
     }

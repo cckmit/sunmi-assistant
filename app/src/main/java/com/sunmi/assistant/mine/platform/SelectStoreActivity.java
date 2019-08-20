@@ -2,7 +2,6 @@ package com.sunmi.assistant.mine.platform;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -34,8 +33,6 @@ import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.ViewHolder;
-
-import static com.sunmi.assistant.mine.shop.ShopListActivity.INTENT_EXTRA_SUCCESS;
 
 /**
  * 选择门店
@@ -91,9 +88,7 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
     @Override
     public void complete(int saasExist, int shopId, String shopName) {
         if (SpUtils.isLoginSuccess()) {
-            Intent intent = getIntent();
-            intent.putExtra(INTENT_EXTRA_SUCCESS, true);
-            setResult(RESULT_OK, intent);
+            setResult(RESULT_OK);
             BaseNotification.newInstance().postNotificationName(CommonNotificationConstant.refreshMainTabView);
             finish();
         } else {

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 
 import com.sunmi.assistant.R;
+import com.sunmi.ipc.face.FaceGroupListActivity_;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -17,8 +18,6 @@ import org.androidannotations.annotations.ViewById;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.TitleBarView;
-
-import static com.sunmi.assistant.mine.shop.ShopListActivity.INTENT_EXTRA_SUCCESS;
 
 /**
  * @author yangShiJie
@@ -59,13 +58,13 @@ public class ShopDetailGroupActivity extends BaseActivity {
 
     @Click(R.id.sil_shop_face)
     public void toShopFace() {
-        //TODO
+        FaceGroupListActivity_.intent(this).mShopId(shopId).start();
     }
 
     @OnActivityResult(ShopListActivity.REQUEST_CODE_SHOP)
     void onResult(int resultCode, @Nullable Intent data) {
         if (resultCode == Activity.RESULT_OK) {
-            isUpdateShopInfo = true;
+            setResult(RESULT_OK);
         }
     }
 }

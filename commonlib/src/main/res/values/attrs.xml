@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <attr name="dividerShow" format="boolean" />
+    <attr name="dividerColor" format="color" />
     <declare-styleable name="TitleBarView">
         <!--左边icon-->
         <attr name="leftIcon" format="reference" />
@@ -20,8 +22,8 @@
         <!--状态栏颜色-->
         <attr name="statusBarColor" format="reference" />
         <!--分割线-->
-        <attr name="dividerShow" format="boolean" />
-        <attr name="dividerColor" format="color" />
+        <attr name="dividerShow" />
+        <attr name="dividerColor" />
 
         <!--左边icon默认点击事件-->
         <attr name="leftDefaultClickEnable" format="boolean" />
@@ -44,6 +46,9 @@
         <attr name="imageRight" format="reference" />
         <attr name="leftPadding" format="dimension" />
         <attr name="rightPadding" format="dimension" />
+        <attr name="dividerShow" />
+        <attr name="dividerColor" />
+        <attr name="dividerHeight" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="VerifyCodeInputView">

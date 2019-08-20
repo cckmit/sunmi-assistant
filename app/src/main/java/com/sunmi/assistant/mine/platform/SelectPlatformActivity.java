@@ -35,7 +35,6 @@ import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.ViewHolder;
 
-import static com.sunmi.assistant.mine.shop.ShopListActivity.INTENT_EXTRA_SUCCESS;
 import static com.sunmi.assistant.mine.shop.ShopListActivity.REQUEST_CODE_SHOP;
 
 /**
@@ -126,11 +125,8 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
 
     @OnActivityResult(REQUEST_CODE_SHOP)
     void onResult(int resultCode, @Nullable Intent data) {
-        if (resultCode == Activity.RESULT_OK && data != null
-                && data.getBooleanExtra(INTENT_EXTRA_SUCCESS, false)) {
-            Intent intent = getIntent();
-            intent.putExtra(INTENT_EXTRA_SUCCESS, true);
-            setResult(RESULT_OK, intent);
+        if (resultCode == Activity.RESULT_OK) {
+            setResult(RESULT_OK);
             finish();
         }
     }

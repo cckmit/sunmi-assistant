@@ -3,7 +3,7 @@ package com.sunmi.ipc.setting;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.model.IpcNewFirmwareResp;
 import com.sunmi.ipc.rpc.IPCCall;
-import com.sunmi.ipc.rpc.IPCCloudApi;
+import com.sunmi.ipc.rpc.IpcCloudApi;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.constant.CommonConstants;
@@ -38,7 +38,7 @@ public class IpcSettingPresenter extends BasePresenter<IpcSettingContract.View>
 
     @Override
     public void updateName(final String name) {
-        IPCCloudApi.updateBaseInfo(SpUtils.getCompanyId(), SpUtils.getShopId(), mDevice.getId(),
+        IpcCloudApi.updateBaseInfo(SpUtils.getCompanyId(), SpUtils.getShopId(), mDevice.getId(),
                 name, new RetrofitCallback<Object>() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
@@ -63,7 +63,7 @@ public class IpcSettingPresenter extends BasePresenter<IpcSettingContract.View>
 
     @Override
     public void currentVersion() {
-        IPCCloudApi.newFirmware(SpUtils.getCompanyId(), SpUtils.getShopId(), mDevice.getId(), new RetrofitCallback<IpcNewFirmwareResp>() {
+        IpcCloudApi.newFirmware(SpUtils.getCompanyId(), SpUtils.getShopId(), mDevice.getId(), new RetrofitCallback<IpcNewFirmwareResp>() {
             @Override
             public void onSuccess(int code, String msg, IpcNewFirmwareResp data) {
                 if (isViewAttached()) {
