@@ -101,6 +101,11 @@ public class IpcVideoView extends SurfaceView
     }
 
     @Override
+    public void initSuccess() {
+
+    }
+
+    @Override
     public void initFail() {
 
     }
