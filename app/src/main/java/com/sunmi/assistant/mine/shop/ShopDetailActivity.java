@@ -170,6 +170,7 @@ public class ShopDetailActivity extends BaseActivity {
     @OnActivityResult(REQUEST_CODE_NAME)
     public void onNameResult(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
+            isUpdateShopInfo = true;
             mInfo.setShopName(data.getStringExtra(INTENT_EXTRA_NAME));
             silShopName.setRightText(mInfo.getShopName());
         }

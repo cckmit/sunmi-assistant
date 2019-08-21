@@ -57,6 +57,12 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
     @Extra
     boolean isBack;
     @Extra
+    int companyId;
+    @Extra
+    String companyName;
+    @Extra
+    int saasExist;
+    @Extra
     ArrayList<AuthStoreInfo.SaasUserInfoListBean> list;
 
     private ShopListAdapter mAdapter;
@@ -67,7 +73,7 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
         if (!isBack) {
             titleBar.getLeftLayout().setVisibility(View.GONE);
         }
-        mPresenter = new SelectStorePresenter(list);
+        mPresenter = new SelectStorePresenter(list, companyId);
         mPresenter.attachView(this);
         mAdapter = new ShopListAdapter(this, mPresenter.getList());
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -80,13 +86,13 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
     }
 
     @Override
-    public void complete() {
+    public void complete(int saasExist, int shopId, String shopName) {
         if (SpUtils.isLoginSuccess()) {
             setResult(RESULT_OK);
             BaseNotification.newInstance().postNotificationName(CommonNotificationConstant.refreshMainTabView);
             finish();
         } else {
-            GetUserInfoUtils.userInfo(this);
+            GetUserInfoUtils.userInfo(this, companyId, companyName, saasExist, shopId, shopName);
         }
     }
 

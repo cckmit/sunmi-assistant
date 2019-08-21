@@ -30,11 +30,16 @@ public class ShopDetailGroupActivity extends BaseActivity {
     TitleBarView titleBar;
     @Extra
     int shopId;
+    @Extra
+    String shopName;
 
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
+        titleBar.setAppTitle(shopName);
+        titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
     }
+
 
     @Click(R.id.sil_shop_detail)
     public void toShopDetail() {
