@@ -7,13 +7,13 @@ import sunmi.common.utils.SecurityUtils;
 public class PrinterJSCall {
 
     private String userId;
-    private String merchantId;
+    private String shopId;
     private String sn;
     private int channelId;
 
-    public PrinterJSCall(String userId, String merchantId, String sn, int channelId) {
+    public PrinterJSCall(String userId, String shopId, String sn, int channelId) {
         this.userId = userId;
-        this.merchantId = merchantId;
+        this.shopId = shopId;
         this.sn = sn;
         this.channelId = channelId;
     }
@@ -21,6 +21,7 @@ public class PrinterJSCall {
     @JavascriptInterface
     public String getInfo() {
         return String.format("{\"userId\":\"%s\",\"merchantId\":\"%s\",\"sn\":\"%s\",\"token\":\"%s\",\"channelId\":\"%s\"}",
-                userId, merchantId, sn, SecurityUtils.md5(userId), channelId);
+                userId, shopId, sn, SecurityUtils.md5(userId), channelId);
     }
+
 }

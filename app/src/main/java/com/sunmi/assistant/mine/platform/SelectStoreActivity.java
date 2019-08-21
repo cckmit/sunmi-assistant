@@ -2,6 +2,7 @@ package com.sunmi.assistant.mine.platform;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -137,8 +138,9 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
             }
         }
 
+        @NonNull
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             ViewHolder holder = super.onCreateViewHolder(parent, viewType);
             holder.getView(R.id.CBox).setOnClickListener(v -> {
                 SelectShopModel info = getData().get(holder.getAdapterPosition());

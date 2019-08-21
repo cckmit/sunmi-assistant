@@ -10,12 +10,14 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.sunmi.ipc.R;
-import com.sunmi.ipc.model.VideoListResp;
+import com.sunmi.ipc.model.VideoTimeSlotBean;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.concurrent.ScheduledExecutorService;
 
+import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.log.LogCat;
 
 /**
@@ -24,26 +26,23 @@ import sunmi.common.utils.log.LogCat;
  */
 public class ZFTimeLine extends View {
 
-    private final int SCALE_TYPE_BIG = 1;           //大刻度
-//    private final int SCALE_TYPE_SMALL = 2;         //小刻度
-
+    private final int INTERVAL_SECONDS = 60 * 10;   //小刻度代表的秒数
     private int intervalValue;                      //小刻度宽度
-    //    private int scaleType;
-    private long currentInterval;                   //中间刻度对应的时间戳
-
-    private SimpleDateFormat formatterScale;        //日期格式化,用于时间戳和时间字符的转换
-    private SimpleDateFormat formatterProject;      //日期格式化,用于时间戳和时间字符的转换
+    private long currentInterval;                   //中间刻度对应的秒数
 
     private Paint pWhite, pOrange, pCenterLine;     //三种不同颜色的画笔
-    private int point = 0;                          //用于当前触控点数量
     private float moveStartX = 0;                   //用于记录单点触摸点位置,用于计算拖距离
-//    private float scaleValue = 0;                   //用于记录两个触摸点间距,用于时间轴缩放计算
 
     private boolean onLock;                         //用于屏蔽时间轴拖动,为true时无法拖动
 
+    private SimpleDateFormat formatterScale;        //日期格式化,用于秒数和时间字符的转换
+    private SimpleDateFormat formatterProject;      //日期格式化,用于秒数和时间字符的转换
+
     private OnZFTimeLineListener listener;          //时间轴拖动监听,这个只在拖动完成时返回数据
 
-    List<VideoListResp.VideoBean> videoData;        //已录制视频数据信息
+    List<VideoTimeSlotBean> videoData;              //已录制视频数据信息
+    //刻度尺移动定时器
+    private ScheduledExecutorService executorService;
 
     public ZFTimeLine(Context context) {
         super(context);
@@ -62,16 +61,14 @@ public class ZFTimeLine extends View {
 
     //数据数据初始化
     private void init() {
-//        scaleType = SCALE_TYPE_BIG;
         intervalValue = 0;
         timeNow();
-        onLock = false;
         formatterScale = new SimpleDateFormat("HH:mm");
         formatterProject = new SimpleDateFormat("yyyyMMddHHmmss");
 
         pWhite = new Paint();
         pWhite.setColor(Color.WHITE);
-        pWhite.setTextSize(intDip2px(10));
+        pWhite.setTextSize(getIntervalValue());
         pWhite.setAntiAlias(true);
         pWhite.setTextAlign(Paint.Align.CENTER);
         pWhite.setStrokeWidth(dip2px(1));
@@ -83,32 +80,40 @@ public class ZFTimeLine extends View {
         pCenterLine.setStrokeWidth(dip2px(1));
         pCenterLine.setColor(ContextCompat.getColor(getContext(), R.color.common_orange));
     }
+//
+//    public void startAutoScroll() {
+//        if (executorService != null) return;
+//        executorService = Executors.newSingleThreadScheduledExecutor();
+//        executorService.scheduleAtFixedRate(new Runnable() {
+//            @Override
+//            public void run() {
+//                LogCat.e("zft", "99999999 111 currentInteval = " + currentInterval);
+//                moveToTime(currentInterval + 1000);
+//            }
+//        }, 0, 10, TimeUnit.SECONDS);
+//    }
 
     //设置监听
     public void setListener(OnZFTimeLineListener listener) {
         this.listener = listener;
     }
 
-    //把当前时间戳设置我中间刻度对应的时间戳
+    //把当前秒数设置我中间刻度对应的秒数
     private void timeNow() {
-        currentInterval = System.currentTimeMillis();
+        currentInterval = System.currentTimeMillis() / 1000;
     }
 
-    //宽度1所代表的毫秒数
-    private long millisecondsOfIntervalValue() {
-//        if (scaleType == SCALE_TYPE_BIG) {
-        return (long) (6 * 60000.0 / intervalValue);
-//        } else {
-//            return (long) (60000.0 / intervalValue);
-//        }
+    //宽度1所代表的秒数
+    private long secondsOfIntervalValue() {
+        return (long) (INTERVAL_SECONDS / intervalValue);
     }
 
     private float dip2px(float dipValue) {
         return dipValue * (getResources().getDisplayMetrics().densityDpi / 160);
     }
 
-    private int intDip2px(float dipValue) {
-        return (int) (dip2px(dipValue) + 0.5);
+    private int getIntervalValue() {
+        return (int) (dip2px((float) 10) + 0.5);
     }
 
     @Override
@@ -116,73 +121,59 @@ public class ZFTimeLine extends View {
         super.onDraw(canvas);
 
         //初始化小刻度的间隔,在init里densityDpi的数据为0,所以放到这里了
-        if (intervalValue == 0) intervalValue = intDip2px(10);
+        if (intervalValue == 0) {
+            intervalValue = getIntervalValue();
+        }
 
         //中间线的x值
         long centerX = getWidth() / 2;
-        //左边界线代表的时间戳
-        long leftInterval = currentInterval - centerX * millisecondsOfIntervalValue();
-        //右边界线时间戳
-        long rightInterval = currentInterval + centerX * millisecondsOfIntervalValue();
+        //左边界线代表的秒数
+        long leftInterval = currentInterval - centerX * secondsOfIntervalValue();
+        //右边界线秒数
+        long rightInterval = currentInterval + centerX * secondsOfIntervalValue();
 
-        long x;             //记录绘制刻度线的位置
-        long interval;      //记录所绘制刻度线代表的时间戳
+        //下面计算需要绘制的第一个刻度线的位置和所代表的秒数
+        long first = leftInterval / INTERVAL_SECONDS;
+        //记录所绘制刻度线代表的秒数
+        long interval = ((first + 1) * INTERVAL_SECONDS);
+        //记录绘制刻度线的位置
+        long x = (interval - leftInterval) / secondsOfIntervalValue();
 
-        //下面计算需要绘制的第一个刻度线的位置和所代表的时间戳
-//        if (scaleType == SCALE_TYPE_BIG) {
-        long first = leftInterval / (60 * 6 * 1000);
-        interval = ((first + 1) * (60 * 6 * 1000));
-        x = (interval - leftInterval) / millisecondsOfIntervalValue();
-//        } else {
-//            long a = leftInterval / (60 * 1000);
-//            interval = ((a + 1) * (60 * 1000));
-//            x = (interval - leftInterval) / millisecondsOfIntervalValue();
-//        }
-
-        //这里是这个项目特有的需求,根据视频数据绘制绿色和红色区域,分别代表该位置有已录制的普通视频和紧急视频(行车记录仪)
+        //这里是这个项目特有的需求,根据视频数据绘制绿色和红色区域,分别代表该位置有已录制的普通视频和紧急视频
+        float displayTop = getHeight() / 2 - dip2px(15);
+        float displayBottom = getHeight() / 2 + dip2px(1);
+        //渲染回放视频区域
         if (videoData != null) {
             for (int i = 0; i < videoData.size(); i++) {
-                VideoListResp.VideoBean info = videoData.get(i);
-                //获取视频文件的开始时间戳和结束时间戳
-                long startInterval = (long) info.getStart_time();
-                long endInterval = (long) info.getEnd_time();
+                VideoTimeSlotBean info = videoData.get(i);
+                //获取视频文件的开始秒数和结束秒数
+                long startInterval = info.getStartTime();
+                long endInterval = info.getEndTime();
                 //判断是否需要绘制
                 if ((startInterval > leftInterval && startInterval < rightInterval)
                         || (endInterval > leftInterval && endInterval < rightInterval)
                         || (startInterval < leftInterval && endInterval > rightInterval)) {
-                    //将开始和结束时间戳转化为对应的x的位置
-                    long startX = (startInterval - leftInterval) / millisecondsOfIntervalValue();
-                    long endX = (endInterval - leftInterval) / millisecondsOfIntervalValue();
-//                    if (info.().contains("SOS")){
-//                        //紧急视频 为红色区域色块
-//                        canvas.drawRect(startX,0,endX,getHeight()-dip2px(24),paintRed);
-//                    }else {
-//                        //普通的为绿色
-                    canvas.drawRect(startX, 0, endX, getHeight() - dip2px(24), pOrange);
-//                    }
+                    canvas.drawRect((startInterval - leftInterval) / secondsOfIntervalValue()
+                            , displayTop,
+                            (endInterval - leftInterval) / secondsOfIntervalValue(),
+                            displayBottom,
+                            pOrange);
                 }
-
-//                LogCat.e("====>", "" + info.getStartTime().getTimeInMillis());
             }
         }
         //画刻度线
         while (x >= 0 && x <= getWidth()) {
-            int a;//长刻度线间隔所代表的时间长度,用于计算,单位是毫秒
-//            if (scaleType == SCALE_TYPE_BIG) {
-            a = 60000 * 6;
-//            } else {
-//                a = 60000;
-//            }
-            long rem = interval % (a * 5);
-            //根据时间戳值对大刻度间隔是否整除判断画长刻度或者短刻度
+            int a = INTERVAL_SECONDS;//长刻度线间隔所代表的时间长度,用于计算,单位是秒
+            long rem = interval % (a * 6);
+            //根据秒数值对大刻度间隔是否整除判断画长刻度或者短刻度
             if (rem != 0) {//小刻度
                 canvas.drawLine(x, getHeight() / 2 - dip2px(3),
-                        x, getHeight() / 2 + dip2px(1), pWhite);
+                        x, displayBottom, pWhite);
             } else {//大刻度
                 canvas.drawLine(x, getHeight() / 2 - dip2px(7),
-                        x, getHeight() / 2 + dip2px(1), pWhite);
+                        x, displayBottom, pWhite);
                 //大刻度绘制时间文字
-                String time = formatterScale.format(interval);
+                String time = formatterScale.format(interval * 1000);
                 canvas.drawText(time, x, getHeight() / 2 + dip2px(14), pWhite);
             }
             //下一个刻度
@@ -190,8 +181,7 @@ public class ZFTimeLine extends View {
             interval = interval + a;
         }
         //画中间线
-        canvas.drawLine(centerX, getHeight() / 2 - dip2px(15),
-                centerX, getHeight() / 2 + dip2px(1), pCenterLine);
+        canvas.drawLine(centerX, displayTop, centerX, displayBottom, pCenterLine);
     }
 
     //通过onTouchEvent来实现拖动和缩放
@@ -199,73 +189,23 @@ public class ZFTimeLine extends View {
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN: {
-                LogCat.e("touch", "ACTION_DOWN" + event.getX());
-                point = 1;
                 moveStartX = event.getX();
             }
             break;
-            case MotionEvent.ACTION_POINTER_DOWN: {
-//                LogCat.e("touch","ACTION_POINTER_DOWN" + event.getX(0) + "-----" + event.getX(1));
-                point = point + 1;
-//                if (point == 2) {
-//                    scaleValue = Math.abs(event.getX(1) - event.getX(0));
-//                }
-            }
-            break;
             case MotionEvent.ACTION_MOVE: {
-//                LogCat.e("touch","ACTION_MOVE");
-                if (point == 1) {
-                    //拖动
-                    currentInterval = currentInterval - millisecondsOfIntervalValue()
-                            * ((long) (event.getX() - moveStartX));
-                    moveStartX = event.getX();
+                currentInterval = currentInterval - secondsOfIntervalValue()
+                        * ((long) (event.getX() - moveStartX));
+                if (listener != null) {
+                    listener.moveTo(DateTimeUtils.secondToDate(currentInterval, "yyyy-MM-dd HH:mm:ss"),
+                            (moveStartX - event.getX()) < 0);
                 }
-//                else if (point == 2) {
-//                    float value = Math.abs(event.getX(1) - event.getX(0));
-//                    if (scaleType == SCALE_TYPE_BIG) {
-//                        if (scaleValue - value < 0) {//变大
-//                            intervalValue = intervalValue + ((int) ((value - scaleValue) / dip2px(100)));
-//                            if (intervalValue >= intDip2px(15)) {
-//                                scaleType = SCALE_TYPE_SMALL;
-//                                intervalValue = intDip2px(10);
-//                            }
-//                        } else {//变小
-//                            intervalValue = intervalValue + ((int) ((value - scaleValue) / dip2px(100)));
-//                            if (intervalValue < intDip2px(10)) {
-//                                intervalValue = intDip2px(10);
-//                            }
-//                        }
-//                    } else {
-//                        if (scaleValue - value < 0) {//变大
-//                            intervalValue = intervalValue + ((int) ((value - scaleValue) / dip2px(100)));
-//                            if (intervalValue >= intDip2px(15)) {
-//                                intervalValue = intDip2px(15);
-//                            }
-//                        } else {//变小
-//                            intervalValue = intervalValue + ((int) ((value - scaleValue) / dip2px(100)));
-//                            if (intervalValue < intDip2px(10)) {
-//                                scaleType = SCALE_TYPE_BIG;
-//                                intervalValue = intDip2px(10);
-//                            }
-//                        }
-//                    }
-//                }
-                else {
-                    return true;
-                }
-            }
-            break;
-            case MotionEvent.ACTION_POINTER_UP: {
-//                LogCat.e("touch","ACTION_POINTER_UP");
-                point = point - 1;
+                moveStartX = event.getX();
             }
             break;
             case MotionEvent.ACTION_UP: {
-//                LogCat.e("touch","ACTION_UP");
-                point = 0;
                 //拖动结束  这里应该有Bug没有区分移动可缩放状态 不过影响不大
                 if (listener != null) {
-                    listener.didMoveToDate(formatterProject.format(currentInterval));
+                    listener.didMoveToDate(formatterProject.format(currentInterval * 1000));
                 }
             }
             break;
@@ -283,7 +223,7 @@ public class ZFTimeLine extends View {
 
     //刷新到当前时间
     public void refreshNow() {
-        if (onLock || point != 0) {
+        if (onLock) {
             return;
         }
         timeNow();
@@ -292,23 +232,23 @@ public class ZFTimeLine extends View {
 
     //移动到某时间  传入参数格式举例 20170918120000
     public void moveToTime(String timeStr) {
-        if (onLock || point != 0) {
+        if (onLock) {
             return;
         }
         try {
-            currentInterval = formatterProject.parse(timeStr).getTime();
+            currentInterval = formatterProject.parse(timeStr).getTime() / 1000;
             invalidate();
             if (listener != null) {
-                listener.didMoveToDate(formatterProject.format(currentInterval));
+                listener.didMoveToDate(formatterProject.format(currentInterval * 1000));
             }
         } catch (ParseException e) {
             e.printStackTrace();
         }
     }
 
-    //移动到某时间 传入时间戳
+    //移动到某时间 传入秒数
     public void moveToTime(long timeInterval) {
-        if (onLock || point != 0) {
+        if (onLock) {
             return;
         }
         if (timeInterval == 0) return;
@@ -316,9 +256,17 @@ public class ZFTimeLine extends View {
         invalidate();
     }
 
+    //移动到某时间 传入秒数
+    public void autoMove() {
+        LogCat.e("zft", "99999999 222 currentInteval = " + currentInterval);
+        currentInterval += 2000;
+        LogCat.e("zft", "99999999 333 currentInteval = " + currentInterval);
+        invalidate();
+    }
+
     //获取当前时间轴指向的时间 返回参数格式举例 20170918120000
     public String currentTimeStr() {
-        return formatterProject.format(currentInterval);
+        return formatterProject.format(currentInterval * 1000);
     }
 
     //锁定,不可拖动和缩放
@@ -331,28 +279,28 @@ public class ZFTimeLine extends View {
         onLock = false;
     }
 
-    //获取当前时间轴指向的时间的时间戳
+    //获取当前时间轴指向的时间的秒数
     public long getCurrentInterval() {
         return currentInterval;
     }
 
-    //把时间数据转化为时间戳
+    //把时间数据转化为秒数
     public long timeIntervalFromStr(String str) {
         try {
-            return formatterProject.parse(str).getTime();
+            return formatterProject.parse(str).getTime() / 1000;
         } catch (ParseException e) {
             e.printStackTrace();
         }
         return 0;
     }
 
-    //把时间戳转化为时间字符串
+    //把秒数转化为时间字符串
     public String timeStrFromInterval(long interval) {
-        return formatterProject.format(interval);
+        return formatterProject.format(interval * 1000);
     }
 
     //写入视频数据
-    public void setVideoData(List<VideoListResp.VideoBean> videos) {
+    public void setVideoData(List<VideoTimeSlotBean> videos) {
         this.videoData = videos;
         refresh();
     }
@@ -365,7 +313,10 @@ public class ZFTimeLine extends View {
 
     //拖动时间轴监听
     public interface OnZFTimeLineListener {
+
         void didMoveToDate(String date);
+
+        void moveTo(String data, boolean isLeftScroll);
     }
 
 }

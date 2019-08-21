@@ -1,11 +1,9 @@
 package com.sunmi.ipc.view;
 
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.model.IpcListResp;
@@ -30,6 +28,7 @@ import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.view.CommonListAdapter;
+import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.ViewHolder;
 import sunmi.common.view.activity.StartConfigSMDeviceActivity_;
 
@@ -41,13 +40,17 @@ import sunmi.common.view.activity.StartConfigSMDeviceActivity_;
 public class IpcConfigCompletedActivity extends BaseActivity {
 
     @ViewById(resName = "rv_result")
-    RecyclerView rvResult;
+    SmRecyclerView rvResult;
     @ViewById(resName = "btn_complete")
     Button btnComplete;
     @ViewById(resName = "btn_retry")
     Button btnRetry;
     @ViewById(resName = "btn_finish")
     Button btnFinish;
+    @ViewById(resName = "tv_result")
+    TextView tvResult;
+    @ViewById(resName = "tv_tip")
+    TextView tvTip;
 
     @Extra
     String shopId;
@@ -59,6 +62,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     ArrayList<SunmiDevice> sunmiDevices;
 
     private List<SunmiDevice> list = new ArrayList<>();
+    private List<SunmiDevice> successList = new ArrayList<>();
     private int failCount;
 
     @AfterViews
@@ -67,13 +71,23 @@ public class IpcConfigCompletedActivity extends BaseActivity {
             for (SunmiDevice sm : sunmiDevices) {
                 if (sm.getStatus() != 1) {
                     failCount++;
+                } else {
+                    successList.add(sm);
                 }
             }
             if (failCount == sunmiDevices.size()) {
+                tvResult.setText(R.string.tip_ipc_config_fail);
                 btnFinish.setVisibility(View.VISIBLE);
                 btnRetry.setVisibility(View.VISIBLE);
             } else {
-                btnComplete.setVisibility(View.VISIBLE);
+                if (CommonConstants.TYPE_IPC_FS == deviceType) {
+                    tvTip.setVisibility(View.VISIBLE);
+                    btnComplete.setText(R.string.str_adjust_screen);
+                    btnComplete.setVisibility(View.VISIBLE);
+                    btnFinish.setVisibility(View.VISIBLE);
+                } else {
+                    btnComplete.setVisibility(View.VISIBLE);
+                }
             }
         }
         list = sunmiDevices;
@@ -82,8 +96,12 @@ public class IpcConfigCompletedActivity extends BaseActivity {
 
     @Click(resName = "btn_complete")
     void completeClick() {
-        GotoActivityUtils.gotoMainActivity(context);
-        finish();
+        if (CommonConstants.TYPE_IPC_FS == deviceType) {
+
+        } else {
+            GotoActivityUtils.gotoMainActivity(context);
+            finish();
+        }
     }
 
     @Click(resName = "btn_finish")
@@ -103,9 +121,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     }
 
     private void initList() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
-        rvResult.setLayoutManager(layoutManager);
-        rvResult.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
+        rvResult.init(R.drawable.shap_line_divider);
         rvResult.setAdapter(new CommonListAdapter<SunmiDevice>(context,
                 R.layout.item_device_config_complete, list) {
             @Override
@@ -116,7 +132,8 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                     holder.setText(R.id.tv_name, device.getName());
                 }
                 holder.getView(R.id.tv_adjust).setVisibility(View.GONE);
-                holder.setImageResource(R.id.iv_device, DeviceTypeUtils.getInstance().getSunmiDeviceImage(device.getModel()));
+                holder.setImageResource(R.id.iv_device, DeviceTypeUtils.getInstance()
+                        .getSunmiDeviceImage(device.getModel()));
                 if (device.getStatus() == 1 || device.getStatus() == 5512) {
                     holder.setText(R.id.tv_status, getString(R.string.str_add_success));
                     holder.setImageResource(R.id.iv_status, R.mipmap.ic_done);
@@ -138,7 +155,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                     } else if (device.getStatus() == 5511) {
                         errStr = getString(R.string.tip_device_offline);
                     } else if (device.getStatus() == 5013) {
-                        errStr = "错误的商户id或者店铺id";
+                        errStr = getString(R.string.tip_error_company_or_shop_id);
                     } else if (device.getStatus() == RpcErrorCode.RPC_ERR_TIMEOUT) {
                         errStr = getString(R.string.tip_bind_timeout);
                     }
@@ -149,6 +166,29 @@ public class IpcConfigCompletedActivity extends BaseActivity {
         });
     }
 
+//    private void chooseFsAdjust() {
+//        new ListDialog.Builder<CommonListAdapter<SunmiDevice>>(context)
+//                .setTitle(R.string.str_choose_fs_adjust)
+//                .setAdapter(new CommonListAdapter<SunmiDevice>(context, R.layout.item_fs_adjust, list) {
+//                    @Override
+//                    public void convert(ViewHolder holder, final SunmiDevice device) {
+//                        if (!TextUtils.isEmpty(device.getDeviceid())) {
+//                            holder.setText(R.id.tv_name, device.getDeviceid());
+//                        } else {
+//                            holder.setText(R.id.tv_name, device.getName());
+//                        }
+//                    }
+//                })
+//                .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                    }
+//                }).create().show();
+//    }
+
+    /**
+     * 绑定完的mqtt消息未给UID。。。校准需要看直播，必须要有UID。。。等云端mqtt返回UID可以去掉接口调用
+     */
     public void startCameraAdjust(final String deviceId) {
         showLoadingDialog();
         IpcCloudApi.getDetailList(SpUtils.getCompanyId(), SpUtils.getShopId(),
@@ -157,7 +197,6 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                     public void onSuccess(int code, String msg, IpcListResp data) {
                         hideLoadingDialog();
                         boolean success = false;
-                        List<SunmiDevice> list = new ArrayList<>();
                         if (data.getFs_list() != null && data.getFs_list().size() > 0) {
                             for (IpcListResp.SsListBean bean : data.getFs_list()) {
                                 if (deviceId.equalsIgnoreCase(bean.getSn())) {

@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.os.Handler;
 import android.text.Html;
 import android.text.TextUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Set;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.RpcErrorCode;
@@ -42,8 +44,11 @@ import sunmi.common.view.dialog.CommonDialog;
 @EActivity(resName = "activity_ipc_configuring")
 public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresenter>
         implements IpcConfiguringContract.View {
+
     @ViewById(resName = "tv_tip")
     TextView tvTip;
+    @ViewById(resName = "iv_device")
+    ImageView ivDevice;
 
     @Extra
     String shopId;
@@ -59,6 +64,9 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
 
     @AfterViews
     void init() {
+        if (CommonConstants.TYPE_IPC_FS == deviceType) {
+            ivDevice.setImageResource(R.mipmap.ic_no_fs);
+        }
         mPresenter = new IpcConfiguringPresenter();
         mPresenter.attachView(this);
         tvTip.setText(Html.fromHtml(getString(R.string.tip_keep_same_network)));
