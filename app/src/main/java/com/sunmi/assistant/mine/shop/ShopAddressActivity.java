@@ -98,7 +98,8 @@ public class ShopAddressActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (TextUtils.isEmpty(etAddress.getText())) {
+        if (TextUtils.isEmpty(etAddress.getText()) ||
+                TextUtils.equals(mInfo.getAddress(), etAddress.getText() == null ? null : etAddress.getText().toString().trim())) {
             super.onBackPressed();
         } else {
             DialogUtils.isCancelSetting(this);

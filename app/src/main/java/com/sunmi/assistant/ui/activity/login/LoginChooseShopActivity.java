@@ -9,12 +9,12 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.ChooseShopContract;
 import com.sunmi.assistant.mine.shop.CreateShopPreviewActivity_;
 import com.sunmi.assistant.presenter.ChooseShopPresenter;
 import com.sunmi.assistant.ui.activity.merchant.CreateCompanyActivity_;
+import com.sunmi.assistant.utils.GetUserInfoUtils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -129,9 +129,12 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
         CreateCompanyActivity_.intent(context).start();
     }
 
+    /**
+     * 选择完商户，门店，获取用户信息成功
+     */
     @Click(R.id.btn_enter_main)
     void enterMainClick() {
-        mPresenter.getUserInfo();
+        GetUserInfoUtils.userInfo(this, companyId, companyName, saasExist, shopId, shopName);
     }
 
     @Click(R.id.btn_refresh)
@@ -163,14 +166,6 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     @Override
     public void getCompanyListFail(int code, String msg, CompanyListResp data) {
         setNoDataVisible(View.VISIBLE);
-    }
-
-    /**
-     * 选择完商户，门店，获取用户信息成功
-     */
-    @Override
-    public void getUserInfoSuccessView() {
-        CommonUtils.gotoMainActivity(this, companyId, companyName, saasExist, shopId, shopName);
     }
 
     @Override
