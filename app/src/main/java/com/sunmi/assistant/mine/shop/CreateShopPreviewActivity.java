@@ -40,6 +40,7 @@ public class CreateShopPreviewActivity extends BaseActivity {
      */
     @Extra
     int saasExist;
+    private boolean isImportSaas;
 
     @AfterViews
     void init() {
@@ -54,6 +55,7 @@ public class CreateShopPreviewActivity extends BaseActivity {
 
     @Click(R.id.btn_shop_import)
     void importShopClick() {
+        isImportSaas = true;
         getSaasInfo();
     }
 
@@ -102,11 +104,13 @@ public class CreateShopPreviewActivity extends BaseActivity {
             authDialog.setCanceledOnTouchOutside(true);
             authDialog.show();
         } else {
-            //未匹配平台数据-->平台列表
-            SelectPlatformActivity_.intent(context)
-                    .companyId(companyId)
-                    .companyName(companyName)
-                    .start();
+            if (isImportSaas) {
+                //未匹配平台数据-->平台列表
+                SelectPlatformActivity_.intent(context)
+                        .companyId(companyId)
+                        .companyName(companyName)
+                        .start();
+            }
         }
     }
 }
