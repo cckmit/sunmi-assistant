@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 
-import com.sunmi.apmanager.utils.DialogUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.ShopContactAreaContract;
 import com.sunmi.assistant.mine.presenter.ShopContactAreaPresenter;
@@ -91,12 +90,13 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
             viewGroup.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
             viewGroup.rightMargin = 150;
             etShopMessage.setLayoutParams(viewGroup);
-
             etShopMessage.setHint(R.string.company_shop_area_tip);
             rlSquare.setVisibility(View.VISIBLE);
-            etShopMessage.setInputType(InputType.TYPE_CLASS_PHONE);
-            etShopMessage.setText(String.valueOf(mInfo.getBusinessArea()));
-            etShopMessage.setSelection(String.valueOf(mInfo.getBusinessArea()).length());
+            etShopMessage.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            if (mInfo.getBusinessArea() > 0) {
+                etShopMessage.setText(String.valueOf(mInfo.getBusinessArea()));
+                etShopMessage.setSelection(String.valueOf(mInfo.getBusinessArea()).length());
+            }
         }
     }
 
@@ -169,19 +169,5 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
         intent.putExtra(ShopDetailActivity.INTENT_EXTRA_AREA, shopMessageText());
         setResult(RESULT_OK, intent);
         finish();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (type == ShopDetailActivity.TYPE_CONTACT &&
-                TextUtils.equals(mInfo.getContactPerson(), shopMessageText())
-                || type == ShopDetailActivity.TYPE_CONTACT_TEL &&
-                TextUtils.equals(mInfo.getContactTel(), shopMessageText())
-                || type == ShopDetailActivity.TYPE_AREA &&
-                TextUtils.equals(String.valueOf(mInfo.getBusinessArea()), shopMessageText())) {
-            super.onBackPressed();
-            return;
-        }
-        DialogUtils.isCancelSetting(this);
     }
 }

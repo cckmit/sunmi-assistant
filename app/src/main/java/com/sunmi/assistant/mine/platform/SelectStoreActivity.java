@@ -1,15 +1,16 @@
 package com.sunmi.assistant.mine.platform;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 
+import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.SelectStoreContract;
 import com.sunmi.assistant.mine.model.SelectShopModel;
@@ -29,6 +30,7 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonNotificationConstant;
 import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.notification.BaseNotification;
+import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
@@ -65,15 +67,14 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
     int saasExist;
     @Extra
     ArrayList<AuthStoreInfo.SaasUserInfoListBean> list;
+    @Extra
+    boolean isLoginSuccessSwitchCompany;
 
     private ShopListAdapter mAdapter;
 
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        if (!isBack) {
-            titleBar.getLeftLayout().setVisibility(View.GONE);
-        }
         mPresenter = new SelectStorePresenter(list, companyId);
         mPresenter.attachView(this);
         mAdapter = new ShopListAdapter(this, mPresenter.getList());
@@ -89,8 +90,13 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
     @Override
     public void complete(int saasExist, int shopId, String shopName) {
         if (SpUtils.isLoginSuccess()) {
-            setResult(RESULT_OK);
             BaseNotification.newInstance().postNotificationName(CommonNotificationConstant.refreshMainTabView);
+            if (isLoginSuccessSwitchCompany) {
+                CommonUtils.saveCompanyShopInfo((Activity) context, companyId, companyName, saasExist, shopId, shopName);
+                GotoActivityUtils.gotoMainActivity(context);
+            } else {
+                setResult(RESULT_OK);
+            }
             finish();
         } else {
             GetUserInfoUtils.userInfo(this, companyId, companyName, saasExist, shopId, shopName);
@@ -117,9 +123,6 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
 
     @Override
     public void onBackPressed() {
-        if (!isBack) {
-            return;
-        }
         super.onBackPressed();
     }
 
