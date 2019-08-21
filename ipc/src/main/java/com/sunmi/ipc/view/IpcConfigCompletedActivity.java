@@ -52,6 +52,8 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     @Extra
     String shopId;
     @Extra
+    int deviceType;
+    @Extra
     boolean isSunmiLink;
     @Extra
     ArrayList<SunmiDevice> sunmiDevices;
@@ -96,7 +98,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
             setResult(RESULT_OK);
         } else
             StartConfigSMDeviceActivity_.intent(context)
-                    .deviceType(CommonConstants.TYPE_IPC).shopId(shopId).start();
+                    .deviceType(deviceType).shopId(shopId).start();
         finish();
     }
 

@@ -57,6 +57,10 @@
     <string name="str_config_tip_printer_1">1. Turn the cloud printer on and press and hold the pairing button for 3 seconds.When you hear the tone, release the pairing button.</string>
     <string name="str_config_tip_printer_2">2. When you hear the tone, release the pairing button.</string>
     <string name="str_config_tip_printer_3">2. Press the "Start" button and select Cloud Printer.（Please make sure the phone Bluetooth is turned on; and ensure that the app location authorization is turned on）</string>
+    <string name="str_config_tip_fs_1">1.请为摄像机插入TF存储卡，以便使用客流统计功能</string>
+    <string name="str_config_tip_fs_2"><![CDATA[2. Power on the IP camera, wait till the indicator is <font color= \'#FF6000\'>「white」</font>]]></string>
+    <string name="str_config_tip_fs_3">3.如使用有网络连接，请为摄像机插入网线，并将手机连接至同一网络</string>
+    <string name="str_config_tip_fs_4"><![CDATA[4. If you want to use the wireless，please connect to the 「SUNMI_XXXX」 Wi-Fi in the label of router <font color= \'#FF6000\'>「SUNMI_XXXX」</font>]]></string>
     <string name="tip_has_ap_already">Is there a connected Sunmi router already？</string>
     <string name="str_start_set">Start</string>
     <string name="str_config_child_tip">If you already had a connected Sunmi router, you could add more routers in「Router Management」</string>
