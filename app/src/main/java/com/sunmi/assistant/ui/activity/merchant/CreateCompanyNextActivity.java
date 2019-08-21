@@ -5,9 +5,9 @@ import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.mine.shop.CreateShopPreviewActivity_;
 import com.sunmi.assistant.ui.activity.contract.CreateCompanyContract;
 import com.sunmi.assistant.ui.activity.presenter.CreateCompanyPresenter;
 
@@ -18,9 +18,7 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.model.CompanyInfoResp;
-import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.TextLengthWatcher;
@@ -69,13 +67,15 @@ public class CreateCompanyNextActivity extends BaseMvpActivity<CreateCompanyPres
         mPresenter.createCompany(companyName);
     }
 
-
     @Override
     public void createCompanySuccessView(CompanyInfoResp resp) {
         shortTip(R.string.company_create_success);
-        CommonUtils.saveSelectCompany(resp.getCompany_id(), resp.getCompany_name(), resp.getSaas_exist());
-        //获取saas数据
-        mPresenter.getSaas(SpUtils.getMobile());
+        //CommonUtils.saveSelectCompany(resp.getCompany_id(), resp.getCompany_name(), resp.getSaas_exist());
+        CreateShopPreviewActivity_.intent(context)
+                .companyId(resp.getCompany_id())
+                .companyName(resp.getCompany_name())
+                .saasExist(resp.getSaas_exist())
+                .start();
     }
 
     @Override
@@ -90,17 +90,4 @@ public class CreateCompanyNextActivity extends BaseMvpActivity<CreateCompanyPres
             shortTip(R.string.company_create_check_name);
         }
     }
-
-    /**
-     * @param bean saas数据
-     */
-    @Override
-    public void getSaasSuccessView(AuthStoreInfo bean) {
-        CommonSaasUtils.getSaasData(context, bean.getSaas_user_info_list());
-    }
-
-    @Override
-    public void getSaasFailView(int code, String msg) {
-    }
-
 }

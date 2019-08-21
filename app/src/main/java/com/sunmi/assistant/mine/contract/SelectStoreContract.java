@@ -13,7 +13,7 @@ public interface SelectStoreContract {
 
     interface View extends BaseView {
 
-        void complete();
+        void complete(int saasExist, int shopId, String shopName);
 
         void onFailedShopCreate(int code);
 

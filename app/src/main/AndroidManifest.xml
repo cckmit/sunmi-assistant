@@ -120,6 +120,7 @@
         <activity android:name=".mine.shop.ShopContactsAreaActivity_" />
         <activity android:name=".mine.company.CompanyDetailActivity_" />
         <activity android:name=".mine.shop.ShopDetailGroupActivity_" />
+        <activity android:name=".mine.shop.CreateShopPreviewActivity_" />
 
         <!--百度地图-->
         <service

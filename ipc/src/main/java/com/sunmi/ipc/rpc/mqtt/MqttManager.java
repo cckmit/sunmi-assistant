@@ -2,7 +2,7 @@ package com.sunmi.ipc.rpc.mqtt;
 
 import android.os.Build;
 
-import com.sunmi.ipc.rpc.IPCCloudApi;
+import com.sunmi.ipc.rpc.IpcCloudApi;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -83,7 +83,7 @@ public class MqttManager {
 
     public void createEmqToken(final boolean isInit) {
         LogCat.e(TAG, "mqtt createEmqToken start");
-        IPCCloudApi.createEmqToken(new RetrofitCallback<EmqTokenResp>() {
+        IpcCloudApi.createEmqToken(new RetrofitCallback<EmqTokenResp>() {
             @Override
             public void onSuccess(int code, String msg, EmqTokenResp response) {
                 LogCat.e(TAG, "mqtt createEmqToken success");

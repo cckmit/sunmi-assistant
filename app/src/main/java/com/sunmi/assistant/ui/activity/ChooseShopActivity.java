@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.model.CompanyListResp;
 import sunmi.common.model.ShopListResp;
@@ -83,21 +82,6 @@ public class ChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter>
 
     @Override
     public void getCompanyListFail(int code, String msg, CompanyListResp data) {
-
-    }
-
-    @Override
-    public void getSaasSuccessView(AuthStoreInfo data) {
-
-    }
-
-    @Override
-    public void getSaasFailView(int code, String msg) {
-
-    }
-
-    @Override
-    public void getUserInfoSuccessView() {
 
     }
 

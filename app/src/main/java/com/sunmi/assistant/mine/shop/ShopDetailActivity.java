@@ -25,6 +25,8 @@ import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.TitleBarView;
 
+import static com.sunmi.assistant.mine.shop.ShopDetailGroupActivity.INTENT_EXTRA_SHOP_NAME;
+
 /**
  * 我的店铺详情
  *
@@ -87,6 +89,7 @@ public class ShopDetailActivity extends BaseActivity {
     public void onBackPressed() {
         if (isUpdateShopInfo) {
             Intent intent = getIntent();
+            intent.putExtra(INTENT_EXTRA_SHOP_NAME, mInfo.getShopName());
             setResult(RESULT_OK, intent);
         }
         super.onBackPressed();
@@ -170,6 +173,7 @@ public class ShopDetailActivity extends BaseActivity {
     @OnActivityResult(REQUEST_CODE_NAME)
     public void onNameResult(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
+            isUpdateShopInfo = true;
             mInfo.setShopName(data.getStringExtra(INTENT_EXTRA_NAME));
             silShopName.setRightText(mInfo.getShopName());
         }

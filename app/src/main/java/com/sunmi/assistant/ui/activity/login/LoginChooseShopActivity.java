@@ -1,7 +1,6 @@
 package com.sunmi.assistant.ui.activity.login;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
@@ -10,13 +9,12 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.ChooseShopContract;
+import com.sunmi.assistant.mine.shop.CreateShopPreviewActivity_;
 import com.sunmi.assistant.presenter.ChooseShopPresenter;
-import com.sunmi.assistant.ui.activity.MainActivity_;
-import com.sunmi.assistant.ui.activity.merchant.CommonSaasUtils;
 import com.sunmi.assistant.ui.activity.merchant.CreateCompanyActivity_;
+import com.sunmi.assistant.utils.GetUserInfoUtils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -25,13 +23,13 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
-import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.model.CompanyListResp;
 import sunmi.common.model.ShopListResp;
@@ -82,6 +80,8 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     @Extra
     int saasExist;
     @Extra
+    ArrayList<ShopListResp.ShopInfo> shopList;
+    @Extra
     boolean isCreateCompany;
 
     private int shopId;
@@ -111,7 +111,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
             titleBar.setAppTitle(R.string.str_select_store);
             tvSelectType.setText(R.string.company_shop_select);
             btnEnterMain.setVisibility(View.VISIBLE);
-            mPresenter.getShopList(companyId);
+            initShopList(shopList);
         } else if (action == CommonConstants.ACTION_CHANGE_COMPANY) {
             titleBar.setAppTitle(R.string.company_switch);
             tvSelectedCompany.setVisibility(View.VISIBLE);
@@ -129,9 +129,12 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
         CreateCompanyActivity_.intent(context).start();
     }
 
+    /**
+     * 选择完商户，门店，获取用户信息成功
+     */
     @Click(R.id.btn_enter_main)
     void enterMainClick() {
-        mPresenter.getUserInfo();
+        GetUserInfoUtils.userInfo(this, companyId, companyName, saasExist, shopId, shopName);
     }
 
     @Click(R.id.btn_refresh)
@@ -166,26 +169,21 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     }
 
     @Override
-    public void getSaasSuccessView(AuthStoreInfo data) {
-        CommonSaasUtils.getSaasData(context, data.getSaas_user_info_list());
-    }
-
-    @Override
-    public void getSaasFailView(int code, String msg) {
-
-    }
-
-    /**
-     * 选择完商户，门店，获取用户信息成功
-     */
-    @Override
-    public void getUserInfoSuccessView() {
-        gotoMainActivity(shopId, shopName);
-    }
-
-    @Override
     public void getShopListSuccess(List<ShopListResp.ShopInfo> shopList) {
-        initShopList(shopList);
+        if (shopList.size() == 0) {
+            CreateShopPreviewActivity_.intent(context)
+                    .companyId(companyId)
+                    .companyName(companyName)
+                    .saasExist(saasExist)
+                    .start();
+        } else {
+            LoginChooseShopActivity_.intent(context)
+                    .companyId(companyId)
+                    .companyName(companyName)
+                    .saasExist(saasExist)
+                    .shopList((ArrayList<ShopListResp.ShopInfo>) shopList)
+                    .action(CommonConstants.ACTION_LOGIN_CHOOSE_SHOP).start();
+        }
     }
 
     @Override
@@ -218,12 +216,10 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
                     silItem.setVisibility(View.VISIBLE);
                 }
                 holder.itemView.setOnClickListener(v -> {
-                    CommonUtils.saveSelectCompany(item.getCompany_id(), item.getCompany_name(), item.getSaas_exist());
-                    LoginChooseShopActivity_.intent(context)
-                            .companyId(item.getCompany_id())
-                            .companyName(item.getCompany_name())
-                            .saasExist(item.getSaas_exist())
-                            .action(CommonConstants.ACTION_LOGIN_CHOOSE_SHOP).start();
+                    companyId = item.getCompany_id();
+                    companyName = item.getCompany_name();
+                    saasExist = item.getSaas_exist();
+                    mPresenter.getShopList(item.getCompany_id());
                 });
             }
         });
@@ -232,12 +228,6 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     @UiThread
     void initShopList(final List<ShopListResp.ShopInfo> shopList) {
         activityVisible();
-        if (shopList.size() == 0) {
-            //setNoDataVisible(View.VISIBLE);
-            //当商户下没有门店检测是否有saas门店数据
-            mPresenter.getSaas(SpUtils.getMobile());
-            return;
-        }
         rvChoose.setAdapter(new CommonListAdapter<ShopListResp.ShopInfo>(context,
                 R.layout.item_shop_company, shopList) {
             int selectedIndex = -1;
@@ -274,16 +264,4 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
         rlRoot.setVisibility(View.VISIBLE);
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
     }
-
-    private void gotoMainActivity(int shopId, String shopName) {
-        SpUtils.setCompanyId(companyId);
-        SpUtils.setCompanyName(companyName);
-        SpUtils.setSaasExist(saasExist);
-        SpUtils.setShopId(shopId);
-        SpUtils.setShopName(shopName);
-        MainActivity_.intent(context)
-                .flags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK).start();
-        finish();
-    }
-
 }

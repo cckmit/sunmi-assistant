@@ -48,6 +48,8 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
     @Extra
     String shopId;
     @Extra
+    int deviceType;
+    @Extra
     ArrayList<SunmiDevice> sunmiDevices;
 
     Set<String> deviceIds = new HashSet<>();
@@ -178,7 +180,7 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
         BaseNotification.newInstance().postNotificationName(IpcConstants.refreshIpcList);
         if (deviceIds.isEmpty()) {
             IpcConfigCompletedActivity_.intent(context).shopId(shopId)
-                    .sunmiDevices(sunmiDevices).start();
+                    .deviceType(deviceType).sunmiDevices(sunmiDevices).start();
             finish();
         }
     }

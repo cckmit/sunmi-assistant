@@ -61,6 +61,8 @@ public class IPCSearchActivity extends BaseActivity
     @Extra
     String shopId;
     @Extra
+    int deviceType;
+    @Extra
     boolean isSunmiLink;//是否是sunmi link模式
 
     private boolean isApMode;//是否ap模式
@@ -259,7 +261,8 @@ public class IPCSearchActivity extends BaseActivity
                 selectedList.add(device);
         }
         if (selectedList.size() > 0)
-            IpcConfiguringActivity_.intent(context).sunmiDevices(selectedList).shopId(shopId).start();
+            IpcConfiguringActivity_.intent(context)
+                    .deviceType(deviceType).sunmiDevices(selectedList).shopId(shopId).start();
     }
 
 }

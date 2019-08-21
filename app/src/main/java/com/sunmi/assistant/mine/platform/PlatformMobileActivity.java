@@ -31,11 +31,9 @@ import java.util.ArrayList;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.AuthStoreInfo;
-import sunmi.common.utils.SpUtils;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.dialog.CommonDialog;
 
-import static com.sunmi.assistant.mine.shop.ShopListActivity.INTENT_EXTRA_SUCCESS;
 import static com.sunmi.assistant.mine.shop.ShopListActivity.REQUEST_CODE_SHOP;
 
 /**
@@ -62,6 +60,12 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
     String platform;
     @Extra
     int saasSource;
+    @Extra
+    int companyId;
+    @Extra
+    String companyName;
+    @Extra
+    int saasExist;
 
     /**
      * 倒计时对象,总共的时间,每隔多少秒更新一次时间
@@ -123,13 +127,14 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
                         SelectStoreActivity_.intent(context)
                                 .isBack(true)
                                 .list(target)
+                                .companyId(companyId)
+                                .companyName(companyName)
+                                .saasExist(saasExist)
                                 .startForResult(REQUEST_CODE_SHOP);
                     }
                 })
                 .setCancelButton((dialog, which) ->
-                        CreateShopActivity_.intent(context)
-                                .companyId(SpUtils.getCompanyId())
-                                .startForResult(REQUEST_CODE_SHOP))
+                        gotoCreateShopActivity())
                 .create().show();
     }
 
@@ -137,10 +142,16 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
         new CommonDialog.Builder(this).setTitle(getString(R.string.str_dialog_auto_create_store))
                 .setCancelButton(com.sunmi.apmanager.R.string.sm_cancel)
                 .setConfirmButton(R.string.company_shop_new_create, (dialog, which) ->
-                        CreateShopActivity_.intent(context)
-                                .companyId(SpUtils.getCompanyId())
-                                .startForResult(REQUEST_CODE_SHOP))
+                        gotoCreateShopActivity())
                 .create().show();
+    }
+
+    private void gotoCreateShopActivity() {
+        CreateShopActivity_.intent(context)
+                .companyId(companyId)
+                .companyName(companyName)
+                .saasExist(saasExist)
+                .startForResult(REQUEST_CODE_SHOP);
     }
 
     private void startDownTimer() {
@@ -156,11 +167,8 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
 
     @OnActivityResult(REQUEST_CODE_SHOP)
     void onResult(int resultCode, @Nullable Intent data) {
-        if (resultCode == Activity.RESULT_OK && data != null
-                && data.getBooleanExtra(INTENT_EXTRA_SUCCESS, false)) {
-            Intent intent = getIntent();
-            intent.putExtra(INTENT_EXTRA_SUCCESS, true);
-            setResult(RESULT_OK, intent);
+        if (resultCode == Activity.RESULT_OK) {
+            setResult(RESULT_OK);
             finish();
         }
     }

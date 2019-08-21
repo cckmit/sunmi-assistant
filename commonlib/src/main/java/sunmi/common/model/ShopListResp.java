@@ -1,5 +1,8 @@
 package sunmi.common.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 public class ShopListResp {
@@ -20,7 +23,7 @@ public class ShopListResp {
         return return_count;
     }
 
-    public static class ShopInfo {
+    public static class ShopInfo implements Parcelable {
 
         private int shop_id;
         private String shop_name;
@@ -39,6 +42,38 @@ public class ShopListResp {
         private String contact_email;
         private int created_time;
         private int modified_time;
+
+        protected ShopInfo(Parcel in) {
+            shop_id = in.readInt();
+            shop_name = in.readString();
+            type_one = in.readInt();
+            type_two = in.readInt();
+            type_name = in.readString();
+            business_status = in.readInt();
+            province = in.readInt();
+            city = in.readInt();
+            area = in.readInt();
+            address = in.readString();
+            region = in.readString();
+            business_hours = in.readString();
+            contact_person = in.readString();
+            contact_tel = in.readString();
+            contact_email = in.readString();
+            created_time = in.readInt();
+            modified_time = in.readInt();
+        }
+
+        public static final Creator<ShopInfo> CREATOR = new Creator<ShopInfo>() {
+            @Override
+            public ShopInfo createFromParcel(Parcel in) {
+                return new ShopInfo(in);
+            }
+
+            @Override
+            public ShopInfo[] newArray(int size) {
+                return new ShopInfo[size];
+            }
+        };
 
         public int getShop_id() {
             return shop_id;
@@ -106,6 +141,32 @@ public class ShopListResp {
 
         public int getModified_time() {
             return modified_time;
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(shop_id);
+            dest.writeString(shop_name);
+            dest.writeInt(type_one);
+            dest.writeInt(type_two);
+            dest.writeString(type_name);
+            dest.writeInt(business_status);
+            dest.writeInt(province);
+            dest.writeInt(city);
+            dest.writeInt(area);
+            dest.writeString(address);
+            dest.writeString(region);
+            dest.writeString(business_hours);
+            dest.writeString(contact_person);
+            dest.writeString(contact_tel);
+            dest.writeString(contact_email);
+            dest.writeInt(created_time);
+            dest.writeInt(modified_time);
         }
     }
 }

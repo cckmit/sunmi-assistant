@@ -14,9 +14,9 @@ import sunmi.common.model.PlatformInfo;
 import sunmi.common.model.ShopCategoryResp;
 import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopRegionResp;
+import sunmi.common.model.SsoTokenResp;
 import sunmi.common.model.UserAvatarResp;
 import sunmi.common.model.UserInfoBean;
-import sunmi.common.rpc.mqtt.EmqTokenResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SafeUtils;
@@ -244,7 +244,7 @@ public class SunmiStoreApi {
                 .enqueue(callback);
     }
 
-    public static void getSsoToken(RetrofitCallback<Object> callback) {
+    public static void getSsoToken(RetrofitCallback<SsoTokenResp> callback) {
         SunmiStoreRetrofitClient.getInstance().create(UserInterface.class)
                 .getSsoToken(new BaseRequest(""))
                 .enqueue(callback);
