@@ -41,14 +41,14 @@
             android:textStyle="bold"
             android:visibility="gone" />
 
-        <RadioGroup
-            android:id="@+id/rg_content"
+        <sunmi.common.view.SmRecyclerView
+            android:id="@+id/rv_content"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_96"
-            android:background="@color/black_10"
             android:layout_marginLeft="@dimen/dp_24"
             android:layout_marginTop="@dimen/dp_24"
             android:layout_marginRight="@dimen/dp_24"
+            android:background="@color/c_white"
             android:visibility="gone" />
 
         <View

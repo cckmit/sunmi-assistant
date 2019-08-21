@@ -3,18 +3,17 @@ package sunmi.common.view.dialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.commonlibrary.R;
 
-import java.util.List;
+import sunmi.common.view.SmRecyclerView;
 
 /**
  * Description:
@@ -248,14 +247,13 @@ public class ListDialog extends Dialog {
 //            return dialog;
 //        }
 //    }
-    public static class Builder {
+    public static class Builder<T extends RecyclerView.Adapter> {
         private Context context;
         private String title;
         private String backBtnText; // 对话框返回按钮文本
         private String confirmBtnText; // 对话框确定文本
         private int cancelBtnTextColor, confirmBtnTextColor; // 对话框确定文本颜色
-        private List<RadioButton> radioButtons;
-
+        private T adapter;
         // 对话框按钮监听事件
         private DialogInterface.OnClickListener cancelButtonClickListener, confirmButtonClickListener;
 
@@ -389,8 +387,8 @@ public class ListDialog extends Dialog {
         /**
          * 设置确定按钮事件和文本（字符串）
          */
-        public Builder setRadioGroup(List<RadioButton> radioButtons) {
-            this.radioButtons = radioButtons;
+        public Builder setAdapter(T adapter) {
+            this.adapter = adapter;
             return this;
         }
 
@@ -414,13 +412,10 @@ public class ListDialog extends Dialog {
                 tvTitle.setText(title);
             }
 
-            if (radioButtons != null) {
-                RadioGroup radioGroup = layout.findViewById(R.id.rg_content);
-                radioGroup.setVisibility(View.VISIBLE);
-                for (RadioButton rb : radioButtons) {
-                    radioGroup.addView(rb);
-                }
-            }
+            SmRecyclerView rv = layout.findViewById(R.id.rv_content);
+            rv.setVisibility(View.VISIBLE);
+            rv.init(R.drawable.shap_line_divider);
+            rv.setAdapter(adapter);
 
             // 设置返回按钮事件和文本
             if (backBtnText != null) {
@@ -452,7 +447,6 @@ public class ListDialog extends Dialog {
                 if (confirmButtonClickListener != null) {
                     cfmButton.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View v) {
-                            dialog.cancel();
                             confirmButtonClickListener.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
                         }
                     });
