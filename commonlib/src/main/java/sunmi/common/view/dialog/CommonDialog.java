@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.commonlibrary.R;
@@ -189,7 +188,6 @@ public class CommonDialog extends Dialog {
             // 实例化自定义的对话框主题
             final CommonDialog dialog = new CommonDialog(context, R.style.Son_dialog);
             View layout = inflater.inflate(R.layout.dialog_common, null);
-            LinearLayout contentLL = layout.findViewById(R.id.ll_dialog);//设置ContentView
 
             dialog.addContentView(layout, new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -201,10 +199,9 @@ public class CommonDialog extends Dialog {
                 tvTitle.setText(title);
             }
 
-            TextView tvMessage = layout.findViewById(R.id.tv_message);
-            if (TextUtils.isEmpty(message)) {
-                contentLL.removeView(tvMessage);
-            } else {
+            if (!TextUtils.isEmpty(message)) {
+                TextView tvMessage = layout.findViewById(R.id.tv_message);
+                tvMessage.setVisibility(View.VISIBLE);
                 tvMessage.setText(message);
             }
 

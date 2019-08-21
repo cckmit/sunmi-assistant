@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.rpc.IPCCall;
@@ -31,6 +32,7 @@ import java.util.Map;
 
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.sunmicall.ResponseBean;
@@ -55,6 +57,8 @@ public class IPCSearchActivity extends BaseActivity
     RelativeLayout rlNoWifi;
     @ViewById(resName = "rl_loading")
     RelativeLayout rlLoading;
+    @ViewById(resName = "tv_no_ipc")
+    TextView tvNoIpc;
     @ViewById(resName = "btn_refresh")
     Button btnRefresh;
 
@@ -73,6 +77,9 @@ public class IPCSearchActivity extends BaseActivity
 
     @AfterViews
     void init() {
+        if (CommonConstants.TYPE_IPC_FS == deviceType) {
+            tvNoIpc.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.ic_no_fs, 0, 0, 0);
+        }
         startScan();
         initApList();
     }
