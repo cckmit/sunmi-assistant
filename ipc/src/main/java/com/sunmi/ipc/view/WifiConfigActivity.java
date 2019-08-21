@@ -60,6 +60,8 @@ public class WifiConfigActivity extends BaseActivity
     @Extra
     String shopId;
     @Extra
+    int deviceType;
+    @Extra
     SunmiDevice sunmiDevice;
 
     private static int TIMEOUT_GET_WIFI = 15_000;
@@ -262,7 +264,8 @@ public class WifiConfigActivity extends BaseActivity
         ArrayList<SunmiDevice> list = new ArrayList<>();
         list.add(sunmiDevice);
         if (list.size() > 0) {
-            IpcConfiguringActivity_.intent(context).sunmiDevices(list).shopId(shopId).start();
+            IpcConfiguringActivity_.intent(context)
+                    .deviceType(deviceType).sunmiDevices(list).shopId(shopId).start();
             hideLoadingDialog();
             finish();
         }
