@@ -85,11 +85,6 @@ public class ChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter>
 
     }
 
-    @Override
-    public void getUserInfoSuccessView() {
-
-    }
-
     @UiThread
     void initShopList(final List<ShopListResp.ShopInfo> data) {
         if (data.size() <= 0) {
