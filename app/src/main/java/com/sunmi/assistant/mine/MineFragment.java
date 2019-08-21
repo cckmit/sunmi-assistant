@@ -8,6 +8,7 @@ import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.MineContract;
+import com.sunmi.assistant.mine.message.MsgCenterActivity_;
 import com.sunmi.assistant.mine.presenter.MinePresenter;
 import com.sunmi.assistant.mine.setting.SettingActivity_;
 import com.sunmi.assistant.mine.shop.ShopListActivity_;
@@ -56,7 +57,7 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
 
     private void initView() {
         initAvatar(false);
-        rlMsg.showCirclePointBadge();
+        initMsg();
         initUsername();
         initAccount();
     }
@@ -84,6 +85,22 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
         }
     }
 
+    @UiThread
+    void initMsg() {
+        if (SpUtils.getUnreadMsg() > 0) {
+            int count = SpUtils.getRemindUnreadMsg();
+            if (count <= 0) {
+                rlMsg.showCirclePointBadge();
+            } else if (count > 99) {
+                rlMsg.showTextBadge("99+");
+            } else {
+                rlMsg.showTextBadge(String.valueOf(count));
+            }
+        }else {
+            rlMsg.hiddenBadge();
+        }
+    }
+
     /**
      * 顶部头像和用户名
      */
@@ -108,6 +125,11 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
         CommonUtils.trackCommonEvent(mActivity, "myStore",
                 "主页_我的_我的店铺", Constants.EVENT_MY_INFO);
         ShopListActivity_.intent(this).start();
+    }
+
+    @Click(R.id.rlMsg)
+    public void msgClick() {
+        MsgCenterActivity_.intent(mActivity).start();
     }
 
     /**
@@ -159,7 +181,7 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     @Override
     public int[] getStickNotificationId() {
         return new int[]{NotificationConstant.updateUsernameSuccess,
-                NotificationConstant.updateAvatarSuccess};
+                NotificationConstant.updateAvatarSuccess, NotificationConstant.msgUpdated};
     }
 
     @Override
@@ -168,6 +190,8 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
             initUsername();
         } else if (id == NotificationConstant.updateAvatarSuccess) {
             initAvatar(true);
+        }else if (id == NotificationConstant.msgUpdated){
+            initMsg();
         }
     }
 

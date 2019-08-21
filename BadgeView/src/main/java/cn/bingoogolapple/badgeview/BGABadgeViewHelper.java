@@ -24,6 +24,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -133,7 +134,7 @@ public class BGABadgeViewHelper {
     private void initDefaultAttrs(Context context, BadgeGravity defaultBadgeGravity) {
         mBadgeNumberRect = new Rect();
         mBadgeRectF = new RectF();
-        mBadgeBgColor = Color.RED;
+        mBadgeBgColor = ContextCompat.getColor(context,R.color.color_FF3838);
         mBadgeTextColor = Color.WHITE;
         mBadgeTextSize = BGABadgeViewUtil.sp2px(context, 10);
 

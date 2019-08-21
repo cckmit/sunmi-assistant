@@ -43,13 +43,6 @@ public class SunmiStoreApi {
         }
     }
 
-    private static final class Singleton {
-        private static final SunmiStoreApi INSTANCE = new SunmiStoreApi();
-    }
-
-    public static SunmiStoreApi getInstance() {
-        return Singleton.INSTANCE;
-    }
 
     private SunmiStoreApi() {
     }

@@ -48,6 +48,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    api project(':BadgeView')
 
     api "com.android.support:appcompat-v7:${SUPPORT_VERSION}"
     api 'com.android.support.constraint:constraint-layout:1.1.3'
@@ -63,8 +64,8 @@ dependencies {
     api "com.android.support:cardview-v7:${SUPPORT_VERSION}"
 
     //注解
-    api 'com.jakewharton:butterknife:8.5.1'
-    implementation 'com.jakewharton:butterknife-compiler:8.5.1'
+    api 'com.jakewharton:butterknife:9.0.0'
+    implementation 'com.jakewharton:butterknife-compiler:9.0.0'
     api "org.androidannotations:androidannotations-api:${AAVersion}"
     annotationProcessor "org.androidannotations:androidannotations:${AAVersion}"
 
@@ -74,7 +75,7 @@ dependencies {
 
     //glide
     api 'com.github.bumptech.glide:glide:4.9.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
+//    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
     //litePal数据库
     api 'org.litepal.android:core:1.5.1'
 
@@ -102,6 +103,10 @@ dependencies {
 
     //下拉刷新
     api 'cn.bingoogolapple:bga-refreshlayout:1.1.7@aar'
+
+    //Android 徽章控件
+    //api 'cn.bingoogolapple:bga-badgeview-api:1.1.8'
+    annotationProcessor "cn.bingoogolapple:bga-badgeview-compiler:1.1.8"
 
     //retrofit
     api 'com.squareup.okhttp3:okhttp:3.10.0'

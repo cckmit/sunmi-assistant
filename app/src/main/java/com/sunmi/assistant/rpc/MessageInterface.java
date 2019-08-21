@@ -1,6 +1,7 @@
 package com.sunmi.assistant.rpc;
 
 import com.sunmi.assistant.mine.model.MessageCountBean;
+import com.sunmi.assistant.mine.model.MessageListBean;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -17,6 +18,39 @@ public interface MessageInterface {
 
     String path = "/api/notification/";
 
-    @POST(path+"mailbox/app/getMessageCount")
+    /**
+     * 获取APP消息中心类型统计数量列表
+     *
+     * @param request
+     * @return
+     */
+    @POST(path + "mailbox/app/getMessageCount")
     Call<BaseResponse<MessageCountBean>> getMessageCount(@Body BaseRequest request);
+
+    /**
+     * 获取消息列表
+     *
+     * @param request
+     * @return
+     */
+    @POST(path + "mailbox/getMessageList")
+    Call<BaseResponse<MessageListBean>> getMessageList(@Body BaseRequest request);
+
+    /**
+     * 在接收列表中删除消息
+     *
+     * @param request
+     * @return
+     */
+    @POST(path + "mailbox/deleteMessage")
+    Call<BaseResponse<Object>> deleteMessage(@Body BaseRequest request);
+
+    /**
+     * 接收消息后对消息进行处理，如查看、操作或标记为已读/未读
+     *
+     * @param request
+     * @return
+     */
+    @POST(path + "mailbox/updateReceiveStatusByModel")
+    Call<BaseResponse<Object>> updateReceiveStatusByModel(@Body BaseRequest request);
 }

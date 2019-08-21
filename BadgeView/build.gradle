@@ -22,6 +22,7 @@ dependencies {
     // 发布到 jcenter 时，api 中用 compile 传递依赖，用 api 不会传递依赖
 
     api "cn.bingoogolapple:bga-badgeview-annotation:1.1.8"
+    implementation 'com.android.support:support-compat:28.0.0'
 
 }
 

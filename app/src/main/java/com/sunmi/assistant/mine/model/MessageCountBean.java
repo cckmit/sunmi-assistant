@@ -1,5 +1,8 @@
 package com.sunmi.assistant.mine.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -59,7 +62,7 @@ public class MessageCountBean {
         this.modelCountList = modelCountList;
     }
 
-    public static class ModelCountListBean {
+    public static class ModelCountListBean implements Parcelable {
         /**
          * model_id : 1
          * model_name : 系统（tag）
@@ -80,7 +83,43 @@ public class MessageCountBean {
         @SerializedName("remind_unread_count")
         private int remindUnreadCount;
         @SerializedName("children")
-        private List<ChildrenBeanX> children;
+        private List<ChildrenBean> children;
+
+        protected ModelCountListBean(Parcel in) {
+            modelId = in.readInt();
+            modelName = in.readString();
+            totalCount = in.readInt();
+            unreadCount = in.readInt();
+            remindUnreadCount = in.readInt();
+            children = in.createTypedArrayList(ChildrenBean.CREATOR);
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(modelId);
+            dest.writeString(modelName);
+            dest.writeInt(totalCount);
+            dest.writeInt(unreadCount);
+            dest.writeInt(remindUnreadCount);
+            dest.writeTypedList(children);
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        public static final Creator<ModelCountListBean> CREATOR = new Creator<ModelCountListBean>() {
+            @Override
+            public ModelCountListBean createFromParcel(Parcel in) {
+                return new ModelCountListBean(in);
+            }
+
+            @Override
+            public ModelCountListBean[] newArray(int size) {
+                return new ModelCountListBean[size];
+            }
+        };
 
         public int getModelId() {
             return modelId;
@@ -122,157 +161,15 @@ public class MessageCountBean {
             this.remindUnreadCount = remindUnreadCount;
         }
 
-        public List<ChildrenBeanX> getChildren() {
+        public List<ChildrenBean> getChildren() {
             return children;
         }
 
-        public void setChildren(List<ChildrenBeanX> children) {
+        public void setChildren(List<ChildrenBean> children) {
             this.children = children;
         }
 
-        public static class ChildrenBeanX {
-            /**
-             * model_id : 11
-             * model_name : 任务跟踪提醒（tag）
-             * total_count : 18
-             * unread_count : 18
-             * remind_unread_count : 18
-             * children : [{"model_id":111,"model_name":"商品库对接完成（tag）","total_count":18,"unread_count":18,"remind_unread_count":18,"last_receive_time":1563246183}]
-             */
 
-            @SerializedName("model_id")
-            private int modelId;
-            @SerializedName("model_name")
-            private String modelName;
-            @SerializedName("total_count")
-            private int totalCount;
-            @SerializedName("unread_count")
-            private int unreadCount;
-            @SerializedName("remind_unread_count")
-            private int remindUnreadCount;
-            @SerializedName("children")
-            private List<ChildrenBean> children;
-
-            public int getModelId() {
-                return modelId;
-            }
-
-            public void setModelId(int modelId) {
-                this.modelId = modelId;
-            }
-
-            public String getModelName() {
-                return modelName;
-            }
-
-            public void setModelName(String modelName) {
-                this.modelName = modelName;
-            }
-
-            public int getTotalCount() {
-                return totalCount;
-            }
-
-            public void setTotalCount(int totalCount) {
-                this.totalCount = totalCount;
-            }
-
-            public int getUnreadCount() {
-                return unreadCount;
-            }
-
-            public void setUnreadCount(int unreadCount) {
-                this.unreadCount = unreadCount;
-            }
-
-            public int getRemindUnreadCount() {
-                return remindUnreadCount;
-            }
-
-            public void setRemindUnreadCount(int remindUnreadCount) {
-                this.remindUnreadCount = remindUnreadCount;
-            }
-
-            public List<ChildrenBean> getChildren() {
-                return children;
-            }
-
-            public void setChildren(List<ChildrenBean> children) {
-                this.children = children;
-            }
-
-            public static class ChildrenBean {
-                /**
-                 * model_id : 111
-                 * model_name : 商品库对接完成（tag）
-                 * total_count : 18
-                 * unread_count : 18
-                 * remind_unread_count : 18
-                 * last_receive_time : 1563246183
-                 */
-
-                @SerializedName("model_id")
-                private int modelId;
-                @SerializedName("model_name")
-                private String modelName;
-                @SerializedName("total_count")
-                private int totalCount;
-                @SerializedName("unread_count")
-                private int unreadCount;
-                @SerializedName("remind_unread_count")
-                private int remindUnreadCount;
-                @SerializedName("last_receive_time")
-                private int lastReceiveTime;
-
-                public int getModelId() {
-                    return modelId;
-                }
-
-                public void setModelId(int modelId) {
-                    this.modelId = modelId;
-                }
-
-                public String getModelName() {
-                    return modelName;
-                }
-
-                public void setModelName(String modelName) {
-                    this.modelName = modelName;
-                }
-
-                public int getTotalCount() {
-                    return totalCount;
-                }
-
-                public void setTotalCount(int totalCount) {
-                    this.totalCount = totalCount;
-                }
-
-                public int getUnreadCount() {
-                    return unreadCount;
-                }
-
-                public void setUnreadCount(int unreadCount) {
-                    this.unreadCount = unreadCount;
-                }
-
-                public int getRemindUnreadCount() {
-                    return remindUnreadCount;
-                }
-
-                public void setRemindUnreadCount(int remindUnreadCount) {
-                    this.remindUnreadCount = remindUnreadCount;
-                }
-
-                public int getLastReceiveTime() {
-                    return lastReceiveTime;
-                }
-
-                public void setLastReceiveTime(int lastReceiveTime) {
-                    this.lastReceiveTime = lastReceiveTime;
-                }
-            }
-        }
     }
 
 }

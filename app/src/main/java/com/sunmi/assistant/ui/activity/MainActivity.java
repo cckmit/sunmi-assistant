@@ -1,7 +1,6 @@
 package com.sunmi.assistant.ui.activity;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkRequest;
@@ -20,6 +19,9 @@ import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.MyApplication;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.MineFragment_;
+import com.sunmi.assistant.mine.contract.MessageCountContract;
+import com.sunmi.assistant.mine.model.MessageCountBean;
+import com.sunmi.assistant.mine.presenter.MessageCountPresenter;
 import com.sunmi.assistant.utils.MainTab;
 import com.sunmi.ipc.rpc.mqtt.MqttManager;
 import com.tencent.bugly.crashreport.CrashReport;
@@ -27,11 +29,12 @@ import com.tencent.bugly.crashreport.CrashReport;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import cn.bingoogolapple.badgeview.BGABadgeTextView;
-import sunmi.common.base.BaseActivity;
 import sunmi.common.base.BaseApplication;
+import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotificationConstant;
 import sunmi.common.notification.BaseNotification;
@@ -43,7 +46,8 @@ import sunmi.common.view.MyFragmentTabHost;
  * main activity
  */
 @EActivity(R.layout.activity_main)
-public class MainActivity extends BaseActivity implements TabHost.OnTabChangeListener {
+public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
+        implements TabHost.OnTabChangeListener, MessageCountContract.View {
 
     @ViewById(android.R.id.tabhost)
     MyFragmentTabHost mTabHost;
@@ -56,10 +60,15 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
     @Extra
     int currentTabIndex;// 要显示的fragment的index
 
+    private BGABadgeTextView mine;
+
     @AfterViews
     void init() {
         instance = this;
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
+        mPresenter = new MessageCountPresenter();
+        mPresenter.attachView(this);
+        mPresenter.getMessageCount();
         registerNetworkReceiver();
         CrashReport.setUserId(SpUtils.getUID());
         if (MyApplication.isCheckedToken)
@@ -113,8 +122,7 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
             }
             title.setText(getString(mainTab.getResName()));
             if (mainTab.getClz() == MineFragment_.class) {
-                title.showTextBadge("9");
-//                title.showCirclePointBadge();
+                mine = title;
             }
             tab.setIndicator(indicator);
             tab.setContent(tag -> new View(context));
@@ -123,6 +131,32 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
 
         mTabHost.setCurrentTab(0);
         mTabHost.setOnTabChangedListener(this);
+    }
+
+    @UiThread
+    @Override
+    public void getMessageCountSuccess(MessageCountBean data) {
+        initMsg();
+    }
+
+    @Override
+    public void getMessageCountFail(int code, String msg) {
+
+    }
+
+    private void initMsg() {
+        if (SpUtils.getUnreadMsg() > 0) {
+            int count = SpUtils.getRemindUnreadMsg();
+            if (count <= 0) {
+                mine.showCirclePointBadge();
+            } else if (count > 99) {
+                mine.showTextBadge("99+");
+            } else {
+                mine.showTextBadge(String.valueOf(count));
+            }
+        }else {
+            mine.hiddenBadge();
+        }
     }
 
     /**
@@ -190,6 +224,11 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
     }
 
     @Override
+    public int[] getStickNotificationId() {
+        return new int[]{NotificationConstant.msgUpdated};
+    }
+
+    @Override
     public int[] getUnStickNotificationId() {
         return new int[]{NotificationConstant.netConnectedMainActivity,
                 CommonNotificationConstant.refreshMainTabView};
@@ -204,6 +243,8 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
                 return;
             }
             initTabs();
+        } else if (NotificationConstant.msgUpdated == id){
+            initMsg();
         }
     }
 

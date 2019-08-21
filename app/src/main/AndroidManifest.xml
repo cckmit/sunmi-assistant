@@ -15,7 +15,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".mine.message.MsgCenterActivity"></activity>
 
         <receiver
             android:name=".receiver.LanuageReceive"
@@ -104,6 +103,9 @@
         <activity android:name=".mine.shop.ShopRegionActivity_" />
         <activity android:name=".mine.shop.ShopAddressActivity_" />
         <activity android:name=".mine.HelpActivity_" /> <!-- 百度地图 -->
+        <activity android:name=".mine.message.MsgCenterActivity_" />
+        <activity android:name=".mine.message.MsgDetailActivity_"/>
+
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"

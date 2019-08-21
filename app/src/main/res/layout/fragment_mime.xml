@@ -172,8 +172,7 @@
                 android:layout_height="@dimen/dp_72"
                 android:layout_below="@+id/v1"
                 app:badge_horizontalMargin="@dimen/dp_40"
-                app:badge_draggable="true"
-                app:badge_isResumeTravel="true">
+                app:badge_textSize="@dimen/sp_12">
 
                 <ImageView
                     android:id="@+id/iv12"
