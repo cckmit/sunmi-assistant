@@ -2,6 +2,7 @@ package com.sunmi.assistant.mine.shop;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.view.View;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.platform.SelectPlatformActivity_;
@@ -12,6 +13,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,7 @@ import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.view.TitleBarView;
 
 /**
  * @author yangShiJie
@@ -31,6 +34,8 @@ import sunmi.common.utils.StatusBarUtils;
 @SuppressLint("Registered")
 @EActivity(R.layout.company_activity_shop_create_preview)
 public class CreateShopPreviewActivity extends BaseActivity {
+    @ViewById(R.id.title_bar)
+    TitleBarView titleBar;
     @Extra
     int companyId;
     @Extra
@@ -40,17 +45,30 @@ public class CreateShopPreviewActivity extends BaseActivity {
      */
     @Extra
     int saasExist;
+    @Extra
+    boolean isLoginSuccessSwitchCompany;
     private boolean isImportSaas;
 
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
+        if (!SpUtils.isLoginSuccess()) {
+            titleBar.setLeftImageVisibility(View.GONE);
+        }
         getSaasInfo();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!SpUtils.isLoginSuccess()) {
+            return;
+        }
+        super.onBackPressed();
     }
 
     @Click(R.id.btn_create_shop)
     void createShopClick() {
-        CreateShopActivity_.intent(context).start();
+        gotoCreateShopActivity();
     }
 
     @Click(R.id.btn_shop_import)
@@ -88,18 +106,14 @@ public class CreateShopPreviewActivity extends BaseActivity {
                     .setMessage(context.getString(R.string.str_dialog_auth_message,
                             saasName.replace(saasName.length() - 1, saasName.length(), "")))
                     .setAllowButton((dialog, which) -> SelectStoreActivity_.intent(context)
-                            .isBack(false)
                             .list((ArrayList) list)
                             .companyId(companyId)
                             .companyName(companyName)
                             .saasExist(saasExist)
+                            .isLoginSuccessSwitchCompany(isLoginSuccessSwitchCompany)
                             .start())
                     .setCancelButton((dialog, which) -> {
-                        CreateShopActivity_.intent(context)
-                                .companyId(companyId)
-                                .companyName(companyName)
-                                .saasExist(saasExist)
-                                .start();
+                        gotoCreateShopActivity();
                     }).create();
             authDialog.setCanceledOnTouchOutside(true);
             authDialog.show();
@@ -109,8 +123,19 @@ public class CreateShopPreviewActivity extends BaseActivity {
                 SelectPlatformActivity_.intent(context)
                         .companyId(companyId)
                         .companyName(companyName)
+                        .saasExist(saasExist)
+                        .isLoginSuccessSwitchCompany(isLoginSuccessSwitchCompany)
                         .start();
             }
         }
+    }
+
+    private void gotoCreateShopActivity() {
+        CreateShopActivity_.intent(context)
+                .companyId(companyId)
+                .companyName(companyName)
+                .saasExist(saasExist)
+                .isLoginSuccessSwitchCompany(isLoginSuccessSwitchCompany)
+                .start();
     }
 }

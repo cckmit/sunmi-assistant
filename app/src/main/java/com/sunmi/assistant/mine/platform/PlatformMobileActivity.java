@@ -66,6 +66,9 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
     String companyName;
     @Extra
     int saasExist;
+    @Extra
+    boolean isLoginSuccessSwitchCompany;
+
 
     /**
      * 倒计时对象,总共的时间,每隔多少秒更新一次时间
@@ -130,6 +133,7 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
                                 .companyId(companyId)
                                 .companyName(companyName)
                                 .saasExist(saasExist)
+                                .isLoginSuccessSwitchCompany(isLoginSuccessSwitchCompany)
                                 .startForResult(REQUEST_CODE_SHOP);
                     }
                 })
@@ -151,6 +155,7 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
                 .companyId(companyId)
                 .companyName(companyName)
                 .saasExist(saasExist)
+                .isLoginSuccessSwitchCompany(isLoginSuccessSwitchCompany)
                 .startForResult(REQUEST_CODE_SHOP);
     }
 

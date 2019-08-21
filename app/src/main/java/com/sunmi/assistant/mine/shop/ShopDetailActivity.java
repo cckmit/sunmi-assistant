@@ -108,7 +108,9 @@ public class ShopDetailActivity extends BaseActivity {
                 silShopAddress.setRightText(mInfo.getAddress());
                 silShopContact.setRightText(mInfo.getContactPerson());
                 silShopMobile.setRightText(mInfo.getContactTel());
-                silShopArea.setRightText(String.valueOf(mInfo.getBusinessArea() + "㎡"));
+                if (mInfo.getBusinessArea() > 0) {
+                    silShopArea.setRightText(String.valueOf(mInfo.getBusinessArea() + "㎡"));
+                }
                 LogCat.d(TAG, "Shop info:" + mInfo);
             }
 

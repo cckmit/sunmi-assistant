@@ -83,6 +83,8 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     ArrayList<ShopListResp.ShopInfo> shopList;
     @Extra
     boolean isCreateCompany;
+    @Extra
+    boolean isLoginSuccessSwitchCompany;
 
     private int shopId;
     private String shopName;
@@ -175,6 +177,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
                     .companyId(companyId)
                     .companyName(companyName)
                     .saasExist(saasExist)
+                    .isLoginSuccessSwitchCompany(isLoginSuccessSwitchCompany)
                     .start();
         } else {
             LoginChooseShopActivity_.intent(context)
@@ -230,7 +233,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
         activityVisible();
         rvChoose.setAdapter(new CommonListAdapter<ShopListResp.ShopInfo>(context,
                 R.layout.item_shop_company, shopList) {
-            int selectedIndex = -1;
+            int selectedIndex = shopList.size() == 1 ? 0 : -1;
 
             @Override
             public void convert(ViewHolder holder, final ShopListResp.ShopInfo item) {
@@ -244,6 +247,11 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
                     CommonHelper.isCanClick(btnEnterMain, true);
                 });
                 if (selectedIndex == holder.getAdapterPosition()) {
+                    if (shopList.size() == 1) {
+                        shopId = item.getShop_id();
+                        shopName = item.getShop_name();
+                        CommonHelper.isCanClick(btnEnterMain, true);
+                    }
                     shopItem.setRightImage(ContextCompat.getDrawable(context, com.sunmi.ipc.R.mipmap.ic_yes));
                     shopItem.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.common_orange));
                 } else {
