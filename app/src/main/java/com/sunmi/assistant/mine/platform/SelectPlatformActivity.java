@@ -29,15 +29,12 @@ import sunmi.common.model.PlatformInfo;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.CommonHelper;
-import sunmi.common.utils.GotoActivityUtils;
-import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.ViewHolder;
 
-import static com.sunmi.assistant.mine.shop.ShopListActivity.INTENT_EXTRA_SUCCESS;
 import static com.sunmi.assistant.mine.shop.ShopListActivity.REQUEST_CODE_SHOP;
 
 /**
@@ -62,6 +59,12 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
 
     @Extra
     boolean isCanBack;
+    @Extra
+    int companyId;
+    @Extra
+    String companyName;
+    @Extra
+    int saasExist;
 
     @AfterViews
     void init() {
@@ -104,11 +107,6 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
             case R.id.img_back:
                 onBackPressed();
                 break;
-            case R.id.txt_right:
-                //没有对接saas数据Q
-                SpUtils.setSaasExist(0);
-                GotoActivityUtils.gotoMainActivity(this);
-                break;
             default:
                 break;
         }
@@ -119,16 +117,16 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
         PlatformMobileActivity_.intent(this)
                 .platform(selectPlatform)
                 .saasSource(selectSaasSource)
+                .companyId(companyId)
+                .companyName(companyName)
+                .saasExist(saasExist)
                 .startForResult(REQUEST_CODE_SHOP);
     }
 
     @OnActivityResult(REQUEST_CODE_SHOP)
     void onResult(int resultCode, @Nullable Intent data) {
-        if (resultCode == Activity.RESULT_OK && data != null
-                && data.getBooleanExtra(INTENT_EXTRA_SUCCESS, false)) {
-            Intent intent = getIntent();
-            intent.putExtra(INTENT_EXTRA_SUCCESS, true);
-            setResult(RESULT_OK, intent);
+        if (resultCode == Activity.RESULT_OK) {
+            setResult(RESULT_OK);
             finish();
         }
     }

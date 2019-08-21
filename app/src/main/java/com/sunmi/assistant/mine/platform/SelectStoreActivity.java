@@ -2,10 +2,10 @@ package com.sunmi.assistant.mine.platform;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 
@@ -34,8 +34,6 @@ import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.ViewHolder;
 
-import static com.sunmi.assistant.mine.shop.ShopListActivity.INTENT_EXTRA_SUCCESS;
-
 /**
  * 选择门店
  *
@@ -59,6 +57,12 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
     @Extra
     boolean isBack;
     @Extra
+    int companyId;
+    @Extra
+    String companyName;
+    @Extra
+    int saasExist;
+    @Extra
     ArrayList<AuthStoreInfo.SaasUserInfoListBean> list;
 
     private ShopListAdapter mAdapter;
@@ -69,7 +73,7 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
         if (!isBack) {
             titleBar.getLeftLayout().setVisibility(View.GONE);
         }
-        mPresenter = new SelectStorePresenter(list);
+        mPresenter = new SelectStorePresenter(list, companyId);
         mPresenter.attachView(this);
         mAdapter = new ShopListAdapter(this, mPresenter.getList());
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -82,15 +86,13 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
     }
 
     @Override
-    public void complete() {
+    public void complete(int saasExist, int shopId, String shopName) {
         if (SpUtils.isLoginSuccess()) {
-            Intent intent = getIntent();
-            intent.putExtra(INTENT_EXTRA_SUCCESS, true);
-            setResult(RESULT_OK, intent);
+            setResult(RESULT_OK);
             BaseNotification.newInstance().postNotificationName(CommonNotificationConstant.refreshMainTabView);
             finish();
         } else {
-            GetUserInfoUtils.userInfo(this);
+            GetUserInfoUtils.userInfo(this, companyId, companyName, saasExist, shopId, shopName);
         }
     }
 
@@ -136,16 +138,23 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
         }
 
         @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            ViewHolder holder = super.onCreateViewHolder(parent, viewType);
+            holder.getView(R.id.CBox).setOnClickListener(v -> {
+                SelectShopModel info = getData().get(holder.getAdapterPosition());
+                info.setChecked(!info.isChecked());
+                selectedCount = info.isChecked() ? selectedCount + 1 : selectedCount - 1;
+                enableCompleteBtn(selectedCount > 0);
+            });
+            return holder;
+        }
+
+        @Override
         public void convert(ViewHolder holder, SelectShopModel info) {
             holder.setText(R.id.tvName, info.getShopName());
             holder.setText(R.id.tvPlatform, getString(R.string.str_shop_platform_from, info.getSaasName()));
             CheckBox checkBox = holder.getView(R.id.CBox);
             checkBox.setChecked(info.isChecked());
-            checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                info.setChecked(isChecked);
-                selectedCount = isChecked ? selectedCount + 1 : selectedCount - 1;
-                enableCompleteBtn(selectedCount > 0);
-            });
         }
     }
 

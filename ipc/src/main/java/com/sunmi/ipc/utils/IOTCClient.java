@@ -3,14 +3,20 @@ package com.sunmi.ipc.utils;
 import android.os.Process;
 
 import com.google.gson.Gson;
-import com.sunmi.ipc.model.IotcCmdBean;
+import com.google.gson.reflect.TypeToken;
+import com.sunmi.ipc.model.IotcCmdReq;
+import com.sunmi.ipc.model.IotcCmdResp;
+import com.sunmi.ipc.model.VideoTimeSlotBean;
 import com.tutk.IOTC.AVAPIs;
 import com.tutk.IOTC.IOTCAPIs;
+import com.tutk.IOTC.P2pCmdCallback;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import sunmi.common.utils.ByteUtils;
+import sunmi.common.utils.ThreadPool;
 import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 
@@ -30,6 +36,7 @@ public class IOTCClient {
     private int CMD_LIVE_STOP = 0x11;
     private int CMD_LIVE_START_AUDIO = 0x12;
     private int CMD_LIVE_STOP_AUDIO = 0x13;
+    private int CMD_SD_CARD_STATUS = 0x1E;
     private int CMD_PLAYBACK_LIST = 0x20;
     private int CMD_PLAYBACK_START = 0x21;
     private int CMD_PLAYBACK_STOP = 0x22;
@@ -120,7 +127,21 @@ public class IOTCClient {
             return;
         }
         LogCat.e(TAG, "Step 3: call avClientStartEx, avIndex = " + avIndex);
-        startPlay();
+        startPlay(new P2pCmdCallback() {
+            @Override
+            public void onResponse(int cmd, IotcCmdResp result) {
+                if (callback != null) {
+                    callback.initSuccess();
+                }
+            }
+
+            @Override
+            public void onError() {
+                if (callback != null) {
+                    callback.initFail();
+                }
+            }
+        });
         Thread videoThread = new Thread(new VideoThread(avIndex), "Video Thread");
         Thread audioThread = new Thread(new AudioThread(avIndex), "Audio Thread");
         videoThread.start();
@@ -164,12 +185,33 @@ public class IOTCClient {
     }
 
     /**
+     * 开始直播
+     */
+    public void startPlay(P2pCmdCallback callback) {
+        changeValue(0, callback);
+    }
+
+    /**
+     * 切换分辨率
+     *
+     * @param type 分辨率，0：超清，1：高清，2：标清
+     */
+    public void changeValue(int type, P2pCmdCallback callback) {
+        IotcCmdReq cmd = new IotcCmdReq.Builder()
+                .setMsg_id(Utils.getMsgId())
+                .setCmd(CMD_LIVE_START)
+                .setChannel(1)
+                .setParam("resolution", type).builder();
+        cmdCall(CMD_LIVE_START, cmd, callback);
+    }
+
+    /**
      * 切换分辨率
      *
      * @param type 分辨率，0：超清，1：高清，2：标清
      */
     public void changeValue(int type) {
-        IotcCmdBean cmd = new IotcCmdBean.Builder()
+        IotcCmdReq cmd = new IotcCmdReq.Builder()
                 .setMsg_id(Utils.getMsgId())
                 .setCmd(CMD_LIVE_START)
                 .setChannel(1)
@@ -181,34 +223,51 @@ public class IOTCClient {
      * 停止直播参数
      */
     public void stopLive() {
-        IotcCmdBean cmd = new IotcCmdBean.Builder()
+        IotcCmdReq cmd = new IotcCmdReq.Builder()
                 .setMsg_id(Utils.getMsgId())
                 .setCmd(CMD_LIVE_STOP)
                 .setChannel(1).builder();
         cmdCall(cmd);
     }
 
-    public void getPlaybackList(long start, long end) {
-        IotcCmdBean cmd = new IotcCmdBean.Builder()
+    public void getPlaybackList(long start, long end, P2pCmdCallback callback) {
+        IotcCmdReq cmd = new IotcCmdReq.Builder()
                 .setMsg_id(Utils.getMsgId())
                 .setCmd(CMD_PLAYBACK_LIST)
                 .setChannel(1)
                 .setParam("start_time", start)
                 .setParam("end_time", end).builder();
-        cmdCall(cmd);
+        cmdCall(CMD_PLAYBACK_LIST, cmd, callback);
     }
 
-    public void startPlayback(long startTime) {
-        IotcCmdBean cmd = new IotcCmdBean.Builder()
+    public void startPlayback(long startTime, P2pCmdCallback callback) {
+        IotcCmdReq cmd = new IotcCmdReq.Builder()
                 .setMsg_id(Utils.getMsgId())
                 .setCmd(CMD_PLAYBACK_START)
                 .setChannel(1)
                 .setParam("start_time", startTime).builder();
-        cmdCall(cmd);
+        cmdCall(CMD_PLAYBACK_START, cmd, callback);
+    }
+
+    public void stopPlayback(P2pCmdCallback callback) {
+        IotcCmdReq cmd = new IotcCmdReq.Builder()
+                .setMsg_id(Utils.getMsgId())
+                .setCmd(CMD_PLAYBACK_STOP)
+                .setChannel(1).builder();
+        cmdCall(CMD_PLAYBACK_STOP, cmd, callback);
+    }
+
+    public void pausePlayback(boolean isPause, P2pCmdCallback callback) {
+        IotcCmdReq cmd = new IotcCmdReq.Builder()
+                .setMsg_id(Utils.getMsgId())
+                .setCmd(CMD_PLAYBACK_PAUSE)
+                .setChannel(1)
+                .setParam("pause", isPause ? 1 : 0).builder();
+        cmdCall(CMD_PLAYBACK_PAUSE, cmd, callback);
     }
 
     public void stopPlayback() {
-        IotcCmdBean cmd = new IotcCmdBean.Builder()
+        IotcCmdReq cmd = new IotcCmdReq.Builder()
                 .setMsg_id(Utils.getMsgId())
                 .setCmd(CMD_PLAYBACK_STOP)
                 .setChannel(1).builder();
@@ -216,7 +275,7 @@ public class IOTCClient {
     }
 
     public void pausePlayback(boolean isPause) {
-        IotcCmdBean cmd = new IotcCmdBean.Builder()
+        IotcCmdReq cmd = new IotcCmdReq.Builder()
                 .setMsg_id(Utils.getMsgId())
                 .setCmd(CMD_PLAYBACK_PAUSE)
                 .setChannel(1)
@@ -224,11 +283,54 @@ public class IOTCClient {
         cmdCall(cmd);
     }
 
-    private void cmdCall(IotcCmdBean cmd) {
-        String json = new Gson().toJson(cmd);
-        byte[] req = json.getBytes();
-        IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
-        getCmdResponse();
+    private void cmdCall(final IotcCmdReq cmd) {
+        ThreadPool.getSingleThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                String json = new Gson().toJson(cmd);
+                byte[] req = json.getBytes();
+                IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
+                getCmdResponse();
+            }
+        });
+    }
+
+    private void cmdCall(final int cmd, final IotcCmdReq cmdReq, final P2pCmdCallback callback) {
+        ThreadPool.getSingleThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                String json = new Gson().toJson(cmdReq);
+                byte[] req = json.getBytes();
+                IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
+                getCmdResponse(cmd, callback);
+            }
+        });
+    }
+
+    private void getCmdResponse(int cmd, P2pCmdCallback callback) {
+        byte[] buf = new byte[1024];
+        int actualLen = IOTCAPIs.IOTC_Session_Read(SID, buf, 1024, 10000, 0);
+        if (actualLen > 0) {
+            byte[] data = new byte[actualLen];
+            System.arraycopy(buf, 0, data, 0, actualLen);
+            String result = ByteUtils.byte2String(data);
+            LogCat.e(TAG, "9999999 cmd result = " + result);
+            try {
+                IotcCmdResp cmdBean;
+                if (CMD_PLAYBACK_LIST == cmd) {
+                    cmdBean = new Gson().fromJson(result,
+                            new TypeToken<IotcCmdResp<List<VideoTimeSlotBean>>>() {
+                            }.getType());
+                } else {
+                    cmdBean = new Gson().fromJson(result, IotcCmdResp.class);
+                }
+                if (callback != null) {
+                    callback.onResponse(cmd, cmdBean);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void getCmdResponse() {
@@ -238,12 +340,13 @@ public class IOTCClient {
             byte[] data = new byte[actualLen];
             System.arraycopy(buf, 0, data, 0, actualLen);
             String result = ByteUtils.byte2String(data);
-            if (callback != null) callback.IOTCResult(result);
+            LogCat.e(TAG, "888888 cmd result = " + result);
+            IotcCmdResp cmdBean = new Gson().fromJson(result, IotcCmdResp.class);
         }
     }
 
     public class VideoThread implements Runnable {
-        final int VIDEO_BUF_SIZE = 2000000;
+        final int VIDEO_BUF_SIZE = 2_000_000;
         final int FRAME_INFO_SIZE = 16;
 
         private int avIndex;
@@ -287,7 +390,7 @@ public class IOTCClient {
                     LogCat.e(TAG, "Session cant be used anymore");
                     break;
                 }
-                LogCat.e(TAG, "555555vvv - " + Process.myTid() + ", VIDEO received = " + ret);
+                LogCat.e(TAG, "888888vvv T-" + Process.myTid() + ", VIDEO received = " + ret);
                 if (ret > 0) {
                     byte[] data = new byte[ret];
                     System.arraycopy(videoBuffer, 0, data, 0, ret);
@@ -336,7 +439,7 @@ public class IOTCClient {
                     LogCat.e(TAG, "AudioThread - AV_ER_LOSED_THIS_FRAME");
                     continue;
                 }
-//                LogCat.e(TAG, "888888aaa AUDIO received ret = " + ret);
+//                LogCat.e(TAG, "888888aaa received ret = " + ret);
                 if (ret < 0) return;
                 byte[] data = new byte[ret];
                 System.arraycopy(audioBuffer, 0, data, 0, ret);
@@ -351,13 +454,15 @@ public class IOTCClient {
     }
 
     public interface Callback {
+
+        void initSuccess();
+
         void initFail();
 
         void onVideoReceived(byte[] videoBuffer);
 
         void onAudioReceived(byte[] audioBuffer);
 
-        void IOTCResult(String result);
     }
 
 }

@@ -28,8 +28,6 @@ import com.sunmi.apmanager.utils.DBUtils;
 import com.sunmi.apmanager.utils.EncryptUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
-import sunmi.common.model.AdListBean;
-import sunmi.common.model.AdListResp;
 import com.sunmi.assistant.presenter.DevicePresenter;
 import com.sunmi.assistant.ui.DeviceSettingDialog;
 import com.sunmi.assistant.ui.MainTopBar;
@@ -65,6 +63,8 @@ import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotificationConstant;
+import sunmi.common.model.AdListBean;
+import sunmi.common.model.AdListResp;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.NetworkUtils;
@@ -214,11 +214,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     }
 
     @Override
-    public void unbindRouterSuccess(String sn, int code, String msg, Object data) {
-
-    }
-
-    @Override
     public void getIpcListSuccess(List<SunmiDevice> devices) {
         ipcList.clear();
         ipcList.addAll(devices);
@@ -235,16 +230,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     @Override
     public void unbindIpcSuccess(int code, String msg, Object data) {
         mPresenter.getIpcList();
-    }
-
-    @Override
-    public void unbindIpcFail(int code, String msg) {
-
-    }
-
-    @Override
-    public void getPrinterStatusSuccess(SunmiDevice device) {
-
     }
 
     @Override

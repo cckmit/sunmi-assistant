@@ -21,7 +21,9 @@ public class BaseArrayAdapter<T> extends BaseRecyclerAdapter<T> {
 
     public BaseArrayAdapter(List<T> data) {
         super();
-        mData.addAll(data);
+        if (data != null) {
+            mData.addAll(data);
+        }
     }
 
     @Override

@@ -1,14 +1,17 @@
 package com.sunmi.assistant.presenter;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
+import com.sunmi.apmanager.constant.enums.DeviceStatus;
+import com.sunmi.apmanager.receiver.MyNetworkCallback;
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.utils.DBUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
 import com.sunmi.cloudprinter.rpc.IOTCloudApi;
 import com.sunmi.ipc.model.IpcListResp;
-import com.sunmi.ipc.rpc.IPCCloudApi;
+import com.sunmi.ipc.rpc.IpcCloudApi;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -76,11 +79,16 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                             JSONObject object = (JSONObject) jsonArray.opt(i);
                             SunmiDevice device = new SunmiDevice();
                             device.setType("ROUTER");
+                            if (object.has("sn")) {
+                                device.setDeviceid(object.getString("sn"));
+                            }
                             if (object.has("active_status")) {
                                 device.setStatus(object.getInt("active_status"));
                             }
-                            if (object.has("sn")) {
-                                device.setDeviceid(object.getString("sn"));
+                            if (TextUtils.equals(device.getDeviceid(), MyNetworkCallback.CURRENT_ROUTER)) {
+                                if (device.getStatus() == DeviceStatus.OFFLINE.ordinal()) {
+                                    device.setStatus(DeviceStatus.EXCEPTION.ordinal());
+                                }
                             }
                             if (object.has("model")) {
                                 device.setModel(object.getString("model"));
@@ -136,7 +144,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
 
     @Override
     public void getIpcList() {
-        IPCCloudApi.getDetailList(SpUtils.getCompanyId(), SpUtils.getShopId(),
+        IpcCloudApi.getDetailList(SpUtils.getCompanyId(), SpUtils.getShopId(),
                 new RetrofitCallback<IpcListResp>() {
                     @Override
                     public void onSuccess(int code, String msg, IpcListResp data) {
@@ -171,8 +179,8 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
 
     @Override
     public void unbindIPC(int deviceId) {
-        IPCCloudApi.unbindIPC(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId,
-                new RetrofitCallback() {
+        IpcCloudApi.unbindIpc(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId,
+                new RetrofitCallback<Object>() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
                         if (isViewAttached()) {
@@ -219,9 +227,6 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
             public void onSuccess(int code, String msg, String data) {
                 try {
                     SunmiDevice device = getStoreBean(new JSONObject(data));
-                    if (isViewAttached()) {
-                        mView.getPrinterStatusSuccess(device);
-                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

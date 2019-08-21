@@ -161,5 +161,29 @@
     <string name="tip_esl_offline">检测到基站离线</string>
     <string name="str_task_erp">ERP对接提醒</string>
     <string name="tip_task_erp">ERP对接完成</string>
+    <string name="company_shop_area">经营面积</string>
+    <string name="company_shop_contact_tip">请输入联系人</string>
+    <string name="company_shop_contact_tel_tip">请输入联系方式</string>
+    <string name="company_shop_area_tip">请输入经营面积</string>
+    <string name="company_name">商户名称</string>
+    <string name="company_id">商户编号</string>
+    <string name="company_create_time">创建时间</string>
+    <string name="company_switch">切换商户</string>
+    <string name="company_email">联系邮箱</string>
+    <string name="company_square">㎡</string>
+    <string name="company_show_now">当前商户</string>
+    <string name="str_change_company_contact">更改联系人</string>
+    <string name="str_change_company_tel">更改联系方式</string>
+    <string name="str_change_company_email">更改联系邮箱</string>
+    <string name="tip_input_company_contact">请输入联系人</string>
+    <string name="tip_input_company_tel">请输入联系方式</string>
+    <string name="tip_input_company_email">请输入联系邮箱</string>
+    <string name="tip_input_company_correct_email">请输入正确的邮箱格式</string>
+    <string name="company_now_selected">当前商户</string>
+    <string name="company_can_switch">可切换商户</string>
+    <string name="company_shop_details">门店详情</string>
+    <string name="company_shop_face_group">人脸分组</string>
+    <string name="company_shop_to_create">该商户暂无门店，您可以新建门店，或者从其他软件平台中导入门店</string>
+    <string name="shop_create">创建门店</string>
 
 </resources>

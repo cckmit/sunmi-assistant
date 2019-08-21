@@ -83,15 +83,13 @@
         <activity android:name=".mine.UserInfoActivity_" />
         <activity android:name=".mine.ChangeUsernameActivity_" />
         <activity android:name=".ui.activity.SunmiLinkSearchActivity_" />
-        <activity android:name=".mine.ChangeCompanyNameActivity_" />
+        <activity android:name=".mine.company.CompanyUpdateActivity_" />
         <activity android:name=".mine.platform.SelectPlatformActivity_" />
         <activity android:name=".mine.platform.SelectStoreActivity_" />
         <activity android:name=".mine.platform.PlatformMobileActivity_" />
         <activity android:name=".order.OrderListActivity_" />
         <activity android:name=".order.OrderDetailActivity_" />
-        <activity
-            android:name=".ui.activity.login.LoginChooseShopActivity_"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity android:name=".ui.activity.login.LoginChooseShopActivity_" />
         <activity android:name=".ui.activity.ChooseShopActivity_" />
         <activity android:name=".ui.activity.merchant.CreateCompanyActivity_" />
         <activity android:name=".ui.activity.merchant.CreateCompanyNextActivity_" />
@@ -104,7 +102,11 @@
         <activity android:name=".mine.shop.ShopAddressActivity_" />
         <activity android:name=".mine.HelpActivity_" /> <!-- 百度地图 -->
         <activity android:name=".mine.message.MsgCenterActivity_" />
-        <activity android:name=".mine.message.MsgDetailActivity_"/>
+        <activity android:name=".mine.message.MsgDetailActivity_" />
+        <activity android:name=".mine.shop.ShopContactsAreaActivity_" />
+        <activity android:name=".mine.company.CompanyDetailActivity_" />
+        <activity android:name=".mine.shop.ShopDetailGroupActivity_" />
+        <activity android:name=".mine.shop.CreateShopPreviewActivity_" />
 
         <service
             android:name="com.baidu.location.f"

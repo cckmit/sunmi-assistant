@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginStart="11dp"
+        android:layout_marginStart="@dimen/dp_10"
         android:layout_toEndOf="@+id/left_image"
         android:ellipsize="end"
         android:gravity="center_vertical"
@@ -60,5 +60,12 @@
         android:layout_marginEnd="@dimen/dp_50"
         android:layout_toStartOf="@+id/right_image"
         android:visibility="gone" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_0_5"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorText_10" />
 
 </RelativeLayout>

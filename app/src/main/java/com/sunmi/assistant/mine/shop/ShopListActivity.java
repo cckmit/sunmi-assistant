@@ -27,19 +27,20 @@ import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
+import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.ViewHolder;
 import sunmi.common.view.bottompopmenu.BottomPopMenu;
 import sunmi.common.view.bottompopmenu.PopItemAction;
 
 /**
  * 我的店铺
+ *
  * @author yangshijie
  */
 @SuppressLint("Registered")
 @EActivity(R.layout.activity_mine_my_store)
 public class ShopListActivity extends BaseActivity {
 
-    public static final String INTENT_EXTRA_SUCCESS = "success";
     public static final int REQUEST_CODE_SHOP = 100;
 
     @ViewById(R.id.recyclerView)
@@ -75,7 +76,6 @@ public class ShopListActivity extends BaseActivity {
 
     private void createShop() {
         CreateShopActivity_.intent(context)
-                .companyId(SpUtils.getCompanyId())
                 .startForResult(REQUEST_CODE_SHOP);
     }
 
@@ -87,22 +87,24 @@ public class ShopListActivity extends BaseActivity {
 
     @OnActivityResult(REQUEST_CODE_SHOP)
     void onResult(int resultCode, @Nullable Intent data) {
-        if (resultCode == Activity.RESULT_OK && data != null
-                && data.getBooleanExtra(INTENT_EXTRA_SUCCESS, false)) {
+        if (resultCode == Activity.RESULT_OK) {
             getShopList();
         }
     }
 
     private void getShopList() {
+        showLoadingDialog();
         SunmiStoreRemote.get().getShopList(SpUtils.getCompanyId(), new RetrofitCallback<ShopListResp>() {
             @Override
             public void onSuccess(int code, String msg, ShopListResp data) {
+                hideLoadingDialog();
                 mAdapter.setData(data.getShop_list());
             }
 
             @Override
             public void onFail(int code, String msg, ShopListResp data) {
                 LogCat.e(TAG, "Get shop list Failed. " + msg);
+                hideLoadingDialog();
                 shortTip(getString(R.string.str_store_load_error));
             }
         });
@@ -116,11 +118,15 @@ public class ShopListActivity extends BaseActivity {
 
         @Override
         public void convert(ViewHolder holder, ShopListResp.ShopInfo info) {
-            holder.setText(R.id.tvName, info.getShop_name());
+            SettingItemLayout silCompanyDetail = holder.getView(R.id.tvName);
+            silCompanyDetail.setLeftText(info.getShop_name());
             holder.itemView.setOnClickListener(v -> {
                 CommonUtils.trackCommonEvent(mContext, "defaultStore",
                         "主页_我的_我的店铺_默认店铺", Constants.EVENT_MY_INFO);
-                ShopDetailActivity_.intent(mContext).shopId(info.getShop_id()).start();
+                ShopDetailGroupActivity_.intent(mContext)
+                        .shopId(info.getShop_id())
+                        .shopName(info.getShop_name())
+                        .startForResult(REQUEST_CODE_SHOP);
             });
         }
     }

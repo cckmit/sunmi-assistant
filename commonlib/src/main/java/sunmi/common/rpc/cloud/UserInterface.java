@@ -8,7 +8,6 @@ import retrofit2.http.POST;
 import retrofit2.http.Part;
 import sunmi.common.model.UserAvatarResp;
 import sunmi.common.model.UserInfoBean;
-import sunmi.common.rpc.mqtt.EmqTokenResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
@@ -93,12 +92,6 @@ public interface UserInterface {
     Call<BaseResponse<UserAvatarResp>> updateIcon(@Part MultipartBody.Part file);
 
     /**
-     * 获取token
-     */
-    @POST(userPath + "getStoreToken")
-    Call<BaseResponse<Object>> getStoreToken(@Body BaseRequest request);
-
-    /**
      * 根据jwt token反解出sso token返回给app
      *
      * @param request
@@ -133,11 +126,5 @@ public interface UserInterface {
      */
     @POST(userPath + "updateEmail")
     Call<BaseResponse<Object>> updateEmail(@Body BaseRequest request);
-
-    /**
-     * 创建emq token去连mqtt,以后用，暂时用emqInterface里的create
-     */
-    @POST(userPath + "createEmqToken")
-    Call<BaseResponse<EmqTokenResp>> createEmqToken(@Body BaseRequest request);
 
 }

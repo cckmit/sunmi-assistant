@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_FAFAFA"
+    android:orientation="vertical"
+    tools:context=".setting.IpcSettingDetailActivity">
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/c_white"
+        app:dividerShow="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:leftDefaultClickEnable="true"
+        app:leftIcon="@mipmap/ic_back_dark"
+        app:titleText="@string/ipc_face_group_create"
+        app:titleTextColor="@color/colorText" />
+
+    <LinearLayout
+        android:id="@+id/layout_name_group"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_72"
+        android:background="@color/c_white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/dp_25"
+            android:text="@string/ipc_face_group_name"
+            android:textColor="@color/colorText"
+            android:textSize="@dimen/sp_16" />
+
+        <sunmi.common.view.ClearableEditText
+            android:id="@+id/cet_face_group_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="@string/ipc_face_group_name_hint"
+            android:inputType="text"
+            android:lines="1"
+            android:paddingStart="@dimen/dp_25"
+            android:paddingEnd="@dimen/dp_25"
+            android:singleLine="true"
+            android:textColor="@color/colorText"
+            android:textColorHint="@color/colorText_40"
+            android:textSize="@dimen/sp_16" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_capacity_group"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_72"
+        android:layout_marginTop="@dimen/dp_0_5"
+        android:background="@color/c_white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/dp_25"
+            android:text="@string/ipc_face_group_capacity"
+            android:textColor="@color/colorText"
+            android:textSize="@dimen/sp_16" />
+
+        <sunmi.common.view.ClearableEditText
+            android:id="@+id/cet_face_group_capacity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="@string/ipc_face_group_capacity"
+            android:inputType="number"
+            android:lines="1"
+            android:paddingStart="@dimen/dp_25"
+            android:paddingEnd="@dimen/dp_25"
+            android:singleLine="true"
+            android:textColor="@color/colorText"
+            android:textColorHint="@color/colorText_40"
+            android:textSize="@dimen/sp_16" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_mark_group"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_72"
+        android:layout_marginTop="@dimen/dp_0_5"
+        android:background="@color/c_white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/dp_25"
+            android:text="@string/ipc_face_group_mark"
+            android:textColor="@color/colorText"
+            android:textSize="@dimen/sp_16" />
+
+        <sunmi.common.view.ClearableEditText
+            android:id="@+id/cet_face_group_mark"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="@string/ipc_face_group_mark_hint"
+            android:inputType="text"
+            android:lines="1"
+            android:paddingStart="@dimen/dp_25"
+            android:paddingEnd="@dimen/dp_25"
+            android:singleLine="true"
+            android:textColor="@color/colorText"
+            android:textColorHint="@color/colorText_40"
+            android:textSize="@dimen/sp_16" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_face_group_save"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_44"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:layout_marginBottom="@dimen/dp_20"
+        android:background="@drawable/face_bg_btn"
+        android:text="@string/ipc_setting_save"
+        android:textColor="@color/c_white"
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</LinearLayout>

@@ -3,7 +3,6 @@ package com.sunmi.assistant.contract;
 import java.util.List;
 
 import sunmi.common.base.BaseView;
-import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.model.CompanyListResp;
 import sunmi.common.model.ShopListResp;
@@ -23,10 +22,6 @@ public interface ChooseShopContract {
 
         void getCompanyListFail(int code, String msg, CompanyListResp data);
 
-        void getSaasSuccessView(AuthStoreInfo data);
-
-        void getSaasFailView(int code, String msg);
-
         void getUserInfoSuccessView();
     }
 
@@ -36,8 +31,6 @@ public interface ChooseShopContract {
         void getCompanyList();
 
         void getUserInfo();
-
-        void getSaas(String mobile);
 
         void getSsoToken();
     }

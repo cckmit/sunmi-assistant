@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.ShopCategoryContract;
-import com.sunmi.assistant.mine.model.ShopInfo;
 import com.sunmi.assistant.mine.presenter.ShopCategoryPresenter;
 
 import org.androidannotations.annotations.AfterViews;
@@ -22,6 +21,7 @@ import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.ShopCategoryResp;
+import sunmi.common.model.ShopInfo;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.TitleBarView;

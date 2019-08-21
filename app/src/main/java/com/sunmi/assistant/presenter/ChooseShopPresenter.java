@@ -10,7 +10,6 @@ import org.json.JSONObject;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
-import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.model.CompanyListResp;
 import sunmi.common.model.ShopListResp;
 import sunmi.common.model.UserInfoBean;
@@ -90,29 +89,6 @@ public class ChooseShopPresenter extends BasePresenter<ChooseShopContract.View>
             public void onFail(int code, String msg, UserInfoBean data) {
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();
-                }
-            }
-        });
-    }
-
-    @Override
-    public void getSaas(String mobile) {
-        mView.showLoadingDialog();
-        SunmiStoreApi.getSaasUserInfo(mobile, new RetrofitCallback<AuthStoreInfo>() {
-            @Override
-            public void onSuccess(int code, String msg, AuthStoreInfo bean) {
-                if (isViewAttached()) {
-                    mView.hideLoadingDialog();
-                    mView.getSaasSuccessView(bean);
-                }
-            }
-
-            @Override
-            public void onFail(int code, String msg, AuthStoreInfo data) {
-                LogCat.e(TAG, "getSaas  Failed code=" + code + "; msg=" + msg);
-                if (isViewAttached()) {
-                    mView.hideLoadingDialog();
-                    mView.getSaasFailView(code, msg);
                 }
             }
         });

@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.sunmi.ipc.contract.IpcSettingWiFiContract;
 import com.sunmi.ipc.model.IpcListResp;
-import com.sunmi.ipc.rpc.IPCCloudApi;
+import com.sunmi.ipc.rpc.IpcCloudApi;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ public class IpcSettingWifiPresenter extends BasePresenter<IpcSettingWiFiContrac
 
     @Override
     public void getIpcStatus(final String deviceid, final String model) {
-        IPCCloudApi.getDetailList(SpUtils.getCompanyId(), SpUtils.getShopId(),
+        IpcCloudApi.getDetailList(SpUtils.getCompanyId(), SpUtils.getShopId(),
                 new RetrofitCallback<IpcListResp>() {
                     @Override
                     public void onSuccess(int code, String msg, IpcListResp data) {

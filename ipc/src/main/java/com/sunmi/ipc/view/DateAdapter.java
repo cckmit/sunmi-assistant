@@ -10,8 +10,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;
-import com.sunmi.ipc.model.ApCloudTimeBean;
 import com.sunmi.ipc.model.TimeBean;
+import com.sunmi.ipc.model.VideoTimeSlotBean;
 
 import java.util.List;
 
@@ -24,10 +24,10 @@ import sunmi.common.utils.DateTimeUtils;
  */
 public class DateAdapter extends RecyclerView.Adapter<DateAdapter.ViewHolder> {
     private List<TimeBean> list;
-    private List<ApCloudTimeBean> apCloudList;//组合时间轴
+    private List<VideoTimeSlotBean> apCloudList;//组合时间轴
     private Context context;
 
-    DateAdapter(Context context, List<TimeBean> list, List<ApCloudTimeBean> apCloudList) {
+    DateAdapter(Context context, List<TimeBean> list, List<VideoTimeSlotBean> apCloudList) {
         this.context = context;
         this.list = list;
         this.apCloudList = apCloudList;
@@ -79,11 +79,9 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.ViewHolder> {
     }
 
     private boolean showShortTimeLine(String minuteSecond) {
-        return minuteSecond.contains("10:00") ||
-                minuteSecond.contains("20:00") ||
-                minuteSecond.contains("30:00") ||
-                minuteSecond.contains("40:00") ||
-                minuteSecond.contains("50:00");
+        return minuteSecond.contains("10:00") || minuteSecond.contains("20:00")
+                || minuteSecond.contains("30:00") || minuteSecond.contains("40:00")
+                || minuteSecond.contains("50:00");
     }
 
     @Override

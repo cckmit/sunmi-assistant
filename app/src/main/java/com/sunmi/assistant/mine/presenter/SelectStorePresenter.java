@@ -1,6 +1,5 @@
 package com.sunmi.assistant.mine.presenter;
 
-import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.mine.contract.SelectStoreContract;
 import com.sunmi.assistant.mine.model.SelectShopModel;
 
@@ -12,7 +11,6 @@ import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.model.CreateShopInfo;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
-import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
 
 
@@ -31,8 +29,17 @@ public class SelectStorePresenter extends BasePresenter<SelectStoreContract.View
     private int mSelectCount = 0;
     private int mCompleteCount = 0;
     private boolean hasSuccess = false;
+    private boolean isAuthSuccess = false;
+    /**
+     * saas创建门店并授权成功保存第一个门店信息
+     */
+    private int shopId;
+    private String shopName;
+    private int mCompanyId;
+    private int mSaasExist;
 
-    public SelectStorePresenter(ArrayList<AuthStoreInfo.SaasUserInfoListBean> list) {
+    public SelectStorePresenter(ArrayList<AuthStoreInfo.SaasUserInfoListBean> list, int companyId) {
+        this.mCompanyId = companyId;
         mList = new ArrayList<>(list.size());
         for (AuthStoreInfo.SaasUserInfoListBean bean : list) {
             mList.add(new SelectShopModel(bean));
@@ -70,12 +77,13 @@ public class SelectStorePresenter extends BasePresenter<SelectStoreContract.View
     }
 
     private void createShop(SelectShopModel item) {
-        SunmiStoreApi.createShop(SpUtils.getCompanyId(), item.getShopName(), "", "", new RetrofitCallback<CreateShopInfo>() {
+        SunmiStoreApi.createShop(mCompanyId, item.getShopName(), "", "", new RetrofitCallback<CreateShopInfo>() {
             @Override
             public void onSuccess(int code, String msg, CreateShopInfo data) {
                 item.setShopId(data.getShop_id());
-                if (SpUtils.getShopId() < 0) {
-                    CommonUtils.saveSelectShop(item.getShopId(), item.getShopName());
+                if (shopId == 0) {
+                    shopId = data.getShop_id();
+                    shopName = item.getShopName();
                 }
                 hasSuccess = true;
                 authorizeSaas(item);
@@ -93,11 +101,11 @@ public class SelectStorePresenter extends BasePresenter<SelectStoreContract.View
     }
 
     private void authorizeSaas(SelectShopModel item) {
-        SunmiStoreApi.authorizeSaas(SpUtils.getCompanyId(), item.getShopId(),
+        SunmiStoreApi.authorizeSaas(mCompanyId, item.getShopId(),
                 item.getSaasSource(), item.getShopNo(), item.getSaasName(), new RetrofitCallback<Object>() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
-                        SpUtils.setSaasExist(1);
+                        mSaasExist = 1;
                         createShopAdd();
                     }
 
@@ -114,7 +122,7 @@ public class SelectStorePresenter extends BasePresenter<SelectStoreContract.View
         if (mCompleteCount >= mSelectCount && isViewAttached()) {
             mView.hideLoadingDialog();
             if (hasSuccess) {
-                mView.complete();
+                mView.complete(mSaasExist, shopId, shopName);
             }
         }
     }

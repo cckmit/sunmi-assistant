@@ -26,7 +26,6 @@ public class IpcVideoView extends SurfaceView
     private static final String TAG = IpcVideoView.class.getSimpleName();
 
     private SurfaceHolder mVideoHolder;
-    private ResultCallback mCallback;
 
     private String mUid;
     private float mWidthHeightRatio = -1;
@@ -52,14 +51,12 @@ public class IpcVideoView extends SurfaceView
      *
      * @param uid        IPC的UID
      * @param videoRatio 视频长宽比（width / height）
-     * @param callback   IOTCResult回调
      */
-    public void init(String uid, float videoRatio, ResultCallback callback) {
+    public void init(String uid, float videoRatio) {
         this.mWidthHeightRatio = videoRatio;
         this.mUid = uid;
         mVideoHolder = getHolder();
         mVideoHolder.addCallback(this);
-        mCallback = callback;
         iotcClient = new IOTCClient(uid);
         iotcClient.setCallback(this);
     }
@@ -104,6 +101,11 @@ public class IpcVideoView extends SurfaceView
     }
 
     @Override
+    public void initSuccess() {
+
+    }
+
+    @Override
     public void initFail() {
 
     }
@@ -123,13 +125,6 @@ public class IpcVideoView extends SurfaceView
     }
 
     @Override
-    public void IOTCResult(String result) {
-        if (mCallback != null) {
-            mCallback.onResult(result);
-        }
-    }
-
-    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
@@ -143,12 +138,4 @@ public class IpcVideoView extends SurfaceView
         setMeasuredDimension(newWidth, newHeight);
     }
 
-    public interface ResultCallback {
-        /**
-         * IPC设备结果回调
-         *
-         * @param result 设备端返回的结果
-         */
-        void onResult(String result);
-    }
 }

@@ -7,6 +7,7 @@ import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.mine.company.CompanyDetailActivity_;
 import com.sunmi.assistant.mine.contract.MineContract;
 import com.sunmi.assistant.mine.message.MsgCenterActivity_;
 import com.sunmi.assistant.mine.presenter.MinePresenter;
@@ -114,7 +115,7 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
      */
     @Click(R.id.rlCompany)
     public void companyClick() {
-        ChangeCompanyNameActivity_.intent(mActivity).start();
+        CompanyDetailActivity_.intent(mActivity).start();
     }
 
     /**

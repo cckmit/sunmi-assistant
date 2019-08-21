@@ -1,7 +1,6 @@
 package com.sunmi.assistant.mine.shop;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -38,7 +37,6 @@ import sunmi.common.view.TitleBarView;
 public class CreateShopActivity extends BaseActivity {
 
     private static final int CREATE_SHOP_ALREADY_EXIST = 5035;
-
     private static final int SHOP_NAME_MAX_LENGTH = 20;
 
     @ViewById(R.id.title_bar)
@@ -51,9 +49,12 @@ public class CreateShopActivity extends BaseActivity {
     ClearableEditText etMobile;
     @ViewById(R.id.btn_complete)
     Button btnComplete;
-
     @Extra
     int companyId;
+    @Extra
+    String companyName;
+    @Extra
+    int saasExist;
 
     @AfterViews
     void init() {
@@ -88,7 +89,7 @@ public class CreateShopActivity extends BaseActivity {
             return;
         }
         showLoadingDialog();
-        SunmiStoreApi.createShop(SpUtils.getCompanyId(), shopName, contact, mobile,
+        SunmiStoreApi.createShop(companyId, shopName, contact, mobile,
                 new RetrofitCallback<CreateShopInfo>() {
                     @Override
                     public void onSuccess(int code, String msg, CreateShopInfo data) {
@@ -112,14 +113,10 @@ public class CreateShopActivity extends BaseActivity {
     private void createShopSuccessView(CreateShopInfo resp) {
         shortTip(R.string.company_create_success);
         if (SpUtils.isLoginSuccess()) {
-            Intent intent = getIntent();
-            intent.putExtra(ShopListActivity.INTENT_EXTRA_SUCCESS, true);
-            setResult(RESULT_OK, intent);
+            setResult(RESULT_OK);
             finish();
         } else {
-            SpUtils.setShopId(resp.getShop_id());
-            SpUtils.setShopName(resp.getShop_name());
-            GetUserInfoUtils.userInfo(this);
+            GetUserInfoUtils.userInfo(this, companyId, companyName, saasExist, resp.getShop_id(), resp.getShop_name());
         }
     }
 
