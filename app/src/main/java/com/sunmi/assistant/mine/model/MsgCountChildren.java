@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author linyuanpeng on 2019-08-16.
  */
-public class ChildrenBean implements Parcelable, Comparable<ChildrenBean> {
+public class MsgCountChildren implements Parcelable, Comparable<MsgCountChildren> {
     /**
      * model_id : 111
      * model_name : 商品库对接完成（tag）
@@ -35,16 +35,16 @@ public class ChildrenBean implements Parcelable, Comparable<ChildrenBean> {
     @SerializedName("last_receive_time")
     private int lastReceiveTime;
     @SerializedName("children")
-    private List<ChildrenBean> children;
+    private List<MsgCountChildren> children;
 
-    protected ChildrenBean(Parcel in) {
+    protected MsgCountChildren(Parcel in) {
         modelId = in.readInt();
         modelName = in.readString();
         totalCount = in.readInt();
         unreadCount = in.readInt();
         remindUnreadCount = in.readInt();
         lastReceiveTime = in.readInt();
-        children = in.createTypedArrayList(ChildrenBean.CREATOR);
+        children = in.createTypedArrayList(MsgCountChildren.CREATOR);
     }
 
     @Override
@@ -63,15 +63,15 @@ public class ChildrenBean implements Parcelable, Comparable<ChildrenBean> {
         return 0;
     }
 
-    public static final Creator<ChildrenBean> CREATOR = new Creator<ChildrenBean>() {
+    public static final Creator<MsgCountChildren> CREATOR = new Creator<MsgCountChildren>() {
         @Override
-        public ChildrenBean createFromParcel(Parcel in) {
-            return new ChildrenBean(in);
+        public MsgCountChildren createFromParcel(Parcel in) {
+            return new MsgCountChildren(in);
         }
 
         @Override
-        public ChildrenBean[] newArray(int size) {
-            return new ChildrenBean[size];
+        public MsgCountChildren[] newArray(int size) {
+            return new MsgCountChildren[size];
         }
     };
 
@@ -123,16 +123,16 @@ public class ChildrenBean implements Parcelable, Comparable<ChildrenBean> {
         this.lastReceiveTime = lastReceiveTime;
     }
 
-    public List<ChildrenBean> getChildren() {
+    public List<MsgCountChildren> getChildren() {
         return children;
     }
 
-    public void setChildren(List<ChildrenBean> children) {
+    public void setChildren(List<MsgCountChildren> children) {
         this.children = children;
     }
 
     @Override
-    public int compareTo(ChildrenBean o) {
-        return o.lastReceiveTime-lastReceiveTime;
+    public int compareTo(MsgCountChildren o) {
+        return o.lastReceiveTime - lastReceiveTime;
     }
 }

@@ -134,7 +134,7 @@ public class BGABadgeViewHelper {
     private void initDefaultAttrs(Context context, BadgeGravity defaultBadgeGravity) {
         mBadgeNumberRect = new Rect();
         mBadgeRectF = new RectF();
-        mBadgeBgColor = ContextCompat.getColor(context,R.color.color_FF3838);
+        mBadgeBgColor = ContextCompat.getColor(context, R.color.color_FF3838);
         mBadgeTextColor = Color.WHITE;
         mBadgeTextSize = BGABadgeViewUtil.sp2px(context, 10);
 
@@ -352,9 +352,9 @@ public class BGABadgeViewHelper {
      * @param canvas
      */
     private void drawDrawableBadge(Canvas canvas) {
-        if (mIsDirectionLeft){
+        if (mIsDirectionLeft) {
             mBadgeRectF.left = mBadgeable.getWidth() / 2 + mBadgeHorizontalMargin;
-        }else {
+        } else {
             mBadgeRectF.left = mBadgeable.getWidth() - mBadgeHorizontalMargin - mBitmap.getWidth();
         }
         mBadgeRectF.top = mBadgeVerticalMargin;

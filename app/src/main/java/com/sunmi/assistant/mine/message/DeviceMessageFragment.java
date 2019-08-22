@@ -6,12 +6,13 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.adapter.MsgContentAdapter;
 import com.sunmi.assistant.mine.adapter.MsgTabAdapter;
 import com.sunmi.assistant.mine.contract.MessageCountContract;
-import com.sunmi.assistant.mine.model.ChildrenBean;
 import com.sunmi.assistant.mine.model.MessageCountBean;
+import com.sunmi.assistant.mine.model.MsgCountChildren;
 import com.sunmi.assistant.mine.presenter.MessageCountPresenter;
 
 import org.androidannotations.annotations.AfterViews;
@@ -48,13 +49,13 @@ public class DeviceMessageFragment extends BaseMvpFragment<MessageCountPresenter
 
     private MessageCountBean.ModelCountListBean bean; //设备消息
 
-    private List<ChildrenBean> msgData;
-    private HashMap<String, List<ChildrenBean>> msgMap = new HashMap<>(); //用于存储对应的消息类型
+    private List<MsgCountChildren> msgData;
+    private HashMap<String, List<MsgCountChildren>> msgMap = new HashMap<>(); //用于存储对应的消息类型
     private MsgTabAdapter msgTabAdapter;
     private MsgContentAdapter msgContentAdapter;
     private List<String> tabTitle = new ArrayList<>();
     private List<Integer> msgCount = new ArrayList<>();
-    private List<ChildrenBean> showData = new ArrayList<>();
+    private List<MsgCountChildren> showData = new ArrayList<>();
     private String selectTab;
 
 
@@ -97,20 +98,20 @@ public class DeviceMessageFragment extends BaseMvpFragment<MessageCountPresenter
             msgData = bean.getChildren();
             tabTitle.clear();
             msgCount.clear();
-            List<ChildrenBean> total = new ArrayList<>();
+            List<MsgCountChildren> total = new ArrayList<>();
             tabTitle.add(getString(R.string.order_filter_all));
             msgCount.add(bean.getRemindUnreadCount());
-            for (ChildrenBean bean : msgData) {
+            for (MsgCountChildren bean : msgData) {
                 if (bean.getTotalCount() > 0) {
-                    total.addAll(bean.getChildren());
+                    total.addAll(getShowData(bean.getChildren()));
                     if (TextUtils.equals(bean.getModelName(), MsgConstants.NOTIFY_MODEL_IPC)) {
                         tabTitle.add(getString(R.string.msg_ipc));
                         msgCount.add(bean.getRemindUnreadCount());
-                        msgMap.put(getString(R.string.msg_ipc), bean.getChildren());
+                        msgMap.put(getString(R.string.msg_ipc), getShowData(bean.getChildren()));
                     } else if (TextUtils.equals(bean.getModelName(), MsgConstants.NOTIFY_MODEL_ESL)) {
                         tabTitle.add(getString(R.string.msg_esl));
                         msgCount.add(bean.getRemindUnreadCount());
-                        msgMap.put(getString(R.string.msg_esl), bean.getChildren());
+                        msgMap.put(getString(R.string.msg_esl), getShowData(bean.getChildren()));
                     }
                 }
             }
@@ -137,7 +138,7 @@ public class DeviceMessageFragment extends BaseMvpFragment<MessageCountPresenter
     }
 
     private void initMsgContent() {
-        List<ChildrenBean> beans = msgMap.get(selectTab);
+        List<MsgCountChildren> beans = msgMap.get(selectTab);
         if (beans != null) {
             showData.clear();
             showData.addAll(beans);
@@ -148,7 +149,7 @@ public class DeviceMessageFragment extends BaseMvpFragment<MessageCountPresenter
             msgContentAdapter.setOnMsgClickListener(new MsgContentAdapter.OnMsgTypeClickListener() {
                 @Override
                 public void onClick(int modelId, String title) {
-
+                    MsgDetailActivity_.intent(mActivity).modelId(modelId).title(title).start();
                 }
             });
             rvMsg.setAdapter(msgContentAdapter);
@@ -156,6 +157,29 @@ public class DeviceMessageFragment extends BaseMvpFragment<MessageCountPresenter
             msgContentAdapter.notifyDataSetChanged();
         }
 
+    }
+
+    private List<MsgCountChildren> getShowData(List<MsgCountChildren> data) {
+        List<MsgCountChildren> list = new ArrayList<>();
+        for (MsgCountChildren children : data) {
+            if (children.getTotalCount() > 0) {
+                list.add(children);
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public void didReceivedNotification(int id, Object... args) {
+        if (id == NotificationConstant.msgReaded) {
+            showLoadingDialog();
+            mPresenter.getMessageCount();
+        }
+    }
+
+    @Override
+    public int[] getStickNotificationId() {
+        return new int[]{NotificationConstant.msgReaded};
     }
 
     @Override

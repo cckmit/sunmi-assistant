@@ -2,6 +2,7 @@ package com.sunmi.assistant.rpc;
 
 import com.sunmi.assistant.mine.model.MessageCountBean;
 import com.sunmi.assistant.mine.model.MessageListBean;
+import com.sunmi.assistant.mine.model.MsgSettingListBean;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -53,4 +54,22 @@ public interface MessageInterface {
      */
     @POST(path + "mailbox/updateReceiveStatusByModel")
     Call<BaseResponse<Object>> updateReceiveStatusByModel(@Body BaseRequest request);
+
+    /**
+     * 获取app消息中心提醒状态列表
+     *
+     * @param request
+     * @return
+     */
+    @POST(path + "remindersetting/app/getList")
+    Call<BaseResponse<MsgSettingListBean>> getSettingList(@Body BaseRequest request);
+
+    /**
+     * 修改app消息中心提醒状态
+     *
+     * @param request
+     * @return
+     */
+    @POST(path + "remindersetting/app/update")
+    Call<BaseResponse<Object>> updateSettingStatus(@Body BaseRequest request);
 }

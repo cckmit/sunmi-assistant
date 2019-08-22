@@ -21,7 +21,8 @@
         android:id="@+id/bga_refresh"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/title_bar">
+        android:layout_below="@+id/title_bar"
+        android:layout_marginTop="@dimen/dp_2">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_msg"
@@ -32,5 +33,15 @@
 
     </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
 
+    <TextView
+        android:id="@+id/tv_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:textSize="@dimen/sp_12"
+        android:drawableTop="@drawable/ic_no_msg"
+        android:text="@string/tip_no_msg"
+        android:visibility="gone"/>
 
 </RelativeLayout>

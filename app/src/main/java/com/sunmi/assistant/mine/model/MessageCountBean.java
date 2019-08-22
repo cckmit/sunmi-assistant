@@ -83,7 +83,7 @@ public class MessageCountBean {
         @SerializedName("remind_unread_count")
         private int remindUnreadCount;
         @SerializedName("children")
-        private List<ChildrenBean> children;
+        private List<MsgCountChildren> children;
 
         protected ModelCountListBean(Parcel in) {
             modelId = in.readInt();
@@ -91,7 +91,7 @@ public class MessageCountBean {
             totalCount = in.readInt();
             unreadCount = in.readInt();
             remindUnreadCount = in.readInt();
-            children = in.createTypedArrayList(ChildrenBean.CREATOR);
+            children = in.createTypedArrayList(MsgCountChildren.CREATOR);
         }
 
         @Override
@@ -161,11 +161,11 @@ public class MessageCountBean {
             this.remindUnreadCount = remindUnreadCount;
         }
 
-        public List<ChildrenBean> getChildren() {
+        public List<MsgCountChildren> getChildren() {
             return children;
         }
 
-        public void setChildren(List<ChildrenBean> children) {
+        public void setChildren(List<MsgCountChildren> children) {
             this.children = children;
         }
 

@@ -9,6 +9,10 @@ public class MsgConstants {
 
     public static final String NOTIFY_MODEL_IPC = "notif-model-ipc";
     public static final String NOTIFY_IPC_TF_DETECT = "notif-model-device-ipc-tf-card-detect";
+    public static final String TF_NON_EXIST = "tf-non-exist";
+    public static final String TF_EXIST = "tf-exist";
+    public static final String TF_CAPABLE = "tf-capable";
+    public static final String TF_NON_CAPABLE = "tf-non-capable";
     public static final String NOTIFY_IPC_ON_OFFLINE = "notif-model-device-ipc-on/offline";
     public static final String NOTIFY_IPC_DETECT_VIDEO = "notif-model-device-ipc-motion-detect-video";
     public static final String NOTIFY_IPC_DETECT_AUDIO = "notif-model-device-ipc-motion-detect-audio";

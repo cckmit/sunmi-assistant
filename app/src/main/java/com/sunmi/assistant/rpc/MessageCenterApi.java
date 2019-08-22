@@ -2,6 +2,7 @@ package com.sunmi.assistant.rpc;
 
 import com.sunmi.assistant.mine.model.MessageCountBean;
 import com.sunmi.assistant.mine.model.MessageListBean;
+import com.sunmi.assistant.mine.model.MsgSettingListBean;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -66,7 +67,7 @@ public class MessageCenterApi {
      * @param msgIdList
      * @param callback
      */
-    public static void deleteMessage(List msgIdList,RetrofitCallback<Object> callback){
+    public static void deleteMessage(List msgIdList, RetrofitCallback<Object> callback) {
         try {
             String params = new JSONObject()
                     .put("msg_id_list", msgIdList)
@@ -85,13 +86,46 @@ public class MessageCenterApi {
      * @param modelId
      * @param callback
      */
-    public static void updateReceiveStatusByModel(List modelId,RetrofitCallback<Object> callback){
+    public static void updateReceiveStatusByModel(int modelId, int statusCode, RetrofitCallback<Object> callback) {
         try {
             String params = new JSONObject()
                     .put("model_id", modelId)
+                    .put("status_code", statusCode)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(MessageInterface.class)
                     .updateReceiveStatusByModel(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取app消息中心提醒状态列表
+     *
+     * @param callback
+     */
+    public static void getSettingList(RetrofitCallback<MsgSettingListBean> callback) {
+        SunmiStoreRetrofitClient.getInstance().create(MessageInterface.class)
+                .getSettingList(new BaseRequest(""))
+                .enqueue(callback);
+    }
+
+    /**
+     * 修改app消息中心提醒状态
+     *
+     * @param settingId
+     * @param status
+     * @param callback
+     */
+    public static void updateSettingStatus(int settingId, int status, RetrofitCallback<Object> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("setting_id", settingId)
+                    .put("status", status)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(MessageInterface.class)
+                    .updateSettingStatus(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
