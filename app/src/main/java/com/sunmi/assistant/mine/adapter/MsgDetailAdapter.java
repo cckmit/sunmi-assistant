@@ -86,7 +86,7 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
             @Override
             public boolean onLongClick(View v) {
                 if (listener != null) {
-                    listener.onLongClick(helper.itemView, item.getMsgId(), helper.getAdapterPosition());
+                    listener.onLongClick(helper.getView(R.id.tv_msg_detail), item.getMsgId(), helper.getAdapterPosition());
                 }
                 return false;
             }
@@ -98,17 +98,19 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
         String disconnectTime = detailMap.get("disconnect_time");
         String deviceName = detailMap.get("device_name");
         String binVersion = detailMap.get("bin_version");
+        String detail;
         if (disconnectTime != null) {
             try {
                 String time = DateTimeUtils.secondToDate(Long.parseLong(disconnectTime), "yyyy-MM-dd HH:mm:ss");
-                helper.setText(R.id.tv_msg_detail, context.getString(resId, deviceName, time));
+                detail = context.getString(resId, deviceName, time);
             } catch (NumberFormatException e) {
-                helper.setText(R.id.tv_msg_detail, context.getString(resId, deviceName, disconnectTime));
+                detail = context.getString(resId, deviceName, disconnectTime);
             }
         } else if (binVersion != null) {
-            helper.setText(R.id.tv_msg_detail, context.getString(resId, deviceName, binVersion));
+            detail = context.getString(resId, deviceName, binVersion);
         } else {
-            helper.setText(R.id.tv_msg_detail, context.getString(resId, deviceName));
+            detail = context.getString(resId, deviceName);
         }
+        helper.setText(R.id.tv_msg_detail, detail);
     }
 }

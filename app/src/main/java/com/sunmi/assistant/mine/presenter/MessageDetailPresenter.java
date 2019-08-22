@@ -1,6 +1,7 @@
 package com.sunmi.assistant.mine.presenter;
 
 import com.sunmi.apmanager.constant.NotificationConstant;
+import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.MessageDetailContract;
 import com.sunmi.assistant.mine.model.MessageListBean;
 import com.sunmi.assistant.rpc.MessageCenterApi;
@@ -23,20 +24,23 @@ public class MessageDetailPresenter extends BasePresenter<MessageDetailContract.
     private List<Integer> list = new ArrayList<>();
 
     @Override
-    public void getMessageList(int modelId, int pageNum, int pageSize) {
+    public void getMessageList(int modelId, int pageNum, int pageSize,boolean needUpdate) {
         list.clear();
         list.add(modelId);
         MessageCenterApi.getMessageList(list, pageNum, pageSize, new RetrofitCallback<MessageListBean>() {
             @Override
             public void onSuccess(int code, String msg, MessageListBean data) {
                 if (isViewAttached()) {
-                    mView.getMessageListSuccess(data.getMsgList(), data.getTotalCount(), data.getReturnCount());
+                    mView.hideLoadingDialog();
+                    mView.getMessageListSuccess(data.getMsgList(), data.getTotalCount(), data.getReturnCount(),needUpdate);
                 }
             }
 
             @Override
             public void onFail(int code, String msg, MessageListBean data) {
                 if (isViewAttached()) {
+                    mView.hideLoadingDialog();
+                    mView.shortTip(R.string.tip_get_data_fail);
                     mView.getMessageListFail(code, msg);
                 }
             }

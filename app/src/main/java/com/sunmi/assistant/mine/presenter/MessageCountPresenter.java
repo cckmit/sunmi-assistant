@@ -33,6 +33,7 @@ public class MessageCountPresenter extends BasePresenter<MessageCountContract.Vi
                     BaseNotification.newInstance().postNotificationName(NotificationConstant.msgUpdated);
                 }
                 if (isViewAttached()) {
+                    mView.hideLoadingDialog();
                     mView.getMessageCountSuccess(data);
                 }
             }
@@ -40,6 +41,7 @@ public class MessageCountPresenter extends BasePresenter<MessageCountContract.Vi
             @Override
             public void onFail(int code, String msg, MessageCountBean data) {
                 if (isViewAttached()) {
+                    mView.hideLoadingDialog();
                     mView.getMessageCountFail(code, msg);
                 }
             }

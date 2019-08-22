@@ -1,8 +1,10 @@
 package com.sunmi.assistant.mine.message;
 
+import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -66,7 +68,7 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
         });
         mPresenter = new MessageDetailPresenter();
         mPresenter.attachView(this);
-        mPresenter.getMessageList(modelId, pageNum, pageSize);
+        mPresenter.getMessageList(modelId, pageNum, pageSize, true);
         showLoadingDialog();
         refreshLayout.setDelegate(this);
         // 设置下拉刷新和上拉加载更多的风格(参数1：应用程序上下文，参数2：是否具有上拉加载更多功能)
@@ -74,17 +76,15 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
     }
 
     @Override
-    public void getMessageListSuccess(List<MessageListBean.MsgListBean> bean, int total, int returnCount) {
+    public void getMessageListSuccess(List<MessageListBean.MsgListBean> bean, int total, int returnCount, boolean needUpdate) {
         refreshLayout.endLoadingMore();
         refreshLayout.endRefreshing();
-        hideLoadingDialog();
         if (total <= 0) {
             tvMsg.setVisibility(View.VISIBLE);
         } else {
             if (returnCount <= 0) {
                 return;
             }
-
             if (pageNum == 1 || total > dataList.size()) {
                 addData(bean);
                 if (total > (pageNum - 1) * pageSize + returnCount) {
@@ -93,8 +93,10 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
                     loadFinish = true;
                 }
             }
+            if (bean.get(0).getReceiveStatus() == 0 && needUpdate) {
+                mPresenter.updateReceiveStatus(modelId);
+            }
         }
-        mPresenter.updateReceiveStatus(modelId);
     }
 
     @Override
@@ -105,8 +107,6 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
 
     @Override
     public void getMessageListFail(int code, String msg) {
-        hideLoadingDialog();
-        shortTip(R.string.tip_get_data_fail);
         refreshLayout.endRefreshing();
         refreshLayout.endLoadingMore();
     }
@@ -140,7 +140,7 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
     @Override
     public void deleteMessageSuccess() {
         dataList.remove(deletePosition);
-        adapter.notifyDataSetChanged();
+        adapter.notifyItemRemoved(deletePosition);
     }
 
     @Override
@@ -179,13 +179,13 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
         pageNum = 1;
         pageSize = 10;
-        mPresenter.getMessageList(modelId, pageNum, pageSize);
+        mPresenter.getMessageList(modelId, pageNum, pageSize, true);
     }
 
     @Override
     public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
         if (NetworkUtils.isNetworkAvailable(context) && !loadFinish) {
-            mPresenter.getMessageList(modelId, pageNum, pageSize);
+            mPresenter.getMessageList(modelId, pageNum, pageSize, false);
             return true;
         }
         refreshLayout.endLoadingMore();
