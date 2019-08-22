@@ -3,14 +3,17 @@ package sunmi.common.constant;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import sunmi.common.base.BaseApplication;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.utils.CommonHelper;
 
 /**
  * Description:
  * Created by bruce on 2019/2/13.
  */
 public class CommonConstants {
-    public static final String FILE_PROVIDER_AUTHORITY = "com.sunmi.assistant.fileprovider";
+    public static final String FILE_PROVIDER_AUTHORITY =
+            CommonHelper.getAppPackageName(BaseApplication.getContext()) + ".fileprovider";
     public static Map<String, SunmiDevice> SUNMI_DEVICE_MAP = new ConcurrentHashMap<>();
 
     public static long LONGITUDE;//精度
