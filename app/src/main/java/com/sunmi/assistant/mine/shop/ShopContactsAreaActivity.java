@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 
+import com.sunmi.apmanager.utils.DialogUtils;
+import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.ShopContactAreaContract;
 import com.sunmi.assistant.mine.presenter.ShopContactAreaPresenter;
@@ -39,7 +41,7 @@ import sunmi.common.view.TitleBarView;
 public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPresenter>
         implements ShopContactAreaContract.View {
 
-    private static final int CONTACTS_MAX_LENGTH = 36;
+    private static final int CONTACTS_MAX_LENGTH = 32;
 
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
@@ -62,12 +64,7 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
         titleBar.getRightText().setOnClickListener(v -> save());
         etShopMessage.requestFocus();
         initShopMessage();
-        etShopMessage.addTextChangedListener(new TextLengthWatcher(etShopMessage, CONTACTS_MAX_LENGTH) {
-            @Override
-            public void onLengthExceed(EditText view, String content) {
-                shortTip(getString(R.string.editetxt_max_length));
-            }
-        });
+
     }
 
     private void initShopMessage() {
@@ -78,6 +75,12 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
                 etShopMessage.setText(mInfo.getContactPerson());
                 etShopMessage.setSelection(mInfo.getContactPerson().length());
             }
+            etShopMessage.addTextChangedListener(new TextLengthWatcher(etShopMessage, CONTACTS_MAX_LENGTH) {
+                @Override
+                public void onLengthExceed(EditText view, String content) {
+                    shortTip(getString(R.string.editetxt_max_length));
+                }
+            });
 
         } else if (type == ShopDetailActivity.TYPE_CONTACT_TEL) {
             titleBar.setAppTitle(R.string.company_shop_mobile);
@@ -87,6 +90,12 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
                 etShopMessage.setText(mInfo.getContactTel());
                 etShopMessage.setSelection(mInfo.getContactTel().length());
             }
+            etShopMessage.addTextChangedListener(new TextLengthWatcher(etShopMessage, CONTACTS_MAX_LENGTH) {
+                @Override
+                public void onLengthExceed(EditText view, String content) {
+                    shortTip(getString(R.string.editetxt_max_length));
+                }
+            });
         } else if (type == ShopDetailActivity.TYPE_AREA) {
             titleBar.setAppTitle(R.string.company_shop_area);
             ConstraintLayout.LayoutParams viewGroup = (ConstraintLayout.LayoutParams) etShopMessage.getLayoutParams();
@@ -117,6 +126,10 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
         if (type == ShopDetailActivity.TYPE_CONTACT) {
             if (TextUtils.isEmpty(shopMessage)) {
                 shortTip(getString(R.string.company_shop_contact_tip));
+                return;
+            }
+            if (HelpUtils.isContainEmoji(shopMessage)) {
+                shortTip(getString(com.sunmi.apmanager.R.string.str_no_contain_emoji));
                 return;
             }
             if (TextUtils.equals(shopMessage, mInfo.getContactPerson())) {
@@ -174,5 +187,19 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
         intent.putExtra(ShopDetailActivity.INTENT_EXTRA_AREA, shopMessageText());
         setResult(RESULT_OK, intent);
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (type == ShopDetailActivity.TYPE_CONTACT &&
+                TextUtils.equals(mInfo.getContactPerson(), shopMessageText())
+                || type == ShopDetailActivity.TYPE_CONTACT_TEL &&
+                TextUtils.equals(mInfo.getContactTel(), shopMessageText())
+                || type == ShopDetailActivity.TYPE_AREA &&
+                TextUtils.equals(String.valueOf(mInfo.getBusinessArea()), shopMessageText())) {
+            super.onBackPressed();
+            return;
+        }
+        DialogUtils.isCancelSetting(this);
     }
 }
