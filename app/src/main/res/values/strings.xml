@@ -197,4 +197,5 @@
     <string name="company_shop_create_success">门店创建成功</string>
     <string name="editetxt_max_length">超过字数限制，请重新输入</string>
     <string name="check_mobile_fixedphone_tip">请输入正确的手机号码或座机</string>
+    <string name="specital_text_cannot_support">特殊字符不支持输入</string>
 </resources>

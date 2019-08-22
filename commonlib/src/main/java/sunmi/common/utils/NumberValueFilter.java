@@ -12,12 +12,14 @@ package sunmi.common.utils;
 
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.method.DigitsKeyListener;
 
 
 public class NumberValueFilter extends DigitsKeyListener {
 
     private static final String TAG = "NumberValueFilter";
+    private int intMaxLength = 6;//整数位的限制位数
 
     public NumberValueFilter() {
         super(false, true);
@@ -34,7 +36,6 @@ public class NumberValueFilter extends DigitsKeyListener {
     public CharSequence filter(CharSequence source, int start, int end,
                                Spanned dest, int dstart, int dend) {
         CharSequence out = super.filter(source, start, end, dest, dstart, dend);
-
 
         // if changed, replace the source
         if (out != null) {
@@ -66,7 +67,7 @@ public class NumberValueFilter extends DigitsKeyListener {
         for (int i = 0; i < dstart; i++) {
             if (dest.charAt(i) == '.') {
                 // being here means, that a number has
-                // been inserted after the dot
+                // been inserted after the dot¬
                 // check if the amount of digits is right
                 return (dlen - (i + 1) + len > digits) ?
                         "" :
@@ -86,9 +87,32 @@ public class NumberValueFilter extends DigitsKeyListener {
             }
         }
 
-
+        //整数length的限制
+        if (!(dest.toString() + source.toString()).contains(".")) {
+            return (dest.toString() + source.toString()).length() > intMaxLength ?
+                    "" :
+                    new SpannableStringBuilder(source, start, end);
+        } else {
+            String strText = dest.toString() + source.toString();
+            int length = strText.length();
+            if (TextUtils.equals(".", source.toString())) {
+                return dest.toString().length() > intMaxLength ?
+                        "" :
+                        new SpannableStringBuilder(source, start, end);
+            } else {
+                if (length == (dstart + 1)) {
+                    return dest.toString().substring(0, dest.toString().indexOf(".")).length() > intMaxLength ?
+                            "" :
+                            new SpannableStringBuilder(source, start, end);
+                } else {
+                    return strText.substring(0, strText.indexOf(".")).length() > (intMaxLength - 1) ?
+                            "" :
+                            new SpannableStringBuilder(source, start, end);
+                }
+            }
+        }
         // if the dot is after the inserted part,
         // nothing can break
-        return new SpannableStringBuilder(source, start, end);
+//        return new SpannableStringBuilder(source, start, end);
     }
 }

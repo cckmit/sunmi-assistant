@@ -3,6 +3,7 @@ package com.sunmi.assistant.mine.shop;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.utils.CommonUtils;
@@ -81,8 +82,23 @@ public class ShopDetailActivity extends BaseActivity {
     protected void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
-        silShopName.getRightText().setSingleLine();
+        setSingleLine();
         getShopInfo(shopId);
+    }
+
+    private void setSingleLine() {
+        silShopName.getRightText().setSingleLine();
+        silShopName.getRightText().setEllipsize(TextUtils.TruncateAt.END);
+        silShopCategory.getRightText().setSingleLine();
+        silShopCategory.getRightText().setEllipsize(TextUtils.TruncateAt.END);
+        silShopRegion.getRightText().setSingleLine();
+        silShopRegion.getRightText().setEllipsize(TextUtils.TruncateAt.END);
+        silShopAddress.getRightText().setSingleLine();
+        silShopAddress.getRightText().setEllipsize(TextUtils.TruncateAt.END);
+        silShopContact.getRightText().setSingleLine();
+        silShopContact.getRightText().setEllipsize(TextUtils.TruncateAt.END);
+        silShopMobile.getRightText().setSingleLine();
+        silShopMobile.getRightText().setEllipsize(TextUtils.TruncateAt.END);
     }
 
     @Override
