@@ -1,6 +1,7 @@
 package com.sunmi.ipc.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.sunmi.ipc.face.model.FaceAge;
 
 import java.util.List;
 
@@ -16,24 +17,4 @@ public class FaceAgeRangeResp {
         return ageRangeList;
     }
 
-    public static class FaceAge {
-
-        /**
-         * age_range : 0~6
-         * age_range_code : 1
-         */
-
-        @SerializedName("age_range")
-        private String ageRange;
-        @SerializedName("age_range_code")
-        private int ageRangeCode;
-
-        public String getAgeRange() {
-            return ageRange;
-        }
-
-        public int getAgeRangeCode() {
-            return ageRangeCode;
-        }
-    }
 }

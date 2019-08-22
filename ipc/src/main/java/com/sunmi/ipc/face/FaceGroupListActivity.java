@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.face.model.FaceGroup;
+import com.sunmi.ipc.face.util.Utils;
 import com.sunmi.ipc.model.FaceGroupListResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
