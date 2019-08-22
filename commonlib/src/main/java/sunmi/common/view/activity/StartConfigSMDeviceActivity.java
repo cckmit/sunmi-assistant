@@ -68,11 +68,11 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
             ivImage.setImageResource(R.mipmap.ic_device_config_ipc_fs);
             tvTip1.setText(R.string.str_config_tip_ipc);
             tvTip2.setText(getString(R.string.str_config_tip_fs_1));
-            tvTip3.setText(Html.fromHtml(getString(R.string.str_config_tip_ipc_1)));
+            tvTip3.setText(Html.fromHtml(getString(R.string.str_config_tip_fs_2)));
             tvTip4.setVisibility(View.VISIBLE);
             tvTip4.setText(getString(R.string.str_config_tip_fs_3));
             tvTip5.setVisibility(View.VISIBLE);
-            tvTip5.setText(Html.fromHtml(getString(R.string.str_config_tip_ipc_3)));
+            tvTip5.setText(Html.fromHtml(getString(R.string.str_config_tip_fs_4)));
         } else if (deviceType == CommonConstants.TYPE_IPC_SS) {
             titleBar.setAppTitle(R.string.str_title_ipc_set);
             ivImage.setImageResource(R.mipmap.ic_device_config_ipc_ss);
