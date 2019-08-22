@@ -349,18 +349,20 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Click(resName = "sil_camera_adjust")
     void cameraAdjust() {
-        if (!NetworkUtils.isNetworkAvailable(this)) {
-            shortTip(R.string.str_net_exception);
-            return;
-        }
-        if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
-            shortTip(R.string.ipc_setting_tip_network_dismatch);
-            return;
-        }
         if (!DeviceTypeUtils.getInstance().isFS1(mDevice.getModel())) {
             return;
         }
-        IPCCall.getInstance().getSdState(mDevice.getIp());
+        if (!NetworkUtils.isNetworkAvailable(context)) {
+            shortTip(R.string.str_net_exception);
+            return;
+        }
+        SunmiDevice device = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
+        if (device == null) {
+            shortTip(R.string.ipc_setting_tip_network_dismatch);
+            return;
+        }
+        showLoadingDialog();
+        IPCCall.getInstance().getSdState(device.getIp());
     }
 
     @Click(resName = "sil_voice_exception")
@@ -638,7 +640,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 .setConfirmButton(R.string.str_confirm).create().show();
     }
 
-    private void updateDetectionView() {
+    @UiThread
+    void updateDetectionView() {
         if (mDetectionConfig == null) {
             return;
         }
