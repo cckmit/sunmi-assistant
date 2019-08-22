@@ -26,7 +26,7 @@ public class ShopRegionPresenter extends BasePresenter<ShopRegionContract.View>
     @Override
     public void updateRegion(int province, int city, int area) {
         mInfo.setRegion(province, city, area);
-        SunmiStoreApi.updateShopInfo(mInfo, new RetrofitCallback<Object>() {
+        SunmiStoreApi.getInstance().updateShopInfo(mInfo, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {

@@ -79,7 +79,7 @@ public class CreateShopPreviewActivity extends BaseActivity {
 
     private void getSaasInfo() {
         showLoadingDialog();
-        SunmiStoreApi.getSaasUserInfo(SpUtils.getMobile(), new RetrofitCallback<AuthStoreInfo>() {
+        SunmiStoreApi.getInstance().getSaasUserInfo(SpUtils.getMobile(), new RetrofitCallback<AuthStoreInfo>() {
             @Override
             public void onSuccess(int code, String msg, AuthStoreInfo bean) {
                 hideLoadingDialog();

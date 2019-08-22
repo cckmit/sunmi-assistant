@@ -7,7 +7,6 @@ import android.os.Bundle;
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.data.SunmiStoreRemote;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -19,6 +18,7 @@ import org.androidannotations.annotations.ViewById;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopInfoResp;
+import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
@@ -97,7 +97,7 @@ public class ShopDetailActivity extends BaseActivity {
 
     private void getShopInfo(int shopId) {
         showLoadingDialog();
-        SunmiStoreRemote.get().getShopInfo(shopId, new RetrofitCallback<ShopInfoResp>() {
+        SunmiStoreApi.getInstance().getShopInfo(shopId, new RetrofitCallback<ShopInfoResp>() {
             @Override
             public void onSuccess(int code, String msg, ShopInfoResp data) {
                 hideLoadingDialog();

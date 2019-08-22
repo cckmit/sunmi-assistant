@@ -22,7 +22,7 @@ public class PlatformMobilePresenter extends BasePresenter<PlatformMobileContrac
 
     @Override
     public void sendMobileCode(String mobile) {
-        SunmiStoreApi.sendSaasVerifyCode(mobile, new RetrofitCallback<Object>() {
+        SunmiStoreApi.getInstance().sendSaasVerifyCode(mobile, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
             }
@@ -39,7 +39,7 @@ public class PlatformMobilePresenter extends BasePresenter<PlatformMobileContrac
 
     @Override
     public void checkMobileCode(String mobile, String code, int saas) {
-        SunmiStoreApi.confirmSaasVerifyCode(mobile, code, new RetrofitCallback<Object>() {
+        SunmiStoreApi.getInstance().confirmSaasVerifyCode(mobile, code, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 getSaasInfo(mobile, saas);
@@ -57,7 +57,7 @@ public class PlatformMobilePresenter extends BasePresenter<PlatformMobileContrac
     }
 
     private void getSaasInfo(String mobile, int saas) {
-        SunmiStoreApi.getSaasUserInfo(mobile, new RetrofitCallback<AuthStoreInfo>() {
+        SunmiStoreApi.getInstance().getSaasUserInfo(mobile, new RetrofitCallback<AuthStoreInfo>() {
             @Override
             public void onSuccess(int code, String msg, AuthStoreInfo data) {
                 ArrayList<AuthStoreInfo.SaasUserInfoListBean> target = new ArrayList<>();

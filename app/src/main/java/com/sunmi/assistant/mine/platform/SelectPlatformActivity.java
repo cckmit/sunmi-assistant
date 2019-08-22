@@ -79,7 +79,7 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
 
     private void getPlatformList() {
         showLoadingDialog();
-        SunmiStoreApi.getPlatformList(new RetrofitCallback<PlatformInfo>() {
+        SunmiStoreApi.getInstance().getPlatformList(new RetrofitCallback<PlatformInfo>() {
             @Override
             public void onSuccess(int code, String msg, PlatformInfo data) {
                 hideLoadingDialog();
