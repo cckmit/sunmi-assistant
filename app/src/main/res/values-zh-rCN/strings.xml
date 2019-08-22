@@ -163,5 +163,8 @@
     <string name="company_shop_face_group">人脸分组</string>
     <string name="company_shop_to_create">该商户暂无门店，您可以新建门店，或者从其他软件平台中导入门店</string>
     <string name="shop_create">创建门店</string>
+    <string name="company_shop_create_success">门店创建成功</string>
+    <string name="editetxt_max_length">超过字数限制，请重新输入</string>
+    <string name="check_mobile_fixedphone_tip">请输入正确的手机号码或座机</string>
 
 </resources>

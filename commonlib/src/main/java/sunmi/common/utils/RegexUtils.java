@@ -24,6 +24,22 @@ public class RegexUtils {
         return m.matches();
     }
 
+    public static boolean isFixedPhone(String phone) {
+        Pattern p1, p2;
+        Matcher m;
+        boolean isPhone;
+        p1 = Pattern.compile("^[0][1-9]{2,3}-[0-9]{5,10}$"); // 验证带区号的
+        p2 = Pattern.compile("^[1-9]{1}[0-9]{5,8}$");     // 验证没有区号的
+        if (phone.length() > 9) {
+            m = p1.matcher(phone);
+            isPhone = m.matches();
+        } else {
+            m = p2.matcher(phone);
+            isPhone = m.matches();
+        }
+        return isPhone;
+    }
+
     /**
      * 数字字母组合，不能全是数组，不能全是字母，8-30位
      */

@@ -103,7 +103,9 @@ public class CompanyDetailActivity extends BaseActivity {
     @Click(R.id.rl_company_switch)
     public void toChangeCompany() {
         LoginChooseShopActivity_.intent(context)
-                .action(CommonConstants.ACTION_CHANGE_COMPANY).start();
+                .action(CommonConstants.ACTION_CHANGE_COMPANY)
+                .isLoginSuccessSwitchCompany(true)
+                .start();
     }
 
     @Click(R.id.sil_company_name)
