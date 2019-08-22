@@ -59,6 +59,7 @@ public class GotoActivityUtils {
         try {
             Class<?> mainActivity = Class.forName("com.sunmi.assistant.ui.activity.MainActivity_");
             Intent intent = new Intent(context, mainActivity);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();

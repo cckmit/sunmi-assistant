@@ -2,7 +2,6 @@ package com.sunmi.assistant.mine.presenter;
 
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.data.SunmiStoreRemote;
 import com.sunmi.assistant.mine.contract.ChangeCompanyNameContract;
 
 import sunmi.common.base.BasePresenter;
@@ -24,7 +23,7 @@ public class ChangeCompanyNamePresenter extends BasePresenter<ChangeCompanyNameC
 
     @Override
     public void getCompanyInfo() {
-        SunmiStoreRemote.get().getCompanyInfo(SpUtils.getCompanyId(), new RetrofitCallback<CompanyInfoResp>() {
+        SunmiStoreApi.getInstance().getCompanyInfo(SpUtils.getCompanyId(), new RetrofitCallback<CompanyInfoResp>() {
             @Override
             public void onSuccess(int code, String msg, CompanyInfoResp data) {
                 if (isViewAttached()) {
@@ -44,7 +43,7 @@ public class ChangeCompanyNamePresenter extends BasePresenter<ChangeCompanyNameC
 
     @Override
     public void updateCompanyName(String name) {
-        SunmiStoreApi.updateCompanyName(SpUtils.getCompanyId(), name, new RetrofitCallback<CompanyInfoResp>() {
+        SunmiStoreApi.getInstance().updateCompanyName(SpUtils.getCompanyId(), name, new RetrofitCallback<CompanyInfoResp>() {
             @Override
             public void onSuccess(int code, String msg, CompanyInfoResp data) {
                 SpUtils.setCompanyName(name);

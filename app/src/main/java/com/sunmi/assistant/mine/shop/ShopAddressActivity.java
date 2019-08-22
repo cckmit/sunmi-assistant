@@ -77,7 +77,7 @@ public class ShopAddressActivity extends BaseActivity {
     private void updateShopAddress(String address) {
         showLoadingDialog();
         mInfo.setAddress(address);
-        SunmiStoreApi.updateShopInfo(mInfo, new RetrofitCallback<Object>() {
+        SunmiStoreApi.getInstance().updateShopInfo(mInfo, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 hideLoadingDialog();
@@ -98,7 +98,8 @@ public class ShopAddressActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (TextUtils.isEmpty(etAddress.getText())) {
+        if (TextUtils.isEmpty(etAddress.getText()) ||
+                TextUtils.equals(mInfo.getAddress(), etAddress.getText() == null ? null : etAddress.getText().toString().trim())) {
             super.onBackPressed();
         } else {
             DialogUtils.isCancelSetting(this);

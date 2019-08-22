@@ -282,4 +282,17 @@
             android:textSize="@dimen/sp_12" />
     </RelativeLayout>
 
+    <TextView
+        android:id="@+id/tv_time_scroll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/bg_shap_grey"
+        android:drawableStart="@mipmap/ic_fast_forward"
+        android:drawablePadding="@dimen/dp_10"
+        android:gravity="center"
+        android:visibility="gone"
+        android:padding="@dimen/dp_10"
+        android:textColor="@color/c_white" />
+
 </RelativeLayout>

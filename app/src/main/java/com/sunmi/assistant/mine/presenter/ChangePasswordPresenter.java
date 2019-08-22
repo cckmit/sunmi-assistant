@@ -16,7 +16,7 @@ public class ChangePasswordPresenter extends BasePresenter<ChangePasswordContrac
 
     @Override
     public void changePassword(String oldPsw, String newPsw) {
-        SunmiStoreApi.changePassword(oldPsw, newPsw, new RetrofitCallback<Object>() {
+        SunmiStoreApi.getInstance().changePassword(oldPsw, newPsw, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {

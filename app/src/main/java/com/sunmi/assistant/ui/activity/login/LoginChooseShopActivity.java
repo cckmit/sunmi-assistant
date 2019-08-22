@@ -9,12 +9,12 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.ChooseShopContract;
 import com.sunmi.assistant.mine.shop.CreateShopPreviewActivity_;
 import com.sunmi.assistant.presenter.ChooseShopPresenter;
 import com.sunmi.assistant.ui.activity.merchant.CreateCompanyActivity_;
+import com.sunmi.assistant.utils.GetUserInfoUtils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -83,6 +83,8 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     ArrayList<ShopListResp.ShopInfo> shopList;
     @Extra
     boolean isCreateCompany;
+    @Extra
+    boolean isLoginSuccessSwitchCompany;
 
     private int shopId;
     private String shopName;
@@ -129,9 +131,12 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
         CreateCompanyActivity_.intent(context).start();
     }
 
+    /**
+     * 选择完商户，门店，获取用户信息成功
+     */
     @Click(R.id.btn_enter_main)
     void enterMainClick() {
-        mPresenter.getUserInfo();
+        GetUserInfoUtils.userInfo(this, companyId, companyName, saasExist, shopId, shopName);
     }
 
     @Click(R.id.btn_refresh)
@@ -165,14 +170,6 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
         setNoDataVisible(View.VISIBLE);
     }
 
-    /**
-     * 选择完商户，门店，获取用户信息成功
-     */
-    @Override
-    public void getUserInfoSuccessView() {
-        CommonUtils.gotoMainActivity(this, companyId, companyName, saasExist, shopId, shopName);
-    }
-
     @Override
     public void getShopListSuccess(List<ShopListResp.ShopInfo> shopList) {
         if (shopList.size() == 0) {
@@ -180,6 +177,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
                     .companyId(companyId)
                     .companyName(companyName)
                     .saasExist(saasExist)
+                    .isLoginSuccessSwitchCompany(isLoginSuccessSwitchCompany)
                     .start();
         } else {
             LoginChooseShopActivity_.intent(context)
@@ -235,7 +233,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
         activityVisible();
         rvChoose.setAdapter(new CommonListAdapter<ShopListResp.ShopInfo>(context,
                 R.layout.item_shop_company, shopList) {
-            int selectedIndex = -1;
+            int selectedIndex = shopList.size() == 1 ? 0 : -1;
 
             @Override
             public void convert(ViewHolder holder, final ShopListResp.ShopInfo item) {
@@ -249,6 +247,11 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
                     CommonHelper.isCanClick(btnEnterMain, true);
                 });
                 if (selectedIndex == holder.getAdapterPosition()) {
+                    if (shopList.size() == 1) {
+                        shopId = item.getShop_id();
+                        shopName = item.getShop_name();
+                        CommonHelper.isCanClick(btnEnterMain, true);
+                    }
                     shopItem.setRightImage(ContextCompat.getDrawable(context, com.sunmi.ipc.R.mipmap.ic_yes));
                     shopItem.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.common_orange));
                 } else {

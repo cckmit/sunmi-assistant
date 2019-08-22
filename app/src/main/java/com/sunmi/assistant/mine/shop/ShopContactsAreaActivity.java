@@ -3,13 +3,13 @@ package com.sunmi.assistant.mine.shop;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 
-import com.sunmi.apmanager.utils.DialogUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.ShopContactAreaContract;
 import com.sunmi.assistant.mine.presenter.ShopContactAreaPresenter;
@@ -21,6 +21,7 @@ import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.ShopInfo;
+import sunmi.common.utils.NumberValueFilter;
 import sunmi.common.utils.RegexUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.ClearableEditText;
@@ -38,7 +39,7 @@ import sunmi.common.view.TitleBarView;
 public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPresenter>
         implements ShopContactAreaContract.View {
 
-    private static final int SHOP_NAME_MAX_LENGTH = 20;
+    private static final int CONTACTS_MAX_LENGTH = 36;
 
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
@@ -61,10 +62,10 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
         titleBar.getRightText().setOnClickListener(v -> save());
         etShopMessage.requestFocus();
         initShopMessage();
-        etShopMessage.addTextChangedListener(new TextLengthWatcher(etShopMessage, SHOP_NAME_MAX_LENGTH) {
+        etShopMessage.addTextChangedListener(new TextLengthWatcher(etShopMessage, CONTACTS_MAX_LENGTH) {
             @Override
             public void onLengthExceed(EditText view, String content) {
-                shortTip(R.string.company_create_shop_max_length);
+                shortTip(getString(R.string.editetxt_max_length));
             }
         });
     }
@@ -77,6 +78,7 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
                 etShopMessage.setText(mInfo.getContactPerson());
                 etShopMessage.setSelection(mInfo.getContactPerson().length());
             }
+
         } else if (type == ShopDetailActivity.TYPE_CONTACT_TEL) {
             titleBar.setAppTitle(R.string.company_shop_mobile);
             etShopMessage.setHint(R.string.company_shop_contact_tel_tip);
@@ -91,12 +93,15 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
             viewGroup.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
             viewGroup.rightMargin = 150;
             etShopMessage.setLayoutParams(viewGroup);
-
             etShopMessage.setHint(R.string.company_shop_area_tip);
             rlSquare.setVisibility(View.VISIBLE);
-            etShopMessage.setInputType(InputType.TYPE_CLASS_PHONE);
-            etShopMessage.setText(String.valueOf(mInfo.getBusinessArea()));
-            etShopMessage.setSelection(String.valueOf(mInfo.getBusinessArea()).length());
+            etShopMessage.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            if (mInfo.getBusinessArea() > 0) {
+                etShopMessage.setText(String.valueOf(mInfo.getBusinessArea()));
+                etShopMessage.setSelection(String.valueOf(mInfo.getBusinessArea()).length());
+            }
+            //默认两位小数
+            etShopMessage.setFilters(new InputFilter[]{new NumberValueFilter()});
         }
     }
 
@@ -128,8 +133,8 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
                 finish();
                 return;
             }
-            if (!RegexUtils.isChinaPhone(shopMessage)) {
-                shortTip(getString(R.string.company_shop_check_mobile));
+            if (!RegexUtils.isChinaPhone(shopMessage) && !RegexUtils.isFixedPhone(shopMessage)) {
+                shortTip(getString(R.string.check_mobile_fixedphone_tip));
                 return;
             }
             mInfo.setContactTel(shopMessage);
@@ -169,19 +174,5 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
         intent.putExtra(ShopDetailActivity.INTENT_EXTRA_AREA, shopMessageText());
         setResult(RESULT_OK, intent);
         finish();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (type == ShopDetailActivity.TYPE_CONTACT &&
-                TextUtils.equals(mInfo.getContactPerson(), shopMessageText())
-                || type == ShopDetailActivity.TYPE_CONTACT_TEL &&
-                TextUtils.equals(mInfo.getContactTel(), shopMessageText())
-                || type == ShopDetailActivity.TYPE_AREA &&
-                TextUtils.equals(String.valueOf(mInfo.getBusinessArea()), shopMessageText())) {
-            super.onBackPressed();
-            return;
-        }
-        DialogUtils.isCancelSetting(this);
     }
 }

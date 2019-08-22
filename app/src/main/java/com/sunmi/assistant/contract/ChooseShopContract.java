@@ -21,17 +21,11 @@ public interface ChooseShopContract {
         void getCompanyListSuccess(List<CompanyInfoResp> companyList);
 
         void getCompanyListFail(int code, String msg, CompanyListResp data);
-
-        void getUserInfoSuccessView();
     }
 
     interface Presenter {
         void getShopList(int companyId);
 
         void getCompanyList();
-
-        void getUserInfo();
-
-        void getSsoToken();
     }
 }

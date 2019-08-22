@@ -18,7 +18,7 @@ public class CommonConfig extends BaseConfig {
 
     @Override
     protected void initDev(Context context, String env) {
-        SUNMI_STORE_URL = "http://store.dev.sunmi.com/";
+        SUNMI_STORE_URL = "https://store.dev.sunmi.com/";
         CLOUD_TOKEN = "Woyouxinxi666";
         DES_IV = "12345678";
         DES_KEY = "wywmxxkj";
@@ -26,7 +26,7 @@ public class CommonConfig extends BaseConfig {
 
     @Override
     protected void initTest(Context context, String env) {
-        SUNMI_STORE_URL = "http://test-store.sunmi.com:30301/";
+        SUNMI_STORE_URL = "https://test-store.sunmi.com/";
         CLOUD_TOKEN = "Woyouxinxi666";
         DES_IV = "12345678";
         DES_KEY = "wywmxxkj";
@@ -34,7 +34,7 @@ public class CommonConfig extends BaseConfig {
 
     @Override
     protected void initRelease(Context context, String env) {
-        SUNMI_STORE_URL = "https://store.sunmi.com:443/";
+        SUNMI_STORE_URL = "https://store.sunmi.com/";
         CLOUD_TOKEN = "Jihewobox15";
         DES_IV = "98765432";
         DES_KEY = "jihexxkj";
@@ -42,7 +42,7 @@ public class CommonConfig extends BaseConfig {
 
     @Override
     protected void initUat(Context context, String env) {
-        SUNMI_STORE_URL = "https://uat-store.sunmi.com:443/";
+        SUNMI_STORE_URL = "https://uat-store.sunmi.com/";
         CLOUD_TOKEN = "Jihewobox15";
         DES_IV = "98765432";
         DES_KEY = "jihexxkj";

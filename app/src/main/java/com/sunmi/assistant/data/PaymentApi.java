@@ -20,11 +20,6 @@ import org.json.JSONObject;
 import java.util.List;
 
 import retrofit2.Call;
-import sunmi.common.model.CompanyInfoResp;
-import sunmi.common.model.ShopInfoResp;
-import sunmi.common.model.ShopListResp;
-import sunmi.common.rpc.cloud.CompanyInterface;
-import sunmi.common.rpc.cloud.ShopInterface;
 import sunmi.common.rpc.cloud.SunmiStoreRetrofitClient;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -35,75 +30,18 @@ import sunmi.common.rpc.retrofit.RetrofitCallback;
  * @author yinhui
  * @since 2019-06-20
  */
-public class SunmiStoreRemote {
+public class PaymentApi {
 
     private static final class Holder {
-        private static final SunmiStoreRemote INSTANCE = new SunmiStoreRemote();
+        private static final PaymentApi INSTANCE = new PaymentApi();
     }
 
-    public static SunmiStoreRemote get() {
+    public static PaymentApi get() {
         return Holder.INSTANCE;
     }
 
-    private SunmiStoreRemote() {
+    private PaymentApi() {
     }
-
-    // ---------- Company Management start ----------
-
-    public Call<BaseResponse<CompanyInfoResp>> getCompanyInfo(int companyId, RetrofitCallback<CompanyInfoResp> callback) {
-        Call<BaseResponse<CompanyInfoResp>> call = null;
-        try {
-            String params = new JSONObject()
-                    .put("company_id", companyId)
-                    .toString();
-            call = SunmiStoreRetrofitClient.getInstance().create(CompanyInterface.class)
-                    .getInfo(Utils.createRequestBody(params));
-            call.enqueue(callback);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return call;
-    }
-
-    // ---------- Company Management end ----------
-
-    // ---------- Shop Management start ----------
-
-    public Call<BaseResponse<ShopListResp>> getShopList(int companyId, RetrofitCallback<ShopListResp> callback) {
-        Call<BaseResponse<ShopListResp>> call = null;
-        try {
-            String params = new JSONObject()
-                    .put("company_id", companyId)
-                    .put("page_num", 1)
-                    .put("page_size", 999)
-                    .toString();
-            call = SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
-                    .getList(Utils.createRequestBody(params));
-            call.enqueue(callback);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return call;
-    }
-
-    public Call<BaseResponse<ShopInfoResp>> getShopInfo(int shopId, RetrofitCallback<ShopInfoResp> callback) {
-        Call<BaseResponse<ShopInfoResp>> call = null;
-        try {
-            String params = new JSONObject()
-                    .put("shop_id", shopId)
-                    .toString();
-            call = SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
-                    .getInfo(Utils.createRequestBody(params));
-            call.enqueue(callback);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return call;
-    }
-
-    // ---------- Shop Management end ----------
-
-    // ---------- Order Management start ----------
 
     public Call<BaseResponse<OrderTotalAmountResp>> getOrderTotalAmount(int companyId, int shopId, long timeStart, long timeEnd,
                                                                         int rateFlag, RetrofitCallback<OrderTotalAmountResp> callback) {
@@ -311,7 +249,5 @@ public class SunmiStoreRemote {
         }
         return call;
     }
-
-    // ---------- Order Management end ----------
 
 }

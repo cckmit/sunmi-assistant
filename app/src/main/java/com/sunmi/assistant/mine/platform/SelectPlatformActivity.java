@@ -65,13 +65,13 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
     String companyName;
     @Extra
     int saasExist;
+    @Extra
+    boolean isLoginSuccessSwitchCompany;
 
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        if (isCanBack) {
-            titleBar.setLeftImageDrawable(ContextCompat.getDrawable(this, R.mipmap.ic_back_dark));
-        }
+        titleBar.setLeftImageDrawable(ContextCompat.getDrawable(this, R.mipmap.ic_back_dark));
         initRecycler();
         CommonHelper.isCanClick(btnNext, false);
         getPlatformList();
@@ -79,7 +79,7 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
 
     private void getPlatformList() {
         showLoadingDialog();
-        SunmiStoreApi.getPlatformList(new RetrofitCallback<PlatformInfo>() {
+        SunmiStoreApi.getInstance().getPlatformList(new RetrofitCallback<PlatformInfo>() {
             @Override
             public void onSuccess(int code, String msg, PlatformInfo data) {
                 hideLoadingDialog();
@@ -96,9 +96,7 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
 
     @Override
     public void onBackPressed() {
-        if (isCanBack) {
-            super.onBackPressed();
-        }
+        super.onBackPressed();
     }
 
     @Override
@@ -120,6 +118,7 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
                 .companyId(companyId)
                 .companyName(companyName)
                 .saasExist(saasExist)
+                .isLoginSuccessSwitchCompany(isLoginSuccessSwitchCompany)
                 .startForResult(REQUEST_CODE_SHOP);
     }
 

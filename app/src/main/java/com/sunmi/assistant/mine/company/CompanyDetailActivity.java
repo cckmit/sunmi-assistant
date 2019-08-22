@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Intent;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.data.SunmiStoreRemote;
 import com.sunmi.assistant.ui.activity.login.LoginChooseShopActivity_;
 
 import org.androidannotations.annotations.AfterViews;
@@ -21,6 +20,7 @@ import java.util.Locale;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.CompanyInfoResp;
+import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -79,7 +79,7 @@ public class CompanyDetailActivity extends BaseActivity {
 
     private void getCompanyInfo() {
         showLoadingDialog();
-        SunmiStoreRemote.get().getCompanyInfo(SpUtils.getCompanyId(), new RetrofitCallback<CompanyInfoResp>() {
+        SunmiStoreApi.getInstance().getCompanyInfo(SpUtils.getCompanyId(), new RetrofitCallback<CompanyInfoResp>() {
             @Override
             public void onSuccess(int code, String msg, CompanyInfoResp mInfo) {
                 hideLoadingDialog();
@@ -103,7 +103,9 @@ public class CompanyDetailActivity extends BaseActivity {
     @Click(R.id.rl_company_switch)
     public void toChangeCompany() {
         LoginChooseShopActivity_.intent(context)
-                .action(CommonConstants.ACTION_CHANGE_COMPANY).start();
+                .action(CommonConstants.ACTION_CHANGE_COMPANY)
+                .isLoginSuccessSwitchCompany(true)
+                .start();
     }
 
     @Click(R.id.sil_company_name)

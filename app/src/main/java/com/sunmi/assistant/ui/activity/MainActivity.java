@@ -71,8 +71,9 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
         mPresenter.getMessageCount();
         registerNetworkReceiver();
         CrashReport.setUserId(SpUtils.getUID());
-        if (MyApplication.isCheckedToken)
+        if (MyApplication.isCheckedToken) {
             MQTTManager.getInstance().createEmqToken(true);//初始化长连接
+        }
         initIpc();
         if (TextUtils.isEmpty(SpUtils.getCompanyName())) {
             CommonUtils.gotoLoginActivity(context, "");
