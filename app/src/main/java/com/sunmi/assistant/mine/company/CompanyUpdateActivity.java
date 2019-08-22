@@ -138,7 +138,7 @@ public class CompanyUpdateActivity extends BaseActivity
                 return true;
             }
             if (HelpUtils.isContainEmoji(companyInfo)) {
-                shortTip(getString(com.sunmi.apmanager.R.string.str_no_contain_emoji));
+                shortTip(getString(R.string.specital_text_cannot_support));
                 return true;
             }
             if (TextUtils.equals(companyInfo, mInfo.getCompany_name())) {

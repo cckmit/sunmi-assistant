@@ -129,7 +129,7 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
                 return;
             }
             if (HelpUtils.isContainEmoji(shopMessage)) {
-                shortTip(getString(com.sunmi.apmanager.R.string.str_no_contain_emoji));
+                shortTip(getString(R.string.specital_text_cannot_support));
                 return;
             }
             if (TextUtils.equals(shopMessage, mInfo.getContactPerson())) {
