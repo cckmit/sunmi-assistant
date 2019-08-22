@@ -87,7 +87,7 @@ public class CreateShopActivity extends BaseActivity {
             return;
         }
         showLoadingDialog();
-        SunmiStoreApi.createShop(companyId, shopName, contact, mobile,
+        SunmiStoreApi.getInstance().createShop(companyId, shopName, contact, mobile,
                 new RetrofitCallback<CreateShopInfo>() {
                     @Override
                     public void onSuccess(int code, String msg, CreateShopInfo data) {

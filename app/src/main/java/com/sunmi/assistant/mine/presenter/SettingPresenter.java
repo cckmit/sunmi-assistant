@@ -16,7 +16,7 @@ public class SettingPresenter extends BasePresenter<SettingContract.View>
 
     @Override
     public void logout() {
-        SunmiStoreApi.logout(new RetrofitCallback<Object>() {
+        SunmiStoreApi.getInstance().logout(new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {

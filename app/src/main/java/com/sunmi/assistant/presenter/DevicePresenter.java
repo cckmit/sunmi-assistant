@@ -42,7 +42,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
 
     @Override
     public void getBannerList() {
-        SunmiStoreApi.getAdList(SpUtils.getCompanyId(), SpUtils.getShopId(),
+        SunmiStoreApi.getInstance().getAdList(SpUtils.getCompanyId(), SpUtils.getShopId(),
                 new RetrofitCallback<AdListResp>() {
                     @Override
                     public void onSuccess(int code, String msg, AdListResp data) {

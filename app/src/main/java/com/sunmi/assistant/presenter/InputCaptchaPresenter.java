@@ -1,14 +1,8 @@
 package com.sunmi.assistant.presenter;
 
-import com.google.gson.Gson;
-import com.sunmi.apmanager.model.LoginDataBean;
-import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.rpc.sso.SSOApi;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.InputCaptchaContract;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
@@ -91,7 +85,7 @@ public class InputCaptchaPresenter extends BasePresenter<InputCaptchaContract.Vi
     @Override
     public void captchaLogin(String mobile, String captcha) {
         mView.showLoadingDialog();
-        SunmiStoreApi.quickLogin(mobile, captcha, new RetrofitCallback<Object>() {
+        SunmiStoreApi.getInstance().quickLogin(mobile, captcha, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {

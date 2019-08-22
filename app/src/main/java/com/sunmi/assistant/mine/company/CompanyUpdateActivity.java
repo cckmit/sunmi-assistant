@@ -96,7 +96,7 @@ public class CompanyUpdateActivity extends BaseActivity
             return;
         }
         showLoadingDialog();
-        SunmiStoreApi.updateCompanyInfo(mInfo, new RetrofitCallback<CompanyInfoResp>() {
+        SunmiStoreApi.getInstance().updateCompanyInfo(mInfo, new RetrofitCallback<CompanyInfoResp>() {
             @Override
             public void onSuccess(int code, String msg, CompanyInfoResp data) {
                 hideLoadingDialog();

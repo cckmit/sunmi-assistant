@@ -24,7 +24,7 @@ public class CreateCompanyPresenter extends BasePresenter<CreateCompanyContract.
     @Override
     public void createCompany(String name) {
         mView.showLoadingDialog();
-        SunmiStoreApi.createCompany(name, new RetrofitCallback<CompanyInfoResp>() {
+        SunmiStoreApi.getInstance().createCompany(name, new RetrofitCallback<CompanyInfoResp>() {
             @Override
             public void onSuccess(int code, String msg, CompanyInfoResp data) {
                 if (isViewAttached()) {

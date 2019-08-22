@@ -24,7 +24,7 @@ public class ChangeUsernamePresenter extends BasePresenter<ChangeUsernameContrac
 
     @Override
     public void getUsername() {
-        SunmiStoreApi.getUserInfo(new RetrofitCallback<UserInfoBean>() {
+        SunmiStoreApi.getInstance().getUserInfo(new RetrofitCallback<UserInfoBean>() {
             @Override
             public void onSuccess(int code, String msg, UserInfoBean data) {
                 CommonUtils.saveLoginInfo(data);
@@ -45,7 +45,7 @@ public class ChangeUsernamePresenter extends BasePresenter<ChangeUsernameContrac
 
     @Override
     public void updateUsername(final String name) {
-        SunmiStoreApi.updateUsername(name, new RetrofitCallback<Object>() {
+        SunmiStoreApi.getInstance().updateUsername(name, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 SpUtils.setUsername(name);

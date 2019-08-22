@@ -21,7 +21,7 @@ public class ShopContactAreaPresenter extends BasePresenter<ShopContactAreaContr
     @Override
     public void editShopMessage(final int type, ShopInfo shopInfo) {
         mView.showLoadingDialog();
-        SunmiStoreApi.updateShopInfo(shopInfo, new RetrofitCallback<Object>() {
+        SunmiStoreApi.getInstance().updateShopInfo(shopInfo, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
