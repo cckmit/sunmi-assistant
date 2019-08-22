@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.data.SunmiStoreRemote;
 import com.sunmi.assistant.mine.platform.SelectPlatformActivity_;
 
 import org.androidannotations.annotations.AfterViews;
@@ -22,6 +21,7 @@ import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.model.ShopListResp;
+import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -76,7 +76,6 @@ public class ShopListActivity extends BaseActivity {
 
     private void createShop() {
         CreateShopActivity_.intent(context)
-                .companyId(SpUtils.getCompanyId())
                 .startForResult(REQUEST_CODE_SHOP);
     }
 
@@ -95,7 +94,7 @@ public class ShopListActivity extends BaseActivity {
 
     private void getShopList() {
         showLoadingDialog();
-        SunmiStoreRemote.get().getShopList(SpUtils.getCompanyId(), new RetrofitCallback<ShopListResp>() {
+        SunmiStoreApi.getInstance().getShopList(SpUtils.getCompanyId(), new RetrofitCallback<ShopListResp>() {
             @Override
             public void onSuccess(int code, String msg, ShopListResp data) {
                 hideLoadingDialog();
@@ -124,7 +123,10 @@ public class ShopListActivity extends BaseActivity {
             holder.itemView.setOnClickListener(v -> {
                 CommonUtils.trackCommonEvent(mContext, "defaultStore",
                         "主页_我的_我的店铺_默认店铺", Constants.EVENT_MY_INFO);
-                ShopDetailGroupActivity_.intent(mContext).shopId(info.getShop_id()).startForResult(REQUEST_CODE_SHOP);
+                ShopDetailGroupActivity_.intent(mContext)
+                        .shopId(info.getShop_id())
+                        .shopName(info.getShop_name())
+                        .startForResult(REQUEST_CODE_SHOP);
             });
         }
     }

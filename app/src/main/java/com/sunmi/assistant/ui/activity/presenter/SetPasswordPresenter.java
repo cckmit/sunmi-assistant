@@ -19,7 +19,7 @@ public class SetPasswordPresenter extends BasePresenter<SetPasswordContract.View
 
     @Override
     public void register(String username, String password, String code) {
-        SunmiStoreApi.register(username, password, code, new RetrofitCallback<Object>() {
+        SunmiStoreApi.getInstance().register(username, password, code, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
@@ -41,7 +41,7 @@ public class SetPasswordPresenter extends BasePresenter<SetPasswordContract.View
 
     @Override
     public void resetPassword(String username, String password, String code) {
-        SunmiStoreApi.resetPassword(username, password, code, new RetrofitCallback<Object>() {
+        SunmiStoreApi.getInstance().resetPassword(username, password, code, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
@@ -61,7 +61,7 @@ public class SetPasswordPresenter extends BasePresenter<SetPasswordContract.View
     @Override
     public void getCompanyList() {
         mView.showLoadingDialog();
-        SunmiStoreApi.getCompanyList(new RetrofitCallback<CompanyListResp>() {
+        SunmiStoreApi.getInstance().getCompanyList(new RetrofitCallback<CompanyListResp>() {
             @Override
             public void onSuccess(int code, String msg, CompanyListResp data) {
                 if (isViewAttached()) {

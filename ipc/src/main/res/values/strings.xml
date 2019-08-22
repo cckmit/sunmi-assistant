@@ -171,6 +171,10 @@
     <string name="ipc_face_group_delete_error">该分组还有人脸照片，请先完成备份或将其移入其他分组中，才能删除。</string>
     <string name="ipc_face_group_new_desc">新客分组为临时分组，未匹配的人脸数据会存放于此</string>
     <string name="ipc_face_group_staff_desc">员工库的人脸识别结果将不计入客流统计</string>
+    <string name="tip_ipc_config_fail">摄像机设置失败</string>
+    <string name="tip_error_company_or_shop_id">错误的商户id或者店铺id</string>
+    <string name="tip_adjust_first">为了能正常使用人脸识别功能，请点击下方【调整画面】按钮</string>
+    <string name="str_choose_fs_adjust">选择要换面调整的摄像机</string>
 
     <string name="ipc_face_list_title">管理照片</string>
     <string name="ipc_face_list_title_select">请选择照片</string>

@@ -41,14 +41,14 @@ public class PrinterManageActivity extends BaseActivity {
     @Extra
     String userId;
     @Extra
-    String merchantId;
+    String shopId;
     @Extra
     int channelId;
 
     @AfterViews
     protected void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
-        PrinterJSCall jsCall = new PrinterJSCall(userId, merchantId, sn, channelId);
+        PrinterJSCall jsCall = new PrinterJSCall(userId, shopId, sn, channelId);
         webView.addJavascriptInterface(jsCall, Constants.JS_INTERFACE_NAME);
         webView.setDownloadListener(new DownloadListener() {
             @Override

@@ -6,6 +6,7 @@ import retrofit2.http.Body;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import sunmi.common.model.SsoTokenResp;
 import sunmi.common.model.UserAvatarResp;
 import sunmi.common.model.UserInfoBean;
 import sunmi.common.rpc.retrofit.BaseRequest;
@@ -98,7 +99,7 @@ public interface UserInterface {
      * @return
      */
     @POST(userPath + "getSsoToken")
-    Call<BaseResponse<Object>> getSsoToken(@Body BaseRequest request);
+    Call<BaseResponse<SsoTokenResp>> getSsoToken(@Body BaseRequest request);
 
     /**
      * 邮箱找回密码

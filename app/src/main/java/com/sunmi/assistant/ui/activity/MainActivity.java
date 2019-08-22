@@ -60,8 +60,9 @@ public class MainActivity extends BaseActivity implements TabHost.OnTabChangeLis
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
         registerNetworkReceiver();
         CrashReport.setUserId(SpUtils.getUID());
-        if (MyApplication.isCheckedToken)
+        if (MyApplication.isCheckedToken) {
             MQTTManager.getInstance().createEmqToken(true);//初始化长连接
+        }
         initIpc();
         if (TextUtils.isEmpty(SpUtils.getCompanyName())) {
             CommonUtils.gotoLoginActivity(context, "");

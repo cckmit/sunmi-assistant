@@ -36,7 +36,7 @@ public class WelcomePresenter extends BasePresenter<WelcomeContract.View>
             }
         });*/
 
-        SunmiStoreApi.checkToken(new RetrofitCallback<Object>() {
+        SunmiStoreApi.getInstance().checkToken(new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {

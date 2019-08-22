@@ -29,8 +29,6 @@ import sunmi.common.model.PlatformInfo;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.CommonHelper;
-import sunmi.common.utils.GotoActivityUtils;
-import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
@@ -61,13 +59,19 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
 
     @Extra
     boolean isCanBack;
+    @Extra
+    int companyId;
+    @Extra
+    String companyName;
+    @Extra
+    int saasExist;
+    @Extra
+    boolean isLoginSuccessSwitchCompany;
 
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        if (isCanBack) {
-            titleBar.setLeftImageDrawable(ContextCompat.getDrawable(this, R.mipmap.ic_back_dark));
-        }
+        titleBar.setLeftImageDrawable(ContextCompat.getDrawable(this, R.mipmap.ic_back_dark));
         initRecycler();
         CommonHelper.isCanClick(btnNext, false);
         getPlatformList();
@@ -75,7 +79,7 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
 
     private void getPlatformList() {
         showLoadingDialog();
-        SunmiStoreApi.getPlatformList(new RetrofitCallback<PlatformInfo>() {
+        SunmiStoreApi.getInstance().getPlatformList(new RetrofitCallback<PlatformInfo>() {
             @Override
             public void onSuccess(int code, String msg, PlatformInfo data) {
                 hideLoadingDialog();
@@ -92,9 +96,7 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
 
     @Override
     public void onBackPressed() {
-        if (isCanBack) {
-            super.onBackPressed();
-        }
+        super.onBackPressed();
     }
 
     @Override
@@ -102,11 +104,6 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
         switch (v.getId()) {
             case R.id.img_back:
                 onBackPressed();
-                break;
-            case R.id.txt_right:
-                //没有对接saas数据Q
-                SpUtils.setSaasExist(0);
-                GotoActivityUtils.gotoMainActivity(this);
                 break;
             default:
                 break;
@@ -118,6 +115,10 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
         PlatformMobileActivity_.intent(this)
                 .platform(selectPlatform)
                 .saasSource(selectSaasSource)
+                .companyId(companyId)
+                .companyName(companyName)
+                .saasExist(saasExist)
+                .isLoginSuccessSwitchCompany(isLoginSuccessSwitchCompany)
                 .startForResult(REQUEST_CODE_SHOP);
     }
 

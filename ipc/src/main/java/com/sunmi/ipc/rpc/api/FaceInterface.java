@@ -84,7 +84,7 @@ public interface FaceInterface {
      *                shop_id	是	integer	店铺id
      *                group_id	是	integer	人脸分组id
      *                file	是	file	人员照片
-     * @param file 人员照片
+     * @param file    人员照片
      * @return Response
      */
     @Multipart

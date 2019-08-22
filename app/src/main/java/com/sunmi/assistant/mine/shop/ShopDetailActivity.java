@@ -7,7 +7,6 @@ import android.os.Bundle;
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.data.SunmiStoreRemote;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -19,11 +18,14 @@ import org.androidannotations.annotations.ViewById;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopInfoResp;
+import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.TitleBarView;
+
+import static com.sunmi.assistant.mine.shop.ShopDetailGroupActivity.INTENT_EXTRA_SHOP_NAME;
 
 /**
  * 我的店铺详情
@@ -87,6 +89,7 @@ public class ShopDetailActivity extends BaseActivity {
     public void onBackPressed() {
         if (isUpdateShopInfo) {
             Intent intent = getIntent();
+            intent.putExtra(INTENT_EXTRA_SHOP_NAME, mInfo.getShopName());
             setResult(RESULT_OK, intent);
         }
         super.onBackPressed();
@@ -94,7 +97,7 @@ public class ShopDetailActivity extends BaseActivity {
 
     private void getShopInfo(int shopId) {
         showLoadingDialog();
-        SunmiStoreRemote.get().getShopInfo(shopId, new RetrofitCallback<ShopInfoResp>() {
+        SunmiStoreApi.getInstance().getShopInfo(shopId, new RetrofitCallback<ShopInfoResp>() {
             @Override
             public void onSuccess(int code, String msg, ShopInfoResp data) {
                 hideLoadingDialog();
@@ -105,7 +108,9 @@ public class ShopDetailActivity extends BaseActivity {
                 silShopAddress.setRightText(mInfo.getAddress());
                 silShopContact.setRightText(mInfo.getContactPerson());
                 silShopMobile.setRightText(mInfo.getContactTel());
-                silShopArea.setRightText(String.valueOf(mInfo.getBusinessArea() + "㎡"));
+                if (mInfo.getBusinessArea() > 0) {
+                    silShopArea.setRightText(String.valueOf(mInfo.getBusinessArea() + "㎡"));
+                }
                 LogCat.d(TAG, "Shop info:" + mInfo);
             }
 
@@ -170,6 +175,7 @@ public class ShopDetailActivity extends BaseActivity {
     @OnActivityResult(REQUEST_CODE_NAME)
     public void onNameResult(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
+            isUpdateShopInfo = true;
             mInfo.setShopName(data.getStringExtra(INTENT_EXTRA_NAME));
             silShopName.setRightText(mInfo.getShopName());
         }

@@ -26,15 +26,21 @@ import sunmi.common.view.TitleBarView;
 @SuppressLint("Registered")
 @EActivity(R.layout.activity_mine_store_detatils_group)
 public class ShopDetailGroupActivity extends BaseActivity {
+    public static final String INTENT_EXTRA_SHOP_NAME = "shop_name";
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
     @Extra
     int shopId;
+    @Extra
+    String shopName;
 
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
+        titleBar.setAppTitle(shopName);
+        titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
     }
+
 
     @Click(R.id.sil_shop_detail)
     public void toShopDetail() {
@@ -50,6 +56,9 @@ public class ShopDetailGroupActivity extends BaseActivity {
     void onResult(int resultCode, @Nullable Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             setResult(RESULT_OK);
+            if (data != null) {
+                titleBar.setAppTitle(data.getStringExtra(INTENT_EXTRA_SHOP_NAME));
+            }
         }
     }
 }

@@ -1,11 +1,12 @@
 package com.sunmi.assistant.mine.shop;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.utils.GetUserInfoUtils;
@@ -20,6 +21,7 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.model.CreateShopInfo;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.RegexUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -37,7 +39,6 @@ import sunmi.common.view.TitleBarView;
 public class CreateShopActivity extends BaseActivity {
 
     private static final int CREATE_SHOP_ALREADY_EXIST = 5035;
-
     private static final int SHOP_NAME_MAX_LENGTH = 20;
 
     @ViewById(R.id.title_bar)
@@ -50,9 +51,14 @@ public class CreateShopActivity extends BaseActivity {
     ClearableEditText etMobile;
     @ViewById(R.id.btn_complete)
     Button btnComplete;
-
     @Extra
     int companyId;
+    @Extra
+    String companyName;
+    @Extra
+    int saasExist;
+    @Extra
+    boolean isLoginSuccessSwitchCompany;
 
     @AfterViews
     void init() {
@@ -64,16 +70,10 @@ public class CreateShopActivity extends BaseActivity {
                 shortTip(R.string.company_create_shop_max_length);
             }
         });
-        if (!SpUtils.isLoginSuccess()) {
-            titleBar.setLeftImageVisibility(View.GONE);
-        }
     }
 
     @Override
     public void onBackPressed() {
-        if (!SpUtils.isLoginSuccess()) {
-            return;
-        }
         super.onBackPressed();
     }
 
@@ -87,7 +87,7 @@ public class CreateShopActivity extends BaseActivity {
             return;
         }
         showLoadingDialog();
-        SunmiStoreApi.createShop(SpUtils.getCompanyId(), shopName, contact, mobile,
+        SunmiStoreApi.getInstance().createShop(companyId, shopName, contact, mobile,
                 new RetrofitCallback<CreateShopInfo>() {
                     @Override
                     public void onSuccess(int code, String msg, CreateShopInfo data) {
@@ -109,14 +109,17 @@ public class CreateShopActivity extends BaseActivity {
     }
 
     private void createShopSuccessView(CreateShopInfo resp) {
-        shortTip(R.string.company_create_success);
+        shortTip(getString(R.string.company_shop_create_success));
         if (SpUtils.isLoginSuccess()) {
-            setResult(RESULT_OK);
+            if (isLoginSuccessSwitchCompany) {
+                CommonUtils.saveCompanyShopInfo((Activity) context, companyId, companyName, saasExist, resp.getShop_id(), resp.getShop_name());
+                GotoActivityUtils.gotoMainActivity(context);
+            } else {
+                setResult(RESULT_OK);
+            }
             finish();
         } else {
-            SpUtils.setShopId(resp.getShop_id());
-            SpUtils.setShopName(resp.getShop_name());
-            GetUserInfoUtils.userInfo(this);
+            GetUserInfoUtils.userInfo(this, companyId, companyName, saasExist, resp.getShop_id(), resp.getShop_name());
         }
     }
 

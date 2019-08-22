@@ -56,7 +56,7 @@ public class LoginPresenter extends BasePresenter<LoginContract.View>
         if (!isViewAttached()) {
             return;
         }
-        SunmiStoreApi.login(mobile, password, new RetrofitCallback<Object>() {
+        SunmiStoreApi.getInstance().login(mobile, password, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
@@ -84,7 +84,7 @@ public class LoginPresenter extends BasePresenter<LoginContract.View>
 
     @Override
     public void getCompanyList() {
-        SunmiStoreApi.getCompanyList(new RetrofitCallback<CompanyListResp>() {
+        SunmiStoreApi.getInstance().getCompanyList(new RetrofitCallback<CompanyListResp>() {
             @Override
             public void onSuccess(int code, String msg, CompanyListResp data) {
                 if (isViewAttached()) {

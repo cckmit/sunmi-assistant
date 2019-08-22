@@ -139,10 +139,10 @@
     <string name="company_shop_check_mobile">请输入正确手机号码</string>
     <string name="company_shop_select_one_or_more">您可以选择一家或多家门店</string>
     <string name="company_create_invalid_character">请输入有效的字符</string>
-    <string name="company_shop_area">门店面积</string>
+    <string name="company_shop_area">经营面积</string>
     <string name="company_shop_contact_tip">请输入联系人</string>
     <string name="company_shop_contact_tel_tip">请输入联系方式</string>
-    <string name="company_shop_area_tip">请输入门店面积</string>
+    <string name="company_shop_area_tip">请输入经营面积</string>
     <string name="company_name">商户名称</string>
     <string name="company_id">商户编号</string>
     <string name="company_create_time">创建时间</string>
@@ -161,5 +161,10 @@
     <string name="company_can_switch">可切换商户</string>
     <string name="company_shop_details">门店详情</string>
     <string name="company_shop_face_group">人脸分组</string>
+    <string name="company_shop_to_create">该商户暂无门店，您可以新建门店，或者从其他软件平台中导入门店</string>
+    <string name="shop_create">创建门店</string>
+    <string name="company_shop_create_success">门店创建成功</string>
+    <string name="editetxt_max_length">超过字数限制，请重新输入</string>
+    <string name="check_mobile_fixedphone_tip">请输入正确的手机号码或座机</string>
 
 </resources>

@@ -75,7 +75,7 @@ public class ShopNameActivity extends BaseActivity {
         }
         showLoadingDialog();
         mInfo.setShopName(name);
-        SunmiStoreApi.updateShopInfo(mInfo, new RetrofitCallback<Object>() {
+        SunmiStoreApi.getInstance().updateShopInfo(mInfo, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 hideLoadingDialog();

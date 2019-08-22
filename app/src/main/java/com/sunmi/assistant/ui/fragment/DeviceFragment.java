@@ -252,7 +252,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         if (TextUtils.equals(device.getType(), "PRINTER")) {
             if (device.getStatus() != DeviceStatus.UNKNOWN.ordinal()) {
                 PrinterManageActivity_.intent(mActivity).sn(device.getDeviceid()).userId(SpUtils.getUID())
-                        .merchantId(SpUtils.getShopId() + "").channelId(device.getChannelId()).start();
+                        .shopId(SpUtils.getShopId() + "").channelId(device.getChannelId()).start();
                 clickedDevice = device;
                 return;
             }

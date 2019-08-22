@@ -16,22 +16,35 @@
         app:titleTextColor="@color/colorText" />
 
     <TextView
-        android:id="@+id/tv_1"
+        android:id="@+id/tv_result"
         style="@style/configTitleText"
         android:layout_below="@+id/title_bar"
         android:text="@string/tip_ipc_config_complete" />
+
+    <TextView
+        android:id="@+id/tv_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_result"
+        android:layout_marginStart="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_50"
+        android:text="@string/tip_adjust_first"
+        android:textColor="@color/color_666666"
+        android:textSize="@dimen/sp_16"
+        android:visibility="gone" />
 
     <View
         android:id="@+id/divider"
         android:layout_width="wrap_content"
         android:layout_height="1dp"
-        android:layout_below="@id/tv_1"
+        android:layout_below="@id/tv_result"
         android:layout_marginStart="@dimen/dp_30"
-        android:layout_marginTop="@dimen/dp_80"
+        android:layout_marginTop="@dimen/dp_86"
         android:layout_marginEnd="@dimen/dp_30"
         android:background="@color/color_divider" />
 
-    <android.support.v7.widget.RecyclerView
+    <sunmi.common.view.SmRecyclerView
         android:id="@+id/rv_result"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,28 +56,33 @@
         android:paddingEnd="@dimen/dp_30"
         android:scrollbars="none" />
 
-    <Button
-        android:id="@+id/btn_complete"
-        style="@style/BtnOrange"
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_margin="@dimen/dp_20"
-        android:text="@string/str_complete"
-        android:visibility="gone" />
+        android:layout_marginBottom="@dimen/dp_20">
 
-    <Button
-        android:id="@+id/btn_retry"
-        style="@style/BtnGrayRounded"
-        android:layout_above="@+id/btn_finish"
-        android:layout_marginBottom="@dimen/dp_20"
-        android:text="@string/str_retry_add"
-        android:visibility="gone" />
+        <Button
+            android:id="@+id/btn_complete"
+            style="@style/BtnOrange"
+            android:layout_above="@+id/btn_finish"
+            android:text="@string/str_complete"
+            android:visibility="gone" />
 
-    <Button
-        android:id="@+id/btn_finish"
-        style="@style/BtnGrayRounded"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/dp_20"
-        android:text="@string/str_go_home"
-        android:visibility="gone" />
+        <Button
+            android:id="@+id/btn_retry"
+            style="@style/BtnGrayRounded"
+            android:layout_above="@+id/btn_finish"
+            android:text="@string/str_retry_add"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btn_finish"
+            style="@style/BtnGrayRounded"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="@dimen/dp_20"
+            android:text="@string/str_go_home"
+            android:visibility="gone" />
+    </RelativeLayout>
 
 </RelativeLayout>
