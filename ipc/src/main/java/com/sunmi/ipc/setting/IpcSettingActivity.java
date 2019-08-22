@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
+import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -308,7 +309,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                             do {
                                 LogCat.d(TAG, "name=\"" + name + "\"");
                                 name = name.substring(0, name.length() - 1);
-                            } while (name.getBytes(Charset.defaultCharset()).length > IPC_NAME_MAX_LENGTH);
+                            }
+                            while (name.getBytes(Charset.defaultCharset()).length > IPC_NAME_MAX_LENGTH);
                             view.setText(name);
                             view.setSelection(name.length());
                         }
@@ -358,10 +360,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         if (!DeviceTypeUtils.getInstance().isFS1(mDevice.getModel())) {
             return;
         }
-        RecognitionSettingActivity_.intent(this)
-                .mDevice(mDevice)
-                .mVideoRatio(16f / 9f)
-                .start();
+        IPCCall.getInstance().getSdState(mDevice.getIp());
     }
 
     @Click(resName = "sil_voice_exception")
@@ -561,7 +560,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 IpcConstants.setIpcNightIdeRotation, IpcConstants.getIpcDetection,
                 IpcConstants.ipcUpgrade, IpcConstants.getIsWire, CommonNotificationConstant.netConnected,
                 CommonNotificationConstant.netDisconnection, CommonNotificationConstant.ipcUpgrade,
-                CommonNotificationConstant.netConnectException};
+                CommonNotificationConstant.netConnectException, IpcConstants.getSdStatus};
     }
 
     @Override
@@ -583,19 +582,15 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         if (!isRun || args == null) {
             return;
         }
-        ResponseBean res;
+        ResponseBean res = (ResponseBean) args[0];
         if (id == IpcConstants.getIpcConnectApMsg) {
-            res = (ResponseBean) args[0];
             getIpcConnectApMsg(res);
         } else if (id == IpcConstants.getIpcNightIdeRotation) {
             timeoutStop();
-            res = (ResponseBean) args[0];
             getIpcNightIdeRotation(res);
         } else if (id == IpcConstants.setIpcNightIdeRotation) {
-            res = (ResponseBean) args[0];
             setIpcNightIdeRotation(res);
         } else if (id == IpcConstants.getIpcDetection) {
-            res = (ResponseBean) args[0];
             if (res.getDataErrCode() == 1) {
                 mDetectionConfig = new Gson().fromJson(res.getResult().toString(), DetectionConfig.class);
                 updateDetectionView();
@@ -603,12 +598,44 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 shortTip(R.string.toast_network_Exception);
             }
         } else if (id == IpcConstants.ipcUpgrade) {
-            res = (ResponseBean) args[0];
             upgradeResult(res);
         } else if (id == IpcConstants.getIsWire) {
-            res = (ResponseBean) args[0];
             checkWire(res);
+        } else if (id == IpcConstants.getSdStatus) {
+            try {
+                int status = res.getResult().getInt("sd_status_code");
+                switch (status) {
+                    case 2:
+                        RecognitionSettingActivity_.intent(this)
+                                .mDevice(mDevice)
+                                .mVideoRatio(16f / 9f)
+                                .start();
+                        break;
+                    case 0:
+                        showErrorDialog(R.string.tip_no_tf_card,
+                                R.string.ipc_recognition_sd_none);
+                        break;
+                    case 1:
+                        showErrorDialog(R.string.tip_tf_uninitalized,
+                                R.string.ipc_recognition_sd_uninitialized);
+                        break;
+                    case 3:
+                        showErrorDialog(R.string.tip_unrecognition_tf_card,
+                                R.string.ipc_recognition_sd_unknown);
+                        break;
+                }
+            } catch (JSONException e) {
+                LogCat.e(TAG, "Parse json ERROR: " + res.getResult());
+            }
         }
+    }
+
+    private void showErrorDialog(@StringRes int title, @StringRes int msgResId) {
+        hideLoadingDialog();
+        new CommonDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(msgResId)
+                .setConfirmButton(R.string.str_confirm).create().show();
     }
 
     private void updateDetectionView() {
