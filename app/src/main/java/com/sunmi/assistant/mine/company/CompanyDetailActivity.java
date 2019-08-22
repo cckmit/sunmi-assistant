@@ -3,9 +3,9 @@ package com.sunmi.assistant.mine.company;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.text.TextUtils;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.data.SunmiStoreRemote;
 import com.sunmi.assistant.ui.activity.login.LoginChooseShopActivity_;
 
 import org.androidannotations.annotations.AfterViews;
@@ -21,6 +21,7 @@ import java.util.Locale;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.CompanyInfoResp;
+import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -67,9 +68,21 @@ public class CompanyDetailActivity extends BaseActivity {
     @AfterViews
     protected void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
+        setSingleLine();
         silCompanyId.setRightImage(null);
         silCompanyCreateTime.setRightImage(null);
         getCompanyInfo();
+    }
+
+    private void setSingleLine() {
+        silCompanyName.getRightText().setSingleLine();
+        silCompanyName.getRightText().setEllipsize(TextUtils.TruncateAt.END);
+        silCompanyContact.getRightText().setSingleLine();
+        silCompanyContact.getRightText().setEllipsize(TextUtils.TruncateAt.END);
+        silCompanyContactTel.getRightText().setSingleLine();
+        silCompanyContactTel.getRightText().setEllipsize(TextUtils.TruncateAt.END);
+        silCompanyEmail.getRightText().setSingleLine();
+        silCompanyEmail.getRightText().setEllipsize(TextUtils.TruncateAt.END);
     }
 
     private String createTime(long time) {
@@ -79,7 +92,7 @@ public class CompanyDetailActivity extends BaseActivity {
 
     private void getCompanyInfo() {
         showLoadingDialog();
-        SunmiStoreRemote.get().getCompanyInfo(SpUtils.getCompanyId(), new RetrofitCallback<CompanyInfoResp>() {
+        SunmiStoreApi.getInstance().getCompanyInfo(SpUtils.getCompanyId(), new RetrofitCallback<CompanyInfoResp>() {
             @Override
             public void onSuccess(int code, String msg, CompanyInfoResp mInfo) {
                 hideLoadingDialog();

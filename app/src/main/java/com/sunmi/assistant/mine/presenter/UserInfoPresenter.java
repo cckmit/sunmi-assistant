@@ -21,7 +21,7 @@ public class UserInfoPresenter extends BasePresenter<UserInfoContract.View>
 
     @Override
     public void updateAvatar(File file) {
-        SunmiStoreApi.updateIcon("t.png", file, new RetrofitCallback<UserAvatarResp>() {
+        SunmiStoreApi.getInstance().updateIcon("t.png", file, new RetrofitCallback<UserAvatarResp>() {
             @Override
             public void onSuccess(int code, String msg, UserAvatarResp data) {
                 if (isViewAttached()) {

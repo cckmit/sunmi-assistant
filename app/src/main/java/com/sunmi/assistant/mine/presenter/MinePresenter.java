@@ -19,7 +19,7 @@ public class MinePresenter extends BasePresenter<MineContract.View> implements M
 
     @Override
     public void getUserInfo() {
-        SunmiStoreApi.getUserInfo(new RetrofitCallback<UserInfoBean>() {
+        SunmiStoreApi.getInstance().getUserInfo(new RetrofitCallback<UserInfoBean>() {
             @Override
             public void onSuccess(int code, String msg, UserInfoBean data) {
                 LogCat.d(TAG, data.toString());

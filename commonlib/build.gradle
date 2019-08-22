@@ -21,7 +21,13 @@ android {
     }
 
     buildTypes {
+        debug {
+            manifestPlaceholders = [
+                    MI_PERMISSION_NAME: "com.sunmi.assistant.test.permission.MIPUSH_RECEIVE"]
+        }
         release {
+            manifestPlaceholders = [
+                    MI_PERMISSION_NAME: "com.sunmi.assistant.permission.MIPUSH_RECEIVE"]
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -47,7 +53,11 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    implementation files('libs/MiPush_SDK_Client_3_6_19.jar')
+
+    api project(':BadgeView')
 
     api "com.android.support:appcompat-v7:${SUPPORT_VERSION}"
     api 'com.android.support.constraint:constraint-layout:1.1.3'
@@ -57,14 +67,16 @@ dependencies {
 
     //design
     api "com.android.support:design:${SUPPORT_VERSION}"
+
     //recyclerView
     api "com.android.support:recyclerview-v7:${SUPPORT_VERSION}"
+
     //cardview
     api "com.android.support:cardview-v7:${SUPPORT_VERSION}"
 
     //注解
-    api 'com.jakewharton:butterknife:8.5.1'
-    implementation 'com.jakewharton:butterknife-compiler:8.5.1'
+    api 'com.jakewharton:butterknife:9.0.0'
+    implementation 'com.jakewharton:butterknife-compiler:9.0.0'
     api "org.androidannotations:androidannotations-api:${AAVersion}"
     annotationProcessor "org.androidannotations:androidannotations:${AAVersion}"
 
@@ -75,6 +87,7 @@ dependencies {
     //glide
     api 'com.github.bumptech.glide:glide:4.9.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
+
     //litePal数据库
     api 'org.litepal.android:core:1.5.1'
 
@@ -103,6 +116,10 @@ dependencies {
     //下拉刷新
     api 'cn.bingoogolapple:bga-refreshlayout:1.1.7@aar'
 
+    //Android 徽章控件
+    //api 'cn.bingoogolapple:bga-badgeview-api:1.1.8'
+    annotationProcessor "cn.bingoogolapple:bga-badgeview-compiler:1.1.8"
+
     //retrofit
     api 'com.squareup.okhttp3:okhttp:3.10.0'
     api 'com.squareup.retrofit2:retrofit:2.4.0'
@@ -110,14 +127,15 @@ dependencies {
     // required, enough for most devices.
     api 'tv.danmaku.ijk.media:ijkplayer-java:0.8.8'
     api 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.8.8'
+
     // Other ABIs: optional
     api 'tv.danmaku.ijk.media:ijkplayer-armv5:0.8.8'
     api 'tv.danmaku.ijk.media:ijkplayer-arm64:0.8.8'
     api 'tv.danmaku.ijk.media:ijkplayer-x86:0.8.8'
     api 'tv.danmaku.ijk.media:ijkplayer-x86_64:0.8.8'
+
     // ExoPlayer as IMediaPlayer: optional, experimental
     api 'tv.danmaku.ijk.media:ijkplayer-exo:0.8.8'
     api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.0'
     api 'com.google.guava:guava:18.0@jar'
-
 }

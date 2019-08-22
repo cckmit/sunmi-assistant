@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.data.SunmiStoreRemote;
 import com.sunmi.assistant.mine.platform.SelectPlatformActivity_;
 
 import org.androidannotations.annotations.AfterViews;
@@ -22,6 +21,7 @@ import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.model.ShopListResp;
+import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -94,7 +94,7 @@ public class ShopListActivity extends BaseActivity {
 
     private void getShopList() {
         showLoadingDialog();
-        SunmiStoreRemote.get().getShopList(SpUtils.getCompanyId(), new RetrofitCallback<ShopListResp>() {
+        SunmiStoreApi.getInstance().getShopList(SpUtils.getCompanyId(), new RetrofitCallback<ShopListResp>() {
             @Override
             public void onSuccess(int code, String msg, ShopListResp data) {
                 hideLoadingDialog();

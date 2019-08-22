@@ -1,5 +1,7 @@
 package sunmi.common.utils;
 
+import android.text.TextUtils;
+
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -56,6 +58,22 @@ public class DateTimeUtils {
         Date date = calendar.getTime();
         SimpleDateFormat format = new SimpleDateFormat(patten, Locale.getDefault());
         return format.format(date);
+    }
+
+    public static String secondToDateMsg(long second) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(second * 1000);
+        Date msgDate = calendar.getTime();
+        SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String msgDay = dayFormat.format(msgDate);
+        String nowDay = dayFormat.format(getNow());
+        if (TextUtils.equals(msgDay, nowDay)) {
+            SimpleDateFormat format = new SimpleDateFormat("a hh:mm", Locale.getDefault());
+            return format.format(msgDate);
+        } else {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+            return format.format(msgDate);
+        }
     }
 
     public enum DateTimePattern {

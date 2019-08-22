@@ -77,7 +77,7 @@ public class SelectStorePresenter extends BasePresenter<SelectStoreContract.View
     }
 
     private void createShop(SelectShopModel item) {
-        SunmiStoreApi.createShop(mCompanyId, item.getShopName(), "", "", new RetrofitCallback<CreateShopInfo>() {
+        SunmiStoreApi.getInstance().createShop(mCompanyId, item.getShopName(), "", "", new RetrofitCallback<CreateShopInfo>() {
             @Override
             public void onSuccess(int code, String msg, CreateShopInfo data) {
                 item.setShopId(data.getShop_id());
@@ -101,7 +101,7 @@ public class SelectStorePresenter extends BasePresenter<SelectStoreContract.View
     }
 
     private void authorizeSaas(SelectShopModel item) {
-        SunmiStoreApi.authorizeSaas(mCompanyId, item.getShopId(),
+        SunmiStoreApi.getInstance().authorizeSaas(mCompanyId, item.getShopId(),
                 item.getSaasSource(), item.getShopNo(), item.getSaasName(), new RetrofitCallback<Object>() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {

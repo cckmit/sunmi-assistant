@@ -10,6 +10,7 @@ import android.text.TextWatcher;
 import android.view.View;
 
 import com.sunmi.apmanager.utils.DialogUtils;
+import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.assistant.R;
 
 import org.androidannotations.annotations.AfterViews;
@@ -38,6 +39,7 @@ public class CompanyUpdateActivity extends BaseActivity
         implements View.OnClickListener, TextWatcher {
 
     private static final int COMPANY_NAME_MAX_LENGTH = 40;
+    private static final int EMAIL_MAX_LENGTH = 100;
 
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
@@ -55,7 +57,11 @@ public class CompanyUpdateActivity extends BaseActivity
         titleBar.setRightTextViewColor(R.color.colorText);
         titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
         titleBar.getRightTextView().setOnClickListener(this);
-        cetUserInfo.setFilters(new InputFilter[]{new InputFilter.LengthFilter(40)});
+        if (type == CompanyDetailActivity.TYPE_EMAIL) {
+            cetUserInfo.setFilters(new InputFilter[]{new InputFilter.LengthFilter(EMAIL_MAX_LENGTH)});
+        } else {
+            cetUserInfo.setFilters(new InputFilter[]{new InputFilter.LengthFilter(COMPANY_NAME_MAX_LENGTH)});
+        }
         cetUserInfo.addTextChangedListener(this);
         cetUserInfo.requestFocus();
         if (type == CompanyDetailActivity.TYPE_NAME) {
@@ -96,7 +102,7 @@ public class CompanyUpdateActivity extends BaseActivity
             return;
         }
         showLoadingDialog();
-        SunmiStoreApi.updateCompanyInfo(mInfo, new RetrofitCallback<CompanyInfoResp>() {
+        SunmiStoreApi.getInstance().updateCompanyInfo(mInfo, new RetrofitCallback<CompanyInfoResp>() {
             @Override
             public void onSuccess(int code, String msg, CompanyInfoResp data) {
                 hideLoadingDialog();
@@ -131,6 +137,10 @@ public class CompanyUpdateActivity extends BaseActivity
                 shortTip(R.string.tip_input_company_name);
                 return true;
             }
+            if (HelpUtils.isContainEmoji(companyInfo)) {
+                shortTip(getString(R.string.specital_text_cannot_support));
+                return true;
+            }
             if (TextUtils.equals(companyInfo, mInfo.getCompany_name())) {
                 finish();
                 return true;
@@ -155,8 +165,8 @@ public class CompanyUpdateActivity extends BaseActivity
                 finish();
                 return true;
             }
-            if (!RegexUtils.isChinaPhone(companyInfo)) {
-                shortTip(getString(R.string.company_shop_check_mobile));
+            if (!RegexUtils.isChinaPhone(companyInfo) && !RegexUtils.isFixedPhone(companyInfo)) {
+                shortTip(getString(R.string.check_mobile_fixedphone_tip));
                 return true;
             }
             mInfo.setContact_tel(companyInfo);

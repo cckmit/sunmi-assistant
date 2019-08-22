@@ -20,7 +20,7 @@ public class GetUserInfoUtils {
 
     public static void userInfo(Context context, int companyId, String companyName,
                                 int saasExist, int shopId, String shopName) {
-        SunmiStoreApi.getUserInfo(new RetrofitCallback<UserInfoBean>() {
+        SunmiStoreApi.getInstance().getUserInfo(new RetrofitCallback<UserInfoBean>() {
             @Override
             public void onSuccess(int code, String msg, UserInfoBean data) {
                 ssoToken(context, data, companyId, companyName, saasExist, shopId, shopName);
@@ -34,7 +34,7 @@ public class GetUserInfoUtils {
 
     private static void ssoToken(Context context, UserInfoBean userInfoBean, int companyId, String companyName,
                                  int saasExist, int shopId, String shopName) {
-        SunmiStoreApi.getSsoToken(new RetrofitCallback<SsoTokenResp>() {
+        SunmiStoreApi.getInstance().getSsoToken(new RetrofitCallback<SsoTokenResp>() {
             @Override
             public void onSuccess(int code, String msg, SsoTokenResp resp) {
                 SpUtils.setSsoToken(resp.getSsoToken());
