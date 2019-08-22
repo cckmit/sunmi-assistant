@@ -9,6 +9,7 @@ import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.company.CompanyDetailActivity_;
 import com.sunmi.assistant.mine.contract.MineContract;
+import com.sunmi.assistant.mine.message.MsgCenterActivity_;
 import com.sunmi.assistant.mine.presenter.MinePresenter;
 import com.sunmi.assistant.mine.setting.SettingActivity_;
 import com.sunmi.assistant.mine.shop.ShopListActivity_;
@@ -21,6 +22,7 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
+import cn.bingoogolapple.badgeview.BGABadgeRelativeLayout;
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.SpUtils;
@@ -42,6 +44,9 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     TextView tvName;
     @ViewById(R.id.tv_account)
     TextView tvAccount;
+    @ViewById(R.id.rlMsg)
+    BGABadgeRelativeLayout rlMsg;
+
 
     @AfterViews
     void init() {
@@ -53,6 +58,7 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
 
     private void initView() {
         initAvatar(false);
+        initMsg();
         initUsername();
         initAccount();
     }
@@ -80,6 +86,22 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
         }
     }
 
+    @UiThread
+    void initMsg() {
+        if (SpUtils.getUnreadMsg() > 0) {
+            int count = SpUtils.getRemindUnreadMsg();
+            if (count <= 0) {
+                rlMsg.showCirclePointBadge();
+            } else if (count > 99) {
+                rlMsg.showTextBadge("99+");
+            } else {
+                rlMsg.showTextBadge(String.valueOf(count));
+            }
+        }else {
+            rlMsg.hiddenBadge();
+        }
+    }
+
     /**
      * 顶部头像和用户名
      */
@@ -104,6 +126,11 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
         CommonUtils.trackCommonEvent(mActivity, "myStore",
                 "主页_我的_我的店铺", Constants.EVENT_MY_INFO);
         ShopListActivity_.intent(this).start();
+    }
+
+    @Click(R.id.rlMsg)
+    public void msgClick() {
+        MsgCenterActivity_.intent(mActivity).start();
     }
 
     /**
@@ -155,7 +182,7 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     @Override
     public int[] getStickNotificationId() {
         return new int[]{NotificationConstant.updateUsernameSuccess,
-                NotificationConstant.updateAvatarSuccess};
+                NotificationConstant.updateAvatarSuccess, NotificationConstant.msgUpdated};
     }
 
     @Override
@@ -164,6 +191,8 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
             initUsername();
         } else if (id == NotificationConstant.updateAvatarSuccess) {
             initAvatar(true);
+        }else if (id == NotificationConstant.msgUpdated){
+            initMsg();
         }
     }
 

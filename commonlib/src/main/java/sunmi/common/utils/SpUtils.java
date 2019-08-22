@@ -30,6 +30,10 @@ public class SpUtils {
     private static final String CURRENT_SHOP_ID = "current_shop_id";
     private static final String CURRENT_SHOP_NAME = "current_shop_name";
     private static final String SAAS_EXIST = "saas_exist";
+    private static final String UNREAD_MSG = "unread_msg";
+    private static final String REMIND_UNREAD_MSG = "remind_unread_msg";
+    private static final String UNREAD_DEVICE_MSG = "unread_device_msg";
+    private static final String UNREAD_SYSTEM_MSG = "unread_system_msg";
 
     SpUtils() {
     }
@@ -263,4 +267,35 @@ public class SpUtils {
         return SharedManager.getIntValue(BaseApplication.getContext(), SAAS_EXIST);
     }
 
+    public static void setUnreadMsg(int unreadMsg) {
+        SharedManager.putValue(BaseApplication.getContext(), UNREAD_MSG, unreadMsg);
+    }
+
+    public static int getUnreadMsg() {
+        return SharedManager.getIntValue(BaseApplication.getContext(), UNREAD_MSG);
+    }
+
+    public static void setRemindUnreadMsg(int remindUnreadMsg) {
+        SharedManager.putValue(BaseApplication.getContext(), REMIND_UNREAD_MSG, remindUnreadMsg);
+    }
+
+    public static int getRemindUnreadMsg() {
+        return SharedManager.getIntValue(BaseApplication.getContext(), REMIND_UNREAD_MSG);
+    }
+
+    public static void setUnreadDeviceMsg(int unreadDeviceMsg){
+        SharedManager.putValue(BaseApplication.getContext(),UNREAD_DEVICE_MSG,unreadDeviceMsg);
+    }
+
+    public static int getUnreadDeviceMsg(){
+        return SharedManager.getIntValue(BaseApplication.getContext(),UNREAD_DEVICE_MSG);
+    }
+
+    public static void setUnreadSystemMsg(int unreadSystemMsg){
+        SharedManager.putValue(BaseApplication.getContext(),UNREAD_SYSTEM_MSG,unreadSystemMsg);
+    }
+
+    public static int getUnreadSystemMsg(){
+        return SharedManager.getIntValue(BaseApplication.getContext(),UNREAD_SYSTEM_MSG);
+    }
 }
