@@ -1,0 +1,48 @@
+package com.sunmi.assistant.mine.presenter;
+
+import com.sunmi.apmanager.constant.NotificationConstant;
+import com.sunmi.assistant.mine.contract.MessageCountContract;
+import com.sunmi.assistant.mine.model.MessageCountBean;
+import com.sunmi.assistant.rpc.MessageCenterApi;
+
+import sunmi.common.base.BasePresenter;
+import sunmi.common.notification.BaseNotification;
+import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.SpUtils;
+
+/**
+ * Description:
+ *
+ * @author linyuanpeng on 2019-08-14.
+ */
+public class MessageCountPresenter extends BasePresenter<MessageCountContract.View>
+        implements MessageCountContract.Presenter {
+
+    @Override
+    public void getMessageCount() {
+        MessageCenterApi.getMessageCount(new RetrofitCallback<MessageCountBean>() {
+            @Override
+            public void onSuccess(int code, String msg, MessageCountBean data) {
+                int unreadMsg = data.getUnreadCount();
+                int remindUnreadMsg = data.getRemindUnreadCount();
+                if (SpUtils.getUnreadMsg() != unreadMsg || SpUtils.getRemindUnreadMsg() != remindUnreadMsg) {
+                    SpUtils.setUnreadMsg(unreadMsg);
+                    SpUtils.setRemindUnreadMsg(remindUnreadMsg);
+                    SpUtils.setUnreadDeviceMsg(data.getModelCountList().get(0).getUnreadCount());
+                    SpUtils.setUnreadSystemMsg(data.getModelCountList().get(1).getUnreadCount());
+                    BaseNotification.newInstance().postNotificationName(NotificationConstant.msgUpdated);
+                }
+                if (isViewAttached()) {
+                    mView.getMessageCountSuccess(data);
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, MessageCountBean data) {
+                if (isViewAttached()) {
+                    mView.getMessageCountFail(code, msg);
+                }
+            }
+        });
+    }
+}
