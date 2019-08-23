@@ -23,6 +23,9 @@
     <string name="network_connected">网络已恢复</string>
     <string name="server_noreponse">服务器无响应</string>
     <string name="toast_network_error">网络异常，请检查网络设置</string>
+    <string name="network_error">当前网络异常</string>
+    <string name="network_error_tip">请检查网络后刷新页面～</string>
+    <string name="info_empty">暂无服务信息</string>
 
     <string name="tip_granted">已授权</string>
     <string name="tip_permission_ungranted">拒绝授权会影响部分功能使用</string>
@@ -77,6 +80,7 @@
     <string name="str_bind_net_error">请确保手机已连接互联网</string>
     <string name="str_searching">搜索中…</string>
 
+    <string name="tip_no_device_found">没有发现新设备</string>
     <string name="str_check_net">请检查网络</string>
     <string name="str_net_exception">网络连接异常，请检查后重试</string>
     <string name="str_server_exception">服务器连接异常，请检查后重试</string>

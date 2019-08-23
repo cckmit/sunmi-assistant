@@ -41,6 +41,27 @@ public class Face implements Parcelable {
     @SerializedName("img_url")
     private String imgUrl;
 
+    /**
+     * 是否是添加照片图标
+     */
+    private boolean isAddIcon;
+    /**
+     * 是否已被选中
+     */
+    private boolean isChecked;
+
+    private Face() {
+    }
+
+    /**
+     * 生成特定对象，代表添加照片图标
+     */
+    public static Face createCamera() {
+        Face face = new Face();
+        face.isAddIcon = true;
+        return face;
+    }
+
     public int getFaceId() {
         return faceId;
     }
@@ -77,6 +98,17 @@ public class Face implements Parcelable {
         return imgUrl;
     }
 
+    public boolean isAddIcon() {
+        return isAddIcon;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
 
     protected Face(Parcel in) {
         faceId = in.readInt();

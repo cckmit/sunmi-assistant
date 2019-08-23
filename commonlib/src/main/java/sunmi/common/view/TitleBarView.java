@@ -223,7 +223,7 @@ public class TitleBarView extends RelativeLayout {
      * 设置返回按钮图片资源
      */
     public TitleBarView setLeftImageResource(int resourseID) {
-        isLeftTextViewShow(false);
+        setLeftTextViewShow(false);
         leftImage.setImageResource(resourseID);
         return this;
     }
@@ -232,7 +232,7 @@ public class TitleBarView extends RelativeLayout {
      * 设置返回按钮图片资源
      */
     public TitleBarView setLeftImageDrawable(Drawable drawable) {
-        isLeftTextViewShow(false);
+        setLeftTextViewShow(false);
         leftImage.setImageDrawable(drawable);
         return this;
     }
@@ -293,7 +293,7 @@ public class TitleBarView extends RelativeLayout {
      * 得到左边的TextView
      */
     public TextView getLeftTextView() {
-        isLeftTextViewShow(true);
+        setLeftTextViewShow(true);
         return leftText;
     }
 
@@ -301,7 +301,7 @@ public class TitleBarView extends RelativeLayout {
      * 设置左边TextView的内容
      */
     public TitleBarView setLeftText(int source) {
-        isLeftTextViewShow(true);
+        setLeftTextViewShow(true);
         leftText.setText(mContext.getResources().getString(source));
         return this;
     }
@@ -310,7 +310,7 @@ public class TitleBarView extends RelativeLayout {
      * 设置左边TextView的内容
      */
     public TitleBarView setLeftText(String title) {
-        isLeftTextViewShow(true);
+        setLeftTextViewShow(true);
         leftText.setText(title);
         return this;
     }
@@ -318,7 +318,7 @@ public class TitleBarView extends RelativeLayout {
     /**
      * 左边是否是TextView显示
      */
-    private void isLeftTextViewShow(boolean isShow) {
+    public void setLeftTextViewShow(boolean isShow) {
         if (isShow) {
             backLayout.setVisibility(View.GONE);
             leftText.setVisibility(View.VISIBLE);

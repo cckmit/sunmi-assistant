@@ -18,7 +18,6 @@
     <string name="str_password_fomat_error">密码格式错误</string>
     <string name="tip_support_multi_select">可选择多台设备</string>
     <string name="tip_title_choose_device">选择您要连接的设备</string>
-    <string name="tip_no_device_found">没有发现新设备</string>
     <string name="tip_keep_device_in">请确保您的设备处于路由器信号范围内</string>
     <string name="str_auth_onclick_protocol">同意授权表示使用此数据创建门店；暂不授权表示创建新门店。点击查看</string>
     <string name="str_auth_protocol_text">《授权协议》</string>
@@ -199,4 +198,6 @@
     <string name="editetxt_max_length">超过字数限制，请重新输入</string>
     <string name="check_mobile_fixedphone_tip">请输入正确的手机号码或座机</string>
     <string name="str_msg_setting">消息提醒设置</string>
+    <string name="str_task_msg">任务信息</string>
+    <string name="specital_text_cannot_support">特殊字符不支持输入</string>
 </resources>

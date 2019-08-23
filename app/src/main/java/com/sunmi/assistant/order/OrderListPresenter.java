@@ -8,13 +8,13 @@ import com.sunmi.assistant.data.PaymentApi;
 import com.sunmi.assistant.data.response.OrderListResp;
 import com.sunmi.assistant.data.response.OrderPayTypeListResp;
 import com.sunmi.assistant.data.response.OrderTypeListResp;
-import com.sunmi.assistant.order.model.FilterItem;
 import com.sunmi.assistant.order.model.OrderInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.model.FilterItem;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
@@ -170,6 +170,7 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
                     mFilterOrderType.add(model.getId());
                 }
                 break;
+            default:
         }
         loadData(true);
         // Update model data & update dropdown menu item view.

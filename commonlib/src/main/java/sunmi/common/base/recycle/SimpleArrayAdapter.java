@@ -1,7 +1,6 @@
 package sunmi.common.base.recycle;
 
 import android.support.annotation.IdRes;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.View;
 
@@ -18,16 +17,14 @@ import sunmi.common.base.recycle.listener.OnViewLongClickListener;
  */
 public abstract class SimpleArrayAdapter<T> extends BaseArrayAdapter<T> {
 
-    private int mLayoutId;
     private Type mType;
 
-    public SimpleArrayAdapter(@LayoutRes int layoutId) {
-        this(layoutId, null);
+    public SimpleArrayAdapter() {
+        this(null);
     }
 
-    public SimpleArrayAdapter(@LayoutRes int layoutId, List<T> data) {
+    public SimpleArrayAdapter(List<T> data) {
         super(data);
-        mLayoutId = layoutId;
         mType = new Type();
         register(mType);
     }
@@ -35,6 +32,8 @@ public abstract class SimpleArrayAdapter<T> extends BaseArrayAdapter<T> {
     public BaseViewHolder<T> createView(@NonNull View view, @NonNull ItemType<T, BaseViewHolder<T>> type) {
         return new BaseViewHolder<>(view, type);
     }
+
+    public abstract int getLayoutId();
 
     public abstract void setupView(@NonNull BaseViewHolder<T> holder, T model, int position);
 
@@ -58,7 +57,7 @@ public abstract class SimpleArrayAdapter<T> extends BaseArrayAdapter<T> {
 
         @Override
         public int getLayoutId(int type) {
-            return mLayoutId;
+            return SimpleArrayAdapter.this.getLayoutId();
         }
 
         @NonNull

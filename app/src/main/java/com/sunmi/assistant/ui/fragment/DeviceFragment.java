@@ -304,17 +304,13 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     @Override
     public void onSettingsClick(SunmiDevice device, int type) {
         if (type == 0) {
-            if (cannotManagerDevice(device)) {
-                return;
-            }
             onDeviceClick(device);
         } else if (type == 1) {
             deleteDevice(device);
         } else if (type == 2) {
-            if (cannotManagerDevice(device)) {
-                return;
+            if (!cannotManagerDevice(device)) {
+                IpcSettingActivity_.intent(mActivity).mDevice(device).start();
             }
-            IpcSettingActivity_.intent(mActivity).mDevice(device).start();
         }
     }
 

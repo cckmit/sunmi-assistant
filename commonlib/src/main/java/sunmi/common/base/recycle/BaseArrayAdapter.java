@@ -98,6 +98,17 @@ public class BaseArrayAdapter<T> extends BaseRecyclerAdapter<T> {
         }
     }
 
+    public void remove(@NonNull T data) {
+        int position = mData.indexOf(data);
+        mData.remove(data);
+        if (mData.isEmpty()) {
+            notifyDataSetChanged();
+        } else if (position >= 0) {
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, mData.size() - position);
+        }
+    }
+
     @Override
     public void clear() {
         mData.clear();

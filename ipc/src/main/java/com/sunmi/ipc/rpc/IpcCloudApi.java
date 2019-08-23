@@ -254,10 +254,10 @@ public class IpcCloudApi {
                     .put("company_id", companyId)
                     .put("shop_id", shopId)
                     .put("group_id", groupId);
-            if (gender > 0) {
+            if (gender >= 0) {
                 params.put("gender", gender);
             }
-            if (age > 0) {
+            if (age >= 0) {
                 params.put("age_range_code", age);
             }
             if (!TextUtils.isEmpty(name)) {

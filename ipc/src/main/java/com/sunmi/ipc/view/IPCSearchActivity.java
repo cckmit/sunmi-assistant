@@ -36,6 +36,7 @@ import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.sunmicall.ResponseBean;
+import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.SMDeviceDiscoverUtils;
 import sunmi.common.utils.log.LogCat;
 
@@ -78,7 +79,7 @@ public class IPCSearchActivity extends BaseActivity
     @AfterViews
     void init() {
         if (CommonConstants.TYPE_IPC_FS == deviceType) {
-            tvNoIpc.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.ic_no_fs, 0, 0, 0);
+            tvNoIpc.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_no_fs, 0, 0);
         }
         startScan();
         initApList();
@@ -227,7 +228,9 @@ public class IPCSearchActivity extends BaseActivity
             }
         }
         ipcList.add(device);
-        if (ipcListAdapter != null) ipcListAdapter.notifyDataSetChanged();
+        if (ipcListAdapter != null) {
+            ipcListAdapter.notifyDataSetChanged();
+        }
         new Handler().post(new Runnable() {
             @Override
             public void run() {
@@ -238,6 +241,12 @@ public class IPCSearchActivity extends BaseActivity
 
     //1 udp搜索到设备
     private synchronized void ipcFound(SunmiDevice ipc) {
+        if ((CommonConstants.TYPE_IPC_FS == deviceType
+                && DeviceTypeUtils.getInstance().isSS1(ipc.getModel()))
+                || (CommonConstants.TYPE_IPC_SS == deviceType
+                && DeviceTypeUtils.getInstance().isFS1(ipc.getModel()))) {
+            return;
+        }
         if (!ipcMap.containsKey(ipc.getDeviceid())) {
             ipc.setSelected(true);
             ipcMap.put(ipc.getDeviceid(), ipc);

@@ -3,6 +3,7 @@ package com.sunmi.assistant.mine.company;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.text.TextUtils;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.login.LoginChooseShopActivity_;
@@ -67,9 +68,21 @@ public class CompanyDetailActivity extends BaseActivity {
     @AfterViews
     protected void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
+        setSingleLine();
         silCompanyId.setRightImage(null);
         silCompanyCreateTime.setRightImage(null);
         getCompanyInfo();
+    }
+
+    private void setSingleLine() {
+        silCompanyName.getRightText().setSingleLine();
+        silCompanyName.getRightText().setEllipsize(TextUtils.TruncateAt.END);
+        silCompanyContact.getRightText().setSingleLine();
+        silCompanyContact.getRightText().setEllipsize(TextUtils.TruncateAt.END);
+        silCompanyContactTel.getRightText().setSingleLine();
+        silCompanyContactTel.getRightText().setEllipsize(TextUtils.TruncateAt.END);
+        silCompanyEmail.getRightText().setSingleLine();
+        silCompanyEmail.getRightText().setEllipsize(TextUtils.TruncateAt.END);
     }
 
     private String createTime(long time) {

@@ -1,4 +1,4 @@
-package com.sunmi.assistant.order;
+package sunmi.common.view;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -13,12 +13,12 @@ import android.view.animation.DecelerateInterpolator;
  * @author yinhui
  * @since 2019-06-27
  */
-class DropdownAnimation {
+public class DropdownAnimation {
 
     private static final String TAG = "DropdownAnimation";
     private AnimatorSet mCurrent;
 
-    void startAnimationToShow(boolean animated, final View dropdownMenu, final View overlay) {
+    public void startAnimationToShow(boolean animated, final View dropdownMenu, final View overlay) {
         if (animated) {
             if (mCurrent != null) {
                 mCurrent.cancel();
@@ -58,7 +58,7 @@ class DropdownAnimation {
         }
     }
 
-    void startAnimationToDismiss(boolean animated, final View dropdownMenu, final View overlay) {
+    public void startAnimationToDismiss(boolean animated, final View dropdownMenu, final View overlay) {
         float height = dropdownMenu.getMeasuredHeight();
         if (animated) {
             if (mCurrent != null) {
