@@ -136,6 +136,9 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
      */
     @Click(R.id.btn_enter_main)
     void enterMainClick() {
+        if (isFastClick(1500)) {
+            return;
+        }
         GetUserInfoUtils.userInfo(this, companyId, companyName, saasExist, shopId, shopName);
     }
 

@@ -21,7 +21,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/title_bar"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dp_12"
         android:scaleType="center" />
 
     <TextView
