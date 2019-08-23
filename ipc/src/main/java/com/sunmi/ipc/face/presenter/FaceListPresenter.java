@@ -1,10 +1,12 @@
 package com.sunmi.ipc.face.presenter;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.face.contract.FaceListContract;
 import com.sunmi.ipc.face.model.Face;
+import com.sunmi.ipc.face.model.FaceAge;
 import com.sunmi.ipc.face.model.FaceGroup;
 import com.sunmi.ipc.model.FaceAgeRangeResp;
 import com.sunmi.ipc.model.FaceGroupListResp;
@@ -13,8 +15,10 @@ import com.sunmi.ipc.rpc.IpcCloudApi;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.model.FilterItem;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
@@ -41,23 +45,43 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
     private int mFilterGender = -1;
     private int mFilterAge = -1;
 
+    private List<FilterItem> mFilterGenderList = new ArrayList<>(3);
+    private List<FilterItem> mFilterAgeList = new ArrayList<>();
+
     public FaceListPresenter(int shopId, FaceGroup group) {
         this.mShopId = shopId;
         this.mGroup = group;
     }
 
     @Override
-    public void init() {
+    public void init(Context context) {
         if (isViewAttached()) {
             mView.showLoadingDialog();
         }
+        mFilterGenderList.clear();
+        mFilterAgeList.clear();
+        FilterItem allGender = new FilterItem(-1, context.getString(R.string.ipc_face_gender),
+                context.getString(R.string.ipc_face_gender_all));
+        allGender.setChecked(true);
+        mFilterGenderList.add(allGender);
+        mFilterGenderList.add(new FilterItem(1, context.getString(R.string.ipc_face_gender_male)));
+        mFilterGenderList.add(new FilterItem(2, context.getString(R.string.ipc_face_gender_female)));
+        FilterItem allAge = new FilterItem(-1, context.getString(R.string.ipc_face_age),
+                context.getString(R.string.ipc_face_age_all));
+        allAge.setChecked(true);
+        mFilterAgeList.add(allAge);
         loadFilter();
         loadGroup();
     }
 
     @Override
-    public void getMore() {
-        loadFace(false, false);
+    public boolean getMore() {
+        if (mCurrentCount >= mTotalCount) {
+            return false;
+        } else {
+            loadFace(false, false);
+            return true;
+        }
     }
 
     @Override
@@ -100,10 +124,11 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
                 ids, new RetrofitCallback<Object>() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
+                        loadFace(true, true);
                         if (isViewAttached()) {
                             mView.shortTip(R.string.ipc_face_tip_move_success);
+                            mView.resetView();
                         }
-                        loadFace(true, true);
                     }
 
                     @Override
@@ -130,10 +155,11 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
                 new RetrofitCallback<Object>() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
+                        loadFace(true, true);
                         if (isViewAttached()) {
                             mView.shortTip(R.string.ipc_face_tip_delete_success);
+                            mView.resetView();
                         }
-                        loadFace(true, true);
                     }
 
                     @Override
@@ -153,7 +179,11 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
             public void onSuccess(int code, String msg, FaceAgeRangeResp data) {
                 loadFace(true, true);
                 if (isViewAttached()) {
-                    mView.updateFilter(data.getAgeRangeList());
+                    List<FaceAge> faceAges = data.getAgeRangeList();
+                    for (FaceAge age : faceAges) {
+                        mFilterAgeList.add(new FilterItem(age.getCode(), age.getName()));
+                    }
+                    mView.updateFilter(mFilterGenderList, mFilterAgeList);
                 }
             }
 
@@ -173,9 +203,11 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
             @Override
             public void onSuccess(int code, String msg, FaceGroupListResp data) {
                 List<FaceGroup> list = data.getGroupList();
-                for (FaceGroup group : list) {
-                    if (group.getGroupId() == mGroup.getGroupId()) {
-                        list.remove(group);
+                ListIterator<FaceGroup> iterator = list.listIterator();
+                while (iterator.hasNext()) {
+                    FaceGroup next = iterator.next();
+                    if (next.getGroupId() == mGroup.getGroupId()) {
+                        iterator.remove();
                     }
                 }
                 if (isViewAttached()) {
@@ -193,7 +225,8 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
         });
     }
 
-    private void loadFace(final boolean refresh, boolean clearFilter) {
+    @Override
+    public void loadFace(final boolean refresh, boolean clearFilter) {
         if (refresh) {
             mCurrentCount = 0;
         }
@@ -211,7 +244,6 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
                         mTotalCount = data.getTotalCount();
                         mCurrentCount += data.getFaceList().size();
                         if (isViewAttached()) {
-                            mView.hideLoadingDialog();
                             boolean hasMore = mCurrentCount < mTotalCount;
                             if (refresh) {
                                 mView.updateList(data.getFaceList(), hasMore);

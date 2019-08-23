@@ -184,7 +184,7 @@
     <string name="ipc_face_search">搜索</string>
     <string name="ipc_face_gender">性别</string>
     <string name="ipc_face_gender_all">全部性别</string>
-    <string name="ipc_face_gender_man">男</string>
+    <string name="ipc_face_gender_male">男</string>
     <string name="ipc_face_gender_female">女</string>
     <string name="ipc_face_age">年龄</string>
     <string name="ipc_face_age_all">全部年龄</string>
