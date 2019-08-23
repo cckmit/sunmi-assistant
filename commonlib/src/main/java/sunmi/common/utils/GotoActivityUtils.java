@@ -19,7 +19,6 @@ public class GotoActivityUtils {
                 && !className.contains("LeadPagesActivity")
                 && !className.contains("WelcomeActivity")
                 && !className.contains("RegisterActivity")
-                && !className.contains("SendSmsLoginActivity")
                 && !className.contains("RetrievePasswordActivity")
                 && !className.contains("InputCaptchaActivity")
                 && !className.contains("InputMobileActivity")

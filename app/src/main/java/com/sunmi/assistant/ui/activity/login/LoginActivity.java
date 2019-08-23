@@ -206,9 +206,6 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
                 CommonUtils.trackCommonEvent(context, "loginBySms", "短信验证码登录", Constants.EVENT_LOGIN);
                 CommonUtils.trackDurationEventBegin(context, "quickLoginDuration",
                         "登录流程开始到结束", Constants.EVENT_DURATION_LOGIN_BY_SMS);
-                /*SendSmsLoginActivity_.intent(context)
-                        .extra("mobile", RegexUtils.isChinaPhone(mobile) ? mobile : "")
-                        .start();*/
                 InputMobileActivity_.intent(context).mobile(RegexUtils.isChinaPhone(mobile) ? mobile : "")
                         .checkSource(InputMobileActivity.SOURCE_SMS_LOGIN).start();
                 break;

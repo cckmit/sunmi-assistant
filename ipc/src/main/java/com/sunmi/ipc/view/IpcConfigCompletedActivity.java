@@ -327,7 +327,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
         @Override
         public void convert(final ViewHolder holder, SunmiDevice device) {
             CheckBox cb = holder.getView(R.id.cb_item);
-            holder.setText(R.id.tv_name, device.getName());
+            holder.setText(R.id.tv_name, device.getDeviceid());
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

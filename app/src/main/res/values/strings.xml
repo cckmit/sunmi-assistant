@@ -18,7 +18,6 @@
     <string name="str_password_fomat_error">Password format error</string>
     <string name="tip_support_multi_select">Multiple devices can be selected</string>
     <string name="tip_title_choose_device">Select the devices you want to connect</string>
-    <string name="tip_no_device_found">No device found</string>
     <string name="tip_keep_device_in">Make sure your device is within the router signal range</string>
     <string name="str_auth_onclick_protocol">Click the button to agree</string>
     <string name="str_auth_protocol_text">《License agreement》</string>
