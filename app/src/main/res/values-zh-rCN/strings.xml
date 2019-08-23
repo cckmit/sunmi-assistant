@@ -194,7 +194,9 @@
     <string name="msg_ipc_offline">网络摄像机%s于%s离线，请检查设备状态</string>
     <string name="msg_esl_offline">基站%s于%s离线，请检查设备状态</string>
     <string name="msg_esl_ota">价签%s已发布新版固件%s，请更新</string>
+    <string name="msg_task_erp">已于%s完成与%s的对接，成功获取%s条商品信息</string>
     <string name="company_shop_create_success">门店创建成功</string>
     <string name="editetxt_max_length">超过字数限制，请重新输入</string>
     <string name="check_mobile_fixedphone_tip">请输入正确的手机号码或座机</string>
+    <string name="str_msg_setting">消息提醒设置</string>
 </resources>

@@ -102,7 +102,7 @@ dependencies {
     api 'com.tencent.mid:mid:4.06-Release'
 
     //下拉刷新
-    api 'cn.bingoogolapple:bga-refreshlayout:1.1.7@aar'
+    api 'cn.bingoogolapple:bga-refreshlayout:1.1.8@aar'
 
     //Android 徽章控件
     //api 'cn.bingoogolapple:bga-badgeview-api:1.1.8'

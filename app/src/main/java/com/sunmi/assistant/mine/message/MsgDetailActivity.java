@@ -1,10 +1,8 @@
 package com.sunmi.assistant.mine.message;
 
-import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +26,7 @@ import java.util.List;
 
 import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
+import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.NetworkUtils;
@@ -56,6 +55,7 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
     private boolean loadFinish;
     List<MessageListBean.MsgListBean> dataList = new ArrayList<>();
     private int deletePosition;
+    private BGARefreshViewHolder viewHolder;
 
     @AfterViews
     void init() {
@@ -71,8 +71,11 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
         mPresenter.getMessageList(modelId, pageNum, pageSize, true);
         showLoadingDialog();
         refreshLayout.setDelegate(this);
+        viewHolder = new BGANormalRefreshViewHolder(context, true);
+        viewHolder.setLoadingMoreText(getString(R.string.str_loding_more));
+        viewHolder.setLoadMoreBackgroundColorRes(R.color.bg_common);
         // 设置下拉刷新和上拉加载更多的风格(参数1：应用程序上下文，参数2：是否具有上拉加载更多功能)
-        refreshLayout.setRefreshViewHolder(new BGANormalRefreshViewHolder(context, true));
+        refreshLayout.setRefreshViewHolder(viewHolder);
     }
 
     @Override
@@ -188,7 +191,6 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
             mPresenter.getMessageList(modelId, pageNum, pageSize, false);
             return true;
         }
-        refreshLayout.endLoadingMore();
         return false;
     }
 }

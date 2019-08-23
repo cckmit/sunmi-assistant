@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.StringRes;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import sunmi.common.utils.DateTimeUtils;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.tablayout.utils.UnreadMsgUtils;
 import sunmi.common.view.tablayout.widget.MsgView;
 
@@ -81,6 +83,8 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
             setMsgDetail(helper, R.string.msg_esl_offline);
         } else if (TextUtils.equals(modelName, MsgConstants.NOTIFY_ESL_OTA)) {
             setMsgDetail(helper, R.string.msg_esl_ota);
+        } else if (TextUtils.equals(modelName, MsgConstants.NOTIFY_TASK_ERP)) {
+            setMsgDetail(helper, R.string.msg_task_erp);
         }
         helper.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -98,6 +102,9 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
         String disconnectTime = detailMap.get("disconnect_time");
         String deviceName = detailMap.get("device_name");
         String binVersion = detailMap.get("bin_version");
+        String timestamp = detailMap.get("timestamp");
+        String saasName = detailMap.get("saas_name");
+        String totalCount = detailMap.get("total_count");
         String detail;
         if (disconnectTime != null) {
             try {
@@ -105,6 +112,13 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
                 detail = context.getString(resId, deviceName, time);
             } catch (NumberFormatException e) {
                 detail = context.getString(resId, deviceName, disconnectTime);
+            }
+        } else if (timestamp != null && saasName != null && totalCount != null) {
+            try {
+                String time = DateTimeUtils.secondToDate(Long.parseLong(timestamp), "yyyy-MM-dd HH:mm:ss");
+                detail = context.getString(resId, time, saasName, totalCount);
+            } catch (NumberFormatException e) {
+                detail = context.getString(resId, timestamp, saasName, totalCount);
             }
         } else if (binVersion != null) {
             detail = context.getString(resId, deviceName, binVersion);

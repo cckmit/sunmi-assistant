@@ -20,7 +20,7 @@ public class MessageCountPresenter extends BasePresenter<MessageCountContract.Vi
 
     @Override
     public void getMessageCount() {
-        MessageCenterApi.getMessageCount(new RetrofitCallback<MessageCountBean>() {
+        MessageCenterApi.getInstance().getMessageCount(new RetrofitCallback<MessageCountBean>() {
             @Override
             public void onSuccess(int code, String msg, MessageCountBean data) {
                 int unreadMsg = data.getUnreadCount();

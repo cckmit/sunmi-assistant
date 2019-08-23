@@ -97,9 +97,11 @@
     <color name="color_A1A7B3">#A1A7B3</color>
     <color name="color_FF999999">#FF999999</color>
 
+    <color name="colorText_0">#00333C4F</color>
     <color name="colorText_5">#0E333C4F</color>
     <color name="colorText_20">#33333C4F</color>
     <color name="colorText_40">#66333C4F</color>
+    <color name="colorText_60_1">#99333C4F</color>
     <color name="colorText_60">#85858A</color>
     <color name="colorText_80">#CC333C4F</color>
     <color name="pop_bg_content">#F9F9F9</color>
