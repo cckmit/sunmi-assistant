@@ -21,11 +21,11 @@ import com.commonlibrary.R;
 
 /**
  * @author yinhui
- * @date 2019-7-17
+ * @date 2019-08-23
  */
-public class BottomDialog extends Dialog {
+public class BottomListDialog extends Dialog {
 
-    private BottomDialog(Context context, int theme) {
+    private BottomListDialog(Context context, int theme) {
         super(context, theme);
     }
 
@@ -52,7 +52,7 @@ public class BottomDialog extends Dialog {
         private int titleTextColor = -1;
         private int cancelTextColor = -1;
         private int okTextColor = -1;
-        private OnClickListener cancelClickListener, okClickListener;
+        private DialogInterface.OnClickListener cancelClickListener, okClickListener;
 
         public Builder(Context context) {
             this.context = context;
@@ -141,7 +141,7 @@ public class BottomDialog extends Dialog {
          * @return 建造者
          */
         public Builder setCancelButton(@StringRes int textId) {
-            return setCancelButton(context.getText(textId), new OnClickListener() {
+            return setCancelButton(context.getText(textId), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();
@@ -156,7 +156,7 @@ public class BottomDialog extends Dialog {
          * @param listener 事件回调
          * @return 建造者
          */
-        public Builder setCancelButton(@StringRes int textId, OnClickListener listener) {
+        public Builder setCancelButton(@StringRes int textId, DialogInterface.OnClickListener listener) {
             return setCancelButton(context.getText(textId), listener);
         }
 
@@ -167,7 +167,7 @@ public class BottomDialog extends Dialog {
          * @return 建造者
          */
         public Builder setCancelButton(CharSequence text) {
-            return setCancelButton(text, new OnClickListener() {
+            return setCancelButton(text, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();
@@ -182,7 +182,7 @@ public class BottomDialog extends Dialog {
          * @param listener 事件回调
          * @return 建造者
          */
-        public Builder setCancelButton(CharSequence text, OnClickListener listener) {
+        public Builder setCancelButton(CharSequence text, DialogInterface.OnClickListener listener) {
             return setCancelButton(text, -1, listener);
         }
 
@@ -194,7 +194,7 @@ public class BottomDialog extends Dialog {
          * @return 建造者
          */
         public Builder setCancelButton(@StringRes int textId, @ColorInt int textColor) {
-            return setCancelButton(context.getText(textId), textColor, new OnClickListener() {
+            return setCancelButton(context.getText(textId), textColor, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();
@@ -210,7 +210,7 @@ public class BottomDialog extends Dialog {
          * @param listener  事件回调
          * @return 建造者
          */
-        public Builder setCancelButton(@StringRes int textId, @ColorInt int textColor, OnClickListener listener) {
+        public Builder setCancelButton(@StringRes int textId, @ColorInt int textColor, DialogInterface.OnClickListener listener) {
             return setCancelButton(context.getText(textId), textColor, listener);
         }
 
@@ -222,7 +222,7 @@ public class BottomDialog extends Dialog {
          * @return 建造者
          */
         public Builder setCancelButton(CharSequence text, @ColorInt int textColor) {
-            return setCancelButton(text, textColor, new OnClickListener() {
+            return setCancelButton(text, textColor, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();
@@ -238,7 +238,7 @@ public class BottomDialog extends Dialog {
          * @param listener  事件回调
          * @return 建造者
          */
-        public Builder setCancelButton(CharSequence text, @ColorInt int textColor, OnClickListener listener) {
+        public Builder setCancelButton(CharSequence text, @ColorInt int textColor, DialogInterface.OnClickListener listener) {
             this.cancelText = text;
             this.cancelTextColor = textColor;
             this.cancelClickListener = listener;
@@ -252,7 +252,7 @@ public class BottomDialog extends Dialog {
          * @return 建造者
          */
         public Builder setOkButton(@StringRes int textId) {
-            return setOkButton(context.getText(textId), new OnClickListener() {
+            return setOkButton(context.getText(textId), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
@@ -267,7 +267,7 @@ public class BottomDialog extends Dialog {
          * @param listener 事件回调
          * @return 建造者
          */
-        public Builder setOkButton(@StringRes int textId, OnClickListener listener) {
+        public Builder setOkButton(@StringRes int textId, DialogInterface.OnClickListener listener) {
             return setOkButton(context.getText(textId), listener);
         }
 
@@ -278,7 +278,7 @@ public class BottomDialog extends Dialog {
          * @return 建造者
          */
         public Builder setOkButton(CharSequence text) {
-            return setOkButton(text, new OnClickListener() {
+            return setOkButton(text, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
@@ -293,7 +293,7 @@ public class BottomDialog extends Dialog {
          * @param listener 事件回调
          * @return 建造者
          */
-        public Builder setOkButton(CharSequence text, OnClickListener listener) {
+        public Builder setOkButton(CharSequence text, DialogInterface.OnClickListener listener) {
             return setOkButton(text, -1, listener);
         }
 
@@ -305,7 +305,7 @@ public class BottomDialog extends Dialog {
          * @return 建造者
          */
         public Builder setOkButton(@StringRes int textId, @ColorInt int textColor) {
-            return setOkButton(context.getText(textId), textColor, new OnClickListener() {
+            return setOkButton(context.getText(textId), textColor, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
@@ -321,7 +321,7 @@ public class BottomDialog extends Dialog {
          * @param listener  事件回调
          * @return 建造者
          */
-        public Builder setOkButton(@StringRes int textId, @ColorInt int textColor, OnClickListener listener) {
+        public Builder setOkButton(@StringRes int textId, @ColorInt int textColor, DialogInterface.OnClickListener listener) {
             return setOkButton(context.getText(textId), textColor, listener);
         }
 
@@ -333,7 +333,7 @@ public class BottomDialog extends Dialog {
          * @return 建造者
          */
         public Builder setOkButton(CharSequence text, @ColorInt int textColor) {
-            return setOkButton(text, textColor, new OnClickListener() {
+            return setOkButton(text, textColor, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
@@ -349,7 +349,7 @@ public class BottomDialog extends Dialog {
          * @param listener  事件回调
          * @return 建造者
          */
-        public Builder setOkButton(CharSequence text, @ColorInt int textColor, OnClickListener listener) {
+        public Builder setOkButton(CharSequence text, @ColorInt int textColor, DialogInterface.OnClickListener listener) {
             this.okText = text;
             this.okTextColor = textColor;
             this.okClickListener = listener;
@@ -359,8 +359,8 @@ public class BottomDialog extends Dialog {
         /**
          * 创建自定义的对话框
          */
-        public BottomDialog create() {
-            final BottomDialog dialog = new BottomDialog(context, R.style.BottomDialog);
+        public BottomListDialog create() {
+            final BottomListDialog dialog = new BottomListDialog(context, R.style.BottomDialog);
             @SuppressLint("InflateParams")
             View layout = inflater.inflate(R.layout.dialog_bottom, null);
             int width = context.getResources().getDisplayMetrics().widthPixels;
@@ -397,7 +397,7 @@ public class BottomDialog extends Dialog {
             return dialog;
         }
 
-        private void setupBtn(final BottomDialog dialog, View layout) {
+        private void setupBtn(final BottomListDialog dialog, View layout) {
             // 切换按钮位置
             Button btnCancel;
             Button btnOk;

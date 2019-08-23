@@ -13,7 +13,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -29,6 +31,7 @@ import com.sunmi.ipc.face.contract.FaceListContract;
 import com.sunmi.ipc.face.model.Face;
 import com.sunmi.ipc.face.model.FaceGroup;
 import com.sunmi.ipc.face.presenter.FaceListPresenter;
+import com.sunmi.ipc.face.util.BottomAnimation;
 import com.sunmi.ipc.face.util.GlideRoundCrop;
 
 import org.androidannotations.annotations.AfterViews;
@@ -111,6 +114,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     private SimpleArrayAdapter<Face> mAdapterSelected;
     private List<FaceGroup> mFaceGroupList;
 
+    private BottomAnimation mBottomAnimator = new BottomAnimation();
     private DropdownAnimation mDropdownAnimator = new DropdownAnimation();
     private DropdownAdapter mFilterAdapterGender;
     private DropdownAdapter mFilterAdapterAge;
@@ -128,6 +132,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         initFilters();
         initDropdown();
         initRecyclerView();
+        updateSelectedLayout(false);
         mPresenter = new FaceListPresenter(mShopId, mFaceGroup);
         mPresenter.attachView(this);
         mPresenter.init(this);
@@ -146,6 +151,23 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
             public void onFocusChange(View v, boolean hasFocus) {
                 String text = mEtSearch.getText() == null ? null : mEtSearch.getText().toString().trim();
                 mTvSearchHint.setVisibility(hasFocus || !TextUtils.isEmpty(text) ? View.INVISIBLE : View.VISIBLE);
+            }
+        });
+        mEtSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String name = s.toString();
+                if (!TextUtils.isEmpty(name)) {
+                    mPresenter.filterName(name);
+                }
             }
         });
         mOverlay.setOnClickListener(new View.OnClickListener() {
@@ -198,11 +220,16 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         mRvSelectedList.setAdapter(mAdapterSelected);
     }
 
-    private void initSelectedLayout() {
-        mAdapterSelected.clear();
-        mTvSelectedTip.setVisibility(View.VISIBLE);
-        updateBtnEnable(false);
-        mLayoutSelected.setVisibility(View.GONE);
+    private void updateSelectedLayout(boolean animated) {
+        boolean isChoose = mState == STATE_CHOOSE;
+        if (isChoose) {
+            mBottomAnimator.startAnimationToShow(animated, mLayoutSelected);
+        } else {
+            mAdapterSelected.clear();
+            mTvSelectedTip.setVisibility(View.VISIBLE);
+            updateBtnEnable(false);
+            mBottomAnimator.startAnimationToDismiss(animated, mLayoutSelected);
+        }
     }
 
     private void updateTitle() {
@@ -248,15 +275,13 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     private void updateStateView() {
         updateTitle();
         updateAddIcon();
-        hideDropdownMenu();
+        updateSelectedLayout(true);
+        hideDropdownMenu(true);
         if (mState == STATE_NORMAL) {
             final List<Face> list = mAdapter.getData();
             for (Face face : list) {
                 face.setChecked(false);
             }
-            initSelectedLayout();
-        } else {
-            mLayoutSelected.setVisibility(View.VISIBLE);
         }
         mAdapter.notifyDataSetChanged();
     }
@@ -269,7 +294,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         if (mState == STATE_NORMAL && !list.get(0).isAddIcon()) {
             mAdapter.add(0, Face.createCamera());
         } else if (mState == STATE_CHOOSE && list.get(0).isAddIcon()) {
-            mAdapter.remove(0);
+//            mAdapter.remove(0);
         }
     }
 
@@ -411,7 +436,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
 
     @Override
     public void onBackPressed() {
-        if (hideDropdownMenu()) {
+        if (hideDropdownMenu(true)) {
             return;
         }
         if (mState == STATE_CHOOSE) {
@@ -421,14 +446,14 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         }
     }
 
-    private boolean hideDropdownMenu() {
+    private boolean hideDropdownMenu(boolean animated) {
         boolean result = false;
         if (mDmFilterGender.getPopup().isShowing()) {
-            mDmFilterGender.getPopup().dismiss(true);
+            mDmFilterGender.getPopup().dismiss(animated);
             result = true;
         }
         if (mDmFilterAge.getPopup().isShowing()) {
-            mDmFilterAge.getPopup().dismiss(true);
+            mDmFilterAge.getPopup().dismiss(animated);
             result = true;
         }
         return result;
@@ -506,7 +531,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
 
         @Override
         public void show(RecyclerView list, boolean animated) {
-            hideDropdownMenu();
+            hideDropdownMenu(false);
             mDropdownAnimator.startAnimationToShow(animated, list, mOverlay);
         }
 
