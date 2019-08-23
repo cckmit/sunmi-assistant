@@ -179,6 +179,42 @@
     <string name="tip_tf_uninitalized">未格式化</string>
     <string name="tip_unrecognition_tf_card">TF卡无法识别</string>
 
+    <string name="ipc_face_list_title">管理照片</string>
+    <string name="ipc_face_list_title_select">请选择照片</string>
+    <string name="ipc_face_list_title_select_num">已选择%d张</string>
+    <string name="ipc_face_select">选择</string>
+    <string name="ipc_face_select_all">全选</string>
+    <string name="ipc_face_search">搜索</string>
+    <string name="ipc_face_gender">性别</string>
+    <string name="ipc_face_gender_all">全部性别</string>
+    <string name="ipc_face_gender_male">男</string>
+    <string name="ipc_face_gender_female">女</string>
+    <string name="ipc_face_age">年龄</string>
+    <string name="ipc_face_age_all">全部年龄</string>
+    <string name="ipc_face_move">移库</string>
+    <string name="ipc_face_move_title">移动分组至</string>
+    <string name="ipc_face_remain">剩余%d</string>
+    <string name="ipc_face_take_photo">拍照</string>
+    <string name="ipc_face_tack_photo_again">重拍</string>
+    <string name="ipc_face_album_choose">从相册选择</string>
+    <string name="ipc_face_album_choose_title">选择照片</string>
+    <string name="ipc_face_upload_title">上传照片</string>
+    <string name="ipc_face_upload_btn">上传</string>
+    <string name="ipc_face_tip_selected">暂无已选照片</string>
+    <string name="ipc_face_tip_move_success">移库成功</string>
+    <string name="ipc_face_tip_delete_success">删除成功</string>
+    <string name="ipc_face_tip_album_title">照片要求</string>
+    <string name="ipc_face_tip_album_content">请选择如下图所示的正面人脸照片\n否则会导致人脸照片上传失败</string>
+    <string name="ipc_face_tip_album_upload_complete">校验结束，只保存符合要求的照片</string>
+    <string name="ipc_face_tip_album_upload_success">上传成功</string>
+    <string name="ipc_face_tip_photo_uploading_title">照片校验中</string>
+    <string name="ipc_face_tip_photo_uploading_content">若校验成功，则保存至照片库\n若校验失败，则需重新拍照</string>
+    <string name="ipc_face_tip_delete">确定要删除上述照片吗？</string>
+    <string name="ipc_face_error_add">照片已达当前人脸分组容量上限，\n无法继续添加</string>
+    <string name="ipc_face_error_upload">校验失败</string>
+    <string name="ipc_face_error_photo">该照片识别不到人脸信息</string>
+    <string name="ipc_face_error_move">该人脸分组可供移入的库存数量剩余不足</string>
+
 </resources>
 
 

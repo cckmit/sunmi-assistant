@@ -1,4 +1,4 @@
-package com.sunmi.ipc.face;
+package com.sunmi.ipc.face.util;
 
 import android.content.Context;
 import android.util.Pair;

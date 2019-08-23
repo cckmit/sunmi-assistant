@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.order.model.FilterItem;
 import com.sunmi.assistant.order.model.OrderInfo;
 
 import org.androidannotations.annotations.AfterViews;
@@ -27,9 +26,15 @@ import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.base.recycle.BaseArrayAdapter;
+import sunmi.common.model.FilterItem;
 import sunmi.common.utils.NetworkUtils;
+import sunmi.common.view.DropdownAdapter;
+import sunmi.common.view.DropdownAnimation;
 import sunmi.common.view.DropdownMenu;
 
+/**
+ * @author yinhui
+ */
 @SuppressLint("Registered")
 @EActivity(R.layout.order_activity_list)
 public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
@@ -289,7 +294,7 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
             measureChild(firstChildView, widthSpec, heightSpec);
             int itemHeight = firstChildView.getMeasuredHeight();
             setMeasuredDimension(View.MeasureSpec.getSize(widthSpec),
-                    getChildCount() > 9 ? itemHeight * 9 : itemHeight * getChildCount());
+                    getChildCount() > 8 ? (int) (itemHeight * 8.5f) : itemHeight * getChildCount());
         }
     }
 

@@ -24,6 +24,9 @@
     <string name="network_connected">Network connected</string>
     <string name="server_noreponse">No response from the server</string>
     <string name="toast_network_error">网络异常，请检查网络设置</string>
+    <string name="network_error">当前网络异常</string>
+    <string name="network_error_tip">请检查网络后刷新页面～</string>
+    <string name="info_empty">暂无服务信息</string>
 
     <string name="tip_granted">Authoized</string>
     <string name="tip_permission_ungranted">Deny authorization may influence the use of some functions</string>
@@ -77,6 +80,7 @@
     <string name="str_bind_net_error">Please make sure that your mobile phone is connected to the internet</string>
     <string name="str_searching">Searching…</string>
 
+    <string name="tip_no_device_found">No device found</string>
     <string name="str_check_net">Please check the status of network</string>
     <string name="str_net_exception">Network connection exception, please check and try again</string>
     <string name="str_server_exception">服务器连接异常，请检查后重试</string>

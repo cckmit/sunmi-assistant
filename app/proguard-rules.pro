@@ -144,3 +144,5 @@
 -keep class com.youth.banner.** {
   *;
 }
+
+-keep class sunmi.common.receiver.MiPushMessageReceiver {*;}
