@@ -3,7 +3,6 @@ package sunmi.common.rpc.http;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,16 +39,16 @@ public class BaseHttpApi {
      *
      * @param url      地址
      * @param map      传递参数
+     * @param timeout  超时时间 s
      * @param callback 回调处理
      */
-    protected static void postWithFile(String url, Map<String, String> map, String paramName,
-                                       String fileName, File file, StringCallback callback) {
+    public static void post(String url, Map<String, String> map, int timeout, StringCallback callback) {
         LogCat.e(TAG, "post: url = " + url + ", map = " + map);
         OkHttpUtils.post()
-                .url(url).params(map).addFile(paramName, fileName, file)
-                .build()//request Call
-                .connTimeOut(CONN_TIMEOUT)
-                .readTimeOut(CONN_TIMEOUT)
+                .url(url)
+                .params(map).build()//request Call
+                .connTimeOut(timeout * 1000)
+                .readTimeOut(timeout * 1000)
                 .execute(callback);
     }
 

@@ -53,9 +53,7 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-
-    implementation files('libs/MiPush_SDK_Client_3_6_19.jar')
+    api fileTree(include: ['*.jar'], dir: 'libs')
 
     api project(':BadgeView')
 
