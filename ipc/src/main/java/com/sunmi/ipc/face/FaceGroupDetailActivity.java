@@ -9,6 +9,7 @@ import com.sunmi.ipc.R;
 import com.sunmi.ipc.face.contract.FaceGroupDetailContract;
 import com.sunmi.ipc.face.model.FaceGroup;
 import com.sunmi.ipc.face.presenter.FaceGroupDetailPresenter;
+import com.sunmi.ipc.face.util.Utils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -27,8 +28,6 @@ import sunmi.common.view.TitleBarView;
 @EActivity(resName = "face_activity_group_detail")
 public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPresenter>
         implements FaceGroupDetailContract.View {
-
-    private static final int SECONDS_PER_DAY = 86400;
 
     @ViewById(resName = "title_bar")
     TitleBarView mTitleBar;
@@ -61,6 +60,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
         mTitleBar.setAppTitle(Utils.getGroupName(this, mFaceGroup, false));
         if (mFaceGroup.isSystemType()) {
             mTitleBar.setRightTextViewEnable(false);
+            mTitleBar.setRightTextViewText("");
             mSilName.setRightImage(null);
         } else {
             mTitleBar.setRightTextViewEnable(true);
@@ -103,6 +103,9 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
         }
 
         mSilManage.setRightText(getString(R.string.ipc_face_group_count, mFaceGroup.getCount()));
+
+        mPresenter = new FaceGroupDetailPresenter(mShopId, mFaceGroup, mOccupiedCapacity);
+        mPresenter.attachView(this);
     }
 
     @Click(resName = "sil_face_group_name")
@@ -127,7 +130,10 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
 
     @Click(resName = "sil_face_group_manage")
     void clickManage() {
-
+        FaceListActivity_.intent(this)
+                .mShopId(mShopId)
+                .mFaceGroup(mFaceGroup)
+                .start();
     }
 
     private void clickDelete() {

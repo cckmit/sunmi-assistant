@@ -5,7 +5,7 @@
     android:layout_height="@dimen/dp_48">
 
     <TextView
-        android:id="@+id/order_filter_name"
+        android:id="@+id/dropdown_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_25"
@@ -20,11 +20,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/order_filter_checkbox"
+        android:id="@+id/dropdown_item_checkbox"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
         android:layout_marginEnd="@dimen/dp_25"
-        android:src="@drawable/order_list_ic_filter_checkbox"
+        android:src="@mipmap/dropdown_ic_checkbox"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

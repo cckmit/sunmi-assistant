@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/face_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    tools:context=".face.FaceListActivity_">
+
+    <cn.bingoogolapple.refreshlayout.BGARefreshLayout
+        android:id="@+id/refresh_face_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/layout_face_selected"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/v_face_divider">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_face_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/c_white" />
+
+    </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/layout_face_selected"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/color_F9F9F9"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_face_selected_list"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_60"
+            android:padding="@dimen/dp_6"
+            app:layout_constraintBottom_toTopOf="@+id/v_face_selected_divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_face_selected_tip"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_60"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/dp_20"
+            android:paddingEnd="@dimen/dp_20"
+            android:text="@string/ipc_face_tip_selected"
+            android:textColor="@color/colorText_60"
+            android:textSize="@dimen/sp_16"
+            app:layout_constraintBottom_toTopOf="@+id/v_face_selected_divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <View
+            android:id="@+id/v_face_selected_divider"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_0_5"
+            android:layout_marginBottom="@dimen/dp_60"
+            android:background="@color/colorText_10"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_face_selected_move"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawableTop="@mipmap/face_ic_move"
+            android:gravity="center"
+            android:text="@string/ipc_face_move"
+            android:textColor="@color/colorText"
+            android:textSize="@dimen/sp_16"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tv_face_selected_delete"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/v_face_selected_divider" />
+
+        <TextView
+            android:id="@+id/tv_face_selected_delete"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawableTop="@mipmap/face_ic_delete"
+            android:gravity="center"
+            android:text="@string/ipc_setting_delete"
+            android:textColor="@color/colorText"
+            android:textSize="@dimen/sp_16"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/tv_face_selected_move"
+            app:layout_constraintTop_toBottomOf="@id/v_face_selected_divider" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <include
+        android:id="@+id/layout_network_error"
+        layout="@layout/include_network_error"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_bar" />
+
+    <include
+        android:id="@+id/layout_empty"
+        layout="@layout/include_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/v_face_divider"
+        app:layout_constraintVertical_bias="0.43" />
+
+    <View
+        android:id="@+id/v_face_overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/black_60"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/v_face_divider" />
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/c_white"
+        app:dividerShow="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:leftDefaultClickEnable="true"
+        app:leftIcon="@mipmap/ic_back_dark"
+        app:leftText="@string/sm_cancel"
+        app:titleTextColor="@color/colorText" />
+
+    <FrameLayout
+        android:id="@+id/layout_face_search"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_44"
+        android:background="@color/color_F4F4F5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_bar">
+
+        <sunmi.common.view.ClearableEditText
+            android:id="@+id/cet_face_search"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_32"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:imeOptions="actionSearch"
+            android:background="@drawable/face_bg_search"
+            android:paddingStart="@dimen/dp_12"
+            android:paddingEnd="@dimen/dp_12" />
+
+        <TextView
+            android:id="@+id/tv_face_search_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/ipc_face_search"
+            android:textColor="@color/colorText_60"
+            android:textSize="@dimen/sp_14" />
+
+    </FrameLayout>
+
+    <sunmi.common.view.DropdownMenu
+        android:id="@+id/dm_face_filter_gender"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_44"
+        android:background="@color/c_white"
+        android:gravity="center"
+        app:layout_constraintEnd_toStartOf="@+id/dm_face_filter_age"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_face_search" />
+
+    <sunmi.common.view.DropdownMenu
+        android:id="@+id/dm_face_filter_age"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_44"
+        android:background="@color/c_white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/dm_face_filter_gender"
+        app:layout_constraintTop_toBottomOf="@id/layout_face_search" />
+
+    <View
+        android:id="@+id/v_face_divider"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_0_5"
+        android:background="@color/colorText_10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dm_face_filter_gender" />
+
+</android.support.constraint.ConstraintLayout>

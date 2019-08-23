@@ -1,4 +1,4 @@
-package com.sunmi.assistant.order.model;
+package sunmi.common.model;
 
 /**
  * @author yinhui

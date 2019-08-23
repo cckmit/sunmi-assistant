@@ -1,24 +1,24 @@
-package com.sunmi.assistant.order;
+package sunmi.common.view;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.TextView;
 
-import com.sunmi.assistant.R;
-import com.sunmi.assistant.order.model.FilterItem;
+import com.commonlibrary.R;
 
-import sunmi.common.view.DropdownMenu;
+import sunmi.common.model.FilterItem;
 
 /**
- * Created by yinhui on 18-1-17.
+ *
+ * @author yinhui
+ * @date 18-1-17
  */
-
 public class DropdownAdapter extends DropdownMenu.BaseAdapter<FilterItem> {
 
-    DropdownAdapter(Context context) {
-        super(context, R.layout.order_dropdown_title, R.layout.order_dropdown_item);
+    public DropdownAdapter(Context context) {
+        super(context, R.layout.dropdown_title, R.layout.dropdown_item);
     }
 
     @Override
@@ -39,15 +39,15 @@ public class DropdownAdapter extends DropdownMenu.BaseAdapter<FilterItem> {
 
         @Override
         public void setUpView(FilterItem model, int position) {
-            TextView title = getView(R.id.order_filter_title);
+            TextView title = getView(R.id.dropdown_item_title);
             title.setText(model.getTitleName());
             Drawable drawable = title.getCompoundDrawablesRelative()[2].mutate();
             if (model.getId() != -1) {
-                title.setTextColor(mContext.getResources().getColor(R.color.color_F35000));
-                drawable.setTint(mContext.getResources().getColor(R.color.color_F35000));
+                title.setTextColor(ContextCompat.getColor(mContext, R.color.color_F35000));
+                drawable.setTint(ContextCompat.getColor(mContext, R.color.color_F35000));
             } else {
-                title.setTextColor(mContext.getResources().getColor(R.color.color_333338));
-                drawable.setTint(mContext.getResources().getColor(R.color.color_333338));
+                title.setTextColor(ContextCompat.getColor(mContext, R.color.color_333338));
+                drawable.setTint(ContextCompat.getColor(mContext, R.color.color_333338));
             }
         }
     }
@@ -60,12 +60,12 @@ public class DropdownAdapter extends DropdownMenu.BaseAdapter<FilterItem> {
 
         @Override
         public void setUpView(FilterItem model, int position) {
-            Resources res = mContext.getResources();
-            TextView name = getView(R.id.order_filter_name);
+            TextView name = getView(R.id.dropdown_item_name);
             name.setText(model.getItemName());
-            name.setTextColor(model.isChecked() ?
-                    res.getColor(R.color.color_FF6000) : res.getColor(R.color.color_333338));
-            getView(R.id.order_filter_checkbox).setVisibility(model.isChecked() ? View.VISIBLE : View.INVISIBLE);
+            name.setTextColor(model.isChecked() ? ContextCompat.getColor(mContext, R.color.color_FF6000)
+                    : ContextCompat.getColor(mContext, R.color.color_333338));
+            getView(R.id.dropdown_item_checkbox).setVisibility(model.isChecked() ?
+                    View.VISIBLE : View.INVISIBLE);
         }
     }
 }

@@ -13,7 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.LinearLayout;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.commonlibrary.R;
@@ -44,6 +45,7 @@ public class BottomDialog extends Dialog {
         private int contentLayoutId = -1;
         private ViewGroup.LayoutParams contentLayoutParams;
 
+        private boolean isBtnBottom = false;
         private CharSequence title;
         private CharSequence cancelText;
         private CharSequence okText;
@@ -55,6 +57,11 @@ public class BottomDialog extends Dialog {
         public Builder(Context context) {
             this.context = context;
             this.inflater = LayoutInflater.from(context);
+        }
+
+        public Builder setBtnBottom(boolean isBtnBottom) {
+            this.isBtnBottom = isBtnBottom;
+            return this;
         }
 
         /**
@@ -371,17 +378,33 @@ public class BottomDialog extends Dialog {
                 }
             }
 
-            // 设置Cancel按钮
-            TextView tvCancel = layout.findViewById(R.id.tv_dialog_cancel);
-            if (TextUtils.isEmpty(cancelText)) {
-                tvCancel.setVisibility(View.GONE);
+            // 切换按钮位置
+            Button btnCancel;
+            Button btnOk;
+            if (isBtnBottom) {
+                layout.findViewById(R.id.layout_dialog_btn).setVisibility(View.VISIBLE);
+                layout.findViewById(R.id.btn_dialog_ok_top).setVisibility(View.GONE);
+                layout.findViewById(R.id.btn_dialog_cancel_top).setVisibility(View.GONE);
+                btnCancel = layout.findViewById(R.id.btn_dialog_cancel_bottom);
+                btnOk = layout.findViewById(R.id.btn_dialog_ok_bottom);
             } else {
-                tvCancel.setText(cancelText);
+                layout.findViewById(R.id.layout_dialog_btn).setVisibility(View.GONE);
+                btnOk = layout.findViewById(R.id.btn_dialog_ok_top);
+                btnOk.setVisibility(View.VISIBLE);
+                btnCancel = layout.findViewById(R.id.btn_dialog_cancel_top);
+                btnCancel.setVisibility(View.VISIBLE);
+            }
+
+            // 设置Cancel按钮
+            if (TextUtils.isEmpty(cancelText)) {
+                btnCancel.setVisibility(View.GONE);
+            } else {
+                btnCancel.setText(cancelText);
                 if (cancelTextColor != -1) {
-                    tvCancel.setTextColor(cancelTextColor);
+                    btnCancel.setTextColor(cancelTextColor);
                 }
                 if (cancelClickListener != null) {
-                    tvCancel.setOnClickListener(new View.OnClickListener() {
+                    btnCancel.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             dialog.cancel();
@@ -392,16 +415,15 @@ public class BottomDialog extends Dialog {
             }
 
             // 设置ok按钮
-            TextView tvOk = layout.findViewById(R.id.tv_dialog_ok);
             if (TextUtils.isEmpty(okText)) {
-                tvOk.setVisibility(View.GONE);
+                btnOk.setVisibility(View.GONE);
             } else {
-                tvOk.setText(okText);
+                btnOk.setText(okText);
                 if (okTextColor != -1) {
-                    tvOk.setTextColor(okTextColor);
+                    btnOk.setTextColor(okTextColor);
                 }
                 if (okClickListener != null) {
-                    tvOk.setOnClickListener(new View.OnClickListener() {
+                    btnOk.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             dialog.dismiss();
@@ -412,7 +434,7 @@ public class BottomDialog extends Dialog {
             }
 
             // 设置内容Layout
-            LinearLayout content = layout.findViewById(R.id.ll_dialog_content);
+            FrameLayout content = layout.findViewById(R.id.layout_dialog_content);
             if (contentView != null) {
                 content.addView(contentView, contentLayoutParams);
             } else if (contentLayoutId != -1) {
