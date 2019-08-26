@@ -1128,6 +1128,12 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     @Override
     public void didMoveToDate(String date, long timeStamp) {
         LogCat.e(TAG, "11111 didMoveToDate, " + date + ",  " + timeStamp);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                tvTimeScroll.setVisibility(View.GONE);
+            }
+        }, 500);
         if (isFirstScroll && !isCurrentLive) {
             LogCat.e(TAG, "11111 didMoveToDate, isFirstScroll");
             selectedDate = timeStamp;
@@ -1135,12 +1141,6 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
             return;
         }
         selectedTimeIsHaveVideo(timeStamp);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                tvTimeScroll.setVisibility(View.GONE);
-            }
-        }, 500);
     }
 
     @Override
