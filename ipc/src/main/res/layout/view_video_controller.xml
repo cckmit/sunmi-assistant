@@ -34,8 +34,8 @@
             android:layout_width="@dimen/dp_28"
             android:layout_height="@dimen/dp_28"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="@dimen/dp_20"
             android:layout_marginEnd="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_20"
             android:background="@mipmap/ic_video_setting"
             android:visibility="gone" />
     </RelativeLayout>
@@ -46,8 +46,8 @@
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="@dimen/dp_123"
         android:layout_marginEnd="@dimen/dp_25"
+        android:layout_marginTop="@dimen/dp_123"
         android:background="@mipmap/ic_recording_normal"
         android:visibility="gone" />
 
@@ -57,8 +57,8 @@
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="@dimen/dp_171"
         android:layout_marginEnd="@dimen/dp_25"
+        android:layout_marginTop="@dimen/dp_171"
         android:background="@mipmap/ic_screenshot"
         android:visibility="gone" />
 
@@ -68,8 +68,8 @@
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="@dimen/dp_219"
         android:layout_marginEnd="@dimen/dp_25"
+        android:layout_marginTop="@dimen/dp_219"
         android:background="@mipmap/ic_live"
         android:visibility="gone" />
 
@@ -78,10 +78,10 @@
         android:id="@+id/test_cloud_back"
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
-        android:layout_below="@+id/iv_live"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_below="@+id/iv_live"
         android:layout_marginEnd="@dimen/dp_25"
+        android:layout_marginTop="@dimen/dp_16"
         android:gravity="center"
         android:text="@string/str_cloud_back"
         android:textColor="@color/c_white"
@@ -93,10 +93,10 @@
         android:id="@+id/ll_change_volume"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_84"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="@dimen/dp_82"
+        android:layout_alignParentEnd="true"
         android:layout_marginBottom="@dimen/dp_44"
+        android:layout_marginEnd="@dimen/dp_82"
         android:background="@drawable/bg_set_video_quality"
         android:gravity="center"
         android:visibility="gone">
@@ -118,10 +118,10 @@
         android:layout_width="@dimen/dp_42"
         android:layout_height="@dimen/dp_48"
         android:layout_above="@+id/rl_bottom"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="@dimen/dp_20"
+        android:layout_alignParentEnd="true"
         android:layout_marginBottom="@dimen/dp_44"
+        android:layout_marginEnd="@dimen/dp_20"
         android:background="@drawable/bg_set_video_quality"
         android:orientation="vertical"
         android:visibility="gone">
@@ -161,8 +161,8 @@
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
             android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/dp_20"
             android:layout_marginEnd="@dimen/dp_24"
+            android:layout_marginStart="@dimen/dp_20"
             android:background="@mipmap/play_disable" />
 
         <com.sunmi.ipc.view.ZFTimeLine
@@ -171,8 +171,8 @@
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/dp_24"
-            android:layout_toStartOf="@+id/tv_calender"
             android:layout_toEndOf="@+id/iv_play"
+            android:layout_toStartOf="@+id/tv_calender"
             android:background="@color/transparent"
             android:visibility="visible" />
 
@@ -182,8 +182,8 @@
             android:layout_height="@dimen/dp_56"
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/dp_24"
-            android:layout_toStartOf="@+id/tv_calender"
             android:layout_toEndOf="@+id/iv_play"
+            android:layout_toStartOf="@+id/tv_calender"
             android:background="@color/transparent"
             android:visibility="gone">
 
@@ -264,8 +264,8 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_14"
-            android:drawableStart="@drawable/oval_red"
             android:drawablePadding="@dimen/dp_8"
+            android:drawableStart="@drawable/oval_red"
             android:text="@string/str_record_text"
             android:textColor="@color/c_white"
             android:textSize="@dimen/sp_12" />
@@ -288,11 +288,11 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:background="@drawable/bg_shap_grey"
-        android:drawableStart="@mipmap/ic_fast_forward"
         android:drawablePadding="@dimen/dp_10"
+        android:drawableStart="@mipmap/ic_fast_forward"
         android:gravity="center"
-        android:visibility="gone"
         android:padding="@dimen/dp_10"
-        android:textColor="@color/c_white" />
+        android:textColor="@color/c_white"
+        android:visibility="gone" />
 
 </RelativeLayout>

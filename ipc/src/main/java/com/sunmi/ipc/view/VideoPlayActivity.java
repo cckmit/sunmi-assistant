@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -32,7 +31,6 @@ import com.sunmi.ipc.presenter.VideoPlayPresenter;
 import com.sunmi.ipc.utils.AACDecoder;
 import com.sunmi.ipc.utils.H264Decoder;
 import com.sunmi.ipc.utils.IOTCClient;
-import com.sunmi.ipc.utils.TimeView;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -113,12 +111,6 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     ImageView ivLive;//直播
     @ViewById(resName = "iv_play")
     ImageView ivPlay;//开始播放
-    @ViewById(resName = "ll_date_view")
-    RelativeLayout llDateView;
-    @ViewById(resName = "recyclerView")
-    RecyclerView recyclerView;
-    @ViewById(resName = "my_view")
-    TimeView timeView;//时间绘制
     @ViewById(resName = "iv_setting")
     ImageView ivSetting;//设置
     @ViewById(resName = "ll_play_fail")
@@ -791,11 +783,6 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
             executorService.shutdownNow();
             executorService = null;
         }
-    }
-
-    @UiThread
-    void initDateList() {
-        llDateView.setVisibility(View.VISIBLE);
     }
 
     //渲染时间轴并滚动到指定时间
