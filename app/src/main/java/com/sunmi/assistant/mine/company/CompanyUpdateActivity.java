@@ -165,8 +165,8 @@ public class CompanyUpdateActivity extends BaseActivity
                 finish();
                 return true;
             }
-            if (!RegexUtils.isChinaPhone(companyInfo) && !RegexUtils.isFixedPhone(companyInfo)) {
-                shortTip(getString(R.string.check_mobile_fixedphone_tip));
+            if (!RegexUtils.isChinaPhone(companyInfo)) {
+                shortTip(getString(R.string.str_invalid_phone));
                 return true;
             }
             mInfo.setContact_tel(companyInfo);

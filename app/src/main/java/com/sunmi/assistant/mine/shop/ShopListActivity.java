@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.TextView;
 
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.utils.CommonUtils;
@@ -45,6 +47,10 @@ public class ShopListActivity extends BaseActivity {
 
     @ViewById(R.id.recyclerView)
     RecyclerView recyclerView;
+    @ViewById(R.id.tv_empty)
+    TextView tvEmpty;
+    @ViewById(R.id.include_network_error)
+    View includeNetworkError;
     private ShopListAdapter mAdapter;
 
     @AfterViews
@@ -53,6 +59,11 @@ public class ShopListActivity extends BaseActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         mAdapter = new ShopListAdapter(this);
         recyclerView.setAdapter(mAdapter);
+        getShopList();
+    }
+
+    @Click(R.id.btn_refresh)
+    void onRefreshClick() {
         getShopList();
     }
 
@@ -98,14 +109,20 @@ public class ShopListActivity extends BaseActivity {
             @Override
             public void onSuccess(int code, String msg, ShopListResp data) {
                 hideLoadingDialog();
-                mAdapter.setData(data.getShop_list());
+                includeNetworkError.setVisibility(View.GONE);
+                if (data.getShop_list().size() == 0) {
+                    tvEmpty.setVisibility(View.VISIBLE);
+                } else {
+                    tvEmpty.setVisibility(View.GONE);
+                    mAdapter.setData(data.getShop_list());
+                }
             }
 
             @Override
             public void onFail(int code, String msg, ShopListResp data) {
                 LogCat.e(TAG, "Get shop list Failed. " + msg);
                 hideLoadingDialog();
-                shortTip(getString(R.string.str_store_load_error));
+                includeNetworkError.setVisibility(View.VISIBLE);
             }
         });
     }

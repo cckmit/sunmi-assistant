@@ -27,6 +27,7 @@ import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.TitleBarView;
 
 import static com.sunmi.assistant.mine.shop.ShopDetailGroupActivity.INTENT_EXTRA_SHOP_NAME;
+import static sunmi.common.utils.CommonHelper.floatTrans;
 
 /**
  * 我的店铺详情
@@ -125,7 +126,7 @@ public class ShopDetailActivity extends BaseActivity {
                 silShopContact.setRightText(mInfo.getContactPerson());
                 silShopMobile.setRightText(mInfo.getContactTel());
                 if (mInfo.getBusinessArea() > 0) {
-                    silShopArea.setRightText(String.valueOf(mInfo.getBusinessArea() + "㎡"));
+                    silShopArea.setRightText(floatTrans(mInfo.getBusinessArea()) + "㎡");
                 }
                 LogCat.d(TAG, "Shop info:" + mInfo);
             }
@@ -245,7 +246,7 @@ public class ShopDetailActivity extends BaseActivity {
         if (resultCode == Activity.RESULT_OK) {
             isUpdateShopInfo = true;
             mInfo.setBusinessArea(Float.parseFloat(data.getStringExtra(INTENT_EXTRA_AREA)));
-            silShopArea.setRightText(String.valueOf(mInfo.getBusinessArea()) + "㎡");
+            silShopArea.setRightText(floatTrans(mInfo.getBusinessArea()) + "㎡");
         }
     }
 
