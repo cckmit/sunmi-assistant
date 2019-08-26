@@ -25,7 +25,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -34,9 +36,11 @@ import sunmi.common.constant.CommonConfig;
 import sunmi.common.rpc.cloud.SunmiStoreRetrofitClient;
 import sunmi.common.rpc.mqtt.EmqTokenResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
+import sunmi.common.rpc.retrofit.BaseRetrofitClient;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.SafeUtils;
+import sunmi.common.utils.SpUtils;
 
 /**
  * Description: IpcCloudApi
@@ -66,7 +70,13 @@ public class IpcCloudApi {
                     .put("longitude", longitude)
                     .put("latitude", latitude)
                     .toString();
-            SunmiStoreRetrofitClient.getInstance().create(DeviceInterface.class)
+            Map<String, String> headers = new HashMap<>();
+            if (!TextUtils.isEmpty(SpUtils.getStoreToken())) {
+                headers.put("Authorization", "Bearer " + SpUtils.getStoreToken());
+            }
+            BaseRetrofitClient baseRetrofitClient = new BaseRetrofitClient();
+            baseRetrofitClient.init(CommonConfig.SUNMI_STORE_URL, headers, 4);
+            baseRetrofitClient.create(DeviceInterface.class)
                     .bind(getSignedRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
