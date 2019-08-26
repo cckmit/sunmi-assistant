@@ -174,7 +174,7 @@
             android:layout_toStartOf="@+id/tv_calender"
             android:layout_toEndOf="@+id/iv_play"
             android:background="@color/transparent"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
         <RelativeLayout
             android:id="@+id/ll_date_view"
@@ -185,7 +185,7 @@
             android:layout_toStartOf="@+id/tv_calender"
             android:layout_toEndOf="@+id/iv_play"
             android:background="@color/transparent"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <RelativeLayout
                 android:id="@+id/rl_recyclerView"
