@@ -1,23 +1,27 @@
 package sunmi.common.view.dialog;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.ColorInt;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.StringRes;
-import android.text.TextUtils;
-import android.view.Gravity;
-import android.view.LayoutInflater;
+import android.support.annotation.DimenRes;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import com.commonlibrary.R;
+
+import sunmi.common.base.recycle.BaseRecyclerAdapter;
+import sunmi.common.base.recycle.BaseViewHolder;
+import sunmi.common.base.recycle.SimpleArrayAdapter;
 
 /**
  * @author yinhui
@@ -29,430 +33,141 @@ public class BottomListDialog extends Dialog {
         super(context, theme);
     }
 
-    public void showWithOutTouchable(boolean touchable) {
-        this.setCanceledOnTouchOutside(touchable);
-        this.show();
-    }
-
     /**
      * builder class for creating a custom dialog
      */
-    public static class Builder {
-        private Context context;
-        private LayoutInflater inflater;
+    public static class Builder<T> extends BottomDialog.Builder {
 
-        private View contentView;
-        private int contentLayoutId = -1;
-        private ViewGroup.LayoutParams contentLayoutParams;
-
-        private boolean isBtnBottom = false;
-        private CharSequence title;
-        private CharSequence cancelText;
-        private CharSequence okText;
-        private int titleTextColor = -1;
-        private int cancelTextColor = -1;
-        private int okTextColor = -1;
-        private DialogInterface.OnClickListener cancelClickListener, okClickListener;
+        private SimpleArrayAdapter<T> mAdapter;
+        private OnItemClickListener<T> mListener;
+        private float maxHeightCount = 6.5f;
+        private boolean dividerShow = true;
+        private int dividerDrawable = -1;
+        private int dividerColor = 0x1A000000;
+        private int dividerSize;
 
         public Builder(Context context) {
-            this.context = context;
-            this.inflater = LayoutInflater.from(context);
+            super(context);
+            dividerSize = (int) context.getResources().getDimension(R.dimen.dp_0_5);
         }
 
-        public Builder setBtnBottom(boolean isBtnBottom) {
-            this.isBtnBottom = isBtnBottom;
+        public Builder<T> setAdapter(SimpleArrayAdapter<T> adapter) {
+            this.mAdapter = adapter;
+            return this;
+        }
+
+        public Builder<T> setOnItemClickListener(OnItemClickListener<T> listener) {
+            this.mListener = listener;
             return this;
         }
 
         /**
-         * 设置标题
+         * 设置对话框最大高度，单位是Item数量，可以非整数。
          *
-         * @param textId 标题文本资源id
+         * @param count 最大高度时展示的Item数量
          * @return 建造者
          */
-        public Builder setTitle(@StringRes int textId) {
-            return setTitle(context.getText(textId));
-        }
-
-        /**
-         * 设置标题
-         *
-         * @param title 标题文本字符串
-         * @return 建造者
-         */
-        public Builder setTitle(CharSequence title) {
-            return setTitle(title, -1);
-        }
-
-        /**
-         * 设置标题和标题颜色
-         *
-         * @param textId    标题文本资源id
-         * @param textColor 标题颜色值（非资源id）
-         * @return 建造者
-         */
-        public Builder setTitle(@StringRes int textId, @ColorInt int textColor) {
-            return setTitle(context.getText(textId), textColor);
-        }
-
-        /**
-         * 设置标题和标题颜色
-         *
-         * @param title     标题文本字符串
-         * @param textColor 标题颜色值（非资源id）
-         * @return 建造者
-         */
-        public Builder setTitle(CharSequence title, @ColorInt int textColor) {
-            this.title = title;
-            this.titleTextColor = textColor;
+        public Builder<T> setMaxHeight(float count) {
+            this.maxHeightCount = count;
             return this;
         }
 
-        /**
-         * 设置对话框内容主体
-         *
-         * @param v  View对象
-         * @param lp 布局参数
-         * @return 建造者
-         */
-        public Builder setContent(View v, ViewGroup.LayoutParams lp) {
-            this.contentLayoutId = -1;
-            this.contentView = v;
-            this.contentLayoutParams = lp;
+        public Builder<T> setDividerShow(boolean isShow) {
+            this.dividerShow = isShow;
             return this;
         }
 
-        /**
-         * 设置对话框内容主体
-         *
-         * @param layoutId 内容布局id
-         * @return 建造者
-         */
-        public Builder setContent(@LayoutRes int layoutId) {
-            this.contentLayoutId = layoutId;
-            this.contentView = null;
+        public Builder<T> setDividerDrawable(@DrawableRes int drawableResId) {
+            this.dividerDrawable = drawableResId;
             return this;
         }
 
-        /**
-         * 设置取消按钮文本，默认事件为dismiss
-         *
-         * @param textId 文本资源id
-         * @return 建造者
-         */
-        public Builder setCancelButton(@StringRes int textId) {
-            return setCancelButton(context.getText(textId), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-        }
-
-        /**
-         * 设置取消按钮文本和事件
-         *
-         * @param textId   文本资源id
-         * @param listener 事件回调
-         * @return 建造者
-         */
-        public Builder setCancelButton(@StringRes int textId, DialogInterface.OnClickListener listener) {
-            return setCancelButton(context.getText(textId), listener);
-        }
-
-        /**
-         * 设置取消按钮文本，默认事件为dismiss
-         *
-         * @param text 文本字符串
-         * @return 建造者
-         */
-        public Builder setCancelButton(CharSequence text) {
-            return setCancelButton(text, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-        }
-
-        /**
-         * 设置取消按钮文本和事件
-         *
-         * @param text     文本字符串
-         * @param listener 事件回调
-         * @return 建造者
-         */
-        public Builder setCancelButton(CharSequence text, DialogInterface.OnClickListener listener) {
-            return setCancelButton(text, -1, listener);
-        }
-
-        /**
-         * 设置取消按钮文本和颜色，默认事件为dismiss
-         *
-         * @param textId    文本资源id
-         * @param textColor 文本颜色值（非资源id）
-         * @return 建造者
-         */
-        public Builder setCancelButton(@StringRes int textId, @ColorInt int textColor) {
-            return setCancelButton(context.getText(textId), textColor, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-        }
-
-        /**
-         * 设置取消按钮文本，颜色和事件
-         *
-         * @param textId    文本资源id
-         * @param textColor 文本颜色值（非资源id）
-         * @param listener  事件回调
-         * @return 建造者
-         */
-        public Builder setCancelButton(@StringRes int textId, @ColorInt int textColor, DialogInterface.OnClickListener listener) {
-            return setCancelButton(context.getText(textId), textColor, listener);
-        }
-
-        /**
-         * 设置取消按钮文本和颜色，默认事件为dismiss
-         *
-         * @param text      文本字符串
-         * @param textColor 文本颜色值（非资源id）
-         * @return 建造者
-         */
-        public Builder setCancelButton(CharSequence text, @ColorInt int textColor) {
-            return setCancelButton(text, textColor, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-        }
-
-        /**
-         * 设置取消按钮文本，颜色和事件
-         *
-         * @param text      文本字符串
-         * @param textColor 文本颜色值（非资源id）
-         * @param listener  事件回调
-         * @return 建造者
-         */
-        public Builder setCancelButton(CharSequence text, @ColorInt int textColor, DialogInterface.OnClickListener listener) {
-            this.cancelText = text;
-            this.cancelTextColor = textColor;
-            this.cancelClickListener = listener;
+        public Builder<T> setDividerColor(@ColorInt int color) {
+            this.dividerColor = color;
             return this;
         }
 
-        /**
-         * 设置确定按钮文本，默认事件为dismiss
-         *
-         * @param textId 文本资源id
-         * @return 建造者
-         */
-        public Builder setOkButton(@StringRes int textId) {
-            return setOkButton(context.getText(textId), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-        }
-
-        /**
-         * 设置确定按钮文本和事件
-         *
-         * @param textId   文本资源id
-         * @param listener 事件回调
-         * @return 建造者
-         */
-        public Builder setOkButton(@StringRes int textId, DialogInterface.OnClickListener listener) {
-            return setOkButton(context.getText(textId), listener);
-        }
-
-        /**
-         * 设置确定按钮文本，默认事件为dismiss
-         *
-         * @param text 文本字符串
-         * @return 建造者
-         */
-        public Builder setOkButton(CharSequence text) {
-            return setOkButton(text, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-        }
-
-        /**
-         * 设置确定按钮文本和事件
-         *
-         * @param text     文本字符串
-         * @param listener 事件回调
-         * @return 建造者
-         */
-        public Builder setOkButton(CharSequence text, DialogInterface.OnClickListener listener) {
-            return setOkButton(text, -1, listener);
-        }
-
-        /**
-         * 设置确定按钮文本和颜色，默认事件为dismiss
-         *
-         * @param textId    文本资源id
-         * @param textColor 文本颜色值（非资源id）
-         * @return 建造者
-         */
-        public Builder setOkButton(@StringRes int textId, @ColorInt int textColor) {
-            return setOkButton(context.getText(textId), textColor, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-        }
-
-        /**
-         * 设置确定按钮文本，颜色和事件
-         *
-         * @param textId    文本资源id
-         * @param textColor 文本颜色值（非资源id）
-         * @param listener  事件回调
-         * @return 建造者
-         */
-        public Builder setOkButton(@StringRes int textId, @ColorInt int textColor, DialogInterface.OnClickListener listener) {
-            return setOkButton(context.getText(textId), textColor, listener);
-        }
-
-        /**
-         * 设置确定按钮文本和颜色，默认事件为dismiss
-         *
-         * @param text      文本字符串
-         * @param textColor 文本颜色值（非资源id）
-         * @return 建造者
-         */
-        public Builder setOkButton(CharSequence text, @ColorInt int textColor) {
-            return setOkButton(text, textColor, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-        }
-
-        /**
-         * 设置确定按钮文本，颜色和事件
-         *
-         * @param text      文本字符串
-         * @param textColor 文本颜色值（非资源id）
-         * @param listener  事件回调
-         * @return 建造者
-         */
-        public Builder setOkButton(CharSequence text, @ColorInt int textColor, DialogInterface.OnClickListener listener) {
-            this.okText = text;
-            this.okTextColor = textColor;
-            this.okClickListener = listener;
+        public Builder<T> setDividerSize(float size) {
+            this.dividerSize = (int) size;
             return this;
         }
 
+        public Builder<T> setDividerSize(@DimenRes int dimenResId) {
+            this.dividerSize = (int) context.getResources().getDimension(dimenResId);
+            return this;
+        }
+
+        @Override
+        protected void setupContent(final Dialog dialog, FrameLayout content) {
+            if (mAdapter == null) {
+                return;
+            }
+            if (mListener != null) {
+                mAdapter.setOnItemClickListener(new sunmi.common.base.recycle.listener.OnItemClickListener<T>() {
+                    @Override
+                    public void onClick(BaseRecyclerAdapter<T> adapter, BaseViewHolder<T> holder,
+                                        T model, int position) {
+                        dialog.dismiss();
+                        mListener.onClick(dialog, holder, model);
+                    }
+                });
+            }
+            RecyclerView recycler = new RecyclerView(context);
+            recycler.setLayoutManager(new LinearLayoutManager(context));
+            recycler.setAdapter(mAdapter);
+            Drawable drawable = dividerDrawable == -1 ? null : ContextCompat.getDrawable(context, dividerDrawable);
+            if (dividerShow) {
+                DividerItemDecoration decoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
+                if (drawable != null) {
+                    decoration.setDrawable(drawable);
+                } else {
+                    GradientDrawable divider = new GradientDrawable();
+                    divider.setShape(GradientDrawable.RECTANGLE);
+                    divider.setSize(ViewGroup.LayoutParams.MATCH_PARENT, dividerSize);
+                    divider.setColor(dividerColor);
+                    decoration.setDrawable(divider);
+                }
+                recycler.addItemDecoration(decoration);
+            }
+            content.addView(recycler, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        }
+
+
+    }
+
+    private static class ListLayoutManager extends LinearLayoutManager {
+
+        private float maxHeight;
+
+        private ListLayoutManager(Context context, float maxHeight) {
+            super(context);
+            this.maxHeight = maxHeight;
+        }
+
+        @Override
+        public void onMeasure(@NonNull RecyclerView.Recycler recycler, @NonNull RecyclerView.State state,
+                              int widthSpec, int heightSpec) {
+            if (getChildCount() == 0) {
+                super.onMeasure(recycler, state, widthSpec, heightSpec);
+                return;
+            }
+            View firstChildView = recycler.getViewForPosition(0);
+            measureChild(firstChildView, widthSpec, heightSpec);
+            int itemHeight = firstChildView.getMeasuredHeight();
+            setMeasuredDimension(View.MeasureSpec.getSize(widthSpec), getChildCount() > (int) maxHeight ?
+                    (int) (itemHeight * maxHeight) : itemHeight * getChildCount());
+        }
+    }
+
+    public interface OnItemClickListener<T> {
         /**
-         * 创建自定义的对话框
+         * This method will be invoked when a item in the list is clicked.
+         *
+         * @param dialog the dialog that received the click
+         * @param holder the view holder of the item that received the click
+         * @param model  the model bound to the item that received clicked.
          */
-        public BottomListDialog create() {
-            final BottomListDialog dialog = new BottomListDialog(context, R.style.BottomDialog);
-            @SuppressLint("InflateParams")
-            View layout = inflater.inflate(R.layout.dialog_bottom, null);
-            int width = context.getResources().getDisplayMetrics().widthPixels;
-            dialog.addContentView(layout, new ViewGroup.LayoutParams(
-                    width, ViewGroup.LayoutParams.WRAP_CONTENT));
-
-            // 设置Title
-            TextView tvTitle = layout.findViewById(R.id.tv_dialog_title);
-            if (TextUtils.isEmpty(title)) {
-                tvTitle.setVisibility(View.GONE);
-            } else {
-                tvTitle.setText(title);
-                if (titleTextColor != -1) {
-                    tvTitle.setTextColor(titleTextColor);
-                }
-            }
-
-            // 设置Btn
-            setupBtn(dialog, layout);
-
-            // 设置内容Layout
-            FrameLayout content = layout.findViewById(R.id.layout_dialog_content);
-            if (contentView != null) {
-                content.addView(contentView, contentLayoutParams);
-            } else if (contentLayoutId != -1) {
-                inflater.inflate(contentLayoutId, content);
-            }
-
-            Window window = dialog.getWindow();
-            if (window != null) {
-                window.setGravity(Gravity.BOTTOM);
-                window.setWindowAnimations(R.style.BottomDialog_Animation);
-            }
-            return dialog;
-        }
-
-        private void setupBtn(final BottomListDialog dialog, View layout) {
-            // 切换按钮位置
-            Button btnCancel;
-            Button btnOk;
-            if (isBtnBottom) {
-                layout.findViewById(R.id.layout_dialog_btn).setVisibility(View.VISIBLE);
-                layout.findViewById(R.id.btn_dialog_ok_top).setVisibility(View.GONE);
-                layout.findViewById(R.id.btn_dialog_cancel_top).setVisibility(View.GONE);
-                btnCancel = layout.findViewById(R.id.btn_dialog_cancel_bottom);
-                btnOk = layout.findViewById(R.id.btn_dialog_ok_bottom);
-            } else {
-                layout.findViewById(R.id.layout_dialog_btn).setVisibility(View.GONE);
-                btnOk = layout.findViewById(R.id.btn_dialog_ok_top);
-                btnOk.setVisibility(View.VISIBLE);
-                btnCancel = layout.findViewById(R.id.btn_dialog_cancel_top);
-                btnCancel.setVisibility(View.VISIBLE);
-            }
-
-            // 设置Cancel按钮
-            if (TextUtils.isEmpty(cancelText)) {
-                btnCancel.setVisibility(View.GONE);
-            } else {
-                btnCancel.setText(cancelText);
-                if (cancelTextColor != -1) {
-                    btnCancel.setTextColor(cancelTextColor);
-                }
-                if (cancelClickListener != null) {
-                    btnCancel.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog.cancel();
-                            cancelClickListener.onClick(dialog, DialogInterface.BUTTON_NEGATIVE);
-                        }
-                    });
-                }
-            }
-
-            // 设置ok按钮
-            if (TextUtils.isEmpty(okText)) {
-                btnOk.setVisibility(View.GONE);
-            } else {
-                btnOk.setText(okText);
-                if (okTextColor != -1) {
-                    btnOk.setTextColor(okTextColor);
-                }
-                if (okClickListener != null) {
-                    btnOk.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog.dismiss();
-                            okClickListener.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
-                        }
-                    });
-                }
-            }
-        }
+        void onClick(DialogInterface dialog, BaseViewHolder<T> holder, T model);
     }
 
 }

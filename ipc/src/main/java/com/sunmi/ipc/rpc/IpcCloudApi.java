@@ -30,10 +30,12 @@ import java.util.List;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import retrofit2.Call;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.rpc.cloud.SunmiStoreRetrofitClient;
 import sunmi.common.rpc.mqtt.EmqTokenResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
+import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.SafeUtils;
@@ -246,9 +248,10 @@ public class IpcCloudApi {
         }
     }
 
-    public static void getFaceList(int companyId, int shopId, int groupId,
-                                   int gender, int age, String name, int page, int size,
-                                   RetrofitCallback<FaceListResp> callback) {
+    public static Call<BaseResponse<FaceListResp>> getFaceList(
+            int companyId, int shopId, int groupId, int gender, int age, String name, int page, int size,
+            RetrofitCallback<FaceListResp> callback) {
+        Call<BaseResponse<FaceListResp>> call = null;
         try {
             JSONObject params = new JSONObject()
                     .put("company_id", companyId)
@@ -264,12 +267,13 @@ public class IpcCloudApi {
                 params.put("name", name);
             }
             params.put("page_num", page).put("page_size", size);
-            SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
-                    .getList(getSignedRequest(params.toString()))
-                    .enqueue(callback);
+            call = SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
+                    .getList(getSignedRequest(params.toString()));
+            call.enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        return call;
     }
 
     public static void updateFaceDetail(int faceId, int groupId, String name, int gender, int age,

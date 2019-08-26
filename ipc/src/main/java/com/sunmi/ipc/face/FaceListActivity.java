@@ -1,6 +1,7 @@
 package com.sunmi.ipc.face;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Rect;
@@ -33,6 +34,7 @@ import com.sunmi.ipc.face.model.FaceGroup;
 import com.sunmi.ipc.face.presenter.FaceListPresenter;
 import com.sunmi.ipc.face.util.BottomAnimation;
 import com.sunmi.ipc.face.util.GlideRoundCrop;
+import com.sunmi.ipc.face.util.Utils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -55,7 +57,7 @@ import sunmi.common.view.DropdownAdapter;
 import sunmi.common.view.DropdownAnimation;
 import sunmi.common.view.DropdownMenu;
 import sunmi.common.view.TitleBarView;
-import sunmi.common.view.dialog.BottomDialog;
+import sunmi.common.view.dialog.BottomListDialog;
 import sunmi.common.view.dialog.CommonDialog;
 
 /**
@@ -112,7 +114,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
 
     private SimpleArrayAdapter<Face> mAdapter;
     private SimpleArrayAdapter<Face> mAdapterSelected;
-    private List<FaceGroup> mFaceGroupList;
+    private FaceGroupDialogAdapter mAdapterFaceGroup;
 
     private BottomAnimation mBottomAnimator = new BottomAnimation();
     private DropdownAnimation mDropdownAnimator = new DropdownAnimation();
@@ -122,8 +124,9 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     private FilterItem mFilterGenderCurrent;
     private FilterItem mFilterAgeCurrent;
 
-    private CommonDialog mDeleteDialog;
-    private BottomDialog mMoveDialog;
+    private Dialog mDeleteDialog;
+    private Dialog mMoveDialog;
+
     private boolean mMovePending = false;
 
     @AfterViews
@@ -164,10 +167,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
 
             @Override
             public void afterTextChanged(Editable s) {
-                String name = s.toString();
-                if (!TextUtils.isEmpty(name)) {
-                    mPresenter.filterName(name);
-                }
+                mPresenter.filterName(s.toString().trim());
             }
         });
         mOverlay.setOnClickListener(new View.OnClickListener() {
@@ -275,7 +275,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     private void updateStateView() {
         updateTitle();
         updateAddIcon();
-        updateSelectedLayout(true);
+        updateSelectedLayout(false);
         hideDropdownMenu(true);
         if (mState == STATE_NORMAL) {
             final List<Face> list = mAdapter.getData();
@@ -294,7 +294,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         if (mState == STATE_NORMAL && !list.get(0).isAddIcon()) {
             mAdapter.add(0, Face.createCamera());
         } else if (mState == STATE_CHOOSE && list.get(0).isAddIcon()) {
-//            mAdapter.remove(0);
+            mAdapter.remove(0);
         }
     }
 
@@ -309,19 +309,32 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
 
     @Click(resName = "tv_face_selected_move")
     void clickMove() {
-        if (mFaceGroupList == null) {
+        if (mAdapterFaceGroup == null) {
             showLoadingDialog();
             mPresenter.loadGroup();
             mMovePending = true;
             return;
         }
         if (mMoveDialog == null) {
-            mMoveDialog = new BottomDialog.Builder(this)
+            mMoveDialog = new BottomListDialog.Builder<FaceGroup>(this)
+                    .setAdapter(mAdapterFaceGroup)
+                    .setOnItemClickListener(new BottomListDialog.OnItemClickListener<FaceGroup>() {
+                        @Override
+                        public void onClick(DialogInterface dialog, BaseViewHolder holder, FaceGroup model) {
+                            List<Face> selected = mAdapterSelected.getData();
+                            if (selected.size() > model.getCapacity() - model.getCount()) {
+                                shortTip(R.string.ipc_face_error_move);
+                            } else {
+                                mPresenter.move(selected, model);
+                            }
+                        }
+                    })
+                    .setTitle(R.string.ipc_face_move_title)
                     .setBtnBottom(true)
                     .setCancelButton(R.string.sm_cancel)
-                    // TODO: Group dialog content
                     .create();
         }
+        mAdapterFaceGroup.setSelectedCount(mAdapterSelected.getItemCount());
         mMoveDialog.show();
     }
 
@@ -368,11 +381,13 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
 
     @Override
     public void updateGroupList(List<FaceGroup> list) {
-        this.mFaceGroupList = list;
+        if (list != null) {
+            mAdapterFaceGroup = new FaceGroupDialogAdapter(list);
+        }
         if (mMovePending) {
             mMovePending = false;
             hideLoadingDialog();
-            if (list == null) {
+            if (mAdapterFaceGroup == null) {
                 shortTip(R.string.toast_network_error);
             } else {
                 clickMove();
@@ -587,6 +602,42 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
             }
             adapter.notifyDataSetChanged();
         }
+    }
+
+    private static class FaceGroupDialogAdapter extends SimpleArrayAdapter<FaceGroup> {
+
+        private int selectedCount = 0;
+
+        public FaceGroupDialogAdapter(List<FaceGroup> data) {
+            super(data);
+        }
+
+        public void setSelectedCount(int selectedCount) {
+            this.selectedCount = selectedCount;
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public int getLayoutId() {
+            return R.layout.face_item_dialog_group;
+        }
+
+        @Override
+        public void setupView(@NonNull BaseViewHolder<FaceGroup> holder, FaceGroup model, int position) {
+            TextView name = holder.getView(R.id.tv_face_group_name);
+            TextView content = holder.getView(R.id.tv_face_group_remain);
+            name.setText(Utils.getGroupName(holder.getContext(), model, false));
+            int remain = model.getCapacity() - model.getCount();
+            content.setText(holder.getContext().getString(R.string.ipc_face_remain, remain));
+            if (selectedCount > remain) {
+                name.setTextColor(ContextCompat.getColor(holder.getContext(), R.color.colorText_40));
+                content.setTextColor(ContextCompat.getColor(holder.getContext(), R.color.colorText_40));
+            } else {
+                name.setTextColor(ContextCompat.getColor(holder.getContext(), R.color.colorText));
+                content.setTextColor(ContextCompat.getColor(holder.getContext(), R.color.colorText_60));
+            }
+        }
+
     }
 
     private class FaceListAdapter extends SimpleArrayAdapter<Face> {
