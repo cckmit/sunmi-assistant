@@ -98,5 +98,7 @@
     <string name="company_shop_new_create">新建门店</string>
     <string name="company_shop_import">导入门店</string>
     <string name="update_app_exception">版本更新异常,请检查网络连接状态是否良好。</string>
+    <string name="str_loding_more">加载中</string>
+    <string name="tip_no_more_data">没有更多数据了</string>
 
 </resources>

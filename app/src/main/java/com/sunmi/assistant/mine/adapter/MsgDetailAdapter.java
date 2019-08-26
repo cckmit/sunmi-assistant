@@ -2,7 +2,6 @@ package com.sunmi.assistant.mine.adapter;
 
 import android.content.Context;
 import android.support.annotation.StringRes;
-import android.text.TextUtils;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -59,7 +58,7 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
         String title = titleTag.getTag();
         helper.setText(R.id.tv_msg_title, titleMap.get("company_name") + titleMap.get("shop_name"));
         helper.setText(R.id.tv_msg_time, DateTimeUtils.secondToDate(item.getReceiveTime(), "yyyy-MM-dd HH:mm:ss"));
-        if (TextUtils.equals(modelName, MsgConstants.NOTIFY_IPC_TF_DETECT)) {
+        if (modelName.contains(MsgConstants.NOTIFY_IPC_TF_DETECT)) {
             if (title.contains(MsgConstants.TF_NON_EXIST)) {
                 setMsgDetail(helper, R.string.msg_ipc_tf_non_exist);
             } else if (title.contains(MsgConstants.TF_EXIST)) {
@@ -69,24 +68,26 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
             } else if (title.contains(MsgConstants.TF_NON_CAPABLE)) {
                 setMsgDetail(helper, R.string.msg_ipc_tf_non_capable);
             }
-        } else if (TextUtils.equals(modelName, MsgConstants.NOTIFY_IPC_ON_OFFLINE)) {
+        } else if (modelName.contains(MsgConstants.NOTIFY_IPC_ON_OFFLINE)) {
             setMsgDetail(helper, R.string.msg_ipc_offline);
-        } else if (TextUtils.equals(modelName, MsgConstants.NOTIFY_IPC_DETECT_AUDIO)) {
+        } else if (modelName.contains(MsgConstants.NOTIFY_IPC_DETECT_AUDIO)) {
             setMsgDetail(helper, R.string.msg_ipc_pic_detect);
-        } else if (TextUtils.equals(modelName, MsgConstants.NOTIFY_IPC_DETECT_VIDEO)) {
+        } else if (modelName.contains(MsgConstants.NOTIFY_IPC_DETECT_VIDEO)) {
             setMsgDetail(helper, R.string.msg_ipc_pic_detect);
-        } else if (TextUtils.equals(modelName, MsgConstants.NOTIFY_IPC_OTA)) {
+        } else if (modelName.contains(MsgConstants.NOTIFY_IPC_OTA)) {
             setMsgDetail(helper, R.string.msg_ipc_ota);
-        } else if (TextUtils.equals(modelName, MsgConstants.NOTIFY_ESL_ON_OFFLINE)) {
+        } else if (modelName.contains(MsgConstants.NOTIFY_ESL_AP_ON_OFFLINE)) {
             setMsgDetail(helper, R.string.msg_esl_offline);
-        } else if (TextUtils.equals(modelName, MsgConstants.NOTIFY_ESL_OTA)) {
+        } else if (modelName.contains(MsgConstants.NOTIFY_ESL_OTA)) {
             setMsgDetail(helper, R.string.msg_esl_ota);
+        } else if (modelName.contains(MsgConstants.NOTIFY_TASK_ERP)) {
+            setMsgDetail(helper, R.string.msg_task_erp);
         }
         helper.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 if (listener != null) {
-                    listener.onLongClick(helper.itemView, item.getMsgId(), helper.getAdapterPosition());
+                    listener.onLongClick(helper.getView(R.id.tv_msg_detail), item.getMsgId(), helper.getAdapterPosition());
                 }
                 return false;
             }
@@ -98,17 +99,29 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
         String disconnectTime = detailMap.get("disconnect_time");
         String deviceName = detailMap.get("device_name");
         String binVersion = detailMap.get("bin_version");
+        String timestamp = detailMap.get("timestamp");
+        String saasName = detailMap.get("saas_name");
+        String totalCount = detailMap.get("total_count");
+        String detail;
         if (disconnectTime != null) {
             try {
                 String time = DateTimeUtils.secondToDate(Long.parseLong(disconnectTime), "yyyy-MM-dd HH:mm:ss");
-                helper.setText(R.id.tv_msg_detail, context.getString(resId, deviceName, time));
+                detail = context.getString(resId, deviceName, time);
             } catch (NumberFormatException e) {
-                helper.setText(R.id.tv_msg_detail, context.getString(resId, deviceName, disconnectTime));
+                detail = context.getString(resId, deviceName, disconnectTime);
+            }
+        } else if (timestamp != null && saasName != null && totalCount != null) {
+            try {
+                String time = DateTimeUtils.secondToDate(Long.parseLong(timestamp), "yyyy-MM-dd HH:mm:ss");
+                detail = context.getString(resId, time, saasName, totalCount);
+            } catch (NumberFormatException e) {
+                detail = context.getString(resId, timestamp, saasName, totalCount);
             }
         } else if (binVersion != null) {
-            helper.setText(R.id.tv_msg_detail, context.getString(resId, deviceName, binVersion));
+            detail = context.getString(resId, deviceName, binVersion);
         } else {
-            helper.setText(R.id.tv_msg_detail, context.getString(resId, deviceName));
+            detail = context.getString(resId, deviceName);
         }
+        helper.setText(R.id.tv_msg_detail, detail);
     }
 }
