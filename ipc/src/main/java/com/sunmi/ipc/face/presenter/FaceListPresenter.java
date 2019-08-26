@@ -9,10 +9,12 @@ import com.sunmi.ipc.face.model.Face;
 import com.sunmi.ipc.face.model.FaceAge;
 import com.sunmi.ipc.face.model.FaceGroup;
 import com.sunmi.ipc.model.FaceAgeRangeResp;
+import com.sunmi.ipc.model.FaceCheckResp;
 import com.sunmi.ipc.model.FaceGroupListResp;
 import com.sunmi.ipc.model.FaceListResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -176,6 +178,22 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
                             mView.hideLoadingDialog();
                             mView.shortTip(R.string.toast_network_error);
                         }
+                    }
+                });
+    }
+
+    @Override
+    public void uploadFace(File file) {
+        IpcCloudApi.uploadFaceAndCheck(SpUtils.getCompanyId(), mShopId, mGroup.getGroupId(), file,
+                new RetrofitCallback<FaceCheckResp>() {
+                    @Override
+                    public void onSuccess(int code, String msg, FaceCheckResp data) {
+
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg, FaceCheckResp data) {
+
                     }
                 });
     }

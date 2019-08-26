@@ -4,10 +4,13 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v4.content.ContextCompat;
@@ -37,11 +40,14 @@ import com.sunmi.ipc.face.util.GlideRoundCrop;
 import com.sunmi.ipc.face.util.Utils;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
@@ -51,12 +57,19 @@ import sunmi.common.base.recycle.BaseRecyclerAdapter;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.SimpleArrayAdapter;
 import sunmi.common.base.recycle.listener.OnViewClickListener;
+import sunmi.common.luban.Luban;
+import sunmi.common.mediapicker.TakePhoto;
+import sunmi.common.mediapicker.TakePhotoAgent;
+import sunmi.common.mediapicker.data.model.Result;
 import sunmi.common.model.FilterItem;
+import sunmi.common.utils.FileHelper;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.DropdownAdapter;
 import sunmi.common.view.DropdownAnimation;
 import sunmi.common.view.DropdownMenu;
 import sunmi.common.view.TitleBarView;
+import sunmi.common.view.bottompopmenu.BottomPopMenu;
+import sunmi.common.view.bottompopmenu.PopItemAction;
 import sunmi.common.view.dialog.BottomListDialog;
 import sunmi.common.view.dialog.CommonDialog;
 
@@ -126,6 +139,11 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
 
     private Dialog mDeleteDialog;
     private Dialog mMoveDialog;
+    private Dialog mUploadDialog;
+    private BottomPopMenu mPickerDialog;
+
+    private TakePhotoAgent mPickerAgent;
+    private Result mPickerResult;
 
     private boolean mMovePending = false;
 
@@ -139,6 +157,10 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         mPresenter = new FaceListPresenter(mShopId, mFaceGroup);
         mPresenter.attachView(this);
         mPresenter.init(this);
+        mPickerAgent = TakePhoto.with(this)
+                .setPickLimit(20)
+                .setTakePhotoListener(new PickerResult())
+                .build();
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -430,6 +452,28 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     }
 
     @Override
+    public void uploadSuccess() {
+        shortTip(R.string.ipc_face_tip_album_upload_success);
+        mPresenter.loadFace(true, true);
+        resetView();
+    }
+
+    @Override
+    public void uploadFailed() {
+        new CommonDialog.Builder(this)
+                .setTitle(R.string.ipc_face_error_upload)
+                .setMessage(R.string.ipc_face_error_photo)
+                .setCancelButton(R.string.sm_cancel)
+                .setConfirmButton(R.string.ipc_face_tack_photo_again, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mPickerAgent.takePhoto();
+                    }
+                })
+                .create().show();
+    }
+
+    @Override
     public void getDataFailed() {
         hideLoadingDialog();
         if (mAdapter.getItemCount() == 0) {
@@ -447,6 +491,37 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         mEtSearch.setText("");
         mEtSearch.clearFocus();
         resetView();
+    }
+
+    private void takePhoto() {
+        new CommonDialog.Builder(this)
+                .setTitle(R.string.ipc_face_tip_album_title)
+                .setMessage(R.string.ipc_face_tip_album_content)
+                .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mPickerAgent.takePhoto();
+                    }
+                })
+                .create()
+                .show();
+    }
+
+    private void openPicker() {
+        mPickerAgent.pickMultiPhotos(mPickerResult);
+    }
+
+    @Background
+    void uploadFace(File file) {
+        try {
+            List<File> files = Luban.with(this)
+                    .setTargetDir(FileHelper.SDCARD_CACHE_IMAGE_PATH)
+                    .load(file)
+                    .get();
+            mPresenter.uploadFace(files.get(0));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -520,6 +595,30 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mPickerAgent.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        mPickerAgent.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mPickerAgent.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mPickerAgent.onRestoreInstanceState(savedInstanceState);
+    }
+
     private class CustomPopupHelper implements DropdownMenu.PopupHelper {
 
         @Override
@@ -573,6 +672,36 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
             int itemHeight = firstChildView.getMeasuredHeight();
             setMeasuredDimension(View.MeasureSpec.getSize(widthSpec),
                     getChildCount() > 6 ? (int) (itemHeight * 6.5f) : itemHeight * getChildCount());
+        }
+    }
+
+    private class PickerResult implements TakePhoto.TakePhotoListener {
+
+        @Override
+        public void onSuccess(int from, Result result) {
+            mPickerResult = result;
+            if (from == TakePhotoAgent.FROM_TAKE_PHOTO) {
+                if (mUploadDialog == null) {
+                    mUploadDialog = new CommonDialog.Builder(FaceListActivity.this)
+                            .setTitle(R.string.ipc_face_tip_photo_uploading_title)
+                            .setMessage(R.string.ipc_face_tip_photo_uploading_content)
+                            .create();
+                }
+                mUploadDialog.show();
+                uploadFace(new File(result.getImage().getPath()));
+            } else {
+                // TODO:
+            }
+        }
+
+        @Override
+        public void onError(int errorCode, int from, String msg) {
+
+        }
+
+        @Override
+        public void onCancel(int from) {
+
         }
     }
 
@@ -648,7 +777,27 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                 public void onClick(BaseRecyclerAdapter<Face> adapter, BaseViewHolder<Face> holder,
                                     View v, Face model, int position) {
                     if (model.isAddIcon()) {
-                        // TODO: Go to take photo or pick image.
+                        if (mPickerDialog == null) {
+                            mPickerDialog = new BottomPopMenu.Builder(FaceListActivity.this)
+                                    .addItemAction(new PopItemAction(R.string.ipc_face_take_photo,
+                                            PopItemAction.PopItemStyle.Normal, new PopItemAction.OnClickListener() {
+                                        @Override
+                                        public void onClick() {
+                                            takePhoto();
+                                        }
+                                    }))
+                                    .addItemAction(new PopItemAction(R.string.ipc_face_album_choose,
+                                            PopItemAction.PopItemStyle.Normal, new PopItemAction.OnClickListener() {
+                                        @Override
+                                        public void onClick() {
+                                            openPicker();
+                                        }
+                                    }))
+                                    .addItemAction(new PopItemAction(R.string.sm_cancel,
+                                            PopItemAction.PopItemStyle.Cancel))
+                                    .create();
+                        }
+                        mPickerDialog.show();
                     } else {
                         // TODO: Go to detail.
                     }

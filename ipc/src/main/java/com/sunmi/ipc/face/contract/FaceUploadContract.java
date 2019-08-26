@@ -5,7 +5,6 @@ import android.content.Context;
 import com.sunmi.ipc.face.model.Face;
 import com.sunmi.ipc.face.model.FaceGroup;
 
-import java.io.File;
 import java.util.List;
 
 import sunmi.common.base.BaseView;
@@ -13,9 +12,9 @@ import sunmi.common.model.FilterItem;
 
 /**
  * @author yinhui
- * @date 2019-08-20
+ * @date 2019-08-26
  */
-public interface FaceListContract {
+public interface FaceUploadContract {
 
     interface View extends BaseView {
 
@@ -28,10 +27,6 @@ public interface FaceListContract {
         void addList(List<Face> list, boolean hasMore);
 
         void resetView();
-
-        void uploadSuccess();
-
-        void uploadFailed();
 
         void getDataFailed();
     }
@@ -51,8 +46,6 @@ public interface FaceListContract {
         void move(List<Face> list, FaceGroup group);
 
         void delete(List<Face> list);
-
-        void uploadFace(File file);
 
         void loadGroup();
 

@@ -13,6 +13,10 @@ import sunmi.common.mediapicker.data.model.Result;
 
 public interface TakePhotoAgent {
 
+    int FROM_TAKE_PHOTO = 0;
+    int FROM_SINGLE_PICK = 1;
+    int FROM_MULTI_PICK = 2;
+
     void pickSinglePhoto();
 
     void pickMultiPhotos(Result haveSelected);

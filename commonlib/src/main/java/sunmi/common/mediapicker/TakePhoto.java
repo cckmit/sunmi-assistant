@@ -46,6 +46,7 @@ public class TakePhoto implements TakePhotoAgent {
     private Config mConfig;
     private TakePhotoListener mListener;
     private File mCurrentPhoto;
+    private int mFrom;
 
     private Runnable waitRunnable;
     private PermissionManager.PermissionRequestCallback mPermissionCallback =
@@ -68,6 +69,7 @@ public class TakePhoto implements TakePhotoAgent {
 
     @Override
     public void pickSinglePhoto() {
+        mFrom = TakePhotoAgent.FROM_SINGLE_PICK;
         int result = PermissionManager.checkPermission(mContext,
                 new String[]{Constant.PER_STORAGE});
         if (result == PermissionManager.STATE_REQUEST) {
@@ -88,6 +90,7 @@ public class TakePhoto implements TakePhotoAgent {
 
     @Override
     public void pickMultiPhotos(final Result haveSelected) {
+        mFrom = TakePhotoAgent.FROM_MULTI_PICK;
         int result = PermissionManager.checkPermission(mContext,
                 new String[]{Constant.PER_STORAGE});
         if (result == PermissionManager.STATE_REQUEST) {
@@ -109,6 +112,7 @@ public class TakePhoto implements TakePhotoAgent {
 
     @Override
     public void takePhoto() {
+        mFrom = TakePhotoAgent.FROM_TAKE_PHOTO;
         int result = PermissionManager.checkPermission(mContext,
                 new String[]{Constant.PER_STORAGE, Constant.PER_CAMERA});
         if (result == PermissionManager.STATE_REQUEST) {
@@ -125,7 +129,7 @@ public class TakePhoto implements TakePhotoAgent {
             Utils.takePhoto(mContext, mCurrentPhoto);
         } catch (IOException e) {
             Log.e(TAG, "Create file failed. " + e.getMessage());
-            mListener.onError(Constant.ERROR_CODE_CREATE_FAIL,
+            mListener.onError(Constant.ERROR_CODE_CREATE_FAIL, TakePhotoAgent.FROM_TAKE_PHOTO,
                     "Create file failed. " + e.getMessage());
         }
     }
@@ -149,41 +153,41 @@ public class TakePhoto implements TakePhotoAgent {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == Constant.REQUEST_PICK_PHOTO) {
             if (resultCode == Activity.RESULT_CANCELED) {
-                mListener.onCancel();
+                mListener.onCancel(mFrom);
                 return;
             }
             if (resultCode == Constant.RESULT_ERROR) {
                 int code = data.getIntExtra(Constant.INTENT_EXTRA_CODE, -1);
                 String msg = data.getStringExtra(Constant.INTENT_EXTRA_MESSAGE);
-                mListener.onError(code, msg);
+                mListener.onError(code, mFrom, msg);
                 return;
             }
             if (resultCode != Activity.RESULT_OK) {
-                mListener.onError(Constant.ERROR_CODE_UNKNOWN, "Unknown error.");
+                mListener.onError(Constant.ERROR_CODE_UNKNOWN, mFrom, "Unknown error.");
                 return;
             }
             // From pick photo.
             if (data == null) {
-                mListener.onError(22001, "No data.");
+                mListener.onError(22001, mFrom, "No data.");
                 return;
             }
             Result result = data.getParcelableExtra(Constant.INTENT_EXTRA_IMAGES);
             if (result == null) {
-                mListener.onError(22002, "No data.");
+                mListener.onError(22002, mFrom, "No data.");
                 return;
             }
-            mListener.onProcessStart(result.clone());
+//            mListener.onProcessStart(result.clone());
             if (mConfig.enableCompress) {
                 Image[] images = new Image[result.getImages().size()];
                 CompressAsyncTask task = new CompressAsyncTask(mContext.getContext(),
                         mCompressCallback);
                 task.execute(result.getImages().toArray(images));
             } else {
-                mListener.onSuccess(result);
+                mListener.onSuccess(mFrom, result);
             }
         } else if (requestCode == Constant.REQUEST_TAKE_PHOTO) {
             if (resultCode != Activity.RESULT_OK) {
-                mListener.onCancel();
+                mListener.onCancel(TakePhotoAgent.FROM_TAKE_PHOTO);
                 return;
             }
             // From take photo.
@@ -199,37 +203,37 @@ public class TakePhoto implements TakePhotoAgent {
 //                ActivityUtils.startActivityForResult(mContext, intent,
 //                        Constant.REQUEST_TAKE_PHOTO_PREVIEW);
             } else if (mConfig.enableCompress) {
-                mListener.onProcessStart(result.clone());
+//                mListener.onProcessStart(result.clone());
                 CompressAsyncTask task = new CompressAsyncTask(mContext.getContext(),
                         mCompressCallback);
                 task.execute(image);
             } else {
-                mListener.onProcessStart(result.clone());
-                mListener.onSuccess(result);
+//                mListener.onProcessStart(result.clone());
+                mListener.onSuccess(TakePhotoAgent.FROM_TAKE_PHOTO, result);
             }
         } else if (requestCode == Constant.REQUEST_TAKE_PHOTO_PREVIEW) {
             if (resultCode != Activity.RESULT_OK) {
-                mListener.onCancel();
+                mListener.onCancel(mFrom);
                 return;
             }
             // From take photo preview.
             if (data == null) {
-                mListener.onError(21011, "No data.");
+                mListener.onError(21011, mFrom, "No data.");
                 return;
             }
             Image image = data.getParcelableExtra(Constant.INTENT_EXTRA_IMAGE);
             if (image == null) {
-                mListener.onError(21012, "No data.");
+                mListener.onError(21012, mFrom, "No data.");
                 return;
             }
             Result result = new Result(image);
-            mListener.onProcessStart(result.clone());
+//            mListener.onProcessStart(result.clone());
             if (mConfig.enableCompress) {
                 CompressAsyncTask task = new CompressAsyncTask(mContext.getContext(),
                         mCompressCallback);
                 task.execute(image);
             } else {
-                mListener.onSuccess(result);
+                mListener.onSuccess(mFrom, result);
             }
         }
     }
@@ -257,18 +261,11 @@ public class TakePhoto implements TakePhotoAgent {
     public interface TakePhotoListener {
 
         /**
-         * 照片处理开始前的回调
-         *
-         * @param result 选取的原始照片
-         */
-        void onProcessStart(Result result);
-
-        /**
          * 成功选取照片
          *
          * @param result 选择结果
          */
-        void onSuccess(Result result);
+        void onSuccess(int from, Result result);
 
         /**
          * 发生错误的回调
@@ -276,12 +273,12 @@ public class TakePhoto implements TakePhotoAgent {
          * @param errorCode 错误码
          * @param msg       错误信息
          */
-        void onError(int errorCode, String msg);
+        void onError(int errorCode, int from, String msg);
 
         /**
          * 取消选择的回调
          */
-        void onCancel();
+        void onCancel(int from);
     }
 
     public static class Builder {
@@ -399,7 +396,7 @@ public class TakePhoto implements TakePhotoAgent {
             for (String per : permissions) {
                 Log.d(TAG, "Permission: " + per);
             }
-            mListener.onError(10002, "Permission denied!");
+            mListener.onError(10002, mFrom, "Permission denied!");
         }
     }
 
@@ -413,14 +410,14 @@ public class TakePhoto implements TakePhotoAgent {
         @Override
         public void onSuccess(List<Image> images) {
             Log.d(TAG, "Compress SUCCESS.");
-            mListener.onSuccess(new Result(images));
+            mListener.onSuccess(mFrom, new Result(images));
         }
 
         @Override
         public void onError(Throwable e) {
             Log.e(TAG, "Image compress error: " + e.getLocalizedMessage());
             e.printStackTrace();
-            mListener.onError(10001, "Image compress error:"
+            mListener.onError(10001, mFrom, "Image compress error:"
                     + e.getLocalizedMessage());
         }
 
