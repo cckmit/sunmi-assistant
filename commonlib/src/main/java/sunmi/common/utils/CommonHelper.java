@@ -603,4 +603,17 @@ public class CommonHelper {
         }
     }
 
+    /**
+     * 如果小数点后为零显示整数否则保留
+     *
+     * @param num
+     * @return
+     */
+    public static String floatTrans(float num) {
+        if (Math.round(num) - num == 0) {
+            return String.valueOf((int) num);
+        }
+        return String.valueOf(num);
+    }
+
 }
