@@ -15,6 +15,7 @@ import com.sunmi.ipc.model.VideoTimeSlotBean;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ScheduledExecutorService;
 
 import sunmi.common.utils.DateTimeUtils;
@@ -63,8 +64,8 @@ public class ZFTimeLine extends View {
     private void init() {
         intervalValue = 0;
         timeNow();
-        formatterScale = new SimpleDateFormat("HH:mm");
-        formatterProject = new SimpleDateFormat("yyyyMMddHHmmss");
+        formatterScale = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        formatterProject = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault());
 
         pWhite = new Paint();
         pWhite.setColor(Color.WHITE);
@@ -80,18 +81,6 @@ public class ZFTimeLine extends View {
         pCenterLine.setStrokeWidth(dip2px(1));
         pCenterLine.setColor(ContextCompat.getColor(getContext(), R.color.common_orange));
     }
-//
-//    public void startAutoScroll() {
-//        if (executorService != null) return;
-//        executorService = Executors.newSingleThreadScheduledExecutor();
-//        executorService.scheduleAtFixedRate(new Runnable() {
-//            @Override
-//            public void run() {
-//                LogCat.e("zft", "99999999 111 currentInteval = " + currentInterval);
-//                moveToTime(currentInterval + 1000);
-//            }
-//        }, 0, 10, TimeUnit.SECONDS);
-//    }
 
     //设置监听
     public void setListener(OnZFTimeLineListener listener) {
@@ -197,7 +186,7 @@ public class ZFTimeLine extends View {
                         * ((long) (event.getX() - moveStartX));
                 if (listener != null) {
                     listener.moveTo(DateTimeUtils.secondToDate(currentInterval, "yyyy-MM-dd HH:mm:ss"),
-                            (moveStartX - event.getX()) < 0);
+                            (moveStartX - event.getX()) < 0, currentInterval);
                 }
                 moveStartX = event.getX();
             }
@@ -205,7 +194,7 @@ public class ZFTimeLine extends View {
             case MotionEvent.ACTION_UP: {
                 //拖动结束  这里应该有Bug没有区分移动可缩放状态 不过影响不大
                 if (listener != null) {
-                    listener.didMoveToDate(formatterProject.format(currentInterval * 1000));
+                    listener.didMoveToDate(formatterProject.format(currentInterval * 1000), currentInterval);
                 }
             }
             break;
@@ -239,7 +228,7 @@ public class ZFTimeLine extends View {
             currentInterval = formatterProject.parse(timeStr).getTime() / 1000;
             invalidate();
             if (listener != null) {
-                listener.didMoveToDate(formatterProject.format(currentInterval * 1000));
+                listener.didMoveToDate(formatterProject.format(currentInterval * 1000), currentInterval);
             }
         } catch (ParseException e) {
             e.printStackTrace();
@@ -259,7 +248,7 @@ public class ZFTimeLine extends View {
     //移动到某时间 传入秒数
     public void autoMove() {
         LogCat.e("zft", "99999999 222 currentInteval = " + currentInterval);
-        currentInterval += 2000;
+        currentInterval += 60;
         LogCat.e("zft", "99999999 333 currentInteval = " + currentInterval);
         invalidate();
     }
@@ -314,9 +303,9 @@ public class ZFTimeLine extends View {
     //拖动时间轴监听
     public interface OnZFTimeLineListener {
 
-        void didMoveToDate(String date);
+        void didMoveToDate(String date, long timeStamp);
 
-        void moveTo(String data, boolean isLeftScroll);
+        void moveTo(String data, boolean isLeftScroll, long timeStamp);
     }
 
 }

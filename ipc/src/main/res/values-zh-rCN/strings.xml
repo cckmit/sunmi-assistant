@@ -177,6 +177,8 @@
     <string name="tip_no_tf_card">未插入TF卡</string>
     <string name="tip_tf_uninitalized">未格式化</string>
     <string name="tip_unrecognition_tf_card">TF卡无法识别</string>
+    <string name="ipc_time_over_current_time">超过了当前时间</string>
+    <string name="ipc_time_over_back_time">超过了日期回放时间</string>
 
     <string name="ipc_face_list_title">管理照片</string>
     <string name="ipc_face_list_title_select">请选择照片</string>

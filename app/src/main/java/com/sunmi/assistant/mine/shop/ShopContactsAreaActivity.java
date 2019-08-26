@@ -30,6 +30,8 @@ import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.TextLengthWatcher;
 import sunmi.common.view.TitleBarView;
 
+import static sunmi.common.utils.CommonHelper.floatTrans;
+
 
 /**
  * 联系人和面积
@@ -106,8 +108,8 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
             rlSquare.setVisibility(View.VISIBLE);
             etShopMessage.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
             if (mInfo.getBusinessArea() > 0) {
-                etShopMessage.setText(String.valueOf(mInfo.getBusinessArea()));
-                etShopMessage.setSelection(String.valueOf(mInfo.getBusinessArea()).length());
+                etShopMessage.setText(floatTrans(mInfo.getBusinessArea()));
+                etShopMessage.setSelection(floatTrans(mInfo.getBusinessArea()).length());
             }
             //默认两位小数
             etShopMessage.setFilters(new InputFilter[]{new NumberValueFilter()});
@@ -146,8 +148,8 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
                 finish();
                 return;
             }
-            if (!RegexUtils.isChinaPhone(shopMessage) && !RegexUtils.isFixedPhone(shopMessage)) {
-                shortTip(getString(R.string.check_mobile_fixedphone_tip));
+            if (!RegexUtils.isChinaPhone(shopMessage)) {
+                shortTip(getString(R.string.str_invalid_phone));
                 return;
             }
             mInfo.setContactTel(shopMessage);
@@ -196,7 +198,7 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
                 || type == ShopDetailActivity.TYPE_CONTACT_TEL &&
                 TextUtils.equals(mInfo.getContactTel(), shopMessageText())
                 || type == ShopDetailActivity.TYPE_AREA &&
-                TextUtils.equals(String.valueOf(mInfo.getBusinessArea()), shopMessageText())) {
+                TextUtils.equals(floatTrans(mInfo.getBusinessArea()), shopMessageText())) {
             super.onBackPressed();
             return;
         }
