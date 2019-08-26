@@ -63,7 +63,8 @@ public class MyApplication extends BaseApplication {
 
     private void initMiPush() {
         MiPushClient.registerPush(this, CommonConfig.MI_PUSH_APP_ID, CommonConfig.MI_PUSH_APP_KEY);
-        MiPushClient.setAlias(this, SpUtils.getUID(), null);
+        if (!TextUtils.isEmpty(SpUtils.getUID()))
+            MiPushClient.setAlias(this, SpUtils.getUID(), null);
         //打开Log
         LoggerInterface newLogger = new LoggerInterface() {
             @Override
