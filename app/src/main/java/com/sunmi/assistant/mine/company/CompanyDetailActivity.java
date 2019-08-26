@@ -108,6 +108,7 @@ public class CompanyDetailActivity extends BaseActivity {
             @Override
             public void onFail(int code, String msg, CompanyInfoResp data) {
                 LogCat.e(TAG, "Get shop info Failed. " + msg);
+                hideLoadingDialog();
                 shortTip(R.string.toast_network_Exception);
             }
         });
