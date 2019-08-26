@@ -1,6 +1,8 @@
 package com.sunmi.assistant.mine.presenter;
 
+import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.MsgSettingContract;
+import com.sunmi.assistant.mine.model.MsgSettingChildren;
 import com.sunmi.assistant.mine.model.MsgSettingListBean;
 import com.sunmi.assistant.rpc.MessageCenterApi;
 
@@ -33,6 +35,7 @@ public class MsgSettingPresenter extends BasePresenter<MsgSettingContract.View>
             public void onFail(int code, String msg, MsgSettingListBean data) {
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();
+                    mView.shortTip(R.string.toast_network_error);
                     mView.getSettingListFail(code, msg);
                 }
             }
@@ -49,7 +52,7 @@ public class MsgSettingPresenter extends BasePresenter<MsgSettingContract.View>
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();
-                    mView.updateSettingStatusSuccess();
+                    mView.updateSettingStatusSuccess(settingId, status);
                 }
             }
 
@@ -57,7 +60,8 @@ public class MsgSettingPresenter extends BasePresenter<MsgSettingContract.View>
             public void onFail(int code, String msg, Object data) {
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();
-                    mView.getSettingListFail(code, msg);
+                    mView.shortTip(R.string.toast_network_error);
+                    mView.updateSettingStatusFail(settingId,status);
                 }
             }
         });

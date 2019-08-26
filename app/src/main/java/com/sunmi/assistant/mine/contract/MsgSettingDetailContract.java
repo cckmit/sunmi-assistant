@@ -10,9 +10,9 @@ import sunmi.common.base.BaseView;
 public interface MsgSettingDetailContract {
 
     interface View extends BaseView {
-        void updateSettingStatusSuccess();
+        void updateSettingStatusSuccess(int msgId, int status);
 
-        void updateSettingStatusFail(int code, String msg);
+        void updateSettingStatusFail(int msgId, int status);
     }
 
     interface Presenter {

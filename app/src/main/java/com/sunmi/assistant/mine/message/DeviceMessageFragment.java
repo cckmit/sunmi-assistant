@@ -169,7 +169,7 @@ public class DeviceMessageFragment extends BaseMvpFragment<MessageCountPresenter
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
-        if (id == NotificationConstant.msgReaded) {
+        if (id == NotificationConstant.msgReadedOrChange) {
             showLoadingDialog();
             mPresenter.getMessageCount();
         }
@@ -177,7 +177,7 @@ public class DeviceMessageFragment extends BaseMvpFragment<MessageCountPresenter
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{NotificationConstant.msgReaded};
+        return new int[]{NotificationConstant.msgReadedOrChange};
     }
 
     @Override

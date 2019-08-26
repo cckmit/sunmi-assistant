@@ -1,7 +1,6 @@
 package com.sunmi.assistant.mine.adapter;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
@@ -61,49 +60,49 @@ public class MsgContentAdapter extends BaseQuickAdapter<MsgCountChildren, BaseVi
         helper.setText(R.id.tv_msg_time, DateTimeUtils.secondToDateMsg(item.getLastReceiveTime()));
         String modelName = item.getModelName();
         String title = "";
-        if (TextUtils.equals(modelName, MsgConstants.NOTIFY_IPC_TF_DETECT)) {
+        if (modelName.contains(MsgConstants.NOTIFY_IPC_TF_DETECT)) {
             helper.setImageResource(R.id.iv_msg, R.mipmap.ic_msg_ipc);
             title = context.getString(R.string.str_tf_detect);
             titleMap.put(modelName, title);
             helper.setText(R.id.tv_msg_title, title);
             helper.setText(R.id.tv_msg_content, R.string.tip_ipc_tf_detect);
-        } else if (TextUtils.equals(modelName, MsgConstants.NOTIFY_IPC_ON_OFFLINE)) {
+        } else if (modelName.contains(MsgConstants.NOTIFY_IPC_ON_OFFLINE)) {
             helper.setImageResource(R.id.iv_msg, R.mipmap.ic_msg_ipc);
             title = context.getString(R.string.str_ipc_on_offline);
             titleMap.put(modelName, title);
             helper.setText(R.id.tv_msg_title, title);
             helper.setText(R.id.tv_msg_content, R.string.tip_ipc_on_offline);
-        } else if (TextUtils.equals(modelName, MsgConstants.NOTIFY_IPC_DETECT_AUDIO)) {
+        } else if (modelName.contains(MsgConstants.NOTIFY_IPC_DETECT_AUDIO)) {
             helper.setImageResource(R.id.iv_msg, R.mipmap.ic_msg_ipc);
             title = context.getString(R.string.str_ipc_audio);
             titleMap.put(modelName, title);
             helper.setText(R.id.tv_msg_title, title);
             helper.setText(R.id.tv_msg_content, R.string.tip_ipc_detect);
-        } else if (TextUtils.equals(modelName, MsgConstants.NOTIFY_IPC_DETECT_VIDEO)) {
+        } else if (modelName.contains(MsgConstants.NOTIFY_IPC_DETECT_VIDEO)) {
             helper.setImageResource(R.id.iv_msg, R.mipmap.ic_msg_ipc);
             title = context.getString(R.string.str_ipc_video);
             titleMap.put(modelName, title);
             helper.setText(R.id.tv_msg_title, title);
             helper.setText(R.id.tv_msg_content, R.string.tip_ipc_detect);
-        } else if (TextUtils.equals(modelName, MsgConstants.NOTIFY_IPC_OTA)) {
+        } else if (modelName.contains(MsgConstants.NOTIFY_IPC_OTA)) {
             helper.setImageResource(R.id.iv_msg, R.mipmap.ic_msg_ipc);
             title = context.getString(R.string.str_device_ota);
             titleMap.put(modelName, title);
             helper.setText(R.id.tv_msg_title, title);
             helper.setText(R.id.tv_msg_content, R.string.tip_device_ota);
-        } else if (TextUtils.equals(modelName, MsgConstants.NOTIFY_ESL_ON_OFFLINE)) {
+        } else if (modelName.contains(MsgConstants.NOTIFY_ESL_AP_ON_OFFLINE)) {
             helper.setImageResource(R.id.iv_msg, R.mipmap.ic_msg_esl);
             title = context.getString(R.string.str_esl_on_offline);
             titleMap.put(modelName, title);
             helper.setText(R.id.tv_msg_title, title);
             helper.setText(R.id.tv_msg_content, R.string.tip_esl_offline);
-        } else if (TextUtils.equals(modelName, MsgConstants.NOTIFY_ESL_OTA)) {
+        } else if (modelName.contains(MsgConstants.NOTIFY_ESL_OTA)) {
             helper.setImageResource(R.id.iv_msg, R.mipmap.ic_msg_esl);
             title = context.getString(R.string.str_device_ota);
             titleMap.put(modelName, title);
             helper.setText(R.id.tv_msg_title, title);
             helper.setText(R.id.tv_msg_content, R.string.tip_device_ota);
-        } else if (TextUtils.equals(modelName, MsgConstants.NOTIFY_TASK_ERP)) {
+        } else if (modelName.contains(MsgConstants.NOTIFY_TASK_ERP)) {
             helper.setImageResource(R.id.iv_msg, R.mipmap.ic_msg_task);
             title = context.getString(R.string.str_task_erp);
             titleMap.put(modelName, title);

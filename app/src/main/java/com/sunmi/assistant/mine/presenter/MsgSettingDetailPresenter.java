@@ -1,5 +1,6 @@
 package com.sunmi.assistant.mine.presenter;
 
+import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.MsgSettingDetailContract;
 import com.sunmi.assistant.rpc.MessageCenterApi;
 
@@ -23,7 +24,8 @@ public class MsgSettingDetailPresenter extends BasePresenter<MsgSettingDetailCon
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
-                    mView.updateSettingStatusSuccess();
+                    mView.hideLoadingDialog();
+                    mView.updateSettingStatusSuccess(settingId, status);
                 }
             }
 
@@ -31,7 +33,8 @@ public class MsgSettingDetailPresenter extends BasePresenter<MsgSettingDetailCon
             public void onFail(int code, String msg, Object data) {
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();
-                    mView.updateSettingStatusFail(code, msg);
+                    mView.shortTip(R.string.toast_network_error);
+                    mView.updateSettingStatusFail(settingId, status);
                 }
             }
         });

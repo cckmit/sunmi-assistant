@@ -2,9 +2,7 @@ package com.sunmi.assistant.mine.adapter;
 
 import android.content.Context;
 import android.support.annotation.StringRes;
-import android.text.TextUtils;
 import android.view.View;
-import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -17,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import sunmi.common.utils.DateTimeUtils;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.tablayout.utils.UnreadMsgUtils;
 import sunmi.common.view.tablayout.widget.MsgView;
 
@@ -61,7 +58,7 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
         String title = titleTag.getTag();
         helper.setText(R.id.tv_msg_title, titleMap.get("company_name") + titleMap.get("shop_name"));
         helper.setText(R.id.tv_msg_time, DateTimeUtils.secondToDate(item.getReceiveTime(), "yyyy-MM-dd HH:mm:ss"));
-        if (TextUtils.equals(modelName, MsgConstants.NOTIFY_IPC_TF_DETECT)) {
+        if (modelName.contains(MsgConstants.NOTIFY_IPC_TF_DETECT)) {
             if (title.contains(MsgConstants.TF_NON_EXIST)) {
                 setMsgDetail(helper, R.string.msg_ipc_tf_non_exist);
             } else if (title.contains(MsgConstants.TF_EXIST)) {
@@ -71,19 +68,19 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
             } else if (title.contains(MsgConstants.TF_NON_CAPABLE)) {
                 setMsgDetail(helper, R.string.msg_ipc_tf_non_capable);
             }
-        } else if (TextUtils.equals(modelName, MsgConstants.NOTIFY_IPC_ON_OFFLINE)) {
+        } else if (modelName.contains(MsgConstants.NOTIFY_IPC_ON_OFFLINE)) {
             setMsgDetail(helper, R.string.msg_ipc_offline);
-        } else if (TextUtils.equals(modelName, MsgConstants.NOTIFY_IPC_DETECT_AUDIO)) {
+        } else if (modelName.contains(MsgConstants.NOTIFY_IPC_DETECT_AUDIO)) {
             setMsgDetail(helper, R.string.msg_ipc_pic_detect);
-        } else if (TextUtils.equals(modelName, MsgConstants.NOTIFY_IPC_DETECT_VIDEO)) {
+        } else if (modelName.contains(MsgConstants.NOTIFY_IPC_DETECT_VIDEO)) {
             setMsgDetail(helper, R.string.msg_ipc_pic_detect);
-        } else if (TextUtils.equals(modelName, MsgConstants.NOTIFY_IPC_OTA)) {
+        } else if (modelName.contains(MsgConstants.NOTIFY_IPC_OTA)) {
             setMsgDetail(helper, R.string.msg_ipc_ota);
-        } else if (TextUtils.equals(modelName, MsgConstants.NOTIFY_ESL_ON_OFFLINE)) {
+        } else if (modelName.contains(MsgConstants.NOTIFY_ESL_AP_ON_OFFLINE)) {
             setMsgDetail(helper, R.string.msg_esl_offline);
-        } else if (TextUtils.equals(modelName, MsgConstants.NOTIFY_ESL_OTA)) {
+        } else if (modelName.contains(MsgConstants.NOTIFY_ESL_OTA)) {
             setMsgDetail(helper, R.string.msg_esl_ota);
-        } else if (TextUtils.equals(modelName, MsgConstants.NOTIFY_TASK_ERP)) {
+        } else if (modelName.contains(MsgConstants.NOTIFY_TASK_ERP)) {
             setMsgDetail(helper, R.string.msg_task_erp);
         }
         helper.itemView.setOnLongClickListener(new View.OnLongClickListener() {

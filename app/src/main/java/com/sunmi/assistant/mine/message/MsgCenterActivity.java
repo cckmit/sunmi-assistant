@@ -6,8 +6,6 @@ import android.widget.FrameLayout;
 
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.mine.model.MsgSettingListBean;
-import com.sunmi.assistant.rpc.MessageCenterApi;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -16,7 +14,6 @@ import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 
 import sunmi.common.base.BaseActivity;
-import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.tablayout.CommonTabLayout;
@@ -54,17 +51,7 @@ public class MsgCenterActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        MessageCenterApi.getInstance().getSettingList(new RetrofitCallback<MsgSettingListBean>() {
-            @Override
-            public void onSuccess(int code, String msg, MsgSettingListBean data) {
-
-            }
-
-            @Override
-            public void onFail(int code, String msg, MsgSettingListBean data) {
-
-            }
-        });
+        MsgSettingActivity_.intent(context).start();
     }
 
     private void initDot() {

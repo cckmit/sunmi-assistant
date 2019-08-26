@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <sunmi.common.view.SettingItemLayout
+        android:id="@+id/sil_device"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:leftText="@string/msg_ipc"
+        app:parentHeight="@dimen/dp_60"
+        app:leftTextSize="@dimen/sp_16"
+        app:leftTextColor="@color/color_333338"
+        app:leftPadding="@dimen/dp_15"
+        app:rightText="@string/sm_enable"
+        app:rightTextSize="@dimen/sp_14"
+        app:imageRight="@mipmap/ic_right_arrow_small"/>
+
+</RelativeLayout>

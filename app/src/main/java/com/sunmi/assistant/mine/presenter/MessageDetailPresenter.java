@@ -31,7 +31,7 @@ public class MessageDetailPresenter extends BasePresenter<MessageDetailContract.
             public void onFail(int code, String msg, MessageListBean data) {
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();
-                    mView.shortTip(R.string.tip_get_data_fail);
+                    mView.shortTip(R.string.toast_network_error);
                     mView.getMessageListFail(code, msg);
                 }
             }

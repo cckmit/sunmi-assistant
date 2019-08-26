@@ -16,6 +16,7 @@ import com.sunmi.assistant.mine.model.MessageListBean;
 import com.sunmi.assistant.mine.presenter.MessageDetailPresenter;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
@@ -44,6 +45,8 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
     RecyclerView rvMsg;
     @ViewById(R.id.tv_message)
     TextView tvMsg;
+    @ViewById(R.id.layout_network_error)
+    View networkError;
 
     @Extra
     int modelId;
@@ -80,6 +83,7 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
 
     @Override
     public void getMessageListSuccess(List<MessageListBean.MsgListBean> bean, int total, int returnCount, boolean needUpdate) {
+        networkError.setVisibility(View.GONE);
         refreshLayout.endLoadingMore();
         refreshLayout.endRefreshing();
         if (total <= 0) {
@@ -104,7 +108,7 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
 
     @Override
     public void onBackPressed() {
-        BaseNotification.newInstance().postNotificationName(NotificationConstant.msgReaded);
+        BaseNotification.newInstance().postNotificationName(NotificationConstant.msgReadedOrChange);
         finish();
     }
 
@@ -112,6 +116,9 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
     public void getMessageListFail(int code, String msg) {
         refreshLayout.endRefreshing();
         refreshLayout.endLoadingMore();
+        if (dataList.size() <= 0) {
+            networkError.setVisibility(View.VISIBLE);
+        }
     }
 
     @UiThread
@@ -144,6 +151,11 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
     public void deleteMessageSuccess() {
         dataList.remove(deletePosition);
         adapter.notifyItemRemoved(deletePosition);
+    }
+
+    @Click(R.id.btn_refresh)
+    void refeshClick() {
+        mPresenter.getMessageList(modelId, pageNum, pageSize, true);
     }
 
     @Override

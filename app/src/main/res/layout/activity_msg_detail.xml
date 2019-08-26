@@ -9,10 +9,9 @@
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/c_white"
         android:layout_marginBottom="@dimen/dp_2"
+        android:background="@color/c_white"
         app:dividerShow="true"
-        app:leftDefaultClickEnable="true"
         app:leftIcon="@mipmap/ic_back_dark"
         app:titleText="@string/str_msg_center"
         app:titleTextColor="@color/colorText" />
@@ -30,7 +29,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:overScrollMode="never"
-            android:scrollbars="none"/>
+            android:scrollbars="none" />
 
     </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
 
@@ -39,10 +38,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:gravity="center"
-        android:textSize="@dimen/sp_12"
         android:drawableTop="@drawable/ic_no_msg"
+        android:gravity="center"
         android:text="@string/tip_no_msg"
-        android:visibility="gone"/>
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/layout_network_error"
+        layout="@layout/include_network_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/title_bar"/>
 
 </RelativeLayout>
