@@ -32,6 +32,10 @@ public class BaseRetrofitClient {
     private File httpCacheDirectory;
 
     protected void init(String url, Map<String, String> headers) {
+        init(url, headers, DEFAULT_TIMEOUT);
+    }
+
+    public void init(String url, Map<String, String> headers, int timeout) {
         interfaceCacheList.clear();
         if (httpCacheDirectory == null) {
             httpCacheDirectory = new File(BaseApplication.getContext().getCacheDir(), "esl_cache");
@@ -59,11 +63,10 @@ public class BaseRetrofitClient {
                         .log(Platform.INFO) // 打印类型
                         .request("Request") // request的Tag
                         .response("Response")// Response的Tag
-                        .addHeader("log-header", "I am the log request header.") // 添加打印头, 注意 key 和 value 都不能是中文
                         .build()
                 )
-                .connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
-                .writeTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
+                .connectTimeout(timeout, TimeUnit.SECONDS)
+                .writeTimeout(timeout, TimeUnit.SECONDS)
                 .connectionPool(new ConnectionPool(8, 15, TimeUnit.SECONDS))
                 // 这里你可以根据自己的机型设置同时连接的个数和时间，我这里8个，和每个保持时间为10s
                 .build();

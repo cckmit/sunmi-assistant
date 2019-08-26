@@ -68,7 +68,7 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
     TextView tvTipTitle;
     @ViewById(R.id.tip_select_multi)
     TextView tvSummary;
-    @ViewById(R.id.tv_no_wifi)
+    @ViewById(R.id.tv_no_ipc)
     TextView tvNoWifi;
     @ViewById(R.id.tv_check_network)
     TextView tvCheckNetwork;

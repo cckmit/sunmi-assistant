@@ -51,7 +51,7 @@ public class MsgCenterActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-
+        MsgSettingActivity_.intent(context).start();
     }
 
     private void initDot() {

@@ -16,6 +16,7 @@ import com.sunmi.assistant.mine.model.MessageListBean;
 import com.sunmi.assistant.mine.presenter.MessageDetailPresenter;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
@@ -26,6 +27,7 @@ import java.util.List;
 
 import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
+import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.NetworkUtils;
@@ -43,17 +45,22 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
     RecyclerView rvMsg;
     @ViewById(R.id.tv_message)
     TextView tvMsg;
+    @ViewById(R.id.layout_network_error)
+    View networkError;
 
     @Extra
     int modelId;
     @Extra
     String title;
+    @Extra
+    String modelName;
 
     private MsgDetailAdapter adapter;
     private int pageNum = 1, pageSize = 10;
     private boolean loadFinish;
     List<MessageListBean.MsgListBean> dataList = new ArrayList<>();
     private int deletePosition;
+    private BGARefreshViewHolder viewHolder;
 
     @AfterViews
     void init() {
@@ -66,25 +73,27 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
         });
         mPresenter = new MessageDetailPresenter();
         mPresenter.attachView(this);
-        mPresenter.getMessageList(modelId, pageNum, pageSize);
+        mPresenter.getMessageList(modelId, pageNum, pageSize, true);
         showLoadingDialog();
         refreshLayout.setDelegate(this);
+        viewHolder = new BGANormalRefreshViewHolder(context, true);
+        viewHolder.setLoadingMoreText(getString(R.string.str_loding_more));
+        viewHolder.setLoadMoreBackgroundColorRes(R.color.bg_common);
         // 设置下拉刷新和上拉加载更多的风格(参数1：应用程序上下文，参数2：是否具有上拉加载更多功能)
-        refreshLayout.setRefreshViewHolder(new BGANormalRefreshViewHolder(context, true));
+        refreshLayout.setRefreshViewHolder(viewHolder);
     }
 
     @Override
-    public void getMessageListSuccess(List<MessageListBean.MsgListBean> bean, int total, int returnCount) {
+    public void getMessageListSuccess(List<MessageListBean.MsgListBean> bean, int total, int returnCount, boolean needUpdate) {
+        networkError.setVisibility(View.GONE);
         refreshLayout.endLoadingMore();
         refreshLayout.endRefreshing();
-        hideLoadingDialog();
         if (total <= 0) {
             tvMsg.setVisibility(View.VISIBLE);
         } else {
             if (returnCount <= 0) {
                 return;
             }
-
             if (pageNum == 1 || total > dataList.size()) {
                 addData(bean);
                 if (total > (pageNum - 1) * pageSize + returnCount) {
@@ -93,22 +102,25 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
                     loadFinish = true;
                 }
             }
+            if (bean.get(0).getReceiveStatus() == 0 && needUpdate) {
+                mPresenter.updateReceiveStatus(modelId);
+            }
         }
-        mPresenter.updateReceiveStatus(modelId);
     }
 
     @Override
     public void onBackPressed() {
-        BaseNotification.newInstance().postNotificationName(NotificationConstant.msgReaded);
+        BaseNotification.newInstance().postNotificationName(NotificationConstant.msgReadedOrChange);
         finish();
     }
 
     @Override
     public void getMessageListFail(int code, String msg) {
-        hideLoadingDialog();
-        shortTip(R.string.tip_get_data_fail);
         refreshLayout.endRefreshing();
         refreshLayout.endLoadingMore();
+        if (dataList.size() <= 0) {
+            networkError.setVisibility(View.VISIBLE);
+        }
     }
 
     @UiThread
@@ -140,7 +152,12 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
     @Override
     public void deleteMessageSuccess() {
         dataList.remove(deletePosition);
-        adapter.notifyDataSetChanged();
+        adapter.notifyItemRemoved(deletePosition);
+    }
+
+    @Click(R.id.btn_refresh)
+    void refeshClick() {
+        mPresenter.getMessageList(modelId, pageNum, pageSize, true);
     }
 
     @Override
@@ -179,16 +196,15 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
         pageNum = 1;
         pageSize = 10;
-        mPresenter.getMessageList(modelId, pageNum, pageSize);
+        mPresenter.getMessageList(modelId, pageNum, pageSize, true);
     }
 
     @Override
     public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
         if (NetworkUtils.isNetworkAvailable(context) && !loadFinish) {
-            mPresenter.getMessageList(modelId, pageNum, pageSize);
+            mPresenter.getMessageList(modelId, pageNum, pageSize, false);
             return true;
         }
-        refreshLayout.endLoadingMore();
         return false;
     }
 }
