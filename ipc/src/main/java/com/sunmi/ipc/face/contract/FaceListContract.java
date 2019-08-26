@@ -52,7 +52,7 @@ public interface FaceListContract {
 
         void delete(List<Face> list);
 
-        void uploadFace(File file);
+        void upload(File file);
 
         void loadGroup();
 

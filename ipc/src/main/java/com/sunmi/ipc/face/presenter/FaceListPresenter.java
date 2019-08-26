@@ -12,6 +12,7 @@ import com.sunmi.ipc.model.FaceAgeRangeResp;
 import com.sunmi.ipc.model.FaceCheckResp;
 import com.sunmi.ipc.model.FaceGroupListResp;
 import com.sunmi.ipc.model.FaceListResp;
+import com.sunmi.ipc.model.FaceSaveResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
 import java.io.File;
@@ -183,17 +184,46 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
     }
 
     @Override
-    public void uploadFace(File file) {
+    public void upload(File file) {
         IpcCloudApi.uploadFaceAndCheck(SpUtils.getCompanyId(), mShopId, mGroup.getGroupId(), file,
                 new RetrofitCallback<FaceCheckResp>() {
                     @Override
                     public void onSuccess(int code, String msg, FaceCheckResp data) {
-
+                        save(data);
                     }
 
                     @Override
                     public void onFail(int code, String msg, FaceCheckResp data) {
+                        LogCat.e(TAG, "Check face file Failed. " + msg);
+                        if (isViewAttached()) {
+                            mView.uploadFailed();
+                        }
+                    }
+                });
+    }
 
+    public void save(FaceCheckResp data) {
+        List<String> name = new ArrayList<>(1);
+        name.add(data.getFileName());
+        IpcCloudApi.saveFace(SpUtils.getCompanyId(), mShopId, mGroup.getGroupId(), name,
+                new RetrofitCallback<FaceSaveResp>() {
+                    @Override
+                    public void onSuccess(int code, String msg, FaceSaveResp data) {
+                        if (isViewAttached()) {
+                            if (!data.getSuccessList().isEmpty()) {
+                                mView.uploadSuccess();
+                            } else {
+                                mView.uploadFailed();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg, FaceSaveResp data) {
+                        LogCat.e(TAG, "Save face file Failed. " + msg);
+                        if (isViewAttached()) {
+                            mView.uploadFailed();
+                        }
                     }
                 });
     }

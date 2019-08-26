@@ -9,12 +9,10 @@ import com.sunmi.ipc.model.FaceHistoryResp;
 import com.sunmi.ipc.model.FaceListResp;
 import com.sunmi.ipc.model.FaceSaveResp;
 
-import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.Multipart;
 import retrofit2.http.POST;
-import retrofit2.http.Part;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
@@ -87,9 +85,8 @@ public interface FaceInterface {
      * @param file    人员照片
      * @return Response
      */
-    @Multipart
     @POST(URL + "group/uploadFace")
-    Call<BaseResponse<FaceCheckResp>> uploadAndCheck(@Body BaseRequest request, @Part MultipartBody.Part file);
+    Call<BaseResponse<FaceCheckResp>> uploadAndCheck(@Body RequestBody request);
 
     /**
      * 保存人脸

@@ -325,9 +325,14 @@ public class IpcCloudApi {
                     .put("group_id", groupId)
                     .toString();
             RequestBody file = RequestBody.create(MediaType.parse("image/*"), image);
-            MultipartBody.Part part = MultipartBody.Part.createFormData("face", image.getName(), file);
+            RequestBody body = new MultipartBody.Builder()
+                    .addFormDataPart("file", image.getName(), file)
+                    .addFormDataPart("company_id", String.valueOf(companyId))
+                    .addFormDataPart("shop_id", String.valueOf(shopId))
+                    .addFormDataPart("group_id", String.valueOf(groupId))
+                    .build();
             SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
-                    .uploadAndCheck(getSignedRequest(params), part)
+                    .uploadAndCheck(body)
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -346,7 +351,7 @@ public class IpcCloudApi {
                     .put("company_id", companyId)
                     .put("shop_id", shopId)
                     .put("group_id", groupId)
-                    .put("file_img_list", array)
+                    .put("face_img_list", array)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
                     .save(getSignedRequest(params))

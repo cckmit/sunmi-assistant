@@ -518,7 +518,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                     .setTargetDir(FileHelper.SDCARD_CACHE_IMAGE_PATH)
                     .load(file)
                     .get();
-            mPresenter.uploadFace(files.get(0));
+            mPresenter.upload(files.get(0));
         } catch (IOException e) {
             e.printStackTrace();
         }
