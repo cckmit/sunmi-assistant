@@ -65,6 +65,22 @@ public class GotoActivityUtils {
         }
     }
 
+    public static void gotoMsgDetailActivity(Context context, int modelId, String modelName) {
+        try {
+            Class<?> activity = Class.forName("com.sunmi.assistant.mine.message.MsgDetailActivity_");
+            Intent intent = new Intent(context, activity);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                    Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("modelId", modelId);
+            intent.putExtra("title", modelName);
+            intent.putExtra("modelName", modelName);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            context.startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void gotoSunmiLinkSearchActivity(Context context, String shopId, String sn) {
         try {
             Class<?> loginActivity = Class.forName("com.sunmi.assistant.ui.activity.SunmiLinkSearchActivity_");

@@ -52,6 +52,8 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
     int modelId;
     @Extra
     String title;
+    @Extra
+    String modelName;
 
     private MsgDetailAdapter adapter;
     private int pageNum = 1, pageSize = 10;
