@@ -7,6 +7,7 @@ import com.sunmi.assistant.mine.model.MsgSettingListBean;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.rpc.cloud.SunmiStoreRetrofitClient;
@@ -22,6 +23,15 @@ public class MessageCenterApi {
 
     private static final String TAG = "MessageCenterApi";
 
+    private static final class Singleton {
+        private static final MessageCenterApi INSTANCE = new MessageCenterApi();
+    }
+
+
+    public static MessageCenterApi getInstance() {
+        return Singleton.INSTANCE;
+    }
+
     private MessageCenterApi() {
 
     }
@@ -31,7 +41,7 @@ public class MessageCenterApi {
      *
      * @param callback
      */
-    public static void getMessageCount(RetrofitCallback<MessageCountBean> callback) {
+    public void getMessageCount(RetrofitCallback<MessageCountBean> callback) {
         SunmiStoreRetrofitClient.getInstance().create(MessageInterface.class)
                 .getMessageCount(new BaseRequest(""))
                 .enqueue(callback);
@@ -40,13 +50,15 @@ public class MessageCenterApi {
     /**
      * 获取消息列表
      *
-     * @param modelIdList
+     * @param modelId
      * @param pageNum
      * @param pageSize
      * @param callback
      */
-    public static void getMessageList(List modelIdList, int pageNum, int pageSize,
-                                      RetrofitCallback<MessageListBean> callback) {
+    public void getMessageList(int modelId, int pageNum, int pageSize,
+                               RetrofitCallback<MessageListBean> callback) {
+        List<Integer> modelIdList = new ArrayList<>();
+        modelIdList.add(modelId);
         try {
             String params = new JSONObject()
                     .put("model_id_list", modelIdList)
@@ -64,10 +76,12 @@ public class MessageCenterApi {
     /**
      * 在接收列表中删除消息
      *
-     * @param msgIdList
+     * @param msgId
      * @param callback
      */
-    public static void deleteMessage(List msgIdList, RetrofitCallback<Object> callback) {
+    public void deleteMessage(int msgId, RetrofitCallback<Object> callback) {
+        List<Integer> msgIdList = new ArrayList<>();
+        msgIdList.add(msgId);
         try {
             String params = new JSONObject()
                     .put("msg_id_list", msgIdList)
@@ -86,7 +100,7 @@ public class MessageCenterApi {
      * @param modelId
      * @param callback
      */
-    public static void updateReceiveStatusByModel(int modelId, int statusCode, RetrofitCallback<Object> callback) {
+    public void updateReceiveStatusByModel(int modelId, int statusCode, RetrofitCallback<Object> callback) {
         try {
             String params = new JSONObject()
                     .put("model_id", modelId)
@@ -105,7 +119,7 @@ public class MessageCenterApi {
      *
      * @param callback
      */
-    public static void getSettingList(RetrofitCallback<MsgSettingListBean> callback) {
+    public void getSettingList(RetrofitCallback<MsgSettingListBean> callback) {
         SunmiStoreRetrofitClient.getInstance().create(MessageInterface.class)
                 .getSettingList(new BaseRequest(""))
                 .enqueue(callback);
@@ -118,7 +132,7 @@ public class MessageCenterApi {
      * @param status
      * @param callback
      */
-    public static void updateSettingStatus(int settingId, int status, RetrofitCallback<Object> callback) {
+    public void updateSettingStatus(int settingId, int status, RetrofitCallback<Object> callback) {
         try {
             String params = new JSONObject()
                     .put("setting_id", settingId)

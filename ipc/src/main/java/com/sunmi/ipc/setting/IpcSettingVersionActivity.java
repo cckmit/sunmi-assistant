@@ -119,7 +119,7 @@ public class IpcSettingVersionActivity extends BaseActivity {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         isSS = DeviceTypeUtils.getInstance().isSS1(mDevice.getModel());
         if (!isSS) {
-            ivIpc.setImageResource(R.mipmap.ic_ipc_setting_fs);
+            ivIpc.setImageResource(R.mipmap.ic_no_fs);
         }
         tvDeviceId.setText(mDevice.getDeviceid());
         //upgrade_required是否需要更新，0-不需要，1-需要
