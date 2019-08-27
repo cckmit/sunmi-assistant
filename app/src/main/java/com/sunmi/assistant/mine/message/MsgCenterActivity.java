@@ -5,15 +5,20 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.mine.model.MessageCountBean;
+import com.sunmi.assistant.rpc.MessageCenterApi;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonNotifications;
+import sunmi.common.notification.BaseNotification;
+import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.tablayout.CommonTabLayout;
@@ -37,16 +42,22 @@ public class MsgCenterActivity extends BaseActivity implements View.OnClickListe
     private ArrayList<CustomTabEntity> tabEntities = new ArrayList<>();
     private ArrayList<Fragment> fragments = new ArrayList<>();
 
+    DeviceMessageFragment deviceF;
+    SystemMessageFragment systemF;
 
     @AfterViews
     void init() {
         titleBar.getRightTextView().setOnClickListener(this);
         tabEntities.add(new TabEntity(getString(R.string.str_device_msg)));
         tabEntities.add(new TabEntity(getString(R.string.str_system_msg)));
-        fragments.add(DeviceMessageFragment_.builder().build());
-        fragments.add(SystemMessageFragment_.builder().build());
+        deviceF = DeviceMessageFragment_.builder().build();
+        systemF = SystemMessageFragment_.builder().build();
+        fragments.add(deviceF);
+        fragments.add(systemF);
         commonTabLayout.setTabData(tabEntities, this, R.id.frame_message, fragments);
         initDot();
+        showLoadingDialog();
+        refreshMsgCount();
     }
 
     @Override
@@ -54,7 +65,8 @@ public class MsgCenterActivity extends BaseActivity implements View.OnClickListe
         MsgSettingActivity_.intent(context).start();
     }
 
-    private void initDot() {
+    @UiThread
+    public void initDot() {
         if (SpUtils.getUnreadDeviceMsg() > 0) {
             commonTabLayout.showDot(0);
         } else {
@@ -68,14 +80,54 @@ public class MsgCenterActivity extends BaseActivity implements View.OnClickListe
     }
 
     @Override
-    public void didReceivedNotification(int id, Object... args) {
-        if (id == CommonNotifications.msgUpdated) {
-            initDot();
-        }
+    public int[] getStickNotificationId() {
+        return new int[]{CommonNotifications.msgReadedOrChange, CommonNotifications.pushMsgArrived};
     }
 
     @Override
-    public int[] getStickNotificationId() {
-        return new int[]{CommonNotifications.msgUpdated};
+    public void didReceivedNotification(int id, Object... args) {
+        if (id == CommonNotifications.msgReadedOrChange) {
+            showLoadingDialog();
+            refreshMsgCount();
+        } else if (CommonNotifications.pushMsgArrived == id) {
+            refreshMsgCount();
+        }
     }
+
+    public void refreshMsgCount() {
+        MessageCenterApi.getInstance().getMessageCount(new RetrofitCallback<MessageCountBean>() {
+            @Override
+            public void onSuccess(int code, String msg, MessageCountBean data) {
+                hideLoadingDialog();
+                int unreadMsg = data.getUnreadCount();
+                int remindUnreadMsg = data.getRemindUnreadCount();
+                if (SpUtils.getUnreadMsg() != unreadMsg || SpUtils.getRemindUnreadMsg() != remindUnreadMsg) {
+                    SpUtils.setUnreadMsg(unreadMsg);
+                    SpUtils.setRemindUnreadMsg(remindUnreadMsg);
+                    SpUtils.setUnreadDeviceMsg(data.getModelCountList().get(0).getUnreadCount());
+                    SpUtils.setUnreadSystemMsg(data.getModelCountList().get(1).getUnreadCount());
+                    initDot();
+                    BaseNotification.newInstance().postNotificationName(CommonNotifications.msgUpdated);
+                }
+                if (deviceF != null) {
+                    deviceF.getMessageCountSuccess(data);
+                }
+                if (systemF != null) {
+                    systemF.getMessageCountSuccess(data);
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, MessageCountBean data) {
+                hideLoadingDialog();
+                if (deviceF != null) {
+                    deviceF.getMessageCountFail();
+                }
+                if (systemF != null) {
+                    systemF.getMessageCountFail();
+                }
+            }
+        });
+    }
+
 }

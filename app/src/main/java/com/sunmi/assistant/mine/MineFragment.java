@@ -183,7 +183,8 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     @Override
     public int[] getStickNotificationId() {
         return new int[]{NotificationConstant.updateUsernameSuccess,
-                NotificationConstant.updateAvatarSuccess, CommonNotifications.msgUpdated};
+                NotificationConstant.updateAvatarSuccess,
+                CommonNotifications.msgUpdated,CommonNotifications.pushMsgArrived};
     }
 
     @Override
@@ -192,7 +193,8 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
             initUsername();
         } else if (id == NotificationConstant.updateAvatarSuccess) {
             initAvatar(true);
-        }else if (id == CommonNotifications.msgUpdated){
+        }else if (id == CommonNotifications.msgUpdated
+                ||id == CommonNotifications.pushMsgArrived){
             initMsg();
         }
     }

@@ -635,7 +635,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         }
     }
 
-    private void showErrorDialog(@StringRes int title, @StringRes int msgResId) {
+    @UiThread
+    public void showErrorDialog(@StringRes int title, @StringRes int msgResId) {
         hideLoadingDialog();
         new CommonDialog.Builder(context)
                 .setTitle(title)

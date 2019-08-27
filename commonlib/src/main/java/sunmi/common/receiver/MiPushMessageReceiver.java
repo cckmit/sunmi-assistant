@@ -8,6 +8,7 @@ import com.xiaomi.mipush.sdk.MiPushCommandMessage;
 import com.xiaomi.mipush.sdk.MiPushMessage;
 import com.xiaomi.mipush.sdk.PushMessageReceiver;
 
+import me.leolin.shortcutbadger.ShortcutBadger;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.MiPushMsgBean;
 import sunmi.common.notification.BaseNotification;
@@ -48,10 +49,10 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
         mMessage = message.getContent();
         LogCat.e(TAG, "mipush onNotificationMessageArrived mMessage = " + mMessage);
         if (!TextUtils.isEmpty(message.getAlias())) {
-            BaseNotification.newInstance().postNotificationName(CommonNotifications.msgUpdated);
             SpUtils.setRemindUnreadMsg(SpUtils.getRemindUnreadMsg() + 1);
             SpUtils.setUnreadMsg(SpUtils.getUnreadMsg() + 1);
-            mAlias = message.getAlias();
+            ShortcutBadger.applyCount(context, SpUtils.getRemindUnreadMsg());
+            BaseNotification.newInstance().postNotificationName(CommonNotifications.pushMsgArrived);
         }
     }
 
