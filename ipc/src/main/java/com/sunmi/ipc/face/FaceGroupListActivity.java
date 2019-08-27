@@ -126,7 +126,7 @@ public class FaceGroupListActivity extends BaseActivity {
     @Click(resName = "tv_face_group_create")
     void createGroup() {
         if (mFaceGroup.size() >= GROUP_LIST_MAX_COUNT) {
-            shortTip("临时：人脸库已满");
+            shortTip(R.string.ipc_face_group_create_full);
             return;
         }
         FaceGroupCreateActivity_.intent(this)

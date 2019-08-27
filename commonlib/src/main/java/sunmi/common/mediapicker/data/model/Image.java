@@ -91,6 +91,11 @@ public class Image implements Parcelable {
         return new Image(FROM_PATH, uri, path, name, lastModified);
     }
 
+    public static Image fromPath(String path) {
+        File file = new File(path);
+        return new Image(FROM_PATH, Uri.parse(path), file.getPath(), file.getName(), file.lastModified());
+    }
+
     public static Image fromCursor(Cursor cursor) {
         long id = cursor.getLong(cursor.getColumnIndexOrThrow(QueryConfig.COLUMN_ID));
         if (id == QueryConfig.ITEM_CAPTURE_ID) {

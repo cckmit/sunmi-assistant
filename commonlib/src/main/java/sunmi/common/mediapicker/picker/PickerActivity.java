@@ -310,6 +310,7 @@ public class PickerActivity extends BaseMvpActivity<PickerPresenter>
                 @Override
                 public void onClick(BaseRecyclerAdapter<Image> adapter, BaseViewHolder<Image> holder,
                                     View v, Image model, int position) {
+                    CheckBox check = holder.getView(R.id.cb_picker_item_check);
                     if (!model.isChecked()
                             && mConfig.getPickLimit() != 0
                             && mPresenter.getSelectSize() >= mConfig.getPickLimit()) {
@@ -318,6 +319,7 @@ public class PickerActivity extends BaseMvpActivity<PickerPresenter>
                         shortTip(R.string.picker_toast_limit);
                     } else {
                         model.setChecked(!model.isChecked());
+                        check.setChecked(model.isChecked());
                         if (model.isChecked()) {
                             mPresenter.addSelectItem(model);
                         } else {
@@ -325,7 +327,6 @@ public class PickerActivity extends BaseMvpActivity<PickerPresenter>
                         }
                         updateTitleBar();
                     }
-                    adapter.notifyItemChanged(position);
                 }
             });
             addOnViewClickListener(R.id.iv_picker_item_image, new OnViewClickListener<Image>() {

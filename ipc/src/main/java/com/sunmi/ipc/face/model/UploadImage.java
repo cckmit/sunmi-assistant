@@ -3,6 +3,8 @@ package com.sunmi.ipc.face.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Objects;
+
 import sunmi.common.mediapicker.data.model.Image;
 
 /**
@@ -56,6 +58,23 @@ public class UploadImage implements Parcelable {
 
     public void setCloudName(String cloudName) {
         this.cloudName = cloudName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        UploadImage that = (UploadImage) o;
+        return file.equals(that.file);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(file);
     }
 
     protected UploadImage(Parcel in) {
