@@ -20,7 +20,7 @@ public class MessageCountPresenter extends BasePresenter<MessageCountContract.Vi
 
     @Override
     public void getMessageCount() {
-        MessageCenterApi.getMessageCount(new RetrofitCallback<MessageCountBean>() {
+        MessageCenterApi.getInstance().getMessageCount(new RetrofitCallback<MessageCountBean>() {
             @Override
             public void onSuccess(int code, String msg, MessageCountBean data) {
                 int unreadMsg = data.getUnreadCount();
@@ -33,6 +33,7 @@ public class MessageCountPresenter extends BasePresenter<MessageCountContract.Vi
                     BaseNotification.newInstance().postNotificationName(NotificationConstant.msgUpdated);
                 }
                 if (isViewAttached()) {
+                    mView.hideLoadingDialog();
                     mView.getMessageCountSuccess(data);
                 }
             }
@@ -40,6 +41,7 @@ public class MessageCountPresenter extends BasePresenter<MessageCountContract.Vi
             @Override
             public void onFail(int code, String msg, MessageCountBean data) {
                 if (isViewAttached()) {
+                    mView.hideLoadingDialog();
                     mView.getMessageCountFail(code, msg);
                 }
             }

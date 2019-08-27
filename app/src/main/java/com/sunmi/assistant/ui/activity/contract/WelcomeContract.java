@@ -14,9 +14,12 @@ public interface WelcomeContract {
 
         void checkTokenFail(int code, String msg);
 
-        void chekUpgradeSuccess(String response);
+        void forceUpdate(String downloadUrl);
 
-        void chekUpgradeFail();
+        void gotoLeadPagesActivity();
+
+        void handleLaunch();
+
     }
 
     interface Presenter {

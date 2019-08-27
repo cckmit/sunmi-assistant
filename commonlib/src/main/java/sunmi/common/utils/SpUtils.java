@@ -1,9 +1,7 @@
 package sunmi.common.utils;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 
 import sunmi.common.base.BaseApplication;
 
@@ -172,20 +170,6 @@ public class SpUtils {
         SharedManager.clearValue(BaseApplication.getContext(), SET_ROUTER_MANGER_PASSWORD);
     }
 
-    //保存手机像素高度
-    public static void saveHeightPixel(Activity context) {
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        context.getWindowManager().getDefaultDisplay().getRealMetrics(outMetrics);
-        //int widthPixel = outMetrics.widthPixels;
-        int heightPixel = outMetrics.heightPixels;
-        SharedManager.putValue(BaseApplication.getContext(), "heightPixel", heightPixel + "");
-    }
-
-    //获取手机像素高度
-    public static int getHeightPixel() {
-        return Integer.valueOf(SharedManager.getValue(BaseApplication.getContext(), "heightPixel"));
-    }
-
     //保存是否显示引导页
     public static void saveLead() {
         SharedManager.putValue(BaseApplication.getContext(), LEAD_PAGES, "TRUE");
@@ -283,19 +267,19 @@ public class SpUtils {
         return SharedManager.getIntValue(BaseApplication.getContext(), REMIND_UNREAD_MSG);
     }
 
-    public static void setUnreadDeviceMsg(int unreadDeviceMsg){
-        SharedManager.putValue(BaseApplication.getContext(),UNREAD_DEVICE_MSG,unreadDeviceMsg);
+    public static void setUnreadDeviceMsg(int unreadDeviceMsg) {
+        SharedManager.putValue(BaseApplication.getContext(), UNREAD_DEVICE_MSG, unreadDeviceMsg);
     }
 
-    public static int getUnreadDeviceMsg(){
-        return SharedManager.getIntValue(BaseApplication.getContext(),UNREAD_DEVICE_MSG);
+    public static int getUnreadDeviceMsg() {
+        return SharedManager.getIntValue(BaseApplication.getContext(), UNREAD_DEVICE_MSG);
     }
 
-    public static void setUnreadSystemMsg(int unreadSystemMsg){
-        SharedManager.putValue(BaseApplication.getContext(),UNREAD_SYSTEM_MSG,unreadSystemMsg);
+    public static void setUnreadSystemMsg(int unreadSystemMsg) {
+        SharedManager.putValue(BaseApplication.getContext(), UNREAD_SYSTEM_MSG, unreadSystemMsg);
     }
 
-    public static int getUnreadSystemMsg(){
-        return SharedManager.getIntValue(BaseApplication.getContext(),UNREAD_SYSTEM_MSG);
+    public static int getUnreadSystemMsg() {
+        return SharedManager.getIntValue(BaseApplication.getContext(), UNREAD_SYSTEM_MSG);
     }
 }

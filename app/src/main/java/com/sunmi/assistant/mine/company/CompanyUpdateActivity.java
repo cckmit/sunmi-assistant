@@ -151,6 +151,10 @@ public class CompanyUpdateActivity extends BaseActivity
                 shortTip(getString(R.string.company_shop_contact_tip));
                 return true;
             }
+            if (HelpUtils.isContainEmoji(companyInfo)) {
+                shortTip(getString(R.string.specital_text_cannot_support));
+                return true;
+            }
             if (TextUtils.equals(companyInfo, mInfo.getContact_person())) {
                 finish();
                 return true;
@@ -165,8 +169,8 @@ public class CompanyUpdateActivity extends BaseActivity
                 finish();
                 return true;
             }
-            if (!RegexUtils.isChinaPhone(companyInfo) && !RegexUtils.isFixedPhone(companyInfo)) {
-                shortTip(getString(R.string.check_mobile_fixedphone_tip));
+            if (!RegexUtils.isChinaPhone(companyInfo)) {
+                shortTip(getString(R.string.str_invalid_phone));
                 return true;
             }
             mInfo.setContact_tel(companyInfo);

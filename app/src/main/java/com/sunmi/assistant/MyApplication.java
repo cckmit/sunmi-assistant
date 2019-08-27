@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.sunmi.apmanager.config.ApConfig;
 import com.sunmi.apmanager.rpc.mqtt.MQTTManager;
@@ -11,8 +12,12 @@ import com.sunmi.assistant.config.BootLoader;
 import com.sunmi.ipc.rpc.mqtt.MqttManager;
 import com.tencent.stat.StatConfig;
 import com.tencent.stat.StatService;
+import com.xiaomi.channel.commonutils.logger.LoggerInterface;
+import com.xiaomi.mipush.sdk.Logger;
+import com.xiaomi.mipush.sdk.MiPushClient;
 
 import sunmi.common.base.BaseApplication;
+import sunmi.common.constant.CommonConfig;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
@@ -53,6 +58,30 @@ public class MyApplication extends BaseApplication {
         StatConfig.setDebugEnable(!TextUtils.equals(Utils.getMetaValue(this,
                 "ENV_DATA", ApConfig.ENV_TEST), ApConfig.ENV_RELEASE));
         StatService.registerActivityLifecycleCallbacks(this);
+        initMiPush();
+    }
+
+    private void initMiPush() {
+        MiPushClient.registerPush(this, CommonConfig.MI_PUSH_APP_ID, CommonConfig.MI_PUSH_APP_KEY);
+        if (!TextUtils.isEmpty(SpUtils.getUID()))
+            MiPushClient.setAlias(this, SpUtils.getUID(), null);
+        //打开Log
+        LoggerInterface newLogger = new LoggerInterface() {
+            @Override
+            public void setTag(String tag) {
+            }
+
+            @Override
+            public void log(String content, Throwable t) {
+                Log.d("mipush", content, t);
+            }
+
+            @Override
+            public void log(String content) {
+                Log.d("mipush", content);
+            }
+        };
+        Logger.setLogger(this, newLogger);
     }
 
     class HhActivityLifecycleCallbacks implements ActivityLifecycleCallbacks {

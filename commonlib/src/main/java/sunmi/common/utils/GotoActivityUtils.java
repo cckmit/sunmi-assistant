@@ -19,7 +19,6 @@ public class GotoActivityUtils {
                 && !className.contains("LeadPagesActivity")
                 && !className.contains("WelcomeActivity")
                 && !className.contains("RegisterActivity")
-                && !className.contains("SendSmsLoginActivity")
                 && !className.contains("RetrievePasswordActivity")
                 && !className.contains("InputCaptchaActivity")
                 && !className.contains("InputMobileActivity")
@@ -59,6 +58,22 @@ public class GotoActivityUtils {
         try {
             Class<?> mainActivity = Class.forName("com.sunmi.assistant.ui.activity.MainActivity_");
             Intent intent = new Intent(context, mainActivity);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            context.startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void gotoMsgDetailActivity(Context context, int modelId, String modelName) {
+        try {
+            Class<?> activity = Class.forName("com.sunmi.assistant.mine.message.MsgDetailActivity_");
+            Intent intent = new Intent(context, activity);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                    Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("modelId", modelId);
+            intent.putExtra("title", modelName);
+            intent.putExtra("modelName", modelName);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.startActivity(intent);
         } catch (Exception e) {

@@ -79,7 +79,6 @@ public class DeviceMessageFragment extends BaseMvpFragment<MessageCountPresenter
     @Override
     public void getMessageCountSuccess(MessageCountBean data) {
         endRefresh();
-        hideLoadingDialog();
         bean = data.getModelCountList().get(0);
         initData();
     }
@@ -87,7 +86,6 @@ public class DeviceMessageFragment extends BaseMvpFragment<MessageCountPresenter
     @Override
     public void getMessageCountFail(int code, String msg) {
         endRefresh();
-        hideLoadingDialog();
         shortTip(R.string.tip_get_data_fail);
     }
 
@@ -171,7 +169,7 @@ public class DeviceMessageFragment extends BaseMvpFragment<MessageCountPresenter
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
-        if (id == NotificationConstant.msgReaded) {
+        if (id == NotificationConstant.msgReadedOrChange) {
             showLoadingDialog();
             mPresenter.getMessageCount();
         }
@@ -179,7 +177,7 @@ public class DeviceMessageFragment extends BaseMvpFragment<MessageCountPresenter
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{NotificationConstant.msgReaded};
+        return new int[]{NotificationConstant.msgReadedOrChange};
     }
 
     @Override

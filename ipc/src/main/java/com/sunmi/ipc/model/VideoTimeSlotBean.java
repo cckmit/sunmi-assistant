@@ -1,5 +1,7 @@
 package com.sunmi.ipc.model;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -44,7 +46,10 @@ public class VideoTimeSlotBean implements Comparable<VideoTimeSlotBean> {
     }
 
     @Override
-    public int compareTo(VideoTimeSlotBean o) {
+    public int compareTo(@NonNull VideoTimeSlotBean o) {
+        if (this.startTime <= 0 || o.getStartTime() <= 0) {
+            return -1;
+        }
         if (this.startTime >= o.getStartTime()) {
             return 1;
         }

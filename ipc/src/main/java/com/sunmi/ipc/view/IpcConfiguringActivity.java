@@ -100,7 +100,9 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
             isTimeoutStart = true;
             new Handler().postDelayed(new Runnable() {
                 public void run() {
-                    if (deviceIds.isEmpty()) return;
+                    if (deviceIds.isEmpty()) {
+                        return;
+                    }
                     mPresenter.getIpcList(SpUtils.getCompanyId(), shopId);
                 }
             }, 30000);
@@ -135,17 +137,24 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
                 }
             }
         }
-        for (String deviceId : deviceIds) {
-            setDeviceStatus(deviceId, RpcErrorCode.RPC_ERR_TIMEOUT);
-        }
-        configComplete();
+        setRemainDevicesStatus();
     }
 
     @Override
     public void getIpcListFail(int code, String msg) {
-        for (String deviceId : deviceIds) {
-            setDeviceStatus(deviceId, RpcErrorCode.RPC_ERR_TIMEOUT);
+        setRemainDevicesStatus();
+    }
+
+    /**
+     * 剩余设备配置失败
+     */
+    private void setRemainDevicesStatus() {
+        for (SunmiDevice device : sunmiDevices) {
+            if (deviceIds.contains(device.getDeviceid())) {
+                device.setStatus(RpcErrorCode.RPC_ERR_TIMEOUT);
+            }
         }
+        deviceIds.clear();
         configComplete();
     }
 

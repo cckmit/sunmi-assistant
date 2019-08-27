@@ -54,25 +54,31 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
-        </activity> <!-- 登录 -->
+        </activity>
+        <!-- 登录 -->
         <activity
             android:name=".ui.activity.login.LoginActivity_"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" /> <!-- 登录发送验证码 -->
+            android:screenOrientation="portrait" />
+        <!-- 登录发送验证码 -->
         <activity
             android:name=".ui.activity.login.SendSmsLoginActivity_"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|adjustPan" /> <!-- 登录获取验证码 -->
+            android:windowSoftInputMode="adjustResize|adjustPan" />
         <!-- 注册 -->
         <activity
             android:name=".ui.activity.login.RegisterActivity_"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustResize|adjustPan" /> <!-- 注册获取验证码 -->
-        <activity android:name=".ui.activity.login.InputCaptchaActivity_" /> <!-- 设置密码 -->
-        <activity android:name=".ui.activity.login.SetPasswordActivity_" /> <!-- 找回密码发送验证码 -->
+            android:windowSoftInputMode="adjustResize|adjustPan" />
+        <!-- 注册获取验证码 -->
+        <activity android:name=".ui.activity.login.InputCaptchaActivity_" />
+        <!-- 设置密码 -->
+        <activity android:name=".ui.activity.login.SetPasswordActivity_" />
+        <!-- 找回密码发送验证码 -->
         <activity android:name=".ui.activity.login.RetrievePasswordActivity_" />
-        <activity android:name=".ui.activity.login.InputMobileActivity_" /> <!-- 首页 -->
+        <activity android:name=".ui.activity.login.InputMobileActivity_" />
+        <!-- 首页 -->
         <activity
             android:name=".ui.activity.MainActivity_"
             android:launchMode="singleTask"
@@ -101,18 +107,22 @@
         <activity android:name=".mine.shop.ShopCategoryActivity_" />
         <activity android:name=".mine.shop.ShopRegionActivity_" />
         <activity android:name=".mine.shop.ShopAddressActivity_" />
-        <activity android:name=".mine.HelpActivity_" /> <!-- 百度地图 -->
+        <activity android:name=".mine.HelpActivity_" />
         <activity android:name=".mine.message.MsgCenterActivity_" />
         <activity android:name=".mine.message.MsgDetailActivity_" />
         <activity android:name=".mine.shop.ShopContactsAreaActivity_" />
         <activity android:name=".mine.company.CompanyDetailActivity_" />
         <activity android:name=".mine.shop.ShopDetailGroupActivity_" />
         <activity android:name=".mine.shop.CreateShopPreviewActivity_" />
+        <activity android:name=".mine.message.MsgSettingActivity_"/>
+        <activity android:name=".mine.message.MsgSettingDetailActivity_"/>
 
+        <!-- 百度地图 -->
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
-            android:process=":remote" /> <!-- 百度AK鉴权 -->
+            android:process=":remote" />
+        <!-- 百度AK鉴权 -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="${BAIDU_KEY}" />

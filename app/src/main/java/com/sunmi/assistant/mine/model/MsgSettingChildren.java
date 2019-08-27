@@ -1,5 +1,8 @@
 package com.sunmi.assistant.mine.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -9,7 +12,7 @@ import java.util.List;
  *
  * @author linyuanpeng on 2019-08-22.
  */
-public class MsgSettingChildren {
+public class MsgSettingChildren implements Parcelable {
     /**
      * id : 11
      * name : 网络摄像机（tag）
@@ -28,6 +31,40 @@ public class MsgSettingChildren {
     private int status;
     @SerializedName("children")
     private List<MsgSettingChildren> children;
+
+    protected MsgSettingChildren(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        pid = in.readString();
+        status = in.readInt();
+        children = in.createTypedArrayList(MsgSettingChildren.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(name);
+        dest.writeString(pid);
+        dest.writeInt(status);
+        dest.writeTypedList(children);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<MsgSettingChildren> CREATOR = new Creator<MsgSettingChildren>() {
+        @Override
+        public MsgSettingChildren createFromParcel(Parcel in) {
+            return new MsgSettingChildren(in);
+        }
+
+        @Override
+        public MsgSettingChildren[] newArray(int size) {
+            return new MsgSettingChildren[size];
+        }
+    };
 
     public int getId() {
         return id;

@@ -80,6 +80,7 @@
     <string name="str_bind_net_error">请确保手机已连接互联网</string>
     <string name="str_searching">搜索中…</string>
 
+    <string name="tip_no_device_found">没有发现新设备</string>
     <string name="str_check_net">请检查网络</string>
     <string name="str_net_exception">网络连接异常，请检查后重试</string>
     <string name="str_server_exception">服务器连接异常，请检查后重试</string>
@@ -97,6 +98,8 @@
     <string name="company_shop_new_create">新建门店</string>
     <string name="company_shop_import">导入门店</string>
     <string name="update_app_exception">版本更新异常,请检查网络连接状态是否良好。</string>
+    <string name="str_loding_more">加载中</string>
+    <string name="tip_no_more_data">没有更多数据了</string>
 
     <string name="picker_title">选择照片</string>
     <string name="picker_toast_no_permission">Permission denied!</string>
