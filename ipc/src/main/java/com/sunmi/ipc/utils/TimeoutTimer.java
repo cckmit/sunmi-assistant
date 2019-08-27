@@ -3,7 +3,7 @@ package com.sunmi.ipc.utils;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import sunmi.common.constant.CommonNotificationConstant;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
 
 /**
@@ -35,7 +35,7 @@ public class TimeoutTimer extends Timer {
             public void run() {
                 if (countDown++ == TIMEOUT) {
                     stop();
-                    BaseNotification.newInstance().postNotificationName(CommonNotificationConstant.netConnectException);
+                    BaseNotification.newInstance().postNotificationName(CommonNotifications.netConnectException);
                 }
             }
         }, 0, 1000);

@@ -17,13 +17,13 @@ public class MessageDetailPresenter extends BasePresenter<MessageDetailContract.
         implements MessageDetailContract.Presenter {
 
     @Override
-    public void getMessageList(int modelId, int pageNum, int pageSize, boolean needUpdate) {
+    public void getMessageList(int modelId, int pageNum, int pageSize, boolean needUpdate, boolean isRefesh) {
         MessageCenterApi.getInstance().getMessageList(modelId, pageNum, pageSize, new RetrofitCallback<MessageListBean>() {
             @Override
             public void onSuccess(int code, String msg, MessageListBean data) {
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();
-                    mView.getMessageListSuccess(data.getMsgList(), data.getTotalCount(), data.getReturnCount(), needUpdate);
+                    mView.getMessageListSuccess(data.getMsgList(), data.getTotalCount(), data.getReturnCount(), needUpdate, isRefesh);
                 }
             }
 

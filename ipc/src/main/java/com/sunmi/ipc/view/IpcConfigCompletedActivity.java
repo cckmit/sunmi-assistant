@@ -34,6 +34,7 @@ import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.GotoActivityUtils;
+import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
@@ -250,6 +251,17 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     private void getSDCardStatus(SunmiDevice device) {
         showLoadingDialog();
         deviceChoose = device;
+        if (!NetworkUtils.isNetworkAvailable(context)) {
+            shortTip(R.string.str_net_exception);
+            hideLoadingDialog();
+            return;
+        }
+        SunmiDevice sunmiDevice = CommonConstants.SUNMI_DEVICE_MAP.get(device.getDeviceid());
+        if (sunmiDevice == null) {
+            shortTip(R.string.ipc_setting_tip_network_dismatch);
+            hideLoadingDialog();
+            return;
+        }
         IPCCall.getInstance().getSdState(device.getIp());
     }
 

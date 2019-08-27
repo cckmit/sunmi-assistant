@@ -14,7 +14,7 @@ import sunmi.common.base.BaseView;
 public interface MessageDetailContract {
 
     interface View extends BaseView {
-        void getMessageListSuccess(List<MessageListBean.MsgListBean> beans, int total, int returnCount, boolean needUpdate);
+        void getMessageListSuccess(List<MessageListBean.MsgListBean> beans, int total, int returnCount, boolean needUpdate, boolean isRefesh);
 
         void getMessageListFail(int code, String msg);
 
@@ -28,7 +28,7 @@ public interface MessageDetailContract {
     }
 
     interface Presenter {
-        void getMessageList(int modelId, int pageNum, int pageSize,boolean needUpdate);
+        void getMessageList(int modelId, int pageNum, int pageSize, boolean needUpdate, boolean isRefesh);
 
         void deleteMessage(int msgId);
 

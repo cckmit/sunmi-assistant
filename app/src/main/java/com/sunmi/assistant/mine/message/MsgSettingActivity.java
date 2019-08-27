@@ -6,12 +6,12 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
-import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.MsgSettingContract;
 import com.sunmi.assistant.mine.model.MsgSettingChildren;
 import com.sunmi.assistant.mine.model.MsgSettingListBean;
 import com.sunmi.assistant.mine.presenter.MsgSettingPresenter;
+import com.sunmi.assistant.utils.MessageUtils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -19,12 +19,12 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
+import sunmi.common.utils.NetworkUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.SmRecyclerView;
@@ -58,7 +58,7 @@ public class MsgSettingActivity extends BaseMvpActivity<MsgSettingPresenter>
     private CommonListAdapter adapter;
     private MsgSettingChildren taskChild, serviceChild, promotionChild;
     private List<MsgSettingChildren> deviceMsg = new ArrayList<>();
-    private Map<String, String> titleMap = new HashMap<>();
+    private boolean allowCheck = true;
 
     @AfterViews
     void init() {
@@ -107,25 +107,18 @@ public class MsgSettingActivity extends BaseMvpActivity<MsgSettingPresenter>
             adapter = new CommonListAdapter<MsgSettingChildren>(context, R.layout.item_msg_device_setting, deviceMsg) {
                 @Override
                 public void convert(ViewHolder holder, MsgSettingChildren msgSettingChildren) {
-                    String name = msgSettingChildren.getName();
                     SettingItemLayout silDevice = holder.getView(R.id.sil_device);
                     if (msgSettingChildren.getStatus() == 1) {
                         silDevice.setRightText(getString(R.string.sm_enable));
                     } else {
                         silDevice.setRightText(getString(R.string.str_close));
                     }
-                    String title = "";
-                    if (TextUtils.equals(name, MsgConstants.NOTIFY_IPC_SETTING)) {
-                        title = getString(R.string.msg_ipc);
-                    } else if (TextUtils.equals(name, MsgConstants.NOTIFY_ESL_SETTING)) {
-                        title = getString(R.string.msg_esl);
-                    }
+                    String title = MessageUtils.getInstance().getMsgFirst(msgSettingChildren.getName());
                     silDevice.setLeftText(title);
-                    titleMap.put(name, title);
                     holder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            MsgSettingDetailActivity_.intent(context).child(msgSettingChildren).title(titleMap.get(name)).start();
+                            MsgSettingDetailActivity_.intent(context).child(msgSettingChildren).title(title).start();
                         }
                     });
                 }
@@ -143,7 +136,7 @@ public class MsgSettingActivity extends BaseMvpActivity<MsgSettingPresenter>
 
     @Override
     public void onBackPressed() {
-        BaseNotification.newInstance().postNotificationName(NotificationConstant.msgReadedOrChange);
+        BaseNotification.newInstance().postNotificationName(CommonNotifications.msgReadedOrChange);
         finish();
     }
 
@@ -155,11 +148,11 @@ public class MsgSettingActivity extends BaseMvpActivity<MsgSettingPresenter>
 
     @Override
     public void updateSettingStatusSuccess(int msgId, int status) {
-
     }
 
     @Override
     public void updateSettingStatusFail(int msgId, int status) {
+        allowCheck = false;
         if (msgId == taskChild.getId()) {
             initSystem(status == 0, sTask);    //由于更改状态失败，现在的状态和需要更改的状态相反
         } else if (msgId == serviceChild.getId()) {
@@ -178,13 +171,13 @@ public class MsgSettingActivity extends BaseMvpActivity<MsgSettingPresenter>
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
             case R.id.switch_task:
-                changeStatus(isChecked, taskChild.getId());
+                changeStatus(isChecked, taskChild.getId(), sTask);
                 break;
             case R.id.switch_service:
-                changeStatus(isChecked, serviceChild.getId());
+                changeStatus(isChecked, serviceChild.getId(), sService);
                 break;
             case R.id.switch_promotion:
-                changeStatus(isChecked, promotionChild.getId());
+                changeStatus(isChecked, promotionChild.getId(), sPromotion);
                 break;
             default:
                 break;
@@ -193,21 +186,37 @@ public class MsgSettingActivity extends BaseMvpActivity<MsgSettingPresenter>
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
-        if (id == NotificationConstant.msgDeviceChange) {
+        if (id == CommonNotifications.msgDeviceChange) {
             mPresenter.getSettingList();
         }
     }
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{NotificationConstant.msgDeviceChange};
+        return new int[]{CommonNotifications.msgDeviceChange};
     }
 
-    private void changeStatus(boolean isChecked, int settingId) {
+    private void changeStatus(boolean isChecked, int settingId, Switch sw) {
+        if (noNetCannotClick()) {
+            sw.setChecked(!isChecked);
+            return;
+        }
+        if (!allowCheck) {
+            allowCheck = true;
+            return;
+        }
         if (isChecked) {
             mPresenter.updateSettingStatus(settingId, 1);
         } else {
             mPresenter.updateSettingStatus(settingId, 0);
         }
+    }
+
+    private boolean noNetCannotClick() {
+        if (!NetworkUtils.isNetworkAvailable(context)) {
+            shortTip(R.string.toast_network_error);
+            return true;
+        }
+        return false;
     }
 }

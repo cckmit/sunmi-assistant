@@ -33,7 +33,7 @@
                 android:layout_height="@dimen/dp_40"
                 android:layout_marginStart="@dimen/dp_25"
                 android:gravity="center_vertical"
-                android:text="@string/str_device_msg"
+                android:text="@string/str_device_setting"
                 android:textColor="@color/colorText_60"
                 android:textSize="@dimen/sp_14" />
 
@@ -50,7 +50,7 @@
                 android:layout_height="@dimen/dp_40"
                 android:layout_marginStart="@dimen/dp_25"
                 android:gravity="center_vertical"
-                android:text="@string/str_system_msg"
+                android:text="@string/str_system_setting"
                 android:textColor="@color/colorText_60"
                 android:textSize="@dimen/sp_14" />
 
