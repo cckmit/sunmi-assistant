@@ -19,9 +19,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonNotifications;
@@ -150,11 +148,11 @@ public class MsgSettingActivity extends BaseMvpActivity<MsgSettingPresenter>
 
     @Override
     public void updateSettingStatusSuccess(int msgId, int status) {
-
     }
 
     @Override
     public void updateSettingStatusFail(int msgId, int status) {
+        allowCheck = false;
         if (msgId == taskChild.getId()) {
             initSystem(status == 0, sTask);    //由于更改状态失败，现在的状态和需要更改的状态相反
         } else if (msgId == serviceChild.getId()) {
@@ -171,31 +169,15 @@ public class MsgSettingActivity extends BaseMvpActivity<MsgSettingPresenter>
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if (noNetCannotClick()) {
-            switch (buttonView.getId()) {
-                case R.id.switch_task:
-                    sTask.setChecked(!isChecked);
-                    break;
-                case R.id.switch_service:
-                    sService.setChecked(!isChecked);
-                    break;
-                case R.id.switch_promotion:
-                    sPromotion.setChecked(!isChecked);
-                    break;
-                default:
-                    break;
-            }
-            return;
-        }
         switch (buttonView.getId()) {
             case R.id.switch_task:
-                changeStatus(isChecked, taskChild.getId());
+                changeStatus(isChecked, taskChild.getId(), sTask);
                 break;
             case R.id.switch_service:
-                changeStatus(isChecked, serviceChild.getId());
+                changeStatus(isChecked, serviceChild.getId(), sService);
                 break;
             case R.id.switch_promotion:
-                changeStatus(isChecked, promotionChild.getId());
+                changeStatus(isChecked, promotionChild.getId(), sPromotion);
                 break;
             default:
                 break;
@@ -214,7 +196,15 @@ public class MsgSettingActivity extends BaseMvpActivity<MsgSettingPresenter>
         return new int[]{CommonNotifications.msgDeviceChange};
     }
 
-    private void changeStatus(boolean isChecked, int settingId) {
+    private void changeStatus(boolean isChecked, int settingId, Switch sw) {
+        if (noNetCannotClick()) {
+            sw.setChecked(!isChecked);
+            return;
+        }
+        if (!allowCheck) {
+            allowCheck = true;
+            return;
+        }
         if (isChecked) {
             mPresenter.updateSettingStatus(settingId, 1);
         } else {

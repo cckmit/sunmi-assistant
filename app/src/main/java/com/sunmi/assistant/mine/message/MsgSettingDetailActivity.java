@@ -21,13 +21,12 @@ import org.androidannotations.annotations.ViewById;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
-import sunmi.common.utils.log.LogCat;
+import sunmi.common.utils.NetworkUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.ViewHolder;
 
 /**
- *
  * @author linyuanpeng on 2019-08-26.
  */
 
@@ -49,7 +48,8 @@ public class MsgSettingDetailActivity extends BaseMvpActivity<MsgSettingDetailPr
     @Extra
     MsgSettingChildren child;
 
-    Switch changedSwitch;
+    private Switch changedSwitch;
+    private boolean allowCheck = true;
 
 
     @AfterViews
@@ -81,7 +81,7 @@ public class MsgSettingDetailActivity extends BaseMvpActivity<MsgSettingDetailPr
                 sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        changeStatus(isChecked, children.getId());
+                        changeStatus(isChecked, children.getId(), sw);
                         changedSwitch = sw;
                     }
                 });
@@ -112,22 +112,39 @@ public class MsgSettingDetailActivity extends BaseMvpActivity<MsgSettingDetailPr
 
     @Override
     public void updateSettingStatusFail(int msgId, int status) {
+        allowCheck = false;
         changedSwitch.setChecked(status == 0);
     }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (buttonView.getId() == R.id.switch_main) {
-            changeStatus(isChecked, child.getId());
+            changeStatus(isChecked, child.getId(), sMian);
             changedSwitch = sMian;
         }
     }
 
-    private void changeStatus(boolean isChecked, int settingId) {
+    private void changeStatus(boolean isChecked, int settingId, Switch sw) {
+        if (noNetCannotClick()) {
+            sw.setChecked(!isChecked);
+            return;
+        }
+        if (!allowCheck) {
+            allowCheck = true;
+            return;
+        }
         if (isChecked) {
             mPresenter.updateSettingStatus(settingId, 1);
         } else {
             mPresenter.updateSettingStatus(settingId, 0);
         }
+    }
+
+    private boolean noNetCannotClick() {
+        if (!NetworkUtils.isNetworkAvailable(context)) {
+            shortTip(R.string.toast_network_error);
+            return true;
+        }
+        return false;
     }
 }

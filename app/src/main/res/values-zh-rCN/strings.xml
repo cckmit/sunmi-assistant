@@ -205,4 +205,5 @@
     <string name="str_service_msg">服务信息</string>
     <string name="str_promotion_msg">推广消息</string>
     <string name="str_msg_setting_detail">%s提醒设置</string>
+    <string name="str_device_setting">设备设置</string>
 </resources>
