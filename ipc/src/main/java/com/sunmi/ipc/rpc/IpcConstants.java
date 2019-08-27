@@ -5,12 +5,12 @@ package com.sunmi.ipc.rpc;
  * Created by bruce on 2019/3/29.
  */
 public class IpcConstants {
-    public static String IPC_IP = "";
-    public static String IPC_SN = "";
 
     private static int totalEvents = 0x3800;
     public static final int ipcDiscovered = totalEvents++;
     public static final int refreshIpcList = totalEvents++;
+    public static final int getIpcSettingMessage = totalEvents++;
+
     public static final int getWifiList = 0x3118;
     public static final int setIPCWifi = 0x3116;
     public static final int getIpcConnectApMsg = 0x3117;
@@ -32,6 +32,5 @@ public class IpcConstants {
     public static final int setIpcNightIdeRotation = 0x305d;
     public static final int getIpcDetection = 0x3120;
     public static final int setIpcDetection = 0x3121;
-    public static final int getIpcSettingMessage = totalEvents++;
 
 }

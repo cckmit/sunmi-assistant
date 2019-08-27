@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
-import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.MsgSettingContract;
 import com.sunmi.assistant.mine.model.MsgSettingChildren;
@@ -25,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.view.CommonListAdapter;
@@ -138,7 +138,7 @@ public class MsgSettingActivity extends BaseMvpActivity<MsgSettingPresenter>
 
     @Override
     public void onBackPressed() {
-        BaseNotification.newInstance().postNotificationName(NotificationConstant.msgReadedOrChange);
+        BaseNotification.newInstance().postNotificationName(CommonNotifications.msgReadedOrChange);
         finish();
     }
 
@@ -204,14 +204,14 @@ public class MsgSettingActivity extends BaseMvpActivity<MsgSettingPresenter>
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
-        if (id == NotificationConstant.msgDeviceChange) {
+        if (id == CommonNotifications.msgDeviceChange) {
             mPresenter.getSettingList();
         }
     }
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{NotificationConstant.msgDeviceChange};
+        return new int[]{CommonNotifications.msgDeviceChange};
     }
 
     private void changeStatus(boolean isChecked, int settingId) {

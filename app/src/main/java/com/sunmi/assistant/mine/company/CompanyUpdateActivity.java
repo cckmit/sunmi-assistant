@@ -151,6 +151,10 @@ public class CompanyUpdateActivity extends BaseActivity
                 shortTip(getString(R.string.company_shop_contact_tip));
                 return true;
             }
+            if (HelpUtils.isContainEmoji(companyInfo)) {
+                shortTip(getString(R.string.specital_text_cannot_support));
+                return true;
+            }
             if (TextUtils.equals(companyInfo, mInfo.getContact_person())) {
                 finish();
                 return true;

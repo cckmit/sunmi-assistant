@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.widget.EditText;
 
-import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.utils.DialogUtils;
 import com.sunmi.assistant.R;
 
@@ -14,6 +13,7 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.ShopInfo;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
@@ -83,7 +83,7 @@ public class ShopNameActivity extends BaseActivity {
                     SpUtils.setShopName(name);
                 }
                 BaseNotification.newInstance().postNotificationName(
-                        NotificationConstant.shopNameChanged, mInfo.getShopId(), name);
+                        CommonNotifications.shopNameChanged, mInfo.getShopId(), name);
                 Intent intent = getIntent();
                 intent.putExtra(ShopDetailActivity.INTENT_EXTRA_NAME, name);
                 setResult(RESULT_OK, intent);

@@ -8,7 +8,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.adapter.MsgDetailAdapter;
 import com.sunmi.assistant.mine.contract.MessageDetailContract;
@@ -30,6 +29,7 @@ import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.view.TitleBarView;
@@ -53,6 +53,8 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
     int modelId;
     @Extra
     String title;
+    @Extra
+    String modelName;
 
     private MsgDetailAdapter adapter;
     private int pageNum = 1, pageSize = 10;
@@ -113,7 +115,7 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
 
     @Override
     public void onBackPressed() {
-        BaseNotification.newInstance().postNotificationName(NotificationConstant.msgReadedOrChange);
+        BaseNotification.newInstance().postNotificationName(CommonNotifications.msgReadedOrChange);
         finish();
     }
 

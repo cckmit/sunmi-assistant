@@ -127,7 +127,7 @@
         android:id="@+id/v_face_overlay"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/black_60"
+        android:background="@color/c_black"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

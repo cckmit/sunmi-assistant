@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
-import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.adapter.MsgContentAdapter;
 import com.sunmi.assistant.mine.adapter.MsgTabAdapter;
@@ -28,6 +27,7 @@ import java.util.List;
 import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpFragment;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.view.SmRecyclerView;
 
 /**
@@ -164,7 +164,7 @@ public class DeviceMessageFragment extends BaseMvpFragment<MessageCountPresenter
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
-        if (id == NotificationConstant.msgReadedOrChange) {
+        if (id == CommonNotifications.msgReadedOrChange) {
             showLoadingDialog();
             mPresenter.getMessageCount();
         }
@@ -172,7 +172,7 @@ public class DeviceMessageFragment extends BaseMvpFragment<MessageCountPresenter
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{NotificationConstant.msgReadedOrChange};
+        return new int[]{CommonNotifications.msgReadedOrChange};
     }
 
     @Override

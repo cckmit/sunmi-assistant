@@ -4,7 +4,6 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.assistant.R;
 
 import org.androidannotations.annotations.AfterViews;
@@ -14,6 +13,7 @@ import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.tablayout.CommonTabLayout;
@@ -69,13 +69,13 @@ public class MsgCenterActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
-        if (id == NotificationConstant.msgUpdated) {
+        if (id == CommonNotifications.msgUpdated) {
             initDot();
         }
     }
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{NotificationConstant.msgUpdated};
+        return new int[]{CommonNotifications.msgUpdated};
     }
 }

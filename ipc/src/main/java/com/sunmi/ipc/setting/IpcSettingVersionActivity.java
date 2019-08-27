@@ -22,7 +22,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import sunmi.common.base.BaseActivity;
-import sunmi.common.constant.CommonNotificationConstant;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.sunmicall.ResponseBean;
@@ -119,7 +119,7 @@ public class IpcSettingVersionActivity extends BaseActivity {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         isSS = DeviceTypeUtils.getInstance().isSS1(mDevice.getModel());
         if (!isSS) {
-            ivIpc.setImageResource(R.mipmap.ic_ipc_setting_fs);
+            ivIpc.setImageResource(R.mipmap.ic_no_fs);
         }
         tvDeviceId.setText(mDevice.getDeviceid());
         //upgrade_required是否需要更新，0-不需要，1-需要
@@ -179,7 +179,7 @@ public class IpcSettingVersionActivity extends BaseActivity {
             dialog.progressDismiss();
             tvVersion.setText(String.format("%s\n%s", mResp.getLatest_bin_version(), getString(R.string.ipc_setting_version_no_new)));
             btnUpgrade.setVisibility(View.GONE);
-            BaseNotification.newInstance().postNotificationName(CommonNotificationConstant.ipcUpgrade);
+            BaseNotification.newInstance().postNotificationName(CommonNotifications.ipcUpgrade);
         } else {
             upgradeVerFailDialog(mResp.getLatest_bin_version());
         }

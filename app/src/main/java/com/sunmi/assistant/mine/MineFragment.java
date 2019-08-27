@@ -24,6 +24,7 @@ import org.androidannotations.annotations.ViewById;
 
 import cn.bingoogolapple.badgeview.BGABadgeRelativeLayout;
 import sunmi.common.base.BaseMvpFragment;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StringHelper;
@@ -182,7 +183,7 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     @Override
     public int[] getStickNotificationId() {
         return new int[]{NotificationConstant.updateUsernameSuccess,
-                NotificationConstant.updateAvatarSuccess, NotificationConstant.msgUpdated};
+                NotificationConstant.updateAvatarSuccess, CommonNotifications.msgUpdated};
     }
 
     @Override
@@ -191,7 +192,7 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
             initUsername();
         } else if (id == NotificationConstant.updateAvatarSuccess) {
             initAvatar(true);
-        }else if (id == NotificationConstant.msgUpdated){
+        }else if (id == CommonNotifications.msgUpdated){
             initMsg();
         }
     }

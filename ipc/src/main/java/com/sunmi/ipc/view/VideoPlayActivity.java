@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -24,7 +25,6 @@ import com.datelibrary.OnSureListener;
 import com.datelibrary.bean.DateType;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.contract.VideoPlayContract;
-import com.sunmi.ipc.model.TimeBean;
 import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.model.VideoTimeSlotBean;
 import com.sunmi.ipc.presenter.VideoPlayPresenter;
@@ -116,7 +116,7 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     @ViewById(resName = "ll_play_fail")
     LinearLayout llPlayFail;
     @ViewById(resName = "scale_panel")
-    ZFTimeLine scalePanel;//todo 替换旧的时间轴
+    ZFTimeLine scalePanel;
     @ViewById(resName = "tv_time_scroll")
     TextView tvTimeScroll;
 
@@ -146,31 +146,22 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     private IOTCClient iotcClient;
     //日历
     private Calendar calendar;
-    //选择视频日期列表
-    private List<TimeBean> list = new ArrayList<>();
-
     //当前时间 ，三天前秒数 ，区间总共秒数
-    private long currentDateSeconds, threeDaysBeforeSeconds, minutesTotal;
+    private long currentDateSeconds, threeDaysBeforeSeconds;
     //3天秒数
     private long threeDaysSeconds = 3 * 24 * 60 * 60;
     //12小时后的秒数
     private int twelveHoursSeconds = 12 * 60 * 60;
     //10分钟
     private int tenMinutes = 10 * 60;
-    //当前分钟走的秒数
-    private int currentSecond;
     //刻度尺移动定时器
     private ScheduledExecutorService executorService;
     //滑动停止的时间戳
     private long scrollTime;
     //选择日历当前的时间的0点
     private long selectedDate;
-    //是否往左滑动
-    private boolean isLeftScroll;
     //是否为选择的日期
     private boolean isSelectedDate;
-    //是否自动滚动
-    private boolean isAutoScroll;
     //视频片段是否小于一分钟
     private boolean isVideoLess1Minute;
     //是否第一次滑动
@@ -206,6 +197,8 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
 
     void initControllerPanel() {
         rlScreen.setOnTouchListener(this);
+        setPlayBooleanStatus();
+        openMove();
         initVolume();
         rlController.setVisibility(View.VISIBLE);
         scalePanel.setListener(this);
@@ -223,10 +216,6 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
         currentDateSeconds = System.currentTimeMillis() / 1000;
         //三天前秒数
         threeDaysBeforeSeconds = currentDateSeconds - threeDaysSeconds;
-        //区间总共秒数 --当前时间前三天+未来12小时的秒数
-        minutesTotal = threeDaysSeconds + twelveHoursSeconds;
-        //当前分钟走的秒数
-        currentSecond = calendar.get(Calendar.SECOND);
 
         iotcClient = new IOTCClient(UID);
         //直播回调
@@ -624,6 +613,10 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
         if (isCloudPlayBack) {
             cloudPlayDestroy();
         }
+        //当前时间秒数 TODO 需优化播放中渲染的时间
+        currentDateSeconds = System.currentTimeMillis() / 1000;
+        selectedDate = currentDateSeconds;
+        refreshTimeSlotVideoList();
         mPresenter.startLive(iotcClient);
     }
 
@@ -760,6 +753,7 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
         if (executorService == null) {
             executorService = Executors.newSingleThreadScheduledExecutor();
         }
+        scrollTime = scalePanel.getCurrentInterval() * 1000;//获取实时滚动的时间
         tvCalender.setText(scalePanel.currentTimeStr().substring(6, 8));
         executorService.scheduleAtFixedRate(new Runnable() {
             @Override
@@ -774,7 +768,10 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
         LogCat.e(TAG, "11111 moveTo currentInteval = " + scalePanel.getCurrentInterval());
         scalePanel.autoMove();
         //自动滑动时下一个视频ap还是cloud播放
-        switch2Playback(scalePanel.getCurrentInterval());
+        if (!isCurrentLive && isVideoLess1Minute) {
+            isVideoLess1Minute = false;
+            switch2Playback(scalePanel.getCurrentInterval());
+        }
     }
 
     //结束移动
@@ -816,14 +813,15 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
         if (time > currentTime) {//未来时间或当前--滑动当前直播
             isSelectedDate = false;
             scrollTime = System.currentTimeMillis();
-            int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-            tvCalender.setText(day > 9 ? day + "" : "0" + day);
+            tvCalender.setText(String.format("%td", new Date()));
+            if (isCurrentLive) {
+                return;
+            }
             switch2Live();
         } else {//回放时间
             isFirstScroll = false;//非首次滑动
             isSelectedDate = true;
             isCurrentLive = false; //回放
-            isAutoScroll = false;//非自动滚动
             ivPlay.setBackgroundResource(R.mipmap.pause_normal);
             ivLive.setVisibility(View.VISIBLE);
 
@@ -832,8 +830,7 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
             int month = Integer.valueOf(strDate.substring(5, 7));
             int day = Integer.valueOf(strDate.substring(8, 10));
             //显示日历天数
-            //tvCalender.setText(String.format("%td%n", date));
-            tvCalender.setText(" " + day);
+            tvCalender.setText(String.format("%td", date));
             //设置选择日期的年月日0时0分0秒
             calendar.clear();
             calendar.set(year, month - 1, day, 0, 0, 0);//设置时候月份减1即是当月
@@ -842,11 +839,8 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
             currentDateSeconds = System.currentTimeMillis() / 1000;
             //选择日期三天前的秒数
             threeDaysBeforeSeconds = selectedDate - threeDaysSeconds;
-            //区间总共秒数
-            minutesTotal = currentDateSeconds - selectedDate + threeDaysSeconds + twelveHoursSeconds;
-            //加载时间轴无渲染
-            listAp.clear();
-            refreshCanvasList();//渲染
+            //加载时间轴
+            refreshTimeSlotVideoList();
         }
     }
 
@@ -952,7 +946,7 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
             //当滑动到最后前后一分钟时，判断下一个视频片段ap还是cloud
             if (end - currTime < 60 && currTime >= start && currTime < end) {
                 if (i == availableVideoSize - 1) {//todo 最后一个，需要渲染后面的数据
-//                    refreshCanvasList();//i是最后一个，基于i的end作为start再拉7天的数据。
+//                    refreshTimeSlotVideoList();//i是最后一个，基于i的end作为start再拉7天的数据。
                 } else {
                     boolean isCloud = !listAp.get(i + 1).isApPlay();
                     final int delayMillis = (int) end - currTime < 0 ? 1 : (int) (end - currTime);
@@ -983,7 +977,7 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     }
 
     /*
-     ****************************绘制时间轴*******************************************
+     *绘制时间轴
      */
     private List<VideoTimeSlotBean> listAp = new ArrayList<>();
     private List<VideoTimeSlotBean> listCloud = new ArrayList<>();
@@ -1006,15 +1000,10 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     }
 
     //发送请求获取组合时间轴
-    private void refreshCanvasList() {
+    private void refreshTimeSlotVideoList() {
         timeSlotsShowProgress();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                listAp.clear();
-                getDeviceTimeSlots(threeDaysBeforeSeconds, currentDateSeconds);
-            }
-        }, 2000);
+        listAp.clear();
+        getDeviceTimeSlots(threeDaysBeforeSeconds, currentDateSeconds);
     }
 
     //获取cloud回放时间轴
@@ -1080,7 +1069,8 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
                 }
             }
         }
-        if (listAp.size() > 1) {
+        LogCat.e(TAG, "11111  apSize>0  cloudSize>0");
+        if (apSize > 0 && cloudSize > 0) {
             listAp = duplicateRemoval(listAp);//去重
             Collections.sort(listAp);//正序比较
         }
@@ -1128,15 +1118,29 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     @Override
     public void didMoveToDate(String date, long timeStamp) {
         LogCat.e(TAG, "11111 didMoveToDate, " + date + ",  " + timeStamp);
-        new Handler().postDelayed(new Runnable() {
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 tvTimeScroll.setVisibility(View.GONE);
             }
         }, 500);
-        if (isFirstScroll && !isCurrentLive) {
-            LogCat.e(TAG, "11111 didMoveToDate, isFirstScroll");
+        if (timeStamp > System.currentTimeMillis() / 1000) {
+            shortTip(getString(R.string.ipc_time_over_current_time));
+            if (isCurrentLive) {//超过当前时间--当前处于直播
+                scrollCurrentLive();
+                return;
+            }
+            switch2Live(); //超过当前时间--当前处于回放
+            return;
+        }
+        if (timeStamp < threeDaysBeforeSeconds) {
+            shortTip(getString(R.string.ipc_time_over_back_time));
+            selectedTimeIsHaveVideo(threeDaysBeforeSeconds);
+            return;
+        }
+        if (isFirstScroll && listAp.size() == 0) {
             selectedDate = timeStamp;
+            scalePanel.clearData();//clear渲染时间轴
             getDeviceTimeSlots(threeDaysBeforeSeconds, currentDateSeconds);
             return;
         }
@@ -1145,15 +1149,6 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
 
     @Override
     public void moveTo(String data, boolean isLeftScroll, long timeStamp) {
-        if (timeStamp > System.currentTimeMillis() / 1000) {
-            shortTip(getString(R.string.ipc_time_over_current_time));
-            switch2Live();
-            return;
-        } else if (timeStamp < threeDaysBeforeSeconds) {
-            shortTip(getString(R.string.ipc_time_over_back_time));
-            selectedTimeIsHaveVideo(threeDaysBeforeSeconds);
-            return;
-        }
         showTimeScroll(data.substring(11), isLeftScroll);//toast显示时间
     }
 
@@ -1166,12 +1161,12 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
         tvTimeScroll.setText(time);
         if (isLeft) {
             if (drawableLeft == null) {
-                drawableLeft = getResources().getDrawable(R.mipmap.ic_fast_forward);
+                drawableLeft = ContextCompat.getDrawable(this, R.mipmap.ic_fast_forward);
             }
             tvTimeScroll.setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null);
         } else {
             if (drawableRight == null) {
-                drawableRight = getResources().getDrawable(R.mipmap.ic_forward);
+                drawableRight = ContextCompat.getDrawable(this, R.mipmap.ic_forward);
             }
             tvTimeScroll.setCompoundDrawablesWithIntrinsicBounds(null, null, drawableRight, null);
         }

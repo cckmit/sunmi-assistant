@@ -1,10 +1,10 @@
 package com.sunmi.assistant.mine.presenter;
 
-import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.ChangeCompanyNameContract;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
@@ -47,7 +47,7 @@ public class ChangeCompanyNamePresenter extends BasePresenter<ChangeCompanyNameC
             @Override
             public void onSuccess(int code, String msg, CompanyInfoResp data) {
                 SpUtils.setCompanyName(name);
-                BaseNotification.newInstance().postNotificationName(NotificationConstant.companyNameChanged);
+                BaseNotification.newInstance().postNotificationName(CommonNotifications.companyNameChanged);
                 if (isViewAttached()) {
                     mView.updateSuccess();
                 }
