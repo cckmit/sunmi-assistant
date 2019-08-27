@@ -1,14 +1,10 @@
 package com.sunmi.ipc.face.contract;
 
-import android.content.Context;
-
-import com.sunmi.ipc.face.model.Face;
-import com.sunmi.ipc.face.model.FaceGroup;
+import com.sunmi.ipc.face.model.UploadImage;
 
 import java.util.List;
 
 import sunmi.common.base.BaseView;
-import sunmi.common.model.FilterItem;
 
 /**
  * @author yinhui
@@ -16,39 +12,23 @@ import sunmi.common.model.FilterItem;
  */
 public interface FaceUploadContract {
 
+    long FILE_SIZE_1M = 1_000_000L;
+
     interface View extends BaseView {
 
-        void updateFilter(List<FilterItem> gender, List<FilterItem> age);
+        void saveComplete();
 
-        void updateGroupList(List<FaceGroup> list);
+        void saveFailed();
 
-        void updateList(List<Face> list, boolean hasMore);
+        void uploadSuccess(UploadImage image);
 
-        void addList(List<Face> list, boolean hasMore);
-
-        void resetView();
-
-        void getDataFailed();
+        void uploadFailed(UploadImage image);
     }
 
     interface Presenter {
 
-        void init(Context context);
+        void upload(UploadImage image);
 
-        boolean getMore();
-
-        void filterName(String name);
-
-        void filterGender(int gender);
-
-        void filterAge(int age);
-
-        void move(List<Face> list, FaceGroup group);
-
-        void delete(List<Face> list);
-
-        void loadGroup();
-
-        void loadFace(boolean refresh, boolean clearFilter);
+        void save(List<UploadImage> list);
     }
 }
