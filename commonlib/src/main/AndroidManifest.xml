@@ -54,9 +54,11 @@
             android:name="sunmi.common.view.activity.StartConfigSMDeviceActivity_"
             android:launchMode="singleTask" />
 
+        <activity android:name="sunmi.common.mediapicker.picker.PickerActivity" />
+
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities=".fileprovider"
+            android:authorities="${applicationId}.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <!--提供共享路径-->

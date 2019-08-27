@@ -5,6 +5,7 @@ import android.content.Context;
 import com.sunmi.ipc.face.model.Face;
 import com.sunmi.ipc.face.model.FaceGroup;
 
+import java.io.File;
 import java.util.List;
 
 import sunmi.common.base.BaseView;
@@ -28,6 +29,10 @@ public interface FaceListContract {
 
         void resetView();
 
+        void uploadSuccess();
+
+        void uploadFailed();
+
         void getDataFailed();
     }
 
@@ -46,6 +51,8 @@ public interface FaceListContract {
         void move(List<Face> list, FaceGroup group);
 
         void delete(List<Face> list);
+
+        void upload(File file);
 
         void loadGroup();
 
