@@ -156,6 +156,10 @@ public class FaceGroup implements Parcelable {
         this.alarmNotified = alarmNotified;
     }
 
+    public void setCount(int count) {
+        this.count = count;
+    }
+
     protected FaceGroup(Parcel in) {
         companyId = in.readInt();
         shopId = in.readInt();

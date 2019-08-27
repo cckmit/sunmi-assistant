@@ -2,9 +2,12 @@ package com.sunmi.ipc.face;
 
 import android.content.Intent;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -15,6 +18,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.face.contract.FaceUploadContract;
+import com.sunmi.ipc.face.model.FaceGroup;
 import com.sunmi.ipc.face.model.UploadImage;
 import com.sunmi.ipc.face.presenter.FaceUploadPresenter;
 
@@ -38,6 +42,7 @@ import sunmi.common.base.recycle.listener.OnViewClickListener;
 import sunmi.common.luban.Luban;
 import sunmi.common.mediapicker.TakePhoto;
 import sunmi.common.mediapicker.TakePhotoAgent;
+import sunmi.common.mediapicker.data.model.Image;
 import sunmi.common.mediapicker.data.model.Result;
 import sunmi.common.utils.FileHelper;
 import sunmi.common.utils.log.LogCat;
@@ -64,6 +69,10 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
     RecyclerView mRvFaceList;
 
     @Extra
+    int mShopId;
+    @Extra
+    FaceGroup mFaceGroup;
+    @Extra
     ArrayList<UploadImage> mImages;
     @Extra
     int mRemain;
@@ -85,6 +94,8 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
         mPickerAgent = TakePhoto.with(this)
                 .setTakePhotoListener(new PickerResult())
                 .build();
+        mPresenter = new FaceUploadPresenter(mShopId, mFaceGroup);
+        mPresenter.attachView(this);
     }
 
     private void initTitle() {
@@ -109,25 +120,29 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
         mPickerAgent.takePhoto();
     }
 
-    private void pickImage(int limit, Result result) {
-        mPickerAgent.setPickLimit(limit);
-        mPickerAgent.pickMultiPhotos(result);
+    private void pickImage() {
+        List<Image> result = new ArrayList<>(mImages.size());
+        for (UploadImage image : mImages) {
+            result.add(Image.fromPath(image.getFile()));
+        }
+        mPickerAgent.setPickLimit(mPickerLimit);
+        mPickerAgent.pickMultiPhotos(new Result(result));
     }
 
     private void upload() {
         mTitleBar.getRightText().setEnabled(false);
         mTitleBar.setRightTextViewColor(R.color.colorText_40);
-        List<UploadImage> list = mAdapter.getData();
-        if (list.size() > 0 && list.get(0).getState() == UploadImage.STATE_ADD) {
-            list.remove(0);
-        }
-        for (UploadImage image : list) {
+        for (UploadImage image : mImages) {
             image.setState(UploadImage.STATE_UPLOADING);
         }
+        List<UploadImage> data = mAdapter.getData();
+        if (data.size() > 0 && data.get(0).getState() == UploadImage.STATE_ADD) {
+            data.remove(0);
+        }
         mAdapter.notifyDataSetChanged();
-        mUploadCount = list.size();
+        mUploadCount = mImages.size();
         mCompleteCount = 0;
-        for (UploadImage image : list) {
+        for (UploadImage image : mImages) {
             compress(image);
         }
     }
@@ -144,11 +159,11 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
             while (file.length() > FILE_SIZE_1M) {
                 List<File> files = Luban.with(this)
                         .setTargetDir(FileHelper.SDCARD_CACHE_IMAGE_PATH)
-                        .load(image.getFile())
+                        .load(file)
                         .get();
                 file = files.get(0);
             }
-            image.setCompressed(file.getAbsolutePath());
+            image.setCompressed(file.getPath());
             mPresenter.upload(image);
         } catch (IOException e) {
             e.printStackTrace();
@@ -162,7 +177,8 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
         if (mValidImages.isEmpty()) {
             mTitleBar.getRightText().setEnabled(false);
             mTitleBar.setRightTextViewColor(R.color.colorText_40);
-            pickImage(mPickerLimit, null);
+            mImages.clear();
+            pickImage();
             mAdapter.clear();
         } else {
             mTitleBar.getRightText().setEnabled(true);
@@ -239,6 +255,10 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
             ArrayList<UploadImage> list = savedInstanceState.getParcelableArrayList(STATE_IMAGES);
             if (list != null) {
                 mAdapter.setData(list);
+                mImages = new ArrayList<>(list);
+                if (list.size() > 0 && list.get(0).getState() == UploadImage.STATE_ADD) {
+                    mImages.remove(0);
+                }
             }
         }
     }
@@ -246,7 +266,16 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
     private class PickerResult implements TakePhoto.TakePhotoListener {
         @Override
         public void onSuccess(int from, Result result) {
-            // TODO:
+            List<Image> images = result.getImages();
+            List<UploadImage> addList = new ArrayList<>();
+            for (Image image : images) {
+                UploadImage item = new UploadImage(image);
+                if (!mImages.contains(item)) {
+                    addList.add(item);
+                }
+            }
+            mAdapter.add(addList);
+            mImages.addAll(addList);
         }
 
         @Override
@@ -260,35 +289,42 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
 
     private class ImageAdapter extends SimpleArrayAdapter<UploadImage> {
 
+        private Drawable addIcon;
+
         public ImageAdapter(List<UploadImage> data) {
             super(data);
             addOnViewClickListener(R.id.iv_face_item_image, new OnViewClickListener<UploadImage>() {
                 @Override
                 public void onClick(BaseRecyclerAdapter<UploadImage> adapter, BaseViewHolder<UploadImage> holder,
                                     View v, UploadImage model, int position) {
-                    if (model.getState() == UploadImage.STATE_ADD) {
-                        if (mPickerDialog == null) {
-                            mPickerDialog = new BottomPopMenu.Builder(FaceUploadActivity.this)
-                                    .addItemAction(new PopItemAction(R.string.ipc_face_take_photo,
-                                            PopItemAction.PopItemStyle.Normal, new PopItemAction.OnClickListener() {
-                                        @Override
-                                        public void onClick() {
-                                            takePhoto();
-                                        }
-                                    }))
-                                    .addItemAction(new PopItemAction(R.string.ipc_face_album_choose,
-                                            PopItemAction.PopItemStyle.Normal, new PopItemAction.OnClickListener() {
-                                        @Override
-                                        public void onClick() {
-                                            // TODO:
-                                        }
-                                    }))
-                                    .addItemAction(new PopItemAction(R.string.sm_cancel,
-                                            PopItemAction.PopItemStyle.Cancel))
-                                    .create();
-                        }
-                        mPickerDialog.show();
+                    if (model.getState() != UploadImage.STATE_ADD) {
+                        return;
                     }
+                    if (mImages.size() >= mPickerLimit) {
+                        shortTip(R.string.ipc_face_error_select_limit);
+                        return;
+                    }
+                    if (mPickerDialog == null) {
+                        mPickerDialog = new BottomPopMenu.Builder(FaceUploadActivity.this)
+                                .addItemAction(new PopItemAction(R.string.ipc_face_take_photo,
+                                        PopItemAction.PopItemStyle.Normal, new PopItemAction.OnClickListener() {
+                                    @Override
+                                    public void onClick() {
+                                        takePhoto();
+                                    }
+                                }))
+                                .addItemAction(new PopItemAction(R.string.ipc_face_album_choose,
+                                        PopItemAction.PopItemStyle.Normal, new PopItemAction.OnClickListener() {
+                                    @Override
+                                    public void onClick() {
+                                        pickImage();
+                                    }
+                                }))
+                                .addItemAction(new PopItemAction(R.string.sm_cancel,
+                                        PopItemAction.PopItemStyle.Cancel))
+                                .create();
+                    }
+                    mPickerDialog.show();
                 }
             });
             addOnViewClickListener(R.id.v_face_item_region, new OnViewClickListener<UploadImage>() {
@@ -296,8 +332,14 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
                 public void onClick(BaseRecyclerAdapter<UploadImage> adapter, BaseViewHolder<UploadImage> holder,
                                     View v, UploadImage model, int position) {
                     remove(position);
+                    mImages.remove(model);
                 }
             });
+            addIcon = ContextCompat.getDrawable(FaceUploadActivity.this, R.mipmap.face_ic_add);
+            if (addIcon == null) {
+                return;
+            }
+            addIcon = DrawableCompat.wrap(addIcon);
         }
 
         @Override
@@ -309,7 +351,18 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
         public void setupView(@NonNull BaseViewHolder<UploadImage> holder, UploadImage model, int position) {
             updateVisible(holder, model.getState());
             ImageView image = holder.getView(R.id.iv_face_item_image);
-            Glide.with(holder.getContext()).load(model.getFile()).into(image);
+            if (model.getState() == UploadImage.STATE_ADD) {
+                if (mImages.size() >= mPickerLimit) {
+                    DrawableCompat.setTint(addIcon, ContextCompat.getColor(context, R.color.color_85858A));
+                } else {
+                    DrawableCompat.setTint(addIcon, ContextCompat.getColor(context, R.color.colorOrange));
+                }
+                image.setScaleType(ImageView.ScaleType.CENTER);
+                image.setImageDrawable(addIcon);
+            } else {
+                image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                Glide.with(holder.getContext()).load(model.getFile()).into(image);
+            }
         }
 
         private void updateVisible(@NonNull BaseViewHolder<UploadImage> holder, int state) {

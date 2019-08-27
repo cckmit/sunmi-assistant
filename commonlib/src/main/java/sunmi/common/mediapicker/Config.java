@@ -32,7 +32,7 @@ public class Config implements Parcelable {
 
     int enableMediaType = MEDIA_IMAGE;
     int pickLimit = 9;
-    long minSize = 1000;
+    long minSize = 10000;
     boolean enableAlbumSelect = false;
     boolean enableCapture = false;
     boolean enableEdit = false;

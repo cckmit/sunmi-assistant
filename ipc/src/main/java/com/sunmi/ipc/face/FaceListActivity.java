@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.CallSuper;
@@ -14,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,6 +36,7 @@ import com.sunmi.ipc.R;
 import com.sunmi.ipc.face.contract.FaceListContract;
 import com.sunmi.ipc.face.model.Face;
 import com.sunmi.ipc.face.model.FaceGroup;
+import com.sunmi.ipc.face.model.UploadImage;
 import com.sunmi.ipc.face.presenter.FaceListPresenter;
 import com.sunmi.ipc.face.util.BottomAnimation;
 import com.sunmi.ipc.face.util.GlideRoundCrop;
@@ -48,6 +51,7 @@ import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
@@ -60,6 +64,7 @@ import sunmi.common.base.recycle.listener.OnViewClickListener;
 import sunmi.common.luban.Luban;
 import sunmi.common.mediapicker.TakePhoto;
 import sunmi.common.mediapicker.TakePhotoAgent;
+import sunmi.common.mediapicker.data.model.Image;
 import sunmi.common.mediapicker.data.model.Result;
 import sunmi.common.model.FilterItem;
 import sunmi.common.utils.FileHelper;
@@ -81,6 +86,7 @@ import sunmi.common.view.dialog.CommonDialog;
 public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         implements FaceListContract.View, BGARefreshLayout.BGARefreshLayoutDelegate {
 
+    private static final int REQUEST_CODE = 100;
     private static final int STATE_NORMAL = 0;
     private static final int STATE_CHOOSE = 1;
 
@@ -143,7 +149,6 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     private BottomPopMenu mPickerDialog;
 
     private TakePhotoAgent mPickerAgent;
-    private Result mPickerResult;
 
     private boolean mMovePending = false;
 
@@ -453,13 +458,16 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
 
     @Override
     public void uploadSuccess() {
+        mUploadDialog.dismiss();
         shortTip(R.string.ipc_face_tip_album_upload_success);
+        mFaceGroup.setCount(mFaceGroup.getCount() + 1);
         mPresenter.loadFace(true, true);
         resetView();
     }
 
     @Override
     public void uploadFailed() {
+        mUploadDialog.dismiss();
         new CommonDialog.Builder(this)
                 .setTitle(R.string.ipc_face_error_upload)
                 .setMessage(R.string.ipc_face_error_photo)
@@ -508,7 +516,17 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     }
 
     private void openPicker() {
-        mPickerAgent.pickMultiPhotos(mPickerResult);
+        new CommonDialog.Builder(this)
+                .setTitle(R.string.ipc_face_tip_album_title)
+                .setMessage(R.string.ipc_face_tip_album_content)
+                .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mPickerAgent.pickMultiPhotos(null);
+                    }
+                })
+                .create()
+                .show();
     }
 
     @Background
@@ -599,6 +617,10 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mPickerAgent.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            mPresenter.loadFace(true, true);
+            resetView();
+        }
     }
 
     @Override
@@ -679,7 +701,6 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
 
         @Override
         public void onSuccess(int from, Result result) {
-            mPickerResult = result;
             if (from == TakePhotoAgent.FROM_TAKE_PHOTO) {
                 if (mUploadDialog == null) {
                     mUploadDialog = new CommonDialog.Builder(FaceListActivity.this)
@@ -690,18 +711,26 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                 mUploadDialog.show();
                 uploadFace(new File(result.getImage().getPath()));
             } else {
-                // TODO:
+                List<Image> images = result.getImages();
+                ArrayList<UploadImage> list = new ArrayList<>(images.size());
+                for (Image image : images) {
+                    list.add(new UploadImage(image));
+                }
+                FaceUploadActivity_.intent(FaceListActivity.this)
+                        .mShopId(mShopId)
+                        .mFaceGroup(mFaceGroup)
+                        .mImages(list)
+                        .mRemain(mFaceGroup.getCapacity() - mFaceGroup.getCount())
+                        .startForResult(REQUEST_CODE);
             }
         }
 
         @Override
         public void onError(int errorCode, int from, String msg) {
-
         }
 
         @Override
         public void onCancel(int from) {
-
         }
     }
 
@@ -771,36 +800,43 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
 
     private class FaceListAdapter extends SimpleArrayAdapter<Face> {
 
+        private Drawable addIcon;
+
         public FaceListAdapter() {
             addOnViewClickListener(R.id.item_image, new OnViewClickListener<Face>() {
                 @Override
                 public void onClick(BaseRecyclerAdapter<Face> adapter, BaseViewHolder<Face> holder,
                                     View v, Face model, int position) {
-                    if (model.isAddIcon()) {
-                        if (mPickerDialog == null) {
-                            mPickerDialog = new BottomPopMenu.Builder(FaceListActivity.this)
-                                    .addItemAction(new PopItemAction(R.string.ipc_face_take_photo,
-                                            PopItemAction.PopItemStyle.Normal, new PopItemAction.OnClickListener() {
-                                        @Override
-                                        public void onClick() {
-                                            takePhoto();
-                                        }
-                                    }))
-                                    .addItemAction(new PopItemAction(R.string.ipc_face_album_choose,
-                                            PopItemAction.PopItemStyle.Normal, new PopItemAction.OnClickListener() {
-                                        @Override
-                                        public void onClick() {
-                                            openPicker();
-                                        }
-                                    }))
-                                    .addItemAction(new PopItemAction(R.string.sm_cancel,
-                                            PopItemAction.PopItemStyle.Cancel))
-                                    .create();
-                        }
-                        mPickerDialog.show();
-                    } else {
+                    if (!model.isAddIcon()) {
                         // TODO: Go to detail.
+                        return;
                     }
+
+                    if (mFaceGroup.getCount() >= mFaceGroup.getCapacity()) {
+                        shortTip(R.string.ipc_face_group_create_full);
+                        return;
+                    }
+                    if (mPickerDialog == null) {
+                        mPickerDialog = new BottomPopMenu.Builder(FaceListActivity.this)
+                                .addItemAction(new PopItemAction(R.string.ipc_face_take_photo,
+                                        PopItemAction.PopItemStyle.Normal, new PopItemAction.OnClickListener() {
+                                    @Override
+                                    public void onClick() {
+                                        takePhoto();
+                                    }
+                                }))
+                                .addItemAction(new PopItemAction(R.string.ipc_face_album_choose,
+                                        PopItemAction.PopItemStyle.Normal, new PopItemAction.OnClickListener() {
+                                    @Override
+                                    public void onClick() {
+                                        openPicker();
+                                    }
+                                }))
+                                .addItemAction(new PopItemAction(R.string.sm_cancel,
+                                        PopItemAction.PopItemStyle.Cancel))
+                                .create();
+                    }
+                    mPickerDialog.show();
                 }
             });
             addOnViewClickListener(R.id.item_check_region, new OnViewClickListener<Face>() {
@@ -827,6 +863,11 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                     }
                 }
             });
+            addIcon = ContextCompat.getDrawable(FaceListActivity.this, R.mipmap.face_ic_add);
+            if (addIcon == null) {
+                return;
+            }
+            addIcon = DrawableCompat.wrap(addIcon);
         }
 
         @Override
@@ -847,6 +888,11 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                 region.setVisibility(View.VISIBLE);
             }
             if (model.isAddIcon()) {
+                if (mFaceGroup.getCount() >= mFaceGroup.getCapacity()) {
+                    DrawableCompat.setTint(addIcon, ContextCompat.getColor(context, R.color.color_85858A));
+                } else {
+                    DrawableCompat.setTint(addIcon, ContextCompat.getColor(context, R.color.colorOrange));
+                }
                 image.setScaleType(ImageView.ScaleType.CENTER);
                 image.setImageResource(R.mipmap.face_ic_add);
             } else {
