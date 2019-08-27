@@ -17,7 +17,11 @@ import sunmi.common.model.FilterItem;
  */
 public interface FaceListContract {
 
+    String EXTRA_COUNT = "extra_count";
+
     interface View extends BaseView {
+
+        void updateCount(int count);
 
         void updateFilter(List<FilterItem> gender, List<FilterItem> age);
 
