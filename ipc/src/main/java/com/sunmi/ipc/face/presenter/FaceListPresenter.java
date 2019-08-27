@@ -122,7 +122,7 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
     }
 
     @Override
-    public void move(List<Face> list, FaceGroup group) {
+    public void move(final List<Face> list, FaceGroup group) {
         if (isViewAttached()) {
             mView.showLoadingDialog();
         }
@@ -136,6 +136,7 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
                     public void onSuccess(int code, String msg, Object data) {
                         loadFace(true, true);
                         if (isViewAttached()) {
+                            mView.updateCount(-list.size());
                             mView.shortTip(R.string.ipc_face_tip_move_success);
                             mView.resetView();
                         }
@@ -153,7 +154,7 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
     }
 
     @Override
-    public void delete(List<Face> list) {
+    public void delete(final List<Face> list) {
         if (isViewAttached()) {
             mView.showLoadingDialog();
         }
@@ -167,6 +168,7 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
                     public void onSuccess(int code, String msg, Object data) {
                         loadFace(true, true);
                         if (isViewAttached()) {
+                            mView.updateCount(-list.size());
                             mView.shortTip(R.string.ipc_face_tip_delete_success);
                             mView.resetView();
                         }
@@ -209,12 +211,14 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
                 new RetrofitCallback<FaceSaveResp>() {
                     @Override
                     public void onSuccess(int code, String msg, FaceSaveResp data) {
-                        if (isViewAttached()) {
-                            if (!data.getSuccessList().isEmpty()) {
+                        if (!data.getSuccessList().isEmpty()) {
+                            loadFace(true, true);
+                            if (isViewAttached()) {
+                                mView.updateCount(1);
                                 mView.uploadSuccess();
-                            } else {
-                                mView.uploadFailed();
                             }
+                        } else if (isViewAttached()) {
+                            mView.uploadFailed();
                         }
                     }
 
