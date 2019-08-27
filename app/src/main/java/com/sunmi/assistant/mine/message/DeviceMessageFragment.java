@@ -13,6 +13,7 @@ import com.sunmi.assistant.mine.contract.MessageCountContract;
 import com.sunmi.assistant.mine.model.MessageCountBean;
 import com.sunmi.assistant.mine.model.MsgCountChildren;
 import com.sunmi.assistant.mine.presenter.MessageCountPresenter;
+import com.sunmi.assistant.utils.MessageUtils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
@@ -49,7 +50,6 @@ public class DeviceMessageFragment extends BaseMvpFragment<MessageCountPresenter
 
     private MessageCountBean.ModelCountListBean bean; //设备消息
 
-    private List<MsgCountChildren> msgData;
     private HashMap<String, List<MsgCountChildren>> msgMap = new HashMap<>(); //用于存储对应的消息类型
     private MsgTabAdapter msgTabAdapter;
     private MsgContentAdapter msgContentAdapter;
@@ -93,7 +93,7 @@ public class DeviceMessageFragment extends BaseMvpFragment<MessageCountPresenter
         if (bean.getTotalCount() <= 0) {
             tvMsg.setVisibility(View.VISIBLE);
         } else {
-            msgData = bean.getChildren();
+            List<MsgCountChildren> msgData = bean.getChildren();
             tabTitle.clear();
             msgCount.clear();
             List<MsgCountChildren> total = new ArrayList<>();
@@ -102,15 +102,10 @@ public class DeviceMessageFragment extends BaseMvpFragment<MessageCountPresenter
             for (MsgCountChildren bean : msgData) {
                 if (bean.getTotalCount() > 0) {
                     total.addAll(getShowData(bean.getChildren()));
-                    if (TextUtils.equals(bean.getModelName(), MsgConstants.NOTIFY_MODEL_IPC)) {
-                        tabTitle.add(getString(R.string.msg_ipc));
-                        msgCount.add(bean.getRemindUnreadCount());
-                        msgMap.put(getString(R.string.msg_ipc), getShowData(bean.getChildren()));
-                    } else if (TextUtils.equals(bean.getModelName(), MsgConstants.NOTIFY_MODEL_ESL)) {
-                        tabTitle.add(getString(R.string.msg_esl));
-                        msgCount.add(bean.getRemindUnreadCount());
-                        msgMap.put(getString(R.string.msg_esl), getShowData(bean.getChildren()));
-                    }
+                    String title = MessageUtils.getInstance().getMsgFirst(bean.getModelName());
+                    tabTitle.add(title);
+                    msgCount.add(bean.getRemindUnreadCount());
+                    msgMap.put(title,getShowData(bean.getChildren()));
                 }
             }
             msgMap.put(getString(R.string.order_filter_all), total);
