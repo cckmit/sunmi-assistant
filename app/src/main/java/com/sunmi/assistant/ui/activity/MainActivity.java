@@ -33,6 +33,7 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import cn.bingoogolapple.badgeview.BGABadgeTextView;
+import me.leolin.shortcutbadger.ShortcutBadger;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
@@ -80,6 +81,7 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
         } else {
             initTabs();
         }
+        ShortcutBadger.applyCount(context, SpUtils.getRemindUnreadMsg()); //for 1.1.4+
     }
 
     public synchronized static MainActivity getInstance() {
@@ -155,7 +157,7 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
             } else {
                 mine.showTextBadge(String.valueOf(count));
             }
-        }else {
+        } else {
             mine.hiddenBadge();
         }
     }
@@ -226,7 +228,7 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{CommonNotifications.msgUpdated};
+        return new int[]{CommonNotifications.msgUpdated, CommonNotifications.pushMsgArrived};
     }
 
     @Override
@@ -244,7 +246,8 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
                 return;
             }
             initTabs();
-        } else if (CommonNotifications.msgUpdated == id){
+        } else if (CommonNotifications.msgUpdated == id
+                || CommonNotifications.pushMsgArrived == id) {
             initMsg();
         }
     }

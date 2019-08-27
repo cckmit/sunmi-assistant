@@ -30,7 +30,7 @@ public class MyApplication extends BaseApplication {
     private static final int TIME_TO_CHECK_KILL_SELF = 10 * 60 * 1000;
     private int startedActivityCount = 0;
     private static boolean isInBackground = false;
-    private static Handler handler;
+    private static Handler handler = new Handler();
 
     private Runnable mAutoKillSelfRunnable = new Runnable() {
         @Override
@@ -48,7 +48,6 @@ public class MyApplication extends BaseApplication {
         super.onCreate();
         init();
         this.registerActivityLifecycleCallbacks(new HhActivityLifecycleCallbacks());
-        handler = new Handler();
     }
 
     private void init() {
@@ -85,7 +84,6 @@ public class MyApplication extends BaseApplication {
     }
 
     class HhActivityLifecycleCallbacks implements ActivityLifecycleCallbacks {
-
         @Override
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
         }
