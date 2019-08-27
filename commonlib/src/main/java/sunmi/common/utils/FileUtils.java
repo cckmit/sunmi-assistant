@@ -849,7 +849,7 @@ public class FileUtils {
 
                 File file = new File(filePath, fileName);
 
-                fileWriter = new FileWriter(file.getAbsolutePath(), file.exists());
+                fileWriter = new FileWriter(file.getAbsolutePath());
                 bufferedWriter = new BufferedWriter(fileWriter);
                 bufferedWriter.write(fileContent);
                 bufferedWriter.close();
