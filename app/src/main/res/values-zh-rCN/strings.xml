@@ -146,7 +146,8 @@
     <string name="str_msg_count">(%s)</string>
     <string name="msg_ipc">网络摄像机</string>
     <string name="msg_esl">电子价签</string>
-    <string name="str_task">任务</string>
+    <string name="msg_task">任务</string>
+    <string name="msg_promotion">推广</string>
     <string name="str_tf_detect">存储卡提醒</string>
     <string name="tip_ipc_tf_detect">网络摄像机检测到存储卡状态改变</string>
     <string name="str_ipc_on_offline">网络摄像机上下线</string>
@@ -193,7 +194,8 @@
     <string name="msg_ipc_offline">网络摄像机%s于%s离线，请检查设备状态</string>
     <string name="msg_esl_offline">基站%s于%s离线，请检查设备状态</string>
     <string name="msg_esl_ota">价签%s已发布新版固件%s，请更新</string>
-    <string name="msg_task_erp">已于%s完成与%s的对接，成功获取%s条商品信息</string>
+    <string name="msg_task_erp_finish">已于%s完成与%s的对接，成功获取%s条商品信息</string>
+    <string name="msg_task_erp_fail">未能完成与%s的对接，请重试</string>
     <string name="company_shop_create_success">门店创建成功</string>
     <string name="editetxt_max_length">超过字数限制，请重新输入</string>
     <string name="check_mobile_fixedphone_tip">请输入正确的手机号码或座机</string>
@@ -202,5 +204,7 @@
     <string name="specital_text_cannot_support">特殊字符不支持输入</string>
     <string name="str_service_msg">服务信息</string>
     <string name="str_promotion_msg">推广消息</string>
-    <string name="str_msg_setting_detail">%s消息设置</string>
+    <string name="str_msg_setting_detail">%s提醒设置</string>
+    <string name="str_device_setting">设备设置</string>
+    <string name="str_system_setting">系统设置</string>
 </resources>

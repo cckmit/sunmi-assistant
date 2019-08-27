@@ -1,15 +1,14 @@
 package com.sunmi.assistant.mine.adapter;
 
 import android.content.Context;
-import android.support.annotation.StringRes;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.mine.message.MsgConstants;
 import com.sunmi.assistant.mine.model.MessageListBean;
 import com.sunmi.assistant.mine.model.MsgTag;
+import com.sunmi.assistant.utils.MessageUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -50,39 +49,13 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
         } else {
             msgView.setVisibility(View.GONE);
         }
-        String modelName = item.getModelName();
         MsgTag titleTag = new MsgTag(item.getTitle());
         Map<String, String> titleMap = titleTag.getMsgMap();
         MsgTag detailTag = new MsgTag(item.getContent());
         detailMap = detailTag.getMsgMap();
-        String title = titleTag.getTag();
         helper.setText(R.id.tv_msg_title, titleMap.get("company_name") + titleMap.get("shop_name"));
         helper.setText(R.id.tv_msg_time, DateTimeUtils.secondToDate(item.getReceiveTime(), "yyyy-MM-dd HH:mm:ss"));
-        if (modelName.contains(MsgConstants.NOTIFY_IPC_TF_DETECT)) {
-            if (title.contains(MsgConstants.TF_NON_EXIST)) {
-                setMsgDetail(helper, R.string.msg_ipc_tf_non_exist);
-            } else if (title.contains(MsgConstants.TF_EXIST)) {
-                setMsgDetail(helper, R.string.msg_ipc_tf_exist);
-            } else if (title.contains(MsgConstants.TF_CAPABLE)) {
-                setMsgDetail(helper, R.string.msg_ipc_tf_capable);
-            } else if (title.contains(MsgConstants.TF_NON_CAPABLE)) {
-                setMsgDetail(helper, R.string.msg_ipc_tf_non_capable);
-            }
-        } else if (modelName.contains(MsgConstants.NOTIFY_IPC_ON_OFFLINE)) {
-            setMsgDetail(helper, R.string.msg_ipc_offline);
-        } else if (modelName.contains(MsgConstants.NOTIFY_IPC_DETECT_AUDIO)) {
-            setMsgDetail(helper, R.string.msg_ipc_pic_detect);
-        } else if (modelName.contains(MsgConstants.NOTIFY_IPC_DETECT_VIDEO)) {
-            setMsgDetail(helper, R.string.msg_ipc_pic_detect);
-        } else if (modelName.contains(MsgConstants.NOTIFY_IPC_OTA)) {
-            setMsgDetail(helper, R.string.msg_ipc_ota);
-        } else if (modelName.contains(MsgConstants.NOTIFY_ESL_AP_ON_OFFLINE)) {
-            setMsgDetail(helper, R.string.msg_esl_offline);
-        } else if (modelName.contains(MsgConstants.NOTIFY_ESL_OTA)) {
-            setMsgDetail(helper, R.string.msg_esl_ota);
-        } else if (modelName.contains(MsgConstants.NOTIFY_TASK_ERP)) {
-            setMsgDetail(helper, R.string.msg_task_erp);
-        }
+        setMsgDetail(helper, MessageUtils.getInstance().getMsgFirst(titleTag.getTag()));
         helper.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -95,7 +68,7 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
 
     }
 
-    private void setMsgDetail(BaseViewHolder helper, @StringRes int resId) {
+    private void setMsgDetail(BaseViewHolder helper, String string) {
         String disconnectTime = detailMap.get("disconnect_time");
         String deviceName = detailMap.get("device_name");
         String binVersion = detailMap.get("bin_version");
@@ -106,21 +79,21 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
         if (disconnectTime != null) {
             try {
                 String time = DateTimeUtils.secondToDate(Long.parseLong(disconnectTime), "yyyy-MM-dd HH:mm:ss");
-                detail = context.getString(resId, deviceName, time);
+                detail = String.format(string, deviceName, time);
             } catch (NumberFormatException e) {
-                detail = context.getString(resId, deviceName, disconnectTime);
+                detail = String.format(string, deviceName, disconnectTime);
             }
         } else if (timestamp != null && saasName != null && totalCount != null) {
             try {
                 String time = DateTimeUtils.secondToDate(Long.parseLong(timestamp), "yyyy-MM-dd HH:mm:ss");
-                detail = context.getString(resId, time, saasName, totalCount);
+                detail = String.format(string, time, saasName, totalCount);
             } catch (NumberFormatException e) {
-                detail = context.getString(resId, timestamp, saasName, totalCount);
+                detail = String.format(string, timestamp, saasName, totalCount);
             }
         } else if (binVersion != null) {
-            detail = context.getString(resId, deviceName, binVersion);
+            detail = String.format(string, deviceName, binVersion);
         } else {
-            detail = context.getString(resId, deviceName);
+            detail = String.format(string, deviceName);
         }
         helper.setText(R.id.tv_msg_detail, detail);
     }
