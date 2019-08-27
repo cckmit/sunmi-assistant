@@ -1,8 +1,6 @@
 package sunmi.common.view;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.TextView;
 
@@ -41,14 +39,7 @@ public class DropdownAdapter extends DropdownMenu.BaseAdapter<FilterItem> {
         public void setUpView(FilterItem model, int position) {
             TextView title = getView(R.id.dropdown_item_title);
             title.setText(model.getTitleName());
-            Drawable drawable = title.getCompoundDrawablesRelative()[2].mutate();
-            if (model.getId() != -1) {
-                title.setTextColor(ContextCompat.getColor(mContext, R.color.color_F35000));
-                drawable.setTint(ContextCompat.getColor(mContext, R.color.color_F35000));
-            } else {
-                title.setTextColor(ContextCompat.getColor(mContext, R.color.color_333338));
-                drawable.setTint(ContextCompat.getColor(mContext, R.color.color_333338));
-            }
+            title.setSelected(model.getId() != -1);
         }
     }
 
@@ -62,8 +53,7 @@ public class DropdownAdapter extends DropdownMenu.BaseAdapter<FilterItem> {
         public void setUpView(FilterItem model, int position) {
             TextView name = getView(R.id.dropdown_item_name);
             name.setText(model.getItemName());
-            name.setTextColor(model.isChecked() ? ContextCompat.getColor(mContext, R.color.color_FF6000)
-                    : ContextCompat.getColor(mContext, R.color.color_333338));
+            name.setSelected(model.isChecked());
             getView(R.id.dropdown_item_checkbox).setVisibility(model.isChecked() ?
                     View.VISIBLE : View.INVISIBLE);
         }

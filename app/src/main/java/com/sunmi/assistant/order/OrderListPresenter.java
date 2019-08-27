@@ -124,6 +124,7 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
                         if (typeIndex != null && mInitOrderType == typeIndex) {
                             first.setChecked(false);
                             item.setChecked(true);
+                            mFilterCurrent.put(2, item);
                             mFilterOrderType.clear();
                             if (item.getId() != -1) {
                                 mFilterOrderType.add(item.getId());

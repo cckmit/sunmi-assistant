@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.CallSuper;
@@ -15,7 +14,6 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -800,8 +798,6 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
 
     private class FaceListAdapter extends SimpleArrayAdapter<Face> {
 
-        private Drawable addIcon;
-
         public FaceListAdapter() {
             addOnViewClickListener(R.id.item_image, new OnViewClickListener<Face>() {
                 @Override
@@ -813,7 +809,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                     }
 
                     if (mFaceGroup.getCount() >= mFaceGroup.getCapacity()) {
-                        shortTip(R.string.ipc_face_group_create_full);
+                        shortTip(R.string.ipc_face_error_add);
                         return;
                     }
                     if (mPickerDialog == null) {
@@ -863,11 +859,6 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                     }
                 }
             });
-            addIcon = ContextCompat.getDrawable(FaceListActivity.this, R.mipmap.face_ic_add);
-            if (addIcon == null) {
-                return;
-            }
-            addIcon = DrawableCompat.wrap(addIcon);
         }
 
         @Override
@@ -888,14 +879,11 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                 region.setVisibility(View.VISIBLE);
             }
             if (model.isAddIcon()) {
-                if (mFaceGroup.getCount() >= mFaceGroup.getCapacity()) {
-                    DrawableCompat.setTint(addIcon, ContextCompat.getColor(context, R.color.color_85858A));
-                } else {
-                    DrawableCompat.setTint(addIcon, ContextCompat.getColor(context, R.color.colorOrange));
-                }
+                image.setActivated(mFaceGroup.getCount() < mFaceGroup.getCapacity());
                 image.setScaleType(ImageView.ScaleType.CENTER);
-                image.setImageResource(R.mipmap.face_ic_add);
+                image.setImageResource(R.drawable.face_ic_add);
             } else {
+                image.setActivated(true);
                 checkBox.setChecked(model.isChecked());
                 image.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 Glide.with(holder.itemView).load(model.getImgUrl()).into(image);

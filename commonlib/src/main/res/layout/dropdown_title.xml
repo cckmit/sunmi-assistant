@@ -12,8 +12,8 @@
         android:ellipsize="end"
         android:maxWidth="@dimen/dp_90"
         android:maxLines="1"
-        android:textColor="@color/color_333338"
-        android:drawableEnd="@drawable/dropdown_ic_arrow_down"
+        android:textColor="@color/dropdown_title_selector"
+        android:drawableEnd="@drawable/dropdown_ic_arrow"
         android:textSize="@dimen/sp_12" />
 
 </LinearLayout>

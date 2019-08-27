@@ -2,12 +2,9 @@ package com.sunmi.ipc.face;
 
 import android.content.Intent;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -180,6 +177,7 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
             mImages.clear();
             pickImage();
             mAdapter.clear();
+            // TODO:
         } else {
             mTitleBar.getRightText().setEnabled(true);
             mTitleBar.setRightTextViewColor(R.color.colorText);
@@ -189,6 +187,7 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
                     save();
                 }
             });
+            shortTip(R.string.ipc_face_tip_album_upload_complete);
         }
     }
 
@@ -289,8 +288,6 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
 
     private class ImageAdapter extends SimpleArrayAdapter<UploadImage> {
 
-        private Drawable addIcon;
-
         public ImageAdapter(List<UploadImage> data) {
             super(data);
             addOnViewClickListener(R.id.iv_face_item_image, new OnViewClickListener<UploadImage>() {
@@ -335,11 +332,6 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
                     mImages.remove(model);
                 }
             });
-            addIcon = ContextCompat.getDrawable(FaceUploadActivity.this, R.mipmap.face_ic_add);
-            if (addIcon == null) {
-                return;
-            }
-            addIcon = DrawableCompat.wrap(addIcon);
         }
 
         @Override
@@ -352,14 +344,11 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
             updateVisible(holder, model.getState());
             ImageView image = holder.getView(R.id.iv_face_item_image);
             if (model.getState() == UploadImage.STATE_ADD) {
-                if (mImages.size() >= mPickerLimit) {
-                    DrawableCompat.setTint(addIcon, ContextCompat.getColor(context, R.color.color_85858A));
-                } else {
-                    DrawableCompat.setTint(addIcon, ContextCompat.getColor(context, R.color.colorOrange));
-                }
+                image.setActivated(mImages.size() < mPickerLimit);
                 image.setScaleType(ImageView.ScaleType.CENTER);
-                image.setImageDrawable(addIcon);
+                image.setImageResource(R.drawable.face_ic_add);
             } else {
+                image.setActivated(true);
                 image.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 Glide.with(holder.getContext()).load(model.getFile()).into(image);
             }
