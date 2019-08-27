@@ -12,6 +12,7 @@ import com.sunmi.assistant.mine.contract.MsgSettingContract;
 import com.sunmi.assistant.mine.model.MsgSettingChildren;
 import com.sunmi.assistant.mine.model.MsgSettingListBean;
 import com.sunmi.assistant.mine.presenter.MsgSettingPresenter;
+import com.sunmi.assistant.utils.MessageUtils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -25,6 +26,7 @@ import java.util.Map;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.notification.BaseNotification;
+import sunmi.common.utils.NetworkUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.SmRecyclerView;
@@ -58,7 +60,7 @@ public class MsgSettingActivity extends BaseMvpActivity<MsgSettingPresenter>
     private CommonListAdapter adapter;
     private MsgSettingChildren taskChild, serviceChild, promotionChild;
     private List<MsgSettingChildren> deviceMsg = new ArrayList<>();
-    private Map<String, String> titleMap = new HashMap<>();
+    private boolean allowCheck = true;
 
     @AfterViews
     void init() {
@@ -107,25 +109,18 @@ public class MsgSettingActivity extends BaseMvpActivity<MsgSettingPresenter>
             adapter = new CommonListAdapter<MsgSettingChildren>(context, R.layout.item_msg_device_setting, deviceMsg) {
                 @Override
                 public void convert(ViewHolder holder, MsgSettingChildren msgSettingChildren) {
-                    String name = msgSettingChildren.getName();
                     SettingItemLayout silDevice = holder.getView(R.id.sil_device);
                     if (msgSettingChildren.getStatus() == 1) {
                         silDevice.setRightText(getString(R.string.sm_enable));
                     } else {
                         silDevice.setRightText(getString(R.string.str_close));
                     }
-                    String title = "";
-                    if (TextUtils.equals(name, MsgConstants.NOTIFY_IPC_SETTING)) {
-                        title = getString(R.string.msg_ipc);
-                    } else if (TextUtils.equals(name, MsgConstants.NOTIFY_ESL_SETTING)) {
-                        title = getString(R.string.msg_esl);
-                    }
+                    String title = MessageUtils.getInstance().getMsgFirst(msgSettingChildren.getName());
                     silDevice.setLeftText(title);
-                    titleMap.put(name, title);
                     holder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            MsgSettingDetailActivity_.intent(context).child(msgSettingChildren).title(titleMap.get(name)).start();
+                            MsgSettingDetailActivity_.intent(context).child(msgSettingChildren).title(title).start();
                         }
                     });
                 }
@@ -176,6 +171,22 @@ public class MsgSettingActivity extends BaseMvpActivity<MsgSettingPresenter>
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (noNetCannotClick()) {
+            switch (buttonView.getId()) {
+                case R.id.switch_task:
+                    sTask.setChecked(!isChecked);
+                    break;
+                case R.id.switch_service:
+                    sService.setChecked(!isChecked);
+                    break;
+                case R.id.switch_promotion:
+                    sPromotion.setChecked(!isChecked);
+                    break;
+                default:
+                    break;
+            }
+            return;
+        }
         switch (buttonView.getId()) {
             case R.id.switch_task:
                 changeStatus(isChecked, taskChild.getId());
@@ -209,5 +220,13 @@ public class MsgSettingActivity extends BaseMvpActivity<MsgSettingPresenter>
         } else {
             mPresenter.updateSettingStatus(settingId, 0);
         }
+    }
+
+    private boolean noNetCannotClick() {
+        if (!NetworkUtils.isNetworkAvailable(context)) {
+            shortTip(R.string.toast_network_error);
+            return true;
+        }
+        return false;
     }
 }

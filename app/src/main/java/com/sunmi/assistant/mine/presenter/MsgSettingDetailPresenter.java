@@ -25,6 +25,7 @@ public class MsgSettingDetailPresenter extends BasePresenter<MsgSettingDetailCon
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();
+                    mView.shortTip(R.string.str_modify_success);
                     mView.updateSettingStatusSuccess(settingId, status);
                 }
             }

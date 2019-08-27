@@ -12,6 +12,7 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.MsgSettingDetailContract;
 import com.sunmi.assistant.mine.model.MsgSettingChildren;
 import com.sunmi.assistant.mine.presenter.MsgSettingDetailPresenter;
+import com.sunmi.assistant.utils.MessageUtils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -74,25 +75,7 @@ public class MsgSettingDetailActivity extends BaseMvpActivity<MsgSettingDetailPr
         rvSetting.setAdapter(new CommonListAdapter<MsgSettingChildren>(context, R.layout.item_msg_device_setting_detail, child.getChildren()) {
             @Override
             public void convert(ViewHolder holder, MsgSettingChildren children) {
-                String name = children.getName();
-                LogCat.e(TAG,"  setting name 99999 ="+name);
-                String title = "";
-                if (name.contains(MsgConstants.NOTIFY_IPC_TF_DETECT)) {
-                    title = context.getString(R.string.str_tf_detect);
-                } else if (name.contains(MsgConstants.NOTIFY_IPC_ON_OFFLINE)) {
-                    title = context.getString(R.string.str_ipc_on_offline);
-                } else if (name.contains(MsgConstants.NOTIFY_IPC_DETECT_AUDIO)) {
-                    title = context.getString(R.string.str_ipc_audio);
-                } else if (name.contains(MsgConstants.NOTIFY_IPC_DETECT_VIDEO)) {
-                    title = context.getString(R.string.str_ipc_video);
-                } else if (name.contains(MsgConstants.NOTIFY_IPC_OTA)) {
-                    title = context.getString(R.string.str_device_ota);
-                } else if (name.contains(MsgConstants.NOTIFY_ESL_ON_OFFLINE)) {
-                    title = context.getString(R.string.str_esl_on_offline);
-                } else if (name.contains(MsgConstants.NOTIFY_ESL_OTA)) {
-                    title = context.getString(R.string.str_device_ota);
-                }
-                holder.setText(R.id.tv_msg_setting, title);
+                holder.setText(R.id.tv_msg_setting, MessageUtils.getInstance().getMsgFirst(children.getName()));
                 Switch sw = holder.getView(R.id.switch_msg);
                 sw.setChecked(children.getStatus() == 1);
                 sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

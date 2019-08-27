@@ -2,7 +2,6 @@ package com.sunmi.assistant.mine.message;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -14,6 +13,7 @@ import com.sunmi.assistant.mine.contract.MessageCountContract;
 import com.sunmi.assistant.mine.model.MessageCountBean;
 import com.sunmi.assistant.mine.model.MsgCountChildren;
 import com.sunmi.assistant.mine.presenter.MessageCountPresenter;
+import com.sunmi.assistant.utils.MessageUtils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
@@ -104,15 +104,10 @@ public class SystemMessageFragment extends BaseMvpFragment<MessageCountPresenter
             for (MsgCountChildren bean : msgData) {
                 if (bean.getTotalCount() > 0) {
                     total.addAll(getShowData(bean.getChildren()));
-                    if (TextUtils.equals(bean.getModelName(), MsgConstants.NOTIFY_MODEL_SERVICE)) {
-                        tabTitle.add(getString(R.string.str_support));
-                        msgCount.add(bean.getRemindUnreadCount());
-                        msgMap.put(getString(R.string.str_support), getShowData(bean.getChildren()));
-                    } else if (TextUtils.equals(bean.getModelName(), MsgConstants.NOTIFY_MODEL_TASK)) {
-                        tabTitle.add(getString(R.string.str_task));
-                        msgCount.add(bean.getRemindUnreadCount());
-                        msgMap.put(getString(R.string.str_task), getShowData(bean.getChildren()));
-                    }
+                    String title = MessageUtils.getInstance().getMsgFirst(bean.getModelName());
+                    tabTitle.add(title);
+                    msgCount.add(bean.getRemindUnreadCount());
+                    msgMap.put(title, getShowData(bean.getChildren()));
                 }
             }
             msgMap.put(getString(R.string.order_filter_all), total);

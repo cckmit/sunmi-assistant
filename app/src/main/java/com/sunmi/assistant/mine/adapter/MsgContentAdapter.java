@@ -9,10 +9,9 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.message.MsgConstants;
 import com.sunmi.assistant.mine.model.MsgCountChildren;
+import com.sunmi.assistant.utils.MessageUtils;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import cn.bingoogolapple.badgeview.BGABadgeRelativeLayout;
 import sunmi.common.utils.DateTimeUtils;
@@ -24,7 +23,6 @@ import sunmi.common.utils.DateTimeUtils;
  */
 public class MsgContentAdapter extends BaseQuickAdapter<MsgCountChildren, BaseViewHolder> {
 
-    private Map<String, String> titleMap = new HashMap<>();
     private Context context;
     private OnMsgTypeClickListener listener;
 
@@ -59,61 +57,20 @@ public class MsgContentAdapter extends BaseQuickAdapter<MsgCountChildren, BaseVi
         }
         helper.setText(R.id.tv_msg_time, DateTimeUtils.secondToDateMsg(item.getLastReceiveTime()));
         String modelName = item.getModelName();
-        String title = "";
-        if (modelName.contains(MsgConstants.NOTIFY_IPC_TF_DETECT)) {
+        helper.setText(R.id.tv_msg_title, MessageUtils.getInstance().getMsgFirst(modelName));
+        helper.setText(R.id.tv_msg_content, MessageUtils.getInstance().getMsgSecond(modelName));
+        if (modelName.contains(MsgConstants.NOTIFY_DEVICE_IPC)) {
             helper.setImageResource(R.id.iv_msg, R.mipmap.ic_msg_ipc);
-            title = context.getString(R.string.str_tf_detect);
-            titleMap.put(modelName, title);
-            helper.setText(R.id.tv_msg_title, title);
-            helper.setText(R.id.tv_msg_content, R.string.tip_ipc_tf_detect);
-        } else if (modelName.contains(MsgConstants.NOTIFY_IPC_ON_OFFLINE)) {
-            helper.setImageResource(R.id.iv_msg, R.mipmap.ic_msg_ipc);
-            title = context.getString(R.string.str_ipc_on_offline);
-            titleMap.put(modelName, title);
-            helper.setText(R.id.tv_msg_title, title);
-            helper.setText(R.id.tv_msg_content, R.string.tip_ipc_on_offline);
-        } else if (modelName.contains(MsgConstants.NOTIFY_IPC_DETECT_AUDIO)) {
-            helper.setImageResource(R.id.iv_msg, R.mipmap.ic_msg_ipc);
-            title = context.getString(R.string.str_ipc_audio);
-            titleMap.put(modelName, title);
-            helper.setText(R.id.tv_msg_title, title);
-            helper.setText(R.id.tv_msg_content, R.string.tip_ipc_detect);
-        } else if (modelName.contains(MsgConstants.NOTIFY_IPC_DETECT_VIDEO)) {
-            helper.setImageResource(R.id.iv_msg, R.mipmap.ic_msg_ipc);
-            title = context.getString(R.string.str_ipc_video);
-            titleMap.put(modelName, title);
-            helper.setText(R.id.tv_msg_title, title);
-            helper.setText(R.id.tv_msg_content, R.string.tip_ipc_detect);
-        } else if (modelName.contains(MsgConstants.NOTIFY_IPC_OTA)) {
-            helper.setImageResource(R.id.iv_msg, R.mipmap.ic_msg_ipc);
-            title = context.getString(R.string.str_device_ota);
-            titleMap.put(modelName, title);
-            helper.setText(R.id.tv_msg_title, title);
-            helper.setText(R.id.tv_msg_content, R.string.tip_device_ota);
-        } else if (modelName.contains(MsgConstants.NOTIFY_ESL_AP_ON_OFFLINE)) {
+        } else if (modelName.contains(MsgConstants.NOTIFY_DEVICE_ESL)) {
             helper.setImageResource(R.id.iv_msg, R.mipmap.ic_msg_esl);
-            title = context.getString(R.string.str_esl_on_offline);
-            titleMap.put(modelName, title);
-            helper.setText(R.id.tv_msg_title, title);
-            helper.setText(R.id.tv_msg_content, R.string.tip_esl_offline);
-        } else if (modelName.contains(MsgConstants.NOTIFY_ESL_OTA)) {
-            helper.setImageResource(R.id.iv_msg, R.mipmap.ic_msg_esl);
-            title = context.getString(R.string.str_device_ota);
-            titleMap.put(modelName, title);
-            helper.setText(R.id.tv_msg_title, title);
-            helper.setText(R.id.tv_msg_content, R.string.tip_device_ota);
-        } else if (modelName.contains(MsgConstants.NOTIFY_TASK_ERP)) {
+        } else if (modelName.contains(MsgConstants.NOTIFY_SYSTEM_TASK)) {
             helper.setImageResource(R.id.iv_msg, R.mipmap.ic_msg_task);
-            title = context.getString(R.string.str_task_erp);
-            titleMap.put(modelName, title);
-            helper.setText(R.id.tv_msg_title, title);
-            helper.setText(R.id.tv_msg_content, R.string.tip_task_erp);
         }
         helper.getView(R.id.rl_msg_content).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-                    listener.onClick(item.getModelId(), titleMap.get(item.getModelName()));
+                    listener.onClick(item.getModelId(), modelName);
                 }
             }
         });

@@ -14,6 +14,7 @@ import com.sunmi.assistant.mine.adapter.MsgDetailAdapter;
 import com.sunmi.assistant.mine.contract.MessageDetailContract;
 import com.sunmi.assistant.mine.model.MessageListBean;
 import com.sunmi.assistant.mine.presenter.MessageDetailPresenter;
+import com.sunmi.assistant.utils.MessageUtils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -62,7 +63,7 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
 
     @AfterViews
     void init() {
-        titleBar.setAppTitle(title);
+        titleBar.setAppTitle(MessageUtils.getInstance().getMsgFirst(title));
         titleBar.getLeftLayout().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,7 +72,7 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
         });
         mPresenter = new MessageDetailPresenter();
         mPresenter.attachView(this);
-        mPresenter.getMessageList(modelId, pageNum, pageSize, true);
+        mPresenter.getMessageList(modelId, pageNum, pageSize, true, false);
         showLoadingDialog();
         refreshLayout.setDelegate(this);
         viewHolder = new BGANormalRefreshViewHolder(context, true);
@@ -82,7 +83,7 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
     }
 
     @Override
-    public void getMessageListSuccess(List<MessageListBean.MsgListBean> bean, int total, int returnCount, boolean needUpdate) {
+    public void getMessageListSuccess(List<MessageListBean.MsgListBean> bean, int total, int returnCount, boolean needUpdate, boolean isRefesh) {
         networkError.setVisibility(View.GONE);
         refreshLayout.endLoadingMore();
         refreshLayout.endRefreshing();
@@ -93,14 +94,18 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
                 return;
             }
             if (pageNum == 1 || total > dataList.size()) {
-                addData(bean);
+                addData(bean, isRefesh);
                 if (total > (pageNum - 1) * pageSize + returnCount) {
                     pageNum++;
                 } else {
                     loadFinish = true;
                 }
             }
-            if (bean.get(0).getReceiveStatus() == 0 && needUpdate) {
+            if (needUpdate) {
+                mPresenter.updateReceiveStatus(modelId);
+            }
+
+            if (isRefesh && bean.get(0).getReceiveStatus() == 0) {
                 mPresenter.updateReceiveStatus(modelId);
             }
         }
@@ -122,9 +127,12 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
     }
 
     @UiThread
-    protected void addData(List<MessageListBean.MsgListBean> beans) {
+    protected void addData(List<MessageListBean.MsgListBean> beans, boolean isReresh) {
         if (beans.size() > 0) {
             initMsgDetail();
+            if (isReresh) {
+                dataList.clear();
+            }
             dataList.addAll(beans);
             adapter.notifyDataSetChanged();
         }
@@ -155,7 +163,7 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
 
     @Click(R.id.btn_refresh)
     void refeshClick() {
-        mPresenter.getMessageList(modelId, pageNum, pageSize, true);
+        mPresenter.getMessageList(modelId, pageNum, pageSize, true, false);
     }
 
     @Override
@@ -194,13 +202,13 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
         pageNum = 1;
         pageSize = 10;
-        mPresenter.getMessageList(modelId, pageNum, pageSize, true);
+        mPresenter.getMessageList(modelId, pageNum, pageSize, false, true);
     }
 
     @Override
     public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
         if (NetworkUtils.isNetworkAvailable(context) && !loadFinish) {
-            mPresenter.getMessageList(modelId, pageNum, pageSize, false);
+            mPresenter.getMessageList(modelId, pageNum, pageSize, false, false);
             return true;
         }
         return false;
