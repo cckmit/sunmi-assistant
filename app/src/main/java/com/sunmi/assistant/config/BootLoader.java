@@ -20,6 +20,7 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import me.leolin.shortcutbadger.ShortcutBadger;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.utils.FileHelper;
 import sunmi.common.utils.SpUtils;
@@ -56,9 +57,11 @@ public class BootLoader {
 //        LeakCanary.install((Application) context);
         //bugly
         CrashReport.initCrashReport(context, ApConfig.BUGLY_ID, true);
-        CrashReport.setUserId(SpUtils.getUID());//todo login后修改
+        if (!TextUtils.isEmpty(SpUtils.getUID()))
+            CrashReport.setUserId(SpUtils.getUID());
         //trustAllCerts
         handleSSLHandshake();
+        ShortcutBadger.applyCount(context, SpUtils.getRemindUnreadMsg()); //for 1.1.4+
     }
 
     //异常日志捕获

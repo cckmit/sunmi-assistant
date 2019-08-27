@@ -20,6 +20,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.json.JSONException;
 
@@ -177,7 +178,8 @@ public class IpcConfigCompletedActivity extends BaseActivity {
         }
     }
 
-    private void showErrorDialog(@StringRes int title, @StringRes int msgResId) {
+    @UiThread
+    public void showErrorDialog(@StringRes int title, @StringRes int msgResId) {
         hideLoadingDialog();
         new CommonDialog.Builder(context)
                 .setTitle(title)
