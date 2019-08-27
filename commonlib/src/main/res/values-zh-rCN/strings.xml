@@ -101,4 +101,11 @@
     <string name="str_loding_more">加载中</string>
     <string name="tip_no_more_data">没有更多数据了</string>
 
+    <string name="picker_title">选择照片</string>
+    <string name="picker_toast_no_permission">Permission denied!</string>
+    <string name="picker_toast_no_camera">No camera app installed.</string>
+    <string name="picker_toast_create_dir_error">Create directory FAILED!</string>
+    <string name="picker_toast_path_error">Path is exist and is NOT a directory!</string>
+    <string name="picker_toast_limit">选择的图片超出上限</string>
+
 </resources>
