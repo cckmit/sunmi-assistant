@@ -8,7 +8,7 @@
         android:id="@+id/tv_picker_album_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableEnd="@drawable/dropdown_ic_arrow_down"
+        android:drawableEnd="@drawable/dropdown_ic_arrow"
         android:drawablePadding="@dimen/dp_4"
         android:ellipsize="end"
         android:lines="1"
