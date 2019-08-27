@@ -36,7 +36,7 @@ import cn.bingoogolapple.badgeview.BGABadgeTextView;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
-import sunmi.common.constant.CommonNotificationConstant;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -226,25 +226,25 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{NotificationConstant.msgUpdated};
+        return new int[]{CommonNotifications.msgUpdated};
     }
 
     @Override
     public int[] getUnStickNotificationId() {
         return new int[]{NotificationConstant.netConnectedMainActivity,
-                CommonNotificationConstant.refreshMainTabView};
+                CommonNotifications.refreshMainTabView};
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (NotificationConstant.netConnectedMainActivity == id) {
             MqttManager.getInstance().createEmqToken(true);
-        } else if (CommonNotificationConstant.refreshMainTabView == id) {
+        } else if (CommonNotifications.refreshMainTabView == id) {
             if (mTabHost.getChildCount() == 4) {
                 return;
             }
             initTabs();
-        } else if (NotificationConstant.msgUpdated == id){
+        } else if (CommonNotifications.msgUpdated == id){
             initMsg();
         }
     }

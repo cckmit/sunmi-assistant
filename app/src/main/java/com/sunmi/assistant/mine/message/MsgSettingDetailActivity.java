@@ -7,7 +7,6 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.MsgSettingDetailContract;
 import com.sunmi.assistant.mine.model.MsgSettingChildren;
@@ -19,6 +18,7 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
@@ -112,7 +112,7 @@ public class MsgSettingDetailActivity extends BaseMvpActivity<MsgSettingDetailPr
 
     @Override
     public void onBackPressed() {
-        BaseNotification.newInstance().postNotificationName(NotificationConstant.msgDeviceChange);
+        BaseNotification.newInstance().postNotificationName(CommonNotifications.msgDeviceChange);
         finish();
     }
 
