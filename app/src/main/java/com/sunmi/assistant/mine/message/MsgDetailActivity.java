@@ -4,7 +4,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -63,23 +62,17 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
     private boolean loadFinish;
     List<MessageListBean.MsgListBean> dataList = new ArrayList<>();
     private int deletePosition;
-    private BGARefreshViewHolder viewHolder;
 
     @AfterViews
     void init() {
         titleBar.setAppTitle(MessageUtils.getInstance().getMsgFirst(title));
-        titleBar.getLeftLayout().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
         mPresenter = new MessageDetailPresenter();
         mPresenter.attachView(this);
         mPresenter.getMessageList(modelId, pageNum, pageSize, true, false);
         showLoadingDialog();
         refreshLayout.setDelegate(this);
-        viewHolder = new BGANormalRefreshViewHolder(context, true);
+        BGARefreshViewHolder viewHolder = new BGANormalRefreshViewHolder(context, true);
         viewHolder.setLoadingMoreText(getString(R.string.str_loding_more));
         viewHolder.setLoadMoreBackgroundColorRes(R.color.bg_common);
         // 设置下拉刷新和上拉加载更多的风格(参数1：应用程序上下文，参数2：是否具有上拉加载更多功能)
@@ -88,7 +81,8 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
     }
 
     @Override
-    public void getMessageListSuccess(List<MessageListBean.MsgListBean> bean, int total, int returnCount, boolean needUpdate, boolean isRefesh) {
+    public void getMessageListSuccess(List<MessageListBean.MsgListBean> bean, int total,
+                                      int returnCount, boolean needUpdate, boolean isRefesh) {
         networkError.setVisibility(View.GONE);
         refreshLayout.endLoadingMore();
         refreshLayout.endRefreshing();
@@ -132,31 +126,14 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
     }
 
     @UiThread
-    protected void addData(List<MessageListBean.MsgListBean> beans, boolean isReresh) {
+    protected void addData(List<MessageListBean.MsgListBean> beans, boolean isRefresh) {
         if (beans.size() > 0) {
             initMsgDetail();
-            if (isReresh) {
+            if (isRefresh) {
                 dataList.clear();
             }
             dataList.addAll(beans);
             adapter.notifyDataSetChanged();
-        }
-    }
-
-    private void initMsgDetail() {
-        if (adapter == null) {
-            LinearLayoutManager layoutManager = new LinearLayoutManager(context);
-            rvMsg.setLayoutManager(layoutManager);
-            adapter = new MsgDetailAdapter(dataList, context);
-            adapter.setMsgLongClickListener(new MsgDetailAdapter.OnMsgLongClickListener() {
-                @Override
-                public void onLongClick(View view, int msgId, int position) {
-                    deletePosition = position;
-                    PopupMenu popupMenu = msgDeleteMenu(view, msgId);
-                    popupMenu.show();
-                }
-            });
-            rvMsg.setAdapter(adapter);
         }
     }
 
@@ -186,30 +163,6 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
 
     }
 
-    private PopupMenu msgDeleteMenu(View view, int msgId) {
-        PopupMenu popupMenu = new PopupMenu(context, view);
-        popupMenu.inflate(R.menu.menu_msg_detail);
-        popupMenu.setGravity(Gravity.CENTER);
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                if (menuItem.getItemId() == R.id.msg_delete) {
-                    mPresenter.deleteMessage(msgId);
-                }
-                return true;
-            }
-        });
-
-        return popupMenu;
-    }
-
-    @Override
-    public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
-        pageNum = 1;
-        pageSize = 10;
-        mPresenter.getMessageList(modelId, pageNum, pageSize, false, true);
-    }
-
     @Override
     public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
         if (NetworkUtils.isNetworkAvailable(context) && !loadFinish) {
@@ -218,4 +171,55 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
         }
         return false;
     }
+
+    @Override
+    public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
+        reloadMessageList();
+    }
+
+    @Override
+    public int[] getStickNotificationId() {
+        return new int[]{CommonNotifications.pushMsgArrived};
+    }
+
+    @Override
+    public void didReceivedNotification(int id, Object... args) {
+        if (CommonNotifications.pushMsgArrived == id) {
+            reloadMessageList();
+        }
+    }
+
+    private void initMsgDetail() {
+        if (adapter == null) {
+            LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+            rvMsg.setLayoutManager(layoutManager);
+            adapter = new MsgDetailAdapter(dataList, context);
+            adapter.setMsgLongClickListener((view, msgId, position) -> {
+                deletePosition = position;
+                PopupMenu popupMenu = msgDeleteMenu(view, msgId);
+                popupMenu.show();
+            });
+            rvMsg.setAdapter(adapter);
+        }
+    }
+
+    private PopupMenu msgDeleteMenu(View view, int msgId) {
+        PopupMenu popupMenu = new PopupMenu(context, view);
+        popupMenu.inflate(R.menu.menu_msg_detail);
+        popupMenu.setGravity(Gravity.CENTER);
+        popupMenu.setOnMenuItemClickListener(menuItem -> {
+            if (menuItem.getItemId() == R.id.msg_delete) {
+                mPresenter.deleteMessage(msgId);
+            }
+            return true;
+        });
+        return popupMenu;
+    }
+
+    private void reloadMessageList() {
+        pageNum = 1;
+        pageSize = 10;
+        mPresenter.getMessageList(modelId, pageNum, pageSize, false, true);
+    }
+
 }

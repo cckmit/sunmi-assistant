@@ -2,17 +2,14 @@ package com.sunmi.assistant.mine.message;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.adapter.MsgContentAdapter;
 import com.sunmi.assistant.mine.adapter.MsgTabAdapter;
-import com.sunmi.assistant.mine.contract.MessageCountContract;
 import com.sunmi.assistant.mine.model.MessageCountBean;
 import com.sunmi.assistant.mine.model.MsgCountChildren;
-import com.sunmi.assistant.mine.presenter.MessageCountPresenter;
 import com.sunmi.assistant.utils.MessageUtils;
 
 import org.androidannotations.annotations.AfterViews;
@@ -26,8 +23,7 @@ import java.util.List;
 
 import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
-import sunmi.common.base.BaseMvpFragment;
-import sunmi.common.constant.CommonNotifications;
+import sunmi.common.base.BaseFragment;
 import sunmi.common.view.SmRecyclerView;
 
 /**
@@ -36,8 +32,8 @@ import sunmi.common.view.SmRecyclerView;
  * @author linyuanpeng on 2019-08-14.
  */
 @EFragment(R.layout.fragment_message)
-public class DeviceMessageFragment extends BaseMvpFragment<MessageCountPresenter>
-        implements MessageCountContract.View, BGARefreshLayout.BGARefreshLayoutDelegate {
+public class DeviceMessageFragment extends BaseFragment
+        implements BGARefreshLayout.BGARefreshLayoutDelegate {
 
     @ViewById(R.id.tv_message)
     TextView tvMsg;
@@ -61,30 +57,25 @@ public class DeviceMessageFragment extends BaseMvpFragment<MessageCountPresenter
 
     @AfterViews
     void init() {
-        mPresenter = new MessageCountPresenter();
-        mPresenter.attachView(this);
-        mPresenter.getMessageCount();
         showLoadingDialog();
         selectTab = getString(R.string.order_filter_all);
         refreshLayout.setDelegate(this);
         // 设置下拉刷新和上拉加载更多的风格(参数1：应用程序上下文，参数2：是否具有上拉加载更多功能)
         refreshLayout.setRefreshViewHolder(new BGANormalRefreshViewHolder(mActivity, false));
         refreshLayout.setIsShowLoadingMoreView(false);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity, LinearLayoutManager.HORIZONTAL, false);
-        rvTab.setLayoutManager(linearLayoutManager);
+        LinearLayoutManager llManager = new LinearLayoutManager(mActivity,
+                LinearLayoutManager.HORIZONTAL, false);
+        rvTab.setLayoutManager(llManager);
         rvMsg.init(R.drawable.shap_line_divider);
     }
 
-
-    @Override
     public void getMessageCountSuccess(MessageCountBean data) {
         endRefresh();
         bean = data.getModelCountList().get(0);
         initData();
     }
 
-    @Override
-    public void getMessageCountFail(int code, String msg) {
+    public void getMessageCountFail() {
         endRefresh();
         shortTip(R.string.tip_get_data_fail);
     }
@@ -105,7 +96,7 @@ public class DeviceMessageFragment extends BaseMvpFragment<MessageCountPresenter
                     String title = MessageUtils.getInstance().getMsgFirst(bean.getModelName());
                     tabTitle.add(title);
                     msgCount.add(bean.getRemindUnreadCount());
-                    msgMap.put(title,getShowData(bean.getChildren()));
+                    msgMap.put(title, getShowData(bean.getChildren()));
                 }
             }
             msgMap.put(getString(R.string.order_filter_all), total);
@@ -117,12 +108,9 @@ public class DeviceMessageFragment extends BaseMvpFragment<MessageCountPresenter
     private void initTab() {
         if (msgTabAdapter == null) {
             msgTabAdapter = new MsgTabAdapter(mActivity, tabTitle, msgCount);
-            msgTabAdapter.setOnItemClickListener(new MsgTabAdapter.OnItemClickListener() {
-                @Override
-                public void onClick(String data) {
-                    selectTab = data;
-                    initMsgContent();
-                }
+            msgTabAdapter.setOnItemClickListener(data -> {
+                selectTab = data;
+                initMsgContent();
             });
             rvTab.setAdapter(msgTabAdapter);
         } else {
@@ -139,17 +127,12 @@ public class DeviceMessageFragment extends BaseMvpFragment<MessageCountPresenter
         Collections.sort(showData);
         if (msgContentAdapter == null) {
             msgContentAdapter = new MsgContentAdapter(showData, mActivity);
-            msgContentAdapter.setOnMsgClickListener(new MsgContentAdapter.OnMsgTypeClickListener() {
-                @Override
-                public void onClick(int modelId, String title) {
-                    MsgDetailActivity_.intent(mActivity).modelId(modelId).title(title).start();
-                }
-            });
+            msgContentAdapter.setOnMsgClickListener((modelId, title) ->
+                    MsgDetailActivity_.intent(mActivity).modelId(modelId).title(title).start());
             rvMsg.setAdapter(msgContentAdapter);
         } else {
             msgContentAdapter.notifyDataSetChanged();
         }
-
     }
 
     private List<MsgCountChildren> getShowData(List<MsgCountChildren> data) {
@@ -163,21 +146,14 @@ public class DeviceMessageFragment extends BaseMvpFragment<MessageCountPresenter
     }
 
     @Override
-    public void didReceivedNotification(int id, Object... args) {
-        if (id == CommonNotifications.msgReadedOrChange) {
-            showLoadingDialog();
-            mPresenter.getMessageCount();
-        }
-    }
-
-    @Override
-    public int[] getStickNotificationId() {
-        return new int[]{CommonNotifications.msgReadedOrChange};
-    }
-
-    @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
-        mPresenter.getMessageCount();
+        refreshMsgCount();
+    }
+
+    private void refreshMsgCount() {
+        if (getActivity() != null) {
+            ((MsgCenterActivity) getActivity()).refreshMsgCount();
+        }
     }
 
     @Override
@@ -190,4 +166,5 @@ public class DeviceMessageFragment extends BaseMvpFragment<MessageCountPresenter
             refreshLayout.endRefreshing();
         }
     }
+
 }
