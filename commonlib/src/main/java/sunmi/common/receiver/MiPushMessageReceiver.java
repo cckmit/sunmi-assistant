@@ -8,8 +8,11 @@ import com.xiaomi.mipush.sdk.MiPushCommandMessage;
 import com.xiaomi.mipush.sdk.MiPushMessage;
 import com.xiaomi.mipush.sdk.PushMessageReceiver;
 
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.MiPushMsgBean;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.GotoActivityUtils;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
 
 public class MiPushMessageReceiver extends PushMessageReceiver {
@@ -37,7 +40,6 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
             MiPushMsgBean msg = new Gson().fromJson(params, MiPushMsgBean.class);
             GotoActivityUtils.gotoMsgDetailActivity(context, msg.getModelId(), msg.getModelName());
             LogCat.e(TAG, "mipush onNotificationMessageClicked mAlias = " + mAlias);
-            LogCat.e(TAG, "mipush onNotificationMessageClicked params = " + params);
         }
     }
 
@@ -46,6 +48,9 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
         mMessage = message.getContent();
         LogCat.e(TAG, "mipush onNotificationMessageArrived mMessage = " + mMessage);
         if (!TextUtils.isEmpty(message.getAlias())) {
+            BaseNotification.newInstance().postNotificationName(CommonNotifications.msgUpdated);
+            SpUtils.setRemindUnreadMsg(SpUtils.getRemindUnreadMsg() + 1);
+            SpUtils.setUnreadMsg(SpUtils.getUnreadMsg() + 1);
             mAlias = message.getAlias();
         }
     }

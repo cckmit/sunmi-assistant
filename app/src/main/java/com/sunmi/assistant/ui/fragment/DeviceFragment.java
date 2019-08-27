@@ -62,7 +62,7 @@ import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.constant.CommonConstants;
-import sunmi.common.constant.CommonNotificationConstant;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.AdListBean;
 import sunmi.common.model.AdListResp;
 import sunmi.common.model.SunmiDevice;
@@ -343,10 +343,10 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{NotificationConstant.shopSwitched, CommonNotificationConstant.netConnected,
-                CommonNotificationConstant.netDisconnection, NotificationConstant.updateConnectComplete,
+        return new int[]{CommonNotifications.shopSwitched, CommonNotifications.netConnected,
+                CommonNotifications.netDisconnection, NotificationConstant.updateConnectComplete,
                 NotificationConstant.connectedTosunmiDevice, NotificationConstant.unBindRouterChanged,
-                CommonNotificationConstant.ipcUpgradeComplete, CommonNotificationConstant.ipcUpgrade};
+                CommonNotifications.ipcUpgradeComplete, CommonNotifications.ipcUpgrade};
     }
 
     @Override
@@ -355,15 +355,15 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         if (id == CommonConstants.tabDevice
                 || NotificationConstant.bindRouterChanged == id
                 || NotificationConstant.updateConnectComplete == id
-                || CommonNotificationConstant.netConnected == id
+                || CommonNotifications.netConnected == id
                 || NotificationConstant.unBindRouterChanged == id
-                || CommonNotificationConstant.ipcUpgradeComplete == id
-                || CommonNotificationConstant.ipcUpgrade == id) {
+                || CommonNotifications.ipcUpgradeComplete == id
+                || CommonNotifications.ipcUpgrade == id) {
             loadData();
-        } else if (id == NotificationConstant.shopSwitched) {
+        } else if (id == CommonNotifications.shopSwitched) {
             topBar.setShopName(SpUtils.getShopName());
             loadData();
-        } else if (CommonNotificationConstant.netDisconnection == id) {//网络断开
+        } else if (CommonNotifications.netDisconnection == id) {//网络断开
             networkDisconnected();
         } else if (NotificationConstant.apStatusException == id) {//异常
             if (TextUtils.isEmpty(MyNetworkCallback.CURRENT_ROUTER)) return;
@@ -418,7 +418,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        } else if (NotificationConstant.shopNameChanged == id) {
+        } else if (CommonNotifications.shopNameChanged == id) {
             topBar.setShopName(SpUtils.getShopName());
         } else if (NotificationConstant.apisConfig == id) {//ap是否配置2034
             ResponseBean res = (ResponseBean) args[0];

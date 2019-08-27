@@ -17,10 +17,10 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.ChooseShopActivity_;
 
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.Utils;
@@ -45,9 +45,9 @@ public class MainTopBar extends LinearLayout implements BaseNotification.Notific
     public MainTopBar(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
-        BaseNotification.newInstance().addStickObserver(this, NotificationConstant.shopSwitched);
-        BaseNotification.newInstance().addStickObserver(this, NotificationConstant.shopNameChanged);
-        BaseNotification.newInstance().addStickObserver(this, NotificationConstant.companyNameChanged);
+        BaseNotification.newInstance().addStickObserver(this, CommonNotifications.shopSwitched);
+        BaseNotification.newInstance().addStickObserver(this, CommonNotifications.shopNameChanged);
+        BaseNotification.newInstance().addStickObserver(this, CommonNotifications.companyNameChanged);
         init(attrs);
     }
 
@@ -105,9 +105,9 @@ public class MainTopBar extends LinearLayout implements BaseNotification.Notific
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        BaseNotification.newInstance().removeObserver(this, NotificationConstant.shopSwitched);
-        BaseNotification.newInstance().removeObserver(this, NotificationConstant.shopNameChanged);
-        BaseNotification.newInstance().removeObserver(this, NotificationConstant.companyNameChanged);
+        BaseNotification.newInstance().removeObserver(this, CommonNotifications.shopSwitched);
+        BaseNotification.newInstance().removeObserver(this, CommonNotifications.shopNameChanged);
+        BaseNotification.newInstance().removeObserver(this, CommonNotifications.companyNameChanged);
     }
 
     @Override

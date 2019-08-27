@@ -1,11 +1,11 @@
 package com.sunmi.assistant.mine.presenter;
 
-import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.assistant.mine.contract.MessageCountContract;
 import com.sunmi.assistant.mine.model.MessageCountBean;
 import com.sunmi.assistant.rpc.MessageCenterApi;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
@@ -30,7 +30,7 @@ public class MessageCountPresenter extends BasePresenter<MessageCountContract.Vi
                     SpUtils.setRemindUnreadMsg(remindUnreadMsg);
                     SpUtils.setUnreadDeviceMsg(data.getModelCountList().get(0).getUnreadCount());
                     SpUtils.setUnreadSystemMsg(data.getModelCountList().get(1).getUnreadCount());
-                    BaseNotification.newInstance().postNotificationName(NotificationConstant.msgUpdated);
+                    BaseNotification.newInstance().postNotificationName(CommonNotifications.msgUpdated);
                 }
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();
