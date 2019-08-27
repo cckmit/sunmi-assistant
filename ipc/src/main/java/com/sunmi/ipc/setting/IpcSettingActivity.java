@@ -584,7 +584,12 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         if (!isRun || args == null) {
             return;
         }
-        ResponseBean res = (ResponseBean) args[0];
+        ResponseBean res = null;
+        try {
+            res = (ResponseBean) args[0];
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (id == IpcConstants.getIpcConnectApMsg) {
             getIpcConnectApMsg(res);
         } else if (id == IpcConstants.getIpcNightIdeRotation) {
