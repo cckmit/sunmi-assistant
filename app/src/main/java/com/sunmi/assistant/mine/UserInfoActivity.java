@@ -10,7 +10,6 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.sunmi.apmanager.constant.NotificationConstant;
-import com.sunmi.apmanager.utils.FileHelper;
 import com.sunmi.apmanager.utils.PhotoUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.UserInfoContract;
@@ -27,6 +26,7 @@ import java.io.File;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.notification.BaseNotification;
+import sunmi.common.utils.FileHelper;
 import sunmi.common.utils.FileUtils;
 import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.PermissionUtils;

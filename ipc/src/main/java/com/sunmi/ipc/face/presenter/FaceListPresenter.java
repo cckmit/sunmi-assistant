@@ -9,16 +9,21 @@ import com.sunmi.ipc.face.model.Face;
 import com.sunmi.ipc.face.model.FaceAge;
 import com.sunmi.ipc.face.model.FaceGroup;
 import com.sunmi.ipc.model.FaceAgeRangeResp;
+import com.sunmi.ipc.model.FaceCheckResp;
 import com.sunmi.ipc.model.FaceGroupListResp;
 import com.sunmi.ipc.model.FaceListResp;
+import com.sunmi.ipc.model.FaceSaveResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
+import retrofit2.Call;
 import sunmi.common.base.BasePresenter;
 import sunmi.common.model.FilterItem;
+import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
@@ -47,6 +52,8 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
 
     private List<FilterItem> mFilterGenderList = new ArrayList<>(3);
     private List<FilterItem> mFilterAgeList = new ArrayList<>();
+
+    private Call<BaseResponse<FaceListResp>> mCall;
 
     public FaceListPresenter(int shopId, FaceGroup group) {
         this.mShopId = shopId;
@@ -90,6 +97,9 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
             return;
         }
         mFilterName = name;
+        if (mCall != null && !mCall.isCanceled()) {
+            mCall.cancel();
+        }
         loadFace(true, false);
     }
 
@@ -112,7 +122,7 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
     }
 
     @Override
-    public void move(List<Face> list, FaceGroup group) {
+    public void move(final List<Face> list, FaceGroup group) {
         if (isViewAttached()) {
             mView.showLoadingDialog();
         }
@@ -126,6 +136,7 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
                     public void onSuccess(int code, String msg, Object data) {
                         loadFace(true, true);
                         if (isViewAttached()) {
+                            mView.updateCount(-list.size());
                             mView.shortTip(R.string.ipc_face_tip_move_success);
                             mView.resetView();
                         }
@@ -143,7 +154,7 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
     }
 
     @Override
-    public void delete(List<Face> list) {
+    public void delete(final List<Face> list) {
         if (isViewAttached()) {
             mView.showLoadingDialog();
         }
@@ -157,6 +168,7 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
                     public void onSuccess(int code, String msg, Object data) {
                         loadFace(true, true);
                         if (isViewAttached()) {
+                            mView.updateCount(-list.size());
                             mView.shortTip(R.string.ipc_face_tip_delete_success);
                             mView.resetView();
                         }
@@ -168,6 +180,53 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
                         if (isViewAttached()) {
                             mView.hideLoadingDialog();
                             mView.shortTip(R.string.toast_network_error);
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void upload(File file) {
+        IpcCloudApi.uploadFaceAndCheck(SpUtils.getCompanyId(), mShopId, mGroup.getGroupId(), file,
+                new RetrofitCallback<FaceCheckResp>() {
+                    @Override
+                    public void onSuccess(int code, String msg, FaceCheckResp data) {
+                        save(data);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg, FaceCheckResp data) {
+                        LogCat.e(TAG, "Check face file Failed. " + msg);
+                        if (isViewAttached()) {
+                            mView.uploadFailed();
+                        }
+                    }
+                });
+    }
+
+    public void save(FaceCheckResp data) {
+        List<String> name = new ArrayList<>(1);
+        name.add(data.getFileName());
+        IpcCloudApi.saveFace(SpUtils.getCompanyId(), mShopId, mGroup.getGroupId(), name,
+                new RetrofitCallback<FaceSaveResp>() {
+                    @Override
+                    public void onSuccess(int code, String msg, FaceSaveResp data) {
+                        if (!data.getSuccessList().isEmpty()) {
+                            loadFace(true, true);
+                            if (isViewAttached()) {
+                                mView.updateCount(1);
+                                mView.uploadSuccess();
+                            }
+                        } else if (isViewAttached()) {
+                            mView.uploadFailed();
+                        }
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg, FaceSaveResp data) {
+                        LogCat.e(TAG, "Save face file Failed. " + msg);
+                        if (isViewAttached()) {
+                            mView.uploadFailed();
                         }
                     }
                 });
@@ -236,10 +295,11 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
             mFilterAge = -1;
         }
         final int page = refresh ? PAGE_INIT : mCurrentPage + 1;
-        IpcCloudApi.getFaceList(SpUtils.getCompanyId(), mShopId, mGroup.getGroupId(),
+        mCall = IpcCloudApi.getFaceList(SpUtils.getCompanyId(), mShopId, mGroup.getGroupId(),
                 mFilterGender, mFilterAge, mFilterName, page, PAGE_SIZE, new RetrofitCallback<FaceListResp>() {
                     @Override
                     public void onSuccess(int code, String msg, FaceListResp data) {
+                        mCall = null;
                         mCurrentPage = page;
                         mTotalCount = data.getTotalCount();
                         mCurrentCount += data.getFaceList().size();
@@ -255,6 +315,7 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
 
                     @Override
                     public void onFail(int code, String msg, FaceListResp data) {
+                        mCall = null;
                         LogCat.e(TAG, "Load face list Failed. " + msg);
                         if (isViewAttached()) {
                             mView.getDataFailed();

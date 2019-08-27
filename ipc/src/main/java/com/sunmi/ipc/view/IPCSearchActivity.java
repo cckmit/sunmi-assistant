@@ -267,7 +267,8 @@ public class IPCSearchActivity extends BaseActivity
     private void gotoWifiConfigActivity() {
         hideLoadingDialog();
         if (ipcList != null && ipcList.size() > 0)
-            WifiConfigActivity_.intent(context).sunmiDevice(ipcList.get(0)).shopId(shopId).start();
+            WifiConfigActivity_.intent(context)
+                    .deviceType(deviceType).sunmiDevice(ipcList.get(0)).shopId(shopId).start();
     }
 
     private void gotoIpcConfigActivity() {

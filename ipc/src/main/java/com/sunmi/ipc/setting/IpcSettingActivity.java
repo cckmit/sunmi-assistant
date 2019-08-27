@@ -44,7 +44,7 @@ import java.util.TimerTask;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
-import sunmi.common.constant.CommonNotificationConstant;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.sunmicall.ResponseBean;
@@ -560,84 +560,83 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     public int[] getStickNotificationId() {
         return new int[]{IpcConstants.getIpcConnectApMsg, IpcConstants.getIpcNightIdeRotation,
                 IpcConstants.setIpcNightIdeRotation, IpcConstants.getIpcDetection,
-                IpcConstants.ipcUpgrade, IpcConstants.getIsWire, CommonNotificationConstant.netConnected,
-                CommonNotificationConstant.netDisconnection, CommonNotificationConstant.ipcUpgrade,
-                CommonNotificationConstant.netConnectException, IpcConstants.getSdStatus};
+                IpcConstants.ipcUpgrade, IpcConstants.getIsWire, CommonNotifications.netConnected,
+                CommonNotifications.netDisconnection, CommonNotifications.ipcUpgrade,
+                CommonNotifications.netConnectException, IpcConstants.getSdStatus};
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
         super.didReceivedNotification(id, args);
         hideLoadingDialog();
-        if (id == CommonNotificationConstant.netDisconnection) { //网络断开
+        if (id == CommonNotifications.netDisconnection) { //网络断开
             isShowWireDialog = false;
             setWifiUnknown();
-        } else if (id == CommonNotificationConstant.netConnected) { //网络连接
+        } else if (id == CommonNotifications.netConnected) { //网络连接
             isShowWireDialog = false;
             connectedNet();
-        } else if (id == CommonNotificationConstant.ipcUpgrade) { //ipc升级
+        } else if (id == CommonNotifications.ipcUpgrade) { //ipc升级
             mDevice.setFirmware(mResp.getLatest_bin_version());
             mPresenter.currentVersion();
-        } else if (id == CommonNotificationConstant.netConnectException) { //连接超时
+        } else if (id == CommonNotifications.netConnectException) { //连接超时
             shortTip(R.string.str_server_exception);
         }
         if (!isRun || args == null) {
             return;
         }
-        ResponseBean res = null;
-        try {
-            res = (ResponseBean) args[0];
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (id == IpcConstants.getIpcConnectApMsg) {
-            getIpcConnectApMsg(res);
-        } else if (id == IpcConstants.getIpcNightIdeRotation) {
-            timeoutStop();
-            getIpcNightIdeRotation(res);
-        } else if (id == IpcConstants.setIpcNightIdeRotation) {
-            setIpcNightIdeRotation(res);
-        } else if (id == IpcConstants.getIpcDetection) {
-            if (res.getDataErrCode() == 1) {
-                mDetectionConfig = new Gson().fromJson(res.getResult().toString(), DetectionConfig.class);
-                updateDetectionView();
-            } else {
-                shortTip(R.string.toast_network_Exception);
-            }
-        } else if (id == IpcConstants.ipcUpgrade) {
-            upgradeResult(res);
-        } else if (id == IpcConstants.getIsWire) {
-            checkWire(res);
-        } else if (id == IpcConstants.getSdStatus) {
-            try {
-                int status = res.getResult().getInt("sd_status_code");
-                switch (status) {
-                    case 2:
-                        RecognitionSettingActivity_.intent(this)
-                                .mDevice(mDevice)
-                                .mVideoRatio(16f / 9f)
-                                .start();
-                        break;
-                    case 0:
-                        showErrorDialog(R.string.tip_no_tf_card,
-                                R.string.ipc_recognition_sd_none);
-                        break;
-                    case 1:
-                        showErrorDialog(R.string.tip_tf_uninitalized,
-                                R.string.ipc_recognition_sd_uninitialized);
-                        break;
-                    case 3:
-                        showErrorDialog(R.string.tip_unrecognition_tf_card,
-                                R.string.ipc_recognition_sd_unknown);
-                        break;
+
+        if (args[0] instanceof ResponseBean) {
+            ResponseBean res = (ResponseBean) args[0];
+            if (id == IpcConstants.getIpcConnectApMsg) {
+                getIpcConnectApMsg(res);
+            } else if (id == IpcConstants.getIpcNightIdeRotation) {
+                timeoutStop();
+                getIpcNightIdeRotation(res);
+            } else if (id == IpcConstants.setIpcNightIdeRotation) {
+                setIpcNightIdeRotation(res);
+            } else if (id == IpcConstants.getIpcDetection) {
+                if (res.getDataErrCode() == 1) {
+                    mDetectionConfig = new Gson().fromJson(res.getResult().toString(), DetectionConfig.class);
+                    updateDetectionView();
+                } else {
+                    shortTip(R.string.toast_network_Exception);
                 }
-            } catch (JSONException e) {
-                LogCat.e(TAG, "Parse json ERROR: " + res.getResult());
+            } else if (id == IpcConstants.ipcUpgrade) {
+                upgradeResult(res);
+            } else if (id == IpcConstants.getIsWire) {
+                checkWire(res);
+            } else if (id == IpcConstants.getSdStatus) {
+                try {
+                    int status = res.getResult().getInt("sd_status_code");
+                    switch (status) {
+                        case 2:
+                            RecognitionSettingActivity_.intent(this)
+                                    .mDevice(mDevice)
+                                    .mVideoRatio(16f / 9f)
+                                    .start();
+                            break;
+                        case 0:
+                            showErrorDialog(R.string.tip_no_tf_card,
+                                    R.string.ipc_recognition_sd_none);
+                            break;
+                        case 1:
+                            showErrorDialog(R.string.tip_tf_uninitalized,
+                                    R.string.ipc_recognition_sd_uninitialized);
+                            break;
+                        case 3:
+                            showErrorDialog(R.string.tip_unrecognition_tf_card,
+                                    R.string.ipc_recognition_sd_unknown);
+                            break;
+                    }
+                } catch (JSONException e) {
+                    LogCat.e(TAG, "Parse json ERROR: " + res.getResult());
+                }
             }
         }
     }
 
-    private void showErrorDialog(@StringRes int title, @StringRes int msgResId) {
+    @UiThread
+    public void showErrorDialog(@StringRes int title, @StringRes int msgResId) {
         hideLoadingDialog();
         new CommonDialog.Builder(context)
                 .setTitle(title)
@@ -827,7 +826,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             progressDialog.progressDismiss();
             mDevice.setFirmware(mResp.getLatest_bin_version());
             mVersion.setRightText(mResp.getLatest_bin_version());
-            BaseNotification.newInstance().postNotificationName(CommonNotificationConstant.ipcUpgradeComplete);
+            BaseNotification.newInstance().postNotificationName(CommonNotifications.ipcUpgradeComplete);
             upgradeVerSuccessDialog();
         } else {
             upgradeVerFailDialog(mResp.getLatest_bin_version());

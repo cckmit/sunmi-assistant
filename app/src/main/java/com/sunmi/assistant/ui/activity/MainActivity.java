@@ -33,10 +33,11 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import cn.bingoogolapple.badgeview.BGABadgeTextView;
+import me.leolin.shortcutbadger.ShortcutBadger;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
-import sunmi.common.constant.CommonNotificationConstant;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -80,6 +81,7 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
         } else {
             initTabs();
         }
+        ShortcutBadger.applyCount(context, SpUtils.getRemindUnreadMsg()); //for 1.1.4+
     }
 
     public synchronized static MainActivity getInstance() {
@@ -155,7 +157,7 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
             } else {
                 mine.showTextBadge(String.valueOf(count));
             }
-        }else {
+        } else {
             mine.hiddenBadge();
         }
     }
@@ -226,25 +228,26 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{NotificationConstant.msgUpdated};
+        return new int[]{CommonNotifications.msgUpdated, CommonNotifications.pushMsgArrived};
     }
 
     @Override
     public int[] getUnStickNotificationId() {
         return new int[]{NotificationConstant.netConnectedMainActivity,
-                CommonNotificationConstant.refreshMainTabView};
+                CommonNotifications.refreshMainTabView};
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (NotificationConstant.netConnectedMainActivity == id) {
             MqttManager.getInstance().createEmqToken(true);
-        } else if (CommonNotificationConstant.refreshMainTabView == id) {
+        } else if (CommonNotifications.refreshMainTabView == id) {
             if (mTabHost.getChildCount() == 4) {
                 return;
             }
             initTabs();
-        } else if (NotificationConstant.msgUpdated == id){
+        } else if (CommonNotifications.msgUpdated == id
+                || CommonNotifications.pushMsgArrived == id) {
             initMsg();
         }
     }

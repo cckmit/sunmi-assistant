@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.constant.CommonNotificationConstant;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.GotoActivityUtils;
@@ -90,7 +90,7 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
     @Override
     public void complete(int saasExist, int shopId, String shopName) {
         if (SpUtils.isLoginSuccess()) {
-            BaseNotification.newInstance().postNotificationName(CommonNotificationConstant.refreshMainTabView);
+            BaseNotification.newInstance().postNotificationName(CommonNotifications.refreshMainTabView);
             if (isLoginSuccessSwitchCompany) {
                 CommonUtils.saveCompanyShopInfo((Activity) context, companyId, companyName, saasExist, shopId, shopName);
                 GotoActivityUtils.gotoMainActivity(context);

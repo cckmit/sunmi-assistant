@@ -1,5 +1,6 @@
 package com.sunmi.ipc.setting;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -168,7 +169,7 @@ public class IpcSettingDetectionTimeActivity extends BaseActivity {
     @Click(resName = "sil_ipc_setting_days_count")
     void onDetectionDaysClick() {
         mTempDaySelect = mDays;
-        BottomDialog dialog = new BottomDialog.Builder(this)
+        Dialog dialog = new BottomDialog.Builder(this)
                 .setTitle(R.string.ipc_setting_detection_time_day)
                 .setCancelButton(R.string.sm_cancel)
                 .setOkButton(R.string.str_complete, new DialogInterface.OnClickListener() {

@@ -149,6 +149,7 @@
     <string name="ipc_face_group_default">系统默认分组，不可删除</string>
     <string name="ipc_face_group_custom">自定义分组，可删除</string>
     <string name="ipc_face_group_create">新建人脸分组</string>
+    <string name="ipc_face_group_create_full">人脸库数量已达上限</string>
     <string name="ipc_face_group_name">名称</string>
     <string name="ipc_face_group_name_hint">最多20个汉字（必填）</string>
     <string name="ipc_face_group_name_error">名称为空或超过20个字符</string>
@@ -198,6 +199,7 @@
     <string name="ipc_face_remain">剩余%d</string>
     <string name="ipc_face_take_photo">拍照</string>
     <string name="ipc_face_tack_photo_again">重拍</string>
+    <string name="ipc_face_pick_again">重新选择</string>
     <string name="ipc_face_album_choose">从相册选择</string>
     <string name="ipc_face_album_choose_title">选择照片</string>
     <string name="ipc_face_upload_title">上传照片</string>
@@ -214,8 +216,10 @@
     <string name="ipc_face_tip_delete">确定要删除上述照片吗？</string>
     <string name="ipc_face_error_add">照片已达当前人脸分组容量上限，\n无法继续添加</string>
     <string name="ipc_face_error_upload">校验失败</string>
+    <string name="ipc_face_error_image_all">上述已选照片均识别不到人脸信息</string>
     <string name="ipc_face_error_photo">该照片识别不到人脸信息</string>
     <string name="ipc_face_error_move">该人脸分组可供移入的库存数量剩余不足</string>
+    <string name="ipc_face_error_select_limit">照片选择数量已达上限</string>
 
 </resources>
 
