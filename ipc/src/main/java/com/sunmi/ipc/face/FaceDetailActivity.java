@@ -112,6 +112,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
 
     private BottomPopMenu mPickerDialog;
     private CommonDialog mUploadDialog;
+    private CommonDialog mDeleteDialog;
     private TakePhotoAgent mPickerAgent;
 
     @AfterViews
@@ -145,6 +146,25 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                 silFaceNewEnterShopTime.setRightText(secondToDate(mFace.getLastArrivalTime(), DATE_FORMAT_ENTER_SHOP));
             }
         }
+        titleBar.getRightText().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mDeleteDialog == null) {
+                    mDeleteDialog = new CommonDialog.Builder(FaceDetailActivity.this)
+                            .setTitle(R.string.ipc_face_tip_delete)
+                            .setConfirmButton(R.string.ipc_setting_delete, R.color.common_orange,
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            mPresenter.delete();
+                                        }
+                                    })
+                            .setCancelButton(R.string.sm_cancel)
+                            .create();
+                }
+                mDeleteDialog.show();
+            }
+        });
     }
 
     private void takePhoto() {
@@ -358,6 +378,12 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
     @Override
     public void loadGroupSuccessView(List<FaceGroup> list) {
         groupList = list;
+    }
+
+    @Override
+    public void deleteSuccess() {
+        setResult(RESULT_OK);
+        finish();
     }
 
     private void identityDialog(String title) {

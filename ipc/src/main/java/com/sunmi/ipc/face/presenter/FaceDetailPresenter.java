@@ -214,4 +214,32 @@ public class FaceDetailPresenter extends BasePresenter<FaceDetailContract.View>
             }
         });
     }
+
+    @Override
+    public void delete() {
+        if (isViewAttached()) {
+            mView.showLoadingDialog();
+        }
+        List<Integer> ids = new ArrayList<>(1);
+        ids.add(mFace.getFaceId());
+        IpcCloudApi.deleteFace(SpUtils.getCompanyId(), mShopId, mFace.getGroupId(), ids,
+                new RetrofitCallback<Object>() {
+                    @Override
+                    public void onSuccess(int code, String msg, Object data) {
+                        if (isViewAttached()) {
+                            mView.shortTip(R.string.ipc_face_tip_delete_success);
+                            mView.deleteSuccess();
+                        }
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg, Object data) {
+                        LogCat.e(TAG, "Move face to another group Failed. " + msg);
+                        if (isViewAttached()) {
+                            mView.hideLoadingDialog();
+                            mView.shortTip(R.string.toast_network_error);
+                        }
+                    }
+                });
+    }
 }

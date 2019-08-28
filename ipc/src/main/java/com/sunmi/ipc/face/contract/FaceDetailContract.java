@@ -30,6 +30,8 @@ public interface FaceDetailContract {
         void faceAgeRangeSuccessView(FaceAgeRangeResp data);
 
         void loadGroupSuccessView(List<FaceGroup> list);
+
+        void deleteSuccess();
     }
 
     interface Presenter {
@@ -47,5 +49,7 @@ public interface FaceDetailContract {
         void faceAgeRange();
 
         void loadGroup();
+
+        void delete();
     }
 }
