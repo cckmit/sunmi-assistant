@@ -3,6 +3,7 @@ package com.sunmi.ipc.face.contract;
 import com.sunmi.ipc.face.model.FaceGroup;
 import com.sunmi.ipc.model.FaceAgeRangeResp;
 
+import java.io.File;
 import java.util.List;
 
 import sunmi.common.base.BaseView;
@@ -11,8 +12,12 @@ import sunmi.common.base.BaseView;
  * @author yangShiJie
  * @date 2019/8/27
  */
-public interface FacePhotoContract {
+public interface FaceDetailContract {
     interface View extends BaseView {
+
+        void updateImageSuccessView(String url);
+
+        void updateImageFailed();
 
         void updateNameSuccessView(String name);
 
@@ -25,20 +30,26 @@ public interface FacePhotoContract {
         void faceAgeRangeSuccessView(FaceAgeRangeResp data);
 
         void loadGroupSuccessView(List<FaceGroup> list);
+
+        void deleteSuccess();
     }
 
     interface Presenter {
 
-        void updateName(int faceId, int sourceGroupId, String name);
+        void upload(File file);
 
-        void updateIdentity(int faceId, int sourceGroupId, int targetGroupId);
+        void updateName(String name);
 
-        void updateGender(int faceId, int sourceGroupId, int gender);
+        void updateIdentity(int targetGroupId);
 
-        void updateAge(int faceId, int sourceGroupId, int ageRangeCode);
+        void updateGender(int gender);
+
+        void updateAge(int ageRangeCode);
 
         void faceAgeRange();
 
         void loadGroup();
+
+        void delete();
     }
 }

@@ -37,6 +37,7 @@ import com.sunmi.ipc.face.model.FaceGroup;
 import com.sunmi.ipc.face.model.UploadImage;
 import com.sunmi.ipc.face.presenter.FaceListPresenter;
 import com.sunmi.ipc.face.util.BottomAnimation;
+import com.sunmi.ipc.face.util.Constants;
 import com.sunmi.ipc.face.util.GlideRoundCrop;
 import com.sunmi.ipc.face.util.Utils;
 
@@ -77,7 +78,6 @@ import sunmi.common.view.dialog.BottomListDialog;
 import sunmi.common.view.dialog.CommonDialog;
 
 import static com.sunmi.ipc.face.contract.FaceListContract.EXTRA_COUNT;
-import static com.sunmi.ipc.face.contract.FaceUploadContract.EXTRA_UPDATE_COUNT;
 import static com.sunmi.ipc.face.contract.FaceUploadContract.FILE_SIZE_1M;
 
 /**
@@ -88,7 +88,8 @@ import static com.sunmi.ipc.face.contract.FaceUploadContract.FILE_SIZE_1M;
 public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         implements FaceListContract.View, BGARefreshLayout.BGARefreshLayoutDelegate {
 
-    private static final int REQUEST_CODE = 100;
+    private static final int REQUEST_CODE_UPLOAD = 100;
+    private static final int REQUEST_CODE_DETAIL = 101;
     private static final int STATE_NORMAL = 0;
     private static final int STATE_CHOOSE = 1;
 
@@ -123,8 +124,6 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
 
     @ViewById(resName = "layout_network_error")
     View mLayoutError;
-    @ViewById(resName = "layout_empty")
-    View mLayoutEmpty;
 
     @Extra
     int mShopId;
@@ -438,16 +437,14 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         hideLoadingDialog();
         mLayoutError.setVisibility(View.GONE);
         if (list.isEmpty()) {
-            mLayoutEmpty.setVisibility(View.VISIBLE);
             mTitleBar.setRightTextViewColor(R.color.colorText_60);
             mTitleBar.setRightTextViewEnable(false);
         } else {
-            mLayoutEmpty.setVisibility(View.GONE);
             mTitleBar.setRightTextViewColor(R.color.colorText);
             mTitleBar.setRightTextViewEnable(true);
-            if (mState == STATE_NORMAL) {
-                list.add(0, Face.createCamera());
-            }
+        }
+        if (mState == STATE_NORMAL) {
+            list.add(0, Face.createCamera());
         }
         mAdapter.setData(list);
     }
@@ -469,8 +466,13 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     @Override
     public void uploadSuccess() {
         mUploadDialog.dismiss();
-        shortTip(R.string.ipc_face_tip_album_upload_success);
         resetView();
+        new CommonDialog.Builder(this)
+                .setMessage(R.string.ipc_face_tip_album_upload_success)
+                .setMessageDrawable(0, R.mipmap.face_ic_ok, 0, 0)
+                .setMessageDrawablePadding(R.dimen.dp_8)
+                .setConfirmButton(R.string.str_confirm)
+                .create().show();
     }
 
     @Override
@@ -493,7 +495,6 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     public void getDataFailed() {
         hideLoadingDialog();
         if (mAdapter.getItemCount() == 0) {
-            mLayoutEmpty.setVisibility(View.GONE);
             mLayoutError.setVisibility(View.VISIBLE);
         } else {
             mLayoutError.setVisibility(View.GONE);
@@ -513,6 +514,8 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         new CommonDialog.Builder(this)
                 .setTitle(R.string.ipc_face_tip_album_title)
                 .setMessage(R.string.ipc_face_tip_album_content)
+                .setMessageDrawable(0, 0, 0, R.mipmap.face_tip_image)
+                .setMessageDrawablePadding(R.dimen.dp_12)
                 .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -527,6 +530,8 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         new CommonDialog.Builder(this)
                 .setTitle(R.string.ipc_face_tip_album_title)
                 .setMessage(R.string.ipc_face_tip_album_content)
+                .setMessageDrawable(0, 0, 0, R.mipmap.face_tip_image)
+                .setMessageDrawablePadding(R.dimen.dp_12)
                 .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -630,11 +635,23 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mPickerAgent.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK && data != null) {
-            int count = data.getIntExtra(EXTRA_UPDATE_COUNT, 0);
-            updateCount(count);
-            mPresenter.loadFace(true, true);
-            resetView();
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_CODE_UPLOAD) {
+                int count = data == null ? 0 : data.getIntExtra(Constants.EXTRA_UPDATE_COUNT, 0);
+                updateCount(count);
+                mPresenter.loadFace(true, true);
+                resetView();
+                new CommonDialog.Builder(this)
+                        .setMessage(R.string.ipc_face_tip_album_upload_success)
+                        .setMessageDrawable(0, R.mipmap.face_ic_ok, 0, 0)
+                        .setMessageDrawablePadding(R.dimen.dp_8)
+                        .setConfirmButton(R.string.str_confirm)
+                        .create().show();
+            } else if (requestCode == REQUEST_CODE_DETAIL) {
+                // TODO: Update FaceGroup
+                mPresenter.loadFace(true, true);
+                resetView();
+            }
         }
     }
 
@@ -736,7 +753,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                         .mFaceGroup(mFaceGroup)
                         .mImages(list)
                         .mRemain(mFaceGroup.getCapacity() - mFaceGroup.getCount())
-                        .startForResult(REQUEST_CODE);
+                        .startForResult(REQUEST_CODE_UPLOAD);
             }
         }
 
@@ -821,11 +838,11 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                 public void onClick(BaseRecyclerAdapter<Face> adapter, BaseViewHolder<Face> holder,
                                     View v, Face model, int position) {
                     if (!model.isAddIcon()) {
-                        FacePhotoDetailActivity_.intent(context)
+                        FaceDetailActivity_.intent(context)
                                 .mShopId(mShopId)
                                 .mFace(model)
                                 .mFaceGroup(mFaceGroup)
-                                .start();
+                                .startForResult(REQUEST_CODE_DETAIL);
                         return;
                     }
 
@@ -892,6 +909,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
             ImageView image = holder.getView(R.id.item_image);
             CheckBox checkBox = holder.getView(R.id.item_check_box);
             View region = holder.getView(R.id.item_check_region);
+            TextView name = holder.getView(R.id.item_name);
             if (mState == STATE_NORMAL || model.isAddIcon()) {
                 checkBox.setVisibility(View.GONE);
                 region.setVisibility(View.GONE);
@@ -900,12 +918,19 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                 region.setVisibility(View.VISIBLE);
             }
             if (model.isAddIcon()) {
+                name.setVisibility(View.GONE);
                 image.setActivated(mFaceGroup.getCount() < mFaceGroup.getCapacity());
                 image.setScaleType(ImageView.ScaleType.CENTER);
                 image.setImageResource(R.drawable.face_ic_add);
             } else {
+                name.setVisibility(View.VISIBLE);
                 image.setActivated(true);
                 checkBox.setChecked(model.isChecked());
+                if (TextUtils.isEmpty(model.getName())) {
+                    name.setText(R.string.ipc_face_name_default);
+                } else {
+                    name.setText(model.getName());
+                }
                 image.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 Glide.with(holder.itemView).load(model.getImgUrl()).into(image);
             }

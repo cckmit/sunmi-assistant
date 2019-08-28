@@ -61,7 +61,7 @@ public class FaceUploadPresenter extends BasePresenter<FaceUploadContract.View>
         for (UploadImage image : list) {
             name.add(image.getCloudName());
         }
-        IpcCloudApi.saveFace(SpUtils.getCompanyId(), mShopId, mGroup.getGroupId(), name,
+        IpcCloudApi.saveFace(SpUtils.getCompanyId(), mShopId, mGroup.getGroupId(), 0, name,
                 new RetrofitCallback<FaceSaveResp>() {
                     @Override
                     public void onSuccess(int code, String msg, FaceSaveResp data) {

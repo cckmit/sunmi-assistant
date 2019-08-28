@@ -194,6 +194,7 @@
     <string name="ipc_face_gender_female">女</string>
     <string name="ipc_face_age">年龄</string>
     <string name="ipc_face_age_all">全部年龄</string>
+    <string name="ipc_face_name_default">未命名</string>
     <string name="ipc_face_move">移库</string>
     <string name="ipc_face_move_title">移动分组至</string>
     <string name="ipc_face_remain">剩余%d</string>

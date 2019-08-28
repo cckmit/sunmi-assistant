@@ -5,10 +5,10 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:background="@color/color_F3F3F3"
         android:id="@+id/item_image"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@color/color_F3F3F3"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1:1"
@@ -17,13 +17,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <CheckBox
-        android:clickable="false"
         android:id="@+id/item_check_box"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:button="@drawable/ic_image_check"
         android:layout_marginTop="@dimen/dp_4"
         android:layout_marginEnd="@dimen/dp_4"
+        android:button="@drawable/ic_image_check"
+        android:clickable="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -35,5 +35,19 @@
         app:layout_constraintHeight_percent="0.4"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.4" />
+
+    <TextView
+        android:id="@+id/item_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:lines="1"
+        android:padding="@dimen/dp_4"
+        android:textColor="@color/c_white"
+        android:textSize="@dimen/sp_10"
+        app:layout_constraintBottom_toBottomOf="@+id/item_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
