@@ -207,4 +207,6 @@
     <string name="str_msg_setting_detail">%s提醒设置</string>
     <string name="str_device_setting">设备设置</string>
     <string name="str_system_setting">系统设置</string>
+    <string name="tip_open_notification">开启消息通知，随时接收动态消息</string>
+    <string name="str_go_open">去开启</string>
 </resources>

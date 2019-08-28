@@ -71,6 +71,9 @@ public class SystemMessageFragment extends BaseFragment
     }
 
     public void getMessageCountSuccess(MessageCountBean data) {
+        if (networkError == null) {
+            return;
+        }
         endRefresh();
         networkError.setVisibility(View.GONE);
         bean = data.getModelCountList().get(1);
@@ -78,6 +81,9 @@ public class SystemMessageFragment extends BaseFragment
     }
 
     public void getMessageCountFail() {
+        if (networkError == null) {
+            return;
+        }
         endRefresh();
         networkError.setVisibility(View.VISIBLE);
         shortTip(R.string.tip_get_data_fail);

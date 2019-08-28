@@ -1,8 +1,13 @@
 package com.sunmi.assistant.mine.message;
 
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
 import com.sunmi.assistant.R;
@@ -11,6 +16,7 @@ import com.sunmi.assistant.rpc.MessageCenterApi;
 import com.sunmi.assistant.utils.MsgCommonCache;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
@@ -23,6 +29,7 @@ import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.FileHelper;
 import sunmi.common.utils.FileUtils;
+import sunmi.common.utils.PermissionUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
@@ -43,6 +50,8 @@ public class MsgCenterActivity extends BaseActivity implements View.OnClickListe
     CommonTabLayout commonTabLayout;
     @ViewById(R.id.frame_message)
     FrameLayout frameLayout;
+    @ViewById(R.id.rl_notice)
+    RelativeLayout rlNotice;
 
     private ArrayList<CustomTabEntity> tabEntities = new ArrayList<>();
     private ArrayList<Fragment> fragments = new ArrayList<>();
@@ -65,6 +74,16 @@ public class MsgCenterActivity extends BaseActivity implements View.OnClickListe
         initDot();
         showLoadingDialog();
         refreshMsgCount();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!PermissionUtils.checkNotificationPermission(context)) {
+            rlNotice.setVisibility(View.VISIBLE);
+        } else {
+            rlNotice.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -108,6 +127,30 @@ public class MsgCenterActivity extends BaseActivity implements View.OnClickListe
             refreshMsgCount();
         } else if (CommonNotifications.pushMsgArrived == id) {
             refreshMsgCount();
+        }
+    }
+
+    @Click(R.id.tv_open)
+    void openClick() {
+        try {
+            Intent intent = new Intent();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+                intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
+                intent.putExtra(Settings.EXTRA_CHANNEL_ID, getApplicationInfo().uid);
+
+            }else {
+                intent.putExtra("app_package", getPackageName());
+                intent.putExtra("app_uid", getApplicationInfo().uid);
+            }
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Intent intent = new Intent();
+            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            Uri uri = Uri.fromParts("package", getPackageName(), null);
+            intent.setData(uri);
+            startActivity(intent);
         }
     }
 
