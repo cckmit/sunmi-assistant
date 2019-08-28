@@ -19,8 +19,11 @@ public class MsgTag {
 
     public MsgTag(String content) {
         String[] msg = content.split(":");
-        tag = msg[0];
-        String[] msgContent = msg[1].split("&");
+        String[] msgContent ={"",""};
+        if (msg.length>1){
+            tag = msg[0];
+            msgContent = msg[1].split("&");
+        }
         for (String str : msgContent) {
             //LogCat.e("MsgTag", "77777777777:" + str);
             String[] detail = str.split("=");

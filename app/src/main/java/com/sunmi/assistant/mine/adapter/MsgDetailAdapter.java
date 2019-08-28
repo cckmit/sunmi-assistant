@@ -56,14 +56,11 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
         helper.setText(R.id.tv_msg_title, titleMap.get("company_name") + titleMap.get("shop_name"));
         helper.setText(R.id.tv_msg_time, DateTimeUtils.secondToDate(item.getReceiveTime(), "yyyy-MM-dd HH:mm:ss"));
         setMsgDetail(helper, MessageUtils.getInstance().getMsgFirst(titleTag.getTag()));
-        helper.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (listener != null) {
-                    listener.onLongClick(helper.getView(R.id.tv_msg_detail), item.getMsgId(), helper.getAdapterPosition());
-                }
-                return false;
+        helper.itemView.setOnLongClickListener(v -> {
+            if (listener != null) {
+                listener.onLongClick(helper.getView(R.id.tv_msg_detail), item.getMsgId(), helper.getAdapterPosition());
             }
+            return false;
         });
 
     }
