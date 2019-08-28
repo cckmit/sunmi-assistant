@@ -3,6 +3,9 @@ package sunmi.common.view.dialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +33,8 @@ public class CommonDialog extends Dialog {
         private Context context;
         private String title;
         private String message; // 对话框内容
+        private Drawable[] messageDrawable = new Drawable[4];
+        private int[] messageDrawableRes = {0, 0, 0, 0};
         private String backBtnText; // 对话框返回按钮文本
         private String confirmBtnText; // 对话框确定文本
         private int cancelBtnTextColor, confirmBtnTextColor; // 对话框确定文本颜色
@@ -69,6 +74,30 @@ public class CommonDialog extends Dialog {
          */
         public Builder setMessage(int message) {
             this.message = (String) context.getText(message);
+            return this;
+        }
+
+        /**
+         * 设置对话框消息附加图
+         */
+        public Builder setMessageDrawable(@Nullable Drawable start, @Nullable Drawable top,
+                                          @Nullable Drawable end, @Nullable Drawable bottom) {
+            messageDrawable[0] = start;
+            messageDrawable[1] = top;
+            messageDrawable[2] = end;
+            messageDrawable[3] = bottom;
+            return this;
+        }
+
+        /**
+         * 设置对话框消息附加图
+         */
+        public Builder setMessageDrawable(@DrawableRes int start, @DrawableRes int top,
+                                          @DrawableRes int end, @DrawableRes int bottom) {
+            messageDrawableRes[0] = start;
+            messageDrawableRes[1] = top;
+            messageDrawableRes[2] = end;
+            messageDrawableRes[3] = bottom;
             return this;
         }
 
@@ -203,6 +232,15 @@ public class CommonDialog extends Dialog {
                 TextView tvMessage = layout.findViewById(R.id.tv_message);
                 tvMessage.setVisibility(View.VISIBLE);
                 tvMessage.setText(message);
+                if (messageDrawable[0] != null || messageDrawable[1] != null
+                        || messageDrawable[2] != null || messageDrawable[3] != null) {
+                    tvMessage.setCompoundDrawablesRelativeWithIntrinsicBounds(messageDrawable[0],
+                            messageDrawable[1], messageDrawable[2], messageDrawable[3]);
+                } else if (messageDrawableRes[0] != 0 || messageDrawableRes[1] != 0
+                        || messageDrawableRes[2] != 0 || messageDrawableRes[3] != 0) {
+                    tvMessage.setCompoundDrawablesRelativeWithIntrinsicBounds(messageDrawableRes[0],
+                            messageDrawableRes[1], messageDrawableRes[2], messageDrawableRes[3]);
+                }
             }
 
             // 设置返回按钮事件和文本
