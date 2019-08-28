@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.DimenRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -35,6 +36,7 @@ public class CommonDialog extends Dialog {
         private String message; // 对话框内容
         private Drawable[] messageDrawable = new Drawable[4];
         private int[] messageDrawableRes = {0, 0, 0, 0};
+        private int messageDrawablePaddingRes;
         private String backBtnText; // 对话框返回按钮文本
         private String confirmBtnText; // 对话框确定文本
         private int cancelBtnTextColor, confirmBtnTextColor; // 对话框确定文本颜色
@@ -98,6 +100,11 @@ public class CommonDialog extends Dialog {
             messageDrawableRes[1] = top;
             messageDrawableRes[2] = end;
             messageDrawableRes[3] = bottom;
+            return this;
+        }
+
+        public Builder setMessageDrawablePadding(@DimenRes int dimen) {
+            messageDrawablePaddingRes = dimen;
             return this;
         }
 
@@ -240,6 +247,9 @@ public class CommonDialog extends Dialog {
                         || messageDrawableRes[2] != 0 || messageDrawableRes[3] != 0) {
                     tvMessage.setCompoundDrawablesRelativeWithIntrinsicBounds(messageDrawableRes[0],
                             messageDrawableRes[1], messageDrawableRes[2], messageDrawableRes[3]);
+                }
+                if (messageDrawablePaddingRes != 0) {
+                    tvMessage.setCompoundDrawablePadding((int) context.getResources().getDimension(messageDrawablePaddingRes));
                 }
             }
 
