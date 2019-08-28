@@ -581,7 +581,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         } else if (id == CommonNotifications.netConnectException) { //连接超时
             shortTip(R.string.str_server_exception);
         }
-        if (!isRun || args == null) {
+        if (!isRun || args == null || args.length < 1) {
             return;
         }
 
