@@ -56,11 +56,11 @@ public interface FaceInterface {
      * @param request face_id	是	integer	人脸在数据库中对应的唯一Id
      *                name	是	string	人员姓名
      *                gender	是	integer	性别
-     *                group_id	是	integer	人脸分组id
+     *                source_group_id	是	integer	人脸分组id
      *                age_range_code	是	integer	年龄段分组
      * @return Response
      */
-    @POST(URL + "group/update")
+    @POST(URL + "update")
     Call<BaseResponse<Object>> update(@Body BaseRequest request);
 
     /**
