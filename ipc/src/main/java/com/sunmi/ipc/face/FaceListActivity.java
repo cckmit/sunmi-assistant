@@ -37,6 +37,7 @@ import com.sunmi.ipc.face.model.FaceGroup;
 import com.sunmi.ipc.face.model.UploadImage;
 import com.sunmi.ipc.face.presenter.FaceListPresenter;
 import com.sunmi.ipc.face.util.BottomAnimation;
+import com.sunmi.ipc.face.util.Constants;
 import com.sunmi.ipc.face.util.GlideRoundCrop;
 import com.sunmi.ipc.face.util.Utils;
 
@@ -77,7 +78,6 @@ import sunmi.common.view.dialog.BottomListDialog;
 import sunmi.common.view.dialog.CommonDialog;
 
 import static com.sunmi.ipc.face.contract.FaceListContract.EXTRA_COUNT;
-import static com.sunmi.ipc.face.contract.FaceUploadContract.EXTRA_UPDATE_COUNT;
 import static com.sunmi.ipc.face.contract.FaceUploadContract.FILE_SIZE_1M;
 
 /**
@@ -124,8 +124,6 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
 
     @ViewById(resName = "layout_network_error")
     View mLayoutError;
-    @ViewById(resName = "layout_empty")
-    View mLayoutEmpty;
 
     @Extra
     int mShopId;
@@ -439,16 +437,14 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         hideLoadingDialog();
         mLayoutError.setVisibility(View.GONE);
         if (list.isEmpty()) {
-            mLayoutEmpty.setVisibility(View.VISIBLE);
             mTitleBar.setRightTextViewColor(R.color.colorText_60);
             mTitleBar.setRightTextViewEnable(false);
         } else {
-            mLayoutEmpty.setVisibility(View.GONE);
             mTitleBar.setRightTextViewColor(R.color.colorText);
             mTitleBar.setRightTextViewEnable(true);
-            if (mState == STATE_NORMAL) {
-                list.add(0, Face.createCamera());
-            }
+        }
+        if (mState == STATE_NORMAL) {
+            list.add(0, Face.createCamera());
         }
         mAdapter.setData(list);
     }
@@ -499,7 +495,6 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     public void getDataFailed() {
         hideLoadingDialog();
         if (mAdapter.getItemCount() == 0) {
-            mLayoutEmpty.setVisibility(View.GONE);
             mLayoutError.setVisibility(View.VISIBLE);
         } else {
             mLayoutError.setVisibility(View.GONE);
@@ -640,17 +635,23 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mPickerAgent.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_UPLOAD && resultCode == RESULT_OK && data != null) {
-            int count = data.getIntExtra(EXTRA_UPDATE_COUNT, 0);
-            updateCount(count);
-            mPresenter.loadFace(true, true);
-            resetView();
-            new CommonDialog.Builder(this)
-                    .setMessage(R.string.ipc_face_tip_album_upload_success)
-                    .setMessageDrawable(0, R.mipmap.face_ic_ok, 0, 0)
-                    .setMessageDrawablePadding(R.dimen.dp_8)
-                    .setConfirmButton(R.string.str_confirm)
-                    .create().show();
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_CODE_UPLOAD) {
+                int count = data == null ? 0 : data.getIntExtra(Constants.EXTRA_UPDATE_COUNT, 0);
+                updateCount(count);
+                mPresenter.loadFace(true, true);
+                resetView();
+                new CommonDialog.Builder(this)
+                        .setMessage(R.string.ipc_face_tip_album_upload_success)
+                        .setMessageDrawable(0, R.mipmap.face_ic_ok, 0, 0)
+                        .setMessageDrawablePadding(R.dimen.dp_8)
+                        .setConfirmButton(R.string.str_confirm)
+                        .create().show();
+            } else if (requestCode == REQUEST_CODE_DETAIL) {
+                // TODO: Update FaceGroup
+                mPresenter.loadFace(true, true);
+                resetView();
+            }
         }
     }
 
@@ -837,7 +838,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                 public void onClick(BaseRecyclerAdapter<Face> adapter, BaseViewHolder<Face> holder,
                                     View v, Face model, int position) {
                     if (!model.isAddIcon()) {
-                        FacePhotoDetailActivity_.intent(context)
+                        FaceDetailActivity_.intent(context)
                                 .mShopId(mShopId)
                                 .mFace(model)
                                 .mFaceGroup(mFaceGroup)

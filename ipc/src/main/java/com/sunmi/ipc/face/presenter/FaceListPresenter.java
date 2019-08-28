@@ -207,7 +207,7 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
     public void save(FaceCheckResp data) {
         List<String> name = new ArrayList<>(1);
         name.add(data.getFileName());
-        IpcCloudApi.saveFace(SpUtils.getCompanyId(), mShopId, mGroup.getGroupId(), name,
+        IpcCloudApi.saveFace(SpUtils.getCompanyId(), mShopId, mGroup.getGroupId(), 0, name,
                 new RetrofitCallback<FaceSaveResp>() {
                     @Override
                     public void onSuccess(int code, String msg, FaceSaveResp data) {
