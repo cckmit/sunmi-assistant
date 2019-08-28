@@ -25,6 +25,7 @@ import java.util.ArrayList;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
 import sunmi.common.base.BaseActivity;
+import sunmi.common.base.BaseApplication;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -135,12 +136,12 @@ public class MsgCenterActivity extends BaseActivity implements View.OnClickListe
     void openClick() {
         try {
             Intent intent = new Intent();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
                 intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
                 intent.putExtra(Settings.EXTRA_CHANNEL_ID, getApplicationInfo().uid);
 
-            }else {
+            } else {
                 intent.putExtra("app_package", getPackageName());
                 intent.putExtra("app_uid", getApplicationInfo().uid);
             }
@@ -168,7 +169,7 @@ public class MsgCenterActivity extends BaseActivity implements View.OnClickListe
                     SpUtils.setUnreadDeviceMsg(data.getModelCountList().get(0).getUnreadCount());
                     SpUtils.setUnreadSystemMsg(data.getModelCountList().get(1).getUnreadCount());
                     initDot();
-                    ShortcutBadger.applyCount(context, SpUtils.getRemindUnreadMsg()); //for 1.1.4+
+                    ShortcutBadger.applyCount(BaseApplication.getInstance(), SpUtils.getRemindUnreadMsg());
                     BaseNotification.newInstance().postNotificationName(CommonNotifications.msgUpdated);
                 }
                 if (deviceF != null) {
