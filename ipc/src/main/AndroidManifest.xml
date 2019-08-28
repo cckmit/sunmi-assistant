@@ -42,6 +42,8 @@
         <activity android:name=".face.FaceGroupDetailActivity_" />
         <activity android:name=".face.FaceListActivity_" />
         <activity android:name=".face.FaceUploadActivity_" />
+        <activity android:name=".face.FacePhotoDetailActivity_" />
+        <activity android:name=".face.FacePhotoDetailTimeRecordActivity_" />
 
     </application>
 
