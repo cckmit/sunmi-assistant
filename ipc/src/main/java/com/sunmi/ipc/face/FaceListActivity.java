@@ -226,18 +226,6 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         mRvSelectedList.setAdapter(mAdapterSelected);
     }
 
-    private void updateSelectedLayout(boolean animated) {
-        boolean isChoose = mState == STATE_CHOOSE;
-        if (isChoose) {
-            mBottomAnimator.startAnimationToShow(animated, mLayoutSelected);
-        } else {
-            mAdapterSelected.clear();
-            mTvSelectedTip.setVisibility(View.VISIBLE);
-            updateBtnEnable(false);
-            mBottomAnimator.startAnimationToDismiss(animated, mLayoutSelected);
-        }
-    }
-
     private void switchStateTo(int state) {
         if (mState == state) {
             return;
@@ -302,6 +290,18 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
             mAdapter.add(0, Face.createCamera());
         } else if (mState == STATE_CHOOSE && list.get(0).isAddIcon()) {
             mAdapter.remove(0);
+        }
+    }
+
+    private void updateSelectedLayout(boolean animated) {
+        boolean isChoose = mState == STATE_CHOOSE;
+        if (isChoose) {
+            mBottomAnimator.startAnimationToShow(animated, mLayoutSelected);
+        } else {
+            mAdapterSelected.clear();
+            mTvSelectedTip.setVisibility(View.VISIBLE);
+            updateBtnEnable(false);
+            mBottomAnimator.startAnimationToDismiss(animated, mLayoutSelected);
         }
     }
 
@@ -380,8 +380,6 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     @Click(resName = "btn_refresh")
     void refresh() {
         mPresenter.init();
-        mEtSearch.setText("");
-        mEtSearch.clearFocus();
     }
 
     @Override
@@ -513,15 +511,13 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     @Override
     public void resetView() {
         switchStateTo(STATE_NORMAL);
+        mEtSearch.setText("");
+        mEtSearch.clearFocus();
         if (mFilterAdapterGender.getItemCount() > 0) {
-            mFilterAdapterGender.getCurrent().setChecked(false);
-            mFilterAdapterGender.getData().get(0).setChecked(true);
-            mFilterAdapterGender.notifyDataSetChanged();
+            mFilterAdapterGender.setCurrent(0);
         }
         if (mFilterAdapterAge.getItemCount() > 0) {
-            mFilterAdapterAge.getCurrent().setChecked(false);
-            mFilterAdapterAge.getData().get(0).setChecked(true);
-            mFilterAdapterAge.notifyDataSetChanged();
+            mFilterAdapterAge.setCurrent(0);
         }
     }
 

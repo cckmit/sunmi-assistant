@@ -153,8 +153,8 @@
             android:layout_gravity="center"
             android:layout_marginStart="@dimen/dp_20"
             android:layout_marginEnd="@dimen/dp_20"
-            android:imeOptions="actionSearch"
             android:background="@drawable/face_bg_search"
+            android:imeOptions="actionSearch"
             android:paddingStart="@dimen/dp_12"
             android:paddingEnd="@dimen/dp_12" />
 
@@ -163,6 +163,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:drawableStart="@mipmap/face_ic_search"
+            android:drawablePadding="@dimen/dp_4"
             android:text="@string/ipc_face_search"
             android:textColor="@color/colorText_60"
             android:textSize="@dimen/sp_14" />

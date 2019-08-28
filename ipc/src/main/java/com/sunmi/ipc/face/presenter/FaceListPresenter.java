@@ -175,6 +175,9 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
             return;
         }
         mFilterGender = gender;
+        if (mCall != null && !mCall.isCanceled()) {
+            mCall.cancel();
+        }
         loadFace(true, false);
     }
 
@@ -184,6 +187,9 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
             return;
         }
         mFilterAge = age;
+        if (mCall != null && !mCall.isCanceled()) {
+            mCall.cancel();
+        }
         loadFace(true, false);
     }
 
