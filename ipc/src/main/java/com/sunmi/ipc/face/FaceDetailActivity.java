@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -384,6 +385,9 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         TextView tvTitle = layout.findViewById(com.commonlibrary.R.id.tv_title);
         RecyclerView rvContent = layout.findViewById(com.commonlibrary.R.id.rv_content);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 600);
+        rvContent.setLayoutParams(params);
+
         rvContent.setLayoutManager(new LinearLayoutManager(context));
         tvTitle.setText(title);
         rvContent.setAdapter(new CommonListAdapter<FaceGroup>(this,
@@ -439,6 +443,8 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         TextView tvTitle = layout.findViewById(com.commonlibrary.R.id.tv_title);
         RecyclerView rvContent = layout.findViewById(com.commonlibrary.R.id.rv_content);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 600);
+        rvContent.setLayoutParams(params);
         rvContent.setLayoutManager(new LinearLayoutManager(context));
         tvTitle.setText(title);
 
@@ -495,6 +501,8 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         TextView tvTitle = layout.findViewById(com.commonlibrary.R.id.tv_title);
         RecyclerView rvContent = layout.findViewById(com.commonlibrary.R.id.rv_content);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 350);
+        rvContent.setLayoutParams(params);
         rvContent.setLayoutManager(new LinearLayoutManager(context));
         tvTitle.setText(title);
         final List<String> list = new ArrayList<>();

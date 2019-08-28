@@ -420,16 +420,16 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     //画质
     @Click(resName = "tv_quality")
     void qualityClick() {
-        if (isDevPlayBack) {
+        if (!isCurrentLive) {
             return;
         }
         llVideoQuality.setVisibility(llVideoQuality.isShown() ? View.GONE : View.VISIBLE);
         if (qualityType == 0) {
-            tvHDQuality.setTextColor(getResources().getColor(R.color.colorOrange));
-            tvSDQuality.setTextColor(getResources().getColor(R.color.c_white));
+            tvHDQuality.setTextColor(ContextCompat.getColor(this, R.color.colorOrange));
+            tvSDQuality.setTextColor(ContextCompat.getColor(this, R.color.c_white));
         } else {
-            tvHDQuality.setTextColor(getResources().getColor(R.color.c_white));
-            tvSDQuality.setTextColor(getResources().getColor(R.color.colorOrange));
+            tvHDQuality.setTextColor(ContextCompat.getColor(this, R.color.c_white));
+            tvSDQuality.setTextColor(ContextCompat.getColor(this, R.color.colorOrange));
         }
     }
 
@@ -851,6 +851,8 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
 
     //滑动回放定位的中间 position
     private void scrollCurrentPlayBackTime(long currentTimeMinutes) {
+        ivPlay.setBackgroundResource(R.mipmap.pause_normal);
+        isPaused = false;
         scalePanel.moveToTime(currentTimeMinutes);
         openMove();
     }
