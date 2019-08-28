@@ -26,7 +26,7 @@ import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.ViewHolder;
 
 import static com.sunmi.ipc.face.FacePhotoDetailActivity.DATE_FORMAT_ENTER_SHOP;
-import static sunmi.common.utils.CommonHelper.long2Time;
+import static sunmi.common.utils.DateTimeUtils.secondToDate;
 
 /**
  * @author yangShiJie
@@ -83,7 +83,7 @@ public class FacePhotoDetailTimeRecordActivity extends BaseActivity {
                 R.layout.item_face_photo_time_record, list) {
             @Override
             public void convert(ViewHolder holder, FaceEntryHistoryResp.EntryHistory entryHistory) {
-                holder.setText(R.id.tv_time, long2Time(entryHistory.getArrivalTime() * 1000, DATE_FORMAT_ENTER_SHOP));
+                holder.setText(R.id.tv_time, secondToDate(entryHistory.getArrivalTime(), DATE_FORMAT_ENTER_SHOP));
             }
         });
     }
