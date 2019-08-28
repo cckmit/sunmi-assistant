@@ -10,6 +10,7 @@ import com.sunmi.ipc.R;
 import com.sunmi.ipc.face.contract.FaceGroupDetailContract;
 import com.sunmi.ipc.face.model.FaceGroup;
 import com.sunmi.ipc.face.presenter.FaceGroupDetailPresenter;
+import com.sunmi.ipc.face.util.Constants;
 import com.sunmi.ipc.face.util.Utils;
 
 import org.androidannotations.annotations.AfterViews;
@@ -22,8 +23,6 @@ import org.androidannotations.annotations.ViewById;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.TitleBarView;
-
-import static com.sunmi.ipc.face.contract.FaceListContract.EXTRA_COUNT;
 
 /**
  * @author yinhui
@@ -178,7 +177,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
     @OnActivityResult(REQUEST_CODE)
     void onActivityResult(int resultCode, Intent data) {
         if (resultCode == RESULT_OK && data != null) {
-            int count = data.getIntExtra(EXTRA_COUNT, mFaceGroup.getCount());
+            int count = data.getIntExtra(Constants.EXTRA_UPDATE_COUNT, mFaceGroup.getCount());
             mFaceGroup.setCount(count);
             mSilManage.setRightText(getString(R.string.ipc_face_group_count, mFaceGroup.getCount()));
             setResult(RESULT_OK);

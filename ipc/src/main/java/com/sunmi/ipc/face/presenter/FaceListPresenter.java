@@ -55,30 +55,96 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
 
     private Call<BaseResponse<FaceListResp>> mCall;
 
-    public FaceListPresenter(int shopId, FaceGroup group) {
+    public FaceListPresenter(Context context, int shopId, FaceGroup group) {
         this.mShopId = shopId;
         this.mGroup = group;
-    }
-
-    @Override
-    public void init(Context context) {
-        if (isViewAttached()) {
-            mView.showLoadingDialog();
-        }
-        mFilterGenderList.clear();
-        mFilterAgeList.clear();
         FilterItem allGender = new FilterItem(-1, context.getString(R.string.ipc_face_gender),
                 context.getString(R.string.ipc_face_gender_all));
         allGender.setChecked(true);
         mFilterGenderList.add(allGender);
         mFilterGenderList.add(new FilterItem(1, context.getString(R.string.ipc_face_gender_male)));
         mFilterGenderList.add(new FilterItem(2, context.getString(R.string.ipc_face_gender_female)));
+
         FilterItem allAge = new FilterItem(-1, context.getString(R.string.ipc_face_age),
                 context.getString(R.string.ipc_face_age_all));
         allAge.setChecked(true);
         mFilterAgeList.add(allAge);
-        loadFilter();
+    }
+
+    @Override
+    public void init() {
+        if (isViewAttached()) {
+            mView.showLoadingDialog();
+            mView.resetView();
+        }
+        if (mFilterAgeList.size() <= 1) {
+            loadAgeFilter();
+        }
         loadGroup();
+        loadFace(true, true);
+    }
+
+    private void loadAgeFilter() {
+        IpcCloudApi.getFaceAgeRange(SpUtils.getCompanyId(), mShopId, new RetrofitCallback<FaceAgeRangeResp>() {
+            @Override
+            public void onSuccess(int code, String msg, FaceAgeRangeResp data) {
+                loadFace(true, true);
+                if (isViewAttached()) {
+                    List<FaceAge> faceAges = data.getAgeRangeList();
+                    for (FaceAge age : faceAges) {
+                        mFilterAgeList.add(new FilterItem(age.getCode(), age.getName()));
+                    }
+                    mView.updateFilter(mFilterGenderList, mFilterAgeList);
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, FaceAgeRangeResp data) {
+                LogCat.e(TAG, "Load filter age range Failed. " + msg);
+                if (isViewAttached()) {
+                    mView.getDataFailed();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void loadGroup() {
+        IpcCloudApi.getFaceGroup(SpUtils.getCompanyId(), mShopId, new RetrofitCallback<FaceGroupListResp>() {
+            @Override
+            public void onSuccess(int code, String msg, FaceGroupListResp data) {
+                List<FaceGroup> list = data.getGroupList();
+                ListIterator<FaceGroup> iterator = list.listIterator();
+                FaceGroup groupNew = null;
+                while (iterator.hasNext()) {
+                    FaceGroup next = iterator.next();
+                    if (next.getGroupId() == mGroup.getGroupId()) {
+                        groupNew = next;
+                        iterator.remove();
+                    }
+                }
+                if (isViewAttached()) {
+                    if (groupNew != null && mGroup.getCount() != groupNew.getCount()) {
+                        mGroup = groupNew;
+                        mView.updateGroup(mGroup);
+                    }
+                    mView.updateGroupList(list);
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, FaceGroupListResp data) {
+                if (isViewAttached()) {
+                    mView.shortTip(R.string.toast_network_error);
+                    mView.updateGroupList(null);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void refresh() {
+        loadFace(true, false);
     }
 
     @Override
@@ -134,12 +200,10 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
                 ids, new RetrofitCallback<Object>() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
-                        loadFace(true, true);
                         if (isViewAttached()) {
-                            mView.updateCount(-list.size());
                             mView.shortTip(R.string.ipc_face_tip_move_success);
-                            mView.resetView();
                         }
+                        init();
                     }
 
                     @Override
@@ -166,12 +230,10 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
                 new RetrofitCallback<Object>() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
-                        loadFace(true, true);
                         if (isViewAttached()) {
-                            mView.updateCount(-list.size());
                             mView.shortTip(R.string.ipc_face_tip_delete_success);
-                            mView.resetView();
                         }
+                        init();
                     }
 
                     @Override
@@ -213,8 +275,9 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
                     public void onSuccess(int code, String msg, FaceSaveResp data) {
                         if (!data.getSuccessList().isEmpty()) {
                             loadFace(true, true);
+                            mGroup.setCount(mGroup.getCount() + 1);
                             if (isViewAttached()) {
-                                mView.updateCount(1);
+                                mView.updateGroup(mGroup);
                                 mView.uploadSuccess();
                             }
                         } else if (isViewAttached()) {
@@ -232,60 +295,7 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
                 });
     }
 
-    private void loadFilter() {
-        IpcCloudApi.getFaceAgeRange(SpUtils.getCompanyId(), mShopId, new RetrofitCallback<FaceAgeRangeResp>() {
-            @Override
-            public void onSuccess(int code, String msg, FaceAgeRangeResp data) {
-                loadFace(true, true);
-                if (isViewAttached()) {
-                    List<FaceAge> faceAges = data.getAgeRangeList();
-                    for (FaceAge age : faceAges) {
-                        mFilterAgeList.add(new FilterItem(age.getCode(), age.getName()));
-                    }
-                    mView.updateFilter(mFilterGenderList, mFilterAgeList);
-                }
-            }
-
-            @Override
-            public void onFail(int code, String msg, FaceAgeRangeResp data) {
-                LogCat.e(TAG, "Load filter age range Failed. " + msg);
-                if (isViewAttached()) {
-                    mView.getDataFailed();
-                }
-            }
-        });
-    }
-
-    @Override
-    public void loadGroup() {
-        IpcCloudApi.getFaceGroup(SpUtils.getCompanyId(), mShopId, new RetrofitCallback<FaceGroupListResp>() {
-            @Override
-            public void onSuccess(int code, String msg, FaceGroupListResp data) {
-                List<FaceGroup> list = data.getGroupList();
-                ListIterator<FaceGroup> iterator = list.listIterator();
-                while (iterator.hasNext()) {
-                    FaceGroup next = iterator.next();
-                    if (next.getGroupId() == mGroup.getGroupId()) {
-                        iterator.remove();
-                    }
-                }
-                if (isViewAttached()) {
-                    mView.updateGroupList(list);
-                }
-            }
-
-            @Override
-            public void onFail(int code, String msg, FaceGroupListResp data) {
-                if (isViewAttached()) {
-                    mView.shortTip(R.string.toast_network_error);
-                    mView.updateGroupList(null);
-                }
-            }
-        });
-    }
-
-    @Override
-    public void loadFace(final boolean refresh, boolean clearFilter) {
+    private void loadFace(final boolean refresh, boolean clearFilter) {
         if (refresh) {
             mCurrentCount = 0;
         }

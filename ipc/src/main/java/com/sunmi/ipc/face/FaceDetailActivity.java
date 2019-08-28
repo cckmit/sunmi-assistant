@@ -39,16 +39,13 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.luban.Luban;
 import sunmi.common.mediapicker.TakePhoto;
 import sunmi.common.mediapicker.TakePhotoAgent;
 import sunmi.common.mediapicker.data.model.Result;
-import sunmi.common.utils.FileHelper;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SettingItemLayout;
@@ -59,7 +56,6 @@ import sunmi.common.view.bottompopmenu.PopItemAction;
 import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.dialog.InputDialog;
 
-import static com.sunmi.ipc.face.contract.FaceUploadContract.FILE_SIZE_1M;
 import static sunmi.common.utils.DateTimeUtils.secondToDate;
 
 
@@ -201,19 +197,12 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
 
     @Background
     void compress(File file) {
-        try {
-            int count = 0;
-            while (file.length() > FILE_SIZE_1M && count < 3) {
-                List<File> files = Luban.with(this)
-                        .setTargetDir(FileHelper.SDCARD_CACHE_IMAGE_PATH)
-                        .load(file)
-                        .get();
-                file = files.get(0);
-                count++;
-            }
+        file = Utils.imageCompress(this, file);
+        if (file == null) {
+            mUploadDialog.dismiss();
+            shortTip(R.string.toast_network_error);
+        } else {
             mPresenter.upload(file);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
