@@ -82,7 +82,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     @Extra
     ArrayList<ShopListResp.ShopInfo> shopList;
     @Extra
-    boolean isCreateCompany;
+    boolean isRegisterEnterCompany;
     @Extra
     boolean isLoginSuccessSwitchCompany;
 
@@ -102,8 +102,9 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
         if (action == CommonConstants.ACTION_LOGIN_CHOOSE_COMPANY) {
             titleBar.setAppTitle(R.string.str_select_company);
             tvSelectType.setText(R.string.company_select);
-            if (isCreateCompany) {
+            if (isRegisterEnterCompany) {
                 titleBar.setRightTextViewText(R.string.company_create);
+                titleBar.setLeftImageVisibility(View.GONE);
             }
             titleBar.getRightText().setOnClickListener(this);
             btnEnterMain.setVisibility(View.GONE);

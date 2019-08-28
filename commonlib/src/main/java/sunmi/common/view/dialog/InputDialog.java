@@ -6,11 +6,13 @@ import android.content.DialogInterface;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.commonlibrary.R;
@@ -45,6 +47,8 @@ public class InputDialog extends Dialog {
         private DialogInterface.OnClickListener cancelButtonClickListener;
         private ConfirmClickListener confirmClickListener;
         private TextChangeListener watcher;
+        private boolean isSetEdittextHeight;
+        private int edittextHeight, margin;
 
         public Builder(Context context) {
             this.context = context;
@@ -177,6 +181,13 @@ public class InputDialog extends Dialog {
             return this;
         }
 
+        public Builder setEditTextHeight(boolean isSetEdittextHeight, int edittextHeight, int margin) {
+            this.isSetEdittextHeight = isSetEdittextHeight;
+            this.edittextHeight = edittextHeight;
+            this.margin = margin;
+            return this;
+        }
+
         /**
          * 创建自定义的对话框
          */
@@ -198,6 +209,17 @@ public class InputDialog extends Dialog {
             }
 
             final EditText etInput = layout.findViewById(R.id.et_input);
+            //设置高度
+            if (isSetEdittextHeight) {
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, edittextHeight);
+                params.leftMargin = margin;
+                params.rightMargin = margin;
+                params.topMargin = margin;
+                params.bottomMargin = margin;
+                etInput.setLayoutParams(params);
+                etInput.setGravity(Gravity.TOP | Gravity.START);
+                etInput.setSingleLine(false);
+            }
             if (!TextUtils.isEmpty(content)) {
                 etInput.setText(content);
                 etInput.setSelection(content.length());
@@ -214,6 +236,7 @@ public class InputDialog extends Dialog {
 
                 if (cancelButtonClickListener != null) {
                     bckButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
                         public void onClick(View v) {
                             dialog.cancel();
                             cancelButtonClickListener.onClick(dialog, DialogInterface.BUTTON_NEGATIVE);

@@ -161,7 +161,7 @@ public class SetPasswordActivity extends BaseMvpActivity<SetPasswordPresenter>
             return;
         }
         LoginChooseShopActivity_.intent(context)
-                .isCreateCompany(true)
+                .isRegisterEnterCompany(true)
                 .action(CommonConstants.ACTION_LOGIN_CHOOSE_COMPANY).start();
     }
 
