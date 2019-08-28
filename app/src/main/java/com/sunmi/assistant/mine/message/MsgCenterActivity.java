@@ -15,6 +15,7 @@ import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 
+import me.leolin.shortcutbadger.ShortcutBadger;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
@@ -107,6 +108,7 @@ public class MsgCenterActivity extends BaseActivity implements View.OnClickListe
                     SpUtils.setUnreadDeviceMsg(data.getModelCountList().get(0).getUnreadCount());
                     SpUtils.setUnreadSystemMsg(data.getModelCountList().get(1).getUnreadCount());
                     initDot();
+                    ShortcutBadger.applyCount(context, SpUtils.getRemindUnreadMsg()); //for 1.1.4+
                     BaseNotification.newInstance().postNotificationName(CommonNotifications.msgUpdated);
                 }
                 if (deviceF != null) {
