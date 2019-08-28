@@ -20,6 +20,7 @@ import com.sunmi.ipc.face.contract.FaceUploadContract;
 import com.sunmi.ipc.face.model.FaceGroup;
 import com.sunmi.ipc.face.model.UploadImage;
 import com.sunmi.ipc.face.presenter.FaceUploadPresenter;
+import com.sunmi.ipc.face.util.Constants;
 import com.sunmi.ipc.face.util.Utils;
 
 import org.androidannotations.annotations.AfterViews;
@@ -57,7 +58,6 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
         implements FaceUploadContract.View {
 
     private static final String STATE_IMAGES = "state_images";
-    private static final int IMAGE_COUNT_LIMIT = 20;
 
     @ViewById(resName = "title_bar")
     TitleBarView mTitleBar;
@@ -87,7 +87,7 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
     void init() {
         initTitle();
         initRecycler();
-        mPickerLimit = Math.min(mRemain, IMAGE_COUNT_LIMIT);
+        mPickerLimit = Math.min(mRemain, Constants.IMAGE_PICKER_LIMIT);
         mPickerAgent = TakePhoto.with(this)
                 .setTakePhotoListener(new PickerResult())
                 .build();
