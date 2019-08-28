@@ -144,7 +144,7 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
     }
 
     @Click(R.id.btn_refresh)
-    void refeshClick() {
+    void refreshClick() {
         mPresenter.getMessageList(modelId, pageNum, pageSize, true, false);
     }
 

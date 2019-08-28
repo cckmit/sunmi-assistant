@@ -1,5 +1,6 @@
 package com.sunmi.assistant.mine.presenter;
 
+import com.google.gson.Gson;
 import com.sunmi.assistant.mine.contract.MessageCountContract;
 import com.sunmi.assistant.mine.model.MessageCountBean;
 import com.sunmi.assistant.rpc.MessageCenterApi;
@@ -8,6 +9,8 @@ import sunmi.common.base.BasePresenter;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.FileHelper;
+import sunmi.common.utils.FileUtils;
 import sunmi.common.utils.SpUtils;
 
 /**
