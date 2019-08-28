@@ -35,8 +35,6 @@ import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Locale;
 
 import sunmi.common.utils.log.LogCat;
@@ -616,11 +614,6 @@ public class CommonHelper {
             return String.valueOf((int) num);
         }
         return String.valueOf(num);
-    }
-
-    public static String long2Time(long time, String format) {
-        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.getDefault());
-        return sdf.format(new Date(time));
     }
 
 }

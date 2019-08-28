@@ -43,7 +43,8 @@ import sunmi.common.view.TitleBarView;
 import sunmi.common.view.ViewHolder;
 import sunmi.common.view.dialog.InputDialog;
 
-import static sunmi.common.utils.CommonHelper.long2Time;
+import static sunmi.common.utils.DateTimeUtils.secondToDate;
+
 
 /**
  * @author yangShiJie
@@ -114,10 +115,10 @@ public class FacePhotoDetailActivity extends BaseMvpActivity<FacePhotoPresenter>
                     context.getString(R.string.ipc_face_gender_female));
             silFaceEnterShopNum.setRightText(mFace.getArrivalCount() + "");
             if (mFace.getCreateTime() != 0) {
-                silFaceRegisterTime.setRightText(long2Time(mFace.getCreateTime() * 1000, DATE_FORMAT_REGISTER));
+                silFaceRegisterTime.setRightText(secondToDate(mFace.getCreateTime(), DATE_FORMAT_REGISTER));
             }
             if (mFace.getLastArrivalTime() != 0) {
-                silFaceNewEnterShopTime.setRightText(long2Time(mFace.getLastArrivalTime() * 1000, DATE_FORMAT_ENTER_SHOP));
+                silFaceNewEnterShopTime.setRightText(secondToDate(mFace.getLastArrivalTime(), DATE_FORMAT_ENTER_SHOP));
             }
         }
     }
