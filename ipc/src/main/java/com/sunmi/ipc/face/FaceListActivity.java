@@ -821,7 +821,11 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                 public void onClick(BaseRecyclerAdapter<Face> adapter, BaseViewHolder<Face> holder,
                                     View v, Face model, int position) {
                     if (!model.isAddIcon()) {
-                        // TODO: Go to detail.
+                        FacePhotoDetailActivity_.intent(context)
+                                .mShopId(mShopId)
+                                .mFace(model)
+                                .mFaceGroup(mFaceGroup)
+                                .start();
                         return;
                     }
 

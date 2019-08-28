@@ -5,8 +5,6 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-import org.litepal.crud.DataSupport;
-
 import java.util.List;
 
 /**
@@ -14,7 +12,7 @@ import java.util.List;
  *
  * @author linyuanpeng on 2019-08-14.
  */
-public class MessageCountBean extends DataSupport {
+public class MessageCountBean {
 
     /**
      * total_count : 100
