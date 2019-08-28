@@ -550,7 +550,8 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                 .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mPickerAgent.setPickLimit(mFaceGroup.getCapacity() - mFaceGroup.getCount());
+                        int remain = mFaceGroup.getCapacity() - mFaceGroup.getCount();
+                        mPickerAgent.setPickLimit(Math.min(remain, Constants.IMAGE_PICKER_LIMIT));
                         mPickerAgent.pickMultiPhotos(null);
                     }
                 })
