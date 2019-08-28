@@ -149,7 +149,7 @@ public class SystemMessageFragment extends BaseFragment
     }
 
     @Click(R.id.btn_refresh)
-    void refeshClick() {
+    void refreshClick() {
         refreshMsgCount();
     }
 
