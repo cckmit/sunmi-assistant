@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.sunmi.ipc.model.CloudTimeSlotResp;
 import com.sunmi.ipc.model.FaceAgeRangeResp;
 import com.sunmi.ipc.model.FaceCheckResp;
+import com.sunmi.ipc.model.FaceEntryHistoryResp;
 import com.sunmi.ipc.model.FaceGroupCreateReq;
 import com.sunmi.ipc.model.FaceGroupCreateResp;
 import com.sunmi.ipc.model.FaceGroupListResp;
@@ -286,15 +287,23 @@ public class IpcCloudApi {
         return call;
     }
 
-    public static void updateFaceDetail(int faceId, int groupId, String name, int gender, int age,
-                                        RetrofitCallback<Object> callback) {
+    /**
+     * @param companyId
+     * @param shopId
+     * @param faceId
+     * @param sourceGroupId 当前人脸分组id
+     * @param callback
+     */
+    public static void updateFaceName(int companyId, int shopId, int faceId, int sourceGroupId,
+                                      String name,
+                                      RetrofitCallback<Object> callback) {
         try {
             String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
                     .put("face_id", faceId)
+                    .put("source_group_id", sourceGroupId)
                     .put("name", name)
-                    .put("gender", gender)
-                    .put("group_id", groupId)
-                    .put("age_range_code", age)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
                     .update(getSignedRequest(params))
@@ -303,6 +312,64 @@ public class IpcCloudApi {
             e.printStackTrace();
         }
     }
+
+    public static void updateFaceTargetGroupId(int companyId, int shopId, int faceId, int sourceGroupId,
+                                               int targetGroupId,
+                                               RetrofitCallback<Object> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("face_id", faceId)
+                    .put("source_group_id", sourceGroupId)
+                    .put("target_group_id", targetGroupId)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
+                    .update(getSignedRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void updateFaceGender(int companyId, int shopId, int faceId, int sourceGroupId,
+                                        int gender,
+                                        RetrofitCallback<Object> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("face_id", faceId)
+                    .put("source_group_id", sourceGroupId)
+                    .put("gender", gender)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
+                    .update(getSignedRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void updateFaceAgeRangeCode(int companyId, int shopId, int faceId, int sourceGroupId,
+                                              int ageRangeCode,
+                                              RetrofitCallback<Object> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("face_id", faceId)
+                    .put("source_group_id", sourceGroupId)
+                    .put("age_range_code", ageRangeCode)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
+                    .update(getSignedRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public static void deleteFace(int companyId, int shopId, int groupId, List<Integer> faceIds,
                                   RetrofitCallback<Object> callback) {
@@ -432,6 +499,21 @@ public class IpcCloudApi {
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
                     .deleteGroup(getSignedRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void arrivalListFaceGroup(int companyId, int shopId, int faceId, RetrofitCallback<FaceEntryHistoryResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("face_id", faceId)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
+                    .getArrivalHistory(getSignedRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();

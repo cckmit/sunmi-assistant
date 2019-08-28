@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string-array name="dashboard_purchase_type">
         <item>支付宝</item>
         <item>微信</item>
@@ -9,7 +9,7 @@
         <item>其他</item>
     </string-array>
 
-    <string-array name="msg_tag">
+    <string-array name="msg_tag" tools:ignore="ExtraTranslation">
         <!--1个Tag对应两个内容-->
         <item>notif-model-device-ipc-tf-card-detect</item>
         <item>notif-model-device-ipc-on/offline</item>
@@ -50,7 +50,6 @@
         <item>notif-system-service-reminder-setting</item>
         <item>notif-system-promotion-reminder-setting</item>
     </string-array>
-
 
     <string-array name="msg_analysis_first">
         <item>@string/str_tf_detect</item>
@@ -93,7 +92,6 @@
         <item>@string/str_promotion_msg</item>
     </string-array>
 
-
     <string-array name="msg_analysis_second">
         <item>@string/tip_ipc_tf_detect</item>
         <item>@string/tip_ipc_on_offline</item>
@@ -104,6 +102,5 @@
         <item>@string/tip_esl_offline</item>
         <item>@string/tip_task_erp</item>
     </string-array>
-
 
 </resources>

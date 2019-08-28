@@ -27,12 +27,10 @@ import java.util.List;
 import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
-import me.leolin.shortcutbadger.ShortcutBadger;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.NetworkUtils;
-import sunmi.common.utils.SpUtils;
 import sunmi.common.view.TitleBarView;
 
 @EActivity(R.layout.activity_msg_detail)
@@ -77,7 +75,6 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
         viewHolder.setLoadMoreBackgroundColorRes(R.color.bg_common);
         // 设置下拉刷新和上拉加载更多的风格(参数1：应用程序上下文，参数2：是否具有上拉加载更多功能)
         refreshLayout.setRefreshViewHolder(viewHolder);
-        ShortcutBadger.applyCount(context, SpUtils.getRemindUnreadMsg()); //for 1.1.4+
     }
 
     @Override
@@ -100,11 +97,8 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
                     loadFinish = true;
                 }
             }
-            if (needUpdate) {
-                mPresenter.updateReceiveStatus(modelId);
-            }
 
-            if (isRefesh && bean.get(0).getReceiveStatus() == 0) {
+            if (needUpdate || (isRefesh && bean.get(0).getReceiveStatus() == 0)) {
                 mPresenter.updateReceiveStatus(modelId);
             }
         }
@@ -144,7 +138,7 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
     }
 
     @Click(R.id.btn_refresh)
-    void refeshClick() {
+    void refreshClick() {
         mPresenter.getMessageList(modelId, pageNum, pageSize, true, false);
     }
 
