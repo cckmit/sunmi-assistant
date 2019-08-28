@@ -53,7 +53,11 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
         Map<String, String> titleMap = titleTag.getMsgMap();
         MsgTag detailTag = new MsgTag(item.getContent());
         detailMap = detailTag.getMsgMap();
-        helper.setText(R.id.tv_msg_title, titleMap.get("company_name") + titleMap.get("shop_name"));
+        String companyName = "";
+        String shopName = "";
+        companyName = titleMap.get("company_name");
+        shopName = titleMap.get("shop_name");
+        helper.setText(R.id.tv_msg_title, companyName + shopName);
         helper.setText(R.id.tv_msg_time, DateTimeUtils.secondToDate(item.getReceiveTime(), "yyyy-MM-dd HH:mm:ss"));
         setMsgDetail(helper, MessageUtils.getInstance().getMsgFirst(titleTag.getTag()));
         helper.itemView.setOnLongClickListener(v -> {
@@ -67,7 +71,8 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
 
     private void setMsgDetail(BaseViewHolder helper, String string) {
         String disconnectTime = detailMap.get("disconnect_time");
-        String deviceName = detailMap.get("device_name");
+        String deviceName = "";
+        deviceName = detailMap.get("device_name");
         String binVersion = detailMap.get("bin_version");
         String timestamp = detailMap.get("timestamp");
         String saasName = detailMap.get("saas_name");
