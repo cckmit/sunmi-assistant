@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TabHost;
 
+import com.google.gson.Gson;
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.receiver.MyNetworkCallback;
@@ -39,6 +40,8 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
+import sunmi.common.utils.FileHelper;
+import sunmi.common.utils.FileUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.MyFragmentTabHost;
@@ -81,6 +84,7 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
         } else {
             initTabs();
         }
+        initMsg();
         ShortcutBadger.applyCount(context, SpUtils.getRemindUnreadMsg()); //for 1.1.4+
     }
 
@@ -140,6 +144,7 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
     @Override
     public void getMessageCountSuccess(MessageCountBean data) {
         initMsg();
+        FileUtils.writeFileToSD(FileHelper.FILE_PATH, "msgCount.json", new Gson().toJson(data));
     }
 
     @Override

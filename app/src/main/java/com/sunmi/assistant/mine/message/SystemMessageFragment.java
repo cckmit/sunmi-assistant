@@ -13,6 +13,7 @@ import com.sunmi.assistant.mine.model.MsgCountChildren;
 import com.sunmi.assistant.utils.MessageUtils;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 
@@ -43,10 +44,11 @@ public class SystemMessageFragment extends BaseFragment
     SmRecyclerView rvMsg;
     @ViewById(R.id.bga_refresh)
     BGARefreshLayout refreshLayout;
+    @ViewById(R.id.layout_network_error)
+    View networkError;
 
     private MessageCountBean.ModelCountListBean bean;
 
-    private List<MsgCountChildren> msgData;
     private HashMap<String, List<MsgCountChildren>> msgMap = new HashMap<>();
     private MsgTabAdapter msgTabAdapter;
     private MsgContentAdapter msgContentAdapter;
@@ -70,14 +72,14 @@ public class SystemMessageFragment extends BaseFragment
 
     public void getMessageCountSuccess(MessageCountBean data) {
         endRefresh();
-        hideLoadingDialog();
+        networkError.setVisibility(View.GONE);
         bean = data.getModelCountList().get(1);
         initData();
     }
 
     public void getMessageCountFail() {
         endRefresh();
-        hideLoadingDialog();
+        networkError.setVisibility(View.VISIBLE);
         shortTip(R.string.tip_get_data_fail);
     }
 
@@ -85,7 +87,7 @@ public class SystemMessageFragment extends BaseFragment
         if (bean.getTotalCount() <= 0) {
             tvMsg.setVisibility(View.VISIBLE);
         } else {
-            msgData = bean.getChildren();
+            List<MsgCountChildren> msgData = bean.getChildren();
             tabTitle.clear();
             msgCount.clear();
             List<MsgCountChildren> total = new ArrayList<>();
@@ -144,6 +146,11 @@ public class SystemMessageFragment extends BaseFragment
             }
         }
         return list;
+    }
+
+    @Click(R.id.btn_refresh)
+    void refreshClick() {
+        refreshMsgCount();
     }
 
     @Override

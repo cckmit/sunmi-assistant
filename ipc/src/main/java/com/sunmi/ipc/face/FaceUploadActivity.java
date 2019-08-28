@@ -1,5 +1,7 @@
 package com.sunmi.ipc.face;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -46,7 +48,9 @@ import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.bottompopmenu.BottomPopMenu;
 import sunmi.common.view.bottompopmenu.PopItemAction;
+import sunmi.common.view.dialog.CommonDialog;
 
+import static com.sunmi.ipc.face.contract.FaceUploadContract.EXTRA_UPDATE_COUNT;
 import static com.sunmi.ipc.face.contract.FaceUploadContract.FILE_SIZE_1M;
 
 /**
@@ -79,6 +83,7 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
     private int mCompleteCount;
 
     private BottomPopMenu mPickerDialog;
+    private Dialog mRetryDialog;
     private ImageAdapter mAdapter;
     private TakePhotoAgent mPickerAgent;
     private int mPickerLimit;
@@ -153,12 +158,14 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
     void compress(UploadImage image) {
         try {
             File file = new File(image.getFile());
-            while (file.length() > FILE_SIZE_1M) {
+            int count = 0;
+            while (file.length() > FILE_SIZE_1M && count < 3) {
                 List<File> files = Luban.with(this)
                         .setTargetDir(FileHelper.SDCARD_CACHE_IMAGE_PATH)
                         .load(file)
                         .get();
                 file = files.get(0);
+                count++;
             }
             image.setCompressed(file.getPath());
             mPresenter.upload(image);
@@ -174,10 +181,21 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
         if (mValidImages.isEmpty()) {
             mTitleBar.getRightText().setEnabled(false);
             mTitleBar.setRightTextViewColor(R.color.colorText_40);
-            mImages.clear();
-            pickImage();
-            mAdapter.clear();
-            // TODO:
+            if (mRetryDialog == null) {
+                mRetryDialog = new CommonDialog.Builder(this)
+                        .setTitle(R.string.ipc_face_error_upload)
+                        .setMessage(R.string.ipc_face_error_image_all)
+                        .setConfirmButton(R.string.ipc_face_pick_again, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mImages.clear();
+                                pickImage();
+                                mAdapter.clear();
+                            }
+                        })
+                        .create();
+            }
+            mRetryDialog.show();
         } else {
             mTitleBar.getRightText().setEnabled(true);
             mTitleBar.setRightTextViewColor(R.color.colorText);
@@ -192,9 +210,11 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
     }
 
     @Override
-    public void saveComplete() {
+    public void saveComplete(int count) {
         hideLoadingDialog();
-        setResult(RESULT_OK);
+        Intent i = getIntent();
+        i.putExtra(EXTRA_UPDATE_COUNT, count);
+        setResult(RESULT_OK, i);
         finish();
     }
 

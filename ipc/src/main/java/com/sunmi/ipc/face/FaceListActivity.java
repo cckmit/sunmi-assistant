@@ -76,6 +76,10 @@ import sunmi.common.view.bottompopmenu.PopItemAction;
 import sunmi.common.view.dialog.BottomListDialog;
 import sunmi.common.view.dialog.CommonDialog;
 
+import static com.sunmi.ipc.face.contract.FaceListContract.EXTRA_COUNT;
+import static com.sunmi.ipc.face.contract.FaceUploadContract.EXTRA_UPDATE_COUNT;
+import static com.sunmi.ipc.face.contract.FaceUploadContract.FILE_SIZE_1M;
+
 /**
  * @author yinhui
  * @date 2019-08-20
@@ -383,6 +387,14 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     }
 
     @Override
+    public void updateCount(int count) {
+        mFaceGroup.setCount(mFaceGroup.getCount() + count);
+        Intent i = getIntent();
+        i.putExtra(EXTRA_COUNT, mFaceGroup.getCount());
+        setResult(RESULT_OK, i);
+    }
+
+    @Override
     public void updateFilter(List<FilterItem> gender, List<FilterItem> age) {
         int selection = -1;
         for (int i = 0, size = gender.size(); i < size; i++) {
@@ -458,8 +470,6 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     public void uploadSuccess() {
         mUploadDialog.dismiss();
         shortTip(R.string.ipc_face_tip_album_upload_success);
-        mFaceGroup.setCount(mFaceGroup.getCount() + 1);
-        mPresenter.loadFace(true, true);
         resetView();
     }
 
@@ -528,13 +538,18 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     }
 
     @Background
-    void uploadFace(File file) {
+    void compress(File file) {
         try {
-            List<File> files = Luban.with(this)
-                    .setTargetDir(FileHelper.SDCARD_CACHE_IMAGE_PATH)
-                    .load(file)
-                    .get();
-            mPresenter.upload(files.get(0));
+            int count = 0;
+            while (file.length() > FILE_SIZE_1M && count < 3) {
+                List<File> files = Luban.with(this)
+                        .setTargetDir(FileHelper.SDCARD_CACHE_IMAGE_PATH)
+                        .load(file)
+                        .get();
+                file = files.get(0);
+                count++;
+            }
+            mPresenter.upload(file);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -615,7 +630,9 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mPickerAgent.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            int count = data.getIntExtra(EXTRA_UPDATE_COUNT, 0);
+            updateCount(count);
             mPresenter.loadFace(true, true);
             resetView();
         }
@@ -707,7 +724,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                             .create();
                 }
                 mUploadDialog.show();
-                uploadFace(new File(result.getImage().getPath()));
+                compress(new File(result.getImage().getPath()));
             } else {
                 List<Image> images = result.getImages();
                 ArrayList<UploadImage> list = new ArrayList<>(images.size());
@@ -804,7 +821,11 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                 public void onClick(BaseRecyclerAdapter<Face> adapter, BaseViewHolder<Face> holder,
                                     View v, Face model, int position) {
                     if (!model.isAddIcon()) {
-                        // TODO: Go to detail.
+                        FacePhotoDetailActivity_.intent(context)
+                                .mShopId(mShopId)
+                                .mFace(model)
+                                .mFaceGroup(mFaceGroup)
+                                .start();
                         return;
                     }
 

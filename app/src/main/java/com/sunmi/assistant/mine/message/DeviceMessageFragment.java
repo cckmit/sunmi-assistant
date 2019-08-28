@@ -13,6 +13,7 @@ import com.sunmi.assistant.mine.model.MsgCountChildren;
 import com.sunmi.assistant.utils.MessageUtils;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 
@@ -43,6 +44,8 @@ public class DeviceMessageFragment extends BaseFragment
     SmRecyclerView rvMsg;
     @ViewById(R.id.bga_refresh)
     BGARefreshLayout refreshLayout;
+    @ViewById(R.id.layout_network_error)
+    View networkError;
 
     private MessageCountBean.ModelCountListBean bean; //设备消息
 
@@ -71,12 +74,14 @@ public class DeviceMessageFragment extends BaseFragment
 
     public void getMessageCountSuccess(MessageCountBean data) {
         endRefresh();
+        networkError.setVisibility(View.GONE);
         bean = data.getModelCountList().get(0);
         initData();
     }
 
     public void getMessageCountFail() {
         endRefresh();
+        networkError.setVisibility(View.VISIBLE);
         shortTip(R.string.tip_get_data_fail);
     }
 
@@ -143,6 +148,11 @@ public class DeviceMessageFragment extends BaseFragment
             }
         }
         return list;
+    }
+
+    @Click(R.id.btn_refresh)
+    void refreshClick() {
+        refreshMsgCount();
     }
 
     @Override

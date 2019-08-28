@@ -67,7 +67,7 @@ public class FaceUploadPresenter extends BasePresenter<FaceUploadContract.View>
                     public void onSuccess(int code, String msg, FaceSaveResp data) {
                         if (isViewAttached()) {
                             if (!data.getSuccessList().isEmpty()) {
-                                mView.saveComplete();
+                                mView.saveComplete(data.getSuccessList().size());
                             } else {
                                 mView.saveFailed();
                             }

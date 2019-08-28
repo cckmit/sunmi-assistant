@@ -1,5 +1,6 @@
 package com.sunmi.ipc.face;
 
+import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
 import android.view.View;
 import android.widget.Switch;
@@ -15,11 +16,14 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.TitleBarView;
+
+import static com.sunmi.ipc.face.contract.FaceListContract.EXTRA_COUNT;
 
 /**
  * @author yinhui
@@ -28,6 +32,8 @@ import sunmi.common.view.TitleBarView;
 @EActivity(resName = "face_activity_group_detail")
 public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPresenter>
         implements FaceGroupDetailContract.View {
+
+    private static final int REQUEST_CODE = 100;
 
     @ViewById(resName = "title_bar")
     TitleBarView mTitleBar;
@@ -133,7 +139,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
         FaceListActivity_.intent(this)
                 .mShopId(mShopId)
                 .mFaceGroup(mFaceGroup)
-                .start();
+                .startForResult(REQUEST_CODE);
     }
 
     private void clickDelete() {
@@ -167,5 +173,15 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
     public void deleteSuccess() {
         setResult(RESULT_OK);
         finish();
+    }
+
+    @OnActivityResult(REQUEST_CODE)
+    void onActivityResult(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && data != null) {
+            int count = data.getIntExtra(EXTRA_COUNT, mFaceGroup.getCount());
+            mFaceGroup.setCount(count);
+            mSilManage.setRightText(getString(R.string.ipc_face_group_count, mFaceGroup.getCount()));
+            setResult(RESULT_OK);
+        }
     }
 }

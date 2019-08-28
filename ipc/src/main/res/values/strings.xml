@@ -199,6 +199,7 @@
     <string name="ipc_face_remain">剩余%d</string>
     <string name="ipc_face_take_photo">拍照</string>
     <string name="ipc_face_tack_photo_again">重拍</string>
+    <string name="ipc_face_pick_again">重新选择</string>
     <string name="ipc_face_album_choose">从相册选择</string>
     <string name="ipc_face_album_choose_title">选择照片</string>
     <string name="ipc_face_upload_title">上传照片</string>
@@ -215,9 +216,24 @@
     <string name="ipc_face_tip_delete">确定要删除上述照片吗？</string>
     <string name="ipc_face_error_add">照片已达当前人脸分组容量上限，\n无法继续添加</string>
     <string name="ipc_face_error_upload">校验失败</string>
+    <string name="ipc_face_error_image_all">上述已选照片均识别不到人脸信息</string>
     <string name="ipc_face_error_photo">该照片识别不到人脸信息</string>
     <string name="ipc_face_error_move">该人脸分组可供移入的库存数量剩余不足</string>
     <string name="ipc_face_error_select_limit">照片选择数量已达上限</string>
+    <string name="ipc_face_group_no_enter_shop_time">暂无进店信息</string>
+    <string name="ipc_face_group_every_enter_shop_time">每次到店时间</string>
+    <string name="str_details">详情</string>
+    <string name="ipc_face_name">姓名</string>
+    <string name="ipc_face_id">身份</string>
+    <string name="ipc_face_total_enter_shop">累计到店次数</string>
+    <string name="ipc_face_register_time">注册日期</string>
+    <string name="ipc_face_new_enter_shop_time">最新到店时间</string>
+    <string name="ipc_face_every_enter_time">每次到店时间</string>
+    <string name="ipc_face_input_name_tip">请输入名称</string>
+    <string name="ipc_face_name_length_tip">不得超过36个字符</string>
+    <string name="ipc_face_selected_age_range">请选择该用户的年龄段</string>
+    <string name="ipc_face_selected_gender">请选择该用户的年性别</string>
+    <string name="ipc_face_selected_group">请选择该用户的分组</string>
 
 </resources>
 
