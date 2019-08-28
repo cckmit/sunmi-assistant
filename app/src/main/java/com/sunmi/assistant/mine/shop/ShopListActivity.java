@@ -87,12 +87,20 @@ public class ShopListActivity extends BaseActivity {
 
     private void createShop() {
         CreateShopActivity_.intent(context)
+                .companyId(SpUtils.getCompanyId())
+                .companyName(SpUtils.getCompanyName())
+                .saasExist(SpUtils.getSaasExist())
+                .isLoginSuccessSwitchCompany(false)
                 .startForResult(REQUEST_CODE_SHOP);
     }
 
     private void importShop() {
         SelectPlatformActivity_.intent(context)
                 .isCanBack(true)
+                .companyId(SpUtils.getCompanyId())
+                .companyName(SpUtils.getCompanyName())
+                .saasExist(SpUtils.getSaasExist())
+                .isLoginSuccessSwitchCompany(false)
                 .startForResult(REQUEST_CODE_SHOP);
     }
 

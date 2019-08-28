@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.text.TextUtils;
+import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.login.LoginChooseShopActivity_;
@@ -21,6 +23,7 @@ import java.util.Locale;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.CompanyInfoResp;
+import sunmi.common.model.CompanyListResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
@@ -62,6 +65,8 @@ public class CompanyDetailActivity extends BaseActivity {
     SettingItemLayout silCompanyContactTel;
     @ViewById(R.id.sil_company_email)
     SettingItemLayout silCompanyEmail;
+    @ViewById(R.id.rl_company_switch)
+    RelativeLayout rlCompanySwitch;
 
     private CompanyInfoResp mCompanyInfo;
 
@@ -71,6 +76,7 @@ public class CompanyDetailActivity extends BaseActivity {
         setSingleLine();
         silCompanyId.setRightImage(null);
         silCompanyCreateTime.setRightImage(null);
+        companyList();
         getCompanyInfo();
     }
 
@@ -88,6 +94,23 @@ public class CompanyDetailActivity extends BaseActivity {
     private String createTime(long time) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         return sdf.format(new Date(time));
+    }
+
+    private void companyList() {
+        SunmiStoreApi.getInstance().getCompanyList(new RetrofitCallback<CompanyListResp>() {
+            @Override
+            public void onSuccess(int code, String msg, CompanyListResp data) {
+                if (data.getCompany_list().size() == 1) {
+                    rlCompanySwitch.setVisibility(View.GONE);
+                } else {
+                    rlCompanySwitch.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, CompanyListResp data) {
+            }
+        });
     }
 
     private void getCompanyInfo() {

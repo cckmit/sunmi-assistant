@@ -158,6 +158,12 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
                 shortTip(getString(R.string.company_shop_area_tip));
                 return;
             }
+            if (TextUtils.equals(shopMessage, "0") ||
+                    TextUtils.equals(shopMessage, "0.0") ||
+                    TextUtils.equals(shopMessage, "0.00")) {
+                shortTip(getString(R.string.company_shop_area_tip));
+                return;
+            }
             if (TextUtils.equals(shopMessage, String.valueOf(mInfo.getBusinessArea()))) {
                 finish();
                 return;
