@@ -20,6 +20,7 @@ import com.sunmi.ipc.face.contract.FaceUploadContract;
 import com.sunmi.ipc.face.model.FaceGroup;
 import com.sunmi.ipc.face.model.UploadImage;
 import com.sunmi.ipc.face.presenter.FaceUploadPresenter;
+import com.sunmi.ipc.face.util.Constants;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -50,7 +51,6 @@ import sunmi.common.view.bottompopmenu.BottomPopMenu;
 import sunmi.common.view.bottompopmenu.PopItemAction;
 import sunmi.common.view.dialog.CommonDialog;
 
-import static com.sunmi.ipc.face.contract.FaceUploadContract.EXTRA_UPDATE_COUNT;
 import static com.sunmi.ipc.face.contract.FaceUploadContract.FILE_SIZE_1M;
 
 /**
@@ -213,7 +213,7 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
     public void saveComplete(int count) {
         hideLoadingDialog();
         Intent i = getIntent();
-        i.putExtra(EXTRA_UPDATE_COUNT, count);
+        i.putExtra(Constants.EXTRA_UPDATE_COUNT, count);
         setResult(RESULT_OK, i);
         finish();
     }

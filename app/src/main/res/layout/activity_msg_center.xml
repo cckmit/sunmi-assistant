@@ -14,9 +14,40 @@
         app:dividerShow="true"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@mipmap/ic_back_dark"
+        app:rightText="@string/str_setting"
         app:titleText="@string/str_msg_center"
-        app:titleTextColor="@color/colorText"
-        app:rightText="@string/str_setting"/>
+        app:titleTextColor="@color/colorText" />
+
+    <RelativeLayout
+        android:id="@+id/rl_notice"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_40"
+        android:background="@color/color_FF6000"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_20"
+            android:gravity="center"
+            android:text="@string/tip_open_notification"
+            android:textColor="@color/c_white"
+            android:textSize="@dimen/sp_12" />
+
+        <TextView
+            android:id="@+id/tv_open"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="@dimen/dp_24"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:background="@drawable/bg_shape_notification"
+            android:gravity="center"
+            android:text="@string/str_go_open"
+            android:textColor="@color/color_FF6000"
+            android:textSize="@dimen/sp_12" />
+
+    </RelativeLayout>
 
     <sunmi.common.view.tablayout.CommonTabLayout
         android:id="@+id/tab_message"
@@ -24,9 +55,9 @@
         android:layout_height="@dimen/dp_44"
         android:background="@color/c_white"
         app:tl_iconVisible="false"
-        app:tl_textsize="@dimen/sp_15"
+        app:tl_textSelectColor="@color/color_FF6000"
         app:tl_textUnselectColor="@color/colorText"
-        app:tl_textSelectColor="@color/color_FF6000" />
+        app:tl_textsize="@dimen/sp_14" />
 
     <FrameLayout
         android:id="@+id/frame_message"

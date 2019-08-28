@@ -13,7 +13,6 @@ import sunmi.common.base.BaseView;
 public interface FaceUploadContract {
 
     long FILE_SIZE_1M = 1_000_000L;
-    String EXTRA_UPDATE_COUNT = "extra_update_count";
 
     interface View extends BaseView {
 

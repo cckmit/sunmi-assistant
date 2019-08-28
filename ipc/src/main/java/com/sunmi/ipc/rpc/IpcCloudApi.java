@@ -416,7 +416,7 @@ public class IpcCloudApi {
         }
     }
 
-    public static void saveFace(int companyId, int shopId, int groupId, List<String> faceImageList,
+    public static void saveFace(int companyId, int shopId, int groupId, int faceId, List<String> faceImageList,
                                 RetrofitCallback<FaceSaveResp> callback) {
         try {
             if (faceImageList == null || faceImageList.isEmpty()) {
@@ -428,6 +428,7 @@ public class IpcCloudApi {
                     .put("company_id", companyId)
                     .put("shop_id", shopId)
                     .put("group_id", groupId)
+                    .put("face_id", faceId)
                     .put("face_img_list", array)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
