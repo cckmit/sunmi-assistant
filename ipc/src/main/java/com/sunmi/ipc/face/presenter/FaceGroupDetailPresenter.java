@@ -48,6 +48,7 @@ public class FaceGroupDetailPresenter extends BasePresenter<FaceGroupDetailContr
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();
+                    mView.shortTip(R.string.ipc_setting_success);
                     mFaceGroup.setGroupName(name);
                     mView.updateNameView(name);
                 }
@@ -83,6 +84,7 @@ public class FaceGroupDetailPresenter extends BasePresenter<FaceGroupDetailContr
                 mFaceGroup.setCapacity(capacity);
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();
+                    mView.shortTip(R.string.ipc_setting_success);
                     mView.updateCapacityView(capacity);
                 }
             }
@@ -117,6 +119,7 @@ public class FaceGroupDetailPresenter extends BasePresenter<FaceGroupDetailContr
                 mFaceGroup.setThreshold(times, days);
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();
+                    mView.shortTip(R.string.ipc_setting_success);
                     mView.updateThresholdView(times, days);
                 }
             }
@@ -177,6 +180,7 @@ public class FaceGroupDetailPresenter extends BasePresenter<FaceGroupDetailContr
                     public void onSuccess(int code, String msg, Object data) {
                         if (isViewAttached()) {
                             mView.hideLoadingDialog();
+                            mView.shortTip(R.string.ipc_setting_success);
                             mView.deleteSuccess();
                         }
                     }
