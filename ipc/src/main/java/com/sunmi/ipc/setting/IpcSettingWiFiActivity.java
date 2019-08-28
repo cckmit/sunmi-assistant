@@ -217,7 +217,7 @@ public class IpcSettingWiFiActivity extends BaseMvpActivity<IpcSettingWifiPresen
 
     @UiThread
     void getWifiList(ResponseBean res) {
-        if (res.getResult() == null || res.getDataErrCode() != 0) {
+        if (res.getResult() == null) {
             netExceptionView(true);
             return;
         }
