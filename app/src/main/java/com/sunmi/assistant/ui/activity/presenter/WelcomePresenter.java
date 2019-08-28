@@ -62,13 +62,6 @@ public class WelcomePresenter extends BasePresenter<WelcomeContract.View>
     public void checkUpgrade() {
         CloudApi.checkUpgrade(new StringCallback() {
             @Override
-            public void onError(Call call, Response response, Exception e, int id) {
-                if (isViewAttached()) {
-                    mView.handleLaunch();
-                }
-            }
-
-            @Override
             public void onResponse(String response, int id) {
                 if (isViewAttached()) {
                     try {
@@ -95,6 +88,13 @@ public class WelcomePresenter extends BasePresenter<WelcomeContract.View>
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    mView.handleLaunch();
+                }
+            }
+
+            @Override
+            public void onError(Call call, Response response, Exception e, int id) {
+                if (isViewAttached()) {
                     mView.handleLaunch();
                 }
             }

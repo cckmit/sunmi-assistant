@@ -140,7 +140,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     }
 
     @Override
-    public int[] getStickNotificationId() {
+    public int[] getUnStickNotificationId() {
         return new int[]{IpcConstants.getSdStatus};
     }
 
