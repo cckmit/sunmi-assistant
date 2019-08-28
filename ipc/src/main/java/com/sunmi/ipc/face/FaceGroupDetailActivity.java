@@ -20,6 +20,7 @@ import com.sunmi.ipc.R;
 import com.sunmi.ipc.face.contract.FaceGroupDetailContract;
 import com.sunmi.ipc.face.model.FaceGroup;
 import com.sunmi.ipc.face.presenter.FaceGroupDetailPresenter;
+import com.sunmi.ipc.face.util.Constants;
 import com.sunmi.ipc.face.util.Utils;
 
 import org.androidannotations.annotations.AfterViews;
@@ -35,11 +36,10 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.dialog.BottomDialog;
+import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.dialog.InputDialog;
 import sunmi.common.view.loopview.LoopView;
 import sunmi.common.view.loopview.OnItemSelectedListener;
-
-import static com.sunmi.ipc.face.contract.FaceListContract.EXTRA_COUNT;
 
 /**
  * @author yinhui
@@ -80,6 +80,9 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
     int mOccupiedCapacity;
     //移库规则
     private int times, days;
+
+    private Dialog mDeleteForbiddenDialog;
+    private Dialog mDeleteDialog;
 
     @AfterViews
     void init() {
@@ -166,7 +169,33 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
     }
 
     private void clickDelete() {
-
+        if (mFaceGroup.getCount() > 0) {
+            if (mDeleteForbiddenDialog == null) {
+                mDeleteForbiddenDialog = new CommonDialog.Builder(this)
+                        .setTitle(getString(R.string.ipc_face_group_delete_title,
+                                Utils.getGroupName(this, mFaceGroup, false)))
+                        .setMessage(R.string.ipc_face_group_delete_error)
+                        .setCancelButton(R.string.sm_cancel)
+                        .create();
+            }
+            mDeleteForbiddenDialog.show();
+        } else {
+            if (mDeleteDialog == null) {
+                mDeleteDialog = new CommonDialog.Builder(this)
+                        .setTitle(getString(R.string.ipc_face_group_delete_title,
+                                Utils.getGroupName(this, mFaceGroup, false)))
+                        .setConfirmButton(R.string.ipc_setting_delete, R.color.colorOrange,
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        mPresenter.delete();
+                                    }
+                                })
+                        .setCancelButton(R.string.sm_cancel)
+                        .create();
+            }
+            mDeleteDialog.show();
+        }
     }
 
     @Override
@@ -201,7 +230,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
     @OnActivityResult(REQUEST_CODE)
     void onActivityResult(int resultCode, Intent data) {
         if (resultCode == RESULT_OK && data != null) {
-            int count = data.getIntExtra(EXTRA_COUNT, mFaceGroup.getCount());
+            int count = data.getIntExtra(Constants.EXTRA_UPDATE_COUNT, mFaceGroup.getCount());
             mFaceGroup.setCount(count);
             mSilManage.setRightText(getString(R.string.ipc_face_group_count, mFaceGroup.getCount()));
             setResult(RESULT_OK);

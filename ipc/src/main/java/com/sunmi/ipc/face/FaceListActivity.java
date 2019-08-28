@@ -49,7 +49,6 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,13 +59,11 @@ import sunmi.common.base.recycle.BaseRecyclerAdapter;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.SimpleArrayAdapter;
 import sunmi.common.base.recycle.listener.OnViewClickListener;
-import sunmi.common.luban.Luban;
 import sunmi.common.mediapicker.TakePhoto;
 import sunmi.common.mediapicker.TakePhotoAgent;
 import sunmi.common.mediapicker.data.model.Image;
 import sunmi.common.mediapicker.data.model.Result;
 import sunmi.common.model.FilterItem;
-import sunmi.common.utils.FileHelper;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.DropdownAdapter;
 import sunmi.common.view.DropdownAnimation;
@@ -76,9 +73,6 @@ import sunmi.common.view.bottompopmenu.BottomPopMenu;
 import sunmi.common.view.bottompopmenu.PopItemAction;
 import sunmi.common.view.dialog.BottomListDialog;
 import sunmi.common.view.dialog.CommonDialog;
-
-import static com.sunmi.ipc.face.contract.FaceListContract.EXTRA_COUNT;
-import static com.sunmi.ipc.face.contract.FaceUploadContract.FILE_SIZE_1M;
 
 /**
  * @author yinhui
@@ -134,7 +128,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
 
     private SimpleArrayAdapter<Face> mAdapter;
     private SimpleArrayAdapter<Face> mAdapterSelected;
-    private FaceGroupDialogAdapter mAdapterFaceGroup;
+    private FaceGroupDialogAdapter mAdapterFaceGroup = new FaceGroupDialogAdapter();
 
     private BottomAnimation mBottomAnimator = new BottomAnimation();
     private DropdownAnimation mDropdownAnimator = new DropdownAnimation();
@@ -157,14 +151,12 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     void init() {
         initViews();
         initFilters();
-        initDropdown();
         initRecyclerView();
         updateSelectedLayout(false);
-        mPresenter = new FaceListPresenter(mShopId, mFaceGroup);
+        mPresenter = new FaceListPresenter(this, mShopId, mFaceGroup);
         mPresenter.attachView(this);
-        mPresenter.init(this);
+        mPresenter.init();
         mPickerAgent = TakePhoto.with(this)
-                .setPickLimit(20)
                 .setTakePhotoListener(new PickerResult())
                 .build();
     }
@@ -201,11 +193,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         mOverlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mDmFilterGender.getPopup().isShowing()) {
-                    mDmFilterGender.getPopup().dismiss(true);
-                } else if (mDmFilterAge.getPopup().isShowing()) {
-                    mDmFilterAge.getPopup().dismiss(true);
-                }
+                hideDropdownMenu(false);
             }
         });
         mRefreshLayout.setDelegate(this);
@@ -216,15 +204,6 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     }
 
     private void initFilters() {
-        mDmFilterGender.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-    }
-
-    private void initDropdown() {
         CustomPopupHelper helper = new CustomPopupHelper();
         mFilterAdapterGender = new DropdownAdapter(this);
         mDmFilterGender.setLayoutManager(new FilterMenuLayoutManager(this));
@@ -234,7 +213,6 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         mDmFilterAge.setLayoutManager(new FilterMenuLayoutManager(this));
         mDmFilterAge.setPopupHelper(helper);
         mDmFilterAge.setAdapter(mFilterAdapterAge);
-
     }
 
     private void initRecyclerView() {
@@ -260,38 +238,6 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         }
     }
 
-    private void updateTitle() {
-        boolean isChoose = mState == STATE_CHOOSE;
-        mTitleBar.setLeftTextViewShow(isChoose);
-        if (isChoose) {
-            mTitleBar.setAppTitle(R.string.ipc_face_list_title_select);
-            mTitleBar.setRightTextViewText(R.string.ipc_face_select_all);
-            mTitleBar.getRightText().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mTvSelectedTip.setVisibility(View.GONE);
-                    updateBtnEnable(true);
-                    List<Face> list = mAdapter.getData();
-                    for (Face face : list) {
-                        face.setChecked(true);
-                    }
-                    mAdapter.notifyDataSetChanged();
-                    mAdapterSelected.setData(list);
-                    mRvSelectedList.scrollToPosition(list.size() - 1);
-                }
-            });
-        } else {
-            mTitleBar.setAppTitle(R.string.ipc_face_list_title);
-            mTitleBar.setRightTextViewText(R.string.ipc_face_select);
-            mTitleBar.getRightText().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    switchStateTo(STATE_CHOOSE);
-                }
-            });
-        }
-    }
-
     private void switchStateTo(int state) {
         if (mState == state) {
             return;
@@ -314,6 +260,39 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         mAdapter.notifyDataSetChanged();
     }
 
+    private void updateTitle() {
+        boolean isChoose = mState == STATE_CHOOSE;
+        mTitleBar.setLeftTextViewShow(isChoose);
+        if (isChoose) {
+            mTitleBar.setAppTitle(R.string.ipc_face_list_title_select);
+            mTitleBar.setRightTextViewText(R.string.ipc_face_select_all);
+            mTitleBar.getRightText().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mTvSelectedTip.setVisibility(View.GONE);
+                    updateBtnEnable(true);
+                    List<Face> list = mAdapter.getData();
+                    for (Face face : list) {
+                        face.setChecked(true);
+                    }
+                    mAdapter.notifyDataSetChanged();
+                    mAdapterSelected.setData(list);
+                    mRvSelectedList.scrollToPosition(list.size() - 1);
+                    mTitleBar.setAppTitle(getString(R.string.ipc_face_list_title_select_num, list.size()));
+                }
+            });
+        } else {
+            mTitleBar.setAppTitle(R.string.ipc_face_list_title);
+            mTitleBar.setRightTextViewText(R.string.ipc_face_select);
+            mTitleBar.getRightText().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    switchStateTo(STATE_CHOOSE);
+                }
+            });
+        }
+    }
+
     private void updateAddIcon() {
         List<Face> list = mAdapter.getData();
         if (list.isEmpty()) {
@@ -324,6 +303,19 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         } else if (mState == STATE_CHOOSE && list.get(0).isAddIcon()) {
             mAdapter.remove(0);
         }
+    }
+
+    private boolean hideDropdownMenu(boolean animated) {
+        boolean result = false;
+        if (mDmFilterGender.getPopup().isShowing()) {
+            mDmFilterGender.getPopup().dismiss(animated);
+            result = true;
+        }
+        if (mDmFilterAge.getPopup().isShowing()) {
+            mDmFilterAge.getPopup().dismiss(animated);
+            result = true;
+        }
+        return result;
     }
 
     private void updateBtnEnable(boolean enable) {
@@ -385,12 +377,35 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         mDeleteDialog.show();
     }
 
+    @Click(resName = "btn_refresh")
+    void refresh() {
+        mPresenter.init();
+        mEtSearch.setText("");
+        mEtSearch.clearFocus();
+    }
+
     @Override
-    public void updateCount(int count) {
-        mFaceGroup.setCount(mFaceGroup.getCount() + count);
-        Intent i = getIntent();
-        i.putExtra(EXTRA_COUNT, mFaceGroup.getCount());
-        setResult(RESULT_OK, i);
+    public void updateGroup(FaceGroup group) {
+        mFaceGroup = group;
+        Intent intent = getIntent();
+        intent.putExtra(Constants.EXTRA_UPDATE_COUNT, mFaceGroup.getCount());
+        setResult(RESULT_OK, intent);
+    }
+
+    @Override
+    public void updateGroupList(List<FaceGroup> list) {
+        if (list != null) {
+            mAdapterFaceGroup.setData(list);
+        }
+        if (mMovePending) {
+            mMovePending = false;
+            hideLoadingDialog();
+            if (mAdapterFaceGroup.getItemCount() == 0) {
+                shortTip(R.string.toast_network_error);
+            } else {
+                clickMove();
+            }
+        }
     }
 
     @Override
@@ -416,25 +431,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     }
 
     @Override
-    public void updateGroupList(List<FaceGroup> list) {
-        if (list != null) {
-            mAdapterFaceGroup = new FaceGroupDialogAdapter(list);
-        }
-        if (mMovePending) {
-            mMovePending = false;
-            hideLoadingDialog();
-            if (mAdapterFaceGroup == null) {
-                shortTip(R.string.toast_network_error);
-            } else {
-                clickMove();
-            }
-        }
-    }
-
-    @Override
     public void updateList(List<Face> list, boolean hasMore) {
-        mRefreshLayout.endRefreshing();
-        hideLoadingDialog();
         mLayoutError.setVisibility(View.GONE);
         if (list.isEmpty()) {
             mTitleBar.setRightTextViewColor(R.color.colorText_60);
@@ -446,21 +443,43 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         if (mState == STATE_NORMAL) {
             list.add(0, Face.createCamera());
         }
+        List<Face> selected = mAdapterSelected.getData();
+        if (selected.size() > 0) {
+            for (Face face : list) {
+                if (selected.contains(face)) {
+                    face.setChecked(true);
+                }
+            }
+        }
         mAdapter.setData(list);
+        mRefreshLayout.endRefreshing();
+        hideLoadingDialog();
     }
 
     @Override
     public void addList(List<Face> list, boolean hasMore) {
+        List<Face> selected = mAdapterSelected.getData();
+        if (selected.size() > 0) {
+            for (Face face : list) {
+                if (selected.contains(face)) {
+                    face.setChecked(true);
+                }
+            }
+        }
+        mAdapter.add(list);
         mRefreshLayout.endLoadingMore();
         hideLoadingDialog();
-        mAdapter.add(list);
     }
 
     @Override
-    public void resetView() {
-        switchStateTo(STATE_NORMAL);
-        mFilterAdapterGender.setCurrent(0);
-        mFilterAdapterAge.setCurrent(0);
+    public void getDataFailed() {
+        hideLoadingDialog();
+        if (mAdapter.getItemCount() == 0) {
+            mLayoutError.setVisibility(View.VISIBLE);
+        } else {
+            mLayoutError.setVisibility(View.GONE);
+            shortTip(R.string.toast_network_error);
+        }
     }
 
     @Override
@@ -492,22 +511,18 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     }
 
     @Override
-    public void getDataFailed() {
-        hideLoadingDialog();
-        if (mAdapter.getItemCount() == 0) {
-            mLayoutError.setVisibility(View.VISIBLE);
-        } else {
-            mLayoutError.setVisibility(View.GONE);
-            shortTip(R.string.toast_network_error);
+    public void resetView() {
+        switchStateTo(STATE_NORMAL);
+        if (mFilterAdapterGender.getItemCount() > 0) {
+            mFilterAdapterGender.getCurrent().setChecked(false);
+            mFilterAdapterGender.getData().get(0).setChecked(true);
+            mFilterAdapterGender.notifyDataSetChanged();
         }
-    }
-
-    @Click(resName = "btn_refresh")
-    void refresh() {
-        mPresenter.init(this);
-        mEtSearch.setText("");
-        mEtSearch.clearFocus();
-        resetView();
+        if (mFilterAdapterAge.getItemCount() > 0) {
+            mFilterAdapterAge.getCurrent().setChecked(false);
+            mFilterAdapterAge.getData().get(0).setChecked(true);
+            mFilterAdapterAge.notifyDataSetChanged();
+        }
     }
 
     private void takePhoto() {
@@ -535,6 +550,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                 .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        mPickerAgent.setPickLimit(mFaceGroup.getCapacity() - mFaceGroup.getCount());
                         mPickerAgent.pickMultiPhotos(null);
                     }
                 })
@@ -544,19 +560,12 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
 
     @Background
     void compress(File file) {
-        try {
-            int count = 0;
-            while (file.length() > FILE_SIZE_1M && count < 3) {
-                List<File> files = Luban.with(this)
-                        .setTargetDir(FileHelper.SDCARD_CACHE_IMAGE_PATH)
-                        .load(file)
-                        .get();
-                file = files.get(0);
-                count++;
-            }
+        file = Utils.imageCompress(this, file);
+        if (file == null) {
+            mUploadDialog.dismiss();
+            shortTip(R.string.toast_network_error);
+        } else {
             mPresenter.upload(file);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -572,22 +581,9 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         }
     }
 
-    private boolean hideDropdownMenu(boolean animated) {
-        boolean result = false;
-        if (mDmFilterGender.getPopup().isShowing()) {
-            mDmFilterGender.getPopup().dismiss(animated);
-            result = true;
-        }
-        if (mDmFilterAge.getPopup().isShowing()) {
-            mDmFilterAge.getPopup().dismiss(animated);
-            result = true;
-        }
-        return result;
-    }
-
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
-        mPresenter.loadFace(true, false);
+        mPresenter.refresh();
     }
 
     @Override
@@ -637,10 +633,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         mPickerAgent.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CODE_UPLOAD) {
-                int count = data == null ? 0 : data.getIntExtra(Constants.EXTRA_UPDATE_COUNT, 0);
-                updateCount(count);
-                mPresenter.loadFace(true, true);
-                resetView();
+                mPresenter.init();
                 new CommonDialog.Builder(this)
                         .setMessage(R.string.ipc_face_tip_album_upload_success)
                         .setMessageDrawable(0, R.mipmap.face_ic_ok, 0, 0)
@@ -648,9 +641,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                         .setConfirmButton(R.string.str_confirm)
                         .create().show();
             } else if (requestCode == REQUEST_CODE_DETAIL) {
-                // TODO: Update FaceGroup
-                mPresenter.loadFace(true, true);
-                resetView();
+                mPresenter.init();
             }
         }
     }
@@ -798,10 +789,6 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
 
         private int selectedCount = 0;
 
-        public FaceGroupDialogAdapter(List<FaceGroup> data) {
-            super(data);
-        }
-
         public void setSelectedCount(int selectedCount) {
             this.selectedCount = selectedCount;
             notifyDataSetChanged();
@@ -880,13 +867,13 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                     model.setChecked(!model.isChecked());
                     CheckBox checkBox = holder.getView(R.id.item_check_box);
                     checkBox.setChecked(model.isChecked());
+                    mTitleBar.setAppTitle(getString(R.string.ipc_face_list_title_select_num,
+                            mAdapterSelected.getItemCount()));
                     if (model.isChecked()) {
                         mAdapterSelected.add(model);
                         mRvSelectedList.scrollToPosition(mAdapterSelected.getItemCount() - 1);
                         mTvSelectedTip.setVisibility(View.GONE);
                         updateBtnEnable(true);
-                        mTitleBar.setAppTitle(getString(R.string.ipc_face_list_title_select_num,
-                                mAdapterSelected.getItemCount()));
                     } else {
                         mAdapterSelected.remove(model);
                         if (mAdapterSelected.getData().isEmpty()) {
@@ -953,6 +940,11 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                                     View v, Face model, int position) {
                     model.setChecked(false);
                     remove(model);
+                    List<Face> list = mAdapter.getData();
+                    int i = list.indexOf(model);
+                    if (i >= 0) {
+                        list.get(i).setChecked(false);
+                    }
                     mAdapter.notifyDataSetChanged();
                     if (getItemCount() == 0) {
                         mTvSelectedTip.setVisibility(View.VISIBLE);
