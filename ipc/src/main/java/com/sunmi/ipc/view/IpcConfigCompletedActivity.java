@@ -220,6 +220,8 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                     errStr = getString(R.string.tip_device_offline);
                 } else if (device.getStatus() == 5013) {
                     errStr = getString(R.string.tip_error_company_or_shop_id);
+                } else if (device.getStatus() == 5514) {
+                    errStr = getString(R.string.tip_device_bound_by_other_shop);
                 } else if (device.getStatus() == RpcErrorCode.RPC_ERR_TIMEOUT) {
                     errStr = getString(R.string.tip_bind_timeout);
                 }

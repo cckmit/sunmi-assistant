@@ -165,7 +165,7 @@ public class WifiConfigActivity extends BaseActivity
     //{"data":[{"opcode":"0x3119","result":{"online":0,"wireless":{"connect_status":"0"}},"errcode":0}],"msg_id":"11111","errcode":0}
     @UiThread
     void wifiStatusGetSuccess(ResponseBean res) {
-        if (!TextUtils.equals("0", res.getErrCode())) {
+        if (TextUtils.isEmpty(res.getReturnData())) {
             countGetStatusFail();
             return;
         }

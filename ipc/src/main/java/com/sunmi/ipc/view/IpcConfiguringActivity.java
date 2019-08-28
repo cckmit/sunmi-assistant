@@ -117,7 +117,7 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
             public void run() {
                 if (sunmiDevices.size() > 1 || retryCount == 20
                         || code == 5501 || code == 5508 || code == 5509 || code == 5510
-                        || code == 5511 || code == 5512 || code == 5013) {
+                        || code == 5511 || code == 5512 || code == 5013 || code == 5514) {
                     startCountDown();
                     setDeviceStatus(sn, code);
                     return;
