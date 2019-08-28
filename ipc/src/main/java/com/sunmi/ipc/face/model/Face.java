@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Objects;
+
 /**
  * @author yinhui
  * @date 2019-08-20
@@ -108,6 +110,23 @@ public class Face implements Parcelable {
 
     public void setChecked(boolean checked) {
         isChecked = checked;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Face face = (Face) o;
+        return faceId == face.faceId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(faceId);
     }
 
     protected Face(Parcel in) {

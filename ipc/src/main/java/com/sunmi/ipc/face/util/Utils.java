@@ -1,12 +1,19 @@
 package com.sunmi.ipc.face.util;
 
 import android.content.Context;
+import android.support.annotation.WorkerThread;
 import android.util.Pair;
 import android.util.SparseArray;
 
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.face.model.FaceGroup;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import sunmi.common.luban.Luban;
+import sunmi.common.utils.FileHelper;
 import sunmi.common.utils.log.LogCat;
 
 import static com.sunmi.ipc.face.model.FaceGroup.FACE_GROUP_TYPE_BLACK;
@@ -64,5 +71,24 @@ public class Utils {
                 LogCat.e(TAG, "Face group type ERROR. " + faceGroup.getType());
         }
         return "";
+    }
+
+    @WorkerThread
+    public static File imageCompress(Context context, File file) {
+        try {
+            int count = 0;
+            while (file.length() > Constants.FILE_SIZE_1M) {
+                List<File> files = Luban.with(context)
+                        .setTargetDir(FileHelper.SDCARD_CACHE_IMAGE_PATH)
+                        .load(file)
+                        .get();
+                file = files.get(0);
+                count++;
+            }
+            return file.length() > Constants.FILE_SIZE_1M ? null : file;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

@@ -25,7 +25,7 @@ import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.ViewHolder;
 
-import static com.sunmi.ipc.face.FacePhotoDetailActivity.DATE_FORMAT_ENTER_SHOP;
+import static com.sunmi.ipc.face.FaceDetailActivity.DATE_FORMAT_ENTER_SHOP;
 import static sunmi.common.utils.DateTimeUtils.secondToDate;
 
 /**
@@ -33,7 +33,7 @@ import static sunmi.common.utils.DateTimeUtils.secondToDate;
  * @date 2019/8/27
  */
 @EActivity(resName = "face_activity_photo_detail_time_record")
-public class FacePhotoDetailTimeRecordActivity extends BaseActivity {
+public class FaceDetailRecordActivity extends BaseActivity {
 
     @ViewById(resName = "recyclerView")
     RecyclerView recyclerView;

@@ -23,7 +23,6 @@
         android:layout_height="@dimen/dp_60"
         android:background="@color/colorWhite"
         android:hint="@string/tip_input_username"
-        android:maxLength="10"
         android:paddingLeft="@dimen/dp_25"
         android:paddingRight="@dimen/dp_25"
         android:singleLine="true"

@@ -194,6 +194,7 @@
     <string name="ipc_face_gender_female">女</string>
     <string name="ipc_face_age">年龄</string>
     <string name="ipc_face_age_all">全部年龄</string>
+    <string name="ipc_face_name_default">未命名</string>
     <string name="ipc_face_move">移库</string>
     <string name="ipc_face_move_title">移动分组至</string>
     <string name="ipc_face_remain">剩余%d</string>
@@ -234,7 +235,14 @@
     <string name="ipc_face_selected_age_range">请选择该用户的年龄段</string>
     <string name="ipc_face_selected_gender">请选择该用户的年性别</string>
     <string name="ipc_face_selected_group">请选择该用户的分组</string>
-
+    <string name="ipc_face_name_length100_tip">不得超过100个字符</string>
+    <string name="ipc_face_photo_num_max">%d之内数字</string>
+    <string name="ipc_face_photo_num_remainder">剩余可分配的照片数量为%d</string>
+    <string name="ipc_face_photo_num_max_more">输入的照片数量超过分组上限</string>
+    <string name="ipc_face_input_photo_num_tip">请输入数量</string>
+    <string name="ipc_face_input_marks_tip">请输入备注</string>
+    <string name="ipc_face_day">天</string>
+    <string name="ipc_face_order">次</string>
 </resources>
 
 

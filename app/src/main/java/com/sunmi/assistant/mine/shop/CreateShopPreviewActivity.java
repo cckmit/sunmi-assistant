@@ -2,7 +2,6 @@ package com.sunmi.assistant.mine.shop;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.view.View;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.platform.SelectPlatformActivity_;
@@ -52,18 +51,7 @@ public class CreateShopPreviewActivity extends BaseActivity {
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        if (!SpUtils.isLoginSuccess()) {
-            titleBar.setLeftImageVisibility(View.GONE);
-        }
         getSaasInfo();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (!SpUtils.isLoginSuccess()) {
-            return;
-        }
-        super.onBackPressed();
     }
 
     @Click(R.id.btn_create_shop)

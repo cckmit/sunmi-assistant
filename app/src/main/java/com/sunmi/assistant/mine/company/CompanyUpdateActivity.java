@@ -8,6 +8,7 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 
 import com.sunmi.apmanager.utils.DialogUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
@@ -25,6 +26,7 @@ import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.RegexUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.ClearableEditText;
+import sunmi.common.view.TextLengthWatcher;
 import sunmi.common.view.TitleBarView;
 
 /**
@@ -60,7 +62,12 @@ public class CompanyUpdateActivity extends BaseActivity
         if (type == CompanyDetailActivity.TYPE_EMAIL) {
             cetUserInfo.setFilters(new InputFilter[]{new InputFilter.LengthFilter(EMAIL_MAX_LENGTH)});
         } else {
-            cetUserInfo.setFilters(new InputFilter[]{new InputFilter.LengthFilter(COMPANY_NAME_MAX_LENGTH)});
+            cetUserInfo.addTextChangedListener(new TextLengthWatcher(cetUserInfo, COMPANY_NAME_MAX_LENGTH) {
+                @Override
+                public void onLengthExceed(EditText view, String content) {
+                    shortTip(getString(R.string.editetxt_max_length));
+                }
+            });
         }
         cetUserInfo.addTextChangedListener(this);
         cetUserInfo.requestFocus();
@@ -81,6 +88,7 @@ public class CompanyUpdateActivity extends BaseActivity
         } else if (type == CompanyDetailActivity.TYPE_CONTACT_TEL) {
             titleBar.setAppTitle(getString(R.string.str_change_company_tel));
             cetUserInfo.setInputType(InputType.TYPE_CLASS_PHONE);
+            cetUserInfo.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
             cetUserInfo.setHint(R.string.tip_input_company_tel);
             if (!TextUtils.isEmpty(mInfo.getContact_tel())) {
                 cetUserInfo.setText(mInfo.getContact_tel());

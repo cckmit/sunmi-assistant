@@ -3,6 +3,11 @@ package com.sunmi.ipc.face;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,29 +23,37 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.sunmi.ipc.R;
-import com.sunmi.ipc.face.contract.FacePhotoContract;
+import com.sunmi.ipc.face.contract.FaceDetailContract;
 import com.sunmi.ipc.face.model.Face;
 import com.sunmi.ipc.face.model.FaceAge;
 import com.sunmi.ipc.face.model.FaceGroup;
-import com.sunmi.ipc.face.presenter.FacePhotoPresenter;
+import com.sunmi.ipc.face.presenter.FaceDetailPresenter;
 import com.sunmi.ipc.face.util.Utils;
 import com.sunmi.ipc.model.FaceAgeRangeResp;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.mediapicker.TakePhoto;
+import sunmi.common.mediapicker.TakePhotoAgent;
+import sunmi.common.mediapicker.data.model.Result;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.ViewHolder;
+import sunmi.common.view.bottompopmenu.BottomPopMenu;
+import sunmi.common.view.bottompopmenu.PopItemAction;
+import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.dialog.InputDialog;
 
 import static sunmi.common.utils.DateTimeUtils.secondToDate;
@@ -51,8 +64,8 @@ import static sunmi.common.utils.DateTimeUtils.secondToDate;
  * @date 2019/8/27
  */
 @EActivity(resName = "face_activity_photo_detail")
-public class FacePhotoDetailActivity extends BaseMvpActivity<FacePhotoPresenter>
-        implements FacePhotoContract.View {
+public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
+        implements FaceDetailContract.View {
     private static final String DATE_FORMAT_REGISTER = "yyyy/MM/dd";
     public static final String DATE_FORMAT_ENTER_SHOP = "yyyy/MM/dd  hh:mm";
     private static final int IPC_NAME_MAX_LENGTH = 36;
@@ -93,14 +106,22 @@ public class FacePhotoDetailActivity extends BaseMvpActivity<FacePhotoPresenter>
     private List<FaceGroup> groupList;
     private int updateIndex = -1;
 
+    private BottomPopMenu mPickerDialog;
+    private CommonDialog mUploadDialog;
+    private CommonDialog mDeleteDialog;
+    private TakePhotoAgent mPickerAgent;
+
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        mPresenter = new FacePhotoPresenter(mShopId);
+        mPresenter = new FaceDetailPresenter(mShopId, mFace);
         mPresenter.attachView(this);
         mPresenter.faceAgeRange();
         mPresenter.loadGroup();
         initFaceInfo();
+        mPickerAgent = TakePhoto.with(this)
+                .setTakePhotoListener(new PickerResult())
+                .build();
     }
 
     private void initFaceInfo() {
@@ -121,11 +142,93 @@ public class FacePhotoDetailActivity extends BaseMvpActivity<FacePhotoPresenter>
                 silFaceNewEnterShopTime.setRightText(secondToDate(mFace.getLastArrivalTime(), DATE_FORMAT_ENTER_SHOP));
             }
         }
+        titleBar.getRightText().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mDeleteDialog == null) {
+                    mDeleteDialog = new CommonDialog.Builder(FaceDetailActivity.this)
+                            .setTitle(R.string.ipc_face_tip_delete)
+                            .setConfirmButton(R.string.ipc_setting_delete, R.color.common_orange,
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            mPresenter.delete();
+                                        }
+                                    })
+                            .setCancelButton(R.string.sm_cancel)
+                            .create();
+                }
+                mDeleteDialog.show();
+            }
+        });
+    }
+
+    private void takePhoto() {
+        new CommonDialog.Builder(this)
+                .setTitle(R.string.ipc_face_tip_album_title)
+                .setMessage(R.string.ipc_face_tip_album_content)
+                .setMessageDrawable(0, 0, 0, R.mipmap.face_tip_image)
+                .setMessageDrawablePadding(R.dimen.dp_12)
+                .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mPickerAgent.takePhoto();
+                    }
+                })
+                .create()
+                .show();
+    }
+
+    private void openPicker() {
+        new CommonDialog.Builder(this)
+                .setTitle(R.string.ipc_face_tip_album_title)
+                .setMessage(R.string.ipc_face_tip_album_content)
+                .setMessageDrawable(0, 0, 0, R.mipmap.face_tip_image)
+                .setMessageDrawablePadding(R.dimen.dp_12)
+                .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mPickerAgent.pickSinglePhoto();
+                    }
+                })
+                .create()
+                .show();
+    }
+
+    @Background
+    void compress(File file) {
+        file = Utils.imageCompress(this, file);
+        if (file == null) {
+            mUploadDialog.dismiss();
+            shortTip(R.string.toast_network_error);
+        } else {
+            mPresenter.upload(file);
+        }
     }
 
     @Click(resName = "iv_face_image")
     void imageClick() {
-
+        if (mPickerDialog == null) {
+            mPickerDialog = new BottomPopMenu.Builder(this)
+                    .addItemAction(new PopItemAction(R.string.ipc_face_take_photo,
+                            PopItemAction.PopItemStyle.Normal, new PopItemAction.OnClickListener() {
+                        @Override
+                        public void onClick() {
+                            takePhoto();
+                        }
+                    }))
+                    .addItemAction(new PopItemAction(R.string.ipc_face_album_choose,
+                            PopItemAction.PopItemStyle.Normal, new PopItemAction.OnClickListener() {
+                        @Override
+                        public void onClick() {
+                            openPicker();
+                        }
+                    }))
+                    .addItemAction(new PopItemAction(R.string.sm_cancel,
+                            PopItemAction.PopItemStyle.Cancel))
+                    .create();
+        }
+        mPickerDialog.show();
     }
 
     @Click(resName = "sil_face_name")
@@ -163,7 +266,7 @@ public class FacePhotoDetailActivity extends BaseMvpActivity<FacePhotoPresenter>
                             shortTip(getString(R.string.ipc_face_input_name_tip));
                             return;
                         }
-                        mPresenter.updateName(mFace.getFaceId(), mFace.getGroupId(), input);
+                        mPresenter.updateName(input);
                         dialog.dismiss();
                     }
                 })
@@ -191,26 +294,53 @@ public class FacePhotoDetailActivity extends BaseMvpActivity<FacePhotoPresenter>
 
     @Click(resName = "sil_face_enter_shop_time_list")
     void timeListClick() {
-        FacePhotoDetailTimeRecordActivity_.intent(context)
+        FaceDetailRecordActivity_.intent(context)
                 .mShopId(mShopId)
                 .mFace(mFace)
                 .start();
     }
 
     @Override
+    public void updateImageSuccessView(String url) {
+        mUploadDialog.dismiss();
+        RequestOptions requestOptions = RequestOptions.circleCropTransform();
+        Glide.with(this).load(url).apply(requestOptions).into(ivFaceImage);
+        setResult(RESULT_OK);
+    }
+
+    @Override
+    public void updateImageFailed() {
+        mUploadDialog.dismiss();
+        new CommonDialog.Builder(this)
+                .setTitle(R.string.ipc_face_error_upload)
+                .setMessage(R.string.ipc_face_error_photo)
+                .setCancelButton(R.string.sm_cancel)
+                .setConfirmButton(R.string.ipc_face_tack_photo_again, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mPickerAgent.takePhoto();
+                    }
+                })
+                .create().show();
+    }
+
+    @Override
     public void updateNameSuccessView(String name) {
         silFaceName.setRightText(name);
+        setResult(RESULT_OK);
     }
 
     @Override
     public void updateIdentitySuccessView() {
         silFaceId.setRightText(groupName);
+        setResult(RESULT_OK);
     }
 
     @Override
     public void updateGenderSuccessView(int gender) {
         silFaceSex.setRightText(gender == 1 ? context.getString(R.string.ipc_face_gender_male) :
                 context.getString(R.string.ipc_face_gender_female));
+        setResult(RESULT_OK);
     }
 
     @Override
@@ -220,6 +350,7 @@ public class FacePhotoDetailActivity extends BaseMvpActivity<FacePhotoPresenter>
                 silFaceAge.setRightText(age.getName());
             }
         }
+        setResult(RESULT_OK);
     }
 
     @Override
@@ -230,11 +361,18 @@ public class FacePhotoDetailActivity extends BaseMvpActivity<FacePhotoPresenter>
                 silFaceAge.setRightText(age.getName());
             }
         }
+        setResult(RESULT_OK);
     }
 
     @Override
     public void loadGroupSuccessView(List<FaceGroup> list) {
         groupList = list;
+    }
+
+    @Override
+    public void deleteSuccess() {
+        setResult(RESULT_OK);
+        finish();
     }
 
     private void identityDialog(String title) {
@@ -283,7 +421,7 @@ public class FacePhotoDetailActivity extends BaseMvpActivity<FacePhotoPresenter>
         layout.findViewById(com.commonlibrary.R.id.btn_sure).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.updateIdentity(mFace.getFaceId(), mFace.getGroupId(), targetGroupId);
+                mPresenter.updateIdentity(targetGroupId);
                 dialog.dismiss();
             }
         });
@@ -338,7 +476,7 @@ public class FacePhotoDetailActivity extends BaseMvpActivity<FacePhotoPresenter>
         layout.findViewById(com.commonlibrary.R.id.btn_sure).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.updateAge(mFace.getFaceId(), mFace.getGroupId(), ageRangeCode);
+                mPresenter.updateAge(ageRangeCode);
                 dialog.dismiss();
             }
         });
@@ -396,7 +534,7 @@ public class FacePhotoDetailActivity extends BaseMvpActivity<FacePhotoPresenter>
         layout.findViewById(com.commonlibrary.R.id.btn_sure).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.updateGender(mFace.getFaceId(), mFace.getGroupId(), gender);
+                mPresenter.updateGender(gender);
                 dialog.dismiss();
             }
         });
@@ -404,4 +542,52 @@ public class FacePhotoDetailActivity extends BaseMvpActivity<FacePhotoPresenter>
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mPickerAgent.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        mPickerAgent.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mPickerAgent.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mPickerAgent.onRestoreInstanceState(savedInstanceState);
+    }
+
+    private class PickerResult implements TakePhoto.TakePhotoListener {
+
+        @Override
+        public void onSuccess(int from, Result result) {
+            if (mUploadDialog == null) {
+                mUploadDialog = new CommonDialog.Builder(FaceDetailActivity.this)
+                        .setTitle(R.string.ipc_face_tip_photo_uploading_title)
+                        .setMessage(R.string.ipc_face_tip_photo_uploading_content)
+                        .create();
+            }
+            mUploadDialog.show();
+            compress(new File(result.getImage().getPath()));
+        }
+
+        @Override
+        public void onError(int errorCode, int from, String msg) {
+        }
+
+        @Override
+        public void onCancel(int from) {
+        }
+    }
+
 }
