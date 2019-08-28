@@ -41,7 +41,7 @@ class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContra
         BaseNotification.newInstance().addStickObserver(this, IpcConstants.fsFocus);
         BaseNotification.newInstance().addStickObserver(this, IpcConstants.fsReset);
         BaseNotification.newInstance().addStickObserver(this, IpcConstants.fsSetLine);
-        BaseNotification.newInstance().addStickObserver(this, IpcConstants.getSdStatus);
+        BaseNotification.newInstance().addObserver(this, IpcConstants.getSdStatus);
     }
 
     @Override
