@@ -12,8 +12,6 @@ import sunmi.common.base.BaseView;
  */
 public interface FaceUploadContract {
 
-    long FILE_SIZE_1M = 1_000_000L;
-
     interface View extends BaseView {
 
         void saveComplete(int count);

@@ -21,6 +21,7 @@ import com.sunmi.ipc.face.model.FaceGroup;
 import com.sunmi.ipc.face.model.UploadImage;
 import com.sunmi.ipc.face.presenter.FaceUploadPresenter;
 import com.sunmi.ipc.face.util.Constants;
+import com.sunmi.ipc.face.util.Utils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -30,7 +31,6 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,19 +39,15 @@ import sunmi.common.base.recycle.BaseRecyclerAdapter;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.SimpleArrayAdapter;
 import sunmi.common.base.recycle.listener.OnViewClickListener;
-import sunmi.common.luban.Luban;
 import sunmi.common.mediapicker.TakePhoto;
 import sunmi.common.mediapicker.TakePhotoAgent;
 import sunmi.common.mediapicker.data.model.Image;
 import sunmi.common.mediapicker.data.model.Result;
-import sunmi.common.utils.FileHelper;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.bottompopmenu.BottomPopMenu;
 import sunmi.common.view.bottompopmenu.PopItemAction;
 import sunmi.common.view.dialog.CommonDialog;
-
-import static com.sunmi.ipc.face.contract.FaceUploadContract.FILE_SIZE_1M;
 
 /**
  * @author yinhui
@@ -62,7 +58,6 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
         implements FaceUploadContract.View {
 
     private static final String STATE_IMAGES = "state_images";
-    private static final int IMAGE_COUNT_LIMIT = 20;
 
     @ViewById(resName = "title_bar")
     TitleBarView mTitleBar;
@@ -92,7 +87,7 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
     void init() {
         initTitle();
         initRecycler();
-        mPickerLimit = Math.min(mRemain, IMAGE_COUNT_LIMIT);
+        mPickerLimit = Math.min(mRemain, Constants.IMAGE_PICKER_LIMIT);
         mPickerAgent = TakePhoto.with(this)
                 .setTakePhotoListener(new PickerResult())
                 .build();
@@ -156,23 +151,13 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
 
     @Background
     void compress(UploadImage image) {
-        try {
-            File file = new File(image.getFile());
-            int count = 0;
-            while (file.length() > FILE_SIZE_1M && count < 3) {
-                List<File> files = Luban.with(this)
-                        .setTargetDir(FileHelper.SDCARD_CACHE_IMAGE_PATH)
-                        .load(file)
-                        .get();
-                file = files.get(0);
-                count++;
-            }
+        File file = Utils.imageCompress(this, new File(image.getFile()));
+        if (file == null) {
+            LogCat.e(TAG, "Compress face image Failed.");
+            uploadFailed(image);
+        } else {
             image.setCompressed(file.getPath());
             mPresenter.upload(image);
-        } catch (IOException e) {
-            e.printStackTrace();
-            LogCat.e(TAG, "Compress face image Failed. " + e.getLocalizedMessage());
-            uploadFailed(image);
         }
     }
 
@@ -213,7 +198,6 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
     public void saveComplete(int count) {
         hideLoadingDialog();
         Intent i = getIntent();
-        i.putExtra(Constants.EXTRA_UPDATE_COUNT, count);
         setResult(RESULT_OK, i);
         finish();
     }
