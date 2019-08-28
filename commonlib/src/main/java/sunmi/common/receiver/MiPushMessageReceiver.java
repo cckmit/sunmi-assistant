@@ -9,6 +9,7 @@ import com.xiaomi.mipush.sdk.MiPushMessage;
 import com.xiaomi.mipush.sdk.PushMessageReceiver;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
+import sunmi.common.base.BaseApplication;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.MiPushMsgBean;
 import sunmi.common.notification.BaseNotification;
@@ -51,7 +52,7 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
         if (!TextUtils.isEmpty(message.getAlias())) {
             SpUtils.setRemindUnreadMsg(SpUtils.getRemindUnreadMsg() + 1);
             SpUtils.setUnreadMsg(SpUtils.getUnreadMsg() + 1);
-            ShortcutBadger.applyCount(context, SpUtils.getRemindUnreadMsg());
+            ShortcutBadger.applyCount(BaseApplication.getInstance(), SpUtils.getRemindUnreadMsg());
             BaseNotification.newInstance().postNotificationName(CommonNotifications.pushMsgArrived);
         }
     }
