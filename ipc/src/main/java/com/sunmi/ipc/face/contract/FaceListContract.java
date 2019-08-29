@@ -31,7 +31,7 @@ public interface FaceListContract {
 
         void uploadSuccess();
 
-        void uploadFailed();
+        void uploadFailed(int code);
 
         void resetView();
     }

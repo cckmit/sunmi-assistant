@@ -57,11 +57,11 @@ public class FaceGroupCreateReq {
         private int targetId;
 
         public Group(String name, String mark, int capacity) {
-            this.name = name;
+            this.name = name == null ? "" : name;
             this.type = FaceGroup.FACE_GROUP_TYPE_CUSTOM;
             this.threshold = 0;
             this.period = 0;
-            this.mark = mark;
+            this.mark = mark == null ? "" : mark;
             this.capacity = capacity;
             this.targetId = 0;
         }

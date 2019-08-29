@@ -493,11 +493,12 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     }
 
     @Override
-    public void uploadFailed() {
+    public void uploadFailed(int code) {
         mUploadDialog.dismiss();
         new CommonDialog.Builder(this)
                 .setTitle(R.string.ipc_face_error_upload)
-                .setMessage(R.string.ipc_face_error_photo)
+                .setMessage(code == 5526 ? R.string.ipc_face_error_photo
+                        : R.string.ipc_face_error_photo_network)
                 .setCancelButton(R.string.sm_cancel)
                 .setConfirmButton(R.string.ipc_face_tack_photo_again, new DialogInterface.OnClickListener() {
                     @Override
@@ -595,6 +596,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
             View view = getCurrentFocus();
             if (view != null && isShouldHideKeyBord(view, ev)) {
                 hideSoftInput(view.getWindowToken());
+                return true;
             }
         }
         return super.dispatchTouchEvent(ev);
@@ -713,7 +715,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
             measureChild(firstChildView, widthSpec, heightSpec);
             int itemHeight = firstChildView.getMeasuredHeight();
             setMeasuredDimension(View.MeasureSpec.getSize(widthSpec),
-                    getChildCount() > 6 ? (int) (itemHeight * 6.5f) : itemHeight * getChildCount());
+                    getChildCount() > 9 ? (int) (itemHeight * 9f) : itemHeight * getChildCount());
         }
     }
 
@@ -800,7 +802,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         public void setupView(@NonNull BaseViewHolder<FaceGroup> holder, FaceGroup model, int position) {
             TextView name = holder.getView(R.id.tv_face_group_name);
             TextView content = holder.getView(R.id.tv_face_group_remain);
-            name.setText(Utils.getGroupName(holder.getContext(), model, false));
+            name.setText(Utils.getGroupName(holder.getContext(), model));
             int remain = model.getCapacity() - model.getCount();
             content.setText(holder.getContext().getString(R.string.ipc_face_remain, remain));
             if (selectedCount > remain) {

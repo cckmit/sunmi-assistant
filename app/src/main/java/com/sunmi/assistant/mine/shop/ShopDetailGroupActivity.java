@@ -17,6 +17,7 @@ import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.TitleBarView;
 
 /**
@@ -26,9 +27,14 @@ import sunmi.common.view.TitleBarView;
 @SuppressLint("Registered")
 @EActivity(R.layout.activity_mine_store_detatils_group)
 public class ShopDetailGroupActivity extends BaseActivity {
+
     public static final String INTENT_EXTRA_SHOP_NAME = "shop_name";
+
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
+    @ViewById(R.id.sil_shop_face)
+    SettingItemLayout mSilShopFace;
+
     @Extra
     int shopId;
     @Extra
@@ -39,6 +45,25 @@ public class ShopDetailGroupActivity extends BaseActivity {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         titleBar.setAppTitle(shopName);
         titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
+//        showLoadingDialog();
+//        IpcCloudApi.getDetailList(SpUtils.getCompanyId(), shopId, new RetrofitCallback<IpcListResp>() {
+//            @Override
+//            public void onSuccess(int code, String msg, IpcListResp data) {
+//                if (data.getFs_list() != null && data.getFs_list().size() > 0) {
+//                    mSilShopFace.setVisibility(View.VISIBLE);
+//                } else {
+//                    mSilShopFace.setVisibility(View.GONE);
+//                }
+//                hideLoadingDialog();
+//            }
+//
+//            @Override
+//            public void onFail(int code, String msg, IpcListResp data) {
+//                mSilShopFace.setVisibility(View.GONE);
+//                hideLoadingDialog();
+//                shortTip(R.string.toast_network_error);
+//            }
+//        });
     }
 
 

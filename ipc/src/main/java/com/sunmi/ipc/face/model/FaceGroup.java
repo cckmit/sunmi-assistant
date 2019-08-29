@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
+import com.sunmi.ipc.face.util.Constants;
 
 /**
  * @author yinhui
@@ -17,12 +18,6 @@ public class FaceGroup implements Parcelable {
     public static final int FACE_GROUP_TYPE_STAFF = 3;
     public static final int FACE_GROUP_TYPE_BLACK = 4;
     public static final int FACE_GROUP_TYPE_CUSTOM = 5;
-
-    public static final int SECONDS_PER_DAY = 86400;
-    public static final int MAX_CAPACITY_ALL_GROUP = 10000;
-    public static final int MAX_THRESHOLD = 100;
-    public static final int MAX_LENGTH_NAME = 20;
-    public static final int MAX_LENGTH_MARK = 100;
 
     /**
      * company_id : 6759
@@ -112,7 +107,7 @@ public class FaceGroup implements Parcelable {
     }
 
     public int getPeriodDays() {
-        return period / SECONDS_PER_DAY;
+        return period / Constants.SECONDS_PER_DAY;
     }
 
     public int getCapacity() {
@@ -141,7 +136,7 @@ public class FaceGroup implements Parcelable {
 
     public void setThreshold(int times, int days) {
         this.threshold = times;
-        this.period = days * SECONDS_PER_DAY;
+        this.period = days * Constants.SECONDS_PER_DAY;
     }
 
     public void setPeriod(int period) {

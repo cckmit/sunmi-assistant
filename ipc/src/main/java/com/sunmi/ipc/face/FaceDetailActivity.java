@@ -129,7 +129,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
         RequestOptions requestOptions = RequestOptions.circleCropTransform();
         Glide.with(this).load(mFace.getImgUrl()).apply(requestOptions).into(ivFaceImage);
         if (mFaceGroup != null) {
-            silFaceId.setRightText(Utils.getGroupName(this, mFaceGroup, false));
+            silFaceId.setRightText(Utils.getGroupName(this, mFaceGroup));
             targetGroupId = mFaceGroup.getGroupId();
         }
         if (mFace != null) {
@@ -316,11 +316,12 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
     }
 
     @Override
-    public void updateImageFailed() {
+    public void updateImageFailed(int code) {
         mUploadDialog.dismiss();
         new CommonDialog.Builder(this)
                 .setTitle(R.string.ipc_face_error_upload)
-                .setMessage(R.string.ipc_face_error_photo)
+                .setMessage(code == 5526 ? R.string.ipc_face_error_photo
+                        : R.string.ipc_face_error_photo_network)
                 .setCancelButton(R.string.sm_cancel)
                 .setConfirmButton(R.string.ipc_face_tack_photo_again, new DialogInterface.OnClickListener() {
                     @Override
@@ -541,7 +542,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
         @Override
         public void convert(final ViewHolder holder, final FaceGroup data) {
             SettingItemLayout item = holder.getView(R.id.sil_item);
-            item.setLeftText(Utils.getGroupName(context, data, false));
+            item.setLeftText(Utils.getGroupName(context, data));
             if (targetGroupId == data.getGroupId()) {
                 selectedIndex = holder.getAdapterPosition();
             }
@@ -550,7 +551,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                 public void onClick(View v) {
                     selectedIndex = holder.getAdapterPosition();
                     targetGroupId = data.getGroupId();
-                    groupName = Utils.getGroupName(context, data, false);
+                    groupName = Utils.getGroupName(context, data);
                     notifyDataSetChanged();
                 }
             });
