@@ -493,11 +493,12 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     }
 
     @Override
-    public void uploadFailed() {
+    public void uploadFailed(int code) {
         mUploadDialog.dismiss();
         new CommonDialog.Builder(this)
                 .setTitle(R.string.ipc_face_error_upload)
-                .setMessage(R.string.ipc_face_error_photo)
+                .setMessage(code == 5526 ? R.string.ipc_face_error_photo
+                        : R.string.ipc_face_error_photo_network)
                 .setCancelButton(R.string.sm_cancel)
                 .setConfirmButton(R.string.ipc_face_tack_photo_again, new DialogInterface.OnClickListener() {
                     @Override

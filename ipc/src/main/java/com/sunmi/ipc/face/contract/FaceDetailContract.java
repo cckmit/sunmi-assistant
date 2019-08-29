@@ -17,7 +17,7 @@ public interface FaceDetailContract {
 
         void updateImageSuccessView(String url);
 
-        void updateImageFailed();
+        void updateImageFailed(int code);
 
         void updateNameSuccessView(String name);
 

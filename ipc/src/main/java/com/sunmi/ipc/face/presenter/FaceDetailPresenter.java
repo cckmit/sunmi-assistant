@@ -49,7 +49,7 @@ public class FaceDetailPresenter extends BasePresenter<FaceDetailContract.View>
                     public void onFail(int code, String msg, FaceCheckResp data) {
                         LogCat.e(TAG, "Check face file Failed. " + msg);
                         if (isViewAttached()) {
-                            mView.updateImageFailed();
+                            mView.updateImageFailed(code);
                         }
                     }
                 });
@@ -67,7 +67,7 @@ public class FaceDetailPresenter extends BasePresenter<FaceDetailContract.View>
                                 mView.updateImageSuccessView(data.getSuccessList().get(0).getImgUrl());
                             }
                         } else if (isViewAttached()) {
-                            mView.updateImageFailed();
+                            mView.updateImageFailed(code);
                         }
                     }
 
@@ -75,7 +75,7 @@ public class FaceDetailPresenter extends BasePresenter<FaceDetailContract.View>
                     public void onFail(int code, String msg, FaceSaveResp data) {
                         LogCat.e(TAG, "Save face file Failed. " + msg);
                         if (isViewAttached()) {
-                            mView.updateImageFailed();
+                            mView.updateImageFailed(code);
                         }
                     }
                 });
