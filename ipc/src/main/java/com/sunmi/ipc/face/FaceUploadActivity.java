@@ -73,7 +73,8 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
     @Extra
     int mRemain;
 
-    List<UploadImage> mValidImages = new ArrayList<>();
+    private List<UploadImage> mValidImages = new ArrayList<>();
+    private List<UploadImage> mInvalidImages = new ArrayList<>();
     private int mUploadCount;
     private int mCompleteCount;
 
@@ -155,6 +156,8 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
     private void resetView() {
         initTitle();
         mImages.clear();
+        mValidImages.clear();
+        mInvalidImages.clear();
         mAdapter.clear();
         mAdapter.add(new UploadImage());
     }
@@ -162,12 +165,20 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
     private void uploadComplete() {
         mTitleBar.setRightTextViewText(R.string.ipc_setting_save);
         if (mValidImages.isEmpty()) {
+            boolean networkFailed = false;
+            for (UploadImage image : mInvalidImages) {
+                if (image.getState() == UploadImage.STATE_FAILED_NET) {
+                    networkFailed = true;
+                    break;
+                }
+            }
             mTitleBar.getRightText().setEnabled(false);
             mTitleBar.setRightTextViewColor(R.color.colorText_40);
             if (mRetryDialog == null) {
                 mRetryDialog = new CommonDialog.Builder(this)
                         .setTitle(R.string.ipc_face_error_upload)
-                        .setMessage(R.string.ipc_face_error_image_all)
+                        .setMessage(networkFailed ? R.string.ipc_face_error_image_all_network
+                                : R.string.ipc_face_error_image_all)
                         .setConfirmButton(R.string.ipc_face_pick_again, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -231,7 +242,7 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
     @UiThread
     @Override
     public void uploadFailed(UploadImage image) {
-        image.setState(UploadImage.STATE_FAILED);
+        mInvalidImages.add(image);
         mAdapter.notifyDataSetChanged();
         mCompleteCount++;
         if (mCompleteCount >= mUploadCount) {
@@ -356,6 +367,7 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
         public void setupView(@NonNull BaseViewHolder<UploadImage> holder, UploadImage model, int position) {
             updateVisible(holder, model.getState());
             ImageView image = holder.getView(R.id.iv_face_item_image);
+            TextView tip = holder.getView(R.id.tv_face_item_tip);
             if (model.getState() == UploadImage.STATE_ADD) {
                 image.setActivated(mImages.size() < mPickerLimit);
                 image.setScaleType(ImageView.ScaleType.CENTER);
@@ -365,6 +377,12 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
                 image.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 Glide.with(holder.getContext()).load(model.getFile()).into(image);
             }
+            if (model.getState() == UploadImage.STATE_FAILED_NET) {
+                tip.setText(R.string.ipc_face_error_photo_network);
+            } else {
+                tip.setText(R.string.ipc_face_error_photo);
+            }
+
         }
 
         private void updateVisible(@NonNull BaseViewHolder<UploadImage> holder, int state) {
@@ -393,6 +411,7 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
                     loading.setVisibility(View.GONE);
                     break;
                 case UploadImage.STATE_FAILED:
+                case UploadImage.STATE_FAILED_NET:
                     delete.setVisibility(View.GONE);
                     region.setVisibility(View.GONE);
                     tip.setVisibility(View.VISIBLE);

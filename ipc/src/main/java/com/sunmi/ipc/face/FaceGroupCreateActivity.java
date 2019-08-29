@@ -111,6 +111,13 @@ public class FaceGroupCreateActivity extends BaseActivity {
                     public void onFail(int code, String msg, FaceGroupCreateResp data) {
                         hideLoadingDialog();
                         LogCat.e(TAG, "Create face group Failed. " + msg);
+                        if (data != null && data.getGroupList() != null && data.getGroupList().size() > 0) {
+                            FaceGroupCreateResp.CreateResult result = data.getGroupList().get(0);
+                            if (result.getCode() == 5523) {
+                                shortTip(R.string.ipc_face_group_create_duplicate);
+                                return;
+                            }
+                        }
                         shortTip(R.string.toast_network_error);
                     }
                 });

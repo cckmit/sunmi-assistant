@@ -153,6 +153,7 @@
     <string name="ipc_face_group_name_error">名称为空或超过32个字符</string>
     <string name="ipc_face_group_create_capacity">照片数量</string>
     <string name="ipc_face_group_create_capacity_hint">剩余照片数量%d张（必填）</string>
+    <string name="ipc_face_group_create_duplicate">该分组名称已经存在</string>
     <string name="ipc_face_group_capacity">人脸照片数量上限</string>
     <string name="ipc_face_group_capacity_error">输入的照片数量错误或超过分组上限</string>
     <string name="ipc_face_group_capacity_dialog">照片数量上限</string>
@@ -219,7 +220,9 @@
     <string name="ipc_face_tip_delete">确定要删除上述照片吗？</string>
     <string name="ipc_face_error_add">照片已达当前人脸分组容量上限，\n无法继续添加</string>
     <string name="ipc_face_error_upload">校验失败</string>
+    <string name="ipc_face_error_photo_network">网络异常请稍候再试</string>
     <string name="ipc_face_error_image_all">上述已选照片均识别不到人脸信息</string>
+    <string name="ipc_face_error_image_all_network">照片上传失败，请重新选择</string>
     <string name="ipc_face_error_photo">该照片识别不到人脸信息</string>
     <string name="ipc_face_error_move">该人脸分组可供移入的库存数量剩余不足</string>
     <string name="ipc_face_error_select_limit">照片选择数量已达上限</string>
