@@ -2,6 +2,7 @@ package com.sunmi.assistant.config;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.sunmi.apmanager.config.ApConfig;
 import com.sunmi.apmanager.config.AppConfig;
@@ -9,6 +10,9 @@ import com.sunmi.apmanager.utils.DBUtils;
 import com.sunmi.cloudprinter.config.PrinterConfig;
 import com.sunmi.sunmiservice.SunmiServiceConfig;
 import com.tencent.bugly.crashreport.CrashReport;
+import com.xiaomi.channel.commonutils.logger.LoggerInterface;
+import com.xiaomi.mipush.sdk.Logger;
+import com.xiaomi.mipush.sdk.MiPushClient;
 
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
@@ -60,6 +64,7 @@ public class BootLoader {
             CrashReport.setUserId(SpUtils.getUID());
         //trustAllCerts
         handleSSLHandshake();
+        initMiPush(context);
     }
 
     //异常日志捕获
@@ -97,6 +102,29 @@ public class BootLoader {
             });
         } catch (Exception ignored) {
         }
+    }
+
+    private void initMiPush(Context context) {
+        MiPushClient.registerPush(context, CommonConfig.MI_PUSH_APP_ID, CommonConfig.MI_PUSH_APP_KEY);
+        if (!TextUtils.isEmpty(SpUtils.getUID()))
+            MiPushClient.setAlias(context, SpUtils.getUID(), null);
+        //打开Log
+        LoggerInterface newLogger = new LoggerInterface() {
+            @Override
+            public void setTag(String tag) {
+            }
+
+            @Override
+            public void log(String content, Throwable t) {
+                Log.d("mipush", content, t);
+            }
+
+            @Override
+            public void log(String content) {
+                Log.d("mipush", content);
+            }
+        };
+        Logger.setLogger(context, newLogger);
     }
 
 }

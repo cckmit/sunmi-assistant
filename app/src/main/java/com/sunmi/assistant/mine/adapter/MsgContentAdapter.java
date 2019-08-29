@@ -32,7 +32,7 @@ public class MsgContentAdapter extends BaseQuickAdapter<MsgCountChildren, BaseVi
     }
 
     public interface OnMsgTypeClickListener {
-        void onClick(int modelId, String title);
+        void onClick(int modelId, String modelName);
     }
 
     public void setOnMsgClickListener(OnMsgTypeClickListener listener) {
@@ -66,12 +66,9 @@ public class MsgContentAdapter extends BaseQuickAdapter<MsgCountChildren, BaseVi
         } else if (modelName.contains(MsgConstants.NOTIFY_SYSTEM_TASK)) {
             helper.setImageResource(R.id.iv_msg, R.mipmap.ic_msg_task);
         }
-        helper.getView(R.id.rl_msg_content).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
-                    listener.onClick(item.getModelId(), modelName);
-                }
+        helper.getView(R.id.rl_msg_content).setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onClick(item.getModelId(), modelName);
             }
         });
     }

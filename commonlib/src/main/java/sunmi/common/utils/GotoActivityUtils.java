@@ -72,9 +72,7 @@ public class GotoActivityUtils {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
                     Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra("modelId", modelId);
-            intent.putExtra("title", modelName);
             intent.putExtra("modelName", modelName);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();

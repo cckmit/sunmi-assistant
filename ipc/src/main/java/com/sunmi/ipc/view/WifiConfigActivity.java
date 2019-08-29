@@ -70,7 +70,6 @@ public class WifiConfigActivity extends BaseActivity
 
     private Timer timer = new Timer();
     private CountDownTimer countDownTimer;//获取online状态后超时等待
-    private int retryCount;
     private boolean alreadyFinish;
     private int failGetStatusCount;
 
@@ -221,7 +220,6 @@ public class WifiConfigActivity extends BaseActivity
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                retryCount++;
                 IPCCall.getInstance().getApStatus(context, sunmiDevice.getIp());
             }
         }, 0, 1000);

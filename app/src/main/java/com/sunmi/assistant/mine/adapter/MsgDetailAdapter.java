@@ -49,15 +49,13 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
         } else {
             msgView.setVisibility(View.GONE);
         }
-        MsgTag titleTag = new MsgTag(item.getTitle());
+        MsgTag titleTag = item.getTitleTag();
+        MsgTag detailTag = item.getDetailTag();
         Map<String, String> titleMap = titleTag.getMsgMap();
-        MsgTag detailTag = new MsgTag(item.getContent());
         detailMap = detailTag.getMsgMap();
-        String companyName = "";
-        String shopName = "";
-        companyName = titleMap.get("company_name");
-        shopName = titleMap.get("shop_name");
-        helper.setText(R.id.tv_msg_title, companyName + shopName);
+        String companyName = titleMap.get("company_name");
+        String shopName = titleMap.get("shop_name");
+        helper.setText(R.id.tv_msg_title, (companyName != null ? companyName : "") + (shopName != null ? shopName : ""));
         helper.setText(R.id.tv_msg_time, DateTimeUtils.secondToDate(item.getReceiveTime(), "yyyy-MM-dd HH:mm:ss"));
         setMsgDetail(helper, MessageUtils.getInstance().getMsgFirst(titleTag.getTag()));
         helper.itemView.setOnLongClickListener(v -> {
@@ -71,8 +69,7 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
 
     private void setMsgDetail(BaseViewHolder helper, String string) {
         String disconnectTime = detailMap.get("disconnect_time");
-        String deviceName = "";
-        deviceName = detailMap.get("device_name");
+        String deviceName = detailMap.get("device_name");
         String binVersion = detailMap.get("bin_version");
         String timestamp = detailMap.get("timestamp");
         String saasName = detailMap.get("saas_name");
@@ -93,9 +90,17 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
                 detail = String.format(string, timestamp, saasName, totalCount);
             }
         } else if (binVersion != null) {
-            detail = String.format(string, deviceName, binVersion);
+            try {
+                detail = String.format(string, deviceName, binVersion);
+            } catch (Exception e) {
+                detail = "";
+            }
         } else {
-            detail = String.format(string, deviceName);
+            try {
+                detail = String.format(string, deviceName);
+            } catch (Exception e) {
+                detail = "";
+            }
         }
         helper.setText(R.id.tv_msg_detail, detail);
     }

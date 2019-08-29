@@ -21,6 +21,7 @@ public class MessageDetailPresenter extends BasePresenter<MessageDetailContract.
         MessageCenterApi.getInstance().getMessageList(modelId, pageNum, pageSize, new RetrofitCallback<MessageListBean>() {
             @Override
             public void onSuccess(int code, String msg, MessageListBean data) {
+
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();
                     mView.getMessageListSuccess(data.getMsgList(), data.getTotalCount(), data.getReturnCount(), needUpdate, isRefesh);

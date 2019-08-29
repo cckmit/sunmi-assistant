@@ -51,8 +51,6 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
     @Extra
     int modelId;
     @Extra
-    String title;
-    @Extra
     String modelName;
 
     private MsgDetailAdapter adapter;
@@ -63,7 +61,7 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
 
     @AfterViews
     void init() {
-        titleBar.setAppTitle(MessageUtils.getInstance().getMsgFirst(title));
+        titleBar.setAppTitle(MessageUtils.getInstance().getMsgFirst(modelName));
         titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
         mPresenter = new MessageDetailPresenter();
         mPresenter.attachView(this);

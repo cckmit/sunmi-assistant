@@ -136,8 +136,8 @@ public class SystemMessageFragment extends BaseFragment
         Collections.sort(showData);
         if (msgContentAdapter == null) {
             msgContentAdapter = new MsgContentAdapter(showData, mActivity);
-            msgContentAdapter.setOnMsgClickListener((modelId, title) ->
-                    MsgDetailActivity_.intent(mActivity).modelId(modelId).title(title).start());
+            msgContentAdapter.setOnMsgClickListener((modelId, modelName) ->
+                    MsgDetailActivity_.intent(mActivity).modelId(modelId).modelName(modelName).start());
             rvMsg.setAdapter(msgContentAdapter);
         } else {
             msgContentAdapter.notifyDataSetChanged();
