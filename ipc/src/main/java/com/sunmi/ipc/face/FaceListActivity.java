@@ -714,7 +714,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
             measureChild(firstChildView, widthSpec, heightSpec);
             int itemHeight = firstChildView.getMeasuredHeight();
             setMeasuredDimension(View.MeasureSpec.getSize(widthSpec),
-                    getChildCount() > 6 ? (int) (itemHeight * 6.5f) : itemHeight * getChildCount());
+                    getChildCount() > 9 ? (int) (itemHeight * 9f) : itemHeight * getChildCount());
         }
     }
 
