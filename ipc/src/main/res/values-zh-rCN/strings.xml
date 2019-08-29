@@ -150,8 +150,8 @@
     <string name="ipc_face_group_create">新建人脸分组</string>
     <string name="ipc_face_group_create_full">人脸库数量已达上限</string>
     <string name="ipc_face_group_name">名称</string>
-    <string name="ipc_face_group_name_hint">最多20个汉字（必填）</string>
-    <string name="ipc_face_group_name_error">名称为空或超过20个字符</string>
+    <string name="ipc_face_group_name_hint">最多32个字符（必填）</string>
+    <string name="ipc_face_group_name_error">名称为空或超过32个字符</string>
     <string name="ipc_face_group_create_capacity">照片数量</string>
     <string name="ipc_face_group_create_capacity_hint">剩余照片数量%d张（必填）</string>
     <string name="ipc_face_group_capacity">人脸照片数量上限</string>
@@ -232,7 +232,7 @@
     <string name="ipc_face_new_enter_shop_time">最新到店时间</string>
     <string name="ipc_face_every_enter_time">每次到店时间</string>
     <string name="ipc_face_input_name_tip">请输入名称</string>
-    <string name="ipc_face_name_length_tip">不得超过36个字符</string>
+    <string name="ipc_face_name_length_tip">不得超过32个字符</string>
     <string name="ipc_face_selected_age_range">请选择该用户的年龄段</string>
     <string name="ipc_face_selected_gender">请选择该用户的年性别</string>
     <string name="ipc_face_selected_group">请选择该用户的分组</string>

@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.sunmi.ipc.R;
-import com.sunmi.ipc.face.model.FaceGroup;
+import com.sunmi.ipc.face.util.Constants;
 import com.sunmi.ipc.model.FaceGroupCreateReq;
 import com.sunmi.ipc.model.FaceGroupCreateResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
@@ -51,7 +51,7 @@ public class FaceGroupCreateActivity extends BaseActivity {
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        int capacity = FaceGroup.MAX_CAPACITY_ALL_GROUP - mOccupiedCapacity;
+        int capacity = Constants.GROUP_MAX_CAPACITY - mOccupiedCapacity;
         mEtCapacity.setHint(getString(R.string.ipc_face_group_create_capacity_hint, capacity));
         mBtnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,17 +72,17 @@ public class FaceGroupCreateActivity extends BaseActivity {
         }
         String mark = mEtMark.getText() == null ? null : mEtMark.getText().toString().trim();
 
-        if (name == null || name.length() == 0 || name.length() > FaceGroup.MAX_LENGTH_NAME) {
+        if (name == null || name.length() == 0 || name.length() > Constants.GROUP_MAX_NAME_LENGTH) {
             shortTip(R.string.ipc_face_group_name_error);
             return;
         }
 
-        if (capacity <= 0 || capacity > FaceGroup.MAX_CAPACITY_ALL_GROUP - mOccupiedCapacity) {
+        if (capacity <= 0 || capacity > Constants.GROUP_MAX_CAPACITY - mOccupiedCapacity) {
             shortTip(R.string.ipc_face_group_capacity_error);
             return;
         }
 
-        if (mark != null && mark.length() > FaceGroup.MAX_LENGTH_NAME) {
+        if (mark != null && mark.length() > Constants.GROUP_MAX_NAME_LENGTH) {
             shortTip(R.string.ipc_face_group_mark_error);
             return;
         }

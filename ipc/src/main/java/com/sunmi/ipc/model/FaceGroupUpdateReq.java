@@ -2,6 +2,7 @@ package com.sunmi.ipc.model;
 
 import com.google.gson.annotations.SerializedName;
 import com.sunmi.ipc.face.model.FaceGroup;
+import com.sunmi.ipc.face.util.Constants;
 
 /**
  * @author yinhui
@@ -65,7 +66,7 @@ public class FaceGroupUpdateReq {
 
     public void setThreshold(int times, int days) {
         this.threshold = times;
-        this.period = days * FaceGroup.SECONDS_PER_DAY;
+        this.period = days * Constants.SECONDS_PER_DAY;
     }
 
     public void setAlarmNotified(int alarmNotified) {

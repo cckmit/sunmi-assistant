@@ -29,6 +29,7 @@ import com.sunmi.ipc.face.model.Face;
 import com.sunmi.ipc.face.model.FaceAge;
 import com.sunmi.ipc.face.model.FaceGroup;
 import com.sunmi.ipc.face.presenter.FaceDetailPresenter;
+import com.sunmi.ipc.face.util.Constants;
 import com.sunmi.ipc.face.util.Utils;
 import com.sunmi.ipc.model.FaceAgeRangeResp;
 
@@ -69,7 +70,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
         implements FaceDetailContract.View {
     private static final String DATE_FORMAT_REGISTER = "yyyy/MM/dd";
     public static final String DATE_FORMAT_ENTER_SHOP = "yyyy/MM/dd  hh:mm";
-    private static final int IPC_NAME_MAX_LENGTH = 36;
+
     private static final int UPDATE_INDEX_ID = 0;
     private static final int UPDATE_INDEX_GENDER = 1;
     private static final int UPDATE_INDEX_ADE = 2;
@@ -244,12 +245,12 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                             return;
                         }
                         String name = s.toString().trim();
-                        if (name.length() > IPC_NAME_MAX_LENGTH) {
-                            shortTip(R.string.ipc_setting_tip_name_length);
+                        if (name.length() > Constants.FACE_MAX_NAME_LENGTH) {
+                            shortTip(R.string.ipc_face_name_length_tip);
                             do {
                                 name = name.substring(0, name.length() - 1);
                             }
-                            while (name.length() > IPC_NAME_MAX_LENGTH);
+                            while (name.length() > Constants.FACE_MAX_NAME_LENGTH);
                             view.setText(name);
                             view.setSelection(name.length());
                         }
@@ -259,7 +260,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                 .setConfirmButton(R.string.str_confirm, new InputDialog.ConfirmClickListener() {
                     @Override
                     public void onConfirmClick(InputDialog dialog, String input) {
-                        if (input.length() > IPC_NAME_MAX_LENGTH) {
+                        if (input.length() > Constants.FACE_MAX_NAME_LENGTH) {
                             shortTip(getString(R.string.ipc_face_name_length_tip));
                             return;
                         }
