@@ -85,7 +85,7 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
             initTabs();
         }
         initMsg();
-        ShortcutBadger.applyCount(context, SpUtils.getRemindUnreadMsg()); //for 1.1.4+
+        ShortcutBadger.applyCount(BaseApplication.getInstance(), SpUtils.getRemindUnreadMsg()); //for 1.1.4+
     }
 
     public synchronized static MainActivity getInstance() {
