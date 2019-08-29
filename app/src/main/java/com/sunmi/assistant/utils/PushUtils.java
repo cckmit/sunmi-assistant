@@ -15,13 +15,13 @@ public class PushUtils {
     public static void resetUnReadCount(MessageCountBean data) {
         int unreadMsg = data.getUnreadCount();
         int remindUnreadMsg = data.getRemindUnreadCount();
+        SpUtils.setUnreadDeviceMsg(data.getModelCountList().get(0).getUnreadCount());
+        SpUtils.setUnreadSystemMsg(data.getModelCountList().get(1).getUnreadCount());
+        MsgCommonCache.getInstance().setMsgCount(data);
         if (SpUtils.getUnreadMsg() != unreadMsg || SpUtils.getRemindUnreadMsg() != remindUnreadMsg) {
             SpUtils.setUnreadMsg(unreadMsg);
             SpUtils.setRemindUnreadMsg(remindUnreadMsg);
-            SpUtils.setUnreadDeviceMsg(data.getModelCountList().get(0).getUnreadCount());
-            SpUtils.setUnreadSystemMsg(data.getModelCountList().get(1).getUnreadCount());
             ShortcutBadger.applyCount(BaseApplication.getInstance(), SpUtils.getRemindUnreadMsg());
-            MsgCommonCache.getInstance().setMsgCount(data);
         }
     }
 
