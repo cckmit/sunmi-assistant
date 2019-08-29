@@ -14,6 +14,7 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.model.MessageCountBean;
 import com.sunmi.assistant.rpc.MessageCenterApi;
 import com.sunmi.assistant.utils.MsgCommonCache;
+import com.sunmi.assistant.utils.PushUtils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -23,9 +24,7 @@ import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 
-import me.leolin.shortcutbadger.ShortcutBadger;
 import sunmi.common.base.BaseActivity;
-import sunmi.common.base.BaseApplication;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -33,7 +32,6 @@ import sunmi.common.utils.FileHelper;
 import sunmi.common.utils.FileUtils;
 import sunmi.common.utils.PermissionUtils;
 import sunmi.common.utils.SpUtils;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.tablayout.CommonTabLayout;
 import sunmi.common.view.tablayout.listener.CustomTabEntity;
@@ -86,6 +84,7 @@ public class MsgCenterActivity extends BaseActivity implements View.OnClickListe
         } else {
             rlNotice.setVisibility(View.GONE);
         }
+        refreshMsgCount();
     }
 
     @Override
@@ -118,14 +117,13 @@ public class MsgCenterActivity extends BaseActivity implements View.OnClickListe
     }
 
     @Override
-    public int[] getStickNotificationId() {
-        return new int[]{CommonNotifications.msgReadedOrChange, CommonNotifications.pushMsgArrived};
+    public int[] getUnStickNotificationId() {
+        return new int[]{CommonNotifications.msgCenterBadgeUpdate, CommonNotifications.pushMsgArrived};
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
-        if (id == CommonNotifications.msgReadedOrChange) {
-            showLoadingDialog();
+        if (id == CommonNotifications.msgCenterBadgeUpdate) {
             refreshMsgCount();
         } else if (CommonNotifications.pushMsgArrived == id) {
             refreshMsgCount();
@@ -161,25 +159,9 @@ public class MsgCenterActivity extends BaseActivity implements View.OnClickListe
             @Override
             public void onSuccess(int code, String msg, MessageCountBean data) {
                 hideLoadingDialog();
-                int unreadMsg = data.getUnreadCount();
-                int remindUnreadMsg = data.getRemindUnreadCount();
-                if (SpUtils.getUnreadMsg() != unreadMsg || SpUtils.getRemindUnreadMsg() != remindUnreadMsg) {
-                    SpUtils.setUnreadMsg(unreadMsg);
-                    SpUtils.setRemindUnreadMsg(remindUnreadMsg);
-                    SpUtils.setUnreadDeviceMsg(data.getModelCountList().get(0).getUnreadCount());
-                    SpUtils.setUnreadSystemMsg(data.getModelCountList().get(1).getUnreadCount());
-                    initDot();
-                    ShortcutBadger.applyCount(BaseApplication.getInstance(), SpUtils.getRemindUnreadMsg());
-                    BaseNotification.newInstance().postNotificationName(CommonNotifications.msgUpdated);
-                }
-                if (deviceF != null) {
-                    deviceF.getMessageCountSuccess(data);
-                }
-                if (systemF != null) {
-                    systemF.getMessageCountSuccess(data);
-                }
-
-                MsgCommonCache.getInstance().setMsgCount(data);
+                PushUtils.resetUnReadCount(data);
+                BaseNotification.newInstance().postNotificationName(CommonNotifications.homePageBadgeUpdate);
+                refreshData(data);
             }
 
             @Override
@@ -189,7 +171,6 @@ public class MsgCenterActivity extends BaseActivity implements View.OnClickListe
                 MessageCountBean bean = MsgCommonCache.getInstance().getMsgCount();
                 if (bean == null) {
                     String response = FileUtils.readSDTxt(FileHelper.FILE_PATH + fileName, "utf-8");
-                    LogCat.e(TAG, "666666666 response=" + response);
                     bean = new Gson().fromJson(response, MessageCountBean.class);
                 }
                 if (deviceF != null) {
@@ -209,6 +190,17 @@ public class MsgCenterActivity extends BaseActivity implements View.OnClickListe
                 }
             }
         });
+    }
+
+    @UiThread
+    public void refreshData(MessageCountBean data) {
+        initDot();
+        if (deviceF != null) {
+            deviceF.getMessageCountSuccess(data);
+        }
+        if (systemF != null) {
+            systemF.getMessageCountSuccess(data);
+        }
     }
 
 }

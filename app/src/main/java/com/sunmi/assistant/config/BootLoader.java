@@ -10,6 +10,7 @@ import com.sunmi.apmanager.utils.DBUtils;
 import com.sunmi.cloudprinter.config.PrinterConfig;
 import com.sunmi.sunmiservice.SunmiServiceConfig;
 import com.tencent.bugly.crashreport.CrashReport;
+import com.tencent.stat.StatConfig;
 import com.xiaomi.channel.commonutils.logger.LoggerInterface;
 import com.xiaomi.mipush.sdk.Logger;
 import com.xiaomi.mipush.sdk.MiPushClient;
@@ -56,14 +57,18 @@ public class BootLoader {
         //初始化创建数据库
         DBUtils.initDb(context);
         captureUnknownException();
+        //腾讯移动分析
+        StatConfig.setDebugEnable(!TextUtils.equals(Utils.getMetaValue(context,
+                "ENV_DATA", ApConfig.ENV_TEST), ApConfig.ENV_RELEASE));
         //内存监测
 //        LeakCanary.install((Application) context);
         //bugly
-        CrashReport.initCrashReport(context, ApConfig.BUGLY_ID, true);
-        if (!TextUtils.isEmpty(SpUtils.getUID()))
-            CrashReport.setUserId(SpUtils.getUID());
         //trustAllCerts
         handleSSLHandshake();
+        CrashReport.initCrashReport(context, ApConfig.BUGLY_ID, true);
+        if (!TextUtils.isEmpty(SpUtils.getUID())) {
+            CrashReport.setUserId(SpUtils.getUID());
+        }
         initMiPush(context);
     }
 
