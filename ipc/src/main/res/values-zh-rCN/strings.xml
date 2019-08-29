@@ -153,7 +153,7 @@
     <string name="ipc_face_group_name_error">名称为空或超过32个字符</string>
     <string name="ipc_face_group_create_capacity">照片数量</string>
     <string name="ipc_face_group_create_capacity_hint">剩余照片数量%d张（必填）</string>
-    <string name="ipc_face_group_create_duplicate">该分组名称已经存在</string>
+    <string name="ipc_face_group_create_duplicate">该分组名称已存在，请重新输入</string>
     <string name="ipc_face_group_capacity">人脸照片数量上限</string>
     <string name="ipc_face_group_capacity_error">输入的照片数量错误或超过分组上限</string>
     <string name="ipc_face_group_capacity_dialog">照片数量上限</string>
