@@ -2,6 +2,7 @@ package com.sunmi.assistant.mine.shop;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.view.View;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.platform.SelectPlatformActivity_;
@@ -46,12 +47,28 @@ public class CreateShopPreviewActivity extends BaseActivity {
     int saasExist;
     @Extra
     boolean isLoginSuccessSwitchCompany;
+    /**
+     * 创建商户进入不能back
+     */
+    @Extra
+    boolean isCannotBackPreview;
     private boolean isImportSaas;
 
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
+        if (isCannotBackPreview) {
+            titleBar.setLeftImageVisibility(View.GONE);
+        }
         getSaasInfo();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isCannotBackPreview) {
+            return;
+        }
+        super.onBackPressed();
     }
 
     @Click(R.id.btn_create_shop)

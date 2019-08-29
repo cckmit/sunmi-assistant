@@ -283,6 +283,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
     private void modifyMarks() {
         new InputDialog.Builder(this)
                 .setTitle(R.string.ipc_face_group_mark)
+                .setHint(getString(R.string.ipc_face_input_marks_tip))
                 .setInitInputContent(mFaceGroup.getMark())
                 .setEditTextHeight(true, 400, 40)
                 .setInputWatcher(new InputDialog.TextChangeListener() {
@@ -293,7 +294,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
                         }
                         String name = s.toString().trim();
                         if (name.length() > IPC_MARK_MAX_LENGTH) {
-                            shortTip(R.string.ipc_setting_tip_name_length);
+                            shortTip(getString(R.string.ipc_face_name_length100_tip));
                             do {
                                 name = name.substring(0, name.length() - 1);
                             }
@@ -304,15 +305,15 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
                     }
                 })
                 .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.str_confirm, new InputDialog.ConfirmClickListener() {
+                .setConfirmButton(R.string.ipc_setting_save, new InputDialog.ConfirmClickListener() {
                     @Override
                     public void onConfirmClick(InputDialog dialog, String input) {
-                        if (input.length() > IPC_MARK_MAX_LENGTH) {
-                            shortTip(getString(R.string.ipc_face_name_length100_tip));
-                            return;
-                        }
                         if (input.trim().length() == 0) {
                             shortTip(getString(R.string.ipc_face_input_marks_tip));
+                            return;
+                        }
+                        if (input.trim().length() > IPC_MARK_MAX_LENGTH) {
+                            shortTip(getString(R.string.ipc_face_name_length100_tip));
                             return;
                         }
                         mPresenter.updateMark(input);

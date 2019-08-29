@@ -21,7 +21,7 @@ public interface FaceDetailContract {
 
         void updateNameSuccessView(String name);
 
-        void updateIdentitySuccessView();
+        void updateIdentitySuccessView(int targetGroupId);
 
         void updateGenderSuccessView(int gender);
 
@@ -40,7 +40,7 @@ public interface FaceDetailContract {
 
         void updateName(String name);
 
-        void updateIdentity(int targetGroupId);
+        void updateIdentity(int groupId, int targetGroupId);
 
         void updateGender(int gender);
 

@@ -29,7 +29,6 @@ import com.sunmi.ipc.face.model.Face;
 import com.sunmi.ipc.face.model.FaceAge;
 import com.sunmi.ipc.face.model.FaceGroup;
 import com.sunmi.ipc.face.presenter.FaceDetailPresenter;
-import com.sunmi.ipc.face.util.Constants;
 import com.sunmi.ipc.face.util.Utils;
 import com.sunmi.ipc.model.FaceAgeRangeResp;
 
@@ -69,11 +68,11 @@ import static sunmi.common.utils.DateTimeUtils.secondToDate;
 public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
         implements FaceDetailContract.View {
     private static final String DATE_FORMAT_REGISTER = "yyyy/MM/dd";
-    public static final String DATE_FORMAT_ENTER_SHOP = "yyyy/MM/dd  hh:mm";
-
+    public static final String DATE_FORMAT_ENTER_SHOP = "yyyy/MM/dd  HH:mm";
+    private static final int IPC_NAME_MAX_LENGTH = 36;
     private static final int UPDATE_INDEX_ID = 0;
     private static final int UPDATE_INDEX_GENDER = 1;
-    private static final int UPDATE_INDEX_ADE = 2;
+    private static final int UPDATE_INDEX_AGE = 2;
 
     @ViewById(resName = "title_bar")
     TitleBarView titleBar;
@@ -102,7 +101,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
     Face mFace;
     @Extra
     FaceGroup mFaceGroup;
-    private int targetGroupId, gender, ageRangeCode;
+    private int groupId, targetGroupId, gender, ageRangeCode;
     private String groupName;
     private List<FaceAge> faceAgesList;
     private List<FaceGroup> groupList;
@@ -131,12 +130,18 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
         Glide.with(this).load(mFace.getImgUrl()).apply(requestOptions).into(ivFaceImage);
         if (mFaceGroup != null) {
             silFaceId.setRightText(Utils.getGroupName(this, mFaceGroup));
+            targetGroupId = mFaceGroup.getGroupId();
         }
         if (mFace != null) {
+            groupId = mFace.getGroupId();
+            gender = mFace.getGender();
+            silFaceName.getRightText().setSingleLine();
+            silFaceName.getRightText().setEllipsize(TextUtils.TruncateAt.END);
             silFaceName.setRightText(mFace.getName());
             silFaceSex.setRightText(mFace.getGender() == 1 ? context.getString(R.string.ipc_face_gender_male) :
                     context.getString(R.string.ipc_face_gender_female));
             silFaceEnterShopNum.setRightText(mFace.getArrivalCount() + "");
+            silFaceEnterShopNum.setRightImage(null);
             if (mFace.getCreateTime() != 0) {
                 silFaceRegisterTime.setRightText(secondToDate(mFace.getCreateTime(), DATE_FORMAT_REGISTER));
             }
@@ -237,7 +242,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
     void nameClick() {
         new InputDialog.Builder(this)
                 .setTitle(R.string.ipc_face_name)
-                .setInitInputContent(mFace.getName())
+                .setInitInputContent(silFaceName.getRightText().getText().toString().trim())
                 .setInputWatcher(new InputDialog.TextChangeListener() {
                     @Override
                     public void onTextChange(EditText view, Editable s) {
@@ -245,12 +250,12 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                             return;
                         }
                         String name = s.toString().trim();
-                        if (name.length() > Constants.FACE_MAX_NAME_LENGTH) {
-                            shortTip(R.string.ipc_face_name_length_tip);
+                        if (name.length() > IPC_NAME_MAX_LENGTH) {
+                            shortTip(getString(R.string.ipc_face_name_length_tip));
                             do {
                                 name = name.substring(0, name.length() - 1);
                             }
-                            while (name.length() > Constants.FACE_MAX_NAME_LENGTH);
+                            while (name.length() > IPC_NAME_MAX_LENGTH);
                             view.setText(name);
                             view.setSelection(name.length());
                         }
@@ -260,7 +265,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                 .setConfirmButton(R.string.str_confirm, new InputDialog.ConfirmClickListener() {
                     @Override
                     public void onConfirmClick(InputDialog dialog, String input) {
-                        if (input.length() > Constants.FACE_MAX_NAME_LENGTH) {
+                        if (input.length() > IPC_NAME_MAX_LENGTH) {
                             shortTip(getString(R.string.ipc_face_name_length_tip));
                             return;
                         }
@@ -279,19 +284,19 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
     @Click(resName = "sil_face_id")
     void idClick() {
         updateIndex = UPDATE_INDEX_ID;
-        identityDialog(getString(R.string.ipc_face_selected_group));
+        selectDialog(getString(R.string.ipc_face_selected_group), UPDATE_INDEX_ID);
     }
 
     @Click(resName = "sil_face_sex")
     void sexClick() {
         updateIndex = UPDATE_INDEX_GENDER;
-        genderDialog(getString(R.string.ipc_face_selected_gender));
+        selectDialog(getString(R.string.ipc_face_selected_gender), UPDATE_INDEX_GENDER);
     }
 
     @Click(resName = "sil_face_age")
     void ageClick() {
-        updateIndex = UPDATE_INDEX_ADE;
-        ageDialog(getString(R.string.ipc_face_selected_age_range));
+        updateIndex = UPDATE_INDEX_AGE;
+        selectDialog(getString(R.string.ipc_face_selected_age_range), UPDATE_INDEX_AGE);
     }
 
     @Click(resName = "sil_face_enter_shop_time_list")
@@ -334,8 +339,9 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
     }
 
     @Override
-    public void updateIdentitySuccessView() {
+    public void updateIdentitySuccessView(int targetGroupId) {
         silFaceId.setRightText(groupName);
+        groupId = targetGroupId;//设置成功后的targetGroupId转化为groupId
         setResult(RESULT_OK);
     }
 
@@ -362,6 +368,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
         for (FaceAge age : faceAgesList) {
             if (mFace.getAgeRangeCode() == age.getCode()) {
                 silFaceAge.setRightText(age.getName());
+                ageRangeCode = age.getCode();
             }
         }
         setResult(RESULT_OK);
@@ -378,46 +385,43 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
         finish();
     }
 
-    private void identityDialog(String title) {
+    /**
+     * 选择更新dialog
+     *
+     * @param title
+     * @param updateIndex
+     */
+    private void selectDialog(String title, final int updateIndex) {
+        int viewHeight = 0;
+        if (updateIndex == UPDATE_INDEX_ID) {
+            viewHeight = 600;
+        } else if (updateIndex == UPDATE_INDEX_GENDER) {
+            viewHeight = 350;
+        } else if (updateIndex == UPDATE_INDEX_AGE) {
+            viewHeight = 600;
+        }
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final Dialog dialog = new Dialog(context, com.commonlibrary.R.style.Son_dialog);
         assert inflater != null;
-        View layout = inflater.inflate(com.commonlibrary.R.layout.dialog_common_list, null);
+        final View layout = inflater.inflate(com.commonlibrary.R.layout.dialog_common_list, null);
         dialog.addContentView(layout, new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         TextView tvTitle = layout.findViewById(com.commonlibrary.R.id.tv_title);
-        RecyclerView rvContent = layout.findViewById(com.commonlibrary.R.id.rv_content);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 600);
-        rvContent.setLayoutParams(params);
-
-        rvContent.setLayoutManager(new LinearLayoutManager(context));
         tvTitle.setText(title);
-        rvContent.setAdapter(new CommonListAdapter<FaceGroup>(this,
-                R.layout.item_common, groupList) {
-            int selectedIndex = -1;
-
-            @Override
-            public void convert(final ViewHolder holder, final FaceGroup data) {
-                SettingItemLayout shopItem = holder.getView(R.id.sil_item);
-                shopItem.setLeftText(Utils.getGroupName(context, data));
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        selectedIndex = holder.getAdapterPosition();
-                        targetGroupId = data.getTargetGroupId();
-                        groupName = Utils.getGroupName(context, data);
-                        notifyDataSetChanged();
-                    }
-                });
-                if (selectedIndex == holder.getAdapterPosition()) {
-                    shopItem.setRightImage(ContextCompat.getDrawable(context, com.sunmi.ipc.R.mipmap.ic_yes));
-                    shopItem.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.common_orange));
-                } else {
-                    shopItem.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.colorText));
-                    shopItem.setRightImage(null);
-                }
-            }
-        });
+        final RecyclerView rvContent = layout.findViewById(com.commonlibrary.R.id.rv_content);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, viewHeight);
+        rvContent.setLayoutParams(params);
+        rvContent.setLayoutManager(new LinearLayoutManager(context));
+        if (updateIndex == UPDATE_INDEX_ID) {
+            rvContent.setAdapter(new IdentityAdapter(context, R.layout.item_common, groupList));
+        } else if (updateIndex == UPDATE_INDEX_GENDER) {
+            final List<String> list = new ArrayList<>();
+            list.add(context.getString(R.string.ipc_face_gender_male));
+            list.add(context.getString(R.string.ipc_face_gender_female));
+            rvContent.setAdapter(new GenderAdapter(context, R.layout.item_common, list));
+        } else if (updateIndex == UPDATE_INDEX_AGE) {
+            rvContent.setAdapter(new AgeAdapter(context, R.layout.item_common, faceAgesList));
+        }
         layout.findViewById(com.commonlibrary.R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -427,124 +431,13 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
         layout.findViewById(com.commonlibrary.R.id.btn_sure).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.updateIdentity(targetGroupId);
-                dialog.dismiss();
-            }
-        });
-        dialog.setContentView(layout);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
-    }
-
-    private void ageDialog(String title) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final Dialog dialog = new Dialog(context, com.commonlibrary.R.style.Son_dialog);
-        assert inflater != null;
-        View layout = inflater.inflate(com.commonlibrary.R.layout.dialog_common_list, null);
-        dialog.addContentView(layout, new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        TextView tvTitle = layout.findViewById(com.commonlibrary.R.id.tv_title);
-        RecyclerView rvContent = layout.findViewById(com.commonlibrary.R.id.rv_content);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 600);
-        rvContent.setLayoutParams(params);
-        rvContent.setLayoutManager(new LinearLayoutManager(context));
-        tvTitle.setText(title);
-
-        rvContent.setAdapter(new CommonListAdapter<FaceAge>(this,
-                R.layout.item_common, faceAgesList) {
-            int selectedIndex = -1;
-
-            @Override
-            public void convert(final ViewHolder holder, final FaceAge data) {
-                SettingItemLayout shopItem = holder.getView(R.id.sil_item);
-                shopItem.setLeftText(data.getName());
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        selectedIndex = holder.getAdapterPosition();
-                        ageRangeCode = data.getCode();
-                        notifyDataSetChanged();
-                    }
-                });
-                if (selectedIndex == holder.getAdapterPosition()) {
-                    shopItem.setRightImage(ContextCompat.getDrawable(context, com.sunmi.ipc.R.mipmap.ic_yes));
-                    shopItem.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.common_orange));
-                } else {
-                    shopItem.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.colorText));
-                    shopItem.setRightImage(null);
+                if (updateIndex == UPDATE_INDEX_ID) {
+                    mPresenter.updateIdentity(groupId, targetGroupId);
+                } else if (updateIndex == UPDATE_INDEX_GENDER) {
+                    mPresenter.updateGender(gender);
+                } else if (updateIndex == UPDATE_INDEX_AGE) {
+                    mPresenter.updateAge(ageRangeCode);
                 }
-            }
-        });
-        layout.findViewById(com.commonlibrary.R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        layout.findViewById(com.commonlibrary.R.id.btn_sure).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPresenter.updateAge(ageRangeCode);
-                dialog.dismiss();
-            }
-        });
-        dialog.setContentView(layout);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
-    }
-
-
-    private void genderDialog(String title) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final Dialog dialog = new Dialog(context, com.commonlibrary.R.style.Son_dialog);
-        assert inflater != null;
-        View layout = inflater.inflate(com.commonlibrary.R.layout.dialog_common_list, null);
-        dialog.addContentView(layout, new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        TextView tvTitle = layout.findViewById(com.commonlibrary.R.id.tv_title);
-        RecyclerView rvContent = layout.findViewById(com.commonlibrary.R.id.rv_content);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 350);
-        rvContent.setLayoutParams(params);
-        rvContent.setLayoutManager(new LinearLayoutManager(context));
-        tvTitle.setText(title);
-        final List<String> list = new ArrayList<>();
-        list.add(context.getString(R.string.ipc_face_gender_male));
-        list.add(context.getString(R.string.ipc_face_gender_female));
-        rvContent.setAdapter(new CommonListAdapter<String>(this,
-                R.layout.item_common, list) {
-            int selectedIndex = -1;
-
-            @Override
-            public void convert(final ViewHolder holder, final String data) {
-                SettingItemLayout shopItem = holder.getView(R.id.sil_item);
-                shopItem.setLeftText(data);
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        selectedIndex = holder.getAdapterPosition();
-                        gender = TextUtils.equals(context.getString(R.string.ipc_face_gender_male), data) ? 1 : 2;
-                        notifyDataSetChanged();
-                    }
-                });
-                if (selectedIndex == holder.getAdapterPosition()) {
-                    shopItem.setRightImage(ContextCompat.getDrawable(context, com.sunmi.ipc.R.mipmap.ic_yes));
-                    shopItem.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.common_orange));
-                } else {
-                    shopItem.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.colorText));
-                    shopItem.setRightImage(null);
-                }
-            }
-        });
-        layout.findViewById(com.commonlibrary.R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        layout.findViewById(com.commonlibrary.R.id.btn_sure).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPresenter.updateGender(gender);
                 dialog.dismiss();
             }
         });
@@ -599,5 +492,114 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
         public void onCancel(int from) {
         }
     }
+
+    class GenderAdapter extends CommonListAdapter<String> {
+
+        /**
+         * @param context  上下文
+         * @param layoutId layout
+         * @param list     列表数据
+         */
+        int selectedIndex = -1;
+
+        GenderAdapter(Context context, int layoutId, List<String> list) {
+            super(context, layoutId, list);
+        }
+
+        @Override
+        public void convert(final ViewHolder holder, final String data) {
+            SettingItemLayout item = holder.getView(R.id.sil_item);
+            item.setLeftText(data);
+            String genderName = gender == 1 ? context.getString(R.string.ipc_face_gender_male) : context.getString(R.string.ipc_face_gender_female);
+            if (TextUtils.equals(genderName, data)) {
+                selectedIndex = holder.getAdapterPosition();
+            }
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selectedIndex = holder.getAdapterPosition();
+                    gender = TextUtils.equals(context.getString(R.string.ipc_face_gender_male), data) ? 1 : 2;
+                    notifyDataSetChanged();
+                }
+            });
+            selectedItem(selectedIndex, holder, item);
+        }
+    }
+
+    class IdentityAdapter extends CommonListAdapter<FaceGroup> {
+
+        /**
+         * @param context  上下文
+         * @param layoutId layout
+         * @param list     列表数据
+         */
+        int selectedIndex = -1;
+
+        IdentityAdapter(Context context, int layoutId, List<FaceGroup> list) {
+            super(context, layoutId, list);
+        }
+
+        @Override
+        public void convert(final ViewHolder holder, final FaceGroup data) {
+            SettingItemLayout item = holder.getView(R.id.sil_item);
+            item.setLeftText(Utils.getGroupName(context, data));
+            if (targetGroupId == data.getGroupId()) {
+                selectedIndex = holder.getAdapterPosition();
+            }
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selectedIndex = holder.getAdapterPosition();
+                    targetGroupId = data.getGroupId();
+                    groupName = Utils.getGroupName(context, data);
+                    notifyDataSetChanged();
+                }
+            });
+            selectedItem(selectedIndex, holder, item);
+        }
+    }
+
+    class AgeAdapter extends CommonListAdapter<FaceAge> {
+
+        /**
+         * @param context  上下文
+         * @param layoutId layout
+         * @param list     列表数据
+         */
+        int selectedIndex = -1;
+
+        AgeAdapter(Context context, int layoutId, List<FaceAge> list) {
+            super(context, layoutId, list);
+        }
+
+        @Override
+        public void convert(final ViewHolder holder, final FaceAge data) {
+            SettingItemLayout item = holder.getView(R.id.sil_item);
+            item.setLeftText(data.getName());
+            if (ageRangeCode == data.getCode()) {
+                selectedIndex = holder.getAdapterPosition();
+            }
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selectedIndex = holder.getAdapterPosition();
+                    ageRangeCode = data.getCode();
+                    notifyDataSetChanged();
+                }
+            });
+            selectedItem(selectedIndex, holder, item);
+        }
+    }
+
+    private void selectedItem(int selectedIndex, ViewHolder holder, SettingItemLayout item) {
+        if (selectedIndex == holder.getAdapterPosition()) {
+            item.setRightImage(ContextCompat.getDrawable(context, com.sunmi.ipc.R.mipmap.ic_yes));
+            item.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.common_orange));
+        } else {
+            item.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.colorText));
+            item.setRightImage(null);
+        }
+    }
+
 
 }

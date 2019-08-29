@@ -155,6 +155,7 @@ public class FaceGroupDetailPresenter extends BasePresenter<FaceGroupDetailContr
                 mFaceGroup.setMark(mark);
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();
+                    mView.shortTip(R.string.ipc_setting_success);
                     mView.updateMarkView(mark);
                 }
             }
