@@ -242,6 +242,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
     void nameClick() {
         new InputDialog.Builder(this)
                 .setTitle(R.string.ipc_face_name)
+                .setHint(getString(R.string.ipc_face_input_name_tip))
                 .setInitInputContent(silFaceName.getRightText().getText().toString().trim())
                 .setInputWatcher(new InputDialog.TextChangeListener() {
                     @Override
@@ -542,7 +543,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
         @Override
         public void convert(final ViewHolder holder, final FaceGroup data) {
             SettingItemLayout item = holder.getView(R.id.sil_item);
-            item.setLeftText(Utils.getGroupName(context, data));
+            item.setLeftText(Utils.getGroupName(context, data) + getString(R.string.ipc_face_need_max_num, (data.getCapacity() - data.getCount())));
             if (targetGroupId == data.getGroupId()) {
                 selectedIndex = holder.getAdapterPosition();
             }

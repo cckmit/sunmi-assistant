@@ -1,6 +1,7 @@
 package com.sunmi.ipc.face;
 
 
+import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -54,17 +55,19 @@ public class FaceDetailRecordActivity extends BaseActivity implements BGARefresh
     private int pageNumFlag = 1;
     private boolean isHasMore;
     private List<FaceEntryHistoryResp.EntryHistory> list = new ArrayList<>();
+    private ArrivalListAdapter mAdapter;
 
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        mAdapter = new ArrivalListAdapter(this);
+        recyclerView.setAdapter(mAdapter);
         initRefreshLayout();
         arrivalList(true);
     }
 
     private void initRefreshLayout() {
-
         refreshView.setDelegate(this);
         refreshView.setRefreshViewHolder(new BGANormalRefreshViewHolder(this, true));
         refreshView.setPullDownRefreshEnable(true);
@@ -99,7 +102,7 @@ public class FaceDetailRecordActivity extends BaseActivity implements BGARefresh
                             }
                             tvEmpty.setVisibility(View.GONE);
                             list.addAll(data.getHistoryList());
-                            showDataView(list);
+                            mAdapter.setData(list);
                         }
                     }
 
@@ -109,16 +112,6 @@ public class FaceDetailRecordActivity extends BaseActivity implements BGARefresh
                         includeNetworkError.setVisibility(View.VISIBLE);
                     }
                 });
-    }
-
-    private void showDataView(List<FaceEntryHistoryResp.EntryHistory> list) {
-        recyclerView.setAdapter(new CommonListAdapter<FaceEntryHistoryResp.EntryHistory>(this,
-                R.layout.item_face_photo_time_record, list) {
-            @Override
-            public void convert(ViewHolder holder, FaceEntryHistoryResp.EntryHistory entryHistory) {
-                holder.setText(R.id.tv_time, secondToDate(entryHistory.getArrivalTime(), DATE_FORMAT_ENTER_SHOP));
-            }
-        });
     }
 
     public void endRefresh(boolean isRefresh) {
@@ -138,12 +131,21 @@ public class FaceDetailRecordActivity extends BaseActivity implements BGARefresh
     @Override
     public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
         if (isHasMore) {
-            if (refreshLayout.isLoadingMore()) {
-                refreshView.beginLoadingMore();
-            }
             arrivalList(false);
             return true;
         }
         return false;
+    }
+
+    private static class ArrivalListAdapter extends CommonListAdapter<FaceEntryHistoryResp.EntryHistory> {
+
+        private ArrivalListAdapter(Context context) {
+            super(context, R.layout.item_face_photo_time_record, null);
+        }
+
+        @Override
+        public void convert(ViewHolder holder, FaceEntryHistoryResp.EntryHistory info) {
+            holder.setText(R.id.tv_time, secondToDate(info.getArrivalTime(), DATE_FORMAT_ENTER_SHOP));
+        }
     }
 }
