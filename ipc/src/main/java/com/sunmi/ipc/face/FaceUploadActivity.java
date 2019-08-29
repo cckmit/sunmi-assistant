@@ -96,6 +96,9 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
     }
 
     private void initTitle() {
+        mTitleBar.getRightText().setEnabled(true);
+        mTitleBar.setRightTextViewColor(R.color.colorText);
+        mTitleBar.setRightTextViewText(R.string.ipc_face_upload_btn);
         mTitleBar.getRightText().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -149,16 +152,11 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
         mPresenter.save(mValidImages);
     }
 
-    @Background
-    void compress(UploadImage image) {
-        File file = Utils.imageCompress(this, new File(image.getFile()));
-        if (file == null) {
-            LogCat.e(TAG, "Compress face image Failed.");
-            uploadFailed(image);
-        } else {
-            image.setCompressed(file.getPath());
-            mPresenter.upload(image);
-        }
+    private void resetView() {
+        initTitle();
+        mImages.clear();
+        mAdapter.clear();
+        mAdapter.add(new UploadImage());
     }
 
     private void uploadComplete() {
@@ -173,9 +171,8 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
                         .setConfirmButton(R.string.ipc_face_pick_again, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                mImages.clear();
+                                resetView();
                                 pickImage();
-                                mAdapter.clear();
                             }
                         })
                         .create();
@@ -191,6 +188,18 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
                 }
             });
             shortTip(R.string.ipc_face_tip_album_upload_complete);
+        }
+    }
+
+    @Background
+    void compress(UploadImage image) {
+        File file = Utils.imageCompress(this, new File(image.getFile()));
+        if (file == null) {
+            LogCat.e(TAG, "Compress face image Failed.");
+            uploadFailed(image);
+        } else {
+            image.setCompressed(file.getPath());
+            mPresenter.upload(image);
         }
     }
 
