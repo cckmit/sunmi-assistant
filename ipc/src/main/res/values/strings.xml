@@ -243,6 +243,7 @@
     <string name="ipc_face_input_marks_tip">请输入备注</string>
     <string name="ipc_face_day">天</string>
     <string name="ipc_face_order">次</string>
+    <string name="tip_device_bound_by_other_shop">Sorry, the camera has been bound by another store !</string>
 </resources>
 
 

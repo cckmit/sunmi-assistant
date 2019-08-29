@@ -116,7 +116,18 @@ public class IpcSettingRotateActivity extends BaseActivity implements View.OnCli
      * @param type
      */
     private void selectRotate(int type) {
-        if (type == ROTATE_DEGREE0) {
+        //0  180
+        if (DeviceTypeUtils.getInstance().isFS1(mDevice.getModel()) && type == ROTATE_DEGREE1) {
+            silDegree0.setRightImage(null);
+            silDegree0.setLeftTextColor(getResources().getColor(R.color.colorText));
+            silDegree90.setRightImage(null);
+            silDegree90.setLeftTextColor(getResources().getColor(R.color.colorText));
+            silDegree180.setRightImage(getResources().getDrawable(R.mipmap.ic_yes));
+            silDegree180.setLeftTextColor(getResources().getColor(R.color.common_orange));
+            silDegree270.setRightImage(null);
+            silDegree270.setLeftTextColor(getResources().getColor(R.color.colorText));
+            setModelRotate(ROTATE_DEGREE1);
+        } else if (type == ROTATE_DEGREE0) {
             silDegree0.setRightImage(getResources().getDrawable(R.mipmap.ic_yes));
             silDegree0.setLeftTextColor(getResources().getColor(R.color.common_orange));
             silDegree90.setRightImage(null);
