@@ -17,6 +17,7 @@ public class UploadImage implements Parcelable {
     public static final int STATE_UPLOADING = 1;
     public static final int STATE_SUCCESS = 2;
     public static final int STATE_FAILED = 3;
+    public static final int STATE_FAILED_NET = 4;
     public static final int STATE_ADD = 10;
 
     private int state = STATE_INIT;
