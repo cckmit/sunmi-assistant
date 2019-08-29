@@ -137,7 +137,7 @@ public class FaceGroupDetailPresenter extends BasePresenter<FaceGroupDetailContr
 
     @Override
     public void updateMark(final String mark) {
-        if (mark == null || mark.length() == 0 || mark.length() > FaceGroup.MAX_LENGTH_NAME) {
+        if (mark == null || mark.length() == 0 || mark.length() > FaceGroup.MAX_LENGTH_MARK) {
             if (isViewAttached()) {
                 mView.shortTip(R.string.ipc_face_group_mark_error);
             }
@@ -154,6 +154,7 @@ public class FaceGroupDetailPresenter extends BasePresenter<FaceGroupDetailContr
                 mFaceGroup.setMark(mark);
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();
+                    mView.shortTip(R.string.ipc_setting_success);
                     mView.updateMarkView(mark);
                 }
             }

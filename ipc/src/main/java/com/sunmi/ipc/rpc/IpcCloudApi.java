@@ -506,12 +506,15 @@ public class IpcCloudApi {
         }
     }
 
-    public static void arrivalListFaceGroup(int companyId, int shopId, int faceId, RetrofitCallback<FaceEntryHistoryResp> callback) {
+    public static void arrivalListFaceGroup(int companyId, int shopId, int faceId, int pageNum, int pageSize,
+                                            RetrofitCallback<FaceEntryHistoryResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
                     .put("shop_id", shopId)
                     .put("face_id", faceId)
+                    .put("page_num", pageNum)
+                    .put("page_size", pageSize)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
                     .getArrivalHistory(getSignedRequest(params))

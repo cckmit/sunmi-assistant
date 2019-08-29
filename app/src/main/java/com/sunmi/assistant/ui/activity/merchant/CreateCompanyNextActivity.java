@@ -70,11 +70,11 @@ public class CreateCompanyNextActivity extends BaseMvpActivity<CreateCompanyPres
     @Override
     public void createCompanySuccessView(CompanyInfoResp resp) {
         shortTip(R.string.company_create_success);
-        //CommonUtils.saveSelectCompany(resp.getCompany_id(), resp.getCompany_name(), resp.getSaas_exist());
         CreateShopPreviewActivity_.intent(context)
                 .companyId(resp.getCompany_id())
                 .companyName(resp.getCompany_name())
                 .saasExist(resp.getSaas_exist())
+                .isCannotBackPreview(true)
                 .start();
     }
 
