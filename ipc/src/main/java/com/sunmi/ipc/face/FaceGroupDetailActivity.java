@@ -78,7 +78,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
     FaceGroup mFaceGroup;
     @Extra
     int mOccupiedCapacity;
-    //移库规则
+
     private int times, days;
 
     private Dialog mDeleteForbiddenDialog;
@@ -102,15 +102,17 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
             });
         }
 
+        mTvTip.setVisibility(mFaceGroup.isSystemType() ? View.VISIBLE : View.GONE);
         if (mFaceGroup.getType() == FaceGroup.FACE_GROUP_TYPE_NEW) {
-            mTvTip.setVisibility(View.VISIBLE);
             mTvTip.setText(R.string.ipc_face_group_new_desc);
+        } else if (mFaceGroup.getType() == FaceGroup.FACE_GROUP_TYPE_OLD) {
+            mTvTip.setText(R.string.ipc_face_group_old_desc);
         } else if (mFaceGroup.getType() == FaceGroup.FACE_GROUP_TYPE_STAFF) {
-            mTvTip.setVisibility(View.VISIBLE);
             mTvTip.setText(R.string.ipc_face_group_staff_desc);
-        } else {
-            mTvTip.setVisibility(View.GONE);
+        } else if (mFaceGroup.getType() == FaceGroup.FACE_GROUP_TYPE_BLACK) {
+            mTvTip.setText(R.string.ipc_face_group_black_desc);
         }
+
         mSilName.setRightText(Utils.getGroupName(this, mFaceGroup, false));
         mSilCapacity.setRightText(String.valueOf(mFaceGroup.getCapacity()));
 
@@ -123,13 +125,15 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
         } else {
             mSilThreshold.setVisibility(View.GONE);
         }
-
+/*
         if (mFaceGroup.getType() == FaceGroup.FACE_GROUP_TYPE_BLACK) {
             mLayoutNotification.setVisibility(View.VISIBLE);
             mSwitchNotification.setChecked(mFaceGroup.getAlarmNotified() != 0);
         } else {
             mLayoutNotification.setVisibility(View.GONE);
         }
+*/
+        mLayoutNotification.setVisibility(View.GONE);
 
         mSilManage.setRightText(getString(R.string.ipc_face_group_count, mFaceGroup.getCount()));
 
