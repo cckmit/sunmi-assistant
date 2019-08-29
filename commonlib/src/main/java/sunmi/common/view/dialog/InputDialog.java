@@ -40,6 +40,7 @@ public class InputDialog extends Dialog {
         private Context context;
         private String title;
         private String content;
+        private String hint;
         private String backBtnText; // 对话框返回按钮文本
         private String confirmBtnText; // 对话框确定文本
         private int confirmBtnTextColor; // 对话框确定文本颜色
@@ -188,6 +189,11 @@ public class InputDialog extends Dialog {
             return this;
         }
 
+        public Builder setHint(String hint) {
+            this.hint = hint;
+            return this;
+        }
+
         /**
          * 创建自定义的对话框
          */
@@ -219,6 +225,9 @@ public class InputDialog extends Dialog {
                 etInput.setLayoutParams(params);
                 etInput.setGravity(Gravity.TOP | Gravity.START);
                 etInput.setSingleLine(false);
+            }
+            if (!TextUtils.isEmpty(hint)) {
+                etInput.setHint(hint);
             }
             if (!TextUtils.isEmpty(content)) {
                 etInput.setText(content);

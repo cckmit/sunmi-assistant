@@ -132,6 +132,14 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
         CreateCompanyActivity_.intent(context).start();
     }
 
+    @Override
+    public void onBackPressed() {
+        if (isRegisterEnterCompany) {
+            return;
+        }
+        super.onBackPressed();
+    }
+
     /**
      * 选择完商户，门店，获取用户信息成功
      */

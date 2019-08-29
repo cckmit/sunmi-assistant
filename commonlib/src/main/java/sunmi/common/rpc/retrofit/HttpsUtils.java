@@ -84,7 +84,8 @@ public class HttpsUtils {
         return getSslSocketFactoryBase(trustManager, bksFile, password);
     }
 
-    private static SSLParams getSslSocketFactoryBase(X509TrustManager trustManager, InputStream bksFile, String password, InputStream... certificates) {
+    private static SSLParams getSslSocketFactoryBase(X509TrustManager trustManager,
+                                                     InputStream bksFile, String password, InputStream... certificates) {
         SSLParams sslParams = new SSLParams();
         try {
             KeyManager[] keyManagers = prepareKeyManager(bksFile, password);

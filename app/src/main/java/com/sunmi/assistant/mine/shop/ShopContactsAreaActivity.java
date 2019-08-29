@@ -3,6 +3,7 @@ package com.sunmi.assistant.mine.shop;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.content.ContextCompat;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -104,6 +105,8 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
             viewGroup.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
             viewGroup.rightMargin = 150;
             etShopMessage.setLayoutParams(viewGroup);
+            etShopMessage.setBackgroundColor(ContextCompat.getColor(this, R.color.c_white));
+
             etShopMessage.setHint(R.string.company_shop_area_tip);
             rlSquare.setVisibility(View.VISIBLE);
             etShopMessage.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);

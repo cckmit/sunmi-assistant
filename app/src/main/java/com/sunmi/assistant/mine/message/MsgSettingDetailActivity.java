@@ -95,7 +95,7 @@ public class MsgSettingDetailActivity extends BaseMvpActivity<MsgSettingDetailPr
 
     @Override
     public void onBackPressed() {
-        BaseNotification.newInstance().postNotificationName(CommonNotifications.msgDeviceChange);
+        BaseNotification.newInstance().postNotificationName(CommonNotifications.msgSettingsChange);
         finish();
     }
 

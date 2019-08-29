@@ -48,7 +48,6 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     @ViewById(R.id.rlMsg)
     BGABadgeRelativeLayout rlMsg;
 
-
     @AfterViews
     void init() {
         mPresenter = new MinePresenter();
@@ -59,7 +58,7 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
 
     private void initView() {
         initAvatar(false);
-        initMsg();
+        setMsgBadge();
         initUsername();
         initAccount();
     }
@@ -88,7 +87,10 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     }
 
     @UiThread
-    void initMsg() {
+    public void setMsgBadge() {
+        if (rlMsg == null) {
+            return;
+        }
         if (SpUtils.getUnreadMsg() > 0) {
             int count = SpUtils.getRemindUnreadMsg();
             if (count <= 0) {
@@ -98,7 +100,7 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
             } else {
                 rlMsg.showTextBadge(String.valueOf(count));
             }
-        }else {
+        } else {
             rlMsg.hiddenBadge();
         }
     }
@@ -184,7 +186,7 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     public int[] getStickNotificationId() {
         return new int[]{NotificationConstant.updateUsernameSuccess,
                 NotificationConstant.updateAvatarSuccess,
-                CommonNotifications.msgUpdated,CommonNotifications.pushMsgArrived};
+                CommonNotifications.homePageBadgeUpdate, CommonNotifications.pushMsgArrived};
     }
 
     @Override
@@ -193,9 +195,9 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
             initUsername();
         } else if (id == NotificationConstant.updateAvatarSuccess) {
             initAvatar(true);
-        }else if (id == CommonNotifications.msgUpdated
-                ||id == CommonNotifications.pushMsgArrived){
-            initMsg();
+        } else if (id == CommonNotifications.homePageBadgeUpdate
+                || id == CommonNotifications.pushMsgArrived) {
+            setMsgBadge();
         }
     }
 

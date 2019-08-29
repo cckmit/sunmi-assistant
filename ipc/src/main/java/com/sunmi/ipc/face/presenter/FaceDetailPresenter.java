@@ -49,7 +49,7 @@ public class FaceDetailPresenter extends BasePresenter<FaceDetailContract.View>
                     public void onFail(int code, String msg, FaceCheckResp data) {
                         LogCat.e(TAG, "Check face file Failed. " + msg);
                         if (isViewAttached()) {
-                            mView.updateImageFailed();
+                            mView.updateImageFailed(code);
                         }
                     }
                 });
@@ -67,7 +67,7 @@ public class FaceDetailPresenter extends BasePresenter<FaceDetailContract.View>
                                 mView.updateImageSuccessView(data.getSuccessList().get(0).getImgUrl());
                             }
                         } else if (isViewAttached()) {
-                            mView.updateImageFailed();
+                            mView.updateImageFailed(code);
                         }
                     }
 
@@ -75,7 +75,7 @@ public class FaceDetailPresenter extends BasePresenter<FaceDetailContract.View>
                     public void onFail(int code, String msg, FaceSaveResp data) {
                         LogCat.e(TAG, "Save face file Failed. " + msg);
                         if (isViewAttached()) {
-                            mView.updateImageFailed();
+                            mView.updateImageFailed(code);
                         }
                     }
                 });
@@ -106,16 +106,16 @@ public class FaceDetailPresenter extends BasePresenter<FaceDetailContract.View>
     }
 
     @Override
-    public void updateIdentity(int targetGroupId) {
+    public void updateIdentity(int groupId, final int targetGroupId) {
         mView.showLoadingDialog();
         IpcCloudApi.updateFaceTargetGroupId(SpUtils.getCompanyId(), mShopId,
-                mFace.getFaceId(), mFace.getGroupId(), targetGroupId, new RetrofitCallback<Object>() {
+                mFace.getFaceId(), groupId, targetGroupId, new RetrofitCallback<Object>() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
                         if (isViewAttached()) {
                             mView.hideLoadingDialog();
                             mView.shortTip(R.string.ipc_setting_success);
-                            mView.updateIdentitySuccessView();
+                            mView.updateIdentitySuccessView(targetGroupId);
                         }
                     }
 

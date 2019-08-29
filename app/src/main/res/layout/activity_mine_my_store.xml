@@ -13,20 +13,23 @@
         app:dividerShow="true"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@mipmap/ic_back_dark"
-        app:titleText="@string/str_my_store"
+        app:titleText="@string/company_shop_details"
         app:titleTextColor="@color/colorText" />
-
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/title_bar"
-        android:layout_marginBottom="@dimen/dp_61"
         android:background="@color/c_white"
-        app:layout_constraintTop_toBottomOf="@id/title_bar" />
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toTopOf="@+id/rl_add"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_bar"
+        app:layout_constraintVertical_bias="0" />
 
     <RelativeLayout
+        android:id="@+id/rl_add"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_60"
         android:background="@color/c_white"

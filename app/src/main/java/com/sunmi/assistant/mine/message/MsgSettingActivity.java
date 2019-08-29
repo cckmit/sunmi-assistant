@@ -136,7 +136,7 @@ public class MsgSettingActivity extends BaseMvpActivity<MsgSettingPresenter>
 
     @Override
     public void onBackPressed() {
-        BaseNotification.newInstance().postNotificationName(CommonNotifications.msgReadedOrChange);
+        BaseNotification.newInstance().postNotificationName(CommonNotifications.msgCenterBadgeUpdate);
         finish();
     }
 
@@ -186,14 +186,14 @@ public class MsgSettingActivity extends BaseMvpActivity<MsgSettingPresenter>
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
-        if (id == CommonNotifications.msgDeviceChange) {
+        if (id == CommonNotifications.msgSettingsChange) {
             mPresenter.getSettingList();
         }
     }
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{CommonNotifications.msgDeviceChange};
+        return new int[]{CommonNotifications.msgSettingsChange};
     }
 
     private void changeStatus(boolean isChecked, int settingId, Switch sw) {

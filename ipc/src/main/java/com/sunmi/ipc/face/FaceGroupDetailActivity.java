@@ -78,7 +78,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
     FaceGroup mFaceGroup;
     @Extra
     int mOccupiedCapacity;
-    //移库规则
+
     private int times, days;
 
     private Dialog mDeleteForbiddenDialog;
@@ -86,7 +86,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
 
     @AfterViews
     void init() {
-        mTitleBar.setAppTitle(Utils.getGroupName(this, mFaceGroup, false));
+        mTitleBar.setAppTitle(Utils.getGroupName(this, mFaceGroup));
         if (mFaceGroup.isSystemType()) {
             mTitleBar.setRightTextViewEnable(false);
             mTitleBar.setRightTextViewText("");
@@ -102,16 +102,18 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
             });
         }
 
+        mTvTip.setVisibility(mFaceGroup.isSystemType() ? View.VISIBLE : View.GONE);
         if (mFaceGroup.getType() == FaceGroup.FACE_GROUP_TYPE_NEW) {
-            mTvTip.setVisibility(View.VISIBLE);
             mTvTip.setText(R.string.ipc_face_group_new_desc);
+        } else if (mFaceGroup.getType() == FaceGroup.FACE_GROUP_TYPE_OLD) {
+            mTvTip.setText(R.string.ipc_face_group_old_desc);
         } else if (mFaceGroup.getType() == FaceGroup.FACE_GROUP_TYPE_STAFF) {
-            mTvTip.setVisibility(View.VISIBLE);
             mTvTip.setText(R.string.ipc_face_group_staff_desc);
-        } else {
-            mTvTip.setVisibility(View.GONE);
+        } else if (mFaceGroup.getType() == FaceGroup.FACE_GROUP_TYPE_BLACK) {
+            mTvTip.setText(R.string.ipc_face_group_black_desc);
         }
-        mSilName.setRightText(Utils.getGroupName(this, mFaceGroup, false));
+
+        mSilName.setRightText(Utils.getGroupName(this, mFaceGroup));
         mSilCapacity.setRightText(String.valueOf(mFaceGroup.getCapacity()));
 
         if (mFaceGroup.getType() == FaceGroup.FACE_GROUP_TYPE_NEW) {
@@ -123,13 +125,15 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
         } else {
             mSilThreshold.setVisibility(View.GONE);
         }
-
+/*
         if (mFaceGroup.getType() == FaceGroup.FACE_GROUP_TYPE_BLACK) {
             mLayoutNotification.setVisibility(View.VISIBLE);
             mSwitchNotification.setChecked(mFaceGroup.getAlarmNotified() != 0);
         } else {
             mLayoutNotification.setVisibility(View.GONE);
         }
+*/
+        mLayoutNotification.setVisibility(View.GONE);
 
         mSilManage.setRightText(getString(R.string.ipc_face_group_count, mFaceGroup.getCount()));
 
@@ -173,7 +177,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
             if (mDeleteForbiddenDialog == null) {
                 mDeleteForbiddenDialog = new CommonDialog.Builder(this)
                         .setTitle(getString(R.string.ipc_face_group_delete_title,
-                                Utils.getGroupName(this, mFaceGroup, false)))
+                                Utils.getGroupName(this, mFaceGroup)))
                         .setMessage(R.string.ipc_face_group_delete_error)
                         .setCancelButton(R.string.sm_cancel)
                         .create();
@@ -183,7 +187,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
             if (mDeleteDialog == null) {
                 mDeleteDialog = new CommonDialog.Builder(this)
                         .setTitle(getString(R.string.ipc_face_group_delete_title,
-                                Utils.getGroupName(this, mFaceGroup, false)))
+                                Utils.getGroupName(this, mFaceGroup)))
                         .setConfirmButton(R.string.ipc_setting_delete, R.color.colorOrange,
                                 new DialogInterface.OnClickListener() {
                                     @Override
@@ -279,6 +283,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
     private void modifyMarks() {
         new InputDialog.Builder(this)
                 .setTitle(R.string.ipc_face_group_mark)
+                .setHint(getString(R.string.ipc_face_input_marks_tip))
                 .setInitInputContent(mFaceGroup.getMark())
                 .setEditTextHeight(true, 400, 40)
                 .setInputWatcher(new InputDialog.TextChangeListener() {
@@ -289,7 +294,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
                         }
                         String name = s.toString().trim();
                         if (name.length() > IPC_MARK_MAX_LENGTH) {
-                            shortTip(R.string.ipc_setting_tip_name_length);
+                            shortTip(getString(R.string.ipc_face_name_length100_tip));
                             do {
                                 name = name.substring(0, name.length() - 1);
                             }
@@ -300,15 +305,15 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
                     }
                 })
                 .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.str_confirm, new InputDialog.ConfirmClickListener() {
+                .setConfirmButton(R.string.ipc_setting_save, new InputDialog.ConfirmClickListener() {
                     @Override
                     public void onConfirmClick(InputDialog dialog, String input) {
-                        if (input.length() > IPC_MARK_MAX_LENGTH) {
-                            shortTip(getString(R.string.ipc_face_name_length100_tip));
-                            return;
-                        }
                         if (input.trim().length() == 0) {
                             shortTip(getString(R.string.ipc_face_input_marks_tip));
+                            return;
+                        }
+                        if (input.trim().length() > IPC_MARK_MAX_LENGTH) {
+                            shortTip(getString(R.string.ipc_face_name_length100_tip));
                             return;
                         }
                         mPresenter.updateMark(input);

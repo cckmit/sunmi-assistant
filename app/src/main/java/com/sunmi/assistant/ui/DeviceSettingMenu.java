@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -18,15 +19,14 @@ import sunmi.common.utils.CommonHelper;
  * Description:
  * Created by bruce on 2019/6/28.
  */
-public class DeviceSettingDialog extends PopupWindow {
+public class DeviceSettingMenu extends PopupWindow {
 
     private LinearLayout llRoot;
     private Context context;
     private OnSettingsClickListener onSettingsClickListener;
     private SunmiDevice device;
-    private int height, width;
 
-    public DeviceSettingDialog(Context context, SunmiDevice device) {
+    public DeviceSettingMenu(Context context, SunmiDevice device) {
         super(context);
         this.context = context;
         this.device = device;
@@ -42,13 +42,14 @@ public class DeviceSettingDialog extends PopupWindow {
         View viewLayout = inflater.inflate(R.layout.layout_device_setting, null);
         llRoot = viewLayout.findViewById(R.id.pop_view);
         setContentView(viewLayout);
-
+        setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);//5.0必须调用setWidth,setHeight
+        setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         viewLayout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         setBackgroundDrawable(new ColorDrawable(0x00000000));
-        setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
         setTouchable(true); // 设置popupwindow可点击
         setOutsideTouchable(true); // 设置popupwindow外部可点击
         setFocusable(false); // 获取焦点
+        setClippingEnabled(false);
 
         viewLayout.findViewById(R.id.tv_detail).setOnClickListener(v -> {
             dismiss();
@@ -80,8 +81,8 @@ public class DeviceSettingDialog extends PopupWindow {
     }
 
     public void show(View parent) {
-        width = llRoot.getMeasuredWidth();
-        height = llRoot.getMeasuredHeight();
+        int width = llRoot.getMeasuredWidth();
+        int height = llRoot.getMeasuredHeight();
         if (!"IPC".equalsIgnoreCase(device.getType())) {
             height = height - CommonHelper.dp2px(context, 48);
         }

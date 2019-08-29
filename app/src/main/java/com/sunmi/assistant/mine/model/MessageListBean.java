@@ -222,5 +222,14 @@ public class MessageListBean {
         public void setMinorButtonLink(String minorButtonLink) {
             this.minorButtonLink = minorButtonLink;
         }
+
+        public MsgTag getTitleTag() {
+            return new MsgTag(getTitle());
+        }
+
+        public MsgTag getDetailTag() {
+            return new MsgTag(getContent());
+        }
+
     }
 }

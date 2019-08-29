@@ -25,11 +25,7 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
 
     @Override
     public void onReceivePassThroughMessage(Context context, MiPushMessage message) {
-        mMessage = message.getContent();
-        LogCat.e(TAG, "mipush onReceivePassThroughMessage mMessage = " + mMessage);
-        if (!TextUtils.isEmpty(message.getAlias())) {
-            mAlias = message.getAlias();
-        }
+
     }
 
     @Override
@@ -41,18 +37,20 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
             String params = message.getExtra().get("params");
             MiPushMsgBean msg = new Gson().fromJson(params, MiPushMsgBean.class);
             GotoActivityUtils.gotoMsgDetailActivity(context, msg.getModelId(), msg.getModelName());
-            LogCat.e(TAG, "mipush onNotificationMessageClicked mAlias = " + mAlias);
         }
     }
 
     @Override
     public void onNotificationMessageArrived(Context context, MiPushMessage message) {
         mMessage = message.getContent();
-        LogCat.e(TAG, "mipush onNotificationMessageArrived mMessage = " + mMessage);
         if (!TextUtils.isEmpty(message.getAlias())) {
             SpUtils.setRemindUnreadMsg(SpUtils.getRemindUnreadMsg() + 1);
             SpUtils.setUnreadMsg(SpUtils.getUnreadMsg() + 1);
             ShortcutBadger.applyCount(BaseApplication.getInstance(), SpUtils.getRemindUnreadMsg());
+            String params = message.getExtra().get("params");
+            MiPushMsgBean msg = new Gson().fromJson(params, MiPushMsgBean.class);
+            LogCat.e(TAG, "mipush onNotificationMessageClicked msg = " + msg.toString());
+            LogCat.e(TAG, "mipush onNotificationMessageArrived unreadCount = " + SpUtils.getRemindUnreadMsg());
             BaseNotification.newInstance().postNotificationName(CommonNotifications.pushMsgArrived);
         }
     }

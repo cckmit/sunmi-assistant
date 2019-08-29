@@ -4,14 +4,12 @@ import com.google.gson.Gson;
 import com.sunmi.assistant.mine.contract.MessageCountContract;
 import com.sunmi.assistant.mine.model.MessageCountBean;
 import com.sunmi.assistant.rpc.MessageCenterApi;
+import com.sunmi.assistant.utils.PushUtils;
 
 import sunmi.common.base.BasePresenter;
-import sunmi.common.constant.CommonNotifications;
-import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.FileHelper;
 import sunmi.common.utils.FileUtils;
-import sunmi.common.utils.SpUtils;
 
 /**
  * Description:
@@ -26,15 +24,8 @@ public class MessageCountPresenter extends BasePresenter<MessageCountContract.Vi
         MessageCenterApi.getInstance().getMessageCount(new RetrofitCallback<MessageCountBean>() {
             @Override
             public void onSuccess(int code, String msg, MessageCountBean data) {
-                int unreadMsg = data.getUnreadCount();
-                int remindUnreadMsg = data.getRemindUnreadCount();
-                if (SpUtils.getUnreadMsg() != unreadMsg || SpUtils.getRemindUnreadMsg() != remindUnreadMsg) {
-                    SpUtils.setUnreadMsg(unreadMsg);
-                    SpUtils.setRemindUnreadMsg(remindUnreadMsg);
-                    SpUtils.setUnreadDeviceMsg(data.getModelCountList().get(0).getUnreadCount());
-                    SpUtils.setUnreadSystemMsg(data.getModelCountList().get(1).getUnreadCount());
-                    BaseNotification.newInstance().postNotificationName(CommonNotifications.msgUpdated);
-                }
+                PushUtils.resetUnReadCount(data);
+                FileUtils.writeFileToSD(FileHelper.FILE_PATH, "msgCount.json", new Gson().toJson(data));
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();
                     mView.getMessageCountSuccess(data);
@@ -50,4 +41,5 @@ public class MessageCountPresenter extends BasePresenter<MessageCountContract.Vi
             }
         });
     }
+
 }

@@ -29,7 +29,7 @@ import com.sunmi.apmanager.utils.EncryptUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
 import com.sunmi.assistant.presenter.DevicePresenter;
-import com.sunmi.assistant.ui.DeviceSettingDialog;
+import com.sunmi.assistant.ui.DeviceSettingMenu;
 import com.sunmi.assistant.ui.MainTopBar;
 import com.sunmi.assistant.ui.adapter.DeviceListAdapter;
 import com.sunmi.assistant.utils.GlideImageLoader;
@@ -81,7 +81,7 @@ import sunmi.common.view.dialog.CommonDialog;
 @EFragment(R.layout.fragment_device)
 public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         implements DeviceContract.View, DeviceListAdapter.OnDeviceClickListener,
-        DeviceSettingDialog.OnSettingsClickListener, OnBannerListener,
+        DeviceSettingMenu.OnSettingsClickListener, OnBannerListener,
         BGARefreshLayout.BGARefreshLayoutDelegate, View.OnClickListener {
 
     @ViewById(R.id.shop_title)
@@ -105,7 +105,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     private Timer timer = null, timerException = null;
     private DeviceListAdapter deviceListAdapter;
     private LinearLayoutManager layoutManager;
-    private DeviceSettingDialog deviceSettingDialog;
+    private DeviceSettingMenu deviceSettingMenu;
 
     private Dialog dialogPassword = null;
     private String password = "";    //路由管理密码
@@ -281,13 +281,13 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @Override
     public void onMoreClick(SunmiDevice item, int position) {
-        if (deviceSettingDialog != null) {
-            deviceSettingDialog.dismiss();
-            deviceSettingDialog = null;
+        if (deviceSettingMenu != null) {
+            deviceSettingMenu.dismiss();
+            deviceSettingMenu = null;
         } else {
-            deviceSettingDialog = new DeviceSettingDialog(mActivity, item);
-            deviceSettingDialog.setOnSettingsClickListener(this);
-            deviceSettingDialog.show(layoutManager.findViewByPosition(position)
+            deviceSettingMenu = new DeviceSettingMenu(mActivity, item);
+            deviceSettingMenu.setOnSettingsClickListener(this);
+            deviceSettingMenu.show(layoutManager.findViewByPosition(position)
                     .findViewById(R.id.iv_more));
         }
     }

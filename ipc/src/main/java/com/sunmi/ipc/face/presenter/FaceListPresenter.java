@@ -266,7 +266,7 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
                     public void onFail(int code, String msg, FaceCheckResp data) {
                         LogCat.e(TAG, "Check face file Failed. " + msg);
                         if (isViewAttached()) {
-                            mView.uploadFailed();
+                            mView.uploadFailed(code);
                         }
                     }
                 });
@@ -287,7 +287,7 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
                                 mView.uploadSuccess();
                             }
                         } else if (isViewAttached()) {
-                            mView.uploadFailed();
+                            mView.uploadFailed(code);
                         }
                     }
 
@@ -295,7 +295,7 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
                     public void onFail(int code, String msg, FaceSaveResp data) {
                         LogCat.e(TAG, "Save face file Failed. " + msg);
                         if (isViewAttached()) {
-                            mView.uploadFailed();
+                            mView.uploadFailed(code);
                         }
                     }
                 });
