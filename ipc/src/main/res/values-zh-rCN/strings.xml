@@ -150,7 +150,7 @@
     <string name="ipc_face_group_create">新建人脸分组</string>
     <string name="ipc_face_group_create_full">人脸库数量已达上限</string>
     <string name="ipc_face_group_name">名称</string>
-    <string name="ipc_face_group_name_hint">最多32个字符（必填）</string>
+    <string name="ipc_face_group_name_hint">请输入分组名称（必填）</string>
     <string name="ipc_face_group_name_error">名称为空或超过32个字符</string>
     <string name="ipc_face_group_create_capacity">照片数量</string>
     <string name="ipc_face_group_create_capacity_hint">剩余照片数量%d张（必填）</string>

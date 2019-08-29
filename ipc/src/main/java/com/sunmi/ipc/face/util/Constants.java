@@ -12,6 +12,7 @@ public class Constants {
     public static final int IMAGE_COMPRESS_RETRY_TIMES = 3;
 
     public static final int GROUP_MAX_CAPACITY = 10000;
+    public static final int GROUP_DEFAULT_CAPACITY = 1000;
     public static final int GROUP_MAX_THRESHOLD = 100;
     public static final int GROUP_MAX_NAME_LENGTH = 32;
     public static final int GROUP_MAX_MARK_LENGTH = 100;
