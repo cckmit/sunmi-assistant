@@ -68,11 +68,6 @@ public interface RecognitionSettingContract {
         void updateState();
 
         /**
-         * 检查IPC SD卡状态
-         */
-        void checkSdStatus();
-
-        /**
          * 设置人脸位置
          *
          * @param x 人脸坐标x
