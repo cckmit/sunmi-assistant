@@ -224,10 +224,7 @@ public class IpcSettingWiFiActivity extends BaseMvpActivity<IpcSettingWifiPresen
         netExceptionView(false);
         tvStatus.setText(R.string.ipc_setting_tip_wifi_choose);
         WifiListResp bean = new Gson().fromJson(res.getResult().toString(), WifiListResp.class);
-        if (bean == null) {
-            return;
-        }
-        if (bean.getScan_results().size() == 0) {
+        if (bean == null || bean.getScan_results().size() == 0) {
             return;
         }
         recyclerView.setAdapter(new CommonListAdapter<WifiListResp.ScanResultsBean>(context,

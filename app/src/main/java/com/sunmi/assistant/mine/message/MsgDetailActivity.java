@@ -29,7 +29,6 @@ import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonNotifications;
-import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.view.TitleBarView;
 
@@ -54,7 +53,7 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
     String modelName;
 
     private MsgDetailAdapter adapter;
-    private int pageNum = 1, pageSize = 10;
+    private int pageNum, pageSize;
     private boolean loadFinish;
     List<MessageListBean.MsgListBean> dataList = new ArrayList<>();
     private int deletePosition;
@@ -65,7 +64,7 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
         titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
         mPresenter = new MessageDetailPresenter();
         mPresenter.attachView(this);
-        mPresenter.getMessageList(modelId, pageNum, pageSize, true, false);
+        reloadMessageList(true);
         showLoadingDialog();
         refreshLayout.setDelegate(this);
         BGARefreshViewHolder viewHolder = new BGANormalRefreshViewHolder(context, true);
@@ -76,8 +75,7 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
     }
 
     @Override
-    public void getMessageListSuccess(List<MessageListBean.MsgListBean> bean, int total,
-                                      int returnCount, boolean needUpdate, boolean isRefesh) {
+    public void getMessageListSuccess(List<MessageListBean.MsgListBean> bean, int total, int returnCount) {
         networkError.setVisibility(View.GONE);
         refreshLayout.endLoadingMore();
         refreshLayout.endRefreshing();
@@ -88,24 +86,14 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
                 return;
             }
             if (pageNum == 1 || total > dataList.size()) {
-                addData(bean, isRefesh);
+                addData(bean, pageNum == 1);
                 if (total > (pageNum - 1) * pageSize + returnCount) {
                     pageNum++;
                 } else {
                     loadFinish = true;
                 }
             }
-
-            if (needUpdate || (isRefesh && bean.get(0).getReceiveStatus() == 0)) {
-                mPresenter.updateReceiveStatus(modelId);
-            }
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        BaseNotification.newInstance().postNotificationName(CommonNotifications.msgReadedOrChange);
-        finish();
     }
 
     @Override
@@ -137,7 +125,7 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
 
     @Click(R.id.btn_refresh)
     void refreshClick() {
-        mPresenter.getMessageList(modelId, pageNum, pageSize, true, false);
+        reloadMessageList(true);
     }
 
     @Override
@@ -146,19 +134,9 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
     }
 
     @Override
-    public void updateReceiveStatusSuccess() {
-
-    }
-
-    @Override
-    public void updateReceiveStatusFail(int code, String msg) {
-
-    }
-
-    @Override
     public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
         if (NetworkUtils.isNetworkAvailable(context) && !loadFinish) {
-            mPresenter.getMessageList(modelId, pageNum, pageSize, false, false);
+            mPresenter.getMessageList(modelId, pageNum, pageSize, false);
             return true;
         }
         return false;
@@ -166,18 +144,18 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
 
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
-        reloadMessageList();
+        reloadMessageList(false);
     }
 
     @Override
-    public int[] getStickNotificationId() {
+    public int[] getUnStickNotificationId() {
         return new int[]{CommonNotifications.pushMsgArrived};
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (CommonNotifications.pushMsgArrived == id) {
-            reloadMessageList();
+            reloadMessageList(false);
         }
     }
 
@@ -208,10 +186,10 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
         return popupMenu;
     }
 
-    private void reloadMessageList() {
+    private void reloadMessageList(boolean needUpdateStatus) {
         pageNum = 1;
         pageSize = 10;
-        mPresenter.getMessageList(modelId, pageNum, pageSize, false, true);
+        mPresenter.getMessageList(modelId, pageNum, pageSize, needUpdateStatus);
     }
 
 }

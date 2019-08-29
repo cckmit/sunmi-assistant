@@ -206,23 +206,27 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
     public void updateNameView(String name) {
         mFaceGroup.setGroupName(name);
         mSilName.setRightText(name);
+        setResult(RESULT_OK);
     }
 
     @Override
     public void updateCapacityView(int capacity) {
         mFaceGroup.setCapacity(capacity);
         mSilCapacity.setRightText(String.valueOf(capacity));
+        setResult(RESULT_OK);
     }
 
     @Override
     public void updateThresholdView(int times, int days) {
         mFaceGroup.setThreshold(times, days);
         mSilThreshold.setRightText(getString(R.string.ipc_face_group_threshold_content, days, times));
+        setResult(RESULT_OK);
     }
 
     @Override
     public void updateMarkView(String mark) {
         mFaceGroup.setMark(mark);
+        setResult(RESULT_OK);
     }
 
     @Override
@@ -329,7 +333,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
         View view = inflater.inflate(R.layout.dialog_photo_input, null);
         final EditText etInput = view.findViewById(R.id.et_input);
         final TextView errorTip = view.findViewById(R.id.tv_error_tip);
-        final int nowCapacity = 10000 - mOccupiedCapacity - mFaceGroup.getCapacity();
+        final int nowCapacity = 10000 - mOccupiedCapacity + mFaceGroup.getCapacity();
         etInput.setHint(getString(R.string.ipc_face_photo_num_max, nowCapacity));
         errorTip.setText(getString(R.string.ipc_face_photo_num_remainder, nowCapacity));
         view.findViewById(com.commonlibrary.R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {

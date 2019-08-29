@@ -64,7 +64,7 @@
         <item>@string/msg_ipc</item>
         <item>@string/msg_esl</item>
         <item>@string/msg_task</item>
-        <item>@string/str_support</item>
+        <item>@string/str_tab_support</item>
         <item>@string/msg_promotion</item>
         <item>@string/msg_ipc_tf_non_exist</item>
         <item>@string/msg_ipc_tf_exist</item>
