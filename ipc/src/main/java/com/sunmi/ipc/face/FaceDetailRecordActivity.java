@@ -12,12 +12,16 @@ import com.sunmi.ipc.model.FaceEntryHistoryResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
+import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
@@ -33,8 +37,10 @@ import static sunmi.common.utils.DateTimeUtils.secondToDate;
  * @date 2019/8/27
  */
 @EActivity(resName = "face_activity_photo_detail_time_record")
-public class FaceDetailRecordActivity extends BaseActivity {
-
+public class FaceDetailRecordActivity extends BaseActivity implements BGARefreshLayout.BGARefreshLayoutDelegate {
+    private static final int PAGE_SIZE = 15;//每页条数
+    @ViewById(resName = "bga_refresh")
+    BGARefreshLayout refreshView;
     @ViewById(resName = "recyclerView")
     RecyclerView recyclerView;
     @ViewById(resName = "tv_empty")
@@ -45,37 +51,64 @@ public class FaceDetailRecordActivity extends BaseActivity {
     int mShopId;
     @Extra
     Face mFace;
+    private int pageNumFlag = 1;
+    private boolean isHasMore;
+    private List<FaceEntryHistoryResp.EntryHistory> list = new ArrayList<>();
 
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        arrivalList();
+        initRefreshLayout();
+        arrivalList(true);
     }
 
-    private void arrivalList() {
-        showLoadingDialog();
-        IpcCloudApi.arrivalListFaceGroup(SpUtils.getCompanyId(), mShopId, mFace.getFaceId(), new RetrofitCallback<FaceEntryHistoryResp>() {
-            @Override
-            public void onSuccess(int code, String msg, FaceEntryHistoryResp data) {
-                hideLoadingDialog();
-                List<FaceEntryHistoryResp.EntryHistory> list = data.getHistoryList();
-                includeNetworkError.setVisibility(View.GONE);
-                if (list.size() == 0) {
-                    tvEmpty.setText(R.string.ipc_face_group_no_enter_shop_time);
-                    tvEmpty.setVisibility(View.VISIBLE);
-                } else {
-                    tvEmpty.setVisibility(View.GONE);
-                    showDataView(list);
-                }
-            }
+    private void initRefreshLayout() {
 
-            @Override
-            public void onFail(int code, String msg, FaceEntryHistoryResp data) {
-                hideLoadingDialog();
-                includeNetworkError.setVisibility(View.VISIBLE);
-            }
-        });
+        refreshView.setDelegate(this);
+        refreshView.setRefreshViewHolder(new BGANormalRefreshViewHolder(this, true));
+        refreshView.setPullDownRefreshEnable(true);
+        refreshView.setIsShowLoadingMoreView(true);
+    }
+
+    @Click(resName = "btn_refresh")
+    void onRefreshClick() {
+        arrivalList(true);
+    }
+
+    private void arrivalList(final boolean isRefresh) {
+        if (isRefresh) {
+            list.clear();
+            pageNumFlag = 1;
+        }
+        IpcCloudApi.arrivalListFaceGroup(SpUtils.getCompanyId(), mShopId, mFace.getFaceId(),
+                pageNumFlag, PAGE_SIZE, new RetrofitCallback<FaceEntryHistoryResp>() {
+                    @Override
+                    public void onSuccess(int code, String msg, FaceEntryHistoryResp data) {
+                        endRefresh(isRefresh);
+                        includeNetworkError.setVisibility(View.GONE);
+                        if (pageNumFlag == 1 && data.getHistoryList().size() == 0) {
+                            tvEmpty.setText(R.string.ipc_face_group_no_enter_shop_time);
+                            tvEmpty.setVisibility(View.VISIBLE);
+                        } else {
+                            if (data.getHistoryList().size() == PAGE_SIZE) {
+                                isHasMore = true;
+                                pageNumFlag++;
+                            } else {
+                                isHasMore = false;
+                            }
+                            tvEmpty.setVisibility(View.GONE);
+                            list.addAll(data.getHistoryList());
+                            showDataView(list);
+                        }
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg, FaceEntryHistoryResp data) {
+                        endRefresh(isRefresh);
+                        includeNetworkError.setVisibility(View.VISIBLE);
+                    }
+                });
     }
 
     private void showDataView(List<FaceEntryHistoryResp.EntryHistory> list) {
@@ -86,5 +119,31 @@ public class FaceDetailRecordActivity extends BaseActivity {
                 holder.setText(R.id.tv_time, secondToDate(entryHistory.getArrivalTime(), DATE_FORMAT_ENTER_SHOP));
             }
         });
+    }
+
+    public void endRefresh(boolean isRefresh) {
+        if (isRefresh) {
+            refreshView.endRefreshing();
+        } else {
+            refreshView.endLoadingMore();
+        }
+    }
+
+    @Override
+    public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
+        refreshView.beginRefreshing();
+        arrivalList(true);
+    }
+
+    @Override
+    public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
+        if (isHasMore) {
+            if (refreshLayout.isLoadingMore()) {
+                refreshView.beginLoadingMore();
+            }
+            arrivalList(false);
+            return true;
+        }
+        return false;
     }
 }
