@@ -130,7 +130,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
         RequestOptions requestOptions = RequestOptions.circleCropTransform();
         Glide.with(this).load(mFace.getImgUrl()).apply(requestOptions).into(ivFaceImage);
         if (mFaceGroup != null) {
-            silFaceId.setRightText(Utils.getGroupName(this, mFaceGroup, false));
+            silFaceId.setRightText(Utils.getGroupName(this, mFaceGroup));
         }
         if (mFace != null) {
             silFaceName.setRightText(mFace.getName());
@@ -398,13 +398,13 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
             @Override
             public void convert(final ViewHolder holder, final FaceGroup data) {
                 SettingItemLayout shopItem = holder.getView(R.id.sil_item);
-                shopItem.setLeftText(Utils.getGroupName(context, data, false));
+                shopItem.setLeftText(Utils.getGroupName(context, data));
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         selectedIndex = holder.getAdapterPosition();
                         targetGroupId = data.getTargetGroupId();
-                        groupName = Utils.getGroupName(context, data, false);
+                        groupName = Utils.getGroupName(context, data);
                         notifyDataSetChanged();
                     }
                 });

@@ -801,7 +801,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         public void setupView(@NonNull BaseViewHolder<FaceGroup> holder, FaceGroup model, int position) {
             TextView name = holder.getView(R.id.tv_face_group_name);
             TextView content = holder.getView(R.id.tv_face_group_remain);
-            name.setText(Utils.getGroupName(holder.getContext(), model, false));
+            name.setText(Utils.getGroupName(holder.getContext(), model));
             int remain = model.getCapacity() - model.getCount();
             content.setText(holder.getContext().getString(R.string.ipc_face_remain, remain));
             if (selectedCount > remain) {

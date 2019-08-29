@@ -141,11 +141,10 @@
     <string name="str_cloud_back">云回</string>
 
     <string name="ipc_face_group_title">人脸分组</string>
-    <string name="ipc_face_group_suffix">分组</string>
-    <string name="ipc_face_group_new">新客</string>
-    <string name="ipc_face_group_old">熟客</string>
-    <string name="ipc_face_group_staff">员工</string>
-    <string name="ipc_face_group_black">黑名单</string>
+    <string name="ipc_face_group_new">新客分组</string>
+    <string name="ipc_face_group_old">熟客分组</string>
+    <string name="ipc_face_group_staff">员工分组</string>
+    <string name="ipc_face_group_black">黑名单分组</string>
     <string name="ipc_face_group_default">系统默认分组，不可删除</string>
     <string name="ipc_face_group_custom">自定义分组，可删除</string>
     <string name="ipc_face_group_create">新建人脸分组</string>
@@ -161,7 +160,7 @@
     <string name="ipc_face_group_capacity_dialog_content">500~1000之内数字</string>
     <string name="ipc_face_group_capacity_dialog_tip">剩余可分配的照片数量为%d</string>
     <string name="ipc_face_group_capacity_dialog_error">输入的照片数量超过分组上限</string>
-    <string name="ipc_face_group_threshold">移库分组规则</string>
+    <string name="ipc_face_group_threshold">移动分组规则</string>
     <string name="ipc_face_group_threshold_content">%d天%d次</string>
     <string name="ipc_face_group_threshold_error">移库分组规则设定错误或超过上限</string>
     <string name="ipc_face_group_mark">备注</string>
@@ -175,7 +174,7 @@
     <string name="ipc_face_group_new_desc">新客分组为临时分组，未匹配的人脸数据会存放于此</string>
     <string name="ipc_face_group_old_desc">满足新客移到熟客条件的人脸信息将存在熟客分组中</string>
     <string name="ipc_face_group_staff_desc">员工库的人脸识别结果将不计入客流统计</string>
-    <string name="ipc_face_group_black_desc">当属于黑名单的人员出现时，会向用户推送告警消息</string>
+    <string name="ipc_face_group_black_desc">当黑名单的人员出现时，会向用户推送告警消息</string>
     <string name="tip_ipc_config_fail">摄像机设置失败</string>
     <string name="tip_error_company_or_shop_id">错误的商户id或者店铺id</string>
     <string name="tip_adjust_first">为了能正常使用人脸识别功能，请点击下方【调整画面】按钮</string>
