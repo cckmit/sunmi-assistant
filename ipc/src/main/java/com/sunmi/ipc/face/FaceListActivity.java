@@ -595,6 +595,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
             View view = getCurrentFocus();
             if (view != null && isShouldHideKeyBord(view, ev)) {
                 hideSoftInput(view.getWindowToken());
+                return true;
             }
         }
         return super.dispatchTouchEvent(ev);
