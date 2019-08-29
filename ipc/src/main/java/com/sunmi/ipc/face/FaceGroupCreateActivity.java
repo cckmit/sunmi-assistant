@@ -51,6 +51,8 @@ public class FaceGroupCreateActivity extends BaseActivity {
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
+        int capacity = FaceGroup.MAX_CAPACITY_ALL_GROUP - mOccupiedCapacity;
+        mEtCapacity.setHint(getString(R.string.ipc_face_group_create_capacity_hint, capacity));
         mBtnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,7 +82,7 @@ public class FaceGroupCreateActivity extends BaseActivity {
             return;
         }
 
-        if (mark == null || mark.length() == 0 || mark.length() > FaceGroup.MAX_LENGTH_NAME) {
+        if (mark != null && mark.length() > FaceGroup.MAX_LENGTH_NAME) {
             shortTip(R.string.ipc_face_group_mark_error);
             return;
         }

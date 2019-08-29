@@ -153,6 +153,8 @@
     <string name="ipc_face_group_name">名称</string>
     <string name="ipc_face_group_name_hint">最多20个汉字（必填）</string>
     <string name="ipc_face_group_name_error">名称为空或超过20个字符</string>
+    <string name="ipc_face_group_create_capacity">照片数量</string>
+    <string name="ipc_face_group_create_capacity_hint">剩余照片数量%d张（必填）</string>
     <string name="ipc_face_group_capacity">人脸照片数量上限</string>
     <string name="ipc_face_group_capacity_error">输入的照片数量错误或超过分组上限</string>
     <string name="ipc_face_group_capacity_dialog">照片数量上限</string>
@@ -164,7 +166,7 @@
     <string name="ipc_face_group_threshold_error">移库分组规则设定错误或超过上限</string>
     <string name="ipc_face_group_mark">备注</string>
     <string name="ipc_face_group_mark_hint">请输入备注</string>
-    <string name="ipc_face_group_mark_error">备注为空或超过100个字符</string>
+    <string name="ipc_face_group_mark_error">备注不得超过100个字符</string>
     <string name="ipc_face_group_manage">管理照片</string>
     <string name="ipc_face_group_count">已存%d</string>
     <string name="ipc_face_group_notification">进店通知</string>
