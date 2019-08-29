@@ -66,4 +66,15 @@ public class MiPushMsgBean {
         this.shopId = shopId;
     }
 
+    @Override
+    public String toString() {
+        return "MiPushMsgBean{" +
+                "companyId=" + companyId +
+                ", modelId=" + modelId +
+                ", modelName='" + modelName + '\'' +
+                ", msgId=" + msgId +
+                ", shopId=" + shopId +
+                '}';
+    }
+
 }
