@@ -250,6 +250,7 @@
     <string name="ipc_face_order">次</string>
     <string name="tip_device_bound_by_other_shop">操作失败，该摄像机已被其他门店绑定</string>
     <string name="ipc_face_need_max_num">(剩余:%d)</string>
+    <string name="ipc_face_full_capacity">该分组容量已满</string>
 
 </resources>
 

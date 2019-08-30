@@ -67,6 +67,7 @@ import sunmi.common.mediapicker.TakePhotoAgent;
 import sunmi.common.mediapicker.data.model.Image;
 import sunmi.common.mediapicker.data.model.Result;
 import sunmi.common.model.FilterItem;
+import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.DropdownAdapter;
 import sunmi.common.view.DropdownAnimation;
@@ -168,6 +169,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
 
     @SuppressLint("ClickableViewAccessibility")
     private void initViews() {
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         mTitleBar.getLeftTextView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
