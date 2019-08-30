@@ -400,7 +400,6 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                 ageRangeCode = age.getCode();
             }
         }
-        setResult(RESULT_OK);
     }
 
     @Override
