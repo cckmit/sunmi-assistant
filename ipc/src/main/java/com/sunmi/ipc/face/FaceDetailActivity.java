@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,12 +24,15 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.face.contract.FaceDetailContract;
 import com.sunmi.ipc.face.model.Face;
 import com.sunmi.ipc.face.model.FaceAge;
 import com.sunmi.ipc.face.model.FaceGroup;
 import com.sunmi.ipc.face.presenter.FaceDetailPresenter;
+import com.sunmi.ipc.face.util.GlideRoundCrop;
 import com.sunmi.ipc.face.util.Utils;
 import com.sunmi.ipc.model.FaceAgeRangeResp;
 
@@ -111,6 +115,9 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
     private CommonDialog mDeleteDialog;
     private TakePhotoAgent mPickerAgent;
 
+    private GlideRoundCrop mRoundTransform;
+    private int mFrom;
+
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
@@ -122,6 +129,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
         mPickerAgent = TakePhoto.with(this)
                 .setTakePhotoListener(new PickerResult())
                 .build();
+        mRoundTransform = new GlideRoundCrop((int) getResources().getDimension(R.dimen.dp_6));
     }
 
     private void initFaceInfo() {
@@ -313,20 +321,43 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
     }
 
     @Override
-    public void updateImageFailed(int code) {
-        mUploadDialog.dismiss();
-        new CommonDialog.Builder(this)
-                .setTitle(R.string.ipc_face_error_upload)
-                .setMessage(code == 5526 ? R.string.ipc_face_error_photo
-                        : R.string.ipc_face_error_photo_network)
-                .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.ipc_face_tack_photo_again, new DialogInterface.OnClickListener() {
+    public void updateImageFailed(final int code, String file) {
+        int size = (int) getResources().getDimension(R.dimen.dp_90);
+        Glide.with(this)
+                .load(file)
+                .apply(RequestOptions.bitmapTransform(mRoundTransform))
+                .into(new CustomTarget<Drawable>(size, size) {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mPickerAgent.takePhoto();
+                    public void onResourceReady(@NonNull Drawable resource,
+                                                @Nullable Transition<? super Drawable> transition) {
+                        mUploadDialog.dismiss();
+                        final boolean fromTakePhoto = mFrom == TakePhotoAgent.FROM_TAKE_PHOTO;
+                        new CommonDialog.Builder(context)
+                                .setTitle(R.string.ipc_face_error_upload)
+                                .setMessage(code == 5526 ? R.string.ipc_face_error_photo
+                                        : R.string.ipc_face_error_photo_network)
+                                .setMessageDrawablePadding(R.dimen.dp_12)
+                                .setMessageDrawable(null, null, null, resource)
+                                .setCancelButton(R.string.sm_cancel)
+                                .setConfirmButton(fromTakePhoto ? R.string.ipc_face_tack_photo_again
+                                                : R.string.ipc_face_pick_again,
+                                        new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                if (fromTakePhoto) {
+                                                    mPickerAgent.takePhoto();
+                                                } else {
+                                                    mPickerAgent.pickSinglePhoto();
+                                                }
+                                            }
+                                        })
+                                .create().show();
                     }
-                })
-                .create().show();
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                    }
+                });
     }
 
     @Override
@@ -369,7 +400,6 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                 ageRangeCode = age.getCode();
             }
         }
-        setResult(RESULT_OK);
     }
 
     @Override
@@ -477,14 +507,30 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
 
         @Override
         public void onSuccess(int from, Result result) {
-            if (mUploadDialog == null) {
-                mUploadDialog = new CommonDialog.Builder(FaceDetailActivity.this)
-                        .setTitle(R.string.ipc_face_tip_photo_uploading_title)
-                        .setMessage(R.string.ipc_face_tip_photo_uploading_content)
-                        .create();
-            }
-            mUploadDialog.show();
-            compress(new File(result.getImage().getPath()));
+            mFrom = from;
+            final File file = new File(result.getImage().getPath());
+            int size = (int) getResources().getDimension(R.dimen.dp_90);
+            Glide.with(context)
+                    .load(file)
+                    .apply(RequestOptions.bitmapTransform(mRoundTransform))
+                    .into(new CustomTarget<Drawable>(size, size) {
+                        @Override
+                        public void onResourceReady(@NonNull Drawable resource,
+                                                    @Nullable Transition<? super Drawable> transition) {
+                            mUploadDialog = new CommonDialog.Builder(context)
+                                    .setTitle(R.string.ipc_face_tip_photo_uploading_title)
+                                    .setMessage(R.string.ipc_face_tip_photo_uploading_content)
+                                    .setMessageDrawablePadding(R.dimen.dp_12)
+                                    .setMessageDrawable(null, null, null, resource)
+                                    .create();
+                            mUploadDialog.show();
+                            compress(file);
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                        }
+                    });
         }
 
         @Override

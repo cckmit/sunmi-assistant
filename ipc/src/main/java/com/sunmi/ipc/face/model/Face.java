@@ -113,6 +113,21 @@ public class Face implements Parcelable {
     }
 
     @Override
+    public String toString() {
+        return "Face{" +
+                "faceId=" + faceId +
+                ", name='" + name + '\'' +
+                ", gender=" + gender +
+                ", ageRangeCode=" + ageRangeCode +
+                ", groupId=" + groupId +
+                ", arrivalCount=" + arrivalCount +
+                ", createTime=" + createTime +
+                ", lastArrivalTime=" + lastArrivalTime +
+                ", imgUrl='" + imgUrl + '\'' +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

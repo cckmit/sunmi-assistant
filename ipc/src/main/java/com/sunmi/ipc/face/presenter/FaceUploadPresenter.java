@@ -47,7 +47,7 @@ public class FaceUploadPresenter extends BasePresenter<FaceUploadContract.View>
 
                     @Override
                     public void onFail(int code, String msg, FaceCheckResp data) {
-                        LogCat.e(TAG, "Check face file Failed. " + msg);
+                        LogCat.e(TAG, "Check face file Failed. " + code + ":" + msg);
                         if (code == 5526) {
                             image.setState(UploadImage.STATE_FAILED);
                         } else {

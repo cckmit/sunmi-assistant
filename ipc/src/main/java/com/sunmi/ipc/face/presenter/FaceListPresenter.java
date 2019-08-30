@@ -254,25 +254,25 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
     }
 
     @Override
-    public void upload(File file) {
+    public void upload(final File file) {
         IpcCloudApi.uploadFaceAndCheck(SpUtils.getCompanyId(), mShopId, mGroup.getGroupId(), file,
                 new RetrofitCallback<FaceCheckResp>() {
                     @Override
                     public void onSuccess(int code, String msg, FaceCheckResp data) {
-                        save(data);
+                        save(file.getPath(), data);
                     }
 
                     @Override
                     public void onFail(int code, String msg, FaceCheckResp data) {
                         LogCat.e(TAG, "Check face file Failed. " + msg);
                         if (isViewAttached()) {
-                            mView.uploadFailed(code);
+                            mView.uploadFailed(code, file.getPath());
                         }
                     }
                 });
     }
 
-    public void save(FaceCheckResp data) {
+    public void save(final String file, FaceCheckResp data) {
         List<String> name = new ArrayList<>(1);
         name.add(data.getFileName());
         IpcCloudApi.saveFace(SpUtils.getCompanyId(), mShopId, mGroup.getGroupId(), 0, name,
@@ -287,7 +287,7 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
                                 mView.uploadSuccess();
                             }
                         } else if (isViewAttached()) {
-                            mView.uploadFailed(code);
+                            mView.uploadFailed(code, file);
                         }
                     }
 
@@ -295,7 +295,7 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
                     public void onFail(int code, String msg, FaceSaveResp data) {
                         LogCat.e(TAG, "Save face file Failed. " + msg);
                         if (isViewAttached()) {
-                            mView.uploadFailed(code);
+                            mView.uploadFailed(code, file);
                         }
                     }
                 });
