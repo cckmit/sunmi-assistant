@@ -107,5 +107,6 @@
     <string name="picker_toast_create_dir_error">Create directory FAILED!</string>
     <string name="picker_toast_path_error">Path is exist and is NOT a directory!</string>
     <string name="picker_toast_limit">选择的图片超出上限</string>
+    <string name="notice_unread_message">您有%d条未读消息</string>
 
 </resources>

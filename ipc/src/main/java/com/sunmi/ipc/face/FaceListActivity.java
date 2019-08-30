@@ -68,6 +68,7 @@ import sunmi.common.mediapicker.data.model.Image;
 import sunmi.common.mediapicker.data.model.Result;
 import sunmi.common.model.FilterItem;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.DropdownAdapter;
 import sunmi.common.view.DropdownAnimation;
@@ -868,6 +869,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                                 .mFace(model)
                                 .mFaceGroup(mFaceGroup)
                                 .startForResult(REQUEST_CODE_DETAIL);
+                        LogCat.d(TAG, "Face: " + model);
                         return;
                     }
 
@@ -957,7 +959,10 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                     name.setText(model.getName());
                 }
                 image.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                Glide.with(holder.itemView).load(model.getImgUrl()).into(image);
+                Glide.with(holder.itemView)
+                        .load(model.getImgUrl())
+                        .placeholder(R.mipmap.face_tip_placeholder)
+                        .into(image);
             }
         }
 
@@ -1002,6 +1007,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
             Glide.with(holder.itemView)
                     .load(model.getImgUrl())
                     .apply(RequestOptions.bitmapTransform(mRoundTransform))
+                    .placeholder(R.mipmap.face_tip_placeholder)
                     .into(image);
         }
 

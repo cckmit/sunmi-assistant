@@ -40,6 +40,7 @@
         android:id="@+id/item_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@drawable/face_bg_name"
         android:ellipsize="end"
         android:gravity="center"
         android:lines="1"
