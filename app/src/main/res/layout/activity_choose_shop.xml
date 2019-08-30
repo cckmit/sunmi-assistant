@@ -21,8 +21,9 @@
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@+id/title_bar"
+        android:background="@color/c_white"
         android:focusable="true"
         android:focusableInTouchMode="true">
 
@@ -53,8 +54,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_12"
                     android:layout_marginTop="@dimen/dp_8"
-                    android:drawableStart="@drawable/dashboard_ic_location"
                     android:drawablePadding="@dimen/dp_4"
+                    android:drawableStart="@drawable/dashboard_ic_location"
                     android:ellipsize="end"
                     android:singleLine="true"
                     android:textColor="@color/colorText"
@@ -62,12 +63,15 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_8"
+                android:background="@color/bg_common" />
+
             <RelativeLayout
                 android:id="@+id/rl_others"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/dp_8"
-                android:background="@color/c_white"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <TextView
@@ -98,8 +102,8 @@
                     android:layout_below="@+id/tv_other"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="@dimen/dp_96"
-                    android:drawableTop="@drawable/ic_no_store"
                     android:drawablePadding="@dimen/dp_12"
+                    android:drawableTop="@drawable/ic_no_store"
                     android:gravity="center"
                     android:text="@string/tip_no_other_shop"
                     android:textSize="@dimen/sp_14"
