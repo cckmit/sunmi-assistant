@@ -50,9 +50,6 @@ public class BaseRetrofitClient {
         }
         HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory();
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
-//                .cookieJar(new CookieJarImpl(new PersistentCookieStore(mContext)))
-//                .cache(cache)
-//                .addInterceptor(new CacheInterceptor(mContext))
                 .addInterceptor(new BaseInterceptor(headers))
                 .sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager)
                 .hostnameVerifier(HttpsUtils.UnSafeHostnameVerifier)
