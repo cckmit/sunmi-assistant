@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.CallSuper;
@@ -30,6 +31,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.face.contract.FaceListContract;
 import com.sunmi.ipc.face.model.Face;
@@ -142,6 +145,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     private Dialog mMoveDialog;
     private Dialog mUploadDialog;
     private BottomPopMenu mPickerDialog;
+    private GlideRoundCrop mRoundTransform;
 
     private TakePhotoAgent mPickerAgent;
 
@@ -159,6 +163,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         mPickerAgent = TakePhoto.with(this)
                 .setTakePhotoListener(new PickerResult())
                 .build();
+        mRoundTransform = new GlideRoundCrop((int) getResources().getDimension(R.dimen.dp_6));
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -724,14 +729,29 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         @Override
         public void onSuccess(int from, Result result) {
             if (from == TakePhotoAgent.FROM_TAKE_PHOTO) {
-                if (mUploadDialog == null) {
-                    mUploadDialog = new CommonDialog.Builder(FaceListActivity.this)
-                            .setTitle(R.string.ipc_face_tip_photo_uploading_title)
-                            .setMessage(R.string.ipc_face_tip_photo_uploading_content)
-                            .create();
-                }
-                mUploadDialog.show();
-                compress(new File(result.getImage().getPath()));
+                File file = new File(result.getImage().getPath());
+                int size = (int) getResources().getDimension(R.dimen.dp_90);
+                Glide.with(FaceListActivity.this)
+                        .load(file)
+                        .apply(RequestOptions.bitmapTransform(mRoundTransform))
+                        .into(new CustomTarget<Drawable>(size, size) {
+                            @Override
+                            public void onResourceReady(@NonNull Drawable resource,
+                                                        @Nullable Transition<? super Drawable> transition) {
+                                mUploadDialog = new CommonDialog.Builder(FaceListActivity.this)
+                                        .setTitle(R.string.ipc_face_tip_photo_uploading_title)
+                                        .setMessage(R.string.ipc_face_tip_photo_uploading_content)
+                                        .setMessageDrawablePadding(R.dimen.dp_12)
+                                        .setMessageDrawable(null, null, null, resource)
+                                        .create();
+                                mUploadDialog.show();
+                            }
+
+                            @Override
+                            public void onLoadCleared(@Nullable Drawable placeholder) {
+                            }
+                        });
+                compress(file);
             } else {
                 List<Image> images = result.getImages();
                 ArrayList<UploadImage> list = new ArrayList<>(images.size());
@@ -930,8 +950,6 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
 
     private class FaceSelectedListAdapter extends SimpleArrayAdapter<Face> {
 
-        private GlideRoundCrop round = new GlideRoundCrop((int) getResources().getDimension(R.dimen.dp_6));
-
         public FaceSelectedListAdapter() {
             addOnViewClickListener(R.id.item_image, new OnViewClickListener<Face>() {
                 @Override
@@ -964,7 +982,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
             ImageView image = holder.getView(R.id.item_image);
             Glide.with(holder.itemView)
                     .load(model.getImgUrl())
-                    .apply(RequestOptions.bitmapTransform(round))
+                    .apply(RequestOptions.bitmapTransform(mRoundTransform))
                     .into(image);
         }
 
