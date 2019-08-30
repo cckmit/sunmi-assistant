@@ -128,6 +128,8 @@
         <service
             android:name="sunmi.common.service.BadgeIntentService"
             android:exported="false" />
+
+        <receiver android:name="sunmi.common.receiver.NotifyBroadcastReceiver" />
         <!-- 小米推送end -->
 
     </application>

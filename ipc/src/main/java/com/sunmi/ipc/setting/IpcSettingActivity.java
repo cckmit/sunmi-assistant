@@ -362,7 +362,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             return;
         }
         showLoadingDialog();
-        IPCCall.getInstance().getSdState(device.getIp());
+        IPCCall.getInstance().getSdState(context,device.getIp());
     }
 
     @Click(resName = "sil_voice_exception")
