@@ -14,7 +14,7 @@ public class IpcConstants {
     public static final int getWifiList = 0x3118;
     public static final int setIPCWifi = 0x3116;
     public static final int getIpcConnectApMsg = 0x3117;
-    public static final int getApStatus = 0x3119;
+    public static final int getApStatus = 0x3115;
     public static final int getIpcToken = 0x3124;
     public static final int bindIpc = 0x3059;
     public static final int getIsWire = 0x3126;
