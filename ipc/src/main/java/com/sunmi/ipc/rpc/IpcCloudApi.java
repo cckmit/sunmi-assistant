@@ -43,6 +43,7 @@ import sunmi.common.rpc.retrofit.BaseRetrofitClient;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.SafeUtils;
+import sunmi.common.utils.SecurityUtils;
 import sunmi.common.utils.SpUtils;
 
 /**
@@ -52,6 +53,8 @@ import sunmi.common.utils.SpUtils;
  * @date 2019/3/31
  */
 public class IpcCloudApi {
+
+    private static final String TAG = IpcCloudApi.class.getSimpleName();
 
     /**
      * @param shopId    是	integer	店铺id
@@ -401,15 +404,15 @@ public class IpcCloudApi {
                     .put("shop_id", shopId)
                     .put("group_id", groupId)
                     .toString();
+            HashMap<String, String> paramsMap = getSignedMap(params);
             RequestBody file = RequestBody.create(MediaType.parse("image/*"), image);
-            RequestBody body = new MultipartBody.Builder()
-                    .addFormDataPart("file", image.getName(), file)
-                    .addFormDataPart("company_id", String.valueOf(companyId))
-                    .addFormDataPart("shop_id", String.valueOf(shopId))
-                    .addFormDataPart("group_id", String.valueOf(groupId))
-                    .build();
+            MultipartBody.Builder builder = new MultipartBody.Builder()
+                    .addFormDataPart("file", image.getName(), file);
+            for (Map.Entry<String, String> entry : paramsMap.entrySet()) {
+                builder.addFormDataPart(entry.getKey(), entry.getValue());
+            }
             SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
-                    .uploadAndCheck(body)
+                    .uploadAndCheck(builder.build())
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -540,6 +543,28 @@ public class IpcCloudApi {
                 .setParams(params)
                 .setSign(sign)
                 .setLang("zh").createBaseRequest();
+    }
+
+    /**
+     * 对参数进行加签
+     *
+     * @param params 参数
+     * @return 加签后的Map
+     */
+    private static HashMap<String, String> getSignedMap(String params) {
+        HashMap<String, String> map = new HashMap<>(6);
+        String timeStamp = DateTimeUtils.currentTimeSecond() + "";
+        String randomNum = (int) ((Math.random() * 9 + 1) * 100000) + "";
+        String isEncrypted = "0";
+        String sign = SecurityUtils.md5(params + isEncrypted +
+                timeStamp + randomNum + SecurityUtils.md5(CommonConfig.CLOUD_TOKEN));
+        map.put("timeStamp", timeStamp);
+        map.put("randomNum", randomNum);
+        map.put("isEncrypted", isEncrypted);
+        map.put("params", params);
+        map.put("sign", sign);
+        map.put("lang", "zh");
+        return map;
     }
 
 }

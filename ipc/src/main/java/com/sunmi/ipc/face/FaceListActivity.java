@@ -959,7 +959,10 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                     name.setText(model.getName());
                 }
                 image.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                Glide.with(holder.itemView).load(model.getImgUrl()).into(image);
+                Glide.with(holder.itemView)
+                        .load(model.getImgUrl())
+                        .placeholder(R.mipmap.face_tip_placeholder)
+                        .into(image);
             }
         }
 
@@ -1004,6 +1007,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
             Glide.with(holder.itemView)
                     .load(model.getImgUrl())
                     .apply(RequestOptions.bitmapTransform(mRoundTransform))
+                    .placeholder(R.mipmap.face_tip_placeholder)
                     .into(image);
         }
 
