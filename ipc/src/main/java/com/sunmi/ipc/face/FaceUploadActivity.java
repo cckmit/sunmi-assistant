@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -110,8 +111,14 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
 
     private void initRecycler() {
         mAdapter = new ImageAdapter(mImages);
-        mAdapter.add(0, new UploadImage());
+        if (mImages.size() < Constants.IMAGE_PICKER_LIMIT) {
+            mAdapter.add(0, new UploadImage());
+        }
         GridLayoutManager layoutManager = new GridLayoutManager(this, 4);
+        RecyclerView.ItemAnimator itemAnimator = mRvFaceList.getItemAnimator();
+        if (itemAnimator != null) {
+            ((SimpleItemAnimator) itemAnimator).setSupportsChangeAnimations(false);
+        }
         mRvFaceList.setLayoutManager(layoutManager);
         mRvFaceList.addItemDecoration(new ImageItemDecoration());
         mRvFaceList.setAdapter(mAdapter);
@@ -232,7 +239,7 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
     public void uploadSuccess(UploadImage image) {
         mValidImages.add(image);
         image.setState(UploadImage.STATE_SUCCESS);
-        mAdapter.notifyDataSetChanged();
+        mAdapter.notifyItemChanged(mAdapter.getData().indexOf(image));
         mCompleteCount++;
         if (mCompleteCount >= mUploadCount) {
             uploadComplete();
@@ -243,7 +250,7 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
     @Override
     public void uploadFailed(UploadImage image) {
         mInvalidImages.add(image);
-        mAdapter.notifyDataSetChanged();
+        mAdapter.notifyItemChanged(mAdapter.getData().indexOf(image));
         mCompleteCount++;
         if (mCompleteCount >= mUploadCount) {
             uploadComplete();
