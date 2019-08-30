@@ -145,6 +145,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     private Dialog mDeleteDialog;
     private Dialog mMoveDialog;
     private Dialog mUploadDialog;
+
     private BottomPopMenu mPickerDialog;
     private GlideRoundCrop mRoundTransform;
 
@@ -500,20 +501,36 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     }
 
     @Override
-    public void uploadFailed(int code) {
-        mUploadDialog.dismiss();
-        new CommonDialog.Builder(this)
-                .setTitle(R.string.ipc_face_error_upload)
-                .setMessage(code == 5526 ? R.string.ipc_face_error_photo
-                        : R.string.ipc_face_error_photo_network)
-                .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.ipc_face_tack_photo_again, new DialogInterface.OnClickListener() {
+    public void uploadFailed(final int code, String file) {
+        int size = (int) getResources().getDimension(R.dimen.dp_90);
+        Glide.with(FaceListActivity.this)
+                .load(file)
+                .apply(RequestOptions.bitmapTransform(mRoundTransform))
+                .into(new CustomTarget<Drawable>(size, size) {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mPickerAgent.takePhoto();
+                    public void onResourceReady(@NonNull Drawable resource,
+                                                @Nullable Transition<? super Drawable> transition) {
+                        mUploadDialog.dismiss();
+                        new CommonDialog.Builder(context)
+                                .setTitle(R.string.ipc_face_error_upload)
+                                .setMessage(code == 5526 ? R.string.ipc_face_error_photo
+                                        : R.string.ipc_face_error_photo_network)
+                                .setMessageDrawablePadding(R.dimen.dp_12)
+                                .setMessageDrawable(null, null, null, resource)
+                                .setCancelButton(R.string.sm_cancel)
+                                .setConfirmButton(R.string.ipc_face_tack_photo_again, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        mPickerAgent.takePhoto();
+                                    }
+                                })
+                                .create().show();
                     }
-                })
-                .create().show();
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                    }
+                });
     }
 
     @Override
