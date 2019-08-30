@@ -1,6 +1,7 @@
 package sunmi.common.receiver;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
@@ -13,6 +14,7 @@ import sunmi.common.base.BaseApplication;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.MiPushMsgBean;
 import sunmi.common.notification.BaseNotification;
+import sunmi.common.service.BadgeIntentService;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
@@ -46,11 +48,15 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
         if (!TextUtils.isEmpty(message.getAlias())) {
             SpUtils.setRemindUnreadMsg(SpUtils.getRemindUnreadMsg() + 1);
             SpUtils.setUnreadMsg(SpUtils.getUnreadMsg() + 1);
-            ShortcutBadger.applyCount(BaseApplication.getInstance(), SpUtils.getRemindUnreadMsg());
-            String params = message.getExtra().get("params");
-            MiPushMsgBean msg = new Gson().fromJson(params, MiPushMsgBean.class);
-            LogCat.e(TAG, "mipush onNotificationMessageClicked msg = " + msg.toString());
             LogCat.e(TAG, "mipush onNotificationMessageArrived unreadCount = " + SpUtils.getRemindUnreadMsg());
+            ShortcutBadger.applyCount(BaseApplication.getInstance(), SpUtils.getRemindUnreadMsg());
+            context.startService(new Intent(context, BadgeIntentService.class)
+                    .putExtra("badgeCount", SpUtils.getRemindUnreadMsg())
+                    .putExtra("title", message.getTitle())
+                    .putExtra("description", message.getDescription()));
+//            String params = message.getExtra().get("params");
+//            MiPushMsgBean msg = new Gson().fromJson(params, MiPushMsgBean.class);
+//            LogCat.e(TAG, "mipush onNotificationMessageClicked msg = " + msg.toString());
             BaseNotification.newInstance().postNotificationName(CommonNotifications.pushMsgArrived);
         }
     }

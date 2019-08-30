@@ -124,6 +124,10 @@
                 <action android:name="com.xiaomi.mipush.ERROR" />
             </intent-filter>
         </receiver>
+
+        <service
+            android:name="sunmi.common.service.BadgeIntentService"
+            android:exported="false" />
         <!-- 小米推送end -->
 
     </application>
