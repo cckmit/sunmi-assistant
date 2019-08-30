@@ -19,8 +19,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import sunmi.common.base.BaseApplication;
 import sunmi.common.rpc.RpcErrorCode;
-import sunmi.common.rpc.SSLSocketFactoryGenerator;
 import sunmi.common.rpc.mqtt.EmqTokenResp;
+import sunmi.common.rpc.retrofit.HttpsUtils;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.rpc.sunmicall.RequestBean;
 import sunmi.common.rpc.sunmicall.ResponseBean;
@@ -126,7 +126,7 @@ public class MqttManager {
         options.setKeepAliveInterval(10);
         //setWill方法，如果项目中需要知道客户端是否掉线可以调用该方法。设置最终端口的通知消息
 //        options.setWill(topic, "close".getBytes(), 2, true);
-        options.setSocketFactory(new SSLSocketFactoryGenerator().generate());//设置证书校验 //todo ssl
+        options.setSocketFactory(HttpsUtils.getSslSocketFactory().sSLSocketFactory);//设置证书校验 //todo ssl
         mqttClient.setCallback(getSMMqttCallback()); //发布订阅回调
         mqttConnect();//开始连接
     }

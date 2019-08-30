@@ -49,7 +49,7 @@ public class InputDialog extends Dialog {
         private ConfirmClickListener confirmClickListener;
         private TextChangeListener watcher;
         private boolean isSetEdittextHeight;
-        private int edittextHeight, margin;
+        private int edittextHeight, topMargin, bottomMargin, leftMargin, rightMargin;
 
         public Builder(Context context) {
             this.context = context;
@@ -182,10 +182,14 @@ public class InputDialog extends Dialog {
             return this;
         }
 
-        public Builder setEditTextHeight(boolean isSetEdittextHeight, int edittextHeight, int margin) {
+        public Builder setEditTextHeight(boolean isSetEdittextHeight, int edittextHeight,
+                                         int topMargin, int bottomMargin, int leftMargin, int rightMargin) {
             this.isSetEdittextHeight = isSetEdittextHeight;
             this.edittextHeight = edittextHeight;
-            this.margin = margin;
+            this.topMargin = topMargin;
+            this.bottomMargin = bottomMargin;
+            this.leftMargin = leftMargin;
+            this.rightMargin = rightMargin;
             return this;
         }
 
@@ -218,10 +222,10 @@ public class InputDialog extends Dialog {
             //设置高度
             if (isSetEdittextHeight) {
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, edittextHeight);
-                params.leftMargin = margin;
-                params.rightMargin = margin;
-                params.topMargin = margin;
-                params.bottomMargin = margin;
+                params.leftMargin = leftMargin;
+                params.rightMargin = rightMargin;
+                params.topMargin = topMargin;
+                params.bottomMargin = bottomMargin;
                 etInput.setLayoutParams(params);
                 etInput.setGravity(Gravity.TOP | Gravity.START);
                 etInput.setSingleLine(false);
@@ -261,11 +265,12 @@ public class InputDialog extends Dialog {
             if (confirmBtnText != null) {
                 Button cfmButton = layout.findViewById(R.id.btn_sure);
                 cfmButton.setText(confirmBtnText);
-                if (confirmBtnTextColor > 0)
+                if (confirmBtnTextColor > 0) {
                     cfmButton.setTextColor(context.getResources().getColor(confirmBtnTextColor));
-
+                }
                 if (confirmClickListener != null) {
                     cfmButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
                         public void onClick(View v) {
                             confirmClickListener.onConfirmClick(dialog, etInput.getText().toString());
                         }

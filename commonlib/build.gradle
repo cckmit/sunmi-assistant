@@ -56,6 +56,7 @@ dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
 
     api project(':BadgeView')
+    api project(':shortcutbadger')
 
     api "com.android.support:appcompat-v7:${SUPPORT_VERSION}"
     api 'com.android.support.constraint:constraint-layout:1.1.3'
