@@ -136,7 +136,9 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
         }
 */
         mLayoutNotification.setVisibility(View.GONE);
-
+        mSilMark.getRightText().setSingleLine();
+        mSilMark.getRightText().setEllipsize(TextUtils.TruncateAt.END);
+        mSilMark.setRightText(mFaceGroup.getMark());
         mSilManage.setRightText(getString(R.string.ipc_face_group_count, mFaceGroup.getCount()));
 
         mPresenter = new FaceGroupDetailPresenter(mShopId, mFaceGroup, mOccupiedCapacity);
@@ -228,6 +230,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
     @Override
     public void updateMarkView(String mark) {
         mFaceGroup.setMark(mark);
+        mSilMark.setRightText(mark);
         setResult(RESULT_OK);
     }
 
