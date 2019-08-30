@@ -27,20 +27,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constrainedHeight="true"
-        app:layout_constraintBottom_toTopOf="@+id/v_face_group_divider"
+        app:layout_constraintBottom_toTopOf="@+id/tv_face_group_create"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_bar"
         app:layout_constraintVertical_bias="0" />
-
-    <View
-        android:id="@+id/v_face_group_divider"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_0_5"
-        android:background="@color/black_10"
-        app:layout_constraintBottom_toTopOf="@+id/tv_face_group_create"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <FrameLayout
         android:id="@+id/tv_face_group_create"
@@ -51,11 +42,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_0_5"
+            android:background="@color/black_10" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:drawableStart="@mipmap/face_group_add"
+            android:drawableStart="@mipmap/ic_round_add"
             android:drawablePadding="@dimen/dp_4"
             android:gravity="center"
             android:text="@string/ipc_face_group_create"
