@@ -68,6 +68,7 @@ import sunmi.common.mediapicker.data.model.Image;
 import sunmi.common.mediapicker.data.model.Result;
 import sunmi.common.model.FilterItem;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.DropdownAdapter;
 import sunmi.common.view.DropdownAnimation;
@@ -868,6 +869,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                                 .mFace(model)
                                 .mFaceGroup(mFaceGroup)
                                 .startForResult(REQUEST_CODE_DETAIL);
+                        LogCat.d(TAG, "Face: " + model);
                         return;
                     }
 

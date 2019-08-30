@@ -155,6 +155,25 @@ public class FaceGroup implements Parcelable {
         this.count = count;
     }
 
+    @Override
+    public String toString() {
+        return "FaceGroup{" +
+                "companyId=" + companyId +
+                ", shopId=" + shopId +
+                ", groupName='" + groupName + '\'' +
+                ", mark='" + mark + '\'' +
+                ", targetGroupId=" + targetGroupId +
+                ", groupId=" + groupId +
+                ", type=" + type +
+                ", threshold=" + threshold +
+                ", period=" + period +
+                ", capacity=" + capacity +
+                ", count=" + count +
+                ", lastModifiedTime=" + lastModifiedTime +
+                ", alarmNotified=" + alarmNotified +
+                '}';
+    }
+
     protected FaceGroup(Parcel in) {
         companyId = in.readInt();
         shopId = in.readInt();
