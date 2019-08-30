@@ -5,8 +5,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.sunmi.apmanager.update.AppUpdate;
@@ -48,6 +50,15 @@ public class WelcomeActivity extends BaseMvpActivity<WelcomePresenter>
         mPresenter.attachView(this);
         new Handler().postDelayed(() -> mPresenter.checkUpgrade(), 500);
         initMTA();
+    }
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (!isTaskRoot()) {
+            finish();
+            return;
+        }
     }
 
     @Override

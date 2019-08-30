@@ -243,7 +243,7 @@
     <string name="ipc_face_selected_gender">请选择该用户的年性别</string>
     <string name="ipc_face_selected_group">请选择该用户的分组</string>
     <string name="ipc_face_name_length100_tip">不得超过100个字符</string>
-    <string name="ipc_face_photo_num_max">%d之内数字</string>
+    <string name="ipc_face_photo_num_max">请输入照片数量</string>
     <string name="ipc_face_photo_num_remainder">剩余可分配的照片数量为%d</string>
     <string name="ipc_face_photo_num_max_more">输入的照片数量超过分组上限</string>
     <string name="ipc_face_input_photo_num_tip">请输入数量</string>

@@ -2,6 +2,7 @@ package sunmi.common.receiver;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
@@ -49,14 +50,14 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
             SpUtils.setRemindUnreadMsg(SpUtils.getRemindUnreadMsg() + 1);
             SpUtils.setUnreadMsg(SpUtils.getUnreadMsg() + 1);
             LogCat.e(TAG, "mipush onNotificationMessageArrived unreadCount = " + SpUtils.getRemindUnreadMsg());
-            ShortcutBadger.applyCount(BaseApplication.getInstance(), SpUtils.getRemindUnreadMsg());
-            context.startService(new Intent(context, BadgeIntentService.class)
-                    .putExtra("badgeCount", SpUtils.getRemindUnreadMsg())
-                    .putExtra("title", message.getTitle())
-                    .putExtra("description", message.getDescription()));
-//            String params = message.getExtra().get("params");
-//            MiPushMsgBean msg = new Gson().fromJson(params, MiPushMsgBean.class);
-//            LogCat.e(TAG, "mipush onNotificationMessageClicked msg = " + msg.toString());
+            if (Build.MANUFACTURER.equalsIgnoreCase("Xiaomi")) {
+                context.startService(new Intent(context, BadgeIntentService.class)
+                        .putExtra("badgeCount", SpUtils.getRemindUnreadMsg())
+                        .putExtra("title", message.getTitle())
+                        .putExtra("description", message.getDescription()));
+            } else {
+                ShortcutBadger.applyCount(BaseApplication.getInstance(), SpUtils.getRemindUnreadMsg());
+            }
             BaseNotification.newInstance().postNotificationName(CommonNotifications.pushMsgArrived);
         }
     }
