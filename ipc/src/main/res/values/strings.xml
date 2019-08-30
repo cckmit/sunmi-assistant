@@ -148,6 +148,7 @@
     <string name="ipc_face_group_default">系统默认分组，不可删除</string>
     <string name="ipc_face_group_custom">自定义分组，可删除</string>
     <string name="ipc_face_group_create">新建人脸分组</string>
+    <string name="ipc_face_group_create_success">新建分组成功</string>
     <string name="ipc_face_group_create_full">人脸库数量已达上限</string>
     <string name="ipc_face_group_name">名称</string>
     <string name="ipc_face_group_name_hint">请输入分组名称（必填）</string>

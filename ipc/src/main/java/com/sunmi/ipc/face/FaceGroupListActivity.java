@@ -81,6 +81,7 @@ public class FaceGroupListActivity extends BaseActivity {
         groupType.setOnItemClickListener(new OnItemClickListener<FaceGroup>() {
             @Override
             public void onClick(BaseRecyclerAdapter<FaceGroup> adapter, BaseViewHolder<FaceGroup> holder, FaceGroup model, int position) {
+                LogCat.d(TAG, "FaceGroup: " + model);
                 openGroupDetail(model);
             }
         });
