@@ -67,7 +67,7 @@ public class ShopListActivity extends BaseActivity {
         getShopList();
     }
 
-    @Click(R.id.btnAdd)
+    @Click(R.id.btn_shop_create)
     void onAddClick() {
         CommonUtils.trackCommonEvent(context, "addStore",
                 "主页_我的_我的店铺_添加店铺", Constants.EVENT_MY_INFO);

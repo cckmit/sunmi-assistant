@@ -134,7 +134,10 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
 
     private void initFaceInfo() {
         RequestOptions requestOptions = RequestOptions.circleCropTransform();
-        Glide.with(this).load(mFace.getImgUrl()).apply(requestOptions).into(ivFaceImage);
+        Glide.with(this)
+                .load(mFace.getImgUrl())
+                .apply(requestOptions)
+                .into(ivFaceImage);
         if (mFaceGroup != null) {
             silFaceId.setRightText(Utils.getGroupName(this, mFaceGroup));
             targetGroupId = mFaceGroup.getGroupId();
@@ -316,7 +319,10 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
     public void updateImageSuccessView(String url) {
         mUploadDialog.dismiss();
         RequestOptions requestOptions = RequestOptions.circleCropTransform();
-        Glide.with(this).load(url).apply(requestOptions).into(ivFaceImage);
+        Glide.with(this)
+                .load(url)
+                .apply(requestOptions)
+                .into(ivFaceImage);
         setResult(RESULT_OK);
     }
 

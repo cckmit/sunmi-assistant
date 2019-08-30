@@ -7,10 +7,13 @@
 
     <sunmi.common.view.TitleBarView
         android:id="@+id/title_bar"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/c_white"
         app:dividerShow="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@mipmap/ic_back_dark"
         app:titleText="@string/company_shop_details"
@@ -22,38 +25,38 @@
         android:layout_height="wrap_content"
         android:background="@color/c_white"
         app:layout_constrainedHeight="true"
-        app:layout_constraintBottom_toTopOf="@+id/rl_add"
+        app:layout_constraintBottom_toTopOf="@+id/btn_shop_create"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_bar"
         app:layout_constraintVertical_bias="0" />
 
-    <RelativeLayout
-        android:id="@+id/rl_add"
-        android:layout_width="match_parent"
+    <FrameLayout
+        android:id="@+id/btn_shop_create"
+        android:layout_width="0dp"
         android:layout_height="@dimen/dp_60"
         android:background="@color/c_white"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_0_5"
-            android:layout_alignParentTop="true"
             android:background="@color/black_10" />
 
-        <Button
-            android:id="@+id/btnAdd"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:background="@null"
+            android:layout_gravity="center"
+            android:drawableStart="@mipmap/ic_round_add"
             android:drawablePadding="@dimen/dp_4"
-            android:drawableStart="@drawable/ic_add_business"
-            android:padding="@dimen/dp_4"
+            android:gravity="center"
             android:text="@string/btn_add_store"
             android:textColor="@color/colorText_60"
             android:textSize="@dimen/sp_16" />
-    </RelativeLayout>
+
+    </FrameLayout>
 
     <include
         layout="@layout/include_empty"

@@ -236,6 +236,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
 
     @Override
     public void deleteSuccess() {
+        shortTip(R.string.ipc_face_tip_delete_success);
         setResult(RESULT_OK);
         finish();
     }

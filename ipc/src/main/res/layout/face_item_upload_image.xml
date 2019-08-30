@@ -56,7 +56,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:indeterminateDrawable="@drawable/progress_small"
+        android:indeterminateDrawable="@anim/progress_small"
         app:layout_constraintBottom_toBottomOf="@+id/iv_face_item_image"
         app:layout_constraintEnd_toEndOf="@+id/iv_face_item_image"
         app:layout_constraintStart_toStartOf="@+id/iv_face_item_image"
