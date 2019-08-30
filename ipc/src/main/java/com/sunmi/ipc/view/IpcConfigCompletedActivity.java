@@ -266,7 +266,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
             hideLoadingDialog();
             return;
         }
-        IPCCall.getInstance().getSdState(device.getIp());
+        IPCCall.getInstance().getSdState(context, device.getIp());
     }
 
     /**

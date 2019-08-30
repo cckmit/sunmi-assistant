@@ -23,8 +23,6 @@ import sunmi.common.utils.log.LogCat;
 public class MiPushMessageReceiver extends PushMessageReceiver {
 
     private String TAG = MiPushMessageReceiver.class.getName();
-    private String mMessage;
-    private String mAlias;
 
     @Override
     public void onReceivePassThroughMessage(Context context, MiPushMessage message) {
@@ -33,10 +31,8 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
 
     @Override
     public void onNotificationMessageClicked(Context context, MiPushMessage message) {
-        mMessage = message.getContent();
-        LogCat.e(TAG, "mipush onNotificationMessageClicked mMessage = " + mMessage);
         if (!TextUtils.isEmpty(message.getAlias())) {
-            mAlias = message.getAlias();
+            LogCat.e(TAG, "mipush onNotificationMessageClicked mAlias = " + message.getAlias());
             String params = message.getExtra().get("params");
             MiPushMsgBean msg = new Gson().fromJson(params, MiPushMsgBean.class);
             GotoActivityUtils.gotoMsgDetailActivity(context, msg.getModelId(), msg.getModelName());
@@ -45,7 +41,6 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
 
     @Override
     public void onNotificationMessageArrived(Context context, MiPushMessage message) {
-        mMessage = message.getContent();
         if (!TextUtils.isEmpty(message.getAlias())) {
             SpUtils.setRemindUnreadMsg(SpUtils.getRemindUnreadMsg() + 1);
             SpUtils.setUnreadMsg(SpUtils.getUnreadMsg() + 1);

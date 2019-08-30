@@ -65,6 +65,20 @@ public class GotoActivityUtils {
         }
     }
 
+    public static void gotoSunmiLinkSearchActivity(Context context, String shopId, String sn) {
+        try {
+            Class<?> loginActivity = Class.forName("com.sunmi.assistant.ui.activity.SunmiLinkSearchActivity_");
+            Intent intent = new Intent(context, loginActivity);
+            if (!TextUtils.isEmpty(sn))
+                intent.putExtra("sn", sn);
+            if (!TextUtils.isEmpty(shopId))
+                intent.putExtra("shopId", shopId);
+            context.startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void gotoMsgDetailActivity(Context context, int modelId, String modelName) {
         try {
             Class<?> activity = Class.forName("com.sunmi.assistant.mine.message.MsgDetailActivity_");
@@ -79,14 +93,12 @@ public class GotoActivityUtils {
         }
     }
 
-    public static void gotoSunmiLinkSearchActivity(Context context, String shopId, String sn) {
+    public static void gotoMsgCenterActivity(Context context) {
         try {
-            Class<?> loginActivity = Class.forName("com.sunmi.assistant.ui.activity.SunmiLinkSearchActivity_");
-            Intent intent = new Intent(context, loginActivity);
-            if (!TextUtils.isEmpty(sn))
-                intent.putExtra("sn", sn);
-            if (!TextUtils.isEmpty(shopId))
-                intent.putExtra("shopId", shopId);
+            Class<?> activity = Class.forName("com.sunmi.assistant.mine.message.MsgCenterActivity_");
+            Intent intent = new Intent(context, activity);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                    Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
