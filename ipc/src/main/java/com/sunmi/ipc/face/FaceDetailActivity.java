@@ -102,10 +102,9 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
     @Extra
     FaceGroup mFaceGroup;
     private int groupId, targetGroupId, gender, ageRangeCode;
-    private String groupName;
+    private String groupName, ageRange;
     private List<FaceAge> faceAgesList;
     private List<FaceGroup> groupList;
-    private int updateIndex = -1;
 
     private BottomPopMenu mPickerDialog;
     private CommonDialog mUploadDialog;
@@ -284,19 +283,16 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
 
     @Click(resName = "sil_face_id")
     void idClick() {
-        updateIndex = UPDATE_INDEX_ID;
         selectDialog(getString(R.string.ipc_face_selected_group), UPDATE_INDEX_ID);
     }
 
     @Click(resName = "sil_face_sex")
     void sexClick() {
-        updateIndex = UPDATE_INDEX_GENDER;
         selectDialog(getString(R.string.ipc_face_selected_gender), UPDATE_INDEX_GENDER);
     }
 
     @Click(resName = "sil_face_age")
     void ageClick() {
-        updateIndex = UPDATE_INDEX_AGE;
         selectDialog(getString(R.string.ipc_face_selected_age_range), UPDATE_INDEX_AGE);
     }
 
@@ -343,6 +339,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
     public void updateIdentitySuccessView(int targetGroupId) {
         silFaceId.setRightText(groupName);
         groupId = targetGroupId;//设置成功后的targetGroupId转化为groupId
+        mPresenter.loadGroup();//刷新分组
         setResult(RESULT_OK);
     }
 
@@ -396,10 +393,15 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
         int viewHeight = 0;
         if (updateIndex == UPDATE_INDEX_ID) {
             viewHeight = 600;
+            groupName = silFaceId.getRightText() == null || TextUtils.isEmpty(silFaceId.getRightText().getText().toString())
+                    ? "" : silFaceId.getRightText().getText().toString();
         } else if (updateIndex == UPDATE_INDEX_GENDER) {
             viewHeight = 350;
+            gender = TextUtils.equals(context.getString(R.string.ipc_face_gender_male), silFaceSex.getRightText().getText().toString()) ? 1 : 2;
         } else if (updateIndex == UPDATE_INDEX_AGE) {
             viewHeight = 600;
+            ageRange = silFaceAge.getRightText() == null || TextUtils.isEmpty(silFaceAge.getRightText().getText().toString())
+                    ? "" : silFaceAge.getRightText().getText().toString();
         }
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final Dialog dialog = new Dialog(context, com.commonlibrary.R.style.Son_dialog);
@@ -542,14 +544,19 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
 
         @Override
         public void convert(final ViewHolder holder, final FaceGroup data) {
-            SettingItemLayout item = holder.getView(R.id.sil_item);
-            item.setLeftText(Utils.getGroupName(context, data) + getString(R.string.ipc_face_need_max_num, (data.getCapacity() - data.getCount())));
-            if (targetGroupId == data.getGroupId()) {
+            final SettingItemLayout item = holder.getView(R.id.sil_item);
+            final int count = data.getCapacity() - data.getCount();
+            item.setLeftText(Utils.getGroupName(context, data) + getString(R.string.ipc_face_need_max_num, count));
+            if (TextUtils.equals(Utils.getGroupName(context, data), groupName) && count != 0) {
                 selectedIndex = holder.getAdapterPosition();
             }
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (count == 0) {
+                        shortTip(getString(R.string.ipc_face_full_capacity));
+                        return;
+                    }
                     selectedIndex = holder.getAdapterPosition();
                     targetGroupId = data.getGroupId();
                     groupName = Utils.getGroupName(context, data);
@@ -557,6 +564,10 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                 }
             });
             selectedItem(selectedIndex, holder, item);
+            if (count == 0) {
+                item.setLeftTextColor(ContextCompat.getColor(context, R.color.colorText_20));
+                item.setRightImage(null);
+            }
         }
     }
 
@@ -577,7 +588,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
         public void convert(final ViewHolder holder, final FaceAge data) {
             SettingItemLayout item = holder.getView(R.id.sil_item);
             item.setLeftText(data.getName());
-            if (ageRangeCode == data.getCode()) {
+            if (TextUtils.equals(ageRange, data.getName())) {
                 selectedIndex = holder.getAdapterPosition();
             }
             holder.itemView.setOnClickListener(new View.OnClickListener() {
