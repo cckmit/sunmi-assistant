@@ -297,6 +297,9 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
                     addList.add(item);
                 }
             }
+            if (mImages.size() + addList.size() >= Constants.IMAGE_PICKER_LIMIT) {
+                mAdapter.remove(0);
+            }
             mAdapter.add(addList);
             mImages.addAll(addList);
         }
@@ -352,7 +355,11 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
                 @Override
                 public void onClick(BaseRecyclerAdapter<UploadImage> adapter, BaseViewHolder<UploadImage> holder,
                                     View v, UploadImage model, int position) {
+                    boolean isAtLimit = mImages.size() >= Constants.IMAGE_PICKER_LIMIT;
                     remove(position);
+                    if (isAtLimit) {
+                        mAdapter.add(0, new UploadImage());
+                    }
                     mImages.remove(model);
                 }
             });

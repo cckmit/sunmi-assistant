@@ -182,7 +182,6 @@ public class FaceGroupDetailPresenter extends BasePresenter<FaceGroupDetailContr
                     public void onSuccess(int code, String msg, Object data) {
                         if (isViewAttached()) {
                             mView.hideLoadingDialog();
-                            mView.shortTip(R.string.ipc_setting_success);
                             mView.deleteSuccess();
                         }
                     }

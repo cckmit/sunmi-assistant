@@ -95,6 +95,7 @@ public class FaceGroupCreateActivity extends BaseActivity {
                         hideLoadingDialog();
                         List<FaceGroupCreateResp.CreateResult> list = data.getGroupList();
                         if (list != null && list.size() > 0 && list.get(0).getCode() == 1) {
+                            shortTip(R.string.ipc_face_group_create_success);
                             setResult(RESULT_OK);
                             finish();
                         } else {

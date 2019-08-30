@@ -229,6 +229,7 @@ public class InputDialog extends Dialog {
                 etInput.setLayoutParams(params);
                 etInput.setGravity(Gravity.TOP | Gravity.START);
                 etInput.setSingleLine(false);
+                etInput.setPadding(20, 20, 20, 20);
             }
             if (!TextUtils.isEmpty(hint)) {
                 etInput.setHint(hint);
