@@ -33,6 +33,7 @@ import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.dialog.BottomDialog;
@@ -86,6 +87,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
 
     @AfterViews
     void init() {
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         mTitleBar.setAppTitle(Utils.getGroupName(this, mFaceGroup));
         if (mFaceGroup.isSystemType()) {
             mTitleBar.setRightTextViewEnable(false);
@@ -289,7 +291,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
                 .setTitle(R.string.ipc_face_group_mark)
                 .setHint(getString(R.string.ipc_face_input_marks_tip))
                 .setInitInputContent(mFaceGroup.getMark())
-                .setEditTextHeight(true, 400, 40)
+                .setEditTextHeight(true, 400, 40, 0, 40, 40)
                 .setInputWatcher(new InputDialog.TextChangeListener() {
                     @Override
                     public void onTextChange(EditText view, Editable s) {
