@@ -250,6 +250,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
     private void modifyGroupName() {
         new InputDialog.Builder(this)
                 .setTitle(R.string.ipc_face_group_name)
+                .setHint(getString(R.string.ipc_face_input_name_tip))
                 .setInitInputContent(mFaceGroup.getGroupName())
                 .setInputWatcher(new InputDialog.TextChangeListener() {
                     @Override
@@ -269,7 +270,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
                         }
                     }
                 }).setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.str_confirm, new InputDialog.ConfirmClickListener() {
+                .setConfirmButton(R.string.ipc_setting_save, new InputDialog.ConfirmClickListener() {
                     @Override
                     public void onConfirmClick(InputDialog dialog, String input) {
                         if (input.length() > IPC_NAME_MAX_LENGTH) {
@@ -336,7 +337,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
         final EditText etInput = view.findViewById(R.id.et_input);
         final TextView errorTip = view.findViewById(R.id.tv_error_tip);
         final int nowCapacity = 10000 - mOccupiedCapacity + mFaceGroup.getCapacity();
-        etInput.setHint(getString(R.string.ipc_face_photo_num_max, nowCapacity));
+        etInput.setHint(getString(R.string.ipc_face_photo_num_max));
         errorTip.setText(getString(R.string.ipc_face_photo_num_remainder, nowCapacity));
         view.findViewById(com.commonlibrary.R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
