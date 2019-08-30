@@ -748,7 +748,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         @Override
         public void onSuccess(int from, Result result) {
             if (from == TakePhotoAgent.FROM_TAKE_PHOTO) {
-                File file = new File(result.getImage().getPath());
+                final File file = new File(result.getImage().getPath());
                 int size = (int) getResources().getDimension(R.dimen.dp_90);
                 Glide.with(FaceListActivity.this)
                         .load(file)
@@ -764,13 +764,13 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                                         .setMessageDrawable(null, null, null, resource)
                                         .create();
                                 mUploadDialog.show();
+                                compress(file);
                             }
 
                             @Override
                             public void onLoadCleared(@Nullable Drawable placeholder) {
                             }
                         });
-                compress(file);
             } else {
                 List<Image> images = result.getImages();
                 ArrayList<UploadImage> list = new ArrayList<>(images.size());
