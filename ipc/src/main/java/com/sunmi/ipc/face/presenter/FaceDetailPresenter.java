@@ -37,25 +37,25 @@ public class FaceDetailPresenter extends BasePresenter<FaceDetailContract.View>
     }
 
     @Override
-    public void upload(File file) {
+    public void upload(final File file) {
         IpcCloudApi.uploadFaceAndCheck(SpUtils.getCompanyId(), mShopId, mFace.getGroupId(), file,
                 new RetrofitCallback<FaceCheckResp>() {
                     @Override
                     public void onSuccess(int code, String msg, FaceCheckResp data) {
-                        save(data);
+                        save(file.getPath(), data);
                     }
 
                     @Override
                     public void onFail(int code, String msg, FaceCheckResp data) {
                         LogCat.e(TAG, "Check face file Failed. " + msg);
                         if (isViewAttached()) {
-                            mView.updateImageFailed(code);
+                            mView.updateImageFailed(code, file.getPath());
                         }
                     }
                 });
     }
 
-    private void save(FaceCheckResp data) {
+    private void save(final String file, FaceCheckResp data) {
         List<String> name = new ArrayList<>(1);
         name.add(data.getFileName());
         IpcCloudApi.saveFace(SpUtils.getCompanyId(), mShopId, mFace.getGroupId(), mFace.getFaceId(), name,
@@ -67,7 +67,7 @@ public class FaceDetailPresenter extends BasePresenter<FaceDetailContract.View>
                                 mView.updateImageSuccessView(data.getSuccessList().get(0).getImgUrl());
                             }
                         } else if (isViewAttached()) {
-                            mView.updateImageFailed(code);
+                            mView.updateImageFailed(code, file);
                         }
                     }
 
@@ -75,7 +75,7 @@ public class FaceDetailPresenter extends BasePresenter<FaceDetailContract.View>
                     public void onFail(int code, String msg, FaceSaveResp data) {
                         LogCat.e(TAG, "Save face file Failed. " + msg);
                         if (isViewAttached()) {
-                            mView.updateImageFailed(code);
+                            mView.updateImageFailed(code, file);
                         }
                     }
                 });
