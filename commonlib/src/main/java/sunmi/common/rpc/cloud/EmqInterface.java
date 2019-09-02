@@ -1,4 +1,4 @@
-package com.sunmi.ipc.rpc.api;
+package sunmi.common.rpc.cloud;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

@@ -39,7 +39,7 @@ public class GotoActivityUtils {
         }
     }
 
-    private static void gotoLoginActivity(Context context, String extra) {
+    public static void gotoLoginActivity(Context context, String extra) {
         try {
             Class<?> loginActivity = Class.forName("com.sunmi.assistant.ui.activity.login.LoginActivity_");
             Intent intent = new Intent(context, loginActivity);

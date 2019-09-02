@@ -6,7 +6,6 @@ import android.util.Log;
 
 import com.sunmi.apmanager.config.ApConfig;
 import com.sunmi.apmanager.config.AppConfig;
-import com.sunmi.apmanager.utils.DBUtils;
 import com.sunmi.cloudprinter.config.PrinterConfig;
 import com.sunmi.sunmiservice.SunmiServiceConfig;
 import com.tencent.bugly.crashreport.CrashReport;
@@ -26,6 +25,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import sunmi.common.constant.CommonConfig;
+import sunmi.common.utils.DBUtils;
 import sunmi.common.utils.FileHelper;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.UnknownException;

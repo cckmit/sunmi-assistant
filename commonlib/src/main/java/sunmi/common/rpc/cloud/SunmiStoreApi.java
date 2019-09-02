@@ -19,6 +19,7 @@ import sunmi.common.model.ShopRegionResp;
 import sunmi.common.model.SsoTokenResp;
 import sunmi.common.model.UserAvatarResp;
 import sunmi.common.model.UserInfoBean;
+import sunmi.common.rpc.mqtt.EmqTokenResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SafeUtils;
@@ -43,6 +44,25 @@ public class SunmiStoreApi {
     private SunmiStoreApi() {
     }
 
+    /**
+     * 创建APP用户登录EMQ的token
+     * <p>
+     * user_id 是	int	sso uId，登录后包含在jwt token中，无需显示传参
+     * source  是	string	用户来源， APP或WEB
+     */
+    public static void createEmqToken(RetrofitCallback<EmqTokenResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("source", "APP")
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(EmqInterface.class)
+                    .create(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void getAdList(int companyId, int shopId, RetrofitCallback callback) {
         try {
             String params = new JSONObject()
@@ -56,7 +76,6 @@ public class SunmiStoreApi {
             e.printStackTrace();
         }
     }
-
 
     /**
      * 用户是否存在

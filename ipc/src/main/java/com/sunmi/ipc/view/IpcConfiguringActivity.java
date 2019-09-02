@@ -12,7 +12,7 @@ import com.sunmi.ipc.contract.IpcConfiguringContract;
 import com.sunmi.ipc.model.IpcListResp;
 import com.sunmi.ipc.presenter.IpcConfiguringPresenter;
 import com.sunmi.ipc.rpc.IpcConstants;
-import com.sunmi.ipc.rpc.mqtt.MqttManager;
+import sunmi.common.rpc.mqtt.MqttManager;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;

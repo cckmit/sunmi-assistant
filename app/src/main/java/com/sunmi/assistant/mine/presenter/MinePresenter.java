@@ -1,12 +1,12 @@
 package com.sunmi.assistant.mine.presenter;
 
-import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.mine.contract.MineContract;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.model.UserInfoBean;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.log.LogCat;
 
 /**
@@ -38,7 +38,7 @@ public class MinePresenter extends BasePresenter<MineContract.View> implements M
 
     private void saveUserInfo(UserInfoBean bean) {
         LogCat.d(TAG, "Avatar: " + bean.getOrigin_icon());
-        CommonUtils.saveLoginInfo(bean);
+        CommonHelper.saveLoginInfo(bean);
     }
 
 }

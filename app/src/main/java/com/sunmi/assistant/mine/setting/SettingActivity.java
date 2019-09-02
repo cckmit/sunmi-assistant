@@ -82,7 +82,7 @@ public class SettingActivity extends BaseMvpActivity<SettingPresenter> implement
     @Override
     public void logoutSuccess() {
         shortTip(R.string.tip_logout_success);
-        CommonUtils.logout();
+        CommonHelper.logout();
         LoginActivity_.intent(context).flags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP
                 | Intent.FLAG_ACTIVITY_NO_HISTORY).start();
