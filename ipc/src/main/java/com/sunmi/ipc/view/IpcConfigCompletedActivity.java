@@ -146,13 +146,14 @@ public class IpcConfigCompletedActivity extends BaseActivity {
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
+        hideLoadingDialog();
         if (args == null) {
             return;
         }
         ResponseBean res = (ResponseBean) args[0];
-        if (res.getDataErrCode() == 1) {
-            if (IpcConstants.getSdStatus == id) {
-                try {
+        if (IpcConstants.getSdStatus == id) {
+            try {
+                if (res.getDataErrCode() == 1) {
                     int status = res.getResult().getInt("sd_status_code");
                     switch (status) {
                         case 2:
@@ -170,12 +171,19 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                             showErrorDialog(R.string.tip_unrecognition_tf_card,
                                     R.string.ipc_recognition_sd_unknown);
                             break;
+                        default:
+                            shortTip(R.string.network_wifi_low);
+                            break;
                     }
-                } catch (JSONException e) {
-                    LogCat.e(TAG, "Parse json ERROR: " + res.getResult());
+                } else {
+                    shortTip(R.string.network_wifi_low);
                 }
+            } catch (JSONException e) {
+                LogCat.e(TAG, "Parse json ERROR: " + res.getResult());
+                shortTip(R.string.network_wifi_low);
             }
         }
+
     }
 
     @UiThread

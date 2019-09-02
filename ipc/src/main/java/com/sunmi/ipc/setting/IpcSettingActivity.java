@@ -362,7 +362,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             return;
         }
         showLoadingDialog();
-        IPCCall.getInstance().getSdState(context,device.getIp());
+        IPCCall.getInstance().getSdState(context, device.getIp());
     }
 
     @Click(resName = "sil_voice_exception")
@@ -607,29 +607,37 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 checkWire(res);
             } else if (id == IpcConstants.getSdStatus) {
                 try {
-                    int status = res.getResult().getInt("sd_status_code");
-                    switch (status) {
-                        case 2:
-                            RecognitionSettingActivity_.intent(this)
-                                    .mDevice(mDevice)
-                                    .mVideoRatio(16f / 9f)
-                                    .start();
-                            break;
-                        case 0:
-                            showErrorDialog(R.string.tip_no_tf_card,
-                                    R.string.ipc_recognition_sd_none);
-                            break;
-                        case 1:
-                            showErrorDialog(R.string.tip_tf_uninitalized,
-                                    R.string.ipc_recognition_sd_uninitialized);
-                            break;
-                        case 3:
-                            showErrorDialog(R.string.tip_unrecognition_tf_card,
-                                    R.string.ipc_recognition_sd_unknown);
-                            break;
+                    if (res.getDataErrCode() == 1) {
+                        int status = res.getResult().getInt("sd_status_code");
+                        switch (status) {
+                            case 2:
+                                RecognitionSettingActivity_.intent(this)
+                                        .mDevice(mDevice)
+                                        .mVideoRatio(16f / 9f)
+                                        .start();
+                                break;
+                            case 0:
+                                showErrorDialog(R.string.tip_no_tf_card,
+                                        R.string.ipc_recognition_sd_none);
+                                break;
+                            case 1:
+                                showErrorDialog(R.string.tip_tf_uninitalized,
+                                        R.string.ipc_recognition_sd_uninitialized);
+                                break;
+                            case 3:
+                                showErrorDialog(R.string.tip_unrecognition_tf_card,
+                                        R.string.ipc_recognition_sd_unknown);
+                                break;
+                            default:
+                                shortTip(R.string.network_wifi_low);
+                                break;
+                        }
+                    } else {
+                        shortTip(R.string.network_wifi_low);
                     }
                 } catch (JSONException e) {
                     LogCat.e(TAG, "Parse json ERROR: " + res.getResult());
+                    shortTip(R.string.network_wifi_low);
                 }
             }
         }
