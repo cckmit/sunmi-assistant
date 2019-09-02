@@ -113,6 +113,7 @@ public class IPCSearchActivity extends BaseActivity
 
     @Click(resName = "btn_retry")
     void retryClick() {
+        ipcMap.clear();
         startScan();
     }
 
