@@ -33,7 +33,7 @@ public class FaceGroupDetailPresenter extends BasePresenter<FaceGroupDetailContr
 
     @Override
     public void updateName(final String name) {
-        if (name == null || name.length() == 0 || name.length() > Constants.GROUP_MAX_NAME_LENGTH) {
+        if (name == null || name.length() == 0 || name.length() > Constants.GROUP_MAX_MARK_LENGTH) {
             if (isViewAttached()) {
                 mView.shortTip(R.string.ipc_face_group_name_error);
             }
