@@ -10,44 +10,31 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.os.LocaleList;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.view.Display;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ListAdapter;
-import android.widget.ListView;
+
+import com.tencent.bugly.crashreport.CrashReport;
+import com.xiaomi.mipush.sdk.MiPushClient;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Locale;
 
+import me.leolin.shortcutbadger.ShortcutBadger;
+import sunmi.common.base.BaseApplication;
+import sunmi.common.model.UserInfoBean;
+import sunmi.common.rpc.mqtt.MqttManager;
 import sunmi.common.utils.log.LogCat;
-import sunmi.common.utils.log.LogHelper;
 
 public class CommonHelper {
-    private static final int MIN_FRAME_WIDTH = 240;
-    private static final int MIN_FRAME_HEIGHT = 240;
-    private static final int MAX_FRAME_WIDTH = 480;
-    private static final int MAX_FRAME_HEIGHT = 360;
-
-    private CommonHelper() {
-    }
 
     public static String getLanguage() {
         Locale locale;
@@ -58,59 +45,6 @@ public class CommonHelper {
     }
 
     /**
-     * 获取手机设备信息
-     *
-     * @return 返回手机设备信息
-     */
-    public static String getDeviceInfo() {
-        String deviceInfo = "";
-
-        Field[] fields = Build.class.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                if (field.getName().toLowerCase(Locale.CHINA).equals("brand")) {
-                    deviceInfo += field.getName() + ":" + field.get(null).toString() + "\n";
-                }
-                if (field.getName().equalsIgnoreCase("device")) {
-                    deviceInfo += field.getName() + ":" + field.get(null).toString() + "\n";
-                }
-                if (field.getName().equalsIgnoreCase("fingerprint")) {
-                    deviceInfo += field.getName() + ":" + field.get(null).toString();
-                }
-            } catch (Exception e) {
-                LogHelper.exportLog(CommonHelper.getCName(new Exception()),
-                        "IllegalArgumentException:" + e.getMessage(), true);
-            }
-        }
-        return deviceInfo;
-    }
-
-    /**
-     * 获取应用程序信息
-     *
-     * @param context 上下文
-     * @return 返回应用程序信息字符串
-     */
-    public static String getAppInfo(Context context) {
-        String appInfo = "";
-
-        PackageManager mPackageManager = context.getPackageManager();
-        PackageInfo mPackageInfo = null;
-        try {
-            mPackageInfo = mPackageManager.getPackageInfo(context.getPackageName(), PackageManager.GET_ACTIVITIES);
-        } catch (NameNotFoundException e) {
-            LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage());
-        }
-
-        if (mPackageInfo != null) {
-            appInfo = mPackageInfo.packageName + "-->" + mPackageInfo.versionName + "-->" + mPackageInfo.versionCode;
-        }
-
-        return appInfo;
-    }
-
-    /**
      * 获取类名称
      *
      * @param e 异常类对象(eg:new Exception())
@@ -118,64 +52,6 @@ public class CommonHelper {
      */
     public static String getCName(Exception e) {
         return e.getStackTrace()[0].getClassName();
-    }
-
-    /**
-     * 获取类中方法的名称
-     *
-     * @param e 异常类对象(eg:new Exception())
-     * @return 返回类中方法的名称
-     */
-    public static String getMName(Exception e) {
-        return e.getStackTrace()[0].getMethodName();
-    }
-
-    /**
-     * 获取扫描头的上面遮盖的矩形区域
-     *
-     * @param activity 当前界面
-     * @return 返回矩形区域
-     */
-    public static Rect getFrameRect(Activity activity) {
-        Point screenResolution = getScreenPoint(activity);
-        Rect framingRect = null;
-        if (framingRect == null) {
-            int width = screenResolution.x * 3 / 4;
-            if (width < MIN_FRAME_WIDTH) {
-                width = MIN_FRAME_WIDTH;
-            } else if (width > MAX_FRAME_WIDTH) {
-                width = MAX_FRAME_WIDTH;
-            }
-            int height = screenResolution.y * 3 / 4;
-            if (height < MIN_FRAME_HEIGHT) {
-                height = MIN_FRAME_HEIGHT;
-            } else if (height > MAX_FRAME_HEIGHT) {
-                height = MAX_FRAME_HEIGHT;
-            }
-            int leftOffset = (screenResolution.x - width) / 2;
-            int topOffset = (screenResolution.y - height) / 2;
-            framingRect = new Rect(leftOffset, topOffset, leftOffset + width, topOffset + height);
-        }
-        return framingRect;
-    }
-
-    /**
-     * 获取手机屏幕的宽高
-     *
-     * @param activity 上下文
-     * @return 返回屏幕的宽高点（即右下角的点）
-     */
-    @SuppressLint("NewApi")
-    @SuppressWarnings("deprecation")
-    public static Point getScreenPoint(Activity activity) {
-        WindowManager windowManager = activity.getWindowManager();
-        Display display = windowManager.getDefaultDisplay();
-        Point point = new Point();
-        if (getSDKVersion() < 13)
-            point = new Point(display.getWidth(), display.getHeight());
-        else
-            display.getSize(point);
-        return point;
     }
 
     /**
@@ -190,10 +66,7 @@ public class CommonHelper {
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();
         Point point = new Point();
-        if (getSDKVersion() < 13)
-            point = new Point(display.getWidth(), display.getHeight());
-        else
-            display.getSize(point);
+        display.getSize(point);
         return point;
     }
 
@@ -259,22 +132,6 @@ public class CommonHelper {
     }
 
     /**
-     * 获取手机外部存储卡路径
-     *
-     * @return 返回路径
-     */
-    public static String getExternalStoragePath() {
-        String path = "";
-
-        boolean isSDCardExists = Environment.getExternalStorageState().equalsIgnoreCase(Environment.MEDIA_MOUNTED);
-        if (isSDCardExists) {
-            path = Environment.getExternalStorageDirectory().getAbsolutePath();
-        }
-
-        return path;
-    }
-
-    /**
      * 获取应用程序包名称
      *
      * @param context 上下文
@@ -294,7 +151,6 @@ public class CommonHelper {
         if (mPackageInfo != null) {
             appInfo = mPackageInfo.packageName;
         }
-
         return appInfo;
     }
 
@@ -318,7 +174,6 @@ public class CommonHelper {
         if (mPackageInfo != null) {
             appInfo = mPackageInfo.versionName;
         }
-
         return appInfo;
     }
 
@@ -342,39 +197,7 @@ public class CommonHelper {
         if (mPackageInfo != null) {
             appInfo = mPackageInfo.versionCode;
         }
-
         return appInfo;
-    }
-
-    /**
-     * 打开网址通过浏览器
-     *
-     * @param pContext 上下文
-     * @param url      网址
-     */
-    public static void openUrlByBrowser(Context pContext, String url) {
-        if (!url.trim().equalsIgnoreCase("") && url != null) {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(url));
-            pContext.startActivity(intent);
-        }
-    }
-
-    /**
-     * 获取系统SDK版本
-     *
-     * @return 返回版本
-     */
-    public static int getSDKVersion() {
-        int version = 0;
-
-        try {
-            version = Build.VERSION.SDK_INT;
-        } catch (Exception e) {
-
-        }
-
-        return version;
     }
 
     /**
@@ -403,53 +226,6 @@ public class CommonHelper {
         Intent intent = new Intent(Intent.ACTION_SENDTO, smsToUri);
         intent.putExtra("sms_body", content);
         activity.startActivity(intent);
-    }
-
-    /**
-     * 动态计算ListView-Item的高度（此方法只是用于Item的根是LinearLayout的情况）
-     *
-     * @param listView
-     */
-    public static void setListViewHeightBasedOnChildren(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null) {
-            // pre-condition
-            return;
-        }
-
-        int totalHeight = 0;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            View listItem = listAdapter.getView(i, null, listView);
-            listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
-        }
-
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-        listView.setLayoutParams(params);
-    }
-
-    public static Bitmap returnBitMap(String url) {
-        URL myFileUrl = null;
-        Bitmap bitmap = null;
-        try {
-            myFileUrl = new URL(url);
-        } catch (MalformedURLException e) {
-            LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage(), e);
-        }
-
-        try {
-            HttpURLConnection conn = (HttpURLConnection) myFileUrl.openConnection();
-            conn.setDoInput(true);
-            conn.connect();
-
-            InputStream is = conn.getInputStream();
-            bitmap = BitmapFactory.decodeStream(is);
-            is.close();
-        } catch (IOException e) {
-            LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage(), e);
-        }
-        return bitmap;
     }
 
     public static void installShortcut(Context context, String appName, Class<?> mainClass, Bitmap icon) {
@@ -614,6 +390,54 @@ public class CommonHelper {
             return String.valueOf((int) num);
         }
         return String.valueOf(num);
+    }
+
+    public static void saveLoginInfo(UserInfoBean bean) {
+        if (bean == null) {
+            return;
+        }
+        SpUtils.setMobile(bean.getPhone());
+        SpUtils.setUID(bean.getId() + "");
+        SpUtils.setUsername(bean.getUsername());
+        SpUtils.setEmail(bean.getEmail());
+        SpUtils.setMerchantUid(bean.getMerchant_id() + "");
+        BaseApplication.isCheckedToken = true;
+        SpUtils.setLoginStatus("Y");
+        SpUtils.setAvatarUrl(bean.getOrigin_icon());
+        DBUtils.switchDb(SpUtils.getUID());
+        CrashReport.setUserId(SpUtils.getUID());
+        MiPushClient.setAlias(BaseApplication.getInstance(), SpUtils.getUID(), null);
+    }
+
+    public static void saveCompanyShopInfo(int companyId, String companyName, int saasExist, int shopId, String shopName) {
+        SpUtils.setCompanyId(companyId);
+        SpUtils.setCompanyName(companyName);
+        SpUtils.setSaasExist(saasExist);
+        SpUtils.setShopId(shopId);
+        SpUtils.setShopName(shopName);
+    }
+
+    public static void logout() {
+        MiPushClient.unsetAlias(BaseApplication.getInstance(), SpUtils.getUID(), null);
+        SpUtils.setLoginStatus("");
+        SpUtils.setSsoToken("");
+        SpUtils.setStoreToken("");
+        SpUtils.setUsername("");
+        SpUtils.setAvatarUrl("");
+        SpUtils.setMerchantUid("");
+        SpUtils.setUID("");
+        SpUtils.setCompanyId(-1);
+        SpUtils.setCompanyName("");
+        SpUtils.setShopId(-1);
+        SpUtils.setShopName("");
+        SpUtils.setRemindUnreadMsg(-1);
+        SpUtils.setUnreadMsg(-1);
+        SpUtils.setUnreadSystemMsg(-1);
+        SpUtils.setUnreadDeviceMsg(-1);
+        BaseApplication.isCheckedToken = false;
+        ShortcutBadger.applyCount(BaseApplication.getInstance(), 0);
+//        MQTTManager.getInstance().disconnect();
+        MqttManager.getInstance().disconnect();
     }
 
 }

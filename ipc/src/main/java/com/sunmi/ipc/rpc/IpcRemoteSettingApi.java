@@ -2,7 +2,7 @@ package com.sunmi.ipc.rpc;
 
 import android.content.Context;
 
-import com.sunmi.ipc.rpc.mqtt.MqttManager;
+import sunmi.common.rpc.mqtt.MqttManager;
 
 import sunmi.common.rpc.sunmicall.BaseIpcApi;
 

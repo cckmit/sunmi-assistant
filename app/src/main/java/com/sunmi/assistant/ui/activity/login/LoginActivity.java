@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.sunmi.apmanager.constant.Constants;
+import com.sunmi.apmanager.rpc.mqtt.MQTTManager;
 import com.sunmi.apmanager.ui.view.MergeDialog;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
@@ -104,8 +105,10 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
                     .setTitle(R.string.tip_kick_off)
                     .setConfirmButton(R.string.str_confirm).create();
             kickedDialog.show();
+            MQTTManager.getInstance().disconnect();//todo 为了多端登录后断连，等以后w1迁到商米store去掉
         } else if (TextUtils.equals("2", reason)) {
             shortTip(R.string.tip_password_changed_login);
+            MQTTManager.getInstance().disconnect();//todo 为了多端登录后断连，等以后w1迁到商米store去掉
         }
     }
 

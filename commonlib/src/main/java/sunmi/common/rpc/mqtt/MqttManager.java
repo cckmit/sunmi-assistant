@@ -1,8 +1,6 @@
-package com.sunmi.ipc.rpc.mqtt;
+package sunmi.common.rpc.mqtt;
 
 import android.os.Build;
-
-import com.sunmi.ipc.rpc.IpcCloudApi;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -19,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import sunmi.common.base.BaseApplication;
 import sunmi.common.rpc.RpcErrorCode;
-import sunmi.common.rpc.mqtt.EmqTokenResp;
+import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.HttpsUtils;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.rpc.sunmicall.RequestBean;
@@ -83,7 +81,7 @@ public class MqttManager {
 
     public void createEmqToken(final boolean isInit) {
         LogCat.e(TAG, "mqtt createEmqToken start");
-        IpcCloudApi.createEmqToken(new RetrofitCallback<EmqTokenResp>() {
+        SunmiStoreApi.createEmqToken(new RetrofitCallback<EmqTokenResp>() {
             @Override
             public void onSuccess(int code, String msg, EmqTokenResp response) {
                 LogCat.e(TAG, "mqtt createEmqToken success");

@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import com.sunmi.apmanager.constant.enums.DeviceStatus;
 import com.sunmi.apmanager.receiver.MyNetworkCallback;
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
-import com.sunmi.apmanager.utils.DBUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
 import com.sunmi.cloudprinter.rpc.IOTCloudApi;
@@ -31,6 +30,7 @@ import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.http.HttpCallback;
 import sunmi.common.rpc.http.RpcCallback;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.DBUtils;
 import sunmi.common.utils.SpUtils;
 
 /**
@@ -73,35 +73,9 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                 DBUtils.deleteSunmiDeviceByType("ROUTER");
                 List<SunmiDevice> list = new ArrayList<>();
                 try {
-                    if (code == 1) {
-                        JSONArray jsonArray = new JSONArray(data);
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject object = (JSONObject) jsonArray.opt(i);
-                            SunmiDevice device = new SunmiDevice();
-                            device.setType("ROUTER");
-                            if (object.has("sn")) {
-                                device.setDeviceid(object.getString("sn"));
-                            }
-                            if (object.has("active_status")) {
-                                device.setStatus(object.getInt("active_status"));
-                            }
-                            if (TextUtils.equals(device.getDeviceid(), MyNetworkCallback.CURRENT_ROUTER)) {
-                                if (device.getStatus() == DeviceStatus.OFFLINE.ordinal()) {
-                                    device.setStatus(DeviceStatus.EXCEPTION.ordinal());
-                                }
-                            }
-                            if (object.has("model")) {
-                                device.setModel(object.getString("model"));
-                                device.setName(object.getString("model"));
-                            }
-                            if (object.has("shop_id")) {
-                                device.setShopId(object.getInt("shop_id"));
-                            } else {
-                                device.setShopId(SpUtils.getShopId());
-                            }
-                            saveDevice(device);
-                            list.add(device);
-                        }
+                    JSONArray jsonArray = new JSONArray(data);
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        list.add(getRouterDevice((JSONObject) jsonArray.opt(i)));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -152,15 +126,13 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                         List<SunmiDevice> list = new ArrayList<>();
                         if (data.getFs_list() != null && data.getFs_list().size() > 0) {
                             for (IpcListResp.SsListBean bean : data.getFs_list()) {
-                                SunmiDevice device = getSunmiDevice(bean);
-                                saveDevice(device);
+                                SunmiDevice device = getIpcDevice(bean);
                                 list.add(device);
                             }
                         }
                         if (data.getSs_list() != null && data.getSs_list().size() > 0) {
                             for (IpcListResp.SsListBean bean : data.getSs_list()) {
-                                SunmiDevice device = getSunmiDevice(bean);
-                                saveDevice(device);
+                                SunmiDevice device = getIpcDevice(bean);
                                 list.add(device);
                             }
                         }
@@ -226,7 +198,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
             @Override
             public void onSuccess(int code, String msg, String data) {
                 try {
-                    SunmiDevice device = getStoreBean(new JSONObject(data));
+                    SunmiDevice device = getPrinterDevice(new JSONObject(data));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -252,7 +224,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                 JSONArray array = jsonObject.getJSONArray("device");
                 for (int i = 0; i < array.length(); i++) {
                     JSONObject object = array.getJSONObject(i);
-                    list.add(getStoreBean(object));
+                    list.add(getPrinterDevice(object));
                 }
             }
         } catch (JSONException e) {
@@ -262,7 +234,35 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
     }
 
     @NonNull
-    private SunmiDevice getSunmiDevice(IpcListResp.SsListBean bean) {
+    private SunmiDevice getRouterDevice(JSONObject object) throws JSONException {
+        SunmiDevice device = new SunmiDevice();
+        device.setType("ROUTER");
+        if (object.has("sn")) {
+            device.setDeviceid(object.getString("sn"));
+        }
+        if (object.has("active_status")) {
+            device.setStatus(object.getInt("active_status"));
+        }
+        if (TextUtils.equals(device.getDeviceid(), MyNetworkCallback.CURRENT_ROUTER)) {
+            if (device.getStatus() == DeviceStatus.OFFLINE.ordinal()) {
+                device.setStatus(DeviceStatus.EXCEPTION.ordinal());
+            }
+        }
+        if (object.has("model")) {
+            device.setModel(object.getString("model"));
+            device.setName(object.getString("model"));
+        }
+        if (object.has("shop_id")) {
+            device.setShopId(object.getInt("shop_id"));
+        } else {
+            device.setShopId(SpUtils.getShopId());
+        }
+        saveDevice(device);
+        return device;
+    }
+
+    @NonNull
+    private SunmiDevice getIpcDevice(IpcListResp.SsListBean bean) {
         SunmiDevice device = new SunmiDevice();
         device.setType("IPC");
         device.setStatus(bean.getActive_status());
@@ -274,11 +274,12 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
         device.setShopId(bean.getShop_id());
         device.setId(bean.getId());
         device.setFirmware(bean.getBin_version());
+        saveDevice(device);
         return device;
     }
 
     @NonNull
-    private SunmiDevice getStoreBean(JSONObject object) throws JSONException {
+    private SunmiDevice getPrinterDevice(JSONObject object) throws JSONException {
         SunmiDevice device = new SunmiDevice();
         device.setType("PRINTER");
         device.setName(BaseApplication.getContext().getString(R.string.str_cloud_printer));

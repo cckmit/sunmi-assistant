@@ -6,7 +6,6 @@ import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.ImageButton;
 
-import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.DialogUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.assistant.R;
@@ -20,6 +19,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.TitleBarView;
@@ -126,7 +126,7 @@ public class ChangePasswordActivity extends BaseMvpActivity<ChangePasswordPresen
     public void changePasswordSuccess() {
         hideLoadingDialog();
         shortTip(R.string.tip_password_change_success);
-        CommonUtils.logout();
+        CommonHelper.logout();
         LoginActivity_.intent(context).start();
         finish();
     }

@@ -1,14 +1,12 @@
 package com.sunmi.assistant.utils;
 
-import android.app.Activity;
 import android.content.Context;
-
-import com.sunmi.apmanager.utils.CommonUtils;
 
 import sunmi.common.model.SsoTokenResp;
 import sunmi.common.model.UserInfoBean;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.SpUtils;
 
@@ -38,8 +36,8 @@ public class GetUserInfoUtils {
             @Override
             public void onSuccess(int code, String msg, SsoTokenResp resp) {
                 SpUtils.setSsoToken(resp.getSsoToken());
-                CommonUtils.saveLoginInfo(userInfoBean);
-                CommonUtils.saveCompanyShopInfo((Activity) context, companyId, companyName, saasExist, shopId, shopName);
+                CommonHelper.saveLoginInfo(userInfoBean);
+                CommonHelper.saveCompanyShopInfo(companyId, companyName, saasExist, shopId, shopName);
                 GotoActivityUtils.gotoMainActivity(context);
             }
 
