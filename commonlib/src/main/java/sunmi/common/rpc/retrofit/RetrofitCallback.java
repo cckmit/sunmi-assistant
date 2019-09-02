@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.commonlibrary.R;
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.concurrent.TimeoutException;
 
@@ -14,7 +15,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.rpc.RpcErrorCode;
+import sunmi.common.utils.CommonHelper;
+import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.ToastUtils;
+import sunmi.common.utils.log.LogCat;
 
 /**
  * Description:
@@ -24,14 +28,26 @@ public abstract class RetrofitCallback<T> implements Callback<BaseResponse<T>> {
     @Override
     public void onResponse(@NonNull Call<BaseResponse<T>> call,
                            @NonNull Response<BaseResponse<T>> response) {
-        if (response.body() != null) {//http的Status Code = 200
-            responseBodyHandle(response.body());
-        } else if (response.code() == RpcErrorCode.HTTP_RESP_TOKEN_ERR
-                || response.code() == RpcErrorCode.HTTP_RESP_TOKEN_EXPIRE) {//token错误或失效
-//            SpUtils.logout();//todo
-//            ActivityUtils.gotoLoginActivity("");
-        } else if (response.code() == RpcErrorCode.HTTP_RESP_FORBID) {//请求被拒
+        LogCat.e("111", "888888 response.code() =  " + response.code());
+        if (response.code() == RpcErrorCode.HTTP_RESP_FORBID) {//请求被拒
             ToastUtils.toastForShort(BaseApplication.getContext(), R.string.tip_forbid_by_server);
+        } else if (response.code() == RpcErrorCode.HTTP_RESP_UNKNOWN_REQUEST) {
+            if (response.errorBody() != null) {
+                try {
+                    BaseResponse errorResp = new Gson()
+                            .fromJson(response.errorBody().string(), BaseResponse.class);
+                    LogCat.e("111", "888888 errcode =  " + errorResp.getCode());
+                    if (RpcErrorCode.HTTP_INVALID_TOKEN == errorResp.getCode()
+                            | RpcErrorCode.HTTP_EXPIRE_TOKEN == errorResp.getCode()) {
+                        CommonHelper.logout();
+                        GotoActivityUtils.gotoLoginActivity(BaseApplication.getContext(), "1");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else if (response.body() != null) {
+            responseBodyHandle(response.body());
         } else if (response.errorBody() != null) {
             errorResponseHandle(response.errorBody());
         }

@@ -10,9 +10,6 @@ import sunmi.common.base.BaseView;
 public interface WelcomeContract {
 
     interface View extends BaseView {
-        void checkTokenSuccess(String response);
-
-        void checkTokenFail(int code, String msg);
 
         void forceUpdate(String downloadUrl);
 
@@ -23,7 +20,6 @@ public interface WelcomeContract {
     }
 
     interface Presenter {
-        void checkToken();
 
         void checkUpgrade();
     }

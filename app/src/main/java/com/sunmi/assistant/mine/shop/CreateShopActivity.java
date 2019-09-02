@@ -1,12 +1,10 @@
 package com.sunmi.assistant.mine.shop;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.utils.GetUserInfoUtils;
@@ -21,6 +19,7 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.model.CreateShopInfo;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.RegexUtils;
 import sunmi.common.utils.SpUtils;
@@ -112,7 +111,7 @@ public class CreateShopActivity extends BaseActivity {
         shortTip(getString(R.string.company_shop_create_success));
         if (SpUtils.isLoginSuccess()) {
             if (isLoginSuccessSwitchCompany) {
-                CommonUtils.saveCompanyShopInfo((Activity) context, companyId, companyName, saasExist, resp.getShop_id(), resp.getShop_name());
+                CommonHelper.saveCompanyShopInfo(companyId, companyName, saasExist, resp.getShop_id(), resp.getShop_name());
                 GotoActivityUtils.gotoMainActivity(context);
             } else {
                 setResult(RESULT_OK);

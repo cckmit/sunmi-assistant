@@ -11,8 +11,6 @@ import org.json.JSONObject;
 import okhttp3.Call;
 import okhttp3.Response;
 import sunmi.common.base.BasePresenter;
-import sunmi.common.rpc.cloud.SunmiStoreApi;
-import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
 
 /**
@@ -22,41 +20,6 @@ import sunmi.common.utils.SpUtils;
  */
 public class WelcomePresenter extends BasePresenter<WelcomeContract.View>
         implements WelcomeContract.Presenter {
-
-    @Override
-    public void checkToken() {
-       /* CloudApi.checkToken(new StringCallback() {
-            @Override
-            public void onError(Call call, Response response, Exception e, int id) {
-                if (isViewAttached()){
-                    mView.checkTokenFail(0,null);
-                }
-            }
-
-            @Override
-            public void onResponse(String response, int id) {
-                if (isViewAttached()){
-                    mView.checkTokenSuccess(response);
-                }
-            }
-        });*/
-
-        SunmiStoreApi.getInstance().checkToken(new RetrofitCallback<Object>() {
-            @Override
-            public void onSuccess(int code, String msg, Object data) {
-                if (isViewAttached()) {
-                    mView.checkTokenSuccess(null);
-                }
-            }
-
-            @Override
-            public void onFail(int code, String msg, Object data) {
-                if (isViewAttached()) {
-                    mView.checkTokenFail(code, msg);
-                }
-            }
-        });
-    }
 
     @Override
     public void checkUpgrade() {
@@ -100,4 +63,5 @@ public class WelcomePresenter extends BasePresenter<WelcomeContract.View>
             }
         });
     }
+
 }

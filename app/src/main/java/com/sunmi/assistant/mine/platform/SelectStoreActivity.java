@@ -1,7 +1,6 @@
 package com.sunmi.assistant.mine.platform;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 
-import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.SelectStoreContract;
 import com.sunmi.assistant.mine.model.SelectShopModel;
@@ -30,6 +28,7 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.notification.BaseNotification;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -92,7 +91,7 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
         if (SpUtils.isLoginSuccess()) {
             BaseNotification.newInstance().postNotificationName(CommonNotifications.refreshMainTabView);
             if (isLoginSuccessSwitchCompany) {
-                CommonUtils.saveCompanyShopInfo((Activity) context, companyId, companyName, saasExist, shopId, shopName);
+                CommonHelper.saveCompanyShopInfo(companyId, companyName, saasExist, shopId, shopName);
                 GotoActivityUtils.gotoMainActivity(context);
             } else {
                 setResult(RESULT_OK);

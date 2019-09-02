@@ -6,10 +6,10 @@ import android.os.Handler;
 
 import com.sunmi.apmanager.rpc.mqtt.MQTTManager;
 import com.sunmi.assistant.config.BootLoader;
-import com.sunmi.ipc.rpc.mqtt.MqttManager;
 import com.tencent.stat.StatService;
 
 import sunmi.common.base.BaseApplication;
+import sunmi.common.rpc.mqtt.MqttManager;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
 

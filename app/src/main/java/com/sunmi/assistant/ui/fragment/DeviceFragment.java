@@ -24,7 +24,7 @@ import com.sunmi.apmanager.ui.activity.router.RouterMangerActivity;
 import com.sunmi.apmanager.utils.ApCompatibleUtils;
 import com.sunmi.apmanager.utils.ApIsNewVersionUtils;
 import com.sunmi.apmanager.utils.CommonUtils;
-import com.sunmi.apmanager.utils.DBUtils;
+import com.sunmi.apmanager.utils.RouterDBHelper;
 import com.sunmi.apmanager.utils.EncryptUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
@@ -485,7 +485,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 JSONObject object3 = object2.getJSONObject("account");
                 String token = object3.getString("token");
                 SpUtils.saveRouterToken(token);//保存token
-                DBUtils.saveLocalMangerPassword(clickedDevice.getDeviceid(), password);//保存本地管理密码
+                RouterDBHelper.saveLocalMangerPassword(clickedDevice.getDeviceid(), password);//保存本地管理密码
                 dialogPasswordDismiss();
                 checkApVersion(clickedDevice.getDeviceid(), clickedDevice.getStatus());
 //                gotoRouterManager();
@@ -659,7 +659,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         //1通过sn号判断是否当前路由器WiFi
         if (TextUtils.equals(sn, MyNetworkCallback.CURRENT_ROUTER)) {
             //2通过查询数据库管理密码check登录（管理密码是否正确）
-            mPassword = DBUtils.queryApPassword(sn);//查询数据库保存的路由器密码
+            mPassword = RouterDBHelper.queryApPassword(sn);//查询数据库保存的路由器密码
             APCall.getInstance().checkLogin(mActivity, mPassword);
         } else {
             checkApVersion(sn, status);

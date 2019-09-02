@@ -1,4 +1,4 @@
-package com.sunmi.ipc.rpc.mqtt;
+package sunmi.common.rpc.mqtt;
 
 import android.os.Process;
 import android.text.TextUtils;
@@ -10,8 +10,6 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import sunmi.common.notification.BaseNotification;
-import sunmi.common.rpc.mqtt.MessageCache;
-import sunmi.common.rpc.mqtt.MessageManager;
 import sunmi.common.rpc.sunmicall.RequestBean;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 
@@ -22,7 +20,6 @@ public class SMMqttCallback implements MqttCallbackExtended {
     public void connectComplete(boolean reconnect, String serverURI) {
         Log.e(TAG, "mqtt connectComplete reconnect = " + reconnect);
         if (reconnect) {//如果是mqtt自动重连，重新订阅一次
-            Log.e(TAG, "mqtt connectComplete clientId = " + MqttManager.getInstance().getClientId());
             Log.e(TAG, "mqtt connectComplete thread id  = " + Process.myTid());
             MqttManager.getInstance().subscribeToTopic();
 //            BaseNotification.newInstance().postNotificationName(NotificationConstant.updateConnectComplete, "connectComplete");
@@ -67,34 +64,5 @@ public class SMMqttCallback implements MqttCallbackExtended {
             e.printStackTrace();
         }
     }
-
-//    private void checkToken() {
-//        if (!NetworkUtils.isNetworkAvailable(BaseApplication.getContext())) return;
-//        if (TextUtils.isEmpty(SpUtils.getLoginStatus())) return;
-//        CloudApi.checkToken(new StringCallback() {
-//            @Override
-//            public void onError(Call call, Response response, Exception e, int id) {
-////                CommonUtils.gotoLoginActivity("");
-//                Log.e(TAG, "mqtt checkToken onError, response = " + response);
-//            }
-//
-//            @Override
-//            public void onResponse(String response, int id) {
-//                try {
-//                    Log.e(TAG, "mqtt checkToken onResponse, response = " + response);
-//                    if (!TextUtils.isEmpty(response)) {
-//                        JSONObject jsonObject = new JSONObject(response);
-//                        int code = jsonObject.getInt("code");
-//                        if (code != 1) {//token失效
-//                            CommonUtils.gotoLoginActivity(BaseApplication.getContext(), "");
-//                        }
-//                    }
-//                } catch (Exception e) {
-//                    Log.e(TAG, "mqtt checkToken handle response exception, ", e);
-////                    CommonUtils.gotoLoginActivity("");
-//                }
-//            }
-//        });
-//    }
 
 }

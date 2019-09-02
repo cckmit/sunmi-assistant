@@ -12,8 +12,6 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.sunmi.apmanager.update.AppUpdate;
-import com.sunmi.apmanager.utils.CommonUtils;
-import com.sunmi.assistant.MyApplication;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.contract.WelcomeContract;
 import com.sunmi.assistant.ui.activity.login.LoginActivity_;
@@ -28,7 +26,6 @@ import org.androidannotations.annotations.UiThread;
 
 import sunmi.common.base.BaseApplication;
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.view.dialog.CommonDialog;
 
@@ -71,32 +68,6 @@ public class WelcomeActivity extends BaseMvpActivity<WelcomePresenter>
         }
     }
 
-    @Override
-    public void checkTokenSuccess(String response) {
-        //todo 云端接口有问题，先不校验token，允许多端登录
-        /*try {
-            if (response != null) {
-                JSONObject jsonObject = new JSONObject(response);
-                if (jsonObject.has("code") && jsonObject.getInt("code") == 1) {
-                    MyApplication.isCheckedToken = true;
-                    gotoMainActivity();
-                    return;
-                }
-            }
-            logout();
-        } catch (Exception e) {
-            e.printStackTrace();
-            logout();
-        }*/
-        MyApplication.isCheckedToken = true;
-        gotoMainActivity();
-    }
-
-    @Override
-    public void checkTokenFail(int code, String msg) {
-        logout();
-    }
-
     /**
      * 运营统计
      */
@@ -112,12 +83,7 @@ public class WelcomeActivity extends BaseMvpActivity<WelcomePresenter>
     public void handleLaunch() {
         //状态登录保存，退出登录置空，检查token是否有效
         if (SpUtils.isLoginSuccess()) {
-            if (!NetworkUtils.isNetworkAvailable(context)) {
-                gotoMainActivity();
-            } else {
-//                mPresenter.checkToken();
-                checkTokenSuccess("");//todo
-            }
+            gotoMainActivity();
         } else {
             gotoLoginActivity();
         }
@@ -137,11 +103,6 @@ public class WelcomeActivity extends BaseMvpActivity<WelcomePresenter>
     public void gotoLeadPagesActivity() {
         LeadPagesActivity_.intent(context).start();
         finish();
-    }
-
-    private void logout() {
-        CommonUtils.logout();
-        gotoLoginActivity();
     }
 
     @UiThread
@@ -187,100 +148,5 @@ public class WelcomeActivity extends BaseMvpActivity<WelcomePresenter>
         }
         return false;
     }
-
-//    private void handlerDelay(long delayMillis, final Class<?> mClass) {
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                openActivity(context, mClass, true);
-//            }
-//        }, delayMillis);
-//    }
-
-    //ping判断是否假网
-//    private void launch() {
-//        ThreadPool.getCachedThreadPool().submit(new Runnable() {
-//            @Override
-//            public void run() {
-//                LogCat.e(TAG, "ping time -- 111");
-//                if (!NetworkUtils.isNetPingUsable()) {
-//                    LogCat.e(TAG, "ping time -- 222");
-//                    if (SpUtils.isLoginSuccess()) {
-//                        gotoMainActivity();
-//                    } else {
-//                        gotoLoginActivity();
-//                    }
-//                } else {
-//                    LogCat.e(TAG, "ping time -- 333");
-//                }
-//            }
-//        });
-//    }
-
-    /*private void checkToken() {
-        CloudApi.checkToken(new StringCallback() {
-            @Override
-            public void onError(Call call, Response response, Exception e, int id) {
-                logout();
-            }
-
-            @Override
-            public void onResponse(String response, int id) {
-                try {
-                    if (response != null) {
-                        JSONObject jsonObject = new JSONObject(response);
-                        if (jsonObject.has("code") && jsonObject.getInt("code") == 1) {
-                            MyApplication.isCheckedToken = true;
-                            gotoMainActivity();
-                            return;
-                        }
-                    }
-                    logout();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    logout();
-                }
-            }
-        });
-    }*/
-
-    /*private void checkUpdate() {
-        CloudApi.checkUpgrade(new StringCallback() {
-            @Override
-            public void onError(Call call, Response response, Exception e, int id) {
-                handleLaunch();
-            }
-
-            @Override
-            public void onResponse(String response, int id) {
-                try {
-                    if (response != null) {
-                        JSONObject jsonObject = new JSONObject(response);
-                        if (jsonObject.has("code") && jsonObject.getInt("code") == 1) {
-                            JSONObject object = (JSONObject) jsonObject.getJSONArray("data").opt(0);
-                            if (object.has("is_force_upgrade")) {
-                                // 是否需要强制升级 0-否 1-是
-                                int needMerge = object.getInt("is_force_upgrade");
-                                if (needMerge == 1) {
-                                    appUrl = object.getString("url");
-                                    forceUpdate(appUrl);
-                                    return;
-                                } else {
-                                    //首次安装或清空数据时
-                                    if (!TextUtils.equals(SpUtils.getLead(), "TRUE")) {
-                                        gotoLeadPagesActivity();
-                                        return;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                handleLaunch();
-            }
-        });
-    }*/
 
 }

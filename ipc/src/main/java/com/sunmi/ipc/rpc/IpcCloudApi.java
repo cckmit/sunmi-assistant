@@ -17,7 +17,6 @@ import com.sunmi.ipc.model.IpcListResp;
 import com.sunmi.ipc.model.IpcNewFirmwareResp;
 import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.rpc.api.DeviceInterface;
-import com.sunmi.ipc.rpc.api.EmqInterface;
 import com.sunmi.ipc.rpc.api.FaceInterface;
 import com.sunmi.ipc.rpc.api.MediaInterface;
 
@@ -36,13 +35,11 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.rpc.cloud.SunmiStoreRetrofitClient;
-import sunmi.common.rpc.mqtt.EmqTokenResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.BaseRetrofitClient;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.DateTimeUtils;
-import sunmi.common.utils.SafeUtils;
 import sunmi.common.utils.SecurityUtils;
 import sunmi.common.utils.SpUtils;
 
@@ -53,8 +50,6 @@ import sunmi.common.utils.SpUtils;
  * @date 2019/3/31
  */
 public class IpcCloudApi {
-
-    private static final String TAG = IpcCloudApi.class.getSimpleName();
 
     /**
      * @param shopId    是	integer	店铺id
@@ -83,7 +78,7 @@ public class IpcCloudApi {
             BaseRetrofitClient baseRetrofitClient = new BaseRetrofitClient();
             baseRetrofitClient.init(CommonConfig.SUNMI_STORE_URL, headers, 4);
             baseRetrofitClient.create(DeviceInterface.class)
-                    .bind(getSignedRequest(params))
+                    .bind(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -104,7 +99,7 @@ public class IpcCloudApi {
                     .put("device_id", deviceId)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(DeviceInterface.class)
-                    .unbind(getSignedRequest(params))
+                    .unbind(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -122,7 +117,7 @@ public class IpcCloudApi {
                     .put("shop_id", shopId)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(DeviceInterface.class)
-                    .getDetailList(getSignedRequest(params))
+                    .getDetailList(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -147,7 +142,7 @@ public class IpcCloudApi {
                     .put("device_name", deviceName)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(DeviceInterface.class)
-                    .updateBaseInfo(getSignedRequest(params))
+                    .updateBaseInfo(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -170,26 +165,7 @@ public class IpcCloudApi {
                     .put("device_id", deviceId)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(DeviceInterface.class)
-                    .newFirmware(getSignedRequest(params))
-                    .enqueue(callback);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 创建APP用户登录EMQ的token
-     * <p>
-     * user_id 是	int	sso uId，登录后包含在jwt token中，无需显示传参
-     * source  是	string	用户来源， APP或WEB
-     */
-    public static void createEmqToken(RetrofitCallback<EmqTokenResp> callback) {
-        try {
-            String params = new JSONObject()
-                    .put("source", "APP")
-                    .toString();
-            SunmiStoreRetrofitClient.getInstance().create(EmqInterface.class)
-                    .create(getSignedRequest(params))
+                    .newFirmware(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -212,7 +188,7 @@ public class IpcCloudApi {
                     .put("end_time", endTime)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(MediaInterface.class)
-                    .getTimeSlots(getSignedRequest(params))
+                    .getTimeSlots(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -236,7 +212,7 @@ public class IpcCloudApi {
                     .put("end_time", endTime)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(MediaInterface.class)
-                    .getVideoList(getSignedRequest(params))
+                    .getVideoList(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -255,7 +231,7 @@ public class IpcCloudApi {
                     .put("shop_id", shopId)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
-                    .getAgeRange(getSignedRequest(params))
+                    .getAgeRange(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -282,7 +258,7 @@ public class IpcCloudApi {
             }
             params.put("page_num", page).put("page_size", size);
             call = SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
-                    .getList(getSignedRequest(params.toString()));
+                    .getList(new BaseRequest(params.toString()));
             call.enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -309,7 +285,7 @@ public class IpcCloudApi {
                     .put("name", name)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
-                    .update(getSignedRequest(params))
+                    .update(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -328,7 +304,7 @@ public class IpcCloudApi {
                     .put("target_group_id", targetGroupId)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
-                    .update(getSignedRequest(params))
+                    .update(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -347,7 +323,7 @@ public class IpcCloudApi {
                     .put("gender", gender)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
-                    .update(getSignedRequest(params))
+                    .update(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -366,7 +342,7 @@ public class IpcCloudApi {
                     .put("age_range_code", ageRangeCode)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
-                    .update(getSignedRequest(params))
+                    .update(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -389,7 +365,7 @@ public class IpcCloudApi {
                     .put("face_id_list", array)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
-                    .delete(getSignedRequest(params))
+                    .delete(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -435,7 +411,7 @@ public class IpcCloudApi {
                     .put("face_img_list", array)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
-                    .save(getSignedRequest(params))
+                    .save(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -459,7 +435,7 @@ public class IpcCloudApi {
                     .put("face_id_list", array)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
-                    .move(getSignedRequest(params))
+                    .move(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -473,7 +449,7 @@ public class IpcCloudApi {
                     .put("shop_id", shopId)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
-                    .getGroupList(getSignedRequest(params))
+                    .getGroupList(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -483,14 +459,14 @@ public class IpcCloudApi {
     public static void createFaceGroup(FaceGroupCreateReq request, RetrofitCallback<FaceGroupCreateResp> callback) {
         String params = new Gson().toJson(request);
         SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
-                .createGroup(getSignedRequest(params))
+                .createGroup(new BaseRequest(params))
                 .enqueue(callback);
     }
 
     public static void updateFaceGroup(FaceGroupUpdateReq request, RetrofitCallback<Object> callback) {
         String params = new Gson().toJson(request);
         SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
-                .updateGroup(getSignedRequest(params))
+                .updateGroup(new BaseRequest(params))
                 .enqueue(callback);
     }
 
@@ -502,7 +478,7 @@ public class IpcCloudApi {
                     .put("group_id", groupId)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
-                    .deleteGroup(getSignedRequest(params))
+                    .deleteGroup(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -520,29 +496,11 @@ public class IpcCloudApi {
                     .put("page_size", pageSize)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
-                    .getArrivalHistory(getSignedRequest(params))
+                    .getArrivalHistory(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * 参数加签
-     */
-    private static BaseRequest getSignedRequest(String params) {
-        String timeStamp = DateTimeUtils.currentTimeSecond() + "";
-        String randomNum = (int) ((Math.random() * 9 + 1) * 100000) + "";
-        String isEncrypted = "0";
-        String sign = SafeUtils.md5(params + isEncrypted +
-                timeStamp + randomNum + SafeUtils.md5(CommonConfig.CLOUD_TOKEN));
-        return new BaseRequest.Builder()
-                .setTimeStamp(timeStamp)
-                .setRandomNum(randomNum)
-                .setIsEncrypted(isEncrypted)
-                .setParams(params)
-                .setSign(sign)
-                .setLang("zh").createBaseRequest();
     }
 
     /**

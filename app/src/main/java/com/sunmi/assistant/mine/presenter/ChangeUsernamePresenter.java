@@ -2,7 +2,6 @@ package com.sunmi.assistant.mine.presenter;
 
 import com.sunmi.apmanager.R;
 import com.sunmi.apmanager.constant.NotificationConstant;
-import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.mine.contract.ChangeUsernameContract;
 
 import sunmi.common.base.BasePresenter;
@@ -10,6 +9,7 @@ import sunmi.common.model.UserInfoBean;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
 
@@ -27,7 +27,7 @@ public class ChangeUsernamePresenter extends BasePresenter<ChangeUsernameContrac
         SunmiStoreApi.getInstance().getUserInfo(new RetrofitCallback<UserInfoBean>() {
             @Override
             public void onSuccess(int code, String msg, UserInfoBean data) {
-                CommonUtils.saveLoginInfo(data);
+                CommonHelper.saveLoginInfo(data);
                 if (isViewAttached()) {
                     mView.updateUsernameView(data.getUsername());
                 }
