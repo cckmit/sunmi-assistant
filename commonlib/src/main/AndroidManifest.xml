@@ -132,6 +132,13 @@
         <receiver android:name="sunmi.common.receiver.NotifyBroadcastReceiver" />
         <!-- 小米推送end -->
 
+        <!-- 高德 -->
+
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="${GAO_MAP_KEY}" />
+        <!-- 定位需要的服务 适配Android Q需要加上android:foregroundServiceType="location"-->
+        <service android:name="com.amap.api.location.APSService" />
     </application>
 
 </manifest>
