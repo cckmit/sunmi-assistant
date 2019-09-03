@@ -133,7 +133,6 @@
         <!-- 小米推送end -->
 
         <!-- 高德 -->
-
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="${GAO_MAP_KEY}" />
