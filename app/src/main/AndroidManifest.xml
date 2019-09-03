@@ -111,15 +111,6 @@
         <activity android:name=".mine.message.MsgSettingActivity_"/>
         <activity android:name=".mine.message.MsgSettingDetailActivity_"/>
 
-        <!-- 百度地图 -->
-        <service
-            android:name="com.baidu.location.f"
-            android:enabled="true"
-            android:process=":remote" />
-        <!-- 百度AK鉴权 -->
-        <meta-data
-            android:name="com.baidu.lbsapi.API_KEY"
-            android:value="${BAIDU_KEY}" />
         <meta-data
             android:name="ENV_DATA"
             android:value="${ENV_VALUE}" />
