@@ -27,7 +27,6 @@ android {
         multiDexEnabled true
 
         manifestPlaceholders = [
-                BAIDU_KEY       : "4U2PRnVbrBVTVc0TLzmHgshUBP67vQeV",
                 ENV_VALUE       : "ENV_TEST",
                 DB_VERSION_VALUE: "2",
                 APP_NAME        : "@string/app_name",
@@ -39,7 +38,6 @@ android {
         debug {
             applicationIdSuffix ".test"
             manifestPlaceholders = [
-                    BAIDU_KEY       : "4U2PRnVbrBVTVc0TLzmHgshUBP67vQeV",
                     ENV_VALUE       : "ENV_TEST",
 //                    ENV_VALUE       : "ENV_RELEASE",
                     DB_VERSION_VALUE: "2",
@@ -50,7 +48,6 @@ android {
 
         release {
             manifestPlaceholders = [
-                    BAIDU_KEY       : "4U2PRnVbrBVTVc0TLzmHgshUBP67vQeV",
                     ENV_VALUE       : "ENV_RELEASE",
                     DB_VERSION_VALUE: "2",
                     APP_NAME        : "@string/app_name",
