@@ -148,6 +148,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
         if (isFastClick(1500)) {
             return;
         }
+        showLoadingDialog();
         GetUserInfoUtils.userInfo(this, companyId, companyName, saasExist, shopId, shopName);
     }
 

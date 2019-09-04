@@ -46,10 +46,12 @@ public abstract class RetrofitCallback<T> implements Callback<BaseResponse<T>> {
                     e.printStackTrace();
                 }
             }
-        } else if (response.body() != null) {
-            responseBodyHandle(response.body());
-        } else if (response.errorBody() != null) {
-            errorResponseHandle(response.errorBody());
+        } else {
+            if (response.body() != null) {
+                responseBodyHandle(response.body());
+            } else if (response.errorBody() != null) {
+                errorResponseHandle(response.errorBody());
+            }
         }
     }
 

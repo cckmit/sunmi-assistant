@@ -18,7 +18,7 @@ public class InputMobilePresenter extends BasePresenter<InputMobileContract.View
 
     @Override
     public void isUserExist(String username) {
-        SunmiStoreApi.isUserExist(username, new RetrofitCallback<Object>() {
+        SunmiStoreApi.getInstance().isUserExist(username, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
