@@ -2,9 +2,12 @@ package com.sunmi.assistant.utils;
 
 import android.content.Context;
 
+import com.sunmi.apmanager.rpc.cloud.CloudApi;
+
 import sunmi.common.model.SsoTokenResp;
 import sunmi.common.model.UserInfoBean;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
+import sunmi.common.rpc.http.RpcCallback;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.GotoActivityUtils;
@@ -38,11 +41,25 @@ public class GetUserInfoUtils {
                 SpUtils.setSsoToken(resp.getSsoToken());
                 CommonHelper.saveLoginInfo(userInfoBean);
                 CommonHelper.saveCompanyShopInfo(companyId, companyName, saasExist, shopId, shopName);
-                GotoActivityUtils.gotoMainActivity(context);
+                checkSession(context);
             }
 
             @Override
             public void onFail(int code, String msg, SsoTokenResp data) {
+            }
+        });
+    }
+
+    private static void checkSession(Context context) {
+        CloudApi.checkSession(new RpcCallback(context, false) {
+            @Override
+            public void onSuccess(int code, String msg, String data) {
+                GotoActivityUtils.gotoMainActivity(context);
+            }
+
+            @Override
+            public void onError(int code, String msg, String data) {
+                GotoActivityUtils.gotoMainActivity(context);
             }
         });
     }
