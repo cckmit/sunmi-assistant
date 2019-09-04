@@ -139,8 +139,6 @@ dependencies {
     api 'tv.danmaku.ijk.media:ijkplayer-exo:0.8.8'
     api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.0'
     api 'com.google.guava:guava:18.0@jar'
-    //桌面图标右上角红点
-    api "me.leolin:ShortcutBadger:1.1.22@aar"
     //高德map
     api 'com.amap.api:location:4.7.0'
 
