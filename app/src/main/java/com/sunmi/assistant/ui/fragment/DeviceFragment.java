@@ -635,7 +635,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @UiThread
     void showEmptyView() {
-        if (rlNoDevice == null) return;
+        if (rlNoDevice == null || btnAdd == null) return;
         if (deviceList.size() > 0) {
             rlNoDevice.setVisibility(View.GONE);
             btnAdd.setVisibility(View.VISIBLE);
