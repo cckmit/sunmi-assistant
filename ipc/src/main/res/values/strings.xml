@@ -101,13 +101,6 @@
     <string name="ipc_setting_dialog_upgrade_fail_content">Download v-%s failed</string>
     <string name="ipc_setting_dialog_upgrade_success">Update successfully</string>
     <string name="ipc_setting_dialog_upgrade_success_content">The version is the latest</string>
-    <string name="ipc_setting_detection_day_monday">Monday</string>
-    <string name="ipc_setting_detection_day_tuesday">Tuesday</string>
-    <string name="ipc_setting_detection_day_wednesday">Wednesday</string>
-    <string name="ipc_setting_detection_day_thursday">Thursday</string>
-    <string name="ipc_setting_detection_day_friday">Friday</string>
-    <string name="ipc_setting_detection_day_saturday">Saturday</string>
-    <string name="ipc_setting_detection_day_sunday">Sunday</string>
     <string name="ipc_setting_data_get_fail">Data acquisition failed</string>
     <string name="ipc_setting_check_net_refresh">Please check the Internet first and refresh the page</string>
     <string name="tip_please_select_ipc">Please select one IPC</string>
