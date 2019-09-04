@@ -7,8 +7,8 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.PermissionChecker;
 import android.widget.Toast;
 
 import com.commonlibrary.R;
@@ -217,6 +217,10 @@ public class PermissionUtils {
                     fine_location == PackageManager.PERMISSION_GRANTED;
         }
         return true;
+    }
+
+    public static boolean checkNotificationPermission(Context context) {
+        return NotificationManagerCompat.from(context).areNotificationsEnabled();
     }
 
 }

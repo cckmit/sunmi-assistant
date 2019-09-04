@@ -6,14 +6,14 @@
     android:visibility="gone">
 
     <TextView
-        android:id="@+id/tv_no_wifi"
+        android:id="@+id/tv_no_ipc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:drawableTop="@mipmap/ic_no_ipc"
+        android:drawableTop="@mipmap/ic_no_ss"
         android:drawablePadding="@dimen/dp_16"
-        android:text="@string/tip_no_ipc_found"
         android:gravity="center"
+        android:text="@string/tip_no_ipc_found"
         android:textColor="@color/color_333333"
         android:textSize="@dimen/sp_20" />
 
@@ -21,7 +21,7 @@
         android:id="@+id/tv_check_network"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_no_wifi"
+        android:layout_below="@+id/tv_no_ipc"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_8"
         android:text="@string/tip_check_ipc_wifi"
@@ -35,7 +35,7 @@
         android:layout_below="@+id/tv_check_network"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_24"
-        android:background="@drawable/edittext_solid_orange"
+        android:background="@drawable/button_corners_solid_orange"
         android:text="@string/str_refresh"
         android:textColor="@color/c_white"
         android:textSize="@dimen/sp_16" />

@@ -13,7 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.LinearLayout;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.commonlibrary.R;
@@ -28,25 +29,22 @@ public class BottomDialog extends Dialog {
         super(context, theme);
     }
 
-    public void showWithOutTouchable(boolean touchable) {
-        this.setCanceledOnTouchOutside(touchable);
-        this.show();
-    }
-
     /**
      * builder class for creating a custom dialog
      */
     public static class Builder {
-        private Context context;
+        protected Context context;
         private LayoutInflater inflater;
 
         private View contentView;
         private int contentLayoutId = -1;
         private ViewGroup.LayoutParams contentLayoutParams;
 
+        private boolean isBtnBottom = false;
         private CharSequence title;
         private CharSequence cancelText;
         private CharSequence okText;
+        private int bgColor = -1;
         private int titleTextColor = -1;
         private int cancelTextColor = -1;
         private int okTextColor = -1;
@@ -55,6 +53,22 @@ public class BottomDialog extends Dialog {
         public Builder(Context context) {
             this.context = context;
             this.inflater = LayoutInflater.from(context);
+        }
+
+        public Builder setBtnBottom(boolean isBtnBottom) {
+            this.isBtnBottom = isBtnBottom;
+            return this;
+        }
+
+        /**
+         * 设置背景颜色
+         *
+         * @param color 颜色值（非资源id）
+         * @return 建造者
+         */
+        public Builder setBackgroundColor(@ColorInt int color) {
+            this.bgColor = color;
+            return this;
         }
 
         /**
@@ -352,15 +366,42 @@ public class BottomDialog extends Dialog {
         /**
          * 创建自定义的对话框
          */
-        public BottomDialog create() {
-            final BottomDialog dialog = new BottomDialog(context, R.style.BottomDialog);
+        public Dialog create() {
+            final Dialog dialog = new BottomDialog(context, R.style.BottomDialog);
             @SuppressLint("InflateParams")
             View layout = inflater.inflate(R.layout.dialog_bottom, null);
             int width = context.getResources().getDisplayMetrics().widthPixels;
             dialog.addContentView(layout, new ViewGroup.LayoutParams(
                     width, ViewGroup.LayoutParams.WRAP_CONTENT));
 
+            if (bgColor != -1) {
+                layout.setBackgroundColor(bgColor);
+            }
+
             // 设置Title
+            setupTitle(layout);
+
+            // 设置Btn
+            setupBtn(dialog, layout);
+
+            // 设置内容Layout
+            FrameLayout content = layout.findViewById(R.id.layout_dialog_content);
+            setupContent(dialog, content);
+
+            Window window = dialog.getWindow();
+            if (window != null) {
+                window.setGravity(Gravity.BOTTOM);
+                window.setWindowAnimations(R.style.BottomDialog_Animation);
+            }
+            return dialog;
+        }
+
+        /**
+         * 设置对话框标题
+         *
+         * @param layout 对话框根布局
+         */
+        protected void setupTitle(View layout) {
             TextView tvTitle = layout.findViewById(R.id.tv_dialog_title);
             if (TextUtils.isEmpty(title)) {
                 tvTitle.setVisibility(View.GONE);
@@ -370,18 +411,54 @@ public class BottomDialog extends Dialog {
                     tvTitle.setTextColor(titleTextColor);
                 }
             }
+        }
+
+        /**
+         * 设置对话框内容
+         *
+         * @param content 对话框内容布局容器
+         */
+        protected void setupContent(final Dialog dialog, FrameLayout content) {
+            if (contentView != null) {
+                content.addView(contentView, contentLayoutParams);
+            } else if (contentLayoutId != -1) {
+                inflater.inflate(contentLayoutId, content);
+            }
+        }
+
+        /**
+         * 设置确认/取消按钮样式
+         *
+         * @param dialog 对话框
+         * @param layout 对话框根布局
+         */
+        protected void setupBtn(final Dialog dialog, View layout) {
+            Button btnCancel;
+            Button btnOk;
+            if (isBtnBottom) {
+                layout.findViewById(R.id.layout_dialog_btn).setVisibility(View.VISIBLE);
+                layout.findViewById(R.id.btn_dialog_ok_top).setVisibility(View.GONE);
+                layout.findViewById(R.id.btn_dialog_cancel_top).setVisibility(View.GONE);
+                btnCancel = layout.findViewById(R.id.btn_dialog_cancel_bottom);
+                btnOk = layout.findViewById(R.id.btn_dialog_ok_bottom);
+            } else {
+                layout.findViewById(R.id.layout_dialog_btn).setVisibility(View.GONE);
+                btnOk = layout.findViewById(R.id.btn_dialog_ok_top);
+                btnOk.setVisibility(View.VISIBLE);
+                btnCancel = layout.findViewById(R.id.btn_dialog_cancel_top);
+                btnCancel.setVisibility(View.VISIBLE);
+            }
 
             // 设置Cancel按钮
-            TextView tvCancel = layout.findViewById(R.id.tv_dialog_cancel);
             if (TextUtils.isEmpty(cancelText)) {
-                tvCancel.setVisibility(View.GONE);
+                btnCancel.setVisibility(View.GONE);
             } else {
-                tvCancel.setText(cancelText);
+                btnCancel.setText(cancelText);
                 if (cancelTextColor != -1) {
-                    tvCancel.setTextColor(cancelTextColor);
+                    btnCancel.setTextColor(cancelTextColor);
                 }
                 if (cancelClickListener != null) {
-                    tvCancel.setOnClickListener(new View.OnClickListener() {
+                    btnCancel.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             dialog.cancel();
@@ -392,16 +469,15 @@ public class BottomDialog extends Dialog {
             }
 
             // 设置ok按钮
-            TextView tvOk = layout.findViewById(R.id.tv_dialog_ok);
             if (TextUtils.isEmpty(okText)) {
-                tvOk.setVisibility(View.GONE);
+                btnOk.setVisibility(View.GONE);
             } else {
-                tvOk.setText(okText);
+                btnOk.setText(okText);
                 if (okTextColor != -1) {
-                    tvOk.setTextColor(okTextColor);
+                    btnOk.setTextColor(okTextColor);
                 }
                 if (okClickListener != null) {
-                    tvOk.setOnClickListener(new View.OnClickListener() {
+                    btnOk.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             dialog.dismiss();
@@ -410,21 +486,6 @@ public class BottomDialog extends Dialog {
                     });
                 }
             }
-
-            // 设置内容Layout
-            LinearLayout content = layout.findViewById(R.id.ll_dialog_content);
-            if (contentView != null) {
-                content.addView(contentView, contentLayoutParams);
-            } else if (contentLayoutId != -1) {
-                inflater.inflate(contentLayoutId, content);
-            }
-
-            Window window = dialog.getWindow();
-            if (window != null) {
-                window.setGravity(Gravity.BOTTOM);
-                window.setWindowAnimations(R.style.BottomDialog_Animation);
-            }
-            return dialog;
         }
     }
 

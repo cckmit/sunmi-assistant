@@ -60,6 +60,8 @@ public class WifiConfigActivity extends BaseActivity
     @Extra
     String shopId;
     @Extra
+    int deviceType;
+    @Extra
     SunmiDevice sunmiDevice;
 
     private static int TIMEOUT_GET_WIFI = 15_000;
@@ -68,7 +70,6 @@ public class WifiConfigActivity extends BaseActivity
 
     private Timer timer = new Timer();
     private CountDownTimer countDownTimer;//获取online状态后超时等待
-    private int retryCount;
     private boolean alreadyFinish;
     private int failGetStatusCount;
 
@@ -219,7 +220,6 @@ public class WifiConfigActivity extends BaseActivity
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                retryCount++;
                 IPCCall.getInstance().getApStatus(context, sunmiDevice.getIp());
             }
         }, 0, 1000);
@@ -262,7 +262,8 @@ public class WifiConfigActivity extends BaseActivity
         ArrayList<SunmiDevice> list = new ArrayList<>();
         list.add(sunmiDevice);
         if (list.size() > 0) {
-            IpcConfiguringActivity_.intent(context).sunmiDevices(list).shopId(shopId).start();
+            IpcConfiguringActivity_.intent(context)
+                    .deviceType(deviceType).sunmiDevices(list).shopId(shopId).start();
             hideLoadingDialog();
             finish();
         }

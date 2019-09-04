@@ -72,11 +72,9 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
 
     @Extra
     String bleAddress;
-    @Extra
-    String sn;
 
     private static int TIMEOUT_GET_LIST = 46_000;
-    private static int TIMEOUT_GET_WIFI_CONFIG = 30_000;
+    private static int TIMEOUT_GET_WIFI_CONFIG = 45_000;
     private static int INTERVAL_COUNTDOWN = 2_000;
     private SunmiPrinterClient printerClient;
     private Dialog passwordDialog;

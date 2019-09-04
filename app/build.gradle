@@ -7,11 +7,11 @@ android {
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
+        applicationId "com.sunmi.assistant"
         minSdkVersion MIN_SDK_VERSION
         targetSdkVersion TARGET_SDK_VERSION
         versionCode Integer.parseInt(VERSION_CODE)
         versionName VERSION_NAME
-        applicationId "com.sunmi.assistant"
 
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_8
@@ -21,35 +21,36 @@ android {
         testInstrumentationRunner "android.support.test_udp.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
-                includeCompileClasspath = true
+                arguments = ['resourcePackageName': "com.sunmi.assistant"]
             }
         }
         multiDexEnabled true
 
         manifestPlaceholders = [
-                BAIDU_KEY       : "4U2PRnVbrBVTVc0TLzmHgshUBP67vQeV",
                 ENV_VALUE       : "ENV_TEST",
                 DB_VERSION_VALUE: "2",
+                APP_NAME        : "@string/app_name",
                 MTA_APPKEY      : "A6INR132MGAI",
                 MTA_CHANNEL     : "myapp"]
     }
 
     buildTypes {
         debug {
+            applicationIdSuffix ".test"
             manifestPlaceholders = [
-                    BAIDU_KEY       : "4U2PRnVbrBVTVc0TLzmHgshUBP67vQeV",
                     ENV_VALUE       : "ENV_TEST",
 //                    ENV_VALUE       : "ENV_RELEASE",
                     DB_VERSION_VALUE: "2",
+                    APP_NAME        : "商米助手test",
                     MTA_APPKEY      : "A6INR132MGAI",
                     MTA_CHANNEL     : "myapp"]
         }
 
         release {
             manifestPlaceholders = [
-                    BAIDU_KEY       : "4U2PRnVbrBVTVc0TLzmHgshUBP67vQeV",
                     ENV_VALUE       : "ENV_RELEASE",
                     DB_VERSION_VALUE: "2",
+                    APP_NAME        : "@string/app_name",
                     MTA_APPKEY      : "A6INR132MGAI",
                     MTA_CHANNEL     : "myapp"]
             //Zipalign优化

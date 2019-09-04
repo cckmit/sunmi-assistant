@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/iv_face_item_image"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/color_F3F3F3"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_face_item_delete"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_1"
+        android:layout_marginEnd="@dimen/dp_1"
+        android:clickable="false"
+        android:src="@mipmap/face_ic_item_delete"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/v_face_item_region"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.3" />
+
+    <TextView
+        android:id="@+id/tv_face_item_tip"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/black_60"
+        android:gravity="center"
+        android:text="@string/ipc_face_error_photo"
+        android:textColor="@color/c_white"
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_face_item_image"
+        app:layout_constraintEnd_toEndOf="@+id/iv_face_item_image"
+        app:layout_constraintStart_toStartOf="@+id/iv_face_item_image"
+        app:layout_constraintTop_toTopOf="@+id/iv_face_item_image" />
+
+    <ProgressBar
+        android:id="@+id/pb_face_item_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:indeterminateDrawable="@anim/progress_small"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_face_item_image"
+        app:layout_constraintEnd_toEndOf="@+id/iv_face_item_image"
+        app:layout_constraintStart_toStartOf="@+id/iv_face_item_image"
+        app:layout_constraintTop_toTopOf="@+id/iv_face_item_image" />
+
+</android.support.constraint.ConstraintLayout>

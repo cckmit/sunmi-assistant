@@ -29,6 +29,7 @@
     <color name="c_text_blue">#3D76F6</color>
     <color name="color_333333_60">#99333333</color>
     <color name="common_orange">#FF671F</color>
+    <color name="colorOrangeEdge">#99FD7C2E</color>
 
     <!--dialog-->
     <color name="color_dialog_content">#333C4F</color>
@@ -42,6 +43,7 @@
     <color name="loading_pb_color">#FF6000</color>
     <color name="read_deep">#EA021E</color>
     <color name="read_deep_more">#D0021B</color>
+    <color name="color_FF3838">#FF3838</color>
 
     <!--white 模糊程度-->
     <color name="white_5a">#0DFFFFFF</color>
@@ -81,8 +83,12 @@
     <color name="color_333338">#333338</color>
     <color name="color_85858A">#85858A</color>
     <color name="color_85858A_20a">#3385858A</color>
+    <color name="color_85858A_60a">#9985858A</color>
     <color name="color_979797_20a">#33979797</color>
     <color name="color_F35000">#F35000</color>
+    <color name="color_F3F3F3">#F3F3F3</color>
+    <color name="color_F4F4F5">#F4F4F5</color>
+    <color name="color_F9F9F9">#F9F9F9</color>
     <color name="color_FF6000">#FF6000</color>
     <color name="color_2896FE">#2896FE</color>
     <color name="color_FAFAFA">#FAFAFA</color>
@@ -94,7 +100,9 @@
     <color name="color_2997FF">#2997FF</color>
     <color name="color_BBBBC7">#BBBBC7</color>
     <color name="color_A1A7B3">#A1A7B3</color>
+    <color name="color_FF999999">#FF999999</color>
 
+    <color name="colorText_0">#00333C4F</color>
     <color name="colorText_5">#0E333C4F</color>
     <color name="colorText_20">#33333C4F</color>
     <color name="colorText_40">#66333C4F</color>

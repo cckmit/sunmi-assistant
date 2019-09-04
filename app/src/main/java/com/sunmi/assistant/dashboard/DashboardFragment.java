@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
 
@@ -26,6 +25,7 @@ import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.base.recycle.BaseArrayAdapter;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.Utils;
@@ -157,18 +157,18 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @Override
     public int[] getStickNotificationId() {
         return new int[]{
-                NotificationConstant.shopSwitched,
-                NotificationConstant.shopNameChanged,
-                NotificationConstant.companyNameChanged,
+                CommonNotifications.shopSwitched,
+                CommonNotifications.shopNameChanged,
+                CommonNotifications.companyNameChanged,
         };
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
-        if (id == NotificationConstant.shopSwitched) {
+        if (id == CommonNotifications.shopSwitched) {
             mPresenter.switchShopTo(SpUtils.getShopId());
-        } else if (id == NotificationConstant.shopNameChanged
-                || id == NotificationConstant.companyNameChanged) {
+        } else if (id == CommonNotifications.shopNameChanged
+                || id == CommonNotifications.companyNameChanged) {
             mPresenter.refresh(0);
         }
     }

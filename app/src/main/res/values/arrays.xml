@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string-array name="dashboard_purchase_type">
         <item>支付宝</item>
         <item>微信</item>
@@ -8,4 +8,99 @@
         <item>银联二维码</item>
         <item>其他</item>
     </string-array>
+
+    <string-array name="msg_tag" tools:ignore="ExtraTranslation">
+        <!--1个Tag对应两个内容-->
+        <item>notif-model-device-ipc-tf-card-detect</item>
+        <item>notif-model-device-ipc-on/offline</item>
+        <item>notif-model-device-ipc-motion-detect-video</item>
+        <item>notif-model-device-ipc-motion-detect-audio</item>
+        <item>notif-model-device-ipc-ota"</item>
+        <item>notif-model-device-esl-ota</item>
+        <item>notif-model-device-esl-ap-on/offline</item>
+        <item>notif-model-system-task-erp</item>
+        <!--1个Tag 对应1个内容-->
+        <item>notif-model-ipc</item>
+        <item>notif-model-esl</item>
+        <item>notif-model-task</item>
+        <item>notif-model-service</item>
+        <item>notif-model-promotion</item>
+        <item>notif-device-ipc-tf-card-detect-tf-non-exist-title</item>
+        <item>notif-device-ipc-tf-card-detect-tf-exist-title</item>
+        <item>notif-device-ipc-tf-card-detect-tf-capable-title</item>
+        <item>notif-device-ipc-tf-card-detect-tf-non-capable-title</item>
+        <item>notif-device-ipc-on/offline-title</item>
+        <item>notif-device-ipc-motion-detect-video-title</item>
+        <item>notif-device-ipc-motion-detect-audio-title</item>
+        <item>notif-device-ipc-ota-title</item>
+        <item>notif-device-esl-ota-title</item>
+        <item>notif-device-esl-ap-on/offline-title</item>
+        <item>notif-system-task-erp-finish-title</item>
+        <item>notif-system-task-erp-failure-title</item>
+        <item>notif-device-ipc-reminder-setting</item>
+        <item>notif-device-ipc-tf-card-detect-reminder-setting</item>
+        <item>notif-device-ipc-on/offline-reminder-setting</item>
+        <item>notif-device-ipc-motion-detect-video-reminder-setting</item>
+        <item>notif-device-ipc-motion-detect-audio-reminder-setting</item>
+        <item>notif-device-ipc-ota-reminder-setting</item>
+        <item>notif-device-esl-reminder-setting</item>
+        <item>notif-device-esl-ota-reminder-setting</item>
+        <item>notif-device-esl-on/offline-reminder-setting</item>
+        <item>notif-system-task-reminder-setting</item>
+        <item>notif-system-service-reminder-setting</item>
+        <item>notif-system-promotion-reminder-setting</item>
+    </string-array>
+
+    <string-array name="msg_analysis_first">
+        <item>@string/str_tf_detect</item>
+        <item>@string/str_ipc_on_offline</item>
+        <item>@string/str_ipc_video</item>
+        <item>@string/str_ipc_audio</item>
+        <item>@string/str_device_ota</item>
+        <item>@string/str_device_ota</item>
+        <item>@string/str_esl_on_offline</item>
+        <item>@string/str_task_erp</item>
+
+        <item>@string/msg_ipc</item>
+        <item>@string/msg_esl</item>
+        <item>@string/msg_task</item>
+        <item>@string/str_tab_support</item>
+        <item>@string/msg_promotion</item>
+        <item>@string/msg_ipc_tf_non_exist</item>
+        <item>@string/msg_ipc_tf_exist</item>
+        <item>@string/msg_ipc_tf_capable</item>
+        <item>@string/msg_ipc_tf_non_capable</item>
+        <item>@string/msg_ipc_offline</item>
+        <item>@string/msg_ipc_pic_detect</item>
+        <item>@string/msg_ipc_pic_detect</item>
+        <item>@string/msg_ipc_ota</item>
+        <item>@string/msg_esl_ota</item>
+        <item>@string/msg_esl_offline</item>
+        <item>@string/msg_task_erp_finish</item>
+        <item>@string/msg_task_erp_fail</item>
+        <item>@string/msg_ipc</item>
+        <item>@string/str_tf_detect</item>
+        <item>@string/str_ipc_on_offline</item>
+        <item>@string/str_ipc_video</item>
+        <item>@string/str_ipc_audio</item>
+        <item>@string/str_device_ota</item>
+        <item>@string/msg_esl</item>
+        <item>@string/str_device_ota</item>
+        <item>@string/str_esl_on_offline</item>
+        <item>@string/str_task_msg</item>
+        <item>@string/str_service_msg</item>
+        <item>@string/str_promotion_msg</item>
+    </string-array>
+
+    <string-array name="msg_analysis_second">
+        <item>@string/tip_ipc_tf_detect</item>
+        <item>@string/tip_ipc_on_offline</item>
+        <item>@string/tip_ipc_detect</item>
+        <item>@string/tip_ipc_detect</item>
+        <item>@string/tip_device_ota</item>
+        <item>@string/tip_device_ota</item>
+        <item>@string/tip_esl_offline</item>
+        <item>@string/tip_task_erp</item>
+    </string-array>
+
 </resources>

@@ -2,9 +2,12 @@
 <resources>
     <string-array name="sunmi_devices">
         <item>W1 Router</item>
-        <item>IPC</item>
         <item>Printer</item>
+        <item>智能看店摄像机FM020</item>
+        <item>智能看店摄像机FM010</item>
+        <item>更多支持设备敬请期待…</item>
     </string-array>
+
     <string-array name="week_name">
         <item>周一</item>
         <item>周二</item>

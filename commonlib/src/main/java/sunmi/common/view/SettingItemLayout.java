@@ -32,6 +32,7 @@ public class SettingItemLayout extends RelativeLayout {
     public ImageView ivRight;
     public ImageView ivRightTip;
     public ImageView ivToTextLeftImage;
+    private View divider;
 
     private float height;
     private String leftText = "";
@@ -45,10 +46,24 @@ public class SettingItemLayout extends RelativeLayout {
     private Drawable rightImage;
     private float leftPadding;
     private float rightPadding;
+
+    private boolean dividerShow;
+    private int dividerColor;
+    private float dividerHeight;
+
     private int defaultColor = 0xff000000;
+    private int defaultDividerColor = 0x1A333C4F;
+
+    public SettingItemLayout(Context context) {
+       this(context,null);
+    }
 
     public SettingItemLayout(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context,attrs,0);
+    }
+
+    public SettingItemLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
         mContext = context;
         setCustomAttributes(attrs);
         initLayout();
@@ -63,6 +78,7 @@ public class SettingItemLayout extends RelativeLayout {
         ivRight = view.findViewById(R.id.right_image);
         ivRightTip = view.findViewById(R.id.right_tip_image);
         ivToTextLeftImage = view.findViewById(R.id.to_right_text_left_image);
+        divider = view.findViewById(R.id.divider);
 
         if (parentLayout != null) {
             ViewGroup.LayoutParams pp = parentLayout.getLayoutParams();
@@ -89,6 +105,16 @@ public class SettingItemLayout extends RelativeLayout {
         tvRight.setTextColor(rightTextColor);
         ivRight.setImageDrawable(rightImage);
         ivRight.setPadding(0, 0, (int) rightPadding, 0);
+
+        if (dividerShow) {
+            divider.setVisibility(VISIBLE);
+            divider.setBackgroundColor(dividerColor);
+            ViewGroup.LayoutParams lp = divider.getLayoutParams();
+            lp.height = (int) dividerHeight;
+            divider.setLayoutParams(lp);
+        } else {
+            divider.setVisibility(GONE);
+        }
     }
 
     /**
@@ -108,6 +134,9 @@ public class SettingItemLayout extends RelativeLayout {
         rightImage = a.getDrawable(R.styleable.SettingItemLayout_imageRight);
         leftPadding = a.getDimension(R.styleable.SettingItemLayout_leftPadding, CommonHelper.dp2px(mContext, 1));
         rightPadding = a.getDimension(R.styleable.SettingItemLayout_rightPadding, CommonHelper.dp2px(mContext, 11));
+        dividerShow = a.getBoolean(R.styleable.SettingItemLayout_dividerShow, false);
+        dividerColor = a.getColor(R.styleable.SettingItemLayout_dividerColor, defaultDividerColor);
+        dividerHeight = a.getDimension(R.styleable.SettingItemLayout_dividerHeight, mContext.getResources().getDimension(R.dimen.dp_0_5));
         a.recycle();
     }
 

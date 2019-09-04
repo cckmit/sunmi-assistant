@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_common"
-    android:visibility="gone">
+    android:visibility="visible">
 
     <sunmi.common.view.TitleBarView
         android:id="@+id/title_bar"
@@ -17,11 +17,49 @@
         app:leftIcon="@mipmap/ic_back_dark"
         app:titleTextColor="@color/colorText" />
 
+    <TextView
+        android:id="@+id/tv_selected_company"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_bar"
+        android:paddingStart="@dimen/dp_25"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingEnd="@dimen/dp_25"
+        android:paddingBottom="@dimen/dp_8"
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone" />
+
+    <sunmi.common.view.SettingItemLayout
+        android:id="@+id/sil_selected_company"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_selected_company"
+        android:background="@color/c_white"
+        android:visibility="gone"
+        app:imageRight="@mipmap/ic_yes"
+        app:leftPadding="@dimen/dp_15"
+        app:leftTextSize="@dimen/sp_16"
+        app:parentHeight="@dimen/dp_60"
+        app:rightPadding="@dimen/dp_20"
+        app:rightTextColor="@color/colorText_60" />
+
+    <TextView
+        android:id="@+id/tv_select_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/sil_selected_company"
+        android:paddingStart="@dimen/dp_25"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingEnd="@dimen/dp_25"
+        android:paddingBottom="@dimen/dp_8"
+        android:textSize="@dimen/sp_12" />
+
     <cn.bingoogolapple.refreshlayout.BGARefreshLayout
         android:id="@+id/bgarl_choose"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title_bar">
+        android:layout_above="@id/btn_enter_main"
+        android:layout_below="@id/tv_select_type">
 
         <sunmi.common.view.SmRecyclerView
             android:id="@+id/rv_choose"
@@ -29,7 +67,19 @@
             android:layout_height="wrap_content"
             android:background="@color/c_white"
             android:overScrollMode="never" />
+
     </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
+
+    <Button
+        android:id="@+id/btn_enter_main"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_44"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/dp_20"
+        android:background="@drawable/button_corners_solid_orange"
+        android:text="@string/company_shop_enter_main"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/sp_16" />
 
     <LinearLayout
         android:id="@+id/ll_no_data"

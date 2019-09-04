@@ -1,8 +1,9 @@
 package com.sunmi.assistant.contract;
 
-import com.sunmi.apmanager.model.LoginDataBean;
+import java.util.List;
 
 import sunmi.common.base.BaseView;
+import sunmi.common.model.CompanyInfoResp;
 
 /**
  * Description:
@@ -13,17 +14,22 @@ public interface LoginContract {
     interface View extends BaseView {
         void showMergeDialog(String url);
 
-        void mobileNoRegister();
+        void mobileUnregister();
 
-        void getStoreTokenSuccess(LoginDataBean loginData);
+        void loginSuccess();
+
+        void getCompanyListSuccess(List<CompanyInfoResp> companyList);
+
+        void getCompanyListFail(int code, String msg);
     }
 
     interface Presenter {
-        void getStoreToken(LoginDataBean loginData);
 
         void userMerge(String user, String mobile, String password);
 
         void login(String mobile, String password);
+
+        void getCompanyList();
 
     }
 

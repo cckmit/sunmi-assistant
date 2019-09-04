@@ -2,8 +2,6 @@ package com.sunmi.ipc.setting.recognition;
 
 import android.support.annotation.StringRes;
 
-import com.sunmi.ipc.view.IpcVideoView;
-
 import sunmi.common.base.BaseView;
 import sunmi.common.model.SunmiDevice;
 
@@ -51,13 +49,6 @@ public interface RecognitionSettingContract {
     interface Presenter {
 
         /**
-         * 获取IPC设备结果处理回调
-         *
-         * @return 回调
-         */
-        IpcVideoView.ResultCallback getCallback();
-
-        /**
          * 初始化设置步骤
          *
          * @param device 设备信息
@@ -75,11 +66,6 @@ public interface RecognitionSettingContract {
          * 获取IPC状态
          */
         void updateState();
-
-        /**
-         * 检查IPC SD卡状态
-         */
-        void checkSdStatus();
 
         /**
          * 设置人脸位置

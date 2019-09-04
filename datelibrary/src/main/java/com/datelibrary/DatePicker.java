@@ -14,8 +14,6 @@ import java.util.Date;
  */
 public class DatePicker extends BaseWheelPick {
 
-    private static final String TAG = "WheelPicker";
-
     private WheelView yearView;
     private WheelView monthView;
     private WheelView dayView;
@@ -43,7 +41,7 @@ public class DatePicker extends BaseWheelPick {
 
     public DatePicker(Context context, DateType type) {
         super(context);
-        if(this.type!=null){
+        if (this.type != null) {
             this.type = type;
         }
     }
@@ -58,7 +56,6 @@ public class DatePicker extends BaseWheelPick {
 
     //初始化值
     public void init() {
-
         this.minuteView = findViewById(R.id.minute);
         this.hourView = findViewById(R.id.hour);
         this.weekView = findViewById(R.id.week);
@@ -131,9 +128,7 @@ public class DatePicker extends BaseWheelPick {
         dayView.setCurrentItem(datePicker.findIndextByValue(datePicker.getToady(DatePickerHelper.Type.DAY), dayArr));
         hourView.setCurrentItem(datePicker.findIndextByValue(datePicker.getToady(DatePickerHelper.Type.HOUR), hourArr));
         minuteView.setCurrentItem(datePicker.findIndextByValue(datePicker.getToady(DatePickerHelper.Type.MINUTE), minutArr));
-
     }
-
 
     protected String[] convertData(WheelView wheelView, Integer[] data) {
         if (wheelView == yearView) {
@@ -160,15 +155,14 @@ public class DatePicker extends BaseWheelPick {
         return dayView.getItemHeight();
     }
 
-
     @Override
     protected void setData(Object[] datas) {
     }
 
     private void setChangeDaySelect(int year, int moth) {
         dayArr = datePicker.genDay(year, moth);
-        WheelGeneralAdapter adapter= (WheelGeneralAdapter) dayView.getViewAdapter();
-        adapter.setData(convertData(dayView,  dayArr));
+        WheelGeneralAdapter adapter = (WheelGeneralAdapter) dayView.getViewAdapter();
+        adapter.setData(convertData(dayView, dayArr));
 
         int indxt = datePicker.findIndextByValue(selectDay, dayArr);
         if (indxt == -1) {
@@ -200,7 +194,6 @@ public class DatePicker extends BaseWheelPick {
         if (onChangeLisener != null) {
             onChangeLisener.onChanged(DateUtils.getDate(year, moth, day, hour, minut));
         }
-
     }
 
     @Override
@@ -211,20 +204,14 @@ public class DatePicker extends BaseWheelPick {
     public void onScrollingFinished(WheelView wheel) {
     }
 
-
     //获取选中日期
     public Date getSelectDate() {
-
         int year = yearArr[yearView.getCurrentItem()];
         int moth = mothArr[monthView.getCurrentItem()];
         int day = dayArr[dayView.getCurrentItem()];
         int hour = hourArr[hourView.getCurrentItem()];
         int minut = minutArr[minuteView.getCurrentItem()];
-
         return DateUtils.getDate(year, moth, day, hour, minut);
-
     }
-
-
 
 }

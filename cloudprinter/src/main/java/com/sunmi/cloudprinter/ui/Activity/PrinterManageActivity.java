@@ -14,7 +14,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.sunmi.cloudprinter.bean.PrinterJSCall;
-import com.sunmi.cloudprinter.bean.db.Printer;
 import com.sunmi.cloudprinter.config.PrinterConfig;
 import com.sunmi.cloudprinter.constant.Constants;
 
@@ -42,19 +41,14 @@ public class PrinterManageActivity extends BaseActivity {
     @Extra
     String userId;
     @Extra
-    String merchantId;
+    String shopId;
     @Extra
     int channelId;
 
     @AfterViews
     protected void init() {
-        Printer printer = new Printer();
-        printer.setShop_id(merchantId);
-        printer.setSn(sn);
-        printer.setStatus("在线");
-        printer.saveOrUpdate("sn=?", sn);
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
-        PrinterJSCall jsCall = new PrinterJSCall(userId, merchantId, sn, channelId);
+        PrinterJSCall jsCall = new PrinterJSCall(userId, shopId, sn, channelId);
         webView.addJavascriptInterface(jsCall, Constants.JS_INTERFACE_NAME);
         webView.setDownloadListener(new DownloadListener() {
             @Override

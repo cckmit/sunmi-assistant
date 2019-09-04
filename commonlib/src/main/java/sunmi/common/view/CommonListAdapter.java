@@ -1,6 +1,7 @@
 package sunmi.common.view;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -12,9 +13,9 @@ import java.util.List;
  */
 public abstract class CommonListAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     protected Context mContext;
-    protected int mLayoutId;
-    protected List<T> mList;
-    protected LayoutInflater mInflater;
+    private int mLayoutId;
+    private List<T> mList;
+    private LayoutInflater mInflater;
 
     /**
      * @param context  上下文
@@ -28,23 +29,23 @@ public abstract class CommonListAdapter<T> extends RecyclerView.Adapter<ViewHold
         mList = list;
     }
 
-    /**
-     * @param parent
-     * @param viewType
-     * @return
-     */
-    @Override
-    public ViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
-        ViewHolder viewHolder = ViewHolder.get(mContext, parent, mLayoutId);
-        return viewHolder;
+    public List<T> getData() {
+        return mList;
     }
 
-    /**
-     * @param holder
-     * @param position
-     */
+    public void setData(List<T> list) {
+        mList = list;
+        notifyDataSetChanged();
+    }
+
+    @NonNull
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public ViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
+        return ViewHolder.get(mContext, parent, mLayoutId);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         //通过实体类获取
 //        T bean=mList.get(position);
 //        convert(holder, bean);
@@ -55,8 +56,6 @@ public abstract class CommonListAdapter<T> extends RecyclerView.Adapter<ViewHold
 
     /**
      * 列表数据的数量
-     *
-     * @return
      */
     @Override
     public int getItemCount() {

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_common">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_tab"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginStart="@dimen/dp_8"
+        android:overScrollMode="never"
+        android:scrollbars="none" />
+
+    <cn.bingoogolapple.refreshlayout.BGARefreshLayout
+        android:id="@+id/bga_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/rv_tab">
+
+        <sunmi.common.view.SmRecyclerView
+            android:id="@+id/rv_msg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/c_white"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
+
+    </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
+
+    <TextView
+        android:id="@+id/tv_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:drawableTop="@drawable/ic_no_msg"
+        android:gravity="center"
+        android:text="@string/tip_no_msg"
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/layout_network_error"
+        layout="@layout/include_network_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</RelativeLayout>

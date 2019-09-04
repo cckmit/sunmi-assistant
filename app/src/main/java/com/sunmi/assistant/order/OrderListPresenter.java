@@ -4,17 +4,17 @@ import android.util.Log;
 import android.util.SparseArray;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.data.SunmiStoreRemote;
+import com.sunmi.assistant.data.PaymentApi;
 import com.sunmi.assistant.data.response.OrderListResp;
 import com.sunmi.assistant.data.response.OrderPayTypeListResp;
 import com.sunmi.assistant.data.response.OrderTypeListResp;
-import com.sunmi.assistant.order.model.FilterItem;
 import com.sunmi.assistant.order.model.OrderInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.model.FilterItem;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
@@ -84,7 +84,7 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
         mFilterCurrent.put(0, order.get(0));
         mView.updateFilter(0, order);
 
-        SunmiStoreRemote.get().getOrderPurchaseTypeList(new RetrofitCallback<OrderPayTypeListResp>() {
+        PaymentApi.get().getOrderPurchaseTypeList(new RetrofitCallback<OrderPayTypeListResp>() {
             @Override
             public void onSuccess(int code, String msg, OrderPayTypeListResp data) {
                 List<OrderPayTypeListResp.PayType> list = data.getPurchase_type_list();
@@ -107,7 +107,7 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
             }
         });
 
-        SunmiStoreRemote.get().getOrderTypeList(new RetrofitCallback<OrderTypeListResp>() {
+        PaymentApi.get().getOrderTypeList(new RetrofitCallback<OrderTypeListResp>() {
             @Override
             public void onSuccess(int code, String msg, OrderTypeListResp data) {
                 List<OrderTypeListResp.OrderType> list = data.getOrder_type_list();
@@ -124,6 +124,7 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
                         if (typeIndex != null && mInitOrderType == typeIndex) {
                             first.setChecked(false);
                             item.setChecked(true);
+                            mFilterCurrent.put(2, item);
                             mFilterOrderType.clear();
                             if (item.getId() != -1) {
                                 mFilterOrderType.add(item.getId());
@@ -170,6 +171,7 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
                     mFilterOrderType.add(model.getId());
                 }
                 break;
+            default:
         }
         loadData(true);
         // Update model data & update dropdown menu item view.
@@ -208,7 +210,7 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
         } else {
             mCurrentPage++;
         }
-        SunmiStoreRemote.get().getOrderList(mCompanyId, mShopId,
+        PaymentApi.get().getOrderList(mCompanyId, mShopId,
                 mTimeStart, mTimeEnd, mFilterAmountSort, mFilterTimeSort,
                 mFilterOrderType, mFilterPayType, mCurrentPage, PAGE_SIZE,
                 new RetrofitCallback<OrderListResp>() {

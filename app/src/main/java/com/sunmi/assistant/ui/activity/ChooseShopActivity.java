@@ -4,12 +4,8 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.ChooseShopContract;
-import com.sunmi.assistant.data.response.CompanyInfoResp;
-import com.sunmi.assistant.data.response.CompanyListResp;
-import com.sunmi.assistant.data.response.ShopListResp;
 import com.sunmi.assistant.presenter.ChooseShopPresenter;
 
 import org.androidannotations.annotations.AfterViews;
@@ -22,6 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.constant.CommonNotifications;
+import sunmi.common.model.CompanyInfoResp;
+import sunmi.common.model.CompanyListResp;
+import sunmi.common.model.ShopListResp;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -103,7 +103,7 @@ public class ChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter>
                         SpUtils.setShopId(shopInfo.getShop_id());
                         SpUtils.setShopName(shopInfo.getShop_name());
                         BaseNotification.newInstance().postNotificationName(
-                                NotificationConstant.shopSwitched);
+                                CommonNotifications.shopSwitched);
                         finish();
                     }
                 });

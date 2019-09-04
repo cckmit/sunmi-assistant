@@ -3,12 +3,16 @@ package sunmi.common.view.dialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.commonlibrary.R;
@@ -36,12 +40,16 @@ public class InputDialog extends Dialog {
         private Context context;
         private String title;
         private String content;
+        private String hint;
         private String backBtnText; // 对话框返回按钮文本
         private String confirmBtnText; // 对话框确定文本
         private int confirmBtnTextColor; // 对话框确定文本颜色
         // 对话框按钮监听事件
         private DialogInterface.OnClickListener cancelButtonClickListener;
         private ConfirmClickListener confirmClickListener;
+        private TextChangeListener watcher;
+        private boolean isSetEdittextHeight;
+        private int edittextHeight, topMargin, bottomMargin, leftMargin, rightMargin;
 
         public Builder(Context context) {
             this.context = context;
@@ -71,6 +79,11 @@ public class InputDialog extends Dialog {
          */
         public Builder setInitInputContent(String content) {
             this.content = content;
+            return this;
+        }
+
+        public Builder setInputWatcher(TextChangeListener watcher) {
+            this.watcher = watcher;
             return this;
         }
 
@@ -169,6 +182,22 @@ public class InputDialog extends Dialog {
             return this;
         }
 
+        public Builder setEditTextHeight(boolean isSetEdittextHeight, int edittextHeight,
+                                         int topMargin, int bottomMargin, int leftMargin, int rightMargin) {
+            this.isSetEdittextHeight = isSetEdittextHeight;
+            this.edittextHeight = edittextHeight;
+            this.topMargin = topMargin;
+            this.bottomMargin = bottomMargin;
+            this.leftMargin = leftMargin;
+            this.rightMargin = rightMargin;
+            return this;
+        }
+
+        public Builder setHint(String hint) {
+            this.hint = hint;
+            return this;
+        }
+
         /**
          * 创建自定义的对话框
          */
@@ -190,9 +219,28 @@ public class InputDialog extends Dialog {
             }
 
             final EditText etInput = layout.findViewById(R.id.et_input);
+            //设置高度
+            if (isSetEdittextHeight) {
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, edittextHeight);
+                params.leftMargin = leftMargin;
+                params.rightMargin = rightMargin;
+                params.topMargin = topMargin;
+                params.bottomMargin = bottomMargin;
+                etInput.setLayoutParams(params);
+                etInput.setGravity(Gravity.TOP | Gravity.START);
+                etInput.setSingleLine(false);
+                etInput.setPadding(20, 20, 20, 20);
+            }
+            if (!TextUtils.isEmpty(hint)) {
+                etInput.setHint(hint);
+            }
             if (!TextUtils.isEmpty(content)) {
                 etInput.setText(content);
                 etInput.setSelection(content.length());
+            }
+            if (watcher != null) {
+                watcher.setView(etInput);
+                etInput.addTextChangedListener(watcher);
             }
 
             // 设置返回按钮事件和文本
@@ -202,6 +250,7 @@ public class InputDialog extends Dialog {
 
                 if (cancelButtonClickListener != null) {
                     bckButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
                         public void onClick(View v) {
                             dialog.cancel();
                             cancelButtonClickListener.onClick(dialog, DialogInterface.BUTTON_NEGATIVE);
@@ -217,11 +266,12 @@ public class InputDialog extends Dialog {
             if (confirmBtnText != null) {
                 Button cfmButton = layout.findViewById(R.id.btn_sure);
                 cfmButton.setText(confirmBtnText);
-                if (confirmBtnTextColor > 0)
+                if (confirmBtnTextColor > 0) {
                     cfmButton.setTextColor(context.getResources().getColor(confirmBtnTextColor));
-
+                }
                 if (confirmClickListener != null) {
                     cfmButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
                         public void onClick(View v) {
                             confirmClickListener.onConfirmClick(dialog, etInput.getText().toString());
                         }
@@ -239,6 +289,32 @@ public class InputDialog extends Dialog {
 
     public interface ConfirmClickListener {
         void onConfirmClick(InputDialog dialog, String input);
+    }
+
+    public static abstract class TextChangeListener implements TextWatcher {
+
+        private EditText view;
+
+        public void setView(EditText view) {
+            this.view = view;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            onTextChange(view, s);
+        }
+
+        public abstract void onTextChange(EditText view, Editable s);
     }
 
 }

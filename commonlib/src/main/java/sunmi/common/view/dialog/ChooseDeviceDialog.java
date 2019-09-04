@@ -4,7 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -14,7 +14,6 @@ import android.view.WindowManager;
 
 import com.commonlibrary.R;
 
-import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.view.SimpleRecyclerViewAdapter;
 import sunmi.common.view.activity.StartConfigSMDeviceActivity_;
@@ -42,8 +41,7 @@ public class ChooseDeviceDialog extends Dialog {
             window.setWindowAnimations(R.style.BottomDialog_Animation);
         }
         RecyclerView recyclerView = findViewById(R.id.rv_devices);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(getAdapter());
 
@@ -59,18 +57,17 @@ public class ChooseDeviceDialog extends Dialog {
      */
     private SimpleRecyclerViewAdapter getAdapter() {
         int[] imageIds;
-        if (CommonConfig.SUPPORT_PRINTER) {
-            imageIds = new int[]{R.mipmap.ic_add_sunmi_ap, R.mipmap.ic_add_sunmi_ss,
-                    R.mipmap.ic_add_sunmi_printer};
-        } else {
-            imageIds = new int[]{R.mipmap.ic_add_sunmi_ap, R.mipmap.ic_add_sunmi_ss};
-        }
-        String[] names = getContext().getResources().getStringArray(R.array.sunmi_devices);
+        imageIds = new int[]{R.mipmap.ic_add_sunmi_ap, R.mipmap.ic_add_sunmi_printer,
+                R.mipmap.ic_add_sunmi_fs, R.mipmap.ic_add_sunmi_ss, R.mipmap.ic_add_more};
+        final String[] names = getContext().getResources().getStringArray(R.array.sunmi_devices);
         SimpleRecyclerViewAdapter adapter = new SimpleRecyclerViewAdapter(
                 R.layout.item_choose_device, imageIds, names);
         adapter.setOnItemClickListener(new SimpleRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int pos) {
+                if (pos == names.length - 1) {
+                    return;
+                }
                 dismiss();
                 if (pos == CommonConstants.TYPE_PRINTER) {
                     gotoPrinterConfig();

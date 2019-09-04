@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.rpc.IPCCall;
@@ -31,9 +32,11 @@ import java.util.Map;
 
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.sunmicall.ResponseBean;
+import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.SMDeviceDiscoverUtils;
 import sunmi.common.utils.log.LogCat;
 
@@ -55,11 +58,15 @@ public class IPCSearchActivity extends BaseActivity
     RelativeLayout rlNoWifi;
     @ViewById(resName = "rl_loading")
     RelativeLayout rlLoading;
+    @ViewById(resName = "tv_no_ipc")
+    TextView tvNoIpc;
     @ViewById(resName = "btn_refresh")
     Button btnRefresh;
 
     @Extra
     String shopId;
+    @Extra
+    int deviceType;
     @Extra
     boolean isSunmiLink;//是否是sunmi link模式
 
@@ -71,6 +78,9 @@ public class IPCSearchActivity extends BaseActivity
 
     @AfterViews
     void init() {
+        if (CommonConstants.TYPE_IPC_FS == deviceType) {
+            tvNoIpc.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_no_fs, 0, 0);
+        }
         startScan();
         initApList();
     }
@@ -103,6 +113,7 @@ public class IPCSearchActivity extends BaseActivity
 
     @Click(resName = "btn_retry")
     void retryClick() {
+        ipcMap.clear();
         startScan();
     }
 
@@ -218,7 +229,9 @@ public class IPCSearchActivity extends BaseActivity
             }
         }
         ipcList.add(device);
-        if (ipcListAdapter != null) ipcListAdapter.notifyDataSetChanged();
+        if (ipcListAdapter != null) {
+            ipcListAdapter.notifyDataSetChanged();
+        }
         new Handler().post(new Runnable() {
             @Override
             public void run() {
@@ -229,6 +242,12 @@ public class IPCSearchActivity extends BaseActivity
 
     //1 udp搜索到设备
     private synchronized void ipcFound(SunmiDevice ipc) {
+        if ((CommonConstants.TYPE_IPC_FS == deviceType
+                && DeviceTypeUtils.getInstance().isSS1(ipc.getModel()))
+                || (CommonConstants.TYPE_IPC_SS == deviceType
+                && DeviceTypeUtils.getInstance().isFS1(ipc.getModel()))) {
+            return;
+        }
         if (!ipcMap.containsKey(ipc.getDeviceid())) {
             ipc.setSelected(true);
             ipcMap.put(ipc.getDeviceid(), ipc);
@@ -249,7 +268,8 @@ public class IPCSearchActivity extends BaseActivity
     private void gotoWifiConfigActivity() {
         hideLoadingDialog();
         if (ipcList != null && ipcList.size() > 0)
-            WifiConfigActivity_.intent(context).sunmiDevice(ipcList.get(0)).shopId(shopId).start();
+            WifiConfigActivity_.intent(context)
+                    .deviceType(deviceType).sunmiDevice(ipcList.get(0)).shopId(shopId).start();
     }
 
     private void gotoIpcConfigActivity() {
@@ -259,7 +279,8 @@ public class IPCSearchActivity extends BaseActivity
                 selectedList.add(device);
         }
         if (selectedList.size() > 0)
-            IpcConfiguringActivity_.intent(context).sunmiDevices(selectedList).shopId(shopId).start();
+            IpcConfiguringActivity_.intent(context)
+                    .deviceType(deviceType).sunmiDevices(selectedList).shopId(shopId).start();
     }
 
 }

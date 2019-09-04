@@ -3,12 +3,15 @@ package sunmi.common.view.dialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.DimenRes;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.commonlibrary.R;
@@ -31,6 +34,9 @@ public class CommonDialog extends Dialog {
         private Context context;
         private String title;
         private String message; // 对话框内容
+        private Drawable[] messageDrawable = new Drawable[4];
+        private int[] messageDrawableRes = {0, 0, 0, 0};
+        private int messageDrawablePaddingRes;
         private String backBtnText; // 对话框返回按钮文本
         private String confirmBtnText; // 对话框确定文本
         private int cancelBtnTextColor, confirmBtnTextColor; // 对话框确定文本颜色
@@ -70,6 +76,35 @@ public class CommonDialog extends Dialog {
          */
         public Builder setMessage(int message) {
             this.message = (String) context.getText(message);
+            return this;
+        }
+
+        /**
+         * 设置对话框消息附加图
+         */
+        public Builder setMessageDrawable(@Nullable Drawable start, @Nullable Drawable top,
+                                          @Nullable Drawable end, @Nullable Drawable bottom) {
+            messageDrawable[0] = start;
+            messageDrawable[1] = top;
+            messageDrawable[2] = end;
+            messageDrawable[3] = bottom;
+            return this;
+        }
+
+        /**
+         * 设置对话框消息附加图
+         */
+        public Builder setMessageDrawable(@DrawableRes int start, @DrawableRes int top,
+                                          @DrawableRes int end, @DrawableRes int bottom) {
+            messageDrawableRes[0] = start;
+            messageDrawableRes[1] = top;
+            messageDrawableRes[2] = end;
+            messageDrawableRes[3] = bottom;
+            return this;
+        }
+
+        public Builder setMessageDrawablePadding(@DimenRes int dimen) {
+            messageDrawablePaddingRes = dimen;
             return this;
         }
 
@@ -189,7 +224,6 @@ public class CommonDialog extends Dialog {
             // 实例化自定义的对话框主题
             final CommonDialog dialog = new CommonDialog(context, R.style.Son_dialog);
             View layout = inflater.inflate(R.layout.dialog_common, null);
-            LinearLayout contentLL = layout.findViewById(R.id.ll_dialog);//设置ContentView
 
             dialog.addContentView(layout, new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -201,11 +235,22 @@ public class CommonDialog extends Dialog {
                 tvTitle.setText(title);
             }
 
-            TextView tvMessage = layout.findViewById(R.id.tv_message);
-            if (TextUtils.isEmpty(message)) {
-                contentLL.removeView(tvMessage);
-            } else {
+            if (!TextUtils.isEmpty(message)) {
+                TextView tvMessage = layout.findViewById(R.id.tv_message);
+                tvMessage.setVisibility(View.VISIBLE);
                 tvMessage.setText(message);
+                if (messageDrawable[0] != null || messageDrawable[1] != null
+                        || messageDrawable[2] != null || messageDrawable[3] != null) {
+                    tvMessage.setCompoundDrawablesRelativeWithIntrinsicBounds(messageDrawable[0],
+                            messageDrawable[1], messageDrawable[2], messageDrawable[3]);
+                } else if (messageDrawableRes[0] != 0 || messageDrawableRes[1] != 0
+                        || messageDrawableRes[2] != 0 || messageDrawableRes[3] != 0) {
+                    tvMessage.setCompoundDrawablesRelativeWithIntrinsicBounds(messageDrawableRes[0],
+                            messageDrawableRes[1], messageDrawableRes[2], messageDrawableRes[3]);
+                }
+                if (messageDrawablePaddingRes != 0) {
+                    tvMessage.setCompoundDrawablePadding((int) context.getResources().getDimension(messageDrawablePaddingRes));
+                }
             }
 
             // 设置返回按钮事件和文本

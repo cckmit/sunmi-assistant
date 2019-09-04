@@ -217,13 +217,16 @@ public class IpcSettingWiFiActivity extends BaseMvpActivity<IpcSettingWifiPresen
 
     @UiThread
     void getWifiList(ResponseBean res) {
-        if (res.getResult() == null || res.getDataErrCode() != 0) {
+        if (res.getResult() == null) {
             netExceptionView(true);
             return;
         }
         netExceptionView(false);
         tvStatus.setText(R.string.ipc_setting_tip_wifi_choose);
         WifiListResp bean = new Gson().fromJson(res.getResult().toString(), WifiListResp.class);
+        if (bean == null || bean.getScan_results().size() == 0) {
+            return;
+        }
         recyclerView.setAdapter(new CommonListAdapter<WifiListResp.ScanResultsBean>(context,
                 R.layout.ipc_item_wifi, bean.getScan_results()) {
             @Override

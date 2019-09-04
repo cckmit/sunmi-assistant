@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.os.Handler;
 import android.text.Html;
 import android.text.TextUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;
@@ -11,7 +12,7 @@ import com.sunmi.ipc.contract.IpcConfiguringContract;
 import com.sunmi.ipc.model.IpcListResp;
 import com.sunmi.ipc.presenter.IpcConfiguringPresenter;
 import com.sunmi.ipc.rpc.IpcConstants;
-import com.sunmi.ipc.rpc.mqtt.MqttManager;
+import sunmi.common.rpc.mqtt.MqttManager;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Set;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.RpcErrorCode;
@@ -42,11 +44,16 @@ import sunmi.common.view.dialog.CommonDialog;
 @EActivity(resName = "activity_ipc_configuring")
 public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresenter>
         implements IpcConfiguringContract.View {
+
     @ViewById(resName = "tv_tip")
     TextView tvTip;
+    @ViewById(resName = "iv_device")
+    ImageView ivDevice;
 
     @Extra
     String shopId;
+    @Extra
+    int deviceType;
     @Extra
     ArrayList<SunmiDevice> sunmiDevices;
 
@@ -57,6 +64,9 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
 
     @AfterViews
     void init() {
+        if (CommonConstants.TYPE_IPC_FS == deviceType) {
+            ivDevice.setImageResource(R.mipmap.ic_no_fs);
+        }
         mPresenter = new IpcConfiguringPresenter();
         mPresenter.attachView(this);
         tvTip.setText(Html.fromHtml(getString(R.string.tip_keep_same_network)));
@@ -90,7 +100,9 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
             isTimeoutStart = true;
             new Handler().postDelayed(new Runnable() {
                 public void run() {
-                    if (deviceIds.isEmpty()) return;
+                    if (deviceIds.isEmpty()) {
+                        return;
+                    }
                     mPresenter.getIpcList(SpUtils.getCompanyId(), shopId);
                 }
             }, 30000);
@@ -105,7 +117,7 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
             public void run() {
                 if (sunmiDevices.size() > 1 || retryCount == 20
                         || code == 5501 || code == 5508 || code == 5509 || code == 5510
-                        || code == 5511 || code == 5512 || code == 5013) {
+                        || code == 5511 || code == 5512 || code == 5013 || code == 5514) {
                     startCountDown();
                     setDeviceStatus(sn, code);
                     return;
@@ -125,17 +137,24 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
                 }
             }
         }
-        for (String deviceId : deviceIds) {
-            setDeviceStatus(deviceId, RpcErrorCode.RPC_ERR_TIMEOUT);
-        }
-        configComplete();
+        setRemainDevicesStatus();
     }
 
     @Override
     public void getIpcListFail(int code, String msg) {
-        for (String deviceId : deviceIds) {
-            setDeviceStatus(deviceId, RpcErrorCode.RPC_ERR_TIMEOUT);
+        setRemainDevicesStatus();
+    }
+
+    /**
+     * 剩余设备配置失败
+     */
+    private void setRemainDevicesStatus() {
+        for (SunmiDevice device : sunmiDevices) {
+            if (deviceIds.contains(device.getDeviceid())) {
+                device.setStatus(RpcErrorCode.RPC_ERR_TIMEOUT);
+            }
         }
+        deviceIds.clear();
         configComplete();
     }
 
@@ -178,7 +197,7 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
         BaseNotification.newInstance().postNotificationName(IpcConstants.refreshIpcList);
         if (deviceIds.isEmpty()) {
             IpcConfigCompletedActivity_.intent(context).shopId(shopId)
-                    .sunmiDevices(sunmiDevices).start();
+                    .deviceType(deviceType).sunmiDevices(sunmiDevices).start();
             finish();
         }
     }

@@ -3,6 +3,7 @@ package sunmi.common.view;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.commonlibrary.R;
+
+import sunmi.common.base.BaseApplication;
 
 /**
  * Description:
@@ -43,6 +46,8 @@ public class SimpleRecyclerViewAdapter extends RecyclerView.Adapter<SimpleRecycl
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
+        viewHolder.tvName.setTextColor(ContextCompat.getColor(BaseApplication.getContext(),
+                i == mNames.length - 1 ? R.color.color_999999 : R.color.color_333333));
         viewHolder.tvName.setText(mNames[i]);
         viewHolder.imageView.setImageResource(mIcons[i]);
     }
@@ -61,13 +66,8 @@ public class SimpleRecyclerViewAdapter extends RecyclerView.Adapter<SimpleRecycl
             super(view);
             rootView = view.findViewById(R.id.rl_root);
             rootView.setOnClickListener(this);
-            for (int i = 0; i < rootView.getChildCount(); i++) {
-                if (rootView.getChildAt(i) instanceof TextView) {
-                    tvName = (TextView) rootView.getChildAt(i);
-                } else if (rootView.getChildAt(i) instanceof ImageView) {
-                    imageView = (ImageView) rootView.getChildAt(i);
-                }
-            }
+            tvName = rootView.findViewById(R.id.tv_name);
+            imageView = rootView.findViewById(R.id.iv_pic);
         }
 
         @Override

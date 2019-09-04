@@ -21,7 +21,7 @@ import com.sunmi.assistant.dashboard.ui.BarXAxisLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.RoundEdgeBarChartRenderer;
 import com.sunmi.assistant.dashboard.ui.SpecificLabelsXAxisRenderer;
 import com.sunmi.assistant.dashboard.ui.SpecificLabelsYAxisRenderer;
-import com.sunmi.assistant.data.SunmiStoreRemote;
+import com.sunmi.assistant.data.PaymentApi;
 import com.sunmi.assistant.data.response.OrderTimeDistributionResp;
 import com.sunmi.assistant.utils.Utils;
 
@@ -134,7 +134,7 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
             interval = INTERVAL_DAY_SECOND;
         }
         Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(period);
-        return SunmiStoreRemote.get().getOrderTimeDistribution(companyId, shopId,
+        return PaymentApi.get().getOrderTimeDistribution(companyId, shopId,
                 periodTimestamp.first, periodTimestamp.second, interval, callback);
     }
 

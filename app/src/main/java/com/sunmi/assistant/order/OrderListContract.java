@@ -2,12 +2,12 @@ package com.sunmi.assistant.order;
 
 import android.content.Context;
 
-import com.sunmi.assistant.order.model.FilterItem;
 import com.sunmi.assistant.order.model.OrderInfo;
 
 import java.util.List;
 
 import sunmi.common.base.BaseView;
+import sunmi.common.model.FilterItem;
 
 /**
  * @author yinhui

@@ -21,7 +21,9 @@ public class BaseArrayAdapter<T> extends BaseRecyclerAdapter<T> {
 
     public BaseArrayAdapter(List<T> data) {
         super();
-        mData.addAll(data);
+        if (data != null) {
+            mData.addAll(data);
+        }
     }
 
     @Override
@@ -91,6 +93,17 @@ public class BaseArrayAdapter<T> extends BaseRecyclerAdapter<T> {
         if (mData.isEmpty()) {
             notifyDataSetChanged();
         } else {
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, mData.size() - position);
+        }
+    }
+
+    public void remove(@NonNull T data) {
+        int position = mData.indexOf(data);
+        mData.remove(data);
+        if (mData.isEmpty()) {
+            notifyDataSetChanged();
+        } else if (position >= 0) {
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, mData.size() - position);
         }

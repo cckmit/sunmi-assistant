@@ -8,6 +8,7 @@ import android.support.annotation.IntRange;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.SparseArray;
@@ -160,7 +161,7 @@ public class DropdownMenu extends FrameLayout implements View.OnClickListener {
         private CustomPopup(Context context) {
             mRecyclerView = (RecyclerView) LayoutInflater.from(context).inflate(R.layout.dropdown_menu_item_rv, null);
             mRecyclerView.setId(View.generateViewId());
-            mRecyclerView.setBackgroundColor(context.getResources().getColor(R.color.c_white));
+            mRecyclerView.setBackgroundColor(ContextCompat.getColor(context, R.color.c_white));
         }
 
         @Override

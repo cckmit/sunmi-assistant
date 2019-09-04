@@ -28,23 +28,23 @@ public class DatePickDialog extends Dialog implements OnChangeLisener {
     private TextView messgeTv;
 
     private String title;
-    private String format;
+    private String format = "yyyy-MM-dd";
     private DateType type = DateType.TYPE_ALL;
 
     //开始时间
     private Date startDate = new Date();
-    //年分限制，默认上下5年
-    private int yearLimt = 5;
+    //年分限制，默认上下100年
+    private int yearLimt = 100;
 
     private OnChangeLisener onChangeLisener;
 
-    private OnSureLisener onSureLisener;
+    private OnSureListener onSureListener;
 
     private DatePicker mDatePicker;
 
     //设置标题
     public void setTitle(String title) {
-       this.title=title;
+        this.title = title;
     }
 
     //设置模式
@@ -68,13 +68,13 @@ public class DatePickDialog extends Dialog implements OnChangeLisener {
     }
 
     //设置选择回调
-    public void setOnChangeLisener(OnChangeLisener onChangeLisener) {
+    public void setOnChangeListener(OnChangeLisener onChangeLisener) {
         this.onChangeLisener = onChangeLisener;
     }
 
     //设置点击确定按钮，回调
-    public void setOnSureLisener(OnSureLisener onSureLisener) {
-        this.onSureLisener = onSureLisener;
+    public void setOnSureListener(OnSureListener onSureListener) {
+        this.onSureListener = onSureListener;
     }
 
     public DatePickDialog(Context context) {
@@ -100,11 +100,11 @@ public class DatePickDialog extends Dialog implements OnChangeLisener {
     }
 
     private void initView() {
-        this.sure = (TextView) findViewById(R.id.sure);
-        this.cancel = (TextView) findViewById(R.id.cancel);
-        this.wheelLayout = (FrameLayout) findViewById(R.id.wheelLayout);
-        this.titleTv = (TextView) findViewById(R.id.title);
-        messgeTv = (TextView) findViewById(R.id.message);
+        this.sure = findViewById(R.id.sure);
+        this.cancel = findViewById(R.id.cancel);
+        this.wheelLayout = findViewById(R.id.wheelLayout);
+        this.titleTv = findViewById(R.id.title);
+        messgeTv = findViewById(R.id.message);
 
         mDatePicker = getDatePicker();
         this.wheelLayout.addView(mDatePicker);
@@ -123,8 +123,8 @@ public class DatePickDialog extends Dialog implements OnChangeLisener {
             @Override
             public void onClick(View v) {
                 dismiss();
-                if (onSureLisener != null) {
-                    onSureLisener.onSure(mDatePicker.getSelectDate());
+                if (onSureListener != null) {
+                    onSureListener.onSure(mDatePicker.getSelectDate());
                 }
             }
         });
@@ -154,6 +154,5 @@ public class DatePickDialog extends Dialog implements OnChangeLisener {
             messgeTv.setText(messge);
         }
     }
-
 
 }

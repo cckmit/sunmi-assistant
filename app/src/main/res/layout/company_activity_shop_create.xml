@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_common">
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorWhite"
+        app:dividerShow="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:leftDefaultClickEnable="true"
+        app:leftIcon="@mipmap/ic_back_dark"
+        app:titleText="@string/company_shop_new_create"
+        app:titleTextColor="@color/colorText" />
+
+    <TextView
+        android:id="@+id/tv_title_tip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_bar"
+        android:paddingBottom="@dimen/dp_8"
+        android:paddingEnd="@dimen/dp_25"
+        android:paddingStart="@dimen/dp_25"
+        android:paddingTop="@dimen/dp_8"
+        android:text="@string/company_shop_create_tip"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_bar" />
+
+
+    <RelativeLayout
+        android:id="@+id/rl_shop"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_60"
+        android:background="@color/c_white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title_tip">
+
+        <TextView
+            android:id="@+id/tv_shop"
+            android:layout_width="@dimen/dp_68"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dp_25"
+            android:text="@string/company_shop_create_name"
+            android:textColor="@color/colorText"
+            android:textSize="@dimen/sp_16" />
+
+        <sunmi.common.view.ClearableEditText
+            android:id="@+id/et_shop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_25"
+            android:layout_toRightOf="@id/tv_shop"
+            android:background="@null"
+            android:hint="@string/company_shop_create_hint"
+            android:inputType="text"
+            android:paddingLeft="@dimen/dp_20"
+            android:textSize="@dimen/sp_16" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_contact"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_60"
+        android:background="@color/c_white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rl_shop">
+
+        <TextView
+            android:id="@+id/tv_contact"
+            android:layout_width="@dimen/dp_68"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dp_25"
+            android:text="@string/company_shop_contact"
+            android:textColor="@color/colorText"
+            android:textSize="@dimen/sp_16" />
+
+        <sunmi.common.view.ClearableEditText
+            android:id="@+id/et_contact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_25"
+            android:layout_toRightOf="@id/tv_contact"
+            android:background="@null"
+            android:hint="@string/company_shop_contact_really_name"
+            android:inputType="text"
+            android:maxLength="20"
+            android:paddingLeft="@dimen/dp_20"
+            android:textSize="@dimen/sp_16" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_mobile"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_60"
+        android:background="@color/c_white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rl_contact">
+
+        <TextView
+            android:id="@+id/tv_mobile"
+            android:layout_width="@dimen/dp_68"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dp_25"
+            android:text="@string/str_mobile"
+            android:textColor="@color/colorText"
+            android:textSize="@dimen/sp_16" />
+
+        <sunmi.common.view.ClearableEditText
+            android:id="@+id/et_mobile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_25"
+            android:layout_toRightOf="@id/tv_mobile"
+            android:background="@null"
+            android:hint="@string/str_please_input_mobile"
+            android:inputType="phone"
+            android:maxLength="11"
+            android:paddingLeft="@dimen/dp_20"
+            android:textSize="@dimen/sp_16" />
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btn_complete"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_44"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_30"
+        android:background="@drawable/button_corners_solid_orange"
+        android:text="@string/str_complete"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rl_mobile" />
+
+
+</android.support.constraint.ConstraintLayout>

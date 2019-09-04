@@ -24,14 +24,12 @@ import com.sunmi.apmanager.ui.activity.router.RouterMangerActivity;
 import com.sunmi.apmanager.utils.ApCompatibleUtils;
 import com.sunmi.apmanager.utils.ApIsNewVersionUtils;
 import com.sunmi.apmanager.utils.CommonUtils;
-import com.sunmi.apmanager.utils.DBUtils;
+import com.sunmi.apmanager.utils.RouterDBHelper;
 import com.sunmi.apmanager.utils.EncryptUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
-import com.sunmi.assistant.data.response.AdListBean;
-import com.sunmi.assistant.data.response.AdListResp;
 import com.sunmi.assistant.presenter.DevicePresenter;
-import com.sunmi.assistant.ui.DeviceSettingDialog;
+import com.sunmi.assistant.ui.DeviceSettingMenu;
 import com.sunmi.assistant.ui.MainTopBar;
 import com.sunmi.assistant.ui.adapter.DeviceListAdapter;
 import com.sunmi.assistant.utils.GlideImageLoader;
@@ -64,7 +62,9 @@ import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.constant.CommonConstants;
-import sunmi.common.constant.CommonNotificationConstant;
+import sunmi.common.constant.CommonNotifications;
+import sunmi.common.model.AdListBean;
+import sunmi.common.model.AdListResp;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.NetworkUtils;
@@ -81,7 +81,7 @@ import sunmi.common.view.dialog.CommonDialog;
 @EFragment(R.layout.fragment_device)
 public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         implements DeviceContract.View, DeviceListAdapter.OnDeviceClickListener,
-        DeviceSettingDialog.OnSettingsClickListener, OnBannerListener,
+        DeviceSettingMenu.OnSettingsClickListener, OnBannerListener,
         BGARefreshLayout.BGARefreshLayoutDelegate, View.OnClickListener {
 
     @ViewById(R.id.shop_title)
@@ -105,7 +105,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     private Timer timer = null, timerException = null;
     private DeviceListAdapter deviceListAdapter;
     private LinearLayoutManager layoutManager;
-    private DeviceSettingDialog deviceSettingDialog;
+    private DeviceSettingMenu deviceSettingMenu;
 
     private Dialog dialogPassword = null;
     private String password = "";    //路由管理密码
@@ -214,11 +214,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     }
 
     @Override
-    public void unbindRouterSuccess(String sn, int code, String msg, Object data) {
-
-    }
-
-    @Override
     public void getIpcListSuccess(List<SunmiDevice> devices) {
         ipcList.clear();
         ipcList.addAll(devices);
@@ -235,16 +230,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     @Override
     public void unbindIpcSuccess(int code, String msg, Object data) {
         mPresenter.getIpcList();
-    }
-
-    @Override
-    public void unbindIpcFail(int code, String msg) {
-
-    }
-
-    @Override
-    public void getPrinterStatusSuccess(SunmiDevice device) {
-
     }
 
     @Override
@@ -267,7 +252,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         if (TextUtils.equals(device.getType(), "PRINTER")) {
             if (device.getStatus() != DeviceStatus.UNKNOWN.ordinal()) {
                 PrinterManageActivity_.intent(mActivity).sn(device.getDeviceid()).userId(SpUtils.getUID())
-                        .merchantId(SpUtils.getShopId() + "").channelId(device.getChannelId()).start();
+                        .shopId(SpUtils.getShopId() + "").channelId(device.getChannelId()).start();
+                clickedDevice = device;
+                return;
             }
         }
         if (cannotManagerDevice(device)) {
@@ -294,13 +281,13 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @Override
     public void onMoreClick(SunmiDevice item, int position) {
-        if (deviceSettingDialog != null) {
-            deviceSettingDialog.dismiss();
-            deviceSettingDialog = null;
+        if (deviceSettingMenu != null) {
+            deviceSettingMenu.dismiss();
+            deviceSettingMenu = null;
         } else {
-            deviceSettingDialog = new DeviceSettingDialog(mActivity, item);
-            deviceSettingDialog.setOnSettingsClickListener(this);
-            deviceSettingDialog.show(layoutManager.findViewByPosition(position)
+            deviceSettingMenu = new DeviceSettingMenu(mActivity, item);
+            deviceSettingMenu.setOnSettingsClickListener(this);
+            deviceSettingMenu.show(layoutManager.findViewByPosition(position)
                     .findViewById(R.id.iv_more));
         }
     }
@@ -317,17 +304,13 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     @Override
     public void onSettingsClick(SunmiDevice device, int type) {
         if (type == 0) {
-            if (cannotManagerDevice(device)) {
-                return;
-            }
             onDeviceClick(device);
         } else if (type == 1) {
             deleteDevice(device);
         } else if (type == 2) {
-            if (cannotManagerDevice(device)) {
-                return;
+            if (!cannotManagerDevice(device)) {
+                IpcSettingActivity_.intent(mActivity).mDevice(device).start();
             }
-            IpcSettingActivity_.intent(mActivity).mDevice(device).start();
         }
     }
 
@@ -360,10 +343,10 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{NotificationConstant.shopSwitched, CommonNotificationConstant.netConnected,
-                CommonNotificationConstant.netDisconnection, NotificationConstant.updateConnectComplete,
+        return new int[]{CommonNotifications.shopSwitched, CommonNotifications.netConnected,
+                CommonNotifications.netDisconnection, NotificationConstant.updateConnectComplete,
                 NotificationConstant.connectedTosunmiDevice, NotificationConstant.unBindRouterChanged,
-                CommonNotificationConstant.ipcUpgradeComplete, CommonNotificationConstant.ipcUpgrade};
+                CommonNotifications.ipcUpgradeComplete, CommonNotifications.ipcUpgrade};
     }
 
     @Override
@@ -372,15 +355,15 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         if (id == CommonConstants.tabDevice
                 || NotificationConstant.bindRouterChanged == id
                 || NotificationConstant.updateConnectComplete == id
-                || CommonNotificationConstant.netConnected == id
+                || CommonNotifications.netConnected == id
                 || NotificationConstant.unBindRouterChanged == id
-                || CommonNotificationConstant.ipcUpgradeComplete == id
-                || CommonNotificationConstant.ipcUpgrade == id) {
+                || CommonNotifications.ipcUpgradeComplete == id
+                || CommonNotifications.ipcUpgrade == id) {
             loadData();
-        } else if (id == NotificationConstant.shopSwitched) {
+        } else if (id == CommonNotifications.shopSwitched) {
             topBar.setShopName(SpUtils.getShopName());
             loadData();
-        } else if (CommonNotificationConstant.netDisconnection == id) {//网络断开
+        } else if (CommonNotifications.netDisconnection == id) {//网络断开
             networkDisconnected();
         } else if (NotificationConstant.apStatusException == id) {//异常
             if (TextUtils.isEmpty(MyNetworkCallback.CURRENT_ROUTER)) return;
@@ -435,7 +418,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        } else if (NotificationConstant.shopNameChanged == id) {
+        } else if (CommonNotifications.shopNameChanged == id) {
             topBar.setShopName(SpUtils.getShopName());
         } else if (NotificationConstant.apisConfig == id) {//ap是否配置2034
             ResponseBean res = (ResponseBean) args[0];
@@ -502,7 +485,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 JSONObject object3 = object2.getJSONObject("account");
                 String token = object3.getString("token");
                 SpUtils.saveRouterToken(token);//保存token
-                DBUtils.saveLocalMangerPassword(clickedDevice.getDeviceid(), password);//保存本地管理密码
+                RouterDBHelper.saveLocalMangerPassword(clickedDevice.getDeviceid(), password);//保存本地管理密码
                 dialogPasswordDismiss();
                 checkApVersion(clickedDevice.getDeviceid(), clickedDevice.getStatus());
 //                gotoRouterManager();
@@ -652,7 +635,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @UiThread
     void showEmptyView() {
-        if (rlNoDevice == null) return;
+        if (rlNoDevice == null || btnAdd == null) return;
         if (deviceList.size() > 0) {
             rlNoDevice.setVisibility(View.GONE);
             btnAdd.setVisibility(View.VISIBLE);
@@ -676,7 +659,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         //1通过sn号判断是否当前路由器WiFi
         if (TextUtils.equals(sn, MyNetworkCallback.CURRENT_ROUTER)) {
             //2通过查询数据库管理密码check登录（管理密码是否正确）
-            mPassword = DBUtils.queryApPassword(sn);//查询数据库保存的路由器密码
+            mPassword = RouterDBHelper.queryApPassword(sn);//查询数据库保存的路由器密码
             APCall.getInstance().checkLogin(mActivity, mPassword);
         } else {
             checkApVersion(sn, status);

@@ -41,6 +41,8 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
     TextView tvTip3;
     @ViewById(resName = "tv_tip_4")
     TextView tvTip4;
+    @ViewById(resName = "tv_tip_5")
+    TextView tvTip5;
     @ViewById(resName = "tv_config_tip")
     TextView tvConfigTip;
     @ViewById(resName = "ctv_privacy")
@@ -61,9 +63,19 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
             tvTip2.setText(Html.fromHtml(getString(R.string.str_config_tip_ap_1)));
             tvTip3.setText(Html.fromHtml(getString(R.string.str_config_tip_ap_2)));
             tvConfigTip.setVisibility(View.GONE);
-        } else if (deviceType == CommonConstants.TYPE_IPC) {
+        } else if (deviceType == CommonConstants.TYPE_IPC_FS) {
             titleBar.setAppTitle(R.string.str_title_ipc_set);
-            ivImage.setImageResource(R.mipmap.ic_device_config_ipc);
+            ivImage.setImageResource(R.mipmap.ic_device_config_ipc_fs);
+            tvTip1.setText(R.string.str_config_tip_ipc);
+            tvTip2.setText(getString(R.string.str_config_tip_fs_1));
+            tvTip3.setText(Html.fromHtml(getString(R.string.str_config_tip_fs_2)));
+            tvTip4.setVisibility(View.VISIBLE);
+            tvTip4.setText(getString(R.string.str_config_tip_fs_3));
+            tvTip5.setVisibility(View.VISIBLE);
+            tvTip5.setText(Html.fromHtml(getString(R.string.str_config_tip_fs_4)));
+        } else if (deviceType == CommonConstants.TYPE_IPC_SS) {
+            titleBar.setAppTitle(R.string.str_title_ipc_set);
+            ivImage.setImageResource(R.mipmap.ic_device_config_ipc_ss);
             tvTip1.setText(R.string.str_config_tip_ipc);
             tvTip2.setText(Html.fromHtml(getString(R.string.str_config_tip_ipc_1)));
             tvTip3.setText(Html.fromHtml(getString(R.string.str_config_tip_ipc_2)));
@@ -92,11 +104,12 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
         }
         if (deviceType == CommonConstants.TYPE_AP) {
             startPrimaryRouteSearchActivity();
-        } else if (deviceType == CommonConstants.TYPE_IPC) {
+        } else if (deviceType == CommonConstants.TYPE_IPC_FS || deviceType == CommonConstants.TYPE_IPC_SS) {
             try {
                 Class<?> ipcSearchActivity = Class.forName("com.sunmi.ipc.view.IPCSearchActivity_");
                 Intent intent = new Intent(context, ipcSearchActivity);
                 intent.putExtra("shopId", shopId);
+                intent.putExtra("deviceType", deviceType);
                 context.startActivity(intent);
             } catch (Exception e) {
                 e.printStackTrace();

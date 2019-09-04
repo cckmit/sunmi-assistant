@@ -3,18 +3,14 @@ package com.sunmi.assistant;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
 
-import com.sunmi.apmanager.config.ApConfig;
 import com.sunmi.apmanager.rpc.mqtt.MQTTManager;
 import com.sunmi.assistant.config.BootLoader;
-import com.sunmi.ipc.rpc.mqtt.MqttManager;
-import com.tencent.stat.StatConfig;
 import com.tencent.stat.StatService;
 
 import sunmi.common.base.BaseApplication;
+import sunmi.common.rpc.mqtt.MqttManager;
 import sunmi.common.utils.SpUtils;
-import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 
 /**
@@ -25,7 +21,7 @@ public class MyApplication extends BaseApplication {
     private static final int TIME_TO_CHECK_KILL_SELF = 10 * 60 * 1000;
     private int startedActivityCount = 0;
     private static boolean isInBackground = false;
-    private static Handler handler;
+    private static Handler handler = new Handler();
 
     private Runnable mAutoKillSelfRunnable = new Runnable() {
         @Override
@@ -43,20 +39,15 @@ public class MyApplication extends BaseApplication {
         super.onCreate();
         init();
         this.registerActivityLifecycleCallbacks(new HhActivityLifecycleCallbacks());
-        handler = new Handler();
     }
 
     private void init() {
         BootLoader bootLoader = new BootLoader(this);
         bootLoader.init();
-        //腾讯移动分析
-        StatConfig.setDebugEnable(!TextUtils.equals(Utils.getMetaValue(this,
-                "ENV_DATA", ApConfig.ENV_TEST), ApConfig.ENV_RELEASE));
         StatService.registerActivityLifecycleCallbacks(this);
     }
 
     class HhActivityLifecycleCallbacks implements ActivityLifecycleCallbacks {
-
         @Override
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
         }
@@ -66,7 +57,7 @@ public class MyApplication extends BaseApplication {
             if (startedActivityCount == 0) {
                 LogCat.e("HhActivityLifecycleCB", "onActivityStarted : hasLogin = "
                         + SpUtils.getLoginStatus() + ", activity = " + activity.getClass().getName());
-                if (TextUtils.equals(SpUtils.getLoginStatus(), "Y")) {
+                if (SpUtils.isLoginSuccess()) {
                     MQTTManager.getInstance().reconnect();
                     MqttManager.getInstance().reconnect();
                 }

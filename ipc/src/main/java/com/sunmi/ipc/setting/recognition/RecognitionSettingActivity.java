@@ -106,7 +106,7 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
         if (mVideoRatio <= 0) {
             mVideoRatio = 16f / 9f;
         }
-        mVideoView.init(mDevice.getUid(), mVideoRatio, mPresenter.getCallback());
+        mVideoView.init(mDevice.getUid(), mVideoRatio);
         mFaceCase.setOnTouchListener(new FaceCaseTouch());
         mLineView.setStateChangeListener(new DoorLineStateChangeListener());
         mResTitle.put(RecognitionSettingContract.STEP_1_POSITION, getString(R.string.ipc_recognition_tip_position));
@@ -179,9 +179,6 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
         if (mStepIndex == RecognitionSettingContract.STEP_1_POSITION) {
             showLoadingDialog();
             mPresenter.updateState();
-        } else if (mStepIndex == RecognitionSettingContract.STEP_3_FOCUS) {
-            showLoadingDialog();
-            mPresenter.checkSdStatus();
         } else if (mStepIndex == RecognitionSettingContract.STEP_4_LINE) {
             showLoadingDialog();
             mPresenter.line(mLineStart, mLineEnd);

@@ -4,11 +4,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
+import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -41,13 +44,14 @@ import java.util.TimerTask;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
-import sunmi.common.constant.CommonNotificationConstant;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.dialog.InputDialog;
@@ -293,6 +297,25 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         new InputDialog.Builder(this)
                 .setTitle(R.string.ipc_setting_name)
                 .setInitInputContent(mDevice.getName())
+                .setInputWatcher(new InputDialog.TextChangeListener() {
+                    @Override
+                    public void onTextChange(EditText view, Editable s) {
+                        if (TextUtils.isEmpty(s.toString())) {
+                            return;
+                        }
+                        String name = s.toString().trim();
+                        if (name.getBytes(Charset.defaultCharset()).length > IPC_NAME_MAX_LENGTH) {
+                            shortTip(R.string.ipc_setting_tip_name_length);
+                            do {
+                                LogCat.d(TAG, "name=\"" + name + "\"");
+                                name = name.substring(0, name.length() - 1);
+                            }
+                            while (name.getBytes(Charset.defaultCharset()).length > IPC_NAME_MAX_LENGTH);
+                            view.setText(name);
+                            view.setSelection(name.length());
+                        }
+                    }
+                })
                 .setCancelButton(R.string.sm_cancel)
                 .setConfirmButton(R.string.ipc_setting_save, new InputDialog.ConfirmClickListener() {
                     @Override
@@ -326,21 +349,20 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Click(resName = "sil_camera_adjust")
     void cameraAdjust() {
-        if (!NetworkUtils.isNetworkAvailable(this)) {
-            shortTip(R.string.str_net_exception);
-            return;
-        }
-        if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
-            shortTip(R.string.ipc_setting_tip_network_dismatch);
-            return;
-        }
         if (!DeviceTypeUtils.getInstance().isFS1(mDevice.getModel())) {
             return;
         }
-        RecognitionSettingActivity_.intent(this)
-                .mDevice(mDevice)
-                .mVideoRatio(16f / 9f)
-                .start();
+        if (!NetworkUtils.isNetworkAvailable(context)) {
+            shortTip(R.string.str_net_exception);
+            return;
+        }
+        SunmiDevice device = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
+        if (device == null) {
+            shortTip(R.string.ipc_setting_tip_network_dismatch);
+            return;
+        }
+        showLoadingDialog();
+        IPCCall.getInstance().getSdState(context, device.getIp());
     }
 
     @Click(resName = "sil_voice_exception")
@@ -538,59 +560,100 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     public int[] getStickNotificationId() {
         return new int[]{IpcConstants.getIpcConnectApMsg, IpcConstants.getIpcNightIdeRotation,
                 IpcConstants.setIpcNightIdeRotation, IpcConstants.getIpcDetection,
-                IpcConstants.ipcUpgrade, IpcConstants.getIsWire, CommonNotificationConstant.netConnected,
-                CommonNotificationConstant.netDisconnection, CommonNotificationConstant.ipcUpgrade,
-                CommonNotificationConstant.netConnectException};
+                IpcConstants.ipcUpgrade, IpcConstants.getIsWire, CommonNotifications.netConnected,
+                CommonNotifications.netDisconnection, CommonNotifications.ipcUpgrade,
+                CommonNotifications.netConnectException, IpcConstants.getSdStatus};
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
         super.didReceivedNotification(id, args);
         hideLoadingDialog();
-        if (id == CommonNotificationConstant.netDisconnection) { //网络断开
+        if (id == CommonNotifications.netDisconnection) { //网络断开
             isShowWireDialog = false;
             setWifiUnknown();
-        } else if (id == CommonNotificationConstant.netConnected) { //网络连接
+        } else if (id == CommonNotifications.netConnected) { //网络连接
             isShowWireDialog = false;
             connectedNet();
-        } else if (id == CommonNotificationConstant.ipcUpgrade) { //ipc升级
+        } else if (id == CommonNotifications.ipcUpgrade) { //ipc升级
             mDevice.setFirmware(mResp.getLatest_bin_version());
             mPresenter.currentVersion();
-        } else if (id == CommonNotificationConstant.netConnectException) { //连接超时
+        } else if (id == CommonNotifications.netConnectException) { //连接超时
             shortTip(R.string.str_server_exception);
         }
-        if (!isRun || args == null) {
+        if (!isRun || args == null || args.length < 1) {
             return;
         }
-        ResponseBean res;
-        if (id == IpcConstants.getIpcConnectApMsg) {
-            res = (ResponseBean) args[0];
-            getIpcConnectApMsg(res);
-        } else if (id == IpcConstants.getIpcNightIdeRotation) {
-            timeoutStop();
-            res = (ResponseBean) args[0];
-            getIpcNightIdeRotation(res);
-        } else if (id == IpcConstants.setIpcNightIdeRotation) {
-            res = (ResponseBean) args[0];
-            setIpcNightIdeRotation(res);
-        } else if (id == IpcConstants.getIpcDetection) {
-            res = (ResponseBean) args[0];
-            if (res.getDataErrCode() == 1) {
-                mDetectionConfig = new Gson().fromJson(res.getResult().toString(), DetectionConfig.class);
-                updateDetectionView();
-            } else {
-                shortTip(R.string.toast_network_Exception);
+
+        if (args[0] instanceof ResponseBean) {
+            ResponseBean res = (ResponseBean) args[0];
+            if (id == IpcConstants.getIpcConnectApMsg) {
+                getIpcConnectApMsg(res);
+            } else if (id == IpcConstants.getIpcNightIdeRotation) {
+                timeoutStop();
+                getIpcNightIdeRotation(res);
+            } else if (id == IpcConstants.setIpcNightIdeRotation) {
+                setIpcNightIdeRotation(res);
+            } else if (id == IpcConstants.getIpcDetection) {
+                if (res.getDataErrCode() == 1) {
+                    mDetectionConfig = new Gson().fromJson(res.getResult().toString(), DetectionConfig.class);
+                    updateDetectionView();
+                } else {
+                    shortTip(R.string.toast_network_Exception);
+                }
+            } else if (id == IpcConstants.ipcUpgrade) {
+                upgradeResult(res);
+            } else if (id == IpcConstants.getIsWire) {
+                checkWire(res);
+            } else if (id == IpcConstants.getSdStatus) {
+                try {
+                    if (res.getDataErrCode() == 1) {
+                        int status = res.getResult().getInt("sd_status_code");
+                        switch (status) {
+                            case 2:
+                                RecognitionSettingActivity_.intent(this)
+                                        .mDevice(mDevice)
+                                        .mVideoRatio(16f / 9f)
+                                        .start();
+                                break;
+                            case 0:
+                                showErrorDialog(R.string.tip_no_tf_card,
+                                        R.string.ipc_recognition_sd_none);
+                                break;
+                            case 1:
+                                showErrorDialog(R.string.tip_tf_uninitalized,
+                                        R.string.ipc_recognition_sd_uninitialized);
+                                break;
+                            case 3:
+                                showErrorDialog(R.string.tip_unrecognition_tf_card,
+                                        R.string.ipc_recognition_sd_unknown);
+                                break;
+                            default:
+                                shortTip(R.string.network_wifi_low);
+                                break;
+                        }
+                    } else {
+                        shortTip(R.string.network_wifi_low);
+                    }
+                } catch (JSONException e) {
+                    LogCat.e(TAG, "Parse json ERROR: " + res.getResult());
+                    shortTip(R.string.network_wifi_low);
+                }
             }
-        } else if (id == IpcConstants.ipcUpgrade) {
-            res = (ResponseBean) args[0];
-            upgradeResult(res);
-        } else if (id == IpcConstants.getIsWire) {
-            res = (ResponseBean) args[0];
-            checkWire(res);
         }
     }
 
-    private void updateDetectionView() {
+    @UiThread
+    public void showErrorDialog(@StringRes int title, @StringRes int msgResId) {
+        hideLoadingDialog();
+        new CommonDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(msgResId)
+                .setConfirmButton(R.string.str_confirm).create().show();
+    }
+
+    @UiThread
+    void updateDetectionView() {
         if (mDetectionConfig == null) {
             return;
         }
@@ -771,7 +834,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             progressDialog.progressDismiss();
             mDevice.setFirmware(mResp.getLatest_bin_version());
             mVersion.setRightText(mResp.getLatest_bin_version());
-            BaseNotification.newInstance().postNotificationName(CommonNotificationConstant.ipcUpgradeComplete);
+            BaseNotification.newInstance().postNotificationName(CommonNotifications.ipcUpgradeComplete);
             upgradeVerSuccessDialog();
         } else {
             upgradeVerFailDialog(mResp.getLatest_bin_version());

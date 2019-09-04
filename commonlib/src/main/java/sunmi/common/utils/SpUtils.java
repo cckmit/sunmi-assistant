@@ -1,8 +1,7 @@
 package sunmi.common.utils;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
-import android.util.DisplayMetrics;
+import android.text.TextUtils;
 
 import sunmi.common.base.BaseApplication;
 
@@ -16,8 +15,8 @@ public class SpUtils {
     private static final String AVATAR_URL = "avatar_url";
     private static final String MERCHANT_UID = "MERCHANT_UID";
     private static final String UID = "UID";
-    private static final String TOKEN = "TOKEN";
     private static final String SSO_TOKEN = "SSO_TOKEN";
+    private static final String STORE_TOKEN = "STORE_TOKEN";
     private static final String LEAD_PAGES = "LEAD_PAGES";
     private static final String WEB_WIDTH = "WEB_WIDTH";
     private static final String WEB_HEIGHT = "WEB_HEIGHT";
@@ -29,12 +28,20 @@ public class SpUtils {
     private static final String CURRENT_SHOP_ID = "current_shop_id";
     private static final String CURRENT_SHOP_NAME = "current_shop_name";
     private static final String SAAS_EXIST = "saas_exist";
+    private static final String UNREAD_MSG = "unread_msg";
+    private static final String REMIND_UNREAD_MSG = "remind_unread_msg";
+    private static final String UNREAD_DEVICE_MSG = "unread_device_msg";
+    private static final String UNREAD_SYSTEM_MSG = "unread_system_msg";
 
     SpUtils() {
     }
 
     private static SharedPreferences getSharedPreference() {
         return SharedManager.getSharedPreference(BaseApplication.getContext());
+    }
+
+    public static boolean isLoginSuccess() {
+        return TextUtils.equals(SpUtils.getLoginStatus(), "Y");
     }
 
     //用户名称
@@ -92,21 +99,21 @@ public class SpUtils {
     }
 
     //用户Token
-    public static String getToken() {
-        return SharedManager.getValue(BaseApplication.getContext(), TOKEN);
-    }
-
-    public static void setToken(String token) {
-        SharedManager.putValue(BaseApplication.getContext(), TOKEN, token);
-    }
-
-    //sso Token
     public static String getSsoToken() {
         return SharedManager.getValue(BaseApplication.getContext(), SSO_TOKEN);
     }
 
-    public static void setSsoToken(String token) {
-        SharedManager.putValue(BaseApplication.getContext(), SSO_TOKEN, token);
+    public static void setSsoToken(String ssoToken) {
+        SharedManager.putValue(BaseApplication.getContext(), SSO_TOKEN, ssoToken);
+    }
+
+    //sunmi store Token
+    public static String getStoreToken() {
+        return SharedManager.getValue(BaseApplication.getContext(), STORE_TOKEN);
+    }
+
+    public static void setStoreToken(String token) {
+        SharedManager.putValue(BaseApplication.getContext(), STORE_TOKEN, token);
     }
 
     //登录状态
@@ -161,20 +168,6 @@ public class SpUtils {
 
     public static void clearRouterMangerPassword() {
         SharedManager.clearValue(BaseApplication.getContext(), SET_ROUTER_MANGER_PASSWORD);
-    }
-
-    //保存手机像素高度
-    public static void saveHeightPixel(Activity context) {
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        context.getWindowManager().getDefaultDisplay().getRealMetrics(outMetrics);
-        //int widthPixel = outMetrics.widthPixels;
-        int heightPixel = outMetrics.heightPixels;
-        SharedManager.putValue(BaseApplication.getContext(), "heightPixel", heightPixel + "");
-    }
-
-    //获取手机像素高度
-    public static int getHeightPixel() {
-        return Integer.valueOf(SharedManager.getValue(BaseApplication.getContext(), "heightPixel"));
     }
 
     //保存是否显示引导页
@@ -258,4 +251,35 @@ public class SpUtils {
         return SharedManager.getIntValue(BaseApplication.getContext(), SAAS_EXIST);
     }
 
+    public static void setUnreadMsg(int unreadMsg) {
+        SharedManager.putValue(BaseApplication.getContext(), UNREAD_MSG, unreadMsg);
+    }
+
+    public static int getUnreadMsg() {
+        return SharedManager.getIntValue(BaseApplication.getContext(), UNREAD_MSG);
+    }
+
+    public static void setRemindUnreadMsg(int remindUnreadMsg) {
+        SharedManager.putValue(BaseApplication.getContext(), REMIND_UNREAD_MSG, remindUnreadMsg);
+    }
+
+    public static int getRemindUnreadMsg() {
+        return SharedManager.getIntValue(BaseApplication.getContext(), REMIND_UNREAD_MSG);
+    }
+
+    public static void setUnreadDeviceMsg(int unreadDeviceMsg) {
+        SharedManager.putValue(BaseApplication.getContext(), UNREAD_DEVICE_MSG, unreadDeviceMsg);
+    }
+
+    public static int getUnreadDeviceMsg() {
+        return SharedManager.getIntValue(BaseApplication.getContext(), UNREAD_DEVICE_MSG);
+    }
+
+    public static void setUnreadSystemMsg(int unreadSystemMsg) {
+        SharedManager.putValue(BaseApplication.getContext(), UNREAD_SYSTEM_MSG, unreadSystemMsg);
+    }
+
+    public static int getUnreadSystemMsg() {
+        return SharedManager.getIntValue(BaseApplication.getContext(), UNREAD_SYSTEM_MSG);
+    }
 }

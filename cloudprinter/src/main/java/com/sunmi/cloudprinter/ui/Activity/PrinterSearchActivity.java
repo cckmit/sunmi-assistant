@@ -55,16 +55,17 @@ public class PrinterSearchActivity extends BaseActivity
     int shopId;
 
     private static final long DURATION_SCAN = 30_000;
-    private Set<String> macSet = new HashSet<>();
-    private List<PrinterDevice> list = new ArrayList<>();
-    private PrinterListAdapter printerAdapter;
-
-    private SunmiPrinterClient sunmiPrinterClient;
 
     private boolean isSnGot;
 
-    String bleAddress;
-    String sn;
+    private String bleAddress;
+
+    private SunmiPrinterClient sunmiPrinterClient;
+    private CommonDialog errorDialog;
+
+    private Set<String> macSet = new HashSet<>();
+    private List<PrinterDevice> list = new ArrayList<>();
+    private PrinterListAdapter printerAdapter;
 
     @AfterViews
     protected void init() {
@@ -104,7 +105,12 @@ public class PrinterSearchActivity extends BaseActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        sunmiPrinterClient = null;
+        if (errorDialog != null) {
+            if (errorDialog.isShowing()) {
+                errorDialog.dismiss();
+            }
+            errorDialog = null;
+        }
     }
 
     @Override
@@ -236,6 +242,8 @@ public class PrinterSearchActivity extends BaseActivity
             showErrorDialog(R.string.tip_printer_already_bound);
         } else if (code == 4402) {
             gotoPrinterSet();
+        } else if (code == 4404) {
+            showErrorDialog(R.string.tip_bound_to_other_shop);
         } else {
             showErrorDialog(R.string.tip_bind_printer_error_no_net);
         }
@@ -248,14 +256,24 @@ public class PrinterSearchActivity extends BaseActivity
 
     private void showErrorDialog(int msgResId) {
         hideLoadingDialog();
-        new CommonDialog.Builder(context)
+        if (errorDialog != null) {
+            if (errorDialog.isShowing()) {
+                errorDialog.dismiss();
+            }
+            errorDialog = null;
+        }
+        if (context == null || this.isFinishing() || this.isDestroyed()) {
+            return;
+        }
+        errorDialog = new CommonDialog.Builder(context)
                 .setTitle(R.string.sm_title_hint)
                 .setMessage(msgResId)
-                .setConfirmButton(R.string.str_confirm).create().show();
+                .setConfirmButton(R.string.str_confirm).create();
+        errorDialog.show();
     }
 
     private void gotoPrinterSet() {
-        WifiConfigActivity_.intent(context).sn(sn).bleAddress(bleAddress).start();
+        WifiConfigActivity_.intent(context).bleAddress(bleAddress).start();
         finish();
     }
 

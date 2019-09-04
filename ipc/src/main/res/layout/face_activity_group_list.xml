@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorText_5"
+    android:orientation="vertical"
+    tools:context=".setting.IpcSettingDetailActivity">
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/c_white"
+        app:dividerShow="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:leftDefaultClickEnable="true"
+        app:leftIcon="@mipmap/ic_back_dark"
+        app:titleText="@string/ipc_face_group_title"
+        app:titleTextColor="@color/colorText" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_face_group"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toTopOf="@+id/tv_face_group_create"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_bar"
+        app:layout_constraintVertical_bias="0" />
+
+    <FrameLayout
+        android:id="@+id/tv_face_group_create"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_60"
+        android:background="@color/c_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_0_5"
+            android:background="@color/black_10" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableStart="@mipmap/ic_round_add"
+            android:drawablePadding="@dimen/dp_4"
+            android:gravity="center"
+            android:text="@string/ipc_face_group_create"
+            android:textColor="@color/colorText_60"
+            android:textSize="@dimen/sp_16" />
+
+    </FrameLayout>
+
+</android.support.constraint.ConstraintLayout>
