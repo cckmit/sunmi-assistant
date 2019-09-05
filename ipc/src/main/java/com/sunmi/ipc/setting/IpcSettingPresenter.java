@@ -4,10 +4,12 @@ import com.sunmi.ipc.R;
 import com.sunmi.ipc.model.IpcNewFirmwareResp;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcCloudApi;
+import com.sunmi.ipc.rpc.IpcConstants;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
@@ -43,6 +45,7 @@ public class IpcSettingPresenter extends BasePresenter<IpcSettingContract.View>
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
                         mDevice.setName(name);
+                        BaseNotification.newInstance().postNotificationName(IpcConstants.refreshIpcList);
                         if (isViewAttached()) {
                             mView.hideLoadingDialog();
                             mView.updateNameView(name);
