@@ -24,8 +24,8 @@ import com.sunmi.apmanager.ui.activity.router.RouterMangerActivity;
 import com.sunmi.apmanager.utils.ApCompatibleUtils;
 import com.sunmi.apmanager.utils.ApIsNewVersionUtils;
 import com.sunmi.apmanager.utils.CommonUtils;
-import com.sunmi.apmanager.utils.RouterDBHelper;
 import com.sunmi.apmanager.utils.EncryptUtils;
+import com.sunmi.apmanager.utils.RouterDBHelper;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
 import com.sunmi.assistant.presenter.DevicePresenter;
@@ -346,7 +346,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         return new int[]{CommonNotifications.shopSwitched, CommonNotifications.netConnected,
                 CommonNotifications.netDisconnection, NotificationConstant.updateConnectComplete,
                 NotificationConstant.connectedTosunmiDevice, NotificationConstant.unBindRouterChanged,
-                CommonNotifications.ipcUpgradeComplete, CommonNotifications.ipcUpgrade};
+                CommonNotifications.ipcUpgradeComplete, CommonNotifications.ipcUpgrade,
+                CommonNotifications.companyNameChanged};
     }
 
     @Override
@@ -418,6 +419,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        } else if (CommonNotifications.companyNameChanged == id) {
+            topBar.setCompanyName(SpUtils.getCompanyName());
         } else if (CommonNotifications.shopNameChanged == id) {
             topBar.setShopName(SpUtils.getShopName());
         } else if (NotificationConstant.apisConfig == id) {//ap是否配置2034

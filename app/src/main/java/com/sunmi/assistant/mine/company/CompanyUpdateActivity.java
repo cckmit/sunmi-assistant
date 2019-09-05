@@ -20,10 +20,13 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.CompanyInfoResp;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.RegexUtils;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.TextLengthWatcher;
@@ -39,7 +42,7 @@ import sunmi.common.view.TitleBarView;
 @EActivity(R.layout.activity_change_username)
 public class CompanyUpdateActivity extends BaseActivity
         implements View.OnClickListener, TextWatcher {
-
+    private static final int CREATE_SHOP_ALREADY_EXIST = 5035;
     private static final int COMPANY_NAME_MAX_LENGTH = 40;
     private static final int EMAIL_MAX_LENGTH = 100;
 
@@ -116,6 +119,10 @@ public class CompanyUpdateActivity extends BaseActivity
                 hideLoadingDialog();
                 Intent intent = getIntent();
                 if (type == CompanyDetailActivity.TYPE_NAME) {
+                    if (data.getCompany_id() == SpUtils.getCompanyId()) {
+                        SpUtils.setCompanyName(data.getCompany_name());
+                        BaseNotification.newInstance().postNotificationName(CommonNotifications.companyNameChanged);
+                    }
                     intent.putExtra(CompanyDetailActivity.INTENT_EXTRA_NAME, companyInfo);
                 } else if (type == CompanyDetailActivity.TYPE_CONTACT) {
                     intent.putExtra(CompanyDetailActivity.INTENT_EXTRA_CONTACT, companyInfo);
@@ -132,7 +139,11 @@ public class CompanyUpdateActivity extends BaseActivity
             public void onFail(int code, String msg, CompanyInfoResp data) {
                 LogCat.e(TAG, "Update shop name Failed. " + msg);
                 hideLoadingDialog();
-                shortTip(R.string.tip_save_fail);
+                if (code == CREATE_SHOP_ALREADY_EXIST) {
+                    shortTip(R.string.str_create_company_alredy_exit);
+                } else {
+                    shortTip(R.string.tip_save_fail);
+                }
             }
         });
 
