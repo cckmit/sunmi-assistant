@@ -126,15 +126,14 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     String ipcType;
     @Extra
     int deviceId; //2237 2223     //设备id
-
+    //屏幕控件自动隐藏计时器
+    CountDownTimer hideControllerPanelTimer;
     //手机屏幕的宽高
     private int screenW, screenH;
     private float aspectRatio;//宽高比
-
     private H264Decoder videoDecoder = null;
     private AACDecoder audioDecoder = null;
     private VolumeHelper volumeHelper = null;
-
     private boolean isStartRecord;//是否开始录制
     private boolean isControlPanelShow = true;//是否点击屏幕
     private boolean isCloudPlayBack;//是否正在云回放
@@ -142,7 +141,6 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     private boolean isPaused;//回放是否暂停
     private boolean isCurrentLive;//当前是否直播
     private int qualityType = 0;//0-超清，1-高清
-
     private IOTCClient iotcClient;
     //日历
     private Calendar calendar;
@@ -167,10 +165,13 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     //是否第一次滑动
     private boolean isFirstScroll = true;
     private Handler handler = new Handler();
-
-    //屏幕控件自动隐藏计时器
-    CountDownTimer hideControllerPanelTimer;
     private Drawable drawableLeft, drawableRight;
+    /*
+     *绘制时间轴
+     */
+    private List<VideoTimeSlotBean> listAp = new ArrayList<>();
+    private List<VideoTimeSlotBean> listCloud = new ArrayList<>();
+    private LoadingDialog timeSlotsDialog;
 
     @AfterViews
     void init() {
@@ -616,7 +617,9 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
         //当前时间秒数 TODO 需优化播放中渲染的时间
         currentDateSeconds = System.currentTimeMillis() / 1000;
         selectedDate = currentDateSeconds;
-        refreshTimeSlotVideoList();
+        if (listAp.size() > 0) {
+            refreshTimeSlotVideoList();
+        }
         mPresenter.startLive(iotcClient);
     }
 
@@ -630,6 +633,8 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
         }
         mPresenter.startPlayback(iotcClient, start);
     }
+
+    //********************************* 云端回放 ***********************************
 
     /**
      * 切到云端回放
@@ -661,6 +666,7 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
         cmTimer.setBase(System.currentTimeMillis());
         cmTimer.start();
     }
+    //***********************云端回放***************************************
 
     private void changeQuality(int type) {
         llVideoQuality.setVisibility(View.GONE);
@@ -675,8 +681,6 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
             shortTip(R.string.tip_video_quality_hd);
         }
     }
-
-    //********************************* 云端回放 ***********************************
 
     /**
      * 播放云端回放
@@ -693,6 +697,8 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
         }
     }
 
+    //*********************时间滑动条***************************
+
     /*
      * 云端回放销毁
      */
@@ -705,7 +711,6 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
             e.printStackTrace();
         }
     }
-    //***********************云端回放***************************************
 
     /**
      * 调节音量
@@ -741,8 +746,6 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
             ivVolume.setBackgroundResource(R.mipmap.ic_volume);
         }
     }
-
-    //*********************时间滑动条***************************
 
     /**
      * 一分钟轮询一次
@@ -977,13 +980,6 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
             }
         }
     }
-
-    /*
-     *绘制时间轴
-     */
-    private List<VideoTimeSlotBean> listAp = new ArrayList<>();
-    private List<VideoTimeSlotBean> listCloud = new ArrayList<>();
-    private LoadingDialog timeSlotsDialog;
 
     private void timeSlotsShowProgress() {
         if (timeSlotsDialog == null) {
