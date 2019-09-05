@@ -24,7 +24,7 @@ android {
         debug {
             manifestPlaceholders = [
                     MI_PERMISSION_NAME: "com.sunmi.assistant.test.permission.MIPUSH_RECEIVE",
-                    GAO_MAP_KEY       : "443a7ffc55db3d44dba621365618e3ee"]
+                    GAO_MAP_KEY       : "c80ca3ce3b15895e2f018f8f2cd99c84"]
         }
         release {
             manifestPlaceholders = [
@@ -141,5 +141,7 @@ dependencies {
     api 'com.google.guava:guava:18.0@jar'
     //高德map
     api 'com.amap.api:location:4.7.0'
+    api 'com.amap.api:3dmap:6.9.4'
+    api 'com.amap.api:search:6.9.2'
 
 }
