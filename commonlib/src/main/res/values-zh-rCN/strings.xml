@@ -109,4 +109,18 @@
     <string name="picker_toast_limit">选择的图片超出上限</string>
     <string name="notice_unread_message">您有%d条未读消息</string>
 
+    <string name="ipc_setting_detection_day_monday">周一</string>
+    <string name="ipc_setting_detection_day_tuesday">周二</string>
+    <string name="ipc_setting_detection_day_wednesday">周三</string>
+    <string name="ipc_setting_detection_day_thursday">周四</string>
+    <string name="ipc_setting_detection_day_friday">周五</string>
+    <string name="ipc_setting_detection_day_saturday">周六</string>
+    <string name="ipc_setting_detection_day_sunday">周日</string>
+
+    <string name="sunmi_device_w1">W1路由器</string>
+    <string name="sunmi_device_printer">云打印机</string>
+    <string name="sunmi_device_fs">AI识客摄像机FM020</string>
+    <string name="sunmi_device_ss">智能看店摄像机FM010</string>
+    <string name="sunmi_device_more">更多支持设备敬请期待…</string>
+
 </resources>

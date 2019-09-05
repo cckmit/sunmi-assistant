@@ -55,7 +55,7 @@ public class SunmiStoreApi {
      * user_id 是	int	sso uId，登录后包含在jwt token中，无需显示传参
      * source  是	string	用户来源， APP或WEB
      */
-    public static void createEmqToken(RetrofitCallback<EmqTokenResp> callback) {
+    public void createEmqToken(RetrofitCallback<EmqTokenResp> callback) {
         try {
             String params = new JSONObject()
                     .put("source", "APP")
@@ -87,7 +87,7 @@ public class SunmiStoreApi {
      *
      * @param username 是	string	邮箱或手机号
      */
-    public static void isUserExist(String username, RetrofitCallback<Object> callback) {
+    public void isUserExist(String username, RetrofitCallback<Object> callback) {
         try {
             String params = new JSONObject()
                     .put("username", username)
@@ -186,7 +186,7 @@ public class SunmiStoreApi {
      * @param key  是	string	获取图片验证码是返回的key
      * @param code 否	string	图片验证码
      */
-    public static void checkImgCode(String key, String code, RetrofitCallback callback) {
+    public void checkImgCode(String key, String code, RetrofitCallback callback) {
         try {
             String params = new JSONObject()
                     .put("key", key)

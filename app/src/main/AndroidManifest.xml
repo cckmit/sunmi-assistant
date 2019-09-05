@@ -110,6 +110,7 @@
         <activity android:name=".mine.shop.CreateShopPreviewActivity_" />
         <activity android:name=".mine.message.MsgSettingActivity_"/>
         <activity android:name=".mine.message.MsgSettingDetailActivity_"/>
+        <activity android:name=".mine.shop.ShopEditAddressActivity_" />
 
         <meta-data
             android:name="ENV_DATA"
