@@ -19,10 +19,12 @@ public class SetPasswordPresenter extends BasePresenter<SetPasswordContract.View
 
     @Override
     public void register(String username, String password, String code) {
+        mView.showLoadingDialog();
         SunmiStoreApi.getInstance().register(username, password, code, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
+                    mView.hideLoadingDialog();
                     SpUtils.setStoreToken(data.toString());
                     //初始化retrofit
                     SunmiStoreRetrofitClient.createInstance();
@@ -33,6 +35,7 @@ public class SetPasswordPresenter extends BasePresenter<SetPasswordContract.View
             @Override
             public void onFail(int code, String msg, Object data) {
                 if (isViewAttached()) {
+                    mView.hideLoadingDialog();
                     mView.registerFail(code, msg);
                 }
             }

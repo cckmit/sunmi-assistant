@@ -34,6 +34,7 @@ import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.model.CompanyListResp;
 import sunmi.common.model.ShopListResp;
 import sunmi.common.utils.CommonHelper;
+import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
@@ -148,6 +149,13 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
         if (isFastClick(1500)) {
             return;
         }
+        //切换商户保存信息直接跳转MainActivity
+        if (isLoginSuccessSwitchCompany) {
+            CommonHelper.saveCompanyShopInfo(companyId, companyName, saasExist, shopId, shopName);
+            GotoActivityUtils.gotoMainActivity(context);
+            return;
+        }
+        showLoadingDialog();
         GetUserInfoUtils.userInfo(this, companyId, companyName, saasExist, shopId, shopName);
     }
 
@@ -197,6 +205,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
                     .companyName(companyName)
                     .saasExist(saasExist)
                     .shopList((ArrayList<ShopListResp.ShopInfo>) shopList)
+                    .isLoginSuccessSwitchCompany(isLoginSuccessSwitchCompany)
                     .action(CommonConstants.ACTION_LOGIN_CHOOSE_SHOP).start();
         }
     }

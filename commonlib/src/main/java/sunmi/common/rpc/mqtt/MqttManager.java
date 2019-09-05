@@ -81,7 +81,7 @@ public class MqttManager {
 
     public void createEmqToken(final boolean isInit) {
         LogCat.e(TAG, "mqtt createEmqToken start");
-        SunmiStoreApi.createEmqToken(new RetrofitCallback<EmqTokenResp>() {
+        SunmiStoreApi.getInstance().createEmqToken(new RetrofitCallback<EmqTokenResp>() {
             @Override
             public void onSuccess(int code, String msg, EmqTokenResp response) {
                 LogCat.e(TAG, "mqtt createEmqToken success");

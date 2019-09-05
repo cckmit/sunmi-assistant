@@ -32,9 +32,9 @@ public class CommonConstants {
     public static final int tabDevice = 100001;
 
     public static int TYPE_AP = 0;
-    public static int TYPE_PRINTER = 1;
+    public static int TYPE_IPC_SS = 1;
     public static int TYPE_IPC_FS = 2;
-    public static int TYPE_IPC_SS = 3;
+    public static int TYPE_PRINTER = 3;
 
     //选择商户和门店
     public static int ACTION_LOGIN_CHOOSE_COMPANY = 0;

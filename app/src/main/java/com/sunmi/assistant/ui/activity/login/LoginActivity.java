@@ -93,6 +93,7 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
         } else if (!TextUtils.isEmpty(SpUtils.getEmail())) {
             etUser.setText(SpUtils.getEmail());
         }
+        MQTTManager.getInstance().disconnect();//todo 为了多端登录后断连，等以后w1迁到商米store去掉
         showTip();
     }
 
@@ -105,10 +106,8 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
                     .setTitle(R.string.tip_kick_off)
                     .setConfirmButton(R.string.str_confirm).create();
             kickedDialog.show();
-            MQTTManager.getInstance().disconnect();//todo 为了多端登录后断连，等以后w1迁到商米store去掉
         } else if (TextUtils.equals("2", reason)) {
             shortTip(R.string.tip_password_changed_login);
-            MQTTManager.getInstance().disconnect();//todo 为了多端登录后断连，等以后w1迁到商米store去掉
         }
     }
 
