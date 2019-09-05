@@ -70,15 +70,16 @@ public class IpcSettingWiFiActivity extends BaseMvpActivity<IpcSettingWifiPresen
     String wifiSsid, wifiMgmt;
     @Extra
     int wifiIsWire;
-
+    /**
+     * 网络异常
+     */
+    CommonDialog commonDialog;
     private TextView tvProgress;
     private Dialog connectDialog;
-
     private Timer timer = null;
     private TimerTask timerTask = null;
     private int countdown = COUNTDOWN_CONFIG_WIFI;
     private String ip, mSsid, mMgmt, mPassword;
-
 
     //开启计时
     private void startTimer() {
@@ -221,6 +222,10 @@ public class IpcSettingWiFiActivity extends BaseMvpActivity<IpcSettingWifiPresen
             netExceptionView(true);
             return;
         }
+        if (res.getResult().length() < 3) {
+            netExceptionView(true);
+            return;
+        }
         netExceptionView(false);
         tvStatus.setText(R.string.ipc_setting_tip_wifi_choose);
         WifiListResp bean = new Gson().fromJson(res.getResult().toString(), WifiListResp.class);
@@ -256,7 +261,6 @@ public class IpcSettingWiFiActivity extends BaseMvpActivity<IpcSettingWifiPresen
         });
     }
 
-
     //连接wifi
     private void connectWifi(String ssid, String mgmt, String password) {
         startTimer();
@@ -284,11 +288,6 @@ public class IpcSettingWiFiActivity extends BaseMvpActivity<IpcSettingWifiPresen
                     }
                 }).create().show();
     }
-
-    /**
-     * 网络异常
-     */
-    CommonDialog commonDialog;
 
     private void netExceptionDialog() {
         if (commonDialog != null) return;
