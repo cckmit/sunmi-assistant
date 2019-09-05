@@ -4,10 +4,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import sunmi.common.constant.CommonConfig;
 import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.model.CreateShopInfo;
 import sunmi.common.model.PlatformInfo;
@@ -22,7 +25,9 @@ import sunmi.common.model.UserInfoBean;
 import sunmi.common.rpc.mqtt.EmqTokenResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.SafeUtils;
+import sunmi.common.utils.SecurityUtils;
 import sunmi.common.utils.SpUtils;
 
 /**
@@ -260,10 +265,15 @@ public class SunmiStoreApi {
      * @param callback 回调
      */
     public void updateIcon(String name, File avatar, RetrofitCallback<UserAvatarResp> callback) {
+        HashMap<String, String> paramsMap = getSignedMap("");
         RequestBody file = RequestBody.create(MediaType.parse("image/*"), avatar);
-        MultipartBody.Part part = MultipartBody.Part.createFormData("icon", name, file);
+        MultipartBody.Builder builder = new MultipartBody.Builder()
+                .addFormDataPart("icon", "t", file);
+        for (Map.Entry<String, String> entry : paramsMap.entrySet()) {
+            builder.addFormDataPart(entry.getKey(), entry.getValue());
+        }
         SunmiStoreRetrofitClient.getInstance().create(UserInterface.class)
-                .updateIcon(part)
+                .updateIcon(builder.build())
                 .enqueue(callback);
     }
 
@@ -599,6 +609,28 @@ public class SunmiStoreApi {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 对参数进行加签
+     *
+     * @param params 参数
+     * @return 加签后的Map
+     */
+    private static HashMap<String, String> getSignedMap(String params) {
+        HashMap<String, String> map = new HashMap<>(6);
+        String timeStamp = DateTimeUtils.currentTimeSecond() + "";
+        String randomNum = (int) ((Math.random() * 9 + 1) * 100000) + "";
+        String isEncrypted = "0";
+        String sign = SecurityUtils.md5(params + isEncrypted +
+                timeStamp + randomNum + SecurityUtils.md5(CommonConfig.CLOUD_TOKEN));
+        map.put("timeStamp", timeStamp);
+        map.put("randomNum", randomNum);
+        map.put("isEncrypted", isEncrypted);
+        map.put("params", params);
+        map.put("sign", sign);
+        map.put("lang", "zh");
+        return map;
     }
 
 }
