@@ -228,8 +228,8 @@ public class IpcSettingWiFiActivity extends BaseMvpActivity<IpcSettingWifiPresen
         try {
             bean = new Gson().fromJson(res.getResult().toString(), WifiListResp.class);
         } catch (Exception e) {
-            netExceptionView(true);
             e.printStackTrace();
+            netExceptionView(true);
         }
         if ((bean != null ? bean.getScan_results() : null) == null || bean.getScan_results().size() == 0) {
             netExceptionView(true);
