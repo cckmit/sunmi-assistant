@@ -80,6 +80,17 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         adapter.register((Class<Model>) mModel.getClass(), this);
     }
 
+    public void setCompanyId(int companyId, int shopId) {
+        if (this.mCompanyId == companyId && this.mShopId == shopId) {
+            return;
+        }
+        this.mCompanyId = companyId;
+        this.mShopId = shopId;
+        this.mModel.skipLoad = false;
+        onPreShopChange(mModel, shopId);
+        requestLoad(true);
+    }
+
     public void setShopId(int shopId) {
         if (this.mShopId == shopId || shopId < 0) {
             return;
@@ -87,7 +98,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         this.mShopId = shopId;
         this.mModel.skipLoad = false;
         onPreShopChange(mModel, shopId);
-        requestLoad(false);
+        requestLoad(true);
     }
 
     public void setPeriod(int period) {
