@@ -222,14 +222,17 @@ public class IpcSettingWiFiActivity extends BaseMvpActivity<IpcSettingWifiPresen
             netExceptionView(true);
             return;
         }
-        if (res.getResult().length() < 3) {
-            netExceptionView(true);
-            return;
-        }
         netExceptionView(false);
         tvStatus.setText(R.string.ipc_setting_tip_wifi_choose);
-        WifiListResp bean = new Gson().fromJson(res.getResult().toString(), WifiListResp.class);
-        if (bean == null || bean.getScan_results().size() == 0) {
+        WifiListResp bean = null;
+        try {
+            bean = new Gson().fromJson(res.getResult().toString(), WifiListResp.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            netExceptionView(true);
+        }
+        if ((bean != null ? bean.getScan_results() : null) == null || bean.getScan_results().size() == 0) {
+            netExceptionView(true);
             return;
         }
         recyclerView.setAdapter(new CommonListAdapter<WifiListResp.ScanResultsBean>(context,
