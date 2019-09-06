@@ -97,11 +97,10 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     RelativeLayout rlNoDevice;
 
     List<AdListBean> adList = new ArrayList<>();//广告
-    private List<SunmiDevice> deviceList = new ArrayList<>();//设备列表全集
     List<SunmiDevice> routerList = new ArrayList<>();
     List<SunmiDevice> ipcList = new ArrayList<>();
     List<SunmiDevice> printerList = new ArrayList<>();
-
+    private List<SunmiDevice> deviceList = new ArrayList<>();//设备列表全集
     private Timer timer = null, timerException = null;
     private DeviceListAdapter deviceListAdapter;
     private LinearLayoutManager layoutManager;
@@ -190,6 +189,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     public void getAdListSuccess(AdListResp adListResp) {
         adList.clear();
         adList.addAll(adListResp.getAd_list());
+        if (mActivity == null || getActivity() == null) {
+            return;
+        }
         initBanner();
     }
 
