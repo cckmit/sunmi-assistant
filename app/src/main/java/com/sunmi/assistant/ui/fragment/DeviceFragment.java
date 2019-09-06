@@ -189,7 +189,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     public void getAdListSuccess(AdListResp adListResp) {
         adList.clear();
         adList.addAll(adListResp.getAd_list());
-        if (mActivity == null || getActivity() == null) {
+        if (mActivity == null || mActivity.isDestroyed()) {
             return;
         }
         initBanner();
