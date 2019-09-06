@@ -121,6 +121,6 @@
     <string name="sunmi_device_printer">云打印机</string>
     <string name="sunmi_device_fs">AI识客摄像机FM020</string>
     <string name="sunmi_device_ss">智能看店摄像机FM010</string>
-    <string name="sunmi_device_more">更多支持设备敬请期待…</string>
+    <string name="sunmi_device_more">更多支持设备\n敬请期待…</string>
 
 </resources>
