@@ -332,6 +332,7 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
 
     }
 
+    //放后台
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         if (isCurrentLive && iotcClient != null) {
@@ -339,6 +340,11 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
             if (audioDecoder != null) {
                 audioDecoder.stopRunning();
             }
+        } else if (isDevPlayBack && iotcClient != null) {
+            //TODO  设备回放暂停
+        } else if (isCloudPlayBack) {
+            //TODO  云回放暂停
+
         }
     }
 
