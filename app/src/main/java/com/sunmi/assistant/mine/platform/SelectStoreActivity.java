@@ -91,14 +91,14 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
         if (SpUtils.isLoginSuccess()) {
             BaseNotification.newInstance().postNotificationName(CommonNotifications.refreshMainTabView);
             if (isLoginSuccessSwitchCompany) {
-                CommonHelper.saveCompanyShopInfo(companyId, companyName, saasExist, shopId, shopName);
+                CommonHelper.saveCompanyShopInfo(companyId, companyName, 1, shopId, shopName);
                 GotoActivityUtils.gotoMainActivity(context);
             } else {
                 setResult(RESULT_OK);
             }
             finish();
         } else {
-            GetUserInfoUtils.userInfo(this, companyId, companyName, saasExist, shopId, shopName);
+            GetUserInfoUtils.userInfo(this, companyId, companyName, 1, shopId, shopName);
         }
     }
 
