@@ -123,4 +123,14 @@
         <item name="android:textSize">@dimen/sp_28</item>
         <item name="android:textStyle">bold</item>
     </style>
+
+    <style name="ConfigTipText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/dp_25</item>
+        <item name="android:layout_marginEnd">@dimen/dp_25</item>
+        <item name="android:textSize">@dimen/sp_12</item>
+        <item name="android:textColor">@color/color_333333</item>
+    </style>
+
 </resources>

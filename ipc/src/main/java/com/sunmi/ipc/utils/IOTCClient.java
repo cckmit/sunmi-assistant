@@ -127,21 +127,7 @@ public class IOTCClient {
             return;
         }
         LogCat.e(TAG, "Step 3: call avClientStartEx, avIndex = " + avIndex);
-        startPlay(new P2pCmdCallback() {
-            @Override
-            public void onResponse(int cmd, IotcCmdResp result) {
-                if (callback != null) {
-                    callback.initSuccess();
-                }
-            }
-
-            @Override
-            public void onError() {
-                if (callback != null) {
-                    callback.initFail();
-                }
-            }
-        });
+        startPlay();
         Thread videoThread = new Thread(new VideoThread(avIndex), "Video Thread");
         Thread audioThread = new Thread(new AudioThread(avIndex), "Audio Thread");
         videoThread.start();
@@ -181,7 +167,21 @@ public class IOTCClient {
      * 开始直播
      */
     public void startPlay() {
-        changeValue(0);
+        startPlay(new P2pCmdCallback() {
+            @Override
+            public void onResponse(int cmd, IotcCmdResp result) {
+                if (callback != null) {
+                    callback.initSuccess();
+                }
+            }
+
+            @Override
+            public void onError() {
+                if (callback != null) {
+                    callback.initFail();
+                }
+            }
+        });
     }
 
     /**

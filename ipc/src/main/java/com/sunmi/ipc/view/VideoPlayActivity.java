@@ -121,19 +121,15 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     TextView tvTimeScroll;
 
     @Extra
-    String UID;
+    String UID;//用来打通P2P
     @Extra
-    String ipcType;
+    String ipcType;//ss or fs
     @Extra
-    int deviceId; //2237 2223     //设备id
-    //屏幕控件自动隐藏计时器
-    CountDownTimer hideControllerPanelTimer;
-    //手机屏幕的宽高
-    private int screenW, screenH;
+    int deviceId;//设备sn
+
+    private int screenW, screenH; //手机屏幕的宽高
     private float aspectRatio;//宽高比
-    private H264Decoder videoDecoder = null;
-    private AACDecoder audioDecoder = null;
-    private VolumeHelper volumeHelper = null;
+
     private boolean isStartRecord;//是否开始录制
     private boolean isControlPanelShow = true;//是否点击屏幕
     private boolean isCloudPlayBack;//是否正在云回放
@@ -141,6 +137,14 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     private boolean isPaused;//回放是否暂停
     private boolean isCurrentLive;//当前是否直播
     private int qualityType = 0;//0-超清，1-高清
+
+    private boolean isVideoLess1Minute;//视频片段是否小于一分钟
+    private boolean isFirstScroll = true;//是否第一次滑动
+
+    private H264Decoder videoDecoder = null;
+    private AACDecoder audioDecoder = null;
+    private VolumeHelper volumeHelper = null;
+
     private IOTCClient iotcClient;
     //日历
     private Calendar calendar;
@@ -148,8 +152,6 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     private long currentDateSeconds, threeDaysBeforeSeconds;
     //3天秒数
     private long threeDaysSeconds = 3 * 24 * 60 * 60;
-    //12小时后的秒数
-    private int twelveHoursSeconds = 12 * 60 * 60;
     //10分钟
     private int tenMinutes = 10 * 60;
     //刻度尺移动定时器
@@ -160,11 +162,11 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     private long selectedDate;
     //是否为选择的日期
     private boolean isSelectedDate;
-    //视频片段是否小于一分钟
-    private boolean isVideoLess1Minute;
-    //是否第一次滑动
-    private boolean isFirstScroll = true;
+
     private Handler handler = new Handler();
+
+    //屏幕控件自动隐藏计时器
+    CountDownTimer hideControllerPanelTimer;
     private Drawable drawableLeft, drawableRight;
     /*
      *绘制时间轴
@@ -315,6 +317,9 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
             videoDecoder = new H264Decoder(holder.getSurface(), 0);
             initP2pLive();
         } else {
+            if (llPlayFail != null && llPlayFail.isShown()) {
+                return;
+            }
             if (isCurrentLive && iotcClient != null) {
                 showLoadingDialog();
                 iotcClient.startPlay();
