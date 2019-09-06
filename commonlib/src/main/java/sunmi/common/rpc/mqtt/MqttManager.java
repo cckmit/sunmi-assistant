@@ -39,10 +39,12 @@ public class MqttManager {
     public static String tokenSS1EventSub;//订阅的event ipc
     public static String tokenFS1EventSub;//订阅的event ipc
     public static String tokenFM010EventSub;//订阅的event ipc
+    public static String tokenFM020EventSub;//订阅的event ipc
 
     public static String tokenWEBSS1EventSub;//订阅的event ipc
     public static String tokenWEBFS1EventSub;//订阅的event ipc
     public static String tokenWEBFM010EventSub;//订阅的event ipc
+    public static String tokenWEBFM020EventSub;//订阅的event ipc
 
     private static Map<String, Integer> messages = new ConcurrentHashMap<>(2);
 
@@ -183,8 +185,8 @@ public class MqttManager {
     }
 
     private String[] getTokens() {
-        return new String[]{tokenSS1EventSub, tokenFS1EventSub, tokenFM010EventSub,
-                tokenWEBSS1EventSub, tokenWEBFS1EventSub, tokenWEBFM010EventSub};//初始化所有门店下的设备dev状态
+        return new String[]{tokenSS1EventSub, tokenFS1EventSub, tokenFM010EventSub, tokenFM020EventSub,
+                tokenWEBSS1EventSub, tokenWEBFS1EventSub, tokenWEBFM010EventSub, tokenWEBFM020EventSub};//初始化所有门店下的设备dev状态
     }
 
     /**
@@ -198,7 +200,7 @@ public class MqttManager {
                 return;
             }
 
-            int[] qoss = new int[]{2, 2, 2, 2, 2, 2};
+            int[] qoss = new int[]{2, 2, 2, 2, 2, 2, 2, 2};
             //订阅1
             mqttClient.subscribe(getTokens(), qoss, null, new IMqttActionListener() {
                 @Override
@@ -363,9 +365,11 @@ public class MqttManager {
         tokenSS1EventSub = String.format("/APP/%s/%s/SS1/response/sub", SpUtils.getUID(), clientId);
         tokenFS1EventSub = String.format("/APP/%s/%s/FS1/response/sub", SpUtils.getUID(), clientId);
         tokenFM010EventSub = String.format("/APP/%s/%s/FM010/response/sub", SpUtils.getUID(), clientId);
+        tokenFM020EventSub = String.format("/APP/%s/%s/FM020/response/sub", SpUtils.getUID(), clientId);
         tokenWEBSS1EventSub = String.format("/WEB/%s/%s/SS1/response/sub", SpUtils.getUID(), clientId);
         tokenWEBFS1EventSub = String.format("/WEB/%s/%s/FS1/response/sub", SpUtils.getUID(), clientId);
         tokenWEBFM010EventSub = String.format("/WEB/%s/%s/FM010/response/sub", SpUtils.getUID(), clientId);
+        tokenWEBFM020EventSub = String.format("/WEB/%s/%s/FM020/response/sub", SpUtils.getUID(), clientId);
     }
 
     /**

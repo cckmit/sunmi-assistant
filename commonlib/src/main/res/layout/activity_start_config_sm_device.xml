@@ -34,44 +34,28 @@
 
     <TextView
         android:id="@+id/tv_tip_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/ConfigTipText"
         android:layout_below="@id/tv_tip_1"
-        android:layout_marginStart="@dimen/dp_25"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_25"
-        android:textSize="@dimen/sp_14" />
+        android:layout_marginTop="@dimen/dp_16" />
 
     <TextView
         android:id="@+id/tv_tip_3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/ConfigTipText"
         android:layout_below="@id/tv_tip_2"
-        android:layout_marginStart="@dimen/dp_25"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_25"
-        android:textSize="@dimen/sp_14" />
+        android:layout_marginTop="@dimen/dp_12" />
 
     <TextView
         android:id="@+id/tv_tip_4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/ConfigTipText"
         android:layout_below="@id/tv_tip_3"
-        android:layout_marginStart="@dimen/dp_25"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_25"
-        android:textSize="@dimen/sp_14"
+        android:layout_marginTop="@dimen/dp_12"
         android:visibility="gone" />
 
     <TextView
         android:id="@+id/tv_tip_5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/ConfigTipText"
         android:layout_below="@id/tv_tip_4"
-        android:layout_marginStart="@dimen/dp_25"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_25"
-        android:textSize="@dimen/sp_14"
+        android:layout_marginTop="@dimen/dp_12"
         android:visibility="gone" />
 
     <TextView
