@@ -5,6 +5,8 @@ import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
+import sunmi.common.utils.log.LogCat;
+
 /**
  * Description:
  *
@@ -24,7 +26,10 @@ public class MsgTag {
                 //LogCat.e("MsgTag", "77777777777:" + str);
                 String[] detail = str.split("=");
                 String key = detail[0];
-                String value = getUrlDecoderString(detail[1]);
+                String value = "";
+                if (detail.length > 1) {
+                    value = getUrlDecoderString(detail[1]);
+                }
                 msgMap.put(key, value);
             }
         } catch (Exception e) {

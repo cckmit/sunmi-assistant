@@ -121,19 +121,14 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     TextView tvTimeScroll;
 
     @Extra
-    String UID;
+    String UID;//用来打通P2P
     @Extra
-    String ipcType;
+    String ipcType;//ss or fs
     @Extra
-    int deviceId; //2237 2223     //设备id
+    int deviceId;//设备sn
 
-    //手机屏幕的宽高
-    private int screenW, screenH;
+    private int screenW, screenH; //手机屏幕的宽高
     private float aspectRatio;//宽高比
-
-    private H264Decoder videoDecoder = null;
-    private AACDecoder audioDecoder = null;
-    private VolumeHelper volumeHelper = null;
 
     private boolean isStartRecord;//是否开始录制
     private boolean isControlPanelShow = true;//是否点击屏幕
@@ -143,6 +138,13 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     private boolean isCurrentLive;//当前是否直播
     private int qualityType = 0;//0-超清，1-高清
 
+    private boolean isVideoLess1Minute;//视频片段是否小于一分钟
+    private boolean isFirstScroll = true;//是否第一次滑动
+
+    private H264Decoder videoDecoder = null;
+    private AACDecoder audioDecoder = null;
+    private VolumeHelper volumeHelper = null;
+
     private IOTCClient iotcClient;
     //日历
     private Calendar calendar;
@@ -150,8 +152,6 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     private long currentDateSeconds, threeDaysBeforeSeconds;
     //3天秒数
     private long threeDaysSeconds = 3 * 24 * 60 * 60;
-    //12小时后的秒数
-    private int twelveHoursSeconds = 12 * 60 * 60;
     //10分钟
     private int tenMinutes = 10 * 60;
     //刻度尺移动定时器
@@ -162,15 +162,18 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     private long selectedDate;
     //是否为选择的日期
     private boolean isSelectedDate;
-    //视频片段是否小于一分钟
-    private boolean isVideoLess1Minute;
-    //是否第一次滑动
-    private boolean isFirstScroll = true;
+
     private Handler handler = new Handler();
 
     //屏幕控件自动隐藏计时器
     CountDownTimer hideControllerPanelTimer;
     private Drawable drawableLeft, drawableRight;
+    /*
+     *绘制时间轴
+     */
+    private List<VideoTimeSlotBean> listAp = new ArrayList<>();
+    private List<VideoTimeSlotBean> listCloud = new ArrayList<>();
+    private LoadingDialog timeSlotsDialog;
 
     @AfterViews
     void init() {
@@ -314,6 +317,9 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
             videoDecoder = new H264Decoder(holder.getSurface(), 0);
             initP2pLive();
         } else {
+            if (llPlayFail != null && llPlayFail.isShown()) {
+                return;
+            }
             if (isCurrentLive && iotcClient != null) {
                 showLoadingDialog();
                 iotcClient.startPlay();
@@ -616,7 +622,9 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
         //当前时间秒数 TODO 需优化播放中渲染的时间
         currentDateSeconds = System.currentTimeMillis() / 1000;
         selectedDate = currentDateSeconds;
-        refreshTimeSlotVideoList();
+        if (listAp.size() > 0) {
+            refreshTimeSlotVideoList();
+        }
         mPresenter.startLive(iotcClient);
     }
 
@@ -630,6 +638,8 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
         }
         mPresenter.startPlayback(iotcClient, start);
     }
+
+    //********************************* 云端回放 ***********************************
 
     /**
      * 切到云端回放
@@ -661,6 +671,7 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
         cmTimer.setBase(System.currentTimeMillis());
         cmTimer.start();
     }
+    //***********************云端回放***************************************
 
     private void changeQuality(int type) {
         llVideoQuality.setVisibility(View.GONE);
@@ -675,8 +686,6 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
             shortTip(R.string.tip_video_quality_hd);
         }
     }
-
-    //********************************* 云端回放 ***********************************
 
     /**
      * 播放云端回放
@@ -693,6 +702,8 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
         }
     }
 
+    //*********************时间滑动条***************************
+
     /*
      * 云端回放销毁
      */
@@ -705,7 +716,6 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
             e.printStackTrace();
         }
     }
-    //***********************云端回放***************************************
 
     /**
      * 调节音量
@@ -741,8 +751,6 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
             ivVolume.setBackgroundResource(R.mipmap.ic_volume);
         }
     }
-
-    //*********************时间滑动条***************************
 
     /**
      * 一分钟轮询一次
@@ -977,13 +985,6 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
             }
         }
     }
-
-    /*
-     *绘制时间轴
-     */
-    private List<VideoTimeSlotBean> listAp = new ArrayList<>();
-    private List<VideoTimeSlotBean> listCloud = new ArrayList<>();
-    private LoadingDialog timeSlotsDialog;
 
     private void timeSlotsShowProgress() {
         if (timeSlotsDialog == null) {

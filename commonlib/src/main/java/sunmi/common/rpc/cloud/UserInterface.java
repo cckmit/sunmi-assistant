@@ -1,11 +1,9 @@
 package sunmi.common.rpc.cloud;
 
-import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.Multipart;
 import retrofit2.http.POST;
-import retrofit2.http.Part;
 import sunmi.common.model.SsoTokenResp;
 import sunmi.common.model.UserAvatarResp;
 import sunmi.common.model.UserInfoBean;
@@ -88,9 +86,8 @@ public interface UserInterface {
     /**
      * 修改账号头像
      */
-    @Multipart
     @POST(userPath + "updateIcon")
-    Call<BaseResponse<UserAvatarResp>> updateIcon(@Part MultipartBody.Part file);
+    Call<BaseResponse<UserAvatarResp>> updateIcon(@Body RequestBody request);
 
     /**
      * 根据jwt token反解出sso token返回给app

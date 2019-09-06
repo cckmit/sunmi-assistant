@@ -41,7 +41,7 @@ import sunmi.common.utils.SMDeviceDiscoverUtils;
 import sunmi.common.utils.log.LogCat;
 
 /**
- * Description:
+ * Description: 搜索ipc设备
  * Created by bruce on 2019/4/16.
  */
 @EActivity(resName = "activity_search_ipc")
@@ -113,6 +113,7 @@ public class IPCSearchActivity extends BaseActivity
 
     @Click(resName = "btn_retry")
     void retryClick() {
+        ipcList.clear();
         ipcMap.clear();
         startScan();
     }
