@@ -33,6 +33,8 @@ public interface DashboardContract {
 
         void switchPeriodTo(int period);
 
+        void switchCompanyTo(int companyId, int shopId);
+
         void switchShopTo(int shopId);
 
         void refresh();
