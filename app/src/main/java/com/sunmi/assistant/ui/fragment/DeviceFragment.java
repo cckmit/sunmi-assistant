@@ -349,7 +349,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 CommonNotifications.netDisconnection, NotificationConstant.updateConnectComplete,
                 NotificationConstant.connectedTosunmiDevice, NotificationConstant.unBindRouterChanged,
                 CommonNotifications.ipcUpgradeComplete, CommonNotifications.ipcUpgrade,
-                CommonNotifications.companyNameChanged};
+                CommonNotifications.companyNameChanged, CommonNotifications.companySwitch};
     }
 
     @Override
@@ -365,6 +365,10 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             loadData();
         } else if (id == CommonNotifications.shopSwitched) {
             topBar.setShopName(SpUtils.getShopName());
+            loadData();
+        } else if (id == CommonNotifications.companySwitch) {
+            topBar.setShopName(SpUtils.getShopName());
+            topBar.setCompanyName(SpUtils.getCompanyName());
             loadData();
         } else if (CommonNotifications.netDisconnection == id) {//网络断开
             networkDisconnected();
