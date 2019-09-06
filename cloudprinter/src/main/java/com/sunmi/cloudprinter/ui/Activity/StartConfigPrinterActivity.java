@@ -84,7 +84,6 @@ public class StartConfigPrinterActivity extends BaseActivity {
 //        tvTip4.setVisibility(View.VISIBLE);
         ViewUtils.setPrivacy(this, ctvPrivacy, R.color.white_40a, false);
         BluetoothClient mClient = new BluetoothClient(context);
-        registerReceiver(blueToothValueReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
     }
 
     @Click(resName = "btn_start")
@@ -98,14 +97,17 @@ public class StartConfigPrinterActivity extends BaseActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (blueToothValueReceiver != null)
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(blueToothValueReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (blueToothValueReceiver != null) {
             unregisterReceiver(blueToothValueReceiver);
-//        if (mClient != null) {
-//            mClient.disconnect(bleAddress);
-//            mClient = null;
-//        }
+        }
     }
 
     @Override
