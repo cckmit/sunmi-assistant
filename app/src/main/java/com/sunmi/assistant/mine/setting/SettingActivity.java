@@ -1,14 +1,13 @@
 package com.sunmi.assistant.mine.setting;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
 
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.mine.contract.SettingContract;
-import com.sunmi.assistant.mine.presenter.SettingPresenter;
 import com.sunmi.assistant.ui.activity.login.LoginActivity_;
 
 import org.androidannotations.annotations.AfterViews;
@@ -16,7 +15,12 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
-import sunmi.common.base.BaseMvpActivity;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import sunmi.common.base.BaseActivity;
+import sunmi.common.rpc.cloud.SunmiStoreApi;
+import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.bottompopmenu.BottomPopMenu;
@@ -28,7 +32,7 @@ import sunmi.common.view.bottompopmenu.PopItemAction;
  * @author yangshijie
  */
 @EActivity(R.layout.activity_setting)
-public class SettingActivity extends BaseMvpActivity<SettingPresenter> implements SettingContract.View {
+public class SettingActivity extends BaseActivity {
 
     @ViewById(R.id.tvVersion)
     TextView tvVersion;
@@ -40,9 +44,8 @@ public class SettingActivity extends BaseMvpActivity<SettingPresenter> implement
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        mPresenter = new SettingPresenter();
-        mPresenter.attachView(this);
-        tvVersion.setText("版本" + CommonHelper.getAppVersionName(this));
+        tvVersion.setText(getString(R.string.str_version_placeholder,
+                CommonHelper.getAppVersionName(context)));
     }
 
     @Click({R.id.rlAccountSafe, R.id.rlAbout, R.id.rlClearCash, R.id.btnLogout})
@@ -70,8 +73,7 @@ public class SettingActivity extends BaseMvpActivity<SettingPresenter> implement
                     .setTitle(R.string.msg_quit_confirm)
                     .setIsShowCircleBackground(true)
                     .addItemAction(new PopItemAction(R.string.str_confirm,
-                            PopItemAction.PopItemStyle.Warning,
-                            this::logout))
+                            PopItemAction.PopItemStyle.Warning, this::logout))
                     .addItemAction(new PopItemAction(R.string.sm_cancel,
                             PopItemAction.PopItemStyle.Cancel))
                     .create();
@@ -79,8 +81,7 @@ public class SettingActivity extends BaseMvpActivity<SettingPresenter> implement
         choosePhotoMenu.show();
     }
 
-    @Override
-    public void logoutSuccess() {
+     void logoutSuccess() {
         shortTip(R.string.tip_logout_success);
         CommonHelper.logout();
         LoginActivity_.intent(context).flags(Intent.FLAG_ACTIVITY_NEW_TASK
@@ -90,16 +91,23 @@ public class SettingActivity extends BaseMvpActivity<SettingPresenter> implement
         System.gc();
     }
 
-    @Override
-    public void logoutFail(int code, String msg) {
-        shortTip(R.string.tip_logout_fail);
-    }
-
     /**
      * 退出登录
      */
-    private void logout() {
-        mPresenter.logout();
+     void logout() {
+        SunmiStoreApi.getInstance().logout(new Callback<BaseResponse<Object>>() {
+            @Override
+            public void onResponse(@NonNull Call<BaseResponse<Object>> call,
+                                   @NonNull Response<BaseResponse<Object>> response) {
+                logoutSuccess();
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<BaseResponse<Object>> call,
+                                  @NonNull Throwable t) {
+                logoutSuccess();
+            }
+        });
     }
 
 }
