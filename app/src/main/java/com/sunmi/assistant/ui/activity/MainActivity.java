@@ -82,9 +82,9 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
             CommonUtils.gotoLoginActivity(context, "");
         } else {
             initTabs();
+            initMessageBadge();
+            ShortcutBadger.applyCount(BaseApplication.getInstance(), SpUtils.getRemindUnreadMsg()); //for 1.1.4+
         }
-        initMessageBadge();
-        ShortcutBadger.applyCount(BaseApplication.getInstance(), SpUtils.getRemindUnreadMsg()); //for 1.1.4+
     }
 
     @Override
@@ -198,7 +198,6 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
             }
             title.setText(getString(mainTab.getResName()));
             if (mainTab.getClz() == MineFragment_.class) {
-                LogCat.e(TAG, "77777777777+mineTitle");
                 mineTitle = title;
             }
             tab.setIndicator(indicator);
@@ -216,13 +215,12 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
 
     @UiThread
     void initMessageBadge() {
-        Log.e(TAG,"7777777777+ initMessageBade");
+        if (mineTitle == null) {
+            return;
+        }
         final Fragment fragment = getFragment(getString(R.string.str_tab_mine));
         if (fragment != null && fragment instanceof MineFragment) {
             ((MineFragment) fragment).setMsgBadge();
-        }
-        if (mineTitle == null) {
-            return;
         }
         if (SpUtils.getUnreadMsg() > 0) {
             int count = SpUtils.getRemindUnreadMsg();
