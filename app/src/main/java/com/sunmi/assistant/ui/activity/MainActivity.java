@@ -7,6 +7,7 @@ import android.net.NetworkRequest;
 import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +44,7 @@ import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.mqtt.MqttManager;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.MyFragmentTabHost;
 
 /**
@@ -196,6 +198,7 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
             }
             title.setText(getString(mainTab.getResName()));
             if (mainTab.getClz() == MineFragment_.class) {
+                LogCat.e(TAG, "77777777777+mineTitle");
                 mineTitle = title;
             }
             tab.setIndicator(indicator);
@@ -213,9 +216,13 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
 
     @UiThread
     void initMessageBadge() {
+        Log.e(TAG,"7777777777+ initMessageBade");
         final Fragment fragment = getFragment(getString(R.string.str_tab_mine));
         if (fragment != null && fragment instanceof MineFragment) {
             ((MineFragment) fragment).setMsgBadge();
+        }
+        if (mineTitle == null) {
+            return;
         }
         if (SpUtils.getUnreadMsg() > 0) {
             int count = SpUtils.getRemindUnreadMsg();
