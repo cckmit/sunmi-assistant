@@ -27,6 +27,7 @@ import javax.net.ssl.X509TrustManager;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.utils.DBUtils;
 import sunmi.common.utils.FileHelper;
+import sunmi.common.utils.SharedManager;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.UnknownException;
 import sunmi.common.utils.Utils;
@@ -45,6 +46,13 @@ public class BootLoader {
 
     public void init() {
         String env = Utils.getMetaValue(context, "ENV_DATA", ApConfig.ENV_TEST);
+        if (!TextUtils.isEmpty(SharedManager.getValue(context, "TOKEN"))
+                && !TextUtils.isEmpty(SpUtils.getSsoToken())
+                && TextUtils.isEmpty(SpUtils.getStoreToken())) {
+            SpUtils.setStoreToken(SpUtils.getSsoToken());
+            SpUtils.setSsoToken(SharedManager.getValue(context, "TOKEN"));
+            SharedManager.clearValue(context, "TOKEN");
+        }
         new CommonConfig().init(context, env);
         new ApConfig().init(context, env);
         new SunmiServiceConfig().init(context, env);
