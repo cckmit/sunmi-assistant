@@ -40,14 +40,14 @@ import sunmi.common.view.SettingItemLayout;
 @EActivity(R.layout.activity_mine_company_detatils)
 public class CompanyDetailActivity extends BaseActivity {
 
-    static final String INTENT_EXTRA_NAME = "company_name";
-    static final String INTENT_EXTRA_CONTACT = "company_contact";
-    static final String INTENT_EXTRA_CONTACT_TEL = "company_contact_tel";
-    static final String INTENT_EXTRA_EMAIL = "company_email";
     public static final int TYPE_NAME = 0;
     public static final int TYPE_CONTACT = 1;
     public static final int TYPE_CONTACT_TEL = 2;
     public static final int TYPE_EMAIL = 3;
+    static final String INTENT_EXTRA_NAME = "company_name";
+    static final String INTENT_EXTRA_CONTACT = "company_contact";
+    static final String INTENT_EXTRA_CONTACT_TEL = "company_contact_tel";
+    static final String INTENT_EXTRA_EMAIL = "company_email";
     private static final int REQUEST_CODE_NAME = 100;
     private static final int REQUEST_CODE_CONTACT = 101;
     private static final int REQUEST_CODE_CONTACT_TEL = 102;
@@ -147,6 +147,9 @@ public class CompanyDetailActivity extends BaseActivity {
 
     @Click(R.id.sil_company_name)
     public void toModifyName() {
+        if (mCompanyInfo == null) {
+            return;
+        }
         CompanyUpdateActivity_.intent(this).mInfo(mCompanyInfo)
                 .type(TYPE_NAME)
                 .startForResult(REQUEST_CODE_NAME);
@@ -154,6 +157,9 @@ public class CompanyDetailActivity extends BaseActivity {
 
     @Click(R.id.sil_company_contact)
     public void toModifyContact() {
+        if (mCompanyInfo == null) {
+            return;
+        }
         CompanyUpdateActivity_.intent(this).mInfo(mCompanyInfo)
                 .type(TYPE_CONTACT)
                 .startForResult(REQUEST_CODE_CONTACT);
@@ -161,6 +167,9 @@ public class CompanyDetailActivity extends BaseActivity {
 
     @Click(R.id.sil_company_contact_tel)
     public void toModifyContactTel() {
+        if (mCompanyInfo == null) {
+            return;
+        }
         CompanyUpdateActivity_.intent(this).mInfo(mCompanyInfo)
                 .type(TYPE_CONTACT_TEL)
                 .startForResult(REQUEST_CODE_CONTACT_TEL);
@@ -168,6 +177,9 @@ public class CompanyDetailActivity extends BaseActivity {
 
     @Click(R.id.sil_company_email)
     public void toModifyEmail() {
+        if (mCompanyInfo == null) {
+            return;
+        }
         CompanyUpdateActivity_.intent(this).mInfo(mCompanyInfo)
                 .type(TYPE_EMAIL)
                 .startForResult(REQUEST_CODE_EMAIL);
