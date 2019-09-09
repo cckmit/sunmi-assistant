@@ -80,15 +80,6 @@ public class SpUtils {
         SharedManager.putValue(BaseApplication.getContext(), AVATAR_URL, avatarUrl);
     }
 
-    //用户登录成功返回的商户id
-    public static String getMerchantUid() {
-        return SharedManager.getValue(BaseApplication.getContext(), MERCHANT_UID);
-    }
-
-    public static void setMerchantUid(String merchantUid) {
-        SharedManager.putValue(BaseApplication.getContext(), SpUtils.MERCHANT_UID, merchantUid);
-    }
-
     //用户uid
     public static String getUID() {
         return SharedManager.getValue(BaseApplication.getContext(), UID);
