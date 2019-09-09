@@ -10,6 +10,7 @@ import java.util.Map;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import retrofit2.Callback;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.model.CreateShopInfo;
@@ -24,6 +25,7 @@ import sunmi.common.model.UserAvatarResp;
 import sunmi.common.model.UserInfoBean;
 import sunmi.common.rpc.mqtt.EmqTokenResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
+import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.SafeUtils;
@@ -168,7 +170,7 @@ public class SunmiStoreApi {
     }
 
     //登出
-    public void logout(RetrofitCallback<Object> callback) {
+    public void logout(Callback<BaseResponse<Object>> callback) {
         SunmiStoreRetrofitClient.getInstance().create(UserInterface.class)
                 .logout(new BaseRequest(""))
                 .enqueue(callback);
