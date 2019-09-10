@@ -111,8 +111,8 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     ImageView ivLive;//直播
     @ViewById(resName = "iv_play")
     ImageView ivPlay;//开始播放
-    @ViewById(resName = "iv_setting")
-    ImageView ivSetting;//设置
+//    @ViewById(resName = "iv_setting")
+//    ImageView ivSetting;//设置
     @ViewById(resName = "ll_play_fail")
     LinearLayout llPlayFail;
     @ViewById(resName = "scale_panel")
@@ -395,7 +395,7 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
         }, 400);
     }
 
-    @Click(resName = "rl_video_back")
+    @Click(resName = "rl_top")
     void backClick() {
         onBackPressed();
     }

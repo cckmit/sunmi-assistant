@@ -20,9 +20,7 @@ import com.sunmi.apmanager.receiver.MyNetworkCallback;
 import com.sunmi.apmanager.rpc.ap.APCall;
 import com.sunmi.apmanager.ui.activity.config.PrimaryRouteStartActivity;
 import com.sunmi.apmanager.ui.activity.router.RouterManagerNewActivity;
-import com.sunmi.apmanager.ui.activity.router.RouterMangerActivity;
 import com.sunmi.apmanager.utils.ApCompatibleUtils;
-import com.sunmi.apmanager.utils.ApIsNewVersionUtils;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.EncryptUtils;
 import com.sunmi.apmanager.utils.RouterDBHelper;
@@ -687,10 +685,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         bundle.putString("shopId", SpUtils.getShopId() + "");
         bundle.putString("sn", sn);
         bundle.putString("status", status);
-        if (ApIsNewVersionUtils.isNewVersion())
-            openActivity(mActivity, RouterManagerNewActivity.class, bundle);
-        else
-            openActivity(mActivity, RouterMangerActivity.class, bundle);
+        openActivity(mActivity, RouterManagerNewActivity.class, bundle);
     }
 
     private void deleteDevice(SunmiDevice device) {
