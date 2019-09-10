@@ -158,6 +158,7 @@ public class ShopDetailActivity extends BaseActivity {
     public void toModifyRegion() {
         CommonUtils.trackCommonEvent(context, "defaultStoreAddress",
                 "主页_我的_我的店铺_默认店铺_门店地址", Constants.EVENT_MY_INFO);
+//        ShopEditAddressActivity_.intent(this).mInfo(mInfo).startForResult(REQUEST_CODE_REGION);
         ShopRegionActivity_.intent(this).mInfo(mInfo).startForResult(REQUEST_CODE_REGION);
     }
 

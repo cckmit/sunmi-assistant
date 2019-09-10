@@ -120,6 +120,34 @@
                 app:rightTextColor="@color/colorText_60" />
 
             <RelativeLayout
+                android:id="@+id/rl_wdr"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_72"
+                android:layout_marginTop="@dimen/dp_0_5"
+                android:background="@color/c_white">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/dp_20"
+                    android:text="@string/ipc_setting_state_wdr"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/sp_16" />
+
+                <Switch
+                    android:id="@+id/switch_wdr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/dp_20"
+                    android:checked="false"
+                    android:thumb="@drawable/switch_thumb"
+                    android:track="@drawable/switch_track" />
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:id="@+id/rl_light"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_72"

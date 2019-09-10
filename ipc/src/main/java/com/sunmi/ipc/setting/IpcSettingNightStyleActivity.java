@@ -44,7 +44,7 @@ public class IpcSettingNightStyleActivity extends BaseActivity
     @Extra
     SunmiDevice mDevice;
     @Extra
-    int nightMode, ledIndicator, rotation;
+    int nightMode, wdrMode, ledIndicator, rotation;
 
     @AfterViews
     void init() {
@@ -71,7 +71,7 @@ public class IpcSettingNightStyleActivity extends BaseActivity
         selectNightStyle(NIGHT_MODE_AUTO);
         showLoadingDialog();
         IPCCall.getInstance().setIpcNightIdeRotation(context, mDevice.getModel(), mDevice.getDeviceid(),
-                NIGHT_MODE_AUTO, ledIndicator, rotation);
+                NIGHT_MODE_AUTO, wdrMode, ledIndicator, rotation);
     }
 
     @Click(resName = "sil_open")
@@ -79,7 +79,7 @@ public class IpcSettingNightStyleActivity extends BaseActivity
         selectNightStyle(NIGHT_MODE_ON);
         showLoadingDialog();
         IPCCall.getInstance().setIpcNightIdeRotation(context, mDevice.getModel(), mDevice.getDeviceid(),
-                NIGHT_MODE_ON, ledIndicator, rotation);
+                NIGHT_MODE_ON, wdrMode, ledIndicator, rotation);
     }
 
     @Click(resName = "sil_close")
@@ -87,7 +87,7 @@ public class IpcSettingNightStyleActivity extends BaseActivity
         selectNightStyle(NIGHT_MODE_OFF);
         showLoadingDialog();
         IPCCall.getInstance().setIpcNightIdeRotation(context, mDevice.getModel(), mDevice.getDeviceid(),
-                NIGHT_MODE_OFF, ledIndicator, rotation);
+                NIGHT_MODE_OFF, wdrMode, ledIndicator, rotation);
     }
 
     /**
@@ -132,7 +132,9 @@ public class IpcSettingNightStyleActivity extends BaseActivity
     public void didReceivedNotification(int id, Object... args) {
         super.didReceivedNotification(id, args);
         hideLoadingDialog();
-        if (args == null) return;
+        if (args == null) {
+            return;
+        }
         ResponseBean res = (ResponseBean) args[0];
         if (id == IpcConstants.setIpcNightIdeRotation) {
             setIpcNightIdeRotation(res);
