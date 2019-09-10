@@ -195,9 +195,6 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
                 CommonUtils.trackCommonEvent(context, "forgetPassword", "忘记密码按钮", Constants.EVENT_LOGIN);
                 CommonUtils.trackDurationEventBegin(context, "retrievePasswordDuration",
                         "找回密码流程开始和结束", Constants.EVENT_DURATION_FORGET_PSW);
-               /* RetrievePasswordActivity_.intent(context)
-                        .extra("mobile", RegexUtils.isChinaPhone(mobile) ? mobile : "")
-                        .start();*/
                 InputMobileActivity_.intent(context).mobile(RegexUtils.isChinaPhone(mobile) ? mobile : "")
                         .checkSource(InputMobileActivity.SOURCE_RETRIEVE_PWD).start();
                 break;

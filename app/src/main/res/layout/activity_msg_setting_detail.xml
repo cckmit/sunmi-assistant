@@ -13,7 +13,7 @@
         android:layout_marginBottom="@dimen/dp_2"
         android:background="@color/c_white"
         app:dividerShow="true"
-        app:leftIcon="@mipmap/ic_back_dark"
+        app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/str_msg_setting_detail"
         app:titleTextColor="@color/colorText" />
 
