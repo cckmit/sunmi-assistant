@@ -12,7 +12,7 @@
         app:dividerColor="@color/colorText_10"
         app:dividerShow="true"
         app:leftDefaultClickEnable="true"
-        app:leftIcon="@mipmap/ic_back_dark"
+        app:leftIcon="@drawable/ic_back_dark"
         app:titleTextColor="@color/colorText" />
 
     <ImageView

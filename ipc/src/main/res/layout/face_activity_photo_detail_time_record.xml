@@ -16,7 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:leftDefaultClickEnable="true"
-        app:leftIcon="@mipmap/ic_back_dark"
+        app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/ipc_face_group_every_enter_shop_time"
         app:titleTextColor="@color/colorText" />
 

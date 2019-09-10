@@ -4,7 +4,7 @@
     <attr name="dividerColor" format="color" />
     <declare-styleable name="TitleBarView">
         <!--左边icon-->
-        <attr name="leftIcon" format="reference" />
+        <attr name="leftIcon" format="reference|color" />
         <!--todo 左边文字、文字颜色、文字大小-->
         <attr name="leftText" format="string" />
         <attr name="leftTextColor" format="color" />

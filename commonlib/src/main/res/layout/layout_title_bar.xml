@@ -43,7 +43,6 @@
             android:id="@+id/ll_back_layout"
             android:layout_width="@dimen/dp_50"
             android:layout_height="match_parent"
-            android:background="@drawable/right_image_selector"
             android:gravity="center_vertical"
             android:visibility="gone">
 
@@ -83,7 +82,7 @@
             android:maxWidth="@dimen/dp_256"
             android:singleLine="true"
             android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/sp_17"
+            android:textSize="@dimen/sp_16"
             android:textStyle="bold" />
 
         <RelativeLayout
@@ -139,7 +138,7 @@
             android:paddingLeft="@dimen/dp_12"
             android:paddingRight="@dimen/dp_12"
             android:textColor="@color/colorText"
-            android:textSize="@dimen/sp_17"
+            android:textSize="@dimen/sp_16"
             android:visibility="gone" />
 
         <TextView
@@ -152,7 +151,7 @@
             android:paddingLeft="@dimen/dp_12"
             android:paddingRight="@dimen/dp_12"
             android:textColor="@color/colorText"
-            android:textSize="@dimen/sp_17"
+            android:textSize="@dimen/sp_16"
             android:visibility="gone" />
 
         <View
