@@ -118,8 +118,8 @@ public class TitleBarView extends RelativeLayout {
             midTitle.setText(titleText);
         }
 
-        int titleTextColor = typedArray.getColor(R.styleable.TitleBarView_titleTextColor, -1);
         if (typedArray.hasValue(R.styleable.TitleBarView_titleTextColor)) {
+            int titleTextColor = typedArray.getColor(R.styleable.TitleBarView_titleTextColor, -1);
             midTitle.setTextColor(titleTextColor);
         }
         float titleTextSize = typedArray.getDimensionPixelSize(R.styleable.TitleBarView_titleTextSize, -1);
@@ -136,15 +136,18 @@ public class TitleBarView extends RelativeLayout {
         if (!TextUtils.isEmpty(leftTextStr)) {
             getLeftTextView().setText(leftTextStr);
         }
-        int leftTextColor = typedArray.getColor(R.styleable.TitleBarView_leftTextColor, -1);
-        if (leftTextColor != -1) {
+        if (typedArray.hasValue(R.styleable.TitleBarView_leftTextColor)) {
+            int leftTextColor = typedArray.getColor(R.styleable.TitleBarView_leftTextColor, -1);
             getLeftTextView().setTextColor(leftTextColor);
         }
         String rightTextStr = typedArray.getString(R.styleable.TitleBarView_rightText);
         if (!TextUtils.isEmpty(rightTextStr)) {
             setRightTextViewText(rightTextStr);
         }
-
+        if (typedArray.hasValue(R.styleable.TitleBarView_rightTextColor)) {
+            int rightTextColor = typedArray.getColor(R.styleable.TitleBarView_rightTextColor, -1);
+            getRightTextView().setTextColor(rightTextColor);
+        }
         int rightIconId = typedArray.getResourceId(R.styleable.TitleBarView_rightIcon, -1);
         if (rightIconId != -1) {
             setRightImageDrawable(rightIconId);

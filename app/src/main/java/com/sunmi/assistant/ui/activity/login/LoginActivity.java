@@ -168,9 +168,6 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
                 CommonUtils.trackCommonEvent(context, "register", "注册按钮", Constants.EVENT_LOGIN);
                 CommonUtils.trackDurationEventBegin(context, "registerDuration",
                         "注册流程开始和结束时调用", Constants.EVENT_DURATION_REGISTER);
-                /*RegisterActivity_.intent(context)
-                        .extra("mobile", RegexUtils.isChinaPhone(mobile) ? mobile : "")
-                        .start();*/
                 InputMobileActivity_.intent(context).mobile(RegexUtils.isChinaPhone(mobile) ? mobile : "")
                         .checkSource(InputMobileActivity.SOURCE_REGISTER).start();
                 break;
