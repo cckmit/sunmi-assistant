@@ -102,12 +102,13 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     SettingItemLayout mVersion;
     @ViewById(resName = "switch_light")
     Switch swLight;
-
+    @ViewById(resName = "switch_wdr")
+    Switch swWdr;
     DetectionConfig mDetectionConfig;
 
     //夜视模式，指示灯，画面旋转
-    private int nightMode, ledIndicator, rotation;
-    private boolean isOnClickLight, isSetLight;
+    private int nightMode, wdrMode, ledIndicator, rotation;
+    private boolean isOnClickLight, isSetLight, isOnClickWdr, isSetWdr;
     private IpcNewFirmwareResp mResp;
     private String wifiSsid, wifiMgmt;
     private int wifiIsWire = WIFI_WIRE_DEFAULT; //-1默认 0无线 1有线
@@ -441,6 +442,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         IpcSettingNightStyleActivity_.intent(this)
                 .mDevice(mDevice)
                 .nightMode(nightMode)
+                .wdrMode(wdrMode)
                 .ledIndicator(ledIndicator)
                 .rotation(rotation)
                 .startForResult(REQUEST_COMPLETE);
@@ -521,7 +523,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     @CheckedChange(resName = "switch_light")
     void setSwLight(CompoundButton buttonView, boolean isChecked) {
         if (noNetCannotClick(false)) {
-            swLight.setChecked(!isChecked);
+            swWdr.setChecked(!isChecked);
             return;
         }
         if (isSetLight == isChecked) {
@@ -529,10 +531,30 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         }
         isSetLight = isChecked;
         isOnClickLight = true;
+        isOnClickWdr = false;
         showLoadingDialog();
         IPCCall.getInstance().setIpcNightIdeRotation(context, mDevice.getModel(),
-                mDevice.getDeviceid(), nightMode, isChecked ? SWITCH_CHECK : SWITCH_UNCHECK, rotation);
+                mDevice.getDeviceid(), nightMode, wdrMode, isChecked ? SWITCH_CHECK : SWITCH_UNCHECK, rotation);
     }
+
+    //宽动态WDR
+    @CheckedChange(resName = "switch_wdr")
+    void setWDR(CompoundButton buttonView, boolean isChecked) {
+        if (noNetCannotClick(false)) {
+            swLight.setChecked(!isChecked);
+            return;
+        }
+        if (isSetWdr == isChecked) {
+            return;
+        }
+        isSetWdr = isChecked;
+        isOnClickWdr = true;
+        isOnClickLight = false;
+        showLoadingDialog();
+        IPCCall.getInstance().setIpcNightIdeRotation(context, mDevice.getModel(),
+                mDevice.getDeviceid(), nightMode, isChecked ? SWITCH_CHECK : SWITCH_UNCHECK, ledIndicator, rotation);
+    }
+
 
     //画面旋转
     @Click(resName = "sil_view_rotate")
@@ -543,6 +565,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         IpcSettingRotateActivity_.intent(this)
                 .mDevice(mDevice)
                 .nightMode(nightMode)
+                .wdrMode(wdrMode)
                 .ledIndicator(ledIndicator)
                 .rotation(rotation)
                 .startForResult(REQUEST_CODE_ROTATE);
@@ -757,6 +780,14 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 ledIndicator = 0;
             }
         }
+        //指示灯
+        if (isOnClickWdr) {
+            if (wdrMode == 0) {
+                wdrMode = 1;
+            } else {
+                wdrMode = 0;
+            }
+        }
     }
 
     //请求error
@@ -768,6 +799,15 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             } else {
                 isSetLight = swLight.isChecked();
                 swLight.setChecked(isSetLight);
+            }
+        }
+        if (isOnClickWdr) {
+            if (swWdr.isChecked()) {
+                isSetWdr = !swWdr.isChecked();
+                swWdr.setChecked(isSetWdr);
+            } else {
+                isSetWdr = swWdr.isChecked();
+                swWdr.setChecked(isSetWdr);
             }
         }
     }
@@ -808,6 +848,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     /**
      * led_indicator :   0:关闭/1:开启
+     * wdr_mode :   0:关闭/1:开启
      * night_mode :   夜视模式 0:始终关闭/1:始终开启/2:自动切换
      * rotation :   0:关闭/1:开启
      */
@@ -820,10 +861,13 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         nightMode = resp.getNight_mode();
         ledIndicator = resp.getLed_indicator();
         rotation = resp.getRotation();
+        wdrMode = resp.getWdr_mode();
         mNightStyle.setRightText(nightMode(nightMode));
 
         isSetLight = ledIndicator != 0;
         swLight.setChecked(isSetLight);
+        isSetWdr = wdrMode != 0;
+        swWdr.setChecked(isSetWdr);
         rotateDegree(rotation);
     }
 

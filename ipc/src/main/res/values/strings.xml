@@ -246,6 +246,7 @@
     <string name="tip_device_bound_by_other_shop">Sorry, the camera has been bound by another store !</string>
     <string name="ipc_face_need_max_num">(剩余:%d)</string>
     <string name="ipc_face_full_capacity">该分组容量已满</string>
+    <string name="ipc_setting_state_wdr">宽动态WDR</string>
 </resources>
 
 
