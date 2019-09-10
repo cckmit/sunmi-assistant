@@ -46,7 +46,7 @@ public class IpcSettingRotateActivity extends BaseActivity implements View.OnCli
     @Extra
     SunmiDevice mDevice;
     @Extra
-    int nightMode, ledIndicator, rotation;
+    int nightMode, wdrMode, ledIndicator, rotation;
 
     @AfterViews
     void init() {
@@ -83,7 +83,7 @@ public class IpcSettingRotateActivity extends BaseActivity implements View.OnCli
     private void setRotationCall() {
         showLoadingDialog();
         IPCCall.getInstance().setIpcNightIdeRotation(context, mDevice.getModel(), mDevice.getDeviceid(),
-                nightMode, ledIndicator, rotation);
+                nightMode, wdrMode, ledIndicator, rotation);
     }
 
     @Click(resName = "sil_degree0")

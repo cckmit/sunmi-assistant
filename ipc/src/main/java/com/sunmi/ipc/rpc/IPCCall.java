@@ -97,7 +97,7 @@ public class IPCCall extends BaseIpcApi {
     /**
      * 获取SD卡状态信息
      */
-    public void getSdState(Context context,String ip) {
+    public void getSdState(Context context, String ip) {
         int opCode = IpcConstants.getSdStatus;
         RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                 "0x" + Integer.toHexString(opCode), new JSONObject());
@@ -292,11 +292,12 @@ public class IPCCall extends BaseIpcApi {
      * @param ledIndicator 指示灯 0:关闭/1:开启
      * @param rotation     旋转 0:关闭/1:开启
      */
-    public void setIpcNightIdeRotation(Context context, String model, String sn, int night, int ledIndicator, int rotation) {
+    public void setIpcNightIdeRotation(Context context, String model, String sn, int night, int wdrMode, int ledIndicator, int rotation) {
         try {
             JSONObject object = new JSONObject();
             object.put("sn", sn);
             object.put("night_mode", night);
+            object.put("wdr_mode", wdrMode);
             object.put("led_indicator", ledIndicator);
             object.put("rotation", rotation);
             int opCode = IpcConstants.setIpcNightIdeRotation;

@@ -161,7 +161,7 @@ public class ShopRegionActivity extends BaseMvpActivity<ShopRegionPresenter>
             setResult(RESULT_CANCELED);
             finish();
         } else {
-            mPresenter.updateRegion(mProvinceId, mCityId, mAreaId);
+            mPresenter.updateRegion(mProvinceId, mCityId, mAreaId, "");
         }
     }
 
