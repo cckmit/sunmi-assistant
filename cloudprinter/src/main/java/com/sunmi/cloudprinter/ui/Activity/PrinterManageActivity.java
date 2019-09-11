@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.webkit.DownloadListener;
 import android.webkit.SslErrorHandler;
@@ -21,10 +23,13 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import sunmi.common.base.BaseActivity;
-import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.webview.SMWebView;
@@ -44,6 +49,17 @@ public class PrinterManageActivity extends BaseActivity {
     String shopId;
     @Extra
     int channelId;
+
+    private static long timeout = 10_000;
+    private Handler mHandler = new Handler();
+
+    private Timer timer = new Timer();
+    TimerTask tt = new TimerTask() {
+        @Override
+        public void run() {
+            handleTimeout();
+        }
+    };
 
     @AfterViews
     protected void init() {
@@ -102,12 +118,14 @@ public class PrinterManageActivity extends BaseActivity {
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
                 showLoadingDialog();
+                timer.schedule(tt, timeout, 1);
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
                 hideLoadingDialog();
+                timerCancel();
             }
 
             @Override
@@ -124,14 +142,28 @@ public class PrinterManageActivity extends BaseActivity {
         });
     }
 
+    @UiThread
+    void handleTimeout() {
+        if (PrinterManageActivity.this.webView.getProgress() < 100) {
+            Message msg = new Message();
+            msg.what = 1;
+            mHandler.sendMessage(msg);
+            timerCancel();
+            hideLoadingDialog();
+            //todo 提示用户刷新
+        }
+    }
+
+    private void timerCancel() {
+        if (timer != null) {
+            timer.cancel();
+            timer.purge();
+        }
+    }
+
     @Click(resName = "img_back")
     public void backClick() {
         onBackPressed();
-    }
-
-    @Override
-    public void onBackPressed() {
-        GotoActivityUtils.gotoMainActivity(context);
     }
 
 }
