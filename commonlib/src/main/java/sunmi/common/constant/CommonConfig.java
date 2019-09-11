@@ -39,7 +39,7 @@ public class CommonConfig extends BaseConfig {
 
     @Override
     protected void initTest(Context context, String env) {
-        SUNMI_STORE_URL = "https://test-store.sunmi.com/";
+        SUNMI_STORE_URL = "https://store.test.sunmi.com/";
         CLOUD_TOKEN = "Woyouxinxi666";
         DES_IV = "12345678";
         DES_KEY = "wywmxxkj";
