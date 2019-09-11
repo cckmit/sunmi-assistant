@@ -5,4 +5,10 @@
     <color name="colorAccent">#D81B60</color>
     <color name="color_FAFAFA">#FAFAFA</color>
     <color name="shimmer_color">#a2878787</color>
+
+    <color name="color_E6E8EB">#E6E8EB</color>
+    <color name="color_525866">#525866</color>
+    <color name="color_303540">#303540</color>
+    <color name="color_777E8C">#777E8C</color>
+    <color name="color_F5F7FA">#F5F7FA</color>
 </resources>

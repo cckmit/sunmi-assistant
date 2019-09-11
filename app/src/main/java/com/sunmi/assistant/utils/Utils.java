@@ -6,7 +6,7 @@ import android.util.Pair;
 import android.util.SparseArray;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.DashboardContract;
+import com.sunmi.assistant.dashboard.Constants;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -49,9 +49,9 @@ public class Utils {
     }
 
     public static String getTrendNameByPeriod(Context context, int period) {
-        if (period == DashboardContract.TIME_PERIOD_TODAY) {
+        if (period == Constants.TIME_PERIOD_TODAY) {
             return context.getResources().getString(R.string.dashboard_day_ratio);
-        } else if (period == DashboardContract.TIME_PERIOD_WEEK) {
+        } else if (period == Constants.TIME_PERIOD_WEEK) {
             return context.getResources().getString(R.string.dashboard_week_ratio);
         } else {
             return context.getResources().getString(R.string.dashboard_month_ratio);
@@ -81,13 +81,13 @@ public class Utils {
         c.clear();
         c.setFirstDayOfWeek(Calendar.MONDAY);
         c.set(year, month, date);
-        if (period == DashboardContract.TIME_PERIOD_MONTH) {
+        if (period == Constants.TIME_PERIOD_MONTH) {
             c.clear();
             c.set(year, month, 1);
             timeStart = c.getTimeInMillis();
             c.add(Calendar.MONTH, 1);
             timeEnd = c.getTimeInMillis();
-        } else if (period == DashboardContract.TIME_PERIOD_WEEK) {
+        } else if (period == Constants.TIME_PERIOD_WEEK) {
             int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
             int offset = c.getFirstDayOfWeek() - dayOfWeek;
             c.add(Calendar.DATE, offset > 0 ? offset - 7 : offset);
@@ -106,9 +106,9 @@ public class Utils {
 
     public static float encodeBarChartXAxisFloat(int period, long timestamp) {
         sTempCalendar.setTimeInMillis(timestamp * 1000);
-        if (period == DashboardContract.TIME_PERIOD_MONTH) {
+        if (period == Constants.TIME_PERIOD_MONTH) {
             return (float) (sTempCalendar.get(Calendar.DAY_OF_MONTH) + 10000);
-        } else if (period == DashboardContract.TIME_PERIOD_WEEK) {
+        } else if (period == Constants.TIME_PERIOD_WEEK) {
             int index = sTempCalendar.get(Calendar.DAY_OF_WEEK);
             index = (index + 5) % 7;
             return index + 100;

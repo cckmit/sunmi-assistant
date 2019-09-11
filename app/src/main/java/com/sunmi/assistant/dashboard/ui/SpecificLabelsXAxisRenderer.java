@@ -3,7 +3,7 @@ package com.sunmi.assistant.dashboard.ui;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.renderer.XAxisRenderer;
-import com.sunmi.assistant.dashboard.DashboardContract;
+import com.sunmi.assistant.dashboard.Constants;
 
 /**
  * @author yinhui
@@ -19,9 +19,9 @@ public class SpecificLabelsXAxisRenderer extends XAxisRenderer {
     }
 
     public void setPeriod(int period, int maxDay) {
-        if (period == DashboardContract.TIME_PERIOD_TODAY) {
+        if (period == Constants.TIME_PERIOD_TODAY) {
             labels = new float[]{0, 4, 8, 12, 16, 20, 24};
-        } else if (period == DashboardContract.TIME_PERIOD_WEEK) {
+        } else if (period == Constants.TIME_PERIOD_WEEK) {
             labels = new float[]{100, 101, 102, 103, 104, 105, 106};
         } else {
             labels = new float[]{10001, 10006, 10012, 10018, 10024, 10000 + maxDay};

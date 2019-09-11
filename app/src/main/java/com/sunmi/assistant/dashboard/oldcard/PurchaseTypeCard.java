@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.card;
+package com.sunmi.assistant.dashboard.oldcard;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -17,6 +17,7 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.DashboardContract;
 import com.sunmi.assistant.data.PaymentApi;
 import com.sunmi.assistant.data.response.OrderPayTypeRankResp;
@@ -66,11 +67,11 @@ public class PurchaseTypeCard extends BaseRefreshCard<PurchaseTypeCard.Model, Or
             PURCHASE_TYPE_INDEX.put("payment-purchase-type-other", 6);
         }
         addOnViewClickListener(R.id.tv_dashboard_radio_by_sales, (adapter, holder, v, model, position) -> {
-            model.dataSource = DashboardContract.DATA_MODE_SALES;
+            model.dataSource = Constants.DATA_MODE_SALES;
             updateView();
         });
         addOnViewClickListener(R.id.tv_dashboard_radio_by_order, (adapter, holder, v, model, position) -> {
-            model.dataSource = DashboardContract.DATA_MODE_ORDER;
+            model.dataSource = Constants.DATA_MODE_ORDER;
             updateView();
         });
     }
@@ -78,12 +79,12 @@ public class PurchaseTypeCard extends BaseRefreshCard<PurchaseTypeCard.Model, Or
     @Override
     protected Model createModel(Context context) {
         return new Model(context.getString(R.string.dashboard_purchase_rank),
-                DashboardContract.DATA_MODE_SALES);
+                Constants.DATA_MODE_SALES);
     }
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_recycle_item_chart_pie;
+        return R.layout.dashboard_recycle_item_old_chart_pie;
     }
 
     @Override
@@ -164,8 +165,8 @@ public class PurchaseTypeCard extends BaseRefreshCard<PurchaseTypeCard.Model, Or
             amountList.add(new PieEntry(totalAmount <= 0 ? 0 : otherAmount / totalAmount, ""));
             countList.add(new PieEntry(totalCount <= 0 ? 0 : otherCount / totalCount, ""));
         }
-        model.dataSets.put(DashboardContract.DATA_MODE_SALES, amountList);
-        model.dataSets.put(DashboardContract.DATA_MODE_ORDER, countList);
+        model.dataSets.put(Constants.DATA_MODE_SALES, amountList);
+        model.dataSets.put(Constants.DATA_MODE_ORDER, countList);
     }
 
     @Override
@@ -178,8 +179,8 @@ public class PurchaseTypeCard extends BaseRefreshCard<PurchaseTypeCard.Model, Or
         TextView byOrder = holder.getView(R.id.tv_dashboard_radio_by_order);
         PieChart chart = holder.getView(R.id.chart_dashboard_pie);
         title.setText(model.title);
-        bySales.setSelected(model.dataSource == DashboardContract.DATA_MODE_SALES);
-        byOrder.setSelected(model.dataSource == DashboardContract.DATA_MODE_ORDER);
+        bySales.setSelected(model.dataSource == Constants.DATA_MODE_SALES);
+        byOrder.setSelected(model.dataSource == Constants.DATA_MODE_ORDER);
 
         List<PieEntry> newDataSet = model.dataSets.get(model.dataSource);
         if (newDataSet == null) {

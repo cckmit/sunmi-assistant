@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.card;
+package com.sunmi.assistant.dashboard.oldcard;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.DashboardContract;
 
 import retrofit2.Call;
@@ -23,11 +24,11 @@ public class TopTabCard extends BaseRefreshCard<TopTabCard.Model, Object> {
     public TopTabCard(Context context, DashboardContract.Presenter presenter) {
         super(context, presenter, -1, -1);
         addOnViewClickListener(R.id.tv_dashboard_today, (adapter, holder, v, model, position) ->
-                mPresenter.switchPeriodTo(DashboardContract.TIME_PERIOD_TODAY));
+                mPresenter.switchPeriodTo(Constants.TIME_PERIOD_TODAY));
         addOnViewClickListener(R.id.tv_dashboard_week, (adapter, holder, v, model, position) ->
-                mPresenter.switchPeriodTo(DashboardContract.TIME_PERIOD_WEEK));
+                mPresenter.switchPeriodTo(Constants.TIME_PERIOD_WEEK));
         addOnViewClickListener(R.id.tv_dashboard_month, (adapter, holder, v, model, position) ->
-                mPresenter.switchPeriodTo(DashboardContract.TIME_PERIOD_MONTH));
+                mPresenter.switchPeriodTo(Constants.TIME_PERIOD_MONTH));
     }
 
     @Override
@@ -37,7 +38,7 @@ public class TopTabCard extends BaseRefreshCard<TopTabCard.Model, Object> {
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_recycle_item_tab;
+        return R.layout.dashboard_recycle_item_old_tab;
     }
 
     @Override
@@ -69,9 +70,9 @@ public class TopTabCard extends BaseRefreshCard<TopTabCard.Model, Object> {
         TextView today = holder.getView(R.id.tv_dashboard_today);
         TextView week = holder.getView(R.id.tv_dashboard_week);
         TextView month = holder.getView(R.id.tv_dashboard_month);
-        today.setSelected(model.period == DashboardContract.TIME_PERIOD_TODAY);
-        week.setSelected(model.period == DashboardContract.TIME_PERIOD_WEEK);
-        month.setSelected(model.period == DashboardContract.TIME_PERIOD_MONTH);
+        today.setSelected(model.period == Constants.TIME_PERIOD_TODAY);
+        week.setSelected(model.period == Constants.TIME_PERIOD_WEEK);
+        month.setSelected(model.period == Constants.TIME_PERIOD_MONTH);
     }
 
     public static class Model extends BaseRefreshCard.BaseModel {

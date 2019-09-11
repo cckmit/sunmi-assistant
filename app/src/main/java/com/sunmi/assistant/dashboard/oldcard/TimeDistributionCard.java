@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.card;
+package com.sunmi.assistant.dashboard.oldcard;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -16,6 +16,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.DashboardContract;
 import com.sunmi.assistant.dashboard.ui.BarXAxisLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.RoundEdgeBarChartRenderer;
@@ -53,11 +54,11 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
                                 int companyId, int shopId) {
         super(context, presenter, companyId, shopId);
         addOnViewClickListener(R.id.tv_dashboard_radio_by_sales, (adapter, holder, v, model, position) -> {
-            model.dataSource = DashboardContract.DATA_MODE_SALES;
+            model.dataSource = Constants.DATA_MODE_SALES;
             updateView();
         });
         addOnViewClickListener(R.id.tv_dashboard_radio_by_order, (adapter, holder, v, model, position) -> {
-            model.dataSource = DashboardContract.DATA_MODE_ORDER;
+            model.dataSource = Constants.DATA_MODE_ORDER;
             updateView();
         });
     }
@@ -65,12 +66,12 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
     @Override
     protected Model createModel(Context context) {
         return new Model(context.getString(R.string.dashboard_time_distribution),
-                DashboardContract.DATA_MODE_SALES);
+                Constants.DATA_MODE_SALES);
     }
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_recycle_item_chart_bar;
+        return R.layout.dashboard_recycle_item_old_chart_bar;
     }
 
     @Override
@@ -128,7 +129,7 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
     @Override
     protected Call<BaseResponse<OrderTimeDistributionResp>> load(int companyId, int shopId, int period, CardCallback callback) {
         int interval;
-        if (period == DashboardContract.TIME_PERIOD_TODAY) {
+        if (period == Constants.TIME_PERIOD_TODAY) {
             interval = INTERVAL_HOUR_SECOND;
         } else {
             interval = INTERVAL_DAY_SECOND;
@@ -150,8 +151,8 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
             amountList.add(new BarEntry(x, item.getAmount()));
             countList.add(new BarEntry(x, item.getCount()));
         }
-        model.dataSets.put(DashboardContract.DATA_MODE_SALES, amountList);
-        model.dataSets.put(DashboardContract.DATA_MODE_ORDER, countList);
+        model.dataSets.put(Constants.DATA_MODE_SALES, amountList);
+        model.dataSets.put(Constants.DATA_MODE_ORDER, countList);
     }
 
     @Override
@@ -165,8 +166,8 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
         TextView byOrder = holder.getView(R.id.tv_dashboard_radio_by_order);
 
         title.setText(model.title);
-        bySales.setSelected(model.dataSource == DashboardContract.DATA_MODE_SALES);
-        byOrder.setSelected(model.dataSource == DashboardContract.DATA_MODE_ORDER);
+        bySales.setSelected(model.dataSource == Constants.DATA_MODE_SALES);
+        byOrder.setSelected(model.dataSource == Constants.DATA_MODE_ORDER);
 
         List<BarEntry> newDataSet = model.dataSets.get(model.dataSource);
         if (newDataSet == null) {
@@ -184,7 +185,7 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
             model.period = calcPeriodByDataSize(newDataSet.size());
         }
 
-        if (model.period == DashboardContract.TIME_PERIOD_TODAY
+        if (model.period == Constants.TIME_PERIOD_TODAY
                 && newDataSet.size() <= PERIOD_TODAY_DATA_COUNT) {
             newDataSet.add(new BarEntry(24f, 0f));
         }
@@ -236,18 +237,18 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
 
     private int calcPeriodByDataSize(int size) {
         if (size <= PERIOD_WEEK_DATA_COUNT) {
-            return DashboardContract.TIME_PERIOD_WEEK;
+            return Constants.TIME_PERIOD_WEEK;
         } else if (size <= PERIOD_TODAY_DATA_COUNT + 1) {
-            return DashboardContract.TIME_PERIOD_TODAY;
+            return Constants.TIME_PERIOD_TODAY;
         } else {
-            return DashboardContract.TIME_PERIOD_MONTH;
+            return Constants.TIME_PERIOD_MONTH;
         }
     }
 
     private Pair<Integer, Integer> calcRangeOfxAxis(int period) {
-        if (period == DashboardContract.TIME_PERIOD_TODAY) {
+        if (period == Constants.TIME_PERIOD_TODAY) {
             return new Pair<>(0, 25);
-        } else if (period == DashboardContract.TIME_PERIOD_WEEK) {
+        } else if (period == Constants.TIME_PERIOD_WEEK) {
             return new Pair<>(100, 107);
         } else {
             Calendar c = Calendar.getInstance();
@@ -256,9 +257,9 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
     }
 
     private float calcBarWidth(int period) {
-        if (period == DashboardContract.TIME_PERIOD_TODAY) {
+        if (period == Constants.TIME_PERIOD_TODAY) {
             return 0.65f;
-        } else if (period == DashboardContract.TIME_PERIOD_WEEK) {
+        } else if (period == Constants.TIME_PERIOD_WEEK) {
             return 0.2f;
         } else {
             return 0.75f;

@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.card;
+package com.sunmi.assistant.dashboard.oldcard;
 
 import android.content.Context;
 import android.os.Handler;
@@ -6,6 +6,7 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.DashboardContract;
 
 import java.text.DecimalFormat;
@@ -53,7 +54,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
 
     private int mCompanyId;
     private int mShopId;
-    private int mPeriod = DashboardContract.TIME_PERIOD_INIT;
+    private int mPeriod = Constants.TIME_PERIOD_INIT;
     private int mState = STATE_INIT;
 
     protected BaseRefreshCard(Context context, DashboardContract.Presenter presenter,
@@ -102,7 +103,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
     }
 
     public void setPeriod(int period) {
-        if (this.mPeriod == period || period == DashboardContract.TIME_PERIOD_INIT) {
+        if (this.mPeriod == period || period == Constants.TIME_PERIOD_INIT) {
             return;
         }
         this.mPeriod = period;
@@ -252,7 +253,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
             this.call = null;
             this.companyId = -1;
             this.shopId = -1;
-            this.period = DashboardContract.TIME_PERIOD_INIT;
+            this.period = Constants.TIME_PERIOD_INIT;
         }
 
         public Call<BaseResponse<Resp>> get() {
@@ -318,6 +319,6 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
     static abstract class BaseModel {
         boolean isValid = false;
         boolean skipLoad = false;
-        int period = DashboardContract.TIME_PERIOD_INIT;
+        int period = Constants.TIME_PERIOD_INIT;
     }
 }

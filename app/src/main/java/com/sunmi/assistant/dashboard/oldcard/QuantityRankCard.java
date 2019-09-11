@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.card;
+package com.sunmi.assistant.dashboard.oldcard;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -52,7 +52,7 @@ public class QuantityRankCard extends BaseRefreshCard<QuantityRankCard.Model, Or
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_recycle_item_list;
+        return R.layout.dashboard_recycle_item_old_list;
     }
 
     @Override
@@ -140,7 +140,7 @@ public class QuantityRankCard extends BaseRefreshCard<QuantityRankCard.Model, Or
         private static final String TAG = QuantityRankCard.class.getSimpleName();
 
         private RankListAdapter(Context context) {
-            super(context, R.layout.dashboard_recycle_item_list_item);
+            super(context, R.layout.dashboard_recycle_item_old_list_item);
         }
 
         @Override

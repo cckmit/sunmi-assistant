@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.card;
+package com.sunmi.assistant.dashboard.oldcard;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.DashboardContract;
 import com.sunmi.assistant.order.OrderListActivity_;
 import com.sunmi.assistant.utils.Utils;
@@ -32,7 +33,7 @@ public abstract class BaseSmallCard<Model extends BaseSmallCard.BaseSmallModel, 
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_recycle_item_data_card;
+        return R.layout.dashboard_recycle_item_old_data_card;
     }
 
     @Override
@@ -148,9 +149,9 @@ public abstract class BaseSmallCard<Model extends BaseSmallCard.BaseSmallModel, 
         }
 
         float getData(int period) {
-            if (period == DashboardContract.TIME_PERIOD_TODAY) {
+            if (period == Constants.TIME_PERIOD_TODAY) {
                 return dataToday;
-            } else if (period == DashboardContract.TIME_PERIOD_WEEK) {
+            } else if (period == Constants.TIME_PERIOD_WEEK) {
                 return dataWeek;
             } else {
                 return dataMonth;
@@ -158,9 +159,9 @@ public abstract class BaseSmallCard<Model extends BaseSmallCard.BaseSmallModel, 
         }
 
         String getTrendData(int period) {
-            if (period == DashboardContract.TIME_PERIOD_TODAY) {
+            if (period == Constants.TIME_PERIOD_TODAY) {
                 return trendDataToday;
-            } else if (period == DashboardContract.TIME_PERIOD_WEEK) {
+            } else if (period == Constants.TIME_PERIOD_WEEK) {
                 return trendDataWeek;
             } else {
                 return trendDataMonth;

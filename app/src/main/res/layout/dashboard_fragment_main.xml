@@ -1,25 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cl_dashboard_content"
     android:layout_width="match_parent"
+    android:background="@color/c_white"
     android:layout_height="match_parent">
 
-    <cn.bingoogolapple.refreshlayout.BGARefreshLayout
-        android:id="@+id/layout_dashboard_refresh"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <sunmi.common.view.NestedCustomScrollView
+        android:id="@+id/sv_outer_scroll"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_dashboard_card_list"
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/cl_container"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_height="wrap_content">
 
-    </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
+            <View
+                android:id="@+id/view_top_bg"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_245"
+                android:background="@drawable/dashboard_bg_top"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <sunmi.common.view.DropdownMenu
+                android:id="@+id/layout_shop_title"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_74"
+                android:gravity="center"
+                android:paddingTop="@dimen/dp_30"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/layout_top_tab"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_44"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_shop_title" />
+
+            <cn.bingoogolapple.refreshlayout.BGARefreshLayout
+                android:id="@+id/layout_dashboard_refresh"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_600"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_top_tab"
+                app:layout_constraintVertical_bias="0">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_dashboard_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
+
+        </android.support.constraint.ConstraintLayout>
+
+    </sunmi.common.view.NestedCustomScrollView>
+
+    <View
+        android:id="@+id/view_top_mask"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_30"
+        android:background="@color/c_white"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <include
-        android:id="@+id/layout_dashboard_sticky_tab"
-        layout="@layout/dashboard_recycle_item_tab"
-        android:visibility="invisible" />
+        android:id="@+id/layout_anim_period_tab"
+        layout="@layout/dashboard_recycle_item_period_tab"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_64"
+        android:layout_marginTop="@dimen/dp_20"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</FrameLayout>
+    <include
+        android:id="@+id/layout_top_period_tab"
+        layout="@layout/dashboard_top_period_tab"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_44"
+        android:layout_marginTop="@dimen/dp_20"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</android.support.constraint.ConstraintLayout>
 

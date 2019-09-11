@@ -1,10 +1,11 @@
-package com.sunmi.assistant.dashboard.card;
+package com.sunmi.assistant.dashboard.oldcard;
 
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Pair;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.DashboardContract;
 import com.sunmi.assistant.data.PaymentApi;
 import com.sunmi.assistant.data.response.OrderAvgUnitSaleResp;
@@ -32,7 +33,7 @@ public class CustomerPriceCard extends BaseSmallCard<CustomerPriceCard.Model, Or
 
     @Override
     protected Call<BaseResponse<OrderAvgUnitSaleResp>> load(int companyId, int shopId, int period, CardCallback callback) {
-        Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(DashboardContract.TIME_PERIOD_TODAY);
+        Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(Constants.TIME_PERIOD_TODAY);
         return PaymentApi.get().getOrderAvgUnitSale(companyId, shopId,
                 periodTimestamp.first, periodTimestamp.second, 1, callback);
     }

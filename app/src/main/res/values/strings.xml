@@ -34,18 +34,32 @@
     <string name="str_choose_please">Please choose</string>
     <string name="str_selected">Please select</string>
     <string name="tip_addr_empty">Please enter the detailed address</string>
+
     <string name="dashboard_data_format">%s%%</string>
     <string name="dashboard_today">Today</string>
+    <string name="dashboard_yesterday">昨日</string>
     <string name="dashboard_this_week">Week</string>
     <string name="dashboard_this_month">Month</string>
+    <string name="dashboard_data_sales_amount">Total sales</string>
+    <string name="dashboard_data_sales_volume">交易笔数</string>
+    <string name="dashboard_data_consumer">进店客流</string>
+    <string name="dashboard_data_transaction_rate">交易转化率</string>
+
+    <string name="dashboard_chart_business_trend">经营趋势</string>
+    <string name="dashboard_chart_rate">转化率</string>
+    <string name="dashboard_chart_sales_volume">交易笔数</string>
+    <string name="dashboard_chart_consumer">客流量</string>
+    <string name="dashboard_chart_distribution">客群分布</string>
+    <string name="dashboard_chart_new_old">新老</string>
+    <string name="dashboard_chart_gender">性别</string>
+    <string name="dashboard_chart_age">年龄</string>
+
     <string name="dashboard_day_ratio">Day to day ratio</string>
     <string name="dashboard_week_ratio">Week to week ratio</string>
     <string name="dashboard_month_ratio">Month ratio</string>
     <string name="dashboard_by_sales">By sales</string>
     <string name="dashboard_by_order">By order number</string>
-    <string name="dashboard_total_sales_amount">Total sales</string>
     <string name="dashboard_customer_price">Customer price</string>
-    <string name="dashboard_total_sales_volume">Order number</string>
     <string name="dashboard_total_refunds">Number of refunds</string>
     <string name="dashboard_time_distribution">Transaction time distribution</string>
     <string name="dashboard_purchase_rank">Payment method</string>

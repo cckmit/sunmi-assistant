@@ -5,16 +5,11 @@ import android.os.Handler;
 import android.os.HandlerThread;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
-import com.sunmi.assistant.dashboard.card.CustomerPriceCard;
-import com.sunmi.assistant.dashboard.card.PurchaseTypeCard;
-import com.sunmi.assistant.dashboard.card.QuantityRankCard;
-import com.sunmi.assistant.dashboard.card.TimeDistributionCard;
-import com.sunmi.assistant.dashboard.card.TitleCard;
-import com.sunmi.assistant.dashboard.card.TopTabCard;
-import com.sunmi.assistant.dashboard.card.TotalCountCard;
-import com.sunmi.assistant.dashboard.card.TotalRefundsCard;
-import com.sunmi.assistant.dashboard.card.TotalSalesCard;
+import com.sunmi.assistant.dashboard.card.BaseRefreshItem;
+import com.sunmi.assistant.dashboard.card.DataCard;
+import com.sunmi.assistant.dashboard.card.DistributionChartCard;
+import com.sunmi.assistant.dashboard.card.PeriodTabCard;
+import com.sunmi.assistant.dashboard.card.TrendChartCard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +22,7 @@ import sunmi.common.utils.log.LogCat;
 class DashboardPresenter extends BasePresenter<DashboardContract.View>
         implements DashboardContract.Presenter {
 
-    private static final String TAG = "DashboardPresenter";
+    private static final String TAG = DashboardPresenter.class.getSimpleName();
 
     private static final int REFRESH_TIME_PERIOD = 120_000;
     private static final HandlerThread WORK_THREAD = new HandlerThread("RefreshTask");
@@ -41,14 +36,14 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     private int mCompanyId;
     private int mShopId;
 
-    private int mPeriod = DashboardContract.TIME_PERIOD_INIT;
+    private int mPeriod = Constants.TIME_PERIOD_INIT;
 
-    private List<BaseRefreshCard> mList;
+    private List<BaseRefreshItem> mList;
 
     private RefreshTask mTask;
 
     @Override
-    public void loadConfig() {
+    public void init() {
         mCompanyId = SpUtils.getCompanyId();
         mShopId = SpUtils.getShopId();
         initList(mCompanyId, mShopId);
@@ -57,18 +52,18 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     @Override
     public void switchPeriodTo(int period) {
         LogCat.d(TAG, "All card switch period to: " + period + "; Current period is " + mPeriod);
-        if (mPeriod == period || period == DashboardContract.TIME_PERIOD_INIT) {
+        if (mPeriod == period || period == Constants.TIME_PERIOD_INIT) {
             LogCat.d(TAG, "Switch period skip.");
             return;
         }
         this.mPeriod = period;
         if (mList != null) {
-            for (BaseRefreshCard card : mList) {
+            for (BaseRefreshItem card : mList) {
                 card.setPeriod(period);
             }
         }
         if (isViewAttached()) {
-            mView.updateStickyTab(period);
+            mView.updateTab(period);
         }
     }
 
@@ -77,7 +72,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         mCompanyId = companyId;
         mShopId = shopId;
         if (mList != null) {
-            for (BaseRefreshCard card : mList) {
+            for (BaseRefreshItem card : mList) {
                 card.setCompanyId(companyId, shopId);
             }
         }
@@ -87,7 +82,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     public void switchShopTo(int shopId) {
         mShopId = shopId;
         if (mList != null) {
-            for (BaseRefreshCard card : mList) {
+            for (BaseRefreshItem card : mList) {
                 card.setShopId(shopId);
             }
         }
@@ -96,7 +91,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     @Override
     public void refresh() {
         if (mList != null) {
-            for (BaseRefreshCard card : mList) {
+            for (BaseRefreshItem card : mList) {
                 card.refresh();
             }
         }
@@ -121,18 +116,11 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             return;
         }
         Context context = mView.getContext();
-        mList = new ArrayList<>(9);
-        mList.add(new TitleCard(context, this, companyId, shopId));
-        mList.add(new TopTabCard(context, this));
-
-        mList.add(new TotalSalesCard(context, this, companyId, shopId));
-        mList.add(new CustomerPriceCard(context, this, companyId, shopId));
-        mList.add(new TotalCountCard(context, this, companyId, shopId));
-        mList.add(new TotalRefundsCard(context, this, companyId, shopId));
-
-        mList.add(new TimeDistributionCard(context, this, companyId, shopId));
-        mList.add(new PurchaseTypeCard(context, this, companyId, shopId));
-        mList.add(new QuantityRankCard(context, this, companyId, shopId));
+        mList = new ArrayList<>(5);
+        mList.add(new PeriodTabCard(context, this));
+        mList.add(new DataCard(context, this, companyId, shopId));
+        mList.add(new TrendChartCard(context, this, companyId, shopId));
+        mList.add(new DistributionChartCard(context, this, companyId, shopId));
         mView.initData(mList);
         mTask = new RefreshTask();
         WORK_HANDLER.postDelayed(mTask, REFRESH_TIME_PERIOD);
@@ -142,7 +130,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     public void detachView() {
         super.detachView();
         WORK_HANDLER.removeCallbacks(mTask);
-        for (BaseRefreshCard card : mList) {
+        for (BaseRefreshItem card : mList) {
             card.cancelLoad();
         }
     }
