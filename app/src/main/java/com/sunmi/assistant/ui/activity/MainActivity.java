@@ -7,7 +7,6 @@ import android.net.NetworkRequest;
 import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +43,6 @@ import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.mqtt.MqttManager;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.MyFragmentTabHost;
 
 /**
@@ -74,10 +72,11 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
         mPresenter.getMessageCount();
         registerNetworkReceiver();
         CrashReport.setUserId(SpUtils.getUID());
+
         if (MyApplication.isCheckedToken) {
             MQTTManager.getInstance().createEmqToken(true);//初始化长连接
+            initIpc();
         }
-        initIpc();
         if (TextUtils.isEmpty(SpUtils.getCompanyName())) {
             CommonUtils.gotoLoginActivity(context, "");
         } else {
@@ -148,7 +147,7 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (NotificationConstant.netConnectedMainActivity == id) {
-            MqttManager.getInstance().createEmqToken(true);
+            initIpc();
         } else if (CommonNotifications.refreshMainTabView == id) {
             if (mTabHost.getChildCount() == 4) {
                 return;
