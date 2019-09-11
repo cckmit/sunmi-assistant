@@ -141,7 +141,7 @@ public class MqttManager {
      * 建立连接
      */
     public void mqttConnect() {
-        if (mqttClient == null) {
+        if (!NetworkUtils.isNetworkAvailable(BaseApplication.getContext()) || mqttClient == null) {
             return;
         }
         if (isConnecting) return;

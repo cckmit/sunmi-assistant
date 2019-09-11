@@ -10,9 +10,6 @@ import java.util.List;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.log.LogCat;
 
-/**
- * 完全退出应用程序类（在每个activity的onCreate方法中调用addActivity方法，在应用程序退出时调用exit方法，就可以完全退出）
- */
 public class BaseApplication extends LitePalApplication {
     private static BaseApplication instance = null;
     private List<Activity> activityList = new LinkedList<>();
@@ -44,6 +41,9 @@ public class BaseApplication extends LitePalApplication {
         activityList.clear();
     }
 
+    /**
+     * 在每个activity的onCreate方法中调用addActivity方法，在应用程序退出时调用exit方法，就可以完全退出
+     */
     public void quit() {
         try {
             finishActivities();
