@@ -69,7 +69,7 @@ public class IpcVideoView extends SurfaceView
         BackgroundExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                iotcClient.init(mUid);
+                iotcClient.init();
             }
         });
     }

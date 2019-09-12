@@ -1,7 +1,8 @@
-package com.sunmi.ipc.setting.recognition;
+package com.sunmi.ipc.presenter;
 
 import com.google.gson.Gson;
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.contract.RecognitionSettingContract;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.setting.entity.CameraConfig;
@@ -14,7 +15,7 @@ import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.log.LogCat;
 
 
-class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContract.View>
+public class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContract.View>
         implements RecognitionSettingContract.Presenter, BaseNotification.NotificationCenterDelegate {
 
     private static final String TAG = RecognitionSettingPresenter.class.getSimpleName();

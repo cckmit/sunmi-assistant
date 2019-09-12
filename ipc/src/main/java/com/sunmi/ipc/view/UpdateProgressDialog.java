@@ -1,4 +1,4 @@
-package com.sunmi.ipc.setting;
+package com.sunmi.ipc.view;
 
 import android.app.Dialog;
 import android.content.Context;

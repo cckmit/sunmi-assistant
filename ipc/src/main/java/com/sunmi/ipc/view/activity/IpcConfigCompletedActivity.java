@@ -1,4 +1,4 @@
-package com.sunmi.ipc.view;
+package com.sunmi.ipc.view.activity;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,7 +14,7 @@ import com.sunmi.ipc.model.IpcListResp;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.ipc.rpc.IpcConstants;
-import com.sunmi.ipc.setting.recognition.RecognitionSettingActivity_;
+import com.sunmi.ipc.setting.RecognitionSettingActivity_;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
