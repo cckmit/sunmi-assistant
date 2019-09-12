@@ -321,7 +321,6 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
             }
             setPanelVisible(View.VISIBLE);
             if (isCurrentLive && iotcClient != null) {
-                LogCat.e(TAG, "99999999 showLoadingDialog 111");
                 showLoadingDialog();
                 iotcClient.startPlay();
             }
@@ -348,7 +347,6 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
 
     @Override
     public void initSuccess() {
-        LogCat.e(TAG, "99999999 initSuccess");
         hideLoadingDialog();
     }
 
@@ -512,7 +510,6 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     @Click(resName = "tv_retry")
     void retryClick() {
         llPlayFail.setVisibility(View.GONE);
-        LogCat.e(TAG, "99999999 showLoadingDialog 5555");
         showLoadingDialog();
         initP2pLive();
     }
@@ -627,7 +624,6 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
      */
     private void switch2Live() {
         isFirstScroll = true;
-        LogCat.e(TAG, "99999999 showLoadingDialog 43444");
         showLoadingDialog();
         //如果是云端回放此时需要调用停止操作然后直播
         if (isCloudPlayBack) {
@@ -646,7 +642,6 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
      * 切到设备回放
      */
     void switch2DevPlayback(long start) {
-        LogCat.e(TAG, "99999999 showLoadingDialog 333");
         showLoadingDialog();
         if (isCloudPlayBack) {
             cloudPlayDestroy();
@@ -660,7 +655,6 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
      * 切到云端回放
      */
     void switch2CloudPlayback(long start, long end) {
-        LogCat.e(TAG, "99999999 showLoadingDialog 222");
         showLoadingDialog();
         if (!isCloudPlayBack) {
             if (isDevPlayBack) {
@@ -1005,14 +999,12 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     private void timeSlotsShowProgress() {
         if (timeSlotsDialog == null) {
             timeSlotsDialog = new LoadingDialog(this);
-            timeSlotsDialog.setTipColorText("hahahahaah", R.color.c_white);
+            timeSlotsDialog.setLoadingContent(null);
         }
-        LogCat.e(TAG, "77777777 show ");
         timeSlotsDialog.show();
     }
 
     private void timeSlotsHideProgress() {
-        LogCat.e(TAG, "77777777 dismiss ");
         if (timeSlotsDialog != null) {
             timeSlotsDialog.dismiss();
         }
