@@ -33,10 +33,6 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
         this.context = context;
     }
 
-    public interface OnMsgLongClickListener {
-        void onLongClick(View view, int msgId, int position);
-    }
-
     public void setMsgLongClickListener(OnMsgLongClickListener listener) {
         this.listener = listener;
     }
@@ -58,6 +54,19 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
         helper.setText(R.id.tv_msg_title, (companyName != null ? companyName : "") + (shopName != null ? shopName : ""));
         helper.setText(R.id.tv_msg_time, DateTimeUtils.secondToDate(item.getReceiveTime(), "yyyy-MM-dd HH:mm:ss"));
         setMsgDetail(helper, MessageUtils.getInstance().getMsgFirst(titleTag.getTag()));
+        //动态侦测视频
+//        if (!TextUtils.isEmpty(item.getMajorButtonLink())) {
+//            helper.itemView.setOnClickListener(v -> {
+//                MsgTag urlTag = item.getMajorButtonLinkTag();
+//                Map<String, String> urlMap = urlTag.getMsgMap();
+//                String url = urlMap.get("url");
+//                String deviceModel = urlMap.get("device_model");
+//                DynamicVideoActivity_.intent(context)
+//                        .url(url)
+//                        .deviceModel(deviceModel)
+//                        .start();
+//            });
+//        }
         helper.itemView.setOnLongClickListener(v -> {
             if (listener != null) {
                 listener.onLongClick(helper.getView(R.id.tv_msg_detail), item.getMsgId(), helper.getAdapterPosition());
@@ -103,5 +112,9 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
             }
         }
         helper.setText(R.id.tv_msg_detail, detail);
+    }
+
+    public interface OnMsgLongClickListener {
+        void onLongClick(View view, int msgId, int position);
     }
 }

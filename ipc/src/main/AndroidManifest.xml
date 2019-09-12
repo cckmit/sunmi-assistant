@@ -44,6 +44,11 @@
         <activity android:name=".face.FaceUploadActivity_" />
         <activity android:name=".face.FaceDetailActivity_" />
         <activity android:name=".face.FaceDetailRecordActivity_" />
+        <activity
+            android:name=".dynamic.DynamicVideoActivity_"
+            android:hardwareAccelerated="false"
+            android:largeHeap="true"
+            android:screenOrientation="landscape" />
 
     </application>
 

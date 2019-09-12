@@ -231,5 +231,8 @@ public class MessageListBean {
             return new MsgTag(getContent());
         }
 
+        public MsgTag getMajorButtonLinkTag() {
+            return new MsgTag(getMajorButtonLink());
+        }
     }
 }
