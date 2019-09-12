@@ -39,6 +39,8 @@
     <string name="title_confirm_connect_to_wifi">Whether connect to “%s”?</string>
     <string name="tip_get_wifi_config_timeout">Failed to get the device Wi-Fi connection information. Please confirm whether to reconnect.</string>
     <string name="tip_bound_to_other_shop">云打印机已被绑定在其他门店。如需继续绑定，请解绑后重试。</string>
+    <string name="tip_load_page_timeout">网络状况差，页面加载超时，请稍后重试。</string>
+    <string name="tip_network_poor">网络状况差，持续加载中</string>
 
 </resources>
 

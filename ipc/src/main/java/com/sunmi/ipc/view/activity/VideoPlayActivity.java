@@ -351,18 +351,23 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     }
 
     @Override
-    @UiThread
     public void initFail() {
         hideLoadingDialog();
-        llPlayFail.setVisibility(View.VISIBLE);
+        setPlayFailVisibility(View.VISIBLE);
     }
 
     @Override
     public void onVideoReceived(byte[] videoBuffer) {
-        llPlayFail.setVisibility(View.GONE);
+        setPlayFailVisibility(View.GONE);
         if (videoDecoder != null) {
             videoDecoder.setVideoData(videoBuffer);
         }
+    }
+
+    @UiThread
+    public void setPlayFailVisibility(int visibility) {
+        llPlayFail.setVisibility(visibility);
+
     }
 
     @Override
@@ -509,7 +514,7 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
 
     @Click(resName = "tv_retry")
     void retryClick() {
-        llPlayFail.setVisibility(View.GONE);
+        setPlayFailVisibility(View.GONE);
         showLoadingDialog();
         initP2pLive();
     }
