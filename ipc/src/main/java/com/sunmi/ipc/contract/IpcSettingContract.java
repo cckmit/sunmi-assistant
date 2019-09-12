@@ -1,4 +1,4 @@
-package com.sunmi.ipc.setting;
+package com.sunmi.ipc.contract;
 
 import android.content.Context;
 

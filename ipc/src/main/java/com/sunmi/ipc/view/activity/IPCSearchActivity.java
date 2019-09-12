@@ -1,4 +1,4 @@
-package com.sunmi.ipc.view;
+package com.sunmi.ipc.view.activity;
 
 import android.os.Handler;
 import android.support.v4.widget.NestedScrollView;
@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcConstants;
+import com.sunmi.ipc.view.IPCListAdapter;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;

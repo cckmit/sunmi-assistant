@@ -1,4 +1,4 @@
-package com.sunmi.ipc.setting.recognition;
+package com.sunmi.ipc.setting;
 
 import android.annotation.SuppressLint;
 import android.graphics.Rect;
@@ -15,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.contract.RecognitionSettingContract;
+import com.sunmi.ipc.presenter.RecognitionSettingPresenter;
 import com.sunmi.ipc.view.DoorLineView;
 import com.sunmi.ipc.view.IpcVideoView;
 

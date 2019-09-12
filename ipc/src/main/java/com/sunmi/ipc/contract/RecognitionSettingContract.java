@@ -1,4 +1,4 @@
-package com.sunmi.ipc.setting.recognition;
+package com.sunmi.ipc.contract;
 
 import android.support.annotation.StringRes;
 
