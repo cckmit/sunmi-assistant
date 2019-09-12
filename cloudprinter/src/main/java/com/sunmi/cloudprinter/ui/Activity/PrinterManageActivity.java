@@ -5,8 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
-import android.os.Handler;
-import android.os.Message;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.webkit.DownloadListener;
 import android.webkit.SslErrorHandler;
@@ -15,6 +14,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.sunmi.cloudprinter.R;
 import com.sunmi.cloudprinter.bean.PrinterJSCall;
 import com.sunmi.cloudprinter.config.PrinterConfig;
 import com.sunmi.cloudprinter.constant.Constants;
@@ -26,12 +26,10 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import sunmi.common.base.BaseActivity;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.TitleBarView;
+import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.webview.SMWebView;
 
 @EActivity(resName = "activity_printer_manage")
@@ -50,16 +48,9 @@ public class PrinterManageActivity extends BaseActivity {
     @Extra
     int channelId;
 
-    private static long timeout = 10_000;
-    private Handler mHandler = new Handler();
+    private static long TOTAL_TIMEOUT = 12_000;
 
-    private Timer timer = new Timer();
-    TimerTask tt = new TimerTask() {
-        @Override
-        public void run() {
-            handleTimeout();
-        }
-    };
+    CountDownTimer timeoutTimer;
 
     @AfterViews
     protected void init() {
@@ -86,6 +77,11 @@ public class PrinterManageActivity extends BaseActivity {
         webView.setWebChromeClient(webChrome);
         webView.setWebViewClient(new WebViewClient());
         loadWebView(PrinterConfig.IOT_H5_URL);
+    }
+
+    @Click(resName = "img_back")
+    public void backClick() {
+        onBackPressed();
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -118,52 +114,64 @@ public class PrinterManageActivity extends BaseActivity {
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
                 showLoadingDialog();
-                timer.schedule(tt, timeout, 1);
+                timerStart();
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                hideLoadingDialog();
                 timerCancel();
             }
 
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                hideLoadingDialog();
                 super.onReceivedError(view, errorCode, description, failingUrl);
+                timerCancel();
             }
 
             @Override
             public void onReceivedSslError(WebView view, final SslErrorHandler handler,
                                            SslError error) {
+                timerCancel();
                 handler.proceed();
             }
         });
     }
 
-    @UiThread
-    void handleTimeout() {
-        if (PrinterManageActivity.this.webView.getProgress() < 100) {
-            Message msg = new Message();
-            msg.what = 1;
-            mHandler.sendMessage(msg);
-            timerCancel();
-            hideLoadingDialog();
-            //todo 提示用户刷新
+    private void timerStart() {
+        if (timeoutTimer == null) {
+            timeoutTimer = new CountDownTimer(TOTAL_TIMEOUT, 2000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    if (millisUntilFinished < 4000) {
+                        shortTip(R.string.tip_network_poor);
+                    }
+                }
+
+                @Override
+                public void onFinish() {
+                    if (PrinterManageActivity.this.webView.getProgress() < 100) {
+                        hideLoadingDialog();
+                        loadPageTimeout();
+                    }
+                }
+            };
         }
+        timeoutTimer.start();
     }
 
     private void timerCancel() {
-        if (timer != null) {
-            timer.cancel();
-            timer.purge();
+        hideLoadingDialog();
+        if (timeoutTimer != null) {
+            timeoutTimer.cancel();
         }
     }
 
-    @Click(resName = "img_back")
-    public void backClick() {
-        onBackPressed();
+    @UiThread
+    void loadPageTimeout() {
+        new CommonDialog.Builder(this)
+                .setTitle(R.string.tip_load_page_timeout)
+                .setConfirmButton(R.string.str_confirm).create().show();
     }
 
 }
