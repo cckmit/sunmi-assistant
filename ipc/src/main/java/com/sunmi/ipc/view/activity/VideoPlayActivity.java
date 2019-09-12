@@ -112,7 +112,7 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     ImageView ivLive;//直播
     @ViewById(resName = "iv_play")
     ImageView ivPlay;//开始播放
-//    @ViewById(resName = "iv_setting")
+    //    @ViewById(resName = "iv_setting")
 //    ImageView ivSetting;//设置
     @ViewById(resName = "ll_play_fail")
     LinearLayout llPlayFail;
@@ -185,10 +185,7 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//保持屏幕常亮
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//隐藏状态栏
         initData();
-        if (loadingDialog != null && !loadingDialog.isShowing()) {
-            loadingDialog.setLoadingContent(null);
-            loadingDialog.show();
-        }
+        showLoadingDialog();
         initSurfaceView();
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -324,6 +321,7 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
             }
             setPanelVisible(View.VISIBLE);
             if (isCurrentLive && iotcClient != null) {
+                LogCat.e(TAG, "99999999 showLoadingDialog 111");
                 showLoadingDialog();
                 iotcClient.startPlay();
             }
@@ -338,7 +336,7 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     //放后台
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        if ((isDevPlayBack || isCloudPlayBack )&& !isPaused) {
+        if ((isDevPlayBack || isCloudPlayBack) && !isPaused) {
             pausePlayClick();
         } else if (isCurrentLive && iotcClient != null) {
             iotcClient.stopLive();
@@ -350,7 +348,7 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
 
     @Override
     public void initSuccess() {
-        LogCat.e(TAG,"99999999 initSuccess");
+        LogCat.e(TAG, "99999999 initSuccess");
         hideLoadingDialog();
     }
 
@@ -514,6 +512,7 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     @Click(resName = "tv_retry")
     void retryClick() {
         llPlayFail.setVisibility(View.GONE);
+        LogCat.e(TAG, "99999999 showLoadingDialog 5555");
         showLoadingDialog();
         initP2pLive();
     }
@@ -628,6 +627,7 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
      */
     private void switch2Live() {
         isFirstScroll = true;
+        LogCat.e(TAG, "99999999 showLoadingDialog 43444");
         showLoadingDialog();
         //如果是云端回放此时需要调用停止操作然后直播
         if (isCloudPlayBack) {
@@ -646,6 +646,7 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
      * 切到设备回放
      */
     void switch2DevPlayback(long start) {
+        LogCat.e(TAG, "99999999 showLoadingDialog 333");
         showLoadingDialog();
         if (isCloudPlayBack) {
             cloudPlayDestroy();
@@ -659,6 +660,7 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
      * 切到云端回放
      */
     void switch2CloudPlayback(long start, long end) {
+        LogCat.e(TAG, "99999999 showLoadingDialog 222");
         showLoadingDialog();
         if (!isCloudPlayBack) {
             if (isDevPlayBack) {
@@ -1003,12 +1005,14 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     private void timeSlotsShowProgress() {
         if (timeSlotsDialog == null) {
             timeSlotsDialog = new LoadingDialog(this);
-            timeSlotsDialog.setLoadingContent("hahahahaah");
+            timeSlotsDialog.setTipColorText("hahahahaah", R.color.c_white);
         }
+        LogCat.e(TAG, "77777777 show ");
         timeSlotsDialog.show();
     }
 
     private void timeSlotsHideProgress() {
+        LogCat.e(TAG, "77777777 dismiss ");
         if (timeSlotsDialog != null) {
             timeSlotsDialog.dismiss();
         }

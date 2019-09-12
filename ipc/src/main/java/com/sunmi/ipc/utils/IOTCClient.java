@@ -170,8 +170,6 @@ public class IOTCClient {
         startPlay(new P2pCmdCallback() {
             @Override
             public void onResponse(int cmd, IotcCmdResp result) {
-                LogCat.e(TAG, "9999999  result = " + result.toString());
-                LogCat.e(TAG, "9999999  result success callback = " + callback);
                 if (callback != null) {
                     callback.initSuccess();
                 }
@@ -179,8 +177,6 @@ public class IOTCClient {
 
             @Override
             public void onError() {
-                LogCat.e(TAG, "9999999  result fail");
-                LogCat.e(TAG, "9999999  result fail callback = " + callback);
                 if (callback != null) {
                     callback.initFail();
                 }
@@ -293,8 +289,7 @@ public class IOTCClient {
             public void run() {
                 String json = new Gson().toJson(cmd);
                 byte[] req = json.getBytes();
-                int writeResult = IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
-                LogCat.e("111", "99999999 writeResult = " + writeResult);
+                IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
                 getCmdResponse();
             }
         });
@@ -319,7 +314,6 @@ public class IOTCClient {
             byte[] data = new byte[actualLen];
             System.arraycopy(buf, 0, data, 0, actualLen);
             String result = ByteUtils.byte2String(data);
-            LogCat.e(TAG, "9999999 cmd result = " + result);
             try {
                 IotcCmdResp cmdBean;
                 if (CMD_PLAYBACK_LIST == cmd) {
@@ -329,12 +323,15 @@ public class IOTCClient {
                 } else {
                     cmdBean = new Gson().fromJson(result, IotcCmdResp.class);
                 }
-                LogCat.e(TAG, "9999999  callback = " + callback);
                 if (callback != null) {
                     callback.onResponse(cmd, cmdBean);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+        } else {
+            if (callback != null) {
+                callback.onError();
             }
         }
     }
@@ -346,7 +343,6 @@ public class IOTCClient {
             byte[] data = new byte[actualLen];
             System.arraycopy(buf, 0, data, 0, actualLen);
             String result = ByteUtils.byte2String(data);
-            LogCat.e(TAG, "888888 cmd result = " + result);
             IotcCmdResp cmdBean = new Gson().fromJson(result, IotcCmdResp.class);
         }
     }
