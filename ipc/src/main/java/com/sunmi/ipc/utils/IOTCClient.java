@@ -51,7 +51,7 @@ public class IOTCClient {
         this.uid = uid;
     }
 
-    public void init(String uid) {
+    public void init() {
         LogCat.e(TAG, "StreamClient init...");
         int ret = IOTCAPIs.IOTC_Initialize2(0);//step 1
         LogCat.e(TAG, "IOTC_Initialize() ret = " + ret);
@@ -170,6 +170,8 @@ public class IOTCClient {
         startPlay(new P2pCmdCallback() {
             @Override
             public void onResponse(int cmd, IotcCmdResp result) {
+                LogCat.e(TAG, "9999999  result = " + result.toString());
+                LogCat.e(TAG, "9999999  result success callback = " + callback);
                 if (callback != null) {
                     callback.initSuccess();
                 }
@@ -177,6 +179,8 @@ public class IOTCClient {
 
             @Override
             public void onError() {
+                LogCat.e(TAG, "9999999  result fail");
+                LogCat.e(TAG, "9999999  result fail callback = " + callback);
                 if (callback != null) {
                     callback.initFail();
                 }
@@ -289,7 +293,8 @@ public class IOTCClient {
             public void run() {
                 String json = new Gson().toJson(cmd);
                 byte[] req = json.getBytes();
-                IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
+                int writeResult = IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
+                LogCat.e("111", "99999999 writeResult = " + writeResult);
                 getCmdResponse();
             }
         });
@@ -324,6 +329,7 @@ public class IOTCClient {
                 } else {
                     cmdBean = new Gson().fromJson(result, IotcCmdResp.class);
                 }
+                LogCat.e(TAG, "9999999  callback = " + callback);
                 if (callback != null) {
                     callback.onResponse(cmd, cmdBean);
                 }
@@ -418,6 +424,7 @@ public class IOTCClient {
                 int[] frameNumber = new int[1];
                 int ret = AVAPIs.avRecvAudioData(avIndex, audioBuffer,
                         AUDIO_BUF_SIZE, frameInfo, FRAME_INFO_SIZE, frameNumber);
+
                 if (ret == AVAPIs.AV_ER_DATA_NOREADY) {//缓存没数据等待10ms再读
                     try {
                         Thread.sleep(10);

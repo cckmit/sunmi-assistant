@@ -18,14 +18,16 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.contract.IpcSettingContract;
 import com.sunmi.ipc.model.IpcConnectApResp;
 import com.sunmi.ipc.model.IpcNewFirmwareResp;
 import com.sunmi.ipc.model.IpcNightModeResp;
+import com.sunmi.ipc.presenter.IpcSettingPresenter;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.setting.entity.DetectionConfig;
-import com.sunmi.ipc.setting.recognition.RecognitionSettingActivity_;
 import com.sunmi.ipc.utils.TimeoutTimer;
+import com.sunmi.ipc.view.UpdateProgressDialog;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.CheckedChange;
