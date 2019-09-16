@@ -195,7 +195,7 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Object
             if (i < 5) {
                 list.add(new BarEntry(i, 0));
             } else {
-                list.add(new BarEntry(i, (float) Math.random() * 1000));
+                list.add(new BarEntry(i, (float) Math.random()));
             }
         }
         model.dataSets.put(Constants.DATA_TYPE_RATE, list);
@@ -311,9 +311,9 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Object
             BarData data = bar.getData();
             if (data != null && data.getDataSetCount() > 0) {
                 set = (BarDataSet) data.getDataSetByIndex(0);
-                set.setValues(dataSet);
                 set.setColor(color);
                 set.setHighLightColor(colorHighlight);
+                set.setValues(dataSet);
                 data.setBarWidth(barWidthRatio);
                 data.notifyDataChanged();
                 bar.notifyDataSetChanged();

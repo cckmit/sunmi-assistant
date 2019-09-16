@@ -53,6 +53,7 @@
     <string name="dashboard_chart_new_old">新老</string>
     <string name="dashboard_chart_gender">性别</string>
     <string name="dashboard_chart_age">年龄</string>
+    <string name="dashboard_chart_pie_hole_ratio">%s占比</string>
 
     <string name="dashboard_day_ratio">日环比</string>
     <string name="dashboard_week_ratio">周环比</string>
