@@ -39,10 +39,17 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
 
     @Override
     protected void setupModel(Model model, Object response) {
+
     }
 
     @Override
     protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+
+    }
+
+    @Override
+    protected void showLoading(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+
     }
 
     public static class Model extends BaseRefreshItem.BaseModel {
