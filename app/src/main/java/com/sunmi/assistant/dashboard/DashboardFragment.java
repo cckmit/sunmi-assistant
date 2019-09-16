@@ -87,12 +87,17 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         if (activity == null || activity.isDestroyed()) {
             return;
         }
-        mScrollView.scrollTo(0, 0);
+
         StatusBarUtils.setStatusBarFullTransparent(activity);
         mStatusBarHeight = Utils.getStatusBarHeight(activity);
         mNavBarHeight = 0;
+        initScrollView();
         initRefreshLayout();
         initRecycler();
+    }
+
+    private void initScrollView() {
+//        mScrollView.setNestedPriority(true, true);
     }
 
     private void initRefreshLayout() {
@@ -116,6 +121,14 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mCardList.setLayoutManager(mLayoutManager);
         mCardList.addOnScrollListener(new ItemStickyListener());
         mCardList.setAdapter(mAdapter);
+    }
+
+    private void layoutRefreshLayout() {
+        ViewGroup.LayoutParams lp = mRefreshLayout.getLayoutParams();
+        lp.width = mContent.getMeasuredWidth();
+        lp.height = mContent.getMeasuredHeight();
+        mRefreshLayout.requestLayout();
+        mScrollView.scrollTo(0, 0);
     }
 
     @Click({R.id.tv_dashboard_today, R.id.tv_dashboard_top_today})
@@ -152,11 +165,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         if (mAdapter == null && data == null) {
             return;
         }
-        ViewGroup.LayoutParams lp = mRefreshLayout.getLayoutParams();
-        lp.width = mContent.getMeasuredWidth();
-        lp.height = mContent.getMeasuredHeight();
-        mScrollView.requestLayout();
-        mScrollView.scrollTo(0, 0);
+        layoutRefreshLayout();
         List<Object> list = new ArrayList<>(data.size());
         for (int i = 0, size = data.size(); i < size; i++) {
             BaseRefreshItem item = data.get(i);

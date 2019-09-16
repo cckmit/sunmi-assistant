@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cl_dashboard_content"
     android:layout_width="match_parent"
-    android:background="@color/c_white"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/c_white">
 
     <sunmi.common.view.NestedCustomScrollView
         android:id="@+id/sv_outer_scroll"
@@ -32,9 +32,10 @@
             <sunmi.common.view.DropdownMenu
                 android:id="@+id/layout_shop_title"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/dp_74"
+                android:layout_height="@dimen/dp_82"
                 android:gravity="center"
                 android:paddingTop="@dimen/dp_30"
+                android:paddingBottom="@dimen/dp_8"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -42,7 +43,7 @@
             <View
                 android:id="@+id/layout_top_tab"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/dp_44"
+                android:layout_height="@dimen/dp_36"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

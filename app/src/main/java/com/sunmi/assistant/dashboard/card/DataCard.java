@@ -17,8 +17,8 @@ import sunmi.common.rpc.retrofit.BaseResponse;
 public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
 
 
-    public DataCard(Context context, DashboardContract.Presenter presenter, int companyId, int shopId) {
-        super(context, presenter, companyId, shopId);
+    public DataCard(Context context, DashboardContract.Presenter presenter, int source) {
+        super(context, presenter, source);
     }
 
     @Override

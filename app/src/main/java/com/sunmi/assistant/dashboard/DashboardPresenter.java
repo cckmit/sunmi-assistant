@@ -36,6 +36,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     private int mCompanyId;
     private int mShopId;
 
+    private int mDataSource = 0x3;
     private int mPeriod = Constants.TIME_PERIOD_INIT;
 
     private List<BaseRefreshItem> mList;
@@ -117,13 +118,14 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         }
         Context context = mView.getContext();
         mList = new ArrayList<>(5);
-        mList.add(new PeriodTabCard(context, this));
-        mList.add(new DataCard(context, this, companyId, shopId));
-        mList.add(new TrendChartCard(context, this, companyId, shopId));
-        mList.add(new DistributionChartCard(context, this, companyId, shopId));
+        mList.add(new PeriodTabCard(context, this, mDataSource));
+        mList.add(new DataCard(context, this, mDataSource));
+        mList.add(new TrendChartCard(context, this, mDataSource));
+        mList.add(new DistributionChartCard(context, this, mDataSource));
         mView.initData(mList);
         mTask = new RefreshTask();
         WORK_HANDLER.postDelayed(mTask, REFRESH_TIME_PERIOD);
+        switchPeriodTo(Constants.TIME_PERIOD_TODAY);
     }
 
     @Override

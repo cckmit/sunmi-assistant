@@ -11,11 +11,11 @@ import com.sunmi.assistant.utils.Utils;
  * @author yinhui
  * @since 2019-07-01
  */
-public class BarXAxisLabelFormatter extends ValueFormatter {
+public class XAxisLabelFormatter extends ValueFormatter {
 
     private static String[] sWeekName;
 
-    public BarXAxisLabelFormatter(Context context) {
+    public XAxisLabelFormatter(Context context) {
         sWeekName = context.getResources().getStringArray(R.array.week_name);
     }
 

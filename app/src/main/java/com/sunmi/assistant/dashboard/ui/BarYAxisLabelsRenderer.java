@@ -1,6 +1,6 @@
 package com.sunmi.assistant.dashboard.ui;
 
-import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.renderer.YAxisRenderer;
 
@@ -8,11 +8,11 @@ import com.github.mikephil.charting.renderer.YAxisRenderer;
  * @author yinhui
  * @since 2019-07-03
  */
-public class SpecificLabelsYAxisRenderer extends YAxisRenderer {
+public class BarYAxisLabelsRenderer extends YAxisRenderer {
 
     private float[] labels;
 
-    public SpecificLabelsYAxisRenderer(BarChart chart) {
+    public BarYAxisLabelsRenderer(BarLineChartBase chart) {
         super(chart.getViewPortHandler(), chart.getAxisLeft(), chart.getTransformer(YAxis.AxisDependency.LEFT));
     }
 

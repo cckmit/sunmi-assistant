@@ -17,6 +17,7 @@ import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
 
 /**
@@ -54,16 +55,25 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
 
     private int mCompanyId;
     private int mShopId;
+    private int mDataSource;
     private int mPeriod = Constants.TIME_PERIOD_INIT;
     private int mState = STATE_INIT;
 
-    protected BaseRefreshItem(Context context, DashboardContract.Presenter presenter,
-                              int companyId, int shopId) {
+    protected BaseRefreshItem(Context context, DashboardContract.Presenter presenter, int source) {
         this.mContext = context;
         this.mPresenter = presenter;
-        this.mCompanyId = companyId;
-        this.mShopId = shopId;
+        this.mDataSource = source;
+        this.mCompanyId = SpUtils.getCompanyId();
+        this.mShopId = SpUtils.getShopId();
         mModel = createModel(context);
+    }
+
+    public boolean showTransactionData() {
+        return (mDataSource & Constants.DATA_SOURCE_SAAS) != 0;
+    }
+
+    public boolean showConsumerData() {
+        return (mDataSource & Constants.DATA_SOURCE_FS) != 0;
     }
 
     public Model getModel() {

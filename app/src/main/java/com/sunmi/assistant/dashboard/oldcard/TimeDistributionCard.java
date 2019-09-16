@@ -18,10 +18,10 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.DashboardContract;
-import com.sunmi.assistant.dashboard.ui.BarXAxisLabelFormatter;
+import com.sunmi.assistant.dashboard.ui.BarYAxisLabelsRenderer;
 import com.sunmi.assistant.dashboard.ui.RoundEdgeBarChartRenderer;
-import com.sunmi.assistant.dashboard.ui.SpecificLabelsXAxisRenderer;
-import com.sunmi.assistant.dashboard.ui.SpecificLabelsYAxisRenderer;
+import com.sunmi.assistant.dashboard.ui.XAxisLabelFormatter;
+import com.sunmi.assistant.dashboard.ui.XAxisLabelsRenderer;
 import com.sunmi.assistant.data.PaymentApi;
 import com.sunmi.assistant.data.response.OrderTimeDistributionResp;
 import com.sunmi.assistant.utils.Utils;
@@ -47,8 +47,8 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
     private static final int INTERVAL_HOUR_SECOND = 3600;
     private static final int INTERVAL_DAY_SECOND = 86400;
 
-    private SpecificLabelsXAxisRenderer xAxisRenderer;
-    private SpecificLabelsYAxisRenderer yAxisRenderer;
+    private XAxisLabelsRenderer xAxisRenderer;
+    private BarYAxisLabelsRenderer yAxisRenderer;
 
     public TimeDistributionCard(Context context, DashboardContract.Presenter presenter,
                                 int companyId, int shopId) {
@@ -87,8 +87,8 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
         Context context = view.getContext();
         float dashLength = CommonHelper.dp2px(context, 4f);
         float dashSpaceLength = CommonHelper.dp2px(context, 2f);
-        xAxisRenderer = new SpecificLabelsXAxisRenderer(chart);
-        yAxisRenderer = new SpecificLabelsYAxisRenderer(chart);
+        xAxisRenderer = new XAxisLabelsRenderer(chart);
+        yAxisRenderer = new BarYAxisLabelsRenderer(chart);
 
         chart.setTouchEnabled(false);
         chart.getDescription().setEnabled(false);
@@ -96,7 +96,7 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
         chart.setDrawGridBackground(false);
         chart.getLegend().setEnabled(false);
         chart.getAxisRight().setEnabled(false);
-        RoundEdgeBarChartRenderer renderer = new RoundEdgeBarChartRenderer(chart, chart.getAnimator(), chart.getViewPortHandler());
+        RoundEdgeBarChartRenderer renderer = new RoundEdgeBarChartRenderer(chart);
         renderer.setRadius(12);
         chart.setFitBars(true);
         chart.setRenderer(renderer);
@@ -109,7 +109,7 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
         xAxis.setDrawAxisLine(true);
         xAxis.setTextSize(10f);
         xAxis.setTextColor(ContextCompat.getColor(context, R.color.color_333338));
-        xAxis.setValueFormatter(new BarXAxisLabelFormatter(holder.getContext()));
+        xAxis.setValueFormatter(new XAxisLabelFormatter(holder.getContext()));
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
         YAxis yAxis = chart.getAxisLeft();
