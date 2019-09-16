@@ -155,6 +155,7 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Object
         lineYAxis.setDrawGridLines(true);
         lineYAxis.setGridColor(ContextCompat.getColor(context, R.color.black_10));
         lineYAxis.setValueFormatter(new LineYAxisLabelFormatter());
+        lineYAxis.setMinWidth(36f);
         barYAxis.setDrawAxisLine(false);
         barYAxis.setGranularityEnabled(true);
         barYAxis.setGranularity(1f);
@@ -163,7 +164,7 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Object
         barYAxis.setAxisMinimum(0f);
         barYAxis.setDrawGridLines(true);
         barYAxis.setGridColor(ContextCompat.getColor(context, R.color.black_10));
-
+        barYAxis.setMinWidth(36f);
 
         // 设置Line图
         mLineChartMarker = new LineChartMarkerView(context);

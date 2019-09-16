@@ -29,7 +29,6 @@ import sunmi.common.rpc.retrofit.BaseResponse;
  */
 public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard.Model, Object> {
 
-
     public DistributionChartCard(Context context, DashboardContract.Presenter presenter, int source) {
         super(context, presenter, source);
         addOnViewClickListener(R.id.tv_dashboard_new_old, (adapter, holder, v, model, position) -> {
