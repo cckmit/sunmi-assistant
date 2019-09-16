@@ -1,13 +1,17 @@
 package com.sunmi.ipc.dynamic;
 
 
+import android.Manifest;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -25,12 +29,12 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Objects;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.utils.CommonHelper;
+import sunmi.common.utils.IVideoPlayer;
 import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.log.LogCat;
@@ -43,8 +47,7 @@ import wseemann.media.FFmpegMediaMetadataRetriever;
  */
 @EActivity(resName = "dynamic_activity_video_play")
 public class DynamicVideoActivity extends BaseActivity implements
-        SunmiVideoListener, SeekBar.OnSeekBarChangeListener {
-
+        IVideoPlayer.SunmiVideoListener, SeekBar.OnSeekBarChangeListener {
     /**
      * 同步进度
      */
@@ -57,8 +60,18 @@ public class DynamicVideoActivity extends BaseActivity implements
      * 延迟毫秒数
      */
     private static final int DELAY_MILLIS = 500;
+    /**
+     * 读写权限
+     */
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    /**
+     * 请求状态码
+     */
+    private static int REQUEST_PERMISSION_CODE = 1;
     @ViewById(resName = "ivp_player")
-    SunmiIMediaPlayer iVideoPlayer;
+    IVideoPlayer iVideoPlayer;
     @ViewById(resName = "ib_back")
     ImageButton ibBack;
     @ViewById(resName = "ib_play")
@@ -76,9 +89,9 @@ public class DynamicVideoActivity extends BaseActivity implements
     @ViewById(resName = "rl_bottom_panel")
     RelativeLayout rlBottomPanel;
     @Extra
-    String url;
+//    String url;
 //    String url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
-//    String url = "http://test.cdn.sunmi.com/VIDEO/IPC/f4c28c287dff0e0656e00192450194e76f4863f80ca0517a135925ebc7828104";
+            String url = "http://test.cdn.sunmi.com/VIDEO/IPC/f4c28c287dff0e0656e00192450194e76f4863f80ca0517a135925ebc7828104";
     @Extra
     String deviceModel;
 
@@ -128,19 +141,38 @@ public class DynamicVideoActivity extends BaseActivity implements
             errorView();
             return;
         }
-        initVideoPlay();
+        requestPermissions();
+    }
+
+    /**
+     * 读写权限
+     */
+    private void requestPermissions() {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            if (ActivityCompat.checkSelfPermission(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_PERMISSION_CODE);
+            } else {
+                initVideoPlay();
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                initVideoPlay();
+            }
+        }
     }
 
     /**
      * 初始化播放
      */
     private void initVideoPlay() {
-        try {
-            iVideoPlayer.setPath(url);
-            iVideoPlayer.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        iVideoPlayer.load(url);
     }
 
     /**
@@ -159,7 +191,7 @@ public class DynamicVideoActivity extends BaseActivity implements
             return;
         }
         if (iVideoPlayer.getCurrentPosition() > 0) {
-            Bitmap bitmap = retriever.getFrameAtTime(iVideoPlayer.getCurrentPosition() * 1000, MediaMetadataRetriever.OPTION_PREVIOUS_SYNC);
+            Bitmap bitmap = retriever.getFrameAtTime(iVideoPlayer.getCurrentPosition() * 1000, MediaMetadataRetriever.OPTION_NEXT_SYNC);
             if (ImageUtils.saveImageToGallery(context, bitmap, 100)) {
                 shortTip(getString(R.string.ipc_dynamic_take_screen_shot_success));
             } else {
@@ -177,7 +209,7 @@ public class DynamicVideoActivity extends BaseActivity implements
 
     @Click(resName = "ib_back")
     void onBackClick() {
-        iVideoPlayer.release();
+        iVideoPlayer.releaseVideo();
         finish();
     }
 
@@ -186,9 +218,9 @@ public class DynamicVideoActivity extends BaseActivity implements
         ibPlay.setBackgroundResource(isPaused ? R.mipmap.pause_normal : R.mipmap.play_normal);
         isPaused = !isPaused;
         if (isPaused) {
-            iVideoPlayer.pause();
+            iVideoPlayer.pauseVideo();
         } else {
-            iVideoPlayer.start();
+            iVideoPlayer.startVideo();
         }
     }
 
@@ -304,7 +336,7 @@ public class DynamicVideoActivity extends BaseActivity implements
         LogCat.e(TAG, "onPrepared");
         if (iVideoPlayer != null) {
             hideLoadingDialog();
-            iVideoPlayer.start();
+            iVideoPlayer.startVideo();
             //设置seekBar的最大限度值，当前视频的总时长（毫秒）
             long duration = iVideoPlayer.getDuration();
             //不足一秒补一秒
@@ -363,8 +395,8 @@ public class DynamicVideoActivity extends BaseActivity implements
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         iVideoPlayer.seekTo(seekBar.getProgress());
-        if (iVideoPlayer != null && !iVideoPlayer.isPlaying()) {
-            iVideoPlayer.start();
+        if (iVideoPlayer != null && !iVideoPlayer.isPlayingVideo()) {
+            iVideoPlayer.startVideo();
         }
         mHandler.removeMessages(MESSAGE_SHOW_PROGRESS);
         isDragging = false;

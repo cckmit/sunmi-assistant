@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/c_black">
 
-    <com.sunmi.ipc.dynamic.SunmiIMediaPlayer
+    <sunmi.common.utils.IVideoPlayer
         android:id="@+id/ivp_player"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
