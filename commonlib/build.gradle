@@ -143,5 +143,6 @@ dependencies {
     api 'com.amap.api:location:4.7.0'
     api 'com.amap.api:3dmap:6.9.4'
     api 'com.amap.api:search:6.9.2'
-
+    //视频图片操作
+    api 'com.github.wseemann:FFmpegMediaMetadataRetriever:1.0.14'
 }

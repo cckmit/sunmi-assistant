@@ -35,6 +35,7 @@ import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.log.LogCat;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
+import wseemann.media.FFmpegMediaMetadataRetriever;
 
 /**
  * @author yangShiJie
@@ -81,7 +82,7 @@ public class DynamicVideoActivity extends BaseActivity implements
     @Extra
     String deviceModel;
 
-    MediaMetadataRetriever retriever;
+    private FFmpegMediaMetadataRetriever retriever;
     /**
      * 是否在拖动进度条中，默认为停止拖动，true为在拖动中，false为停止拖动
      */
@@ -146,7 +147,7 @@ public class DynamicVideoActivity extends BaseActivity implements
      * 初始化设置截屏数据
      */
     private void initTakeScreenShot() {
-        retriever = new MediaMetadataRetriever();
+        retriever = new FFmpegMediaMetadataRetriever();
         retriever.setDataSource(url, new HashMap<String, String>());
     }
 
@@ -158,7 +159,7 @@ public class DynamicVideoActivity extends BaseActivity implements
             return;
         }
         if (iVideoPlayer.getCurrentPosition() > 0) {
-            Bitmap bitmap = retriever.getFrameAtTime(iVideoPlayer.getCurrentPosition() * 1000, MediaMetadataRetriever.OPTION_NEXT_SYNC);
+            Bitmap bitmap = retriever.getFrameAtTime(iVideoPlayer.getCurrentPosition() * 1000, MediaMetadataRetriever.OPTION_PREVIOUS_SYNC);
             if (ImageUtils.saveImageToGallery(context, bitmap, 100)) {
                 shortTip(getString(R.string.ipc_dynamic_take_screen_shot_success));
             } else {
