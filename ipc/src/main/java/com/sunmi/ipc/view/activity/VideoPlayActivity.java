@@ -1,4 +1,4 @@
-package com.sunmi.ipc.view;
+package com.sunmi.ipc.view.activity;
 
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
@@ -31,6 +31,7 @@ import com.sunmi.ipc.presenter.VideoPlayPresenter;
 import com.sunmi.ipc.utils.AACDecoder;
 import com.sunmi.ipc.utils.H264Decoder;
 import com.sunmi.ipc.utils.IOTCClient;
+import com.sunmi.ipc.view.ZFTimeLine;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -111,7 +112,7 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     ImageView ivLive;//直播
     @ViewById(resName = "iv_play")
     ImageView ivPlay;//开始播放
-//    @ViewById(resName = "iv_setting")
+    //    @ViewById(resName = "iv_setting")
 //    ImageView ivSetting;//设置
     @ViewById(resName = "ll_play_fail")
     LinearLayout llPlayFail;
@@ -179,16 +180,12 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     void init() {
         mPresenter = new VideoPlayPresenter();
         mPresenter.attachView(this);
-//        UID = "ZTEBT7S3WFR5EMCX111A";//todo test yuanfeng  UID = "ACVVZ17BHPGWZU3L111A";//todo test tutk
         LogCat.e(TAG, "8888888 uid = " + UID);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//保持屏幕常亮
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//隐藏状态栏
         initData();
-        if (loadingDialog != null && !loadingDialog.isShowing()) {
-            loadingDialog.setLoadingContent(null);
-            loadingDialog.show();
-        }
+        showLoadingDialog();
         initSurfaceView();
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -298,7 +295,9 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
         return false;
     }
 
-    //按键控制音量，return true时不显示系统音量 return false时显示系统音量
+    /**
+     * 按键控制音量，return true时不显示系统音量 return false时显示系统音量
+     */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
@@ -320,6 +319,7 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
             if (llPlayFail != null && llPlayFail.isShown()) {
                 return;
             }
+            setPanelVisible(View.VISIBLE);
             if (isCurrentLive && iotcClient != null) {
                 showLoadingDialog();
                 iotcClient.startPlay();
@@ -335,16 +335,13 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     //放后台
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        if (isCurrentLive && iotcClient != null) {
+        if ((isDevPlayBack || isCloudPlayBack) && !isPaused) {
+            pausePlayClick();
+        } else if (isCurrentLive && iotcClient != null) {
             iotcClient.stopLive();
             if (audioDecoder != null) {
                 audioDecoder.stopRunning();
             }
-        } else if (isDevPlayBack && iotcClient != null) {
-            //TODO  设备回放暂停
-        } else if (isCloudPlayBack) {
-            //TODO  云回放暂停
-
         }
     }
 
@@ -354,18 +351,23 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     }
 
     @Override
-    @UiThread
     public void initFail() {
         hideLoadingDialog();
-        llPlayFail.setVisibility(View.VISIBLE);
+        setPlayFailVisibility(View.VISIBLE);
     }
 
     @Override
     public void onVideoReceived(byte[] videoBuffer) {
-        llPlayFail.setVisibility(View.GONE);
+        setPlayFailVisibility(View.GONE);
         if (videoDecoder != null) {
             videoDecoder.setVideoData(videoBuffer);
         }
+    }
+
+    @UiThread
+    public void setPlayFailVisibility(int visibility) {
+        llPlayFail.setVisibility(visibility);
+
     }
 
     @Override
@@ -461,17 +463,19 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
 
     //开始，暂停
     @Click(resName = "iv_play")
-    void playLiveClick() {
-        if (!isDevPlayBack && !isCloudPlayBack && isCurrentLive) {
+    void pausePlayClick() {
+        if (isFastClick(1000)) {
             return;
         }
-        if (isFastClick(1000)) {
+        if (!isDevPlayBack && !isCloudPlayBack && isCurrentLive) {
             return;
         }
         ivPlay.setBackgroundResource(isPaused ? R.mipmap.pause_normal : R.mipmap.play_normal);
         isPaused = !isPaused;
         if (isDevPlayBack) {
-            iotcClient.pausePlayback(isPaused);
+            if (iotcClient != null) {
+                iotcClient.pausePlayback(isPaused);
+            }
         } else if (isCloudPlayBack) {
             if (isPaused) {
                 ivpCloud.pause();
@@ -500,18 +504,17 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     @Click(resName = "rl_screen")
     void screenClick() {
         if (isControlPanelShow) {
-            hideControllerBar();
+            hideControllerPanel();
             isControlPanelShow = false;
         } else {
-            rlTopBar.setVisibility(View.VISIBLE);
-            rlBottomBar.setVisibility(View.VISIBLE);
+            setPanelVisible(View.VISIBLE);
             isControlPanelShow = true;
         }
     }
 
     @Click(resName = "tv_retry")
     void retryClick() {
-        llPlayFail.setVisibility(View.GONE);
+        setPlayFailVisibility(View.GONE);
         showLoadingDialog();
         initP2pLive();
     }
@@ -588,15 +591,21 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     //开始直播
     @Background
     void initP2pLive() {
-        iotcClient.init(UID);
+        iotcClient.init();
     }
 
     @UiThread
-    void hideControllerBar() {
-        rlTopBar.setVisibility(View.GONE);
-        rlBottomBar.setVisibility(View.GONE);
+    void hideControllerPanel() {
+        setPanelVisible(View.GONE);
         llChangeVolume.setVisibility(View.GONE);//音量
         llVideoQuality.setVisibility(View.GONE);//画质
+    }
+
+    private void setPanelVisible(int visible) {
+        if (rlTopBar != null && rlBottomBar != null) {
+            rlTopBar.setVisibility(visible);
+            rlBottomBar.setVisibility(visible);
+        }
     }
 
     private void showDatePicker() {
@@ -1104,7 +1113,7 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
 
                 @Override
                 public void onFinish() {
-                    hideControllerBar();
+                    hideControllerPanel();
                     isControlPanelShow = false;
                 }
             };

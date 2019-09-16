@@ -1,6 +1,7 @@
-package com.sunmi.ipc.setting;
+package com.sunmi.ipc.presenter;
 
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.contract.IpcSettingContract;
 import com.sunmi.ipc.model.IpcNewFirmwareResp;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcCloudApi;

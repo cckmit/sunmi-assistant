@@ -1,4 +1,4 @@
-package com.sunmi.ipc.view;
+package com.sunmi.ipc.view.activity;
 
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -15,6 +15,7 @@ import com.sunmi.ipc.R;
 import com.sunmi.ipc.model.WifiListResp;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcConstants;
+import com.sunmi.ipc.view.WifiListAdapter;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;

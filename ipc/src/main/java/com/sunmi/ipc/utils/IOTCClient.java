@@ -1,7 +1,5 @@
 package com.sunmi.ipc.utils;
 
-import android.os.Process;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.sunmi.ipc.model.IotcCmdReq;
@@ -51,7 +49,7 @@ public class IOTCClient {
         this.uid = uid;
     }
 
-    public void init(String uid) {
+    public void init() {
         LogCat.e(TAG, "StreamClient init...");
         int ret = IOTCAPIs.IOTC_Initialize2(0);//step 1
         LogCat.e(TAG, "IOTC_Initialize() ret = " + ret);
@@ -314,7 +312,6 @@ public class IOTCClient {
             byte[] data = new byte[actualLen];
             System.arraycopy(buf, 0, data, 0, actualLen);
             String result = ByteUtils.byte2String(data);
-            LogCat.e(TAG, "9999999 cmd result = " + result);
             try {
                 IotcCmdResp cmdBean;
                 if (CMD_PLAYBACK_LIST == cmd) {
@@ -330,6 +327,10 @@ public class IOTCClient {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        } else {
+            if (callback != null) {
+                callback.onError();
+            }
         }
     }
 
@@ -340,7 +341,6 @@ public class IOTCClient {
             byte[] data = new byte[actualLen];
             System.arraycopy(buf, 0, data, 0, actualLen);
             String result = ByteUtils.byte2String(data);
-            LogCat.e(TAG, "888888 cmd result = " + result);
             IotcCmdResp cmdBean = new Gson().fromJson(result, IotcCmdResp.class);
         }
     }
@@ -390,7 +390,7 @@ public class IOTCClient {
                     LogCat.e(TAG, "Session cant be used anymore");
                     break;
                 }
-                LogCat.e(TAG, "888888vvv T-" + Process.myTid() + ", VIDEO received = " + ret);
+//                LogCat.e(TAG, "888888vvv T-" + Process.myTid() + ", VIDEO received = " + ret);
                 if (ret > 0) {
                     byte[] data = new byte[ret];
                     System.arraycopy(videoBuffer, 0, data, 0, ret);
@@ -418,6 +418,7 @@ public class IOTCClient {
                 int[] frameNumber = new int[1];
                 int ret = AVAPIs.avRecvAudioData(avIndex, audioBuffer,
                         AUDIO_BUF_SIZE, frameInfo, FRAME_INFO_SIZE, frameNumber);
+
                 if (ret == AVAPIs.AV_ER_DATA_NOREADY) {//缓存没数据等待10ms再读
                     try {
                         Thread.sleep(10);

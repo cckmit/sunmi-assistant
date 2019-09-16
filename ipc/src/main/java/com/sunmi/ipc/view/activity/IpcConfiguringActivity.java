@@ -1,4 +1,4 @@
-package com.sunmi.ipc.view;
+package com.sunmi.ipc.view.activity;
 
 import android.content.DialogInterface;
 import android.os.Handler;
@@ -12,7 +12,6 @@ import com.sunmi.ipc.contract.IpcConfiguringContract;
 import com.sunmi.ipc.model.IpcListResp;
 import com.sunmi.ipc.presenter.IpcConfiguringPresenter;
 import com.sunmi.ipc.rpc.IpcConstants;
-import sunmi.common.rpc.mqtt.MqttManager;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -31,6 +30,7 @@ import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.RpcErrorCode;
+import sunmi.common.rpc.mqtt.MqttManager;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.NetworkUtils;

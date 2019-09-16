@@ -52,6 +52,10 @@ public class DynamicVideoActivity extends BaseActivity implements
      * 缓冲进度界限值
      */
     private static final int BUFFERING_PROGRESS = 95;
+    /**
+     * 延迟毫秒数
+     */
+    private static final int DELAY_MILLIS = 500;
     @ViewById(resName = "ivp_player")
     SunmiIMediaPlayer iVideoPlayer;
     @ViewById(resName = "ib_back")
@@ -71,11 +75,12 @@ public class DynamicVideoActivity extends BaseActivity implements
     @ViewById(resName = "rl_bottom_panel")
     RelativeLayout rlBottomPanel;
     @Extra
-    String url;
+//    String url;
+//    String url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
+            String url = "http://test.cdn.sunmi.com/VIDEO/IPC/f4c28c287dff0e0656e00192450194e76f4863f80ca0517a135925ebc7828104";
     @Extra
     String deviceModel;
-    //    String url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
-//    String path = "http://test.cdn.sunmi.com/VIDEO/IPC/f4c28c287dff0e0656e00192450194e76f4863f80ca0517a135925ebc7828104";
+
     MediaMetadataRetriever retriever;
     /**
      * 是否在拖动进度条中，默认为停止拖动，true为在拖动中，false为停止拖动
@@ -95,7 +100,7 @@ public class DynamicVideoActivity extends BaseActivity implements
             if (msg.what == MESSAGE_SHOW_PROGRESS) {
                 if (!isDragging) {
                     msg = obtainMessage(MESSAGE_SHOW_PROGRESS, iVideoPlayer.getCurrentPosition());
-                    sendMessageDelayed(msg, 1000);
+                    sendMessageDelayed(msg, DELAY_MILLIS);
                     syncProgress(msg.obj);
                 }
             }
@@ -152,10 +157,9 @@ public class DynamicVideoActivity extends BaseActivity implements
         if (isFastClick(1500)) {
             return;
         }
-        int quality = 100;//图片压缩质量
         if (iVideoPlayer.getCurrentPosition() > 0) {
             Bitmap bitmap = retriever.getFrameAtTime(iVideoPlayer.getCurrentPosition() * 1000, MediaMetadataRetriever.OPTION_NEXT_SYNC);
-            if (ImageUtils.saveImageToGallery(context, bitmap, quality)) {
+            if (ImageUtils.saveImageToGallery(context, bitmap, 100)) {
                 shortTip(getString(R.string.ipc_dynamic_take_screen_shot_success));
             } else {
                 shortTip(getString(R.string.ipc_dynamic_take_screen_shot_fail));
@@ -208,12 +212,26 @@ public class DynamicVideoActivity extends BaseActivity implements
      */
     private void syncProgress(Object obj) {
         if (obj != null) {
-            tvCurrentPlayTime.setText(iVideoPlayer.generateTime((Long) obj));
+            long generateTime;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                generateTime = (Long) obj;
                 sbBar.setProgress(Math.toIntExact((Long) obj));
             } else {
-                //sbBar.setProgress(Integer.parseInt((String) obj));
+                String strProgress = String.valueOf(obj);
+                int progress = Integer.valueOf(strProgress);
+                if ((progress == 0)) {
+                    return;
+                }
+                if (progress + DELAY_MILLIS >= iVideoPlayer.getDuration()) {
+                    sbBar.setProgress(sbBar.getMax());
+                    generateTime = ((Long) obj) + 1000;//毫秒
+                } else {
+                    sbBar.setProgress(progress);
+                    generateTime = (Long) obj;
+                }
             }
+            //刷新当前播放时间
+            tvCurrentPlayTime.setText(iVideoPlayer.generateTime(generateTime));
         }
     }
 
@@ -288,16 +306,16 @@ public class DynamicVideoActivity extends BaseActivity implements
             iVideoPlayer.start();
             //设置seekBar的最大限度值，当前视频的总时长（毫秒）
             long duration = iVideoPlayer.getDuration();
-//            //不足一秒补一秒
-//            if (duration % 1000 > 0) {
-//                duration = duration + (1000 - duration % 1000);
-//            }
+            //不足一秒补一秒
+            if (duration % 1000 > 0) {
+                duration = duration + (1000 - duration % 1000);
+            }
             sbBar.setMax((int) duration);
             //视频总时长
             tvCountPlayTime.setText(Objects.requireNonNull(iVideoPlayer).generateTime(duration));
             //发送当前播放时间点通知
             Message message = Message.obtain(mHandler, MESSAGE_SHOW_PROGRESS, iVideoPlayer.getCurrentPosition());
-            mHandler.sendMessageDelayed(message, 1000);
+            mHandler.sendMessageDelayed(message, DELAY_MILLIS);
         }
     }
 
@@ -344,10 +362,13 @@ public class DynamicVideoActivity extends BaseActivity implements
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         iVideoPlayer.seekTo(seekBar.getProgress());
+        if (iVideoPlayer != null && !iVideoPlayer.isPlaying()) {
+            iVideoPlayer.start();
+        }
         mHandler.removeMessages(MESSAGE_SHOW_PROGRESS);
         isDragging = false;
         //拖动停止后发送通知
-        mHandler.sendEmptyMessageDelayed(MESSAGE_SHOW_PROGRESS, 1000);
+        mHandler.sendEmptyMessageDelayed(MESSAGE_SHOW_PROGRESS, DELAY_MILLIS);
     }
 
     @Override

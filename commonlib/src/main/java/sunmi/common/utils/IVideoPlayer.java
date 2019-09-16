@@ -364,11 +364,8 @@ public class IVideoPlayer extends RelativeLayout {
     }
 
     public boolean isPlaying() {
-        if (mediaPlayer != null && mediaPlayer.isPlaying()
-                || cacheMediaPlayer != null && cacheMediaPlayer.isPlaying()) {
-            return true;
-        }
-        return false;
+        return mediaPlayer != null && mediaPlayer.isPlaying()
+                || cacheMediaPlayer != null && cacheMediaPlayer.isPlaying();
     }
 
     /**
