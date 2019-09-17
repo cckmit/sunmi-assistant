@@ -40,6 +40,8 @@
         android:gravity="center"
         android:paddingTop="@dimen/dp_30"
         android:paddingBottom="@dimen/dp_8"
+        android:paddingStart="@dimen/dp_20"
+        android:paddingEnd="@dimen/dp_20"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

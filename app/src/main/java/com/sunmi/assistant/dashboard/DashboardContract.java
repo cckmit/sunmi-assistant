@@ -19,7 +19,7 @@ public interface DashboardContract {
 
         void setShopList(List<FilterItem> list);
 
-        void setCards(List<BaseRefreshItem> data);
+        void setCards(List<BaseRefreshItem> data, int dataSource);
 
     }
 

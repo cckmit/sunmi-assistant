@@ -168,19 +168,20 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 } else {
                     mList.clear();
                 }
+//                mDataSource = 0;
                 // 根据数据来源，变更卡片
                 switch (mDataSource) {
                     case 0x3:
-                        initList(mCompanyId, mShopId);
+                        initList(mDataSource);
                         break;
                     case 0x1:
-                        initNoFsList(mCompanyId, mShopId);
+                        initNoFsList(mDataSource);
                         break;
                     case 0x2:
-                        initNoOrderList(mCompanyId, mShopId);
+                        initNoOrderList(mDataSource);
                         break;
                     default:
-                        initNoDataList(mCompanyId, mShopId);
+                        initNoDataList(mDataSource);
                 }
             }
 
@@ -189,56 +190,55 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 // TODO
             }
         });
-
     }
 
-    private void initList(int companyId, int shopId) {
+    private void initList(int source) {
         if (!isViewAttached()) {
             return;
         }
         Context context = mView.getContext();
-        mList.add(new PeriodTabCard(context, this, mDataSource));
-        mList.add(new DataCard(context, this, mDataSource));
-        mList.add(new TrendChartCard(context, this, mDataSource));
-        mList.add(new DistributionChartCard(context, this, mDataSource));
+        mList.add(new PeriodTabCard(context, this, source));
+        mList.add(new DataCard(context, this, source));
+        mList.add(new TrendChartCard(context, this, source));
+        mList.add(new DistributionChartCard(context, this, source));
         mList.add(new EmptyGapCard(ContextCompat.getColor(context, R.color.color_F5F7FA),
                 (int) context.getResources().getDimension(R.dimen.dp_24)));
-        mView.setCards(mList);
+        mView.setCards(mList, source);
         switchPeriodTo(Constants.TIME_PERIOD_TODAY);
     }
 
-    private void initNoOrderList(int companyId, int shopId) {
+    private void initNoOrderList(int source) {
         if (!isViewAttached()) {
             return;
         }
         Context context = mView.getContext();
-        mList.add(new PeriodTabCard(context, this, mDataSource));
-        mList.add(new DataCard(context, this, mDataSource));
-        mList.add(new TrendChartCard(context, this, mDataSource));
-        mList.add(new DistributionChartCard(context, this, mDataSource));
+        mList.add(new PeriodTabCard(context, this, source));
+        mList.add(new DataCard(context, this, source));
+        mList.add(new TrendChartCard(context, this, source));
+        mList.add(new DistributionChartCard(context, this, source));
         mList.add(new NoOrderCard(context, this, false));
         mList.add(new EmptyGapCard(ContextCompat.getColor(context, R.color.color_F5F7FA),
                 (int) context.getResources().getDimension(R.dimen.dp_32)));
-        mView.setCards(mList);
+        mView.setCards(mList, source);
         switchPeriodTo(Constants.TIME_PERIOD_TODAY);
     }
 
-    private void initNoFsList(int companyId, int shopId) {
+    private void initNoFsList(int source) {
         if (!isViewAttached()) {
             return;
         }
         Context context = mView.getContext();
-        mList.add(new PeriodTabCard(context, this, mDataSource));
-        mList.add(new DataCard(context, this, mDataSource));
-        mList.add(new TrendChartCard(context, this, mDataSource));
+        mList.add(new PeriodTabCard(context, this, source));
+        mList.add(new DataCard(context, this, source));
+        mList.add(new TrendChartCard(context, this, source));
         mList.add(new NoFsCard(context, this, false));
         mList.add(new EmptyGapCard(ContextCompat.getColor(context, R.color.color_F5F7FA),
                 (int) context.getResources().getDimension(R.dimen.dp_32)));
-        mView.setCards(mList);
+        mView.setCards(mList, source);
         switchPeriodTo(Constants.TIME_PERIOD_TODAY);
     }
 
-    private void initNoDataList(int companyId, int shopId) {
+    private void initNoDataList(int source) {
         if (!isViewAttached()) {
             return;
         }
@@ -247,7 +247,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         mList.add(new NoFsCard(context, this, true));
         mList.add(new NoOrderCard(context, this, true));
         mList.add(new EmptyGapCard(0xFFFFFFFF, (int) context.getResources().getDimension(R.dimen.dp_32)));
-        mView.setCards(mList);
+        mView.setCards(mList, source);
     }
 
     @Override
