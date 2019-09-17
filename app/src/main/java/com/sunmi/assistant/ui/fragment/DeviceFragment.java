@@ -34,7 +34,7 @@ import com.sunmi.assistant.utils.GlideImageLoader;
 import com.sunmi.cloudprinter.ui.Activity.PrinterManageActivity_;
 import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.setting.IpcSettingActivity_;
-import com.sunmi.ipc.view.activity.IpcManagerActivity_;
+import com.sunmi.ipc.view.activity.VideoPlayActivity_;
 import com.sunmi.sunmiservice.WebViewActivity_;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
@@ -273,7 +273,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             if (TextUtils.isEmpty(device.getUid())) {
                 shortTip(R.string.tip_play_fail);
             } else {
-                IpcManagerActivity_.intent(mActivity).device(device).start();
+                VideoPlayActivity_.intent(mActivity).UID(device.getUid())
+                        .deviceId(device.getId()).ipcType(device.getModel()).start();
             }
         }
     }
