@@ -7,6 +7,7 @@ import com.sunmi.assistant.dashboard.card.BaseRefreshItem;
 import java.util.List;
 
 import sunmi.common.base.BaseView;
+import sunmi.common.model.FilterItem;
 
 public interface DashboardContract {
 
@@ -14,20 +15,23 @@ public interface DashboardContract {
 
         Context getContext();
 
-        void initData(List<BaseRefreshItem> data);
-
         void updateTab(int period);
+
+        void setShopList(List<FilterItem> list);
+
+        void setCards(List<BaseRefreshItem> data);
+
     }
 
     interface Presenter {
 
         void init();
 
-        void switchPeriodTo(int period);
-
         void switchCompanyTo(int companyId, int shopId);
 
         void switchShopTo(int shopId);
+
+        void switchPeriodTo(int period);
 
         void refresh();
 

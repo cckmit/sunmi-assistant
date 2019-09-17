@@ -1,6 +1,7 @@
 package com.sunmi.assistant.dashboard.card;
 
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -10,7 +11,6 @@ import com.sunmi.assistant.dashboard.DashboardContract;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
-import sunmi.common.base.recycle.ItemType;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
 /**
@@ -19,11 +19,20 @@ import sunmi.common.rpc.retrofit.BaseResponse;
  */
 public class NoOrderCard extends BaseRefreshItem<NoOrderCard.Model, Object> {
 
-    private boolean mIsAllEmpty;
+    private int mColorGray;
+    private int mColorWhite;
+    private GradientDrawable mContentBg;
 
     public NoOrderCard(Context context, DashboardContract.Presenter presenter, boolean isAllEmpty) {
         super(context, presenter, 0);
-        this.mIsAllEmpty = isAllEmpty;
+        Model model = getModel();
+        model.isAllEmpty = isAllEmpty;
+        model.isValid = true;
+        mColorGray = ContextCompat.getColor(context, R.color.color_F5F7FA);
+        mColorWhite = 0xFFFFFFFF;
+        float radius = context.getResources().getDimension(R.dimen.dp_12);
+        mContentBg = new GradientDrawable();
+        mContentBg.setCornerRadii(new float[]{radius, radius, radius, radius, radius, radius, radius, radius});
     }
 
     @Override
@@ -41,27 +50,20 @@ public class NoOrderCard extends BaseRefreshItem<NoOrderCard.Model, Object> {
         return null;
     }
 
-    @NonNull
-    @Override
-    public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
-        BaseViewHolder<Model> holder = new BaseViewHolder<>(view, type);
-        View root = holder.getView(R.id.layout_dashboard_root);
-        View content = holder.getView(R.id.layout_dashboard_content);
-        int gray = ContextCompat.getColor(view.getContext(), R.color.color_F5F7FA);
-        int white = 0xFFFFFFFF;
-        root.setBackgroundColor(mIsAllEmpty ? white : gray);
-        content.setBackgroundColor(mIsAllEmpty ? gray : white);
-        return holder;
-    }
-
     @Override
     protected void setupModel(Model model, Object response) {
     }
 
     @Override
     protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+        View root = holder.getView(R.id.layout_dashboard_root);
+        View content = holder.getView(R.id.layout_dashboard_content);
+        root.setBackgroundColor(model.isAllEmpty ? mColorWhite : mColorGray);
+        mContentBg.setColor(model.isAllEmpty ? mColorGray : mColorWhite);
+        content.setBackground(mContentBg);
     }
 
     public static class Model extends BaseRefreshItem.BaseModel {
+        private boolean isAllEmpty;
     }
 }

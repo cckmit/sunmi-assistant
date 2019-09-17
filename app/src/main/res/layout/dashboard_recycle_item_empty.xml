@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_256"
-    android:background="@drawable/dashboard_bg_white_top_radius">
+    android:background="@drawable/dashboard_bg_top_white_radius">
 
     <ImageView
         android:id="@+id/iv_dashboard_empty_image"

@@ -15,11 +15,17 @@ import com.sunmi.assistant.dashboard.card.NoFsCard;
 import com.sunmi.assistant.dashboard.card.NoOrderCard;
 import com.sunmi.assistant.dashboard.card.PeriodTabCard;
 import com.sunmi.assistant.dashboard.card.TrendChartCard;
+import com.sunmi.ipc.model.IpcListResp;
+import com.sunmi.ipc.rpc.IpcCloudApi;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.model.FilterItem;
+import sunmi.common.model.ShopListResp;
+import sunmi.common.rpc.cloud.SunmiStoreApi;
+import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
 
@@ -41,7 +47,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     private int mCompanyId;
     private int mShopId;
 
-    private int mDataSource = 0x3;
+    private int mDataSource = 0;
     private int mPeriod = Constants.TIME_PERIOD_INIT;
 
     private List<BaseRefreshItem> mList;
@@ -52,14 +58,23 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     public void init() {
         mCompanyId = SpUtils.getCompanyId();
         mShopId = SpUtils.getShopId();
-        if (mList == null) {
-            mList = new ArrayList<>(6);
-        } else {
-            mList.clear();
-        }
-        initList(mCompanyId, mShopId);
+        loadShopList();
+        loadDataSource();
         mTask = new RefreshTask();
         WORK_HANDLER.postDelayed(mTask, REFRESH_TIME_PERIOD);
+    }
+
+    @Override
+    public void switchCompanyTo(int companyId, int shopId) {
+        mCompanyId = companyId;
+        mShopId = shopId;
+        loadDataSource();
+    }
+
+    @Override
+    public void switchShopTo(int shopId) {
+        mShopId = shopId;
+        loadDataSource();
     }
 
     @Override
@@ -77,27 +92,6 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         }
         if (isViewAttached()) {
             mView.updateTab(period);
-        }
-    }
-
-    @Override
-    public void switchCompanyTo(int companyId, int shopId) {
-        mCompanyId = companyId;
-        mShopId = shopId;
-        if (mList != null) {
-            for (BaseRefreshItem card : mList) {
-                card.setCompanyId(companyId, shopId);
-            }
-        }
-    }
-
-    @Override
-    public void switchShopTo(int shopId) {
-        mShopId = shopId;
-        if (mList != null) {
-            for (BaseRefreshItem card : mList) {
-                card.setShopId(shopId);
-            }
         }
     }
 
@@ -124,6 +118,86 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         }
     }
 
+    private void loadShopList() {
+        SunmiStoreApi.getInstance().getShopList(mCompanyId, new RetrofitCallback<ShopListResp>() {
+            @Override
+            public void onSuccess(int code, String msg, ShopListResp data) {
+                List<ShopListResp.ShopInfo> shops = data.getShop_list();
+                List<FilterItem> result = new ArrayList<>(shops.size());
+                for (ShopListResp.ShopInfo shop : shops) {
+                    if (shop.getShop_id() == mShopId) {
+                        FilterItem item = new FilterItem(shop.getShop_id(), shop.getShop_name());
+                        item.setChecked(true);
+                        result.add(0, item);
+                    } else {
+                        result.add(new FilterItem(shop.getShop_id(), shop.getShop_name()));
+                    }
+                }
+                if (isViewAttached()) {
+                    mView.setShopList(result);
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, ShopListResp data) {
+                // TODO
+            }
+        });
+    }
+
+    private void loadDataSource() {
+        int old = mDataSource;
+        if (SpUtils.getSaasExist() == 1) {
+            mDataSource |= Constants.DATA_SOURCE_SAAS;
+        } else {
+            mDataSource &= ~Constants.DATA_SOURCE_SAAS;
+        }
+        IpcCloudApi.getDetailList(mCompanyId, mShopId, new RetrofitCallback<IpcListResp>() {
+            @Override
+            public void onSuccess(int code, String msg, IpcListResp data) {
+                if (data.getFs_list() != null && data.getFs_list().size() > 0) {
+                    mDataSource |= Constants.DATA_SOURCE_FS;
+                } else {
+                    mDataSource &= ~Constants.DATA_SOURCE_FS;
+                }
+                int changed = mDataSource ^ old;
+                // 如果数据来源无变化（是否有FS以及是否有订单数据），那么直接更新卡片商户和门店
+                if (changed == 0 && mList != null && !mList.isEmpty()) {
+                    for (BaseRefreshItem card : mList) {
+                        card.setCompanyId(mCompanyId, mShopId);
+                    }
+                    return;
+                }
+                // 初始胡列表
+                if (mList == null) {
+                    mList = new ArrayList<>(6);
+                } else {
+                    mList.clear();
+                }
+                // 根据数据来源，变更卡片
+                switch (mDataSource) {
+                    case 0x3:
+                        initList(mCompanyId, mShopId);
+                        break;
+                    case 0x1:
+                        initNoFsList(mCompanyId, mShopId);
+                        break;
+                    case 0x2:
+                        initNoOrderList(mCompanyId, mShopId);
+                        break;
+                    default:
+                        initNoDataList(mCompanyId, mShopId);
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, IpcListResp data) {
+                // TODO
+            }
+        });
+
+    }
+
     private void initList(int companyId, int shopId) {
         if (!isViewAttached()) {
             return;
@@ -135,7 +209,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         mList.add(new DistributionChartCard(context, this, mDataSource));
         mList.add(new EmptyGapCard(ContextCompat.getColor(context, R.color.color_F5F7FA),
                 (int) context.getResources().getDimension(R.dimen.dp_24)));
-        mView.initData(mList);
+        mView.setCards(mList);
         switchPeriodTo(Constants.TIME_PERIOD_TODAY);
     }
 
@@ -151,7 +225,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         mList.add(new NoOrderCard(context, this, false));
         mList.add(new EmptyGapCard(ContextCompat.getColor(context, R.color.color_F5F7FA),
                 (int) context.getResources().getDimension(R.dimen.dp_32)));
-        mView.initData(mList);
+        mView.setCards(mList);
         switchPeriodTo(Constants.TIME_PERIOD_TODAY);
     }
 
@@ -166,7 +240,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         mList.add(new NoFsCard(context, this, false));
         mList.add(new EmptyGapCard(ContextCompat.getColor(context, R.color.color_F5F7FA),
                 (int) context.getResources().getDimension(R.dimen.dp_32)));
-        mView.initData(mList);
+        mView.setCards(mList);
         switchPeriodTo(Constants.TIME_PERIOD_TODAY);
     }
 
@@ -179,7 +253,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         mList.add(new NoFsCard(context, this, true));
         mList.add(new NoOrderCard(context, this, true));
         mList.add(new EmptyGapCard(0xFFFFFFFF, (int) context.getResources().getDimension(R.dimen.dp_32)));
-        mView.initData(mList);
+        mView.setCards(mList);
     }
 
     @Override
