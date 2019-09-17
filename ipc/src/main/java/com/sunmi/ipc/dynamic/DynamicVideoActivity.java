@@ -148,13 +148,8 @@ public class DynamicVideoActivity extends BaseActivity implements
             return;
         }
         showLoadingDialog();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                initTakeScreenShot();
-                requestPermissions();
-            }
-        }, 800);
+        requestPermissions();
+        //initTakeScreenShot();
     }
 
     @Override
@@ -214,6 +209,7 @@ public class DynamicVideoActivity extends BaseActivity implements
             isInitTakeScreenShot = true;
         } catch (Exception e) {
             isInitTakeScreenShot = false;
+            hideLoadingDialog();
             errorView();
             e.printStackTrace();
         }
@@ -367,6 +363,7 @@ public class DynamicVideoActivity extends BaseActivity implements
     public boolean onError(IMediaPlayer iMediaPlayer, int i, int i1) {
         LogCat.e(TAG, "onError");
         hideLoadingDialog();
+        shortTip(getString(R.string.ipc_video_play_error));
         errorView();
         return false;
     }
@@ -380,6 +377,7 @@ public class DynamicVideoActivity extends BaseActivity implements
         LogCat.e(TAG, "onPrepared");
         if (iVideoPlayer != null) {
             hideLoadingDialog();
+            initTakeScreenShot();
             iVideoPlayer.startVideo();
             //设置seekBar的最大限度值，当前视频的总时长（毫秒）
             long duration = iVideoPlayer.getDuration();
