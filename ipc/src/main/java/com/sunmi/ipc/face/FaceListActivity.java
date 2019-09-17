@@ -968,7 +968,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
 
         @Override
         public void onViewRecycled(@NonNull BaseViewHolder<Face> holder) {
-            Glide.with(holder.itemView).clear(holder.getView(R.id.item_image));
+            Glide.with(holder.itemView).clear((View) holder.getView(R.id.item_image));
         }
     }
 
@@ -1013,7 +1013,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
 
         @Override
         public void onViewRecycled(@NonNull BaseViewHolder<Face> holder) {
-            Glide.with(holder.itemView).clear(holder.getView(R.id.item_image));
+            Glide.with(holder.itemView).clear((View) holder.getView(R.id.item_image));
         }
     }
 
