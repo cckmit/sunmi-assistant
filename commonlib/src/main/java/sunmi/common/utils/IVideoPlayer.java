@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.PixelFormat;
 import android.media.AudioManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -56,76 +55,6 @@ public class IVideoPlayer extends RelativeLayout {
             }
         }
     };
-    private AudioManager mAudioManager;
-    private SunmiVideoListener mListener;
-    private IMediaPlayer.OnPreparedListener mPreparedListener = new IMediaPlayer.OnPreparedListener() {
-
-        @Override
-        public void onPrepared(IMediaPlayer iMediaPlayer) {
-            if (mListener != null) {
-                mListener.onPrepared(iMediaPlayer);
-            }
-        }
-    };
-    private IMediaPlayer.OnBufferingUpdateListener mBufferingUpdateListener = new IMediaPlayer.OnBufferingUpdateListener() {
-
-        @Override
-        public void onBufferingUpdate(IMediaPlayer iMediaPlayer, int i) {
-            if (mListener != null) {
-                mListener.onBufferingUpdate(iMediaPlayer, i);
-            }
-        }
-    };
-    private IMediaPlayer.OnCompletionListener mCompletionListener = new IMediaPlayer.OnCompletionListener() {
-
-        @Override
-        public void onCompletion(IMediaPlayer iMediaPlayer) {
-            if (mListener != null) {
-                mListener.onCompletion(iMediaPlayer);
-            }
-        }
-    };
-    private IMediaPlayer.OnErrorListener mErrorListener = new IMediaPlayer.OnErrorListener() {
-
-        @Override
-        public boolean onError(IMediaPlayer iMediaPlayer, int i, int i1) {
-            if (mListener != null) {
-                mListener.onError(iMediaPlayer, i, i1);
-            }
-            return false;
-        }
-
-    };
-    private IMediaPlayer.OnSeekCompleteListener mSeekCompleteListener = new IMediaPlayer.OnSeekCompleteListener() {
-
-        @Override
-        public void onSeekComplete(IMediaPlayer iMediaPlayer) {
-            if (mListener != null) {
-                mListener.onSeekComplete(iMediaPlayer);
-            }
-        }
-    };
-    private IMediaPlayer.OnInfoListener mInfoListener = new IMediaPlayer.OnInfoListener() {
-
-
-        @Override
-        public boolean onInfo(IMediaPlayer iMediaPlayer, int i, int i1) {
-            if (mListener != null) {
-                mListener.onInfo(iMediaPlayer, i, i1);
-            }
-            return false;
-        }
-    };
-    private IMediaPlayer.OnVideoSizeChangedListener mVideoSizeChangedListener = new IMediaPlayer.OnVideoSizeChangedListener() {
-        @Override
-        public void onVideoSizeChanged(IMediaPlayer iMediaPlayer, int i, int i1, int i2, int i3) {
-            int videoWidth = iMediaPlayer.getVideoWidth();
-            int videoHeight = iMediaPlayer.getVideoHeight();
-            if (videoWidth != 0 && videoHeight != 0) {
-                surfaceView.getHolder().setFixedSize(videoWidth, videoHeight);
-            }
-        }
-    };
 
     public IVideoPlayer(@NonNull Context context) {
         this(context, null);
@@ -145,8 +74,8 @@ public class IVideoPlayer extends RelativeLayout {
         mContext = context;
         createSurfaceView();
         createCacheSurfaceView();
-        mAudioManager = (AudioManager) mContext.getApplicationContext()
-                .getSystemService(Context.AUDIO_SERVICE);
+//        mAudioManager = (AudioManager) mContext.getApplicationContext()
+//                .getSystemService(Context.AUDIO_SERVICE);
 //        audioFocusHelper = new AudioFocusHelper();
     }
 
@@ -435,26 +364,46 @@ public class IVideoPlayer extends RelativeLayout {
                 || cacheMediaPlayer != null && cacheMediaPlayer.isPlaying();
     }
 
-    /**
-     * 设置ijkplayer的监听
-     *
-     * @param player IMediaPlayer
-     */
-    private void setSunmiListener(IMediaPlayer player) {
-        player.setOnPreparedListener(mPreparedListener);
-        player.setOnVideoSizeChangedListener(mVideoSizeChangedListener);
-        player.setOnBufferingUpdateListener(mBufferingUpdateListener);
-        player.setOnCompletionListener(mCompletionListener);
-        player.setOnSeekCompleteListener(mSeekCompleteListener);
-        player.setOnInfoListener(mInfoListener);
-        player.setOnErrorListener(mErrorListener);
+    public void setOnPreparedListener(IMediaPlayer.OnPreparedListener listener) {
+        if (mediaPlayer != null) {
+            mediaPlayer.setOnPreparedListener(listener);
+        }
     }
 
-    /**
-     * 设置自己的player回调
-     */
-    public void setVideoListener(SunmiVideoListener listener) {
-        mListener = listener;
+    public void setOnVideoSizeChangedListener(IMediaPlayer.OnVideoSizeChangedListener listener) {
+        if (mediaPlayer != null) {
+            mediaPlayer.setOnVideoSizeChangedListener(listener);
+        }
+    }
+
+    public void setOnBufferingUpdateListener(IMediaPlayer.OnBufferingUpdateListener listener) {
+        if (mediaPlayer != null) {
+            mediaPlayer.setOnBufferingUpdateListener(listener);
+        }
+    }
+
+    public void setOnCompletionListener(IMediaPlayer.OnCompletionListener listener) {
+        if (mediaPlayer != null) {
+            mediaPlayer.setOnCompletionListener(listener);
+        }
+    }
+
+    public void setOnSeekCompleteListener(IMediaPlayer.OnSeekCompleteListener listener) {
+        if (mediaPlayer != null) {
+            mediaPlayer.setOnSeekCompleteListener(listener);
+        }
+    }
+
+    public void setOnInfoListener(IMediaPlayer.OnInfoListener listener) {
+        if (mediaPlayer != null) {
+            mediaPlayer.setOnInfoListener(listener);
+        }
+    }
+
+    public void setOnErrorListener(IMediaPlayer.OnErrorListener listener) {
+        if (mediaPlayer != null) {
+            mediaPlayer.setOnErrorListener(listener);
+        }
     }
 
     /**
@@ -469,7 +418,6 @@ public class IVideoPlayer extends RelativeLayout {
             mediaPlayer = null;
         }
         mediaPlayer = createPlayer();
-        setSunmiListener(mediaPlayer);
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mediaPlayer.setDisplay(surfaceView.getHolder());
         try {
@@ -489,29 +437,9 @@ public class IVideoPlayer extends RelativeLayout {
         }
     }
 
-    public void resetVideo() {
-        if (mediaPlayer != null) {
-            mediaPlayer.reset();
-        }
-    }
-
-    public void releaseVideo() {
-        if (mediaPlayer != null) {
-            mediaPlayer.reset();
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
-    }
-
     public void pauseVideo() {
         if (mediaPlayer != null) {
             mediaPlayer.pause();
-        }
-    }
-
-    public void stopVideo() {
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
         }
     }
 
@@ -534,34 +462,6 @@ public class IVideoPlayer extends RelativeLayout {
     public void seekTo(long l) {
         if (mediaPlayer != null) {
             mediaPlayer.seekTo(l);
-        }
-    }
-
-    public boolean isPlayingVideo() {
-        if (mediaPlayer != null) {
-            return mediaPlayer.isPlaying();
-        }
-        return false;
-    }
-
-
-    public void volume() {
-        if (mediaPlayer != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_MUTE, AudioManager.FLAG_SHOW_UI);
-            } else {
-                mAudioManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
-            }
-        }
-    }
-
-    public void muteVolume() {
-        if (mediaPlayer != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_UNMUTE, AudioManager.FLAG_SHOW_UI);
-            } else {
-                mAudioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
-            }
         }
     }
 
@@ -648,15 +548,6 @@ public class IVideoPlayer extends RelativeLayout {
         void onStartPlay();
 
         void onPlayComplete();
-    }
-
-    public interface SunmiVideoListener extends IMediaPlayer.OnBufferingUpdateListener,
-            IMediaPlayer.OnCompletionListener,
-            IMediaPlayer.OnPreparedListener,
-            IMediaPlayer.OnInfoListener,
-            IMediaPlayer.OnVideoSizeChangedListener,
-            IMediaPlayer.OnErrorListener,
-            IMediaPlayer.OnSeekCompleteListener {
     }
 
 }
