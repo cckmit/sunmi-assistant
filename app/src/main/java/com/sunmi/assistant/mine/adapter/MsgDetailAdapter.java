@@ -62,17 +62,18 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
             helper.itemView.setOnClickListener(v -> {
                 msgView.setVisibility(View.GONE);
                 String[] link = item.getMajorButtonLink().split("&");
+                String url = "", deviceModel = "";
                 for (int i = 0; i < link.length; i++) {
                     if (TextUtils.isEmpty(link[2]) || TextUtils.isEmpty(link[3])) {
                         return;
                     }
-                    String url = MsgTag.getUrlDecoderString(link[2].substring(4));//url=
-                    String deviceModel = link[3].substring(13);//device_model=
-                    DynamicVideoActivity_.intent(context)
-                            .url(url)
-                            .deviceModel(deviceModel)
-                            .start();
+                    url = MsgTag.getUrlDecoderString(link[2].substring(4));//url=
+                    deviceModel = link[3].substring(13);//device_model=
                 }
+                DynamicVideoActivity_.intent(context)
+                        .url(url)
+                        .deviceModel(deviceModel)
+                        .start();
             });
         }
         helper.itemView.setOnLongClickListener(v -> {
