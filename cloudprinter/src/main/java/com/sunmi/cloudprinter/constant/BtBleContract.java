@@ -1,7 +1,6 @@
 package com.sunmi.cloudprinter.constant;
 
-import com.inuker.bluetooth.library.BluetoothClient;
-
+import library.BluetoothClient;
 import sunmi.common.base.BaseView;
 
 /**
