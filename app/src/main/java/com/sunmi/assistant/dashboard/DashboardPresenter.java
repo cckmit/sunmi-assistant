@@ -65,14 +65,8 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     @Override
-    public void switchCompanyTo(int companyId, int shopId) {
+    public void switchShopTo(int companyId, int shopId) {
         mCompanyId = companyId;
-        mShopId = shopId;
-        loadDataSource();
-    }
-
-    @Override
-    public void switchShopTo(int shopId) {
         mShopId = shopId;
         loadDataSource();
     }
@@ -168,7 +162,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                     }
                     return;
                 }
-                // 初始胡列表
+                // 初始化列表
                 if (mList == null) {
                     mList = new ArrayList<>(6);
                 } else {

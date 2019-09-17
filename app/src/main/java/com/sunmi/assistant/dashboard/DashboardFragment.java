@@ -224,7 +224,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (id == CommonNotifications.shopSwitched) {
-            mPresenter.switchShopTo(SpUtils.getShopId());
+            mPresenter.switchShopTo(SpUtils.getCompanyId(), SpUtils.getShopId());
         } else if (id == CommonNotifications.shopNameChanged
                 || id == CommonNotifications.companyNameChanged) {
             mPresenter.refresh(0);

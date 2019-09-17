@@ -27,9 +27,7 @@ public interface DashboardContract {
 
         void init();
 
-        void switchCompanyTo(int companyId, int shopId);
-
-        void switchShopTo(int shopId);
+        void switchShopTo(int companyId, int shopId);
 
         void switchPeriodTo(int period);
 
