@@ -5,8 +5,6 @@ import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
-import sunmi.common.utils.log.LogCat;
-
 /**
  * Description:
  *
@@ -45,7 +43,7 @@ public class MsgTag {
         return msgMap;
     }
 
-    private static String getUrlDecoderString(String str) {
+    public static String getUrlDecoderString(String str) {
         if (str == null) {
             return "";
         }
