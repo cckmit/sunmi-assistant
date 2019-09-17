@@ -11,6 +11,7 @@
     <string name="str_exit">退出</string>
     <string name="str_next">下一步</string>
     <string name="str_close">关闭</string>
+    <string name="str_setting">设置</string>
 
     <string name="str_click_consent">点击“开始配置”代表你同意</string>
     <string name="sunmi_user_protocol">《商米用户协议》</string>
