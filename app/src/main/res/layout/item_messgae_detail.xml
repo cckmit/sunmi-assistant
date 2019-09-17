@@ -17,7 +17,7 @@
         android:gravity="center"
         android:textSize="@dimen/sp_12"
         app:mv_backgroundColor="@color/color_FF3838"
-        app:mv_isRadiusHalfHeight="true"/>
+        app:mv_isRadiusHalfHeight="true" />
 
     <TextView
         android:id="@+id/tv_msg_title"
@@ -26,6 +26,20 @@
         android:layout_marginStart="@dimen/dp_25"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_25"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/color_333338"
+        android:textSize="@dimen/sp_16" />
+
+    <TextView
+        android:id="@+id/tv_msg_shop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_msg_title"
+        android:layout_marginStart="@dimen/dp_25"
+        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginEnd="@dimen/dp_25"
+        android:ellipsize="end"
         android:singleLine="true"
         android:textColor="@color/color_333338"
         android:textSize="@dimen/sp_16" />
@@ -34,7 +48,7 @@
         android:id="@+id/tv_msg_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_msg_title"
+        android:layout_below="@+id/tv_msg_shop"
         android:layout_marginStart="@dimen/dp_25"
         android:layout_marginTop="@dimen/dp_5"
         android:layout_marginEnd="@dimen/dp_25"

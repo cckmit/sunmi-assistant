@@ -240,6 +240,9 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
                     silItem.setVisibility(View.VISIBLE);
                 }
                 holder.itemView.setOnClickListener(v -> {
+                    if (isFastClick(1200)) {
+                        return;
+                    }
                     companyId = item.getCompany_id();
                     companyName = item.getCompany_name();
                     saasExist = item.getSaas_exist();

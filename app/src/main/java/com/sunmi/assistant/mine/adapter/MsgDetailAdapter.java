@@ -53,12 +53,14 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
         detailMap = detailTag.getMsgMap();
         String companyName = titleMap.get("company_name");
         String shopName = titleMap.get("shop_name");
-        helper.setText(R.id.tv_msg_title, (companyName != null ? companyName : "") + (shopName != null ? shopName : ""));
+        helper.setText(R.id.tv_msg_title, (companyName != null ? companyName : ""));
+        helper.setText(R.id.tv_msg_shop, (shopName != null ? shopName : ""));
         helper.setText(R.id.tv_msg_time, DateTimeUtils.secondToDate(item.getReceiveTime(), "yyyy-MM-dd HH:mm:ss"));
         setMsgDetail(helper, MessageUtils.getInstance().getMsgFirst(titleTag.getTag()));
         //动态侦测视频
         if (!TextUtils.isEmpty(item.getMajorButtonLink())) {
             helper.itemView.setOnClickListener(v -> {
+                msgView.setVisibility(View.GONE);
                 MsgTag urlTag = item.getMajorButtonLinkTag();
                 Map<String, String> urlMap = urlTag.getMsgMap();
                 String url = urlMap.get("url");

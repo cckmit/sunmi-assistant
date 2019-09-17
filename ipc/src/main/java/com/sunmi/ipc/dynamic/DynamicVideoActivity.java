@@ -2,7 +2,6 @@ package com.sunmi.ipc.dynamic;
 
 
 import android.Manifest;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
@@ -37,6 +36,7 @@ import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.IVideoPlayer;
 import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.NetworkUtils;
+import sunmi.common.utils.VolumeHelper;
 import sunmi.common.utils.log.LogCat;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import wseemann.media.FFmpegMediaMetadataRetriever;
@@ -47,7 +47,12 @@ import wseemann.media.FFmpegMediaMetadataRetriever;
  */
 @EActivity(resName = "dynamic_activity_video_play")
 public class DynamicVideoActivity extends BaseActivity implements
-        IVideoPlayer.SunmiVideoListener, SeekBar.OnSeekBarChangeListener {
+        SeekBar.OnSeekBarChangeListener,
+        IMediaPlayer.OnBufferingUpdateListener,
+        IMediaPlayer.OnCompletionListener,
+        IMediaPlayer.OnPreparedListener,
+        IMediaPlayer.OnErrorListener,
+        IMediaPlayer.OnSeekCompleteListener {
     /**
      * 同步进度
      */
@@ -101,9 +106,13 @@ public class DynamicVideoActivity extends BaseActivity implements
      */
     private boolean isDragging;
     /**
-     * 是否暂停，是否静音
+     * 是否暂停，是否静音，是否初始化了截屏
      */
-    private boolean isPaused, isOpenVolume;
+    private boolean isPaused, isOpenVolume, isInitTakeScreenShot;
+    /**
+     * 音量
+     */
+    private VolumeHelper volumeHelper = null;
     /**
      * 消息处理
      */
@@ -126,8 +135,7 @@ public class DynamicVideoActivity extends BaseActivity implements
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//保持屏幕常亮
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//隐藏状态栏
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        sbBar.setOnSeekBarChangeListener(this);
+        volumeHelper = new VolumeHelper(this);
         //手机屏幕的宽高
         int screenWidth = CommonHelper.getScreenWidth(context);
         int screenHeight = CommonHelper.getScreenHeight(context);
@@ -135,13 +143,26 @@ public class DynamicVideoActivity extends BaseActivity implements
         lpCloud.width = screenWidth;
         lpCloud.height = screenHeight;
         iVideoPlayer.setLayoutParams(lpCloud);
-        iVideoPlayer.setVideoListener(this);
-        initTakeScreenShot();
         if (!NetworkUtils.isNetworkAvailable(context)) {
             errorView();
             return;
         }
+        initTakeScreenShot();
         requestPermissions();
+    }
+
+    @Override
+    protected boolean needLandscape() {
+        return true;
+    }
+
+    private void setVideoListener() {
+        sbBar.setOnSeekBarChangeListener(this);
+        iVideoPlayer.setOnPreparedListener(this);
+        iVideoPlayer.setOnBufferingUpdateListener(this);
+        iVideoPlayer.setOnCompletionListener(this);
+        iVideoPlayer.setOnErrorListener(this);
+        iVideoPlayer.setOnSeekCompleteListener(this);
     }
 
     /**
@@ -172,13 +193,16 @@ public class DynamicVideoActivity extends BaseActivity implements
      * 初始化播放
      */
     private void initVideoPlay() {
+        showLoadingDialog();
         iVideoPlayer.load(url);
+        setVideoListener();
     }
 
     /**
      * 初始化设置截屏数据
      */
     private void initTakeScreenShot() {
+        isInitTakeScreenShot = true;
         retriever = new FFmpegMediaMetadataRetriever();
         retriever.setDataSource(url, new HashMap<String, String>());
     }
@@ -191,7 +215,8 @@ public class DynamicVideoActivity extends BaseActivity implements
             return;
         }
         if (iVideoPlayer.getCurrentPosition() > 0) {
-            Bitmap bitmap = retriever.getFrameAtTime(iVideoPlayer.getCurrentPosition() * 1000, MediaMetadataRetriever.OPTION_NEXT_SYNC);
+            Bitmap bitmap = retriever.getFrameAtTime(iVideoPlayer.getCurrentPosition() * 1000,
+                    MediaMetadataRetriever.OPTION_NEXT_SYNC);
             if (ImageUtils.saveImageToGallery(context, bitmap, 100)) {
                 shortTip(getString(R.string.ipc_dynamic_take_screen_shot_success));
             } else {
@@ -203,13 +228,15 @@ public class DynamicVideoActivity extends BaseActivity implements
     @Click(resName = "tv_retry")
     void retryClick() {
         isShowBottomView(true);
-        showLoadingDialog();
-        initVideoPlay();
+        if (!isInitTakeScreenShot) {
+            initTakeScreenShot();
+        }
+        requestPermissions();
     }
 
     @Click(resName = "ib_back")
     void onBackClick() {
-        iVideoPlayer.releaseVideo();
+        iVideoPlayer.release();
         finish();
     }
 
@@ -234,36 +261,31 @@ public class DynamicVideoActivity extends BaseActivity implements
         ibVolume.setBackgroundResource(isOpenVolume ? R.mipmap.ic_volume : R.mipmap.ic_muse);
         isOpenVolume = !isOpenVolume;
         if (isOpenVolume) {
-            iVideoPlayer.volume();
+            volumeHelper.unMute();
         } else {
-            iVideoPlayer.muteVolume();
+            volumeHelper.mute();
         }
     }
 
     /**
-     *
+     * 更新进度
      */
     private void syncProgress(Object obj) {
         if (obj != null) {
-            long generateTime;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                generateTime = (Long) obj;
-                sbBar.setProgress(Math.toIntExact((Long) obj));
-            } else {
-                String strProgress = String.valueOf(obj);
-                int progress = Integer.valueOf(strProgress);
-                if ((progress == 0)) {
-                    return;
-                }
-                if (progress + DELAY_MILLIS >= iVideoPlayer.getDuration()) {
-                    sbBar.setProgress(sbBar.getMax());
-                    generateTime = ((Long) obj) + 1000;//毫秒
-                } else {
-                    sbBar.setProgress(progress);
-                    generateTime = (Long) obj;
-                }
+            String strProgress = String.valueOf(obj);
+            int progress = Integer.valueOf(strProgress);
+            if ((progress == 0)) {
+                return;
             }
-            //刷新当前播放时间
+            long generateTime;
+            if (progress + DELAY_MILLIS >= iVideoPlayer.getDuration()) {
+                progress = sbBar.getMax();
+                generateTime = sbBar.getMax();//毫秒
+            } else {
+                generateTime = (Long) obj;
+            }
+            LogCat.e(TAG, "dur=" + iVideoPlayer.getDuration() + ", max=" + sbBar.getMax() + ", obj=" + obj);
+            sbBar.setProgress(progress);
             tvCurrentPlayTime.setText(iVideoPlayer.generateTime(generateTime));
         }
     }
@@ -307,6 +329,10 @@ public class DynamicVideoActivity extends BaseActivity implements
     @Override
     public void onCompletion(IMediaPlayer iMediaPlayer) {
         LogCat.e(TAG, "onCompletion");
+        if (iVideoPlayer != null) {
+            isPaused = false;
+            ibPlay.setBackgroundResource(R.mipmap.play_normal);
+        }
         if (mHandler != null) {
             mHandler.removeMessages(MESSAGE_SHOW_PROGRESS);
         }
@@ -322,11 +348,6 @@ public class DynamicVideoActivity extends BaseActivity implements
         return false;
     }
 
-    @Override
-    public boolean onInfo(IMediaPlayer iMediaPlayer, int i, int i1) {
-        LogCat.e(TAG, "onInfo");
-        return false;
-    }
 
     /**
      * 开始播放
@@ -361,15 +382,6 @@ public class DynamicVideoActivity extends BaseActivity implements
     }
 
     /**
-     * Video大小改变
-     **/
-    @Override
-    public void onVideoSizeChanged(IMediaPlayer iMediaPlayer, int i, int i1, int i2, int i3) {
-        LogCat.e(TAG, "onVideoSizeChanged");
-    }
-
-
-    /**
      * 进度条滑动监听
      */
     @Override
@@ -395,8 +407,9 @@ public class DynamicVideoActivity extends BaseActivity implements
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         iVideoPlayer.seekTo(seekBar.getProgress());
-        if (iVideoPlayer != null && !iVideoPlayer.isPlayingVideo()) {
+        if (iVideoPlayer != null && !iVideoPlayer.isPlaying()) {
             iVideoPlayer.startVideo();
+            ibPlay.setBackgroundResource(R.mipmap.pause_normal);
         }
         mHandler.removeMessages(MESSAGE_SHOW_PROGRESS);
         isDragging = false;
