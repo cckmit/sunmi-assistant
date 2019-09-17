@@ -21,7 +21,8 @@ android {
         testInstrumentationRunner "android.support.test_udp.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = ['resourcePackageName': "com.sunmi.assistant"]
+                arguments = ['resourcePackageName': "com.sunmi.assistant",
+                             "HOST"               : "app"]
             }
         }
         multiDexEnabled true
@@ -112,5 +113,7 @@ dependencies {
     implementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
 
     implementation 'com.youth.banner:banner:1.4.10'  //最新版本
+
+    annotationProcessor "com.github.xiaojinzi123.Component:component-compiler:1.7.4"
 
 }

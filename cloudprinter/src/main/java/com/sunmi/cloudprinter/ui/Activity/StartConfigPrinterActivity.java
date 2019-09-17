@@ -13,7 +13,6 @@ import android.widget.CheckedTextView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.inuker.bluetooth.library.BluetoothClient;
 import com.sunmi.cloudprinter.R;
 
 import org.androidannotations.annotations.AfterViews;
@@ -22,6 +21,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
+import library.BluetoothClient;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.utils.PermissionUtils;
 import sunmi.common.utils.StatusBarUtils;

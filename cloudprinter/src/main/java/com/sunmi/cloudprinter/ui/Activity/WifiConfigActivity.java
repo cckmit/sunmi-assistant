@@ -94,7 +94,7 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
                 onBackPressed();
             }
         });
-        printerClient = new SunmiPrinterClient(context, bleAddress, this);
+        printerClient = new SunmiPrinterClient(context, this);
         getWifiList();
     }
 
