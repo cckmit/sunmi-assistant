@@ -1,6 +1,7 @@
 package com.sunmi.assistant.mine.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -9,6 +10,7 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.model.MessageListBean;
 import com.sunmi.assistant.mine.model.MsgTag;
 import com.sunmi.assistant.utils.MessageUtils;
+import com.sunmi.ipc.dynamic.DynamicVideoActivity_;
 
 import java.util.List;
 import java.util.Map;
@@ -33,10 +35,6 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
         this.context = context;
     }
 
-    public interface OnMsgLongClickListener {
-        void onLongClick(View view, int msgId, int position);
-    }
-
     public void setMsgLongClickListener(OnMsgLongClickListener listener) {
         this.listener = listener;
     }
@@ -55,9 +53,29 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
         detailMap = detailTag.getMsgMap();
         String companyName = titleMap.get("company_name");
         String shopName = titleMap.get("shop_name");
-        helper.setText(R.id.tv_msg_title, (companyName != null ? companyName : "") + (shopName != null ? shopName : ""));
+        helper.setText(R.id.tv_msg_title, (companyName != null ? companyName : ""));
+        helper.setText(R.id.tv_msg_shop, (shopName != null ? shopName : ""));
         helper.setText(R.id.tv_msg_time, DateTimeUtils.secondToDate(item.getReceiveTime(), "yyyy-MM-dd HH:mm:ss"));
         setMsgDetail(helper, MessageUtils.getInstance().getMsgFirst(titleTag.getTag()));
+        //动态侦测视频
+        if (!TextUtils.isEmpty(item.getMajorButtonLink())) {
+            helper.itemView.setOnClickListener(v -> {
+                msgView.setVisibility(View.GONE);
+                String[] link = item.getMajorButtonLink().split("&");
+                String url = "", deviceModel = "";
+                for (int i = 0; i < link.length; i++) {
+                    if (TextUtils.isEmpty(link[2]) || TextUtils.isEmpty(link[3])) {
+                        return;
+                    }
+                    url = MsgTag.getUrlDecoderString(link[2].substring(4));//url=
+                    deviceModel = link[3].substring(13);//device_model=
+                }
+                DynamicVideoActivity_.intent(context)
+                        .url(url)
+                        .deviceModel(deviceModel)
+                        .start();
+            });
+        }
         helper.itemView.setOnLongClickListener(v -> {
             if (listener != null) {
                 listener.onLongClick(helper.getView(R.id.tv_msg_detail), item.getMsgId(), helper.getAdapterPosition());
@@ -103,5 +121,9 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
             }
         }
         helper.setText(R.id.tv_msg_detail, detail);
+    }
+
+    public interface OnMsgLongClickListener {
+        void onLongClick(View view, int msgId, int position);
     }
 }

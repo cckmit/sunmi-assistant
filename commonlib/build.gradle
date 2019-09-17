@@ -146,4 +146,6 @@ dependencies {
 
     api 'com.github.xiaojinzi123.Component:component-impl:1.7.4'
 
+    //视频图片操作
+    api 'com.github.wseemann:FFmpegMediaMetadataRetriever:1.0.14'
 }

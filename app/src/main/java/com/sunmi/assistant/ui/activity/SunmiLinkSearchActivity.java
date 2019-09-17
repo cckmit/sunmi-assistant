@@ -20,7 +20,7 @@ import com.sunmi.ipc.model.IpcListResp;
 import com.sunmi.ipc.presenter.IpcConfiguringPresenter;
 import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.view.IPCListAdapter;
-import com.sunmi.ipc.view.IpcConfigCompletedActivity_;
+import com.sunmi.ipc.view.activity.IpcConfigCompletedActivity_;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
