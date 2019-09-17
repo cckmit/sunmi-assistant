@@ -17,15 +17,14 @@
         android:layout_height="match_parent"
         android:layout_centerInParent="true" />
 
-    <include layout="@layout/view_video_controller" />
+    <include layout="@layout/include_video_controller_landscape" />
 
     <!--播放错误-->
     <LinearLayout
         android:id="@+id/ll_play_fail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dp_104"
+        android:layout_centerInParent="true"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:visibility="gone">
