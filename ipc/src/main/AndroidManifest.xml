@@ -44,7 +44,11 @@
         <activity android:name=".face.FaceUploadActivity_" />
         <activity android:name=".face.FaceDetailActivity_" />
         <activity android:name=".face.FaceDetailRecordActivity_" />
-        <activity android:name=".view.activity.IpcManagerActivity_" />
+        <activity
+            android:name=".view.activity.IpcManagerActivity_"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:hardwareAccelerated="false"
+            android:largeHeap="true" />
         <activity
             android:name=".dynamic.DynamicVideoActivity_"
             android:hardwareAccelerated="false"
