@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_64"
     android:layout_marginTop="@dimen/dp_82"
-    android:background="@drawable/dashboard_bg_period_tab">
+    android:background="@drawable/dashboard_bg_white_top_radius">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="@dimen/dp_215"

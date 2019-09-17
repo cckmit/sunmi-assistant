@@ -206,8 +206,8 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
             set.setUsingSliceColorAsValueLineColor(true);
             set.setSliceSpace(0f);
             set.setSelectionShift(6f);
-            set.setValueLinePart1OffsetPercentage(140f);
-            set.setValueLinePart1Length(0.5f);
+            set.setValueLinePart1OffsetPercentage(135f);
+            set.setValueLinePart1Length(0.45f);
             set.setValueLinePart2Length(1.3f);
             set.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
             set.setValueFormatter(new PieChartLabelFormatter());

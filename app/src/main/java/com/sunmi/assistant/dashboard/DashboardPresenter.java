@@ -3,11 +3,16 @@ package com.sunmi.assistant.dashboard;
 import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.support.v4.content.ContextCompat;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshItem;
 import com.sunmi.assistant.dashboard.card.DataCard;
 import com.sunmi.assistant.dashboard.card.DistributionChartCard;
+import com.sunmi.assistant.dashboard.card.EmptyDataCard;
+import com.sunmi.assistant.dashboard.card.EmptyGapCard;
+import com.sunmi.assistant.dashboard.card.NoFsCard;
+import com.sunmi.assistant.dashboard.card.NoOrderCard;
 import com.sunmi.assistant.dashboard.card.PeriodTabCard;
 import com.sunmi.assistant.dashboard.card.TrendChartCard;
 
@@ -47,7 +52,14 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     public void init() {
         mCompanyId = SpUtils.getCompanyId();
         mShopId = SpUtils.getShopId();
+        if (mList == null) {
+            mList = new ArrayList<>(6);
+        } else {
+            mList.clear();
+        }
         initList(mCompanyId, mShopId);
+        mTask = new RefreshTask();
+        WORK_HANDLER.postDelayed(mTask, REFRESH_TIME_PERIOD);
     }
 
     @Override
@@ -117,15 +129,57 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             return;
         }
         Context context = mView.getContext();
-        mList = new ArrayList<>(5);
         mList.add(new PeriodTabCard(context, this, mDataSource));
         mList.add(new DataCard(context, this, mDataSource));
         mList.add(new TrendChartCard(context, this, mDataSource));
         mList.add(new DistributionChartCard(context, this, mDataSource));
+        mList.add(new EmptyGapCard(ContextCompat.getColor(context, R.color.color_F5F7FA),
+                (int) context.getResources().getDimension(R.dimen.dp_24)));
         mView.initData(mList);
-        mTask = new RefreshTask();
-        WORK_HANDLER.postDelayed(mTask, REFRESH_TIME_PERIOD);
         switchPeriodTo(Constants.TIME_PERIOD_TODAY);
+    }
+
+    private void initNoOrderList(int companyId, int shopId) {
+        if (!isViewAttached()) {
+            return;
+        }
+        Context context = mView.getContext();
+        mList.add(new PeriodTabCard(context, this, mDataSource));
+        mList.add(new DataCard(context, this, mDataSource));
+        mList.add(new TrendChartCard(context, this, mDataSource));
+        mList.add(new DistributionChartCard(context, this, mDataSource));
+        mList.add(new NoOrderCard(context, this, false));
+        mList.add(new EmptyGapCard(ContextCompat.getColor(context, R.color.color_F5F7FA),
+                (int) context.getResources().getDimension(R.dimen.dp_32)));
+        mView.initData(mList);
+        switchPeriodTo(Constants.TIME_PERIOD_TODAY);
+    }
+
+    private void initNoFsList(int companyId, int shopId) {
+        if (!isViewAttached()) {
+            return;
+        }
+        Context context = mView.getContext();
+        mList.add(new PeriodTabCard(context, this, mDataSource));
+        mList.add(new DataCard(context, this, mDataSource));
+        mList.add(new TrendChartCard(context, this, mDataSource));
+        mList.add(new NoFsCard(context, this, false));
+        mList.add(new EmptyGapCard(ContextCompat.getColor(context, R.color.color_F5F7FA),
+                (int) context.getResources().getDimension(R.dimen.dp_32)));
+        mView.initData(mList);
+        switchPeriodTo(Constants.TIME_PERIOD_TODAY);
+    }
+
+    private void initNoDataList(int companyId, int shopId) {
+        if (!isViewAttached()) {
+            return;
+        }
+        Context context = mView.getContext();
+        mList.add(new EmptyDataCard(context, this));
+        mList.add(new NoFsCard(context, this, true));
+        mList.add(new NoOrderCard(context, this, true));
+        mList.add(new EmptyGapCard(0xFFFFFFFF, (int) context.getResources().getDimension(R.dimen.dp_32)));
+        mView.initData(mList);
     }
 
     @Override
