@@ -3,6 +3,7 @@ package com.sunmi.assistant.mine.adapter;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -53,26 +54,36 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
         detailMap = detailTag.getMsgMap();
         String companyName = titleMap.get("company_name");
         String shopName = titleMap.get("shop_name");
-        helper.setText(R.id.tv_msg_title, (companyName != null ? companyName : ""));
+        helper.setText(R.id.tv_msg_company, (companyName != null ? companyName : ""));
         helper.setText(R.id.tv_msg_shop, (shopName != null ? shopName : ""));
+        helper.setText(R.id.tv_msg_device_model, context.getString(R.string.ipc_device_model, ""));
         helper.setText(R.id.tv_msg_time, DateTimeUtils.secondToDate(item.getReceiveTime(), "yyyy-MM-dd HH:mm:ss"));
         setMsgDetail(helper, MessageUtils.getInstance().getMsgFirst(titleTag.getTag()));
         //动态侦测视频
-        if (!TextUtils.isEmpty(item.getMajorButtonLink())) {
-            helper.itemView.setOnClickListener(v -> {
-                msgView.setVisibility(View.GONE);
-                String[] link = item.getMajorButtonLink().split("&");
-                String url = "", deviceModel = "";
-                for (int i = 0; i < link.length; i++) {
-                    if (TextUtils.isEmpty(link[2]) || TextUtils.isEmpty(link[3])) {
-                        return;
-                    }
-                    url = MsgTag.getUrlDecoderString(link[2].substring(4));//url=
-                    deviceModel = link[3].substring(13);//device_model=
+        Button btnPlay = helper.getView(R.id.btn_play);
+        if (item.getMajorButtonLink().contains("url")) {
+            btnPlay.setVisibility(View.VISIBLE);
+        } else {
+            btnPlay.setVisibility(View.GONE);
+        }
+        if (!TextUtils.isEmpty(item.getMajorButtonLink()) && item.getMajorButtonLink().contains("url")) {
+            String[] link = item.getMajorButtonLink().split("&");
+            String url = "", deviceModel = "";
+            for (int i = 0; i < link.length; i++) {
+                if (TextUtils.isEmpty(link[2]) || TextUtils.isEmpty(link[3])) {
+                    return;
                 }
+                url = MsgTag.getUrlDecoderString(link[2].substring(4));//url=
+                deviceModel = link[3].substring(13);//device_model=
+            }
+            helper.setText(R.id.tv_msg_device_model, context.getString(R.string.ipc_device_model, deviceModel));
+            String finalUrl = url;
+            String finalDeviceModel = deviceModel;
+            btnPlay.setOnClickListener(v -> {
+                msgView.setVisibility(View.GONE);
                 DynamicVideoActivity_.intent(context)
-                        .url(url)
-                        .deviceModel(deviceModel)
+                        .url(finalUrl)
+                        .deviceModel(finalDeviceModel)
                         .start();
             });
         }
@@ -120,7 +131,8 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
                 detail = "";
             }
         }
-        helper.setText(R.id.tv_msg_detail, detail);
+        helper.setText(R.id.tv_msg_device_name, context.getString(R.string.ipc_device_name, deviceName));
+        helper.setText(R.id.tv_msg_detail, context.getString(R.string.ipc_device_msg_content, detail));
     }
 
     public interface OnMsgLongClickListener {
