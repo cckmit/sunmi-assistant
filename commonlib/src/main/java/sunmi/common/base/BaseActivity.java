@@ -170,7 +170,7 @@ public abstract class BaseActivity extends FragmentActivity
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (loadingDialog == null || !loadingDialog.isShowing()) {
+                if (loadingDialog == null) {
                     return;
                 }
                 loadingDialog.setCancelable(true);

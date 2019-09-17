@@ -365,13 +365,14 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
                 .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        showLoadingDialog();
+                        if (printerClient != null) {
+                            printerClient.deleteWifiInfo(bleAddress);
+                        }
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 hideLoadingDialog();
-                                if (printerClient != null) {
-                                    printerClient.deleteWifiInfo(bleAddress);
-                                }
                                 BaseNotification.newInstance().postNotificationName(Constants.NOTIFICATION_PRINTER_ADDED);
                                 GotoActivityUtils.gotoMainActivity(context);
                                 finish();

@@ -136,7 +136,7 @@
     <string name="tip_get_captcha_fail">发送短信验证码失败</string>
     <string name="str_authorization_permission">允许授权</string>
     <string name="str_authorization_deny">暂不授权</string>
-    <string name="str_text_version_placeholder">版本%s</string>
+    <string name="str_version_placeholder">版本%s</string>
 
     <string name="company_select">您已所属以下商户，选择进入一家商户</string>
     <string name="company_shop_select">您已所属以下门店，选择进入一家门店</string>

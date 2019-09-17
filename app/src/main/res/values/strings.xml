@@ -136,7 +136,7 @@
     <string name="tip_get_captcha_fail">Send SMS verification code failed</string>
     <string name="str_authorization_permission">Allow authorization</string>
     <string name="str_authorization_deny">Not yet authorized</string>
-    <string name="str_text_version_placeholder">v%s</string>
+    <string name="str_version_placeholder">v%s</string>
 
     <string name="company_select">您已所属以下商户，选择进入一家商户</string>
     <string name="company_shop_select">您已所属以下门店，选择进入一家门店</string>

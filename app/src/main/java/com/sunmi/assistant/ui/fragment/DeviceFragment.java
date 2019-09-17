@@ -20,9 +20,7 @@ import com.sunmi.apmanager.receiver.MyNetworkCallback;
 import com.sunmi.apmanager.rpc.ap.APCall;
 import com.sunmi.apmanager.ui.activity.config.PrimaryRouteStartActivity;
 import com.sunmi.apmanager.ui.activity.router.RouterManagerNewActivity;
-import com.sunmi.apmanager.ui.activity.router.RouterMangerActivity;
 import com.sunmi.apmanager.utils.ApCompatibleUtils;
-import com.sunmi.apmanager.utils.ApIsNewVersionUtils;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.EncryptUtils;
 import com.sunmi.apmanager.utils.RouterDBHelper;
@@ -36,7 +34,7 @@ import com.sunmi.assistant.utils.GlideImageLoader;
 import com.sunmi.cloudprinter.ui.Activity.PrinterManageActivity_;
 import com.sunmi.ipc.rpc.IpcConstants;
 import com.sunmi.ipc.setting.IpcSettingActivity_;
-import com.sunmi.ipc.view.VideoPlayActivity_;
+import com.sunmi.ipc.view.activity.VideoPlayActivity_;
 import com.sunmi.sunmiservice.WebViewActivity_;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
@@ -349,7 +347,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 CommonNotifications.netDisconnection, NotificationConstant.updateConnectComplete,
                 NotificationConstant.connectedTosunmiDevice, NotificationConstant.unBindRouterChanged,
                 CommonNotifications.ipcUpgradeComplete, CommonNotifications.ipcUpgrade,
-                CommonNotifications.companyNameChanged};
+                CommonNotifications.companyNameChanged, CommonNotifications.companySwitch};
     }
 
     @Override
@@ -365,6 +363,10 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             loadData();
         } else if (id == CommonNotifications.shopSwitched) {
             topBar.setShopName(SpUtils.getShopName());
+            loadData();
+        } else if (id == CommonNotifications.companySwitch) {
+            topBar.setShopName(SpUtils.getShopName());
+            topBar.setCompanyName(SpUtils.getCompanyName());
             loadData();
         } else if (CommonNotifications.netDisconnection == id) {//网络断开
             networkDisconnected();
@@ -683,10 +685,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         bundle.putString("shopId", SpUtils.getShopId() + "");
         bundle.putString("sn", sn);
         bundle.putString("status", status);
-        if (ApIsNewVersionUtils.isNewVersion())
-            openActivity(mActivity, RouterManagerNewActivity.class, bundle);
-        else
-            openActivity(mActivity, RouterMangerActivity.class, bundle);
+        openActivity(mActivity, RouterManagerNewActivity.class, bundle);
     }
 
     private void deleteDevice(SunmiDevice device) {

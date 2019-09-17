@@ -398,12 +398,17 @@ public class CommonHelper {
         }
         SpUtils.setMobile(bean.getPhone());
         SpUtils.setUID(bean.getId() + "");
-        SpUtils.setUsername(bean.getUsername());
-        SpUtils.setEmail(bean.getEmail());
-        SpUtils.setMerchantUid(bean.getMerchant_id() + "");
+        if (!TextUtils.isEmpty(bean.getUsername())) {
+            SpUtils.setUsername(bean.getUsername());
+        }
+        if (!TextUtils.isEmpty(bean.getEmail())) {
+            SpUtils.setEmail(bean.getEmail());
+        }
         BaseApplication.isCheckedToken = true;
         SpUtils.setLoginStatus("Y");
-        SpUtils.setAvatarUrl(bean.getOrigin_icon());
+        if (!TextUtils.isEmpty(bean.getOrigin_icon())) {
+            SpUtils.setAvatarUrl(bean.getOrigin_icon());
+        }
         DBUtils.switchDb(SpUtils.getUID());
         CrashReport.setUserId(SpUtils.getUID());
         MiPushClient.setAlias(BaseApplication.getInstance(), SpUtils.getUID(), null);
@@ -424,7 +429,6 @@ public class CommonHelper {
         SpUtils.setStoreToken("");
         SpUtils.setUsername("");
         SpUtils.setAvatarUrl("");
-        SpUtils.setMerchantUid("");
         SpUtils.setUID("");
         SpUtils.setCompanyId(-1);
         SpUtils.setCompanyName("");

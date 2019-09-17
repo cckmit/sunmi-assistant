@@ -245,6 +245,10 @@
     <string name="tip_device_bound_by_other_shop">操作失败，该摄像机已被其他门店绑定</string>
     <string name="ipc_face_need_max_num">(剩余:%d)</string>
     <string name="ipc_face_full_capacity">该分组容量已满</string>
+    <string name="ipc_setting_state_wdr">宽动态WDR</string>
+    <string name="str_refresh_try">刷新重试</string>
+    <string name="ipc_dynamic_take_screen_shot_success">截屏保存成功</string>
+    <string name="ipc_dynamic_take_screen_shot_fail">截屏保存失败，请稍后重试</string>
 
 </resources>
 

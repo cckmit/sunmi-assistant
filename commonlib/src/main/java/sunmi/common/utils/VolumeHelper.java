@@ -174,4 +174,13 @@ public class VolumeHelper {
         audioManager.setMicrophoneMute(false);
     }
 
+    //静音
+    public boolean isMute() {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            return audioManager.isStreamMute(AudioManager.STREAM_MUSIC);//API 23
+        } else {//todo
+            return 0 == audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);//API 23
+        }
+    }
+
 }

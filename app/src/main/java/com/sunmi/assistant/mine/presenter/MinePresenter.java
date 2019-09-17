@@ -22,8 +22,7 @@ public class MinePresenter extends BasePresenter<MineContract.View> implements M
         SunmiStoreApi.getInstance().getUserInfo(new RetrofitCallback<UserInfoBean>() {
             @Override
             public void onSuccess(int code, String msg, UserInfoBean data) {
-                LogCat.d(TAG, data.toString());
-                saveUserInfo(data);
+                CommonHelper.saveLoginInfo(data);
                 if (isViewAttached()) {
                     mView.updateUserInfo();
                 }
@@ -34,11 +33,6 @@ public class MinePresenter extends BasePresenter<MineContract.View> implements M
                 LogCat.e(TAG, "Get user info failed. " + msg);
             }
         });
-    }
-
-    private void saveUserInfo(UserInfoBean bean) {
-        LogCat.d(TAG, "Avatar: " + bean.getOrigin_icon());
-        CommonHelper.saveLoginInfo(bean);
     }
 
 }

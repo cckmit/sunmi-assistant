@@ -19,7 +19,6 @@ import java.util.Locale;
 import java.util.concurrent.ScheduledExecutorService;
 
 import sunmi.common.utils.DateTimeUtils;
-import sunmi.common.utils.log.LogCat;
 
 /**
  * Description:
@@ -247,9 +246,7 @@ public class ZFTimeLine extends View {
 
     //移动到某时间 传入秒数
     public void autoMove() {
-        LogCat.e("zft", "99999999 222 currentInteval = " + currentInterval);
         currentInterval += 60;
-        LogCat.e("zft", "99999999 333 currentInteval = " + currentInterval);
         invalidate();
     }
 

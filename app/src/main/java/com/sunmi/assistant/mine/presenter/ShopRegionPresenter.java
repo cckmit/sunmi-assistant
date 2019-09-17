@@ -1,5 +1,7 @@
 package com.sunmi.assistant.mine.presenter;
 
+import android.text.TextUtils;
+
 import com.sunmi.assistant.mine.contract.ShopRegionContract;
 
 import sunmi.common.base.BasePresenter;
@@ -24,8 +26,11 @@ public class ShopRegionPresenter extends BasePresenter<ShopRegionContract.View>
     }
 
     @Override
-    public void updateRegion(int province, int city, int area) {
+    public void updateRegion(int province, int city, int area, String address) {
         mInfo.setRegion(province, city, area);
+        if (!TextUtils.isEmpty(address)) {
+            mInfo.setAddress(address);
+        }
         SunmiStoreApi.getInstance().updateShopInfo(mInfo, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {

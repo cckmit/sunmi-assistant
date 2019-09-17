@@ -218,6 +218,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
                 CommonNotifications.shopSwitched,
                 CommonNotifications.shopNameChanged,
                 CommonNotifications.companyNameChanged,
+                CommonNotifications.companySwitch
         };
     }
 
@@ -228,6 +229,8 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         } else if (id == CommonNotifications.shopNameChanged
                 || id == CommonNotifications.companyNameChanged) {
             mPresenter.refresh(0);
+        } else if (id == CommonNotifications.companySwitch) {
+            mPresenter.switchCompanyTo(SpUtils.getCompanyId(), SpUtils.getShopId());
         }
     }
 

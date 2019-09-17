@@ -13,6 +13,7 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.SelectStoreContract;
 import com.sunmi.assistant.mine.model.SelectShopModel;
 import com.sunmi.assistant.mine.presenter.SelectStorePresenter;
+import com.sunmi.assistant.ui.activity.MainActivity_;
 import com.sunmi.assistant.utils.GetUserInfoUtils;
 
 import org.androidannotations.annotations.AfterViews;
@@ -29,7 +30,6 @@ import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.CommonHelper;
-import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
@@ -89,10 +89,13 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
     @Override
     public void complete(int saasExist, int shopId, String shopName) {
         if (SpUtils.isLoginSuccess()) {
+            SpUtils.setSaasExist(1);
             BaseNotification.newInstance().postNotificationName(CommonNotifications.refreshMainTabView);
             if (isLoginSuccessSwitchCompany) {
                 CommonHelper.saveCompanyShopInfo(companyId, companyName, 1, shopId, shopName);
-                GotoActivityUtils.gotoMainActivity(context);
+                BaseNotification.newInstance().postNotificationName(CommonNotifications.companySwitch);
+                MainActivity_.intent(this).start();
+                //GotoActivityUtils.gotoMainActivity(context);
             } else {
                 setResult(RESULT_OK);
             }

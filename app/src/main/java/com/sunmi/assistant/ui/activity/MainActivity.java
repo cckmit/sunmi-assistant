@@ -72,17 +72,18 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
         mPresenter.getMessageCount();
         registerNetworkReceiver();
         CrashReport.setUserId(SpUtils.getUID());
+
         if (MyApplication.isCheckedToken) {
             MQTTManager.getInstance().createEmqToken(true);//初始化长连接
+            initIpc();
         }
-        initIpc();
         if (TextUtils.isEmpty(SpUtils.getCompanyName())) {
             CommonUtils.gotoLoginActivity(context, "");
         } else {
             initTabs();
+            initMessageBadge();
+            ShortcutBadger.applyCount(BaseApplication.getInstance(), SpUtils.getRemindUnreadMsg()); //for 1.1.4+
         }
-        initMessageBadge();
-        ShortcutBadger.applyCount(BaseApplication.getInstance(), SpUtils.getRemindUnreadMsg()); //for 1.1.4+
     }
 
     @Override
@@ -146,7 +147,7 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (NotificationConstant.netConnectedMainActivity == id) {
-            MqttManager.getInstance().createEmqToken(true);
+            initIpc();
         } else if (CommonNotifications.refreshMainTabView == id) {
             if (mTabHost.getChildCount() == 4) {
                 return;
@@ -213,6 +214,9 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
 
     @UiThread
     void initMessageBadge() {
+        if (mineTitle == null) {
+            return;
+        }
         final Fragment fragment = getFragment(getString(R.string.str_tab_mine));
         if (fragment != null && fragment instanceof MineFragment) {
             ((MineFragment) fragment).setMsgBadge();

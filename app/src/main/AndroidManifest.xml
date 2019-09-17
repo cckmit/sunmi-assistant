@@ -69,8 +69,7 @@
         <activity android:name=".ui.activity.login.InputCaptchaActivity_" />
         <!-- 设置密码 -->
         <activity android:name=".ui.activity.login.SetPasswordActivity_" />
-        <!-- 找回密码发送验证码 -->
-        <activity android:name=".ui.activity.login.RetrievePasswordActivity_" />
+        <!-- 输入手机号 -->
         <activity android:name=".ui.activity.login.InputMobileActivity_" />
         <!-- 首页 -->
         <activity
@@ -108,8 +107,8 @@
         <activity android:name=".mine.company.CompanyDetailActivity_" />
         <activity android:name=".mine.shop.ShopDetailGroupActivity_" />
         <activity android:name=".mine.shop.CreateShopPreviewActivity_" />
-        <activity android:name=".mine.message.MsgSettingActivity_"/>
-        <activity android:name=".mine.message.MsgSettingDetailActivity_"/>
+        <activity android:name=".mine.message.MsgSettingActivity_" />
+        <activity android:name=".mine.message.MsgSettingDetailActivity_" />
         <activity android:name=".mine.shop.ShopEditAddressActivity_" />
 
         <meta-data
