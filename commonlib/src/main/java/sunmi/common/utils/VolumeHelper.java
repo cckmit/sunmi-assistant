@@ -153,8 +153,8 @@ public class VolumeHelper {
     }
 
     //取消静音
-    public void unMute() {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+    public void mute() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_MUTE,
                     AudioManager.FLAG_SHOW_UI);  //23以后的版本用这个
         } else {
@@ -164,8 +164,8 @@ public class VolumeHelper {
     }
 
     //静音
-    public void mute() {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+    public void unMute() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_UNMUTE,
                     AudioManager.FLAG_SHOW_UI);  //23以后的版本用这个
         } else {
@@ -176,7 +176,7 @@ public class VolumeHelper {
 
     //静音
     public boolean isMute() {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return audioManager.isStreamMute(AudioManager.STREAM_MUSIC);//API 23
         } else {//todo
             return 0 == audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);//API 23
