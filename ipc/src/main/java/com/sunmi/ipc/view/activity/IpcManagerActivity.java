@@ -192,6 +192,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private List<VideoTimeSlotBean> listCloud = new ArrayList<>();
 
     private LoadingDialog timeSlotsDialog;
+    //竖屏切换高清
+    private BottomPopMenu qualityPop;
 
     @AfterViews
     void init() {
@@ -630,7 +632,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     public void setVideoParams(int orientation) {
         int videoW = screenW, videoH = screenW;
         ViewGroup.LayoutParams rlLP = rlVideo.getLayoutParams();
+        ViewGroup.LayoutParams bottomBarLp = rlBottomBar.getLayoutParams();
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            bottomBarLp.height = CommonHelper.dp2px(context, 64);
             int screenH = CommonHelper.getScreenWidth(context);//横屏
             float aspectRatio = screenW / screenH;//宽高比
             videoW = screenH;
@@ -646,6 +650,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             rlLP.height = screenW;
             rlLP.width = screenH;
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            bottomBarLp.height = CommonHelper.dp2px(context, 48);
             if (isSS1()) {
                 videoH = screenW;
             } else {
@@ -656,6 +661,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         }
 
         rlVideo.setLayoutParams(rlLP);
+        rlBottomBar.setLayoutParams(bottomBarLp);
 
         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
         lp.width = videoW;
@@ -1254,9 +1260,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             tvTimeScroll.setCompoundDrawablesWithIntrinsicBounds(null, null, drawableRight, null);
         }
     }
-
-    private BottomPopMenu qualityPop;
-
 
     private void switchQuality() {
         if (qualityPop == null) {
