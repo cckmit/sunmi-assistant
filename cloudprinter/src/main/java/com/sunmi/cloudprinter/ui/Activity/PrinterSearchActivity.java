@@ -70,7 +70,7 @@ public class PrinterSearchActivity extends BaseActivity
     @AfterViews
     protected void init() {
         StatusBarUtils.StatusBarLightMode(this);//状态栏
-        sunmiPrinterClient = new SunmiPrinterClient(context, bleAddress, this);
+        sunmiPrinterClient = new SunmiPrinterClient(context, this);
         initList();
     }
 
@@ -129,7 +129,7 @@ public class PrinterSearchActivity extends BaseActivity
     }
 
     private void initBt() {
-        sunmiPrinterClient = new SunmiPrinterClient(context, bleAddress, this);
+        sunmiPrinterClient = new SunmiPrinterClient(context, this);
         startScan();
     }
 

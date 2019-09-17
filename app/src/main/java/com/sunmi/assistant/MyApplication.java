@@ -7,6 +7,8 @@ import android.os.Handler;
 import com.sunmi.apmanager.rpc.mqtt.MQTTManager;
 import com.sunmi.assistant.config.BootLoader;
 import com.tencent.stat.StatService;
+import com.xiaojinzi.component.Component;
+import com.xiaojinzi.component.impl.application.ModuleManager;
 
 import sunmi.common.base.BaseApplication;
 import sunmi.common.rpc.mqtt.MqttManager;
@@ -42,6 +44,18 @@ public class MyApplication extends BaseApplication {
     }
 
     private void init() {
+        // 初始化组件化相关
+        Component.init(this, BuildConfig.DEBUG);
+
+
+        // 装载各个业务组件
+        ModuleManager.getInstance().registerArr(
+                "app","ipc"
+        );
+
+        if (BuildConfig.DEBUG) {
+            ModuleManager.getInstance().check();
+        }
         BootLoader bootLoader = new BootLoader(this);
         bootLoader.init();
         StatService.registerActivityLifecycleCallbacks(this);
