@@ -4,7 +4,7 @@
     android:id="@+id/cl_dashboard_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/holo_purple">
+    android:background="@color/color_303540">
 
     <cn.bingoogolapple.refreshlayout.BGARefreshLayout
         android:id="@+id/layout_dashboard_refresh"

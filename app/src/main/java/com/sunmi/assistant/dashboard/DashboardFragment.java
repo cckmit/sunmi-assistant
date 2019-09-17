@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshItem;
+import com.sunmi.assistant.dashboard.ui.ShopMenuAnimation;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -34,7 +35,6 @@ import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
-import sunmi.common.view.DropdownAnimation;
 import sunmi.common.view.DropdownMenu;
 
 /**
@@ -71,11 +71,12 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     private BaseArrayAdapter<Object> mAdapter;
     private LinearLayoutManager mLayoutManager;
     private ShopMenuAdapter mShopAdapter;
-    private DropdownAnimation mDropdownAnimator = new DropdownAnimation();
+    private ShopMenuAnimation mDropdownAnimator = new ShopMenuAnimation();
 
     private int mStatusBarHeight;
     private int mTopShopMenuHeight;
     private boolean mIsStickyTop = false;
+    private int mSlideOffset = 0;
 
     @AfterViews
     void init() {
@@ -113,6 +114,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mShopMenu.setLayoutManager(new ShopMenuLayoutManager(getContext()));
         mShopMenu.setPopupHelper(new ShopMenuPopupHelper());
         mShopMenu.setAdapter(mShopAdapter);
+        mOverlay.setOnClickListener(v -> mShopMenu.getPopup().dismiss(true));
     }
 
     private void initRefreshLayout() {
@@ -234,22 +236,22 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
                 topBar.getLocationInWindow(coordinate);
                 position = coordinate[1];
             }
+            if (mIsStickyTop && position > 0) {
+                mIsStickyTop = false;
+                StatusBarUtils.setStatusBarFullTransparent(getActivity());
+                mShopMenu.setVisibility(View.VISIBLE);
+                mTopPeriodTab.setVisibility(View.INVISIBLE);
+            } else if (!mIsStickyTop && position <= 0) {
+                mIsStickyTop = true;
+                StatusBarUtils.setStatusBarColor(getActivity(), StatusBarUtils.TYPE_DARK);
+                mShopMenu.setTranslationY(-mTopShopMenuHeight);
+                mShopMenu.setVisibility(View.INVISIBLE);
+                mTopPeriodTab.setVisibility(View.VISIBLE);
+            }
+
             if (position > 0) {
-                if (mIsStickyTop) {
-                    mIsStickyTop = false;
-                    StatusBarUtils.setStatusBarFullTransparent(getActivity());
-                    mShopMenu.setVisibility(View.VISIBLE);
-                    mTopPeriodTab.setVisibility(View.INVISIBLE);
-                }
-                int offset = position - mTopShopMenuHeight;
-                mShopMenu.setTranslationY(offset);
-            } else {
-                if (!mIsStickyTop) {
-                    mIsStickyTop = true;
-                    StatusBarUtils.setStatusBarColor(getActivity(), StatusBarUtils.TYPE_DARK);
-                    mShopMenu.setVisibility(View.INVISIBLE);
-                    mTopPeriodTab.setVisibility(View.VISIBLE);
-                }
+                mSlideOffset = Math.min(position - mTopShopMenuHeight, 0);
+                mShopMenu.setTranslationY(mSlideOffset);
             }
         }
     }
@@ -280,12 +282,12 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
         @Override
         public void show(RecyclerView list, boolean animated) {
-            mDropdownAnimator.startAnimationToShow(animated, list, mOverlay);
+            mDropdownAnimator.startAnimationToShow(animated, list, mSlideOffset, mOverlay);
         }
 
         @Override
         public void dismiss(RecyclerView list, boolean animated) {
-            mDropdownAnimator.startAnimationToDismiss(animated, list, mOverlay);
+            mDropdownAnimator.startAnimationToDismiss(animated, list, mSlideOffset, mOverlay);
         }
     }
 
