@@ -429,7 +429,7 @@ public class TitleBarView extends RelativeLayout {
         setAppTitle(strRes);
         setLeftImgOnClickListener();
         setLeftTextOnClickListener();
-        setLeftImageResource(R.mipmap.ic_back);
+        setLeftImageResource(R.mipmap.ic_back_white);
     }
 
     /**
