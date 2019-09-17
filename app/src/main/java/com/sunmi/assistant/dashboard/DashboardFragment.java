@@ -3,18 +3,17 @@ package com.sunmi.assistant.dashboard;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshItem;
-import com.sunmi.assistant.dashboard.ui.ShopMenuAnimation;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -56,6 +55,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @ViewById(R.id.layout_shop_title)
     DropdownMenu mShopMenu;
+    private LinearLayout mShopMenuList;
     @ViewById(R.id.view_dashboard_overlay)
     View mOverlay;
 
@@ -71,12 +71,12 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     private BaseArrayAdapter<Object> mAdapter;
     private LinearLayoutManager mLayoutManager;
     private ShopMenuAdapter mShopAdapter;
-    private ShopMenuAnimation mDropdownAnimator = new ShopMenuAnimation();
 
     private int mStatusBarHeight;
     private int mTopShopMenuHeight;
     private boolean mIsStickyTop = false;
     private int mSlideOffset = 0;
+    private FilterItem mCurrentShopItem;
 
     @AfterViews
     void init() {
@@ -112,8 +112,22 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     private void initShopMenu() {
         mShopAdapter = new ShopMenuAdapter(getContext());
         mShopMenu.setLayoutManager(new ShopMenuLayoutManager(getContext()));
-        mShopMenu.setPopupHelper(new ShopMenuPopupHelper());
+        mShopMenu.setPopupHelper(new ShopMenuPopupHelper(getContext(), mContent, mOverlay));
         mShopMenu.setAdapter(mShopAdapter);
+        mShopAdapter.setOnItemClickListener((adapter, model, position) -> {
+            if (SpUtils.getShopId() != model.getId()) {
+                mCurrentShopItem.setChecked(false);
+                mCurrentShopItem = model;
+                model.setChecked(true);
+                List<FilterItem> shops = adapter.getData();
+                shops.remove(position);
+                shops.add(0, model);
+                adapter.notifyDataSetChanged();
+                SpUtils.setShopId(model.getId());
+                SpUtils.setShopName(model.getItemName());
+                BaseNotification.newInstance().postNotificationName(CommonNotifications.shopSwitched);
+            }
+        });
         mOverlay.setOnClickListener(v -> mShopMenu.getPopup().dismiss(true));
     }
 
@@ -163,14 +177,13 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Override
     public void setShopList(List<FilterItem> list) {
-        mShopAdapter.setData(list);
-        mShopAdapter.setOnItemClickListener((adapter, model, position) -> {
-            if (SpUtils.getShopId() != model.getId()) {
-                SpUtils.setShopId(model.getId());
-                SpUtils.setShopName(model.getItemName());
-                BaseNotification.newInstance().postNotificationName(CommonNotifications.shopSwitched);
+        for (FilterItem item : list) {
+            if (item.isChecked()) {
+                mCurrentShopItem = item;
+                break;
             }
-        });
+        }
+        mShopAdapter.setData(list);
     }
 
     @UiThread
@@ -253,41 +266,6 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
                 mSlideOffset = Math.min(position - mTopShopMenuHeight, 0);
                 mShopMenu.setTranslationY(mSlideOffset);
             }
-        }
-    }
-
-    private class ShopMenuPopupHelper implements DropdownMenu.PopupHelper {
-
-        @Override
-        public void initMenu(RecyclerView list) {
-            if (list.getAdapter() == null || list.getAdapter().getItemCount() == 0) {
-                return;
-            }
-            // Add view into ConstraintLayout.
-            int index = mContent.indexOfChild(mOverlay) + 1;
-            if (mContent.indexOfChild(list) == -1) {
-                mContent.addView(list, index);
-            }
-            // Init constraint set of menu list in ConstraintLayout.
-            ConstraintSet con = new ConstraintSet();
-            con.clone(mContent);
-            con.connect(list.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0);
-            con.connect(list.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 0);
-            con.connect(list.getId(), ConstraintSet.TOP, R.id.layout_shop_title, ConstraintSet.BOTTOM, 0);
-            con.constrainHeight(list.getId(), ConstraintSet.MATCH_CONSTRAINT);
-            con.constrainWidth(list.getId(), ConstraintSet.MATCH_CONSTRAINT);
-            con.applyTo(mContent);
-            list.measure(0, 0);
-        }
-
-        @Override
-        public void show(RecyclerView list, boolean animated) {
-            mDropdownAnimator.startAnimationToShow(animated, list, mSlideOffset, mOverlay);
-        }
-
-        @Override
-        public void dismiss(RecyclerView list, boolean animated) {
-            mDropdownAnimator.startAnimationToDismiss(animated, list, mSlideOffset, mOverlay);
         }
     }
 
