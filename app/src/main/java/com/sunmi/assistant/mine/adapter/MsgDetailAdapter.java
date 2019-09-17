@@ -61,12 +61,14 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
         if (!TextUtils.isEmpty(item.getMajorButtonLink())) {
             helper.itemView.setOnClickListener(v -> {
                 msgView.setVisibility(View.GONE);
-                MsgTag urlTag = item.getMajorButtonLinkTag();
-                Map<String, String> urlMap = urlTag.getMsgMap();
-                String url = urlMap.get("url");
-                String deviceModel = urlMap.get("device_model");
-                if (TextUtils.isEmpty(url) || TextUtils.isEmpty(deviceModel)) {
-                    return;
+                String[] link = item.getMajorButtonLink().split("&");
+                String url = "", deviceModel = "";
+                for (int i = 0; i < link.length; i++) {
+                    if (TextUtils.isEmpty(link[2]) || TextUtils.isEmpty(link[3])) {
+                        return;
+                    }
+                    url = MsgTag.getUrlDecoderString(link[2].substring(4));//url=
+                    deviceModel = link[3].substring(13);//device_model=
                 }
                 DynamicVideoActivity_.intent(context)
                         .url(url)
