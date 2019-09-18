@@ -587,7 +587,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 IpcConstants.setIpcNightIdeRotation, IpcConstants.getIpcDetection,
                 IpcConstants.ipcUpgrade, IpcConstants.getIsWire, CommonNotifications.netConnected,
                 CommonNotifications.netDisconnection, CommonNotifications.ipcUpgrade,
-                CommonNotifications.netConnectException, IpcConstants.getSdStatus};
+                CommonNotifications.timeout, IpcConstants.getSdStatus};
     }
 
     @Override
@@ -603,7 +603,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         } else if (id == CommonNotifications.ipcUpgrade) { //ipc升级
             mDevice.setFirmware(mResp.getLatest_bin_version());
             mPresenter.currentVersion();
-        } else if (id == CommonNotifications.netConnectException) { //连接超时
+        } else if (id == CommonNotifications.timeout) { //连接超时
             shortTip(R.string.str_server_exception);
         }
         if (!isRun || args == null || args.length < 1) {

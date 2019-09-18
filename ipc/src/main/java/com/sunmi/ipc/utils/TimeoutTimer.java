@@ -35,7 +35,7 @@ public class TimeoutTimer extends Timer {
             public void run() {
                 if (countDown++ == TIMEOUT) {
                     stop();
-                    BaseNotification.newInstance().postNotificationName(CommonNotifications.netConnectException);
+                    BaseNotification.newInstance().postNotificationName(CommonNotifications.timeout);
                 }
             }
         }, 0, 1000);

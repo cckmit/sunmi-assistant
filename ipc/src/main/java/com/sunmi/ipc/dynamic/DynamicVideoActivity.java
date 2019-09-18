@@ -469,13 +469,13 @@ public class DynamicVideoActivity extends BaseActivity implements
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{CommonNotifications.netConnectException};
+        return new int[]{CommonNotifications.timeout};
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
         super.didReceivedNotification(id, args);
-        if (id == CommonNotifications.netConnectException) { //连接超时
+        if (id == CommonNotifications.timeout) { //连接超时
             hideLoadingDialog();
             shortTip(R.string.str_server_exception);
             errorView();
