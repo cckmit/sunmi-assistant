@@ -225,9 +225,10 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mLayoutError.setVisibility(View.GONE);
         mDataSource = dataSource;
         resetTopView();
-        if (mAdapter == null && data == null) {
+        if (mAdapter == null || data == null) {
             return;
         }
+        mAdapter.clearTypes();
         List<Object> list = new ArrayList<>(data.size());
         for (int i = 0, size = data.size(); i < size; i++) {
             BaseRefreshItem item = data.get(i);

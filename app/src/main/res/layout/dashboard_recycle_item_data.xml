@@ -244,6 +244,12 @@
         tools:text="42.21%" />
 
     <android.support.constraint.Group
+        android:id="@+id/group_dashboard_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="tv_dashboard_value,tv_dashboard_subdata,tv_dashboard_title,tv_dashboard_subtitle" />
+
+    <android.support.constraint.Group
         android:id="@+id/group_dashboard_volume"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -260,5 +266,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:constraint_referenced_ids="tv_dashboard_rate_title,tv_dashboard_rate_subtitle,tv_dashboard_rate_subdata,tv_dashboard_rate" />
+
+    <ImageView
+        android:id="@+id/iv_dashboard_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

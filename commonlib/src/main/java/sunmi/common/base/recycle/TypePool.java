@@ -51,6 +51,12 @@ public class TypePool implements ITypePool {
         }
     }
 
+    public void clear() {
+        isMultiType = true;
+        classes.clear();
+        types.clear();
+    }
+
     @Override
     public int getIndexOfType(Class<?> itemClass) {
         if (isMultiType) {

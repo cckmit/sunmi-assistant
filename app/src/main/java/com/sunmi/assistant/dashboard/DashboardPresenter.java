@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.v4.content.ContextCompat;
-import android.util.SparseArray;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshItem;
@@ -16,13 +15,10 @@ import com.sunmi.assistant.dashboard.card.NoFsCard;
 import com.sunmi.assistant.dashboard.card.NoOrderCard;
 import com.sunmi.assistant.dashboard.card.PeriodTabCard;
 import com.sunmi.assistant.dashboard.card.TrendChartCard;
-import com.sunmi.ipc.face.model.FaceAge;
-import com.sunmi.ipc.model.FaceAgeRangeResp;
 import com.sunmi.ipc.model.IpcListResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
@@ -57,7 +53,6 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     private boolean mIsShopListLoaded;
     private boolean mIsDataSourceLoaded;
 
-    private SparseArray<String> mAgeList;
     private List<BaseRefreshItem> mList;
 
     private RefreshTask mTask;
@@ -68,7 +63,6 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         mShopId = SpUtils.getShopId();
         loadDataSource();
         loadShopList();
-        loadAgeList();
         if (mTask == null) {
             mTask = new RefreshTask();
             WORK_HANDLER.postDelayed(mTask, REFRESH_TIME_PERIOD);
@@ -121,31 +115,6 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         if (isViewAttached()) {
             mView.shortTip(R.string.toast_network_Exception);
         }
-    }
-
-    public SparseArray<String> getAgeList() {
-        return mAgeList;
-    }
-
-    private void loadAgeList() {
-        if (mAgeList != null) {
-            return;
-        }
-        IpcCloudApi.getFaceAgeRange(mCompanyId, mShopId, new RetrofitCallback<FaceAgeRangeResp>() {
-            @Override
-            public void onSuccess(int code, String msg, FaceAgeRangeResp data) {
-                List<FaceAge> faceAges = data.getAgeRangeList();
-                Collections.sort(faceAges, (o1, o2) -> o1.getCode() - o2.getCode());
-                mAgeList = new SparseArray<>(faceAges.size());
-                for (FaceAge age : faceAges) {
-                    mAgeList.put(age.getCode(), age.getName());
-                }
-            }
-
-            @Override
-            public void onFail(int code, String msg, FaceAgeRangeResp data) {
-            }
-        });
     }
 
     private void loadShopList() {
