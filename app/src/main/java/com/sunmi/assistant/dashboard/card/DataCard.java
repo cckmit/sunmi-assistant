@@ -18,6 +18,8 @@ import com.sunmi.assistant.utils.Utils;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
+import sunmi.common.model.ConsumerCountResp;
+import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 
@@ -46,19 +48,31 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
     protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, CardCallback callback) {
         Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(Constants.TIME_PERIOD_TODAY);
         if (showTransactionData()) {
-            loadSales(companyId, shopId, periodTimestamp.first, periodTimestamp.second, callback);
+            loadSales(companyId, shopId, period, callback);
         } else if (showConsumerData()) {
-            loadConsumer(companyId, shopId, period);
+            loadConsumer(companyId, shopId, period, callback);
         }
         return null;
     }
 
-    private void loadSales(int companyId, int shopId, long startTime, long endTime, CardCallback callback) {
-        PaymentApi.get().getOrderTotalAmount(companyId, shopId, startTime, endTime, 0,
+    private void loadSales(int companyId, int shopId, int period, CardCallback callback) {
+        Pair<Long, Long> time = Utils.getPeriodTimestamp(Constants.TIME_PERIOD_TODAY);
+        PaymentApi.get().getOrderTotalAmount(companyId, shopId, time.first, time.second, 0,
                 new RetrofitCallback<OrderTotalAmountResp>() {
                     @Override
                     public void onSuccess(int code, String msg, OrderTotalAmountResp data) {
-
+                        Model model = getModel();
+                        if (period == Constants.TIME_PERIOD_TODAY) {
+                            model.sales = data.getDayAmount();
+                            model.lastSales = data.getYesterdayAmount();
+                        } else if (period == Constants.TIME_PERIOD_WEEK) {
+                            model.sales = data.getWeekAmount();
+                            model.lastSales = data.getLastWeekAmount();
+                        } else {
+                            model.sales = data.getMonthAmount();
+                            model.lastSales = data.getLastMonthAmount();
+                        }
+                        loadVolume(companyId, shopId, period, callback);
                     }
 
                     @Override
@@ -68,12 +82,28 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
                 });
     }
 
-    private void loadVolume(int companyId, int shopId, long startTime, long endTime, CardCallback callback) {
-        PaymentApi.get().getOrderTotalCount(companyId, shopId, startTime, endTime, 0,
+    private void loadVolume(int companyId, int shopId, int period, CardCallback callback) {
+        Pair<Long, Long> time = Utils.getPeriodTimestamp(Constants.TIME_PERIOD_TODAY);
+        PaymentApi.get().getOrderTotalCount(companyId, shopId, time.first, time.second, 0,
                 new RetrofitCallback<OrderTotalCountResp>() {
                     @Override
                     public void onSuccess(int code, String msg, OrderTotalCountResp data) {
-
+                        Model model = getModel();
+                        if (period == Constants.TIME_PERIOD_TODAY) {
+                            model.volume = data.getDayCount();
+                            model.lastVolume = data.getYesterdayCount();
+                        } else if (period == Constants.TIME_PERIOD_WEEK) {
+                            model.volume = data.getWeekCount();
+                            model.lastVolume = data.getLastWeekCount();
+                        } else {
+                            model.volume = data.getMonthCount();
+                            model.lastVolume = data.getLastMonthCount();
+                        }
+                        if (showConsumerData()) {
+                            loadConsumer(companyId, shopId, period, callback);
+                        } else {
+                            callback.onSuccess();
+                        }
                     }
 
                     @Override
@@ -83,8 +113,27 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
                 });
     }
 
-    private void loadConsumer(int companyId, int shopId, int period) {
+    private void loadConsumer(int companyId, int shopId, int period, CardCallback callback) {
+        SunmiStoreApi.getInstance().getConsumer(companyId, shopId, period,
+                new RetrofitCallback<ConsumerCountResp>() {
+                    @Override
+                    public void onSuccess(int code, String msg, ConsumerCountResp data) {
+                        Model model = getModel();
+                        model.consumer = data.getLatestCount();
+                        model.lastConsumer = data.getEarlyCount();
+                        if (showTransactionData()) {
+                            model.rate = model.consumer == 0 ?
+                                    0f : (float) model.volume / model.consumer;
+                            model.lastRate = model.lastConsumer == 0 ?
+                                    0f : (float) model.lastVolume / model.lastConsumer;
+                        }
+                    }
 
+                    @Override
+                    public void onFail(int code, String msg, ConsumerCountResp data) {
+                        callback.onFail(code, msg, data);
+                    }
+                });
     }
 
     @Override

@@ -33,9 +33,9 @@ public interface DashboardContract {
 
         void switchPeriodTo(int period);
 
-        void refresh();
+        void refresh(boolean showLoading);
 
-        void refresh(int position);
+        void refresh(int position, boolean showLoading);
 
         void showFailedTip();
 

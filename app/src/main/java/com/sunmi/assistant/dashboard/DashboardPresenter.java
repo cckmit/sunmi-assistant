@@ -95,18 +95,18 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     @Override
-    public void refresh() {
+    public void refresh(boolean showLoading) {
         if (mList != null) {
             for (BaseRefreshItem card : mList) {
-                card.refresh();
+                card.refresh(showLoading);
             }
         }
     }
 
     @Override
-    public void refresh(int position) {
+    public void refresh(int position, boolean showLoading) {
         if (mList != null && mList.size() > position) {
-            mList.get(position).refresh();
+            mList.get(position).refresh(showLoading);
         }
     }
 
@@ -278,7 +278,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
         @Override
         public void run() {
-            refresh();
+            refresh(false);
             WORK_HANDLER.postDelayed(this, REFRESH_TIME_PERIOD);
         }
     }

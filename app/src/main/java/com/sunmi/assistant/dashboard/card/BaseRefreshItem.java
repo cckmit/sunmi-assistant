@@ -99,7 +99,7 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
         this.mShopId = shopId;
         this.mModel.skipLoad = false;
         onPreShopChange(mModel, shopId);
-        requestLoad(true);
+        requestLoad(true, true);
     }
 
     public void setShopId(int shopId) {
@@ -109,7 +109,7 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
         this.mShopId = shopId;
         this.mModel.skipLoad = false;
         onPreShopChange(mModel, shopId);
-        requestLoad(true);
+        requestLoad(true, true);
     }
 
     public void setPeriod(int period) {
@@ -120,11 +120,11 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
         this.mModel.period = period;
         this.mModel.skipLoad = false;
         onPrePeriodChange(mModel, period);
-        requestLoad(false);
+        requestLoad(false, true);
     }
 
-    public void refresh() {
-        requestLoad(true);
+    public void refresh(boolean showLoading) {
+        requestLoad(true, showLoading);
     }
 
     public void cancelLoad() {
@@ -156,7 +156,7 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
         }
     }
 
-    private void requestLoad(boolean forceLoad) {
+    private void requestLoad(boolean forceLoad, boolean showLoading) {
         if (forceLoad || !mModel.skipLoad) {
             if (mCall.isLoading() && mCall.isRequestSame(mCompanyId, mShopId, mPeriod)) {
                 LogCat.d(TAG, "Data is loading, skip.");
@@ -164,6 +164,9 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
             }
             LogCat.d(TAG, "Start to load data.");
             mState = STATE_LOADING;
+            if (showLoading) {
+                updateView();
+            }
             mCall.set(load(mCompanyId, mShopId, mPeriod, mCallback), mCompanyId, mShopId, mPeriod);
         }
     }

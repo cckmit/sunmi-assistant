@@ -40,12 +40,12 @@ public class TotalSalesCard extends BaseSmallCard<TotalSalesCard.Model, OrderTot
 
     @Override
     protected void setupModel(Model model, OrderTotalAmountResp response) {
-        model.dataToday = response.getDay_amount();
-        model.dataWeek = response.getWeek_amount();
-        model.dataMonth = response.getMonth_amount();
-        model.trendDataToday = TextUtils.isEmpty(response.getDay_rate()) ? DATA_NONE : response.getDay_rate();
-        model.trendDataWeek = TextUtils.isEmpty(response.getWeek_rate()) ? DATA_NONE : response.getWeek_rate();
-        model.trendDataMonth = TextUtils.isEmpty(response.getMonth_rate()) ? DATA_NONE : response.getMonth_rate();
+        model.dataToday = response.getDayAmount();
+        model.dataWeek = response.getWeekAmount();
+        model.dataMonth = response.getMonthAmount();
+        model.trendDataToday = TextUtils.isEmpty(response.getDayRate()) ? DATA_NONE : response.getDayRate();
+        model.trendDataWeek = TextUtils.isEmpty(response.getWeekRate()) ? DATA_NONE : response.getWeekRate();
+        model.trendDataMonth = TextUtils.isEmpty(response.getMonthRate()) ? DATA_NONE : response.getMonthRate();
     }
 
     @Override

@@ -247,7 +247,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
-        mPresenter.refresh();
+        mPresenter.refresh(true);
         refreshLayout.postDelayed(refreshLayout::endRefreshing, 500);
     }
 
@@ -273,7 +273,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             mPresenter.switchShopTo(SpUtils.getCompanyId(), SpUtils.getShopId());
         } else if (id == CommonNotifications.shopNameChanged
                 || id == CommonNotifications.companyNameChanged) {
-            mPresenter.refresh(0);
+            // TODO: Update name
         }
     }
 
