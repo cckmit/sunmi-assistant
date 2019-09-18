@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/transparent"
-    android:visibility="gone">
+    android:visibility="visible">
 
     <RelativeLayout
         android:id="@+id/rl_top"
@@ -131,7 +131,7 @@
     <RelativeLayout
         android:id="@+id/rl_bottom"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_56"
+        android:layout_height="@dimen/dp_48"
         android:layout_alignParentBottom="true"
         android:animateLayoutChanges="true"
         android:background="@mipmap/bg_video_controller_bottom">
@@ -155,43 +155,6 @@
             android:layout_toEndOf="@+id/iv_play"
             android:background="@color/transparent"
             android:visibility="visible" />
-
-        <RelativeLayout
-            android:id="@+id/ll_date_view"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_56"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/dp_24"
-            android:layout_toStartOf="@+id/tv_calender"
-            android:layout_toEndOf="@+id/iv_play"
-            android:background="@color/transparent"
-            android:visibility="gone">
-
-            <RelativeLayout
-                android:id="@+id/rl_recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_56"
-                android:layout_marginTop="@dimen/dp_8">
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_56" />
-
-                <!--和RecyclerView item_time 的高度相同 dp_30=dp_20+dp_10 -->
-                <TextView
-                    android:layout_width="@dimen/dp_1"
-                    android:layout_height="@dimen/dp_16"
-                    android:layout_centerHorizontal="true"
-                    android:background="@color/c_red" />
-            </RelativeLayout>
-
-            <com.sunmi.ipc.utils.TimeView
-                android:id="@+id/my_view"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_36"
-                android:layout_alignBottom="@id/rl_recyclerView" />
-        </RelativeLayout>
 
         <TextView
             android:id="@+id/tv_calender"

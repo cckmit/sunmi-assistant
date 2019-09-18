@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -24,10 +23,10 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.datelibrary.DatePickDialog;
-import com.datelibrary.OnSureListener;
 import com.datelibrary.bean.DateType;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.contract.IpcManagerContract;
+import com.sunmi.ipc.model.IpcManageBean;
 import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.model.VideoTimeSlotBean;
 import com.sunmi.ipc.presenter.IpcManagerPresenter;
@@ -67,8 +66,13 @@ import sunmi.common.utils.IVideoPlayer;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.VolumeHelper;
 import sunmi.common.utils.log.LogCat;
+import sunmi.common.view.CommonListAdapter;
+import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.VerticalSeekBar;
+import sunmi.common.view.ViewHolder;
+import sunmi.common.view.bottompopmenu.BottomPopMenu;
+import sunmi.common.view.bottompopmenu.PopItemAction;
 import sunmi.common.view.dialog.LoadingDialog;
 
 /**
@@ -131,26 +135,16 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @ViewById(resName = "rl_video")
     RelativeLayout rlVideo;
 
-    @ViewById(resName = "scale_panel_portrait")
-    ZFTimeLine scalePanelP;
-    @ViewById(resName = "ll_portrait_time_line")
-    LinearLayout llPortraitTimeLine;
     @ViewById(resName = "ll_portrait_controller_bar")
     LinearLayout llPortraitBar;
     @ViewById(resName = "tv_calender_portrait")
     TextView tvCalenderP;//日历
     @ViewById(resName = "iv_volume_portrait")
     ImageView ivVolumeP;//音量
-    @ViewById(resName = "ll_video_quality_portrait")
-    LinearLayout llVideoQualityP;//是否显示画质
     @ViewById(resName = "tv_quality_portrait")
     TextView tvQualityP;//高清画质
-    @ViewById(resName = "tv_hd_quality_p")
-    TextView tvHDQualityP;//高清画质
-    @ViewById(resName = "tv_sd_quality_p")
-    TextView tvSDQualityP;//标清画质
     @ViewById(resName = "rv_manager")
-    RecyclerView rvManager;
+    SmRecyclerView rvManager;
 
     @Extra
     SunmiDevice device;
@@ -198,6 +192,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private List<VideoTimeSlotBean> listCloud = new ArrayList<>();
 
     private LoadingDialog timeSlotsDialog;
+    //竖屏切换高清
+    private BottomPopMenu qualityPop;
 
     @AfterViews
     void init() {
@@ -211,32 +207,24 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         titleBar.getRightTextView().setOnClickListener(this);
         initData();
         initSurfaceView();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                initControllerPanel();
-            }
-        }, 200);
+        initManageList();
+        handler.postDelayed(this::initControllerPanel, 200);
     }
 
     @SuppressLint("ClickableViewAccessibility")
     void initControllerPanel() {
-        rlVideo.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (MotionEvent.ACTION_DOWN == event.getAction()) {
-                    if (!isControlPanelShow) {
-                        startTimer();
-                    }
+        rlVideo.setOnTouchListener((v, event) -> {
+            if (MotionEvent.ACTION_DOWN == event.getAction()) {
+                if (!isControlPanelShow) {
+                    startTimer();
                 }
-                return false;
             }
+            return false;
         });
         openMove();
         initVolume();
         rlController.setVisibility(View.GONE);
-//        scalePanel.setListener(this);
-        scalePanelP.setListener(this);
+        scalePanel.setListener(this);
     }
 
     void initData() {
@@ -276,13 +264,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     @Override
     public void onBackPressed() {
-        stopPlay();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                finish();
-            }
-        }, 200);
+        if (isPortrait()) {
+            stopPlay();
+            handler.postDelayed(this::finish, 200);
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
     }
 
     @Override
@@ -327,9 +314,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     @Click(resName = "iv_full_screen")
     void fullScreenClick() {
-        if (llVideoQualityP.isShown()) {
-            llVideoQualityP.setVisibility(View.GONE);
-        }
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
@@ -393,21 +377,13 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     //画质
     @Click(resName = "tv_quality_portrait")
     void qualityPortraitClick() {
-        if (playType != 0) {
-            return;
-        }
-        llVideoQualityP.setVisibility(llVideoQualityP.isShown() ? View.GONE : View.VISIBLE);
-        if (qualityType == 0) {
-            tvHDQualityP.setTextColor(ContextCompat.getColor(this, R.color.colorOrange));
-            tvSDQualityP.setTextColor(ContextCompat.getColor(this, R.color.c_white));
-        } else {
-            tvHDQualityP.setTextColor(ContextCompat.getColor(this, R.color.c_white));
-            tvSDQualityP.setTextColor(ContextCompat.getColor(this, R.color.colorOrange));
+        if (playType == 0) {
+            switchQuality();
         }
     }
 
     //超清画质
-    @Click(resName = {"tv_hd_quality", "tv_hd_quality_p"})
+    @Click(resName = {"tv_hd_quality"})
     void hdQualityClick() {
         tvQuality.setText(R.string.str_FHD);
         tvQualityP.setText(R.string.str_FHD);
@@ -415,7 +391,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     //高清画质
-    @Click(resName = {"tv_sd_quality_p", "tv_sd_quality_p"})
+    @Click(resName = {"tv_sd_quality"})
     void sdQualityClick() {
         tvQuality.setText(R.string.str_HD);
         tvQualityP.setText(R.string.str_HD);
@@ -551,7 +527,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     @Override
     public void onPlayComplete() {//获取当前播放完毕时间判断是否cloud or ap
-        selectedTimeIsHaveVideo(scalePanelP.getCurrentInterval());
+        selectedTimeIsHaveVideo(scalePanel.getCurrentInterval());
     }
 
     @Override
@@ -617,26 +593,37 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         cloudPlay(urlList);
     }
 
+    private boolean isPortrait() {
+        return getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+    }
+
     /**
      * 视频全屏切换
      */
     public void switchOrientation(int orientation) {
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//隐藏状态栏
-            titleBar.setVisibility(View.GONE);
-            llPortraitTimeLine.setVisibility(View.GONE);
-            llPortraitBar.setVisibility(View.GONE);
-            rvManager.setVisibility(View.GONE);
-            setPanelVisible(View.VISIBLE);
+            setPortraitViewVisible(View.GONE);
+            setLandscapeViewVisible(View.VISIBLE);
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            titleBar.setVisibility(View.VISIBLE);
-            llPortraitTimeLine.setVisibility(View.VISIBLE);
-            llPortraitBar.setVisibility(View.VISIBLE);
-            rvManager.setVisibility(View.VISIBLE);
-            setPanelVisible(View.GONE);
+            setPortraitViewVisible(View.VISIBLE);
+            setLandscapeViewVisible(View.GONE);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//显示状态栏
         }
         setVideoParams(orientation);
+    }
+
+    private void setLandscapeViewVisible(int visibility) {
+        tvCalender.setVisibility(visibility);
+        tvQuality.setVisibility(visibility);
+        ivVolume.setVisibility(visibility);
+        setPanelVisible(visibility);
+    }
+
+    private void setPortraitViewVisible(int visibility) {
+        titleBar.setVisibility(visibility);
+        llPortraitBar.setVisibility(visibility);
+        rvManager.setVisibility(visibility);
     }
 
     /**
@@ -645,8 +632,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     public void setVideoParams(int orientation) {
         int videoW = screenW, videoH = screenW;
         ViewGroup.LayoutParams rlLP = rlVideo.getLayoutParams();
+        ViewGroup.LayoutParams bottomBarLp = rlBottomBar.getLayoutParams();
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//隐藏状态栏
+            bottomBarLp.height = CommonHelper.dp2px(context, 64);
             int screenH = CommonHelper.getScreenWidth(context);//横屏
             float aspectRatio = screenW / screenH;//宽高比
             videoW = screenH;
@@ -654,14 +642,15 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                 videoW = screenW;
             } else {
                 if (aspectRatio > 16 / 9) {
-                    videoW = videoW * 16 / 9;
+                    videoW = videoH * 16 / 9;
                 } else {
-                    videoH = 1080 * videoH / 1920;
+                    videoH = videoW * 9 / 16;
                 }
             }
             rlLP.height = screenW;
             rlLP.width = screenH;
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            bottomBarLp.height = CommonHelper.dp2px(context, 48);
             if (isSS1()) {
                 videoH = screenW;
             } else {
@@ -672,6 +661,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         }
 
         rlVideo.setLayoutParams(rlLP);
+        rlBottomBar.setLayoutParams(bottomBarLp);
 
         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
         lp.width = videoW;
@@ -720,7 +710,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private void setPanelVisible(int visible) {
         if (rlTopBar != null && rlBottomBar != null) {
             rlController.setVisibility(View.VISIBLE);
-            rlTopBar.setVisibility(visible);
+            rlTopBar.setVisibility(isPortrait() ? View.GONE : visible);
             rlBottomBar.setVisibility(visible);
         }
     }
@@ -729,12 +719,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         DatePickDialog datePickDialog = new DatePickDialog(context);
         datePickDialog.setType(DateType.TYPE_YMD);
         //设置点击确定按钮回调
-        datePickDialog.setOnSureListener(new OnSureListener() {
-            @Override
-            public void onSure(Date date) {
-                onSureButton(date);
-            }
-        });
+        datePickDialog.setOnSureListener(this::onSureButton);
 
         datePickDialog.setStartDate(scrollTime > 0 ? new Date(scrollTime)
                 : new Date(System.currentTimeMillis()));
@@ -790,15 +775,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     //开始计时录制
     private void startRecord() {
-        cmTimer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
-            @Override
-            public void onChronometerTick(Chronometer cArg) {
-                long time = System.currentTimeMillis() - cArg.getBase();
-                Date d = new Date(time);
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.US);
-                sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-                cmTimer.setText(sdf.format(d));
-            }
+        cmTimer.setOnChronometerTickListener(cArg -> {
+            long time = System.currentTimeMillis() - cArg.getBase();
+            Date d = new Date(time);
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.US);
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+            cmTimer.setText(sdf.format(d));
         });
         cmTimer.setBase(System.currentTimeMillis());
         cmTimer.start();
@@ -807,7 +789,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     private void changeQuality(int type) {
         llVideoQuality.setVisibility(View.GONE);
-        llVideoQualityP.setVisibility(View.GONE);
         if (type == qualityType) {
             return;
         }
@@ -894,24 +875,19 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         if (executorService == null) {
             executorService = Executors.newSingleThreadScheduledExecutor();
         }
-        scrollTime = scalePanelP.getCurrentInterval() * 1000;//获取实时滚动的时间
-        setCalendarText(scalePanelP.currentTimeStr().substring(6, 8));
-        executorService.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                moveTo();
-            }
-        }, 60, 60, TimeUnit.SECONDS);
+        scrollTime = scalePanel.getCurrentInterval() * 1000;//获取实时滚动的时间
+        setCalendarText(scalePanel.currentTimeStr().substring(6, 8));
+        executorService.scheduleAtFixedRate(this::moveTo, 60, 60, TimeUnit.SECONDS);
     }
 
     @UiThread
     void moveTo() {
-        LogCat.e(TAG, "11111 moveTo currentInteval = " + scalePanelP.getCurrentInterval());
-        scalePanelP.autoMove();
+        LogCat.e(TAG, "11111 moveTo currentInteval = " + scalePanel.getCurrentInterval());
+        scalePanel.autoMove();
         //自动滑动时下一个视频ap还是cloud播放
         if (playType != 0 && isVideoLess1Minute) {
             isVideoLess1Minute = false;
-            switch2Playback(scalePanelP.getCurrentInterval());
+            switch2Playback(scalePanel.getCurrentInterval());
         }
     }
 
@@ -926,10 +902,10 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     //渲染时间轴并滚动到指定时间
     @UiThread
     void timeCanvasList(final List<VideoTimeSlotBean> apCloudList) {
-        scalePanelP.setVideoData(listAp);
-        scalePanelP.refresh();
+        scalePanel.setVideoData(listAp);
+        scalePanel.refresh();
         if (isFirstScroll && !isSelectedDate) {
-            LogCat.e(TAG, "11111 timeCanvasList isFirstScroll ok= " + scalePanelP.getCurrentInterval());
+            LogCat.e(TAG, "11111 timeCanvasList isFirstScroll ok= " + scalePanel.getCurrentInterval());
             isFirstScroll = false;
             selectedTimeIsHaveVideo(selectedDate); //初始化左滑渲染及回放
         } else {
@@ -937,7 +913,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             if (isSelectedDate) {
                 selectedTimeIsHaveVideo(selectedDate);//滑动到选择日期
             } else {
-                scalePanelP.refreshNow(); //滚动到当前时间
+                scalePanel.refreshNow(); //滚动到当前时间
             }
         }
         //渲染完成
@@ -986,14 +962,14 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     //获取视频跳转播放的currentItemPosition
     private void videoSkipScrollPosition(long currentTimeMinutes) {
-        scalePanelP.moveToTime(currentTimeMinutes);
+        scalePanel.moveToTime(currentTimeMinutes);
     }
 
     //滑动回放定位的中间 position
     private void scrollCurrentPlayBackTime(long currentTimeMinutes) {
         ivPlay.setBackgroundResource(R.mipmap.pause_normal);
         isPaused = false;
-        scalePanelP.moveToTime(currentTimeMinutes);
+        scalePanel.moveToTime(currentTimeMinutes);
         openMove();
     }
 
@@ -1005,7 +981,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
      */
     private void scrollCurrentLive() {
         playType = 0;
-        scalePanelP.refreshNow();
+        scalePanel.refreshNow();
         openMove();
     }
 
@@ -1084,22 +1060,16 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                     final int delayMillis = (int) end - currTime < 0 ? 1 : (int) (end - currTime);
                     final int finalI = i;
                     if (isCloud) {
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                switch2CloudPlayback(listAp.get(finalI + 1).getStartTime(),
-                                        listAp.get(finalI + 1).getStartTime() + tenMinutes);
-                                videoSkipScrollPosition(listAp.get(finalI + 1).getStartTime()); //偏移跳转
-                            }
+                        handler.postDelayed(() -> {
+                            switch2CloudPlayback(listAp.get(finalI + 1).getStartTime(),
+                                    listAp.get(finalI + 1).getStartTime() + tenMinutes);
+                            videoSkipScrollPosition(listAp.get(finalI + 1).getStartTime()); //偏移跳转
                         }, delayMillis * 1000);
                         break;
                     } else {
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                switch2DevPlayback(listAp.get(finalI + 1).getStartTime());
-                                videoSkipScrollPosition(listAp.get(finalI + 1).getStartTime());//偏移跳转
-                            }
+                        handler.postDelayed(() -> {
+                            switch2DevPlayback(listAp.get(finalI + 1).getStartTime());
+                            videoSkipScrollPosition(listAp.get(finalI + 1).getStartTime());//偏移跳转
                         }, delayMillis * 1000);
                         break;
                     }
@@ -1242,12 +1212,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @Override
     public void didMoveToDate(String date, long timeStamp) {
         LogCat.e(TAG, "11111 didMoveToDate, " + date + ",  " + timeStamp);
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                tvTimeScroll.setVisibility(View.GONE);
-            }
-        }, 500);
+        handler.postDelayed(() -> tvTimeScroll.setVisibility(View.GONE), 500);
         if (timeStamp > System.currentTimeMillis() / 1000) {
             shortTip(getString(R.string.ipc_time_over_current_time));
             if (playType == 0) {//超过当前时间--当前处于直播
@@ -1264,7 +1229,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         }
         if (isFirstScroll && listAp.size() == 0) {
             selectedDate = timeStamp;
-            scalePanelP.clearData();//clear渲染时间轴
+            scalePanel.clearData();//clear渲染时间轴
             getDeviceTimeSlots(threeDaysBeforeSeconds, currentDateSeconds);
             return;
         }
@@ -1294,6 +1259,40 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             }
             tvTimeScroll.setCompoundDrawablesWithIntrinsicBounds(null, null, drawableRight, null);
         }
+    }
+
+    private void switchQuality() {
+        if (qualityPop == null) {
+            qualityPop = new BottomPopMenu.Builder(this)
+                    .addItemAction(new PopItemAction(R.string.str_HD,
+                            PopItemAction.PopItemStyle.Normal, this::hdQualityClick))
+                    .addItemAction(new PopItemAction(R.string.str_FHD,
+                            PopItemAction.PopItemStyle.Normal, this::sdQualityClick))
+                    .create();
+        }
+        qualityPop.show();
+    }
+
+    private void initManageList() {
+        rvManager.init(0);
+        List<IpcManageBean> list = new ArrayList<>();
+        list.add(new IpcManageBean(R.mipmap.ipc_manage_face_history, "进店日志", "查看人脸记录", "查看详情"));
+        list.add(new IpcManageBean(R.mipmap.ipc_manage_md, "动态侦测", "异常人员进入", "查看详情"));
+        list.add(new IpcManageBean(R.mipmap.ipc_manage_cashier, "收银审计", "查看交易流水视频", "查看详情"));
+        list.add(new IpcManageBean(R.mipmap.ipc_manage_cloud_storage, "云存储", "云存储服务", "敬请期待"));
+        CommonListAdapter adapter = new CommonListAdapter<IpcManageBean>(context,
+                R.layout.item_ipc_manager, list) {
+            @Override
+            public void convert(ViewHolder holder, IpcManageBean bean) {
+                holder.setImageResource(R.id.iv_icon, bean.getLeftImageResId());
+                holder.setText(R.id.tv_title, bean.getTitle());
+                holder.setText(R.id.tv_summary, bean.getSummary());
+                holder.setText(R.id.tv_detail, bean.getRightText());
+                holder.setOnClickListener(R.id.tv_detail, v -> {
+                });
+            }
+        };
+        rvManager.setAdapter(adapter);
     }
 
 }
