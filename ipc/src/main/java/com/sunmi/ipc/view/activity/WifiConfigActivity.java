@@ -136,12 +136,9 @@ public class WifiConfigActivity extends BaseActivity
 
     private void getWifiList() {
         IPCCall.getInstance().getWifiList(context, sunmiDevice.getIp());
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (wifiList.size() == 0) {
-                    setNoWifiVisible(View.VISIBLE);
-                }
+        new Handler().postDelayed(() -> {
+            if (wifiList.size() == 0) {
+                setNoWifiVisible(View.VISIBLE);
             }
         }, TIMEOUT_GET_WIFI);
     }
@@ -203,12 +200,9 @@ public class WifiConfigActivity extends BaseActivity
             cancelWaitCountTimer();
             stopTimer();
             failGetStatusCount = 0;
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    hideLoadingDialog();
-                    gotoBind();
-                }
+            new Handler().postDelayed(() -> {
+                hideLoadingDialog();
+                gotoBind();
             }, TIMEOUT_GET_IPC_STATUS_FAIL);
         }
     }
@@ -297,17 +291,18 @@ public class WifiConfigActivity extends BaseActivity
         new InputDialog.Builder(context)
                 .setTitle(R.string.str_input_psw)
                 .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.str_confirm, new InputDialog.ConfirmClickListener() {
-                    @Override
-                    public void onConfirmClick(InputDialog dialog, String input) {
-                        if (TextUtils.isEmpty(input)) {
-                            shortTip(R.string.str_text_password_no_null);
-                            return;
-                        }
-                        dialog.dismiss();
-                        showLoadingDialog();
-                        IPCCall.getInstance().setIPCWifi(context, ssid, mgmt, input, sunmiDevice.getIp());
+                .setConfirmButton(R.string.str_confirm, (dialog, input) -> {
+                    if (TextUtils.isEmpty(input)) {
+                        shortTip(R.string.str_text_password_no_null);
+                        return;
                     }
+                    if (input.length() < 8 || input.length() > 64) {
+                        shortTip(R.string.tip_wifi_psw_length_inconformity);
+                        return;
+                    }
+                    dialog.dismiss();
+                    showLoadingDialog();
+                    IPCCall.getInstance().setIPCWifi(context, ssid, mgmt, input, sunmiDevice.getIp());
                 }).create().show();
     }
 
