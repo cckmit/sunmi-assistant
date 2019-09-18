@@ -106,7 +106,7 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
             startPrimaryRouteSearchActivity();
         } else if (deviceType == CommonConstants.TYPE_IPC_FS || deviceType == CommonConstants.TYPE_IPC_SS) {
             try {
-                Class<?> ipcSearchActivity = Class.forName("com.sunmi.ipc.view.IPCSearchActivity_");
+                Class<?> ipcSearchActivity = Class.forName("com.sunmi.ipc.view.activity.IPCSearchActivity_");
                 Intent intent = new Intent(context, ipcSearchActivity);
                 intent.putExtra("shopId", shopId);
                 intent.putExtra("deviceType", deviceType);
