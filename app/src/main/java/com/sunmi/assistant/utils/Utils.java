@@ -117,7 +117,7 @@ public class Utils {
         }
     }
 
-    public static String decodeBarChartXAxisFloat(float value, String[] weekName) {
+    public static String decodeChartXAxisFloat(float value, String[] weekName) {
         if (value >= 10000) {
             return String.valueOf((int) (value - 10000));
         } else if (value >= 100) {

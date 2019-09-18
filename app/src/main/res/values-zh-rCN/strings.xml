@@ -42,6 +42,7 @@
     <string name="dashboard_yesterday">昨日</string>
     <string name="dashboard_last_week">上周</string>
     <string name="dashboard_last_month">上个月</string>
+    <string name="dashboard_time">时间 %s</string>
     <string name="dashboard_data_sales_amount">总销售额</string>
     <string name="dashboard_data_sales_volume">交易笔数</string>
     <string name="dashboard_data_consumer">进店客流</string>

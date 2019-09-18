@@ -11,6 +11,8 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.Constants;
+import com.sunmi.assistant.utils.Utils;
 
 import java.util.Locale;
 
@@ -19,6 +21,8 @@ import java.util.Locale;
  * @date 2019-09-11
  */
 public class LineChartMarkerView extends MarkerView {
+
+    private static String[] WEEK_NAME;
 
     private ImageView mIvPoint;
     private TextView mTvTitle;
@@ -37,6 +41,7 @@ public class LineChartMarkerView extends MarkerView {
      */
     public LineChartMarkerView(Context context) {
         super(context, R.layout.dashboard_chart_line_marker);
+        WEEK_NAME = context.getResources().getStringArray(R.array.week_name);
         mTvTitle = findViewById(R.id.tv_dashboard_marker_title);
         mTvValue = findViewById(R.id.tv_dashboard_marker_value);
         mTvLabel = findViewById(R.id.tv_dashboard_marker_label);
@@ -44,11 +49,22 @@ public class LineChartMarkerView extends MarkerView {
         mOffsetPoint = mIvPoint.getWidth() / 2;
     }
 
+    public void setType(int type) {
+        if (type == Constants.DATA_TYPE_RATE) {
+            mTvTitle.setText(R.string.dashboard_chart_rate);
+        } else if (type == Constants.DATA_TYPE_VOLUME) {
+            mTvTitle.setText(R.string.dashboard_chart_sales_volume);
+        } else {
+            mTvTitle.setText(R.string.dashboard_chart_consumer);
+        }
+    }
+
     @Override
     public void refreshContent(Entry e, Highlight highlight) {
-        String value = String.format(Locale.getDefault(), "%.2f%%", e.getY());
+        String value = String.format(Locale.getDefault(), "%.2f%%", e.getY() * 100);
         mTvValue.setText(value);
-        mTvLabel.setText("时间 周一");
+        mTvLabel.setText(getResources().getString(R.string.dashboard_time,
+                Utils.decodeChartXAxisFloat(e.getX(), WEEK_NAME)));
         super.refreshContent(e, highlight);
     }
 

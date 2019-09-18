@@ -257,6 +257,9 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
         public Model(String title, int type) {
             this.title = title;
             this.type = type;
+            dataSets.put(Constants.DATA_TYPE_NEW_OLD, new ArrayList<>());
+            dataSets.put(Constants.DATA_TYPE_AGE, new ArrayList<>());
+            dataSets.put(Constants.DATA_TYPE_GENDER, new ArrayList<>());
         }
 
         public void clear() {

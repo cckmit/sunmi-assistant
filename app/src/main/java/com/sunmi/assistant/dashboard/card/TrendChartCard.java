@@ -38,6 +38,8 @@ import java.util.List;
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
+import sunmi.common.model.ConsumerRateResp;
+import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.utils.CommonHelper;
 
@@ -45,7 +47,7 @@ import sunmi.common.utils.CommonHelper;
  * @author yinhui
  * @since 2019-07-01
  */
-public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Object> {
+public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, ConsumerRateResp> {
 
     private XAxisLabelsRenderer lineXAxisRenderer;
     private LineYAxisLabelsRenderer lineYAxisRenderer;
@@ -61,33 +63,41 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Object
         mDashLength = CommonHelper.dp2px(context, 4f);
         mDashSpaceLength = CommonHelper.dp2px(context, 2f);
         addOnViewClickListener(R.id.tv_dashboard_rate, (adapter, holder, v, model, position) -> {
-            model.type = Constants.DATA_TYPE_RATE;
-            updateView();
+            if (model.type != Constants.DATA_TYPE_RATE) {
+                model.type = Constants.DATA_TYPE_RATE;
+                updateView();
+            }
         });
         addOnViewClickListener(R.id.tv_dashboard_volume, (adapter, holder, v, model, position) -> {
-            model.type = Constants.DATA_TYPE_VOLUME;
-            updateView();
+            if (model.type != Constants.DATA_TYPE_VOLUME) {
+                model.type = Constants.DATA_TYPE_VOLUME;
+                updateView();
+            }
         });
         addOnViewClickListener(R.id.tv_dashboard_consumer, (adapter, holder, v, model, position) -> {
-            model.type = Constants.DATA_TYPE_CONSUMER;
-            updateView();
+            if (model.type != Constants.DATA_TYPE_CONSUMER) {
+                model.type = Constants.DATA_TYPE_CONSUMER;
+                updateView();
+            }
         });
     }
 
     @Override
     protected Model createModel(Context context) {
-        return new Model("", Constants.DATA_TYPE_RATE);
+        int type;
+        if (showTransactionData() && showConsumerData()) {
+            type = Constants.DATA_TYPE_RATE;
+        } else if (showTransactionData()) {
+            type = Constants.DATA_TYPE_VOLUME;
+        } else {
+            type = Constants.DATA_TYPE_CONSUMER;
+        }
+        return new Model("", type);
     }
 
     @Override
     public int getLayoutId(int type) {
         return R.layout.dashboard_recycle_item_trend;
-    }
-
-    @Override
-    protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, CardCallback callback) {
-        callback.onSuccess();
-        return null;
     }
 
     @NonNull
@@ -186,37 +196,30 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Object
     }
 
     @Override
-    protected void setupModel(Model model, Object response) {
-        model.isValid = true;
-        model.type = Constants.DATA_TYPE_VOLUME;
-        model.period = Constants.TIME_PERIOD_TODAY;
-        List<BarEntry> list = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            if (i < 5) {
-                list.add(new BarEntry(i, 0));
-            } else {
-                list.add(new BarEntry(i, (float) Math.random()));
-            }
+    protected Call<BaseResponse<ConsumerRateResp>> load(int companyId, int shopId, int period, CardCallback callback) {
+        SunmiStoreApi.getInstance().getConsumerRate(companyId, shopId, period, callback);
+        return null;
+    }
+
+    @Override
+    protected void setupModel(Model model, ConsumerRateResp response) {
+        int offset = calcEncodeXAxisOffset(model.period);
+        List<BarEntry> rateList = model.dataSets.get(Constants.DATA_TYPE_RATE);
+        List<BarEntry> volumeList = model.dataSets.get(Constants.DATA_TYPE_VOLUME);
+        List<BarEntry> consumerList = model.dataSets.get(Constants.DATA_TYPE_CONSUMER);
+        rateList.clear();
+        volumeList.clear();
+        consumerList.clear();
+        List<ConsumerRateResp.CountListBean> list = response.getCountList();
+        for (ConsumerRateResp.CountListBean bean : list) {
+            int time = Math.abs(bean.getTime());
+            int count = Math.abs(bean.getOrderCount());
+            int consumer = Math.abs(bean.getPassengerFlowCount());
+            int x = time + offset;
+            rateList.add(new BarEntry(x, consumer == 0 ? 0f : Math.min((float) count / consumer, 1f)));
+            volumeList.add(new BarEntry(x, count));
+            consumerList.add(new BarEntry(x, consumer));
         }
-        model.dataSets.put(Constants.DATA_TYPE_RATE, list);
-        list = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            if (i < 5) {
-                list.add(new BarEntry(i, 0));
-            } else {
-                list.add(new BarEntry(i, (float) Math.random() * 1000));
-            }
-        }
-        model.dataSets.put(Constants.DATA_TYPE_VOLUME, list);
-        list = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            if (i < 5) {
-                list.add(new BarEntry(i, 0));
-            } else {
-                list.add(new BarEntry(i, (float) Math.random() * 1000));
-            }
-        }
-        model.dataSets.put(Constants.DATA_TYPE_CONSUMER, list);
     }
 
     @Override
@@ -272,6 +275,7 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Object
 
         // Refresh data set
         if (model.type == Constants.DATA_TYPE_RATE) {
+            mLineChartMarker.setType(model.type);
             LineDataSet set;
             LineData data = line.getData();
             ArrayList<Entry> values = new ArrayList<>(dataSet);
@@ -300,6 +304,7 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Object
             }
             line.animateX(300);
         } else {
+            mBarChartMarker.setType(model.type);
             float barWidthRatio = calcBarWidth(model.period);
             int color = model.type == Constants.DATA_TYPE_VOLUME ?
                     ContextCompat.getColor(holder.getContext(), R.color.color_FFD0B3) :
@@ -341,6 +346,16 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Object
         super.showError(holder, model, position);
     }
 
+    private int calcEncodeXAxisOffset(int period) {
+        if (period == Constants.TIME_PERIOD_TODAY) {
+            return -1;
+        } else if (period == Constants.TIME_PERIOD_WEEK) {
+            return 99;
+        } else {
+            return 10000;
+        }
+    }
+
     private Pair<Integer, Integer> calcRangeOfXAxis(int period) {
         if (period == Constants.TIME_PERIOD_TODAY) {
             return new Pair<>(0, 24);
@@ -370,6 +385,9 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Object
         public Model(String title, int type) {
             this.title = title;
             this.type = type;
+            dataSets.put(Constants.DATA_TYPE_RATE, new ArrayList<>());
+            dataSets.put(Constants.DATA_TYPE_VOLUME, new ArrayList<>());
+            dataSets.put(Constants.DATA_TYPE_CONSUMER, new ArrayList<>());
         }
 
         public void clear() {

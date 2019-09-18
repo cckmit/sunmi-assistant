@@ -45,7 +45,6 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
     protected DashboardContract.Presenter mPresenter;
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
-    private CardCallback mCallback = new CardCallback();
     private RequestCall<Resp> mCall = new RequestCall<>();
 
     private BaseRecyclerAdapter<Object> mAdapter;
@@ -98,6 +97,7 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
         this.mCompanyId = companyId;
         this.mShopId = shopId;
         this.mModel.skipLoad = false;
+        this.mModel.isValid = false;
         onPreShopChange(mModel, shopId);
         requestLoad(true, true);
     }
@@ -108,6 +108,7 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
         }
         this.mShopId = shopId;
         this.mModel.skipLoad = false;
+        this.mModel.isValid = false;
         onPreShopChange(mModel, shopId);
         requestLoad(true, true);
     }
@@ -117,13 +118,16 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
             return;
         }
         this.mPeriod = period;
-        this.mModel.period = period;
         this.mModel.skipLoad = false;
+        this.mModel.isValid = false;
         onPrePeriodChange(mModel, period);
         requestLoad(false, true);
     }
 
     public void refresh(boolean showLoading) {
+        if (showLoading) {
+            this.mModel.isValid = false;
+        }
         requestLoad(true, showLoading);
     }
 
@@ -167,7 +171,9 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
             if (showLoading) {
                 updateView();
             }
-            mCall.set(load(mCompanyId, mShopId, mPeriod, mCallback), mCompanyId, mShopId, mPeriod);
+            Call<BaseResponse<Resp>> call = load(mCompanyId, mShopId, mPeriod,
+                    new CardCallback(mPeriod));
+            mCall.set(call, mCompanyId, mShopId, mPeriod);
         }
     }
 
@@ -296,11 +302,18 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
 
     protected class CardCallback extends RetrofitCallback<Resp> {
 
+        private int period;
+
+        public CardCallback(int period) {
+            this.period = period;
+        }
+
         public void onSuccess() {
             LogCat.d(TAG, "Dashboard card load data pass. ");
             mState = STATE_SUCCESS;
             mCall.clear();
             mModel.isValid = true;
+            mModel.period = this.period;
             setupModel(mModel, null);
             updateView();
         }
@@ -311,6 +324,7 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
             mState = STATE_SUCCESS;
             mCall.clear();
             mModel.isValid = true;
+            mModel.period = this.period;
             setupModel(mModel, data);
             updateView();
         }
