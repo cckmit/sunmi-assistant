@@ -21,17 +21,20 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.utils.TimeoutTimer;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.HashMap;
 import java.util.Objects;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.IVideoPlayer;
 import sunmi.common.utils.ImageUtils;
@@ -93,10 +96,12 @@ public class DynamicVideoActivity extends BaseActivity implements
     LinearLayout llPlayFail;
     @ViewById(resName = "rl_bottom_panel")
     RelativeLayout rlBottomPanel;
+    @ViewById(resName = "tv_tip")
+    TextView tvTip;
     @Extra
-    String url;
+//    String url;
     //    String url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
-//    String url = "http://test.cdn.sunmi.com/VIDEO/IPC/f4c28c287dff0e0656e00192450194e76f4863f80ca0517a135925ebc7828104";
+            String url = "http://test.cdn.sunmi.com/VIDEO/IPC/f4c28c287dff0e0656e00192450194e76f4863f80ca0517a135925ebc7828104";
     @Extra
     String deviceModel;
 
@@ -132,6 +137,7 @@ public class DynamicVideoActivity extends BaseActivity implements
 
     @AfterViews
     void init() {
+        TimeoutTimer.getInstance().start();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//保持屏幕常亮
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//隐藏状态栏
@@ -149,7 +155,6 @@ public class DynamicVideoActivity extends BaseActivity implements
         }
         showLoadingDialog();
         requestPermissions();
-        //initTakeScreenShot();
     }
 
     @Override
@@ -194,7 +199,6 @@ public class DynamicVideoActivity extends BaseActivity implements
      * 初始化播放
      */
     private void initVideoPlay() {
-        showLoadingDialog();
         iVideoPlayer.load(url);
         setVideoListener();
     }
@@ -213,24 +217,30 @@ public class DynamicVideoActivity extends BaseActivity implements
             errorView();
             e.printStackTrace();
         }
-
     }
 
     /**
      * 保存截屏
      */
     private void saveVideoFrameAtTime() {
-        if (isFastClick(1500)) {
+        if (isFastClick(1200)) {
             return;
         }
         if (iVideoPlayer.getCurrentPosition() > 0) {
-            Bitmap bitmap = retriever.getFrameAtTime(iVideoPlayer.getCurrentPosition() * 1000,
+            tvTip.setVisibility(View.VISIBLE);
+            final Bitmap bitmap = retriever.getFrameAtTime(iVideoPlayer.getCurrentPosition() * 1000,
                     MediaMetadataRetriever.OPTION_NEXT_SYNC);
-            if (ImageUtils.saveImageToGallery(context, bitmap, 100)) {
-                shortTip(getString(R.string.ipc_dynamic_take_screen_shot_success));
-            } else {
-                shortTip(getString(R.string.ipc_dynamic_take_screen_shot_fail));
-            }
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (ImageUtils.saveImageToGallery(context, bitmap, 100)) {
+                        shortTip(getString(R.string.ipc_dynamic_take_screen_shot_success));
+                    } else {
+                        shortTip(getString(R.string.ipc_dynamic_take_screen_shot_fail));
+                    }
+                    tvTip.setVisibility(View.GONE);
+                }
+            }, 1200);
         }
     }
 
@@ -243,7 +253,7 @@ public class DynamicVideoActivity extends BaseActivity implements
         if (isFastClick(1500)) {
             return;
         }
-        isShowBottomView(true);
+        showLoadingDialog();
         if (!isInitTakeScreenShot) {
             initTakeScreenShot();
         }
@@ -258,6 +268,9 @@ public class DynamicVideoActivity extends BaseActivity implements
 
     @Click(resName = "ib_play")
     void onPlayClick() {
+        if (iVideoPlayer == null && sbBar.getProgress() >= iVideoPlayer.getDuration()) {
+            return;
+        }
         ibPlay.setBackgroundResource(isPaused ? R.mipmap.pause_normal : R.mipmap.play_normal);
         isPaused = !isPaused;
         if (isPaused) {
@@ -306,7 +319,8 @@ public class DynamicVideoActivity extends BaseActivity implements
         }
     }
 
-    private void errorView() {
+    @UiThread
+    void errorView() {
         rlBottomPanel.setVisibility(View.GONE);
         iVideoPlayer.setVisibility(View.GONE);
         llPlayFail.setVisibility(View.VISIBLE);
@@ -363,7 +377,8 @@ public class DynamicVideoActivity extends BaseActivity implements
     public boolean onError(IMediaPlayer iMediaPlayer, int i, int i1) {
         LogCat.e(TAG, "onError");
         hideLoadingDialog();
-        shortTip(getString(R.string.ipc_video_play_error));
+        timeoutStop();
+        shortTip(R.string.str_server_exception);
         errorView();
         return false;
     }
@@ -376,7 +391,9 @@ public class DynamicVideoActivity extends BaseActivity implements
     public void onPrepared(IMediaPlayer iMediaPlayer) {
         LogCat.e(TAG, "onPrepared");
         if (iVideoPlayer != null) {
+            isShowBottomView(true);
             hideLoadingDialog();
+            timeoutStop();
             initTakeScreenShot();
             iVideoPlayer.startVideo();
             //设置seekBar的最大限度值，当前视频的总时长（毫秒）
@@ -439,9 +456,29 @@ public class DynamicVideoActivity extends BaseActivity implements
         mHandler.sendEmptyMessageDelayed(MESSAGE_SHOW_PROGRESS, DELAY_MILLIS);
     }
 
+    private void timeoutStop() {
+        TimeoutTimer.getInstance().stop();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        timeoutStop();
         mHandler.removeCallbacksAndMessages(null);
+    }
+
+    @Override
+    public int[] getStickNotificationId() {
+        return new int[]{CommonNotifications.mqttResponseTimeout};
+    }
+
+    @Override
+    public void didReceivedNotification(int id, Object... args) {
+        super.didReceivedNotification(id, args);
+        if (id == CommonNotifications.mqttResponseTimeout) { //连接超时
+            hideLoadingDialog();
+            shortTip(R.string.str_server_exception);
+            errorView();
+        }
     }
 }
