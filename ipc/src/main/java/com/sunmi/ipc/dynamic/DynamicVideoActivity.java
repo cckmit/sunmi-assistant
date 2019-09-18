@@ -95,7 +95,7 @@ public class DynamicVideoActivity extends BaseActivity implements
     RelativeLayout rlBottomPanel;
     @Extra
     String url;
-//    String url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
+    //    String url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
 //    String url = "http://test.cdn.sunmi.com/VIDEO/IPC/f4c28c287dff0e0656e00192450194e76f4863f80ca0517a135925ebc7828104";
     @Extra
     String deviceModel;
@@ -147,8 +147,9 @@ public class DynamicVideoActivity extends BaseActivity implements
             errorView();
             return;
         }
-        initTakeScreenShot();
+        showLoadingDialog();
         requestPermissions();
+        //initTakeScreenShot();
     }
 
     @Override
@@ -202,9 +203,17 @@ public class DynamicVideoActivity extends BaseActivity implements
      * 初始化设置截屏数据
      */
     private void initTakeScreenShot() {
-        isInitTakeScreenShot = true;
         retriever = new FFmpegMediaMetadataRetriever();
-        retriever.setDataSource(url, new HashMap<String, String>());
+        try {
+            retriever.setDataSource(url, new HashMap<String, String>());
+            isInitTakeScreenShot = true;
+        } catch (Exception e) {
+            isInitTakeScreenShot = false;
+            hideLoadingDialog();
+            errorView();
+            e.printStackTrace();
+        }
+
     }
 
     /**
@@ -227,6 +236,13 @@ public class DynamicVideoActivity extends BaseActivity implements
 
     @Click(resName = "tv_retry")
     void retryClick() {
+        if (!NetworkUtils.isNetworkAvailable(context)) {
+            shortTip(R.string.tip_network_fail_retry);
+            return;
+        }
+        if (isFastClick(1500)) {
+            return;
+        }
         isShowBottomView(true);
         if (!isInitTakeScreenShot) {
             initTakeScreenShot();
@@ -330,12 +346,14 @@ public class DynamicVideoActivity extends BaseActivity implements
     public void onCompletion(IMediaPlayer iMediaPlayer) {
         LogCat.e(TAG, "onCompletion");
         if (iVideoPlayer != null) {
-            isPaused = false;
+            isPaused = true;
             ibPlay.setBackgroundResource(R.mipmap.play_normal);
         }
         if (mHandler != null) {
             mHandler.removeMessages(MESSAGE_SHOW_PROGRESS);
         }
+        sbBar.setProgress(sbBar.getMax());
+        tvCurrentPlayTime.setText(iVideoPlayer.generateTime(sbBar.getMax()));
     }
 
     /**
@@ -345,6 +363,8 @@ public class DynamicVideoActivity extends BaseActivity implements
     public boolean onError(IMediaPlayer iMediaPlayer, int i, int i1) {
         LogCat.e(TAG, "onError");
         hideLoadingDialog();
+        shortTip(getString(R.string.ipc_video_play_error));
+        errorView();
         return false;
     }
 
@@ -357,6 +377,7 @@ public class DynamicVideoActivity extends BaseActivity implements
         LogCat.e(TAG, "onPrepared");
         if (iVideoPlayer != null) {
             hideLoadingDialog();
+            initTakeScreenShot();
             iVideoPlayer.startVideo();
             //设置seekBar的最大限度值，当前视频的总时长（毫秒）
             long duration = iVideoPlayer.getDuration();
@@ -409,6 +430,7 @@ public class DynamicVideoActivity extends BaseActivity implements
         iVideoPlayer.seekTo(seekBar.getProgress());
         if (iVideoPlayer != null && !iVideoPlayer.isPlaying()) {
             iVideoPlayer.startVideo();
+            isPaused = false;
             ibPlay.setBackgroundResource(R.mipmap.pause_normal);
         }
         mHandler.removeMessages(MESSAGE_SHOW_PROGRESS);

@@ -17,9 +17,15 @@ public class MsgTag {
 
     public MsgTag(String content) {
         try {
-            String[] msg = content.split(":");
-            tag = msg[0];
-            String[] msgContent = msg[1].split("&");
+            String[] msgContent;
+            if (content.contains(":")) {
+                String[] msg = content.split(":");
+                tag = msg[0];
+                msgContent = msg[1].split("&");
+            } else {
+                tag = content;
+                msgContent = content.split("&");
+            }
             for (String str : msgContent) {
                 //LogCat.e("MsgTag", "77777777777:" + str);
                 String[] detail = str.split("=");
@@ -35,14 +41,6 @@ public class MsgTag {
         }
     }
 
-    public String getTag() {
-        return tag;
-    }
-
-    public Map<String, String> getMsgMap() {
-        return msgMap;
-    }
-
     public static String getUrlDecoderString(String str) {
         if (str == null) {
             return "";
@@ -53,5 +51,13 @@ public class MsgTag {
             e.printStackTrace();
         }
         return "";
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public Map<String, String> getMsgMap() {
+        return msgMap;
     }
 }
