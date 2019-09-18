@@ -204,7 +204,7 @@ public class IpcSettingRotateActivity extends BaseActivity implements View.OnCli
     @Override
     public int[] getStickNotificationId() {
         return new int[]{IpcConstants.setIpcNightIdeRotation,
-                CommonNotifications.timeout};
+                CommonNotifications.mqttResponseTimeout};
     }
 
     @Override
@@ -218,7 +218,7 @@ public class IpcSettingRotateActivity extends BaseActivity implements View.OnCli
                 return;
             }
             setIpcNightIdeRotation(res);
-        } else if (id == CommonNotifications.timeout) { //连接超时
+        } else if (id == CommonNotifications.mqttResponseTimeout) { //连接超时
             isNetException = true;
             shortTip(R.string.str_server_exception);
         }

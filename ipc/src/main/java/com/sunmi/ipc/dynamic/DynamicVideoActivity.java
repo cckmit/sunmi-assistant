@@ -99,9 +99,9 @@ public class DynamicVideoActivity extends BaseActivity implements
     @ViewById(resName = "tv_tip")
     TextView tvTip;
     @Extra
-    String url;
+//    String url;
     //    String url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
-//    String url = "http://test.cdn.sunmi.com/VIDEO/IPC/f4c28c287dff0e0656e00192450194e76f4863f80ca0517a135925ebc7828104";
+            String url = "http://test.cdn.sunmi.com/VIDEO/IPC/f4c28c287dff0e0656e00192450194e76f4863f80ca0517a135925ebc7828104";
     @Extra
     String deviceModel;
 
@@ -469,13 +469,13 @@ public class DynamicVideoActivity extends BaseActivity implements
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{CommonNotifications.timeout};
+        return new int[]{CommonNotifications.mqttResponseTimeout};
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
         super.didReceivedNotification(id, args);
-        if (id == CommonNotifications.timeout) { //连接超时
+        if (id == CommonNotifications.mqttResponseTimeout) { //连接超时
             hideLoadingDialog();
             shortTip(R.string.str_server_exception);
             errorView();

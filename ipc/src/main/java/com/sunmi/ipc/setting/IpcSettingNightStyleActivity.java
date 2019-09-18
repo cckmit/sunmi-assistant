@@ -135,7 +135,7 @@ public class IpcSettingNightStyleActivity extends BaseActivity
     @Override
     public int[] getStickNotificationId() {
         return new int[]{IpcConstants.setIpcNightIdeRotation,
-                CommonNotifications.timeout};
+                CommonNotifications.mqttResponseTimeout};
     }
 
     @Override
@@ -151,7 +151,7 @@ public class IpcSettingNightStyleActivity extends BaseActivity
                 return;
             }
             setIpcNightIdeRotation(res);
-        } else if (id == CommonNotifications.timeout) { //连接超时
+        } else if (id == CommonNotifications.mqttResponseTimeout) { //连接超时
             isNetException = true;
             shortTip(R.string.str_server_exception);
         }
