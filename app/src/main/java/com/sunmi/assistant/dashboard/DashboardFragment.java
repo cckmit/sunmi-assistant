@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.constraint.Group;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -70,26 +71,29 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @ViewById(R.id.tv_dashboard_top_month)
     TextView mMonthViews;
 
+    @ViewById(R.id.group_dashboard_content)
+    Group mContentGroup;
+    @ViewById(R.id.layout_dashboard_error)
+    View mLayoutError;
+
     private int mDataSource;
     private BaseArrayAdapter<Object> mAdapter;
     private LinearLayoutManager mLayoutManager;
 
     private ShopMenuAdapter mShopMenuAdapter;
     private Drawable mShopMenuBg;
-    private FilterItem mCurrentShopItem;
+    private TextView mShopMenuTitle;
+    private FilterItem mShopMenuItem;
 
     private int mStatusBarHeight;
     private int mTopShopMenuHeight;
-
-    private boolean mIsStickyTop = false;
-    private int mSlideOffset = 0;
-    private TextView mShopMenuTitle;
 
     @AfterViews
     void init() {
         mPresenter = new DashboardPresenter();
         mPresenter.attachView(this);
         initView();
+        showLoadingDialog();
         mPresenter.init();
     }
 
@@ -127,8 +131,8 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mShopMenuAdapter = new ShopMenuAdapter(context);
         mShopMenuAdapter.setOnItemClickListener((adapter, model, position) -> {
             if (SpUtils.getShopId() != model.getId()) {
-                mCurrentShopItem.setChecked(false);
-                mCurrentShopItem = model;
+                mShopMenuItem.setChecked(false);
+                mShopMenuItem = model;
                 model.setChecked(true);
                 List<FilterItem> shops = adapter.getData();
                 shops.remove(position);
@@ -189,6 +193,12 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mPresenter.switchPeriodTo(Constants.TIME_PERIOD_MONTH);
     }
 
+    @Click(R.id.btn_refresh)
+    void clickReload() {
+        showLoadingDialog();
+        mPresenter.init();
+    }
+
     @Override
     public void updateTab(int period) {
         mTodayView.setSelected(period == Constants.TIME_PERIOD_TODAY);
@@ -200,7 +210,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     public void setShopList(List<FilterItem> list) {
         for (FilterItem item : list) {
             if (item.isChecked()) {
-                mCurrentShopItem = item;
+                mShopMenuItem = item;
                 break;
             }
         }
@@ -210,6 +220,9 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @UiThread
     @Override
     public void setCards(List<BaseRefreshItem> data, int dataSource) {
+        hideLoadingDialog();
+        mContentGroup.setVisibility(View.VISIBLE);
+        mLayoutError.setVisibility(View.GONE);
         mDataSource = dataSource;
         resetTopView();
         if (mAdapter == null && data == null) {
@@ -222,6 +235,13 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             list.add(item.getModel());
         }
         mAdapter.setData(list);
+    }
+
+    @Override
+    public void loadDataFailed() {
+        hideLoadingDialog();
+        mContentGroup.setVisibility(View.GONE);
+        mLayoutError.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -256,8 +276,36 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         }
     }
 
+    private void showStickyTop(Context context, boolean animated) {
+        StatusBarUtils.setStatusBarColor(getActivity(), StatusBarUtils.TYPE_DARK);
+        if (mDataSource != 0) {
+            mShopMenu.setTranslationY(-mTopShopMenuHeight);
+            mShopMenu.setVisibility(View.INVISIBLE);
+            mTopPeriodTab.setVisibility(View.VISIBLE);
+        } else {
+            mShopMenuTitle.setTextColor(ContextCompat.getColor(context, R.color.color_303540));
+            mShopMenuTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    0, 0, R.drawable.ic_arrow_drop_down_black_24dp, 0);
+            mShopMenu.setBackgroundResource(R.drawable.dashboard_bg_white_with_divider);
+        }
+    }
+
+    private void hideStickyTop(Context context, boolean animated) {
+        StatusBarUtils.setStatusBarFullTransparent(getActivity());
+        if (mDataSource != 0) {
+            mShopMenu.setVisibility(View.VISIBLE);
+            mTopPeriodTab.setVisibility(View.INVISIBLE);
+        } else {
+            mShopMenuTitle.setTextColor(0xFFFFFFFF);
+            mShopMenuTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    0, 0, R.drawable.ic_arrow_drop_down_white_24dp, 0);
+            mShopMenu.setBackgroundResource(R.drawable.dashboard_bg_top);
+        }
+    }
+
     private class ItemStickyListener extends RecyclerView.OnScrollListener {
 
+        private boolean mIsStickyTop = false;
         private View topBar = null;
 
         @Override
@@ -275,35 +323,16 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
                 position = coordinate[1];
             }
 
+            Context context = recyclerView.getContext();
             if (mIsStickyTop && position > 0) {
                 mIsStickyTop = false;
-                StatusBarUtils.setStatusBarFullTransparent(getActivity());
-                if (mDataSource != 0) {
-                    mShopMenu.setVisibility(View.VISIBLE);
-                    mTopPeriodTab.setVisibility(View.INVISIBLE);
-                } else {
-                    mShopMenuTitle.setTextColor(0xFFFFFFFF);
-                    mShopMenuTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                            0, 0, R.drawable.ic_arrow_drop_down_white_24dp, 0);
-                    mShopMenu.setBackgroundResource(R.drawable.dashboard_bg_top);
-                }
+                hideStickyTop(context, true);
             } else if (!mIsStickyTop && position <= 0) {
                 mIsStickyTop = true;
-                StatusBarUtils.setStatusBarColor(getActivity(), StatusBarUtils.TYPE_DARK);
-                if (mDataSource != 0) {
-                    mShopMenu.setTranslationY(-mTopShopMenuHeight);
-                    mShopMenu.setVisibility(View.INVISIBLE);
-                    mTopPeriodTab.setVisibility(View.VISIBLE);
-                } else {
-                    mShopMenuTitle.setTextColor(ContextCompat.getColor(recyclerView.getContext(), R.color.color_303540));
-                    mShopMenuTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                            0, 0, R.drawable.ic_arrow_drop_down_black_24dp, 0);
-                    mShopMenu.setBackgroundResource(R.drawable.dashboard_bg_white_with_divider);
-                }
+                showStickyTop(context, true);
             }
             if (position > 0 && mDataSource != 0) {
-                mSlideOffset = Math.min(position - mTopShopMenuHeight, 0);
-                mShopMenu.setTranslationY(mSlideOffset);
+                mShopMenu.setTranslationY(Math.min(position - mTopShopMenuHeight, 0));
             }
         }
     }

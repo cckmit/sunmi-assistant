@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cl_dashboard_content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/color_303540">
+    android:layout_height="match_parent">
 
     <cn.bingoogolapple.refreshlayout.BGARefreshLayout
         android:id="@+id/layout_dashboard_refresh"
@@ -27,6 +26,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/c_black"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -38,10 +38,10 @@
         android:layout_height="@dimen/dp_82"
         android:background="@drawable/dashboard_bg_top"
         android:gravity="center"
-        android:paddingTop="@dimen/dp_30"
-        android:paddingBottom="@dimen/dp_8"
         android:paddingStart="@dimen/dp_20"
+        android:paddingTop="@dimen/dp_30"
         android:paddingEnd="@dimen/dp_20"
+        android:paddingBottom="@dimen/dp_8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -55,6 +55,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <include
+        android:id="@+id/layout_dashboard_error"
+        layout="@layout/include_network_error"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.constraint.Group
+        android:id="@+id/group_dashboard_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="layout_shop_title,layout_dashboard_refresh" />
 
 </android.support.constraint.ConstraintLayout>
 

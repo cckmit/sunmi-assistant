@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.v4.content.ContextCompat;
+import android.util.SparseArray;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshItem;
@@ -15,10 +16,13 @@ import com.sunmi.assistant.dashboard.card.NoFsCard;
 import com.sunmi.assistant.dashboard.card.NoOrderCard;
 import com.sunmi.assistant.dashboard.card.PeriodTabCard;
 import com.sunmi.assistant.dashboard.card.TrendChartCard;
+import com.sunmi.ipc.face.model.FaceAge;
+import com.sunmi.ipc.model.FaceAgeRangeResp;
 import com.sunmi.ipc.model.IpcListResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
@@ -50,6 +54,10 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     private int mDataSource = 0;
     private int mPeriod = Constants.TIME_PERIOD_INIT;
 
+    private boolean mIsShopListLoaded;
+    private boolean mIsDataSourceLoaded;
+
+    private SparseArray<String> mAgeList;
     private List<BaseRefreshItem> mList;
 
     private RefreshTask mTask;
@@ -58,10 +66,13 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     public void init() {
         mCompanyId = SpUtils.getCompanyId();
         mShopId = SpUtils.getShopId();
-        loadShopList();
         loadDataSource();
-        mTask = new RefreshTask();
-        WORK_HANDLER.postDelayed(mTask, REFRESH_TIME_PERIOD);
+        loadShopList();
+        loadAgeList();
+        if (mTask == null) {
+            mTask = new RefreshTask();
+            WORK_HANDLER.postDelayed(mTask, REFRESH_TIME_PERIOD);
+        }
     }
 
     @Override
@@ -112,7 +123,31 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         }
     }
 
+    private void loadAgeList() {
+        if (mAgeList != null) {
+            return;
+        }
+        IpcCloudApi.getFaceAgeRange(SpUtils.getCompanyId(), mShopId, new RetrofitCallback<FaceAgeRangeResp>() {
+            @Override
+            public void onSuccess(int code, String msg, FaceAgeRangeResp data) {
+                List<FaceAge> faceAges = data.getAgeRangeList();
+                Collections.sort(faceAges, (o1, o2) -> o1.getCode() - o2.getCode());
+                mAgeList = new SparseArray<>(faceAges.size());
+                for (FaceAge age : faceAges) {
+                    mAgeList.put(age.getCode(), age.getName());
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, FaceAgeRangeResp data) {
+            }
+        });
+    }
+
     private void loadShopList() {
+        if (mIsShopListLoaded) {
+            return;
+        }
         SunmiStoreApi.getInstance().getShopList(mCompanyId, new RetrofitCallback<ShopListResp>() {
             @Override
             public void onSuccess(int code, String msg, ShopListResp data) {
@@ -130,16 +165,20 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 if (isViewAttached()) {
                     mView.setShopList(result);
                 }
+                mIsShopListLoaded = true;
+                completeDataLoad(mList, mDataSource);
             }
 
             @Override
             public void onFail(int code, String msg, ShopListResp data) {
-                // TODO
+                LogCat.e(TAG, "Load shop list Failed. " + code + ":" + msg);
+                mView.loadDataFailed();
             }
         });
     }
 
     private void loadDataSource() {
+        mIsDataSourceLoaded = false;
         int old = mDataSource;
         if (SpUtils.getSaasExist() == 1) {
             mDataSource |= Constants.DATA_SOURCE_SAAS;
@@ -181,13 +220,16 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                         initNoOrderList(mDataSource);
                         break;
                     default:
-                        initNoDataList(mDataSource);
+                        initNoDataList();
                 }
+                mIsDataSourceLoaded = true;
+                completeDataLoad(mList, mDataSource);
             }
 
             @Override
             public void onFail(int code, String msg, IpcListResp data) {
-                // TODO
+                LogCat.e(TAG, "Load data source Failed. " + code + ":" + msg);
+                mView.loadDataFailed();
             }
         });
     }
@@ -203,8 +245,6 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         mList.add(new DistributionChartCard(context, this, source));
         mList.add(new EmptyGapCard(ContextCompat.getColor(context, R.color.color_F5F7FA),
                 (int) context.getResources().getDimension(R.dimen.dp_24)));
-        mView.setCards(mList, source);
-        switchPeriodTo(Constants.TIME_PERIOD_TODAY);
     }
 
     private void initNoOrderList(int source) {
@@ -219,8 +259,6 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         mList.add(new NoOrderCard(context, this, false));
         mList.add(new EmptyGapCard(ContextCompat.getColor(context, R.color.color_F5F7FA),
                 (int) context.getResources().getDimension(R.dimen.dp_32)));
-        mView.setCards(mList, source);
-        switchPeriodTo(Constants.TIME_PERIOD_TODAY);
     }
 
     private void initNoFsList(int source) {
@@ -234,11 +272,9 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         mList.add(new NoFsCard(context, this, false));
         mList.add(new EmptyGapCard(ContextCompat.getColor(context, R.color.color_F5F7FA),
                 (int) context.getResources().getDimension(R.dimen.dp_32)));
-        mView.setCards(mList, source);
-        switchPeriodTo(Constants.TIME_PERIOD_TODAY);
     }
 
-    private void initNoDataList(int source) {
+    private void initNoDataList() {
         if (!isViewAttached()) {
             return;
         }
@@ -247,7 +283,13 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         mList.add(new NoFsCard(context, this, true));
         mList.add(new NoOrderCard(context, this, true));
         mList.add(new EmptyGapCard(0xFFFFFFFF, (int) context.getResources().getDimension(R.dimen.dp_32)));
-        mView.setCards(mList, source);
+    }
+
+    private void completeDataLoad(List<BaseRefreshItem> cards, int source) {
+        if (isViewAttached() && mIsShopListLoaded && mIsDataSourceLoaded) {
+            mView.setCards(cards, source);
+            switchPeriodTo(Constants.TIME_PERIOD_TODAY);
+        }
     }
 
     @Override

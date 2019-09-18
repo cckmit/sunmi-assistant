@@ -21,6 +21,8 @@ public interface DashboardContract {
 
         void setCards(List<BaseRefreshItem> data, int dataSource);
 
+        void loadDataFailed();
+
     }
 
     interface Presenter {
