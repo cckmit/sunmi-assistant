@@ -98,9 +98,9 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
         if (disconnectTime != null) {
             try {
                 String time = DateTimeUtils.secondToDate(Long.parseLong(disconnectTime), "yyyy-MM-dd HH:mm:ss");
-                detail = String.format(string, deviceName, time);
+                detail = String.format(string, "", time);
             } catch (NumberFormatException e) {
-                detail = String.format(string, deviceName, disconnectTime);
+                detail = String.format(string, "", disconnectTime);
             }
         } else if (timestamp != null && saasName != null && totalCount != null) {
             try {
@@ -111,13 +111,13 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
             }
         } else if (binVersion != null) {
             try {
-                detail = String.format(string, deviceName, binVersion);
+                detail = String.format(string, "", binVersion);
             } catch (Exception e) {
                 detail = "";
             }
         } else {
             try {
-                detail = String.format(string, deviceName);
+                detail = String.format(string, "");
             } catch (Exception e) {
                 detail = "";
             }

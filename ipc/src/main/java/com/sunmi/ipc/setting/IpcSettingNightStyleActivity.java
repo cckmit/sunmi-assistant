@@ -6,6 +6,7 @@ import android.view.View;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcConstants;
+import com.sunmi.ipc.utils.TimeoutTimer;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -15,6 +16,7 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.StatusBarUtils;
@@ -45,6 +47,7 @@ public class IpcSettingNightStyleActivity extends BaseActivity
     SunmiDevice mDevice;
     @Extra
     int nightMode, wdrMode, ledIndicator, rotation;
+    private boolean isNetException;
 
     @AfterViews
     void init() {
@@ -66,28 +69,28 @@ public class IpcSettingNightStyleActivity extends BaseActivity
         onBackPressed();
     }
 
-    @Click(resName = "sil_auto_switch")
-    void autoClick() {
-        selectNightStyle(NIGHT_MODE_AUTO);
+    private void setIpc(int type) {
+        isNetException = false;
+        TimeoutTimer.getInstance().start();
+        selectNightStyle(type);
         showLoadingDialog();
         IPCCall.getInstance().setIpcNightIdeRotation(context, mDevice.getModel(), mDevice.getDeviceid(),
-                NIGHT_MODE_AUTO, wdrMode, ledIndicator, rotation);
+                type, wdrMode, ledIndicator, rotation);
+    }
+
+    @Click(resName = "sil_auto_switch")
+    void autoClick() {
+        setIpc(NIGHT_MODE_AUTO);
     }
 
     @Click(resName = "sil_open")
     void openClick() {
-        selectNightStyle(NIGHT_MODE_ON);
-        showLoadingDialog();
-        IPCCall.getInstance().setIpcNightIdeRotation(context, mDevice.getModel(), mDevice.getDeviceid(),
-                NIGHT_MODE_ON, wdrMode, ledIndicator, rotation);
+        setIpc(NIGHT_MODE_ON);
     }
 
     @Click(resName = "sil_close")
     void closeClick() {
-        selectNightStyle(NIGHT_MODE_OFF);
-        showLoadingDialog();
-        IPCCall.getInstance().setIpcNightIdeRotation(context, mDevice.getModel(), mDevice.getDeviceid(),
-                NIGHT_MODE_OFF, wdrMode, ledIndicator, rotation);
+        setIpc(NIGHT_MODE_OFF);
     }
 
     /**
@@ -124,8 +127,15 @@ public class IpcSettingNightStyleActivity extends BaseActivity
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        TimeoutTimer.getInstance().stop();
+    }
+
+    @Override
     public int[] getStickNotificationId() {
-        return new int[]{IpcConstants.setIpcNightIdeRotation};
+        return new int[]{IpcConstants.setIpcNightIdeRotation,
+                CommonNotifications.netConnectException};
     }
 
     @Override
@@ -137,7 +147,13 @@ public class IpcSettingNightStyleActivity extends BaseActivity
         }
         ResponseBean res = (ResponseBean) args[0];
         if (id == IpcConstants.setIpcNightIdeRotation) {
+            if (isNetException) {
+                return;
+            }
             setIpcNightIdeRotation(res);
+        } else if (id == CommonNotifications.netConnectException) { //连接超时
+            isNetException = true;
+            shortTip(R.string.str_server_exception);
         }
     }
 

@@ -51,7 +51,7 @@
         android:layout_height="@dimen/dp_0_5"
         android:layout_below="@+id/tv_msg_shop"
         android:layout_marginTop="@dimen/dp_8"
-        android:background="@color/colorText_10" />
+        android:background="@color/colorText_5" />
 
     <TextView
         android:id="@+id/tv_msg_device_model"
@@ -92,7 +92,7 @@
         android:layout_height="@dimen/dp_0_5"
         android:layout_below="@+id/tv_msg_detail"
         android:layout_marginTop="@dimen/dp_8"
-        android:background="@color/colorText_10" />
+        android:background="@color/colorText_5" />
 
 
     <TextView

@@ -6,6 +6,7 @@ import android.view.View;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcConstants;
+import com.sunmi.ipc.utils.TimeoutTimer;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -15,6 +16,7 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DeviceTypeUtils;
@@ -47,6 +49,7 @@ public class IpcSettingRotateActivity extends BaseActivity implements View.OnCli
     SunmiDevice mDevice;
     @Extra
     int nightMode, wdrMode, ledIndicator, rotation;
+    private boolean isNetException;
 
     @AfterViews
     void init() {
@@ -81,7 +84,9 @@ public class IpcSettingRotateActivity extends BaseActivity implements View.OnCli
     }
 
     private void setRotationCall() {
+        isNetException = false;
         showLoadingDialog();
+        TimeoutTimer.getInstance().start();
         IPCCall.getInstance().setIpcNightIdeRotation(context, mDevice.getModel(), mDevice.getDeviceid(),
                 nightMode, wdrMode, ledIndicator, rotation);
     }
@@ -191,8 +196,15 @@ public class IpcSettingRotateActivity extends BaseActivity implements View.OnCli
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        TimeoutTimer.getInstance().stop();
+    }
+
+    @Override
     public int[] getStickNotificationId() {
-        return new int[]{IpcConstants.setIpcNightIdeRotation};
+        return new int[]{IpcConstants.setIpcNightIdeRotation,
+                CommonNotifications.netConnectException};
     }
 
     @Override
@@ -202,7 +214,13 @@ public class IpcSettingRotateActivity extends BaseActivity implements View.OnCli
         if (args == null) return;
         ResponseBean res = (ResponseBean) args[0];
         if (id == IpcConstants.setIpcNightIdeRotation) {
+            if (isNetException) {
+                return;
+            }
             setIpcNightIdeRotation(res);
+        } else if (id == CommonNotifications.netConnectException) { //连接超时
+            isNetException = true;
+            shortTip(R.string.str_server_exception);
         }
     }
 

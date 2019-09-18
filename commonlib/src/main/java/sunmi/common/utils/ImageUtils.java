@@ -169,6 +169,9 @@ public class ImageUtils {
      * @return {@code true}: success<br>{@code false}: fail
      */
     public static boolean saveImageToGallery(Context context, Bitmap bmp, int quality) {
+        if (bmp == null) {
+            return false;
+        }
         String storePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "screen_shot";
         File appDir = new File(storePath);
         if (!appDir.exists()) {

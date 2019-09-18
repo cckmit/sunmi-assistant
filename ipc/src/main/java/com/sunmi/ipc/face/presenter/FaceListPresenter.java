@@ -54,8 +54,11 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
     private List<FilterItem> mFilterAgeList = new ArrayList<>();
 
     private Call<BaseResponse<FaceListResp>> mCall;
+    private String faceOperateTip = "";
+    private Context context;
 
     public FaceListPresenter(Context context, int shopId, FaceGroup group) {
+        this.context = context;
         this.mShopId = shopId;
         this.mGroup = group;
         FilterItem allGender = new FilterItem(-1, context.getString(R.string.ipc_face_gender),
@@ -207,7 +210,7 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
                         if (isViewAttached()) {
-                            mView.shortTip(R.string.ipc_face_tip_move_success);
+                            faceOperateTip = context.getString(R.string.ipc_face_tip_move_success);
                         }
                         init();
                     }
@@ -237,7 +240,8 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
                         if (isViewAttached()) {
-                            mView.shortTip(R.string.ipc_face_tip_delete_success);
+                            faceOperateTip = context.getString(R.string.ipc_face_tip_delete_success);
+                            //mView.shortTip(R.string.ipc_face_tip_delete_success);
                         }
                         init();
                     }
@@ -315,6 +319,10 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
                 mFilterGender, mFilterAge, mFilterName, page, PAGE_SIZE, new RetrofitCallback<FaceListResp>() {
                     @Override
                     public void onSuccess(int code, String msg, FaceListResp data) {
+                        if (!TextUtils.isEmpty(faceOperateTip)) {
+                            mView.shortTip(faceOperateTip);
+                            faceOperateTip = "";
+                        }
                         mCall = null;
                         mCurrentPage = page;
                         mTotalCount = data.getTotalCount();
