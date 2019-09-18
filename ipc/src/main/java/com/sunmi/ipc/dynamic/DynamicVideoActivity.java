@@ -268,7 +268,7 @@ public class DynamicVideoActivity extends BaseActivity implements
 
     @Click(resName = "ib_play")
     void onPlayClick() {
-        if (iVideoPlayer != null && sbBar.getProgress() >= iVideoPlayer.getDuration()) {
+        if (iVideoPlayer == null && sbBar.getProgress() >= iVideoPlayer.getDuration()) {
             return;
         }
         ibPlay.setBackgroundResource(isPaused ? R.mipmap.pause_normal : R.mipmap.play_normal);
