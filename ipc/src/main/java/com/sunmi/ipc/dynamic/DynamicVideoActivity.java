@@ -99,9 +99,9 @@ public class DynamicVideoActivity extends BaseActivity implements
     @ViewById(resName = "tv_tip")
     TextView tvTip;
     @Extra
-//    String url;
-            //    String url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
-            String url = "http://test.cdn.sunmi.com/VIDEO/IPC/f4c28c287dff0e0656e00192450194e76f4863f80ca0517a135925ebc7828104";
+    String url;
+    //    String url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
+//    String url = "http://test.cdn.sunmi.com/VIDEO/IPC/f4c28c287dff0e0656e00192450194e76f4863f80ca0517a135925ebc7828104";
     @Extra
     String deviceModel;
 
