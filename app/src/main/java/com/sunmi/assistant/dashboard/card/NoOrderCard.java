@@ -47,6 +47,7 @@ public class NoOrderCard extends BaseRefreshItem<NoOrderCard.Model, Object> {
 
     @Override
     protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, CardCallback callback) {
+        callback.onSuccess();
         return null;
     }
 

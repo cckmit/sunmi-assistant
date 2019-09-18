@@ -127,6 +127,7 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
                             model.lastRate = model.lastConsumer == 0 ?
                                     0f : (float) model.lastVolume / model.lastConsumer;
                         }
+                        callback.onSuccess();
                     }
 
                     @Override

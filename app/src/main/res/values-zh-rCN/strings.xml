@@ -54,7 +54,11 @@
     <string name="dashboard_chart_consumer">客流量</string>
     <string name="dashboard_chart_distribution">客群分布</string>
     <string name="dashboard_chart_new_old">新老</string>
+    <string name="dashboard_chart_new">新客</string>
+    <string name="dashboard_chart_old">熟客</string>
     <string name="dashboard_chart_gender">性别</string>
+    <string name="dashboard_chart_male">男性</string>
+    <string name="dashboard_chart_female">女性</string>
     <string name="dashboard_chart_age">年龄</string>
     <string name="dashboard_chart_pie_hole_ratio">%s占比</string>
     <string name="dashboard_empty_data_tip">暂无门店数据，您可以尝试：</string>

@@ -6,9 +6,11 @@ import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
+import android.text.format.DateFormat;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.util.Pair;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.TextView;
@@ -25,14 +27,23 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.DashboardContract;
 import com.sunmi.assistant.dashboard.ui.PieChartLabelFormatter;
+import com.sunmi.assistant.utils.Utils;
+import com.sunmi.ipc.face.model.FaceAge;
+import com.sunmi.ipc.model.FaceAgeRangeResp;
+import com.sunmi.ipc.rpc.IpcCloudApi;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
+import sunmi.common.model.ConsumerAgeGenderResp;
+import sunmi.common.model.ConsumerAgeNewOldResp;
+import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
+import sunmi.common.rpc.retrofit.RetrofitCallback;
 
 /**
  * @author yinhui
@@ -44,7 +55,9 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
     private static final int[] PIE_COLORS_GENDER = {0xFF4B7AFA, 0xFFFF6666};
     private static final int[] PIE_COLORS_AGE = {0xFFFFE14C, 0xFF99FF66, 0xFF4CC3FF, 0xFF4C88FF, 0xFF7F66FF, 0xFFBB7DFA, 0xFFFF6680, 0xFFFF9966};
     private static final int[] PIE_COLORS_EMPTY = {0xFFCED2D9};
+
     private PieChart mChart;
+    private SparseArray<String> mAgeList;
 
     public DistributionChartCard(Context context, DashboardContract.Presenter presenter, int source) {
         super(context, presenter, source);
@@ -74,8 +87,96 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
 
     @Override
     protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, CardCallback callback) {
-        callback.onSuccess();
+        Pair<Long, Long> time = Utils.getPeriodTimestamp(period);
+        String start = DateFormat.format(DATE_FORMAT, time.first).toString();
+        String end = DateFormat.format(DATE_FORMAT, time.second).toString();
+        if (mAgeList == null) {
+            loadAgeList(companyId, shopId, start, end, callback);
+        } else {
+            loadNewOld(companyId, shopId, start, end, callback);
+        }
         return null;
+    }
+
+    private void loadAgeList(int companyId, int shopId, String start, String end, CardCallback callback) {
+        IpcCloudApi.getFaceAgeRange(companyId, shopId, new RetrofitCallback<FaceAgeRangeResp>() {
+            @Override
+            public void onSuccess(int code, String msg, FaceAgeRangeResp data) {
+                List<FaceAge> list = data.getAgeRangeList();
+                Collections.sort(list, (o1, o2) -> (o1.getCode() - o2.getCode()));
+                mAgeList = new SparseArray<>(list.size());
+                for (FaceAge age : list) {
+                    mAgeList.put(age.getCode(), age.getName());
+                }
+                loadNewOld(companyId, shopId, start, end, callback);
+            }
+
+            @Override
+            public void onFail(int code, String msg, FaceAgeRangeResp data) {
+                callback.onFail(code, msg, data);
+            }
+        });
+    }
+
+    private void loadNewOld(int companyId, int shopId, String start, String end, CardCallback callback) {
+        SunmiStoreApi.getInstance().getConsumerByAgeNewOld(companyId, shopId, start, end,
+                new RetrofitCallback<ConsumerAgeNewOldResp>() {
+                    @Override
+                    public void onSuccess(int code, String msg, ConsumerAgeNewOldResp data) {
+                        Model model = getModel();
+                        List<PieEntry> newOldList = model.dataSets.get(Constants.DATA_TYPE_NEW_OLD);
+                        List<PieEntry> ageList = model.dataSets.get(Constants.DATA_TYPE_AGE);
+                        newOldList.clear();
+                        ageList.clear();
+                        List<ConsumerAgeNewOldResp.CountListBean> list = data.getCountList();
+                        int newCount = 0;
+                        int oldCount = 0;
+                        for (ConsumerAgeNewOldResp.CountListBean bean : list) {
+                            newCount += bean.getStrangerCount();
+                            oldCount += bean.getRegularCount();
+                            int ageCount = bean.getRegularCount() + bean.getStrangerCount();
+                            ageList.add(new PieEntry(ageCount, mAgeList.get(bean.getAgeRangeCode())));
+                        }
+                        String newName = mContext.getString(R.string.dashboard_chart_new);
+                        String oldName = mContext.getString(R.string.dashboard_chart_old);
+                        newOldList.add(new PieEntry(newCount, newName));
+                        newOldList.add(new PieEntry(oldCount, oldName));
+                        loadGender(companyId, shopId, start, end, callback);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg, ConsumerAgeNewOldResp data) {
+                        callback.onFail(code, msg, data);
+                    }
+                });
+    }
+
+    private void loadGender(int companyId, int shopId, String start, String end, CardCallback callback) {
+        SunmiStoreApi.getInstance().getConsumerByAgeGender(companyId, shopId, start, end,
+                new RetrofitCallback<ConsumerAgeGenderResp>() {
+                    @Override
+                    public void onSuccess(int code, String msg, ConsumerAgeGenderResp data) {
+                        Model model = getModel();
+                        List<PieEntry> genderList = model.dataSets.get(Constants.DATA_TYPE_GENDER);
+                        List<ConsumerAgeGenderResp.CountListBean> list = data.getCountList();
+                        int maleCount = 0;
+                        int femaleCount = 0;
+                        for (ConsumerAgeGenderResp.CountListBean bean : list) {
+                            maleCount += bean.getMaleCount();
+                            femaleCount += bean.getFemaleCount();
+                        }
+                        String maleName = mContext.getString(R.string.dashboard_chart_male);
+                        String femaleName = mContext.getString(R.string.dashboard_chart_female);
+                        genderList.add(new PieEntry(maleCount, maleName));
+                        genderList.add(new PieEntry(femaleCount, femaleName));
+                        callback.onSuccess();
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg, ConsumerAgeGenderResp data) {
+                        callback.onFail(code, msg, data);
+                    }
+                });
     }
 
     @NonNull
@@ -106,25 +207,6 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
 
     @Override
     protected void setupModel(Model model, Object response) {
-        model.isValid = true;
-        model.type = Constants.DATA_TYPE_NEW_OLD;
-        model.period = Constants.TIME_PERIOD_TODAY;
-        List<PieEntry> list = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
-            list.add(new PieEntry((float) Math.random() * 1000, "part" + i));
-        }
-        model.dataSets.put(Constants.DATA_TYPE_NEW_OLD, list);
-        list = new ArrayList<>();
-        model.dataSets.put(Constants.DATA_TYPE_GENDER, list);
-        list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            if (i < 5) {
-                list.add(new PieEntry((float) Math.random() * 100, "part" + i));
-            } else {
-                list.add(new PieEntry((float) Math.random() * 1000, "part" + i));
-            }
-        }
-        model.dataSets.put(Constants.DATA_TYPE_AGE, list);
     }
 
     @Override
@@ -149,10 +231,21 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
             model.dataSets.put(model.type, dataSet);
         }
 
+        // Highlight largest data part
+        int maxIndex = -1;
+        float max = 0;
+        for (int i = 0, size = dataSet.size(); i < size; i++) {
+            float value = dataSet.get(i).getValue();
+            if (max < value) {
+                max = value;
+                maxIndex = i;
+            }
+        }
+
         // Get color based by type
         int[] colors;
         boolean isEmpty = false;
-        if (dataSet.isEmpty()) {
+        if (dataSet.isEmpty() || max <= 0) {
             colors = PIE_COLORS_EMPTY;
             isEmpty = true;
         } else if (model.type == Constants.DATA_TYPE_NEW_OLD) {
@@ -171,17 +264,6 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
         } else {
             pie.setHighlightPerTapEnabled(true);
             mChart.setCenterTextOffset(0, -5);
-        }
-
-        // Highlight largest data part
-        int maxIndex = -1;
-        float max = 0;
-        for (int i = 0, size = dataSet.size(); i < size; i++) {
-            float value = dataSet.get(i).getValue();
-            if (max < value) {
-                max = value;
-                maxIndex = i;
-            }
         }
 
         // Refresh data set
