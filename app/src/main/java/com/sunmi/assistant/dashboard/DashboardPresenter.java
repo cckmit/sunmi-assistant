@@ -123,11 +123,15 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         }
     }
 
+    public SparseArray<String> getAgeList() {
+        return mAgeList;
+    }
+
     private void loadAgeList() {
         if (mAgeList != null) {
             return;
         }
-        IpcCloudApi.getFaceAgeRange(SpUtils.getCompanyId(), mShopId, new RetrofitCallback<FaceAgeRangeResp>() {
+        IpcCloudApi.getFaceAgeRange(mCompanyId, mShopId, new RetrofitCallback<FaceAgeRangeResp>() {
             @Override
             public void onSuccess(int code, String msg, FaceAgeRangeResp data) {
                 List<FaceAge> faceAges = data.getAgeRangeList();
