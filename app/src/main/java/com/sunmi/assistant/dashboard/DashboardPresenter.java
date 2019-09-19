@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.util.ArrayMap;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshItem;
@@ -53,12 +54,16 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     private boolean mIsShopListLoaded;
     private boolean mIsDataSourceLoaded;
 
+    private ArrayMap<Class<?>, BaseRefreshItem> mCardMap = new ArrayMap<>(8);
     private List<BaseRefreshItem> mList;
 
     private RefreshTask mTask;
 
     @Override
     public void init() {
+        if (!isViewAttached()) {
+            return;
+        }
         mCompanyId = SpUtils.getCompanyId();
         mShopId = SpUtils.getShopId();
         loadDataSource();
@@ -193,7 +198,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                         initNoOrderList(mDataSource);
                         break;
                     default:
-                        initNoDataList();
+                        initNoDataList(mDataSource);
                 }
                 mIsDataSourceLoaded = true;
                 completeDataLoad(mList, mDataSource);
@@ -212,12 +217,48 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             return;
         }
         Context context = mView.getContext();
-        mList.add(new PeriodTabCard(context, this, source));
-        mList.add(new DataCard(context, this, source));
-        mList.add(new TrendChartCard(context, this, source));
-        mList.add(new DistributionChartCard(context, this, source));
-        mList.add(new EmptyGapCard(ContextCompat.getColor(context, R.color.color_F5F7FA),
-                (int) context.getResources().getDimension(R.dimen.dp_24)));
+        BaseRefreshItem card;
+
+        card = mCardMap.get(PeriodTabCard.class);
+        if (card == null) {
+            card = new PeriodTabCard(context, this);
+            mCardMap.put(PeriodTabCard.class, card);
+        }
+        card.initConfig(source);
+        mList.add(card);
+
+        card = mCardMap.get(DataCard.class);
+        if (card == null) {
+            card = new DataCard(context, this);
+            mCardMap.put(DataCard.class, card);
+        }
+        card.initConfig(source);
+        mList.add(card);
+
+        card = mCardMap.get(TrendChartCard.class);
+        if (card == null) {
+            card = new TrendChartCard(context, this);
+            mCardMap.put(TrendChartCard.class, card);
+        }
+        card.initConfig(source);
+        mList.add(card);
+
+        card = mCardMap.get(DistributionChartCard.class);
+        if (card == null) {
+            card = new DistributionChartCard(context, this);
+            mCardMap.put(DistributionChartCard.class, card);
+        }
+        card.initConfig(source);
+        mList.add(card);
+
+        card = mCardMap.get(EmptyGapCard.class);
+        if (card == null) {
+            card = new EmptyGapCard();
+            mCardMap.put(EmptyGapCard.class, card);
+        }
+        ((EmptyGapCard) card).setHeightAndColor((int) context.getResources().getDimension(R.dimen.dp_24),
+                ContextCompat.getColor(context, R.color.color_F5F7FA));
+        mList.add(card);
     }
 
     private void initNoOrderList(int source) {
@@ -225,13 +266,56 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             return;
         }
         Context context = mView.getContext();
-        mList.add(new PeriodTabCard(context, this, source));
-        mList.add(new DataCard(context, this, source));
-        mList.add(new TrendChartCard(context, this, source));
-        mList.add(new DistributionChartCard(context, this, source));
-        mList.add(new NoOrderCard(context, this, false));
-        mList.add(new EmptyGapCard(ContextCompat.getColor(context, R.color.color_F5F7FA),
-                (int) context.getResources().getDimension(R.dimen.dp_32)));
+        BaseRefreshItem card;
+
+        card = mCardMap.get(PeriodTabCard.class);
+        if (card == null) {
+            card = new PeriodTabCard(context, this);
+            mCardMap.put(PeriodTabCard.class, card);
+        }
+        card.initConfig(source);
+        mList.add(card);
+
+        card = mCardMap.get(DataCard.class);
+        if (card == null) {
+            card = new DataCard(context, this);
+            mCardMap.put(DataCard.class, card);
+        }
+        card.initConfig(source);
+        mList.add(card);
+
+        card = mCardMap.get(TrendChartCard.class);
+        if (card == null) {
+            card = new TrendChartCard(context, this);
+            mCardMap.put(TrendChartCard.class, card);
+        }
+        card.initConfig(source);
+        mList.add(card);
+
+        card = mCardMap.get(DistributionChartCard.class);
+        if (card == null) {
+            card = new DistributionChartCard(context, this);
+            mCardMap.put(DistributionChartCard.class, card);
+        }
+        card.initConfig(source);
+        mList.add(card);
+
+        card = mCardMap.get(NoOrderCard.class);
+        if (card == null) {
+            card = new NoOrderCard(context, this);
+            mCardMap.put(NoOrderCard.class, card);
+        }
+        ((NoOrderCard) card).setIsAllEmpty(false);
+        mList.add(card);
+
+        card = mCardMap.get(EmptyGapCard.class);
+        if (card == null) {
+            card = new EmptyGapCard();
+            mCardMap.put(EmptyGapCard.class, card);
+        }
+        ((EmptyGapCard) card).setHeightAndColor((int) context.getResources().getDimension(R.dimen.dp_32),
+                ContextCompat.getColor(context, R.color.color_F5F7FA));
+        mList.add(card);
     }
 
     private void initNoFsList(int source) {
@@ -239,23 +323,88 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             return;
         }
         Context context = mView.getContext();
-        mList.add(new PeriodTabCard(context, this, source));
-        mList.add(new DataCard(context, this, source));
-        mList.add(new TrendChartCard(context, this, source));
-        mList.add(new NoFsCard(context, this, false));
-        mList.add(new EmptyGapCard(ContextCompat.getColor(context, R.color.color_F5F7FA),
-                (int) context.getResources().getDimension(R.dimen.dp_32)));
+        BaseRefreshItem card;
+
+        card = mCardMap.get(PeriodTabCard.class);
+        if (card == null) {
+            card = new PeriodTabCard(context, this);
+            mCardMap.put(PeriodTabCard.class, card);
+        }
+        card.initConfig(source);
+        mList.add(card);
+
+        card = mCardMap.get(DataCard.class);
+        if (card == null) {
+            card = new DataCard(context, this);
+            mCardMap.put(DataCard.class, card);
+        }
+        card.initConfig(source);
+        mList.add(card);
+
+        card = mCardMap.get(TrendChartCard.class);
+        if (card == null) {
+            card = new TrendChartCard(context, this);
+            mCardMap.put(TrendChartCard.class, card);
+        }
+        card.initConfig(source);
+        mList.add(card);
+
+        card = mCardMap.get(NoFsCard.class);
+        if (card == null) {
+            card = new NoFsCard(context, this);
+            mCardMap.put(NoFsCard.class, card);
+        }
+        ((NoFsCard) card).setIsAllEmpty(false);
+        mList.add(card);
+
+        card = mCardMap.get(EmptyGapCard.class);
+        if (card == null) {
+            card = new EmptyGapCard();
+            mCardMap.put(EmptyGapCard.class, card);
+        }
+        ((EmptyGapCard) card).setHeightAndColor((int) context.getResources().getDimension(R.dimen.dp_32),
+                ContextCompat.getColor(context, R.color.color_F5F7FA));
+        mList.add(card);
     }
 
-    private void initNoDataList() {
+    private void initNoDataList(int source) {
         if (!isViewAttached()) {
             return;
         }
         Context context = mView.getContext();
-        mList.add(new EmptyDataCard(context, this));
-        mList.add(new NoFsCard(context, this, true));
-        mList.add(new NoOrderCard(context, this, true));
-        mList.add(new EmptyGapCard(0xFFFFFFFF, (int) context.getResources().getDimension(R.dimen.dp_32)));
+        BaseRefreshItem card;
+
+        card = mCardMap.get(EmptyDataCard.class);
+        if (card == null) {
+            card = new EmptyDataCard();
+            mCardMap.put(EmptyDataCard.class, card);
+        }
+        mList.add(card);
+
+        card = mCardMap.get(NoFsCard.class);
+        if (card == null) {
+            card = new NoFsCard(context, this);
+            mCardMap.put(NoFsCard.class, card);
+        }
+        ((NoFsCard) card).setIsAllEmpty(true);
+        mList.add(card);
+
+        card = mCardMap.get(NoOrderCard.class);
+        if (card == null) {
+            card = new NoOrderCard(context, this);
+            mCardMap.put(NoOrderCard.class, card);
+        }
+        ((NoOrderCard) card).setIsAllEmpty(true);
+        mList.add(card);
+
+        card = mCardMap.get(EmptyGapCard.class);
+        if (card == null) {
+            card = new EmptyGapCard();
+            mCardMap.put(EmptyGapCard.class, card);
+        }
+        ((EmptyGapCard) card).setHeightAndColor((int) context.getResources().getDimension(R.dimen.dp_32),
+                ContextCompat.getColor(context, R.color.color_F5F7FA));
+        mList.add(card);
     }
 
     private void completeDataLoad(List<BaseRefreshItem> cards, int source) {

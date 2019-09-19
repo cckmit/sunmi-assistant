@@ -59,8 +59,8 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
     private final float mDashLength;
     private final float mDashSpaceLength;
 
-    public TrendChartCard(Context context, DashboardContract.Presenter presenter, int source) {
-        super(context, presenter, source);
+    public TrendChartCard(Context context, DashboardContract.Presenter presenter) {
+        super(context, presenter);
         mDashLength = CommonHelper.dp2px(context, 4f);
         mDashSpaceLength = CommonHelper.dp2px(context, 2f);
         addOnViewClickListener(R.id.tv_dashboard_rate, (adapter, holder, v, model, position) -> {

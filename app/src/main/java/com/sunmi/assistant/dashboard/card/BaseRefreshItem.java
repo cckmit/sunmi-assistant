@@ -54,19 +54,24 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
 
     private Model mModel;
 
+    protected boolean isInit = false;
     private int mCompanyId;
     private int mShopId;
     private int mDataSource;
     private int mPeriod = Constants.TIME_PERIOD_INIT;
     private int mState = STATE_INIT;
 
-    protected BaseRefreshItem(Context context, DashboardContract.Presenter presenter, int source) {
+    protected BaseRefreshItem(Context context, DashboardContract.Presenter presenter) {
         this.mContext = context;
         this.mPresenter = presenter;
+        mModel = createModel(context);
+    }
+
+    public void initConfig(int source) {
         this.mDataSource = source;
         this.mCompanyId = SpUtils.getCompanyId();
         this.mShopId = SpUtils.getShopId();
-        mModel = createModel(context);
+        this.isInit = true;
     }
 
     public boolean showTransactionData() {
@@ -90,6 +95,16 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
         this.mPosition = position;
         //noinspection unchecked
         adapter.register((Class<Model>) mModel.getClass(), this);
+    }
+
+    public void setDataSource(int source) {
+        if (this.mDataSource == source) {
+            return;
+        }
+        this.mDataSource = source;
+        this.mModel.skipLoad = false;
+        this.mModel.isValid = false;
+        requestLoad(true, true);
     }
 
     public void setCompanyId(int companyId, int shopId) {
@@ -148,6 +163,9 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+        if (!isInit) {
+            return;
+        }
         boolean isLoading = (mState == STATE_INIT || mState == STATE_LOADING);
         if (model.isValid) {
             setupView(holder, model, position);
@@ -163,6 +181,9 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
     }
 
     private void requestLoad(boolean forceLoad, boolean showLoading) {
+        if (!isInit) {
+            return;
+        }
         if (forceLoad || !mModel.skipLoad) {
             if (mCall.isLoading() && mCall.isRequestSame(mCompanyId, mShopId, mPeriod)) {
                 LogCat.d(TAG, "Data is loading, skip.");

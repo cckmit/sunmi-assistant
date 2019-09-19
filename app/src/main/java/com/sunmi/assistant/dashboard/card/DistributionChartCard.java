@@ -60,8 +60,8 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
     private SparseArray<String> mAgeList;
     private OnPieSelectedListener mOnSelectedListener;
 
-    public DistributionChartCard(Context context, DashboardContract.Presenter presenter, int source) {
-        super(context, presenter, source);
+    public DistributionChartCard(Context context, DashboardContract.Presenter presenter) {
+        super(context, presenter);
         addOnViewClickListener(R.id.tv_dashboard_new_old, (adapter, holder, v, model, position) -> {
             model.type = Constants.DATA_TYPE_NEW_OLD;
             updateView();
