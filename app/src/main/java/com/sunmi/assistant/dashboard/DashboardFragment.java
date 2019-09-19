@@ -49,6 +49,8 @@ import sunmi.common.view.DropdownMenu;
 public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         implements DashboardContract.View, BGARefreshLayout.BGARefreshLayoutDelegate {
 
+    private static final int OFFSET_PARALLAX = 50;
+
     @ViewById(R.id.cl_dashboard_content)
     ConstraintLayout mContent;
     @ViewById(R.id.layout_dashboard_refresh)
@@ -79,6 +81,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     private int mDataSource;
     private BaseArrayAdapter<Object> mAdapter;
     private LinearLayoutManager mLayoutManager;
+    private BGANormalRefreshViewHolder mRefreshHeaderHolder;
 
     private ShopMenuAdapter mShopMenuAdapter;
     private Drawable mShopMenuBg;
@@ -103,10 +106,11 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             return;
         }
         StatusBarUtils.setStatusBarFullTransparent(activity);
-        initDimens();
         initShopMenu();
         initRefreshLayout();
         initRecycler();
+        initDimens();
+//        mShopMenu.setAlpha(0.2f);
     }
 
     private void initDimens() {
@@ -117,6 +121,9 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             }
             mStatusBarHeight = Utils.getStatusBarHeight(context);
             mTopShopMenuHeight = mShopMenu.getMeasuredHeight();
+//            View refreshHeaderView = mRefreshHeaderHolder.getRefreshHeaderView();
+//            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) refreshHeaderView.getLayoutParams();
+//            lp.topMargin = mTopShopMenuHeight;
         });
     }
 
@@ -150,11 +157,10 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     private void initRefreshLayout() {
+        mRefreshHeaderHolder = new BGANormalRefreshViewHolder(getContext(), false);
+        mRefreshHeaderHolder.setRefreshViewBackgroundColorRes(R.color.color_303540);
         mRefreshLayout.setDelegate(this);
-        BGANormalRefreshViewHolder refreshViewHolder =
-                new BGANormalRefreshViewHolder(getContext(), false);
-        View refreshHeaderView = refreshViewHolder.getRefreshHeaderView();
-        mRefreshLayout.setRefreshViewHolder(refreshViewHolder);
+        mRefreshLayout.setRefreshViewHolder(mRefreshHeaderHolder);
         mRefreshLayout.setPullDownRefreshEnable(true);
         mRefreshLayout.setIsShowLoadingMoreView(false);
     }
@@ -277,7 +283,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         }
     }
 
-    private void showStickyTop(Context context, boolean animated) {
+    private void showStickyTop(Context context) {
         StatusBarUtils.setStatusBarColor(getActivity(), StatusBarUtils.TYPE_DARK);
         if (mDataSource != 0) {
             mShopMenu.setTranslationY(-mTopShopMenuHeight);
@@ -291,7 +297,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         }
     }
 
-    private void hideStickyTop(Context context, boolean animated) {
+    private void hideStickyTop(Context context) {
         StatusBarUtils.setStatusBarFullTransparent(getActivity());
         if (mDataSource != 0) {
             mShopMenu.setVisibility(View.VISIBLE);
@@ -327,10 +333,10 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             Context context = recyclerView.getContext();
             if (mIsStickyTop && position > 0) {
                 mIsStickyTop = false;
-                hideStickyTop(context, true);
+                hideStickyTop(context);
             } else if (!mIsStickyTop && position <= 0) {
                 mIsStickyTop = true;
-                showStickyTop(context, true);
+                showStickyTop(context);
             }
             if (position > 0 && mDataSource != 0) {
                 mShopMenu.setTranslationY(Math.min(position - mTopShopMenuHeight, 0));

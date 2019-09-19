@@ -16,6 +16,8 @@ import com.sunmi.assistant.data.PaymentApi;
 import com.sunmi.assistant.data.response.OrderTotalAmountResp;
 import com.sunmi.assistant.data.response.OrderTotalCountResp;
 
+import java.util.Locale;
+
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.model.ConsumerCountResp;
@@ -57,7 +59,7 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
 
     private void loadSales(int companyId, int shopId, int period, CardCallback callback) {
         Pair<Long, Long> time = Utils.getPeriodTimestamp(Constants.TIME_PERIOD_TODAY);
-        PaymentApi.get().getOrderTotalAmount(companyId, shopId, time.first, time.second, 0,
+        PaymentApi.get().getOrderTotalAmount(companyId, shopId, time.first, time.second, 1,
                 new RetrofitCallback<OrderTotalAmountResp>() {
                     @Override
                     public void onSuccess(int code, String msg, OrderTotalAmountResp data) {
@@ -84,7 +86,7 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
 
     private void loadVolume(int companyId, int shopId, int period, CardCallback callback) {
         Pair<Long, Long> time = Utils.getPeriodTimestamp(Constants.TIME_PERIOD_TODAY);
-        PaymentApi.get().getOrderTotalCount(companyId, shopId, time.first, time.second, 0,
+        PaymentApi.get().getOrderTotalCount(companyId, shopId, time.first, time.second, 1,
                 new RetrofitCallback<OrderTotalCountResp>() {
                     @Override
                     public void onSuccess(int code, String msg, OrderTotalCountResp data) {
@@ -158,8 +160,8 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
             volumeValue.setText(model.getVolume());
             volumeSubdata.setText(model.getLastVolume());
         } else if (!showTransactionData() && showConsumerData()) {
-            consumerValue.setText(model.getConsumer());
-            consumerSubdata.setText(model.getLastConsumer());
+            value.setText(model.getConsumer());
+            subdata.setText(model.getLastConsumer());
         } else {
             value.setText(model.getSales());
             subdata.setText(model.getLastSales());
@@ -280,11 +282,11 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
         float lastRate;
 
         public String getSales() {
-            return String.valueOf(sales);
+            return String.format(Locale.getDefault(), FORMAT_FLOAT_DOUBLE_DECIMAL, sales);
         }
 
         public String getLastSales() {
-            return String.valueOf(lastSales);
+            return String.format(Locale.getDefault(), FORMAT_FLOAT_DOUBLE_DECIMAL, lastSales);
         }
 
         public String getVolume() {
@@ -304,11 +306,11 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
         }
 
         public String getRate() {
-            return String.valueOf(rate);
+            return String.format(Locale.getDefault(), FORMAT_FLOAT_DOUBLE_PERCENT, rate * 100);
         }
 
         public String getLastRate() {
-            return String.valueOf(lastRate);
+            return String.format(Locale.getDefault(), FORMAT_FLOAT_DOUBLE_PERCENT, lastRate * 100);
         }
     }
 }

@@ -40,6 +40,7 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
     protected static final String DATA_ZERO = "0";
     protected static final String FORMAT_FLOAT_NO_DECIMAL = "%.0f";
     protected static final String FORMAT_FLOAT_DOUBLE_DECIMAL = "%.2f";
+    protected static final String FORMAT_FLOAT_DOUBLE_PERCENT = "%.2f%%";
     protected static final DecimalFormat FORMAT_MAX_DOUBLE_DECIMAL = new DecimalFormat("#.##");
 
     protected Context mContext;
