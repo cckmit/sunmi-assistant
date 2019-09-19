@@ -53,7 +53,7 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
 
     private static final int[] PIE_COLORS_NEW_OLD = {0xFF5A97FC, 0xFFFF8000};
     private static final int[] PIE_COLORS_GENDER = {0xFF4B7AFA, 0xFFFF6666};
-    private static final int[] PIE_COLORS_AGE = {0xFFFFE14C, 0xFF99FF66, 0xFF4CC3FF, 0xFF4C88FF, 0xFF7F66FF, 0xFFBB7DFA, 0xFFFF6680, 0xFFFF9966};
+    private static final int[] PIE_COLORS_AGE = {0xFFFADD4B, 0xFF45E6B0, 0xFF4BC0FA, 0xFF4B85FA, 0xFF7A62F5, 0xFFB87AF5, 0xFFFF6680, 0xFFFF884D};
     private static final int[] PIE_COLORS_EMPTY = {0xFFCED2D9};
 
     private PieChart mChart;
