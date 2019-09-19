@@ -8,13 +8,6 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.inuker.bluetooth.library.BluetoothClient;
-import com.inuker.bluetooth.library.connect.options.BleConnectOptions;
-import com.inuker.bluetooth.library.connect.response.BleConnectResponse;
-import com.inuker.bluetooth.library.connect.response.BleNotifyResponse;
-import com.inuker.bluetooth.library.connect.response.BleUnnotifyResponse;
-import com.inuker.bluetooth.library.connect.response.BleWriteResponse;
-import com.inuker.bluetooth.library.model.BleGattProfile;
 import com.sunmi.cloudprinter.R;
 import com.sunmi.cloudprinter.bean.PrinterDevice;
 import com.sunmi.cloudprinter.bean.Router;
@@ -24,6 +17,13 @@ import com.sunmi.cloudprinter.utils.Utility;
 
 import java.util.UUID;
 
+import library.BluetoothClient;
+import library.connect.options.BleConnectOptions;
+import library.connect.response.BleConnectResponse;
+import library.connect.response.BleNotifyResponse;
+import library.connect.response.BleUnnotifyResponse;
+import library.connect.response.BleWriteResponse;
+import library.model.BleGattProfile;
 import sunmi.common.rpc.http.HttpCallback;
 import sunmi.common.utils.ByteUtils;
 
@@ -45,16 +45,14 @@ public class SunmiPrinterClient implements BluetoothAdapter.LeScanCallback {
     //回调
     private IPrinterClient iPrinterClient;
 
-    private String bleAddress;
 
     private byte[] receivedData;
     private int receivedLen;
     private int retryCount;
 
-    public SunmiPrinterClient(Context context, String bleAddress, IPrinterClient iPrinterClient) {
+    public SunmiPrinterClient(Context context, IPrinterClient iPrinterClient) {
         this.context = context;
         this.iPrinterClient = iPrinterClient;
-        this.bleAddress = bleAddress;
         mClient = new BluetoothClient(context);
         final BluetoothManager bluetoothManager =
                 (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);

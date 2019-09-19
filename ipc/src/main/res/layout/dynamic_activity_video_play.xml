@@ -18,10 +18,26 @@
         android:layout_height="@dimen/dp_28"
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_18"
-        android:background="@mipmap/ipc_white_back"
+        android:background="@drawable/ic_back_light_shadow"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription,MissingConstraints" />
+
+    <TextView
+        android:id="@+id/tv_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_35"
+        android:layout_marginBottom="@dimen/dp_72"
+        android:textColor="@color/c_white"
+        android:padding="@dimen/dp_8"
+        android:gravity="center"
+        android:textSize="@dimen/sp_12"
+        android:background="@drawable/setting_bg_tip_text"
+        android:text="@string/ipc_save_picture_tip"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <!--底部控制区-->
     <RelativeLayout
@@ -29,7 +45,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_64"
         android:animateLayoutChanges="true"
-        android:background="@color/transparent"
+        android:background="@mipmap/bg_video_controller_bottom"
         android:gravity="center_vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:ignore="MissingConstraints">

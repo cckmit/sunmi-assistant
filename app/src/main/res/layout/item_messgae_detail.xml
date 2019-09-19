@@ -6,7 +6,7 @@
     android:layout_marginStart="@dimen/dp_10"
     android:layout_marginTop="@dimen/dp_8"
     android:layout_marginEnd="@dimen/dp_10"
-    android:background="@drawable/bg_shap_white">
+    android:background="@drawable/bg_shape_white">
 
     <sunmi.common.view.tablayout.widget.MsgView
         android:id="@+id/msg_view"
@@ -20,7 +20,7 @@
         app:mv_isRadiusHalfHeight="true" />
 
     <TextView
-        android:id="@+id/tv_msg_title"
+        android:id="@+id/tv_msg_company"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_25"
@@ -29,42 +29,94 @@
         android:ellipsize="end"
         android:singleLine="true"
         android:textColor="@color/color_333338"
-        android:textSize="@dimen/sp_16" />
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tv_msg_shop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_msg_title"
+        android:layout_below="@+id/tv_msg_company"
         android:layout_marginStart="@dimen/dp_25"
-        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginTop="@dimen/dp_2"
         android:layout_marginEnd="@dimen/dp_25"
         android:ellipsize="end"
         android:singleLine="true"
-        android:textColor="@color/color_333338"
-        android:textSize="@dimen/sp_16" />
+        android:textColor="@color/color_666666"
+        android:textSize="@dimen/sp_14" />
+
+    <View
+        android:id="@+id/v_line_top"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_0_5"
+        android:layout_below="@+id/tv_msg_shop"
+        android:layout_marginTop="@dimen/dp_8"
+        android:background="@color/colorText_5" />
 
     <TextView
-        android:id="@+id/tv_msg_time"
+        android:id="@+id/tv_msg_device_model"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_msg_shop"
+        android:layout_below="@id/v_line_top"
         android:layout_marginStart="@dimen/dp_25"
-        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginTop="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_25"
-        android:textColor="@color/color_999999"
+        android:textColor="@color/color_666666"
+        android:textSize="@dimen/sp_12" />
+
+    <TextView
+        android:id="@+id/tv_msg_device_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_msg_device_model"
+        android:layout_marginStart="@dimen/dp_25"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_25"
+        android:textColor="@color/color_666666"
         android:textSize="@dimen/sp_12" />
 
     <TextView
         android:id="@+id/tv_msg_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_msg_time"
+        android:layout_below="@id/tv_msg_device_name"
         android:layout_marginStart="@dimen/dp_25"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_25"
-        android:layout_marginBottom="@dimen/dp_16"
         android:textColor="@color/color_666666"
         android:textSize="@dimen/sp_12" />
+
+    <View
+        android:id="@+id/v_line_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_0_5"
+        android:layout_below="@+id/tv_msg_detail"
+        android:layout_marginTop="@dimen/dp_8"
+        android:background="@color/colorText_5" />
+
+
+    <TextView
+        android:id="@+id/tv_msg_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/v_line_bottom"
+        android:layout_marginStart="@dimen/dp_25"
+        android:layout_marginTop="@dimen/dp_13"
+        android:layout_marginBottom="@dimen/dp_13"
+        android:textColor="@color/color_999999"
+        android:textSize="@dimen/sp_12" />
+
+    <Button
+        android:id="@+id/btn_play"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_26"
+        android:layout_below="@+id/v_line_bottom"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_25"
+        android:background="@drawable/button_corners_edge_orange_solid_white"
+        android:text="@string/ipc_right_now_play"
+        android:textColor="@color/colorOrange"
+        android:textSize="@dimen/sp_10" />
 
 </RelativeLayout>

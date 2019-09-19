@@ -244,4 +244,8 @@
     <string name="shop_address">门店地址</string>
     <string name="shop_input_region_tip">请先选择地区</string>
     <string name="str_create_company_alredy_exit">门店名称已存在</string>
+    <string name="ipc_right_now_play">立即查看</string>
+    <string name="ipc_device_model">设备型号：%s</string>
+    <string name="ipc_device_name">设备名称：%s</string>
+    <string name="ipc_device_msg_content">内容详情：%s</string>
 </resources>
