@@ -14,7 +14,7 @@ import com.google.gson.GsonBuilder;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.model.WifiListResp;
 import com.sunmi.ipc.rpc.IPCCall;
-import com.sunmi.ipc.rpc.IpcConstants;
+import com.sunmi.ipc.rpc.OpcodeConstants;
 import com.sunmi.ipc.view.WifiListAdapter;
 
 import org.androidannotations.annotations.AfterViews;
@@ -118,18 +118,18 @@ public class WifiConfigActivity extends BaseActivity
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{IpcConstants.getWifiList, IpcConstants.setIPCWifi, IpcConstants.getApStatus};
+        return new int[]{OpcodeConstants.getWifiList, OpcodeConstants.setIPCWifi, OpcodeConstants.getApStatus};
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (args == null) return;
         ResponseBean res = (ResponseBean) args[0];
-        if (id == IpcConstants.getWifiList) {
+        if (id == OpcodeConstants.getWifiList) {
             wifiListGetSuccess(res);
-        } else if (id == IpcConstants.setIPCWifi) {
+        } else if (id == OpcodeConstants.setIPCWifi) {
             setIpcWifiSuccess();
-        } else if (id == IpcConstants.getApStatus) {
+        } else if (id == OpcodeConstants.getApStatus) {
             wifiStatusGetSuccess(res);
         }
     }

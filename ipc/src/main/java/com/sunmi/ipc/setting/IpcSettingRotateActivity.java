@@ -5,7 +5,7 @@ import android.view.View;
 
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.rpc.IPCCall;
-import com.sunmi.ipc.rpc.IpcConstants;
+import com.sunmi.ipc.rpc.OpcodeConstants;
 import com.sunmi.ipc.utils.TimeoutTimer;
 
 import org.androidannotations.annotations.AfterViews;
@@ -203,7 +203,7 @@ public class IpcSettingRotateActivity extends BaseActivity implements View.OnCli
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{IpcConstants.setIpcNightIdeRotation,
+        return new int[]{OpcodeConstants.setIpcNightIdeRotation,
                 CommonNotifications.mqttResponseTimeout};
     }
 
@@ -213,7 +213,7 @@ public class IpcSettingRotateActivity extends BaseActivity implements View.OnCli
         hideLoadingDialog();
         if (args == null) return;
         ResponseBean res = (ResponseBean) args[0];
-        if (id == IpcConstants.setIpcNightIdeRotation) {
+        if (id == OpcodeConstants.setIpcNightIdeRotation) {
             if (isNetException) {
                 return;
             }

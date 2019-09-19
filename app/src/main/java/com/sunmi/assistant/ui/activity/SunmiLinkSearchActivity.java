@@ -15,10 +15,11 @@ import android.widget.TextView;
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.rpc.ap.APCall;
 import com.sunmi.assistant.R;
+import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.IpcConfiguringContract;
 import com.sunmi.ipc.model.IpcListResp;
 import com.sunmi.ipc.presenter.IpcConfiguringPresenter;
-import com.sunmi.ipc.rpc.IpcConstants;
+import com.sunmi.ipc.rpc.OpcodeConstants;
 import com.sunmi.ipc.view.IPCListAdapter;
 import com.sunmi.ipc.view.activity.IpcConfigCompletedActivity_;
 
@@ -172,7 +173,7 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
     @Override
     public int[] getStickNotificationId() {
         return new int[]{NotificationConstant.apSearchStart, NotificationConstant.apSearchStop,
-                NotificationConstant.apGetSearchInfo, IpcConstants.ipcDiscovered, IpcConstants.bindIpc};
+                NotificationConstant.apGetSearchInfo, IpcConstants.ipcDiscovered, OpcodeConstants.bindIpc};
     }
 
     @Override
@@ -181,7 +182,7 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
         ResponseBean res = (ResponseBean) args[0];
         if (NotificationConstant.apGetSearchInfo == id) {//sunmilink搜索的设备列表
             apGetSearchResult(res);
-        } else if (id == IpcConstants.bindIpc) {//绑定结果的mqtt消息
+        } else if (id == OpcodeConstants.bindIpc) {//绑定结果的mqtt消息
             try {
                 setDeviceStatus(res.getResult().getString("sn"), res.getDataErrCode());
             } catch (JSONException e) {

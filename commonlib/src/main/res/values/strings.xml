@@ -124,4 +124,7 @@
     <string name="sunmi_device_ss">智能看店摄像机FM010</string>
     <string name="sunmi_device_more">更多支持设备\n敬请期待…</string>
 
+    <string name="str_setting_detail">View</string>
+    <string name="str_coming_soon">敬请期待</string>
+
 </resources>

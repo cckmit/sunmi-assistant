@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.datelibrary.DatePickDialog;
 import com.datelibrary.bean.DateType;
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.IpcManagerContract;
 import com.sunmi.ipc.model.IpcManageBean;
 import com.sunmi.ipc.model.VideoListResp;
@@ -385,16 +386,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     //超清画质
     @Click(resName = {"tv_hd_quality"})
     void hdQualityClick() {
-        tvQuality.setText(R.string.str_FHD);
-        tvQualityP.setText(R.string.str_FHD);
         changeQuality(0);
     }
 
     //高清画质
     @Click(resName = {"tv_sd_quality"})
     void sdQualityClick() {
-        tvQuality.setText(R.string.str_HD);
-        tvQualityP.setText(R.string.str_HD);
         changeQuality(1);
     }
 
@@ -540,9 +537,11 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @Override
     public void getCloudTimeSlotFail() {
         if (listAp == null || listAp.size() == 0) {
+            LogCat.e(TAG, "88888888 aa");
             timeSlotsHideProgress();
             switch2Live();//无ap且无cloud的时间列表
         } else {
+            LogCat.e(TAG, "88888888 bb");
             timeCanvasList(listAp); //ap时间列表>0且cloud列表=0
         }
     }
@@ -560,11 +559,13 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @UiThread
     @Override
     public void startLiveSuccess() {
-        playType = 0;
         ivPlay.setBackgroundResource(R.mipmap.play_disable);
-        ivLive.setVisibility(View.GONE);
-        ivpCloud.setVisibility(View.GONE);
-        videoView.setVisibility(View.VISIBLE);
+//        playType = 0;
+//        ivpCloud.setVisibility(View.GONE);
+//        videoView.setVisibility(View.VISIBLE);
+//        ivLive.setVisibility(View.GONE);
+//        tvQualityP.setClickable(true);
+        setPlayType(0);
         scrollCurrentLive();
         hideLoadingDialog();
     }
@@ -572,25 +573,59 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @UiThread
     @Override
     public void startPlaybackSuccess() {
-        playType = 1;
-        ivpCloud.setVisibility(View.GONE);
-        videoView.setVisibility(View.VISIBLE);
-        ivLive.setVisibility(View.VISIBLE);
+//        playType = 1;
+//        ivpCloud.setVisibility(View.GONE);
+//        videoView.setVisibility(View.VISIBLE);
+//        ivLive.setVisibility(View.VISIBLE);
+//        tvQualityP.setClickable(false);
+        setPlayType(1);
         hideLoadingDialog();
     }
 
     @UiThread
     @Override
     public void getCloudVideosSuccess(List<VideoListResp.VideoBean> videoBeans) {
-        playType = 2;
-        ivpCloud.setVisibility(View.VISIBLE);
-        videoView.setVisibility(View.GONE);
-        ivLive.setVisibility(View.VISIBLE);
+//        playType = 2;
+//        ivpCloud.setVisibility(View.VISIBLE);
+//        videoView.setVisibility(View.GONE);
+//        ivLive.setVisibility(View.VISIBLE);
+//        tvQualityP.setClickable(false);
+        setPlayType(2);
         List<String> urlList = new ArrayList<>();
         for (VideoListResp.VideoBean bean : videoBeans) {
             urlList.add(bean.getUrl());
         }
         cloudPlay(urlList);
+    }
+
+    @Override
+    public int[] getStickNotificationId() {
+        return new int[]{IpcConstants.ipcNameChanged};
+    }
+
+    @Override
+    public void didReceivedNotification(int id, Object... args) {
+        super.didReceivedNotification(id, args);
+        hideLoadingDialog();
+        if (id == IpcConstants.ipcNameChanged) {
+            if (args != null) {
+                SunmiDevice sd = (SunmiDevice) args[0];
+                if (TextUtils.equals(sd.getDeviceid(), device.getDeviceid())) {
+                    device.setName(sd.getName());
+                    titleBar.setAppTitle(device.getName());
+                }
+            }
+        }
+    }
+
+    private void setPlayType(int type) {
+        playType = type;
+        ivpCloud.setVisibility(type == 2 ? View.VISIBLE : View.GONE);
+        videoView.setVisibility(type != 2 ? View.VISIBLE : View.GONE);
+        ivLive.setVisibility(type != 0 ? View.VISIBLE : View.GONE);
+        tvQualityP.setClickable(type == 0);
+        tvQualityP.setTextColor(type == 0 ? ContextCompat.getColor(context, R.color.c_white)
+                : ContextCompat.getColor(context, R.color.white_40a));
     }
 
     private boolean isPortrait() {
@@ -795,8 +830,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         qualityType = qualityType == 0 ? 1 : 0;
         iotcClient.changeValue(qualityType);
         if (qualityType == 0) {
+            tvQuality.setText(R.string.str_FHD);
+            tvQualityP.setText(R.string.str_FHD);
             shortTip(R.string.tip_video_quality_fhd);
         } else if (qualityType == 1) {
+            tvQuality.setText(R.string.str_HD);
+            tvQualityP.setText(R.string.str_HD);
             shortTip(R.string.tip_video_quality_hd);
         }
     }
@@ -1276,10 +1315,14 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private void initManageList() {
         rvManager.init(0);
         List<IpcManageBean> list = new ArrayList<>();
-        list.add(new IpcManageBean(R.mipmap.ipc_manage_face_history, "进店日志", "查看人脸记录", "查看详情"));
-        list.add(new IpcManageBean(R.mipmap.ipc_manage_md, "动态侦测", "异常人员进入", "查看详情"));
-        list.add(new IpcManageBean(R.mipmap.ipc_manage_cashier, "收银审计", "查看交易流水视频", "查看详情"));
-        list.add(new IpcManageBean(R.mipmap.ipc_manage_cloud_storage, "云存储", "云存储服务", "敬请期待"));
+        list.add(new IpcManageBean(R.mipmap.ipc_manage_face_history, getString(R.string.str_face_history),
+                getString(R.string.str_view_face_history), getString(R.string.str_coming_soon)));
+        list.add(new IpcManageBean(R.mipmap.ipc_manage_md, getString(R.string.str_motion_detection),
+                getString(R.string.str_md_exception), getString(R.string.str_coming_soon)));
+//        list.add(new IpcManageBean(R.mipmap.ipc_manage_cashier, getString(R.string.str_cashier),
+//                getString(R.string.str_view_flow_video), getString(R.string.str_setting_detail)));
+//        list.add(new IpcManageBean(R.mipmap.ipc_manage_cloud_storage, getString(R.string.str_cloud_storage),
+//                getString(R.string.str_cloud_storage_service), getString(R.string.str_setting_detail)));
         CommonListAdapter adapter = new CommonListAdapter<IpcManageBean>(context,
                 R.layout.item_ipc_manager, list) {
             @Override
