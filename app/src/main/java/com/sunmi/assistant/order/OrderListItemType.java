@@ -4,8 +4,8 @@ import android.support.annotation.NonNull;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.order.model.OrderInfo;
-import com.sunmi.assistant.utils.Utils;
 
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
@@ -32,7 +32,7 @@ public class OrderListItemType extends ItemType<OrderInfo, BaseViewHolder<OrderI
                 R.string.order_amount, model.getAmount()));
         orderPayType.setText(holder.getContext().getResources().getString(
                 R.string.order_pay_method_colon, model.getPurchaseType()));
-        orderTime.setText(Utils.getHourMinuteTime(model.getPurchaseTime()));
+        orderTime.setText(Utils.getHourMinute(model.getPurchaseTime()));
         if (model.getAmount() < 0) {
             orderAmount.setTextColor(holder.getContext().getResources().getColor(R.color.color_F35000));
         } else {

@@ -68,6 +68,10 @@ public abstract class BaseRecyclerAdapter<T>
         itemType.setAdapter((BaseRecyclerAdapter<Type>) this);
     }
 
+    public void clearTypes() {
+        mTypePool.clear();
+    }
+
     protected abstract T getItem(int position);
 
     public abstract void add(@NonNull T data);

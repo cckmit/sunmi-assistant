@@ -25,6 +25,9 @@ public class TypePool implements ITypePool {
         } else if (itemClass != null && !isMultiType) {
             throw new IllegalStateException();
         }
+        if (classes.contains(itemClass)) {
+            return;
+        }
         if (itemClass == null) {
             isMultiType = false;
         } else {
@@ -46,6 +49,12 @@ public class TypePool implements ITypePool {
         } else {
             return types.get(0);
         }
+    }
+
+    public void clear() {
+        isMultiType = true;
+        classes.clear();
+        types.clear();
     }
 
     @Override

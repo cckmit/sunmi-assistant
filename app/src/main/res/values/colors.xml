@@ -5,4 +5,17 @@
     <color name="colorAccent">#D81B60</color>
     <color name="color_FAFAFA">#FAFAFA</color>
     <color name="shimmer_color">#a2878787</color>
+
+    <color name="color_E6E8EB">#E6E8EB</color>
+    <color name="color_525866">#525866</color>
+    <color name="color_303540">#303540</color>
+    <color name="color_777E8C">#777E8C</color>
+    <color name="color_F5F7FA">#F5F7FA</color>
+    <color name="color_A1A7B3">#A1A7B3</color>
+    <color name="color_FF6000_30">#4CFF6000</color>
+    <color name="color_FFD0B3">#FFD0B3</color>
+    <color name="color_AFC3FA">#AFC3FA</color>
+    <color name="color_4B7AFA">#4B7AFA</color>
+    <color name="color_CED2D9">#CED2D9</color>
+    <color name="color_F0F2F5">#F0F2F5</color>
 </resources>
