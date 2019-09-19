@@ -122,8 +122,8 @@
     <string name="ipc_recognition_tip_zoom">Resize the screen and move the position of the face frame so that the face just fills the entire face frame</string>
     <string name="ipc_recognition_tip_focus">If the auto focus is not clear, you can adjust the face clearly by manual focus.</string>
     <string name="ipc_recognition_tip_line">点击画面任意两点，即可设置进店门槛线\n（为保证识别率，门槛线需画在门的下方位置）</string>
-    <string name="ipc_recognition_line_start">Setting the beginning threshold</string>
-    <string name="ipc_recognition_line_end">Setting the ending thrreshold</string>
+    <string name="ipc_recognition_line_start">点击以设置门槛线起点</string>
+    <string name="ipc_recognition_line_end">再次点击以设置门槛线终点</string>
     <string name="ipc_recognition_line_cancel">Cancel</string>
     <string name="ipc_recognition_line_error">当前划线不符合要求，请重新操作</string>
     <string name="ipc_recognition_complete">Picture adjustment completed</string>
