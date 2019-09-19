@@ -100,8 +100,7 @@ public class DynamicVideoActivity extends BaseActivity implements
     TextView tvTip;
     @Extra
     String url;
-    //    String url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
-//    String url = "http://test.cdn.sunmi.com/VIDEO/IPC/f4c28c287dff0e0656e00192450194e76f4863f80ca0517a135925ebc7828104";
+    //  String url = "http://test.cdn.sunmi.com/VIDEO/IPC/f4c28c287dff0e0656e00192450194e76f4863f80ca0517a135925ebc7828104";
     @Extra
     String deviceModel;
 
@@ -324,7 +323,7 @@ public class DynamicVideoActivity extends BaseActivity implements
             } else {
                 generateTime = (Long) obj;
             }
-            LogCat.e(TAG, "dur=" + iVideoPlayer.getDuration() + ", max=" + sbBar.getMax() + ", obj=" + obj);
+            LogCat.e(TAG, "kkk dur=" + iVideoPlayer.getDuration() + ", max=" + sbBar.getMax() + ", obj=" + obj);
             sbBar.setProgress(progress);
             tvCurrentPlayTime.setText(iVideoPlayer.generateTime(generateTime));
         }
@@ -370,7 +369,6 @@ public class DynamicVideoActivity extends BaseActivity implements
      **/
     @Override
     public void onCompletion(IMediaPlayer iMediaPlayer) {
-        LogCat.e(TAG, "onCompletion bufferingUpdate=" + bufferingUpdate);
         if (iVideoPlayer != null) {
             isPaused = true;
             ibPlay.setBackgroundResource(R.mipmap.play_normal);
@@ -424,9 +422,7 @@ public class DynamicVideoActivity extends BaseActivity implements
             //视频总时长
             tvCountPlayTime.setText(Objects.requireNonNull(iVideoPlayer).generateTime(duration));
             //发送当前播放时间点通知
-            Message message = Message.obtain(mHandler, MESSAGE_SHOW_PROGRESS, iVideoPlayer.getCurrentPosition());
-            mHandler.sendMessageDelayed(message, DELAY_MILLIS);
-
+            mHandler.sendEmptyMessageDelayed(MESSAGE_SHOW_PROGRESS, DELAY_MILLIS);
         }
     }
 
@@ -435,7 +431,6 @@ public class DynamicVideoActivity extends BaseActivity implements
      **/
     @Override
     public void onSeekComplete(IMediaPlayer iMediaPlayer) {
-        LogCat.e(TAG, "onSeekComplete");
     }
 
     /**
@@ -463,16 +458,16 @@ public class DynamicVideoActivity extends BaseActivity implements
      */
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-        iVideoPlayer.seekTo(seekBar.getProgress());
-        if (iVideoPlayer != null && !iVideoPlayer.isPlaying()) {
-            iVideoPlayer.startVideo();
-            isPaused = false;
-            ibPlay.setBackgroundResource(R.mipmap.pause_normal);
+        if (iVideoPlayer != null) {
+            iVideoPlayer.seekTo(seekBar.getProgress());
+            if (!iVideoPlayer.isPlaying()) {
+                iVideoPlayer.startVideo();
+                isPaused = false;
+                ibPlay.setBackgroundResource(R.mipmap.pause_normal);
+            }
+            isDragging = false;
+            mHandler.sendEmptyMessageDelayed(MESSAGE_SHOW_PROGRESS, DELAY_MILLIS);
         }
-        mHandler.removeMessages(MESSAGE_SHOW_PROGRESS);
-        isDragging = false;
-        //拖动停止后发送通知
-        mHandler.sendEmptyMessageDelayed(MESSAGE_SHOW_PROGRESS, DELAY_MILLIS);
     }
 
     private void timeoutStop() {
@@ -483,7 +478,9 @@ public class DynamicVideoActivity extends BaseActivity implements
     protected void onDestroy() {
         super.onDestroy();
         timeoutStop();
-        mHandler.removeCallbacksAndMessages(null);
+        if (mHandler != null) {
+            mHandler.removeCallbacksAndMessages(null);
+        }
     }
 
     @Override
