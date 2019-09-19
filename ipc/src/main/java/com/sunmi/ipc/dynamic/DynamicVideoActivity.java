@@ -98,9 +98,14 @@ public class DynamicVideoActivity extends BaseActivity implements
     RelativeLayout rlBottomPanel;
     @ViewById(resName = "tv_tip")
     TextView tvTip;
+    @ViewById(resName = "tv_fail_tip")
+    TextView tvFailTip;
+    @ViewById(resName = "tv_retry")
+    TextView tvRetry;
+
     @Extra
     String url;
-    //  String url = "http://test.cdn.sunmi.com/VIDEO/IPC/f4c28c287dff0e0656e00192450194e76f4863f80ca0517a135925ebc7828104";
+    //            String url = "http://test.cdn.sunmi.com/VIDEO/IPC/f4c28c287dff0e0656e00192450194e76f4863f80ca0517a135925ebc7828104";
     @Extra
     String deviceModel;
 
@@ -190,7 +195,12 @@ public class DynamicVideoActivity extends BaseActivity implements
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_PERMISSION_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                showLoadingDialog();
                 initVideoPlay();
+            } else {
+                //未授权
+                requestPermissionsFailView();
+                timeoutStop();
             }
         }
     }
@@ -336,15 +346,20 @@ public class DynamicVideoActivity extends BaseActivity implements
         llPlayFail.setVisibility(View.VISIBLE);
     }
 
-    private void isShowBottomView(boolean hasShow) {
+    private void isShowBottomView() {
         iVideoPlayer.setVisibility(View.VISIBLE);
         llPlayFail.setVisibility(View.GONE);
-        if (hasShow) {
-            rlBottomPanel.setVisibility(View.VISIBLE);
-        } else {
-            rlBottomPanel.setVisibility(View.GONE);
-        }
+        rlBottomPanel.setVisibility(View.VISIBLE);
     }
+
+    private void requestPermissionsFailView() {
+        rlBottomPanel.setVisibility(View.GONE);
+        iVideoPlayer.setVisibility(View.GONE);
+        llPlayFail.setVisibility(View.VISIBLE);
+        tvRetry.setVisibility(View.GONE);
+        tvFailTip.setText(R.string.ipc_dynamic_request_external_storage);
+    }
+
 
     /**
      * 缓存状态
@@ -405,7 +420,7 @@ public class DynamicVideoActivity extends BaseActivity implements
     public void onPrepared(IMediaPlayer iMediaPlayer) {
         LogCat.e(TAG, "onPrepared");
         if (iVideoPlayer != null) {
-            isShowBottomView(true);
+            isShowBottomView();
             hideLoadingDialog();
             timeoutStop();
             iVideoPlayer.startVideo();
