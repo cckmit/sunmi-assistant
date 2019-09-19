@@ -112,8 +112,8 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
         mFaceCase.setOnTouchListener(new FaceCaseTouch());
         mLineView.setStateChangeListener(new DoorLineStateChangeListener());
         mResTitle.put(RecognitionSettingContract.STEP_1_POSITION, getString(R.string.ipc_recognition_tip_position));
-        mResTitle.put(RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM, "");
-        mResTitle.put(RecognitionSettingContract.STEP_3_FOCUS, "");
+        mResTitle.put(RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM, getString(R.string.ipc_recognition_tip_zoom));
+        mResTitle.put(RecognitionSettingContract.STEP_3_FOCUS, getString(R.string.ipc_recognition_tip_focus));
         mResTitle.put(RecognitionSettingContract.STEP_4_LINE, getString(R.string.ipc_recognition_line_start));
         String next = getString(R.string.str_next);
         mResNext.put(RecognitionSettingContract.STEP_1_POSITION, next);
