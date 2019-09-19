@@ -160,6 +160,7 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
                     public void onSuccess(int code, String msg, ConsumerAgeGenderResp data) {
                         Model model = getModel();
                         List<PieEntry> genderList = model.dataSets.get(Constants.DATA_TYPE_GENDER);
+                        genderList.clear();
                         List<ConsumerAgeGenderResp.CountListBean> list = data.getCountList();
                         int maleCount = 0;
                         int femaleCount = 0;

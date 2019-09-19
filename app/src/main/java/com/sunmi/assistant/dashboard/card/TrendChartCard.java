@@ -219,6 +219,7 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
             rateList.add(new BarEntry(x, consumer == 0 ? 0f : Math.min((float) count / consumer, 1f)));
             volumeList.add(new BarEntry(x, count));
             consumerList.add(new BarEntry(x, consumer));
+
 //            rateList.add(new BarEntry(x, (float) Math.random()));
 //            volumeList.add(new BarEntry(x, (int)(Math.random() * 1000)));
 //            consumerList.add(new BarEntry(x, (int)(Math.random() * 1000)));
