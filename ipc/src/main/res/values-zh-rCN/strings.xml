@@ -124,8 +124,8 @@
     <string name="ipc_recognition_tip_zoom">调整画面大小并移动人脸框的位置，使人脸刚好填充整个人脸框</string>
     <string name="ipc_recognition_tip_focus">若自动对焦不清晰，可以手动对焦调整人脸清晰</string>
     <string name="ipc_recognition_tip_line">点击画面任意两点，即可设置进店门槛线\n（为保证识别率，门槛线需画在门的下方位置）</string>
-    <string name="ipc_recognition_line_start">设置门槛起点</string>
-    <string name="ipc_recognition_line_end">设置门槛终点</string>
+    <string name="ipc_recognition_line_start">点击以设置门槛线起点</string>
+    <string name="ipc_recognition_line_end">再次点击以设置门槛线终点</string>
     <string name="ipc_recognition_line_cancel">撤销</string>
     <string name="ipc_recognition_line_error">当前划线不符合要求，请重新操作</string>
     <string name="ipc_recognition_complete">摄像机画面调整完成</string>
@@ -251,6 +251,7 @@
     <string name="ipc_dynamic_take_screen_shot_fail">截屏保存失败，请稍后重试</string>
     <string name="ipc_video_play_error">视频播放异常</string>
     <string name="tip_wifi_psw_length_inconformity">密码长度至少8位，至多64位</string>
+    <string name="ipc_save_picture_tip">正在保存截屏图片，请稍后...</string>
 
 </resources>
 

@@ -6,16 +6,14 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Shader;
 
-import com.github.mikephil.charting.animation.ChartAnimator;
 import com.github.mikephil.charting.buffer.BarBuffer;
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.interfaces.dataprovider.BarDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.model.GradientColor;
 import com.github.mikephil.charting.renderer.BarChartRenderer;
 import com.github.mikephil.charting.utils.Transformer;
-import com.github.mikephil.charting.utils.ViewPortHandler;
 
 /**
  * @author yinhui
@@ -24,16 +22,22 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 public class RoundEdgeBarChartRenderer extends BarChartRenderer {
     private RectF mBarShadowRectBuffer = new RectF();
 
-    private int mRadius;
+    private float mRadius;
 
-    public RoundEdgeBarChartRenderer(BarDataProvider chart, ChartAnimator animator, ViewPortHandler viewPortHandler) {
-        super(chart, animator, viewPortHandler);
+    public RoundEdgeBarChartRenderer(BarChart chart) {
+        super(chart, chart.getAnimator(), chart.getViewPortHandler());
     }
 
-    public void setRadius(int radius) {
+    public RoundEdgeBarChartRenderer(BarChart chart, float radius) {
+        super(chart, chart.getAnimator(), chart.getViewPortHandler());
         this.mRadius = radius;
     }
 
+    public void setRadius(float radius) {
+        this.mRadius = radius;
+    }
+
+    @Override
     protected void drawDataSet(Canvas c, IBarDataSet dataSet, int index) {
 
         Transformer trans = mChart.getTransformer(dataSet.getAxisDependency());

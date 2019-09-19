@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_248"
+    android:background="@color/color_F5F7FA">
+
+    <TextView
+        android:id="@+id/tv_dashboard_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_24"
+        android:text="@string/dashboard_chart_distribution"
+        android:textColor="@color/color_303540"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_dashboard_new_old"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_26"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:text="@string/dashboard_chart_new_old"
+        android:textColor="@color/dashboard_btn_chart_text"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintEnd_toStartOf="@+id/tv_dashboard_gender"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_dashboard_gender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_26"
+        android:layout_marginEnd="@dimen/dp_12"
+        app:layout_goneMarginEnd="@dimen/dp_24"
+        android:text="@string/dashboard_chart_gender"
+        android:textColor="@color/dashboard_btn_chart_text"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintEnd_toStartOf="@+id/tv_dashboard_age"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_dashboard_age"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_26"
+        android:layout_marginEnd="@dimen/dp_24"
+        android:text="@string/dashboard_chart_age"
+        android:textColor="@color/dashboard_btn_chart_text"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/view_dashboard_pie_chart"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_title" />
+
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_64"
+    android:background="@color/c_white"
+    android:paddingTop="@dimen/dp_20">
+
+    <View
+        android:layout_width="@dimen/dp_172"
+        android:layout_height="@dimen/dp_26"
+        android:background="@drawable/dashboard_bg_period_tab_border"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_dashboard_top_today"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_22"
+        android:background="@drawable/dashboard_bg_period_tab_text"
+        android:gravity="center"
+        android:text="@string/dashboard_today"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tv_dashboard_top_week"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_dashboard_top_week"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_22"
+        android:background="@drawable/dashboard_bg_period_tab_text"
+        android:gravity="center"
+        android:text="@string/dashboard_this_week"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tv_dashboard_top_month"
+        app:layout_constraintStart_toEndOf="@+id/tv_dashboard_top_today"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_dashboard_top_month"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_22"
+        android:background="@drawable/dashboard_bg_period_tab_text"
+        android:gravity="center"
+        android:text="@string/dashboard_this_month"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_dashboard_top_week"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_0_5"
+        android:background="@color/color_CED2D9"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

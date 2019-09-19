@@ -2,44 +2,40 @@ package com.sunmi.assistant.dashboard;
 
 import android.content.Context;
 
-import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.card.BaseRefreshItem;
 
 import java.util.List;
 
 import sunmi.common.base.BaseView;
+import sunmi.common.model.FilterItem;
 
 public interface DashboardContract {
-
-    int TIME_PERIOD_INIT = 0;
-    int TIME_PERIOD_TODAY = 1;
-    int TIME_PERIOD_WEEK = 2;
-    int TIME_PERIOD_MONTH = 3;
-
-    int DATA_MODE_SALES = 0;
-    int DATA_MODE_ORDER = 1;
 
     interface View extends BaseView {
 
         Context getContext();
 
-        void initData(List<BaseRefreshCard> data);
+        void updateTab(int period);
 
-        void updateStickyTab(int period);
+        void setShopList(List<FilterItem> list);
+
+        void setCards(List<BaseRefreshItem> data, int dataSource);
+
+        void loadDataFailed();
+
     }
 
     interface Presenter {
 
-        void loadConfig();
+        void init();
+
+        void switchShopTo(int companyId, int shopId);
 
         void switchPeriodTo(int period);
 
-        void switchCompanyTo(int companyId, int shopId);
+        void refresh(boolean showLoading);
 
-        void switchShopTo(int shopId);
-
-        void refresh();
-
-        void refresh(int position);
+        void refresh(int position, boolean showLoading);
 
         void showFailedTip();
 
