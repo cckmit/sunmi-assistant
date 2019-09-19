@@ -2,11 +2,14 @@ package sunmi.common.view.activity;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.os.Handler;
+import android.support.v4.widget.NestedScrollView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckedTextView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.commonlibrary.R;
@@ -15,6 +18,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
@@ -35,6 +39,10 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
     ImageView ivImage;
     @ViewById(resName = "tv_tip_1")
     TextView tvTip1;
+    @ViewById(resName = "nsv_tips")
+    NestedScrollView nsvTips;
+    @ViewById(resName = "ll_sv_root")
+    LinearLayout llSvRoot;
     @ViewById(resName = "tv_tip_2")
     TextView tvTip2;
     @ViewById(resName = "tv_tip_3")
@@ -47,6 +55,8 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
     TextView tvConfigTip;
     @ViewById(resName = "ctv_privacy")
     CheckedTextView ctvPrivacy;
+    @ViewById(resName = "view_divider_bottom")
+    View viewDivider;
 
     @Extra
     String shopId;
@@ -62,7 +72,7 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
             tvTip1.setText(R.string.str_config_tip_ap);
             tvTip2.setText(Html.fromHtml(getString(R.string.str_config_tip_ap_1)));
             tvTip3.setText(Html.fromHtml(getString(R.string.str_config_tip_ap_2)));
-            tvConfigTip.setVisibility(View.GONE);
+            tvConfigTip.setVisibility(View.VISIBLE);
         } else if (deviceType == CommonConstants.TYPE_IPC_FS) {
             titleBar.setAppTitle(R.string.str_title_ipc_set);
             ivImage.setImageResource(R.mipmap.ic_device_config_ipc_fs);
@@ -88,7 +98,20 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
             tvTip2.setText(Html.fromHtml(getString(R.string.str_config_tip_printer_1)));
             tvTip3.setText(Html.fromHtml(getString(R.string.str_config_tip_printer_2)));
         }
+        setViewDividerVisible();
         ViewUtils.setPrivacy(this, ctvPrivacy, R.color.white_40a, false);
+    }
+
+    @UiThread
+    void setViewDividerVisible() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (llSvRoot.getMeasuredHeight() > nsvTips.getMeasuredHeight()) {
+                    viewDivider.setVisibility(View.VISIBLE);
+                }
+            }
+        }, 100);
     }
 
     @Click(resName = "tv_config_tip")

@@ -13,8 +13,9 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.rpc.IPCCall;
-import com.sunmi.ipc.rpc.IpcConstants;
+import com.sunmi.ipc.rpc.OpcodeConstants;
 import com.sunmi.ipc.view.IPCListAdapter;
 
 import org.androidannotations.annotations.AfterViews;
@@ -171,7 +172,7 @@ public class IPCSearchActivity extends BaseActivity
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{IpcConstants.ipcDiscovered, IpcConstants.getIpcToken, IpcConstants.getIsWire};
+        return new int[]{IpcConstants.ipcDiscovered, OpcodeConstants.getIpcToken, OpcodeConstants.getIsWire};
     }
 
     @Override
@@ -180,7 +181,7 @@ public class IPCSearchActivity extends BaseActivity
         if (id == IpcConstants.ipcDiscovered) {
             SunmiDevice ipc = (SunmiDevice) args[0];
             ipcFound(ipc);
-        } else if (id == IpcConstants.getIpcToken) {
+        } else if (id == OpcodeConstants.getIpcToken) {
             ResponseBean res = (ResponseBean) args[0];
             try {
                 if (TextUtils.equals(res.getErrCode(), RpcErrorCode.RPC_COMMON_ERROR + "")) {
@@ -201,7 +202,7 @@ public class IPCSearchActivity extends BaseActivity
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        } else if (id == IpcConstants.getIsWire) {
+        } else if (id == OpcodeConstants.getIsWire) {
             ResponseBean res = (ResponseBean) args[0];
             try {
                 if (TextUtils.equals(res.getErrCode(), RpcErrorCode.RPC_COMMON_ERROR + "")) {

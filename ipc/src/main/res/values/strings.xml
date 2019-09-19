@@ -40,7 +40,6 @@
     <string name="tip_unbind_fail">Unbind failed</string>
     <string name="str_setting_ipc_camera">IPC Setting</string>
 
-
     <string name="ipc_setting_success">Update completed</string>
     <string name="ipc_setting_fail">Update failed</string>
     <string name="ipc_setting_save">Save</string>
@@ -252,8 +251,17 @@
     <string name="ipc_dynamic_take_screen_shot_fail">截屏保存失败，请稍后重试</string>
     <string name="ipc_video_play_error">视频播放异常</string>
     <string name="tip_wifi_psw_length_inconformity">密码长度至少8位，至多64位</string>
-    <string name="ipc_save_picture_tip">正在保存截屏图片，请稍后...</string>
+    <string name="ipc_save_picture_tip">正在保存截屏图片，请稍后…</string>
+    <string name="str_face_history">进店日志</string>
+    <string name="str_view_face_history">查看人脸记录</string>
+    <string name="str_motion_detection">动态侦测</string>
+    <string name="str_md_exception">异常人员进入</string>
+    <string name="str_cashier">收银审计</string>
+    <string name="str_view_flow_video">查看交易流水视频</string>
+    <string name="str_cloud_storage">云存储</string>
+    <string name="str_cloud_storage_service">云存储服务</string>
     <string name="ipc_dynamic_request_external_storage">暂未授予存储权限，请授权后重试</string>
+    
 </resources>
 
 
