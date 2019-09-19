@@ -1,4 +1,4 @@
-package com.sunmi.assistant.utils;
+package com.sunmi.assistant.dashboard;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -6,17 +6,11 @@ import android.util.Pair;
 import android.util.SparseArray;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.Constants;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
-import sunmi.common.constant.CommonConfig;
-import sunmi.common.rpc.retrofit.BaseRequest;
-import sunmi.common.utils.DateTimeUtils;
-import sunmi.common.utils.SafeUtils;
 
 /**
  * @author yinhui
@@ -25,29 +19,18 @@ import sunmi.common.utils.SafeUtils;
 public class Utils {
 
     @SuppressLint("SimpleDateFormat")
-    private static final SimpleDateFormat HOUR_MINUTE_TIME = new SimpleDateFormat("HH:mm");
+    private static final SimpleDateFormat DATE_FORMAT_HOUR_MINUTE = new SimpleDateFormat("HH:mm");
     @SuppressLint("SimpleDateFormat")
-    private static final SimpleDateFormat DATE_HOUR_MINUTE_TIME = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+    private static final SimpleDateFormat DATE_FORMAT_DATE_TIME = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+
+    private static final int PERIOD_WEEK_OFFSET = 100;
+    private static final int PERIOD_MONTH_OFFSET = 10000;
 
     private static SparseArray<Pair<Long, Long>> sPeriodCache = new SparseArray<>(3);
     private static Calendar sLastCalendar = Calendar.getInstance();
     private static Calendar sTempCalendar = Calendar.getInstance();
 
-    public static BaseRequest createRequestBody(String params) {
-        String timeStamp = DateTimeUtils.currentTimeSecond() + "";
-        String randomNum = (int) ((Math.random() * 9 + 1) * 100000) + "";
-        String isEncrypted = "0";
-        String sign = SafeUtils.md5(params + isEncrypted +
-                timeStamp + randomNum + SafeUtils.md5(CommonConfig.CLOUD_TOKEN));
-        return new BaseRequest.Builder()
-                .setTimeStamp(timeStamp)
-                .setRandomNum(randomNum)
-                .setIsEncrypted(isEncrypted)
-                .setParams(params)
-                .setSign(sign)
-                .setLang("zh").createBaseRequest();
-    }
-
+    @Deprecated
     public static String getTrendNameByPeriod(Context context, int period) {
         if (period == Constants.TIME_PERIOD_TODAY) {
             return context.getResources().getString(R.string.dashboard_day_ratio);
@@ -58,6 +41,7 @@ public class Utils {
         }
     }
 
+    @Deprecated
     public static Pair<Long, Long> getPeriodTimestamp(int period) {
         sTempCalendar = Calendar.getInstance();
         if (sLastCalendar != null
@@ -104,34 +88,78 @@ public class Utils {
         return periodTimestamp;
     }
 
-    public static float encodeBarChartXAxisFloat(int period, long timestamp) {
+    /**
+     * 根据时间维度获取折线图和柱状图X轴值范围，其中：
+     * 1~25表示：天维度的的00:00~24:00
+     * 101~107表示：周维度的周一到周日
+     * 10001~100030表示：月维度的1~30日
+     *
+     * @param period 时间维度
+     * @return X轴值范围
+     */
+    public static Pair<Integer, Integer> calcChartXAxisRange(int period) {
+        if (period == Constants.TIME_PERIOD_TODAY) {
+            return new Pair<>(0, 26);
+        } else if (period == Constants.TIME_PERIOD_WEEK) {
+            return new Pair<>(100, 108);
+        } else {
+            Calendar c = Calendar.getInstance();
+            return new Pair<>(10000, c.getActualMaximum(Calendar.DAY_OF_MONTH) + 10001);
+        }
+    }
+
+    @Deprecated
+    public static float encodeChartXAxisFloat(int period, long timestamp) {
         sTempCalendar.setTimeInMillis(timestamp * 1000);
         if (period == Constants.TIME_PERIOD_MONTH) {
             return (float) (sTempCalendar.get(Calendar.DAY_OF_MONTH) + 10000);
         } else if (period == Constants.TIME_PERIOD_WEEK) {
             int index = sTempCalendar.get(Calendar.DAY_OF_WEEK);
             index = (index + 5) % 7;
-            return index + 100;
+            return index + 101;
         } else {
-            return sTempCalendar.get(Calendar.HOUR_OF_DAY);
+            return sTempCalendar.get(Calendar.HOUR_OF_DAY) + 1;
+        }
+    }
+
+    /**
+     * 根据时间维度获取折线图和柱状图X轴值范围，其中：
+     * 1~25表示：天维度的的00:00~24:00
+     * 101~107表示：周维度的周一到周日
+     * 10001~100030表示：月维度的1~30日
+     *
+     * @param timeIndexFromServer 从服务器获取的时间序列值，目前1代表第一个值（00:00、周一、1日）
+     * @return X轴值范围
+     */
+    public static float encodeChartXAxisFloat(int period, int timeIndexFromServer) {
+        if (period == Constants.TIME_PERIOD_TODAY) {
+            return timeIndexFromServer;
+        } else if (period == Constants.TIME_PERIOD_WEEK) {
+            return PERIOD_WEEK_OFFSET + timeIndexFromServer;
+        } else {
+            return PERIOD_MONTH_OFFSET + timeIndexFromServer;
         }
     }
 
     public static String decodeChartXAxisFloat(float value, String[] weekName) {
-        if (value >= 10000) {
-            return String.valueOf((int) (value - 10000));
-        } else if (value >= 100) {
-            return weekName[(int) (value - 100)];
+        if (value > PERIOD_MONTH_OFFSET) {
+            return String.valueOf((int) (value - PERIOD_MONTH_OFFSET));
+        } else if (value > PERIOD_WEEK_OFFSET) {
+            return weekName[(int) (value - PERIOD_WEEK_OFFSET - 1)];
         } else {
-            return String.format(Locale.getDefault(), "%02.0f:00", value);
+            return String.format(Locale.getDefault(), "%02.0f:00", value - 1);
         }
     }
 
-    public static String getHourMinuteTime(long timestamp) {
-        return HOUR_MINUTE_TIME.format(new Date(timestamp));
+    public static String getHourMinute(long timestamp) {
+        synchronized (DATE_FORMAT_HOUR_MINUTE) {
+            return DATE_FORMAT_HOUR_MINUTE.format(new Date(timestamp));
+        }
     }
 
-    public static String getDateHourMinuteTime(long timestamp) {
-        return DATE_HOUR_MINUTE_TIME.format(new Date(timestamp));
+    public static String getDateTime(long timestamp) {
+        synchronized (DATE_FORMAT_DATE_TIME) {
+            return DATE_FORMAT_DATE_TIME.format(new Date(timestamp));
+        }
     }
 }

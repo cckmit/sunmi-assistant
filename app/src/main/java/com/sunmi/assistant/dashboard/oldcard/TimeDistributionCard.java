@@ -18,13 +18,13 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.DashboardContract;
+import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.ui.BarYAxisLabelsRenderer;
 import com.sunmi.assistant.dashboard.ui.RoundEdgeBarChartRenderer;
 import com.sunmi.assistant.dashboard.ui.XAxisLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.XAxisLabelsRenderer;
 import com.sunmi.assistant.data.PaymentApi;
 import com.sunmi.assistant.data.response.OrderTimeDistributionResp;
-import com.sunmi.assistant.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -147,7 +147,7 @@ public class TimeDistributionCard extends BaseRefreshCard<TimeDistributionCard.M
         List<BarEntry> amountList = new ArrayList<>(size);
         List<BarEntry> countList = new ArrayList<>(size);
         for (OrderTimeDistributionResp.PeriodItem item : list) {
-            float x = Utils.encodeBarChartXAxisFloat(model.period, item.getTime());
+            float x = Utils.encodeChartXAxisFloat(model.period, item.getTime());
             amountList.add(new BarEntry(x, item.getAmount()));
             countList.add(new BarEntry(x, item.getCount()));
         }

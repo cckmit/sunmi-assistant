@@ -26,8 +26,8 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.DashboardContract;
+import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.ui.PieChartLabelFormatter;
-import com.sunmi.assistant.utils.Utils;
 import com.sunmi.ipc.face.model.FaceAge;
 import com.sunmi.ipc.model.FaceAgeRangeResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
@@ -49,7 +49,7 @@ import sunmi.common.rpc.retrofit.RetrofitCallback;
  * @author yinhui
  * @since 2019-07-01
  */
-public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard.Model, Object> implements OnChartValueSelectedListener {
+public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard.Model, Object> {
 
     private static final int[] PIE_COLORS_NEW_OLD = {0xFF5A97FC, 0xFFFF8000};
     private static final int[] PIE_COLORS_GENDER = {0xFF4B7AFA, 0xFFFF6666};
@@ -58,6 +58,7 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
 
     private PieChart mChart;
     private SparseArray<String> mAgeList;
+    private OnPieSelectedListener mOnSelectedListener;
 
     public DistributionChartCard(Context context, DashboardContract.Presenter presenter, int source) {
         super(context, presenter, source);
@@ -106,7 +107,8 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
                 Collections.sort(list, (o1, o2) -> (o1.getCode() - o2.getCode()));
                 mAgeList = new SparseArray<>(list.size());
                 for (FaceAge age : list) {
-                    mAgeList.put(age.getCode(), age.getName());
+                    mAgeList.put(age.getCode(),
+                            mContext.getString(R.string.dashboard_chart_age_label, age.getName()));
                 }
                 loadNewOld(companyId, shopId, start, end, callback);
             }
@@ -200,13 +202,22 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
         mChart.setCenterTextSize(24);
         mChart.setCenterTextColor(ContextCompat.getColor(context, R.color.color_525866));
 
-        mChart.setOnChartValueSelectedListener(this);
+        mOnSelectedListener = new OnPieSelectedListener(mChart);
+        mChart.setOnChartValueSelectedListener(mOnSelectedListener);
 
         return holder;
     }
 
     @Override
     protected void setupModel(Model model, Object response) {
+//        int size = model.dataSets.size();
+//        for (int i = 0; i < size; i++) {
+//            int key = model.dataSets.keyAt(i);
+//            List<PieEntry> entries = model.dataSets.get(key);
+//            for (PieEntry entry : entries) {
+//                entry.setY((int)(Math.random() * 1000));
+//            }
+//        }
     }
 
     @Override
@@ -218,6 +229,7 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
         TextView age = holder.getView(R.id.tv_dashboard_age);
 
         PieChart pie = holder.getView(R.id.view_dashboard_pie_chart);
+        pie.highlightValue(null);
 
         // Set button selected
         newOld.setSelected(model.type == Constants.DATA_TYPE_NEW_OLD);
@@ -234,13 +246,16 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
         // Highlight largest data part
         int maxIndex = -1;
         float max = 0;
+        float total = 0;
         for (int i = 0, size = dataSet.size(); i < size; i++) {
             float value = dataSet.get(i).getValue();
+            total += value;
             if (max < value) {
                 max = value;
                 maxIndex = i;
             }
         }
+        mOnSelectedListener.setMax((int) total);
 
         // Get color based by type
         int[] colors;
@@ -290,7 +305,7 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
             set.setSelectionShift(6f);
             set.setValueLinePart1OffsetPercentage(135f);
             set.setValueLinePart1Length(0.45f);
-            set.setValueLinePart2Length(1.3f);
+            set.setValueLinePart2Length(0.8f);
             set.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
             set.setValueFormatter(new PieChartLabelFormatter());
             data = new PieData(set);
@@ -306,29 +321,45 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
         }
     }
 
-    private SpannableString createCenterText(Context context, String name, float value) {
-        String title = context.getString(R.string.dashboard_chart_pie_hole_ratio, name);
-        SpannableString s = new SpannableString(
-                new StringBuilder(title).append("\n").append(Math.round(value * 100)).append("%"));
-        s.setSpan(new AbsoluteSizeSpan(24, true), 0, title.length(), 0);
-        s.setSpan(new StyleSpan(Typeface.NORMAL), 0, title.length(), 0);
-        s.setSpan(new ForegroundColorSpan(0xFF777E8C), 0, title.length(), 0);
+    public static class OnPieSelectedListener implements OnChartValueSelectedListener {
 
-        s.setSpan(new AbsoluteSizeSpan(48, true), title.length(), s.length(), 0);
-        s.setSpan(new StyleSpan(Typeface.BOLD), title.length(), s.length(), 0);
-        s.setSpan(new ForegroundColorSpan(0xFF525866), title.length(), s.length(), 0);
-        return s;
-    }
+        private PieChart chart;
+        private int total;
 
-    @Override
-    public void onValueSelected(Entry e, Highlight h) {
-        PieEntry entry = (PieEntry) e;
-        mChart.setCenterText(createCenterText(mContext, entry.getLabel(), entry.getValue()));
-    }
+        public OnPieSelectedListener(PieChart chart) {
+            this.chart = chart;
+        }
 
-    @Override
-    public void onNothingSelected() {
-        mChart.setCenterText("");
+        public void setMax(int max) {
+            this.total = max;
+        }
+
+        @Override
+        public void onValueSelected(Entry e, Highlight h) {
+            PieEntry entry = (PieEntry) e;
+            chart.setCenterText(createCenterText(chart.getContext(), entry.getLabel(), entry.getValue()));
+        }
+
+        @Override
+        public void onNothingSelected() {
+            chart.setCenterText("");
+        }
+
+        private SpannableString createCenterText(Context context, String name, float value) {
+            String title = context.getString(R.string.dashboard_chart_pie_hole_ratio, name);
+            int percent = total > 0 ? Math.round(value / total * 100) : 0;
+            SpannableString s = new SpannableString(
+                    new StringBuilder(title).append("\n").append(percent).append("%"));
+            s.setSpan(new AbsoluteSizeSpan(32, true), 0, title.length(), 0);
+            s.setSpan(new StyleSpan(Typeface.NORMAL), 0, title.length(), 0);
+            s.setSpan(new ForegroundColorSpan(0xFF777E8C), 0, title.length(), 0);
+
+            s.setSpan(new AbsoluteSizeSpan(60, true), title.length(), s.length(), 0);
+            s.setSpan(new StyleSpan(Typeface.BOLD), title.length(), s.length(), 0);
+            s.setSpan(new ForegroundColorSpan(0xFF525866), title.length(), s.length(), 0);
+            return s;
+        }
+
     }
 
     public static class Model extends BaseRefreshItem.BaseModel {

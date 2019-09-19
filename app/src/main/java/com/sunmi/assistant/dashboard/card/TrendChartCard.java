@@ -22,6 +22,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.DashboardContract;
+import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.ui.BarChartMarkerView;
 import com.sunmi.assistant.dashboard.ui.BarYAxisLabelsRenderer;
 import com.sunmi.assistant.dashboard.ui.LineChartMarkerView;
@@ -203,7 +204,6 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
 
     @Override
     protected void setupModel(Model model, ConsumerRateResp response) {
-        int offset = calcEncodeXAxisOffset(model.period);
         List<BarEntry> rateList = model.dataSets.get(Constants.DATA_TYPE_RATE);
         List<BarEntry> volumeList = model.dataSets.get(Constants.DATA_TYPE_VOLUME);
         List<BarEntry> consumerList = model.dataSets.get(Constants.DATA_TYPE_CONSUMER);
@@ -215,10 +215,13 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
             int time = Math.abs(bean.getTime());
             int count = Math.abs(bean.getOrderCount());
             int consumer = Math.abs(bean.getPassengerFlowCount());
-            int x = time + offset;
+            float x = Utils.encodeChartXAxisFloat(model.period, time);
             rateList.add(new BarEntry(x, consumer == 0 ? 0f : Math.min((float) count / consumer, 1f)));
             volumeList.add(new BarEntry(x, count));
             consumerList.add(new BarEntry(x, consumer));
+//            rateList.add(new BarEntry(x, (float) Math.random()));
+//            volumeList.add(new BarEntry(x, (int)(Math.random() * 1000)));
+//            consumerList.add(new BarEntry(x, (int)(Math.random() * 1000)));
         }
     }
 
@@ -251,7 +254,7 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
         }
 
         // Calculate min & max of axis value.
-        Pair<Integer, Integer> xAxisRange = calcRangeOfXAxis(model.period);
+        Pair<Integer, Integer> xAxisRange = Utils.calcChartXAxisRange(model.period);
         int max = 0;
         for (BarEntry entry : dataSet) {
             if (model.type == Constants.DATA_TYPE_RATE && entry.getY() > 1) {
@@ -261,12 +264,13 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
                 max = (int) Math.ceil(entry.getY());
             }
         }
+        int maxDay = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
         if (model.type == Constants.DATA_TYPE_RATE) {
-            lineXAxisRenderer.setPeriod(model.period, 30);
+            lineXAxisRenderer.setPeriod(model.period, maxDay);
             line.getXAxis().setAxisMinimum(xAxisRange.first);
             line.getXAxis().setAxisMaximum(xAxisRange.second);
         } else {
-            barXAxisRenderer.setPeriod(model.period, 30);
+            barXAxisRenderer.setPeriod(model.period, maxDay);
             float maxAxis = barYAxisRenderer.setMaxValue(max);
             bar.getXAxis().setAxisMinimum(xAxisRange.first);
             bar.getXAxis().setAxisMaximum(xAxisRange.second);
@@ -275,6 +279,7 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
 
         // Refresh data set
         if (model.type == Constants.DATA_TYPE_RATE) {
+            line.highlightValue(null);
             mLineChartMarker.setType(model.type);
             LineDataSet set;
             LineData data = line.getData();
@@ -304,6 +309,7 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
             }
             line.animateX(300);
         } else {
+            bar.highlightValue(null);
             mBarChartMarker.setType(model.type);
             float barWidthRatio = calcBarWidth(model.period);
             int color = model.type == Constants.DATA_TYPE_VOLUME ?
@@ -346,34 +352,13 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
         super.showError(holder, model, position);
     }
 
-    private int calcEncodeXAxisOffset(int period) {
-        if (period == Constants.TIME_PERIOD_TODAY) {
-            return -1;
-        } else if (period == Constants.TIME_PERIOD_WEEK) {
-            return 99;
-        } else {
-            return 10000;
-        }
-    }
-
-    private Pair<Integer, Integer> calcRangeOfXAxis(int period) {
-        if (period == Constants.TIME_PERIOD_TODAY) {
-            return new Pair<>(0, 24);
-        } else if (period == Constants.TIME_PERIOD_WEEK) {
-            return new Pair<>(100, 106);
-        } else {
-            Calendar c = Calendar.getInstance();
-            return new Pair<>(10001, c.getActualMaximum(Calendar.DAY_OF_MONTH) + 10000);
-        }
-    }
-
     private float calcBarWidth(int period) {
         if (period == Constants.TIME_PERIOD_TODAY) {
-            return 0.6f;
+            return 0.5f;
         } else if (period == Constants.TIME_PERIOD_WEEK) {
             return 0.3f;
         } else {
-            return 0.7f;
+            return 0.6f;
         }
     }
 

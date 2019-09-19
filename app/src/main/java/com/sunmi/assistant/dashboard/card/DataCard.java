@@ -11,10 +11,10 @@ import android.widget.TextView;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.DashboardContract;
+import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.data.PaymentApi;
 import com.sunmi.assistant.data.response.OrderTotalAmountResp;
 import com.sunmi.assistant.data.response.OrderTotalCountResp;
-import com.sunmi.assistant.utils.Utils;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;

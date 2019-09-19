@@ -20,9 +20,9 @@ public class XAxisLabelsRenderer extends XAxisRenderer {
 
     public void setPeriod(int period, int maxDay) {
         if (period == Constants.TIME_PERIOD_TODAY) {
-            labels = new float[]{0, 4, 8, 12, 16, 20, 24};
+            labels = new float[]{1, 5, 9, 13, 17, 21, 25};
         } else if (period == Constants.TIME_PERIOD_WEEK) {
-            labels = new float[]{100, 101, 102, 103, 104, 105, 106};
+            labels = new float[]{101, 102, 103, 104, 105, 106, 107};
         } else {
             labels = new float[]{10001, 10006, 10012, 10018, 10024, 10000 + maxDay};
         }

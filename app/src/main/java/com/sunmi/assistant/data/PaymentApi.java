@@ -11,7 +11,6 @@ import com.sunmi.assistant.data.response.OrderTotalAmountResp;
 import com.sunmi.assistant.data.response.OrderTotalCountResp;
 import com.sunmi.assistant.data.response.OrderTotalRefundsResp;
 import com.sunmi.assistant.data.response.OrderTypeListResp;
-import com.sunmi.assistant.utils.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,9 +19,13 @@ import org.json.JSONObject;
 import java.util.List;
 
 import retrofit2.Call;
+import sunmi.common.constant.CommonConfig;
 import sunmi.common.rpc.cloud.SunmiStoreRetrofitClient;
+import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.DateTimeUtils;
+import sunmi.common.utils.SafeUtils;
 
 /**
  * 订单管理远程接口
@@ -55,7 +58,7 @@ public class PaymentApi {
                     .put("rate_required", rateFlag)
                     .toString();
             call = SunmiStoreRetrofitClient.getInstance().create(PaymentInterface.class)
-                    .getTotalAmount(Utils.createRequestBody(params));
+                    .getTotalAmount(createRequestBody(params));
             call.enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -75,7 +78,7 @@ public class PaymentApi {
                     .put("rate_required", rateFlag)
                     .toString();
             call = SunmiStoreRetrofitClient.getInstance().create(PaymentInterface.class)
-                    .getTotalCount(Utils.createRequestBody(params));
+                    .getTotalCount(createRequestBody(params));
             call.enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -95,7 +98,7 @@ public class PaymentApi {
                     .put("rate_required", rateFlag)
                     .toString();
             call = SunmiStoreRetrofitClient.getInstance().create(PaymentInterface.class)
-                    .getRefundCount(Utils.createRequestBody(params));
+                    .getRefundCount(createRequestBody(params));
             call.enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -115,7 +118,7 @@ public class PaymentApi {
                     .put("rate_required", rateFlag)
                     .toString();
             call = SunmiStoreRetrofitClient.getInstance().create(PaymentInterface.class)
-                    .getAvgUnitSale(Utils.createRequestBody(params));
+                    .getAvgUnitSale(createRequestBody(params));
             call.enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -134,7 +137,7 @@ public class PaymentApi {
                     .put("time_range_end", timeEnd)
                     .toString();
             call = SunmiStoreRetrofitClient.getInstance().create(PaymentInterface.class)
-                    .getQuantityRank(Utils.createRequestBody(params));
+                    .getQuantityRank(createRequestBody(params));
             call.enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -144,14 +147,14 @@ public class PaymentApi {
 
     public Call<BaseResponse<OrderTypeListResp>> getOrderTypeList(RetrofitCallback<OrderTypeListResp> callback) {
         Call<BaseResponse<OrderTypeListResp>> call = SunmiStoreRetrofitClient.getInstance().create(PaymentInterface.class)
-                .getOrderTypeList(Utils.createRequestBody(""));
+                .getOrderTypeList(createRequestBody(""));
         call.enqueue(callback);
         return call;
     }
 
     public Call<BaseResponse<OrderPayTypeListResp>> getOrderPurchaseTypeList(RetrofitCallback<OrderPayTypeListResp> callback) {
         Call<BaseResponse<OrderPayTypeListResp>> call = SunmiStoreRetrofitClient.getInstance().create(PaymentInterface.class)
-                .getPurchaseTypeList(Utils.createRequestBody(""));
+                .getPurchaseTypeList(createRequestBody(""));
         call.enqueue(callback);
         return call;
     }
@@ -186,7 +189,7 @@ public class PaymentApi {
                     .put("page_size", pageSize)
                     .toString();
             call = SunmiStoreRetrofitClient.getInstance().create(PaymentInterface.class)
-                    .getList(Utils.createRequestBody(params));
+                    .getList(createRequestBody(params));
             call.enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -201,7 +204,7 @@ public class PaymentApi {
                     .put("order_id", orderId)
                     .toString();
             call = SunmiStoreRetrofitClient.getInstance().create(PaymentInterface.class)
-                    .getDetailList(Utils.createRequestBody(params));
+                    .getDetailList(createRequestBody(params));
             call.enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -221,7 +224,7 @@ public class PaymentApi {
                     .put("end_time", timeEnd)
                     .toString();
             call = SunmiStoreRetrofitClient.getInstance().create(PaymentInterface.class)
-                    .getPurchaseTypeRank(Utils.createRequestBody(params));
+                    .getPurchaseTypeRank(createRequestBody(params));
             call.enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -242,7 +245,7 @@ public class PaymentApi {
                     .put("time_interval", interval)
                     .toString();
             call = SunmiStoreRetrofitClient.getInstance().create(PaymentInterface.class)
-                    .getTimeDistribution(Utils.createRequestBody(params));
+                    .getTimeDistribution(createRequestBody(params));
             call.enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -250,4 +253,18 @@ public class PaymentApi {
         return call;
     }
 
+    public BaseRequest createRequestBody(String params) {
+        String timeStamp = DateTimeUtils.currentTimeSecond() + "";
+        String randomNum = (int) ((Math.random() * 9 + 1) * 100000) + "";
+        String isEncrypted = "0";
+        String sign = SafeUtils.md5(params + isEncrypted +
+                timeStamp + randomNum + SafeUtils.md5(CommonConfig.CLOUD_TOKEN));
+        return new BaseRequest.Builder()
+                .setTimeStamp(timeStamp)
+                .setRandomNum(randomNum)
+                .setIsEncrypted(isEncrypted)
+                .setParams(params)
+                .setSign(sign)
+                .setLang("zh").createBaseRequest();
+    }
 }

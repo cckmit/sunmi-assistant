@@ -11,8 +11,8 @@ import android.widget.TextView;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.DashboardContract;
+import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.order.OrderListActivity_;
-import com.sunmi.assistant.utils.Utils;
 
 import java.util.Locale;
 

@@ -180,7 +180,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 } else {
                     mList.clear();
                 }
-//                mDataSource = 0;
+                mDataSource = 3;
                 // 根据数据来源，变更卡片
                 switch (mDataSource) {
                     case 0x3:

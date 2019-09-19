@@ -60,6 +60,7 @@
     <string name="dashboard_chart_male">男性</string>
     <string name="dashboard_chart_female">女性</string>
     <string name="dashboard_chart_age">年龄</string>
+    <string name="dashboard_chart_age_label">%s岁</string>
     <string name="dashboard_chart_pie_hole_ratio">%s占比</string>
     <string name="dashboard_empty_data_tip">暂无门店数据，您可以尝试：</string>
     <string name="dashboard_no_fs_title">添加AI识客摄像机</string>

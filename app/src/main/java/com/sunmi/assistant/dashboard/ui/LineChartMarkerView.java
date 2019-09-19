@@ -12,7 +12,7 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.Constants;
-import com.sunmi.assistant.utils.Utils;
+import com.sunmi.assistant.dashboard.Utils;
 
 import java.util.Locale;
 
