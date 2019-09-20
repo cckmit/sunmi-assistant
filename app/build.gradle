@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'walle'
 
 android {
     compileSdkVersion COMPILE_SDK_VERSION
@@ -35,6 +36,15 @@ android {
                 MTA_CHANNEL     : "myapp"]
     }
 
+    signingConfigs {
+        sign {
+            storeFile file("../Keystore.jks")
+            storePassword "SUNMIwireless388"
+            keyAlias "SUNMI_Key"
+            keyPassword "SUNMIwireless388"
+        }
+    }
+
     buildTypes {
         debug {
             applicationIdSuffix ".test"
@@ -58,6 +68,7 @@ android {
             zipAlignEnabled true
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.sign
         }
     }
 
@@ -114,6 +125,15 @@ dependencies {
 
     implementation 'com.youth.banner:banner:1.4.10'  //最新版本
 
-    annotationProcessor "com.github.xiaojinzi123.Component:component-compiler:1.7.4"
 
+    annotationProcessor "com.github.xiaojinzi123.Component:component-compiler:1.7.5"
+
+}
+walle {
+    //指定渠道包的输出路径
+    apkOutputFolder = new File("${project.buildDir}/outputs/channels")
+    //定制渠道包的APK的文件名称 例如app-xiaomi.apk
+    apkFileNameFormat = 'app-${channel}.apk'
+    //渠道配置文件
+    channelFile = new File("${project.getProjectDir()}/channel")
 }
