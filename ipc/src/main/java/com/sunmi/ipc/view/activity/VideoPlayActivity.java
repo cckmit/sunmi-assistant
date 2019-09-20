@@ -96,9 +96,9 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     TextView tvQuality;//画质
     @ViewById(resName = "ll_video_quality")
     LinearLayout llVideoQuality;//是否显示画质
-    @ViewById(resName = "tv_hd_quality")
+    @ViewById(resName = "tv_fhd_quality")
     TextView tvHDQuality;//高清画质
-    @ViewById(resName = "tv_sd_quality")
+    @ViewById(resName = "tv_hd_quality")
     TextView tvSDQuality;//标清画质
     @ViewById(resName = "cm_timer")
     Chronometer cmTimer;//录制时间
@@ -448,14 +448,14 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
     }
 
     //超清画质
-    @Click(resName = "tv_hd_quality")
+    @Click(resName = "tv_fhd_quality")
     void hdQualityClick() {
         tvQuality.setText(R.string.str_FHD);
         changeQuality(0);
     }
 
     //高清画质
-    @Click(resName = "tv_sd_quality")
+    @Click(resName = "tv_hd_quality")
     void sdQualityClick() {
         tvQuality.setText(R.string.str_HD);
         changeQuality(1);
