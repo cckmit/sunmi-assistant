@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import com.commonlibrary.R;
 
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.view.SimpleRecyclerViewAdapter;
 import sunmi.common.view.activity.StartConfigSMDeviceActivity_;
 
@@ -59,7 +60,9 @@ public class ChooseDeviceDialog extends Dialog {
         int[] imageIds;
         imageIds = new int[]{R.mipmap.ic_add_sunmi_ap, R.mipmap.ic_add_sunmi_ss,
                 R.mipmap.ic_add_sunmi_fs, R.mipmap.ic_add_sunmi_printer, R.mipmap.ic_add_more};
-        final String[] names = getContext().getResources().getStringArray(R.array.sunmi_devices);
+        getContext().getResources().getIntArray(R.array.sunmi_devices_image);
+        final String[] names = getContext().getResources().getStringArray(
+                CommonHelper.isGooglePlay() ? R.array.sunmi_devices_google_play : R.array.sunmi_devices);
         SimpleRecyclerViewAdapter adapter = new SimpleRecyclerViewAdapter(
                 R.layout.item_choose_device, imageIds, names);
         adapter.setOnItemClickListener(new SimpleRecyclerViewAdapter.OnItemClickListener() {

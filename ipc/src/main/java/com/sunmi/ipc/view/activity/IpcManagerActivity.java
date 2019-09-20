@@ -74,7 +74,6 @@ import sunmi.common.view.VerticalSeekBar;
 import sunmi.common.view.ViewHolder;
 import sunmi.common.view.bottompopmenu.BottomPopMenu;
 import sunmi.common.view.bottompopmenu.PopItemAction;
-import sunmi.common.view.dialog.LoadingDialog;
 
 /**
  * Description:
@@ -194,7 +193,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private List<VideoTimeSlotBean> listAp = new ArrayList<>();
     private List<VideoTimeSlotBean> listCloud = new ArrayList<>();
 
-    private LoadingDialog timeSlotsDialog;
     //竖屏切换高清
     private BottomPopMenu qualityPop;
 
@@ -537,7 +535,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     public void getCloudTimeSlotFail() {
         if (listAp == null || listAp.size() == 0) {
             LogCat.e(TAG, "88888888 aa");
-            timeSlotsHideProgress();
+            hideVideoLoading();
             switch2Live();//无ap且无cloud的时间列表
         } else {
             LogCat.e(TAG, "88888888 bb");
@@ -967,7 +965,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             }
         }
         //渲染完成
-        timeSlotsHideProgress();
+        hideVideoLoading();
     }
 
     //选择日历日期回调
@@ -1128,25 +1126,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         }
     }
 
-    private void timeSlotsShowProgress() {
-        if (timeSlotsDialog == null) {
-            timeSlotsDialog = new LoadingDialog(this);
-            timeSlotsDialog.setLoadingContent(null);
-        }
-        timeSlotsDialog.show();
-    }
-
-    private void timeSlotsHideProgress() {
-        if (timeSlotsDialog != null) {
-            timeSlotsDialog.dismiss();
-        }
-        //开启控件隐藏倒计时
-        startTimer();
-    }
-
     //发送请求获取组合时间轴
     private void refreshTimeSlotVideoList() {
-        timeSlotsShowProgress();
+        showVideoLoading();
         listAp.clear();
         getDeviceTimeSlots(threeDaysBeforeSeconds, currentDateSeconds);
     }
