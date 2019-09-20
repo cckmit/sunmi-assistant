@@ -42,38 +42,7 @@ public class ShopListResp {
         private String contact_email;
         private int created_time;
         private int modified_time;
-
-        protected ShopInfo(Parcel in) {
-            shop_id = in.readInt();
-            shop_name = in.readString();
-            type_one = in.readInt();
-            type_two = in.readInt();
-            type_name = in.readString();
-            business_status = in.readInt();
-            province = in.readInt();
-            city = in.readInt();
-            area = in.readInt();
-            address = in.readString();
-            region = in.readString();
-            business_hours = in.readString();
-            contact_person = in.readString();
-            contact_tel = in.readString();
-            contact_email = in.readString();
-            created_time = in.readInt();
-            modified_time = in.readInt();
-        }
-
-        public static final Creator<ShopInfo> CREATOR = new Creator<ShopInfo>() {
-            @Override
-            public ShopInfo createFromParcel(Parcel in) {
-                return new ShopInfo(in);
-            }
-
-            @Override
-            public ShopInfo[] newArray(int size) {
-                return new ShopInfo[size];
-            }
-        };
+        private int saas_exist;
 
         public int getShop_id() {
             return shop_id;
@@ -143,9 +112,29 @@ public class ShopListResp {
             return modified_time;
         }
 
-        @Override
-        public int describeContents() {
-            return 0;
+        public int getSaas_exist() {
+            return saas_exist;
+        }
+
+        protected ShopInfo(Parcel in) {
+            shop_id = in.readInt();
+            shop_name = in.readString();
+            type_one = in.readInt();
+            type_two = in.readInt();
+            type_name = in.readString();
+            business_status = in.readInt();
+            province = in.readInt();
+            city = in.readInt();
+            area = in.readInt();
+            address = in.readString();
+            region = in.readString();
+            business_hours = in.readString();
+            contact_person = in.readString();
+            contact_tel = in.readString();
+            contact_email = in.readString();
+            created_time = in.readInt();
+            modified_time = in.readInt();
+            saas_exist = in.readInt();
         }
 
         @Override
@@ -167,6 +156,24 @@ public class ShopListResp {
             dest.writeString(contact_email);
             dest.writeInt(created_time);
             dest.writeInt(modified_time);
+            dest.writeInt(saas_exist);
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        public static final Creator<ShopInfo> CREATOR = new Creator<ShopInfo>() {
+            @Override
+            public ShopInfo createFromParcel(Parcel in) {
+                return new ShopInfo(in);
+            }
+
+            @Override
+            public ShopInfo[] newArray(int size) {
+                return new ShopInfo[size];
+            }
+        };
     }
 }

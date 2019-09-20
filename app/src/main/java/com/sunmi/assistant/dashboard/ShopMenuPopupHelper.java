@@ -3,10 +3,8 @@ package com.sunmi.assistant.dashboard;
 import android.content.Context;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -23,12 +21,15 @@ import sunmi.common.view.DropdownMenu;
  */
 public class ShopMenuPopupHelper implements DropdownMenu.PopupHelper {
 
+    private static final String TAG = ShopMenuPopupHelper.class.getSimpleName();
+
     private Context mContext;
     private ConstraintLayout mContent;
     private View mOverlay;
     private LinearLayout mShopMenuList;
     private ShopMenuAnimation mDropdownAnimator = new ShopMenuAnimation();
     private int mOffset;
+    private TextView mHeader;
 
     public ShopMenuPopupHelper(Context context, ConstraintLayout content, View overlay) {
         this.mContext = context;
@@ -40,37 +41,32 @@ public class ShopMenuPopupHelper implements DropdownMenu.PopupHelper {
         this.mOffset = offset;
     }
 
+    public void setCompanyName(String name) {
+        if (mHeader != null) {
+            mHeader.setText(name);
+        }
+    }
+
     @Override
     public void initMenu(RecyclerView list) {
         if (mContext == null || list.getAdapter() == null || list.getAdapter().getItemCount() == 0) {
             return;
         }
-        // Add header view
-        mShopMenuList = new LinearLayout(mContext);
-        mShopMenuList.setId(View.generateViewId());
-        mShopMenuList.setOrientation(LinearLayout.VERTICAL);
-        mShopMenuList.setLayoutParams(new ConstraintLayout.LayoutParams(
-                ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT));
-        TextView header = new TextView(mContext);
-        header.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, (int) mContext.getResources().getDimension(R.dimen.dp_32)));
-        int padding = (int) mContext.getResources().getDimension(R.dimen.dp_4);
-        header.setText(SpUtils.getCompanyName());
-        header.setPadding(padding, 0, padding, 0);
-        header.setEllipsize(TextUtils.TruncateAt.END);
-        header.setLines(1);
-        header.setTextSize(12f);
-        header.setTextColor(ContextCompat.getColor(mContext, R.color.color_525866));
-        header.setGravity(Gravity.CENTER);
-        header.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_F0F2F5));
-        list.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT));
-        mShopMenuList.addView(header);
-        mShopMenuList.addView(list);
-        // Add view into ConstraintLayout.
-        int index = mContent.indexOfChild(mOverlay) + 1;
-        if (mContent.indexOfChild(mShopMenuList) == -1) {
+        if (mShopMenuList == null) {
+            // Add header view
+            mShopMenuList = (LinearLayout) LayoutInflater.from(list.getContext())
+                    .inflate(R.layout.shop_menu_layout, mContent, false);
+            mShopMenuList.setId(View.generateViewId());
+            mHeader = mShopMenuList.findViewById(R.id.shop_menu_title);
+            mHeader.setText(SpUtils.getCompanyName());
+            list.setLayoutParams(new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT));
+            mShopMenuList.addView(list);
+            // Add view into ConstraintLayout.
+            int index = mContent.indexOfChild(mOverlay) + 1;
             mContent.addView(mShopMenuList, index);
+        } else {
+            mHeader = mShopMenuList.findViewById(R.id.shop_menu_title);
         }
         // Init constraint set of menu view in ConstraintLayout.
         ConstraintSet con = new ConstraintSet();
@@ -82,6 +78,7 @@ public class ShopMenuPopupHelper implements DropdownMenu.PopupHelper {
         con.constrainWidth(mShopMenuList.getId(), ConstraintSet.MATCH_CONSTRAINT);
         con.applyTo(mContent);
         mShopMenuList.measure(0, 0);
+        mShopMenuList.getLayoutParams().height = list.getMeasuredHeight() + mHeader.getMeasuredHeight();
     }
 
     @Override

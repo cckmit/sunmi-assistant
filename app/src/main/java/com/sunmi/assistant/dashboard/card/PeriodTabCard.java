@@ -19,8 +19,8 @@ import sunmi.common.rpc.retrofit.BaseResponse;
 public class PeriodTabCard extends BaseRefreshItem<PeriodTabCard.Model, Object> {
 
 
-    public PeriodTabCard(Context context, DashboardContract.Presenter presenter, int source) {
-        super(context, presenter, source);
+    public PeriodTabCard(Context context, DashboardContract.Presenter presenter) {
+        super(context, presenter);
         addOnViewClickListener(R.id.tv_dashboard_today, (adapter, holder, v, model, position) ->
                 mPresenter.switchPeriodTo(Constants.TIME_PERIOD_TODAY));
         addOnViewClickListener(R.id.tv_dashboard_week, (adapter, holder, v, model, position) ->

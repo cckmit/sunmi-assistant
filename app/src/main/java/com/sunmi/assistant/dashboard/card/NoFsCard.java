@@ -19,20 +19,24 @@ import sunmi.common.rpc.retrofit.BaseResponse;
  */
 public class NoFsCard extends BaseRefreshItem<NoFsCard.Model, Object> {
 
+    private boolean isAllEmpty;
     private int mColorGray;
     private int mColorWhite;
     private GradientDrawable mContentBg;
 
-    public NoFsCard(Context context, DashboardContract.Presenter presenter, boolean isAllEmpty) {
-        super(context, presenter, 0);
-        Model model = getModel();
-        model.isAllEmpty = isAllEmpty;
-        model.isValid = true;
-        mColorGray = ContextCompat.getColor(context, R.color.color_F5F7FA);
-        mColorWhite = 0xFFFFFFFF;
+    public NoFsCard(Context context, DashboardContract.Presenter presenter) {
+        super(context, presenter);
+        this.isAllEmpty = isAllEmpty;
+        this.mColorGray = ContextCompat.getColor(context, R.color.color_F5F7FA);
+        this.mColorWhite = 0xFFFFFFFF;
         float radius = context.getResources().getDimension(R.dimen.dp_12);
-        mContentBg = new GradientDrawable();
-        mContentBg.setCornerRadii(new float[]{radius, radius, radius, radius, radius, radius, radius, radius});
+        this.mContentBg = new GradientDrawable();
+        this.mContentBg.setCornerRadii(new float[]{radius, radius, radius, radius, radius, radius, radius, radius});
+        this.isInit = true;
+    }
+
+    public void setIsAllEmpty(boolean isAllEmpty) {
+        this.isAllEmpty = isAllEmpty;
     }
 
     @Override
@@ -59,12 +63,11 @@ public class NoFsCard extends BaseRefreshItem<NoFsCard.Model, Object> {
     protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         View root = holder.getView(R.id.layout_dashboard_root);
         View content = holder.getView(R.id.layout_dashboard_content);
-        root.setBackgroundColor(model.isAllEmpty ? mColorWhite : mColorGray);
-        mContentBg.setColor(model.isAllEmpty ? mColorGray : mColorWhite);
+        root.setBackgroundColor(isAllEmpty ? mColorWhite : mColorGray);
+        mContentBg.setColor(isAllEmpty ? mColorGray : mColorWhite);
         content.setBackground(mContentBg);
     }
 
     public static class Model extends BaseRefreshItem.BaseModel {
-        private boolean isAllEmpty;
     }
 }

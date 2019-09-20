@@ -1,16 +1,13 @@
 package com.sunmi.assistant.dashboard.card;
 
 import android.content.Context;
-import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.sunmi.assistant.R;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
-import sunmi.common.base.recycle.ItemType;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
 /**
@@ -22,10 +19,17 @@ public class EmptyGapCard extends BaseRefreshItem<EmptyGapCard.Model, Object> {
     private int mColor;
     private int mHeight;
 
-    public EmptyGapCard(@ColorInt int color, int height) {
-        super(null, null, 0);
-        this.mColor = color;
+    public EmptyGapCard() {
+        super(null, null);
+        this.isInit = true;
+    }
+
+    public void setHeightAndColor(int height, int color) {
+        if (this.mHeight == height && this.mColor == color) {
+            return;
+        }
         this.mHeight = height;
+        this.mColor = color;
     }
 
     @Override
@@ -44,21 +48,15 @@ public class EmptyGapCard extends BaseRefreshItem<EmptyGapCard.Model, Object> {
         return null;
     }
 
-    @NonNull
-    @Override
-    public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
-        ViewGroup.LayoutParams lp = view.getLayoutParams();
-        lp.height = mHeight;
-        view.setBackgroundColor(mColor);
-        return super.onCreateViewHolder(view, type);
-    }
-
     @Override
     protected void setupModel(Model model, Object response) {
     }
 
     @Override
     protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+        ViewGroup.LayoutParams lp = holder.itemView.getLayoutParams();
+        lp.height = mHeight;
+        holder.itemView.setBackgroundColor(mColor);
     }
 
     public static class Model extends BaseRefreshItem.BaseModel {
