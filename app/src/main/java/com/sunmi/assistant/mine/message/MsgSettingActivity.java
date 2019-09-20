@@ -25,6 +25,7 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.NetworkUtils;
+import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.SmRecyclerView;
@@ -62,12 +63,8 @@ public class MsgSettingActivity extends BaseMvpActivity<MsgSettingPresenter>
 
     @AfterViews
     void init() {
-        titleBar.getLeftLayout().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
+        titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
         mPresenter = new MsgSettingPresenter();
         mPresenter.attachView(this);
         mPresenter.getSettingList();
