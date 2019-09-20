@@ -40,6 +40,7 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
     protected static final String DATA_ZERO = "0";
     protected static final String FORMAT_FLOAT_NO_DECIMAL = "%.0f";
     protected static final String FORMAT_FLOAT_DOUBLE_DECIMAL = "%.2f";
+    protected static final String FORMAT_FLOAT_DOUBLE_PERCENT = "%.2f%%";
     protected static final DecimalFormat FORMAT_MAX_DOUBLE_DECIMAL = new DecimalFormat("#.##");
 
     protected Context mContext;
@@ -53,19 +54,24 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
 
     private Model mModel;
 
+    protected boolean isInit = false;
     private int mCompanyId;
     private int mShopId;
     private int mDataSource;
-    private int mPeriod = Constants.TIME_PERIOD_INIT;
+    private int mPeriod = Constants.TIME_PERIOD_TODAY;
     private int mState = STATE_INIT;
 
-    protected BaseRefreshItem(Context context, DashboardContract.Presenter presenter, int source) {
+    protected BaseRefreshItem(Context context, DashboardContract.Presenter presenter) {
         this.mContext = context;
         this.mPresenter = presenter;
+        mModel = createModel(context);
+    }
+
+    public void initConfig(int source) {
         this.mDataSource = source;
         this.mCompanyId = SpUtils.getCompanyId();
         this.mShopId = SpUtils.getShopId();
-        mModel = createModel(context);
+        this.isInit = true;
     }
 
     public boolean showTransactionData() {
@@ -89,6 +95,16 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
         this.mPosition = position;
         //noinspection unchecked
         adapter.register((Class<Model>) mModel.getClass(), this);
+    }
+
+    public void setDataSource(int source) {
+        if (this.mDataSource == source) {
+            return;
+        }
+        this.mDataSource = source;
+        this.mModel.skipLoad = false;
+        this.mModel.isValid = false;
+        requestLoad(true, true);
     }
 
     public void setCompanyId(int companyId, int shopId) {
@@ -115,7 +131,7 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
     }
 
     public void setPeriod(int period) {
-        if (this.mPeriod == period || period == Constants.TIME_PERIOD_INIT) {
+        if (this.mPeriod == period) {
             return;
         }
         this.mPeriod = period;
@@ -147,6 +163,9 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+        if (!isInit) {
+            return;
+        }
         boolean isLoading = (mState == STATE_INIT || mState == STATE_LOADING);
         if (model.isValid) {
             setupView(holder, model, position);
@@ -162,6 +181,9 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
     }
 
     private void requestLoad(boolean forceLoad, boolean showLoading) {
+        if (!isInit) {
+            return;
+        }
         if (forceLoad || !mModel.skipLoad) {
             if (mCall.isLoading() && mCall.isRequestSame(mCompanyId, mShopId, mPeriod)) {
                 LogCat.d(TAG, "Data is loading, skip.");
@@ -273,7 +295,7 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
             this.call = null;
             this.companyId = -1;
             this.shopId = -1;
-            this.period = Constants.TIME_PERIOD_INIT;
+            this.period = 0;
         }
 
         public Call<BaseResponse<Resp>> get() {
@@ -347,6 +369,6 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
     static abstract class BaseModel {
         boolean isValid = false;
         boolean skipLoad = false;
-        int period = Constants.TIME_PERIOD_INIT;
+        int period = Constants.TIME_PERIOD_TODAY;
     }
 }

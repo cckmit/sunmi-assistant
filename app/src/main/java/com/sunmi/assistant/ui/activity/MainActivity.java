@@ -41,6 +41,7 @@ import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.mqtt.MqttManager;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.MyFragmentTabHost;
@@ -141,14 +142,14 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
     @Override
     public int[] getUnStickNotificationId() {
         return new int[]{NotificationConstant.netConnectedMainActivity,
-                CommonNotifications.refreshMainTabView};
+                CommonNotifications.importShop};
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (NotificationConstant.netConnectedMainActivity == id) {
             initIpc();
-        } else if (CommonNotifications.refreshMainTabView == id) {
+        } else if (CommonNotifications.importShop == id) {
             if (mTabHost.getChildCount() == 4) {
                 return;
             }
@@ -182,8 +183,8 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
         }
         MainTab[] mainTabs = MainTab.values();
         for (MainTab mainTab : mainTabs) {
-            if (SpUtils.getSaasExist() == 0 && TextUtils.equals(getString(mainTab.getResName()),
-                    getString(R.string.str_tab_dashboard))) {//saas平台需要显示数据tab
+            if (CommonHelper.isGooglePlay() && TextUtils.equals(getString(mainTab.getResName()),
+                    getString(R.string.str_tab_support))) {//saas平台需要显示数据tab
                 continue;
             }
             TabHost.TabSpec tab = mTabHost.newTabSpec(getString(mainTab.getResName()));

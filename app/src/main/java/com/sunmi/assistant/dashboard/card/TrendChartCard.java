@@ -43,6 +43,7 @@ import sunmi.common.model.ConsumerRateResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.utils.CommonHelper;
+import sunmi.common.utils.log.LogCat;
 
 /**
  * @author yinhui
@@ -59,8 +60,8 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
     private final float mDashLength;
     private final float mDashSpaceLength;
 
-    public TrendChartCard(Context context, DashboardContract.Presenter presenter, int source) {
-        super(context, presenter, source);
+    public TrendChartCard(Context context, DashboardContract.Presenter presenter) {
+        super(context, presenter);
         mDashLength = CommonHelper.dp2px(context, 4f);
         mDashSpaceLength = CommonHelper.dp2px(context, 2f);
         addOnViewClickListener(R.id.tv_dashboard_rate, (adapter, holder, v, model, position) -> {
@@ -253,6 +254,7 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
             dataSet = new ArrayList<>();
             model.dataSets.put(model.type, dataSet);
         }
+        LogCat.d(TAG, "Period=" + model.period + "; type=" + model.type + "\nData set:" + dataSet);
 
         // Calculate min & max of axis value.
         Pair<Integer, Integer> xAxisRange = Utils.calcChartXAxisRange(model.period);
@@ -321,16 +323,17 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
                     ContextCompat.getColor(holder.getContext(), R.color.color_4B7AFA);
             BarDataSet set;
             BarData data = bar.getData();
+            ArrayList<BarEntry> values = new ArrayList<>(dataSet);
             if (data != null && data.getDataSetCount() > 0) {
                 set = (BarDataSet) data.getDataSetByIndex(0);
                 set.setColor(color);
                 set.setHighLightColor(colorHighlight);
-                set.setValues(dataSet);
+                set.setValues(values);
                 data.setBarWidth(barWidthRatio);
                 data.notifyDataChanged();
                 bar.notifyDataSetChanged();
             } else {
-                set = new BarDataSet(dataSet, "data");
+                set = new BarDataSet(values, "data");
                 set.setColor(ContextCompat.getColor(holder.getContext(), R.color.color_2997FF));
                 set.setDrawValues(false);
                 set.setColor(color);
