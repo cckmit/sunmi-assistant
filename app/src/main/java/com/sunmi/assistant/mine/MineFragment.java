@@ -68,11 +68,11 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     }
 
     private void initView() {
-        if (CommonHelper.isGooglePlay()) {
-            rlOrder.setVisibility(View.GONE);
-            rlAddress.setVisibility(View.GONE);
-            rlCoupon.setVisibility(View.GONE);
-            rlHelp.setVisibility(View.GONE);
+        if (!CommonHelper.isGooglePlay()) {
+            rlOrder.setVisibility(View.VISIBLE);
+            rlAddress.setVisibility(View.VISIBLE);
+            rlCoupon.setVisibility(View.VISIBLE);
+            rlHelp.setVisibility(View.VISIBLE);
         }
         initAvatar(false);
         setMsgBadge();
