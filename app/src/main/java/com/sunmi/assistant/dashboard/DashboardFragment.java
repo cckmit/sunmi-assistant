@@ -274,7 +274,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
                 CommonNotifications.shopSwitched,
                 CommonNotifications.shopNameChanged,
                 CommonNotifications.importShop,
-                IpcConstants.refreshIpcList,
+                IpcConstants.refreshIpcList
         };
     }
 
