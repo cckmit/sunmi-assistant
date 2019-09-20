@@ -182,10 +182,10 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
         }
         MainTab[] mainTabs = MainTab.values();
         for (MainTab mainTab : mainTabs) {
-            if (SpUtils.getSaasExist() == 0 && TextUtils.equals(getString(mainTab.getResName()),
-                    getString(R.string.str_tab_dashboard))) {//saas平台需要显示数据tab
-                continue;
-            }
+//            if (SpUtils.getSaasExist() == 0 && TextUtils.equals(getString(mainTab.getResName()),
+//                    getString(R.string.str_tab_dashboard))) {//saas平台需要显示数据tab
+//                continue;
+//            }
             TabHost.TabSpec tab = mTabHost.newTabSpec(getString(mainTab.getResName()));
             View indicator = LayoutInflater.from(getApplicationContext())
                     .inflate(R.layout.tab_indicator, null);

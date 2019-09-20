@@ -58,7 +58,7 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
     private int mCompanyId;
     private int mShopId;
     private int mDataSource;
-    private int mPeriod = Constants.TIME_PERIOD_INIT;
+    private int mPeriod = Constants.TIME_PERIOD_TODAY;
     private int mState = STATE_INIT;
 
     protected BaseRefreshItem(Context context, DashboardContract.Presenter presenter) {
@@ -131,7 +131,7 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
     }
 
     public void setPeriod(int period) {
-        if (this.mPeriod == period || period == Constants.TIME_PERIOD_INIT) {
+        if (this.mPeriod == period) {
             return;
         }
         this.mPeriod = period;
@@ -295,7 +295,7 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
             this.call = null;
             this.companyId = -1;
             this.shopId = -1;
-            this.period = Constants.TIME_PERIOD_INIT;
+            this.period = 0;
         }
 
         public Call<BaseResponse<Resp>> get() {
@@ -369,6 +369,6 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
     static abstract class BaseModel {
         boolean isValid = false;
         boolean skipLoad = false;
-        int period = Constants.TIME_PERIOD_INIT;
+        int period = Constants.TIME_PERIOD_TODAY;
     }
 }

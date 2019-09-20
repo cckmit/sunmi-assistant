@@ -7,7 +7,6 @@ import com.sunmi.assistant.dashboard.card.BaseRefreshItem;
 import java.util.List;
 
 import sunmi.common.base.BaseView;
-import sunmi.common.model.FilterItem;
 
 public interface DashboardContract {
 
@@ -17,7 +16,7 @@ public interface DashboardContract {
 
         void updateTab(int period);
 
-        void setShopList(List<FilterItem> list);
+        void setShopList(List<ShopItem> list);
 
         void setCards(List<BaseRefreshItem> data, int dataSource);
 
@@ -30,6 +29,8 @@ public interface DashboardContract {
         void init();
 
         void reload();
+
+        boolean switchShopTo(ShopItem shop);
 
         void switchPeriodTo(int period);
 
