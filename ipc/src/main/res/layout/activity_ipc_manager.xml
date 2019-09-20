@@ -119,6 +119,22 @@
                     android:src="@mipmap/ic_full_screen" />
             </LinearLayout>
 
+            <RelativeLayout
+                android:id="@+id/rl_loading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/rl_video"
+                android:layout_alignBottom="@+id/ll_portrait_controller_bar"
+                android:background="@color/black_60">
+
+                <ProgressBar
+                    android:layout_width="@dimen/dp_60"
+                    android:layout_height="@dimen/dp_60"
+                    android:layout_centerInParent="true"
+                    android:indeterminate="false"
+                    android:indeterminateDrawable="@drawable/loading_common" />
+            </RelativeLayout>
+
             <sunmi.common.view.SmRecyclerView
                 android:id="@+id/rv_manager"
                 android:layout_width="match_parent"
@@ -130,7 +146,6 @@
                 android:nestedScrollingEnabled="false"
                 android:overScrollMode="never"
                 android:visibility="visible" />
-
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
 
