@@ -160,7 +160,6 @@ public class VolumeHelper {
         } else {
             audioManager.setStreamMute(AudioManager.STREAM_MUSIC, true);//API 23
         }
-        audioManager.setMicrophoneMute(true);
     }
 
     //静音
@@ -171,7 +170,6 @@ public class VolumeHelper {
         } else {
             audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);//API 23
         }
-        audioManager.setMicrophoneMute(false);
     }
 
     //静音

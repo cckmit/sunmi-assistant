@@ -274,9 +274,7 @@ public class DynamicVideoActivity extends BaseActivity implements
             return;
         }
         showLoadingDialog();
-        if (!isInitTakeScreenShot) {
-            initTakeScreenShot();
-        }
+        TimeoutTimer.getInstance().start();
         requestPermissions();
     }
 
@@ -310,9 +308,9 @@ public class DynamicVideoActivity extends BaseActivity implements
         ibVolume.setBackgroundResource(isOpenVolume ? R.mipmap.ic_volume : R.mipmap.ic_muse);
         isOpenVolume = !isOpenVolume;
         if (isOpenVolume) {
-            volumeHelper.unMute();
-        } else {
             volumeHelper.mute();
+        } else {
+            volumeHelper.unMute();
         }
     }
 
@@ -333,7 +331,6 @@ public class DynamicVideoActivity extends BaseActivity implements
             } else {
                 generateTime = (Long) obj;
             }
-            LogCat.e(TAG, "kkk dur=" + iVideoPlayer.getDuration() + ", max=" + sbBar.getMax() + ", obj=" + obj);
             sbBar.setProgress(progress);
             tvCurrentPlayTime.setText(iVideoPlayer.generateTime(generateTime));
         }
