@@ -44,6 +44,7 @@ import sunmi.common.model.ConsumerAgeNewOldResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.log.LogCat;
 
 /**
  * @author yinhui
@@ -243,6 +244,7 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
             dataSet = new ArrayList<>();
             model.dataSets.put(model.type, dataSet);
         }
+        LogCat.d(TAG, "Period=" + model.period + "; type=" + model.type + "\nData set:" + dataSet);
 
         // Highlight largest data part
         int maxIndex = -1;
