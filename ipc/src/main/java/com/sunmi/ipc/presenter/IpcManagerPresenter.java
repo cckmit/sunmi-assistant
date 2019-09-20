@@ -136,4 +136,24 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
         });
     }
 
+    @Override
+    public void changeQuality(int quality, IOTCClient iotcClient) {
+        if (iotcClient == null) {
+            return;
+        }
+        iotcClient.changeValue(quality, new P2pCmdCallback() {
+            @Override
+            public void onResponse(int cmd, IotcCmdResp result) {
+                if (isViewAttached()) {
+                    mView.changeQualitySuccess(quality);
+                }
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
+    }
+
 }

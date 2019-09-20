@@ -66,6 +66,7 @@ import sunmi.common.model.AdListResp;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.sunmicall.ResponseBean;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
@@ -121,7 +122,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         }
         initViews();
         loadData();
-        startTimer();
+        if (!CommonHelper.isGooglePlay()) {
+            startTimer();
+        }
     }
 
     protected void initViews() {
@@ -156,8 +159,10 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     private void loadData() {
         mPresenter.getBannerList();
         mPresenter.getRouterList();
-        mPresenter.getIpcList();
-        mPresenter.getPrinterList();
+        if (!CommonHelper.isGooglePlay()) {
+            mPresenter.getIpcList();
+            mPresenter.getPrinterList();
+        }
     }
 
     @Override

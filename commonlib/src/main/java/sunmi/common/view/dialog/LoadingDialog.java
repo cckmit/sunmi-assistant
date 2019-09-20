@@ -29,18 +29,19 @@ public class LoadingDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (layoutId > 0)
+        if (layoutId > 0) {
             setContentView(layoutId);
-        else
+        } else {
             setContentView(R.layout.dialog_loading);
-        tvLoading = this.findViewById(R.id.tvTip);
+            tvLoading = this.findViewById(R.id.tv_loading);
+        }
     }
 
     public void setLoadingContent(String content) {
-        if (getContext() == null) return;
         if (tvLoading == null) {
             this.show();
             this.dismiss();
+            return;
         }
         if (!TextUtils.isEmpty(content)) {
             tvLoading.setVisibility(View.VISIBLE);
@@ -51,10 +52,10 @@ public class LoadingDialog extends Dialog {
     }
 
     public void setTipColorText(String content, int colorRes) {
-        if (getContext() == null) return;
         if (tvLoading == null) {
             this.show();
             this.dismiss();
+            return;
         }
         if (!TextUtils.isEmpty(content)) {
             tvLoading.setVisibility(View.VISIBLE);
