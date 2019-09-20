@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.meituan.android.walle.WalleChannelReader;
+import com.sunmi.apmanager.config.ApConfig;
 import com.sunmi.apmanager.rpc.mqtt.MQTTManager;
 import com.sunmi.assistant.config.BootLoader;
+import com.tencent.bugly.Bugly;
 import com.tencent.stat.StatService;
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.impl.application.ModuleManager;
@@ -50,9 +53,8 @@ public class MyApplication extends BaseApplication {
 
         // 装载各个业务组件
         ModuleManager.getInstance().registerArr(
-                "app","ipc"
+                "app", "ipc"
         );
-
         if (BuildConfig.DEBUG) {
             ModuleManager.getInstance().check();
         }

@@ -218,7 +218,8 @@
                 android:id="@+id/rlOrder"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_72"
-                android:layout_below="@+id/rlMsg">
+                android:layout_below="@+id/rlMsg"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/iv3"
@@ -263,7 +264,8 @@
                 android:id="@+id/rlAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_72"
-                android:layout_below="@+id/rlOrder">
+                android:layout_below="@+id/rlOrder"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/iv4"
@@ -308,7 +310,8 @@
                 android:id="@+id/rlCoupon"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_72"
-                android:layout_below="@+id/rlAddress">
+                android:layout_below="@+id/rlAddress"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/iv5"
@@ -360,7 +363,8 @@
                 android:id="@+id/rlHelp"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_72"
-                android:layout_below="@+id/v2">
+                android:layout_below="@+id/v2"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/iv1"

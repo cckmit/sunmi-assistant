@@ -44,6 +44,7 @@ import sunmi.common.model.ConsumerAgeNewOldResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.log.LogCat;
 
 /**
  * @author yinhui
@@ -60,8 +61,8 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
     private SparseArray<String> mAgeList;
     private OnPieSelectedListener mOnSelectedListener;
 
-    public DistributionChartCard(Context context, DashboardContract.Presenter presenter, int source) {
-        super(context, presenter, source);
+    public DistributionChartCard(Context context, DashboardContract.Presenter presenter) {
+        super(context, presenter);
         addOnViewClickListener(R.id.tv_dashboard_new_old, (adapter, holder, v, model, position) -> {
             model.type = Constants.DATA_TYPE_NEW_OLD;
             updateView();
@@ -243,6 +244,7 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
             dataSet = new ArrayList<>();
             model.dataSets.put(model.type, dataSet);
         }
+        LogCat.d(TAG, "Period=" + model.period + "; type=" + model.type + "\nData set:" + dataSet);
 
         // Highlight largest data part
         int maxIndex = -1;

@@ -3,8 +3,7 @@
     android:id="@+id/rl_control_panel"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/transparent"
-    android:visibility="gone">
+    android:background="@color/transparent">
 
     <RelativeLayout
         android:id="@+id/rl_top"
@@ -49,8 +48,8 @@
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="@dimen/dp_219"
         android:layout_marginEnd="@dimen/dp_25"
+        android:layout_centerVertical="true"
         android:background="@mipmap/ic_live"
         android:visibility="gone" />
 
@@ -108,7 +107,7 @@
         android:visibility="gone">
 
         <TextView
-            android:id="@+id/tv_hd_quality"
+            android:id="@+id/tv_fhd_quality"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -118,7 +117,7 @@
             android:textSize="@dimen/sp_10" />
 
         <TextView
-            android:id="@+id/tv_sd_quality"
+            android:id="@+id/tv_hd_quality"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"

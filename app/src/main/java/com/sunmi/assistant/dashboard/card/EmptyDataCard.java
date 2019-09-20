@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.DashboardContract;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
@@ -16,8 +15,9 @@ import sunmi.common.rpc.retrofit.BaseResponse;
  */
 public class EmptyDataCard extends BaseRefreshItem<EmptyDataCard.Model, Object> {
 
-    public EmptyDataCard(Context context, DashboardContract.Presenter presenter) {
-        super(context, presenter, 0);
+    public EmptyDataCard() {
+        super(null, null);
+        this.isInit = true;
     }
 
     @Override

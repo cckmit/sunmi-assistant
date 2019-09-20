@@ -111,10 +111,10 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     TextView tvQuality;//画质
     @ViewById(resName = "ll_video_quality")
     LinearLayout llVideoQuality;//是否显示画质
+    @ViewById(resName = "tv_fhd_quality")
+    TextView tvFHDQuality;//高清画质
     @ViewById(resName = "tv_hd_quality")
-    TextView tvHDQuality;//高清画质
-    @ViewById(resName = "tv_sd_quality")
-    TextView tvSDQuality;//标清画质
+    TextView tvHDQuality;//标清画质
     @ViewById(resName = "cm_timer")
     Chronometer cmTimer;//录制时间
     @ViewById(resName = "rl_record")
@@ -136,6 +136,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @ViewById(resName = "rl_video")
     RelativeLayout rlVideo;
 
+    @ViewById(resName = "rl_loading")
+    RelativeLayout rlLoadingP;
     @ViewById(resName = "ll_portrait_controller_bar")
     LinearLayout llPortraitBar;
     @ViewById(resName = "tv_calender_portrait")
@@ -207,6 +209,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         titleBar.getLeftLayout().setOnClickListener(this);
         titleBar.getRightTextView().setOnClickListener(this);
         initData();
+        showVideoLoading();
+        rlLoadingP.setOnTouchListener((v, event) -> true);
         initSurfaceView();
         initManageList();
         handler.postDelayed(this::initControllerPanel, 200);
@@ -367,11 +371,11 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         }
         llVideoQuality.setVisibility(llVideoQuality.isShown() ? View.GONE : View.VISIBLE);
         if (qualityType == 0) {
-            tvHDQuality.setTextColor(ContextCompat.getColor(this, R.color.colorOrange));
-            tvSDQuality.setTextColor(ContextCompat.getColor(this, R.color.c_white));
-        } else {
+            tvFHDQuality.setTextColor(ContextCompat.getColor(this, R.color.colorOrange));
             tvHDQuality.setTextColor(ContextCompat.getColor(this, R.color.c_white));
-            tvSDQuality.setTextColor(ContextCompat.getColor(this, R.color.colorOrange));
+        } else {
+            tvFHDQuality.setTextColor(ContextCompat.getColor(this, R.color.c_white));
+            tvHDQuality.setTextColor(ContextCompat.getColor(this, R.color.colorOrange));
         }
     }
 
@@ -384,14 +388,14 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     //超清画质
-    @Click(resName = {"tv_hd_quality"})
-    void hdQualityClick() {
+    @Click(resName = {"tv_fhd_quality"})
+    void fhdQualityClick() {
         changeQuality(0);
     }
 
     //高清画质
-    @Click(resName = {"tv_sd_quality"})
-    void sdQualityClick() {
+    @Click(resName = {"tv_hd_quality"})
+    void hdQualityClick() {
         changeQuality(1);
     }
 
@@ -449,7 +453,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @Click(resName = "tv_retry")
     void retryClick() {
         setPlayFailVisibility(View.GONE);
-        showLoadingDialog();
+        showVideoLoading();
         initP2pLive();
     }
 
@@ -464,7 +468,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             }
             setPanelVisible(View.VISIBLE);
             if (playType == 0 && iotcClient != null) {
-                showLoadingDialog();
+                showVideoLoading();
                 iotcClient.startPlay();
             }
         }
@@ -490,12 +494,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     @Override
     public void initSuccess() {
-        hideLoadingDialog();
+        hideVideoLoading();
     }
 
     @Override
     public void initFail() {
-        hideLoadingDialog();
+        hideVideoLoading();
         setPlayFailVisibility(View.VISIBLE);
     }
 
@@ -507,11 +511,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         }
     }
 
-    @UiThread
-    public void setPlayFailVisibility(int visibility) {
-        llPlayFail.setVisibility(visibility);
-    }
-
     @Override
     public void onAudioReceived(byte[] audioBuffer) {
         audioDecoder.setAudioData(audioBuffer);
@@ -519,7 +518,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     @Override
     public void onStartPlay() {
-        hideLoadingDialog();
+        hideVideoLoading();
     }
 
     @Override
@@ -560,42 +559,42 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @Override
     public void startLiveSuccess() {
         ivPlay.setBackgroundResource(R.mipmap.play_disable);
-//        playType = 0;
-//        ivpCloud.setVisibility(View.GONE);
-//        videoView.setVisibility(View.VISIBLE);
-//        ivLive.setVisibility(View.GONE);
-//        tvQualityP.setClickable(true);
         setPlayType(0);
         scrollCurrentLive();
-        hideLoadingDialog();
+        hideVideoLoading();
     }
 
     @UiThread
     @Override
     public void startPlaybackSuccess() {
-//        playType = 1;
-//        ivpCloud.setVisibility(View.GONE);
-//        videoView.setVisibility(View.VISIBLE);
-//        ivLive.setVisibility(View.VISIBLE);
-//        tvQualityP.setClickable(false);
         setPlayType(1);
-        hideLoadingDialog();
+        hideVideoLoading();
     }
 
     @UiThread
     @Override
     public void getCloudVideosSuccess(List<VideoListResp.VideoBean> videoBeans) {
-//        playType = 2;
-//        ivpCloud.setVisibility(View.VISIBLE);
-//        videoView.setVisibility(View.GONE);
-//        ivLive.setVisibility(View.VISIBLE);
-//        tvQualityP.setClickable(false);
         setPlayType(2);
         List<String> urlList = new ArrayList<>();
         for (VideoListResp.VideoBean bean : videoBeans) {
             urlList.add(bean.getUrl());
         }
         cloudPlay(urlList);
+    }
+
+    @UiThread
+    @Override
+    public void changeQualitySuccess(int quality) {
+        qualityType = quality;
+        if (qualityType == 0) {
+            tvQuality.setText(R.string.str_FHD);
+            tvQualityP.setText(R.string.str_FHD);
+            shortTip(R.string.tip_video_quality_fhd);
+        } else if (qualityType == 1) {
+            tvQuality.setText(R.string.str_HD);
+            tvQualityP.setText(R.string.str_HD);
+            shortTip(R.string.tip_video_quality_hd);
+        }
     }
 
     @Override
@@ -606,7 +605,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @Override
     public void didReceivedNotification(int id, Object... args) {
         super.didReceivedNotification(id, args);
-        hideLoadingDialog();
         if (id == IpcConstants.ipcNameChanged) {
             if (args != null) {
                 SunmiDevice sd = (SunmiDevice) args[0];
@@ -615,6 +613,29 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                     titleBar.setAppTitle(device.getName());
                 }
             }
+        }
+    }
+
+    @UiThread
+    public void setPlayFailVisibility(int visibility) {
+        llPlayFail.setVisibility(visibility);
+    }
+
+    @UiThread
+    public void showVideoLoading() {
+        if (isPortrait()) {
+            rlLoadingP.setVisibility(View.VISIBLE);
+        } else {
+            showLoadingDialog();
+        }
+    }
+
+    @UiThread
+    public void hideVideoLoading() {
+        if (isPortrait()) {
+            rlLoadingP.setVisibility(View.GONE);
+        } else {
+            hideLoadingDialog();
         }
     }
 
@@ -766,7 +787,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
      */
     private void switch2Live() {
         isFirstScroll = true;
-        showLoadingDialog();
+        showVideoLoading();
         //如果是云端回放此时需要调用停止操作然后直播
         if (playType == 2) {
             cloudPlayDestroy();
@@ -784,7 +805,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
      * 切到设备回放
      */
     void switch2DevPlayback(long start) {
-        showLoadingDialog();
+        showVideoLoading();
         if (playType == 2) {
             cloudPlayDestroy();
         }
@@ -797,7 +818,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
      * 切到云端回放
      */
     void switch2CloudPlayback(long start, long end) {
-        showLoadingDialog();
+        showVideoLoading();
         if (playType != 2) {
             if (playType == 1) {
                 iotcClient.stopPlayback();//先停止设备回放
@@ -827,17 +848,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         if (type == qualityType) {
             return;
         }
-        qualityType = qualityType == 0 ? 1 : 0;
-        iotcClient.changeValue(qualityType);
-        if (qualityType == 0) {
-            tvQuality.setText(R.string.str_FHD);
-            tvQualityP.setText(R.string.str_FHD);
-            shortTip(R.string.tip_video_quality_fhd);
-        } else if (qualityType == 1) {
-            tvQuality.setText(R.string.str_HD);
-            tvQualityP.setText(R.string.str_HD);
-            shortTip(R.string.tip_video_quality_hd);
-        }
+        mPresenter.changeQuality(type, iotcClient);
     }
 
     /**
@@ -1306,7 +1317,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                     .addItemAction(new PopItemAction(R.string.str_HD,
                             PopItemAction.PopItemStyle.Normal, this::hdQualityClick))
                     .addItemAction(new PopItemAction(R.string.str_FHD,
-                            PopItemAction.PopItemStyle.Normal, this::sdQualityClick))
+                            PopItemAction.PopItemStyle.Normal, this::fhdQualityClick))
                     .create();
         }
         qualityPop.show();

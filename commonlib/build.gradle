@@ -144,7 +144,8 @@ dependencies {
     api 'com.amap.api:3dmap:6.9.4'
     api 'com.amap.api:search:6.9.2'
 
-    api 'com.github.xiaojinzi123.Component:component-impl:1.7.4'
+    api 'com.github.xiaojinzi123.Component:component-impl:1.7.5'
+    api 'com.meituan.android.walle:library:1.1.6' //美团多渠道打包
 
     //视频图片操作
     api 'com.github.wseemann:FFmpegMediaMetadataRetriever:1.0.14'

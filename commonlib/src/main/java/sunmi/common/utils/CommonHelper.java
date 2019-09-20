@@ -20,6 +20,7 @@ import android.view.Display;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import com.meituan.android.walle.WalleChannelReader;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xiaomi.mipush.sdk.MiPushClient;
 
@@ -30,6 +31,7 @@ import java.util.Locale;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
 import sunmi.common.base.BaseApplication;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.UserInfoBean;
 import sunmi.common.rpc.mqtt.MqttManager;
 import sunmi.common.utils.log.LogCat;
@@ -443,5 +445,11 @@ public class CommonHelper {
 //        MQTTManager.getInstance().disconnect();
         MqttManager.getInstance().disconnect();
     }
+
+    public static boolean isGooglePlay() {
+        return TextUtils.equals(WalleChannelReader.getChannel(BaseApplication.getInstance()),
+                CommonConstants.GOOGLE_PLAY);
+    }
+
 
 }
