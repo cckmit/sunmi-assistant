@@ -1,6 +1,7 @@
 package sunmi.common.base;
 
 import android.app.Activity;
+import android.content.res.Resources;
 
 import org.litepal.LitePalApplication;
 
@@ -26,6 +27,20 @@ public class BaseApplication extends LitePalApplication {
     public void onCreate() {
         super.onCreate();
         instance = this;
+    }
+
+    /**
+     * 重写 getResource 方法，禁止app字体大小跟随系统字体大小调节
+     */
+    @Override
+    public Resources getResources() {
+        Resources resources = super.getResources();
+        if (resources != null && resources.getConfiguration().fontScale != 1.0f) {
+            android.content.res.Configuration configuration = resources.getConfiguration();
+            configuration.fontScale = 1.0f;
+            resources.updateConfiguration(configuration, resources.getDisplayMetrics());
+        }
+        return resources;
     }
 
     public void addActivity(Activity activity) {
