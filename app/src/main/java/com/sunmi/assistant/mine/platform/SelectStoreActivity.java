@@ -90,7 +90,7 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
     public void complete(int saasExist, int shopId, String shopName) {
         if (SpUtils.isLoginSuccess()) {
             SpUtils.setSaasExist(1);
-            BaseNotification.newInstance().postNotificationName(CommonNotifications.refreshMainTabView);
+            BaseNotification.newInstance().postNotificationName(CommonNotifications.importShop);
             if (isLoginSuccessSwitchCompany) {
                 CommonHelper.saveCompanyShopInfo(companyId, companyName, 1, shopId, shopName);
                 BaseNotification.newInstance().postNotificationName(CommonNotifications.companySwitch);

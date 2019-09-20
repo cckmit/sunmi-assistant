@@ -29,7 +29,7 @@ public interface DashboardContract {
 
         void init();
 
-        void switchShopTo(int companyId, int shopId);
+        void reload();
 
         void switchPeriodTo(int period);
 

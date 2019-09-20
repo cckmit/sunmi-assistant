@@ -75,9 +75,9 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     @Override
-    public void switchShopTo(int companyId, int shopId) {
-        mCompanyId = companyId;
-        mShopId = shopId;
+    public void reload() {
+        mCompanyId = SpUtils.getCompanyId();
+        mShopId = SpUtils.getShopId();
         loadDataSource();
     }
 

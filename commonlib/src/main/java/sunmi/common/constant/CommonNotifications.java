@@ -9,7 +9,7 @@ public class CommonNotifications {
     public static final int netConnected = totalEvents++;         //网络连接
     public static final int ipcUpgrade = totalEvents++;           //ipc升级
     public static final int ipcUpgradeComplete = totalEvents++;   //ipc升级完成
-    public static final int refreshMainTabView = totalEvents++;   //刷新tab
+    public static final int importShop = totalEvents++;   //刷新tab
 
     public static final int shopNameChanged = totalEvents++;      //修改店铺名称
     public static final int shopSwitched = totalEvents++;         //店铺切换

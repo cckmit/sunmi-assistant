@@ -141,14 +141,14 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
     @Override
     public int[] getUnStickNotificationId() {
         return new int[]{NotificationConstant.netConnectedMainActivity,
-                CommonNotifications.refreshMainTabView};
+                CommonNotifications.importShop};
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (NotificationConstant.netConnectedMainActivity == id) {
             initIpc();
-        } else if (CommonNotifications.refreshMainTabView == id) {
+        } else if (CommonNotifications.importShop == id) {
             if (mTabHost.getChildCount() == 4) {
                 return;
             }

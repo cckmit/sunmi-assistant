@@ -5,6 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <View
+        android:id="@+id/view_dashboard_refresh_bg"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_300"
+        android:background="@color/color_303540"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_shop_title" />
+
     <cn.bingoogolapple.refreshlayout.BGARefreshLayout
         android:id="@+id/layout_dashboard_refresh"
         android:layout_width="0dp"
@@ -71,7 +80,7 @@
         android:id="@+id/group_dashboard_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="layout_shop_title,layout_dashboard_refresh" />
+        app:constraint_referenced_ids="layout_shop_title,layout_dashboard_refresh,view_dashboard_refresh_bg" />
 
 </android.support.constraint.ConstraintLayout>
 

@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshItem;
+import com.sunmi.ipc.rpc.IpcConstants;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -90,12 +91,14 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     private int mStatusBarHeight;
     private int mTopShopMenuHeight;
+    private ShopMenuPopupHelper mShopMenuPopupHelper;
 
     @AfterViews
     void init() {
         mPresenter = new DashboardPresenter();
         mPresenter.attachView(this);
         initView();
+        mContentGroup.setVisibility(View.INVISIBLE);
         showLoadingDialog();
         mPresenter.init();
     }
@@ -133,8 +136,9 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             return;
         }
         mShopMenuBg = ContextCompat.getDrawable(context, R.drawable.dashboard_bg_top);
+        mShopMenuPopupHelper = new ShopMenuPopupHelper(context, mContent, mOverlay);
         mShopMenu.setLayoutManager(new ShopMenuLayoutManager(context));
-        mShopMenu.setPopupHelper(new ShopMenuPopupHelper(context, mContent, mOverlay));
+        mShopMenu.setPopupHelper(mShopMenuPopupHelper);
         mShopMenuAdapter = new ShopMenuAdapter(context);
         mShopMenuAdapter.setOnItemClickListener((adapter, model, position) -> {
             if (SpUtils.getShopId() != model.getId()) {
@@ -226,7 +230,6 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @UiThread
     @Override
     public void setCards(List<BaseRefreshItem> data, int dataSource) {
-        hideLoadingDialog();
         mContentGroup.setVisibility(View.VISIBLE);
         mLayoutError.setVisibility(View.GONE);
         mDataSource = dataSource;
@@ -234,7 +237,6 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         if (mAdapter == null || data == null) {
             return;
         }
-        mAdapter.clearTypes();
         List<Object> list = new ArrayList<>(data.size());
         for (int i = 0, size = data.size(); i < size; i++) {
             BaseRefreshItem item = data.get(i);
@@ -242,6 +244,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             list.add(item.getModel());
         }
         mAdapter.setData(list);
+        hideLoadingDialog();
     }
 
     @Override
@@ -265,21 +268,27 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @Override
     public int[] getStickNotificationId() {
         return new int[]{
+                CommonNotifications.companySwitch,
+                CommonNotifications.companyNameChanged,
                 CommonNotifications.shopSwitched,
                 CommonNotifications.shopNameChanged,
-                CommonNotifications.companyNameChanged,
-                CommonNotifications.companySwitch
+                CommonNotifications.importShop,
+                IpcConstants.refreshIpcList,
         };
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (id == CommonNotifications.companySwitch
-                || id == CommonNotifications.shopSwitched) {
-            mPresenter.switchShopTo(SpUtils.getCompanyId(), SpUtils.getShopId());
-        } else if (id == CommonNotifications.shopNameChanged
                 || id == CommonNotifications.companyNameChanged) {
-            // TODO: Update name
+            mShopMenuPopupHelper.setCompanyName(SpUtils.getCompanyName());
+            mPresenter.init();
+        } else if (id == CommonNotifications.shopSwitched
+                || id == CommonNotifications.shopNameChanged) {
+            mPresenter.init();
+        } else if (id == IpcConstants.refreshIpcList
+                || id == CommonNotifications.importShop) {
+            mPresenter.reload();
         }
     }
 
