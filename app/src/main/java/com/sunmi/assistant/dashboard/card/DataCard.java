@@ -2,7 +2,6 @@ package com.sunmi.assistant.dashboard.card;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.constraint.Group;
 import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,6 +14,8 @@ import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.data.PaymentApi;
 import com.sunmi.assistant.data.response.OrderTotalAmountResp;
 import com.sunmi.assistant.data.response.OrderTotalCountResp;
+import com.sunmi.assistant.order.OrderListActivity_;
+import com.sunmi.assistant.order.model.OrderInfo;
 
 import java.util.Locale;
 
@@ -34,6 +35,17 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
 
     public DataCard(Context context, DashboardContract.Presenter presenter) {
         super(context, presenter);
+        addOnViewClickListener(R.id.layout_dashboard_main, (adapter, holder, v, model, position) -> {
+            if (!showTransactionData() && showConsumerData()) {
+                goToConsumerList(context);
+            } else {
+                goToOrderList(context);
+            }
+        });
+        addOnViewClickListener(R.id.layout_dashboard_volume, (adapter, holder, v, model, position)
+                -> goToOrderList(context));
+        addOnViewClickListener(R.id.layout_dashboard_consumer, (adapter, holder, v, model, position)
+                -> goToConsumerList(context));
     }
 
     @Override
@@ -176,10 +188,10 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
 
     @Override
     protected void showLoading(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-        Group main = holder.getView(R.id.group_dashboard_main);
-        Group volume = holder.getView(R.id.group_dashboard_volume);
-        Group consumer = holder.getView(R.id.group_dashboard_consumer);
-        Group rate = holder.getView(R.id.group_dashboard_rate);
+        View main = holder.getView(R.id.layout_dashboard_main);
+        View volume = holder.getView(R.id.layout_dashboard_volume);
+        View consumer = holder.getView(R.id.layout_dashboard_consumer);
+        View rate = holder.getView(R.id.layout_dashboard_rate);
         ImageView loading = holder.getView(R.id.iv_dashboard_loading);
         if (!showTransactionData() && showConsumerData()) {
             main.setVisibility(View.INVISIBLE);
@@ -219,10 +231,10 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
     }
 
     private void setupVisible(@NonNull BaseViewHolder<Model> holder, int period) {
-        Group main = holder.getView(R.id.group_dashboard_main);
-        Group volume = holder.getView(R.id.group_dashboard_volume);
-        Group consumer = holder.getView(R.id.group_dashboard_consumer);
-        Group rate = holder.getView(R.id.group_dashboard_rate);
+        View main = holder.getView(R.id.layout_dashboard_main);
+        View volume = holder.getView(R.id.layout_dashboard_volume);
+        View consumer = holder.getView(R.id.layout_dashboard_consumer);
+        View rate = holder.getView(R.id.layout_dashboard_rate);
         TextView title = holder.getView(R.id.tv_dashboard_title);
         TextView subtitle = holder.getView(R.id.tv_dashboard_subtitle);
         TextView volumeTitle = holder.getView(R.id.tv_dashboard_volume_title);
@@ -269,6 +281,19 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
             consumerSubtitle.setText(R.string.dashboard_last_month);
             rateSubtitle.setText(R.string.dashboard_last_month);
         }
+    }
+
+    private void goToOrderList(Context context) {
+        Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(getPeriod());
+        OrderListActivity_.intent(context)
+                .mTimeStart(periodTimestamp.first)
+                .mTimeEnd(periodTimestamp.second)
+                .mInitOrderType(OrderInfo.ORDER_TYPE_ALL)
+                .start();
+    }
+
+    private void goToConsumerList(Context context) {
+        // TODO: Consumer List
     }
 
     public static class Model extends BaseRefreshItem.BaseModel {
