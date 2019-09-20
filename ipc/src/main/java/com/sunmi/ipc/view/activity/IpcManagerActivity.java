@@ -642,8 +642,13 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         ivpCloud.setVisibility(type == 2 ? View.VISIBLE : View.GONE);
         videoView.setVisibility(type != 2 ? View.VISIBLE : View.GONE);
         ivLive.setVisibility(type != 0 ? View.VISIBLE : View.GONE);
-        tvQualityP.setClickable(type == 0);
-        tvQualityP.setTextColor(type == 0 ? ContextCompat.getColor(context, R.color.c_white)
+        setTextViewClickable(tvQuality, type == 0);
+        setTextViewClickable(tvQualityP, type == 0);
+    }
+
+    private void setTextViewClickable(TextView textView, boolean clickable) {
+        textView.setClickable(clickable);
+        textView.setTextColor(clickable ? ContextCompat.getColor(context, R.color.c_white)
                 : ContextCompat.getColor(context, R.color.white_40a));
     }
 
