@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string-array name="sunmi_devices" tools:ignore="ExtraTranslation">
+    <string-array name="sunmi_devices">
         <item>@string/sunmi_device_w1</item>
         <item>@string/sunmi_device_ss</item>
         <item>@string/sunmi_device_fs</item>
@@ -8,7 +8,12 @@
         <item>@string/sunmi_device_more</item>
     </string-array>
 
-    <string-array name="week_name" tools:ignore="ExtraTranslation">
+    <string-array name="sunmi_devices_google_play">
+        <item>@string/sunmi_device_w1</item>
+        <item>@string/sunmi_device_more</item>
+    </string-array>
+
+    <string-array name="week_name">
         <item>@string/ipc_setting_detection_day_monday</item>
         <item>@string/ipc_setting_detection_day_tuesday</item>
         <item>@string/ipc_setting_detection_day_wednesday</item>
