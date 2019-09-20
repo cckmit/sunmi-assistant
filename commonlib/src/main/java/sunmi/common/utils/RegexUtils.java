@@ -18,8 +18,14 @@ public class RegexUtils {
      * 198，199
      */
     public static boolean isChinaPhone(String mobiles) {
-        Pattern p = Pattern
-                .compile("^((13[0-9])|(14[57])|(15[^4,\\D])|(16[56])|(17[0-9])|(18[0-9])|(19[8-9]))\\d{8}$");
+        Pattern p;
+        if (CommonHelper.isGooglePlay()) {
+            p = Pattern
+                    .compile("^\\w+((-\\w+)|(.\\w+))*@[A-Za-z0-9]+((.|-)[A-Za-z0-9]+)*.[A-Za-z0-9]+$");
+        } else {
+            p = Pattern
+                    .compile("^((13[0-9])|(14[57])|(15[^4,\\D])|(16[56])|(17[0-9])|(18[0-9])|(19[8-9]))\\d{8}$");
+        }
         Matcher m = p.matcher(mobiles);
         return m.matches();
     }

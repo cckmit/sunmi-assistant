@@ -1,6 +1,8 @@
 package com.sunmi.assistant.mine;
 
 import android.text.TextUtils;
+import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sunmi.apmanager.constant.Constants;
@@ -25,6 +27,7 @@ import org.androidannotations.annotations.ViewById;
 import cn.bingoogolapple.badgeview.BGABadgeRelativeLayout;
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.constant.CommonNotifications;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StringHelper;
@@ -47,6 +50,14 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     TextView tvAccount;
     @ViewById(R.id.rlMsg)
     BGABadgeRelativeLayout rlMsg;
+    @ViewById(R.id.rlOrder)
+    RelativeLayout rlOrder;
+    @ViewById(R.id.rlAddress)
+    RelativeLayout rlAddress;
+    @ViewById(R.id.rlCoupon)
+    RelativeLayout rlCoupon;
+    @ViewById(R.id.rlHelp)
+    RelativeLayout rlHelp;
 
     @AfterViews
     void init() {
@@ -57,6 +68,12 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     }
 
     private void initView() {
+        if (CommonHelper.isGooglePlay()) {
+            rlOrder.setVisibility(View.GONE);
+            rlAddress.setVisibility(View.GONE);
+            rlCoupon.setVisibility(View.GONE);
+            rlHelp.setVisibility(View.GONE);
+        }
         initAvatar(false);
         setMsgBadge();
         initUsername();
