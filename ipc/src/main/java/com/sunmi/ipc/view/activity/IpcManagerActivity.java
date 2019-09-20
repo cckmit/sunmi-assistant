@@ -74,7 +74,6 @@ import sunmi.common.view.VerticalSeekBar;
 import sunmi.common.view.ViewHolder;
 import sunmi.common.view.bottompopmenu.BottomPopMenu;
 import sunmi.common.view.bottompopmenu.PopItemAction;
-import sunmi.common.view.dialog.LoadingDialog;
 
 /**
  * Description:
@@ -194,7 +193,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private List<VideoTimeSlotBean> listAp = new ArrayList<>();
     private List<VideoTimeSlotBean> listCloud = new ArrayList<>();
 
-    private LoadingDialog timeSlotsDialog;
     //竖屏切换高清
     private BottomPopMenu qualityPop;
 
@@ -509,6 +507,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         if (videoDecoder != null) {
             videoDecoder.setVideoData(videoBuffer);
         }
+        if (playType == 0) {
+            hideVideoLoading();
+        }
     }
 
     @Override
@@ -536,11 +537,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @Override
     public void getCloudTimeSlotFail() {
         if (listAp == null || listAp.size() == 0) {
-            LogCat.e(TAG, "88888888 aa");
-            timeSlotsHideProgress();
+            hideVideoLoading();
             switch2Live();//无ap且无cloud的时间列表
         } else {
-            LogCat.e(TAG, "88888888 bb");
             timeCanvasList(listAp); //ap时间列表>0且cloud列表=0
         }
     }
@@ -644,8 +643,13 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         ivpCloud.setVisibility(type == 2 ? View.VISIBLE : View.GONE);
         videoView.setVisibility(type != 2 ? View.VISIBLE : View.GONE);
         ivLive.setVisibility(type != 0 ? View.VISIBLE : View.GONE);
-        tvQualityP.setClickable(type == 0);
-        tvQualityP.setTextColor(type == 0 ? ContextCompat.getColor(context, R.color.c_white)
+        setTextViewClickable(tvQuality, type == 0);
+        setTextViewClickable(tvQualityP, type == 0);
+    }
+
+    private void setTextViewClickable(TextView textView, boolean clickable) {
+        textView.setClickable(clickable);
+        textView.setTextColor(clickable ? ContextCompat.getColor(context, R.color.c_white)
                 : ContextCompat.getColor(context, R.color.white_40a));
     }
 
@@ -955,11 +959,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         scalePanel.setVideoData(listAp);
         scalePanel.refresh();
         if (isFirstScroll && !isSelectedDate) {
-            LogCat.e(TAG, "11111 timeCanvasList isFirstScroll ok= " + scalePanel.getCurrentInterval());
             isFirstScroll = false;
             selectedTimeIsHaveVideo(selectedDate); //初始化左滑渲染及回放
         } else {
-            LogCat.e(TAG, "11111 timeCanvasList isFirstScroll no");
             if (isSelectedDate) {
                 selectedTimeIsHaveVideo(selectedDate);//滑动到选择日期
             } else {
@@ -967,7 +969,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             }
         }
         //渲染完成
-        timeSlotsHideProgress();
+        hideVideoLoading();
     }
 
     //选择日历日期回调
@@ -1128,25 +1130,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         }
     }
 
-    private void timeSlotsShowProgress() {
-        if (timeSlotsDialog == null) {
-            timeSlotsDialog = new LoadingDialog(this);
-            timeSlotsDialog.setLoadingContent(null);
-        }
-        timeSlotsDialog.show();
-    }
-
-    private void timeSlotsHideProgress() {
-        if (timeSlotsDialog != null) {
-            timeSlotsDialog.dismiss();
-        }
-        //开启控件隐藏倒计时
-        startTimer();
-    }
-
     //发送请求获取组合时间轴
     private void refreshTimeSlotVideoList() {
-        timeSlotsShowProgress();
+        showVideoLoading();
         listAp.clear();
         getDeviceTimeSlots(threeDaysBeforeSeconds, currentDateSeconds);
     }
@@ -1261,15 +1247,16 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     @Override
     public void didMoveToDate(String date, long timeStamp) {
-        LogCat.e(TAG, "11111 didMoveToDate, " + date + ",  " + timeStamp);
-        handler.postDelayed(() -> tvTimeScroll.setVisibility(View.GONE), 500);
-        if (timeStamp > System.currentTimeMillis() / 1000) {
+        if (!tvTimeScroll.isShown()) {
+            handler.postDelayed(() -> tvTimeScroll.setVisibility(View.GONE), 500);
+        }
+        if (timeStamp > System.currentTimeMillis() / 1000) {//超过当前时间
             shortTip(getString(R.string.ipc_time_over_current_time));
-            if (playType == 0) {//超过当前时间--当前处于直播
+            if (playType == 0) {//当前处于直播
                 scrollCurrentLive();
-                return;
+            } else {//当前处于回放
+                switch2Live();
             }
-            switch2Live(); //超过当前时间--当前处于回放
             return;
         }
         if (timeStamp < threeDaysBeforeSeconds) {

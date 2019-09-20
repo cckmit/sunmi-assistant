@@ -190,10 +190,12 @@ public class ZFTimeLine extends View {
                 moveStartX = event.getX();
             }
             break;
+            case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP: {
                 //拖动结束  这里应该有Bug没有区分移动可缩放状态 不过影响不大
                 if (listener != null) {
-                    listener.didMoveToDate(formatterProject.format(currentInterval * 1000), currentInterval);
+                    listener.didMoveToDate(formatterProject.format(currentInterval * 1000),
+                            currentInterval);
                 }
             }
             break;

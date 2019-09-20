@@ -64,7 +64,9 @@ import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.AdListBean;
 import sunmi.common.model.AdListResp;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.sunmicall.ResponseBean;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
@@ -120,7 +122,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         }
         initViews();
         loadData();
-        startTimer();
+        if (!CommonHelper.isGooglePlay()) {
+            startTimer();
+        }
     }
 
     protected void initViews() {
@@ -155,8 +159,10 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     private void loadData() {
         mPresenter.getBannerList();
         mPresenter.getRouterList();
-        mPresenter.getIpcList();
-        mPresenter.getPrinterList();
+        if (!CommonHelper.isGooglePlay()) {
+            mPresenter.getIpcList();
+            mPresenter.getPrinterList();
+        }
     }
 
     @Override
@@ -229,7 +235,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @Override
     public void unbindIpcSuccess(int code, String msg, Object data) {
-        mPresenter.getIpcList();
+        BaseNotification.newInstance().postNotificationName(IpcConstants.refreshIpcList);
     }
 
     @Override
@@ -333,7 +339,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         return new int[]{
                 NotificationConstant.bindRouterChanged,
                 NotificationConstant.apPostStatus, NotificationConstant.apStatusException,
-                NotificationConstant.checkApPassword, IpcConstants.refreshIpcList,
+                NotificationConstant.checkApPassword,
                 NotificationConstant.checkLogin, NotificationConstant.apisConfig,
                 NotificationConstant.checkLoginAgain, CommonConstants.tabDevice,
                 com.sunmi.cloudprinter.constant.Constants.NOTIFICATION_PRINTER_ADDED
@@ -345,7 +351,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         return new int[]{CommonNotifications.shopSwitched, CommonNotifications.netConnected,
                 CommonNotifications.netDisconnection, NotificationConstant.updateConnectComplete,
                 NotificationConstant.connectedTosunmiDevice, NotificationConstant.unBindRouterChanged,
-                CommonNotifications.ipcUpgradeComplete, CommonNotifications.ipcUpgrade,
+                CommonNotifications.ipcUpgradeComplete, CommonNotifications.ipcUpgrade, IpcConstants.refreshIpcList,
                 CommonNotifications.companyNameChanged, CommonNotifications.companySwitch};
     }
 

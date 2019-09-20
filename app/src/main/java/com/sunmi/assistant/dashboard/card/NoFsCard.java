@@ -11,7 +11,10 @@ import com.sunmi.assistant.dashboard.DashboardContract;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.rpc.retrofit.BaseResponse;
+import sunmi.common.utils.SpUtils;
+import sunmi.common.view.activity.StartConfigSMDeviceActivity_;
 
 /**
  * @author yinhui
@@ -33,6 +36,12 @@ public class NoFsCard extends BaseRefreshItem<NoFsCard.Model, Object> {
         this.mContentBg = new GradientDrawable();
         this.mContentBg.setCornerRadii(new float[]{radius, radius, radius, radius, radius, radius, radius, radius});
         this.isInit = true;
+        addOnViewClickListener(R.id.btn_dashboard_add, (adapter, holder, v, model, position) -> {
+            StartConfigSMDeviceActivity_.intent(context)
+                    .deviceType(CommonConstants.TYPE_IPC_FS)
+                    .shopId(SpUtils.getShopId() + "")
+                    .start();
+        });
     }
 
     public void setIsAllEmpty(boolean isAllEmpty) {
