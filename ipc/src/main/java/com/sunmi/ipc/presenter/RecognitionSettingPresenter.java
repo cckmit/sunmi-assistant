@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.contract.RecognitionSettingContract;
 import com.sunmi.ipc.rpc.IPCCall;
-import com.sunmi.ipc.rpc.IpcConstants;
+import com.sunmi.ipc.rpc.OpcodeConstants;
 import com.sunmi.ipc.setting.entity.CameraConfig;
 
 import sunmi.common.base.BasePresenter;
@@ -34,12 +34,12 @@ public class RecognitionSettingPresenter extends BasePresenter<RecognitionSettin
     @Override
     public void init(SunmiDevice device) {
         this.mDevice = device;
-        BaseNotification.newInstance().addStickObserver(this, IpcConstants.fsGetStatus);
-        BaseNotification.newInstance().addStickObserver(this, IpcConstants.fsAutoFocus);
-        BaseNotification.newInstance().addStickObserver(this, IpcConstants.fsZoom);
-        BaseNotification.newInstance().addStickObserver(this, IpcConstants.fsFocus);
-        BaseNotification.newInstance().addStickObserver(this, IpcConstants.fsReset);
-        BaseNotification.newInstance().addStickObserver(this, IpcConstants.fsSetLine);
+        BaseNotification.newInstance().addStickObserver(this, OpcodeConstants.fsGetStatus);
+        BaseNotification.newInstance().addStickObserver(this, OpcodeConstants.fsAutoFocus);
+        BaseNotification.newInstance().addStickObserver(this, OpcodeConstants.fsZoom);
+        BaseNotification.newInstance().addStickObserver(this, OpcodeConstants.fsFocus);
+        BaseNotification.newInstance().addStickObserver(this, OpcodeConstants.fsReset);
+        BaseNotification.newInstance().addStickObserver(this, OpcodeConstants.fsSetLine);
     }
 
     @Override
@@ -157,7 +157,7 @@ public class RecognitionSettingPresenter extends BasePresenter<RecognitionSettin
             return;
         }
         switch (id) {
-            case IpcConstants.fsGetStatus:
+            case OpcodeConstants.fsGetStatus:
                 this.mConfig = new Gson().fromJson(res.getResult().toString(), CameraConfig.class);
                 this.mBaseFocus = mConfig.getCurrentFocus();
                 this.mZoomGap = mConfig.getMaxZoom() / 10;
@@ -165,21 +165,21 @@ public class RecognitionSettingPresenter extends BasePresenter<RecognitionSettin
                     mView.updateViewsStepTo(RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM);
                 }
                 break;
-            case IpcConstants.fsAutoFocus:
+            case OpcodeConstants.fsAutoFocus:
                 this.mConfig = new Gson().fromJson(res.getResult().toString(), CameraConfig.class);
                 this.mBaseFocus = mConfig.getCurrentFocus();
                 break;
-            case IpcConstants.fsZoom:
-            case IpcConstants.fsReset:
+            case OpcodeConstants.fsZoom:
+            case OpcodeConstants.fsReset:
                 this.mConfig = new Gson().fromJson(res.getResult().toString(), CameraConfig.class);
                 this.mBaseFocus = mConfig.getCurrentFocus();
                 updateZoomBtnEnable();
                 break;
-            case IpcConstants.fsFocus:
+            case OpcodeConstants.fsFocus:
                 this.mConfig = new Gson().fromJson(res.getResult().toString(), CameraConfig.class);
                 updateFocusBtnEnable();
                 break;
-            case IpcConstants.fsSetLine:
+            case OpcodeConstants.fsSetLine:
                 if (isViewAttached()) {
                     mView.complete();
                 }
@@ -205,12 +205,12 @@ public class RecognitionSettingPresenter extends BasePresenter<RecognitionSettin
     @Override
     public void detachView() {
         super.detachView();
-        BaseNotification.newInstance().removeObserver(this, IpcConstants.fsGetStatus);
-        BaseNotification.newInstance().removeObserver(this, IpcConstants.fsAutoFocus);
-        BaseNotification.newInstance().removeObserver(this, IpcConstants.fsZoom);
-        BaseNotification.newInstance().removeObserver(this, IpcConstants.fsFocus);
-        BaseNotification.newInstance().removeObserver(this, IpcConstants.fsReset);
-        BaseNotification.newInstance().removeObserver(this, IpcConstants.fsSetLine);
+        BaseNotification.newInstance().removeObserver(this, OpcodeConstants.fsGetStatus);
+        BaseNotification.newInstance().removeObserver(this, OpcodeConstants.fsAutoFocus);
+        BaseNotification.newInstance().removeObserver(this, OpcodeConstants.fsZoom);
+        BaseNotification.newInstance().removeObserver(this, OpcodeConstants.fsFocus);
+        BaseNotification.newInstance().removeObserver(this, OpcodeConstants.fsReset);
+        BaseNotification.newInstance().removeObserver(this, OpcodeConstants.fsSetLine);
     }
 
 }

@@ -8,10 +8,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.IpcConfiguringContract;
 import com.sunmi.ipc.model.IpcListResp;
 import com.sunmi.ipc.presenter.IpcConfiguringPresenter;
-import com.sunmi.ipc.rpc.IpcConstants;
+import com.sunmi.ipc.rpc.OpcodeConstants;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -165,7 +166,7 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{IpcConstants.getIpcToken, IpcConstants.bindIpc};
+        return new int[]{OpcodeConstants.getIpcToken, OpcodeConstants.bindIpc};
     }
 
     @Override
@@ -174,7 +175,7 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
         ResponseBean res = (ResponseBean) args[0];
         if (TextUtils.equals(res.getErrCode(), RpcErrorCode.RPC_COMMON_ERROR + "")) {
             configFailDialog(R.string.tip_set_fail, R.string.str_bind_net_error);
-        } else if (id == IpcConstants.bindIpc) {
+        } else if (id == OpcodeConstants.bindIpc) {
             try {
                 setDeviceStatus(res.getResult().getString("sn"), res.getDataErrCode());
             } catch (JSONException e) {

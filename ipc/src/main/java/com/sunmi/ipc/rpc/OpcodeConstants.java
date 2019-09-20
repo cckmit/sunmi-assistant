@@ -4,12 +4,7 @@ package com.sunmi.ipc.rpc;
  * Description:
  * Created by bruce on 2019/3/29.
  */
-public class IpcConstants {
-
-    private static int totalEvents = 0x3800;
-    public static final int ipcDiscovered = totalEvents++;
-    public static final int refreshIpcList = totalEvents++;
-    public static final int getIpcSettingMessage = totalEvents++;
+public class OpcodeConstants {
 
     public static final int getWifiList = 0x3118;
     public static final int setIPCWifi = 0x3116;

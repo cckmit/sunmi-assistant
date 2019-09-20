@@ -19,7 +19,7 @@ import com.sunmi.ipc.contract.IpcSettingWiFiContract;
 import com.sunmi.ipc.model.WifiListResp;
 import com.sunmi.ipc.presenter.IpcSettingWifiPresenter;
 import com.sunmi.ipc.rpc.IPCCall;
-import com.sunmi.ipc.rpc.IpcConstants;
+import com.sunmi.ipc.rpc.OpcodeConstants;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -199,7 +199,7 @@ public class IpcSettingWiFiActivity extends BaseMvpActivity<IpcSettingWifiPresen
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{IpcConstants.getWifiList, IpcConstants.setIPCWifi};
+        return new int[]{OpcodeConstants.getWifiList, OpcodeConstants.setIPCWifi};
     }
 
     @Override
@@ -209,9 +209,9 @@ public class IpcSettingWiFiActivity extends BaseMvpActivity<IpcSettingWifiPresen
         ResponseBean res = (ResponseBean) args[0];
         if (TextUtils.equals(res.getErrCode(), RpcErrorCode.RPC_COMMON_ERROR + "")) {
             netExceptionView(true);
-        } else if (id == IpcConstants.getWifiList) {
+        } else if (id == OpcodeConstants.getWifiList) {
             getWifiList(res);
-        } else if (id == IpcConstants.setIPCWifi) {
+        } else if (id == OpcodeConstants.setIPCWifi) {
             //LogCat.e(TAG, "1111  33=" + res.getResult());
         }
     }
@@ -283,6 +283,10 @@ public class IpcSettingWiFiActivity extends BaseMvpActivity<IpcSettingWifiPresen
                     public void onConfirmClick(InputDialog dialog, String input) {
                         if (TextUtils.isEmpty(input)) {
                             shortTip(R.string.str_text_password_no_null);
+                            return;
+                        }
+                        if (input.length() < 8 || input.length() > 64) {
+                            shortTip(R.string.tip_wifi_psw_length_inconformity);
                             return;
                         }
                         mPassword = input;

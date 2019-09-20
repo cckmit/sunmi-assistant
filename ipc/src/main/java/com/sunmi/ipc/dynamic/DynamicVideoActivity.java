@@ -98,10 +98,14 @@ public class DynamicVideoActivity extends BaseActivity implements
     RelativeLayout rlBottomPanel;
     @ViewById(resName = "tv_tip")
     TextView tvTip;
+    @ViewById(resName = "tv_fail_tip")
+    TextView tvFailTip;
+    @ViewById(resName = "tv_retry")
+    TextView tvRetry;
+
     @Extra
-//    String url;
-    //    String url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
-            String url = "http://test.cdn.sunmi.com/VIDEO/IPC/f4c28c287dff0e0656e00192450194e76f4863f80ca0517a135925ebc7828104";
+    String url;
+    //            String url = "http://test.cdn.sunmi.com/VIDEO/IPC/f4c28c287dff0e0656e00192450194e76f4863f80ca0517a135925ebc7828104";
     @Extra
     String deviceModel;
 
@@ -118,6 +122,7 @@ public class DynamicVideoActivity extends BaseActivity implements
      * 音量
      */
     private VolumeHelper volumeHelper = null;
+    private int bufferingUpdate;
     /**
      * 消息处理
      */
@@ -190,7 +195,12 @@ public class DynamicVideoActivity extends BaseActivity implements
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_PERMISSION_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                showLoadingDialog();
                 initVideoPlay();
+            } else {
+                //未授权
+                requestPermissionsFailView();
+                timeoutStop();
             }
         }
     }
@@ -199,8 +209,18 @@ public class DynamicVideoActivity extends BaseActivity implements
      * 初始化播放
      */
     private void initVideoPlay() {
-        iVideoPlayer.load(url);
-        setVideoListener();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                iVideoPlayer.load(url);
+                setVideoListener();
+                //初始化参数
+                isPaused = false;
+                ibPlay.setBackgroundResource(R.mipmap.pause_normal);
+                sbBar.setProgress(0);
+                tvCurrentPlayTime.setText(iVideoPlayer.generateTime(0));
+            }
+        }, 300);
     }
 
     /**
@@ -268,7 +288,7 @@ public class DynamicVideoActivity extends BaseActivity implements
 
     @Click(resName = "ib_play")
     void onPlayClick() {
-        if (iVideoPlayer == null && sbBar.getProgress() >= iVideoPlayer.getDuration()) {
+        if (iVideoPlayer == null || sbBar.getProgress() >= iVideoPlayer.getDuration()) {
             return;
         }
         ibPlay.setBackgroundResource(isPaused ? R.mipmap.pause_normal : R.mipmap.play_normal);
@@ -313,7 +333,7 @@ public class DynamicVideoActivity extends BaseActivity implements
             } else {
                 generateTime = (Long) obj;
             }
-            LogCat.e(TAG, "dur=" + iVideoPlayer.getDuration() + ", max=" + sbBar.getMax() + ", obj=" + obj);
+            LogCat.e(TAG, "kkk dur=" + iVideoPlayer.getDuration() + ", max=" + sbBar.getMax() + ", obj=" + obj);
             sbBar.setProgress(progress);
             tvCurrentPlayTime.setText(iVideoPlayer.generateTime(generateTime));
         }
@@ -326,15 +346,20 @@ public class DynamicVideoActivity extends BaseActivity implements
         llPlayFail.setVisibility(View.VISIBLE);
     }
 
-    private void isShowBottomView(boolean hasShow) {
+    private void isShowBottomView() {
         iVideoPlayer.setVisibility(View.VISIBLE);
         llPlayFail.setVisibility(View.GONE);
-        if (hasShow) {
-            rlBottomPanel.setVisibility(View.VISIBLE);
-        } else {
-            rlBottomPanel.setVisibility(View.GONE);
-        }
+        rlBottomPanel.setVisibility(View.VISIBLE);
     }
+
+    private void requestPermissionsFailView() {
+        rlBottomPanel.setVisibility(View.GONE);
+        iVideoPlayer.setVisibility(View.GONE);
+        llPlayFail.setVisibility(View.VISIBLE);
+        tvRetry.setVisibility(View.GONE);
+        tvFailTip.setText(R.string.ipc_dynamic_request_external_storage);
+    }
+
 
     /**
      * 缓存状态
@@ -343,6 +368,7 @@ public class DynamicVideoActivity extends BaseActivity implements
     public void onBufferingUpdate(IMediaPlayer iMediaPlayer, int i) {
         LogCat.e(TAG, "onBufferingUpdate i=" + i);
         if (iVideoPlayer != null) {
+            bufferingUpdate = i;
             int onBufferingProgress;
             if (i >= BUFFERING_PROGRESS) {
                 onBufferingProgress = (int) iVideoPlayer.getDuration();
@@ -358,7 +384,6 @@ public class DynamicVideoActivity extends BaseActivity implements
      **/
     @Override
     public void onCompletion(IMediaPlayer iMediaPlayer) {
-        LogCat.e(TAG, "onCompletion");
         if (iVideoPlayer != null) {
             isPaused = true;
             ibPlay.setBackgroundResource(R.mipmap.play_normal);
@@ -366,8 +391,12 @@ public class DynamicVideoActivity extends BaseActivity implements
         if (mHandler != null) {
             mHandler.removeMessages(MESSAGE_SHOW_PROGRESS);
         }
-        sbBar.setProgress(sbBar.getMax());
-        tvCurrentPlayTime.setText(iVideoPlayer.generateTime(sbBar.getMax()));
+        if (bufferingUpdate == 0) {
+            errorView();
+        } else {
+            sbBar.setProgress(sbBar.getMax());
+            tvCurrentPlayTime.setText(iVideoPlayer.generateTime(sbBar.getMax()));
+        }
     }
 
     /**
@@ -391,11 +420,13 @@ public class DynamicVideoActivity extends BaseActivity implements
     public void onPrepared(IMediaPlayer iMediaPlayer) {
         LogCat.e(TAG, "onPrepared");
         if (iVideoPlayer != null) {
-            isShowBottomView(true);
+            isShowBottomView();
             hideLoadingDialog();
             timeoutStop();
-            initTakeScreenShot();
             iVideoPlayer.startVideo();
+            if (!isInitTakeScreenShot) {
+                initTakeScreenShot();
+            }
             //设置seekBar的最大限度值，当前视频的总时长（毫秒）
             long duration = iVideoPlayer.getDuration();
             //不足一秒补一秒
@@ -406,8 +437,7 @@ public class DynamicVideoActivity extends BaseActivity implements
             //视频总时长
             tvCountPlayTime.setText(Objects.requireNonNull(iVideoPlayer).generateTime(duration));
             //发送当前播放时间点通知
-            Message message = Message.obtain(mHandler, MESSAGE_SHOW_PROGRESS, iVideoPlayer.getCurrentPosition());
-            mHandler.sendMessageDelayed(message, DELAY_MILLIS);
+            mHandler.sendEmptyMessageDelayed(MESSAGE_SHOW_PROGRESS, DELAY_MILLIS);
         }
     }
 
@@ -416,7 +446,6 @@ public class DynamicVideoActivity extends BaseActivity implements
      **/
     @Override
     public void onSeekComplete(IMediaPlayer iMediaPlayer) {
-        LogCat.e(TAG, "onSeekComplete");
     }
 
     /**
@@ -444,16 +473,16 @@ public class DynamicVideoActivity extends BaseActivity implements
      */
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-        iVideoPlayer.seekTo(seekBar.getProgress());
-        if (iVideoPlayer != null && !iVideoPlayer.isPlaying()) {
-            iVideoPlayer.startVideo();
-            isPaused = false;
-            ibPlay.setBackgroundResource(R.mipmap.pause_normal);
+        if (iVideoPlayer != null) {
+            iVideoPlayer.seekTo(seekBar.getProgress());
+            if (!iVideoPlayer.isPlaying()) {
+                iVideoPlayer.startVideo();
+                isPaused = false;
+                ibPlay.setBackgroundResource(R.mipmap.pause_normal);
+            }
+            isDragging = false;
+            mHandler.sendEmptyMessageDelayed(MESSAGE_SHOW_PROGRESS, DELAY_MILLIS);
         }
-        mHandler.removeMessages(MESSAGE_SHOW_PROGRESS);
-        isDragging = false;
-        //拖动停止后发送通知
-        mHandler.sendEmptyMessageDelayed(MESSAGE_SHOW_PROGRESS, DELAY_MILLIS);
     }
 
     private void timeoutStop() {
@@ -464,7 +493,9 @@ public class DynamicVideoActivity extends BaseActivity implements
     protected void onDestroy() {
         super.onDestroy();
         timeoutStop();
-        mHandler.removeCallbacksAndMessages(null);
+        if (mHandler != null) {
+            mHandler.removeCallbacksAndMessages(null);
+        }
     }
 
     @Override
