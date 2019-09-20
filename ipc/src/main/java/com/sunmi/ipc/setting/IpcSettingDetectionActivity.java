@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.rpc.IPCCall;
-import com.sunmi.ipc.rpc.IpcConstants;
+import com.sunmi.ipc.rpc.OpcodeConstants;
 import com.sunmi.ipc.setting.entity.DetectionConfig;
 
 import org.androidannotations.annotations.AfterViews;
@@ -166,7 +166,7 @@ public class IpcSettingDetectionActivity extends BaseActivity {
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{IpcConstants.setIpcDetection};
+        return new int[]{OpcodeConstants.setIpcDetection};
     }
 
     @Override
@@ -177,7 +177,7 @@ public class IpcSettingDetectionActivity extends BaseActivity {
             return;
         }
         ResponseBean res = (ResponseBean) args[0];
-        if (id == IpcConstants.setIpcDetection) {
+        if (id == OpcodeConstants.setIpcDetection) {
             hideLoadingDialog();
             if (res.getDataErrCode() == 1) {
                 shortTip(R.string.tip_set_complete);

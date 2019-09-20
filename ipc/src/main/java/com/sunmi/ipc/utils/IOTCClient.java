@@ -151,11 +151,11 @@ public class IOTCClient {
         }
         if (avIndex < 0) return;
         AVAPIs.avClientStop(avIndex);
-        AVAPIs.avClientExit(SID, 1);
         LogCat.e(TAG, "avClientStop OK");
+        AVAPIs.avClientExit(SID, 1);
+        AVAPIs.avDeInitialize();
         IOTCAPIs.IOTC_Session_Close(SID);
         LogCat.e(TAG, "IOTC_Session_Close OK");
-        AVAPIs.avDeInitialize();
         IOTCAPIs.IOTC_DeInitialize();
         isRunning = false;
         LogCat.e(TAG, "StreamClient exit...");

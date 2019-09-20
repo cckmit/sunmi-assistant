@@ -13,7 +13,7 @@ import com.sunmi.ipc.R;
 import com.sunmi.ipc.model.IpcListResp;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcCloudApi;
-import com.sunmi.ipc.rpc.IpcConstants;
+import com.sunmi.ipc.rpc.OpcodeConstants;
 import com.sunmi.ipc.setting.RecognitionSettingActivity_;
 
 import org.androidannotations.annotations.AfterViews;
@@ -141,7 +141,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
 
     @Override
     public int[] getUnStickNotificationId() {
-        return new int[]{IpcConstants.getSdStatus};
+        return new int[]{OpcodeConstants.getSdStatus};
     }
 
     @Override
@@ -151,7 +151,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
             return;
         }
         ResponseBean res = (ResponseBean) args[0];
-        if (IpcConstants.getSdStatus == id) {
+        if (OpcodeConstants.getSdStatus == id) {
             try {
                 if (res.getDataErrCode() == 1) {
                     int status = res.getResult().getInt("sd_status_code");

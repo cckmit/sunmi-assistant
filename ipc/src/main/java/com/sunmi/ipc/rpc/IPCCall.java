@@ -2,6 +2,7 @@ package com.sunmi.ipc.rpc;
 
 import android.content.Context;
 
+import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.utils.JsonUtils;
 
 import org.json.JSONArray;
@@ -38,7 +39,7 @@ public class IPCCall extends BaseIpcApi {
 
     //获取IPC无线还是有线
     public void getWifiList(Context context, String url) {
-        int opCode = IpcConstants.getWifiList;
+        int opCode = OpcodeConstants.getWifiList;
         RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                 "0x" + Integer.toHexString(opCode), new JSONObject());
         new IPCLocalApi(url).post(context, "", requestBean.getMsgId(), opCode, requestBean.serialize());
@@ -53,7 +54,7 @@ public class IPCCall extends BaseIpcApi {
             object.put("ssid", ssid);
             object.put("key_mgmt", keyMgmt);
             object.put("key", key);
-            int opCode = IpcConstants.setIPCWifi;
+            int opCode = OpcodeConstants.setIPCWifi;
             RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                     "0x" + Integer.toHexString(opCode), object);
             new IPCLocalApi(url).post(context, "", requestBean.getMsgId(), opCode, requestBean.serialize());
@@ -64,7 +65,7 @@ public class IPCCall extends BaseIpcApi {
 
     //获取IPC无线关联前端AP的状态
     public void getApStatus(Context context, String url) {
-        int opCode = IpcConstants.getApStatus;
+        int opCode = OpcodeConstants.getApStatus;
         RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                 "0x" + Integer.toHexString(opCode), new JSONObject());
         new IPCLocalApi(url).post(context, "", requestBean.getMsgId(), opCode, requestBean.serialize());
@@ -72,7 +73,7 @@ public class IPCCall extends BaseIpcApi {
 
     //获取ipc当前连接的AP信息
     public void getIpcConnectApMsg(Context context, String url) {
-        int opCode = IpcConstants.getIpcConnectApMsg;
+        int opCode = OpcodeConstants.getIpcConnectApMsg;
         RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                 "0x" + Integer.toHexString(opCode), new JSONObject());
         new IPCLocalApi(url).post(context, "", requestBean.getMsgId(), opCode, requestBean.serialize());
@@ -80,7 +81,7 @@ public class IPCCall extends BaseIpcApi {
 
     //获取IPC无线还是有线
     public void getIsWire(Context context, String url) {
-        int opCode = IpcConstants.getIsWire;
+        int opCode = OpcodeConstants.getIsWire;
         RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                 "0x" + Integer.toHexString(opCode), new JSONObject());
         new IPCLocalApi(url).post(context, "", requestBean.getMsgId(), opCode, requestBean.serialize());
@@ -88,7 +89,7 @@ public class IPCCall extends BaseIpcApi {
 
     //获取token,绑定ipc使用
     public void getToken(Context context, String url) {
-        int opCode = IpcConstants.getIpcToken;
+        int opCode = OpcodeConstants.getIpcToken;
         RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                 "0x" + Integer.toHexString(opCode), new JSONObject());
         new IPCLocalApi(url).post(context, "", requestBean.getMsgId(), opCode, requestBean.serialize());
@@ -98,7 +99,7 @@ public class IPCCall extends BaseIpcApi {
      * 获取SD卡状态信息
      */
     public void getSdState(Context context, String ip) {
-        int opCode = IpcConstants.getSdStatus;
+        int opCode = OpcodeConstants.getSdStatus;
         RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                 "0x" + Integer.toHexString(opCode), new JSONObject());
         new IPCLocalApi(ip).post(context, "", requestBean.getMsgId(), opCode, requestBean.serialize());
@@ -113,7 +114,7 @@ public class IPCCall extends BaseIpcApi {
         try {
             JSONObject object = new JSONObject();
             object.put("zoom", zoom);
-            int opCode = IpcConstants.fsZoom;
+            int opCode = OpcodeConstants.fsZoom;
             RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                     "0x" + Integer.toHexString(opCode), object);
             new IPCLocalApi(ip).postRouterTimeout("", opCode, requestBean.serialize(), 20);
@@ -131,7 +132,7 @@ public class IPCCall extends BaseIpcApi {
         try {
             JSONObject object = new JSONObject();
             object.put("focus", focus);
-            int opCode = IpcConstants.fsFocus;
+            int opCode = OpcodeConstants.fsFocus;
             RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                     "0x" + Integer.toHexString(opCode), object);
             new IPCLocalApi(ip).postRouterTimeout("", opCode, requestBean.serialize(), 20);
@@ -161,7 +162,7 @@ public class IPCCall extends BaseIpcApi {
             jsonArray.put(x);
             jsonArray.put(y);
             object.put("area", jsonArray);
-            int opCode = IpcConstants.fsAutoFocus;
+            int opCode = OpcodeConstants.fsAutoFocus;
             RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                     "0x" + Integer.toHexString(opCode), object);
             new IPCLocalApi(ip).postRouterTimeout("", opCode, requestBean.serialize(), 20);
@@ -182,7 +183,7 @@ public class IPCCall extends BaseIpcApi {
         try {
             JSONObject object = new JSONObject();
             object.put("target", target);
-            int opCode = IpcConstants.fsReset;
+            int opCode = OpcodeConstants.fsReset;
             RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                     "0x" + Integer.toHexString(opCode), object);
             new IPCLocalApi(ip).postRouterTimeout("", opCode, requestBean.serialize(), 20);
@@ -195,7 +196,7 @@ public class IPCCall extends BaseIpcApi {
      * 获取设备信息
      */
     public void fsGetStatus(String ip) {
-        int opCode = IpcConstants.fsGetStatus;
+        int opCode = OpcodeConstants.fsGetStatus;
         RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                 "0x" + Integer.toHexString(opCode), new JSONObject());
         new IPCLocalApi(ip).postRouterTimeout("", opCode, requestBean.serialize(), 20);
@@ -216,7 +217,7 @@ public class IPCCall extends BaseIpcApi {
             object.put("end_x", end[0]);
             object.put("end_y", end[1]);
             object.put("resolution", 0);
-            int opCode = IpcConstants.fsSetLine;
+            int opCode = OpcodeConstants.fsSetLine;
             RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                     "0x" + Integer.toHexString(opCode), object);
             new IPCLocalApi(ip).postRouterTimeout("", opCode, requestBean.serialize(), 20);
@@ -234,7 +235,7 @@ public class IPCCall extends BaseIpcApi {
         try {
             JSONObject object = new JSONObject();
             object.put("set", set);
-            post(context, "", IpcConstants.fsIrMode, object);
+            post(context, "", OpcodeConstants.fsIrMode, object);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -254,7 +255,7 @@ public class IPCCall extends BaseIpcApi {
             object.put("sn", sn);
             object.put("bin_version", version);
             object.put("url", url);
-            int opCode = IpcConstants.ipcUpgrade;
+            int opCode = OpcodeConstants.ipcUpgrade;
             RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                     "0x" + Integer.toHexString(opCode), object);
             new IpcRemoteSettingApi().post(context, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
@@ -274,7 +275,7 @@ public class IPCCall extends BaseIpcApi {
         try {
             JSONObject object = new JSONObject();
             object.put("sn", sn);
-            int opCode = IpcConstants.getIpcNightIdeRotation;
+            int opCode = OpcodeConstants.getIpcNightIdeRotation;
             RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                     "0x" + Integer.toHexString(opCode), object);
             post(context, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
@@ -300,7 +301,7 @@ public class IPCCall extends BaseIpcApi {
             object.put("wdr_mode", wdrMode);
             object.put("led_indicator", ledIndicator);
             object.put("rotation", rotation);
-            int opCode = IpcConstants.setIpcNightIdeRotation;
+            int opCode = OpcodeConstants.setIpcNightIdeRotation;
             RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                     "0x" + Integer.toHexString(opCode), object);
             post(context, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
@@ -320,7 +321,7 @@ public class IPCCall extends BaseIpcApi {
         try {
             JSONObject object = new JSONObject();
             object.put("sn", sn);
-            int opCode = IpcConstants.getIpcDetection;
+            int opCode = OpcodeConstants.getIpcDetection;
             RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                     "0x" + Integer.toHexString(opCode), object);
             post(context, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
@@ -352,7 +353,7 @@ public class IPCCall extends BaseIpcApi {
             object.put("weekday", weekday);
             object.put("start_time", startTime);
             object.put("stop_time", stopTime);
-            int opCode = IpcConstants.setIpcDetection;
+            int opCode = OpcodeConstants.setIpcDetection;
             RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                     "0x" + Integer.toHexString(opCode), object);
             post(context, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
@@ -375,8 +376,8 @@ public class IPCCall extends BaseIpcApi {
             JSONObject object = new JSONObject();
             object.put("sn", sn);
             List<JSONObject> list = new ArrayList<>();
-            list.add(JsonUtils.getRequest("0x" + Integer.toHexString(IpcConstants.getIpcDetection), object));
-            list.add(JsonUtils.getRequest("0x" + Integer.toHexString(IpcConstants.getIpcNightIdeRotation), object));
+            list.add(JsonUtils.getRequest("0x" + Integer.toHexString(OpcodeConstants.getIpcDetection), object));
+            list.add(JsonUtils.getRequest("0x" + Integer.toHexString(OpcodeConstants.getIpcNightIdeRotation), object));
             post(context, sn, msgId, IpcConstants.getIpcSettingMessage, model, JsonUtils.getMultiRequest(msgId, list));
         } catch (JSONException e) {
             e.printStackTrace();
