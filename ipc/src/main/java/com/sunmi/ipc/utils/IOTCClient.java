@@ -299,6 +299,7 @@ public class IOTCClient {
             public void run() {
                 String json = new Gson().toJson(cmdReq);
                 byte[] req = json.getBytes();
+                LogCat.e(TAG, "99999999 cmdReq = " + cmdReq.toString());
                 IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
                 getCmdResponse(cmd, callback);
             }
@@ -312,6 +313,7 @@ public class IOTCClient {
             byte[] data = new byte[actualLen];
             System.arraycopy(buf, 0, data, 0, actualLen);
             String result = ByteUtils.byte2String(data);
+            LogCat.e(TAG, "99999999 result = " + result);
             try {
                 IotcCmdResp cmdBean;
                 if (CMD_PLAYBACK_LIST == cmd) {
