@@ -119,5 +119,6 @@
     <string name="sunmi_device_fs">AI识客摄像机FM020</string>
     <string name="sunmi_device_ss">智能看店摄像机FM010</string>
     <string name="sunmi_device_more">Coming soon</string>
-
+    <string name="str_setting_detail">查看详情</string>
+    <string name="str_coming_soon">敬请期待</string>
 </resources>
