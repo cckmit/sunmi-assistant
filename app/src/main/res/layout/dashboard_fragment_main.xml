@@ -14,7 +14,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layout_shop_title" />
 
-    <cn.bingoogolapple.refreshlayout.BGARefreshLayout
+    <com.sunmi.assistant.dashboard.ui.RefreshLayout
         android:id="@+id/layout_dashboard_refresh"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-    </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
+    </com.sunmi.assistant.dashboard.ui.RefreshLayout>
 
     <View
         android:id="@+id/view_dashboard_overlay"
@@ -44,13 +44,11 @@
     <sunmi.common.view.DropdownMenu
         android:id="@+id/layout_shop_title"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_82"
+        android:layout_height="@dimen/dp_64"
         android:background="@drawable/dashboard_bg_top"
         android:gravity="center"
         android:paddingStart="@dimen/dp_20"
-        android:paddingTop="@dimen/dp_30"
         android:paddingEnd="@dimen/dp_20"
-        android:paddingBottom="@dimen/dp_8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -59,7 +57,7 @@
         android:id="@+id/layout_top_period_tab"
         layout="@layout/dashboard_top_period_tab"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_64"
+        android:layout_height="@dimen/dp_44"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

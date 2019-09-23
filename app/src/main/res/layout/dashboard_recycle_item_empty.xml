@@ -2,7 +2,6 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_marginTop="@dimen/dp_82"
     android:layout_height="@dimen/dp_256"
     android:background="@drawable/dashboard_bg_top_white_radius">
 

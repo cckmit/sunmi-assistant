@@ -261,6 +261,7 @@
     <string name="str_cloud_storage">云存储</string>
     <string name="str_cloud_storage_service">云存储服务</string>
     <string name="ipc_dynamic_request_external_storage">暂未授予存储权限，请授权后重试</string>
+    <string name="ipc_video_play_loading">视频加载中，请稍候</string>
 
 </resources>
 

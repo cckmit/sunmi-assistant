@@ -1,6 +1,7 @@
 package com.sunmi.assistant.dashboard.card;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.widget.TextView;
 
@@ -55,8 +56,11 @@ public class PeriodTabCard extends BaseRefreshItem<PeriodTabCard.Model, Object> 
         TextView week = holder.getView(R.id.tv_dashboard_week);
         TextView month = holder.getView(R.id.tv_dashboard_month);
         today.setSelected(model.period == Constants.TIME_PERIOD_TODAY);
+        today.setTypeface(null, model.period == Constants.TIME_PERIOD_TODAY ? Typeface.BOLD : Typeface.NORMAL);
         week.setSelected(model.period == Constants.TIME_PERIOD_WEEK);
+        week.setTypeface(null, model.period == Constants.TIME_PERIOD_WEEK ? Typeface.BOLD : Typeface.NORMAL);
         month.setSelected(model.period == Constants.TIME_PERIOD_MONTH);
+        month.setTypeface(null, model.period == Constants.TIME_PERIOD_MONTH ? Typeface.BOLD : Typeface.NORMAL);
     }
 
     public static class Model extends BaseRefreshItem.BaseModel {
