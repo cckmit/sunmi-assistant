@@ -28,12 +28,12 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_35"
         android:layout_marginBottom="@dimen/dp_72"
-        android:textColor="@color/c_white"
-        android:padding="@dimen/dp_8"
-        android:gravity="center"
-        android:textSize="@dimen/sp_12"
         android:background="@drawable/setting_bg_tip_text"
+        android:gravity="center"
+        android:padding="@dimen/dp_8"
         android:text="@string/ipc_save_picture_tip"
+        android:textColor="@color/c_white"
+        android:textSize="@dimen/sp_12"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -138,7 +138,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableTop="@mipmap/ic_video_play_error"
-            android:drawablePadding="@dimen/dp_12"
+            android:drawablePadding="@dimen/dp_26"
             android:text="@string/tip_network_fail_retry"
             android:textColor="@color/color_666666"
             android:textSize="@dimen/sp_12" />
@@ -147,12 +147,43 @@
             android:id="@+id/tv_retry"
             android:layout_width="@dimen/dp_108"
             android:layout_height="@dimen/dp_44"
-            android:layout_marginTop="@dimen/dp_38"
+            android:layout_marginTop="@dimen/dp_24"
             android:background="@drawable/setting_bg_tip_btn"
             android:gravity="center"
-            android:text="@string/str_refresh_try"
+            android:text="@string/str_retry"
             android:textColor="@color/c_white"
             android:textSize="@dimen/sp_16" />
+    </LinearLayout>
+
+    <!--初始化loading-->
+    <LinearLayout
+        android:id="@+id/ll_play_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ProgressBar
+            android:layout_width="@dimen/dp_28"
+            android:layout_height="@dimen/dp_28"
+            android:indeterminate="false"
+            android:indeterminateDrawable="@drawable/loading_common_white" />
+
+        <TextView
+            android:id="@+id/tv_loading_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_24"
+            android:gravity="center"
+            android:text="@string/ipc_video_play_loading"
+            android:textColor="@color/white_60a"
+            android:textSize="@dimen/sp_12" />
     </LinearLayout>
 
 
