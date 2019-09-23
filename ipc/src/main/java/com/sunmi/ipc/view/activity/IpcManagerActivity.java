@@ -440,6 +440,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     //点击屏幕
     @Click(resName = "rl_video")
     void screenClick() {
+        if (llPlayFail != null && llPlayFail.isShown()) {
+            return;
+        }
         if (isControlPanelShow) {
             hideControllerPanel();
             isControlPanelShow = false;
@@ -451,6 +454,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     @Click(resName = "tv_retry")
     void retryClick() {
+        isControlPanelShow = false;
         setPlayFailVisibility(View.GONE);
         showVideoLoading();
         initP2pLive();
@@ -501,7 +505,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     public void initFail() {
         hideVideoLoading();
         hideControllerPanel();
-
+        isControlPanelShow = true;
         setPlayFailVisibility(View.VISIBLE);
     }
 
@@ -1252,9 +1256,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     @Override
     public void didMoveToDate(String date, long timeStamp) {
-        if (!tvTimeScroll.isShown()) {
-            hideTimeScroll();
-        }
+        hideTimeScroll();
         if (timeStamp > System.currentTimeMillis() / 1000) {//超过当前时间
             shortTip(getString(R.string.ipc_time_over_current_time));
             if (playType == PLAY_TYPE_LIVE) {//当前处于直播
