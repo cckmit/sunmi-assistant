@@ -172,7 +172,7 @@
         <ProgressBar
             android:layout_width="@dimen/dp_28"
             android:layout_height="@dimen/dp_28"
-            android:indeterminate="false"
+            android:indeterminate="true"
             android:indeterminateDrawable="@drawable/loading_common_white" />
 
         <TextView
