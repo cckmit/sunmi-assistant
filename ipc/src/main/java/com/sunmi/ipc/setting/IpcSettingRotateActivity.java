@@ -211,16 +211,20 @@ public class IpcSettingRotateActivity extends BaseActivity implements View.OnCli
     public void didReceivedNotification(int id, Object... args) {
         super.didReceivedNotification(id, args);
         hideLoadingDialog();
-        if (args == null) return;
+        if (args == null) {
+            return;
+        }
+        if (id == CommonNotifications.mqttResponseTimeout) { //连接超时
+            isNetException = true;
+            shortTip(R.string.str_server_exception);
+            return;
+        }
         ResponseBean res = (ResponseBean) args[0];
         if (id == OpcodeConstants.setIpcNightIdeRotation) {
             if (isNetException) {
                 return;
             }
             setIpcNightIdeRotation(res);
-        } else if (id == CommonNotifications.mqttResponseTimeout) { //连接超时
-            isNetException = true;
-            shortTip(R.string.str_server_exception);
         }
     }
 

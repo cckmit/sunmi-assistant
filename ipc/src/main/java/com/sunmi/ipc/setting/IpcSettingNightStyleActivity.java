@@ -145,15 +145,17 @@ public class IpcSettingNightStyleActivity extends BaseActivity
         if (args == null) {
             return;
         }
+        if (id == CommonNotifications.mqttResponseTimeout) { //连接超时
+            isNetException = true;
+            shortTip(R.string.str_server_exception);
+            return;
+        }
         ResponseBean res = (ResponseBean) args[0];
         if (id == OpcodeConstants.setIpcNightIdeRotation) {
             if (isNetException) {
                 return;
             }
             setIpcNightIdeRotation(res);
-        } else if (id == CommonNotifications.mqttResponseTimeout) { //连接超时
-            isNetException = true;
-            shortTip(R.string.str_server_exception);
         }
     }
 
