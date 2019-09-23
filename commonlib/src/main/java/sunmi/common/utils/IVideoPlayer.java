@@ -307,9 +307,13 @@ public class IVideoPlayer extends RelativeLayout {
      * 暂停
      */
     public void pause() {
-        if (currentMediaPlayer != null) {
-            currentMediaPlayer.pause();
+        try {
+            if (currentMediaPlayer != null) {
+                currentMediaPlayer.pause();
 //            audioFocusHelper.abandonFocus();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 

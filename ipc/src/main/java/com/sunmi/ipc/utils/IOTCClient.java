@@ -1,5 +1,7 @@
 package com.sunmi.ipc.utils;
 
+import android.os.Process;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.sunmi.ipc.model.IotcCmdReq;
@@ -96,6 +98,9 @@ public class IOTCClient {
         LogCat.e(TAG, "IOTC_CONNECT_RESULT = " + IOTC_CONNECT_RESULT);
         if (IOTC_CONNECT_RESULT < 0 || alreadyQuit) {
             LogCat.e(TAG, "IOTC_Connect_ByUID_Parallel failed ret = " + IOTC_CONNECT_RESULT);
+            if (callback != null) {
+                callback.initFail();
+            }
             return;
         }
 
@@ -381,7 +386,7 @@ public class IOTCClient {
                     LogCat.e(TAG, "Session cant be used anymore");
                     break;
                 }
-//                LogCat.e(TAG, "888888vvv T-" + Process.myTid() + ", VIDEO received = " + ret);
+                LogCat.e(TAG, "888888vvv T-" + Process.myTid() + ", VIDEO received = " + ret);
                 if (ret > 0) {
                     byte[] data = new byte[ret];
                     System.arraycopy(videoBuffer, 0, data, 0, ret);
