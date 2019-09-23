@@ -22,6 +22,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.webview.SMWebView;
 
@@ -60,6 +61,24 @@ public class ProtocolActivity extends BaseActivity {
     @AfterViews
     protected void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
+        if (CommonHelper.isGooglePlay()) {
+            initGoogle();
+        } else {
+            initNormal();
+        }
+        // 设置标题
+        WebChromeClient webChrome = new WebChromeClient() {
+            @Override
+            public void onReceivedTitle(WebView view, String title) {
+                super.onReceivedTitle(view, title);
+            }
+        };
+        // 设置setWebChromeClient对象
+        webView.setWebChromeClient(webChrome);
+    }
+
+
+    private void initNormal() {
         if (protocolType == USER_PROTOCOL) { //app注册协议
             loadWebView(PROTOCOL_USER);
         } else if (protocolType == USER_PRIVATE) {
@@ -73,17 +92,24 @@ public class ProtocolActivity extends BaseActivity {
         } else if (protocolType == USER_AUTH_PLATFORM) {//获取平台授权协议
             loadWebView(AUTH_PLATFORM);
         }
-        // 设置标题
-        WebChromeClient webChrome = new WebChromeClient() {
-            @Override
-            public void onReceivedTitle(WebView view, String title) {
-                super.onReceivedTitle(view, title);
-            }
-        };
-        // 设置setWebChromeClient对象
-        webView.setWebChromeClient(webChrome);
     }
 
+
+    private void initGoogle() {
+        if (protocolType == USER_PROTOCOL) { //app注册协议
+            loadWebView("file:///android_asset/Sunmi_user.html");
+        } else if (protocolType == USER_PRIVATE) {
+            loadWebView("file:///android_asset/Sunmi_private.html");
+        } else if (protocolType == USER_AP_PROTOCOL) { //快速配置路由器协议
+            loadWebView("file:///android_asset/Sunmi_user.html");
+        } else if (protocolType == USER_AP_PRIVATE) {
+            loadWebView("file:///android_asset/Sunmi_private.html");
+        } else if (protocolType == USER_WX_HELP) {
+            loadWebView(WX_AUTH_HELP);
+        } else if (protocolType == USER_AUTH_PLATFORM) {//获取平台授权协议
+            loadWebView(AUTH_PLATFORM);
+        }
+    }
 
     @Click(resName = "btnImage")
     public void onClick(View v) {

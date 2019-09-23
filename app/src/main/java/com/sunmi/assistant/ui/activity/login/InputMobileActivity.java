@@ -1,8 +1,11 @@
 package com.sunmi.assistant.ui.activity.login;
 
 import android.content.DialogInterface;
+import android.graphics.Typeface;
+import android.support.v4.widget.TextViewCompat;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.TextView;
@@ -47,6 +50,10 @@ public class InputMobileActivity extends BaseMvpActivity<InputMobilePresenter>
     TitleBarView titleBar;
     @ViewById(R.id.tv)
     TextView tv;
+    @ViewById(R.id.tv86)
+    TextView tv86;
+    @ViewById(R.id.tvLine)
+    TextView tvLine;
 
     @Extra
     String mobile;
@@ -65,6 +72,11 @@ public class InputMobileActivity extends BaseMvpActivity<InputMobilePresenter>
         mPresenter.attachView(this);
         if (CommonHelper.isGooglePlay()) {
             tv.setText(R.string.tip_input_email_address);
+            etMobile.setInputType(EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        }else {
+            tv86.setVisibility(View.VISIBLE);
+            tvLine.setVisibility(View.VISIBLE);
+            etMobile.setMaxLines(11);
         }
         etMobile.setClearIcon(R.mipmap.ic_edit_delete_white);
         new SomeMonitorEditText().setMonitorEditText(btnNext, etMobile);
