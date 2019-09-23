@@ -104,7 +104,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/bg_round_corner_black_15"
                     android:gravity="center"
-                    android:text="@string/str_HD"
+                    android:text="@string/str_FHD"
                     android:textColor="@color/c_white"
                     android:textSize="@dimen/sp_12" />
 
