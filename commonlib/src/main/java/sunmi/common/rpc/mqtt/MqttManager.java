@@ -156,7 +156,7 @@ public class MqttManager {
                 }
 
                 @Override
-                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                public void onFailure(IMqttToken token, Throwable exception) {
                     isConnecting = false;
                     LogCat.e(TAG, "mqtt Connect FAIL");
                     if (!NetworkUtils.isNetworkAvailable(BaseApplication.getContext())) {
@@ -165,13 +165,11 @@ public class MqttManager {
                         isRegister = false;
                         return;
                     }
-                    if (asyncActionToken.getException() != null
-                            && asyncActionToken.getException().getReasonCode()
-                            == MqttException.REASON_CODE_FAILED_AUTHENTICATION
-                            || asyncActionToken.getException().getReasonCode()
-                            == MqttException.REASON_CODE_CLIENT_EXCEPTION) {
-                        LogCat.e(TAG, "mqtt Connect fail,code = " + asyncActionToken.getException().getReasonCode()
-                                + ", cause = " + asyncActionToken.getException().getCause());
+                    if (token.getException() != null &&
+                            (token.getException().getReasonCode() == MqttException.REASON_CODE_FAILED_AUTHENTICATION ||
+                                    token.getException().getReasonCode() == MqttException.REASON_CODE_CLIENT_EXCEPTION)) {
+                        LogCat.e(TAG, "mqtt Connect fail,code = " + token.getException().getReasonCode()
+                                + ", cause = " + token.getException().getCause());
                         isRegister = false;
                         createEmqToken(true);
                     }
@@ -185,8 +183,10 @@ public class MqttManager {
     }
 
     private String[] getTokens() {
-        return new String[]{tokenSS1EventSub, tokenFS1EventSub, tokenFM010EventSub, tokenFM020EventSub,
-                tokenWEBSS1EventSub, tokenWEBFS1EventSub, tokenWEBFM010EventSub, tokenWEBFM020EventSub};//初始化所有门店下的设备dev状态
+        return new String[]{tokenSS1EventSub, tokenFM010EventSub,
+                tokenFS1EventSub, tokenFM020EventSub,
+                tokenWEBSS1EventSub, tokenWEBFM010EventSub,
+                tokenWEBFS1EventSub, tokenWEBFM020EventSub};//初始化所有门店下的设备dev状态
     }
 
     /**
@@ -200,7 +200,10 @@ public class MqttManager {
                 return;
             }
 
-            int[] qoss = new int[]{2, 2, 2, 2, 2, 2, 2, 2};
+            int[] qoss = new int[getTokens().length];
+            for (int index : qoss) {
+                qoss[index] = 2;
+            }
             //订阅1
             mqttClient.subscribe(getTokens(), qoss, null, new IMqttActionListener() {
                 @Override
