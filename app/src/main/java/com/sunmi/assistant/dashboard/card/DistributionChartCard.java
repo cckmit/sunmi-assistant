@@ -231,7 +231,6 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
         TextView age = holder.getView(R.id.tv_dashboard_age);
 
         PieChart pie = holder.getView(R.id.view_dashboard_pie_chart);
-        pie.highlightValue(null);
 
         // Set button selected
         newOld.setSelected(model.type == Constants.DATA_TYPE_NEW_OLD);

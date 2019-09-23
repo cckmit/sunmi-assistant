@@ -263,9 +263,13 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
         // Calculate min & max of axis value.
         Pair<Integer, Integer> xAxisRange = Utils.calcChartXAxisRange(model.period);
         int max = 0;
+        float lastX = 0;
         for (BarEntry entry : dataSet) {
             if (model.type == Constants.DATA_TYPE_RATE && entry.getY() > 1) {
                 entry.setY(1f);
+            }
+            if (entry.getX() > lastX) {
+                lastX = entry.getX();
             }
             if (entry.getY() > max) {
                 max = (int) Math.ceil(entry.getY());
@@ -286,7 +290,6 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
 
         // Refresh data set
         if (model.type == Constants.DATA_TYPE_RATE) {
-            line.highlightValue(null);
             mLineChartMarker.setType(model.type);
             LineDataSet set;
             LineData data = line.getData();
@@ -301,9 +304,6 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
                 int color = ContextCompat.getColor(holder.getContext(), R.color.colorOrange);
                 set.setColor(color);
                 set.setLineWidth(2f);
-                set.setDrawFilled(true);
-                set.setFillDrawable(ContextCompat.getDrawable(holder.getContext(),
-                        R.drawable.dashboard_line_chart_filled_color));
                 set.setDrawValues(false);
                 set.setDrawCircleHole(false);
                 set.setCircleColor(color);
@@ -314,9 +314,9 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
                 data = new LineData(set);
                 line.setData(data);
             }
+            line.highlightValue(lastX, 0);
             line.animateX(300);
         } else {
-            bar.highlightValue(null);
             mBarChartMarker.setType(model.type);
             float barWidthRatio = calcBarWidth(model.period);
             int color = model.type == Constants.DATA_TYPE_VOLUME ?
@@ -346,6 +346,7 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
                 data.setBarWidth(barWidthRatio);
                 bar.setData(data);
             }
+            bar.highlightValue(lastX, 0);
             bar.animateY(300, Easing.EaseOutCubic);
         }
     }

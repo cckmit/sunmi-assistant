@@ -89,6 +89,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     private RefreshViewHolder mRefreshHeaderHolder;
 
     private ShopMenuAdapter mShopMenuAdapter;
+    private ShopMenuPopupHelper mShopMenuPopupHelper;
     private TextView mShopMenuTitle;
     private ImageView mShopMenuTitleArrow;
     private ShopItem mShopMenuItem;
@@ -96,7 +97,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     private int mStatusBarHeight;
     private int mTopBarHeight;
     private int mTopShopMenuHeight;
-    private ShopMenuPopupHelper mShopMenuPopupHelper;
+    private boolean mIsStickyTop = false;
 
     @AfterViews
     void init() {
@@ -191,7 +192,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mShopMenu.setBackgroundResource(R.drawable.dashboard_bg_top);
         mShopMenu.setTranslationY(0);
         mShopMenuTitle.setTextColor(0xFFFFFFFF);
-        mShopMenuTitleArrow.setImageResource(R.drawable.ic_arrow_drop_down_white_24dp);
+        mShopMenuTitleArrow.setImageResource(R.drawable.ic_arrow_drop_down_white);
         mTopPeriodTab.setVisibility(View.INVISIBLE);
         mCardList.scrollToPosition(0);
     }
@@ -314,7 +315,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             mTopPeriodTab.setVisibility(View.VISIBLE);
         } else {
             mShopMenuTitle.setTextColor(ContextCompat.getColor(context, R.color.color_303540));
-            mShopMenuTitleArrow.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp);
+            mShopMenuTitleArrow.setImageResource(R.drawable.ic_arrow_drop_down_black);
             mShopMenu.setBackgroundResource(R.drawable.dashboard_bg_white_with_divider);
         }
     }
@@ -326,14 +327,13 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             mTopPeriodTab.setVisibility(View.INVISIBLE);
         } else {
             mShopMenuTitle.setTextColor(0xFFFFFFFF);
-            mShopMenuTitleArrow.setImageResource(R.drawable.ic_arrow_drop_down_white_24dp);
+            mShopMenuTitleArrow.setImageResource(R.drawable.ic_arrow_drop_down_white);
             mShopMenu.setBackgroundResource(R.drawable.dashboard_bg_top);
         }
     }
 
     private class ItemStickyListener extends RecyclerView.OnScrollListener {
 
-        private boolean mIsStickyTop = false;
         private View topBar = null;
 
         @Override
