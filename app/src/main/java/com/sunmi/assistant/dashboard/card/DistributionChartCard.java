@@ -90,8 +90,8 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
     @Override
     protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, CardCallback callback) {
         Pair<Long, Long> time = Utils.getPeriodTimestamp(period);
-        String start = DateFormat.format(DATE_FORMAT, time.first).toString();
-        String end = DateFormat.format(DATE_FORMAT, time.second).toString();
+        String start = DateFormat.format(DATE_FORMAT, time.first * 1000).toString();
+        String end = DateFormat.format(DATE_FORMAT, time.second * 1000).toString();
         if (mAgeList == null) {
             loadAgeList(companyId, shopId, start, end, callback);
         } else {
@@ -186,7 +186,7 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
     @NonNull
     @Override
     public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
-        BaseViewHolder<Model> holder = new BaseViewHolder<>(view, type);
+        BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
         Context context = view.getContext();
         mChart = holder.getView(R.id.view_dashboard_pie_chart);
 
@@ -231,12 +231,14 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
         TextView age = holder.getView(R.id.tv_dashboard_age);
 
         PieChart pie = holder.getView(R.id.view_dashboard_pie_chart);
-        pie.highlightValue(null);
 
         // Set button selected
         newOld.setSelected(model.type == Constants.DATA_TYPE_NEW_OLD);
+        newOld.setTypeface(null, model.type == Constants.DATA_TYPE_NEW_OLD ? Typeface.BOLD : Typeface.NORMAL);
         gender.setSelected(model.type == Constants.DATA_TYPE_GENDER);
+        gender.setTypeface(null, model.type == Constants.DATA_TYPE_GENDER ? Typeface.BOLD : Typeface.NORMAL);
         age.setSelected(model.type == Constants.DATA_TYPE_AGE);
+        age.setTypeface(null, model.type == Constants.DATA_TYPE_AGE ? Typeface.BOLD : Typeface.NORMAL);
 
         // Get data set from model
         List<PieEntry> dataSet = model.dataSets.get(model.type);

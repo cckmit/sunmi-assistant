@@ -128,6 +128,10 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
                         getString(R.string.str_tab_device))) {
                     BaseNotification.newInstance().postNotificationName(CommonConstants.tabDevice);
                 }
+                if (!TextUtils.equals(mTabHost.getCurrentTabTag(),
+                        getString(R.string.str_tab_dashboard))) {
+                    StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
+                }
             } else {
                 v.setSelected(false);
             }

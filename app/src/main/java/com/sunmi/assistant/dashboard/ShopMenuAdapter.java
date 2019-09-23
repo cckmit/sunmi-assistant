@@ -38,7 +38,6 @@ public class ShopMenuAdapter extends DropdownMenu.BaseAdapter<ShopItem> {
         public void setUpView(ShopItem model, int position) {
             TextView title = getView(R.id.dropdown_item_title);
             title.setText(model.getShopName());
-            title.setSelected(model.getShopId() != -1);
         }
     }
 

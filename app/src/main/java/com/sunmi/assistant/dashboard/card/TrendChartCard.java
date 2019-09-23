@@ -1,6 +1,7 @@
 package com.sunmi.assistant.dashboard.card;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.Pair;
@@ -105,7 +106,7 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
     @NonNull
     @Override
     public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
-        BaseViewHolder<Model> holder = new BaseViewHolder<>(view, type);
+        BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
         LineChart lineChart = holder.getView(R.id.view_dashboard_line_chart);
         BarChart barChart = holder.getView(R.id.view_dashboard_bar_chart);
         Context context = view.getContext();
@@ -245,8 +246,11 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
         line.setVisibility(model.type == Constants.DATA_TYPE_RATE ? View.VISIBLE : View.INVISIBLE);
         bar.setVisibility(model.type != Constants.DATA_TYPE_RATE ? View.VISIBLE : View.INVISIBLE);
         rate.setSelected(model.type == Constants.DATA_TYPE_RATE);
+        rate.setTypeface(null, model.type == Constants.DATA_TYPE_RATE ? Typeface.BOLD : Typeface.NORMAL);
         volume.setSelected(model.type == Constants.DATA_TYPE_VOLUME);
+        volume.setTypeface(null, model.type == Constants.DATA_TYPE_VOLUME ? Typeface.BOLD : Typeface.NORMAL);
         consumer.setSelected(model.type == Constants.DATA_TYPE_CONSUMER);
+        consumer.setTypeface(null, model.type == Constants.DATA_TYPE_CONSUMER ? Typeface.BOLD : Typeface.NORMAL);
 
         // Get data set from model
         List<BarEntry> dataSet = model.dataSets.get(model.type);
@@ -259,9 +263,13 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
         // Calculate min & max of axis value.
         Pair<Integer, Integer> xAxisRange = Utils.calcChartXAxisRange(model.period);
         int max = 0;
+        float lastX = 0;
         for (BarEntry entry : dataSet) {
             if (model.type == Constants.DATA_TYPE_RATE && entry.getY() > 1) {
                 entry.setY(1f);
+            }
+            if (entry.getX() > lastX) {
+                lastX = entry.getX();
             }
             if (entry.getY() > max) {
                 max = (int) Math.ceil(entry.getY());
@@ -282,7 +290,6 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
 
         // Refresh data set
         if (model.type == Constants.DATA_TYPE_RATE) {
-            line.highlightValue(null);
             mLineChartMarker.setType(model.type);
             LineDataSet set;
             LineData data = line.getData();
@@ -297,9 +304,6 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
                 int color = ContextCompat.getColor(holder.getContext(), R.color.colorOrange);
                 set.setColor(color);
                 set.setLineWidth(2f);
-                set.setDrawFilled(true);
-                set.setFillDrawable(ContextCompat.getDrawable(holder.getContext(),
-                        R.drawable.dashboard_line_chart_filled_color));
                 set.setDrawValues(false);
                 set.setDrawCircleHole(false);
                 set.setCircleColor(color);
@@ -310,9 +314,9 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
                 data = new LineData(set);
                 line.setData(data);
             }
+            line.highlightValue(lastX, 0);
             line.animateX(300);
         } else {
-            bar.highlightValue(null);
             mBarChartMarker.setType(model.type);
             float barWidthRatio = calcBarWidth(model.period);
             int color = model.type == Constants.DATA_TYPE_VOLUME ?
@@ -342,6 +346,7 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
                 data.setBarWidth(barWidthRatio);
                 bar.setData(data);
             }
+            bar.highlightValue(lastX, 0);
             bar.animateY(300, Easing.EaseOutCubic);
         }
     }

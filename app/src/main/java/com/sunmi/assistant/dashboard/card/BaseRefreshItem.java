@@ -5,6 +5,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.DashboardContract;
@@ -42,6 +44,8 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
     protected static final String FORMAT_FLOAT_DOUBLE_DECIMAL = "%.2f";
     protected static final String FORMAT_FLOAT_DOUBLE_PERCENT = "%.2f%%";
     protected static final DecimalFormat FORMAT_MAX_DOUBLE_DECIMAL = new DecimalFormat("#.##");
+    protected static final DecimalFormat FORMAT_THOUSANDS_DOUBLE_DECIMAL = new DecimalFormat(",###,##0.00");
+    protected static final DecimalFormat FORMAT_THOUSANDS = new DecimalFormat(",###,###");
 
     protected Context mContext;
     protected DashboardContract.Presenter mPresenter;
@@ -50,6 +54,8 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
     private RequestCall<Resp> mCall = new RequestCall<>();
 
     private BaseRecyclerAdapter<Object> mAdapter;
+    private int[] mPadding;
+    private int[] mMargin;
     private int mPosition;
 
     private Model mModel;
@@ -154,11 +160,32 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
         }
     }
 
+    public void setMargin(int left, int top, int right, int bottom) {
+        this.mMargin = new int[]{left, top, right, bottom};
+    }
+
+    public void setPadding(int left, int top, int right, int bottom) {
+        this.mPadding = new int[]{left, top, right, bottom};
+    }
+
     public void updateView() {
         if (mAdapter != null) {
             LogCat.d(TAG, "Update view.");
             mHandler.post(() -> mAdapter.notifyItemChanged(mPosition));
         }
+    }
+
+    @NonNull
+    @Override
+    public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
+        if (mMargin != null) {
+            ((ViewGroup.MarginLayoutParams) view.getLayoutParams())
+                    .setMargins(mMargin[0], mMargin[1], mMargin[2], mMargin[3]);
+        }
+        if (mPadding != null) {
+            view.setPadding(mPadding[0], mPadding[1], mPadding[2], mPadding[3]);
+        }
+        return super.onCreateViewHolder(view, type);
     }
 
     @Override

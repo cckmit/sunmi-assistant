@@ -54,7 +54,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     private HashMap<Class<?>, BaseRefreshItem> mCardMap = new HashMap<>(8);
     private List<ShopItem> mShopList;
-    private List<BaseRefreshItem> mList;
+    private List<BaseRefreshItem> mList = new ArrayList<>();
 
     private RefreshTask mTask;
 
@@ -94,10 +94,8 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     @Override
     public void switchPeriodTo(int period) {
-        if (mList != null) {
-            for (BaseRefreshItem card : mList) {
-                card.setPeriod(period);
-            }
+        for (BaseRefreshItem card : mList) {
+            card.setPeriod(period);
         }
         if (isViewAttached()) {
             mView.updateTab(period);
@@ -106,16 +104,14 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     @Override
     public void refresh(boolean showLoading) {
-        if (mList != null) {
-            for (BaseRefreshItem card : mList) {
-                card.refresh(showLoading);
-            }
+        for (BaseRefreshItem card : mList) {
+            card.refresh(showLoading);
         }
     }
 
     @Override
     public void refresh(int position, boolean showLoading) {
-        if (mList != null && mList.size() > position) {
+        if (mList.size() > position) {
             mList.get(position).refresh(showLoading);
         }
     }
@@ -178,7 +174,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 }
                 int changed = mDataSource ^ old;
                 // 如果数据来源无变化（是否有FS以及是否有订单数据），那么直接更新卡片商户和门店
-                if (changed == 0 && mList != null && !mList.isEmpty()) {
+                if (changed == 0 && !mList.isEmpty()) {
                     for (BaseRefreshItem card : mList) {
                         card.setCompanyId(mCompanyId, mShop.getShopId());
                     }
@@ -189,11 +185,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                     return;
                 }
                 // 初始化列表
-                if (mList == null) {
-                    mList = new ArrayList<>(6);
-                } else {
-                    mList.clear();
-                }
+                mList.clear();
 //                mDataSource = 3;
                 // 根据数据来源，变更卡片
                 switch (mDataSource) {
