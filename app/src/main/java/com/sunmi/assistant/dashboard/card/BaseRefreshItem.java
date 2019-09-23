@@ -44,6 +44,8 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
     protected static final String FORMAT_FLOAT_DOUBLE_DECIMAL = "%.2f";
     protected static final String FORMAT_FLOAT_DOUBLE_PERCENT = "%.2f%%";
     protected static final DecimalFormat FORMAT_MAX_DOUBLE_DECIMAL = new DecimalFormat("#.##");
+    protected static final DecimalFormat FORMAT_THOUSANDS_DOUBLE_DECIMAL = new DecimalFormat(",###,##0.00");
+    protected static final DecimalFormat FORMAT_THOUSANDS = new DecimalFormat(",###,###");
 
     protected Context mContext;
     protected DashboardContract.Presenter mPresenter;

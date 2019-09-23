@@ -1,6 +1,7 @@
 package com.sunmi.assistant.dashboard;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -13,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -70,9 +72,9 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @ViewById(R.id.tv_dashboard_top_today)
     TextView mTodayView;
     @ViewById(R.id.tv_dashboard_top_week)
-    TextView mWeekViews;
+    TextView mWeekView;
     @ViewById(R.id.tv_dashboard_top_month)
-    TextView mMonthViews;
+    TextView mMonthView;
 
     @ViewById(R.id.group_dashboard_content)
     Group mContentGroup;
@@ -88,6 +90,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     private ShopMenuAdapter mShopMenuAdapter;
     private TextView mShopMenuTitle;
+    private ImageView mShopMenuTitleArrow;
     private ShopItem mShopMenuItem;
 
     private int mStatusBarHeight;
@@ -152,6 +155,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         });
         mShopMenu.setAdapter(mShopMenuAdapter);
         mShopMenuTitle = mShopMenuAdapter.getTitle().getView(R.id.dropdown_item_title);
+        mShopMenuTitleArrow = mShopMenuAdapter.getTitle().getView(R.id.dropdown_item_arrow);
         mOverlay.setOnClickListener(v -> mShopMenu.getPopup().dismiss(true));
     }
 
@@ -187,8 +191,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mShopMenu.setBackgroundResource(R.drawable.dashboard_bg_top);
         mShopMenu.setTranslationY(0);
         mShopMenuTitle.setTextColor(0xFFFFFFFF);
-        mShopMenuTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                0, 0, R.drawable.ic_arrow_drop_down_white_24dp, 0);
+        mShopMenuTitleArrow.setImageResource(R.drawable.ic_arrow_drop_down_white_24dp);
         mTopPeriodTab.setVisibility(View.INVISIBLE);
         mCardList.scrollToPosition(0);
     }
@@ -217,8 +220,11 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @Override
     public void updateTab(int period) {
         mTodayView.setSelected(period == Constants.TIME_PERIOD_TODAY);
-        mWeekViews.setSelected(period == Constants.TIME_PERIOD_WEEK);
-        mMonthViews.setSelected(period == Constants.TIME_PERIOD_MONTH);
+        mTodayView.setTypeface(null, period == Constants.TIME_PERIOD_TODAY ? Typeface.BOLD : Typeface.NORMAL);
+        mWeekView.setSelected(period == Constants.TIME_PERIOD_WEEK);
+        mWeekView.setTypeface(null, period == Constants.TIME_PERIOD_WEEK ? Typeface.BOLD : Typeface.NORMAL);
+        mMonthView.setSelected(period == Constants.TIME_PERIOD_MONTH);
+        mMonthView.setTypeface(null, period == Constants.TIME_PERIOD_MONTH ? Typeface.BOLD : Typeface.NORMAL);
     }
 
     @Override
@@ -308,8 +314,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             mTopPeriodTab.setVisibility(View.VISIBLE);
         } else {
             mShopMenuTitle.setTextColor(ContextCompat.getColor(context, R.color.color_303540));
-            mShopMenuTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                    0, 0, R.drawable.ic_arrow_drop_down_black_24dp, 0);
+            mShopMenuTitleArrow.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp);
             mShopMenu.setBackgroundResource(R.drawable.dashboard_bg_white_with_divider);
         }
     }
@@ -321,8 +326,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             mTopPeriodTab.setVisibility(View.INVISIBLE);
         } else {
             mShopMenuTitle.setTextColor(0xFFFFFFFF);
-            mShopMenuTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                    0, 0, R.drawable.ic_arrow_drop_down_white_24dp, 0);
+            mShopMenuTitleArrow.setImageResource(R.drawable.ic_arrow_drop_down_white_24dp);
             mShopMenu.setBackgroundResource(R.drawable.dashboard_bg_top);
         }
     }

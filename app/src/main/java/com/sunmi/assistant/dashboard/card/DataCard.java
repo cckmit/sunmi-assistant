@@ -33,6 +33,7 @@ import sunmi.common.rpc.retrofit.RetrofitCallback;
 public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
 
     private static final int NUM_100_MILLION = 100000000;
+    private static final int NUM_10_THOUSANDS = 10000;
 
     public DataCard(Context context, DashboardContract.Presenter presenter) {
         super(context, presenter);
@@ -137,9 +138,9 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
                         model.lastConsumer = data.getEarlyCount();
                         if (showTransactionData()) {
                             model.rate = model.consumer == 0 ?
-                                    0f : (float) model.volume / model.consumer;
+                                    0f : Math.min((float) model.volume / model.consumer, 1f);
                             model.lastRate = model.lastConsumer == 0 ?
-                                    0f : (float) model.lastVolume / model.lastConsumer;
+                                    0f : Math.min((float) model.lastVolume / model.lastConsumer, 1f);
                         }
                         callback.onSuccess();
                     }
@@ -307,27 +308,51 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
         float lastRate;
 
         public String getSales() {
-            return String.format(Locale.getDefault(), FORMAT_FLOAT_DOUBLE_DECIMAL, sales);
+            if (sales > NUM_100_MILLION) {
+                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(sales / NUM_100_MILLION) + "亿";
+            } else {
+                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(sales);
+            }
         }
 
         public String getLastSales() {
-            return String.format(Locale.getDefault(), FORMAT_FLOAT_DOUBLE_DECIMAL, lastSales);
+            if (lastSales > NUM_100_MILLION) {
+                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(lastSales / NUM_100_MILLION) + "亿";
+            } else {
+                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(lastSales);
+            }
         }
 
         public String getVolume() {
-            return String.valueOf(volume);
+            if (volume > NUM_10_THOUSANDS) {
+                return FORMAT_THOUSANDS.format(volume / NUM_10_THOUSANDS) + "万";
+            } else {
+                return FORMAT_THOUSANDS.format(volume);
+            }
         }
 
         public String getLastVolume() {
-            return String.valueOf(lastVolume);
+            if (lastVolume > NUM_10_THOUSANDS) {
+                return FORMAT_THOUSANDS.format(lastVolume / NUM_10_THOUSANDS) + "万";
+            } else {
+                return FORMAT_THOUSANDS.format(lastVolume);
+            }
         }
 
         public String getConsumer() {
-            return String.valueOf(consumer);
+            if (consumer > NUM_10_THOUSANDS) {
+                return FORMAT_THOUSANDS.format(consumer / NUM_10_THOUSANDS) + "万";
+            } else {
+                return FORMAT_THOUSANDS.format(consumer);
+            }
         }
 
         public String getLastConsumer() {
-            return String.valueOf(lastConsumer);
+            if (lastConsumer > NUM_10_THOUSANDS) {
+                return FORMAT_THOUSANDS.format(lastConsumer / NUM_10_THOUSANDS) + "万";
+            } else {
+                return FORMAT_THOUSANDS.format(lastConsumer);
+            }
         }
 
         public String getRate() {

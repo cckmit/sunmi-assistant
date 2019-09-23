@@ -235,8 +235,11 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
 
         // Set button selected
         newOld.setSelected(model.type == Constants.DATA_TYPE_NEW_OLD);
+        newOld.setTypeface(null, model.type == Constants.DATA_TYPE_NEW_OLD ? Typeface.BOLD : Typeface.NORMAL);
         gender.setSelected(model.type == Constants.DATA_TYPE_GENDER);
+        gender.setTypeface(null, model.type == Constants.DATA_TYPE_GENDER ? Typeface.BOLD : Typeface.NORMAL);
         age.setSelected(model.type == Constants.DATA_TYPE_AGE);
+        age.setTypeface(null, model.type == Constants.DATA_TYPE_AGE ? Typeface.BOLD : Typeface.NORMAL);
 
         // Get data set from model
         List<PieEntry> dataSet = model.dataSets.get(model.type);

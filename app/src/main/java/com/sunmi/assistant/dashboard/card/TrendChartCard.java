@@ -1,6 +1,7 @@
 package com.sunmi.assistant.dashboard.card;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.Pair;
@@ -245,8 +246,11 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
         line.setVisibility(model.type == Constants.DATA_TYPE_RATE ? View.VISIBLE : View.INVISIBLE);
         bar.setVisibility(model.type != Constants.DATA_TYPE_RATE ? View.VISIBLE : View.INVISIBLE);
         rate.setSelected(model.type == Constants.DATA_TYPE_RATE);
+        rate.setTypeface(null, model.type == Constants.DATA_TYPE_RATE ? Typeface.BOLD : Typeface.NORMAL);
         volume.setSelected(model.type == Constants.DATA_TYPE_VOLUME);
+        volume.setTypeface(null, model.type == Constants.DATA_TYPE_VOLUME ? Typeface.BOLD : Typeface.NORMAL);
         consumer.setSelected(model.type == Constants.DATA_TYPE_CONSUMER);
+        consumer.setTypeface(null, model.type == Constants.DATA_TYPE_CONSUMER ? Typeface.BOLD : Typeface.NORMAL);
 
         // Get data set from model
         List<BarEntry> dataSet = model.dataSets.get(model.type);
