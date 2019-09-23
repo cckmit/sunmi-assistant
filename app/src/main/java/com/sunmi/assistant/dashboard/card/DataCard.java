@@ -52,7 +52,7 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
 
     @Override
     protected Model createModel(Context context) {
-        return new Model();
+        return new Model(context);
     }
 
     @Override
@@ -298,6 +298,10 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
     }
 
     public static class Model extends BaseRefreshItem.BaseModel {
+
+        private String mNum100Million;
+        private String mNum10Thousands;
+
         float sales;
         float lastSales;
         int volume;
@@ -307,9 +311,14 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
         float rate;
         float lastRate;
 
+        public Model(Context context) {
+            mNum10Thousands = context.getString(R.string.str_num_10_thousands);
+            mNum100Million = context.getString(R.string.str_num_100_million);
+        }
+
         public String getSales() {
             if (sales > NUM_100_MILLION) {
-                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(sales / NUM_100_MILLION) + "亿";
+                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(sales / NUM_100_MILLION) + mNum100Million;
             } else {
                 return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(sales);
             }
@@ -317,7 +326,7 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
 
         public String getLastSales() {
             if (lastSales > NUM_100_MILLION) {
-                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(lastSales / NUM_100_MILLION) + "亿";
+                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(lastSales / NUM_100_MILLION) + mNum100Million;
             } else {
                 return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(lastSales);
             }
@@ -325,7 +334,7 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
 
         public String getVolume() {
             if (volume > NUM_10_THOUSANDS) {
-                return FORMAT_THOUSANDS.format(volume / NUM_10_THOUSANDS) + "万";
+                return FORMAT_THOUSANDS.format(volume / NUM_10_THOUSANDS) + mNum10Thousands;
             } else {
                 return FORMAT_THOUSANDS.format(volume);
             }
@@ -333,7 +342,7 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
 
         public String getLastVolume() {
             if (lastVolume > NUM_10_THOUSANDS) {
-                return FORMAT_THOUSANDS.format(lastVolume / NUM_10_THOUSANDS) + "万";
+                return FORMAT_THOUSANDS.format(lastVolume / NUM_10_THOUSANDS) + mNum10Thousands;
             } else {
                 return FORMAT_THOUSANDS.format(lastVolume);
             }
@@ -341,7 +350,7 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
 
         public String getConsumer() {
             if (consumer > NUM_10_THOUSANDS) {
-                return FORMAT_THOUSANDS.format(consumer / NUM_10_THOUSANDS) + "万";
+                return FORMAT_THOUSANDS.format(consumer / NUM_10_THOUSANDS) + mNum10Thousands;
             } else {
                 return FORMAT_THOUSANDS.format(consumer);
             }
@@ -349,7 +358,7 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
 
         public String getLastConsumer() {
             if (lastConsumer > NUM_10_THOUSANDS) {
-                return FORMAT_THOUSANDS.format(lastConsumer / NUM_10_THOUSANDS) + "万";
+                return FORMAT_THOUSANDS.format(lastConsumer / NUM_10_THOUSANDS) + mNum10Thousands;
             } else {
                 return FORMAT_THOUSANDS.format(lastConsumer);
             }
