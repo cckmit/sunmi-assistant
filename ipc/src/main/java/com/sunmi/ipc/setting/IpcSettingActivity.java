@@ -95,6 +95,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Extra
     SunmiDevice mDevice;
+    @Extra
+    Boolean disableAdjustScreen;
 
     private static final int IPC_NAME_MAX_LENGTH = 36;
     private static final int REQUEST_CODE_SOUND_DETECTION = 1001;
@@ -195,7 +197,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) mSoundDetection.getLayoutParams();
             lp.topMargin = (int) getResources().getDimension(R.dimen.dp_16);
             mSoundDetection.setLayoutParams(lp);
-        } else if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
+        } else if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid()) || disableAdjustScreen) {
             mAdjustScreen.setLeftTextColor(ContextCompat.getColor(this, R.color.colorText_40));
         }
     }
@@ -352,6 +354,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Click(resName = "sil_camera_adjust")
     void cameraAdjust() {
+        if (disableAdjustScreen) {
+            return;
+        }
         if (!DeviceTypeUtils.getInstance().isFS1(mDevice.getModel())) {
             return;
         }

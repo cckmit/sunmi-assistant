@@ -17,6 +17,7 @@ import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.receiver.MyNetworkCallback;
 import com.sunmi.apmanager.rpc.mqtt.MQTTManager;
 import com.sunmi.apmanager.utils.CommonUtils;
+import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.assistant.MyApplication;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.MineFragment;
@@ -119,6 +120,7 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
     @Override
     public void onTabChanged(String tabId) {
         trackTabEvent(tabId);
+        initStatusBar(tabId);
         final int size = mTabHost.getTabWidget().getTabCount();
         for (int i = 0; i < size; i++) {
             View v = mTabHost.getTabWidget().getChildAt(i);
@@ -128,13 +130,18 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
                         getString(R.string.str_tab_device))) {
                     BaseNotification.newInstance().postNotificationName(CommonConstants.tabDevice);
                 }
-                if (!TextUtils.equals(mTabHost.getCurrentTabTag(),
-                        getString(R.string.str_tab_dashboard))) {
-                    StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-                }
             } else {
                 v.setSelected(false);
             }
+        }
+    }
+
+    private void initStatusBar(String tabId) {
+        if (TextUtils.equals(getStringById(R.string.str_tab_dashboard), tabId)) {
+            HelpUtils.setStatusBarFullTransparent(this);//透明标题栏
+        } else {
+            StatusBarUtils.setStatusBarColor(this,
+                    StatusBarUtils.TYPE_DARK);//状态栏
         }
     }
 
@@ -187,7 +194,7 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
         }
         MainTab[] mainTabs = MainTab.values();
         for (MainTab mainTab : mainTabs) {
-            if (isHideTab(mainTab)) {//saas平台需要显示数据tab
+            if (isHideTab(mainTab.getResName())) {//saas平台需要显示数据tab
                 continue;
             }
             TabHost.TabSpec tab = mTabHost.newTabSpec(getString(mainTab.getResName()));
@@ -210,12 +217,6 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
 
         mTabHost.setCurrentTab(0);
         mTabHost.setOnTabChangedListener(this);
-    }
-
-    private boolean isHideTab(MainTab mainTab) {
-        return CommonHelper.isGooglePlay() &&
-                (TextUtils.equals(getString(mainTab.getResName()), getString(R.string.str_tab_support))
-                        || TextUtils.equals(getString(mainTab.getResName()), getString(R.string.str_tab_support)));
     }
 
     private Fragment getFragment(String tag) {
@@ -272,6 +273,12 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
                     .getSystemService(Context.CONNECTIVITY_SERVICE);
             connectivityManager.unregisterNetworkCallback(networkCallback);
         }
+    }
+
+    private boolean isHideTab(int tabNameRes) {
+        return CommonHelper.isGooglePlay() &&
+                (TextUtils.equals(getString(tabNameRes), getString(R.string.str_tab_dashboard))
+                        || TextUtils.equals(getString(tabNameRes), getString(R.string.str_tab_support)));
     }
 
 }
