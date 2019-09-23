@@ -186,7 +186,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 }
                 // 初始化列表
                 mList.clear();
-                mDataSource = 3;
+//                mDataSource = 3;
                 // 根据数据来源，变更卡片
                 switch (mDataSource) {
                     case 0x3:

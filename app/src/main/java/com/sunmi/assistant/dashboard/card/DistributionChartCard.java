@@ -186,7 +186,7 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
     @NonNull
     @Override
     public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
-        BaseViewHolder<Model> holder = new BaseViewHolder<>(view, type);
+        BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
         Context context = view.getContext();
         mChart = holder.getView(R.id.view_dashboard_pie_chart);
 

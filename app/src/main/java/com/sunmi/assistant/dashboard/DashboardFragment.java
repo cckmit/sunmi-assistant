@@ -1,7 +1,8 @@
 package com.sunmi.assistant.dashboard;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Group;
@@ -17,6 +18,8 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshItem;
+import com.sunmi.assistant.dashboard.ui.RefreshLayout;
+import com.sunmi.assistant.dashboard.ui.RefreshViewHolder;
 import com.sunmi.ipc.config.IpcConstants;
 
 import org.androidannotations.annotations.AfterViews;
@@ -28,14 +31,13 @@ import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
-import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.base.recycle.BaseArrayAdapter;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.DropdownMenu;
 
 /**
@@ -46,14 +48,14 @@ import sunmi.common.view.DropdownMenu;
  */
 @EFragment(R.layout.dashboard_fragment_main)
 public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
-        implements DashboardContract.View, BGARefreshLayout.BGARefreshLayoutDelegate {
+        implements DashboardContract.View, RefreshLayout.RefreshLayoutDelegate {
 
     private static final int OFFSET_PARALLAX = 50;
 
     @ViewById(R.id.cl_dashboard_content)
     ConstraintLayout mContent;
     @ViewById(R.id.layout_dashboard_refresh)
-    BGARefreshLayout mRefreshLayout;
+    RefreshLayout mRefreshLayout;
     @ViewById(R.id.rv_dashboard_list)
     RecyclerView mCardList;
 
@@ -77,17 +79,19 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @ViewById(R.id.layout_dashboard_error)
     View mLayoutError;
 
+    private Handler mHandler = new Handler(Looper.getMainLooper());
+
     private int mDataSource;
     private BaseArrayAdapter<Object> mAdapter;
     private LinearLayoutManager mLayoutManager;
-    private BGANormalRefreshViewHolder mRefreshHeaderHolder;
+    private RefreshViewHolder mRefreshHeaderHolder;
 
     private ShopMenuAdapter mShopMenuAdapter;
-    private Drawable mShopMenuBg;
     private TextView mShopMenuTitle;
     private ShopItem mShopMenuItem;
 
     private int mStatusBarHeight;
+    private int mTopBarHeight;
     private int mTopShopMenuHeight;
     private ShopMenuPopupHelper mShopMenuPopupHelper;
 
@@ -95,46 +99,42 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     void init() {
         mPresenter = new DashboardPresenter();
         mPresenter.attachView(this);
-        initView();
-        mContentGroup.setVisibility(View.INVISIBLE);
-        showLoadingDialog();
         mPresenter.init();
+        showLoading();
+        mHandler.post(this::initView);
     }
 
     private void initView() {
-        FragmentActivity activity = getActivity();
-        if (activity == null || activity.isDestroyed()) {
-            return;
-        }
-        StatusBarUtils.setStatusBarFullTransparent(activity);
-        initShopMenu();
-        initRefreshLayout();
-        initRecycler();
-        initDimens();
-//        mShopMenu.setAlpha(0.2f);
-    }
-
-    private void initDimens() {
-        mShopMenu.post(() -> {
-            Context context = getContext();
-            if (context == null) {
-                return;
-            }
-            mStatusBarHeight = Utils.getStatusBarHeight(context);
-            mTopShopMenuHeight = mShopMenu.getMeasuredHeight();
-            mTopPeriodTab.setPadding(0, mStatusBarHeight, 0, 0);
-//            View refreshHeaderView = mRefreshHeaderHolder.getRefreshHeaderView();
-//            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) refreshHeaderView.getLayoutParams();
-//            lp.topMargin = mTopShopMenuHeight;
-        });
-    }
-
-    private void initShopMenu() {
         Context context = getContext();
         if (context == null) {
             return;
         }
-        mShopMenuBg = ContextCompat.getDrawable(context, R.drawable.dashboard_bg_top);
+        initDimens(context);
+        initTopBar(context);
+        initRefreshLayout(context);
+        initRecycler(context);
+    }
+
+    private void initDimens(Context context) {
+        mStatusBarHeight = Utils.getStatusBarHeight(context);
+        mTopBarHeight = (int) context.getResources().getDimension(R.dimen.dp_44) + mStatusBarHeight;
+        mTopShopMenuHeight = (int) context.getResources().getDimension(R.dimen.dp_64) + mStatusBarHeight;
+    }
+
+    private void initTopBar(Context context) {
+        // 初始化设置状态栏
+        FragmentActivity activity = getActivity();
+        if (activity != null && !activity.isDestroyed()) {
+            StatusBarUtils.setStatusBarFullTransparent(activity);
+        }
+
+        // 初始化设置TopBar高度和Padding
+        mTopPeriodTab.getLayoutParams().height = mTopBarHeight;
+        mTopPeriodTab.setPadding(0, mStatusBarHeight, 0, 0);
+        mShopMenu.getLayoutParams().height = mTopShopMenuHeight;
+        mShopMenu.setPadding(0, mStatusBarHeight, 0, 0);
+
+        // 初始化设置顶部门店选择下拉列表
         mShopMenuPopupHelper = new ShopMenuPopupHelper(context, mContent, mOverlay);
         mShopMenu.setLayoutManager(new ShopMenuLayoutManager(context));
         mShopMenu.setPopupHelper(mShopMenuPopupHelper);
@@ -155,16 +155,15 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mOverlay.setOnClickListener(v -> mShopMenu.getPopup().dismiss(true));
     }
 
-    private void initRefreshLayout() {
-        mRefreshHeaderHolder = new BGANormalRefreshViewHolder(getContext(), false);
-        mRefreshHeaderHolder.setRefreshViewBackgroundColorRes(R.color.color_303540);
+    private void initRefreshLayout(Context context) {
+        mRefreshHeaderHolder = new RefreshViewHolder(getContext(), false);
         mRefreshLayout.setDelegate(this);
-        mRefreshLayout.setRefreshViewHolder(mRefreshHeaderHolder);
+        mRefreshLayout.setRefreshViewHolder(mRefreshHeaderHolder, mTopShopMenuHeight);
         mRefreshLayout.setPullDownRefreshEnable(true);
         mRefreshLayout.setIsShowLoadingMoreView(false);
     }
 
-    private void initRecycler() {
+    private void initRecycler(Context context) {
         RecyclerView.ItemAnimator animator = mCardList.getItemAnimator();
         if (animator instanceof SimpleItemAnimator) {
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
@@ -174,6 +173,11 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mCardList.setLayoutManager(mLayoutManager);
         mCardList.addOnScrollListener(new ItemStickyListener());
         mCardList.setAdapter(mAdapter);
+    }
+
+    private void showLoading() {
+        mContentGroup.setVisibility(View.INVISIBLE);
+        showLoadingDialog();
     }
 
     private void resetTopView() {
@@ -234,9 +238,10 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mContentGroup.setVisibility(View.VISIBLE);
         mLayoutError.setVisibility(View.GONE);
         mDataSource = dataSource;
-        if (mAdapter == null || data == null) {
+        if (mAdapter == null || data == null || data.isEmpty()) {
             return;
         }
+        data.get(0).setMargin(0, mTopShopMenuHeight, 0, 0);
         List<Object> list = new ArrayList<>(data.size());
         for (int i = 0, size = data.size(); i < size; i++) {
             BaseRefreshItem item = data.get(i);
@@ -256,13 +261,13 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     @Override
-    public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
+    public void onRefreshLayoutBeginRefreshing(RefreshLayout refreshLayout) {
         mPresenter.refresh(true);
         refreshLayout.postDelayed(refreshLayout::endRefreshing, 500);
     }
 
     @Override
-    public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
+    public boolean onRefreshLayoutBeginLoadingMore(RefreshLayout refreshLayout) {
         return false;
     }
 
@@ -274,6 +279,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
                 CommonNotifications.shopSwitched,
                 CommonNotifications.shopNameChanged,
                 CommonNotifications.importShop,
+                CommonNotifications.shopCreate,
                 IpcConstants.refreshIpcList
         };
     }
@@ -286,7 +292,8 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             mPresenter.init();
         } else if (id == CommonNotifications.shopSwitched
                 || id == CommonNotifications.shopNameChanged
-                || id == CommonNotifications.importShop) {
+                || id == CommonNotifications.importShop
+                || id == CommonNotifications.shopCreate) {
             mPresenter.init();
         } else if (id == IpcConstants.refreshIpcList) {
             mPresenter.reload();
@@ -339,20 +346,24 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
                 topBar.getLocationInWindow(coordinate);
                 position = coordinate[1];
             }
-
+            LogCat.d(TAG, "onScroll=" + position + "; topHeight=" + mTopShopMenuHeight);
             Context context = recyclerView.getContext();
-            if (mIsStickyTop && position > 0) {
+            if (mIsStickyTop && !showSticky(position)) {
                 mIsStickyTop = false;
                 hideStickyTop(context);
-            } else if (!mIsStickyTop && position < 0) {
+            } else if (!mIsStickyTop && showSticky(position)) {
                 mIsStickyTop = true;
                 showStickyTop(context);
             }
-            if (position > 0 && mDataSource != 0) {
+            if (!showSticky(position) && mDataSource != 0) {
                 int offset = Math.min(position - mTopShopMenuHeight, 0);
                 mShopMenu.setTranslationY(offset);
                 mShopMenuPopupHelper.setOffset(offset);
             }
+        }
+
+        private boolean showSticky(int position) {
+            return position <= 0;
         }
     }
 

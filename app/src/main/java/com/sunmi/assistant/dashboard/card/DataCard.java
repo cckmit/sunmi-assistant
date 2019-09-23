@@ -32,6 +32,7 @@ import sunmi.common.rpc.retrofit.RetrofitCallback;
  */
 public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
 
+    private static final int NUM_100_MILLION = 100000000;
 
     public DataCard(Context context, DashboardContract.Presenter presenter) {
         super(context, presenter);

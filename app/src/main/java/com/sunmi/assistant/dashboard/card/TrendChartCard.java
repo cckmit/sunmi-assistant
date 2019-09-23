@@ -105,7 +105,7 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
     @NonNull
     @Override
     public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
-        BaseViewHolder<Model> holder = new BaseViewHolder<>(view, type);
+        BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
         LineChart lineChart = holder.getView(R.id.view_dashboard_line_chart);
         BarChart barChart = holder.getView(R.id.view_dashboard_bar_chart);
         Context context = view.getContext();
