@@ -60,7 +60,6 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
 
     @Override
     protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, CardCallback callback) {
-        Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(Constants.TIME_PERIOD_TODAY);
         if (showTransactionData()) {
             loadSales(companyId, shopId, period, callback);
         } else if (showConsumerData()) {
