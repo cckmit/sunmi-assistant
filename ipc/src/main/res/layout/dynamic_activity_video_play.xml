@@ -138,9 +138,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableTop="@mipmap/ic_video_play_error"
-            android:drawablePadding="@dimen/dp_26"
+            android:drawablePadding="@dimen/dp_24"
             android:text="@string/tip_network_fail_retry"
-            android:textColor="@color/color_666666"
+            android:textColor="@color/white_60a"
             android:textSize="@dimen/sp_12" />
 
         <TextView
@@ -150,8 +150,8 @@
             android:layout_marginTop="@dimen/dp_24"
             android:background="@drawable/setting_bg_tip_btn"
             android:gravity="center"
-            android:text="@string/str_retry"
-            android:textColor="@color/c_white"
+            android:text="@string/str_refresh"
+            android:textColor="@color/white_80a"
             android:textSize="@dimen/sp_16" />
     </LinearLayout>
 
