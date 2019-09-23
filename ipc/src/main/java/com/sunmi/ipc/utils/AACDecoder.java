@@ -21,23 +21,26 @@ public class AACDecoder {
 
     private static final String TAG = "AACDecoderUtil";
 
-    private static final int KEY_CHANNEL_COUNT = 2;//声道数
-    private static final int KEY_SAMPLE_RATE = 8000;//采样率
+    private static final int DEFAULT_SAMPLE_RATE = 4000;//默认采样率
     private static final int KEY_BIT_RATE = 128000;//比特率
 
     private MusicAudioTrack audioTrack; //用于播放解码后的pcm
 
     private MediaCodec mDecoder; //解码器
 
+    private MediaFormat mediaFormat = new MediaFormat();
+
     private MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();//编解码器缓冲区
 
     private int count = 0;//用来记录解码失败的帧数
+
+    private int channelCount = 2;//声道数
+    private int sampleRate = 8000;//采样率
 
     private boolean isRunning;
 
     public AACDecoder() {
         isRunning = true;
-        decodeInit();
         ThreadPool.getCachedThreadPool().submit(new DecodeAACWorker());//开启解码线程
     }
 
@@ -70,20 +73,16 @@ public class AACDecoder {
      * 初始化解码器
      */
     private void decodeInit() {
-        // 初始化AudioTrack
-        audioTrack = new MusicAudioTrack(KEY_SAMPLE_RATE, AudioFormat.CHANNEL_OUT_STEREO,
-                AudioFormat.ENCODING_PCM_16BIT);
-        audioTrack.init();
+        initAudioTrack();
         try {
             //需要解码数据的类型
             String mine = "audio/mp4a-latm";
             //初始化解码器
             mDecoder = MediaCodec.createDecoderByType(mine);
             //MediaFormat用于描述音视频数据的相关参数
-            MediaFormat mediaFormat = new MediaFormat();
+            mediaFormat.setInteger(MediaFormat.KEY_CHANNEL_COUNT, channelCount);
+            mediaFormat.setInteger(MediaFormat.KEY_SAMPLE_RATE, sampleRate);
             mediaFormat.setString(MediaFormat.KEY_MIME, mine);//数据类型
-            mediaFormat.setInteger(MediaFormat.KEY_CHANNEL_COUNT, KEY_CHANNEL_COUNT); //声道个数
-            mediaFormat.setInteger(MediaFormat.KEY_SAMPLE_RATE, KEY_SAMPLE_RATE); //采样率
             mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, KEY_BIT_RATE); //比特率
             mediaFormat.setInteger(MediaFormat.KEY_IS_ADTS, 0);//用来标记AAC是否有adts头，1->有
             mediaFormat.setInteger(MediaFormat.KEY_AAC_PROFILE,
@@ -104,6 +103,12 @@ public class AACDecoder {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void initAudioTrack() {
+        audioTrack = new MusicAudioTrack(sampleRate, AudioFormat.CHANNEL_OUT_STEREO,
+                AudioFormat.ENCODING_PCM_16BIT);
+        audioTrack.init();
     }
 
     /**
@@ -188,6 +193,11 @@ public class AACDecoder {
 //                            LogCat.e(TAG, "888888aaa AUDIO play 333");
                             decode(data, 0, data.length);
 //                            LogCat.e(TAG, "888888aaa AUDIO play 444");
+                        } else {
+                            int channelC = (readData[14] >> 3) & 0x0F;
+                            channelCount = channelC;
+                            sampleRate = channelC * DEFAULT_SAMPLE_RATE;
+                            decodeInit();
                         }
                     }
                 }

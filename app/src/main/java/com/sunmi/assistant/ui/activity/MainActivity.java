@@ -187,8 +187,7 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
         }
         MainTab[] mainTabs = MainTab.values();
         for (MainTab mainTab : mainTabs) {
-            if (CommonHelper.isGooglePlay() && TextUtils.equals(getString(mainTab.getResName()),
-                    getString(R.string.str_tab_support))) {//saas平台需要显示数据tab
+            if (isHideTab(mainTab)) {//saas平台需要显示数据tab
                 continue;
             }
             TabHost.TabSpec tab = mTabHost.newTabSpec(getString(mainTab.getResName()));
@@ -211,6 +210,12 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
 
         mTabHost.setCurrentTab(0);
         mTabHost.setOnTabChangedListener(this);
+    }
+
+    private boolean isHideTab(MainTab mainTab) {
+        return CommonHelper.isGooglePlay() &&
+                (TextUtils.equals(getString(mainTab.getResName()), getString(R.string.str_tab_support))
+                        || TextUtils.equals(getString(mainTab.getResName()), getString(R.string.str_tab_support)));
     }
 
     private Fragment getFragment(String tag) {

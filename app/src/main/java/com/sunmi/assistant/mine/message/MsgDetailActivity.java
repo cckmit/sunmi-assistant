@@ -30,6 +30,7 @@ import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.utils.NetworkUtils;
+import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.TitleBarView;
 
 @EActivity(R.layout.activity_msg_detail)
@@ -60,6 +61,7 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
 
     @AfterViews
     void init() {
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         titleBar.setAppTitle(MessageUtils.getInstance().getMsgFirst(modelName));
         titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
         mPresenter = new MessageDetailPresenter();

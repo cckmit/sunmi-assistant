@@ -32,6 +32,7 @@ import sunmi.common.utils.FileHelper;
 import sunmi.common.utils.FileUtils;
 import sunmi.common.utils.PermissionUtils;
 import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.tablayout.CommonTabLayout;
 import sunmi.common.view.tablayout.listener.CustomTabEntity;
@@ -62,6 +63,7 @@ public class MsgCenterActivity extends BaseActivity implements View.OnClickListe
 
     @AfterViews
     void init() {
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         titleBar.getRightTextView().setOnClickListener(this);
         titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
         tabEntities.add(new TabEntity(getString(R.string.str_device_msg)));

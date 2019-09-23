@@ -50,44 +50,39 @@ public class IOTCClient {
     }
 
     public void init() {
-        LogCat.e(TAG, "StreamClient init...");
-        int ret = IOTCAPIs.IOTC_Initialize2(0);//step 1
+        int ret = IOTCAPIs.IOTC_Initialize2(0);
         LogCat.e(TAG, "IOTC_Initialize() ret = " + ret);
         if (ret != IOTCAPIs.IOTC_ER_NoERROR) {
-            LogCat.e(TAG, "IOTCAPIs_Device exit...!!");
-            if (IOTCAPIs.IOTC_ER_ALREADY_INITIALIZED == ret) {
+            if (IOTCAPIs.IOTC_ER_ALREADY_INITIALIZED != ret) {
                 IOTCAPIs.IOTC_DeInitialize();
+                if (callback != null) {
+                    callback.initFail();
+                }
+                return;
             }//todo
-            if (callback != null) {
-                callback.initFail();
-            }
-            return;
         }
 
-        // alloc 3 sessions for video and two-way audio
-        AVAPIs.avInitialize(3);//step 2
+        AVAPIs.avInitialize(3);// alloc 3 sessions for video and two-way audio
 
-        SID = IOTCAPIs.IOTC_Get_SessionID();//step 3
+        SID = IOTCAPIs.IOTC_Get_SessionID();
+        LogCat.e(TAG, "IOTC_Get_SessionID error code, sid = " + SID);
         if (SID < 0) {
-            LogCat.e(TAG, "IOTC_Get_SessionID error code, sid = " + SID);
             IOTCAPIs.IOTC_DeInitialize();
             if (callback != null) {
                 callback.initFail();
             }
             return;
         }
-        LogCat.e(TAG, "Step 1: call IOTC_Get_SessionID, uid = " + uid);
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                LogCat.e(TAG, "Step 2: call IOTC_Connect_ByUID_Parallel timeout,ret = " + IOTC_CONNECT_RESULT);
                 timer.cancel();
                 if (alreadyQuit) {
                     return;
                 }
                 if (IOTC_CONNECT_RESULT < 0) {
-                    LogCat.e(TAG, "Step 2: call IOTC_Connect_ByUID_Parallel timeout, quit");
+                    LogCat.e(TAG, "IOTC_Connect_ByUID_Parallel timeout, quit");
                     IOTCAPIs.IOTC_Connect_Stop_BySID(SID);
                     AVAPIs.avDeInitialize();
                     if (callback != null) {
@@ -98,11 +93,11 @@ public class IOTCClient {
         }, IOTC_CONNECT_TIMEOUT, 1000);
 
         IOTC_CONNECT_RESULT = IOTCAPIs.IOTC_Connect_ByUID_Parallel(uid, SID);//step 4
+        LogCat.e(TAG, "IOTC_CONNECT_RESULT = " + IOTC_CONNECT_RESULT);
         if (IOTC_CONNECT_RESULT < 0 || alreadyQuit) {
             LogCat.e(TAG, "IOTC_Connect_ByUID_Parallel failed ret = " + IOTC_CONNECT_RESULT);
             return;
         }
-        LogCat.e(TAG, "Step 2: call IOTC_Connect_ByUID_Parallel, uid = " + uid);
 
         String account = "admin";
         String password = "12345678";//8Qi0ZLkwv3VP0W
@@ -124,7 +119,7 @@ public class IOTCClient {
             IOTC_CONNECT_RESULT = -1000;
             return;
         }
-        LogCat.e(TAG, "Step 3: call avClientStartEx, avIndex = " + avIndex);
+        LogCat.e(TAG, "AVAPIs.avClientStart2, avIndex = " + avIndex);
         startPlay();
         Thread videoThread = new Thread(new VideoThread(avIndex), "Video Thread");
         Thread audioThread = new Thread(new AudioThread(avIndex), "Audio Thread");
@@ -282,26 +277,21 @@ public class IOTCClient {
     }
 
     private void cmdCall(final IotcCmdReq cmd) {
-        ThreadPool.getSingleThreadPool().execute(new Runnable() {
-            @Override
-            public void run() {
-                String json = new Gson().toJson(cmd);
-                byte[] req = json.getBytes();
-                IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
-                getCmdResponse();
-            }
+        ThreadPool.getSingleThreadPool().execute(() -> {
+            String json = new Gson().toJson(cmd);
+            byte[] req = json.getBytes();
+            IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
+            getCmdResponse();
         });
     }
 
     private void cmdCall(final int cmd, final IotcCmdReq cmdReq, final P2pCmdCallback callback) {
-        ThreadPool.getSingleThreadPool().execute(new Runnable() {
-            @Override
-            public void run() {
-                String json = new Gson().toJson(cmdReq);
-                byte[] req = json.getBytes();
-                IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
-                getCmdResponse(cmd, callback);
-            }
+        ThreadPool.getSingleThreadPool().execute(() -> {
+            String json = new Gson().toJson(cmdReq);
+            byte[] req = json.getBytes();
+            LogCat.e(TAG, "99999999 cmdReq = " + cmdReq.toString());
+            IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
+            getCmdResponse(cmd, callback);
         });
     }
 
@@ -312,6 +302,7 @@ public class IOTCClient {
             byte[] data = new byte[actualLen];
             System.arraycopy(buf, 0, data, 0, actualLen);
             String result = ByteUtils.byte2String(data);
+            LogCat.e(TAG, "99999999 result = " + result);
             try {
                 IotcCmdResp cmdBean;
                 if (CMD_PLAYBACK_LIST == cmd) {

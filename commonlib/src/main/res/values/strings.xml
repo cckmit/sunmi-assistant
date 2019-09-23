@@ -17,18 +17,16 @@
     <string name="str_click_consent">By clicking the button of "Start Configuration", you agree</string>
     <string name="sunmi_user_protocol">《Sunmi User Protocol》</string>
     <string name="str_privacy">《Privacy Policy》</string>
-    <string name="str_and">&#160;and&#160;</string>
-    <!-- Network -->
+    <string name="str_and"> and </string>
     <string name="network_disconnect">Network disconnected</string>
     <string name="toast_networkIsExceptional">Current network abnormal</string>
     <string name="toast_serverNoResponse">Please detect the network anomalies</string>
     <string name="network_connected">Network connected</string>
     <string name="server_noreponse">No response from the server</string>
-    <string name="toast_network_error">网络异常，请检查网络设置</string>
-    <string name="network_error">当前网络异常</string>
-    <string name="network_error_tip">请检查网络后刷新页面～</string>
-    <string name="info_empty">暂无服务信息</string>
-
+    <string name="toast_network_error">Network exception, please check the network settings</string>
+    <string name="network_error">Network exception</string>
+    <string name="network_error_tip">Please check your network and refresh</string>
+    <string name="info_empty">No service message</string>
     <string name="tip_granted">Authoized</string>
     <string name="tip_permission_ungranted">Deny authorization may influence the use of some functions</string>
     <string name="permission_granted">The permission is granted from your mobile phon</string>
@@ -84,7 +82,7 @@
     <string name="tip_no_device_found">No device found</string>
     <string name="str_check_net">Please check the status of network</string>
     <string name="str_net_exception">Network connection exception, please check and try again</string>
-    <string name="str_server_exception">服务器连接异常，请检查后重试</string>
+    <string name="str_server_exception">Server connection exception, please check and try again</string>
     <string name="str_btn_try_again">Click to try again</string>
     <string name="tip_forbid_by_server">The request has been denied by server</string>
     <string name="str_bind_success">Bind success</string>
@@ -95,13 +93,12 @@
     <string name="str_delete_success">Delete successfully</string>
     <string name="str_delete_fail">Delete failed</string>
     <string name="tip_play_fail">Playback failed</string>
-    <string name="company_shop_new_create_or_import">您可以选择新建一家门店，或从其他软件平台导入已有门店。</string>
-    <string name="company_shop_new_create">新建门店</string>
-    <string name="company_shop_import">导入门店</string>
+    <string name="company_shop_new_create_or_import">You can create a new shop or import from other software platforms</string>
+    <string name="company_shop_new_create">Create Shop</string>
+    <string name="company_shop_import">Import Shop</string>
     <string name="update_app_exception">版本更新异常,请检查网络连接状态是否良好。</string>
-    <string name="str_loding_more">加载中</string>
-    <string name="tip_no_more_data">没有更多数据了</string>
-
+    <string name="str_loding_more">Loading</string>
+    <string name="tip_no_more_data">No more data</string>
     <string name="picker_title">选择照片</string>
     <string name="picker_toast_no_permission">Permission denied!</string>
     <string name="picker_toast_no_camera">No camera app installed.</string>
@@ -117,14 +114,11 @@
     <string name="ipc_setting_detection_day_friday">Friday</string>
     <string name="ipc_setting_detection_day_saturday">Saturday</string>
     <string name="ipc_setting_detection_day_sunday">Sunday</string>
-
-    <string name="sunmi_device_w1">W1路由器</string>
+    <string name="sunmi_device_w1">W1 Router</string>
     <string name="sunmi_device_printer">云打印机</string>
     <string name="sunmi_device_fs">AI识客摄像机FM020</string>
     <string name="sunmi_device_ss">智能看店摄像机FM010</string>
-    <string name="sunmi_device_more">更多支持设备\n敬请期待…</string>
-
-    <string name="str_setting_detail">View</string>
+    <string name="sunmi_device_more">Coming soon</string>
+    <string name="str_setting_detail">查看详情</string>
     <string name="str_coming_soon">敬请期待</string>
-
 </resources>

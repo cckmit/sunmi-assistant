@@ -84,6 +84,13 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         implements IpcManagerContract.View, SurfaceHolder.Callback, IOTCClient.Callback,
         IVideoPlayer.VideoPlayListener, ZFTimeLine.OnZFTimeLineListener, View.OnClickListener {
 
+    private final static int PLAY_TYPE_LIVE = 0;          // 直播
+    private final static int PLAY_TYPE_PLAYBACK_DEV = 1;  // 设备回放
+    private final static int PLAY_TYPE_PLAYBACK_CLOUD = 2;// 云回放
+
+    private final static long threeDaysSeconds = 3 * 24 * 60 * 60;//3天秒数
+    private final static int tenMinutes = 10 * 60;//10分钟
+
     @ViewById(resName = "rl_screen")
     LinearLayout rlScreen;
     @ViewById(resName = "title_bar")
@@ -152,7 +159,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     SunmiDevice device;
 
     private int screenW; //手机屏幕的宽
-    private int playType;// 0直播  1设备回放 2云回放
+    private int playType;
     private boolean isPaused;//回放是否暂停
     private int qualityType = 0;//0-超清，1-高清
 
@@ -166,10 +173,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private Calendar calendar;
     //当前时间 ，三天前秒数
     private long currentDateSeconds, threeDaysBeforeSeconds;
-    //3天秒数
-    private long threeDaysSeconds = 3 * 24 * 60 * 60;
-    //10分钟
-    private int tenMinutes = 10 * 60;
+
     //刻度尺移动定时器
     private ScheduledExecutorService executorService;
     //滑动停止的时间戳
@@ -364,7 +368,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     //画质
     @Click(resName = "tv_quality")
     void qualityClick() {
-        if (playType != 0) {
+        if (playType != PLAY_TYPE_LIVE) {
             return;
         }
         llVideoQuality.setVisibility(llVideoQuality.isShown() ? View.GONE : View.VISIBLE);
@@ -380,7 +384,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     //画质
     @Click(resName = "tv_quality_portrait")
     void qualityPortraitClick() {
-        if (playType == 0) {
+        if (playType == PLAY_TYPE_LIVE) {
             switchQuality();
         }
     }
@@ -400,19 +404,16 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     //开始，暂停
     @Click(resName = "iv_play")
     void pausePlayClick() {
-        if (isFastClick(1000)) {
-            return;
-        }
-        if (playType == 0) {
+        if (isFastClick(1000) || playType == PLAY_TYPE_LIVE) {
             return;
         }
         ivPlay.setBackgroundResource(isPaused ? R.mipmap.pause_normal : R.mipmap.play_normal);
         isPaused = !isPaused;
-        if (playType == 1) {
+        if (playType == PLAY_TYPE_PLAYBACK_DEV) {
             if (iotcClient != null) {
                 iotcClient.pausePlayback(isPaused);
             }
-        } else if (playType == 2) {
+        } else if (playType == PLAY_TYPE_PLAYBACK_CLOUD) {
             if (isPaused) {
                 ivpCloud.pause();
             } else {
@@ -439,6 +440,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     //点击屏幕
     @Click(resName = "rl_video")
     void screenClick() {
+        if (llPlayFail != null && llPlayFail.isShown()) {
+            return;
+        }
         if (isControlPanelShow) {
             hideControllerPanel();
             isControlPanelShow = false;
@@ -450,6 +454,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     @Click(resName = "tv_retry")
     void retryClick() {
+        isControlPanelShow = false;
         setPlayFailVisibility(View.GONE);
         showVideoLoading();
         initP2pLive();
@@ -465,7 +470,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                 return;
             }
             setPanelVisible(View.VISIBLE);
-            if (playType == 0 && iotcClient != null) {
+            if (playType == PLAY_TYPE_LIVE && iotcClient != null) {
                 showVideoLoading();
                 iotcClient.startPlay();
             }
@@ -480,9 +485,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     //放后台
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        if ((playType == 1 || playType == 2) && !isPaused) {
+        if (playType != PLAY_TYPE_LIVE && !isPaused) {
             pausePlayClick();
-        } else if (playType == 0 && iotcClient != null) {
+        } else if (playType == PLAY_TYPE_LIVE && iotcClient != null) {
             iotcClient.stopLive();
             if (audioDecoder != null) {
                 audioDecoder.stopRunning();
@@ -495,9 +500,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         hideVideoLoading();
     }
 
+    @UiThread
     @Override
     public void initFail() {
         hideVideoLoading();
+        hideControllerPanel();
+        isControlPanelShow = true;
         setPlayFailVisibility(View.VISIBLE);
     }
 
@@ -506,6 +514,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         setPlayFailVisibility(View.GONE);
         if (videoDecoder != null) {
             videoDecoder.setVideoData(videoBuffer);
+        }
+        if (playType == PLAY_TYPE_LIVE) {
+            hideVideoLoading();
+        } else if (playType == PLAY_TYPE_PLAYBACK_DEV && (tvTimeScroll != null && tvTimeScroll.isShown())) {
+            hideVideoLoading();
+            hideTimeScroll();
         }
     }
 
@@ -534,11 +548,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @Override
     public void getCloudTimeSlotFail() {
         if (listAp == null || listAp.size() == 0) {
-            LogCat.e(TAG, "88888888 aa");
             hideVideoLoading();
             switch2Live();//无ap且无cloud的时间列表
         } else {
-            LogCat.e(TAG, "88888888 bb");
             timeCanvasList(listAp); //ap时间列表>0且cloud列表=0
         }
     }
@@ -642,8 +654,13 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         ivpCloud.setVisibility(type == 2 ? View.VISIBLE : View.GONE);
         videoView.setVisibility(type != 2 ? View.VISIBLE : View.GONE);
         ivLive.setVisibility(type != 0 ? View.VISIBLE : View.GONE);
-        tvQualityP.setClickable(type == 0);
-        tvQualityP.setTextColor(type == 0 ? ContextCompat.getColor(context, R.color.c_white)
+        setTextViewClickable(tvQuality, type == 0);
+        setTextViewClickable(tvQualityP, type == 0);
+    }
+
+    private void setTextViewClickable(TextView textView, boolean clickable) {
+        textView.setClickable(clickable);
+        textView.setTextColor(clickable ? ContextCompat.getColor(context, R.color.c_white)
                 : ContextCompat.getColor(context, R.color.white_40a));
     }
 
@@ -787,7 +804,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         isFirstScroll = true;
         showVideoLoading();
         //如果是云端回放此时需要调用停止操作然后直播
-        if (playType == 2) {
+        if (playType == PLAY_TYPE_PLAYBACK_CLOUD) {
             cloudPlayDestroy();
         }
         //当前时间秒数 TODO 需优化播放中渲染的时间
@@ -804,7 +821,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
      */
     void switch2DevPlayback(long start) {
         showVideoLoading();
-        if (playType == 2) {
+        if (playType == PLAY_TYPE_PLAYBACK_CLOUD) {
             cloudPlayDestroy();
         }
         mPresenter.startPlayback(iotcClient, start);
@@ -817,12 +834,10 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
      */
     void switch2CloudPlayback(long start, long end) {
         showVideoLoading();
-        if (playType != 2) {
-            if (playType == 1) {
-                iotcClient.stopPlayback();//先停止设备回放
-            } else {
-                iotcClient.stopLive();//先停止直播
-            }
+        if (playType == PLAY_TYPE_PLAYBACK_DEV) {
+            iotcClient.stopPlayback();//先停止设备回放
+        } else if (playType == PLAY_TYPE_LIVE) {
+            iotcClient.stopLive();//先停止直播
         }
         mPresenter.getCloudVideoList(device.getId(), start, end);
     }
@@ -933,7 +948,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         LogCat.e(TAG, "11111 moveTo currentInteval = " + scalePanel.getCurrentInterval());
         scalePanel.autoMove();
         //自动滑动时下一个视频ap还是cloud播放
-        if (playType != 0 && isVideoLess1Minute) {
+        if (playType != PLAY_TYPE_LIVE && isVideoLess1Minute) {
             isVideoLess1Minute = false;
             switch2Playback(scalePanel.getCurrentInterval());
         }
@@ -953,11 +968,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         scalePanel.setVideoData(listAp);
         scalePanel.refresh();
         if (isFirstScroll && !isSelectedDate) {
-            LogCat.e(TAG, "11111 timeCanvasList isFirstScroll ok= " + scalePanel.getCurrentInterval());
             isFirstScroll = false;
             selectedTimeIsHaveVideo(selectedDate); //初始化左滑渲染及回放
         } else {
-            LogCat.e(TAG, "11111 timeCanvasList isFirstScroll no");
             if (isSelectedDate) {
                 selectedTimeIsHaveVideo(selectedDate);//滑动到选择日期
             } else {
@@ -979,7 +992,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             isSelectedDate = false;
             scrollTime = System.currentTimeMillis();
             setCalendarText(String.format("%td", new Date()));
-            if (playType == 0) {
+            if (playType == PLAY_TYPE_LIVE) {
                 return;
             }
             switch2Live();
@@ -1028,7 +1041,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
      * 2 点击直播按钮
      */
     private void scrollCurrentLive() {
-        playType = 0;
+        playType = PLAY_TYPE_LIVE;
         scalePanel.refreshNow();
         openMove();
     }
@@ -1243,15 +1256,14 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     @Override
     public void didMoveToDate(String date, long timeStamp) {
-        LogCat.e(TAG, "11111 didMoveToDate, " + date + ",  " + timeStamp);
-        handler.postDelayed(() -> tvTimeScroll.setVisibility(View.GONE), 500);
-        if (timeStamp > System.currentTimeMillis() / 1000) {
+        hideTimeScroll();
+        if (timeStamp > System.currentTimeMillis() / 1000) {//超过当前时间
             shortTip(getString(R.string.ipc_time_over_current_time));
-            if (playType == 0) {//超过当前时间--当前处于直播
+            if (playType == PLAY_TYPE_LIVE) {//当前处于直播
                 scrollCurrentLive();
-                return;
+            } else {//当前处于回放
+                switch2Live();
             }
-            switch2Live(); //超过当前时间--当前处于回放
             return;
         }
         if (timeStamp < threeDaysBeforeSeconds) {
@@ -1293,6 +1305,11 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         }
     }
 
+    @UiThread
+    void hideTimeScroll() {
+        handler.postDelayed(() -> tvTimeScroll.setVisibility(View.GONE), 500);
+    }
+
     private void switchQuality() {
         if (qualityPop == null) {
             qualityPop = new BottomPopMenu.Builder(this)
@@ -1312,10 +1329,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                 getString(R.string.str_view_face_history), getString(R.string.str_coming_soon)));
         list.add(new IpcManageBean(R.mipmap.ipc_manage_md, getString(R.string.str_motion_detection),
                 getString(R.string.str_md_exception), getString(R.string.str_coming_soon)));
-//        list.add(new IpcManageBean(R.mipmap.ipc_manage_cashier, getString(R.string.str_cashier),
-//                getString(R.string.str_view_flow_video), getString(R.string.str_setting_detail)));
-//        list.add(new IpcManageBean(R.mipmap.ipc_manage_cloud_storage, getString(R.string.str_cloud_storage),
-//                getString(R.string.str_cloud_storage_service), getString(R.string.str_setting_detail)));
         CommonListAdapter adapter = new CommonListAdapter<IpcManageBean>(context,
                 R.layout.item_ipc_manager, list) {
             @Override

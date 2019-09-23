@@ -68,7 +68,9 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
 
             @Override
             public void onError() {
-
+                if (isViewAttached()) {
+                    mView.getDeviceTimeSlotSuccess(null);
+                }
             }
         });
     }
