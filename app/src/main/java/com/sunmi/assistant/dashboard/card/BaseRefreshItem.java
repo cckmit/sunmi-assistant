@@ -92,6 +92,10 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
         return mModel;
     }
 
+    public int getSource() {
+        return mDataSource;
+    }
+
     public int getPeriod() {
         return mPeriod;
     }
