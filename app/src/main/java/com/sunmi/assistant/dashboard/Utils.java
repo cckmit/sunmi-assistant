@@ -5,11 +5,13 @@ import android.content.Context;
 import android.util.Pair;
 import android.util.SparseArray;
 
+import com.github.mikephil.charting.data.BarEntry;
 import com.sunmi.assistant.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -161,5 +163,17 @@ public class Utils {
         synchronized (DATE_FORMAT_DATE_TIME) {
             return DATE_FORMAT_DATE_TIME.format(new Date(timestamp));
         }
+    }
+
+    public static String getMonthName(List<BarEntry> data) {
+        Calendar c = Calendar.getInstance();
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DATE);
+        if (day == 1 && data.size() >= 28) {
+            month = (month + 11) % 12;
+        } else if (day >= 28 && data.size() == 1) {
+            month = (month + 1) % 12;
+        }
+        return String.format(Locale.getDefault(), "%02d-", month + 1);
     }
 }

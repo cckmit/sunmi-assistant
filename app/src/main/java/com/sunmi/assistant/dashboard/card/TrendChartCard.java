@@ -299,6 +299,11 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
         // Refresh data set
         if (model.type == Constants.DATA_TYPE_RATE) {
             mLineChartMarker.setType(model.type);
+            if (model.period == Constants.TIME_PERIOD_MONTH) {
+                mLineChartMarker.setTip(Utils.getMonthName(dataSet));
+            } else {
+                mLineChartMarker.setTip("");
+            }
             LineDataSet set;
             LineData data = line.getData();
             ArrayList<Entry> values = new ArrayList<>(dataSet);
@@ -326,6 +331,11 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
             line.animateX(300);
         } else {
             mBarChartMarker.setType(model.type);
+            if (model.period == Constants.TIME_PERIOD_MONTH) {
+                mBarChartMarker.setTip(Utils.getMonthName(dataSet));
+            } else {
+                mBarChartMarker.setTip("");
+            }
             float barWidthRatio = calcBarWidth(model.period);
             int color = model.type == Constants.DATA_TYPE_VOLUME ?
                     ContextCompat.getColor(holder.getContext(), R.color.color_FFD0B3) :
