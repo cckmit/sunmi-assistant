@@ -55,8 +55,8 @@ android {
                     APP_NAME        : "商米助手test",
                     MTA_APPKEY      : "A6INR132MGAI",
                     MTA_CHANNEL     : "myapp"]
-            minifyEnabled false
-            signingConfig signingConfigs.sign
+//            minifyEnabled false
+//            signingConfig signingConfigs.sign
         }
 
         release {

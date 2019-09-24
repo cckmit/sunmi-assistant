@@ -54,12 +54,12 @@ public class GetUserInfoUtils {
         CloudApi.checkSession(new RpcCallback(context, false) {
             @Override
             public void onSuccess(int code, String msg, String data) {
-                GotoActivityUtils.gotoMainActivity(context);
+                GotoActivityUtils.gotoMainActivityClearTask(context);
             }
 
             @Override
             public void onError(int code, String msg, String data) {
-                GotoActivityUtils.gotoMainActivity(context);
+                GotoActivityUtils.gotoMainActivityClearTask(context);
             }
         });
     }
