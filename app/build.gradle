@@ -116,12 +116,12 @@ dependencies {
     implementation project(':sunmiservice')
     implementation project(':cloudprinter')
     implementation project(':ipc')
+    implementation project(':MPChartLib')
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     annotationProcessor "org.androidannotations:androidannotations:${AAVersion}"
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
     implementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
 
