@@ -123,7 +123,12 @@ public class ResponseBean {
                 e.printStackTrace();
             }
             if (((JSONObject) jsonArray.opt(0)).has("result")) {
-                result = ((JSONObject) jsonArray.opt(0)).getJSONObject("result");
+                try {
+                    result = ((JSONObject) jsonArray.opt(0)).getJSONObject("result");
+                } catch (Exception e) {
+                    result = new JSONObject();
+                }
+
             }
         } catch (JSONException e) {
             e.printStackTrace();

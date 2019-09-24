@@ -1,6 +1,5 @@
 package com.sunmi.ipc.view.activity;
 
-import android.content.DialogInterface;
 import android.os.Handler;
 import android.text.Html;
 import android.text.TextUtils;
@@ -208,18 +207,9 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
         new CommonDialog.Builder(context)
                 .setTitle(titleRes)
                 .setMessage(messageRes)
-                .setCancelButton(R.string.str_quit_config, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        GotoActivityUtils.gotoMainActivity(context);
-                    }
-                })
-                .setConfirmButton(R.string.str_retry, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        bind();
-                    }
-                }).create().show();
+                .setCancelButton(R.string.str_quit_config,
+                        (dialogInterface, i) -> GotoActivityUtils.gotoMainActivity(context))
+                .setConfirmButton(R.string.str_retry, (dialogInterface, i) -> bind()).create().show();
     }
 
 }
