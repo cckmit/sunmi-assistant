@@ -221,11 +221,26 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
             rateList.add(new BarEntry(x, consumer == 0 ? 0f : Math.min((float) count / consumer, 1f)));
             volumeList.add(new BarEntry(x, count));
             consumerList.add(new BarEntry(x, consumer));
-
-//            rateList.add(new BarEntry(x, (float) Math.random()));
-//            volumeList.add(new BarEntry(x, (int)(Math.random() * 1000)));
-//            consumerList.add(new BarEntry(x, (int)(Math.random() * 1000)));
         }
+
+        // Test data
+//        rateList.clear();
+//        volumeList.clear();
+//        consumerList.clear();
+//        int count = model.period == Constants.TIME_PERIOD_WEEK ? 5 : 20;
+//        int min = count / 3;
+//        for (int i = 1; i < count + 1; i++) {
+//            float x = Utils.encodeChartXAxisFloat(model.period, i);
+//            if (i <= min + 1) {
+//                rateList.add(new BarEntry(x, 0f));
+//                volumeList.add(new BarEntry(x, 0f));
+//                consumerList.add(new BarEntry(x, 0f));
+//            } else {
+//                rateList.add(new BarEntry(x, (float) Math.random()));
+//                volumeList.add(new BarEntry(x, (int) (Math.random() * 1000)));
+//                consumerList.add(new BarEntry(x, (int) (Math.random() * 1000)));
+//            }
+//        }
     }
 
     @Override

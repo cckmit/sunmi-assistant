@@ -114,6 +114,8 @@ public class LineChartMarkerView extends MarkerView {
         if (mOffset == null) {
             // center the marker horizontally and vertically
             mOffset = new MPPointF(-((float) getWidth() / 2), -getHeight() + mOffsetPoint);
+        } else {
+            mOffset.x = -((float) getWidth() / 2);
         }
         return mOffset;
     }
