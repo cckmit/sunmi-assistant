@@ -11,6 +11,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -36,6 +37,7 @@ import java.util.Objects;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.utils.CommonHelper;
+import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.IVideoPlayer;
 import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.NetworkUtils;
@@ -107,7 +109,7 @@ public class DynamicVideoActivity extends BaseActivity implements
 
     @Extra
     String url;
-    //            String url = "http://test.cdn.sunmi.com/VIDEO/IPC/f4c28c287dff0e0656e00192450194e76f4863f80ca0517a135925ebc7828104";
+    //            String url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
     @Extra
     String deviceModel;
 
@@ -144,24 +146,34 @@ public class DynamicVideoActivity extends BaseActivity implements
 
     @AfterViews
     void init() {
-        TimeoutTimer.getInstance().start();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//保持屏幕常亮
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//隐藏状态栏
         volumeHelper = new VolumeHelper(this);
-        //手机屏幕的宽高
-        int screenWidth = CommonHelper.getScreenWidth(context);
-        int screenHeight = CommonHelper.getScreenHeight(context);
-        ViewGroup.LayoutParams lpCloud = iVideoPlayer.getLayoutParams();
-        lpCloud.width = screenWidth;
-        lpCloud.height = screenHeight;
-        iVideoPlayer.setLayoutParams(lpCloud);
+        initScreenWidthHeight();
+        if (TextUtils.isEmpty(url)) {
+            return;
+        }
         if (!NetworkUtils.isNetworkAvailable(context)) {
             errorView();
             return;
         }
+        TimeoutTimer.getInstance().start();
         loadingView();
         requestPermissions();
+    }
+
+    private void initScreenWidthHeight() {
+        //手机屏幕的宽高
+        int screenWidth = CommonHelper.getScreenWidth(context);
+        int screenHeight = CommonHelper.getScreenHeight(context);
+        if (DeviceTypeUtils.getInstance().isSS1(deviceModel)) {
+            screenWidth = CommonHelper.getScreenHeight(context);
+        }
+        ViewGroup.LayoutParams params = iVideoPlayer.getLayoutParams();
+        params.width = screenWidth;
+        params.height = screenHeight;
+        iVideoPlayer.setLayoutParams(params);
     }
 
     @Override
