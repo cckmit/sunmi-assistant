@@ -64,52 +64,127 @@
         <activity
             android:name=".ui.activity.login.RegisterActivity_"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|adjustPan" />
         <!-- 注册获取验证码 -->
-        <activity android:name=".ui.activity.login.InputCaptchaActivity_" />
+        <activity
+            android:name=".ui.activity.login.InputCaptchaActivity_"
+            android:screenOrientation="portrait" />
         <!-- 设置密码 -->
-        <activity android:name=".ui.activity.login.SetPasswordActivity_" />
+        <activity
+            android:name=".ui.activity.login.SetPasswordActivity_"
+            android:screenOrientation="portrait" />
         <!-- 输入手机号 -->
-        <activity android:name=".ui.activity.login.InputMobileActivity_" />
+        <activity
+            android:name=".ui.activity.login.InputMobileActivity_"
+            android:screenOrientation="portrait" />
         <!-- 首页 -->
         <activity
             android:name=".ui.activity.MainActivity_"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity android:name=".mine.setting.SettingActivity_" />
-        <activity android:name=".mine.setting.SecurityActivity_" />
-        <activity android:name=".mine.setting.ChangePasswordActivity_" />
-        <activity android:name=".mine.setting.AboutActivity_" />
-        <activity android:name=".mine.UserInfoActivity_" />
-        <activity android:name=".mine.ChangeUsernameActivity_" />
-        <activity android:name=".ui.activity.SunmiLinkSearchActivity_" />
-        <activity android:name=".mine.company.CompanyUpdateActivity_" />
-        <activity android:name=".mine.platform.SelectPlatformActivity_" />
-        <activity android:name=".mine.platform.SelectStoreActivity_" />
-        <activity android:name=".mine.platform.PlatformMobileActivity_" />
-        <activity android:name=".order.OrderListActivity_" />
-        <activity android:name=".order.OrderDetailActivity_" />
-        <activity android:name=".ui.activity.login.LoginChooseShopActivity_" />
-        <activity android:name=".ui.activity.ChooseShopActivity_" />
-        <activity android:name=".ui.activity.merchant.CreateCompanyActivity_" />
-        <activity android:name=".ui.activity.merchant.CreateCompanyNextActivity_" />
-        <activity android:name=".mine.shop.CreateShopActivity_" />
-        <activity android:name=".mine.shop.ShopListActivity_" />
-        <activity android:name=".mine.shop.ShopDetailActivity_" />
-        <activity android:name=".mine.shop.ShopNameActivity_" />
-        <activity android:name=".mine.shop.ShopCategoryActivity_" />
-        <activity android:name=".mine.shop.ShopRegionActivity_" />
-        <activity android:name=".mine.shop.ShopAddressActivity_" />
-        <activity android:name=".mine.HelpActivity_" />
-        <activity android:name=".mine.message.MsgCenterActivity_" />
-        <activity android:name=".mine.message.MsgDetailActivity_" />
-        <activity android:name=".mine.shop.ShopContactsAreaActivity_" />
-        <activity android:name=".mine.company.CompanyDetailActivity_" />
-        <activity android:name=".mine.shop.ShopDetailGroupActivity_" />
-        <activity android:name=".mine.shop.CreateShopPreviewActivity_" />
-        <activity android:name=".mine.message.MsgSettingActivity_" />
-        <activity android:name=".mine.message.MsgSettingDetailActivity_" />
-        <activity android:name=".mine.shop.ShopEditAddressActivity_" />
+        <activity
+            android:name=".mine.setting.SettingActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.setting.SecurityActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.setting.ChangePasswordActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.setting.AboutActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.UserInfoActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.ChangeUsernameActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.SunmiLinkSearchActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.company.CompanyUpdateActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.platform.SelectPlatformActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.platform.SelectStoreActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.platform.PlatformMobileActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".order.OrderListActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".order.OrderDetailActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.login.LoginChooseShopActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.ChooseShopActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.merchant.CreateCompanyActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.merchant.CreateCompanyNextActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.shop.CreateShopActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.shop.ShopListActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.shop.ShopDetailActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.shop.ShopNameActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.shop.ShopCategoryActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.shop.ShopRegionActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.shop.ShopAddressActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.HelpActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.message.MsgCenterActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.message.MsgDetailActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.shop.ShopContactsAreaActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.company.CompanyDetailActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.shop.ShopDetailGroupActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.shop.CreateShopPreviewActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.message.MsgSettingActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.message.MsgSettingDetailActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.shop.ShopEditAddressActivity_"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="ENV_DATA"
