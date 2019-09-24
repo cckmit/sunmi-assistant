@@ -96,7 +96,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     @Extra
     SunmiDevice mDevice;
     @Extra
-    Boolean disableAdjustScreen;
+    boolean disableAdjustScreen;
 
     private static final int IPC_NAME_MAX_LENGTH = 36;
     private static final int REQUEST_CODE_SOUND_DETECTION = 1001;

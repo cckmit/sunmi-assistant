@@ -152,7 +152,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
         //切换商户保存信息直接跳转MainActivity
         if (isLoginSuccessSwitchCompany) {
             CommonHelper.saveCompanyShopInfo(companyId, companyName, saasExist, shopId, shopName);
-            GotoActivityUtils.gotoMainActivity(context);
+            GotoActivityUtils.gotoMainActivityClearTask(context);
             return;
         }
         showLoadingDialog();

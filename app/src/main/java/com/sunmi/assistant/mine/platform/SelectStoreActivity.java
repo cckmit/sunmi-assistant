@@ -95,7 +95,7 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
                 CommonHelper.saveCompanyShopInfo(companyId, companyName, 1, shopId, shopName);
                 BaseNotification.newInstance().postNotificationName(CommonNotifications.companySwitch);
                 MainActivity_.intent(this).start();
-                //GotoActivityUtils.gotoMainActivity(context);
+                //GotoActivityUtils.gotoMainActivityClearTask(context);
             } else {
                 setResult(RESULT_OK);
             }

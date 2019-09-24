@@ -115,7 +115,7 @@ public class CreateShopActivity extends BaseActivity {
             BaseNotification.newInstance().postNotificationName(CommonNotifications.shopCreate);
             if (isLoginSuccessSwitchCompany) {
                 CommonHelper.saveCompanyShopInfo(companyId, companyName, saasExist, resp.getShop_id(), resp.getShop_name());
-                GotoActivityUtils.gotoMainActivity(context);
+                GotoActivityUtils.gotoMainActivityClearTask(context);
             } else {
                 setResult(RESULT_OK);
             }
