@@ -87,15 +87,7 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
 
     @Override
     protected Model createModel(Context context) {
-        int type;
-        if (showTransactionData() && showConsumerData()) {
-            type = Constants.DATA_TYPE_RATE;
-        } else if (showTransactionData()) {
-            type = Constants.DATA_TYPE_VOLUME;
-        } else {
-            type = Constants.DATA_TYPE_CONSUMER;
-        }
-        return new Model("", type);
+        return new Model("");
     }
 
     @Override
@@ -106,6 +98,7 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
     @NonNull
     @Override
     public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
+        getModel().updateType(getSource());
         BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
         LineChart lineChart = holder.getView(R.id.view_dashboard_line_chart);
         BarChart barChart = holder.getView(R.id.view_dashboard_bar_chart);
@@ -391,12 +384,21 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
         private int type;
         private SparseArray<List<BarEntry>> dataSets = new SparseArray<>(3);
 
-        public Model(String title, int type) {
+        public Model(String title) {
             this.title = title;
-            this.type = type;
             dataSets.put(Constants.DATA_TYPE_RATE, new ArrayList<>());
             dataSets.put(Constants.DATA_TYPE_VOLUME, new ArrayList<>());
             dataSets.put(Constants.DATA_TYPE_CONSUMER, new ArrayList<>());
+        }
+
+        public void updateType(int source) {
+            if ((source & Constants.DATA_SOURCE_FS) != 0 && (source & Constants.DATA_SOURCE_SAAS) != 0) {
+                type = Constants.DATA_TYPE_RATE;
+            } else if ((source & Constants.DATA_SOURCE_SAAS) != 0) {
+                type = Constants.DATA_TYPE_VOLUME;
+            } else {
+                type = Constants.DATA_TYPE_CONSUMER;
+            }
         }
 
         public void clear() {
