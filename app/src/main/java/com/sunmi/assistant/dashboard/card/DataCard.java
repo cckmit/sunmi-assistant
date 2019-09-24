@@ -212,7 +212,7 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
 
     @Override
     protected void showError(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-        setupVisible(holder, model.period);
+        setupVisible(holder, getPeriod());
         TextView value = holder.getView(R.id.tv_dashboard_value);
         TextView subdata = holder.getView(R.id.tv_dashboard_subdata);
         TextView volumeValue = holder.getView(R.id.tv_dashboard_volume);
