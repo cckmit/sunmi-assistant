@@ -167,8 +167,15 @@ public class DynamicVideoActivity extends BaseActivity implements
         //手机屏幕的宽高
         int screenWidth = CommonHelper.getScreenWidth(context);
         int screenHeight = CommonHelper.getScreenHeight(context);
+        float aspectRatio = screenWidth / screenHeight;
         if (DeviceTypeUtils.getInstance().isSS1(deviceModel)) {
             screenWidth = CommonHelper.getScreenHeight(context);
+        } else {
+            if (aspectRatio > 16 / 9) {
+                screenWidth = screenHeight * 16 / 9;
+            } else {
+                screenHeight = 1080 * screenWidth / 1920;
+            }
         }
         ViewGroup.LayoutParams params = iVideoPlayer.getLayoutParams();
         params.width = screenWidth;
