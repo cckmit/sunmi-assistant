@@ -102,6 +102,8 @@ public class DynamicVideoActivity extends BaseActivity implements
     TextView tvFailTip;
     @ViewById(resName = "tv_retry")
     TextView tvRetry;
+    @ViewById(resName = "ll_play_loading")
+    LinearLayout llPlayLoading;
 
     @Extra
     String url;
@@ -158,7 +160,7 @@ public class DynamicVideoActivity extends BaseActivity implements
             errorView();
             return;
         }
-        showLoadingDialog();
+        loadingView();
         requestPermissions();
     }
 
@@ -195,7 +197,7 @@ public class DynamicVideoActivity extends BaseActivity implements
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_PERMISSION_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                showLoadingDialog();
+                loadingView();
                 initVideoPlay();
             } else {
                 //未授权
@@ -233,7 +235,6 @@ public class DynamicVideoActivity extends BaseActivity implements
             isInitTakeScreenShot = true;
         } catch (Exception e) {
             isInitTakeScreenShot = false;
-            hideLoadingDialog();
             errorView();
             e.printStackTrace();
         }
@@ -273,7 +274,7 @@ public class DynamicVideoActivity extends BaseActivity implements
         if (isFastClick(1500)) {
             return;
         }
-        showLoadingDialog();
+        loadingView();
         TimeoutTimer.getInstance().start();
         requestPermissions();
     }
@@ -341,12 +342,14 @@ public class DynamicVideoActivity extends BaseActivity implements
         rlBottomPanel.setVisibility(View.GONE);
         iVideoPlayer.setVisibility(View.GONE);
         llPlayFail.setVisibility(View.VISIBLE);
+        llPlayLoading.setVisibility(View.GONE);
     }
 
     private void isShowBottomView() {
         iVideoPlayer.setVisibility(View.VISIBLE);
         llPlayFail.setVisibility(View.GONE);
         rlBottomPanel.setVisibility(View.VISIBLE);
+        llPlayLoading.setVisibility(View.GONE);
     }
 
     private void requestPermissionsFailView() {
@@ -354,9 +357,16 @@ public class DynamicVideoActivity extends BaseActivity implements
         iVideoPlayer.setVisibility(View.GONE);
         llPlayFail.setVisibility(View.VISIBLE);
         tvRetry.setVisibility(View.GONE);
+        llPlayLoading.setVisibility(View.GONE);
         tvFailTip.setText(R.string.ipc_dynamic_request_external_storage);
     }
 
+    private void loadingView() {
+        rlBottomPanel.setVisibility(View.GONE);
+        iVideoPlayer.setVisibility(View.GONE);
+        llPlayFail.setVisibility(View.GONE);
+        llPlayLoading.setVisibility(View.VISIBLE);
+    }
 
     /**
      * 缓存状态
@@ -402,7 +412,6 @@ public class DynamicVideoActivity extends BaseActivity implements
     @Override
     public boolean onError(IMediaPlayer iMediaPlayer, int i, int i1) {
         LogCat.e(TAG, "onError");
-        hideLoadingDialog();
         timeoutStop();
         shortTip(R.string.str_server_exception);
         errorView();
@@ -418,7 +427,6 @@ public class DynamicVideoActivity extends BaseActivity implements
         LogCat.e(TAG, "onPrepared");
         if (iVideoPlayer != null) {
             isShowBottomView();
-            hideLoadingDialog();
             timeoutStop();
             iVideoPlayer.startVideo();
             if (!isInitTakeScreenShot) {
@@ -504,7 +512,6 @@ public class DynamicVideoActivity extends BaseActivity implements
     public void didReceivedNotification(int id, Object... args) {
         super.didReceivedNotification(id, args);
         if (id == CommonNotifications.mqttResponseTimeout) { //连接超时
-            hideLoadingDialog();
             shortTip(R.string.str_server_exception);
             errorView();
         }

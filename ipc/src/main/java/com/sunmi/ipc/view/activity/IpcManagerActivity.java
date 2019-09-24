@@ -304,7 +304,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         if (v.getId() == R.id.ll_back_layout) {
             onBackPressed();
         } else if (v.getId() == R.id.txt_right) {
-            IpcSettingActivity_.intent(context).mDevice(device).start();
+            IpcSettingActivity_.intent(context).mDevice(device).disableAdjustScreen(true).start();
         }
     }
 
@@ -505,7 +505,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     public void initFail() {
         hideVideoLoading();
         hideControllerPanel();
-        isControlPanelShow = true;
         setPlayFailVisibility(View.VISIBLE);
     }
 
