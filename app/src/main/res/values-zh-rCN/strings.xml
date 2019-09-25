@@ -34,18 +34,49 @@
     <string name="str_choose_please">请选择</string>
     <string name="str_selected">请选择</string>
     <string name="tip_addr_empty">请输入详细地址</string>
+
     <string name="dashboard_data_format">%s%%</string>
     <string name="dashboard_today">今日</string>
     <string name="dashboard_this_week">本周</string>
     <string name="dashboard_this_month">本月</string>
+    <string name="dashboard_yesterday">昨日</string>
+    <string name="dashboard_last_week">上周</string>
+    <string name="dashboard_last_month">上个月</string>
+    <string name="dashboard_time">时间 %s%s</string>
+    <string name="dashboard_data_sales_amount">总销售额</string>
+    <string name="dashboard_data_sales_volume">交易笔数</string>
+    <string name="dashboard_data_consumer">进店客流</string>
+    <string name="dashboard_data_transaction_rate">交易转化率</string>
+
+    <string name="dashboard_chart_business_trend">经营趋势</string>
+    <string name="dashboard_chart_rate">转化率</string>
+    <string name="dashboard_chart_sales_volume">交易笔数</string>
+    <string name="dashboard_chart_consumer">客流量</string>
+    <string name="dashboard_chart_distribution">客群分布</string>
+    <string name="dashboard_chart_new_old">新老</string>
+    <string name="dashboard_chart_new">新客</string>
+    <string name="dashboard_chart_old">熟客</string>
+    <string name="dashboard_chart_gender">性别</string>
+    <string name="dashboard_chart_male">男性</string>
+    <string name="dashboard_chart_female">女性</string>
+    <string name="dashboard_chart_age">年龄</string>
+    <string name="dashboard_chart_age_label">%s岁</string>
+    <string name="dashboard_chart_pie_hole_ratio">%s占比</string>
+    <string name="dashboard_empty_data_tip">暂无门店数据，您可以尝试：</string>
+    <string name="dashboard_no_fs_title">添加AI识客摄像机</string>
+    <string name="dashboard_no_fs_subtitle">支持统计实时客流、客群分析</string>
+    <string name="dashboard_no_fs_add">添加</string>
+    <string name="dashboard_no_fs_buy">购买</string>
+    <string name="dashboard_no_order_title">导入软件订单数据</string>
+    <string name="dashboard_no_order_subtitle">现已支持银豹、生意专家等38个软件</string>
+    <string name="dashboard_no_order_inport">导入</string>
+
     <string name="dashboard_day_ratio">日环比</string>
     <string name="dashboard_week_ratio">周环比</string>
     <string name="dashboard_month_ratio">月同比</string>
     <string name="dashboard_by_sales">按销售额</string>
     <string name="dashboard_by_order">按订单数</string>
-    <string name="dashboard_total_sales_amount">总销售额</string>
     <string name="dashboard_customer_price">客单价</string>
-    <string name="dashboard_total_sales_volume">总笔数</string>
     <string name="dashboard_total_refunds">退款笔数</string>
     <string name="dashboard_time_distribution">交易时间分布</string>
     <string name="dashboard_purchase_rank">支付方式</string>
@@ -101,7 +132,6 @@
     <string name="str_mine_company">我的商户</string>
     <string name="tip_get_shop_list_fail">获取门店数据失败</string>
     <string name="str_select_company">选择商户</string>
-    <string name="str_setting_detail">查看详情</string>
     <string name="str_setting_delete_device">删除设备</string>
     <string name="str_import_other_platform_data">未匹配到该手机号下的门店数据，是否从外部平台导入？</string>
     <string name="str_shop_platform_from">本数据由%s提供</string>
@@ -212,4 +242,8 @@
     <string name="shop_address">门店地址</string>
     <string name="shop_input_region_tip">请先选择地区</string>
     <string name="str_create_company_alredy_exit">门店名称已存在</string>
+    <string name="ipc_right_now_play">立即查看</string>
+    <string name="ipc_device_model">设备型号：%s</string>
+    <string name="ipc_device_name">设备名称：%s</string>
+    <string name="ipc_device_msg_content">内容详情：%s</string>
 </resources>

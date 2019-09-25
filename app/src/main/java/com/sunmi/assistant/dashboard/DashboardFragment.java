@@ -1,16 +1,28 @@
 package com.sunmi.assistant.dashboard;
 
-import android.graphics.Rect;
+import android.content.Context;
+import android.graphics.Typeface;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.Group;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.card.BaseRefreshItem;
+import com.sunmi.assistant.dashboard.ui.RefreshLayout;
+import com.sunmi.assistant.dashboard.ui.RefreshViewHolder;
+import com.sunmi.ipc.config.IpcConstants;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -21,14 +33,14 @@ import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
-import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.base.recycle.BaseArrayAdapter;
 import sunmi.common.constant.CommonNotifications;
-import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
+import sunmi.common.utils.log.LogCat;
+import sunmi.common.view.DropdownMenu;
 
 /**
  * 首页数据Dashboard的展示
@@ -38,105 +50,224 @@ import sunmi.common.utils.Utils;
  */
 @EFragment(R.layout.dashboard_fragment_main)
 public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
-        implements DashboardContract.View, BGARefreshLayout.BGARefreshLayoutDelegate {
+        implements DashboardContract.View, RefreshLayout.RefreshLayoutDelegate {
 
-    private static final int POSITION_TOP_TITLE_AND_BAR = 2;
-    private static final int BIG_CARD_SPAN = 2;
+    private static final int OFFSET_PARALLAX = 50;
 
+    @ViewById(R.id.cl_dashboard_content)
+    ConstraintLayout mContent;
     @ViewById(R.id.layout_dashboard_refresh)
-    BGARefreshLayout mRefreshLayout;
-    @ViewById(R.id.rv_dashboard_card_list)
+    RefreshLayout mRefreshLayout;
+    @ViewById(R.id.rv_dashboard_list)
     RecyclerView mCardList;
-    @ViewById(R.id.layout_dashboard_sticky_tab)
-    ViewGroup mStickyTab;
-    @ViewById(R.id.tv_dashboard_today)
-    TextView mTabToday;
-    @ViewById(R.id.tv_dashboard_week)
-    TextView mTabWeek;
-    @ViewById(R.id.tv_dashboard_month)
-    TextView mTabMonth;
 
+    @ViewById(R.id.layout_shop_title)
+    DropdownMenu mShopMenu;
+    private LinearLayout mShopMenuList;
+    @ViewById(R.id.view_dashboard_overlay)
+    View mOverlay;
+
+    @ViewById(R.id.layout_top_period_tab)
+    ViewGroup mTopPeriodTab;
+    @ViewById(R.id.tv_dashboard_top_today)
+    TextView mTodayView;
+    @ViewById(R.id.tv_dashboard_top_week)
+    TextView mWeekView;
+    @ViewById(R.id.tv_dashboard_top_month)
+    TextView mMonthView;
+
+    @ViewById(R.id.group_dashboard_content)
+    Group mContentGroup;
+    @ViewById(R.id.layout_dashboard_error)
+    View mLayoutError;
+
+    private Handler mHandler = new Handler(Looper.getMainLooper());
+
+    private int mDataSource;
     private BaseArrayAdapter<Object> mAdapter;
-    private GridLayoutManager mLayoutManager;
+    private LinearLayoutManager mLayoutManager;
+    private ItemStickyListener mStickyListener;
+    private RefreshViewHolder mRefreshHeaderHolder;
+
+    private ShopMenuAdapter mShopMenuAdapter;
+    private ShopMenuPopupHelper mShopMenuPopupHelper;
+    private TextView mShopMenuTitle;
+    private ImageView mShopMenuTitleArrow;
+    private ShopItem mShopMenuItem;
 
     private int mStatusBarHeight;
-    private int mStatusGap;
+    private int mTopBarHeight;
+    private int mTopShopMenuHeight;
+    private boolean mIsStickyTop = false;
 
     @AfterViews
     void init() {
         mPresenter = new DashboardPresenter();
         mPresenter.attachView(this);
-        initView();
-        initAdapter();
-        mPresenter.loadConfig();
-        mPresenter.switchPeriodTo(DashboardContract.TIME_PERIOD_TODAY);
+        mPresenter.init();
+        showLoadingDialog();
+        mHandler.post(this::initView);
     }
 
     private void initView() {
-        mStatusBarHeight = Utils.getStatusBarHeight(mStickyTab.getContext());
-        mStatusGap = (int) mStickyTab.getContext().getResources().getDimension(R.dimen.dp_4);
-        int topPadding = mStatusBarHeight + (int) mStickyTab.getContext().getResources().getDimension(R.dimen.dp_8);
-        mStickyTab.setPaddingRelative(0, topPadding, 0, 0);
-        RecyclerView.ItemAnimator animator = mCardList.getItemAnimator();
-        if (animator instanceof SimpleItemAnimator) {
-            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        Context context = getContext();
+        if (context == null) {
+            return;
         }
+        initDimens(context);
+        initTopBar(context);
+        initRefreshLayout(context);
+        initRecycler(context);
+    }
+
+    private void initDimens(Context context) {
+        mStatusBarHeight = Utils.getStatusBarHeight(context);
+        mTopBarHeight = (int) context.getResources().getDimension(R.dimen.dp_44) + mStatusBarHeight;
+        mTopShopMenuHeight = (int) context.getResources().getDimension(R.dimen.dp_64) + mStatusBarHeight;
+    }
+
+    private void initTopBar(Context context) {
+        // 初始化设置状态栏
+        FragmentActivity activity = getActivity();
+        if (activity != null && !activity.isDestroyed()) {
+            StatusBarUtils.setStatusBarFullTransparent(activity);
+        }
+
+        // 初始化设置TopBar高度和Padding
+        mTopPeriodTab.getLayoutParams().height = mTopBarHeight;
+        mTopPeriodTab.setPadding(0, mStatusBarHeight, 0, 0);
+        mShopMenu.getLayoutParams().height = mTopShopMenuHeight;
+        mShopMenu.setPadding(0, mStatusBarHeight, 0, 0);
+
+        // 初始化设置顶部门店选择下拉列表
+        mShopMenuPopupHelper = new ShopMenuPopupHelper(context, mContent, mOverlay);
+        mShopMenu.setLayoutManager(new ShopMenuLayoutManager(context));
+        mShopMenu.setPopupHelper(mShopMenuPopupHelper);
+        mShopMenuAdapter = new ShopMenuAdapter(context);
+        mShopMenuAdapter.setOnItemClickListener((adapter, model, position) -> {
+            boolean changed = mPresenter.switchShopTo(model);
+            if (changed) {
+                showLoadingDialog();
+                List<ShopItem> shops = adapter.getData();
+                shops.remove(position);
+                shops.add(0, model);
+                adapter.notifyDataSetChanged();
+            }
+        });
+        mShopMenu.setAdapter(mShopMenuAdapter);
+        mShopMenuTitle = mShopMenuAdapter.getTitle().getView(R.id.dropdown_item_title);
+        mShopMenuTitleArrow = mShopMenuAdapter.getTitle().getView(R.id.dropdown_item_arrow);
+        mOverlay.setOnClickListener(v -> mShopMenu.getPopup().dismiss(true));
+    }
+
+    private void initRefreshLayout(Context context) {
+        mRefreshHeaderHolder = new RefreshViewHolder(getContext(), false);
         mRefreshLayout.setDelegate(this);
-        BGANormalRefreshViewHolder refreshViewHolder =
-                new BGANormalRefreshViewHolder(getContext(), false);
-        View refreshHeaderView = refreshViewHolder.getRefreshHeaderView();
-        refreshHeaderView.setPadding(0, mStatusBarHeight, 0, 0);
-        mRefreshLayout.setRefreshViewHolder(refreshViewHolder);
+        mRefreshLayout.setRefreshViewHolder(mRefreshHeaderHolder, mTopShopMenuHeight);
         mRefreshLayout.setPullDownRefreshEnable(true);
         mRefreshLayout.setIsShowLoadingMoreView(false);
     }
 
-    private void initAdapter() {
+    private void initRecycler(Context context) {
+        RecyclerView.ItemAnimator animator = mCardList.getItemAnimator();
+        if (animator instanceof SimpleItemAnimator) {
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        }
         mAdapter = new BaseArrayAdapter<>();
-        mLayoutManager = new GridLayoutManager(getContext(), 2);
-        mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                return mAdapter.getItemType(position).getSpanSize();
-            }
-        });
+        mLayoutManager = new LinearLayoutManager(getContext());
         mCardList.setLayoutManager(mLayoutManager);
-        mCardList.addOnScrollListener(new ItemStickyListener());
-        mCardList.addItemDecoration(new ItemSpaceDecoration());
+        mStickyListener = new ItemStickyListener();
+        mCardList.addOnScrollListener(mStickyListener);
         mCardList.setAdapter(mAdapter);
     }
 
-    @Click(R.id.tv_dashboard_today)
+    public void updateStatusBar() {
+        if (mIsStickyTop) {
+            StatusBarUtils.setStatusBarColor(getActivity(), StatusBarUtils.TYPE_DARK);
+        } else {
+            StatusBarUtils.setStatusBarFullTransparent(getActivity());
+        }
+    }
+
+    private void showContent() {
+        mContentGroup.setVisibility(View.VISIBLE);
+        mOverlay.setVisibility(View.GONE);
+        mTopPeriodTab.setVisibility(View.INVISIBLE);
+        mLayoutError.setVisibility(View.GONE);
+
+        StatusBarUtils.setStatusBarFullTransparent(getActivity());
+        mStickyListener.reset();
+        mCardList.scrollToPosition(0);
+        mShopMenu.setBackgroundResource(R.drawable.dashboard_bg_top);
+        mShopMenu.setTranslationY(0);
+        mShopMenu.getPopup().dismiss(false);
+        mShopMenuTitle.setTextColor(0xFFFFFFFF);
+        mShopMenuTitleArrow.setImageResource(R.drawable.ic_arrow_drop_down_white);
+        hideLoadingDialog();
+    }
+
+    private void showError() {
+        mContentGroup.setVisibility(View.INVISIBLE);
+        mOverlay.setVisibility(View.GONE);
+        mTopPeriodTab.setVisibility(View.INVISIBLE);
+        mLayoutError.setVisibility(View.VISIBLE);
+        hideLoadingDialog();
+    }
+
+    @Click(R.id.tv_dashboard_top_today)
     void clickPeriodToday() {
-        mPresenter.switchPeriodTo(DashboardContract.TIME_PERIOD_TODAY);
+        mPresenter.switchPeriodTo(Constants.TIME_PERIOD_TODAY);
     }
 
-    @Click(R.id.tv_dashboard_week)
+    @Click(R.id.tv_dashboard_top_week)
     void clickPeriodWeek() {
-        mPresenter.switchPeriodTo(DashboardContract.TIME_PERIOD_WEEK);
+        mPresenter.switchPeriodTo(Constants.TIME_PERIOD_WEEK);
     }
 
-    @Click(R.id.tv_dashboard_month)
+    @Click(R.id.tv_dashboard_top_month)
     void clickPeriodMonth() {
-        mPresenter.switchPeriodTo(DashboardContract.TIME_PERIOD_MONTH);
+        mPresenter.switchPeriodTo(Constants.TIME_PERIOD_MONTH);
+    }
+
+    @Click(R.id.btn_refresh)
+    void clickReload() {
+        showLoadingDialog();
+        mPresenter.init();
     }
 
     @Override
-    public void updateStickyTab(int period) {
-        mTabToday.setSelected(period == DashboardContract.TIME_PERIOD_TODAY);
-        mTabWeek.setSelected(period == DashboardContract.TIME_PERIOD_WEEK);
-        mTabMonth.setSelected(period == DashboardContract.TIME_PERIOD_MONTH);
+    public void updateTab(int period) {
+        mTodayView.setSelected(period == Constants.TIME_PERIOD_TODAY);
+        mTodayView.setTypeface(null, period == Constants.TIME_PERIOD_TODAY ? Typeface.BOLD : Typeface.NORMAL);
+        mWeekView.setSelected(period == Constants.TIME_PERIOD_WEEK);
+        mWeekView.setTypeface(null, period == Constants.TIME_PERIOD_WEEK ? Typeface.BOLD : Typeface.NORMAL);
+        mMonthView.setSelected(period == Constants.TIME_PERIOD_MONTH);
+        mMonthView.setTypeface(null, period == Constants.TIME_PERIOD_MONTH ? Typeface.BOLD : Typeface.NORMAL);
+    }
+
+    @Override
+    public void setShopList(List<ShopItem> list) {
+        for (ShopItem item : list) {
+            if (item.isChecked()) {
+                mShopMenuItem = item;
+                break;
+            }
+        }
+        mShopMenuAdapter.setData(list);
     }
 
     @UiThread
     @Override
-    public void initData(List<BaseRefreshCard> data) {
-        if (mAdapter == null && data == null) {
+    public void setCards(List<BaseRefreshItem> data, int dataSource) {
+        showContent();
+        mDataSource = dataSource;
+        if (mAdapter == null || data == null || data.isEmpty()) {
             return;
         }
+        data.get(0).setMargin(0, mTopShopMenuHeight, 0, 0);
         List<Object> list = new ArrayList<>(data.size());
         for (int i = 0, size = data.size(); i < size; i++) {
-            BaseRefreshCard item = data.get(i);
+            BaseRefreshItem item = data.get(i);
             item.registerIntoAdapter(mAdapter, i);
             list.add(item.getModel());
         }
@@ -144,35 +275,72 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     @Override
-    public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
-        mPresenter.refresh();
+    public void loadDataFailed() {
+        showError();
+    }
+
+    @Override
+    public void onRefreshLayoutBeginRefreshing(RefreshLayout refreshLayout) {
+        mPresenter.refresh(true);
         refreshLayout.postDelayed(refreshLayout::endRefreshing, 500);
     }
 
     @Override
-    public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
+    public boolean onRefreshLayoutBeginLoadingMore(RefreshLayout refreshLayout) {
         return false;
     }
 
     @Override
     public int[] getStickNotificationId() {
         return new int[]{
+                CommonNotifications.companySwitch,
+                CommonNotifications.companyNameChanged,
                 CommonNotifications.shopSwitched,
                 CommonNotifications.shopNameChanged,
-                CommonNotifications.companyNameChanged,
-                CommonNotifications.companySwitch
+                CommonNotifications.importShop,
+                CommonNotifications.shopCreate,
+                IpcConstants.refreshIpcList
         };
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
-        if (id == CommonNotifications.shopSwitched) {
-            mPresenter.switchShopTo(SpUtils.getShopId());
-        } else if (id == CommonNotifications.shopNameChanged
+        if (id == CommonNotifications.companySwitch
                 || id == CommonNotifications.companyNameChanged) {
-            mPresenter.refresh(0);
-        } else if (id == CommonNotifications.companySwitch) {
-            mPresenter.switchCompanyTo(SpUtils.getCompanyId(), SpUtils.getShopId());
+            mShopMenuPopupHelper.setCompanyName(SpUtils.getCompanyName());
+            mPresenter.init();
+        } else if (id == CommonNotifications.shopSwitched
+                || id == CommonNotifications.shopNameChanged
+                || id == CommonNotifications.importShop
+                || id == CommonNotifications.shopCreate) {
+            mPresenter.init();
+        } else if (id == IpcConstants.refreshIpcList) {
+            mPresenter.reload();
+        }
+    }
+
+    private void showStickyTop(Context context) {
+        StatusBarUtils.setStatusBarColor(getActivity(), StatusBarUtils.TYPE_DARK);
+        if (mDataSource != 0) {
+            mShopMenu.setTranslationY(-mTopShopMenuHeight);
+            mShopMenu.setVisibility(View.INVISIBLE);
+            mTopPeriodTab.setVisibility(View.VISIBLE);
+        } else {
+            mShopMenuTitle.setTextColor(ContextCompat.getColor(context, R.color.color_303540));
+            mShopMenuTitleArrow.setImageResource(R.drawable.ic_arrow_drop_down_black);
+            mShopMenu.setBackgroundResource(R.drawable.dashboard_bg_white_with_divider);
+        }
+    }
+
+    private void hideStickyTop(Context context) {
+        StatusBarUtils.setStatusBarFullTransparent(getActivity());
+        if (mDataSource != 0) {
+            mShopMenu.setVisibility(View.VISIBLE);
+            mTopPeriodTab.setVisibility(View.INVISIBLE);
+        } else {
+            mShopMenuTitle.setTextColor(0xFFFFFFFF);
+            mShopMenuTitleArrow.setImageResource(R.drawable.ic_arrow_drop_down_white);
+            mShopMenu.setBackgroundResource(R.drawable.dashboard_bg_top);
         }
     }
 
@@ -182,60 +350,60 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
         @Override
         public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+            if (recyclerView.getChildCount() == 0) {
+                return;
+            }
             int position = -1;
             if (topBar == null) {
-                topBar = recyclerView.getChildAt(1);
+                topBar = recyclerView.getChildAt(0);
             }
             if (topBar != null) {
                 int[] coordinate = new int[2];
                 topBar.getLocationInWindow(coordinate);
                 position = coordinate[1];
             }
-            if (position < mStatusBarHeight - mStatusGap) {
-                mStickyTab.setVisibility(View.VISIBLE);
-            } else {
-                mStickyTab.setVisibility(View.INVISIBLE);
+            LogCat.d(TAG, "onScroll=" + position + "; topHeight=" + mTopShopMenuHeight);
+            Context context = recyclerView.getContext();
+            if (mIsStickyTop && !showSticky(position)) {
+                mIsStickyTop = false;
+                hideStickyTop(context);
+            } else if (!mIsStickyTop && showSticky(position)) {
+                mIsStickyTop = true;
+                showStickyTop(context);
             }
+            if (!showSticky(position) && mDataSource != 0) {
+                int offset = Math.min(position - mTopShopMenuHeight, 0);
+                mShopMenu.setTranslationY(offset);
+                mShopMenuPopupHelper.setOffset(offset);
+            }
+        }
+
+        private void reset() {
+            topBar = null;
+        }
+
+        private boolean showSticky(int position) {
+            return position <= 0;
         }
     }
 
-    private class ItemSpaceDecoration extends RecyclerView.ItemDecoration {
+    private static class ShopMenuLayoutManager extends LinearLayoutManager {
+
+        private ShopMenuLayoutManager(Context context) {
+            super(context);
+        }
 
         @Override
-        public void getItemOffsets(@NonNull Rect outRect, @NonNull View view,
-                                   @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-            int position = parent.getChildAdapterPosition(view);
-            if (getContext() == null || position < POSITION_TOP_TITLE_AND_BAR) {
-                super.getItemOffsets(outRect, view, parent, state);
+        public void onMeasure(@NonNull RecyclerView.Recycler recycler, @NonNull RecyclerView.State state, int widthSpec, int heightSpec) {
+            if (getChildCount() == 0) {
+                super.onMeasure(recycler, state, widthSpec, heightSpec);
                 return;
             }
-            int space = CommonHelper.dp2px(getContext(), 10.0f);
-            int spanSize = mAdapter.getItemType(position).getSpanSize();
-            if (spanSize == BIG_CARD_SPAN) {
-                outRect.left = space;
-                outRect.right = space;
-            } else {
-                int posPoint = position - 1;
-                boolean isFirst = true;
-                while (posPoint >= POSITION_TOP_TITLE_AND_BAR) {
-                    if (mAdapter.getItemType(posPoint).getSpanSize() == 1) {
-                        isFirst = !isFirst;
-                    } else {
-                        break;
-                    }
-                    posPoint--;
-                }
-                if (isFirst) {
-                    outRect.left = space;
-                    outRect.right = space / 2;
-                } else {
-                    outRect.left = space / 2;
-                    outRect.right = space;
-                }
-            }
-            outRect.top = space;
-            outRect.bottom = position == mAdapter.getData().size() - 1 ? space : 0;
+            View firstChildView = recycler.getViewForPosition(0);
+            measureChild(firstChildView, widthSpec, heightSpec);
+            int itemHeight = firstChildView.getMeasuredHeight();
+            setMeasuredDimension(View.MeasureSpec.getSize(widthSpec),
+                    getChildCount() > 8 ? (int) (itemHeight * 8.5f) : itemHeight * getChildCount());
         }
     }
-
 }

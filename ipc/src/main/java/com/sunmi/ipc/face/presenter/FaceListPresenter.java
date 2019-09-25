@@ -54,6 +54,7 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
     private List<FilterItem> mFilterAgeList = new ArrayList<>();
 
     private Call<BaseResponse<FaceListResp>> mCall;
+    private int faceOperateTip;
 
     public FaceListPresenter(Context context, int shopId, FaceGroup group) {
         this.mShopId = shopId;
@@ -207,7 +208,7 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
                         if (isViewAttached()) {
-                            mView.shortTip(R.string.ipc_face_tip_move_success);
+                            faceOperateTip = R.string.ipc_face_tip_move_success;
                         }
                         init();
                     }
@@ -237,7 +238,8 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
                         if (isViewAttached()) {
-                            mView.shortTip(R.string.ipc_face_tip_delete_success);
+                            faceOperateTip = R.string.ipc_face_tip_delete_success;
+                            //mView.shortTip(R.string.ipc_face_tip_delete_success);
                         }
                         init();
                     }
@@ -315,6 +317,10 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
                 mFilterGender, mFilterAge, mFilterName, page, PAGE_SIZE, new RetrofitCallback<FaceListResp>() {
                     @Override
                     public void onSuccess(int code, String msg, FaceListResp data) {
+                        if (faceOperateTip > 0) {
+                            mView.shortTip(faceOperateTip);
+                            faceOperateTip = 0;
+                        }
                         mCall = null;
                         mCurrentPage = page;
                         mTotalCount = data.getTotalCount();

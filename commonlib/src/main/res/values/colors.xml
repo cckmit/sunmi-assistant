@@ -101,6 +101,14 @@
     <color name="color_BBBBC7">#BBBBC7</color>
     <color name="color_A1A7B3">#A1A7B3</color>
     <color name="color_FF999999">#FF999999</color>
+    <color name="color_FF7F00">#FF7F00</color>
+    <color name="color_FF7F00_60">#99FF7F00</color>
+    <color name="color_FF6000_60">#99FF6000</color>
+    <color name="color_CED2D9">#CED2D9</color>
+    <color name="color_6CBBFF">#6CBBFF</color>
+    <color name="color_4B7AFA">#6CBBFF</color>
+    <color name="color_6CBBFF_60">#996CBBFF</color>
+    <color name="color_4B7AFA_60">#996CBBFF</color>
 
     <color name="colorText_0">#00333C4F</color>
     <color name="colorText_5">#0E333C4F</color>

@@ -20,9 +20,7 @@ import com.sunmi.apmanager.receiver.MyNetworkCallback;
 import com.sunmi.apmanager.rpc.ap.APCall;
 import com.sunmi.apmanager.ui.activity.config.PrimaryRouteStartActivity;
 import com.sunmi.apmanager.ui.activity.router.RouterManagerNewActivity;
-import com.sunmi.apmanager.ui.activity.router.RouterMangerActivity;
 import com.sunmi.apmanager.utils.ApCompatibleUtils;
-import com.sunmi.apmanager.utils.ApIsNewVersionUtils;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.EncryptUtils;
 import com.sunmi.apmanager.utils.RouterDBHelper;
@@ -34,9 +32,9 @@ import com.sunmi.assistant.ui.MainTopBar;
 import com.sunmi.assistant.ui.adapter.DeviceListAdapter;
 import com.sunmi.assistant.utils.GlideImageLoader;
 import com.sunmi.cloudprinter.ui.Activity.PrinterManageActivity_;
-import com.sunmi.ipc.rpc.IpcConstants;
+import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.setting.IpcSettingActivity_;
-import com.sunmi.ipc.view.VideoPlayActivity_;
+import com.sunmi.ipc.view.activity.IpcManagerActivity_;
 import com.sunmi.sunmiservice.WebViewActivity_;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
@@ -66,7 +64,9 @@ import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.AdListBean;
 import sunmi.common.model.AdListResp;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.sunmicall.ResponseBean;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
@@ -122,7 +122,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         }
         initViews();
         loadData();
-        startTimer();
+        if (!CommonHelper.isGooglePlay()) {
+            startTimer();
+        }
     }
 
     protected void initViews() {
@@ -157,8 +159,10 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     private void loadData() {
         mPresenter.getBannerList();
         mPresenter.getRouterList();
-        mPresenter.getIpcList();
-        mPresenter.getPrinterList();
+        if (!CommonHelper.isGooglePlay()) {
+            mPresenter.getIpcList();
+            mPresenter.getPrinterList();
+        }
     }
 
     @Override
@@ -231,7 +235,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @Override
     public void unbindIpcSuccess(int code, String msg, Object data) {
-        mPresenter.getIpcList();
+        BaseNotification.newInstance().postNotificationName(IpcConstants.refreshIpcList);
     }
 
     @Override
@@ -275,8 +279,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             if (TextUtils.isEmpty(device.getUid())) {
                 shortTip(R.string.tip_play_fail);
             } else {
-                VideoPlayActivity_.intent(mActivity).UID(device.getUid())
-                        .deviceId(device.getId()).ipcType(device.getModel()).start();
+                IpcManagerActivity_.intent(mActivity).device(device).start();
             }
         }
     }
@@ -336,7 +339,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         return new int[]{
                 NotificationConstant.bindRouterChanged,
                 NotificationConstant.apPostStatus, NotificationConstant.apStatusException,
-                NotificationConstant.checkApPassword, IpcConstants.refreshIpcList,
+                NotificationConstant.checkApPassword,
                 NotificationConstant.checkLogin, NotificationConstant.apisConfig,
                 NotificationConstant.checkLoginAgain, CommonConstants.tabDevice,
                 com.sunmi.cloudprinter.constant.Constants.NOTIFICATION_PRINTER_ADDED
@@ -348,7 +351,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         return new int[]{CommonNotifications.shopSwitched, CommonNotifications.netConnected,
                 CommonNotifications.netDisconnection, NotificationConstant.updateConnectComplete,
                 NotificationConstant.connectedTosunmiDevice, NotificationConstant.unBindRouterChanged,
-                CommonNotifications.ipcUpgradeComplete, CommonNotifications.ipcUpgrade,
+                CommonNotifications.ipcUpgradeComplete, CommonNotifications.ipcUpgrade, IpcConstants.refreshIpcList,
                 CommonNotifications.companyNameChanged, CommonNotifications.companySwitch};
     }
 
@@ -687,10 +690,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         bundle.putString("shopId", SpUtils.getShopId() + "");
         bundle.putString("sn", sn);
         bundle.putString("status", status);
-        if (ApIsNewVersionUtils.isNewVersion())
-            openActivity(mActivity, RouterManagerNewActivity.class, bundle);
-        else
-            openActivity(mActivity, RouterMangerActivity.class, bundle);
+        openActivity(mActivity, RouterManagerNewActivity.class, bundle);
     }
 
     private void deleteDevice(SunmiDevice device) {

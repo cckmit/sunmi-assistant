@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'walle'
 
 android {
     compileSdkVersion COMPILE_SDK_VERSION
@@ -21,7 +22,8 @@ android {
         testInstrumentationRunner "android.support.test_udp.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = ['resourcePackageName': "com.sunmi.assistant"]
+                arguments = ['resourcePackageName': "com.sunmi.assistant",
+                             "HOST"               : "app"]
             }
         }
         multiDexEnabled true
@@ -34,6 +36,15 @@ android {
                 MTA_CHANNEL     : "myapp"]
     }
 
+    signingConfigs {
+        sign {
+            storeFile file("../Keystore.jks")
+            storePassword "SUNMIwireless388"
+            keyAlias "SUNMI_Key"
+            keyPassword "SUNMIwireless388"
+        }
+    }
+
     buildTypes {
         debug {
             applicationIdSuffix ".test"
@@ -44,6 +55,8 @@ android {
                     APP_NAME        : "商米助手test",
                     MTA_APPKEY      : "A6INR132MGAI",
                     MTA_CHANNEL     : "myapp"]
+//            minifyEnabled false
+//            signingConfig signingConfigs.sign
         }
 
         release {
@@ -57,6 +70,7 @@ android {
             zipAlignEnabled true
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.sign
         }
     }
 
@@ -102,15 +116,26 @@ dependencies {
     implementation project(':sunmiservice')
     implementation project(':cloudprinter')
     implementation project(':ipc')
+    implementation project(':MPChartLib')
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     annotationProcessor "org.androidannotations:androidannotations:${AAVersion}"
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
     implementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
 
     implementation 'com.youth.banner:banner:1.4.10'  //最新版本
 
+
+    annotationProcessor "com.github.xiaojinzi123.Component:component-compiler:1.7.5"
+
+}
+walle {
+    //指定渠道包的输出路径
+    apkOutputFolder = new File("${project.buildDir}/outputs/channels")
+    //定制渠道包的APK的文件名称 例如app-xiaomi.apk
+    apkFileNameFormat = 'app-${channel}.apk'
+    //渠道配置文件
+    channelFile = new File("${project.getProjectDir()}/channel")
 }

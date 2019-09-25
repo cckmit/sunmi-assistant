@@ -13,6 +13,7 @@ public class IpcNightModeResp {
      */
 
     private int led_indicator;
+    private int wdr_mode;
     private int night_mode;
     private int rotation;
     private String sn;
@@ -47,5 +48,13 @@ public class IpcNightModeResp {
 
     public void setSn(String sn) {
         this.sn = sn;
+    }
+
+    public int getWdr_mode() {
+        return wdr_mode;
+    }
+
+    public void setWdr_mode(int wdr_mode) {
+        this.wdr_mode = wdr_mode;
     }
 }

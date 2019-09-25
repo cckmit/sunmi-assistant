@@ -22,6 +22,7 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.NetworkUtils;
+import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.ViewHolder;
@@ -54,13 +55,9 @@ public class MsgSettingDetailActivity extends BaseMvpActivity<MsgSettingDetailPr
 
     @AfterViews
     void init() {
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         titleBar.setAppTitle(getString(R.string.str_msg_setting_detail, title));
-        titleBar.getLeftLayout().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
         tvMain.setText(title);
         sMian.setChecked(child.getStatus() == 1);
         mPresenter = new MsgSettingDetailPresenter();
@@ -78,12 +75,9 @@ public class MsgSettingDetailActivity extends BaseMvpActivity<MsgSettingDetailPr
                 holder.setText(R.id.tv_msg_setting, MessageUtils.getInstance().getMsgFirst(children.getName()));
                 Switch sw = holder.getView(R.id.switch_msg);
                 sw.setChecked(children.getStatus() == 1);
-                sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        changeStatus(isChecked, children.getId(), sw);
-                        changedSwitch = sw;
-                    }
+                sw.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    changeStatus(isChecked, children.getId(), sw);
+                    changedSwitch = sw;
                 });
 
             }

@@ -391,7 +391,7 @@ public class DropdownMenu extends FrameLayout implements View.OnClickListener {
         }
 
         @SuppressWarnings("unchecked")
-        protected <V extends View> V getView(int resId) {
+        public <V extends View> V getView(int resId) {
             View view = mViews.get(resId);
             if (view == null) {
                 view = itemView.findViewById(resId);

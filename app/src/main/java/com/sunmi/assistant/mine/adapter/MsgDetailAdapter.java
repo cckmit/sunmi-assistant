@@ -1,7 +1,9 @@
 package com.sunmi.assistant.mine.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -9,6 +11,7 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.model.MessageListBean;
 import com.sunmi.assistant.mine.model.MsgTag;
 import com.sunmi.assistant.utils.MessageUtils;
+import com.sunmi.ipc.dynamic.DynamicVideoActivity_;
 
 import java.util.List;
 import java.util.Map;
@@ -33,10 +36,6 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
         this.context = context;
     }
 
-    public interface OnMsgLongClickListener {
-        void onLongClick(View view, int msgId, int position);
-    }
-
     public void setMsgLongClickListener(OnMsgLongClickListener listener) {
         this.listener = listener;
     }
@@ -55,9 +54,30 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
         detailMap = detailTag.getMsgMap();
         String companyName = titleMap.get("company_name");
         String shopName = titleMap.get("shop_name");
-        helper.setText(R.id.tv_msg_title, (companyName != null ? companyName : "") + (shopName != null ? shopName : ""));
+        helper.setText(R.id.tv_msg_company, (companyName != null ? companyName : ""));
+        helper.setText(R.id.tv_msg_shop, (shopName != null ? shopName : ""));
+        helper.setText(R.id.tv_msg_device_model, context.getString(R.string.ipc_device_model, ""));
         helper.setText(R.id.tv_msg_time, DateTimeUtils.secondToDate(item.getReceiveTime(), "yyyy-MM-dd HH:mm:ss"));
         setMsgDetail(helper, MessageUtils.getInstance().getMsgFirst(titleTag.getTag()));
+        //动态侦测视频
+        Button btnPlay = helper.getView(R.id.btn_play);
+        if (!TextUtils.isEmpty(item.getMajorButtonLink()) && item.getMajorButtonLink().contains("url")) {
+            btnPlay.setVisibility(View.VISIBLE);
+            MsgTag urlTag = item.getMajorButtonLinkTag();
+            Map<String, String> urlMap = urlTag.getMsgMap();
+            String url = urlMap.get("url");
+            String deviceModel = urlMap.get("device_model");
+            helper.setText(R.id.tv_msg_device_model, context.getString(R.string.ipc_device_model, deviceModel));
+            btnPlay.setOnClickListener(v -> {
+                msgView.setVisibility(View.GONE);
+                DynamicVideoActivity_.intent(context)
+                        .url(url)
+                        .deviceModel(deviceModel)
+                        .start();
+            });
+        } else {
+            btnPlay.setVisibility(View.GONE);
+        }
         helper.itemView.setOnLongClickListener(v -> {
             if (listener != null) {
                 listener.onLongClick(helper.getView(R.id.tv_msg_detail), item.getMsgId(), helper.getAdapterPosition());
@@ -78,9 +98,9 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
         if (disconnectTime != null) {
             try {
                 String time = DateTimeUtils.secondToDate(Long.parseLong(disconnectTime), "yyyy-MM-dd HH:mm:ss");
-                detail = String.format(string, deviceName, time);
+                detail = String.format(string, "", time);
             } catch (NumberFormatException e) {
-                detail = String.format(string, deviceName, disconnectTime);
+                detail = String.format(string, "", disconnectTime);
             }
         } else if (timestamp != null && saasName != null && totalCount != null) {
             try {
@@ -91,17 +111,22 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
             }
         } else if (binVersion != null) {
             try {
-                detail = String.format(string, deviceName, binVersion);
+                detail = String.format(string, "", binVersion);
             } catch (Exception e) {
                 detail = "";
             }
         } else {
             try {
-                detail = String.format(string, deviceName);
+                detail = String.format(string, "");
             } catch (Exception e) {
                 detail = "";
             }
         }
-        helper.setText(R.id.tv_msg_detail, detail);
+        helper.setText(R.id.tv_msg_device_name, context.getString(R.string.ipc_device_name, deviceName));
+        helper.setText(R.id.tv_msg_detail, context.getString(R.string.ipc_device_msg_content, detail));
+    }
+
+    public interface OnMsgLongClickListener {
+        void onLongClick(View view, int msgId, int position);
     }
 }

@@ -152,7 +152,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
         //切换商户保存信息直接跳转MainActivity
         if (isLoginSuccessSwitchCompany) {
             CommonHelper.saveCompanyShopInfo(companyId, companyName, saasExist, shopId, shopName);
-            GotoActivityUtils.gotoMainActivity(context);
+            GotoActivityUtils.gotoMainActivityClearTask(context);
             return;
         }
         showLoadingDialog();
@@ -240,6 +240,9 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
                     silItem.setVisibility(View.VISIBLE);
                 }
                 holder.itemView.setOnClickListener(v -> {
+                    if (isFastClick(1200)) {
+                        return;
+                    }
                     companyId = item.getCompany_id();
                     companyName = item.getCompany_name();
                     saasExist = item.getSaas_exist();

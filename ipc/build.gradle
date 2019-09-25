@@ -9,6 +9,16 @@ android {
         targetSdkVersion TARGET_SDK_VERSION
         versionCode 1
         versionName "1.0"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                // 配置业务模块的模块名称
+                arguments = ["HOST": "ipc"]
+            }
+        }
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -42,4 +52,5 @@ dependencies {
 
     annotationProcessor "org.androidannotations:androidannotations:${AAVersion}"
 //    implementation 'com.github.codbking:PickTime:v1.0.1'
+    annotationProcessor "com.github.xiaojinzi123.Component:component-compiler:1.7.5"
 }

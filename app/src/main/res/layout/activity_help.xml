@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:background="@color/c_white"
         app:dividerShow="true"
-        app:leftIcon="@mipmap/ic_back_dark"
+        app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/str_help_feedback"
         app:titleTextColor="@color/colorText" />
 

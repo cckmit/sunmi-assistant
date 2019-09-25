@@ -1,10 +1,14 @@
 package com.sunmi.assistant.ui.activity.login;
 
 import android.content.DialogInterface;
+import android.graphics.Typeface;
+import android.support.v4.widget.TextViewCompat;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CheckedTextView;
+import android.widget.TextView;
 
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.ui.view.MergeDialog;
@@ -25,6 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.RegexUtils;
 import sunmi.common.utils.ViewUtils;
 import sunmi.common.view.ClearableEditText;
@@ -43,6 +48,12 @@ public class InputMobileActivity extends BaseMvpActivity<InputMobilePresenter>
     CheckedTextView ctvPrivacy;
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
+    @ViewById(R.id.tv)
+    TextView tv;
+    @ViewById(R.id.tv86)
+    TextView tv86;
+    @ViewById(R.id.tvLine)
+    TextView tvLine;
 
     @Extra
     String mobile;
@@ -59,6 +70,14 @@ public class InputMobileActivity extends BaseMvpActivity<InputMobilePresenter>
         HelpUtils.setStatusBarFullTransparent(this);//透明标题栏
         mPresenter = new InputMobilePresenter();
         mPresenter.attachView(this);
+        if (CommonHelper.isGooglePlay()) {
+            tv.setText(R.string.tip_input_email_address);
+            etMobile.setInputType(EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        }else {
+            tv86.setVisibility(View.VISIBLE);
+            tvLine.setVisibility(View.VISIBLE);
+            etMobile.setMaxLines(11);
+        }
         etMobile.setClearIcon(R.mipmap.ic_edit_delete_white);
         new SomeMonitorEditText().setMonitorEditText(btnNext, etMobile);
         if (!TextUtils.isEmpty(mobile)) {
@@ -89,7 +108,11 @@ public class InputMobileActivity extends BaseMvpActivity<InputMobilePresenter>
         }
         mobile = etMobile.getText().toString().trim();
         if (!RegexUtils.isChinaPhone(mobile)) {
-            shortTip(R.string.str_invalid_phone);
+            if (CommonHelper.isGooglePlay()) {
+                shortTip(R.string.str_invalid_email);
+            } else {
+                shortTip(R.string.str_invalid_phone);
+            }
             return;
         }
         if (checkSource == SOURCE_REGISTER) {
@@ -151,7 +174,7 @@ public class InputMobileActivity extends BaseMvpActivity<InputMobilePresenter>
     @UiThread
     void mobileRegistered() {
         new CommonDialog.Builder(context)
-                .setTitle(R.string.tip_register_already)
+                .setTitle((CommonHelper.isGooglePlay()?R.string.tip_register_already_email:R.string.tip_register_already))
                 .setCancelButton(R.string.sm_cancel)
                 .setConfirmButton(R.string.str_goto_register, new DialogInterface.OnClickListener() {
                     @Override

@@ -36,6 +36,7 @@ import java.util.List;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.CompanyInfoResp;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.PermissionUtils;
 import sunmi.common.utils.RegexUtils;
 import sunmi.common.utils.SpUtils;
@@ -66,6 +67,8 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
     Button btnFixPassword;
     @ViewById(R.id.btnLogout)
     Button btnLogout;
+    @ViewById(R.id.tvLogo)
+    TextView tvLogo;
 
     @Extra
     String reason;
@@ -82,6 +85,11 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
         mPresenter.attachView(this);
         PermissionUtils.checkPermissionActivity(this);//手机权限
         HelpUtils.setStatusBarFullTransparent(this);//透明标题栏
+        if(CommonHelper.isGooglePlay()){
+            tvSMSLogin.setVisibility(View.GONE);
+            etUser.setHint(R.string.hint_input_email);
+            tvLogo.setBackgroundResource(R.mipmap.ic_sunmi_logo_en);
+        }
         etUser.setClearIcon(R.mipmap.ic_edit_delete_white);
         etPassword.setClearIcon(R.mipmap.ic_edit_delete_white);
         if (TextUtils.isEmpty(mobile)) {
@@ -168,9 +176,6 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
                 CommonUtils.trackCommonEvent(context, "register", "注册按钮", Constants.EVENT_LOGIN);
                 CommonUtils.trackDurationEventBegin(context, "registerDuration",
                         "注册流程开始和结束时调用", Constants.EVENT_DURATION_REGISTER);
-                /*RegisterActivity_.intent(context)
-                        .extra("mobile", RegexUtils.isChinaPhone(mobile) ? mobile : "")
-                        .start();*/
                 InputMobileActivity_.intent(context).mobile(RegexUtils.isChinaPhone(mobile) ? mobile : "")
                         .checkSource(InputMobileActivity.SOURCE_REGISTER).start();
                 break;
@@ -195,9 +200,6 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
                 CommonUtils.trackCommonEvent(context, "forgetPassword", "忘记密码按钮", Constants.EVENT_LOGIN);
                 CommonUtils.trackDurationEventBegin(context, "retrievePasswordDuration",
                         "找回密码流程开始和结束", Constants.EVENT_DURATION_FORGET_PSW);
-               /* RetrievePasswordActivity_.intent(context)
-                        .extra("mobile", RegexUtils.isChinaPhone(mobile) ? mobile : "")
-                        .start();*/
                 InputMobileActivity_.intent(context).mobile(RegexUtils.isChinaPhone(mobile) ? mobile : "")
                         .checkSource(InputMobileActivity.SOURCE_RETRIEVE_PWD).start();
                 break;

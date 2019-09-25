@@ -19,7 +19,6 @@ import java.util.Locale;
 import java.util.concurrent.ScheduledExecutorService;
 
 import sunmi.common.utils.DateTimeUtils;
-import sunmi.common.utils.log.LogCat;
 
 /**
  * Description:
@@ -191,10 +190,12 @@ public class ZFTimeLine extends View {
                 moveStartX = event.getX();
             }
             break;
+            case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP: {
                 //拖动结束  这里应该有Bug没有区分移动可缩放状态 不过影响不大
                 if (listener != null) {
-                    listener.didMoveToDate(formatterProject.format(currentInterval * 1000), currentInterval);
+                    listener.didMoveToDate(formatterProject.format(currentInterval * 1000),
+                            currentInterval);
                 }
             }
             break;
@@ -247,9 +248,7 @@ public class ZFTimeLine extends View {
 
     //移动到某时间 传入秒数
     public void autoMove() {
-        LogCat.e("zft", "99999999 222 currentInteval = " + currentInterval);
         currentInterval += 60;
-        LogCat.e("zft", "99999999 333 currentInteval = " + currentInterval);
         invalidate();
     }
 

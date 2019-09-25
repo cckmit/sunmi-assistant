@@ -1,25 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cl_dashboard_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <cn.bingoogolapple.refreshlayout.BGARefreshLayout
+    <View
+        android:id="@+id/view_dashboard_refresh_bg"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_150"
+        android:background="@color/color_303540"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_shop_title" />
+
+    <com.sunmi.assistant.dashboard.ui.RefreshLayout
         android:id="@+id/layout_dashboard_refresh"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_dashboard_card_list"
+            android:id="@+id/rv_dashboard_list"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_height="match_parent" />
 
-    </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
+    </com.sunmi.assistant.dashboard.ui.RefreshLayout>
+
+    <View
+        android:id="@+id/view_dashboard_overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/c_black"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_shop_title" />
+
+    <sunmi.common.view.DropdownMenu
+        android:id="@+id/layout_shop_title"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_64"
+        android:background="@drawable/dashboard_bg_top"
+        android:gravity="center"
+        android:paddingStart="@dimen/dp_20"
+        android:paddingEnd="@dimen/dp_20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <include
-        android:id="@+id/layout_dashboard_sticky_tab"
-        layout="@layout/dashboard_recycle_item_tab"
-        android:visibility="invisible" />
+        android:id="@+id/layout_top_period_tab"
+        layout="@layout/dashboard_top_period_tab"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_44"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</FrameLayout>
+    <include
+        android:id="@+id/layout_dashboard_error"
+        layout="@layout/include_network_error"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.constraint.Group
+        android:id="@+id/group_dashboard_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="layout_shop_title,layout_dashboard_refresh,view_dashboard_refresh_bg" />
+
+</android.support.constraint.ConstraintLayout>
 

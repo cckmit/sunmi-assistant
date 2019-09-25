@@ -2,6 +2,7 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/const_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_common">
@@ -13,8 +14,9 @@
         android:background="@color/c_white"
         app:dividerShow="true"
         app:leftDefaultClickEnable="true"
-        app:leftIcon="@mipmap/ic_back_dark"
-        app:titleText="@string/str_store_info"
+        app:leftIcon="@drawable/ic_back_dark"
+        app:rightText="@string/str_save"
+        app:titleText="@string/shop_address"
         app:titleTextColor="@color/colorText"
         tools:ignore="MissingConstraints" />
 
@@ -32,21 +34,37 @@
         app:rightTextColor="@color/colorText_60"
         tools:ignore="MissingConstraints" />
 
-    <sunmi.common.view.ClearableEditText
-        android:id="@+id/cet_details_address"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/const_layout_poi"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_112"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_12"
-        android:background="@color/c_white"
-        android:hint="@string/tip_addr_empty"
-        android:paddingStart="@dimen/dp_25"
-        android:paddingTop="@dimen/dp_20"
-        android:paddingEnd="@dimen/dp_25"
-        android:paddingBottom="@dimen/dp_20"
-        android:textColor="@color/text_color"
-        android:textSize="@dimen/sp_16"
-        app:layout_constraintTop_toBottomOf="@id/sil_address"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintTop_toBottomOf="@id/sil_address">
+
+        <sunmi.common.view.ClearableEditText
+            android:id="@+id/cet_details_address"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_112"
+            android:background="@color/c_white"
+            android:hint="@string/tip_addr_empty"
+            android:paddingStart="@dimen/dp_25"
+            android:paddingTop="@dimen/dp_20"
+            android:paddingEnd="@dimen/dp_25"
+            android:paddingBottom="@dimen/dp_20"
+            android:textColor="@color/text_color"
+            android:textSize="@dimen/sp_16"
+            tools:ignore="MissingConstraints" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/poi_recyclerView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_1"
+            android:background="@color/c_white"
+            app:layout_constraintTop_toBottomOf="@id/cet_details_address"
+            tools:ignore="MissingConstraints" />
+
+    </android.support.constraint.ConstraintLayout>
 
 
 </android.support.constraint.ConstraintLayout>

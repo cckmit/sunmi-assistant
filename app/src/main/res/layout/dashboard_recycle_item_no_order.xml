@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_dashboard_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/layout_dashboard_content"
+        android:layout_width="@dimen/dp_327"
+        android:layout_height="@dimen/dp_144"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="@dimen/dp_24">
+
+        <TextView
+            android:id="@+id/tv_dashboard_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_24"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/dp_20"
+            android:text="@string/dashboard_no_order_title"
+            android:textColor="@color/color_303540"
+            android:textSize="@dimen/sp_20"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_4"
+            android:text="@string/dashboard_no_order_subtitle"
+            android:textColor="@color/color_777E8C"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_title" />
+
+        <Button
+            android:id="@+id/btn_dashboard_coming_soon"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="@dimen/dp_96"
+            android:layout_height="@dimen/dp_40"
+            android:layout_marginStart="@dimen/dp_24"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:background="@drawable/dashboard_btn_round_gray"
+            android:text="@string/str_coming_soon"
+            android:textColor="@color/c_white"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/dashboard_empty_order"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</FrameLayout>

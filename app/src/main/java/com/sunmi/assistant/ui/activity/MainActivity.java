@@ -19,6 +19,7 @@ import com.sunmi.apmanager.rpc.mqtt.MQTTManager;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.MyApplication;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.DashboardFragment;
 import com.sunmi.assistant.mine.MineFragment;
 import com.sunmi.assistant.mine.MineFragment_;
 import com.sunmi.assistant.mine.contract.MessageCountContract;
@@ -41,6 +42,7 @@ import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.mqtt.MqttManager;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.MyFragmentTabHost;
@@ -118,6 +120,7 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
     @Override
     public void onTabChanged(String tabId) {
         trackTabEvent(tabId);
+        initStatusBar(tabId);
         final int size = mTabHost.getTabWidget().getTabCount();
         for (int i = 0; i < size; i++) {
             View v = mTabHost.getTabWidget().getChildAt(i);
@@ -133,6 +136,18 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
         }
     }
 
+    private void initStatusBar(String tabId) {
+        if (TextUtils.equals(getStringById(R.string.str_tab_dashboard), tabId)) {
+            DashboardFragment fragment = (DashboardFragment) getFragment(
+                    getString(R.string.str_tab_dashboard));
+            if (fragment != null) {
+                fragment.updateStatusBar();
+            }
+        } else {
+            StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
+        }
+    }
+
     @Override
     public int[] getStickNotificationId() {
         return new int[]{CommonNotifications.homePageBadgeUpdate, CommonNotifications.pushMsgArrived};
@@ -141,14 +156,14 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
     @Override
     public int[] getUnStickNotificationId() {
         return new int[]{NotificationConstant.netConnectedMainActivity,
-                CommonNotifications.refreshMainTabView};
+                CommonNotifications.importShop};
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (NotificationConstant.netConnectedMainActivity == id) {
             initIpc();
-        } else if (CommonNotifications.refreshMainTabView == id) {
+        } else if (CommonNotifications.importShop == id) {
             if (mTabHost.getChildCount() == 4) {
                 return;
             }
@@ -182,8 +197,7 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
         }
         MainTab[] mainTabs = MainTab.values();
         for (MainTab mainTab : mainTabs) {
-            if (SpUtils.getSaasExist() == 0 && TextUtils.equals(getString(mainTab.getResName()),
-                    getString(R.string.str_tab_dashboard))) {//saas平台需要显示数据tab
+            if (isHideTab(mainTab.getResName())) {//saas平台需要显示数据tab
                 continue;
             }
             TabHost.TabSpec tab = mTabHost.newTabSpec(getString(mainTab.getResName()));
@@ -262,6 +276,12 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
                     .getSystemService(Context.CONNECTIVITY_SERVICE);
             connectivityManager.unregisterNetworkCallback(networkCallback);
         }
+    }
+
+    private boolean isHideTab(int tabNameRes) {
+        return CommonHelper.isGooglePlay() &&
+                (TextUtils.equals(getString(tabNameRes), getString(R.string.str_tab_dashboard))
+                        || TextUtils.equals(getString(tabNameRes), getString(R.string.str_tab_support)));
     }
 
 }

@@ -18,7 +18,6 @@ import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.ToastUtils;
-import sunmi.common.utils.log.LogCat;
 
 /**
  * Description:
@@ -28,7 +27,6 @@ public abstract class RetrofitCallback<T> implements Callback<BaseResponse<T>> {
     @Override
     public void onResponse(@NonNull Call<BaseResponse<T>> call,
                            @NonNull Response<BaseResponse<T>> response) {
-        LogCat.e("111", "888888 response.code() =  " + response.code());
         if (response.code() == RpcErrorCode.HTTP_RESP_FORBID) {//请求被拒
             ToastUtils.toastForShort(BaseApplication.getContext(), R.string.tip_forbid_by_server);
         } else if (response.code() == RpcErrorCode.HTTP_RESP_UNKNOWN_REQUEST) {
@@ -36,9 +34,9 @@ public abstract class RetrofitCallback<T> implements Callback<BaseResponse<T>> {
                 try {
                     BaseResponse errorResp = new Gson()
                             .fromJson(response.errorBody().string(), BaseResponse.class);
-                    LogCat.e("111", "888888 errcode =  " + errorResp.getCode());
                     if (RpcErrorCode.HTTP_INVALID_TOKEN == errorResp.getCode()
-                            | RpcErrorCode.HTTP_EXPIRE_TOKEN == errorResp.getCode()) {
+                            || RpcErrorCode.HTTP_EXPIRE_TOKEN == errorResp.getCode()
+                            || RpcErrorCode.HTTP_JWT_TOKEN_EXPIRED == errorResp.getCode()) {
                         CommonHelper.logout();
                         GotoActivityUtils.gotoLoginActivity(BaseApplication.getContext(), "1");
                     }

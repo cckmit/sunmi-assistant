@@ -9,7 +9,8 @@ import android.widget.TextView;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.model.IpcNewFirmwareResp;
 import com.sunmi.ipc.rpc.IPCCall;
-import com.sunmi.ipc.rpc.IpcConstants;
+import com.sunmi.ipc.rpc.OpcodeConstants;
+import com.sunmi.ipc.view.UpdateProgressDialog;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -160,14 +161,14 @@ public class IpcSettingVersionActivity extends BaseActivity {
 
     @Override
     public int[] getUnStickNotificationId() {
-        return new int[]{IpcConstants.ipcUpgrade};
+        return new int[]{OpcodeConstants.ipcUpgrade};
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (args == null) return;
         ResponseBean res = (ResponseBean) args[0];
-        if (id == IpcConstants.ipcUpgrade) {
+        if (id == OpcodeConstants.ipcUpgrade) {
             upgradeResult(res);
         }
     }

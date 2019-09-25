@@ -27,22 +27,34 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
  */
 public class IVideoPlayer extends RelativeLayout {
 
+    VideoPlayListener videoPlayListener;
     private Context mContext;
     private SurfaceView surfaceView, cacheSurfaceView;
-
     //由ijkplayer提供，用于播放视频，需要给他传入一个surfaceView
     private IMediaPlayer mediaPlayer = null, cacheMediaPlayer = null;
     private IMediaPlayer currentMediaPlayer = null;
-
     //视频文件地址
     private Queue<String> urlQueue = new LinkedBlockingQueue<>();
     //视频请求header
     private Map<String, String> header;
 
-    VideoPlayListener videoPlayListener;
-
-//    private AudioManager audioManager;
+    //    private AudioManager audioManager;
 //    private AudioFocusHelper audioFocusHelper;
+    IMediaPlayer.OnCompletionListener completionListener = new IMediaPlayer.OnCompletionListener() {
+        @Override
+        public void onCompletion(IMediaPlayer iMediaPlayer) {
+            iMediaPlayer.setDisplay(null);
+            if (currentMediaPlayer == mediaPlayer) {
+                initPlayer(false);
+                startCachePlayer();
+                return;
+            }
+            if (currentMediaPlayer == cacheMediaPlayer) {
+                initCachePlayer();
+                startPlayer();
+            }
+        }
+    };
 
     public IVideoPlayer(@NonNull Context context) {
         this(context, null);
@@ -62,7 +74,7 @@ public class IVideoPlayer extends RelativeLayout {
         mContext = context;
         createSurfaceView();
         createCacheSurfaceView();
-//        audioManager = (AudioManager) mContext.getApplicationContext()
+//        mAudioManager = (AudioManager) mContext.getApplicationContext()
 //                .getSystemService(Context.AUDIO_SERVICE);
 //        audioFocusHelper = new AudioFocusHelper();
     }
@@ -212,22 +224,6 @@ public class IVideoPlayer extends RelativeLayout {
         });
     }
 
-    IMediaPlayer.OnCompletionListener completionListener = new IMediaPlayer.OnCompletionListener() {
-        @Override
-        public void onCompletion(IMediaPlayer iMediaPlayer) {
-            iMediaPlayer.setDisplay(null);
-            if (currentMediaPlayer == mediaPlayer) {
-                initPlayer(false);
-                startCachePlayer();
-                return;
-            }
-            if (currentMediaPlayer == cacheMediaPlayer) {
-                initCachePlayer();
-                startPlayer();
-            }
-        }
-    };
-
     private void startPlayer() {
         if (mediaPlayer != null) {
             LogCat.e("lvp", "88888888 startPlayer");
@@ -311,9 +307,13 @@ public class IVideoPlayer extends RelativeLayout {
      * 暂停
      */
     public void pause() {
-        if (currentMediaPlayer != null) {
-            currentMediaPlayer.pause();
+        try {
+            if (currentMediaPlayer != null) {
+                currentMediaPlayer.pause();
 //            audioFocusHelper.abandonFocus();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -364,12 +364,122 @@ public class IVideoPlayer extends RelativeLayout {
     }
 
     public boolean isPlaying() {
-        if (mediaPlayer != null && mediaPlayer.isPlaying()
-                || cacheMediaPlayer != null && cacheMediaPlayer.isPlaying()) {
-            return true;
-        }
-        return false;
+        return mediaPlayer != null && mediaPlayer.isPlaying()
+                || cacheMediaPlayer != null && cacheMediaPlayer.isPlaying();
     }
+
+    public void setOnPreparedListener(IMediaPlayer.OnPreparedListener listener) {
+        if (mediaPlayer != null) {
+            mediaPlayer.setOnPreparedListener(listener);
+        }
+    }
+
+    public void setOnVideoSizeChangedListener(IMediaPlayer.OnVideoSizeChangedListener listener) {
+        if (mediaPlayer != null) {
+            mediaPlayer.setOnVideoSizeChangedListener(listener);
+        }
+    }
+
+    public void setOnBufferingUpdateListener(IMediaPlayer.OnBufferingUpdateListener listener) {
+        if (mediaPlayer != null) {
+            mediaPlayer.setOnBufferingUpdateListener(listener);
+        }
+    }
+
+    public void setOnCompletionListener(IMediaPlayer.OnCompletionListener listener) {
+        if (mediaPlayer != null) {
+            mediaPlayer.setOnCompletionListener(listener);
+        }
+    }
+
+    public void setOnSeekCompleteListener(IMediaPlayer.OnSeekCompleteListener listener) {
+        if (mediaPlayer != null) {
+            mediaPlayer.setOnSeekCompleteListener(listener);
+        }
+    }
+
+    public void setOnInfoListener(IMediaPlayer.OnInfoListener listener) {
+        if (mediaPlayer != null) {
+            mediaPlayer.setOnInfoListener(listener);
+        }
+    }
+
+    public void setOnErrorListener(IMediaPlayer.OnErrorListener listener) {
+        if (mediaPlayer != null) {
+            mediaPlayer.setOnErrorListener(listener);
+        }
+    }
+
+    /**
+     * 加载视频
+     *
+     * @param url
+     */
+    public void load(String url) {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+        mediaPlayer = createPlayer();
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mediaPlayer.setDisplay(surfaceView.getHolder());
+        try {
+            mediaPlayer.setDataSource(mContext, Uri.parse(url), header);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mediaPlayer.prepareAsync();
+    }
+
+    /**
+     * 开始播放
+     */
+    public void startVideo() {
+        if (mediaPlayer != null) {
+            mediaPlayer.start();
+        }
+    }
+
+    public void pauseVideo() {
+        if (mediaPlayer != null) {
+            mediaPlayer.pause();
+        }
+    }
+
+    public long getDuration() {
+        if (mediaPlayer != null) {
+            return mediaPlayer.getDuration();
+        } else {
+            return 0;
+        }
+    }
+
+    public long getCurrentPosition() {
+        if (mediaPlayer != null) {
+            return mediaPlayer.getCurrentPosition();
+        } else {
+            return 0;
+        }
+    }
+
+    public void seekTo(long l) {
+        if (mediaPlayer != null) {
+            mediaPlayer.seekTo(l);
+        }
+    }
+
+    /**
+     * 时长格式化显示
+     */
+    public String generateTime(long time) {
+        int totalSeconds = (int) (time / 1000);
+        int seconds = totalSeconds % 60;
+        int minutes = (totalSeconds / 60) % 60;
+        int hours = totalSeconds / 3600;
+        return hours > 0 ? String.format("%02d:%02d:%02d", hours, minutes, seconds) : String.format("%02d:%02d", minutes, seconds);
+    }
+
 
     /**
      * 音频焦点改变监听

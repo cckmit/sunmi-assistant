@@ -133,7 +133,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:leftDefaultClickEnable="true"
-        app:leftIcon="@mipmap/ic_back_dark"
+        app:leftIcon="@drawable/ic_back_dark"
         app:leftText="@string/sm_cancel"
         app:titleTextColor="@color/colorText" />
 

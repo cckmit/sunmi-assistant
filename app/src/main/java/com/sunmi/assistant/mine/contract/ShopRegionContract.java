@@ -25,6 +25,6 @@ public interface ShopRegionContract {
 
     interface Presenter {
 
-        void updateRegion(int province, int city, int area);
+        void updateRegion(int province, int city, int area, String address);
     }
 }

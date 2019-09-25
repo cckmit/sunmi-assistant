@@ -71,7 +71,6 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        titleBar.setLeftImageDrawable(ContextCompat.getDrawable(this, R.mipmap.ic_back_dark));
         initRecycler();
         CommonHelper.isCanClick(btnNext, false);
         getPlatformList();

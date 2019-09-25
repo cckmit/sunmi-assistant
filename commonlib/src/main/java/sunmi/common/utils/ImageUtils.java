@@ -1,9 +1,13 @@
 package sunmi.common.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
@@ -22,7 +26,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 public class ImageUtils {
     /**
@@ -129,6 +135,68 @@ public class ImageUtils {
         }
         return bitmap;
     }
+
+    /**
+     * Save the bitmap.
+     *
+     * @param src     The source of bitmap.
+     * @param file    The file.
+     * @param recycle True to recycle the source of bitmap, false otherwise.
+     * @return {@code true}: success<br>{@code false}: fail
+     */
+    public static boolean save(final Bitmap src, final String file,
+                               Bitmap.CompressFormat format, int quality, boolean recycle) {
+        if (src == null) {
+            return false;
+        }
+        boolean ret = false;
+        try (OutputStream os = new BufferedOutputStream(new FileOutputStream(file))) {
+            ret = src.compress(format, quality, os);
+            if (recycle && !src.isRecycled()) {
+                src.recycle();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ret;
+    }
+
+    /**
+     * 保存文件到指定路径
+     *
+     * @param context context
+     * @param bmp     bmp
+     * @return {@code true}: success<br>{@code false}: fail
+     */
+    public static boolean saveImageToGallery(Context context, Bitmap bmp, int quality) {
+        if (bmp == null) {
+            return false;
+        }
+        String storePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "screen_shot";
+        File appDir = new File(storePath);
+        if (!appDir.exists()) {
+            appDir.mkdir();
+        }
+        String fileName = System.currentTimeMillis() + ".jpg";
+        File file = new File(appDir, fileName);
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            //通过io流的方式来压缩保存图片
+            boolean isSuccess = bmp.compress(Bitmap.CompressFormat.JPEG, quality, fos);
+            fos.flush();
+            fos.close();
+            //把文件插入到系统图库
+            MediaStore.Images.Media.insertImage(context.getContentResolver(), file.getAbsolutePath(), fileName, null);
+            //保存图片后发送广播通知更新数据库
+            Uri uri = Uri.fromFile(file);
+            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
+            return isSuccess;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 
     public static byte[] decodeFromBase64(String string) {
         return Base64.decode(string.getBytes(), Base64.NO_WRAP);//解密

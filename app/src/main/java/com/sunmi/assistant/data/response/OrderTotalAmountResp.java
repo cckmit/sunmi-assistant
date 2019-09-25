@@ -1,40 +1,80 @@
 package com.sunmi.assistant.data.response;
 
+import com.google.gson.annotations.SerializedName;
+
 public class OrderTotalAmountResp {
 
-    private float total_amount;
-    private float day_amount;
-    private float week_amount;
-    private float month_amount;
-    private String day_rate;
-    private String week_rate;
-    private String month_rate;
+    /**
+     * total_amount : 0
+     * day_amount : 0
+     * yesterday_amount : 0
+     * week_amount : 0
+     * last_week_amount : 0
+     * month_amount : 0
+     * last_month_amount : 0
+     * day_rate :
+     * week_rate :
+     * month_rate :
+     */
 
-    public float getTotal_amount() {
-        return total_amount;
+    @SerializedName("total_amount")
+    private float totalAmount;
+    @SerializedName("day_amount")
+    private float dayAmount;
+    @SerializedName("yesterday_amount")
+    private float yesterdayAmount;
+    @SerializedName("week_amount")
+    private float weekAmount;
+    @SerializedName("last_week_amount")
+    private float lastWeekAmount;
+    @SerializedName("month_amount")
+    private float monthAmount;
+    @SerializedName("last_month_amount")
+    private float lastMonthAmount;
+    @SerializedName("day_rate")
+    private String dayRate;
+    @SerializedName("week_rate")
+    private String weekRate;
+    @SerializedName("month_rate")
+    private String monthRate;
+
+    public float getTotalAmount() {
+        return totalAmount;
     }
 
-    public float getDay_amount() {
-        return day_amount;
+    public float getDayAmount() {
+        return dayAmount;
     }
 
-    public float getWeek_amount() {
-        return week_amount;
+    public float getYesterdayAmount() {
+        return yesterdayAmount;
     }
 
-    public float getMonth_amount() {
-        return month_amount;
+    public float getWeekAmount() {
+        return weekAmount;
     }
 
-    public String getDay_rate() {
-        return day_rate;
+    public float getLastWeekAmount() {
+        return lastWeekAmount;
     }
 
-    public String getWeek_rate() {
-        return week_rate;
+    public float getMonthAmount() {
+        return monthAmount;
     }
 
-    public String getMonth_rate() {
-        return month_rate;
+    public float getLastMonthAmount() {
+        return lastMonthAmount;
+    }
+
+    public String getDayRate() {
+        return dayRate;
+    }
+
+    public String getWeekRate() {
+        return weekRate;
+    }
+
+    public String getMonthRate() {
+        return monthRate;
     }
 }

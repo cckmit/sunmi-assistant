@@ -16,7 +16,9 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.CreateShopInfo;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.CommonHelper;
@@ -110,9 +112,10 @@ public class CreateShopActivity extends BaseActivity {
     private void createShopSuccessView(CreateShopInfo resp) {
         shortTip(getString(R.string.company_shop_create_success));
         if (SpUtils.isLoginSuccess()) {
+            BaseNotification.newInstance().postNotificationName(CommonNotifications.shopCreate);
             if (isLoginSuccessSwitchCompany) {
                 CommonHelper.saveCompanyShopInfo(companyId, companyName, saasExist, resp.getShop_id(), resp.getShop_name());
-                GotoActivityUtils.gotoMainActivity(context);
+                GotoActivityUtils.gotoMainActivityClearTask(context);
             } else {
                 setResult(RESULT_OK);
             }

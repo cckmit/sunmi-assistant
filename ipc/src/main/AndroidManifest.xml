@@ -12,38 +12,84 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <application>
-        <activity android:name=".view.WifiConfigActivity_" />
         <activity
-            android:name=".view.IpcConfiguringActivity_"
+            android:name=".view.activity.WifiConfigActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.IpcConfiguringActivity_"
             android:launchMode="singleTask" />
-        <activity android:name=".view.IpcConfigCompletedActivity_" />
         <activity
-            android:name=".view.VideoPlayActivity_"
+            android:name=".view.activity.IpcConfigCompletedActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.VideoPlayActivity_"
             android:hardwareAccelerated="false"
             android:largeHeap="true"
             android:screenOrientation="landscape" />
-        <activity android:name=".view.IPCSearchActivity_" />
-        <activity android:name=".setting.IpcSettingActivity_" />
-        <activity android:name=".setting.IpcSettingDetailActivity_" />
-        <activity android:name=".setting.IpcSettingDetectionActivity_" />
-        <activity android:name=".setting.IpcSettingDetectionTimeActivity_" />
-        <activity android:name=".setting.IpcSettingNightStyleActivity_" />
-        <activity android:name=".setting.IpcSettingVersionActivity_" />
-        <activity android:name=".setting.IpcSettingWiFiActivity_" />
-        <activity android:name=".setting.IpcSettingRotateActivity_" />
         <activity
-            android:name=".setting.recognition.RecognitionSettingActivity_"
+            android:name=".view.activity.IPCSearchActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".setting.IpcSettingActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".setting.IpcSettingDetailActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".setting.IpcSettingDetectionActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".setting.IpcSettingDetectionTimeActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".setting.IpcSettingNightStyleActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".setting.IpcSettingVersionActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".setting.IpcSettingWiFiActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".setting.IpcSettingRotateActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".setting.RecognitionSettingActivity_"
             android:hardwareAccelerated="false"
             android:largeHeap="true"
             android:screenOrientation="landscape" />
 
-        <activity android:name=".face.FaceGroupListActivity_" />
-        <activity android:name=".face.FaceGroupCreateActivity_" />
-        <activity android:name=".face.FaceGroupDetailActivity_" />
-        <activity android:name=".face.FaceListActivity_" />
-        <activity android:name=".face.FaceUploadActivity_" />
-        <activity android:name=".face.FaceDetailActivity_" />
-        <activity android:name=".face.FaceDetailRecordActivity_" />
+        <activity
+            android:name=".face.FaceGroupListActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".face.FaceGroupCreateActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".face.FaceGroupDetailActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".face.FaceListActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".face.FaceUploadActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".face.FaceDetailActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".face.FaceDetailRecordActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.IpcManagerActivity_"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:hardwareAccelerated="false"
+            android:largeHeap="true" />
+        <activity
+            android:name=".dynamic.DynamicVideoActivity_"
+            android:hardwareAccelerated="false"
+            android:largeHeap="true"
+            android:screenOrientation="landscape" />
 
     </application>
 

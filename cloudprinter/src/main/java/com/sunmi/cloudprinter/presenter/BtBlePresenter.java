@@ -3,12 +3,6 @@ package com.sunmi.cloudprinter.presenter;
 import android.os.Handler;
 import android.util.Log;
 
-import com.inuker.bluetooth.library.BluetoothClient;
-import com.inuker.bluetooth.library.connect.options.BleConnectOptions;
-import com.inuker.bluetooth.library.connect.response.BleConnectResponse;
-import com.inuker.bluetooth.library.connect.response.BleNotifyResponse;
-import com.inuker.bluetooth.library.connect.response.BleWriteResponse;
-import com.inuker.bluetooth.library.model.BleGattProfile;
 import com.sunmi.cloudprinter.constant.BtBleContract;
 import com.sunmi.cloudprinter.constant.Constants;
 import com.sunmi.cloudprinter.rpc.IOTCloudApi;
@@ -16,6 +10,12 @@ import com.sunmi.cloudprinter.utils.Utility;
 
 import java.util.UUID;
 
+import library.BluetoothClient;
+import library.connect.options.BleConnectOptions;
+import library.connect.response.BleConnectResponse;
+import library.connect.response.BleNotifyResponse;
+import library.connect.response.BleWriteResponse;
+import library.model.BleGattProfile;
 import sunmi.common.base.BasePresenter;
 import sunmi.common.rpc.http.HttpCallback;
 import sunmi.common.utils.ByteUtils;

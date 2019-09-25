@@ -13,6 +13,10 @@ import okhttp3.RequestBody;
 import retrofit2.Callback;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.model.CompanyInfoResp;
+import sunmi.common.model.ConsumerAgeGenderResp;
+import sunmi.common.model.ConsumerAgeNewOldResp;
+import sunmi.common.model.ConsumerCountResp;
+import sunmi.common.model.ConsumerRateResp;
 import sunmi.common.model.CreateShopInfo;
 import sunmi.common.model.PlatformInfo;
 import sunmi.common.model.ShopCategoryResp;
@@ -27,6 +31,7 @@ import sunmi.common.rpc.mqtt.EmqTokenResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.SafeUtils;
 import sunmi.common.utils.SecurityUtils;
@@ -511,9 +516,16 @@ public class SunmiStoreApi {
 
 
     public void getShopCategory(RetrofitCallback<ShopCategoryResp> callback) {
-        SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
-                .getShopCategory(new BaseRequest(""))
-                .enqueue(callback);
+        try {
+            String params = new JSONObject()
+                    .put("language", CommonHelper.getLanguage())
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
+                    .getShopCategory(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void getShopRegion(RetrofitCallback<ShopRegionResp> callback) {
@@ -607,6 +619,104 @@ public class SunmiStoreApi {
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
                     .authorizeSaas(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // -------------- 客流统计相关 --------------
+
+    /**
+     * 获取最近时间维度客流量（今日、本周、本月，昨日、上周、上月）
+     *
+     * @param companyId 是	number	商户ID
+     * @param shopId    是	number	门店ID
+     * @param timeType  是	number	日: 1、周: 2、月: 3
+     */
+    public void getConsumer(int companyId, int shopId, int timeType,
+                            RetrofitCallback<ConsumerCountResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("type", timeType)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(ConsumerInterface.class)
+                    .getConsumer(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取最近时间维度客流转换率，客流量，交易量（今日，本周，本月）
+     *
+     * @param companyId 是	number	商户ID
+     * @param shopId    是	number	门店ID
+     * @param timeType  是	number	日: 1、周: 2、月: 3
+     */
+    public void getConsumerRate(int companyId, int shopId, int timeType,
+                                RetrofitCallback<ConsumerRateResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("type", timeType)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(ConsumerInterface.class)
+                    .getConsumerRate(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取门店客群年龄性别分布
+     *
+     * @param companyId 是	number	商户ID
+     * @param shopId    是	number	门店ID
+     * @param startTime 是	string	筛选开始时间 “YYYY-MM-DD”(“YYYY-MM-DD HH-MM-SS” 暂未启用）
+     * @param endTime   是	string	筛选结束时间 “YYYY-MM-DD”(“YYYY-MM-DD HH-MM-SS” 暂未启用）
+     */
+    public void getConsumerByAgeGender(int companyId, int shopId, String startTime, String endTime,
+                                       RetrofitCallback<ConsumerAgeGenderResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("start_time", startTime)
+                    .put("end_time", endTime)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(ConsumerInterface.class)
+                    .getConsumerByAgeGender(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取门店客群年龄生熟客分布
+     *
+     * @param companyId 是	number	商户ID
+     * @param shopId    是	number	门店ID
+     * @param startTime 是	string	筛选开始时间 “YYYY-MM-DD”(“YYYY-MM-DD HH-MM-SS” 暂未启用）
+     * @param endTime   是	string	筛选结束时间 “YYYY-MM-DD”(“YYYY-MM-DD HH-MM-SS” 暂未启用）
+     */
+    public void getConsumerByAgeNewOld(int companyId, int shopId, String startTime, String endTime,
+                                       RetrofitCallback<ConsumerAgeNewOldResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("start_time", startTime)
+                    .put("end_time", endTime)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(ConsumerInterface.class)
+                    .getConsumerByAgeNewOld(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
