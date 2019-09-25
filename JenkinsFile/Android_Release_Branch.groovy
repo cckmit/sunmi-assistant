@@ -24,6 +24,7 @@ pipeline{
                 export ANDROID_NDK_HOME=/Users/admin/Library/Android/ndk-bundle/android-ndk-r19c
                 echo $ANDROID_HOME
                 mkdir -p build
+                rm -rf apmanager/build/outputs/*
                 fastlane releaseEnv
                 ''') 
               stash(includes: 'app/build/outputs/apk/**/app-universal-*.apk', name: 'apk')
@@ -54,13 +55,14 @@ pipeline{
               export ANDROID_HOME=/Users/admin/Library/Android/sdk
               export apk_path=app/build/outputs/apk/release/
               mkdir -p release
+              rm -rf release/*
               cd $apk_path
               apk=`ls *universal*`
               cd $WORKSPACE
               version=`$ANDROID_HOME/build-tools/28.0.3/aapt dump badging $apk_path$apk | grep versionName | awk '{print $4}' | sed s/versionName=//g | sed s/\\'//g`
               name=`$ANDROID_HOME/build-tools/28.0.3/aapt dump badging $apk_path$apk | grep application: | awk '{print $2}' | sed s/label=//g | sed s/\\'//g`
               icon=`$ANDROID_HOME/build-tools/28.0.3/aapt dump badging $apk_path$apk | grep application: | awk '{print $3}' | sed s/icon=//g | sed s/\\'//g`
-              echo name=$name >> version.txt
+              echo name=$name > version.txt
               echo version=$version >> version.txt
               cp version.txt release
               unzip -u $apk_path$apk -d ./apk
@@ -86,7 +88,7 @@ pipeline{
         success {
           echo "R ${currentBuild.result} C ${currentBuild.currentResult}"
           script{
-            def recipient_list = 'lukai@sunmi.com,xiaoxinwu@sunmi.com,yangshijie@sunmi.com,yangjibin@sunmi.com,lvsiwen@sunmi.com,ningrulin@sunmi.com,hanruifeng@sunmi.com,simayujing@sunmi.com,linianhan@sunmi.com'
+            def recipient_list = 'lukai@sunmi.com,xiaoxinwu@sunmi.com,yangshijie@sunmi.com,yangjibin@sunmi.com,lvsiwen@sunmi.com,ningrulin@sunmi.com,hanruifeng@sunmi.com,simayujing@sunmi.com,linianhan@sunmi.com,liuxiaoliang@sunmi.com'
             def changeString = getChangeString()
             def details = """<p>请从以下URL下载： "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>"</p><br/>更新内容：<br/>""" 
             emailext(attachLog: false, body: details + changeString, mimeType: 'text/html', subject: 'Android Release Build 已加固完成', to: recipient_list)
@@ -109,7 +111,7 @@ def getChangeString() {
     for (int j = 0; j < entries.length; j++) {
       def entry = entries[j]
       truncated_msg = entry.msg.take(MAX_MSG_LEN)
-      changeString += " - ${truncated_msg} [${entry.author}]\n"
+      changeString += " - ${truncated_msg} [${entry.author}]\n<br/>"
     }
   }
 
