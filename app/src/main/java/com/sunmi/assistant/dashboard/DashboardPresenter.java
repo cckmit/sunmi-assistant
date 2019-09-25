@@ -127,7 +127,15 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         SunmiStoreApi.getInstance().getShopList(mCompanyId, new RetrofitCallback<ShopListResp>() {
             @Override
             public void onSuccess(int code, String msg, ShopListResp data) {
+                if (data == null) {
+                    onFail(code, msg, null);
+                    return;
+                }
                 List<ShopListResp.ShopInfo> shops = data.getShop_list();
+                if (shops == null) {
+                    onFail(code, msg, data);
+                    return;
+                }
                 List<ShopItem> result = new ArrayList<>(shops.size());
                 int shopId = SpUtils.getShopId();
                 for (ShopListResp.ShopInfo shop : shops) {
@@ -167,6 +175,10 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         IpcCloudApi.getDetailList(mCompanyId, mShop.getShopId(), new RetrofitCallback<IpcListResp>() {
             @Override
             public void onSuccess(int code, String msg, IpcListResp data) {
+                if (data == null) {
+                    onFail(code, msg, null);
+                    return;
+                }
                 if (data.getFs_list() != null && data.getFs_list().size() > 0) {
                     mDataSource |= Constants.DATA_SOURCE_FS;
                 } else {

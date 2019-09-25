@@ -104,7 +104,15 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
         IpcCloudApi.getFaceAgeRange(companyId, shopId, new RetrofitCallback<FaceAgeRangeResp>() {
             @Override
             public void onSuccess(int code, String msg, FaceAgeRangeResp data) {
+                if (data == null) {
+                    onFail(code, msg, null);
+                    return;
+                }
                 List<FaceAge> list = data.getAgeRangeList();
+                if (list == null) {
+                    onFail(code, msg, data);
+                    return;
+                }
                 Collections.sort(list, (o1, o2) -> (o1.getCode() - o2.getCode()));
                 mAgeList = new SparseArray<>(list.size());
                 for (FaceAge age : list) {
@@ -126,12 +134,20 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
                 new RetrofitCallback<ConsumerAgeNewOldResp>() {
                     @Override
                     public void onSuccess(int code, String msg, ConsumerAgeNewOldResp data) {
+                        if (data == null) {
+                            onFail(code, msg, null);
+                            return;
+                        }
+                        List<ConsumerAgeNewOldResp.CountListBean> list = data.getCountList();
+                        if (list == null) {
+                            onFail(code, msg, data);
+                            return;
+                        }
                         Model model = getModel();
                         List<PieEntry> newOldList = model.dataSets.get(Constants.DATA_TYPE_NEW_OLD);
                         List<PieEntry> ageList = model.dataSets.get(Constants.DATA_TYPE_AGE);
                         newOldList.clear();
                         ageList.clear();
-                        List<ConsumerAgeNewOldResp.CountListBean> list = data.getCountList();
                         int newCount = 0;
                         int oldCount = 0;
                         for (ConsumerAgeNewOldResp.CountListBean bean : list) {
@@ -159,10 +175,18 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
                 new RetrofitCallback<ConsumerAgeGenderResp>() {
                     @Override
                     public void onSuccess(int code, String msg, ConsumerAgeGenderResp data) {
+                        if (data == null) {
+                            onFail(code, msg, null);
+                            return;
+                        }
+                        List<ConsumerAgeGenderResp.CountListBean> list = data.getCountList();
+                        if (list == null) {
+                            onFail(code, msg, data);
+                            return;
+                        }
                         Model model = getModel();
                         List<PieEntry> genderList = model.dataSets.get(Constants.DATA_TYPE_GENDER);
                         genderList.clear();
-                        List<ConsumerAgeGenderResp.CountListBean> list = data.getCountList();
                         int maleCount = 0;
                         int femaleCount = 0;
                         for (ConsumerAgeGenderResp.CountListBean bean : list) {
