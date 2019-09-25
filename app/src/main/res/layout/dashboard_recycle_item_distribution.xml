@@ -21,39 +21,38 @@
     <TextView
         android:id="@+id/tv_dashboard_new_old"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_26"
+        android:layout_height="@dimen/dp_32"
         android:layout_marginEnd="@dimen/dp_12"
+        android:gravity="center"
         android:text="@string/dashboard_chart_new_old"
         android:textColor="@color/dashboard_btn_chart_text"
         android:textSize="@dimen/sp_12"
-        app:layout_constraintEnd_toStartOf="@+id/tv_dashboard_gender"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/tv_dashboard_title"
+        app:layout_constraintEnd_toStartOf="@+id/tv_dashboard_gender" />
 
     <TextView
         android:id="@+id/tv_dashboard_gender"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_26"
+        android:layout_height="@dimen/dp_32"
         android:layout_marginEnd="@dimen/dp_12"
-        app:layout_goneMarginEnd="@dimen/dp_24"
+        android:gravity="center"
         android:text="@string/dashboard_chart_gender"
         android:textColor="@color/dashboard_btn_chart_text"
         android:textSize="@dimen/sp_12"
-        app:layout_constraintEnd_toStartOf="@+id/tv_dashboard_age"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/tv_dashboard_title"
+        app:layout_constraintEnd_toStartOf="@+id/tv_dashboard_age" />
 
     <TextView
         android:id="@+id/tv_dashboard_age"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_26"
+        android:layout_height="@dimen/dp_32"
         android:layout_marginEnd="@dimen/dp_24"
+        android:gravity="center"
         android:text="@string/dashboard_chart_age"
         android:textColor="@color/dashboard_btn_chart_text"
         android:textSize="@dimen/sp_12"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/tv_dashboard_title"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/view_dashboard_pie_chart"
