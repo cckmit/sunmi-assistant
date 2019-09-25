@@ -175,8 +175,6 @@ public class AVAPIs {
 	/** The SDK Version not support DTLS */
 	public static final int	AV_ER_SDK_NOT_SUPPORT_DTLS              =-21334;
 
-
-
 	public native static int  avGetAVApiVer();	//save as Little endian
 	public native static int  avInitialize(int nMaxNumAllowed);
 	public native static int  avDeInitialize();
