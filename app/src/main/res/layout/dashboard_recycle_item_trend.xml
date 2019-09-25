@@ -21,39 +21,39 @@
     <TextView
         android:id="@+id/tv_dashboard_rate"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_26"
+        android:layout_height="@dimen/dp_32"
         android:layout_marginEnd="@dimen/dp_12"
+        android:gravity="center"
         android:text="@string/dashboard_chart_rate"
         android:textColor="@color/dashboard_btn_chart_text"
         android:textSize="@dimen/sp_12"
-        app:layout_constraintEnd_toStartOf="@+id/tv_dashboard_volume"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/tv_dashboard_title"
+        app:layout_constraintEnd_toStartOf="@+id/tv_dashboard_volume" />
 
     <TextView
         android:id="@+id/tv_dashboard_volume"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_26"
+        android:layout_height="@dimen/dp_32"
         android:layout_marginEnd="@dimen/dp_12"
-        app:layout_goneMarginEnd="@dimen/dp_24"
+        android:gravity="center"
         android:text="@string/dashboard_chart_sales_volume"
         android:textColor="@color/dashboard_btn_chart_text"
         android:textSize="@dimen/sp_12"
+        app:layout_constraintBaseline_toBaselineOf="@+id/tv_dashboard_title"
         app:layout_constraintEnd_toStartOf="@+id/tv_dashboard_consumer"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_goneMarginEnd="@dimen/dp_24" />
 
     <TextView
         android:id="@+id/tv_dashboard_consumer"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_26"
+        android:layout_height="@dimen/dp_32"
         android:layout_marginEnd="@dimen/dp_24"
+        android:gravity="center"
         android:text="@string/dashboard_chart_consumer"
         android:textColor="@color/dashboard_btn_chart_text"
         android:textSize="@dimen/sp_12"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/tv_dashboard_title"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/view_dashboard_line_chart"
