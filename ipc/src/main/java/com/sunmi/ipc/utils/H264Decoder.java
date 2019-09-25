@@ -23,12 +23,10 @@ public class H264Decoder {
 
     private static final int VIDEO_WIDTH = 1920;
     private static final int VIDEO_HEIGHT = 1080;
-
+    
     private MediaCodec mediaCodec;//处理音视频的编解码的类MediaCodec
 
     private Surface surface;//显示画面的Surface
-
-    private int state = 0;// 0: live, 1: playback, 2: local file
 
     //视频数据
     private BlockingQueue<byte[]> videoDataQueue = new ArrayBlockingQueue<>(10000);
@@ -49,7 +47,6 @@ public class H264Decoder {
 
     public H264Decoder(Surface surface, int playerState) {
         this.surface = surface;
-        this.state = playerState;
     }
 
     public void stopRunning() {
@@ -178,14 +175,13 @@ public class H264Decoder {
                             data = videoDataQueue.take();
                             buffer.put(data);
                             mediaCodec.queueInputBuffer(inIndex, 0, data.length,
-                                    state == 0 ? 66 : 33, 0);
+                                    0, 0);//把数据传给解码器
                         } else {
-                            mediaCodec.queueInputBuffer(inIndex, 0, 0,
-                                    state == 0 ? 66 : 33, 0);
+                            mediaCodec.queueInputBuffer(inIndex, 0, 0, 0, 0);
                         }
                     } else {
                         mediaCodec.queueInputBuffer(inIndex, 0, 0,
-                                0, MediaCodec.BUFFER_FLAG_END_OF_STREAM);
+                                10000, MediaCodec.BUFFER_FLAG_END_OF_STREAM);
                     }
 
                     int outIndex = mediaCodec.dequeueOutputBuffer(info, 0);
