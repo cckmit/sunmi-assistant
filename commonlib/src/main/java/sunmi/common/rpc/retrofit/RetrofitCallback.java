@@ -35,7 +35,8 @@ public abstract class RetrofitCallback<T> implements Callback<BaseResponse<T>> {
                     BaseResponse errorResp = new Gson()
                             .fromJson(response.errorBody().string(), BaseResponse.class);
                     if (RpcErrorCode.HTTP_INVALID_TOKEN == errorResp.getCode()
-                            | RpcErrorCode.HTTP_EXPIRE_TOKEN == errorResp.getCode()) {
+                            || RpcErrorCode.HTTP_EXPIRE_TOKEN == errorResp.getCode()
+                            || RpcErrorCode.HTTP_JWT_TOKEN_EXPIRED == errorResp.getCode()) {
                         CommonHelper.logout();
                         GotoActivityUtils.gotoLoginActivity(BaseApplication.getContext(), "1");
                     }
