@@ -17,5 +17,6 @@ public class RpcErrorCode {
     //云端http请求 业务错误
     public static int HTTP_INVALID_TOKEN = 5027;//invalid store token
     public static int HTTP_EXPIRE_TOKEN = 5028;//store token expire
+    public static int HTTP_JWT_TOKEN_EXPIRED = 5029;//jwt token expire
 
 }

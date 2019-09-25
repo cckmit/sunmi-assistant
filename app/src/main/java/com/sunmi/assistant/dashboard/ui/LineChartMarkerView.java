@@ -33,6 +33,7 @@ public class LineChartMarkerView extends MarkerView {
 
     private MPPointF mOffset;
     private MPPointF mRealOffset;
+    private String mTip = "";
 
     /**
      * Constructor. Sets up the MarkerView with a custom layout resource.
@@ -59,11 +60,15 @@ public class LineChartMarkerView extends MarkerView {
         }
     }
 
+    public void setTip(String tip) {
+        this.mTip = tip;
+    }
+
     @Override
     public void refreshContent(Entry e, Highlight highlight) {
         String value = String.format(Locale.getDefault(), "%.2f%%", e.getY() * 100);
         mTvValue.setText(value);
-        mTvLabel.setText(getResources().getString(R.string.dashboard_time,
+        mTvLabel.setText(getResources().getString(R.string.dashboard_time, mTip,
                 Utils.decodeChartXAxisFloat(e.getX(), WEEK_NAME)));
         super.refreshContent(e, highlight);
     }
@@ -114,6 +119,8 @@ public class LineChartMarkerView extends MarkerView {
         if (mOffset == null) {
             // center the marker horizontally and vertically
             mOffset = new MPPointF(-((float) getWidth() / 2), -getHeight() + mOffsetPoint);
+        } else {
+            mOffset.x = -((float) getWidth() / 2);
         }
         return mOffset;
     }

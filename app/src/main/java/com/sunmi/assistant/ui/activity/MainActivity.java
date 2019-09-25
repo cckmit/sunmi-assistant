@@ -17,9 +17,9 @@ import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.receiver.MyNetworkCallback;
 import com.sunmi.apmanager.rpc.mqtt.MQTTManager;
 import com.sunmi.apmanager.utils.CommonUtils;
-import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.assistant.MyApplication;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.DashboardFragment;
 import com.sunmi.assistant.mine.MineFragment;
 import com.sunmi.assistant.mine.MineFragment_;
 import com.sunmi.assistant.mine.contract.MessageCountContract;
@@ -138,10 +138,13 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
 
     private void initStatusBar(String tabId) {
         if (TextUtils.equals(getStringById(R.string.str_tab_dashboard), tabId)) {
-            HelpUtils.setStatusBarFullTransparent(this);//透明标题栏
+            DashboardFragment fragment = (DashboardFragment) getFragment(
+                    getString(R.string.str_tab_dashboard));
+            if (fragment != null) {
+                fragment.updateStatusBar();
+            }
         } else {
-            StatusBarUtils.setStatusBarColor(this,
-                    StatusBarUtils.TYPE_DARK);//状态栏
+            StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         }
     }
 

@@ -87,15 +87,7 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
 
     @Override
     protected Model createModel(Context context) {
-        int type;
-        if (showTransactionData() && showConsumerData()) {
-            type = Constants.DATA_TYPE_RATE;
-        } else if (showTransactionData()) {
-            type = Constants.DATA_TYPE_VOLUME;
-        } else {
-            type = Constants.DATA_TYPE_CONSUMER;
-        }
-        return new Model("", type);
+        return new Model("");
     }
 
     @Override
@@ -106,6 +98,7 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
     @NonNull
     @Override
     public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
+        getModel().updateType(getSource());
         BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
         LineChart lineChart = holder.getView(R.id.view_dashboard_line_chart);
         BarChart barChart = holder.getView(R.id.view_dashboard_bar_chart);
@@ -221,11 +214,26 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
             rateList.add(new BarEntry(x, consumer == 0 ? 0f : Math.min((float) count / consumer, 1f)));
             volumeList.add(new BarEntry(x, count));
             consumerList.add(new BarEntry(x, consumer));
-
-//            rateList.add(new BarEntry(x, (float) Math.random()));
-//            volumeList.add(new BarEntry(x, (int)(Math.random() * 1000)));
-//            consumerList.add(new BarEntry(x, (int)(Math.random() * 1000)));
         }
+
+        // Test data
+//        rateList.clear();
+//        volumeList.clear();
+//        consumerList.clear();
+//        int count = model.period == Constants.TIME_PERIOD_WEEK ? 5 : 20;
+//        int min = count / 3;
+//        for (int i = 1; i < count + 1; i++) {
+//            float x = Utils.encodeChartXAxisFloat(model.period, i);
+//            if (i <= min + 1) {
+//                rateList.add(new BarEntry(x, 0f));
+//                volumeList.add(new BarEntry(x, 0f));
+//                consumerList.add(new BarEntry(x, 0f));
+//            } else {
+//                rateList.add(new BarEntry(x, (float) Math.random()));
+//                volumeList.add(new BarEntry(x, (int) (Math.random() * 1000)));
+//                consumerList.add(new BarEntry(x, (int) (Math.random() * 1000)));
+//            }
+//        }
     }
 
     @Override
@@ -291,6 +299,11 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
         // Refresh data set
         if (model.type == Constants.DATA_TYPE_RATE) {
             mLineChartMarker.setType(model.type);
+            if (model.period == Constants.TIME_PERIOD_MONTH) {
+                mLineChartMarker.setTip(Utils.getMonthName(dataSet));
+            } else {
+                mLineChartMarker.setTip("");
+            }
             LineDataSet set;
             LineData data = line.getData();
             ArrayList<Entry> values = new ArrayList<>(dataSet);
@@ -318,6 +331,11 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
             line.animateX(300);
         } else {
             mBarChartMarker.setType(model.type);
+            if (model.period == Constants.TIME_PERIOD_MONTH) {
+                mBarChartMarker.setTip(Utils.getMonthName(dataSet));
+            } else {
+                mBarChartMarker.setTip("");
+            }
             float barWidthRatio = calcBarWidth(model.period);
             int color = model.type == Constants.DATA_TYPE_VOLUME ?
                     ContextCompat.getColor(holder.getContext(), R.color.color_FFD0B3) :
@@ -376,12 +394,21 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
         private int type;
         private SparseArray<List<BarEntry>> dataSets = new SparseArray<>(3);
 
-        public Model(String title, int type) {
+        public Model(String title) {
             this.title = title;
-            this.type = type;
             dataSets.put(Constants.DATA_TYPE_RATE, new ArrayList<>());
             dataSets.put(Constants.DATA_TYPE_VOLUME, new ArrayList<>());
             dataSets.put(Constants.DATA_TYPE_CONSUMER, new ArrayList<>());
+        }
+
+        public void updateType(int source) {
+            if ((source & Constants.DATA_SOURCE_FS) != 0 && (source & Constants.DATA_SOURCE_SAAS) != 0) {
+                type = Constants.DATA_TYPE_RATE;
+            } else if ((source & Constants.DATA_SOURCE_SAAS) != 0) {
+                type = Constants.DATA_TYPE_VOLUME;
+            } else {
+                type = Constants.DATA_TYPE_CONSUMER;
+            }
         }
 
         public void clear() {

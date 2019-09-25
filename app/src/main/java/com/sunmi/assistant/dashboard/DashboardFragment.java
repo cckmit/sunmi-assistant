@@ -86,6 +86,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     private int mDataSource;
     private BaseArrayAdapter<Object> mAdapter;
     private LinearLayoutManager mLayoutManager;
+    private ItemStickyListener mStickyListener;
     private RefreshViewHolder mRefreshHeaderHolder;
 
     private ShopMenuAdapter mShopMenuAdapter;
@@ -104,7 +105,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mPresenter = new DashboardPresenter();
         mPresenter.attachView(this);
         mPresenter.init();
-        showLoading();
+        showLoadingDialog();
         mHandler.post(this::initView);
     }
 
@@ -151,7 +152,6 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
                 shops.remove(position);
                 shops.add(0, model);
                 adapter.notifyDataSetChanged();
-                resetTopView();
             }
         });
         mShopMenu.setAdapter(mShopMenuAdapter);
@@ -176,25 +176,42 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mAdapter = new BaseArrayAdapter<>();
         mLayoutManager = new LinearLayoutManager(getContext());
         mCardList.setLayoutManager(mLayoutManager);
-        mCardList.addOnScrollListener(new ItemStickyListener());
+        mStickyListener = new ItemStickyListener();
+        mCardList.addOnScrollListener(mStickyListener);
         mCardList.setAdapter(mAdapter);
     }
 
-    private void showLoading() {
-        mContentGroup.setVisibility(View.INVISIBLE);
-        showLoadingDialog();
+    public void updateStatusBar() {
+        if (mIsStickyTop) {
+            StatusBarUtils.setStatusBarColor(getActivity(), StatusBarUtils.TYPE_DARK);
+        } else {
+            StatusBarUtils.setStatusBarFullTransparent(getActivity());
+        }
     }
 
-    private void resetTopView() {
-        mCardList.addOnScrollListener(new ItemStickyListener());
+    private void showContent() {
+        mContentGroup.setVisibility(View.VISIBLE);
+        mOverlay.setVisibility(View.GONE);
+        mTopPeriodTab.setVisibility(View.INVISIBLE);
+        mLayoutError.setVisibility(View.GONE);
+
         StatusBarUtils.setStatusBarFullTransparent(getActivity());
-        mShopMenu.setVisibility(View.VISIBLE);
+        mStickyListener.reset();
+        mCardList.scrollToPosition(0);
         mShopMenu.setBackgroundResource(R.drawable.dashboard_bg_top);
         mShopMenu.setTranslationY(0);
+        mShopMenu.getPopup().dismiss(false);
         mShopMenuTitle.setTextColor(0xFFFFFFFF);
         mShopMenuTitleArrow.setImageResource(R.drawable.ic_arrow_drop_down_white);
+        hideLoadingDialog();
+    }
+
+    private void showError() {
+        mContentGroup.setVisibility(View.INVISIBLE);
+        mOverlay.setVisibility(View.GONE);
         mTopPeriodTab.setVisibility(View.INVISIBLE);
-        mCardList.scrollToPosition(0);
+        mLayoutError.setVisibility(View.VISIBLE);
+        hideLoadingDialog();
     }
 
     @Click(R.id.tv_dashboard_top_today)
@@ -242,8 +259,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @UiThread
     @Override
     public void setCards(List<BaseRefreshItem> data, int dataSource) {
-        mContentGroup.setVisibility(View.VISIBLE);
-        mLayoutError.setVisibility(View.GONE);
+        showContent();
         mDataSource = dataSource;
         if (mAdapter == null || data == null || data.isEmpty()) {
             return;
@@ -256,15 +272,11 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             list.add(item.getModel());
         }
         mAdapter.setData(list);
-        resetTopView();
-        hideLoadingDialog();
     }
 
     @Override
     public void loadDataFailed() {
-        hideLoadingDialog();
-        mContentGroup.setVisibility(View.GONE);
-        mLayoutError.setVisibility(View.VISIBLE);
+        showError();
     }
 
     @Override
@@ -364,6 +376,10 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
                 mShopMenu.setTranslationY(offset);
                 mShopMenuPopupHelper.setOffset(offset);
             }
+        }
+
+        private void reset() {
+            topBar = null;
         }
 
         private boolean showSticky(int position) {

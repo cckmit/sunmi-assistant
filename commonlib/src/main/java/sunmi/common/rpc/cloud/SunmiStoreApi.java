@@ -31,6 +31,7 @@ import sunmi.common.rpc.mqtt.EmqTokenResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.SafeUtils;
 import sunmi.common.utils.SecurityUtils;
@@ -515,9 +516,16 @@ public class SunmiStoreApi {
 
 
     public void getShopCategory(RetrofitCallback<ShopCategoryResp> callback) {
-        SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
-                .getShopCategory(new BaseRequest(""))
-                .enqueue(callback);
+        try {
+            String params = new JSONObject()
+                    .put("language", CommonHelper.getLanguage())
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
+                    .getShopCategory(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void getShopRegion(RetrofitCallback<ShopRegionResp> callback) {
