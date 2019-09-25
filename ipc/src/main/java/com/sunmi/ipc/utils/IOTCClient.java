@@ -294,9 +294,14 @@ public class IOTCClient {
         ThreadPool.getSingleThreadPool().execute(() -> {
             String json = new Gson().toJson(cmdReq);
             byte[] req = json.getBytes();
-            LogCat.e(TAG, "99999999 cmdReq = " + cmdReq.toString());
-            IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
-            getCmdResponse(cmd, callback);
+            LogCat.e(TAG, "99999999 cmd = " + cmd);
+            if (IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0) > 0) {
+                LogCat.e(TAG, "99999999 write ok");
+                getCmdResponse(cmd, callback);
+            } else {//先重试，todo 换av新接口
+                LogCat.e(TAG, "99999999 write fail");
+                cmdCall(cmd, cmdReq, callback);
+            }
         });
     }
 
