@@ -205,6 +205,10 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
         rateList.clear();
         volumeList.clear();
         consumerList.clear();
+        if (response == null || response.getCountList() == null) {
+            LogCat.e(TAG, "Trend data load Failed. Response is null.");
+            return;
+        }
         List<ConsumerRateResp.CountListBean> list = response.getCountList();
         for (ConsumerRateResp.CountListBean bean : list) {
             int time = Math.abs(bean.getTime());
