@@ -147,7 +147,7 @@ public class InputMobileActivity extends BaseMvpActivity<InputMobilePresenter>
             return;
         }
         String user = etMobile.getText().toString();//email test: esyzim06497@chacuo.net
-        if (RegexUtils.isCorrectAccount(user) || RegexUtils.isEmail(user)) {
+        if (RegexUtils.isCorrectAccount(user)) {
             showLoadingDialog();
             mPresenter.checkUserName(user);
         }

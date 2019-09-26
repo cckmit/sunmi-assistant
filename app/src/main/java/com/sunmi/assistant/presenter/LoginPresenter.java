@@ -25,7 +25,7 @@ public class LoginPresenter extends BasePresenter<LoginContract.View>
 
     @Override
     public void userMerge(String user, String mobile, String password) {
-        if (RegexUtils.isCorrectAccount(user) || RegexUtils.isEmail(user)) {
+        if (RegexUtils.isCorrectAccount(user)) {
             SSOApi.checkUserName(user, new HttpCallback<String>(null) {
                 @Override
                 public void onSuccess(int code, String msg, String data) {

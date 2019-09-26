@@ -10,7 +10,7 @@ public class RegexUtils {
 
     public static boolean isCorrectAccount(String mobiles) {
 
-        if (CommonHelper.isGooglePlay()) {
+        if (mobiles.contains("@")) {
             return isEmail(mobiles);
         } else {
             return isChinaPhone(mobiles);

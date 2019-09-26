@@ -115,7 +115,7 @@ public class RegisterActivity extends BaseMvpActivity<InputMobilePresenter>
     public void userMerge() {
         if (etMobile.getText() == null) return;
         String user = etMobile.getText().toString();//email test: esyzim06497@chacuo.net
-        if (RegexUtils.isCorrectAccount(user) || RegexUtils.isEmail(user)) {
+        if (RegexUtils.isCorrectAccount(user)) {
             showLoadingDialog();
             mPresenter.checkUserName(user);
         }

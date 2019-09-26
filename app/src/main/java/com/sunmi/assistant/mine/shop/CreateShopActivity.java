@@ -91,9 +91,7 @@ public class CreateShopActivity extends BaseActivity {
         String contact = etContact.getText() == null ? null : etContact.getText().toString().trim();
         String mobile = etMobile.getText() == null ? null : etMobile.getText().toString().trim();
         if (!TextUtils.isEmpty(mobile) && !RegexUtils.isCorrectAccount(mobile)) {
-            if (CommonHelper.isGooglePlay()) {
-                shortTip(R.string.str_invalid_email);
-            } else {
+            if (!CommonHelper.isGooglePlay()) {
                 shortTip(getString(R.string.str_invalid_phone));
             }
             return;
