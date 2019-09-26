@@ -1,8 +1,6 @@
 package com.sunmi.assistant.ui.activity.login;
 
 import android.content.DialogInterface;
-import android.graphics.Typeface;
-import android.support.v4.widget.TextViewCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -107,7 +105,7 @@ public class InputMobileActivity extends BaseMvpActivity<InputMobilePresenter>
             return;
         }
         mobile = etMobile.getText().toString().trim();
-        if (!RegexUtils.isChinaPhone(mobile)) {
+        if (!RegexUtils.isCorrectAccount(mobile)) {
             if (CommonHelper.isGooglePlay()) {
                 shortTip(R.string.str_invalid_email);
             } else {
@@ -149,7 +147,7 @@ public class InputMobileActivity extends BaseMvpActivity<InputMobilePresenter>
             return;
         }
         String user = etMobile.getText().toString();//email test: esyzim06497@chacuo.net
-        if (RegexUtils.isChinaPhone(user) || RegexUtils.isEmail(user)) {
+        if (RegexUtils.isCorrectAccount(user) || RegexUtils.isEmail(user)) {
             showLoadingDialog();
             mPresenter.checkUserName(user);
         }
@@ -230,12 +228,12 @@ public class InputMobileActivity extends BaseMvpActivity<InputMobilePresenter>
                                 break;
                             case SOURCE_RETRIEVE_PWD:
                                 InputCaptchaActivity_.intent(context)
-                                        .extra("mobile", RegexUtils.isChinaPhone(mobile) ? mobile : "")
+                                        .extra("mobile", RegexUtils.isCorrectAccount(mobile) ? mobile : "")
                                         .extra("source", "password").start();
                                 break;
                             case SOURCE_SMS_LOGIN:
                                 InputCaptchaActivity_.intent(context)
-                                        .extra("mobile", RegexUtils.isChinaPhone(mobile) ? mobile : "")
+                                        .extra("mobile", RegexUtils.isCorrectAccount(mobile) ? mobile : "")
                                         .extra("source", "login").start();
                                 break;
                             default:

@@ -159,7 +159,7 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
                 if (isFastClick(1500)) {
                     return;
                 }
-                if (!RegexUtils.isChinaPhone(mobile) && !RegexUtils.isEmail(mobile)) {
+                if (!RegexUtils.isCorrectAccount(mobile) && !RegexUtils.isEmail(mobile)) {
                     shortTip(R.string.tip_invalid_phone_number);
                     return;
                 }
@@ -176,7 +176,7 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
                 CommonUtils.trackCommonEvent(context, "register", "注册按钮", Constants.EVENT_LOGIN);
                 CommonUtils.trackDurationEventBegin(context, "registerDuration",
                         "注册流程开始和结束时调用", Constants.EVENT_DURATION_REGISTER);
-                InputMobileActivity_.intent(context).mobile(RegexUtils.isChinaPhone(mobile) ? mobile : "")
+                InputMobileActivity_.intent(context).mobile(RegexUtils.isCorrectAccount(mobile) ? mobile : "")
                         .checkSource(InputMobileActivity.SOURCE_REGISTER).start();
                 break;
             case R.id.ib_visible: //密码是否可见
@@ -200,7 +200,7 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
                 CommonUtils.trackCommonEvent(context, "forgetPassword", "忘记密码按钮", Constants.EVENT_LOGIN);
                 CommonUtils.trackDurationEventBegin(context, "retrievePasswordDuration",
                         "找回密码流程开始和结束", Constants.EVENT_DURATION_FORGET_PSW);
-                InputMobileActivity_.intent(context).mobile(RegexUtils.isChinaPhone(mobile) ? mobile : "")
+                InputMobileActivity_.intent(context).mobile(RegexUtils.isCorrectAccount(mobile) ? mobile : "")
                         .checkSource(InputMobileActivity.SOURCE_RETRIEVE_PWD).start();
                 break;
             case R.id.tvSMSLogin:  //短信登录
@@ -210,7 +210,7 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
                 CommonUtils.trackCommonEvent(context, "loginBySms", "短信验证码登录", Constants.EVENT_LOGIN);
                 CommonUtils.trackDurationEventBegin(context, "quickLoginDuration",
                         "登录流程开始到结束", Constants.EVENT_DURATION_LOGIN_BY_SMS);
-                InputMobileActivity_.intent(context).mobile(RegexUtils.isChinaPhone(mobile) ? mobile : "")
+                InputMobileActivity_.intent(context).mobile(RegexUtils.isCorrectAccount(mobile) ? mobile : "")
                         .checkSource(InputMobileActivity.SOURCE_SMS_LOGIN).start();
                 break;
             default:
@@ -247,7 +247,7 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
                         CommonUtils.trackCommonEvent(context, "loginUnRegisterDialogRegister",
                                 "登录_未注册弹框-立即注册", Constants.EVENT_LOGIN);
                         RegisterActivity_.intent(context)
-                                .extra("mobile", RegexUtils.isChinaPhone(mobile) ? mobile : "")
+                                .extra("mobile", RegexUtils.isCorrectAccount(mobile) ? mobile : "")
                                 .start();
                     }
                 }).create().show();

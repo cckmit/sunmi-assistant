@@ -7,6 +7,17 @@ import java.util.regex.Pattern;
 
 public class RegexUtils {
 
+
+    public static boolean isCorrectAccount(String mobiles) {
+
+        if (CommonHelper.isGooglePlay()) {
+            return isEmail(mobiles);
+        } else {
+            return isChinaPhone(mobiles);
+        }
+
+    }
+
     /**
      * 验证手机号
      * 130，131，132，133，134，135，136，137，138，139
@@ -18,14 +29,7 @@ public class RegexUtils {
      * 198，199
      */
     public static boolean isChinaPhone(String mobiles) {
-        Pattern p;
-        if (CommonHelper.isGooglePlay()) {
-            p = Pattern
-                    .compile("^\\w+((-\\w+)|(.\\w+))*@[A-Za-z0-9]+((.|-)[A-Za-z0-9]+)*.[A-Za-z0-9]+$");
-        } else {
-            p = Pattern
-                    .compile("^((13[0-9])|(14[57])|(15[^4,\\D])|(16[56])|(17[0-9])|(18[0-9])|(19[8-9]))\\d{8}$");
-        }
+        Pattern p = Pattern.compile("^((13[0-9])|(14[57])|(15[^4,\\D])|(16[56])|(17[0-9])|(18[0-9])|(19[8-9]))\\d{8}$");
         Matcher m = p.matcher(mobiles);
         return m.matches();
     }
@@ -64,7 +68,7 @@ public class RegexUtils {
      * @return
      */
     public static boolean isEmail(String emails) {
-        String reg = "^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$";
+        String reg = "^\\w+((-\\w+)|(.\\w+))*@[A-Za-z0-9]+((.|-)[A-Za-z0-9]+)*.[A-Za-z0-9]+$";
         Pattern p = Pattern.compile(reg);
         Matcher m = p.matcher(emails);
         return m.matches();

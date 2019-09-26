@@ -2,8 +2,10 @@ package com.sunmi.assistant.mine.shop;
 
 import android.annotation.SuppressLint;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
@@ -52,6 +54,8 @@ public class CreateShopActivity extends BaseActivity {
     ClearableEditText etMobile;
     @ViewById(R.id.btn_complete)
     Button btnComplete;
+    @ViewById(R.id.rl_mobile)
+    RelativeLayout rlMobile;
     @Extra
     int companyId;
     @Extra
@@ -64,6 +68,9 @@ public class CreateShopActivity extends BaseActivity {
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
+        if (!CommonHelper.isGooglePlay()) {
+            rlMobile.setVisibility(View.VISIBLE);
+        }
         new SomeMonitorEditText().setMonitorEditText(btnComplete, etShop);
         etShop.addTextChangedListener(new TextLengthWatcher(etShop, SHOP_NAME_MAX_LENGTH) {
             @Override
@@ -83,8 +90,12 @@ public class CreateShopActivity extends BaseActivity {
         String shopName = etShop.getText() == null ? null : etShop.getText().toString().trim();
         String contact = etContact.getText() == null ? null : etContact.getText().toString().trim();
         String mobile = etMobile.getText() == null ? null : etMobile.getText().toString().trim();
-        if (!TextUtils.isEmpty(mobile) && !RegexUtils.isChinaPhone(mobile)) {
-            shortTip(getString(R.string.company_shop_check_mobile));
+        if (!TextUtils.isEmpty(mobile) && !RegexUtils.isCorrectAccount(mobile)) {
+            if (CommonHelper.isGooglePlay()) {
+                shortTip(R.string.str_invalid_email);
+            } else {
+                shortTip(getString(R.string.str_invalid_phone));
+            }
             return;
         }
         showLoadingDialog();

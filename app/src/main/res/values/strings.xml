@@ -163,7 +163,6 @@
     <string name="company_shop_contact">Contact person</string>
     <string name="company_shop_contact_really_name">Name of contact person</string>
     <string name="company_shop_mobile">Contact information</string>
-    <string name="company_shop_check_mobile">Please enter the correct phone number</string>
     <string name="company_shop_select_one_or_more">You can select one or more shops</string>
     <string name="company_create_invalid_character">Please enter a valid character</string>
     <string name="str_my_msg">My message</string>

@@ -150,7 +150,7 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
                 finish();
                 return;
             }
-            if (!RegexUtils.isChinaPhone(shopMessage)) {
+            if (!RegexUtils.isCorrectAccount(shopMessage)) {
                 shortTip(getString(R.string.str_invalid_phone));
                 return;
             }

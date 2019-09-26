@@ -1,5 +1,7 @@
 package sunmi.common.rpc.cloud;
 
+import android.text.TextUtils;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -471,12 +473,21 @@ public class SunmiStoreApi {
     public void createShop(int companyId, String shopName, String person, String tel,
                            RetrofitCallback<CreateShopInfo> callback) {
         try {
-            String params = new JSONObject()
-                    .put("company_id", companyId)
-                    .put("shop_name", shopName)
-                    .put("contact_person", person)
-                    .put("contact_tel", tel)
-                    .toString();
+            String params;
+            if (TextUtils.isEmpty(tel)) {
+                params = new JSONObject()
+                        .put("company_id", companyId)
+                        .put("shop_name", shopName)
+                        .put("contact_person", person)
+                        .toString();
+            } else {
+                params = new JSONObject()
+                        .put("company_id", companyId)
+                        .put("shop_name", shopName)
+                        .put("contact_person", person)
+                        .put("contact_tel", tel)
+                        .toString();
+            }
             SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
                     .createShop(new BaseRequest(params))
                     .enqueue(callback);
