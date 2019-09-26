@@ -214,7 +214,7 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
         mChart = holder.getView(R.id.view_dashboard_pie_chart);
 
         mChart.setTouchEnabled(true);
-        mChart.setRotationEnabled(false);
+        mChart.setRotationEnabled(true);
         mChart.getDescription().setEnabled(false);
         mChart.getLegend().setEnabled(false);
         mChart.setDrawEntryLabels(false);
