@@ -1,6 +1,9 @@
 
 package com.github.mikephil.charting.data;
 
+import android.util.Log;
+
+import com.github.mikephil.charting.components.PieMarkerView;
 import com.github.mikephil.charting.interfaces.datasets.IPieDataSet;
 import com.github.mikephil.charting.utils.Utils;
 
@@ -19,16 +22,30 @@ public class PieDataSet extends DataSet<PieEntry> implements IPieDataSet {
      * indicates the selection distance of a pie slice
      */
     private float mShift = 18f;
+    private float mInnerShift = 0f;
 
     private ValuePosition mXValuePosition = ValuePosition.INSIDE_SLICE;
     private ValuePosition mYValuePosition = ValuePosition.INSIDE_SLICE;
     private boolean mUsingSliceColorAsValueLineColor = false;
+    private boolean mUsingSliceColorAsHighlightShadowColor = true;
+    private float mHighlightShadowRadius = 0;
+    private float[] mHighlightShadowOffset = new float[2];
+    private int mHighlightShadowColor = 0xff000000;
+    private float mHighlightShadowColorAlpha = 1f;
     private int mValueLineColor = 0xff000000;
     private float mValueLineWidth = 1.0f;
+    private boolean mValueLineStartDrawCircles = false;
+    private boolean mValueLineStartDrawCircleHole = false;
+    private float mValueLineStartCircleRadius = 8f;
+    private float mValueLineStartCircleHoleRadius = 4f;
     private float mValueLinePart1OffsetPercentage = 75.f;
     private float mValueLinePart1Length = 0.3f;
     private float mValueLinePart2Length = 0.4f;
     private boolean mValueLineVariableLength = true;
+    private boolean mValueLineAlignParent = false;
+    private float mValueLinePart2Offset = 12;
+    private float mDrawValuesAbove = 0f;
+    private PieMarkerView mValueMarker;
 
     public PieDataSet(List<PieEntry> yVals, String label) {
         super(yVals, label);
@@ -216,6 +233,138 @@ public class PieDataSet extends DataSet<PieEntry> implements IPieDataSet {
 
     public void setValueLineVariableLength(boolean valueLineVariableLength) {
         this.mValueLineVariableLength = valueLineVariableLength;
+    }
+
+    @Override
+    public boolean isValueLineStartDrawCircles() {
+        return mValueLineStartDrawCircles;
+    }
+
+    public void setValueLineStartDrawCircles(boolean enabled) {
+        this.mValueLineStartDrawCircles = enabled;
+    }
+
+    @Override
+    public boolean isValueLineStartDrawCircleHole() {
+        return mValueLineStartDrawCircleHole;
+    }
+
+    public void setValueLineStartDrawCircleHole(boolean enabled) {
+        this.mValueLineStartDrawCircleHole = enabled;
+    }
+
+    @Override
+    public float getValueLineStartCircleRadius() {
+        return mValueLineStartCircleRadius;
+    }
+
+    public void setValueLineStartCircleRadius(float circleRadius) {
+        if (circleRadius >= 0f) {
+            mValueLineStartCircleRadius = Utils.convertDpToPixel(circleRadius);
+        } else {
+            Log.e("PieDataSet", "Circle radius cannot be above 0");
+        }
+    }
+
+    @Override
+    public float getValueLineStartCircleHoleRadius() {
+        return mValueLineStartCircleHoleRadius;
+    }
+
+    public void setValueLineStartCircleHoleRadius(float circleHoleRadius) {
+        if (circleHoleRadius >= 0f) {
+            mValueLineStartCircleHoleRadius = Utils.convertDpToPixel(circleHoleRadius);
+        } else {
+            Log.e("PieDataSet", "Circle radius cannot be above 0");
+        }
+    }
+
+    @Override
+    public boolean isValueLineAlignParent() {
+        return mValueLineAlignParent;
+    }
+
+    public void setValueLineAlignParent(boolean isAlign) {
+        this.mValueLineAlignParent = isAlign;
+    }
+
+    @Override
+    public float getValueLinePart2Offset() {
+        return mValueLinePart2Offset;
+    }
+
+    public void setValueLinePart2Offset(int offset) {
+        this.mValueLinePart2Offset = Utils.convertDpToPixel(offset);
+    }
+
+    @Override
+    public PieMarkerView getValueMarker() {
+        return mValueMarker;
+    }
+
+    public void setValueMarker(PieMarkerView marker) {
+        this.mValueMarker = marker;
+    }
+
+    @Override
+    public float getDrawValuesAbove() {
+        return mDrawValuesAbove;
+    }
+
+    public void setDrawValuesAbove(float mDrawValuesAbove) {
+        this.mDrawValuesAbove = mDrawValuesAbove;
+    }
+
+    @Override
+    public float getSelectionInnerShift() {
+        return mInnerShift;
+    }
+
+    public void setSelectionInnerShift(float shift) {
+        mInnerShift = Utils.convertDpToPixel(shift);
+    }
+
+    @Override
+    public boolean isUsingSliceColorAsHighlightShadowColor() {
+        return mUsingSliceColorAsValueLineColor;
+    }
+
+    public void setUsingSliceColorAsHighlightShadowColor(boolean enable) {
+        this.mUsingSliceColorAsValueLineColor = enable;
+    }
+
+    @Override
+    public float getHighlightShadowRadius() {
+        return mHighlightShadowRadius;
+    }
+
+    @Override
+    public float[] getHighlightShadowOffset() {
+        return mHighlightShadowOffset;
+    }
+
+    @Override
+    public int getHighlightShadowColor() {
+        return mHighlightShadowColor;
+    }
+
+    public void setHighlightShadow(float radius, float dx, float dy) {
+        mHighlightShadowRadius = Utils.convertDpToPixel(radius);
+        mHighlightShadowOffset[0] = Utils.convertDpToPixel(dx);
+        mHighlightShadowOffset[1] = Utils.convertDpToPixel(dy);
+    }
+
+    public void setHighlightShadowColor(int color) {
+        mHighlightShadowColor = color;
+    }
+
+    @Override
+    public float getHighlightShadowColorAlpha() {
+        return mHighlightShadowColorAlpha;
+    }
+
+    public void setHighlightShadowColorAlpha(float alpha) {
+        this.mHighlightShadowColorAlpha = alpha;
     }
 
     public enum ValuePosition {

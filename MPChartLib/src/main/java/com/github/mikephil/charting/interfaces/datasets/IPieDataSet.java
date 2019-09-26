@@ -1,5 +1,6 @@
 package com.github.mikephil.charting.interfaces.datasets;
 
+import com.github.mikephil.charting.components.PieMarkerView;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 
@@ -70,5 +71,32 @@ public interface IPieDataSet extends IDataSet<PieEntry> {
      * */
     boolean isValueLineVariableLength();
 
+    boolean isValueLineStartDrawCircles();
+
+    boolean isValueLineStartDrawCircleHole();
+
+    float getValueLineStartCircleRadius();
+
+    float getValueLineStartCircleHoleRadius();
+
+    boolean isValueLineAlignParent();
+
+    float getValueLinePart2Offset();
+
+    PieMarkerView getValueMarker();
+
+    float getDrawValuesAbove();
+
+    float getSelectionInnerShift();
+
+    boolean isUsingSliceColorAsHighlightShadowColor();
+
+    float getHighlightShadowRadius();
+
+    float[] getHighlightShadowOffset();
+
+    int getHighlightShadowColor();
+
+    float getHighlightShadowColorAlpha();
 }
 
