@@ -27,7 +27,6 @@ public class MessageCountPresenter extends BasePresenter<MessageCountContract.Vi
                 PushUtils.resetUnReadCount(data);
                 FileUtils.writeFileToSD(FileHelper.FILE_PATH, "msgCount.json", new Gson().toJson(data));
                 if (isViewAttached()) {
-                    mView.hideLoadingDialog();
                     mView.getMessageCountSuccess(data);
                 }
             }
@@ -35,7 +34,6 @@ public class MessageCountPresenter extends BasePresenter<MessageCountContract.Vi
             @Override
             public void onFail(int code, String msg, MessageCountBean data) {
                 if (isViewAttached()) {
-                    mView.hideLoadingDialog();
                     mView.getMessageCountFail(code, msg);
                 }
             }
