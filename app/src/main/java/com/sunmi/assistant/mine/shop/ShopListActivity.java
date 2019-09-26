@@ -25,6 +25,7 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.model.ShopListResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
@@ -71,18 +72,18 @@ public class ShopListActivity extends BaseActivity {
     void onAddClick() {
         CommonUtils.trackCommonEvent(context, "addStore",
                 "主页_我的_我的店铺_添加店铺", Constants.EVENT_MY_INFO);
-        BottomPopMenu choosePhotoMenu = new BottomPopMenu.Builder(this)
-                .setTitle(R.string.company_shop_new_create_or_import)
+        BottomPopMenu.Builder builder = new BottomPopMenu.Builder(this);
+        builder.setTitle(R.string.company_shop_new_create_or_import)
                 .setIsShowCircleBackground(true)
                 .addItemAction(new PopItemAction(R.string.company_shop_new_create,
-                        PopItemAction.PopItemStyle.Normal, this::createShop))
-                .addItemAction(new PopItemAction(R.string.company_shop_import,
-                        PopItemAction.PopItemStyle.Normal, this::importShop))
-                .addItemAction(new PopItemAction(R.string.sm_cancel,
-                        PopItemAction.PopItemStyle.Cancel))
-                .create();
-        choosePhotoMenu.show();
-
+                        PopItemAction.PopItemStyle.Normal, this::createShop));
+        if (!CommonHelper.isGooglePlay()) {
+            builder.addItemAction(new PopItemAction(R.string.company_shop_import,
+                    PopItemAction.PopItemStyle.Normal, this::importShop));
+        }
+        builder.addItemAction(new PopItemAction(R.string.sm_cancel,
+                PopItemAction.PopItemStyle.Cancel))
+                .create().show();
     }
 
     private void createShop() {
