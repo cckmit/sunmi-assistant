@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_dashboard_content"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_dashboard_marker_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/color_525866"
+        android:textSize="@dimen/sp_10"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_dashboard_marker_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/color_777E8C"
+        android:textSize="@dimen/sp_10" />
+
+</LinearLayout>
