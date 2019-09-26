@@ -1,14 +1,21 @@
 package com.sunmi.assistant.ui.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -63,14 +70,19 @@ import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.AdListBean;
 import sunmi.common.model.AdListResp;
+import sunmi.common.model.ShopListResp;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.CommonHelper;
+import sunmi.common.utils.CommonPopupWindow;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.ClearableEditText;
+import sunmi.common.view.CommonListAdapter;
+import sunmi.common.view.ViewHolder;
 import sunmi.common.view.dialog.ChooseDeviceDialog;
 import sunmi.common.view.dialog.CommonDialog;
 
@@ -92,6 +104,10 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     RecyclerView rvDevice;
     @ViewById(R.id.btn_add)
     TextView btnAdd;
+    @ViewById(R.id.rl_shop_title)
+    RelativeLayout rlShopTitle;
+    @ViewById(R.id.tv_shop_title)
+    TextView tvShopTitle;
 
     Banner vpBanner;
     RelativeLayout rlNoDevice;
@@ -110,9 +126,12 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     private String password = "";    //路由管理密码
     private String mPassword;
     private SunmiDevice clickedDevice;
+    private CommonPopupWindow popupwindow;
+    private int state;//PopupWindow
 
     @AfterViews
     protected void init() {
+        initDimens(mActivity);
         mPresenter = new DevicePresenter();
         mPresenter.attachView(this);
         adList.addAll(DataSupport.findAll(AdListBean.class));
@@ -127,9 +146,17 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         }
     }
 
+    private void initDimens(Context context) {
+        int mStatusBarHeight = Utils.getStatusBarHeight(context);
+        rlShopTitle.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.dp_64) + mStatusBarHeight;
+        tvShopTitle.setPadding(0, mStatusBarHeight, 0, 0);
+        rlShopTitle.requestLayout();
+    }
+
     protected void initViews() {
         topBar.setCompanyName(SpUtils.getCompanyName());
         topBar.setShopName(SpUtils.getShopName());
+        tvShopTitle.setText(SpUtils.getShopName());
         initRefreshLayout();
         initBanner();
         layoutManager = new LinearLayoutManager(mActivity);
@@ -181,6 +208,78 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         ChooseDeviceDialog chooseDeviceDialog = new ChooseDeviceDialog(mActivity, SpUtils.getShopId());
         chooseDeviceDialog.show();
         AppConfig.globalDevList = routerList;//todo
+    }
+
+    @Click(R.id.rl_shop_title)
+    void dropSelectShop() {
+        if (state == 1 && popupwindow != null) {
+            popupwindow.dismiss();
+            state = 0;
+            return;
+        }
+        mPresenter.getShopList();
+    }
+
+    @Override
+    public void getShopListSuccess(List<ShopListResp.ShopInfo> shopList) {
+        popShopList(shopList);
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void popShopList(List<ShopListResp.ShopInfo> shopList) {
+        LayoutInflater inflater = LayoutInflater.from(mActivity);
+        View viewLayout = inflater.inflate(R.layout.device_popwindow_shop_list, null);
+        popupwindow = new CommonPopupWindow(viewLayout, ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT, true);
+        popupwindow.setAnimationStyle(R.anim.pop_action_sheet_enter);
+        popupwindow.showAsDropDown(rlShopTitle);
+        ColorDrawable cd = new ColorDrawable(0x00000000);
+        popupwindow.setBackgroundDrawable(cd);
+        popupwindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
+        popupwindow.setTouchable(true);
+        popupwindow.setOutsideTouchable(true);
+        popupwindow.setFocusable(false);
+        popupwindow.update();
+        popupwindow.setClippingEnabled(false);
+
+        state = 1;
+        TextView tvItemCompany = viewLayout.findViewById(R.id.tv_item_company);
+        RecyclerView itemRecyclerView = viewLayout.findViewById(R.id.item_recycler_view);
+        tvItemCompany.setText(SpUtils.getCompanyName());
+        itemRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
+        itemRecyclerView.setAdapter(new CommonListAdapter<ShopListResp.ShopInfo>(mActivity,
+                R.layout.dropdown_item, shopList) {
+            @Override
+            public void convert(ViewHolder holder, ShopListResp.ShopInfo shopInfo) {
+                TextView dropdownItemName = holder.getView(R.id.dropdown_item_name);
+                ImageView dropdownItemCheckbox = holder.getView(R.id.dropdown_item_checkbox);
+                dropdownItemName.setText(shopInfo.getShop_name());
+                if (holder.getAdapterPosition() == 0) {
+                    dropdownItemCheckbox.setVisibility(View.VISIBLE);
+                    dropdownItemName.setTextColor(ContextCompat.getColor(mActivity, R.color.common_orange));
+                } else {
+                    dropdownItemCheckbox.setVisibility(View.GONE);
+                    dropdownItemName.setTextColor(ContextCompat.getColor(mActivity, R.color.color_525866));
+                }
+                holder.itemView.setOnClickListener(v -> {
+                    tvShopTitle.setText(shopInfo.getShop_name());
+                    SpUtils.setShopId(shopInfo.getShop_id());
+                    SpUtils.setShopName(shopInfo.getShop_name());
+                    BaseNotification.newInstance().postNotificationName(CommonNotifications.shopSwitched);
+                    BaseNotification.newInstance().postNotificationName(CommonNotifications.shopNameChanged);
+                    state = 0;
+                    popupwindow.dismiss();
+                });
+            }
+        });
+        viewLayout.setOnTouchListener((view, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_OUTSIDE || event.getAction() == MotionEvent.ACTION_DOWN) {
+                state = 0;
+                popupwindow.dismiss();
+                return true;
+            }
+            return false;
+        });
     }
 
     @Override
@@ -368,10 +467,12 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             loadData();
         } else if (id == CommonNotifications.shopSwitched) {
             topBar.setShopName(SpUtils.getShopName());
+            tvShopTitle.setText(SpUtils.getShopName());
             loadData();
         } else if (id == CommonNotifications.companySwitch) {
             topBar.setShopName(SpUtils.getShopName());
             topBar.setCompanyName(SpUtils.getCompanyName());
+            tvShopTitle.setText(SpUtils.getShopName());
             loadData();
         } else if (CommonNotifications.netDisconnection == id) {//网络断开
             networkDisconnected();
@@ -432,6 +533,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             topBar.setCompanyName(SpUtils.getCompanyName());
         } else if (CommonNotifications.shopNameChanged == id) {
             topBar.setShopName(SpUtils.getShopName());
+            tvShopTitle.setText(SpUtils.getShopName());
         } else if (NotificationConstant.apisConfig == id) {//ap是否配置2034
             ResponseBean res = (ResponseBean) args[0];
             checkApIsConfig(res);

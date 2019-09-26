@@ -25,6 +25,7 @@ import sunmi.common.base.BasePresenter;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.model.AdListBean;
 import sunmi.common.model.AdListResp;
+import sunmi.common.model.ShopListResp;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.http.HttpCallback;
@@ -216,6 +217,40 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
         });
     }
 
+    @Override
+    public void getShopList() {
+        mView.showLoadingDialog();
+        SunmiStoreApi.getInstance().getShopList(SpUtils.getCompanyId(), new RetrofitCallback<ShopListResp>() {
+            @Override
+            public void onSuccess(int code, String msg, ShopListResp data) {
+                if (isViewAttached()) {
+                    mView.hideLoadingDialog();
+                    List<ShopListResp.ShopInfo> shopList = data.getShop_list();
+                    if (shopList == null) {
+                        return;
+                    }
+                    List<ShopListResp.ShopInfo> newShopList = new ArrayList<>();
+                    for (ShopListResp.ShopInfo shop : shopList) {
+                        if (shop.getShop_id() == SpUtils.getShopId()) {
+                            newShopList.add(0, shop);
+                        } else {
+                            newShopList.add(shop);
+                        }
+                    }
+                    mView.getShopListSuccess(newShopList);
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, ShopListResp data) {
+                if (isViewAttached()) {
+                    mView.hideLoadingDialog();
+                    mView.shortTip(R.string.str_server_exception);
+                }
+            }
+        });
+    }
+
     private List<SunmiDevice> getList(String data) {
         List<SunmiDevice> list = new ArrayList<>();
         try {
@@ -305,5 +340,6 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
     private void saveDevice(SunmiDevice device) {
         device.saveOrUpdate("deviceid=?", device.getDeviceid());
     }
+
 
 }

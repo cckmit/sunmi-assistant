@@ -137,7 +137,8 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
     }
 
     private void initStatusBar(String tabId) {
-        if (TextUtils.equals(getStringById(R.string.str_tab_dashboard), tabId)) {
+        if (TextUtils.equals(getStringById(R.string.str_tab_dashboard), tabId)
+                || TextUtils.equals(getStringById(R.string.str_tab_device), tabId)) {
             DashboardFragment fragment = (DashboardFragment) getFragment(
                     getString(R.string.str_tab_dashboard));
             if (fragment != null) {
