@@ -1,4 +1,4 @@
-include ':app', ':commonlib', ':sunmiservice', ':datelibrary', ':shortcutbadger'
+include ':app', ':commonlib', ':sunmiservice', ':datelibrary', ':shortcutbadger', ':MPChartLib'
 include ':apmanager'
 include ':cloudprinter'
 include ':ipc'
