@@ -160,7 +160,9 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             @Override
             public void onFail(int code, String msg, ShopListResp data) {
                 LogCat.e(TAG, "Load shop list Failed. " + code + ":" + msg);
-                mView.loadDataFailed();
+                if (isViewAttached()) {
+                    mView.loadDataFailed();
+                }
             }
         });
     }
