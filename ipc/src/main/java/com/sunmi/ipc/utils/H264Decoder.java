@@ -23,7 +23,7 @@ public class H264Decoder {
 
     private static final int VIDEO_WIDTH = 1920;
     private static final int VIDEO_HEIGHT = 1080;
-    
+
     private MediaCodec mediaCodec;//处理音视频的编解码的类MediaCodec
 
     private Surface surface;//显示画面的Surface
@@ -72,13 +72,18 @@ public class H264Decoder {
                 System.arraycopy(data, 20, videoData, h264Header.length, data.length - 20 - 4);
                 videoDataQueue.put(videoData);
             } else {//头信息
-                decodeHeader(data);
+                if (!isFlvHeader(data)) {//只解析h264头，不解析flv头
+                    decodeHeader(data);
+                }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             Log.e("H264Decoder", "decode fail, data = " + Arrays.toString(data));
         }
+    }
+
+    private boolean isFlvHeader(byte[] data) {
+        return data[0] == 70 && data[1] == 76 && data[2] == 86;
     }
 
     /**
