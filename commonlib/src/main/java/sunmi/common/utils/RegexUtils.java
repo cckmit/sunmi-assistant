@@ -7,15 +7,12 @@ import java.util.regex.Pattern;
 
 public class RegexUtils {
 
-
     public static boolean isCorrectAccount(String mobiles) {
-
         if (mobiles.contains("@")) {
             return isEmail(mobiles);
         } else {
             return isChinaPhone(mobiles);
         }
-
     }
 
     /**

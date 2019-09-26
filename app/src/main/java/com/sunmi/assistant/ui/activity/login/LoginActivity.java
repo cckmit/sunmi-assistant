@@ -159,7 +159,7 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
                 if (isFastClick(1500)) {
                     return;
                 }
-                if (!RegexUtils.isCorrectAccount(mobile) && !RegexUtils.isEmail(mobile)) {
+                if (!RegexUtils.isCorrectAccount(mobile)) {
                     shortTip(R.string.tip_invalid_phone_number);
                     return;
                 }

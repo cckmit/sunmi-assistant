@@ -90,7 +90,7 @@ public class CreateShopActivity extends BaseActivity {
         String shopName = etShop.getText() == null ? null : etShop.getText().toString().trim();
         String contact = etContact.getText() == null ? null : etContact.getText().toString().trim();
         String mobile = etMobile.getText() == null ? null : etMobile.getText().toString().trim();
-        if (!TextUtils.isEmpty(mobile) && !RegexUtils.isCorrectAccount(mobile)) {
+        if (!TextUtils.isEmpty(mobile) && !RegexUtils.isChinaPhone(mobile)) {                 //手机号可以为空
             if (!CommonHelper.isGooglePlay()) {
                 shortTip(getString(R.string.str_invalid_phone));
             }
