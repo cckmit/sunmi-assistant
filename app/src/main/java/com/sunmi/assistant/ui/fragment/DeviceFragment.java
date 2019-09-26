@@ -35,7 +35,6 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
 import com.sunmi.assistant.presenter.DevicePresenter;
 import com.sunmi.assistant.ui.DeviceSettingMenu;
-import com.sunmi.assistant.ui.MainTopBar;
 import com.sunmi.assistant.ui.adapter.DeviceListAdapter;
 import com.sunmi.assistant.utils.GlideImageLoader;
 import com.sunmi.cloudprinter.ui.Activity.PrinterManageActivity_;
@@ -96,8 +95,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         DeviceSettingMenu.OnSettingsClickListener, OnBannerListener,
         BGARefreshLayout.BGARefreshLayoutDelegate, View.OnClickListener {
 
-    @ViewById(R.id.shop_title)
-    MainTopBar topBar;
     @ViewById(R.id.bga_refresh)
     BGARefreshLayout refreshView;
     @ViewById(R.id.rv_device)
@@ -154,8 +151,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     }
 
     protected void initViews() {
-        topBar.setCompanyName(SpUtils.getCompanyName());
-        topBar.setShopName(SpUtils.getShopName());
         tvShopTitle.setText(SpUtils.getShopName());
         initRefreshLayout();
         initBanner();
@@ -466,12 +461,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 || CommonNotifications.ipcUpgrade == id) {
             loadData();
         } else if (id == CommonNotifications.shopSwitched) {
-            topBar.setShopName(SpUtils.getShopName());
             tvShopTitle.setText(SpUtils.getShopName());
             loadData();
         } else if (id == CommonNotifications.companySwitch) {
-            topBar.setShopName(SpUtils.getShopName());
-            topBar.setCompanyName(SpUtils.getCompanyName());
             tvShopTitle.setText(SpUtils.getShopName());
             loadData();
         } else if (CommonNotifications.netDisconnection == id) {//网络断开
@@ -529,10 +521,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        } else if (CommonNotifications.companyNameChanged == id) {
-            topBar.setCompanyName(SpUtils.getCompanyName());
         } else if (CommonNotifications.shopNameChanged == id) {
-            topBar.setShopName(SpUtils.getShopName());
             tvShopTitle.setText(SpUtils.getShopName());
         } else if (NotificationConstant.apisConfig == id) {//ap是否配置2034
             ResponseBean res = (ResponseBean) args[0];

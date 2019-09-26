@@ -6,15 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.sunmi.assistant.ui.MainTopBar
-        android:id="@+id/shop_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/color_303540"
-        android:visibility="gone"
-        ptr:bottom_margin="@dimen/dp_12"
-        ptr:layout_constraintTop_toTopOf="parent" />
-
     <RelativeLayout
         android:id="@+id/rl_shop_title"
         android:layout_width="match_parent"
