@@ -1,7 +1,6 @@
 package com.sunmi.assistant.dashboard.card;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -27,7 +26,7 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.DashboardContract;
 import com.sunmi.assistant.dashboard.Utils;
-import com.sunmi.assistant.dashboard.ui.PieChartLabelFormatter;
+import com.sunmi.assistant.dashboard.ui.PieChartMarkerView;
 import com.sunmi.ipc.face.model.FaceAge;
 import com.sunmi.ipc.model.FaceAgeRangeResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
@@ -215,16 +214,15 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
         mChart = holder.getView(R.id.view_dashboard_pie_chart);
 
         mChart.setTouchEnabled(true);
-        mChart.setRotationEnabled(false);
+        mChart.setRotationEnabled(true);
         mChart.getDescription().setEnabled(false);
         mChart.getLegend().setEnabled(false);
         mChart.setDrawEntryLabels(false);
         mChart.setUsePercentValues(true);
         mChart.setDrawHoleEnabled(true);
-        mChart.setHoleRadius(70f);
+        mChart.setHoleRadius(75f);
         mChart.setTransparentCircleRadius(0f);
-        mChart.setExtraOffsets(10, 10, 10, 10);
-        mChart.setCenterTextOffset(0, -5);
+        mChart.setExtraOffsets(10, 13, 10, 13);
         mChart.setCenterTextSize(24);
         mChart.setCenterTextColor(ContextCompat.getColor(context, R.color.color_525866));
 
@@ -236,13 +234,16 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
 
     @Override
     protected void setupModel(Model model, Object response) {
-//        int size = model.dataSets.size();
-//        for (int i = 0; i < size; i++) {
-//            int key = model.dataSets.keyAt(i);
-//            List<PieEntry> entries = model.dataSets.get(key);
-//            for (PieEntry entry : entries) {
-//                entry.setY((int)(Math.random() * 1000));
-//            }
+//        List<PieEntry> entries = model.dataSets.get(Constants.DATA_TYPE_NEW_OLD);
+//        for (PieEntry entry : entries) {
+//            entry.setY((int)(Math.random() * 1000));
+//        }
+//
+//        model.dataSets.get(Constants.DATA_TYPE_GENDER).clear();
+//
+//        entries = model.dataSets.get(Constants.DATA_TYPE_AGE);
+//        for (PieEntry entry : entries) {
+//            entry.setY((int)(Math.random() * 1000));
 //        }
     }
 
@@ -315,6 +316,7 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
         PieData data = pie.getData();
         ArrayList<PieEntry> values = new ArrayList<>(dataSet);
         if (isEmpty) {
+            values.clear();
             values.add(new PieEntry(1f));
         }
         if (data != null && data.getDataSetCount() > 0) {
@@ -332,14 +334,24 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
             set.setUsingSliceColorAsValueLineColor(true);
             set.setSliceSpace(0f);
             set.setSelectionShift(6f);
-            set.setValueLinePart1OffsetPercentage(135f);
+            set.setSelectionInnerShift(6f);
+            set.setUsingSliceColorAsHighlightShadowColor(true);
+            set.setHighlightShadowColorAlpha(0.4f);
+            set.setHighlightShadow(8f, 0f, 4f);
+            set.setValueLineStartDrawCircles(true);
+            set.setValueLineStartDrawCircleHole(true);
+            set.setValueLineStartCircleHoleRadius(1f);
+            set.setValueLineStartCircleRadius(2f);
+            set.setValueLinePart1OffsetPercentage(160f);
             set.setValueLinePart1Length(0.45f);
-            set.setValueLinePart2Length(0.8f);
+            set.setValueLinePart2Offset(0);
+            set.setValueLineAlignParent(true);
             set.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-            set.setValueFormatter(new PieChartLabelFormatter());
+            PieChartMarkerView marker = new PieChartMarkerView(holder.getContext());
+            marker.setChartView(pie);
+            set.setValueMarker(marker);
+            set.setDrawValuesAbove(0.095f);
             data = new PieData(set);
-            data.setValueTextSize(11f);
-            data.setValueTextColor(Color.BLACK);
             pie.setData(data);
         }
         pie.animateY(300, Easing.EaseOutCubic);
