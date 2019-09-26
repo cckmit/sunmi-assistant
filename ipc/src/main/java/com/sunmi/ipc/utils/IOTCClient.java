@@ -32,6 +32,8 @@ public class IOTCClient {
     private int SID = -1;
     private int avIndex = -1;
     private int IOTC_CONNECT_RESULT = -1000;
+
+    private int CMD_IS_AV_CONTROL = 0x01;
     private int CMD_LIVE_START = 0x10;
     private int CMD_LIVE_STOP = 0x11;
     private int CMD_LIVE_START_AUDIO = 0x12;
@@ -47,6 +49,8 @@ public class IOTCClient {
     private boolean isRunning = true;
     private Timer timer;
 
+    private boolean isNewInterface;//是否用新接口发命令
+
     public IOTCClient(String uid) {
         this.uid = uid;
     }
@@ -61,10 +65,17 @@ public class IOTCClient {
                     callback.initFail();
                 }
                 return;
-            }//todo
+            }
         }
 
-        AVAPIs.avInitialize(3);// alloc 3 sessions for video and two-way audio
+        ret = AVAPIs.avInitialize(4);// alloc 3 sessions for video and two-way audio
+        if (ret < 0) {
+            IOTCAPIs.IOTC_DeInitialize();
+            if (callback != null) {
+                callback.initFail();
+            }
+            return;
+        }
 
         SID = IOTCAPIs.IOTC_Get_SessionID();
         LogCat.e(TAG, "IOTC_Get_SessionID error code, sid = " + SID);
@@ -104,7 +115,7 @@ public class IOTCClient {
             return;
         }
 
-        String account = "admin";
+        String account = "sunmi";
         String password = "12345678";//8Qi0ZLkwv3VP0W
         int timeoutSec = 20;
         int channelId = 1;//chid用来传输音视频
@@ -124,6 +135,8 @@ public class IOTCClient {
             IOTC_CONNECT_RESULT = -1000;
             return;
         }
+        isNewInterface = pservType[0] > 0;
+
         LogCat.e(TAG, "AVAPIs.avClientStart2, avIndex = " + avIndex);
         startPlay();
         Thread videoThread = new Thread(new VideoThread(avIndex), "Video Thread");
@@ -168,9 +181,9 @@ public class IOTCClient {
         startPlay(new P2pCmdCallback() {
             @Override
             public void onResponse(int cmd, IotcCmdResp result) {
-                if (callback != null) {
-                    callback.initSuccess();
-                }
+//                if (callback != null) {
+//                    callback.initSuccess();
+//                }
             }
 
             @Override
@@ -214,7 +227,17 @@ public class IOTCClient {
                 .setCmd(CMD_LIVE_START)
                 .setChannel(1)
                 .setParam("resolution", type).builder();
-        cmdCall(cmd);
+        cmdCall(CMD_LIVE_START, cmd, new P2pCmdCallback() {
+            @Override
+            public void onResponse(int cmd, IotcCmdResp result) {
+
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
     }
 
     /**
@@ -225,7 +248,17 @@ public class IOTCClient {
                 .setMsg_id(Utils.getMsgId())
                 .setCmd(CMD_LIVE_STOP)
                 .setChannel(1).builder();
-        cmdCall(cmd);
+        cmdCall(CMD_LIVE_STOP, cmd, new P2pCmdCallback() {
+            @Override
+            public void onResponse(int cmd, IotcCmdResp result) {
+
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
     }
 
     public void getPlaybackList(long start, long end, P2pCmdCallback callback) {
@@ -247,29 +280,22 @@ public class IOTCClient {
         cmdCall(CMD_PLAYBACK_START, cmd, callback);
     }
 
-    public void stopPlayback(P2pCmdCallback callback) {
-        IotcCmdReq cmd = new IotcCmdReq.Builder()
-                .setMsg_id(Utils.getMsgId())
-                .setCmd(CMD_PLAYBACK_STOP)
-                .setChannel(1).builder();
-        cmdCall(CMD_PLAYBACK_STOP, cmd, callback);
-    }
-
-    public void pausePlayback(boolean isPause, P2pCmdCallback callback) {
-        IotcCmdReq cmd = new IotcCmdReq.Builder()
-                .setMsg_id(Utils.getMsgId())
-                .setCmd(CMD_PLAYBACK_PAUSE)
-                .setChannel(1)
-                .setParam("pause", isPause ? 1 : 0).builder();
-        cmdCall(CMD_PLAYBACK_PAUSE, cmd, callback);
-    }
-
     public void stopPlayback() {
         IotcCmdReq cmd = new IotcCmdReq.Builder()
                 .setMsg_id(Utils.getMsgId())
                 .setCmd(CMD_PLAYBACK_STOP)
                 .setChannel(1).builder();
-        cmdCall(cmd);
+        cmdCall(CMD_PLAYBACK_STOP, cmd, new P2pCmdCallback() {
+            @Override
+            public void onResponse(int cmd, IotcCmdResp result) {
+
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
     }
 
     public void pausePlayback(boolean isPause) {
@@ -278,15 +304,16 @@ public class IOTCClient {
                 .setCmd(CMD_PLAYBACK_PAUSE)
                 .setChannel(1)
                 .setParam("pause", isPause ? 1 : 0).builder();
-        cmdCall(cmd);
-    }
+        cmdCall(CMD_PLAYBACK_PAUSE, cmd, new P2pCmdCallback() {
+            @Override
+            public void onResponse(int cmd, IotcCmdResp result) {
 
-    private void cmdCall(final IotcCmdReq cmd) {
-        ThreadPool.getSingleThreadPool().execute(() -> {
-            String json = new Gson().toJson(cmd);
-            byte[] req = json.getBytes();
-            IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0);
-            getCmdResponse();
+            }
+
+            @Override
+            public void onError() {
+
+            }
         });
     }
 
@@ -295,19 +322,35 @@ public class IOTCClient {
             String json = new Gson().toJson(cmdReq);
             byte[] req = json.getBytes();
             LogCat.e(TAG, "99999999 cmd = " + cmd);
-            if (IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0) > 0) {
-                LogCat.e(TAG, "99999999 write ok");
-                getCmdResponse(cmd, callback);
-            } else {//先重试，todo 换av新接口
-                LogCat.e(TAG, "99999999 write fail");
-                cmdCall(cmd, cmdReq, callback);
+            if (isNewInterface) {
+                if (AVAPIs.avSendIOCtrl(avIndex, 0x200, req, req.length) == 0) {
+                    LogCat.e(TAG, "99999999 avCmdCall write ok");
+                    getCmdResponse(cmd, callback);
+                } else {
+                    LogCat.e(TAG, "99999999 avCmdCall write fail");
+                    callback.onError();
+                }
+            } else {
+                if (IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0) > 0) {
+                    LogCat.e(TAG, "99999999 write ok");
+                    getCmdResponse(cmd, callback);
+                } else {
+                    LogCat.e(TAG, "99999999 write fail");
+                    cmdCall(cmd, cmdReq, callback);
+                }
             }
         });
     }
 
     private void getCmdResponse(int cmd, P2pCmdCallback callback) {
         byte[] buf = new byte[1024];
-        int actualLen = IOTCAPIs.IOTC_Session_Read(SID, buf, 1024, 10000, 0);
+        int actualLen;
+        if (isNewInterface) {
+            actualLen = AVAPIs.avRecvIOCtrl(avIndex, new int[]{0x200}, buf, 1024, 10000);
+        } else {
+            actualLen = IOTCAPIs.IOTC_Session_Read(SID, buf, 1024, 10000, 0);
+        }
+
         if (actualLen > 0) {
             byte[] data = new byte[actualLen];
             System.arraycopy(buf, 0, data, 0, actualLen);
@@ -329,20 +372,10 @@ public class IOTCClient {
                 e.printStackTrace();
             }
         } else {
+            LogCat.e(TAG, "99999999 actualLen = " + actualLen);
             if (callback != null) {
                 callback.onError();
             }
-        }
-    }
-
-    private void getCmdResponse() {
-        byte[] buf = new byte[1024];
-        int actualLen = IOTCAPIs.IOTC_Session_Read(SID, buf, 1024, 10000, 0);
-        if (actualLen > 0) {
-            byte[] data = new byte[actualLen];
-            System.arraycopy(buf, 0, data, 0, actualLen);
-            String result = ByteUtils.byte2String(data);
-            IotcCmdResp cmdBean = new Gson().fromJson(result, IotcCmdResp.class);
         }
     }
 
@@ -447,7 +480,6 @@ public class IOTCClient {
                 System.arraycopy(audioBuffer, 0, data, 0, ret);
                 if (callback != null) callback.onAudioReceived(data);
             }
-            LogCat.e(TAG, "AudioThread - Exit");
         }
     }
 
