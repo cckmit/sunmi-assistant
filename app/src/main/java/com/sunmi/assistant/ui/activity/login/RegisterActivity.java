@@ -76,7 +76,7 @@ public class RegisterActivity extends BaseMvpActivity<InputMobilePresenter>
             shortTip(R.string.tip_agree_protocol);
             return;
         }
-        if (!RegexUtils.isChinaPhone(mobile)) {
+        if (!RegexUtils.isCorrectAccount(mobile)) {
             shortTip(R.string.str_invalid_phone);
             return;
         }
@@ -115,7 +115,7 @@ public class RegisterActivity extends BaseMvpActivity<InputMobilePresenter>
     public void userMerge() {
         if (etMobile.getText() == null) return;
         String user = etMobile.getText().toString();//email test: esyzim06497@chacuo.net
-        if (RegexUtils.isChinaPhone(user) || RegexUtils.isEmail(user)) {
+        if (RegexUtils.isCorrectAccount(user)) {
             showLoadingDialog();
             mPresenter.checkUserName(user);
         }

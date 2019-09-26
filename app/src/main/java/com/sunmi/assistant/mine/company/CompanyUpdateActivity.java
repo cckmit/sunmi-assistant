@@ -188,7 +188,7 @@ public class CompanyUpdateActivity extends BaseActivity
                 finish();
                 return true;
             }
-            if (!RegexUtils.isChinaPhone(companyInfo)) {
+            if (!RegexUtils.isCorrectAccount(companyInfo)) {
                 shortTip(getString(R.string.str_invalid_phone));
                 return true;
             }

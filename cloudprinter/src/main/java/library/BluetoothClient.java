@@ -2,8 +2,8 @@ package library;
 
 import android.content.Context;
 
-import library.BluetoothClientImpl;
-import library.IBluetoothClient;
+import java.util.UUID;
+
 import library.connect.listener.BleConnectStatusListener;
 import library.connect.listener.BluetoothStateListener;
 import library.connect.options.BleConnectOptions;
@@ -21,8 +21,6 @@ import library.utils.BluetoothLog;
 import library.utils.BluetoothUtils;
 import library.utils.ByteUtils;
 import library.utils.proxy.ProxyUtils;
-
-import java.util.UUID;
 
 /**
  * Created by dingjikerbo on 2016/9/1.

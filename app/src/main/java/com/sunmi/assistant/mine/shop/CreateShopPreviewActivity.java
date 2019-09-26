@@ -3,6 +3,7 @@ package com.sunmi.assistant.mine.shop;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.view.View;
+import android.widget.Button;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.platform.SelectPlatformActivity_;
@@ -22,6 +23,7 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.TitleBarView;
@@ -36,6 +38,8 @@ import sunmi.common.view.TitleBarView;
 public class CreateShopPreviewActivity extends BaseActivity {
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
+    @ViewById(R.id.btn_shop_import)
+    Button btnShopImport;
     @Extra
     int companyId;
     @Extra
@@ -59,6 +63,9 @@ public class CreateShopPreviewActivity extends BaseActivity {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         if (isCannotBackPreview) {
             titleBar.setLeftImageVisibility(View.GONE);
+        }
+        if (!CommonHelper.isGooglePlay()) {
+            btnShopImport.setVisibility(View.VISIBLE);
         }
         getSaasInfo();
     }
