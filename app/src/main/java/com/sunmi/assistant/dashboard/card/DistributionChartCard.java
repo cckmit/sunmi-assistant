@@ -256,6 +256,7 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
         TextView age = holder.getView(R.id.tv_dashboard_age);
 
         PieChart pie = holder.getView(R.id.view_dashboard_pie_chart);
+        pie.setRotationAngle(270);
 
         // Set button selected
         newOld.setSelected(model.type == Constants.DATA_TYPE_NEW_OLD);
@@ -360,6 +361,20 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
         } else {
             pie.highlightValues(null);
         }
+    }
+
+    @Override
+    protected void showLoading(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+        model.period = getPeriod();
+        model.dataSets.get(model.type).clear();
+        setupView(holder, model, position);
+    }
+
+    @Override
+    protected void showError(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+        model.period = getPeriod();
+        model.dataSets.get(model.type).clear();
+        setupView(holder, model, position);
     }
 
     public static class OnPieSelectedListener implements OnChartValueSelectedListener {
