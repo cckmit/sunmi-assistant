@@ -140,9 +140,6 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mShopMenu.setPadding(0, mStatusBarHeight, 0, 0);
 
         // 初始化设置顶部门店选择下拉列表
-        mShopMenuPopupHelper = new ShopMenuPopupHelper(context, mContent, mOverlay);
-        mShopMenu.setLayoutManager(new ShopMenuLayoutManager(context));
-        mShopMenu.setPopupHelper(mShopMenuPopupHelper);
         mShopMenuAdapter = new ShopMenuAdapter(context);
         mShopMenuAdapter.setOnItemClickListener((adapter, model, position) -> {
             boolean changed = mPresenter.switchShopTo(model);
@@ -157,6 +154,9 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mShopMenu.setAdapter(mShopMenuAdapter);
         mShopMenuTitle = mShopMenuAdapter.getTitle().getView(R.id.dropdown_item_title);
         mShopMenuTitleArrow = mShopMenuAdapter.getTitle().getView(R.id.dropdown_item_arrow);
+        mShopMenuPopupHelper = new ShopMenuPopupHelper(context, mContent, mOverlay, mShopMenuTitleArrow);
+        mShopMenu.setLayoutManager(new ShopMenuLayoutManager(context));
+        mShopMenu.setPopupHelper(mShopMenuPopupHelper);
         mOverlay.setOnClickListener(v -> mShopMenu.getPopup().dismiss(true));
     }
 
