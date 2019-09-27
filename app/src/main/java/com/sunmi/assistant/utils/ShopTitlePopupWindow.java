@@ -40,13 +40,15 @@ public class ShopTitlePopupWindow extends PopupWindow implements View.OnTouchLis
      */
     private static final int SHOP_ITEM_SIZE = 7;
     private Activity mContext;
+    private TextView mSetViewImg;
 
     @SuppressLint("ClickableViewAccessibility")
     public ShopTitlePopupWindow(Activity activity, View topToPopupWindowView,
-                                List<ShopListResp.ShopInfo> shopList) {
+                                List<ShopListResp.ShopInfo> shopList, TextView mSetViewImg) {
         super();
         if (activity != null) {
             this.mContext = activity;
+            this.mSetViewImg = mSetViewImg;
         }
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View viewLayout = inflater.inflate(R.layout.device_popwindow_shop_list, null);
@@ -88,12 +90,19 @@ public class ShopTitlePopupWindow extends PopupWindow implements View.OnTouchLis
         update();
     }
 
+    private void setImageBackground() {
+        if (mSetViewImg != null) {
+            mSetViewImg.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(mContext, R.drawable.ic_arrow_drop_down_white), null);
+        }
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_OUTSIDE ||
                 event.getAction() == MotionEvent.ACTION_DOWN) {
             dismiss();
+            setImageBackground();
             return true;
         }
         return false;
@@ -143,6 +152,7 @@ public class ShopTitlePopupWindow extends PopupWindow implements View.OnTouchLis
                 BaseNotification.newInstance().postNotificationName(CommonNotifications.shopSwitched);
                 BaseNotification.newInstance().postNotificationName(CommonNotifications.shopNameChanged);
                 dismiss();
+                setImageBackground();
             });
         }
     }
