@@ -187,6 +187,9 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         } else {
             StatusBarUtils.setStatusBarFullTransparent(getActivity());
         }
+        if (mShopMenu.getPopup().isShowing()) {
+            mShopMenu.getPopup().dismiss(false);
+        }
     }
 
     private void showContent() {
