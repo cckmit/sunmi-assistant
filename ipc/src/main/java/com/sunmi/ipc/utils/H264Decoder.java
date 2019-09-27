@@ -23,7 +23,7 @@ public class H264Decoder {
 
     private static final int VIDEO_WIDTH = 1920;
     private static final int VIDEO_HEIGHT = 1080;
-    
+
     private MediaCodec mediaCodec;//处理音视频的编解码的类MediaCodec
 
     private Surface surface;//显示画面的Surface
@@ -72,13 +72,18 @@ public class H264Decoder {
                 System.arraycopy(data, 20, videoData, h264Header.length, data.length - 20 - 4);
                 videoDataQueue.put(videoData);
             } else {//头信息
-                decodeHeader(data);
+                if (!isFlvHeader(data)) {//只解析h264头，不解析flv头
+                    decodeHeader(data);
+                }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             Log.e("H264Decoder", "decode fail, data = " + Arrays.toString(data));
         }
+    }
+
+    private boolean isFlvHeader(byte[] data) {
+        return data[0] == 70 && data[1] == 76 && data[2] == 86;
     }
 
     /**
@@ -88,12 +93,15 @@ public class H264Decoder {
      * 23、24位是sps长度，sps数据之后的2、3位是pps长度
      */
     private void decodeHeader(byte[] data) {
-        //初始化解码器
         initFormat(data);
-        initMediaCodec();
-        ThreadPool.getCachedThreadPool().submit(new DecodeH264Thread());//开启解码线程
+        startDecode();
     }
 
+    /**
+     * 初始化解码器
+     *
+     * @param data 头信息
+     */
     private void initFormat(byte[] data) {
         format = MediaFormat.createVideoFormat("video/avc", VIDEO_WIDTH, VIDEO_HEIGHT);
         //获取h264中的pps及sps数据
@@ -125,7 +133,7 @@ public class H264Decoder {
         }
     }
 
-    public synchronized void initMediaCodec() {
+    private synchronized void initMediaCodec() {
         release();
         try {
             mediaCodec = MediaCodec.createDecoderByType("video/avc");
@@ -144,6 +152,11 @@ public class H264Decoder {
             e.printStackTrace();
             ToastUtils.toastForShort(BaseApplication.getContext(), "播放失败，清重试");
         }
+    }
+
+    public synchronized void startDecode() {
+        initMediaCodec();
+        ThreadPool.getCachedThreadPool().submit(new DecodeH264Thread());//开启解码线程
     }
 
     /**

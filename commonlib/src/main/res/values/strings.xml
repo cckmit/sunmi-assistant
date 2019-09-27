@@ -124,4 +124,8 @@
 
     <string name="str_num_10_thousands">万</string>
     <string name="str_num_100_million">亿</string>
+    <string name="str_num_people">%d人</string>
+    <string name="str_num_10_thousands_people">%s万人</string>
+    <string name="str_num_people_total">总人数</string>
+    <string name="str_cancel_setting">Are you sure to cancel the setting?</string>
 </resources>

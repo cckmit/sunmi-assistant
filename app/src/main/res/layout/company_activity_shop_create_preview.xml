@@ -70,6 +70,7 @@
         android:text="@string/company_shop_import"
         android:textColor="@color/colorOrangeText"
         android:textSize="@dimen/sp_16"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 

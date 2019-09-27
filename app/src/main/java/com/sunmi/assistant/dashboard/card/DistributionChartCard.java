@@ -1,7 +1,6 @@
 package com.sunmi.assistant.dashboard.card;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -27,7 +26,7 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.DashboardContract;
 import com.sunmi.assistant.dashboard.Utils;
-import com.sunmi.assistant.dashboard.ui.PieChartLabelFormatter;
+import com.sunmi.assistant.dashboard.ui.PieChartMarkerView;
 import com.sunmi.ipc.face.model.FaceAge;
 import com.sunmi.ipc.model.FaceAgeRangeResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
@@ -51,6 +50,8 @@ import sunmi.common.utils.log.LogCat;
  * @since 2019-07-01
  */
 public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard.Model, Object> {
+
+    private static final int NUM_10_THOUSANDS = 10000;
 
     private static final int[] PIE_COLORS_NEW_OLD = {0xFF5A97FC, 0xFFFF8000};
     private static final int[] PIE_COLORS_GENDER = {0xFF4B7AFA, 0xFFFF6666};
@@ -215,16 +216,15 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
         mChart = holder.getView(R.id.view_dashboard_pie_chart);
 
         mChart.setTouchEnabled(true);
-        mChart.setRotationEnabled(false);
+        mChart.setRotationEnabled(true);
         mChart.getDescription().setEnabled(false);
         mChart.getLegend().setEnabled(false);
         mChart.setDrawEntryLabels(false);
         mChart.setUsePercentValues(true);
         mChart.setDrawHoleEnabled(true);
-        mChart.setHoleRadius(70f);
+        mChart.setHoleRadius(75f);
         mChart.setTransparentCircleRadius(0f);
-        mChart.setExtraOffsets(10, 10, 10, 10);
-        mChart.setCenterTextOffset(0, -5);
+        mChart.setExtraOffsets(10, 13, 10, 13);
         mChart.setCenterTextSize(24);
         mChart.setCenterTextColor(ContextCompat.getColor(context, R.color.color_525866));
 
@@ -236,13 +236,16 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
 
     @Override
     protected void setupModel(Model model, Object response) {
-//        int size = model.dataSets.size();
-//        for (int i = 0; i < size; i++) {
-//            int key = model.dataSets.keyAt(i);
-//            List<PieEntry> entries = model.dataSets.get(key);
-//            for (PieEntry entry : entries) {
-//                entry.setY((int)(Math.random() * 1000));
-//            }
+//        List<PieEntry> entries = model.dataSets.get(Constants.DATA_TYPE_NEW_OLD);
+//        for (PieEntry entry : entries) {
+//            entry.setY((int)(Math.random() * 1000));
+//        }
+//
+//        model.dataSets.get(Constants.DATA_TYPE_GENDER).clear();
+//
+//        entries = model.dataSets.get(Constants.DATA_TYPE_AGE);
+//        for (PieEntry entry : entries) {
+//            entry.setY((int)(Math.random() * 1000));
 //        }
     }
 
@@ -255,6 +258,7 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
         TextView age = holder.getView(R.id.tv_dashboard_age);
 
         PieChart pie = holder.getView(R.id.view_dashboard_pie_chart);
+        pie.setRotationAngle(270);
 
         // Set button selected
         newOld.setSelected(model.type == Constants.DATA_TYPE_NEW_OLD);
@@ -315,6 +319,7 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
         PieData data = pie.getData();
         ArrayList<PieEntry> values = new ArrayList<>(dataSet);
         if (isEmpty) {
+            values.clear();
             values.add(new PieEntry(1f));
         }
         if (data != null && data.getDataSetCount() > 0) {
@@ -332,14 +337,24 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
             set.setUsingSliceColorAsValueLineColor(true);
             set.setSliceSpace(0f);
             set.setSelectionShift(6f);
-            set.setValueLinePart1OffsetPercentage(135f);
+            set.setSelectionInnerShift(6f);
+            set.setUsingSliceColorAsHighlightShadowColor(true);
+            set.setHighlightShadowColorAlpha(0.4f);
+            set.setHighlightShadow(8f, 0f, 4f);
+            set.setValueLineStartDrawCircles(true);
+            set.setValueLineStartDrawCircleHole(true);
+            set.setValueLineStartCircleHoleRadius(1f);
+            set.setValueLineStartCircleRadius(2f);
+            set.setValueLinePart1OffsetPercentage(160f);
             set.setValueLinePart1Length(0.45f);
-            set.setValueLinePart2Length(0.8f);
+            set.setValueLinePart2Offset(0);
+            set.setValueLineAlignParent(true);
             set.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-            set.setValueFormatter(new PieChartLabelFormatter());
+            PieChartMarkerView marker = new PieChartMarkerView(holder.getContext());
+            marker.setChartView(pie);
+            set.setValueMarker(marker);
+            set.setDrawValuesAbove(0.095f);
             data = new PieData(set);
-            data.setValueTextSize(11f);
-            data.setValueTextColor(Color.BLACK);
             pie.setData(data);
         }
         pie.animateY(300, Easing.EaseOutCubic);
@@ -350,13 +365,29 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
         }
     }
 
+    @Override
+    protected void showLoading(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+        model.period = getPeriod();
+        model.dataSets.get(model.type).clear();
+        setupView(holder, model, position);
+    }
+
+    @Override
+    protected void showError(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+        model.period = getPeriod();
+        model.dataSets.get(model.type).clear();
+        setupView(holder, model, position);
+    }
+
     public static class OnPieSelectedListener implements OnChartValueSelectedListener {
 
         private PieChart chart;
         private int total;
+        private String totalTitle;
 
         public OnPieSelectedListener(PieChart chart) {
             this.chart = chart;
+            this.totalTitle = chart.getContext().getString(R.string.str_num_people_total);
         }
 
         public void setMax(int max) {
@@ -371,7 +402,7 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
 
         @Override
         public void onNothingSelected() {
-            chart.setCenterText("");
+            chart.setCenterText(createTotalText(chart.getContext(), total));
         }
 
         private SpannableString createCenterText(Context context, String name, float value) {
@@ -379,13 +410,43 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
             int percent = total > 0 ? Math.round(value / total * 100) : 0;
             SpannableString s = new SpannableString(
                     new StringBuilder(title).append("\n").append(percent).append("%"));
-            s.setSpan(new AbsoluteSizeSpan(32, true), 0, title.length(), 0);
-            s.setSpan(new StyleSpan(Typeface.NORMAL), 0, title.length(), 0);
-            s.setSpan(new ForegroundColorSpan(0xFF777E8C), 0, title.length(), 0);
 
-            s.setSpan(new AbsoluteSizeSpan(60, true), title.length(), s.length(), 0);
-            s.setSpan(new StyleSpan(Typeface.BOLD), title.length(), s.length(), 0);
-            s.setSpan(new ForegroundColorSpan(0xFF525866), title.length(), s.length(), 0);
+            int titleLength = title.length();
+            s.setSpan(new AbsoluteSizeSpan(32, true), 0, titleLength, 0);
+            s.setSpan(new StyleSpan(Typeface.NORMAL), 0, titleLength, 0);
+            s.setSpan(new ForegroundColorSpan(0xFF777E8C), 0, titleLength, 0);
+
+            s.setSpan(new AbsoluteSizeSpan(60, true), titleLength, s.length(), 0);
+            s.setSpan(new StyleSpan(Typeface.BOLD), titleLength, s.length(), 0);
+            s.setSpan(new ForegroundColorSpan(0xFF525866), titleLength, s.length(), 0);
+            return s;
+        }
+
+        private SpannableString createTotalText(Context context, float value) {
+            int unit = 1;
+            String count;
+            if (total > NUM_10_THOUSANDS) {
+                count = context.getString(R.string.str_num_10_thousands_people,
+                        FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
+                                (float) total / NUM_10_THOUSANDS));
+                unit = 2;
+            } else {
+                count = context.getString(R.string.str_num_people, total);
+            }
+            SpannableString s = new SpannableString(
+                    new StringBuilder(totalTitle).append("\n").append(count));
+
+            int titleLength = totalTitle.length();
+            s.setSpan(new AbsoluteSizeSpan(32, true), 0, titleLength, 0);
+            s.setSpan(new StyleSpan(Typeface.NORMAL), 0, titleLength, 0);
+            s.setSpan(new ForegroundColorSpan(0xFF777E8C), 0, titleLength, 0);
+
+            s.setSpan(new AbsoluteSizeSpan(60, true), titleLength, s.length() - unit, 0);
+            s.setSpan(new StyleSpan(Typeface.BOLD), titleLength, s.length() - unit, 0);
+            s.setSpan(new ForegroundColorSpan(0xFF525866), titleLength, s.length(), 0);
+
+            s.setSpan(new AbsoluteSizeSpan(32, true), s.length() - unit, s.length(), 0);
+            s.setSpan(new StyleSpan(Typeface.NORMAL), s.length() - unit, s.length(), 0);
             return s;
         }
 

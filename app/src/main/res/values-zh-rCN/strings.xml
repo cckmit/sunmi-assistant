@@ -165,7 +165,6 @@
     <string name="company_shop_contact">联系人</string>
     <string name="company_shop_contact_really_name">联系人真实姓名</string>
     <string name="company_shop_mobile">联系方式</string>
-    <string name="company_shop_check_mobile">请输入正确手机号码</string>
     <string name="company_shop_select_one_or_more">您可以选择一家或多家门店</string>
     <string name="company_create_invalid_character">请输入有效的字符</string>
     <string name="str_my_msg">我的消息</string>

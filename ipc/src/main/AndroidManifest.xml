@@ -84,7 +84,8 @@
             android:name=".view.activity.IpcManagerActivity_"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:hardwareAccelerated="false"
-            android:largeHeap="true" />
+            android:largeHeap="true"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".dynamic.DynamicVideoActivity_"
             android:hardwareAccelerated="false"
