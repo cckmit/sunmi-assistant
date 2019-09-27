@@ -504,8 +504,13 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
             dataSets.put(Constants.DATA_TYPE_GENDER, new ArrayList<>());
         }
 
-        public void clear() {
-            dataSets.clear();
+        @Override
+        public void clear(int source) {
+            period = Constants.TIME_PERIOD_TODAY;
+            for (int i = 0, size = dataSets.size(); i < size; i++) {
+                int key = dataSets.keyAt(i);
+                dataSets.get(key).clear();
+            }
         }
     }
 }

@@ -78,6 +78,7 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
         this.mCompanyId = SpUtils.getCompanyId();
         this.mShopId = SpUtils.getShopId();
         this.isInit = true;
+        this.mModel.clear(source);
     }
 
     public boolean showTransactionData() {
@@ -401,5 +402,8 @@ public abstract class BaseRefreshItem<Model extends BaseRefreshItem.BaseModel, R
         boolean isValid = false;
         boolean skipLoad = false;
         int period = Constants.TIME_PERIOD_TODAY;
+
+        void clear(int source) {
+        }
     }
 }
