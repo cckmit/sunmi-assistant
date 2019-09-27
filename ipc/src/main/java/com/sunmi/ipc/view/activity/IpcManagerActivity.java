@@ -473,6 +473,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             if (playType == PLAY_TYPE_LIVE && iotcClient != null) {
                 showVideoLoading();
                 iotcClient.startPlay();
+            } else if (playType == PLAY_TYPE_PLAYBACK_DEV && videoDecoder != null) {
+                videoDecoder.startDecode();
             }
         }
     }
