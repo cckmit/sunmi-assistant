@@ -93,12 +93,15 @@ public class H264Decoder {
      * 23、24位是sps长度，sps数据之后的2、3位是pps长度
      */
     private void decodeHeader(byte[] data) {
-        //初始化解码器
         initFormat(data);
-        initMediaCodec();
-        ThreadPool.getCachedThreadPool().submit(new DecodeH264Thread());//开启解码线程
+        startDecode();
     }
 
+    /**
+     * 初始化解码器
+     *
+     * @param data 头信息
+     */
     private void initFormat(byte[] data) {
         format = MediaFormat.createVideoFormat("video/avc", VIDEO_WIDTH, VIDEO_HEIGHT);
         //获取h264中的pps及sps数据
@@ -130,7 +133,7 @@ public class H264Decoder {
         }
     }
 
-    public synchronized void initMediaCodec() {
+    private synchronized void initMediaCodec() {
         release();
         try {
             mediaCodec = MediaCodec.createDecoderByType("video/avc");
@@ -149,6 +152,11 @@ public class H264Decoder {
             e.printStackTrace();
             ToastUtils.toastForShort(BaseApplication.getContext(), "播放失败，清重试");
         }
+    }
+
+    public synchronized void startDecode() {
+        initMediaCodec();
+        ThreadPool.getCachedThreadPool().submit(new DecodeH264Thread());//开启解码线程
     }
 
     /**
