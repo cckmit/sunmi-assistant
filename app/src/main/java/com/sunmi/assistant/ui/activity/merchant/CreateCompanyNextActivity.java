@@ -2,8 +2,10 @@ package com.sunmi.assistant.ui.activity.merchant;
 
 import android.annotation.SuppressLint;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
@@ -19,6 +21,7 @@ import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.CompanyInfoResp;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.TextLengthWatcher;
@@ -41,12 +44,17 @@ public class CreateCompanyNextActivity extends BaseMvpActivity<CreateCompanyPres
     ClearableEditText etCompany;
     @ViewById(R.id.btn_create_company)
     Button btnCreateCompany;
+    @ViewById(R.id.tv_title_tip)
+    TextView tvTitleTip;
     @Extra
     boolean createCompanyCannotBack;
 
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
+        if (!CommonHelper.isGooglePlay()){
+            tvTitleTip.setVisibility(View.VISIBLE);
+        }
         new SomeMonitorEditText().setMonitorEditText(btnCreateCompany, etCompany);
         mPresenter = new CreateCompanyPresenter();
         mPresenter.attachView(this);

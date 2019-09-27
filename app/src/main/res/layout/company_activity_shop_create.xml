@@ -30,6 +30,7 @@
         android:paddingTop="@dimen/dp_8"
         android:text="@string/company_shop_create_tip"
         android:textSize="@dimen/sp_12"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_bar" />
