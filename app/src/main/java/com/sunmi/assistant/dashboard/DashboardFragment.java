@@ -403,7 +403,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             measureChild(firstChildView, widthSpec, heightSpec);
             int itemHeight = firstChildView.getMeasuredHeight();
             setMeasuredDimension(View.MeasureSpec.getSize(widthSpec),
-                    getChildCount() > 8 ? (int) (itemHeight * 8.5f) : itemHeight * getChildCount());
+                    getChildCount() > 7 ? (int) (itemHeight * 7.5f) : itemHeight * getChildCount());
         }
     }
 }
