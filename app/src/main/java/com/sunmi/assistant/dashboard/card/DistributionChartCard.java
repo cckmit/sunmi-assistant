@@ -51,6 +51,8 @@ import sunmi.common.utils.log.LogCat;
  */
 public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard.Model, Object> {
 
+    private static final int NUM_10_THOUSANDS = 10000;
+
     private static final int[] PIE_COLORS_NEW_OLD = {0xFF5A97FC, 0xFFFF8000};
     private static final int[] PIE_COLORS_GENDER = {0xFF4B7AFA, 0xFFFF6666};
     private static final int[] PIE_COLORS_AGE = {0xFFFADD4B, 0xFF45E6B0, 0xFF4BC0FA, 0xFF4B85FA, 0xFF7A62F5, 0xFFB87AF5, 0xFFFF6680, 0xFFFF884D};
@@ -256,6 +258,7 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
         TextView age = holder.getView(R.id.tv_dashboard_age);
 
         PieChart pie = holder.getView(R.id.view_dashboard_pie_chart);
+        pie.setRotationAngle(270);
 
         // Set button selected
         newOld.setSelected(model.type == Constants.DATA_TYPE_NEW_OLD);
@@ -362,13 +365,29 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
         }
     }
 
+    @Override
+    protected void showLoading(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+        model.period = getPeriod();
+        model.dataSets.get(model.type).clear();
+        setupView(holder, model, position);
+    }
+
+    @Override
+    protected void showError(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+        model.period = getPeriod();
+        model.dataSets.get(model.type).clear();
+        setupView(holder, model, position);
+    }
+
     public static class OnPieSelectedListener implements OnChartValueSelectedListener {
 
         private PieChart chart;
         private int total;
+        private String totalTitle;
 
         public OnPieSelectedListener(PieChart chart) {
             this.chart = chart;
+            this.totalTitle = chart.getContext().getString(R.string.str_num_people_total);
         }
 
         public void setMax(int max) {
@@ -383,7 +402,7 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
 
         @Override
         public void onNothingSelected() {
-            chart.setCenterText("");
+            chart.setCenterText(createTotalText(chart.getContext(), total));
         }
 
         private SpannableString createCenterText(Context context, String name, float value) {
@@ -391,13 +410,43 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
             int percent = total > 0 ? Math.round(value / total * 100) : 0;
             SpannableString s = new SpannableString(
                     new StringBuilder(title).append("\n").append(percent).append("%"));
-            s.setSpan(new AbsoluteSizeSpan(32, true), 0, title.length(), 0);
-            s.setSpan(new StyleSpan(Typeface.NORMAL), 0, title.length(), 0);
-            s.setSpan(new ForegroundColorSpan(0xFF777E8C), 0, title.length(), 0);
 
-            s.setSpan(new AbsoluteSizeSpan(60, true), title.length(), s.length(), 0);
-            s.setSpan(new StyleSpan(Typeface.BOLD), title.length(), s.length(), 0);
-            s.setSpan(new ForegroundColorSpan(0xFF525866), title.length(), s.length(), 0);
+            int titleLength = title.length();
+            s.setSpan(new AbsoluteSizeSpan(32, true), 0, titleLength, 0);
+            s.setSpan(new StyleSpan(Typeface.NORMAL), 0, titleLength, 0);
+            s.setSpan(new ForegroundColorSpan(0xFF777E8C), 0, titleLength, 0);
+
+            s.setSpan(new AbsoluteSizeSpan(60, true), titleLength, s.length(), 0);
+            s.setSpan(new StyleSpan(Typeface.BOLD), titleLength, s.length(), 0);
+            s.setSpan(new ForegroundColorSpan(0xFF525866), titleLength, s.length(), 0);
+            return s;
+        }
+
+        private SpannableString createTotalText(Context context, float value) {
+            int unit = 1;
+            String count;
+            if (total > NUM_10_THOUSANDS) {
+                count = context.getString(R.string.str_num_10_thousands_people,
+                        FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
+                                (float) total / NUM_10_THOUSANDS));
+                unit = 2;
+            } else {
+                count = context.getString(R.string.str_num_people, total);
+            }
+            SpannableString s = new SpannableString(
+                    new StringBuilder(totalTitle).append("\n").append(count));
+
+            int titleLength = totalTitle.length();
+            s.setSpan(new AbsoluteSizeSpan(32, true), 0, titleLength, 0);
+            s.setSpan(new StyleSpan(Typeface.NORMAL), 0, titleLength, 0);
+            s.setSpan(new ForegroundColorSpan(0xFF777E8C), 0, titleLength, 0);
+
+            s.setSpan(new AbsoluteSizeSpan(60, true), titleLength, s.length() - unit, 0);
+            s.setSpan(new StyleSpan(Typeface.BOLD), titleLength, s.length() - unit, 0);
+            s.setSpan(new ForegroundColorSpan(0xFF525866), titleLength, s.length(), 0);
+
+            s.setSpan(new AbsoluteSizeSpan(32, true), s.length() - unit, s.length(), 0);
+            s.setSpan(new StyleSpan(Typeface.NORMAL), s.length() - unit, s.length(), 0);
             return s;
         }
 

@@ -272,6 +272,10 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @Override
     public void onBackPressed() {
         if (isPortrait()) {
+            if (rlLoadingP != null && rlLoadingP.isShown()) {
+                rlLoadingP.setVisibility(View.GONE);
+                return;
+            }
             stopPlay();
             handler.postDelayed(this::finish, 200);
         } else {
@@ -473,6 +477,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             if (playType == PLAY_TYPE_LIVE && iotcClient != null) {
                 showVideoLoading();
                 iotcClient.startPlay();
+            } else if (playType == PLAY_TYPE_PLAYBACK_DEV && videoDecoder != null) {
+                videoDecoder.startDecode();
             }
         }
     }
@@ -517,7 +523,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         if (playType == PLAY_TYPE_LIVE) {
             hideVideoLoading();
         } else if (playType == PLAY_TYPE_PLAYBACK_DEV && (tvTimeScroll != null && tvTimeScroll.isShown())) {
-            hideVideoLoading();
+//            hideVideoLoading();
             hideTimeScroll();
         }
     }
@@ -1255,6 +1261,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     @Override
     public void didMoveToDate(String date, long timeStamp) {
+        showVideoLoading();
         hideTimeScroll();
         if (timeStamp > System.currentTimeMillis() / 1000) {//超过当前时间
             shortTip(getString(R.string.ipc_time_over_current_time));
