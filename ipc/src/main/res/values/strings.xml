@@ -21,7 +21,7 @@
     <string name="str_SD">Standard definition</string>
     <string name="str_FHD">Super definition</string>
     <string name="str_record_text">In recording：</string>
-    <string name="str_go_home">Return to the home page</string>
+    <string name="str_go_home">Return to the devices page</string>
     <string name="str_retry_add">Re-add</string>
     <string name="tip_no_ipc_found">No IP camera was found</string>
     <string name="tip_check_ipc_wifi">Please check whether the mobile phone has been connected with the same Wi-Fi of IP camera, whether the indicator is solid blue「solid blue」</string>
