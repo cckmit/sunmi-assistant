@@ -183,6 +183,21 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     @Override
     public void getCompanyListSuccess(List<CompanyInfoResp> companyList) {
         initCompanyList(companyList);
+        if (companyList.size() == 0) {
+            CreateCompanyActivity_.intent(context).start();
+            return;
+        }
+        if (action == CommonConstants.ACTION_CHANGE_COMPANY) {
+            List<CompanyInfoResp> list = new ArrayList<>();
+            for (CompanyInfoResp resp : companyList) {
+                if (!TextUtils.equals(resp.getCompany_name(), SpUtils.getCompanyName())) {
+                    list.add(resp);
+                }
+            }
+            initCompanyList(list);
+        }else {
+            initCompanyList(companyList);
+        }
     }
 
     @Override
@@ -223,22 +238,12 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     @UiThread
     void initCompanyList(List<CompanyInfoResp> companyList) {
         activityVisible();
-        if (companyList.size() == 0) {
-            CreateCompanyActivity_.intent(context).start();
-            return;
-        }
         rvChoose.setAdapter(new CommonListAdapter<CompanyInfoResp>(context,
                 R.layout.item_shop_company, companyList) {
             @Override
             public void convert(ViewHolder holder, final CompanyInfoResp item) {
                 SettingItemLayout silItem = holder.getView(R.id.sil_item);
                 silItem.setLeftText(item.getCompany_name());
-                if (action == CommonConstants.ACTION_CHANGE_COMPANY &&
-                        TextUtils.equals(item.getCompany_name(), SpUtils.getCompanyName())) {
-                    silItem.setVisibility(View.GONE);
-                } else {
-                    silItem.setVisibility(View.VISIBLE);
-                }
                 holder.itemView.setOnClickListener(v -> {
                     if (isFastClick(1200)) {
                         return;

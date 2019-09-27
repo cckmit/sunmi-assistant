@@ -145,7 +145,9 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
 
                     @Override
                     public void onFail(int code, String msg, IpcListResp data) {
-                        mView.endRefresh();
+                        if (isViewAttached()) {
+                            mView.endRefresh();
+                        }
                     }
                 });
     }
@@ -212,7 +214,9 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
         IOTCloudApi.unbindPrinter(SpUtils.getShopId(), sn, new HttpCallback<String>(null) {
             @Override
             public void onSuccess(int code, String msg, String data) {
-                if (isViewAttached()) mView.unbindPrinterSuccess(sn);
+                if (isViewAttached()) {
+                    mView.unbindPrinterSuccess(sn);
+                }
             }
         });
     }
