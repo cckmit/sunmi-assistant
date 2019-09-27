@@ -375,12 +375,16 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
 
     @Override
     protected void showLoading(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-        super.showLoading(holder, model, position);
+        model.period = getPeriod();
+        model.dataSets.get(model.type).clear();
+        setupView(holder, model, position);
     }
 
     @Override
     protected void showError(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-        super.showError(holder, model, position);
+        model.period = getPeriod();
+        model.dataSets.get(model.type).clear();
+        setupView(holder, model, position);
     }
 
     private float calcBarWidth(int period) {
