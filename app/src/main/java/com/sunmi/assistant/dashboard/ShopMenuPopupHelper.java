@@ -6,6 +6,7 @@ import android.support.constraint.ConstraintSet;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -26,15 +27,17 @@ public class ShopMenuPopupHelper implements DropdownMenu.PopupHelper {
     private Context mContext;
     private ConstraintLayout mContent;
     private View mOverlay;
+    private final ImageView mArrow;
     private LinearLayout mShopMenuList;
     private ShopMenuAnimation mDropdownAnimator = new ShopMenuAnimation();
     private int mOffset;
     private TextView mHeader;
 
-    public ShopMenuPopupHelper(Context context, ConstraintLayout content, View overlay) {
+    public ShopMenuPopupHelper(Context context, ConstraintLayout content, View overlay, ImageView arrow) {
         this.mContext = context;
         this.mContent = content;
         this.mOverlay = overlay;
+        this.mArrow = arrow;
     }
 
     public void setOffset(int offset) {
@@ -86,7 +89,7 @@ public class ShopMenuPopupHelper implements DropdownMenu.PopupHelper {
         if (mShopMenuList == null) {
             return;
         }
-        mDropdownAnimator.startAnimationToShow(animated, mShopMenuList, mOffset, mOverlay);
+        mDropdownAnimator.startAnimationToShow(animated, mShopMenuList, mOffset, mOverlay, mArrow);
     }
 
     @Override
@@ -94,6 +97,6 @@ public class ShopMenuPopupHelper implements DropdownMenu.PopupHelper {
         if (mShopMenuList == null) {
             return;
         }
-        mDropdownAnimator.startAnimationToDismiss(animated, mShopMenuList, mOffset, mOverlay);
+        mDropdownAnimator.startAnimationToDismiss(animated, mShopMenuList, mOffset, mOverlay, mArrow);
     }
 }
