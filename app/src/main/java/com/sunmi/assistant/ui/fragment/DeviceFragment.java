@@ -1,6 +1,7 @@
 package com.sunmi.assistant.ui.fragment;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,9 +29,9 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
 import com.sunmi.assistant.presenter.DevicePresenter;
 import com.sunmi.assistant.ui.DeviceSettingMenu;
-import com.sunmi.assistant.ui.MainTopBar;
 import com.sunmi.assistant.ui.adapter.DeviceListAdapter;
 import com.sunmi.assistant.utils.GlideImageLoader;
+import com.sunmi.assistant.utils.ShopTitlePopupWindow;
 import com.sunmi.cloudprinter.ui.Activity.PrinterManageActivity_;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.setting.IpcSettingActivity_;
@@ -63,12 +64,14 @@ import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.AdListBean;
 import sunmi.common.model.AdListResp;
+import sunmi.common.model.ShopListResp;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.dialog.ChooseDeviceDialog;
@@ -84,14 +87,16 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         DeviceSettingMenu.OnSettingsClickListener, OnBannerListener,
         BGARefreshLayout.BGARefreshLayoutDelegate, View.OnClickListener {
 
-    @ViewById(R.id.shop_title)
-    MainTopBar topBar;
     @ViewById(R.id.bga_refresh)
     BGARefreshLayout refreshView;
     @ViewById(R.id.rv_device)
     RecyclerView rvDevice;
     @ViewById(R.id.btn_add)
     TextView btnAdd;
+    @ViewById(R.id.rl_shop_title)
+    RelativeLayout rlShopTitle;
+    @ViewById(R.id.tv_shop_title)
+    TextView tvShopTitle;
 
     Banner vpBanner;
     RelativeLayout rlNoDevice;
@@ -100,12 +105,12 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     List<SunmiDevice> routerList = new ArrayList<>();
     List<SunmiDevice> ipcList = new ArrayList<>();
     List<SunmiDevice> printerList = new ArrayList<>();
+    private ShopTitlePopupWindow popupWindow;
     private List<SunmiDevice> deviceList = new ArrayList<>();//设备列表全集
     private Timer timer = null, timerException = null;
     private DeviceListAdapter deviceListAdapter;
     private LinearLayoutManager layoutManager;
     private DeviceSettingMenu deviceSettingMenu;
-
     private Dialog dialogPassword = null;
     private String password = "";    //路由管理密码
     private String mPassword;
@@ -113,6 +118,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @AfterViews
     protected void init() {
+        initDimens(mActivity);
         mPresenter = new DevicePresenter();
         mPresenter.attachView(this);
         adList.addAll(DataSupport.findAll(AdListBean.class));
@@ -127,9 +133,15 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         }
     }
 
+    private void initDimens(Context context) {
+        int mStatusBarHeight = Utils.getStatusBarHeight(context);
+        rlShopTitle.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.dp_64) + mStatusBarHeight;
+        tvShopTitle.setPadding(0, mStatusBarHeight, 0, 0);
+        rlShopTitle.requestLayout();
+    }
+
     protected void initViews() {
-        topBar.setCompanyName(SpUtils.getCompanyName());
-        topBar.setShopName(SpUtils.getShopName());
+        tvShopTitle.setText(SpUtils.getShopName());
         initRefreshLayout();
         initBanner();
         layoutManager = new LinearLayoutManager(mActivity);
@@ -181,6 +193,20 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         ChooseDeviceDialog chooseDeviceDialog = new ChooseDeviceDialog(mActivity, SpUtils.getShopId());
         chooseDeviceDialog.show();
         AppConfig.globalDevList = routerList;//todo
+    }
+
+    @Click(R.id.rl_shop_title)
+    void dropSelectShop() {
+        if (popupWindow != null && popupWindow.isShowing()) {
+            popupWindow.dismiss();
+            return;
+        }
+        mPresenter.getShopList();
+    }
+
+    @Override
+    public void getShopListSuccess(List<ShopListResp.ShopInfo> shopList) {
+        popupWindow = new ShopTitlePopupWindow(mActivity, rlShopTitle, shopList);
     }
 
     @Override
@@ -367,11 +393,10 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 || CommonNotifications.ipcUpgrade == id) {
             loadData();
         } else if (id == CommonNotifications.shopSwitched) {
-            topBar.setShopName(SpUtils.getShopName());
+            tvShopTitle.setText(SpUtils.getShopName());
             loadData();
         } else if (id == CommonNotifications.companySwitch) {
-            topBar.setShopName(SpUtils.getShopName());
-            topBar.setCompanyName(SpUtils.getCompanyName());
+            tvShopTitle.setText(SpUtils.getShopName());
             loadData();
         } else if (CommonNotifications.netDisconnection == id) {//网络断开
             networkDisconnected();
@@ -428,10 +453,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        } else if (CommonNotifications.companyNameChanged == id) {
-            topBar.setCompanyName(SpUtils.getCompanyName());
         } else if (CommonNotifications.shopNameChanged == id) {
-            topBar.setShopName(SpUtils.getShopName());
+            tvShopTitle.setText(SpUtils.getShopName());
         } else if (NotificationConstant.apisConfig == id) {//ap是否配置2034
             ResponseBean res = (ResponseBean) args[0];
             checkApIsConfig(res);
@@ -727,5 +750,4 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 .setMessage(getString(R.string.str_dialog_net_disconnected))
                 .setCancelButton(R.string.str_confirm, (dialog, which) -> dialog.dismiss()).create().show();
     }
-
 }

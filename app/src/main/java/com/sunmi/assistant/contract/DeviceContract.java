@@ -4,6 +4,7 @@ import java.util.List;
 
 import sunmi.common.base.BaseView;
 import sunmi.common.model.AdListResp;
+import sunmi.common.model.ShopListResp;
 import sunmi.common.model.SunmiDevice;
 
 /**
@@ -26,6 +27,8 @@ public interface DeviceContract {
         void unbindPrinterSuccess(String sn);
 
         void endRefresh();
+
+        void getShopListSuccess(List<ShopListResp.ShopInfo> shopList);
     }
 
     interface Presenter {
@@ -45,6 +48,8 @@ public interface DeviceContract {
         void getPrinterStatus(String sn);
 
         void unBindPrinter(String sn);
+
+        void getShopList();
     }
 
 }
