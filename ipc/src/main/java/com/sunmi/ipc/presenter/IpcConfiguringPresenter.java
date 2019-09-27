@@ -44,7 +44,6 @@ public class IpcConfiguringPresenter extends BasePresenter<IpcConfiguringContrac
         IpcCloudApi.getDetailList(companyId, SpUtils.getShopId(), new RetrofitCallback<IpcListResp>() {
             @Override
             public void onSuccess(int code, String msg, IpcListResp data) {
-                LogCat.e("111111", "666666 getIpcList onResponse response = " + data.toString());
                 List<IpcListResp.SsListBean> ipcList = new ArrayList<>();
                 if (data.getFs_list() != null) {
                     ipcList.addAll(data.getFs_list());
@@ -57,7 +56,6 @@ public class IpcConfiguringPresenter extends BasePresenter<IpcConfiguringContrac
 
             @Override
             public void onFail(int code, String msg, IpcListResp data) {
-                LogCat.e("111111", "666666 getIpcList onFail code = " + code);
                 if (isViewAttached()) mView.getIpcListFail(code, msg);
             }
         });
