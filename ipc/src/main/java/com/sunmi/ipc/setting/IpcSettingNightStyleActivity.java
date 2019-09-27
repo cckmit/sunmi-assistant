@@ -33,6 +33,9 @@ public class IpcSettingNightStyleActivity extends BaseActivity
     private final int NIGHT_MODE_OFF = 0;
     private final int NIGHT_MODE_ON = 1;
     private final int NIGHT_MODE_AUTO = 2;
+    //wdr 0 关闭  wdr 1 开启
+    private final int WDR_MODE_OFF = 0;
+    private final int WDR_MODE_ON = 1;
 
     @ViewById(resName = "title_bar")
     TitleBarView titleBar;
@@ -60,6 +63,7 @@ public class IpcSettingNightStyleActivity extends BaseActivity
     public void onBackPressed() {
         Intent intent = getIntent();
         intent.putExtra("nightMode", nightMode);
+        intent.putExtra("wdrMode", wdrMode);
         setResult(RESULT_OK, intent);
         super.onBackPressed();
     }
@@ -85,6 +89,7 @@ public class IpcSettingNightStyleActivity extends BaseActivity
 
     @Click(resName = "sil_open")
     void openClick() {
+        wdrMode = WDR_MODE_OFF;//夜视模式开启，wdr 0 关闭 |wdr 1 开启
         setIpc(NIGHT_MODE_ON);
     }
 
@@ -168,8 +173,8 @@ public class IpcSettingNightStyleActivity extends BaseActivity
         if (res.getDataErrCode() == 1) {
             shortTip(R.string.tip_set_complete);
         } else {
+            wdrMode = wdrMode == WDR_MODE_OFF ? WDR_MODE_ON : WDR_MODE_OFF;
             shortTip(R.string.tip_set_fail);
         }
     }
-
 }

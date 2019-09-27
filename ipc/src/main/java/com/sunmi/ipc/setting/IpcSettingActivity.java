@@ -70,6 +70,16 @@ import static com.sunmi.ipc.setting.entity.DetectionConfig.INTENT_EXTRA_DETECTIO
 public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         implements IpcSettingContract.View {
 
+    private static final int IPC_NAME_MAX_LENGTH = 36;
+    private static final int REQUEST_CODE_SOUND_DETECTION = 1001;
+    private static final int REQUEST_CODE_ACTIVE_DETECTION = 1002;
+    private static final int REQUEST_CODE_DETECTION_TIME = 1003;
+    private static final int REQUEST_CODE_WIFI = 1004;
+    private static final int REQUEST_CODE_ROTATE = 1005;
+    private static final int REQUEST_COMPLETE = 1000;
+    private final int SWITCH_UNCHECK = 0;
+    private final int SWITCH_CHECK = 1;
+    private final int WIFI_WIRE_DEFAULT = -1;
     @ViewById(resName = "sil_camera_name")
     SettingItemLayout mNameView;
     @ViewById(resName = "sil_camera_adjust")
@@ -92,28 +102,17 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     Switch swLight;
     @ViewById(resName = "switch_wdr")
     Switch swWdr;
-
+    @ViewById(resName = "tv_wdr")
+    TextView tvWdr;
     @Extra
     SunmiDevice mDevice;
     @Extra
     boolean disableAdjustScreen;
-
-    private static final int IPC_NAME_MAX_LENGTH = 36;
-    private static final int REQUEST_CODE_SOUND_DETECTION = 1001;
-    private static final int REQUEST_CODE_ACTIVE_DETECTION = 1002;
-    private static final int REQUEST_CODE_DETECTION_TIME = 1003;
-    private static final int REQUEST_CODE_WIFI = 1004;
-    private static final int REQUEST_CODE_ROTATE = 1005;
-    private static final int REQUEST_COMPLETE = 1000;
-    private final int SWITCH_UNCHECK = 0;
-    private final int SWITCH_CHECK = 1;
-    private final int WIFI_WIRE_DEFAULT = -1;
-
     DetectionConfig mDetectionConfig;
 
     //夜视模式，指示灯，画面旋转
     private int nightMode, wdrMode, ledIndicator, rotation;
-    private boolean isOnClickLight, isSetLight, isOnClickWdr, isSetWdr;
+    private boolean isOnClickLight, isSetLight, isOnClickWdr, isSetWdr, isAuthSetWdr;
     private IpcNewFirmwareResp mResp;
     private String wifiSsid, wifiMgmt;
     private int wifiIsWire = WIFI_WIRE_DEFAULT; //-1默认 0无线 1有线
@@ -192,12 +191,12 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
             setWifiUnknown();
         }
-        if (!DeviceTypeUtils.getInstance().isFS1(mDevice.getModel())) {
+        if (!DeviceTypeUtils.getInstance().isFS1(mDevice.getModel()) || disableAdjustScreen) {
             mAdjustScreen.setVisibility(View.GONE);
             ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) mSoundDetection.getLayoutParams();
             lp.topMargin = (int) getResources().getDimension(R.dimen.dp_16);
             mSoundDetection.setLayoutParams(lp);
-        } else if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid()) || disableAdjustScreen) {
+        } else if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
             mAdjustScreen.setLeftTextColor(ContextCompat.getColor(this, R.color.colorText_40));
         }
     }
@@ -459,7 +458,15 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     void onResult(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             nightMode = Objects.requireNonNull(data.getExtras()).getInt("nightMode");
+            wdrMode = Objects.requireNonNull(data.getExtras()).getInt("wdrMode");
             mNightStyle.setRightText(nightMode(nightMode));
+            //夜视模式开启，此时wrd关闭
+            if (wdrMode == 0 && swWdr.isChecked()) {
+                isAuthSetWdr = true;
+                isSetWdr = false;
+                swWdr.setChecked(false);
+            }
+            isCanSetWdr(nightMode);
         }
     }
 
@@ -541,16 +548,41 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 mDevice.getDeviceid(), nightMode, wdrMode, isChecked ? SWITCH_CHECK : SWITCH_UNCHECK, rotation);
     }
 
+    /**
+     * 夜视模式 0:始终关闭/1:始终开启/2:自动切换
+     * 当夜视模式开启不能设置wdr
+     */
+    @UiThread
+    void isCanSetWdr(int nightMode) {
+        if (nightMode == 1) {
+            swWdr.setEnabled(false);
+            tvWdr.setTextColor(ContextCompat.getColor(this, R.color.colorText_40));
+        } else {
+            swWdr.setEnabled(true);
+            tvWdr.setTextColor(ContextCompat.getColor(this, R.color.colorText));
+        }
+    }
+
     //宽动态WDR
     @CheckedChange(resName = "switch_wdr")
     void setWDR(CompoundButton buttonView, boolean isChecked) {
+        if (isAuthSetWdr) {
+            isAuthSetWdr = false;
+            return;
+        }
+        if (nightMode == 1) {
+            swWdr.setChecked(!isChecked);
+            return;
+        }
         if (noNetCannotClick(false)) {
             swLight.setChecked(!isChecked);
             return;
         }
         if (isSetWdr == isChecked) {
+            LogCat.e(TAG, "kkkkkk 11");
             return;
         }
+        LogCat.e(TAG, "kkkkkk 22");
         isSetWdr = isChecked;
         isOnClickWdr = true;
         isOnClickLight = false;
@@ -874,6 +906,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         isSetWdr = wdrMode != 0;
         swWdr.setChecked(isSetWdr);
         rotateDegree(rotation);
+        isCanSetWdr(nightMode);
     }
 
     @UiThread

@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
@@ -56,6 +57,8 @@ public class CreateShopActivity extends BaseActivity {
     Button btnComplete;
     @ViewById(R.id.rl_mobile)
     RelativeLayout rlMobile;
+    @ViewById(R.id.tv_title_tip)
+    TextView tvTitleTip;
     @Extra
     int companyId;
     @Extra
@@ -70,6 +73,7 @@ public class CreateShopActivity extends BaseActivity {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         if (!CommonHelper.isGooglePlay()) {
             rlMobile.setVisibility(View.VISIBLE);
+            tvTitleTip.setVisibility(View.VISIBLE);
         }
         new SomeMonitorEditText().setMonitorEditText(btnComplete, etShop);
         etShop.addTextChangedListener(new TextLengthWatcher(etShop, SHOP_NAME_MAX_LENGTH) {
