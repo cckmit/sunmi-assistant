@@ -67,7 +67,7 @@ public class DynamicVideoActivity extends BaseActivity implements
     /**
      * 延迟毫秒数
      */
-    private static final int DELAY_MILLIS = 500;
+    private static final int DELAY_MILLIS = 10;
     /**
      * 读写权限
      */
