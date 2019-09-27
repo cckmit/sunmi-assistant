@@ -187,6 +187,9 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         } else {
             StatusBarUtils.setStatusBarFullTransparent(getActivity());
         }
+        if (mShopMenu.getPopup().isShowing()) {
+            mShopMenu.getPopup().dismiss(false);
+        }
     }
 
     private void showContent() {
@@ -403,7 +406,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             measureChild(firstChildView, widthSpec, heightSpec);
             int itemHeight = firstChildView.getMeasuredHeight();
             setMeasuredDimension(View.MeasureSpec.getSize(widthSpec),
-                    getChildCount() > 8 ? (int) (itemHeight * 8.5f) : itemHeight * getChildCount());
+                    getChildCount() > 7 ? (int) (itemHeight * 7.5f) : itemHeight * getChildCount());
         }
     }
 }

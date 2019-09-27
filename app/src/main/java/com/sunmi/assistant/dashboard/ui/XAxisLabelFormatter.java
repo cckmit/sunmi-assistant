@@ -21,6 +21,6 @@ public class XAxisLabelFormatter extends ValueFormatter {
 
     @Override
     public String getAxisLabel(float value, AxisBase axis) {
-        return Utils.decodeChartXAxisFloat(value, sWeekName);
+        return Utils.convertFloatToXAxisName(value, sWeekName);
     }
 }

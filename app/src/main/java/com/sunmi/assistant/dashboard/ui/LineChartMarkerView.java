@@ -69,7 +69,7 @@ public class LineChartMarkerView extends MarkerView {
         String value = String.format(Locale.getDefault(), "%.2f%%", e.getY() * 100);
         mTvValue.setText(value);
         mTvLabel.setText(getResources().getString(R.string.dashboard_time, mTip,
-                Utils.decodeChartXAxisFloat(e.getX(), WEEK_NAME)));
+                Utils.convertFloatToMarkerName(e.getX(), WEEK_NAME)));
         super.refreshContent(e, highlight);
     }
 
