@@ -1,7 +1,5 @@
 package com.sunmi.ipc.utils;
 
-import android.os.Process;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.sunmi.ipc.model.IotcCmdReq;
@@ -324,19 +322,19 @@ public class IOTCClient {
             LogCat.e(TAG, "99999999 cmd = " + cmd);
             if (isNewInterface) {
                 if (AVAPIs.avSendIOCtrl(avIndex, 0x200, req, req.length) == 0) {
-                    LogCat.e(TAG, "99999999 avCmdCall write ok");
+                    LogCat.e(TAG, "avCmdCall write ok");
                     getCmdResponse(cmd, callback);
                 } else {
-                    LogCat.e(TAG, "99999999 avCmdCall write fail");
+                    LogCat.e(TAG, "avCmdCall write fail");
                     callback.onError();
                 }
             } else {
                 if (IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0) > 0) {
-                    LogCat.e(TAG, "99999999 write ok");
+                    LogCat.e(TAG, "write ok");
                     getCmdResponse(cmd, callback);
                 } else {
-                    LogCat.e(TAG, "99999999 write fail");
-                    cmdCall(cmd, cmdReq, callback);
+                    LogCat.e(TAG, "write fail");
+                    callback.onError();
                 }
             }
         });
@@ -355,7 +353,7 @@ public class IOTCClient {
             byte[] data = new byte[actualLen];
             System.arraycopy(buf, 0, data, 0, actualLen);
             String result = ByteUtils.byte2String(data);
-            LogCat.e(TAG, "99999999 result = " + result);
+            LogCat.e(TAG, "result = " + result);
             try {
                 IotcCmdResp cmdBean;
                 if (CMD_PLAYBACK_LIST == cmd) {
@@ -372,7 +370,7 @@ public class IOTCClient {
                 e.printStackTrace();
             }
         } else {
-            LogCat.e(TAG, "99999999 actualLen = " + actualLen);
+            LogCat.e(TAG, "actualLen = " + actualLen);
             if (callback != null) {
                 callback.onError();
             }
@@ -424,7 +422,7 @@ public class IOTCClient {
                     LogCat.e(TAG, "Session cant be used anymore");
                     break;
                 }
-                LogCat.e(TAG, "888888vvv T-" + Process.myTid() + ", VIDEO received = " + ret);
+//                LogCat.e(TAG, "888888vvv T-" + Process.myTid() + ", VIDEO received = " + ret);
                 if (ret > 0) {
                     byte[] data = new byte[ret];
                     System.arraycopy(videoBuffer, 0, data, 0, ret);

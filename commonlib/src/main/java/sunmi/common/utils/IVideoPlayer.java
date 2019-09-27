@@ -160,7 +160,6 @@ public class IVideoPlayer extends RelativeLayout {
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mediaPlayer.setDisplay(surfaceView.getHolder());
         String url = urlQueue.poll();
-        LogCat.e("lvp", "88888888 111url = " + url);
         try {
             mediaPlayer.setDataSource(mContext, Uri.parse(url), header);
         } catch (Exception e) {
@@ -202,7 +201,6 @@ public class IVideoPlayer extends RelativeLayout {
         cacheMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         cacheMediaPlayer.setDisplay(cacheSurfaceView.getHolder());
         String url = urlQueue.poll();
-        LogCat.e("lvp", "88888888 222url = " + url);
         try {
             cacheMediaPlayer.setDataSource(mContext, Uri.parse(url), header);
         } catch (Exception e) {
@@ -226,7 +224,6 @@ public class IVideoPlayer extends RelativeLayout {
 
     private void startPlayer() {
         if (mediaPlayer != null) {
-            LogCat.e("lvp", "88888888 startPlayer");
             currentMediaPlayer = mediaPlayer;
             mediaPlayer.start();
 //            audioFocusHelper.requestFocus();
@@ -247,7 +244,6 @@ public class IVideoPlayer extends RelativeLayout {
 
     private void startCachePlayer() {
         if (cacheMediaPlayer != null) {
-            LogCat.e("lvp", "88888888 startCachePlayer");
             currentMediaPlayer = cacheMediaPlayer;
             cacheMediaPlayer.start();
 //            audioFocusHelper.requestFocus();
@@ -312,7 +308,7 @@ public class IVideoPlayer extends RelativeLayout {
                 currentMediaPlayer.pause();
 //            audioFocusHelper.abandonFocus();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -477,76 +473,9 @@ public class IVideoPlayer extends RelativeLayout {
         int seconds = totalSeconds % 60;
         int minutes = (totalSeconds / 60) % 60;
         int hours = totalSeconds / 3600;
-        return hours > 0 ? String.format("%02d:%02d:%02d", hours, minutes, seconds) : String.format("%02d:%02d", minutes, seconds);
+        return hours > 0 ? String.format("%02d:%02d:%02d", hours, minutes, seconds)
+                : String.format("%02d:%02d", minutes, seconds);
     }
-
-
-    /**
-     * 音频焦点改变监听
-     */
-//    private class AudioFocusHelper implements AudioManager.OnAudioFocusChangeListener {
-//        boolean startRequested = false;
-//        boolean pausedForLoss = false;
-//        int currentFocus = 0;
-//
-//        @Override
-//        public void onAudioFocusChange(int focusChange) {
-//            if (currentFocus == focusChange) {
-//                return;
-//            }
-//
-//            currentFocus = focusChange;
-//            switch (focusChange) {
-//                case AudioManager.AUDIOFOCUS_GAIN://获得焦点
-//                case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT://暂时获得焦点
-//                    if (startRequested || pausedForLoss) {
-//                        start();
-//                        startRequested = false;
-//                        pausedForLoss = false;
-//                    }
-//                    if (mediaPlayer != null)//恢复音量
-//                        mediaPlayer.setVolume(1.0f, 1.0f);
-//                    break;
-//                case AudioManager.AUDIOFOCUS_LOSS://焦点丢失
-//                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT://焦点暂时丢失
-//                    if (isPlaying()) {
-//                        pausedForLoss = true;
-//                        pause();
-//                    }
-//                    break;
-//                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK://此时需降低音量
-//                    if (mediaPlayer != null && isPlaying()) {
-//                        mediaPlayer.setVolume(0.1f, 0.1f);
-//                    }
-//                    break;
-//            }
-//        }
-//
-//        boolean requestFocus() {
-//            if (currentFocus == AudioManager.AUDIOFOCUS_GAIN) {
-//                return true;
-//            }
-//            if (audioManager == null) {
-//                return false;
-//            }i
-//            int status = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-//            if (AudioManager.AUDIOFOCUS_REQUEST_GRANTED == status) {
-//                currentFocus = AudioManager.AUDIOFOCUS_GAIN;
-//                return true;
-//            }
-//            startRequested = true;
-//            return false;
-//        }
-//
-//        boolean abandonFocus() {
-//            if (audioManager == null) {
-//                return false;
-//            }
-//            startRequested = false;
-//            int status = audioManager.abandonAudioFocus(this);
-//            return AudioManager.AUDIOFOCUS_REQUEST_GRANTED == status;
-//        }
-//    }
 
     public interface VideoPlayListener {
         void onStartPlay();
