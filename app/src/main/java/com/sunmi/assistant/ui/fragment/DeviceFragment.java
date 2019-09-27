@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -241,7 +240,10 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         TextView tvItemCompany = viewLayout.findViewById(R.id.tv_item_company);
         RecyclerView itemRecyclerView = viewLayout.findViewById(R.id.item_recycler_view);
         tvItemCompany.setText(SpUtils.getCompanyName());
-        itemRecyclerView.setLayoutManager(new ShopMenuLayoutManager(mActivity));
+        if (shopList.size() > 7) {
+            itemRecyclerView.getLayoutParams().height = (int) (mActivity.getResources().getDimension(R.dimen.dp_48) * 7.5);
+        }
+        itemRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
         itemRecyclerView.setAdapter(new CommonListAdapter<ShopListResp.ShopInfo>(mActivity,
                 R.layout.dropdown_item, shopList) {
             @Override
@@ -818,25 +820,4 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 .setMessage(getString(R.string.str_dialog_net_disconnected))
                 .setCancelButton(R.string.str_confirm, (dialog, which) -> dialog.dismiss()).create().show();
     }
-
-    private static class ShopMenuLayoutManager extends LinearLayoutManager {
-
-        private ShopMenuLayoutManager(Context context) {
-            super(context);
-        }
-
-        @Override
-        public void onMeasure(@NonNull RecyclerView.Recycler recycler, @NonNull RecyclerView.State state, int widthSpec, int heightSpec) {
-            if (getChildCount() == 0) {
-                super.onMeasure(recycler, state, widthSpec, heightSpec);
-                return;
-            }
-            View firstChildView = recycler.getViewForPosition(0);
-            measureChild(firstChildView, widthSpec, heightSpec);
-            int itemHeight = firstChildView.getMeasuredHeight();
-            setMeasuredDimension(View.MeasureSpec.getSize(widthSpec),
-                    getChildCount() > 8 ? (int) (itemHeight * 8.5f) : itemHeight * getChildCount());
-        }
-    }
-
 }
