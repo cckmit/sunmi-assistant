@@ -199,16 +199,18 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     @Click({R.id.rl_shop_title})
     void dropSelectShop() {
         if (popupWindow != null && popupWindow.isShowing()) {
-            tvShopTitle.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(mActivity, R.drawable.ic_arrow_drop_down_white), null);
+            tvShopTitle.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                    ContextCompat.getDrawable(mActivity, R.drawable.ic_arrow_drop_down_white), null);
             popupWindow.dismiss();
             return;
         }
-        tvShopTitle.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(mActivity, R.drawable.ic_arrow_drop_up_white), null);
         mPresenter.getShopList();
     }
 
     @Override
     public void getShopListSuccess(List<ShopListResp.ShopInfo> shopList) {
+        tvShopTitle.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                ContextCompat.getDrawable(mActivity, R.drawable.ic_arrow_drop_up_white), null);
         popupWindow = new ShopTitlePopupWindow(mActivity, rlShopTitle, shopList, tvShopTitle);
     }
 
