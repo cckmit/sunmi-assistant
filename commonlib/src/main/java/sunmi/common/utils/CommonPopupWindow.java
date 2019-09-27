@@ -1,5 +1,6 @@
 package sunmi.common.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
@@ -30,23 +31,16 @@ public class CommonPopupWindow extends PopupWindow {
 
     @Override
     public void showAsDropDown(View anchor) {
-        if (Build.VERSION.SDK_INT >= 24) {//Android 7.0以上 view显示问题
+        //Android 7.0以上 view显示问题
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Rect rect = new Rect();
-            anchor.getGlobalVisibleRect(rect);
-            int h = anchor.getResources().getDisplayMetrics().heightPixels - rect.bottom;
+            anchor.getWindowVisibleDisplayFrame(rect);
+            Activity activity = (Activity) anchor.getContext();
+            Rect outRect1 = new Rect();
+            activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(outRect1);
+            int h = outRect1.height() - rect.bottom;
             setHeight(h);
         }
         super.showAsDropDown(anchor);
-    }
-
-    @Override
-    public void showAsDropDown(View anchor, int xoff, int yoff) {
-        if (Build.VERSION.SDK_INT >= 24) {//Android 7.0以上 view显示问题
-            Rect rect = new Rect();
-            anchor.getGlobalVisibleRect(rect);
-            int h = anchor.getResources().getDisplayMetrics().heightPixels - rect.bottom;
-            setHeight(h);
-        }
-        super.showAsDropDown(anchor, xoff, yoff);
     }
 }

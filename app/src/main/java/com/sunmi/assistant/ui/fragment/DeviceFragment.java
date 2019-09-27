@@ -235,7 +235,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         popupwindow.setOutsideTouchable(true);
         popupwindow.setFocusable(false);
         popupwindow.update();
-        popupwindow.setClippingEnabled(false);
 
         state = 1;
         TextView tvItemCompany = viewLayout.findViewById(R.id.tv_item_company);
