@@ -21,7 +21,7 @@
     <android.support.v7.widget.RecyclerView
         android:background="@color/c_white"
         android:id="@+id/item_recycler_view"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
