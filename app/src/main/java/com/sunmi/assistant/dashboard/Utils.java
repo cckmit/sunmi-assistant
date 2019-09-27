@@ -143,13 +143,23 @@ public class Utils {
         }
     }
 
-    public static String decodeChartXAxisFloat(float value, String[] weekName) {
+    public static String convertFloatToXAxisName(float value, String[] weekName) {
         if (value > PERIOD_MONTH_OFFSET) {
             return String.valueOf((int) (value - PERIOD_MONTH_OFFSET));
         } else if (value > PERIOD_WEEK_OFFSET) {
             return weekName[(int) (value - PERIOD_WEEK_OFFSET - 1)];
         } else {
             return String.format(Locale.getDefault(), "%02.0f:00", value - 1);
+        }
+    }
+
+    public static String convertFloatToMarkerName(float value, String[] weekName) {
+        if (value > PERIOD_MONTH_OFFSET) {
+            return String.valueOf((int) (value - PERIOD_MONTH_OFFSET));
+        } else if (value > PERIOD_WEEK_OFFSET) {
+            return weekName[(int) (value - PERIOD_WEEK_OFFSET - 1)];
+        } else {
+            return String.format(Locale.getDefault(), "%02.0f:00-%02.0f:00", value - 1, value);
         }
     }
 

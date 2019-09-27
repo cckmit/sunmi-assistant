@@ -65,7 +65,7 @@ public class BarChartMarkerView extends MarkerView {
     public void refreshContent(Entry e, Highlight highlight) {
         mTvValue.setText(String.valueOf((int) e.getY()));
         mTvLabel.setText(getResources().getString(R.string.dashboard_time, mTip,
-                Utils.decodeChartXAxisFloat(e.getX(), WEEK_NAME)));
+                Utils.convertFloatToMarkerName(e.getX(), WEEK_NAME)));
         super.refreshContent(e, highlight);
     }
 

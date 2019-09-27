@@ -10,11 +10,15 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_0_5"
+        android:background="@color/color_CED2D9" />
+
     <sunmi.common.view.MyFragmentTabHost
         android:id="@android:id/tabhost"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_48"
-        android:background="@color/black_5"
-        android:paddingBottom="2dp" />
+        android:background="@color/c_white" />
 
 </LinearLayout>

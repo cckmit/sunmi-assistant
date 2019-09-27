@@ -56,7 +56,7 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
         String shopName = titleMap.get("shop_name");
         helper.setText(R.id.tv_msg_company, (companyName != null ? companyName : ""));
         helper.setText(R.id.tv_msg_shop, (shopName != null ? shopName : ""));
-        helper.setText(R.id.tv_msg_device_model, context.getString(R.string.ipc_device_model, ""));
+        helper.setText(R.id.tv_msg_device_model, context.getString(R.string.ipc_device_model, "--"));
         helper.setText(R.id.tv_msg_time, DateTimeUtils.secondToDate(item.getReceiveTime(), "yyyy-MM-dd HH:mm:ss"));
         setMsgDetail(helper, MessageUtils.getInstance().getMsgFirst(titleTag.getTag()));
         //动态侦测视频
