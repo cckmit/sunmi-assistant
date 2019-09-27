@@ -20,7 +20,7 @@ public class ShopMenuAnimation {
     private AnimatorSet mCurrent;
 
     public void startAnimationToShow(boolean animated, final View dropdownMenu, int offset,
-                                     final View overlay) {
+                                     final View overlay, final View arrow) {
         if (animated) {
             if (mCurrent != null) {
                 mCurrent.cancel();
@@ -30,7 +30,8 @@ public class ShopMenuAnimation {
                     dropdownMenu.getTranslationY(), offset);
             ObjectAnimator overlayAnim = ObjectAnimator.ofFloat(overlay, "alpha",
                     overlay.getAlpha(), 0.6f);
-            set.play(menuAnim).with(overlayAnim);
+            ObjectAnimator arrowAnim = ObjectAnimator.ofFloat(arrow, "rotation", 0, 180);
+            set.play(menuAnim).with(overlayAnim).with(arrowAnim);
             set.setDuration(250);
             set.setInterpolator(new DecelerateInterpolator());
             set.addListener(new AnimatorListenerAdapter() {
@@ -56,12 +57,13 @@ public class ShopMenuAnimation {
             dropdownMenu.setTranslationY(offset);
             dropdownMenu.setVisibility(View.VISIBLE);
             overlay.setAlpha(0.6f);
+            arrow.setRotation(180);
             overlay.setVisibility(View.VISIBLE);
         }
     }
 
     public void startAnimationToDismiss(boolean animated, final View dropdownMenu, int offset,
-                                        final View overlay) {
+                                        final View overlay, final View arrow) {
         float height = dropdownMenu.getMeasuredHeight();
         if (animated) {
             if (mCurrent != null) {
@@ -72,7 +74,8 @@ public class ShopMenuAnimation {
                     dropdownMenu.getTranslationY(), -1 * height + offset);
             ObjectAnimator overlayAnim = ObjectAnimator.ofFloat(overlay, "alpha",
                     overlay.getAlpha(), 0);
-            set.play(menuAnim).with(overlayAnim);
+            ObjectAnimator arrowAnim = ObjectAnimator.ofFloat(arrow, "rotation", -180, 0);
+            set.play(menuAnim).with(overlayAnim).with(arrowAnim);
             set.setDuration(250);
             set.setInterpolator(new DecelerateInterpolator());
             set.addListener(new AnimatorListenerAdapter() {
@@ -80,6 +83,7 @@ public class ShopMenuAnimation {
                 public void onAnimationEnd(Animator animation) {
                     dropdownMenu.setVisibility(View.INVISIBLE);
                     overlay.setVisibility(View.INVISIBLE);
+                    arrow.setRotation(0);
                     mCurrent = null;
                 }
 
@@ -87,6 +91,7 @@ public class ShopMenuAnimation {
                 public void onAnimationCancel(Animator animation) {
                     dropdownMenu.setVisibility(View.INVISIBLE);
                     overlay.setVisibility(View.INVISIBLE);
+                    arrow.setRotation(0);
                     mCurrent = null;
                 }
             });
@@ -96,6 +101,7 @@ public class ShopMenuAnimation {
             dropdownMenu.setTranslationY(-1 * height + offset);
             dropdownMenu.setVisibility(View.INVISIBLE);
             overlay.setAlpha(0);
+            arrow.setRotation(0);
             overlay.setVisibility(View.INVISIBLE);
         }
     }
