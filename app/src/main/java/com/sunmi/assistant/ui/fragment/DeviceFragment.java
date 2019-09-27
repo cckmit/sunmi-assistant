@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -136,7 +137,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     private void initDimens(Context context) {
         int mStatusBarHeight = Utils.getStatusBarHeight(context);
         rlShopTitle.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.dp_64) + mStatusBarHeight;
-        tvShopTitle.setPadding(0, mStatusBarHeight, 0, 0);
+        tvShopTitle.setPadding(30, mStatusBarHeight, 0, 0);
         rlShopTitle.requestLayout();
     }
 
@@ -195,9 +196,11 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         AppConfig.globalDevList = routerList;//todo
     }
 
-    @Click(R.id.rl_shop_title)
+    @Click({R.id.rl_shop_title})
     void dropSelectShop() {
         if (popupWindow != null && popupWindow.isShowing()) {
+            tvShopTitle.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                    ContextCompat.getDrawable(mActivity, R.drawable.ic_arrow_drop_down_white), null);
             popupWindow.dismiss();
             return;
         }
@@ -206,7 +209,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @Override
     public void getShopListSuccess(List<ShopListResp.ShopInfo> shopList) {
-        popupWindow = new ShopTitlePopupWindow(mActivity, rlShopTitle, shopList);
+        tvShopTitle.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                ContextCompat.getDrawable(mActivity, R.drawable.ic_arrow_drop_up_white), null);
+        popupWindow = new ShopTitlePopupWindow(mActivity, rlShopTitle, shopList, tvShopTitle);
     }
 
     @Override

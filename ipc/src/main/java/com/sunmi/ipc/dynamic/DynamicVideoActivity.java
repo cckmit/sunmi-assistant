@@ -4,7 +4,6 @@ package com.sunmi.ipc.dynamic;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.media.MediaMetadataRetriever;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -31,7 +30,6 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
-import java.util.HashMap;
 import java.util.Objects;
 
 import sunmi.common.base.BaseActivity;
@@ -109,7 +107,8 @@ public class DynamicVideoActivity extends BaseActivity implements
 
     @Extra
     String url;
-    //            String url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
+    //            string url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
+//            String url = "https://wifi.cdn.sunmi.com/VIDEO/IPC/b6760075fd4326fc6bb1ef67f00b9e059a01b1159e8788649ffa8bb19a7b0661";
     @Extra
     String deviceModel;
 
@@ -230,17 +229,14 @@ public class DynamicVideoActivity extends BaseActivity implements
      * 初始化播放
      */
     private void initVideoPlay() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                iVideoPlayer.load(url);
-                setVideoListener();
-                //初始化参数
-                isPaused = false;
-                ibPlay.setBackgroundResource(R.mipmap.pause_normal);
-                sbBar.setProgress(0);
-                tvCurrentPlayTime.setText(iVideoPlayer.generateTime(0));
-            }
+        new Handler().postDelayed(() -> {
+            iVideoPlayer.load(url);
+            setVideoListener();
+            //初始化参数
+            isPaused = false;
+            ibPlay.setBackgroundResource(R.mipmap.pause_normal);
+            sbBar.setProgress(0);
+            tvCurrentPlayTime.setText(iVideoPlayer.generateTime(0));
         }, 300);
     }
 
@@ -250,12 +246,18 @@ public class DynamicVideoActivity extends BaseActivity implements
     private void initTakeScreenShot() {
         retriever = new FFmpegMediaMetadataRetriever();
         try {
-            retriever.setDataSource(url, new HashMap<String, String>());
+            retriever.setDataSource(url);
             isInitTakeScreenShot = true;
         } catch (Exception e) {
             isInitTakeScreenShot = false;
             errorView();
             e.printStackTrace();
+        } finally {
+            try {
+                retriever.release();
+            } catch (RuntimeException ex) {
+                LogCat.e(TAG, ex.getCause() + "," + ex.getMessage());
+            }
         }
     }
 
@@ -266,10 +268,10 @@ public class DynamicVideoActivity extends BaseActivity implements
         if (isFastClick(1200)) {
             return;
         }
-        if (iVideoPlayer.getCurrentPosition() > 0) {
+        if (iVideoPlayer.getCurrentPosition() > 0 && retriever != null) {
             tvTip.setVisibility(View.VISIBLE);
             final Bitmap bitmap = retriever.getFrameAtTime(iVideoPlayer.getCurrentPosition() * 1000,
-                    MediaMetadataRetriever.OPTION_NEXT_SYNC);
+                    FFmpegMediaMetadataRetriever.OPTION_NEXT_SYNC);
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -448,9 +450,9 @@ public class DynamicVideoActivity extends BaseActivity implements
             isShowBottomView();
             timeoutStop();
             iVideoPlayer.startVideo();
-            if (!isInitTakeScreenShot) {
-                initTakeScreenShot();
-            }
+//            if (!isInitTakeScreenShot) {
+//                initTakeScreenShot();
+//            }
             //设置seekBar的最大限度值，当前视频的总时长（毫秒）
             long duration = iVideoPlayer.getDuration();
             //不足一秒补一秒

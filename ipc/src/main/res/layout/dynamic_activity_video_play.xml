@@ -102,6 +102,7 @@
             android:textSize="@dimen/sp_12" />
 
         <ImageButton
+            android:visibility="invisible"
             android:id="@+id/ib_save_img"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
