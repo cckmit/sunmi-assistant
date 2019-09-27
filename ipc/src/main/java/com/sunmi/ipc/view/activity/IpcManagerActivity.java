@@ -530,7 +530,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     @Override
     public void onAudioReceived(byte[] audioBuffer) {
-        audioDecoder.setAudioData(audioBuffer);
+        if (audioDecoder != null) {
+            audioDecoder.setAudioData(audioBuffer);
+        }
     }
 
     @Override

@@ -266,7 +266,7 @@ public class DynamicVideoActivity extends BaseActivity implements
         if (isFastClick(1200)) {
             return;
         }
-        if (iVideoPlayer.getCurrentPosition() > 0) {
+        if (iVideoPlayer.getCurrentPosition() > 0 && retriever != null) {
             tvTip.setVisibility(View.VISIBLE);
             final Bitmap bitmap = retriever.getFrameAtTime(iVideoPlayer.getCurrentPosition() * 1000,
                     MediaMetadataRetriever.OPTION_NEXT_SYNC);
