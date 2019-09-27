@@ -192,12 +192,12 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
             setWifiUnknown();
         }
-        if (!DeviceTypeUtils.getInstance().isFS1(mDevice.getModel())) {
+        if (!DeviceTypeUtils.getInstance().isFS1(mDevice.getModel()) || disableAdjustScreen) {
             mAdjustScreen.setVisibility(View.GONE);
             ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) mSoundDetection.getLayoutParams();
             lp.topMargin = (int) getResources().getDimension(R.dimen.dp_16);
             mSoundDetection.setLayoutParams(lp);
-        } else if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid()) || disableAdjustScreen) {
+        } else if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
             mAdjustScreen.setLeftTextColor(ContextCompat.getColor(this, R.color.colorText_40));
         }
     }
