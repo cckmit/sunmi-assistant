@@ -58,12 +58,9 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
     MyFragmentTabHost mTabHost;
 
     MyNetworkCallback networkCallback = new MyNetworkCallback();
-
-    private long mExitTime;
-
     @Extra
     int currentTabIndex;// 要显示的fragment的index
-
+    private long mExitTime;
     private BGABadgeTextView mineTitle;
 
     @AfterViews
@@ -143,6 +140,8 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
             if (fragment != null) {
                 fragment.updateStatusBar();
             }
+        } else if (TextUtils.equals(getStringById(R.string.str_tab_device), tabId)) {
+            StatusBarUtils.setStatusBarFullTransparent(this);
         } else {
             StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         }
