@@ -346,7 +346,8 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
 
         public String getVolume() {
             if (volume > NUM_10_THOUSANDS) {
-                return FORMAT_THOUSANDS.format(volume / NUM_10_THOUSANDS) + mNum10Thousands;
+                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
+                        (float) volume / NUM_10_THOUSANDS) + mNum10Thousands;
             } else {
                 return FORMAT_THOUSANDS.format(volume);
             }
@@ -354,7 +355,8 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
 
         public String getLastVolume() {
             if (lastVolume > NUM_10_THOUSANDS) {
-                return FORMAT_THOUSANDS.format(lastVolume / NUM_10_THOUSANDS) + mNum10Thousands;
+                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
+                        (float) lastVolume / NUM_10_THOUSANDS) + mNum10Thousands;
             } else {
                 return FORMAT_THOUSANDS.format(lastVolume);
             }
@@ -362,7 +364,8 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
 
         public String getConsumer() {
             if (consumer > NUM_10_THOUSANDS) {
-                return FORMAT_THOUSANDS.format(consumer / NUM_10_THOUSANDS) + mNum10Thousands;
+                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
+                        (float) consumer / NUM_10_THOUSANDS) + mNum10Thousands;
             } else {
                 return FORMAT_THOUSANDS.format(consumer);
             }
@@ -370,7 +373,8 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
 
         public String getLastConsumer() {
             if (lastConsumer > NUM_10_THOUSANDS) {
-                return FORMAT_THOUSANDS.format(lastConsumer / NUM_10_THOUSANDS) + mNum10Thousands;
+                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
+                        (float) lastConsumer / NUM_10_THOUSANDS) + mNum10Thousands;
             } else {
                 return FORMAT_THOUSANDS.format(lastConsumer);
             }

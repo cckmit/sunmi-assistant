@@ -104,9 +104,9 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     void init() {
         mPresenter = new DashboardPresenter();
         mPresenter.attachView(this);
-        mPresenter.init();
         showLoadingDialog();
-        mHandler.post(this::initView);
+        initView();
+        mPresenter.init();
     }
 
     private void initView() {
@@ -259,8 +259,8 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @UiThread
     @Override
     public void setCards(List<BaseRefreshItem> data, int dataSource) {
-        showContent();
         mDataSource = dataSource;
+        showContent();
         if (mAdapter == null || data == null || data.isEmpty()) {
             return;
         }
