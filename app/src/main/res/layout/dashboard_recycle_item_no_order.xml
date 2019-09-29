@@ -25,17 +25,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_24"
-            android:layout_marginTop="@dimen/dp_4"
-            android:text="@string/dashboard_no_order_subtitle"
-            android:textColor="@color/color_777E8C"
-            android:textSize="@dimen/sp_12"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_title" />
-
         <Button
             android:id="@+id/btn_dashboard_coming_soon"
             style="?android:attr/borderlessButtonStyle"
