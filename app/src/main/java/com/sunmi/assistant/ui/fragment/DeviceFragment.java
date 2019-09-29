@@ -383,7 +383,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 CommonNotifications.netDisconnection, NotificationConstant.updateConnectComplete,
                 NotificationConstant.connectedTosunmiDevice, NotificationConstant.unBindRouterChanged,
                 CommonNotifications.ipcUpgradeComplete, CommonNotifications.ipcUpgrade, IpcConstants.refreshIpcList,
-                CommonNotifications.companyNameChanged, CommonNotifications.companySwitch};
+                CommonNotifications.companyNameChanged, CommonNotifications.companySwitch,
+                CommonNotifications.shopNameChanged};
     }
 
     @Override
