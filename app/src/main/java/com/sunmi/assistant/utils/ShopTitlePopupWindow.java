@@ -73,6 +73,7 @@ public class ShopTitlePopupWindow extends PopupWindow implements View.OnTouchLis
         itemRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         itemRecyclerView.setAdapter(new ShopRecyclerViewAdapter(mContext, shopList));
         viewLayout.setOnTouchListener(this);
+        this.setTouchInterceptor(this);
     }
 
     /**
@@ -92,7 +93,8 @@ public class ShopTitlePopupWindow extends PopupWindow implements View.OnTouchLis
 
     private void setImageBackground() {
         if (mSetViewImg != null) {
-            mSetViewImg.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(mContext, R.drawable.ic_arrow_drop_down_white), null);
+            mSetViewImg.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                    ContextCompat.getDrawable(mContext, R.drawable.ic_arrow_drop_down_white), null);
         }
     }
 
@@ -101,8 +103,10 @@ public class ShopTitlePopupWindow extends PopupWindow implements View.OnTouchLis
     public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_OUTSIDE ||
                 event.getAction() == MotionEvent.ACTION_DOWN) {
-            dismiss();
-            setImageBackground();
+            if (this.isShowing()) {
+                dismiss();
+                setImageBackground();
+            }
             return true;
         }
         return false;
