@@ -107,22 +107,28 @@ repositories {
     }
 }
 
+walle {
+    //指定渠道包的输出路径
+    apkOutputFolder = new File("${project.buildDir}/outputs/channels")
+    //定制渠道包的APK的文件名称 例如app-xiaomi.apk
+    apkFileNameFormat = 'app-${channel}.apk'
+    //渠道配置文件
+    channelFile = new File("${project.getProjectDir()}/channel")
+}
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-//    implementation fileTree(include: ['*.aar'], dir: 'libs')//不要提交！！！
-    implementation project(':apmanager')//不要提交！！！
+    implementation fileTree(include: ['*.aar'], dir: 'libs')
 
     implementation project(':commonlib')//公共库
-    implementation project(':sunmiservice')
-    implementation project(':cloudprinter')
     implementation project(':ipc')
-//    implementation project(':MPChartLib')
-    implementation(name:'MPChartLib-release', ext:'aar')
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     annotationProcessor "org.androidannotations:androidannotations:${AAVersion}"
+    testImplementation 'org.mockito:mockito-core:2.19.0'
+    androidTestImplementation 'org.mockito:mockito-core:2.19.0'
 
     implementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
 
@@ -131,12 +137,4 @@ dependencies {
 
     annotationProcessor "com.github.xiaojinzi123.Component:component-compiler:1.7.5"
 
-}
-walle {
-    //指定渠道包的输出路径
-    apkOutputFolder = new File("${project.buildDir}/outputs/channels")
-    //定制渠道包的APK的文件名称 例如app-xiaomi.apk
-    apkFileNameFormat = 'app-${channel}.apk'
-    //渠道配置文件
-    channelFile = new File("${project.getProjectDir()}/channel")
 }
