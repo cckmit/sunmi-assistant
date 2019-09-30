@@ -115,4 +115,14 @@ public class GotoActivityUtils {
         }
     }
 
+    public static void gotoRegisterActivity(Context context) {
+        try {
+            Class<?> registerActivity = Class.forName("com.sunmi.assistant.ui.activity.login.RegisterActivity");
+            Intent intent = new Intent(context, registerActivity);
+            context.startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

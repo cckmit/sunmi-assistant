@@ -120,8 +120,8 @@
 
     <string name="sunmi_device_w1">W1路由器</string>
     <string name="sunmi_device_printer">云打印机</string>
-    <string name="sunmi_device_fs">AI识客摄像机FM020</string>
-    <string name="sunmi_device_ss">智能看店摄像机FM010</string>
+    <string name="sunmi_device_fs">AI识客摄像机</string>
+    <string name="sunmi_device_ss">智能看店摄像机</string>
     <string name="sunmi_device_more">更多支持设备\n敬请期待…</string>
 
     <string name="str_setting_detail">查看详情</string>
