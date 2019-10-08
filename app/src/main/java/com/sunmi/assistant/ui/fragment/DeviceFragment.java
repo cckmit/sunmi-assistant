@@ -122,7 +122,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         initDimens(mActivity);
         mPresenter = new DevicePresenter();
         mPresenter.attachView(this);
-        adList.addAll(DataSupport.findAll(AdListBean.class));
+        if (!CommonHelper.isGooglePlay()) {
+            adList.addAll(DataSupport.findAll(AdListBean.class));
+        }
         deviceList.addAll(DataSupport.findAll(SunmiDevice.class));
         for (SunmiDevice device : deviceList) {
             device.setStatus(DeviceStatus.UNKNOWN.ordinal());
@@ -144,7 +146,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     protected void initViews() {
         tvShopTitle.setText(SpUtils.getShopName());
         initRefreshLayout();
-        initBanner();
         layoutManager = new LinearLayoutManager(mActivity);
         rvDevice.setLayoutManager(layoutManager);
         deviceListAdapter = new DeviceListAdapter(mActivity, deviceList);
@@ -153,6 +154,10 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         deviceListAdapter.addHeaderView(headerView);
         rlNoDevice = headerView.findViewById(R.id.rl_empty);
         vpBanner = headerView.findViewById(R.id.vp_banner);
+        if (!CommonHelper.isGooglePlay()){
+            vpBanner.setVisibility(View.VISIBLE);
+            initBanner();
+        }
         headerView.findViewById(R.id.btn_add_device).setOnClickListener(this);
         deviceListAdapter.setClickListener(this);
         rvDevice.setAdapter(deviceListAdapter);
@@ -170,9 +175,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     }
 
     private void loadData() {
-        mPresenter.getBannerList();
         mPresenter.getRouterList();
         if (!CommonHelper.isGooglePlay()) {
+            mPresenter.getBannerList();
             mPresenter.getIpcList();
             mPresenter.getPrinterList();
         }
