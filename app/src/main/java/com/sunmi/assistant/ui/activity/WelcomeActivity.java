@@ -48,6 +48,13 @@ public class WelcomeActivity extends BaseMvpActivity<WelcomePresenter>
         mPresenter.attachView(this);
         if (!CommonHelper.isGooglePlay()) {
             new Handler().postDelayed(() -> mPresenter.checkUpgrade(), 500);
+        } else {
+            if (!TextUtils.equals(SpUtils.getLead(), "TRUE")) {
+                gotoLeadPagesActivity();
+                return;
+            } else {
+                handleLaunch();
+            }
         }
         initMTA();
     }

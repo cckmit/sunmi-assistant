@@ -168,10 +168,12 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     private void initRefreshLayout() {
         refreshView.setDelegate(this);
         // 设置下拉刷新和上拉加载更多的风格(参数1：应用程序上下文，参数2：是否具有上拉加载更多功能)
-        BGANormalRefreshViewHolder refreshViewHolder =
-                new BGANormalRefreshViewHolder(getActivity(), false);
-        refreshView.setRefreshViewHolder(refreshViewHolder);
-        refreshView.setIsShowLoadingMoreView(false); // 设置正在加载更多时的文本
+        BGANormalRefreshViewHolder refreshViewHolder = new BGANormalRefreshViewHolder(mActivity, false); // 设置下拉刷新和上拉加载更多的风格
+        refreshViewHolder.setRefreshingText(getString(R.string.str_refresh_loading));
+        refreshViewHolder.setPullDownRefreshText(getString(R.string.str_refresh_pull));
+        refreshViewHolder.setReleaseRefreshText(getString(R.string.str_refresh_release));
+        refreshView.setRefreshViewHolder(refreshViewHolder); // 为了增加下拉刷新头部和加载更多的通用性，提供了以下可选配置选项
+        refreshView.setIsShowLoadingMoreView(false); // 设置正在加载更多时的文本// 设置正在加载更多时的文本
     }
 
     private void loadData() {
