@@ -49,12 +49,7 @@ public class WelcomeActivity extends BaseMvpActivity<WelcomePresenter>
         if (!CommonHelper.isGooglePlay()) {
             new Handler().postDelayed(() -> mPresenter.checkUpgrade(), 500);
         } else {
-            if (!TextUtils.equals(SpUtils.getLead(), "TRUE")) {
-                gotoLeadPagesActivity();
-                return;
-            } else {
-                handleLaunch();
-            }
+            gotoLeadPagesActivity();
         }
         initMTA();
     }
@@ -111,8 +106,12 @@ public class WelcomeActivity extends BaseMvpActivity<WelcomePresenter>
 
     @Override
     public void gotoLeadPagesActivity() {
-        LeadPagesActivity_.intent(context).start();
-        finish();
+        if (!TextUtils.equals(SpUtils.getLead(), "TRUE")) {
+            LeadPagesActivity_.intent(context).start();
+            finish();
+        }else {
+            handleLaunch();
+        }
     }
 
     @UiThread
