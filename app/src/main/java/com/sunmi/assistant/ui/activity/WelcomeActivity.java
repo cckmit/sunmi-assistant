@@ -26,6 +26,7 @@ import org.androidannotations.annotations.UiThread;
 
 import sunmi.common.base.BaseApplication;
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.view.dialog.CommonDialog;
 
@@ -45,7 +46,11 @@ public class WelcomeActivity extends BaseMvpActivity<WelcomePresenter>
     protected void init() {
         mPresenter = new WelcomePresenter();
         mPresenter.attachView(this);
-        new Handler().postDelayed(() -> mPresenter.checkUpgrade(), 500);
+        if (!CommonHelper.isGooglePlay()) {
+            new Handler().postDelayed(() -> mPresenter.checkUpgrade(), 500);
+        } else {
+            gotoLeadPagesActivity();
+        }
         initMTA();
     }
 
@@ -101,8 +106,12 @@ public class WelcomeActivity extends BaseMvpActivity<WelcomePresenter>
 
     @Override
     public void gotoLeadPagesActivity() {
-        LeadPagesActivity_.intent(context).start();
-        finish();
+        if (!TextUtils.equals(SpUtils.getLead(), "TRUE")) {
+            LeadPagesActivity_.intent(context).start();
+            finish();
+        }else {
+            handleLaunch();
+        }
     }
 
     @UiThread

@@ -1,7 +1,5 @@
 package com.sunmi.assistant.ui.activity.presenter;
 
-import android.text.TextUtils;
-
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.assistant.ui.activity.contract.WelcomeContract;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -11,7 +9,6 @@ import org.json.JSONObject;
 import okhttp3.Call;
 import okhttp3.Response;
 import sunmi.common.base.BasePresenter;
-import sunmi.common.utils.SpUtils;
 
 /**
  * Description:
@@ -40,10 +37,8 @@ public class WelcomePresenter extends BasePresenter<WelcomeContract.View>
                                         return;
                                     } else {
                                         //首次安装或清空数据时
-                                        if (!TextUtils.equals(SpUtils.getLead(), "TRUE")) {
-                                            mView.gotoLeadPagesActivity();
-                                            return;
-                                        }
+                                        mView.gotoLeadPagesActivity();
+                                        return;
                                     }
                                 }
                             }

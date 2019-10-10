@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 public class RegexUtils {
 
     public static boolean isCorrectAccount(String mobiles) {
-        if (mobiles.contains("@")) {
+        if (CommonHelper.isGooglePlay()) {
             return isEmail(mobiles);
         } else {
             return isChinaPhone(mobiles);
