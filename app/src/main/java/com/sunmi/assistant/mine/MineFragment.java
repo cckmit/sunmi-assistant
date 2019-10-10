@@ -58,6 +58,8 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     RelativeLayout rlCoupon;
     @ViewById(R.id.rlHelp)
     RelativeLayout rlHelp;
+    @ViewById(R.id.v1)
+    View divider;
 
     @AfterViews
     void init() {
@@ -73,6 +75,8 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
             rlAddress.setVisibility(View.VISIBLE);
             rlCoupon.setVisibility(View.VISIBLE);
             rlHelp.setVisibility(View.VISIBLE);
+            rlMsg.setVisibility(View.VISIBLE);
+            divider.setVisibility(View.VISIBLE);
         }
         initAvatar(false);
         setMsgBadge();
