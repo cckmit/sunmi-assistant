@@ -40,7 +40,8 @@
         android:layout_height="@dimen/dp_60"
         android:layout_below="@id/tvVersion"
         android:layout_marginTop="@dimen/dp_38"
-        android:background="@color/colorWhite">
+        android:background="@color/colorWhite"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="match_parent"

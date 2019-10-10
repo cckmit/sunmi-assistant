@@ -164,13 +164,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_16"
                 android:layout_below="@+id/rlStore"
-                android:background="@color/colorText_10" />
+                android:background="@color/colorText_10"
+                android:visibility="gone"/>
 
             <cn.bingoogolapple.badgeview.BGABadgeRelativeLayout
                 android:id="@+id/rlMsg"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_72"
                 android:layout_below="@+id/v1"
+                android:visibility="gone"
                 app:badge_horizontalMargin="@dimen/dp_40"
                 app:badge_textSize="@dimen/sp_12">
 
