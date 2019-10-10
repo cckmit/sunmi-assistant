@@ -21,7 +21,7 @@ import com.sunmi.apmanager.constant.enums.DeviceStatus;
 import com.sunmi.apmanager.receiver.MyNetworkCallback;
 import com.sunmi.apmanager.rpc.ap.APCall;
 import com.sunmi.apmanager.ui.activity.config.PrimaryRouteStartActivity;
-import com.sunmi.apmanager.ui.activity.router.RouterManagerNewActivity;
+import com.sunmi.apmanager.ui.activity.router.RouterManagerActivity;
 import com.sunmi.apmanager.utils.ApCompatibleUtils;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.EncryptUtils;
@@ -154,7 +154,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         deviceListAdapter.addHeaderView(headerView);
         rlNoDevice = headerView.findViewById(R.id.rl_empty);
         vpBanner = headerView.findViewById(R.id.vp_banner);
-        if (!CommonHelper.isGooglePlay()){
+        if (!CommonHelper.isGooglePlay()) {
             vpBanner.setVisibility(View.VISIBLE);
             initBanner();
         }
@@ -726,7 +726,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         bundle.putString("shopId", SpUtils.getShopId() + "");
         bundle.putString("sn", sn);
         bundle.putString("status", status);
-        openActivity(mActivity, RouterManagerNewActivity.class, bundle);
+        openActivity(mActivity, RouterManagerActivity.class, bundle);
     }
 
     private void deleteDevice(SunmiDevice device) {
