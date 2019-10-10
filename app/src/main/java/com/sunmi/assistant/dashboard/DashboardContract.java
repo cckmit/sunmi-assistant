@@ -2,7 +2,7 @@ package com.sunmi.assistant.dashboard;
 
 import android.content.Context;
 
-import com.sunmi.assistant.dashboard.card.BaseRefreshItem;
+import com.sunmi.assistant.dashboard.newcard.BaseRefreshCard;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public interface DashboardContract {
 
         void setShopList(List<ShopItem> list);
 
-        void setCards(List<BaseRefreshItem> data, int dataSource);
+        void setCards(List<BaseRefreshCard> data, int dataSource);
 
         void loadDataFailed();
 

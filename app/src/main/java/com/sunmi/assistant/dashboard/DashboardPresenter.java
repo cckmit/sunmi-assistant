@@ -3,23 +3,21 @@ package com.sunmi.assistant.dashboard;
 import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.support.v4.content.ContextCompat;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.card.BaseRefreshItem;
-import com.sunmi.assistant.dashboard.card.DataCard;
-import com.sunmi.assistant.dashboard.card.DistributionChartCard;
-import com.sunmi.assistant.dashboard.card.EmptyDataCard;
-import com.sunmi.assistant.dashboard.card.EmptyGapCard;
-import com.sunmi.assistant.dashboard.card.NoFsCard;
-import com.sunmi.assistant.dashboard.card.NoOrderCard;
-import com.sunmi.assistant.dashboard.card.PeriodTabCard;
-import com.sunmi.assistant.dashboard.card.TrendChartCard;
+import com.sunmi.assistant.dashboard.newcard.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.newcard.DataCard;
+import com.sunmi.assistant.dashboard.newcard.DistributionChartCard;
+import com.sunmi.assistant.dashboard.newcard.EmptyDataCard;
+import com.sunmi.assistant.dashboard.newcard.EmptyGapCard;
+import com.sunmi.assistant.dashboard.newcard.NoFsCard;
+import com.sunmi.assistant.dashboard.newcard.NoOrderCard;
+import com.sunmi.assistant.dashboard.newcard.PeriodTabCard;
+import com.sunmi.assistant.dashboard.newcard.TrendChartCard;
 import com.sunmi.ipc.model.IpcListResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
@@ -48,15 +46,13 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     private Context mContext;
 
-    private int mCompanyId;
     private ShopItem mShop;
-    private boolean mSaasExist;
-
+    private int mCompanyId;
     private int mDataSource = 0;
 
-    private HashMap<Class<?>, BaseRefreshItem> mCardMap = new HashMap<>(8);
+
     private List<ShopItem> mShopList;
-    private List<BaseRefreshItem> mList = new ArrayList<>();
+    private List<BaseRefreshCard> mList = new ArrayList<>();
 
     private RefreshTask mTask;
 
@@ -102,8 +98,8 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     @Override
     public void switchPeriodTo(int period) {
-        for (BaseRefreshItem card : mList) {
-            card.setPeriod(period);
+        for (BaseRefreshCard card : mList) {
+            card.setPeriod(period, false);
         }
         if (isViewAttached()) {
             mView.updateTab(period);
@@ -112,7 +108,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     @Override
     public void refresh(boolean showLoading) {
-        for (BaseRefreshItem card : mList) {
+        for (BaseRefreshCard card : mList) {
             card.refresh(showLoading);
         }
     }
@@ -197,32 +193,17 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 int changed = mDataSource ^ old;
                 // 如果数据来源无变化（是否有FS以及是否有订单数据），那么直接更新卡片商户和门店
                 if (changed == 0 && !mList.isEmpty()) {
-                    for (BaseRefreshItem card : mList) {
-                        card.setCompanyId(mCompanyId, mShop.getShopId());
+                    for (BaseRefreshCard card : mList) {
+                        card.setShop(mCompanyId, mShop.getShopId(), true);
                     }
-                    refresh(true);
                     if (isViewAttached()) {
                         mView.hideLoadingDialog();
                     }
                     return;
                 }
-                // 初始化列表
-                mList.clear();
 //                mDataSource = 3;
                 // 根据数据来源，变更卡片
-                switch (mDataSource) {
-                    case 0x3:
-                        initList(mDataSource);
-                        break;
-                    case 0x1:
-                        initNoFsList(mDataSource);
-                        break;
-                    case 0x2:
-                        initNoOrderList(mDataSource);
-                        break;
-                    default:
-                        initNoDataList(mDataSource);
-                }
+                initList(mDataSource);
                 if (isViewAttached()) {
                     mView.setCards(mList, mDataSource);
                     switchPeriodTo(Constants.TIME_PERIOD_TODAY);
@@ -239,193 +220,36 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     private void initList(int source) {
-        if (!isViewAttached()) {
-            return;
+        mList.clear();
+        switch (mDataSource) {
+            case 0x3:
+                mList.add(PeriodTabCard.init(this, source));
+                mList.add(DataCard.init(this, source));
+                mList.add(TrendChartCard.init(this, source));
+                mList.add(DistributionChartCard.init(this, source));
+                mList.add(EmptyGapCard.init(this, source));
+                break;
+            case 0x2:
+                mList.add(PeriodTabCard.init(this, source));
+                mList.add(DataCard.init(this, source));
+                mList.add(TrendChartCard.init(this, source));
+                mList.add(NoFsCard.init(this, source));
+                mList.add(EmptyGapCard.init(this, source));
+                break;
+            case 0x1:
+                mList.add(PeriodTabCard.init(this, source));
+                mList.add(DataCard.init(this, source));
+                mList.add(TrendChartCard.init(this, source));
+                mList.add(DistributionChartCard.init(this, source));
+                mList.add(NoOrderCard.init(this, source));
+                mList.add(EmptyGapCard.init(this, source));
+                break;
+            default:
+                mList.add(EmptyDataCard.init(this, source));
+                mList.add(NoFsCard.init(this, source));
+                mList.add(NoOrderCard.init(this, source));
+                mList.add(EmptyGapCard.init(this, source));
         }
-        BaseRefreshItem card;
-
-        card = mCardMap.get(PeriodTabCard.class);
-        if (card == null) {
-            card = new PeriodTabCard(mContext, this);
-            mCardMap.put(PeriodTabCard.class, card);
-        }
-        card.initConfig(source);
-        mList.add(card);
-
-        card = mCardMap.get(DataCard.class);
-        if (card == null) {
-            card = new DataCard(mContext, this);
-            mCardMap.put(DataCard.class, card);
-        }
-        card.initConfig(source);
-        mList.add(card);
-
-        card = mCardMap.get(TrendChartCard.class);
-        if (card == null) {
-            card = new TrendChartCard(mContext, this);
-            mCardMap.put(TrendChartCard.class, card);
-        }
-        card.initConfig(source);
-        mList.add(card);
-
-        card = mCardMap.get(DistributionChartCard.class);
-        if (card == null) {
-            card = new DistributionChartCard(mContext, this);
-            mCardMap.put(DistributionChartCard.class, card);
-        }
-        card.initConfig(source);
-        mList.add(card);
-
-        card = mCardMap.get(EmptyGapCard.class);
-        if (card == null) {
-            card = new EmptyGapCard();
-            mCardMap.put(EmptyGapCard.class, card);
-        }
-        ((EmptyGapCard) card).setHeightAndColor((int) mContext.getResources().getDimension(R.dimen.dp_24),
-                ContextCompat.getColor(mContext, R.color.color_F5F7FA));
-        mList.add(card);
-    }
-
-    private void initNoOrderList(int source) {
-        if (!isViewAttached()) {
-            return;
-        }
-        BaseRefreshItem card;
-
-        card = mCardMap.get(PeriodTabCard.class);
-        if (card == null) {
-            card = new PeriodTabCard(mContext, this);
-            mCardMap.put(PeriodTabCard.class, card);
-        }
-        card.initConfig(source);
-        mList.add(card);
-
-        card = mCardMap.get(DataCard.class);
-        if (card == null) {
-            card = new DataCard(mContext, this);
-            mCardMap.put(DataCard.class, card);
-        }
-        card.initConfig(source);
-        mList.add(card);
-
-        card = mCardMap.get(TrendChartCard.class);
-        if (card == null) {
-            card = new TrendChartCard(mContext, this);
-            mCardMap.put(TrendChartCard.class, card);
-        }
-        card.initConfig(source);
-        mList.add(card);
-
-        card = mCardMap.get(DistributionChartCard.class);
-        if (card == null) {
-            card = new DistributionChartCard(mContext, this);
-            mCardMap.put(DistributionChartCard.class, card);
-        }
-        card.initConfig(source);
-        mList.add(card);
-
-        card = mCardMap.get(NoOrderCard.class);
-        if (card == null) {
-            card = new NoOrderCard(mContext, this);
-            mCardMap.put(NoOrderCard.class, card);
-        }
-        ((NoOrderCard) card).setIsAllEmpty(false);
-        mList.add(card);
-
-        card = mCardMap.get(EmptyGapCard.class);
-        if (card == null) {
-            card = new EmptyGapCard();
-            mCardMap.put(EmptyGapCard.class, card);
-        }
-        ((EmptyGapCard) card).setHeightAndColor((int) mContext.getResources().getDimension(R.dimen.dp_32),
-                ContextCompat.getColor(mContext, R.color.color_F5F7FA));
-        mList.add(card);
-    }
-
-    private void initNoFsList(int source) {
-        if (!isViewAttached()) {
-            return;
-        }
-        BaseRefreshItem card;
-
-        card = mCardMap.get(PeriodTabCard.class);
-        if (card == null) {
-            card = new PeriodTabCard(mContext, this);
-            mCardMap.put(PeriodTabCard.class, card);
-        }
-        card.initConfig(source);
-        mList.add(card);
-
-        card = mCardMap.get(DataCard.class);
-        if (card == null) {
-            card = new DataCard(mContext, this);
-            mCardMap.put(DataCard.class, card);
-        }
-        card.initConfig(source);
-        mList.add(card);
-
-        card = mCardMap.get(TrendChartCard.class);
-        if (card == null) {
-            card = new TrendChartCard(mContext, this);
-            mCardMap.put(TrendChartCard.class, card);
-        }
-        card.initConfig(source);
-        mList.add(card);
-
-        card = mCardMap.get(NoFsCard.class);
-        if (card == null) {
-            card = new NoFsCard(mContext, this);
-            mCardMap.put(NoFsCard.class, card);
-        }
-        ((NoFsCard) card).setIsAllEmpty(false);
-        mList.add(card);
-
-        card = mCardMap.get(EmptyGapCard.class);
-        if (card == null) {
-            card = new EmptyGapCard();
-            mCardMap.put(EmptyGapCard.class, card);
-        }
-        ((EmptyGapCard) card).setHeightAndColor((int) mContext.getResources().getDimension(R.dimen.dp_32),
-                ContextCompat.getColor(mContext, R.color.color_F5F7FA));
-        mList.add(card);
-    }
-
-    private void initNoDataList(int source) {
-        if (!isViewAttached()) {
-            return;
-        }
-        BaseRefreshItem card;
-
-        card = mCardMap.get(EmptyDataCard.class);
-        if (card == null) {
-            card = new EmptyDataCard();
-            mCardMap.put(EmptyDataCard.class, card);
-        }
-        mList.add(card);
-
-        card = mCardMap.get(NoFsCard.class);
-        if (card == null) {
-            card = new NoFsCard(mContext, this);
-            mCardMap.put(NoFsCard.class, card);
-        }
-        ((NoFsCard) card).setIsAllEmpty(true);
-        mList.add(card);
-
-        card = mCardMap.get(NoOrderCard.class);
-        if (card == null) {
-            card = new NoOrderCard(mContext, this);
-            mCardMap.put(NoOrderCard.class, card);
-        }
-        ((NoOrderCard) card).setIsAllEmpty(true);
-        mList.add(card);
-
-        card = mCardMap.get(EmptyGapCard.class);
-        if (card == null) {
-            card = new EmptyGapCard();
-            mCardMap.put(EmptyGapCard.class, card);
-        }
-        ((EmptyGapCard) card).setHeightAndColor((int) mContext.getResources().getDimension(R.dimen.dp_32), 0xFFFFFFFF);
-        mList.add(card);
     }
 
     @Override
@@ -433,7 +257,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         super.detachView();
         mContext = null;
         WORK_HANDLER.removeCallbacks(mTask);
-        for (BaseRefreshItem card : mList) {
+        for (BaseRefreshCard card : mList) {
             card.cancelLoad();
         }
     }

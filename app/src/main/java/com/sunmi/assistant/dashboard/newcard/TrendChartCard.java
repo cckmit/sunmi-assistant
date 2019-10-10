@@ -207,7 +207,9 @@ public class TrendChartCard extends BaseRefreshCard<TrendChartCard.Model, Consum
 
     @Override
     protected List<Model> createModel() {
-        return null;
+        ArrayList<Model> models = new ArrayList<>();
+        models.add(new Model(""));
+        return models;
     }
 
     @Override

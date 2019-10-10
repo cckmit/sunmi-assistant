@@ -63,12 +63,12 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
     private int mShopId;
 
     protected BaseRefreshCard(DashboardContract.Presenter presenter, int source) {
-        init(source);
         this.mPresenter = presenter;
         this.mModels = createModel();
         if (mModels == null || mModels.isEmpty()) {
             throw new RuntimeException("createModel() must return NON-NULL & NON-EMPTY model list!");
         }
+        init(source);
     }
 
     protected void init(int source) {
@@ -102,7 +102,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         return mModels.get(0);
     }
 
-    public void registerIntoAdapter(BaseRecyclerAdapter<Object> adapter, int position, int size) {
+    public void registerIntoAdapter(BaseRecyclerAdapter<Object> adapter, int position) {
         this.mPositionMin = position;
         this.mPositionMax = position + mModels.size() - 1;
         //noinspection unchecked
@@ -152,8 +152,8 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         }
     }
 
-    public void setShop(int companyId, int shopId) {
-        if (this.mCompanyId == companyId && this.mShopId == shopId) {
+    public void setShop(int companyId, int shopId, boolean forceLoad) {
+        if (!forceLoad && this.mCompanyId == companyId && this.mShopId == shopId) {
             return;
         }
         this.mCompanyId = companyId;
@@ -164,8 +164,8 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         requestLoad(true);
     }
 
-    public void setPeriod(int period) {
-        if (this.mPeriod == period) {
+    public void setPeriod(int period, boolean forceLoad) {
+        if (!forceLoad && this.mPeriod == period) {
             return;
         }
         this.mPeriod = period;

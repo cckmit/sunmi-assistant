@@ -19,7 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.card.BaseRefreshItem;
+import com.sunmi.assistant.dashboard.newcard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.ui.RefreshLayout;
 import com.sunmi.assistant.dashboard.ui.RefreshViewHolder;
 import com.sunmi.ipc.config.IpcConstants;
@@ -27,7 +27,6 @@ import com.sunmi.ipc.config.IpcConstants;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
@@ -39,7 +38,6 @@ import sunmi.common.constant.CommonNotifications;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.DropdownMenu;
 
 /**
@@ -259,20 +257,20 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mShopMenuAdapter.setData(list);
     }
 
-    @UiThread
     @Override
-    public void setCards(List<BaseRefreshItem> data, int dataSource) {
+    public void setCards(List<BaseRefreshCard> data, int dataSource) {
         mDataSource = dataSource;
         showContent();
         if (mAdapter == null || data == null || data.isEmpty()) {
             return;
         }
-        data.get(0).setMargin(0, mTopShopMenuHeight, 0, 0);
+        data.get(0).getModel().setMargin(0, mTopShopMenuHeight, 0, 0);
         List<Object> list = new ArrayList<>(data.size());
-        for (int i = 0, size = data.size(); i < size; i++) {
-            BaseRefreshItem item = data.get(i);
-            item.registerIntoAdapter(mAdapter, i);
-            list.add(item.getModel());
+        int position = 0;
+        for (BaseRefreshCard card : data) {
+            card.registerIntoAdapter(mAdapter, position);
+            position += card.getModels().size();
+            list.addAll(card.getModels());
         }
         mAdapter.setData(list);
     }
@@ -365,7 +363,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
                 topBar.getLocationInWindow(coordinate);
                 position = coordinate[1];
             }
-            LogCat.d(TAG, "onScroll=" + position + "; topHeight=" + mTopShopMenuHeight);
+//            LogCat.d(TAG, "onScroll=" + position + "; topHeight=" + mTopShopMenuHeight);
             Context context = recyclerView.getContext();
             if (mIsStickyTop && !showSticky(position)) {
                 mIsStickyTop = false;

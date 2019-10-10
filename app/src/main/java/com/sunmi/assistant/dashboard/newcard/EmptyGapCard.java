@@ -1,6 +1,8 @@
 package com.sunmi.assistant.dashboard.newcard;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.view.ViewGroup;
 
 import com.sunmi.assistant.R;
@@ -12,6 +14,7 @@ import java.util.List;
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.rpc.retrofit.BaseResponse;
+
 
 /**
  * @author yinhui
@@ -58,22 +61,24 @@ public class EmptyGapCard extends BaseRefreshCard<EmptyGapCard.Model, Object> {
 
     @Override
     protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+        Context context = holder.getContext();
+        int color;
+        int height;
+        if (hasSaas() || hasFs()) {
+            color = ContextCompat.getColor(context, R.color.color_F5F7FA);
+        } else {
+            color = 0xFFFFFFFF;
+        }
+        if (hasSaas() && hasFs()) {
+            height = (int) context.getResources().getDimension(R.dimen.dp_24);
+        } else {
+            height = (int) context.getResources().getDimension(R.dimen.dp_32);
+        }
         ViewGroup.LayoutParams lp = holder.itemView.getLayoutParams();
-        lp.height = model.height;
-        holder.itemView.setBackgroundColor(model.color);
+        lp.height = height;
+        holder.itemView.setBackgroundColor(color);
     }
 
     public static class Model extends BaseRefreshCard.BaseModel {
-        private int color;
-        private int height;
-
-        public void setColor(int color) {
-            this.color = color;
-        }
-
-        public void setHeight(int height) {
-            this.height = height;
-        }
-
     }
 }

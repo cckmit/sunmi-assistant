@@ -91,16 +91,11 @@ public class NoFsCard extends BaseRefreshCard<NoFsCard.Model, Object> {
     protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         View root = holder.getView(R.id.layout_dashboard_root);
         View content = holder.getView(R.id.layout_dashboard_content);
-        root.setBackgroundColor(model.isAllEmpty ? mColorWhite : mColorGray);
-        mContentBg.setColor(model.isAllEmpty ? mColorGray : mColorWhite);
+        root.setBackgroundColor(!hasSaas() && !hasFs() ? mColorWhite : mColorGray);
+        mContentBg.setColor(!hasSaas() && !hasFs() ? mColorGray : mColorWhite);
         content.setBackground(mContentBg);
     }
 
     public static class Model extends BaseRefreshCard.BaseModel {
-        private boolean isAllEmpty;
-
-        public void setAllEmpty(boolean allEmpty) {
-            isAllEmpty = allEmpty;
-        }
     }
 }
