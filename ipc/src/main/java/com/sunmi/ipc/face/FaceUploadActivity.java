@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.base.recycle.BaseRecyclerAdapter;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.SimpleArrayAdapter;
 import sunmi.common.base.recycle.listener.OnViewClickListener;
@@ -326,8 +325,7 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
             super(data);
             addOnViewClickListener(R.id.iv_face_item_image, new OnViewClickListener<UploadImage>() {
                 @Override
-                public void onClick(BaseRecyclerAdapter<UploadImage> adapter, BaseViewHolder<UploadImage> holder,
-                                    View v, UploadImage model, int position) {
+                public void onClick(BaseViewHolder<UploadImage> holder, UploadImage model, int position) {
                     if (model.getState() != UploadImage.STATE_ADD) {
                         return;
                     }
@@ -360,8 +358,7 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
             });
             addOnViewClickListener(R.id.v_face_item_region, new OnViewClickListener<UploadImage>() {
                 @Override
-                public void onClick(BaseRecyclerAdapter<UploadImage> adapter, BaseViewHolder<UploadImage> holder,
-                                    View v, UploadImage model, int position) {
+                public void onClick(BaseViewHolder<UploadImage> holder, UploadImage model, int position) {
                     boolean isAtLimit = mImages.size() >= Constants.IMAGE_PICKER_LIMIT;
                     remove(position);
                     if (isAtLimit) {

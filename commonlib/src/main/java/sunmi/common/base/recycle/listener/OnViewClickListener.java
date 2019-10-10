@@ -1,8 +1,5 @@
 package sunmi.common.base.recycle.listener;
 
-import android.view.View;
-
-import sunmi.common.base.recycle.BaseRecyclerAdapter;
 import sunmi.common.base.recycle.BaseViewHolder;
 
 /**
@@ -18,6 +15,5 @@ public interface OnViewClickListener<T> {
      * @param model    the item model attach to clicked view.
      * @param position position in list of clicked view.
      */
-    void onClick(BaseRecyclerAdapter<T> adapter, BaseViewHolder<T> holder,
-                 View v, T model, int position);
+    void onClick(BaseViewHolder<T> holder, T model, int position);
 }

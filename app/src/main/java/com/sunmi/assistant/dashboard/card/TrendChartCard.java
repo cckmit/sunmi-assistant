@@ -65,19 +65,19 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
         super(context, presenter);
         mDashLength = CommonHelper.dp2px(context, 4f);
         mDashSpaceLength = CommonHelper.dp2px(context, 2f);
-        addOnViewClickListener(R.id.tv_dashboard_rate, (adapter, holder, v, model, position) -> {
+        addOnViewClickListener(R.id.tv_dashboard_rate, (holder, model, position) -> {
             if (model.type != Constants.DATA_TYPE_RATE) {
                 model.type = Constants.DATA_TYPE_RATE;
                 updateView();
             }
         });
-        addOnViewClickListener(R.id.tv_dashboard_volume, (adapter, holder, v, model, position) -> {
+        addOnViewClickListener(R.id.tv_dashboard_volume, (holder, model, position) -> {
             if (model.type != Constants.DATA_TYPE_VOLUME) {
                 model.type = Constants.DATA_TYPE_VOLUME;
                 updateView();
             }
         });
-        addOnViewClickListener(R.id.tv_dashboard_consumer, (adapter, holder, v, model, position) -> {
+        addOnViewClickListener(R.id.tv_dashboard_consumer, (holder, model, position) -> {
             if (model.type != Constants.DATA_TYPE_CONSUMER) {
                 model.type = Constants.DATA_TYPE_CONSUMER;
                 updateView();

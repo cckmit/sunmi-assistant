@@ -58,7 +58,6 @@ import java.util.List;
 import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.base.recycle.BaseRecyclerAdapter;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.SimpleArrayAdapter;
 import sunmi.common.base.recycle.listener.OnViewClickListener;
@@ -861,8 +860,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         public FaceListAdapter() {
             addOnViewClickListener(R.id.item_image, new OnViewClickListener<Face>() {
                 @Override
-                public void onClick(BaseRecyclerAdapter<Face> adapter, BaseViewHolder<Face> holder,
-                                    View v, Face model, int position) {
+                public void onClick(BaseViewHolder<Face> holder, Face model, int position) {
                     if (!model.isAddIcon()) {
                         FaceDetailActivity_.intent(context)
                                 .mShopId(mShopId)
@@ -902,8 +900,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
             });
             addOnViewClickListener(R.id.item_check_region, new OnViewClickListener<Face>() {
                 @Override
-                public void onClick(BaseRecyclerAdapter<Face> adapter, BaseViewHolder<Face> holder,
-                                    View v, Face model, int position) {
+                public void onClick(BaseViewHolder<Face> holder, Face model, int position) {
                     model.setChecked(!model.isChecked());
                     CheckBox checkBox = holder.getView(R.id.item_check_box);
                     checkBox.setChecked(model.isChecked());
@@ -977,8 +974,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         public FaceSelectedListAdapter() {
             addOnViewClickListener(R.id.item_image, new OnViewClickListener<Face>() {
                 @Override
-                public void onClick(BaseRecyclerAdapter<Face> adapter, BaseViewHolder<Face> holder,
-                                    View v, Face model, int position) {
+                public void onClick(BaseViewHolder<Face> holder, Face model, int position) {
                     model.setChecked(false);
                     remove(model);
                     List<Face> list = mAdapter.getData();

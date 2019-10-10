@@ -37,16 +37,16 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
 
     public DataCard(Context context, DashboardContract.Presenter presenter) {
         super(context, presenter);
-        addOnViewClickListener(R.id.layout_dashboard_main, (adapter, holder, v, model, position) -> {
+        addOnViewClickListener(R.id.layout_dashboard_main, (holder, model, position) -> {
             if (!showTransactionData() && showConsumerData()) {
                 goToConsumerList(context);
             } else {
                 goToOrderList(context);
             }
         });
-        addOnViewClickListener(R.id.layout_dashboard_volume, (adapter, holder, v, model, position)
+        addOnViewClickListener(R.id.layout_dashboard_volume, (holder, model, position)
                 -> goToOrderList(context));
-        addOnViewClickListener(R.id.layout_dashboard_consumer, (adapter, holder, v, model, position)
+        addOnViewClickListener(R.id.layout_dashboard_consumer, (holder, model, position)
                 -> goToConsumerList(context));
     }
 

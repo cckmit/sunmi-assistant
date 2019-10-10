@@ -64,15 +64,15 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
 
     public DistributionChartCard(Context context, DashboardContract.Presenter presenter) {
         super(context, presenter);
-        addOnViewClickListener(R.id.tv_dashboard_new_old, (adapter, holder, v, model, position) -> {
+        addOnViewClickListener(R.id.tv_dashboard_new_old, (holder, model, position) -> {
             model.type = Constants.DATA_TYPE_NEW_OLD;
             updateView();
         });
-        addOnViewClickListener(R.id.tv_dashboard_gender, (adapter, holder, v, model, position) -> {
+        addOnViewClickListener(R.id.tv_dashboard_gender, (holder, model, position) -> {
             model.type = Constants.DATA_TYPE_GENDER;
             updateView();
         });
-        addOnViewClickListener(R.id.tv_dashboard_age, (adapter, holder, v, model, position) -> {
+        addOnViewClickListener(R.id.tv_dashboard_age, (holder, model, position) -> {
             model.type = Constants.DATA_TYPE_AGE;
             updateView();
         });
