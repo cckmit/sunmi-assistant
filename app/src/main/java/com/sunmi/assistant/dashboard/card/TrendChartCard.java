@@ -50,7 +50,9 @@ import sunmi.common.utils.log.LogCat;
  * @author yinhui
  * @since 2019-07-01
  */
-public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, ConsumerRateResp> {
+public class TrendChartCard extends BaseRefreshCard<TrendChartCard.Model, ConsumerRateResp> {
+
+    private static TrendChartCard sInstance;
 
     private XAxisLabelsRenderer lineXAxisRenderer;
     private LineYAxisLabelsRenderer lineYAxisRenderer;
@@ -58,36 +60,20 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
     private BarYAxisLabelsRenderer barYAxisRenderer;
     private LineChartMarkerView mLineChartMarker;
     private BarChartMarkerView mBarChartMarker;
-    private final float mDashLength;
-    private final float mDashSpaceLength;
+    private float mDashLength;
+    private float mDashSpaceLength;
 
-    public TrendChartCard(Context context, DashboardContract.Presenter presenter) {
-        super(context, presenter);
-        mDashLength = CommonHelper.dp2px(context, 4f);
-        mDashSpaceLength = CommonHelper.dp2px(context, 2f);
-        addOnViewClickListener(R.id.tv_dashboard_rate, (holder, model, position) -> {
-            if (model.type != Constants.DATA_TYPE_RATE) {
-                model.type = Constants.DATA_TYPE_RATE;
-                updateView();
-            }
-        });
-        addOnViewClickListener(R.id.tv_dashboard_volume, (holder, model, position) -> {
-            if (model.type != Constants.DATA_TYPE_VOLUME) {
-                model.type = Constants.DATA_TYPE_VOLUME;
-                updateView();
-            }
-        });
-        addOnViewClickListener(R.id.tv_dashboard_consumer, (holder, model, position) -> {
-            if (model.type != Constants.DATA_TYPE_CONSUMER) {
-                model.type = Constants.DATA_TYPE_CONSUMER;
-                updateView();
-            }
-        });
+    private TrendChartCard(DashboardContract.Presenter presenter, int source) {
+        super(presenter, source);
     }
 
-    @Override
-    protected Model createModel(Context context) {
-        return new Model("");
+    public static TrendChartCard init(DashboardContract.Presenter presenter, int source) {
+        if (sInstance == null) {
+            sInstance = new TrendChartCard(presenter, source);
+        } else {
+            sInstance.init(source);
+        }
+        return sInstance;
     }
 
     @Override
@@ -98,11 +84,33 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
     @NonNull
     @Override
     public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
-        getModel().updateType(getSource());
         BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
+        Context context = view.getContext();
+
+        mDashLength = CommonHelper.dp2px(context, 4f);
+        mDashSpaceLength = CommonHelper.dp2px(context, 2f);
+        holder.addOnClickListener(R.id.tv_dashboard_rate, (h, model, position) -> {
+            if (model.type != Constants.DATA_TYPE_RATE) {
+                model.type = Constants.DATA_TYPE_RATE;
+                updateViews();
+            }
+        });
+        holder.addOnClickListener(R.id.tv_dashboard_volume, (h, model, position) -> {
+            if (model.type != Constants.DATA_TYPE_VOLUME) {
+                model.type = Constants.DATA_TYPE_VOLUME;
+                updateViews();
+            }
+        });
+        holder.addOnClickListener(R.id.tv_dashboard_consumer, (h, model, position) -> {
+            if (model.type != Constants.DATA_TYPE_CONSUMER) {
+                model.type = Constants.DATA_TYPE_CONSUMER;
+                updateViews();
+            }
+        });
+
         LineChart lineChart = holder.getView(R.id.view_dashboard_line_chart);
         BarChart barChart = holder.getView(R.id.view_dashboard_bar_chart);
-        Context context = view.getContext();
+
         // 设置图表坐标Label格式
         lineXAxisRenderer = new XAxisLabelsRenderer(lineChart);
         lineYAxisRenderer = new LineYAxisLabelsRenderer(lineChart);
@@ -198,7 +206,15 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
     }
 
     @Override
-    protected void setupModel(Model model, ConsumerRateResp response) {
+    protected List<Model> createModel() {
+        ArrayList<Model> models = new ArrayList<>();
+        models.add(new Model(""));
+        return models;
+    }
+
+    @Override
+    protected void setupModel(List<Model> models, ConsumerRateResp response) {
+        Model model = models.get(0);
         List<BarEntry> rateList = model.dataSets.get(Constants.DATA_TYPE_RATE);
         List<BarEntry> volumeList = model.dataSets.get(Constants.DATA_TYPE_VOLUME);
         List<BarEntry> consumerList = model.dataSets.get(Constants.DATA_TYPE_CONSUMER);
@@ -252,9 +268,9 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
         BarChart bar = holder.getView(R.id.view_dashboard_bar_chart);
 
         // Set visible & button selected
-        rate.setVisibility(showConsumerData() && showTransactionData() ? View.VISIBLE : View.GONE);
-        volume.setVisibility(showTransactionData() ? View.VISIBLE : View.GONE);
-        consumer.setVisibility(showConsumerData() ? View.VISIBLE : View.GONE);
+        rate.setVisibility(hasFs() && hasSaas() ? View.VISIBLE : View.GONE);
+        volume.setVisibility(hasSaas() ? View.VISIBLE : View.GONE);
+        consumer.setVisibility(hasFs() ? View.VISIBLE : View.GONE);
         line.setVisibility(model.type == Constants.DATA_TYPE_RATE ? View.VISIBLE : View.INVISIBLE);
         bar.setVisibility(model.type != Constants.DATA_TYPE_RATE ? View.VISIBLE : View.INVISIBLE);
         rate.setSelected(model.type == Constants.DATA_TYPE_RATE);
@@ -375,14 +391,14 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
 
     @Override
     protected void showLoading(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-        model.period = getPeriod();
+        model.period = mPeriod;
         model.dataSets.get(model.type).clear();
         setupView(holder, model, position);
     }
 
     @Override
     protected void showError(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-        model.period = getPeriod();
+        model.period = mPeriod;
         model.dataSets.get(model.type).clear();
         setupView(holder, model, position);
     }
@@ -397,7 +413,7 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
         }
     }
 
-    public static class Model extends BaseRefreshItem.BaseModel {
+    public static class Model extends BaseRefreshCard.BaseModel {
         private String title;
         private int type;
         private SparseArray<List<BarEntry>> dataSets = new SparseArray<>(3);
@@ -407,6 +423,15 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
             dataSets.put(Constants.DATA_TYPE_RATE, new ArrayList<>());
             dataSets.put(Constants.DATA_TYPE_VOLUME, new ArrayList<>());
             dataSets.put(Constants.DATA_TYPE_CONSUMER, new ArrayList<>());
+        }
+
+        @Override
+        public void init(int source) {
+            updateType(source);
+            for (int i = 0, size = dataSets.size(); i < size; i++) {
+                int key = dataSets.keyAt(i);
+                dataSets.get(key).clear();
+            }
         }
 
         public void updateType(int source) {
@@ -419,14 +444,5 @@ public class TrendChartCard extends BaseRefreshItem<TrendChartCard.Model, Consum
             }
         }
 
-        @Override
-        public void clear(int source) {
-            period = Constants.TIME_PERIOD_TODAY;
-            updateType(source);
-            for (int i = 0, size = dataSets.size(); i < size; i++) {
-                int key = dataSets.keyAt(i);
-                dataSets.get(key).clear();
-            }
-        }
     }
 }

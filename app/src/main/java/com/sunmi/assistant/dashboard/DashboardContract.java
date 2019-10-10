@@ -2,7 +2,7 @@ package com.sunmi.assistant.dashboard;
 
 import android.content.Context;
 
-import com.sunmi.assistant.dashboard.newcard.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
 
 import java.util.List;
 

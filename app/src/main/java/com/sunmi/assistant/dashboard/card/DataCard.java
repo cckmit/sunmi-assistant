@@ -17,10 +17,13 @@ import com.sunmi.assistant.data.response.OrderTotalCountResp;
 import com.sunmi.assistant.order.OrderListActivity_;
 import com.sunmi.assistant.order.model.OrderInfo;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
+import sunmi.common.base.recycle.ItemType;
 import sunmi.common.model.ConsumerCountResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
@@ -30,29 +33,24 @@ import sunmi.common.rpc.retrofit.RetrofitCallback;
  * @author yinhui
  * @since 2019-07-01
  */
-public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
+public class DataCard extends BaseRefreshCard<DataCard.Model, Object> {
+
+    private static DataCard sInstance;
 
     private static final int NUM_100_MILLION = 100000000;
     private static final int NUM_10_THOUSANDS = 10000;
 
-    public DataCard(Context context, DashboardContract.Presenter presenter) {
-        super(context, presenter);
-        addOnViewClickListener(R.id.layout_dashboard_main, (holder, model, position) -> {
-            if (!showTransactionData() && showConsumerData()) {
-                goToConsumerList(context);
-            } else {
-                goToOrderList(context);
-            }
-        });
-        addOnViewClickListener(R.id.layout_dashboard_volume, (holder, model, position)
-                -> goToOrderList(context));
-        addOnViewClickListener(R.id.layout_dashboard_consumer, (holder, model, position)
-                -> goToConsumerList(context));
+    private DataCard(DashboardContract.Presenter presenter, int source) {
+        super(presenter, source);
     }
 
-    @Override
-    protected Model createModel(Context context) {
-        return new Model(context);
+    public static DataCard init(DashboardContract.Presenter presenter, int source) {
+        if (sInstance == null) {
+            sInstance = new DataCard(presenter, source);
+        } else {
+            sInstance.init(source);
+        }
+        return sInstance;
     }
 
     @Override
@@ -62,9 +60,9 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
 
     @Override
     protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, CardCallback callback) {
-        if (showTransactionData()) {
+        if (hasSaas()) {
             loadSales(companyId, shopId, period, callback);
-        } else if (showConsumerData()) {
+        } else if (hasFs()) {
             loadConsumer(companyId, shopId, period, callback);
         }
         return null;
@@ -80,7 +78,7 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
                             onFail(code, msg, null);
                             return;
                         }
-                        Model model = getModel();
+                        Model model = getModels().get(0);
                         if (period == Constants.TIME_PERIOD_TODAY) {
                             model.sales = data.getDayAmount();
                             model.lastSales = data.getYesterdayAmount();
@@ -111,7 +109,7 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
                             onFail(code, msg, null);
                             return;
                         }
-                        Model model = getModel();
+                        Model model = getModels().get(0);
                         if (period == Constants.TIME_PERIOD_TODAY) {
                             model.volume = data.getDayCount();
                             model.lastVolume = data.getYesterdayCount();
@@ -122,7 +120,7 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
                             model.volume = data.getMonthCount();
                             model.lastVolume = data.getLastMonthCount();
                         }
-                        if (showConsumerData()) {
+                        if (hasFs()) {
                             loadConsumer(companyId, shopId, period, callback);
                         } else {
                             callback.onSuccess();
@@ -145,10 +143,10 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
                             onFail(code, msg, null);
                             return;
                         }
-                        Model model = getModel();
+                        Model model = getModels().get(0);
                         model.consumer = data.getLatestCount();
                         model.lastConsumer = data.getEarlyCount();
-                        if (showTransactionData()) {
+                        if (hasSaas()) {
                             model.rate = model.consumer == 0 ?
                                     0f : Math.min((float) model.volume / model.consumer, 1f);
                             model.lastRate = model.lastConsumer == 0 ?
@@ -165,7 +163,36 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
     }
 
     @Override
-    protected void setupModel(Model model, Object response) {
+    protected List<Model> createModel() {
+        ArrayList<Model> models = new ArrayList<>();
+        models.add(new Model());
+        return models;
+    }
+
+    @Override
+    protected void setupModel(List<Model> models, Object response) {
+    }
+
+    @NonNull
+    @Override
+    public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
+        BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
+        Context context = holder.getContext();
+        for (Model model : getModels()) {
+            model.init(context);
+        }
+        holder.addOnClickListener(R.id.layout_dashboard_main, (h, model, position) -> {
+            if (!hasSaas() && hasFs()) {
+                goToConsumerList(context);
+            } else {
+                goToOrderList(context);
+            }
+        });
+        holder.addOnClickListener(R.id.layout_dashboard_volume, (h, model, position)
+                -> goToOrderList(context));
+        holder.addOnClickListener(R.id.layout_dashboard_consumer, (h, model, position)
+                -> goToConsumerList(context));
+        return holder;
     }
 
     @Override
@@ -179,12 +206,12 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
         TextView consumerSubdata = holder.getView(R.id.tv_dashboard_consumer_subdata);
         TextView rateValue = holder.getView(R.id.tv_dashboard_rate);
         TextView rateSubdata = holder.getView(R.id.tv_dashboard_rate_subdata);
-        if (showTransactionData() && !showConsumerData()) {
+        if (hasSaas() && !hasFs()) {
             value.setText(model.getSales());
             subdata.setText(model.getLastSales());
             volumeValue.setText(model.getVolume());
             volumeSubdata.setText(model.getLastVolume());
-        } else if (!showTransactionData() && showConsumerData()) {
+        } else if (!hasSaas() && hasFs()) {
             value.setText(model.getConsumer());
             subdata.setText(model.getLastConsumer());
         } else {
@@ -206,7 +233,7 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
         View consumer = holder.getView(R.id.layout_dashboard_consumer);
         View rate = holder.getView(R.id.layout_dashboard_rate);
         ImageView loading = holder.getView(R.id.iv_dashboard_loading);
-        if (!showTransactionData() && showConsumerData()) {
+        if (!hasSaas() && hasFs()) {
             main.setVisibility(View.INVISIBLE);
             volume.setVisibility(View.GONE);
             consumer.setVisibility(View.GONE);
@@ -224,7 +251,7 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
 
     @Override
     protected void showError(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-        setupVisible(holder, getPeriod());
+        setupVisible(holder, mPeriod);
         TextView value = holder.getView(R.id.tv_dashboard_value);
         TextView subdata = holder.getView(R.id.tv_dashboard_subdata);
         TextView volumeValue = holder.getView(R.id.tv_dashboard_volume);
@@ -258,13 +285,13 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
         TextView rateSubtitle = holder.getView(R.id.tv_dashboard_rate_subtitle);
         holder.getView(R.id.iv_dashboard_loading).setVisibility(View.GONE);
         // 根据数据来源变更View展示的部分和文案
-        if (showTransactionData() && !showConsumerData()) {
+        if (hasSaas() && !hasFs()) {
             main.setVisibility(View.VISIBLE);
             volume.setVisibility(View.VISIBLE);
             consumer.setVisibility(View.GONE);
             rate.setVisibility(View.GONE);
             title.setText(R.string.dashboard_data_sales_amount);
-        } else if (!showTransactionData() && showConsumerData()) {
+        } else if (!hasSaas() && hasFs()) {
             main.setVisibility(View.VISIBLE);
             volume.setVisibility(View.GONE);
             consumer.setVisibility(View.GONE);
@@ -297,7 +324,7 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
     }
 
     private void goToOrderList(Context context) {
-        Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(getPeriod());
+        Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(mPeriod);
         OrderListActivity_.intent(context)
                 .mTimeStart(periodTimestamp.first)
                 .mTimeEnd(periodTimestamp.second)
@@ -309,7 +336,7 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
         // TODO: Consumer List
     }
 
-    public static class Model extends BaseRefreshItem.BaseModel {
+    public static class Model extends BaseRefreshCard.BaseModel {
 
         private String mNum100Million;
         private String mNum10Thousands;
@@ -323,7 +350,7 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
         float rate;
         float lastRate;
 
-        public Model(Context context) {
+        public void init(Context context) {
             mNum10Thousands = context.getString(R.string.str_num_10_thousands);
             mNum100Million = context.getString(R.string.str_num_100_million);
         }
@@ -387,5 +414,6 @@ public class DataCard extends BaseRefreshItem<DataCard.Model, Object> {
         public String getLastRate() {
             return String.format(Locale.getDefault(), FORMAT_FLOAT_DOUBLE_PERCENT, lastRate * 100);
         }
+
     }
 }

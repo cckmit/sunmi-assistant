@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.newcard;
+package com.sunmi.assistant.dashboard.card;
 
 import android.os.Handler;
 import android.os.Looper;

@@ -1,38 +1,41 @@
 package com.sunmi.assistant.dashboard.card;
 
-import android.content.Context;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
+import android.view.View;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.DashboardContract;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
+import sunmi.common.base.recycle.ItemType;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
 /**
  * @author yinhui
  * @since 2019-07-01
  */
-public class PeriodTabCard extends BaseRefreshItem<PeriodTabCard.Model, Object> {
+public class PeriodTabCard extends BaseRefreshCard<PeriodTabCard.Model, Object> {
 
+    private static PeriodTabCard sInstance;
 
-    public PeriodTabCard(Context context, DashboardContract.Presenter presenter) {
-        super(context, presenter);
-        addOnViewClickListener(R.id.tv_dashboard_today, (holder, model, position) ->
-                mPresenter.switchPeriodTo(Constants.TIME_PERIOD_TODAY));
-        addOnViewClickListener(R.id.tv_dashboard_week, (holder, model, position) ->
-                mPresenter.switchPeriodTo(Constants.TIME_PERIOD_WEEK));
-        addOnViewClickListener(R.id.tv_dashboard_month, (holder, model, position) ->
-                mPresenter.switchPeriodTo(Constants.TIME_PERIOD_MONTH));
+    private PeriodTabCard(DashboardContract.Presenter presenter, int source) {
+        super(presenter, source);
     }
 
-    @Override
-    protected Model createModel(Context context) {
-        return new Model();
+    public static PeriodTabCard init(DashboardContract.Presenter presenter, int source) {
+        if (sInstance == null) {
+            sInstance = new PeriodTabCard(presenter, source);
+        } else {
+            sInstance.init(source);
+        }
+        return sInstance;
     }
 
     @Override
@@ -47,7 +50,27 @@ public class PeriodTabCard extends BaseRefreshItem<PeriodTabCard.Model, Object> 
     }
 
     @Override
-    protected void setupModel(Model model, Object response) {
+    protected List<Model> createModel() {
+        ArrayList<Model> models = new ArrayList<>();
+        models.add(new Model());
+        return models;
+    }
+
+    @Override
+    protected void setupModel(List<Model> models, Object response) {
+    }
+
+    @NonNull
+    @Override
+    public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
+        BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
+        holder.addOnClickListener(R.id.tv_dashboard_today, (h, model, position) ->
+                mPresenter.switchPeriodTo(Constants.TIME_PERIOD_TODAY));
+        holder.addOnClickListener(R.id.tv_dashboard_week, (h, model, position) ->
+                mPresenter.switchPeriodTo(Constants.TIME_PERIOD_WEEK));
+        holder.addOnClickListener(R.id.tv_dashboard_month, (h, model, position) ->
+                mPresenter.switchPeriodTo(Constants.TIME_PERIOD_MONTH));
+        return holder;
     }
 
     @Override
@@ -63,6 +86,6 @@ public class PeriodTabCard extends BaseRefreshItem<PeriodTabCard.Model, Object> 
         month.setTypeface(null, model.period == Constants.TIME_PERIOD_MONTH ? Typeface.BOLD : Typeface.NORMAL);
     }
 
-    public static class Model extends BaseRefreshItem.BaseModel {
+    public static class Model extends BaseRefreshCard.BaseModel {
     }
 }

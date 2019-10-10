@@ -49,7 +49,7 @@ import sunmi.common.utils.log.LogCat;
  * @author yinhui
  * @since 2019-07-01
  */
-public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard.Model, Object> {
+public class DistributionChartCard extends BaseRefreshCard<DistributionChartCard.Model, Object> {
 
     private static final int NUM_10_THOUSANDS = 10000;
 
@@ -58,29 +58,23 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
     private static final int[] PIE_COLORS_AGE = {0xFFFADD4B, 0xFF45E6B0, 0xFF4BC0FA, 0xFF4B85FA, 0xFF7A62F5, 0xFFB87AF5, 0xFFFF6680, 0xFFFF884D};
     private static final int[] PIE_COLORS_EMPTY = {0xFFCED2D9};
 
+    private static DistributionChartCard sInstance;
+
     private PieChart mChart;
     private SparseArray<String> mAgeList;
     private OnPieSelectedListener mOnSelectedListener;
 
-    public DistributionChartCard(Context context, DashboardContract.Presenter presenter) {
-        super(context, presenter);
-        addOnViewClickListener(R.id.tv_dashboard_new_old, (holder, model, position) -> {
-            model.type = Constants.DATA_TYPE_NEW_OLD;
-            updateView();
-        });
-        addOnViewClickListener(R.id.tv_dashboard_gender, (holder, model, position) -> {
-            model.type = Constants.DATA_TYPE_GENDER;
-            updateView();
-        });
-        addOnViewClickListener(R.id.tv_dashboard_age, (holder, model, position) -> {
-            model.type = Constants.DATA_TYPE_AGE;
-            updateView();
-        });
+    private DistributionChartCard(DashboardContract.Presenter presenter, int source) {
+        super(presenter, source);
     }
 
-    @Override
-    protected Model createModel(Context context) {
-        return new Model("", Constants.DATA_TYPE_NEW_OLD);
+    public static DistributionChartCard init(DashboardContract.Presenter presenter, int source) {
+        if (sInstance == null) {
+            sInstance = new DistributionChartCard(presenter, source);
+        } else {
+            sInstance.init(source);
+        }
+        return sInstance;
     }
 
     @Override
@@ -117,8 +111,8 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
                 Collections.sort(list, (o1, o2) -> (o1.getCode() - o2.getCode()));
                 mAgeList = new SparseArray<>(list.size());
                 for (FaceAge age : list) {
-                    mAgeList.put(age.getCode(),
-                            mContext.getString(R.string.dashboard_chart_age_label, age.getName()));
+                    mAgeList.put(age.getCode(), mPresenter.getContext().
+                            getString(R.string.dashboard_chart_age_label, age.getName()));
                 }
                 loadNewOld(companyId, shopId, start, end, callback);
             }
@@ -144,7 +138,7 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
                             onFail(code, msg, data);
                             return;
                         }
-                        Model model = getModel();
+                        Model model = getModels().get(0);
                         List<PieEntry> newOldList = model.dataSets.get(Constants.DATA_TYPE_NEW_OLD);
                         List<PieEntry> ageList = model.dataSets.get(Constants.DATA_TYPE_AGE);
                         newOldList.clear();
@@ -157,8 +151,8 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
                             int ageCount = bean.getRegularCount() + bean.getStrangerCount();
                             ageList.add(new PieEntry(ageCount, mAgeList.get(bean.getAgeRangeCode())));
                         }
-                        String newName = mContext.getString(R.string.dashboard_chart_new);
-                        String oldName = mContext.getString(R.string.dashboard_chart_old);
+                        String newName = mPresenter.getContext().getString(R.string.dashboard_chart_new);
+                        String oldName = mPresenter.getContext().getString(R.string.dashboard_chart_old);
                         newOldList.add(new PieEntry(newCount, newName));
                         newOldList.add(new PieEntry(oldCount, oldName));
                         loadGender(companyId, shopId, start, end, callback);
@@ -185,7 +179,7 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
                             onFail(code, msg, data);
                             return;
                         }
-                        Model model = getModel();
+                        Model model = getModels().get(0);
                         List<PieEntry> genderList = model.dataSets.get(Constants.DATA_TYPE_GENDER);
                         genderList.clear();
                         int maleCount = 0;
@@ -194,8 +188,8 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
                             maleCount += bean.getMaleCount();
                             femaleCount += bean.getFemaleCount();
                         }
-                        String maleName = mContext.getString(R.string.dashboard_chart_male);
-                        String femaleName = mContext.getString(R.string.dashboard_chart_female);
+                        String maleName = mPresenter.getContext().getString(R.string.dashboard_chart_male);
+                        String femaleName = mPresenter.getContext().getString(R.string.dashboard_chart_female);
                         genderList.add(new PieEntry(maleCount, maleName));
                         genderList.add(new PieEntry(femaleCount, femaleName));
                         callback.onSuccess();
@@ -231,11 +225,31 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
         mOnSelectedListener = new OnPieSelectedListener(mChart);
         mChart.setOnChartValueSelectedListener(mOnSelectedListener);
 
+        holder.addOnClickListener(R.id.tv_dashboard_new_old, (h, model, position) -> {
+            model.type = Constants.DATA_TYPE_NEW_OLD;
+            updateViews();
+        });
+        holder.addOnClickListener(R.id.tv_dashboard_gender, (h, model, position) -> {
+            model.type = Constants.DATA_TYPE_GENDER;
+            updateViews();
+        });
+        holder.addOnClickListener(R.id.tv_dashboard_age, (h, model, position) -> {
+            model.type = Constants.DATA_TYPE_AGE;
+            updateViews();
+        });
+
         return holder;
     }
 
     @Override
-    protected void setupModel(Model model, Object response) {
+    protected List<Model> createModel() {
+        ArrayList<Model> models = new ArrayList<>();
+        models.add(new Model("", Constants.DATA_TYPE_NEW_OLD));
+        return models;
+    }
+
+    @Override
+    protected void setupModel(List<Model> models, Object response) {
 //        List<PieEntry> entries = model.dataSets.get(Constants.DATA_TYPE_NEW_OLD);
 //        for (PieEntry entry : entries) {
 //            entry.setY((int)(Math.random() * 1000));
@@ -346,7 +360,7 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
     @Override
     protected void showLoading(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         PieChart pie = holder.getView(R.id.view_dashboard_pie_chart);
-        model.period = getPeriod();
+        model.period = mPeriod;
         model.dataSets.get(model.type).clear();
         pie.setCenterText("");
         PieDataSet set;
@@ -372,7 +386,7 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
     @Override
     protected void showError(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         PieChart pie = holder.getView(R.id.view_dashboard_pie_chart);
-        model.period = getPeriod();
+        model.period = mPeriod;
         model.dataSets.get(model.type).clear();
         pie.setCenterText("");
         PieDataSet set;
@@ -491,7 +505,7 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
 
     }
 
-    public static class Model extends BaseRefreshItem.BaseModel {
+    public static class Model extends BaseRefreshCard.BaseModel {
         private String title;
         private int type;
         private SparseArray<List<PieEntry>> dataSets = new SparseArray<>(3);
@@ -505,8 +519,7 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
         }
 
         @Override
-        public void clear(int source) {
-            period = Constants.TIME_PERIOD_TODAY;
+        public void init(int source) {
             for (int i = 0, size = dataSets.size(); i < size; i++) {
                 int key = dataSets.keyAt(i);
                 dataSets.get(key).clear();
