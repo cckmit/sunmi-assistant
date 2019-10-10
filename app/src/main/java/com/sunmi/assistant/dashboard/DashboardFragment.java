@@ -106,7 +106,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mPresenter.attachView(this);
         showLoadingDialog();
         initView();
-        mPresenter.init();
+        mPresenter.init(getContext());
     }
 
     private void initView() {
@@ -235,7 +235,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @Click(R.id.btn_refresh)
     void clickReload() {
         showLoadingDialog();
-        mPresenter.init();
+        mPresenter.init(getContext());
     }
 
     @Override
@@ -311,12 +311,12 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         if (id == CommonNotifications.companySwitch
                 || id == CommonNotifications.companyNameChanged) {
             mShopMenuPopupHelper.setCompanyName(SpUtils.getCompanyName());
-            mPresenter.init();
+            mPresenter.init(getContext());
         } else if (id == CommonNotifications.shopSwitched
                 || id == CommonNotifications.shopNameChanged
                 || id == CommonNotifications.importShop
                 || id == CommonNotifications.shopCreate) {
-            mPresenter.init();
+            mPresenter.init(getContext());
         } else if (id == IpcConstants.refreshIpcList) {
             mPresenter.reload();
         }

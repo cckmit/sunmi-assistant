@@ -62,7 +62,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
     private int mCompanyId;
     private int mShopId;
 
-    BaseRefreshCard(DashboardContract.Presenter presenter, int source) {
+    protected BaseRefreshCard(DashboardContract.Presenter presenter, int source) {
         init(source);
         this.mPresenter = presenter;
         this.mModels = createModel();
@@ -78,6 +78,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         this.mShopId = SpUtils.getShopId();
         for (Model model : mModels) {
             model.valid = false;
+            model.init(source);
         }
     }
 
@@ -97,6 +98,10 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         return mModels;
     }
 
+    public Model getModel() {
+        return mModels.get(0);
+    }
+
     public void registerIntoAdapter(BaseRecyclerAdapter<Object> adapter, int position, int size) {
         this.mPositionMin = position;
         this.mPositionMax = position + mModels.size() - 1;
@@ -104,7 +109,33 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         adapter.register((Class<Model>) mModels.get(0).getClass(), this);
     }
 
-    private void clearModels() {
+    protected void updateModels() {
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            mHandler.post(this::updateModels);
+            return;
+        }
+        mModels.clear();
+        mPositionMin = -1;
+        mPositionMax = -1;
+        BaseRecyclerAdapter adapter = getAdapter();
+        int count = adapter.getItemCount();
+        int min = count;
+        int max = -1;
+        for (int i = count - 1; i >= 0; i--) {
+            if (adapter.getItemType(i) == this) {
+                min = Math.min(min, i);
+                max = Math.max(max, i);
+                //noinspection unchecked
+                mModels.add((Model) adapter.getItem(i));
+            }
+        }
+        if (min <= max) {
+            mPositionMin = min;
+            mPositionMax = max;
+        }
+    }
+
+    protected void clearModels() {
         if (Looper.myLooper() != Looper.getMainLooper()) {
             mHandler.post(this::clearModels);
             return;
@@ -174,11 +205,12 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         mCall.set(call, mCompanyId, mShopId, mPeriod);
     }
 
-    private void updateViews() {
+    protected void updateViews() {
         if (Looper.myLooper() != Looper.getMainLooper()) {
             mHandler.post(this::updateViews);
             return;
         }
+        updateModels();
         if (mPositionMin < 0 || mPositionMax < 0) {
             return;
         }
@@ -382,7 +414,15 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         int[] padding;
         int[] margin;
 
-        public BaseModel() {
+        public void init(int source) {
+        }
+
+        public void setMargin(int left, int top, int right, int bottom) {
+            this.margin = new int[]{left, top, right, bottom};
+        }
+
+        public void setPadding(int left, int top, int right, int bottom) {
+            this.padding = new int[]{left, top, right, bottom};
         }
 
     }

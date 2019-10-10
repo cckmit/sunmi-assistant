@@ -12,8 +12,6 @@ public interface DashboardContract {
 
     interface View extends BaseView {
 
-        Context getContext();
-
         void updateTab(int period);
 
         void setShopList(List<ShopItem> list);
@@ -26,7 +24,9 @@ public interface DashboardContract {
 
     interface Presenter {
 
-        void init();
+        Context getContext();
+
+        void init(Context context);
 
         void reload();
 

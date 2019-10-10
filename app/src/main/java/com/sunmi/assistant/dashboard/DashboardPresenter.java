@@ -46,6 +46,8 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         WORK_HANDLER = new Handler(WORK_THREAD.getLooper());
     }
 
+    private Context mContext;
+
     private int mCompanyId;
     private ShopItem mShop;
     private boolean mSaasExist;
@@ -59,10 +61,16 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     private RefreshTask mTask;
 
     @Override
-    public void init() {
+    public Context getContext() {
+        return mContext;
+    }
+
+    @Override
+    public void init(Context context) {
         if (!isViewAttached()) {
             return;
         }
+        mContext = context;
         mCompanyId = SpUtils.getCompanyId();
         loadShopList();
         if (mTask == null) {
@@ -234,12 +242,11 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         if (!isViewAttached()) {
             return;
         }
-        Context context = mView.getContext();
         BaseRefreshItem card;
 
         card = mCardMap.get(PeriodTabCard.class);
         if (card == null) {
-            card = new PeriodTabCard(context, this);
+            card = new PeriodTabCard(mContext, this);
             mCardMap.put(PeriodTabCard.class, card);
         }
         card.initConfig(source);
@@ -247,7 +254,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
         card = mCardMap.get(DataCard.class);
         if (card == null) {
-            card = new DataCard(context, this);
+            card = new DataCard(mContext, this);
             mCardMap.put(DataCard.class, card);
         }
         card.initConfig(source);
@@ -255,7 +262,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
         card = mCardMap.get(TrendChartCard.class);
         if (card == null) {
-            card = new TrendChartCard(context, this);
+            card = new TrendChartCard(mContext, this);
             mCardMap.put(TrendChartCard.class, card);
         }
         card.initConfig(source);
@@ -263,7 +270,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
         card = mCardMap.get(DistributionChartCard.class);
         if (card == null) {
-            card = new DistributionChartCard(context, this);
+            card = new DistributionChartCard(mContext, this);
             mCardMap.put(DistributionChartCard.class, card);
         }
         card.initConfig(source);
@@ -274,8 +281,8 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             card = new EmptyGapCard();
             mCardMap.put(EmptyGapCard.class, card);
         }
-        ((EmptyGapCard) card).setHeightAndColor((int) context.getResources().getDimension(R.dimen.dp_24),
-                ContextCompat.getColor(context, R.color.color_F5F7FA));
+        ((EmptyGapCard) card).setHeightAndColor((int) mContext.getResources().getDimension(R.dimen.dp_24),
+                ContextCompat.getColor(mContext, R.color.color_F5F7FA));
         mList.add(card);
     }
 
@@ -283,12 +290,11 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         if (!isViewAttached()) {
             return;
         }
-        Context context = mView.getContext();
         BaseRefreshItem card;
 
         card = mCardMap.get(PeriodTabCard.class);
         if (card == null) {
-            card = new PeriodTabCard(context, this);
+            card = new PeriodTabCard(mContext, this);
             mCardMap.put(PeriodTabCard.class, card);
         }
         card.initConfig(source);
@@ -296,7 +302,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
         card = mCardMap.get(DataCard.class);
         if (card == null) {
-            card = new DataCard(context, this);
+            card = new DataCard(mContext, this);
             mCardMap.put(DataCard.class, card);
         }
         card.initConfig(source);
@@ -304,7 +310,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
         card = mCardMap.get(TrendChartCard.class);
         if (card == null) {
-            card = new TrendChartCard(context, this);
+            card = new TrendChartCard(mContext, this);
             mCardMap.put(TrendChartCard.class, card);
         }
         card.initConfig(source);
@@ -312,7 +318,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
         card = mCardMap.get(DistributionChartCard.class);
         if (card == null) {
-            card = new DistributionChartCard(context, this);
+            card = new DistributionChartCard(mContext, this);
             mCardMap.put(DistributionChartCard.class, card);
         }
         card.initConfig(source);
@@ -320,7 +326,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
         card = mCardMap.get(NoOrderCard.class);
         if (card == null) {
-            card = new NoOrderCard(context, this);
+            card = new NoOrderCard(mContext, this);
             mCardMap.put(NoOrderCard.class, card);
         }
         ((NoOrderCard) card).setIsAllEmpty(false);
@@ -331,8 +337,8 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             card = new EmptyGapCard();
             mCardMap.put(EmptyGapCard.class, card);
         }
-        ((EmptyGapCard) card).setHeightAndColor((int) context.getResources().getDimension(R.dimen.dp_32),
-                ContextCompat.getColor(context, R.color.color_F5F7FA));
+        ((EmptyGapCard) card).setHeightAndColor((int) mContext.getResources().getDimension(R.dimen.dp_32),
+                ContextCompat.getColor(mContext, R.color.color_F5F7FA));
         mList.add(card);
     }
 
@@ -340,12 +346,11 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         if (!isViewAttached()) {
             return;
         }
-        Context context = mView.getContext();
         BaseRefreshItem card;
 
         card = mCardMap.get(PeriodTabCard.class);
         if (card == null) {
-            card = new PeriodTabCard(context, this);
+            card = new PeriodTabCard(mContext, this);
             mCardMap.put(PeriodTabCard.class, card);
         }
         card.initConfig(source);
@@ -353,7 +358,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
         card = mCardMap.get(DataCard.class);
         if (card == null) {
-            card = new DataCard(context, this);
+            card = new DataCard(mContext, this);
             mCardMap.put(DataCard.class, card);
         }
         card.initConfig(source);
@@ -361,7 +366,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
         card = mCardMap.get(TrendChartCard.class);
         if (card == null) {
-            card = new TrendChartCard(context, this);
+            card = new TrendChartCard(mContext, this);
             mCardMap.put(TrendChartCard.class, card);
         }
         card.initConfig(source);
@@ -369,7 +374,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
         card = mCardMap.get(NoFsCard.class);
         if (card == null) {
-            card = new NoFsCard(context, this);
+            card = new NoFsCard(mContext, this);
             mCardMap.put(NoFsCard.class, card);
         }
         ((NoFsCard) card).setIsAllEmpty(false);
@@ -380,8 +385,8 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             card = new EmptyGapCard();
             mCardMap.put(EmptyGapCard.class, card);
         }
-        ((EmptyGapCard) card).setHeightAndColor((int) context.getResources().getDimension(R.dimen.dp_32),
-                ContextCompat.getColor(context, R.color.color_F5F7FA));
+        ((EmptyGapCard) card).setHeightAndColor((int) mContext.getResources().getDimension(R.dimen.dp_32),
+                ContextCompat.getColor(mContext, R.color.color_F5F7FA));
         mList.add(card);
     }
 
@@ -389,7 +394,6 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         if (!isViewAttached()) {
             return;
         }
-        Context context = mView.getContext();
         BaseRefreshItem card;
 
         card = mCardMap.get(EmptyDataCard.class);
@@ -401,7 +405,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
         card = mCardMap.get(NoFsCard.class);
         if (card == null) {
-            card = new NoFsCard(context, this);
+            card = new NoFsCard(mContext, this);
             mCardMap.put(NoFsCard.class, card);
         }
         ((NoFsCard) card).setIsAllEmpty(true);
@@ -409,7 +413,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
         card = mCardMap.get(NoOrderCard.class);
         if (card == null) {
-            card = new NoOrderCard(context, this);
+            card = new NoOrderCard(mContext, this);
             mCardMap.put(NoOrderCard.class, card);
         }
         ((NoOrderCard) card).setIsAllEmpty(true);
@@ -420,13 +424,14 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             card = new EmptyGapCard();
             mCardMap.put(EmptyGapCard.class, card);
         }
-        ((EmptyGapCard) card).setHeightAndColor((int) context.getResources().getDimension(R.dimen.dp_32), 0xFFFFFFFF);
+        ((EmptyGapCard) card).setHeightAndColor((int) mContext.getResources().getDimension(R.dimen.dp_32), 0xFFFFFFFF);
         mList.add(card);
     }
 
     @Override
     public void detachView() {
         super.detachView();
+        mContext = null;
         WORK_HANDLER.removeCallbacks(mTask);
         for (BaseRefreshItem card : mList) {
             card.cancelLoad();
