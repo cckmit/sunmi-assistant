@@ -76,7 +76,7 @@
         android:layout_height="@dimen/dp_98"
         android:layout_marginStart="@dimen/dp_24"
         app:layout_goneMarginEnd="@dimen/dp_24"
-        app:layout_constraintEnd_toStartOf="@+id/layout_dashboard_consumer"
+        app:layout_constraintEnd_toStartOf="@+id/layout_dashboard_customer"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_dashboard_main">
@@ -136,7 +136,7 @@
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/layout_dashboard_consumer"
+        android:id="@+id/layout_dashboard_customer"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_98"
         app:layout_constraintEnd_toStartOf="@+id/layout_dashboard_rate"
@@ -145,11 +145,11 @@
         app:layout_constraintTop_toBottomOf="@id/layout_dashboard_main">
 
         <TextView
-            android:id="@+id/tv_dashboard_consumer_title"
+            android:id="@+id/tv_dashboard_customer_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/dashboard_data_consumer"
+            android:text="@string/dashboard_data_customer"
             android:textColor="@color/color_525866"
             android:textSize="@dimen/sp_12"
             app:layout_constraintEnd_toEndOf="parent"
@@ -157,7 +157,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tv_dashboard_consumer"
+            android:id="@+id/tv_dashboard_customer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -166,11 +166,11 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_consumer_title"
+            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_customer_title"
             tools:text="1,920" />
 
         <TextView
-            android:id="@+id/tv_dashboard_consumer_subtitle"
+            android:id="@+id/tv_dashboard_customer_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_32"
@@ -178,14 +178,14 @@
             android:textColor="@color/color_777E8C"
             android:textSize="@dimen/sp_10"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tv_dashboard_consumer_subdata"
+            app:layout_constraintEnd_toStartOf="@+id/tv_dashboard_customer_subdata"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_consumer" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_customer" />
 
 
         <TextView
-            android:id="@+id/tv_dashboard_consumer_subdata"
+            android:id="@+id/tv_dashboard_customer_subdata"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_4"
@@ -194,8 +194,8 @@
             android:textSize="@dimen/sp_12"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_dashboard_consumer_subtitle"
-            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_consumer"
+            app:layout_constraintStart_toEndOf="@+id/tv_dashboard_customer_subtitle"
+            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_customer"
             tools:text="900" />
 
     </android.support.constraint.ConstraintLayout>
@@ -207,7 +207,7 @@
         android:layout_marginEnd="@dimen/dp_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/layout_dashboard_consumer"
+        app:layout_constraintStart_toEndOf="@+id/layout_dashboard_customer"
         app:layout_constraintTop_toBottomOf="@id/layout_dashboard_main">
 
         <TextView

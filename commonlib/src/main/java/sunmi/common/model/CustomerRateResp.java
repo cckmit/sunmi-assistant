@@ -8,7 +8,7 @@ import java.util.List;
  * @author yinhui
  * @date 2019-09-18
  */
-public class ConsumerRateResp {
+public class CustomerRateResp {
 
 
     @SerializedName("count_list")

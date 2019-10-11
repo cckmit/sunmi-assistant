@@ -40,16 +40,16 @@
         android:textColor="@color/dashboard_btn_chart_text"
         android:textSize="@dimen/sp_12"
         app:layout_constraintBaseline_toBaselineOf="@+id/tv_dashboard_title"
-        app:layout_constraintEnd_toStartOf="@+id/tv_dashboard_consumer"
+        app:layout_constraintEnd_toStartOf="@+id/tv_dashboard_customer"
         app:layout_goneMarginEnd="@dimen/dp_24" />
 
     <TextView
-        android:id="@+id/tv_dashboard_consumer"
+        android:id="@+id/tv_dashboard_customer"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_32"
         android:layout_marginEnd="@dimen/dp_24"
         android:gravity="center"
-        android:text="@string/dashboard_chart_consumer"
+        android:text="@string/dashboard_chart_customer"
         android:textColor="@color/dashboard_btn_chart_text"
         android:textSize="@dimen/sp_12"
         app:layout_constraintBaseline_toBaselineOf="@+id/tv_dashboard_title"

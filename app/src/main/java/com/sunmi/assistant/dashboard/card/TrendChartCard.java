@@ -40,7 +40,7 @@ import java.util.List;
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
-import sunmi.common.model.ConsumerRateResp;
+import sunmi.common.model.CustomerRateResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.utils.CommonHelper;
@@ -50,7 +50,7 @@ import sunmi.common.utils.log.LogCat;
  * @author yinhui
  * @since 2019-07-01
  */
-public class TrendChartCard extends BaseRefreshCard<TrendChartCard.Model, ConsumerRateResp> {
+public class TrendChartCard extends BaseRefreshCard<TrendChartCard.Model, CustomerRateResp> {
 
     private static TrendChartCard sInstance;
 
@@ -101,9 +101,9 @@ public class TrendChartCard extends BaseRefreshCard<TrendChartCard.Model, Consum
                 updateViews();
             }
         });
-        holder.addOnClickListener(R.id.tv_dashboard_consumer, (h, model, position) -> {
-            if (model.type != Constants.DATA_TYPE_CONSUMER) {
-                model.type = Constants.DATA_TYPE_CONSUMER;
+        holder.addOnClickListener(R.id.tv_dashboard_customer, (h, model, position) -> {
+            if (model.type != Constants.DATA_TYPE_CUSTOMER) {
+                model.type = Constants.DATA_TYPE_CUSTOMER;
                 updateViews();
             }
         });
@@ -200,8 +200,8 @@ public class TrendChartCard extends BaseRefreshCard<TrendChartCard.Model, Consum
     }
 
     @Override
-    protected Call<BaseResponse<ConsumerRateResp>> load(int companyId, int shopId, int period, CardCallback callback) {
-        SunmiStoreApi.getInstance().getConsumerRate(companyId, shopId, period, callback);
+    protected Call<BaseResponse<CustomerRateResp>> load(int companyId, int shopId, int period, CardCallback callback) {
+        SunmiStoreApi.getInstance().getCustomerRate(companyId, shopId, period, callback);
         return null;
     }
 
@@ -213,33 +213,33 @@ public class TrendChartCard extends BaseRefreshCard<TrendChartCard.Model, Consum
     }
 
     @Override
-    protected void setupModel(List<Model> models, ConsumerRateResp response) {
+    protected void setupModel(List<Model> models, CustomerRateResp response) {
         Model model = models.get(0);
         List<BarEntry> rateList = model.dataSets.get(Constants.DATA_TYPE_RATE);
         List<BarEntry> volumeList = model.dataSets.get(Constants.DATA_TYPE_VOLUME);
-        List<BarEntry> consumerList = model.dataSets.get(Constants.DATA_TYPE_CONSUMER);
+        List<BarEntry> customerList = model.dataSets.get(Constants.DATA_TYPE_CUSTOMER);
         rateList.clear();
         volumeList.clear();
-        consumerList.clear();
+        customerList.clear();
         if (response == null || response.getCountList() == null) {
             LogCat.e(TAG, "Trend data load Failed. Response is null.");
             return;
         }
-        List<ConsumerRateResp.CountListBean> list = response.getCountList();
-        for (ConsumerRateResp.CountListBean bean : list) {
+        List<CustomerRateResp.CountListBean> list = response.getCountList();
+        for (CustomerRateResp.CountListBean bean : list) {
             int time = Math.abs(bean.getTime());
             int count = Math.abs(bean.getOrderCount());
-            int consumer = Math.abs(bean.getPassengerFlowCount());
+            int customer = Math.abs(bean.getPassengerFlowCount());
             float x = Utils.encodeChartXAxisFloat(model.period, time);
-            rateList.add(new BarEntry(x, consumer == 0 ? 0f : Math.min((float) count / consumer, 1f)));
+            rateList.add(new BarEntry(x, customer == 0 ? 0f : Math.min((float) count / customer, 1f)));
             volumeList.add(new BarEntry(x, count));
-            consumerList.add(new BarEntry(x, consumer));
+            customerList.add(new BarEntry(x, customer));
         }
 
         // Test data
 //        rateList.clear();
 //        volumeList.clear();
-//        consumerList.clear();
+//        customerList.clear();
 //        int count = model.period == Constants.TIME_PERIOD_WEEK ? 5 : 20;
 //        int min = count / 3;
 //        for (int i = 1; i < count + 1; i++) {
@@ -247,11 +247,11 @@ public class TrendChartCard extends BaseRefreshCard<TrendChartCard.Model, Consum
 //            if (i <= min + 1) {
 //                rateList.add(new BarEntry(x, 0f));
 //                volumeList.add(new BarEntry(x, 0f));
-//                consumerList.add(new BarEntry(x, 0f));
+//                customerList.add(new BarEntry(x, 0f));
 //            } else {
 //                rateList.add(new BarEntry(x, (float) Math.random()));
 //                volumeList.add(new BarEntry(x, (int) (Math.random() * 1000)));
-//                consumerList.add(new BarEntry(x, (int) (Math.random() * 1000)));
+//                customerList.add(new BarEntry(x, (int) (Math.random() * 1000)));
 //            }
 //        }
     }
@@ -262,7 +262,7 @@ public class TrendChartCard extends BaseRefreshCard<TrendChartCard.Model, Consum
         TextView title = holder.getView(R.id.tv_dashboard_title);
         TextView rate = holder.getView(R.id.tv_dashboard_rate);
         TextView volume = holder.getView(R.id.tv_dashboard_volume);
-        TextView consumer = holder.getView(R.id.tv_dashboard_consumer);
+        TextView customer = holder.getView(R.id.tv_dashboard_customer);
 
         LineChart line = holder.getView(R.id.view_dashboard_line_chart);
         BarChart bar = holder.getView(R.id.view_dashboard_bar_chart);
@@ -270,15 +270,15 @@ public class TrendChartCard extends BaseRefreshCard<TrendChartCard.Model, Consum
         // Set visible & button selected
         rate.setVisibility(hasFs() && hasSaas() ? View.VISIBLE : View.GONE);
         volume.setVisibility(hasSaas() ? View.VISIBLE : View.GONE);
-        consumer.setVisibility(hasFs() ? View.VISIBLE : View.GONE);
+        customer.setVisibility(hasFs() ? View.VISIBLE : View.GONE);
         line.setVisibility(model.type == Constants.DATA_TYPE_RATE ? View.VISIBLE : View.INVISIBLE);
         bar.setVisibility(model.type != Constants.DATA_TYPE_RATE ? View.VISIBLE : View.INVISIBLE);
         rate.setSelected(model.type == Constants.DATA_TYPE_RATE);
         rate.setTypeface(null, model.type == Constants.DATA_TYPE_RATE ? Typeface.BOLD : Typeface.NORMAL);
         volume.setSelected(model.type == Constants.DATA_TYPE_VOLUME);
         volume.setTypeface(null, model.type == Constants.DATA_TYPE_VOLUME ? Typeface.BOLD : Typeface.NORMAL);
-        consumer.setSelected(model.type == Constants.DATA_TYPE_CONSUMER);
-        consumer.setTypeface(null, model.type == Constants.DATA_TYPE_CONSUMER ? Typeface.BOLD : Typeface.NORMAL);
+        customer.setSelected(model.type == Constants.DATA_TYPE_CUSTOMER);
+        customer.setTypeface(null, model.type == Constants.DATA_TYPE_CUSTOMER ? Typeface.BOLD : Typeface.NORMAL);
 
         // Get data set from model
         List<BarEntry> dataSet = model.dataSets.get(model.type);
@@ -422,7 +422,7 @@ public class TrendChartCard extends BaseRefreshCard<TrendChartCard.Model, Consum
             this.title = title;
             dataSets.put(Constants.DATA_TYPE_RATE, new ArrayList<>());
             dataSets.put(Constants.DATA_TYPE_VOLUME, new ArrayList<>());
-            dataSets.put(Constants.DATA_TYPE_CONSUMER, new ArrayList<>());
+            dataSets.put(Constants.DATA_TYPE_CUSTOMER, new ArrayList<>());
         }
 
         @Override
@@ -440,7 +440,7 @@ public class TrendChartCard extends BaseRefreshCard<TrendChartCard.Model, Consum
             } else if ((source & Constants.DATA_SOURCE_SAAS) != 0) {
                 type = Constants.DATA_TYPE_VOLUME;
             } else {
-                type = Constants.DATA_TYPE_CONSUMER;
+                type = Constants.DATA_TYPE_CUSTOMER;
             }
         }
 

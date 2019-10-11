@@ -16,7 +16,7 @@ public class Constants {
 
     public static final int DATA_TYPE_RATE = 0;
     public static final int DATA_TYPE_VOLUME = 1;
-    public static final int DATA_TYPE_CONSUMER = 2;
+    public static final int DATA_TYPE_CUSTOMER = 2;
 
     public static final int DATA_TYPE_NEW_OLD = 10;
     public static final int DATA_TYPE_GENDER = 11;
@@ -24,5 +24,5 @@ public class Constants {
 
     public static final int DATA_SOURCE_SAAS = 0x1;
     public static final int DATA_SOURCE_FS = 0x2;
-    public static final int DATA_SOURCE_CONSUMER = 0x4;
+    public static final int DATA_SOURCE_CUSTOMER = 0x4;
 }

@@ -8,7 +8,7 @@ import java.util.List;
  * @author yinhui
  * @date 2019-09-18
  */
-public class ConsumerAgeGenderResp {
+public class CustomerAgeNewOldResp {
 
     @SerializedName("count_list")
     private List<CountListBean> countList;
@@ -20,27 +20,27 @@ public class ConsumerAgeGenderResp {
     public static class CountListBean {
         /**
          * age_range_code : 0
-         * male_count : 12
-         * female_count : 13
+         * stranger_count : 12
+         * regular_count : 13
          */
 
         @SerializedName("age_range_code")
         private int ageRangeCode;
-        @SerializedName("male_count")
-        private int maleCount;
-        @SerializedName("female_count")
-        private int femaleCount;
+        @SerializedName("stranger_count")
+        private int strangerCount;
+        @SerializedName("regular_count")
+        private int regularCount;
 
         public int getAgeRangeCode() {
             return ageRangeCode;
         }
 
-        public int getMaleCount() {
-            return maleCount;
+        public int getStrangerCount() {
+            return strangerCount;
         }
 
-        public int getFemaleCount() {
-            return femaleCount;
+        public int getRegularCount() {
+            return regularCount;
         }
 
     }

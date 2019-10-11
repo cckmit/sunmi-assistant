@@ -38,8 +38,8 @@ import java.util.List;
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
-import sunmi.common.model.ConsumerAgeGenderResp;
-import sunmi.common.model.ConsumerAgeNewOldResp;
+import sunmi.common.model.CustomerAgeGenderResp;
+import sunmi.common.model.CustomerAgeNewOldResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -125,27 +125,27 @@ public class DistributionChartCard extends BaseRefreshCard<DistributionChartCard
     }
 
     private void loadNewOld(int companyId, int shopId, String start, String end, CardCallback callback) {
-        SunmiStoreApi.getInstance().getConsumerByAgeNewOld(companyId, shopId, start, end,
-                new RetrofitCallback<ConsumerAgeNewOldResp>() {
+        SunmiStoreApi.getInstance().getCustomerByAgeNewOld(companyId, shopId, start, end,
+                new RetrofitCallback<CustomerAgeNewOldResp>() {
                     @Override
-                    public void onSuccess(int code, String msg, ConsumerAgeNewOldResp data) {
+                    public void onSuccess(int code, String msg, CustomerAgeNewOldResp data) {
                         if (data == null) {
                             onFail(code, msg, null);
                             return;
                         }
-                        List<ConsumerAgeNewOldResp.CountListBean> list = data.getCountList();
+                        List<CustomerAgeNewOldResp.CountListBean> list = data.getCountList();
                         if (list == null) {
                             onFail(code, msg, data);
                             return;
                         }
-                        Model model = getModels().get(0);
+                        Model model = getModel();
                         List<PieEntry> newOldList = model.dataSets.get(Constants.DATA_TYPE_NEW_OLD);
                         List<PieEntry> ageList = model.dataSets.get(Constants.DATA_TYPE_AGE);
                         newOldList.clear();
                         ageList.clear();
                         int newCount = 0;
                         int oldCount = 0;
-                        for (ConsumerAgeNewOldResp.CountListBean bean : list) {
+                        for (CustomerAgeNewOldResp.CountListBean bean : list) {
                             newCount += bean.getStrangerCount();
                             oldCount += bean.getRegularCount();
                             int ageCount = bean.getRegularCount() + bean.getStrangerCount();
@@ -159,32 +159,32 @@ public class DistributionChartCard extends BaseRefreshCard<DistributionChartCard
                     }
 
                     @Override
-                    public void onFail(int code, String msg, ConsumerAgeNewOldResp data) {
+                    public void onFail(int code, String msg, CustomerAgeNewOldResp data) {
                         callback.onFail(code, msg, data);
                     }
                 });
     }
 
     private void loadGender(int companyId, int shopId, String start, String end, CardCallback callback) {
-        SunmiStoreApi.getInstance().getConsumerByAgeGender(companyId, shopId, start, end,
-                new RetrofitCallback<ConsumerAgeGenderResp>() {
+        SunmiStoreApi.getInstance().getCustomerByAgeGender(companyId, shopId, start, end,
+                new RetrofitCallback<CustomerAgeGenderResp>() {
                     @Override
-                    public void onSuccess(int code, String msg, ConsumerAgeGenderResp data) {
+                    public void onSuccess(int code, String msg, CustomerAgeGenderResp data) {
                         if (data == null) {
                             onFail(code, msg, null);
                             return;
                         }
-                        List<ConsumerAgeGenderResp.CountListBean> list = data.getCountList();
+                        List<CustomerAgeGenderResp.CountListBean> list = data.getCountList();
                         if (list == null) {
                             onFail(code, msg, data);
                             return;
                         }
-                        Model model = getModels().get(0);
+                        Model model = getModel();
                         List<PieEntry> genderList = model.dataSets.get(Constants.DATA_TYPE_GENDER);
                         genderList.clear();
                         int maleCount = 0;
                         int femaleCount = 0;
-                        for (ConsumerAgeGenderResp.CountListBean bean : list) {
+                        for (CustomerAgeGenderResp.CountListBean bean : list) {
                             maleCount += bean.getMaleCount();
                             femaleCount += bean.getFemaleCount();
                         }
@@ -196,7 +196,7 @@ public class DistributionChartCard extends BaseRefreshCard<DistributionChartCard
                     }
 
                     @Override
-                    public void onFail(int code, String msg, ConsumerAgeGenderResp data) {
+                    public void onFail(int code, String msg, CustomerAgeGenderResp data) {
                         callback.onFail(code, msg, data);
                     }
                 });

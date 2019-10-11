@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
  * @author yinhui
  * @date 2019-09-18
  */
-public class ConsumerCountResp {
+public class CustomerCountResp {
 
 
     /**

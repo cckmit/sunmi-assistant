@@ -53,7 +53,7 @@ public class BarChartMarkerView extends MarkerView {
         } else if (type == Constants.DATA_TYPE_VOLUME) {
             mTvTitle.setText(R.string.dashboard_chart_sales_volume);
         } else {
-            mTvTitle.setText(R.string.dashboard_chart_consumer);
+            mTvTitle.setText(R.string.dashboard_chart_customer);
         }
     }
 

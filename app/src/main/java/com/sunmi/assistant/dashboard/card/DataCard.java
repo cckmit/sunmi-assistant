@@ -24,7 +24,7 @@ import java.util.Locale;
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
-import sunmi.common.model.ConsumerCountResp;
+import sunmi.common.model.CustomerCountResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -63,7 +63,7 @@ public class DataCard extends BaseRefreshCard<DataCard.Model, Object> {
         if (hasSaas()) {
             loadSales(companyId, shopId, period, callback);
         } else if (hasFs()) {
-            loadConsumer(companyId, shopId, period, callback);
+            loadCustomer(companyId, shopId, period, callback);
         }
         return null;
     }
@@ -78,7 +78,7 @@ public class DataCard extends BaseRefreshCard<DataCard.Model, Object> {
                             onFail(code, msg, null);
                             return;
                         }
-                        Model model = getModels().get(0);
+                        Model model = getModel();
                         if (period == Constants.TIME_PERIOD_TODAY) {
                             model.sales = data.getDayAmount();
                             model.lastSales = data.getYesterdayAmount();
@@ -109,7 +109,7 @@ public class DataCard extends BaseRefreshCard<DataCard.Model, Object> {
                             onFail(code, msg, null);
                             return;
                         }
-                        Model model = getModels().get(0);
+                        Model model = getModel();
                         if (period == Constants.TIME_PERIOD_TODAY) {
                             model.volume = data.getDayCount();
                             model.lastVolume = data.getYesterdayCount();
@@ -121,7 +121,7 @@ public class DataCard extends BaseRefreshCard<DataCard.Model, Object> {
                             model.lastVolume = data.getLastMonthCount();
                         }
                         if (hasFs()) {
-                            loadConsumer(companyId, shopId, period, callback);
+                            loadCustomer(companyId, shopId, period, callback);
                         } else {
                             callback.onSuccess();
                         }
@@ -134,29 +134,29 @@ public class DataCard extends BaseRefreshCard<DataCard.Model, Object> {
                 });
     }
 
-    private void loadConsumer(int companyId, int shopId, int period, CardCallback callback) {
-        SunmiStoreApi.getInstance().getConsumer(companyId, shopId, period,
-                new RetrofitCallback<ConsumerCountResp>() {
+    private void loadCustomer(int companyId, int shopId, int period, CardCallback callback) {
+        SunmiStoreApi.getInstance().getCustomer(companyId, shopId, period,
+                new RetrofitCallback<CustomerCountResp>() {
                     @Override
-                    public void onSuccess(int code, String msg, ConsumerCountResp data) {
+                    public void onSuccess(int code, String msg, CustomerCountResp data) {
                         if (data == null) {
                             onFail(code, msg, null);
                             return;
                         }
-                        Model model = getModels().get(0);
-                        model.consumer = data.getLatestCount();
-                        model.lastConsumer = data.getEarlyCount();
+                        Model model = getModel();
+                        model.customer = data.getLatestCount();
+                        model.lastCustomer = data.getEarlyCount();
                         if (hasSaas()) {
-                            model.rate = model.consumer == 0 ?
-                                    0f : Math.min((float) model.volume / model.consumer, 1f);
-                            model.lastRate = model.lastConsumer == 0 ?
-                                    0f : Math.min((float) model.lastVolume / model.lastConsumer, 1f);
+                            model.rate = model.customer == 0 ?
+                                    0f : Math.min((float) model.volume / model.customer, 1f);
+                            model.lastRate = model.lastCustomer == 0 ?
+                                    0f : Math.min((float) model.lastVolume / model.lastCustomer, 1f);
                         }
                         callback.onSuccess();
                     }
 
                     @Override
-                    public void onFail(int code, String msg, ConsumerCountResp data) {
+                    public void onFail(int code, String msg, CustomerCountResp data) {
                         callback.onFail(code, msg, data);
                     }
                 });
@@ -183,15 +183,15 @@ public class DataCard extends BaseRefreshCard<DataCard.Model, Object> {
         }
         holder.addOnClickListener(R.id.layout_dashboard_main, (h, model, position) -> {
             if (!hasSaas() && hasFs()) {
-                goToConsumerList(context);
+                goToCustomerList(context);
             } else {
                 goToOrderList(context);
             }
         });
         holder.addOnClickListener(R.id.layout_dashboard_volume, (h, model, position)
                 -> goToOrderList(context));
-        holder.addOnClickListener(R.id.layout_dashboard_consumer, (h, model, position)
-                -> goToConsumerList(context));
+        holder.addOnClickListener(R.id.layout_dashboard_customer, (h, model, position)
+                -> goToCustomerList(context));
         return holder;
     }
 
@@ -202,8 +202,8 @@ public class DataCard extends BaseRefreshCard<DataCard.Model, Object> {
         TextView subdata = holder.getView(R.id.tv_dashboard_subdata);
         TextView volumeValue = holder.getView(R.id.tv_dashboard_volume);
         TextView volumeSubdata = holder.getView(R.id.tv_dashboard_volume_subdata);
-        TextView consumerValue = holder.getView(R.id.tv_dashboard_consumer);
-        TextView consumerSubdata = holder.getView(R.id.tv_dashboard_consumer_subdata);
+        TextView customerValue = holder.getView(R.id.tv_dashboard_customer);
+        TextView customerSubdata = holder.getView(R.id.tv_dashboard_customer_subdata);
         TextView rateValue = holder.getView(R.id.tv_dashboard_rate);
         TextView rateSubdata = holder.getView(R.id.tv_dashboard_rate_subdata);
         if (hasSaas() && !hasFs()) {
@@ -212,15 +212,15 @@ public class DataCard extends BaseRefreshCard<DataCard.Model, Object> {
             volumeValue.setText(model.getVolume());
             volumeSubdata.setText(model.getLastVolume());
         } else if (!hasSaas() && hasFs()) {
-            value.setText(model.getConsumer());
-            subdata.setText(model.getLastConsumer());
+            value.setText(model.getCustomer());
+            subdata.setText(model.getLastCustomer());
         } else {
             value.setText(model.getSales());
             subdata.setText(model.getLastSales());
             volumeValue.setText(model.getVolume());
             volumeSubdata.setText(model.getLastVolume());
-            consumerValue.setText(model.getConsumer());
-            consumerSubdata.setText(model.getLastConsumer());
+            customerValue.setText(model.getCustomer());
+            customerSubdata.setText(model.getLastCustomer());
             rateValue.setText(model.getRate());
             rateSubdata.setText(model.getLastRate());
         }
@@ -230,19 +230,19 @@ public class DataCard extends BaseRefreshCard<DataCard.Model, Object> {
     protected void showLoading(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         View main = holder.getView(R.id.layout_dashboard_main);
         View volume = holder.getView(R.id.layout_dashboard_volume);
-        View consumer = holder.getView(R.id.layout_dashboard_consumer);
+        View customer = holder.getView(R.id.layout_dashboard_customer);
         View rate = holder.getView(R.id.layout_dashboard_rate);
         ImageView loading = holder.getView(R.id.iv_dashboard_loading);
         if (!hasSaas() && hasFs()) {
             main.setVisibility(View.INVISIBLE);
             volume.setVisibility(View.GONE);
-            consumer.setVisibility(View.GONE);
+            customer.setVisibility(View.GONE);
             rate.setVisibility(View.GONE);
             loading.setImageResource(R.mipmap.dashboard_skeleton_single);
         } else {
             main.setVisibility(View.INVISIBLE);
             volume.setVisibility(View.INVISIBLE);
-            consumer.setVisibility(View.INVISIBLE);
+            customer.setVisibility(View.INVISIBLE);
             rate.setVisibility(View.INVISIBLE);
             loading.setImageResource(R.mipmap.dashboard_skeleton_multi);
         }
@@ -256,16 +256,16 @@ public class DataCard extends BaseRefreshCard<DataCard.Model, Object> {
         TextView subdata = holder.getView(R.id.tv_dashboard_subdata);
         TextView volumeValue = holder.getView(R.id.tv_dashboard_volume);
         TextView volumeSubdata = holder.getView(R.id.tv_dashboard_volume_subdata);
-        TextView consumerValue = holder.getView(R.id.tv_dashboard_consumer);
-        TextView consumerSubdata = holder.getView(R.id.tv_dashboard_consumer_subdata);
+        TextView customerValue = holder.getView(R.id.tv_dashboard_customer);
+        TextView customerSubdata = holder.getView(R.id.tv_dashboard_customer_subdata);
         TextView rateValue = holder.getView(R.id.tv_dashboard_rate);
         TextView rateSubdata = holder.getView(R.id.tv_dashboard_rate_subdata);
         value.setText(DATA_NONE);
         subdata.setText(DATA_NONE);
         volumeValue.setText(DATA_NONE);
         volumeSubdata.setText(DATA_NONE);
-        consumerValue.setText(DATA_NONE);
-        consumerSubdata.setText(DATA_NONE);
+        customerValue.setText(DATA_NONE);
+        customerSubdata.setText(DATA_NONE);
         rateValue.setText(DATA_NONE);
         rateSubdata.setText(DATA_NONE);
     }
@@ -273,14 +273,14 @@ public class DataCard extends BaseRefreshCard<DataCard.Model, Object> {
     private void setupVisible(@NonNull BaseViewHolder<Model> holder, int period) {
         View main = holder.getView(R.id.layout_dashboard_main);
         View volume = holder.getView(R.id.layout_dashboard_volume);
-        View consumer = holder.getView(R.id.layout_dashboard_consumer);
+        View customer = holder.getView(R.id.layout_dashboard_customer);
         View rate = holder.getView(R.id.layout_dashboard_rate);
         TextView title = holder.getView(R.id.tv_dashboard_title);
         TextView subtitle = holder.getView(R.id.tv_dashboard_subtitle);
         TextView volumeTitle = holder.getView(R.id.tv_dashboard_volume_title);
         TextView volumeSubtitle = holder.getView(R.id.tv_dashboard_volume_subtitle);
-        TextView consumerTitle = holder.getView(R.id.tv_dashboard_consumer_title);
-        TextView consumerSubtitle = holder.getView(R.id.tv_dashboard_consumer_subtitle);
+        TextView customerTitle = holder.getView(R.id.tv_dashboard_customer_title);
+        TextView customerSubtitle = holder.getView(R.id.tv_dashboard_customer_subtitle);
         TextView rateTitle = holder.getView(R.id.tv_dashboard_rate_title);
         TextView rateSubtitle = holder.getView(R.id.tv_dashboard_rate_subtitle);
         holder.getView(R.id.iv_dashboard_loading).setVisibility(View.GONE);
@@ -288,19 +288,19 @@ public class DataCard extends BaseRefreshCard<DataCard.Model, Object> {
         if (hasSaas() && !hasFs()) {
             main.setVisibility(View.VISIBLE);
             volume.setVisibility(View.VISIBLE);
-            consumer.setVisibility(View.GONE);
+            customer.setVisibility(View.GONE);
             rate.setVisibility(View.GONE);
             title.setText(R.string.dashboard_data_sales_amount);
         } else if (!hasSaas() && hasFs()) {
             main.setVisibility(View.VISIBLE);
             volume.setVisibility(View.GONE);
-            consumer.setVisibility(View.GONE);
+            customer.setVisibility(View.GONE);
             rate.setVisibility(View.GONE);
-            title.setText(R.string.dashboard_data_consumer);
+            title.setText(R.string.dashboard_data_customer);
         } else {
             main.setVisibility(View.VISIBLE);
             volume.setVisibility(View.VISIBLE);
-            consumer.setVisibility(View.VISIBLE);
+            customer.setVisibility(View.VISIBLE);
             rate.setVisibility(View.VISIBLE);
             title.setText(R.string.dashboard_data_sales_amount);
         }
@@ -308,17 +308,17 @@ public class DataCard extends BaseRefreshCard<DataCard.Model, Object> {
         if (period == Constants.TIME_PERIOD_TODAY) {
             subtitle.setText(R.string.dashboard_yesterday);
             volumeSubtitle.setText(R.string.dashboard_yesterday);
-            consumerSubtitle.setText(R.string.dashboard_yesterday);
+            customerSubtitle.setText(R.string.dashboard_yesterday);
             rateSubtitle.setText(R.string.dashboard_yesterday);
         } else if (period == Constants.TIME_PERIOD_WEEK) {
             subtitle.setText(R.string.dashboard_last_week);
             volumeSubtitle.setText(R.string.dashboard_last_week);
-            consumerSubtitle.setText(R.string.dashboard_last_week);
+            customerSubtitle.setText(R.string.dashboard_last_week);
             rateSubtitle.setText(R.string.dashboard_last_week);
         } else {
             subtitle.setText(R.string.dashboard_last_month);
             volumeSubtitle.setText(R.string.dashboard_last_month);
-            consumerSubtitle.setText(R.string.dashboard_last_month);
+            customerSubtitle.setText(R.string.dashboard_last_month);
             rateSubtitle.setText(R.string.dashboard_last_month);
         }
     }
@@ -332,8 +332,8 @@ public class DataCard extends BaseRefreshCard<DataCard.Model, Object> {
                 .start();
     }
 
-    private void goToConsumerList(Context context) {
-        // TODO: Consumer List
+    private void goToCustomerList(Context context) {
+        // TODO: Customer List
     }
 
     public static class Model extends BaseRefreshCard.BaseModel {
@@ -345,8 +345,8 @@ public class DataCard extends BaseRefreshCard<DataCard.Model, Object> {
         float lastSales;
         int volume;
         int lastVolume;
-        int consumer;
-        int lastConsumer;
+        int customer;
+        int lastCustomer;
         float rate;
         float lastRate;
 
@@ -389,21 +389,21 @@ public class DataCard extends BaseRefreshCard<DataCard.Model, Object> {
             }
         }
 
-        public String getConsumer() {
-            if (consumer > NUM_10_THOUSANDS) {
+        public String getCustomer() {
+            if (customer > NUM_10_THOUSANDS) {
                 return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
-                        (float) consumer / NUM_10_THOUSANDS) + mNum10Thousands;
+                        (float) customer / NUM_10_THOUSANDS) + mNum10Thousands;
             } else {
-                return FORMAT_THOUSANDS.format(consumer);
+                return FORMAT_THOUSANDS.format(customer);
             }
         }
 
-        public String getLastConsumer() {
-            if (lastConsumer > NUM_10_THOUSANDS) {
+        public String getLastCustomer() {
+            if (lastCustomer > NUM_10_THOUSANDS) {
                 return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
-                        (float) lastConsumer / NUM_10_THOUSANDS) + mNum10Thousands;
+                        (float) lastCustomer / NUM_10_THOUSANDS) + mNum10Thousands;
             } else {
-                return FORMAT_THOUSANDS.format(lastConsumer);
+                return FORMAT_THOUSANDS.format(lastCustomer);
             }
         }
 

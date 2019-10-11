@@ -90,8 +90,8 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         return (mSource & Constants.DATA_SOURCE_FS) != 0;
     }
 
-    public boolean hasConsumer() {
-        return (mSource & Constants.DATA_SOURCE_CONSUMER) != 0;
+    public boolean hasCustomer() {
+        return (mSource & Constants.DATA_SOURCE_CUSTOMER) != 0;
     }
 
     public List<Model> getModels() {

@@ -45,13 +45,13 @@
     <string name="dashboard_time">时间 %s%s</string>
     <string name="dashboard_data_sales_amount">总销售额</string>
     <string name="dashboard_data_sales_volume">交易笔数</string>
-    <string name="dashboard_data_consumer">进店客流</string>
+    <string name="dashboard_data_customer">进店客流</string>
     <string name="dashboard_data_transaction_rate">交易转化率</string>
 
     <string name="dashboard_chart_business_trend">经营趋势</string>
     <string name="dashboard_chart_rate">转化率</string>
     <string name="dashboard_chart_sales_volume">交易笔数</string>
-    <string name="dashboard_chart_consumer">客流量</string>
+    <string name="dashboard_chart_customer">客流量</string>
     <string name="dashboard_chart_distribution">客群分布</string>
     <string name="dashboard_chart_new_old">新老</string>
     <string name="dashboard_chart_new">新客</string>
