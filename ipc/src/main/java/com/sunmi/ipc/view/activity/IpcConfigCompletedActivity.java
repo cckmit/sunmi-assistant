@@ -282,7 +282,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
      */
     public void startCameraAdjust(final SunmiDevice device) {
         showLoadingDialog();
-        IpcCloudApi.getDetailList(SpUtils.getCompanyId(), SpUtils.getShopId(),
+        IpcCloudApi.getInstance().getDetailList(SpUtils.getCompanyId(), SpUtils.getShopId(),
                 new RetrofitCallback<IpcListResp>() {
                     @Override
                     public void onSuccess(int code, String msg, IpcListResp data) {

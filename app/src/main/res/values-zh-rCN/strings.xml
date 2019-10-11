@@ -245,4 +245,5 @@
     <string name="ipc_device_model">设备型号：%s</string>
     <string name="ipc_device_name">设备名称：%s</string>
     <string name="ipc_device_msg_content">内容详情：%s</string>
+    <string name="company_shop_into_log">进店日志</string>
 </resources>

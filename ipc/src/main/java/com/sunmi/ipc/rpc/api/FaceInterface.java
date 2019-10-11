@@ -1,5 +1,6 @@
 package com.sunmi.ipc.rpc.api;
 
+import com.sunmi.ipc.face.model.FaceArrivalLogResp;
 import com.sunmi.ipc.model.FaceAgeRangeResp;
 import com.sunmi.ipc.model.FaceCheckResp;
 import com.sunmi.ipc.model.FaceEntryHistoryResp;
@@ -212,5 +213,12 @@ public interface FaceInterface {
     @POST(URL + "history/arrival/delete")
     Call<BaseResponse<Object>> deleteArrivalHistory(@Body BaseRequest request);
 
+    /**
+     * 用户获取进店记录
+     * @param request
+     * @return
+     */
+    @POST(URL+"/history/arrival/getListByTimeRange")
+    Call<BaseResponse<FaceArrivalLogResp>> getListByTimeRange(@Body BaseRequest request);
 
 }

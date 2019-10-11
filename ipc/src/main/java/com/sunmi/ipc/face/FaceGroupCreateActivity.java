@@ -88,7 +88,7 @@ public class FaceGroupCreateActivity extends BaseActivity {
         }
 
         showLoadingDialog();
-        IpcCloudApi.createFaceGroup(new FaceGroupCreateReq(SpUtils.getCompanyId(), mShopId, name, mark, capacity),
+        IpcCloudApi.getInstance().createFaceGroup(new FaceGroupCreateReq(SpUtils.getCompanyId(), mShopId, name, mark, capacity),
                 new RetrofitCallback<FaceGroupCreateResp>() {
                     @Override
                     public void onSuccess(int code, String msg, FaceGroupCreateResp data) {
