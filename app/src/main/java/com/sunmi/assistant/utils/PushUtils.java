@@ -4,6 +4,7 @@ import com.sunmi.assistant.mine.model.MessageCountBean;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
 import sunmi.common.base.BaseApplication;
+import sunmi.common.utils.CommonCache;
 import sunmi.common.utils.SpUtils;
 
 /**
@@ -17,7 +18,7 @@ public class PushUtils {
         int remindUnreadMsg = data.getRemindUnreadCount();
         SpUtils.setUnreadDeviceMsg(data.getModelCountList().get(0).getUnreadCount());
         SpUtils.setUnreadSystemMsg(data.getModelCountList().get(1).getUnreadCount());
-        MsgCommonCache.getInstance().setMsgCount(data);
+        CommonCache.getInstance().setMsgCount(data);
         if (SpUtils.getUnreadMsg() != unreadMsg || SpUtils.getRemindUnreadMsg() != remindUnreadMsg) {
             SpUtils.setUnreadMsg(unreadMsg);
             SpUtils.setRemindUnreadMsg(remindUnreadMsg);

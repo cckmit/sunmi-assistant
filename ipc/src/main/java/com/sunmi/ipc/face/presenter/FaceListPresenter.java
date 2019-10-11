@@ -86,7 +86,7 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
     }
 
     private void loadAgeFilter() {
-        IpcCloudApi.getFaceAgeRange(SpUtils.getCompanyId(), mShopId, new RetrofitCallback<FaceAgeRangeResp>() {
+        IpcCloudApi.getInstance().getFaceAgeRange(SpUtils.getCompanyId(), mShopId, new RetrofitCallback<FaceAgeRangeResp>() {
             @Override
             public void onSuccess(int code, String msg, FaceAgeRangeResp data) {
                 loadFace(true, true);
@@ -111,7 +111,7 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
 
     @Override
     public void loadGroup() {
-        IpcCloudApi.getFaceGroup(SpUtils.getCompanyId(), mShopId, new RetrofitCallback<FaceGroupListResp>() {
+        IpcCloudApi.getInstance().getFaceGroup(SpUtils.getCompanyId(), mShopId, new RetrofitCallback<FaceGroupListResp>() {
             @Override
             public void onSuccess(int code, String msg, FaceGroupListResp data) {
                 List<FaceGroup> list = data.getGroupList();
@@ -203,7 +203,7 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
         for (Face face : list) {
             ids.add(face.getFaceId());
         }
-        IpcCloudApi.moveFace(SpUtils.getCompanyId(), mShopId, mGroup.getGroupId(), group.getGroupId(),
+        IpcCloudApi.getInstance().moveFace(SpUtils.getCompanyId(), mShopId, mGroup.getGroupId(), group.getGroupId(),
                 ids, new RetrofitCallback<Object>() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
@@ -233,7 +233,7 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
         for (Face face : list) {
             ids.add(face.getFaceId());
         }
-        IpcCloudApi.deleteFace(SpUtils.getCompanyId(), mShopId, mGroup.getGroupId(), ids,
+        IpcCloudApi.getInstance().deleteFace(SpUtils.getCompanyId(), mShopId, mGroup.getGroupId(), ids,
                 new RetrofitCallback<Object>() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
@@ -257,7 +257,7 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
 
     @Override
     public void upload(final File file) {
-        IpcCloudApi.uploadFaceAndCheck(SpUtils.getCompanyId(), mShopId, mGroup.getGroupId(), file,
+        IpcCloudApi.getInstance().uploadFaceAndCheck(SpUtils.getCompanyId(), mShopId, mGroup.getGroupId(), file,
                 new RetrofitCallback<FaceCheckResp>() {
                     @Override
                     public void onSuccess(int code, String msg, FaceCheckResp data) {
@@ -277,7 +277,7 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
     public void save(final String file, FaceCheckResp data) {
         List<String> name = new ArrayList<>(1);
         name.add(data.getFileName());
-        IpcCloudApi.saveFace(SpUtils.getCompanyId(), mShopId, mGroup.getGroupId(), 0, name,
+        IpcCloudApi.getInstance().saveFace(SpUtils.getCompanyId(), mShopId, mGroup.getGroupId(), 0, name,
                 new RetrofitCallback<FaceSaveResp>() {
                     @Override
                     public void onSuccess(int code, String msg, FaceSaveResp data) {
@@ -313,7 +313,7 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
             mFilterAge = -1;
         }
         final int page = refresh ? PAGE_INIT : mCurrentPage + 1;
-        mCall = IpcCloudApi.getFaceList(SpUtils.getCompanyId(), mShopId, mGroup.getGroupId(),
+        mCall = IpcCloudApi.getInstance().getFaceList(SpUtils.getCompanyId(), mShopId, mGroup.getGroupId(),
                 mFilterGender, mFilterAge, mFilterName, page, PAGE_SIZE, new RetrofitCallback<FaceListResp>() {
                     @Override
                     public void onSuccess(int code, String msg, FaceListResp data) {

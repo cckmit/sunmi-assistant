@@ -243,5 +243,6 @@
     <string name="ipc_device_model">Device Model：%s</string>
     <string name="ipc_device_name">Device Name：%s</string>
     <string name="ipc_device_msg_content">Content：%s</string>
+    <string name="company_shop_into_log">进店日志</string>
 
 </resources>
