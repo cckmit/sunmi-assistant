@@ -3,7 +3,7 @@ package com.sunmi.assistant.dashboard.card;
 import android.support.annotation.NonNull;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.DashboardContract;
+import com.sunmi.assistant.dashboard.BaseRefreshCard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +20,11 @@ public class EmptyDataCard extends BaseRefreshCard<EmptyDataCard.Model, Object> 
 
     private static EmptyDataCard sInstance;
 
-    private EmptyDataCard(DashboardContract.Presenter presenter, int source) {
+    private EmptyDataCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static EmptyDataCard init(DashboardContract.Presenter presenter, int source) {
+    public static EmptyDataCard init(Presenter presenter, int source) {
         if (sInstance == null) {
             sInstance = new EmptyDataCard(presenter, source);
         } else {

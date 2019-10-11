@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.card;
+package com.sunmi.assistant.dashboard.overview.card;
 
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
@@ -6,8 +6,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
-import com.sunmi.assistant.dashboard.DashboardContract;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +25,11 @@ public class PeriodTabCard extends BaseRefreshCard<PeriodTabCard.Model, Object> 
 
     private static PeriodTabCard sInstance;
 
-    private PeriodTabCard(DashboardContract.Presenter presenter, int source) {
+    private PeriodTabCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static PeriodTabCard init(DashboardContract.Presenter presenter, int source) {
+    public static PeriodTabCard init(Presenter presenter, int source) {
         if (sInstance == null) {
             sInstance = new PeriodTabCard(presenter, source);
         } else {
@@ -87,5 +87,9 @@ public class PeriodTabCard extends BaseRefreshCard<PeriodTabCard.Model, Object> 
     }
 
     public static class Model extends BaseRefreshCard.BaseModel {
+        @Override
+        public void init(int source) {
+            period = Constants.TIME_PERIOD_TODAY;
+        }
     }
 }

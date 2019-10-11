@@ -7,7 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.DashboardContract;
+import com.sunmi.assistant.dashboard.BaseRefreshCard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +29,11 @@ public class NoOrderCard extends BaseRefreshCard<NoOrderCard.Model, Object> {
     private int mColorWhite;
     private GradientDrawable mContentBg;
 
-    private NoOrderCard(DashboardContract.Presenter presenter, int source) {
+    private NoOrderCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static NoOrderCard init(DashboardContract.Presenter presenter, int source) {
+    public static NoOrderCard init(Presenter presenter, int source) {
         if (sInstance == null) {
             sInstance = new NoOrderCard(presenter, source);
         } else {

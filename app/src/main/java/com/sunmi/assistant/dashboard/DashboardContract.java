@@ -2,8 +2,6 @@ package com.sunmi.assistant.dashboard;
 
 import android.content.Context;
 
-import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
-
 import java.util.List;
 
 import sunmi.common.base.BaseView;
@@ -22,9 +20,7 @@ public interface DashboardContract {
 
     }
 
-    interface Presenter {
-
-        Context getContext();
+    interface Presenter extends BaseRefreshCard.Presenter {
 
         void init(Context context);
 
@@ -32,13 +28,9 @@ public interface DashboardContract {
 
         boolean switchShopTo(ShopItem shop);
 
-        void switchPeriodTo(int period);
-
         void refresh(boolean showLoading);
 
         void refresh(int position, boolean showLoading);
-
-        void showFailedTip();
 
     }
 }

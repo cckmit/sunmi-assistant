@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.card;
+package com.sunmi.assistant.dashboard.overview.card;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -8,8 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
-import com.sunmi.assistant.dashboard.DashboardContract;
 import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.data.PaymentApi;
 import com.sunmi.assistant.data.response.OrderTotalAmountResp;
@@ -40,11 +40,11 @@ public class DataCard extends BaseRefreshCard<DataCard.Model, Object> {
     private static final int NUM_100_MILLION = 100000000;
     private static final int NUM_10_THOUSANDS = 10000;
 
-    private DataCard(DashboardContract.Presenter presenter, int source) {
+    private DataCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static DataCard init(DashboardContract.Presenter presenter, int source) {
+    public static DataCard init(Presenter presenter, int source) {
         if (sInstance == null) {
             sInstance = new DataCard(presenter, source);
         } else {
@@ -349,6 +349,11 @@ public class DataCard extends BaseRefreshCard<DataCard.Model, Object> {
         int lastCustomer;
         float rate;
         float lastRate;
+
+        @Override
+        public void init(int source) {
+            period = Constants.TIME_PERIOD_TODAY;
+        }
 
         public void init(Context context) {
             mNum10Thousands = context.getString(R.string.str_num_10_thousands);

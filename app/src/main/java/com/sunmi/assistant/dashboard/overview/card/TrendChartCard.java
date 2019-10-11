@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.card;
+package com.sunmi.assistant.dashboard.overview.card;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -21,8 +21,8 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
-import com.sunmi.assistant.dashboard.DashboardContract;
 import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.ui.BarChartMarkerView;
 import com.sunmi.assistant.dashboard.ui.BarYAxisLabelsRenderer;
@@ -63,11 +63,11 @@ public class TrendChartCard extends BaseRefreshCard<TrendChartCard.Model, Custom
     private float mDashLength;
     private float mDashSpaceLength;
 
-    private TrendChartCard(DashboardContract.Presenter presenter, int source) {
+    private TrendChartCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static TrendChartCard init(DashboardContract.Presenter presenter, int source) {
+    public static TrendChartCard init(Presenter presenter, int source) {
         if (sInstance == null) {
             sInstance = new TrendChartCard(presenter, source);
         } else {
@@ -214,7 +214,7 @@ public class TrendChartCard extends BaseRefreshCard<TrendChartCard.Model, Custom
 
     @Override
     protected void setupModel(List<Model> models, CustomerRateResp response) {
-        Model model = models.get(0);
+        Model model = getModel();
         List<BarEntry> rateList = model.dataSets.get(Constants.DATA_TYPE_RATE);
         List<BarEntry> volumeList = model.dataSets.get(Constants.DATA_TYPE_VOLUME);
         List<BarEntry> customerList = model.dataSets.get(Constants.DATA_TYPE_CUSTOMER);
@@ -427,6 +427,7 @@ public class TrendChartCard extends BaseRefreshCard<TrendChartCard.Model, Custom
 
         @Override
         public void init(int source) {
+            period = Constants.TIME_PERIOD_TODAY;
             updateType(source);
             for (int i = 0, size = dataSets.size(); i < size; i++) {
                 int key = dataSets.keyAt(i);

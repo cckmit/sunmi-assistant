@@ -19,7 +19,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.ui.RefreshLayout;
 import com.sunmi.assistant.dashboard.ui.RefreshViewHolder;
 import com.sunmi.ipc.config.IpcConstants;

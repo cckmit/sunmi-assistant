@@ -1,14 +1,12 @@
-package com.sunmi.assistant.dashboard.card;
+package com.sunmi.assistant.dashboard;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.ViewGroup;
-
-import com.sunmi.assistant.dashboard.Constants;
-import com.sunmi.assistant.dashboard.DashboardContract;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -55,14 +53,14 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
     private int mPositionMin = -1;
     private int mPositionMax = -1;
 
-    protected DashboardContract.Presenter mPresenter;
+    protected Presenter mPresenter;
     protected int mState;
     protected int mSource;
     protected int mPeriod;
     private int mCompanyId;
     private int mShopId;
 
-    protected BaseRefreshCard(DashboardContract.Presenter presenter, int source) {
+    protected BaseRefreshCard(Presenter presenter, int source) {
         this.mPresenter = presenter;
         this.mModels = createModel();
         if (mModels == null || mModels.isEmpty()) {
@@ -72,14 +70,15 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
     }
 
     protected void init(int source) {
-        this.mState = STATE_INIT;
-        this.mSource = source;
-        this.mCompanyId = SpUtils.getCompanyId();
-        this.mShopId = SpUtils.getShopId();
         for (Model model : mModels) {
             model.valid = false;
             model.init(source);
         }
+        this.mState = STATE_INIT;
+        this.mSource = source;
+        this.mPeriod = getModel().period;
+        this.mCompanyId = SpUtils.getCompanyId();
+        this.mShopId = SpUtils.getShopId();
     }
 
     public boolean hasSaas() {
@@ -407,12 +406,12 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
     }
 
     public static abstract class BaseModel {
-        boolean valid = false;
-        int source;
-        int period;
+        public boolean valid = false;
+        public int source;
+        public int period;
 
-        int[] padding;
-        int[] margin;
+        public int[] padding;
+        public int[] margin;
 
         public void init(int source) {
         }
@@ -425,5 +424,13 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
             this.padding = new int[]{left, top, right, bottom};
         }
 
+    }
+
+    public interface Presenter {
+        Context getContext();
+
+        void switchPeriodTo(int period);
+
+        void showFailedTip();
     }
 }

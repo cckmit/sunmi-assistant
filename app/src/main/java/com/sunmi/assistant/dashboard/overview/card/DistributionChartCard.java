@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.card;
+package com.sunmi.assistant.dashboard.overview.card;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -23,8 +23,8 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
-import com.sunmi.assistant.dashboard.DashboardContract;
 import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.ui.PieChartMarkerView;
 import com.sunmi.ipc.face.model.FaceAge;
@@ -64,11 +64,11 @@ public class DistributionChartCard extends BaseRefreshCard<DistributionChartCard
     private SparseArray<String> mAgeList;
     private OnPieSelectedListener mOnSelectedListener;
 
-    private DistributionChartCard(DashboardContract.Presenter presenter, int source) {
+    private DistributionChartCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static DistributionChartCard init(DashboardContract.Presenter presenter, int source) {
+    public static DistributionChartCard init(Presenter presenter, int source) {
         if (sInstance == null) {
             sInstance = new DistributionChartCard(presenter, source);
         } else {
@@ -520,6 +520,7 @@ public class DistributionChartCard extends BaseRefreshCard<DistributionChartCard
 
         @Override
         public void init(int source) {
+            period = Constants.TIME_PERIOD_TODAY;
             for (int i = 0, size = dataSets.size(); i < size; i++) {
                 int key = dataSets.keyAt(i);
                 dataSets.get(key).clear();

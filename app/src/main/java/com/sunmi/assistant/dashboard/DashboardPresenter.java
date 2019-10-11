@@ -5,15 +5,14 @@ import android.os.Handler;
 import android.os.HandlerThread;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
-import com.sunmi.assistant.dashboard.card.DataCard;
-import com.sunmi.assistant.dashboard.card.DistributionChartCard;
 import com.sunmi.assistant.dashboard.card.EmptyDataCard;
 import com.sunmi.assistant.dashboard.card.EmptyGapCard;
 import com.sunmi.assistant.dashboard.card.NoFsCard;
 import com.sunmi.assistant.dashboard.card.NoOrderCard;
-import com.sunmi.assistant.dashboard.card.PeriodTabCard;
-import com.sunmi.assistant.dashboard.card.TrendChartCard;
+import com.sunmi.assistant.dashboard.overview.card.DataCard;
+import com.sunmi.assistant.dashboard.overview.card.DistributionChartCard;
+import com.sunmi.assistant.dashboard.overview.card.PeriodTabCard;
+import com.sunmi.assistant.dashboard.overview.card.TrendChartCard;
 import com.sunmi.ipc.model.IpcListResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
