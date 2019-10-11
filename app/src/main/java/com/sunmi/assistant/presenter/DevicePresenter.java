@@ -119,7 +119,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
 
     @Override
     public void getIpcList() {
-        IpcCloudApi.getDetailList(SpUtils.getCompanyId(), SpUtils.getShopId(),
+        IpcCloudApi.getInstance().getDetailList(SpUtils.getCompanyId(), SpUtils.getShopId(),
                 new RetrofitCallback<IpcListResp>() {
                     @Override
                     public void onSuccess(int code, String msg, IpcListResp data) {
@@ -154,7 +154,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
 
     @Override
     public void unbindIPC(int deviceId) {
-        IpcCloudApi.unbindIpc(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId,
+        IpcCloudApi.getInstance().unbindIpc(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId,
                 new RetrofitCallback<Object>() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {

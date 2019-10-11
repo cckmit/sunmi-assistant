@@ -13,7 +13,7 @@ import com.google.gson.Gson;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.model.MessageCountBean;
 import com.sunmi.assistant.rpc.MessageCenterApi;
-import com.sunmi.assistant.utils.MsgCommonCache;
+import sunmi.common.utils.CommonCache;
 import com.sunmi.assistant.utils.PushUtils;
 
 import org.androidannotations.annotations.AfterViews;
@@ -97,9 +97,9 @@ public class MsgCenterActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void onBackPressed() {
-        MessageCountBean bean = MsgCommonCache.getInstance().getMsgCount();
-        if (bean != null) {
-            FileUtils.writeFileToSD(FileHelper.FILE_PATH, fileName, new Gson().toJson(bean));
+        Object msg = CommonCache.getInstance().getMsgCount();
+        if (msg instanceof MessageCountBean) {
+            FileUtils.writeFileToSD(FileHelper.FILE_PATH, fileName, new Gson().toJson(msg));
         }
         finish();
     }
@@ -170,8 +170,14 @@ public class MsgCenterActivity extends BaseActivity implements View.OnClickListe
             public void onFail(int code, String msg, MessageCountBean data) {
                 hideLoadingDialog();
                 shortTip(R.string.toast_network_error);
-                MessageCountBean bean = MsgCommonCache.getInstance().getMsgCount();
-                if (bean == null) {
+                Object msgCount = CommonCache.getInstance().getMsgCount();
+                MessageCountBean bean = null;
+                if (msgCount != null) {
+                    if (msgCount instanceof MessageCountBean) {
+                        bean = (MessageCountBean) msgCount;
+                    }
+
+                } else {
                     String response = FileUtils.readSDTxt(FileHelper.FILE_PATH + fileName, "utf-8");
                     bean = new Gson().fromJson(response, MessageCountBean.class);
                 }

@@ -77,6 +77,11 @@ public class ShopDetailGroupActivity extends BaseActivity {
         FaceGroupListActivity_.intent(this).mShopId(shopId).start();
     }
 
+    @Click(R.id.sil_shop_log)
+    public void toShopLog(){
+
+    }
+
     @OnActivityResult(ShopListActivity.REQUEST_CODE_SHOP)
     void onResult(int resultCode, @Nullable Intent data) {
         if (resultCode == Activity.RESULT_OK) {

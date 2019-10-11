@@ -41,7 +41,7 @@ public class IpcSettingPresenter extends BasePresenter<IpcSettingContract.View>
 
     @Override
     public void updateName(final String name) {
-        IpcCloudApi.updateBaseInfo(SpUtils.getCompanyId(), SpUtils.getShopId(), mDevice.getId(),
+        IpcCloudApi.getInstance().updateBaseInfo(SpUtils.getCompanyId(), SpUtils.getShopId(), mDevice.getId(),
                 name, new RetrofitCallback<Object>() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
@@ -67,7 +67,7 @@ public class IpcSettingPresenter extends BasePresenter<IpcSettingContract.View>
 
     @Override
     public void currentVersion() {
-        IpcCloudApi.newFirmware(SpUtils.getCompanyId(), SpUtils.getShopId(), mDevice.getId(), new RetrofitCallback<IpcNewFirmwareResp>() {
+        IpcCloudApi.getInstance().newFirmware(SpUtils.getCompanyId(), SpUtils.getShopId(), mDevice.getId(), new RetrofitCallback<IpcNewFirmwareResp>() {
             @Override
             public void onSuccess(int code, String msg, IpcNewFirmwareResp data) {
                 if (isViewAttached()) {
