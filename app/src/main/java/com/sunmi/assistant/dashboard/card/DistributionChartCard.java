@@ -102,7 +102,7 @@ public class DistributionChartCard extends BaseRefreshItem<DistributionChartCard
     }
 
     private void loadAgeList(int companyId, int shopId, String start, String end, CardCallback callback) {
-        IpcCloudApi.getFaceAgeRange(companyId, shopId, new RetrofitCallback<FaceAgeRangeResp>() {
+        IpcCloudApi.getInstance().getFaceAgeRange(companyId, shopId, new RetrofitCallback<FaceAgeRangeResp>() {
             @Override
             public void onSuccess(int code, String msg, FaceAgeRangeResp data) {
                 if (data == null) {

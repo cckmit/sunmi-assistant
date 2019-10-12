@@ -78,6 +78,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_0_5"
         android:background="@color/c_white"
+        android:visibility="gone"
         app:imageRight="@mipmap/ic_right_arrow_small"
         app:layout_constraintTop_toBottomOf="@id/sil_company_contact"
         app:leftPadding="@dimen/dp_10"

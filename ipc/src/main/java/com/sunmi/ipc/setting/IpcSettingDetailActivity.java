@@ -86,7 +86,7 @@ public class IpcSettingDetailActivity extends BaseActivity {
     }
 
     private void unbindIpc(int deviceId) {
-        IpcCloudApi.unbindIpc(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId,
+        IpcCloudApi.getInstance().unbindIpc(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId,
                 new RetrofitCallback<Object>() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {

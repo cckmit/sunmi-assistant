@@ -92,7 +92,7 @@ public class FaceGroupListActivity extends BaseActivity {
 
     private void getGroup() {
         showLoadingDialog();
-        IpcCloudApi.getFaceGroup(SpUtils.getCompanyId(), mShopId, new RetrofitCallback<FaceGroupListResp>() {
+        IpcCloudApi.getInstance().getFaceGroup(SpUtils.getCompanyId(), mShopId, new RetrofitCallback<FaceGroupListResp>() {
             @Override
             public void onSuccess(int code, String msg, FaceGroupListResp data) {
                 hideLoadingDialog();

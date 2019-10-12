@@ -174,7 +174,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         } else {
             mDataSource &= ~Constants.DATA_SOURCE_SAAS;
         }
-        IpcCloudApi.getDetailList(mCompanyId, mShop.getShopId(), new RetrofitCallback<IpcListResp>() {
+        IpcCloudApi.getInstance().getDetailList(mCompanyId, mShop.getShopId(), new RetrofitCallback<IpcListResp>() {
             @Override
             public void onSuccess(int code, String msg, IpcListResp data) {
                 if (data == null) {

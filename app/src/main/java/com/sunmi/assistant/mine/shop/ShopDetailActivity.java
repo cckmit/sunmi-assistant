@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.utils.CommonUtils;
@@ -28,6 +29,7 @@ import sunmi.common.view.TitleBarView;
 
 import static com.sunmi.assistant.mine.shop.ShopDetailGroupActivity.INTENT_EXTRA_SHOP_NAME;
 import static sunmi.common.utils.CommonHelper.floatTrans;
+import static sunmi.common.utils.CommonHelper.isGooglePlay;
 
 /**
  * 我的店铺详情
@@ -83,6 +85,13 @@ public class ShopDetailActivity extends BaseActivity {
     protected void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
+        if (!isGooglePlay()) {
+            silShopCategory.setVisibility(View.VISIBLE);
+            silShopRegion.setVisibility(View.VISIBLE);
+            silShopAddress.setVisibility(View.VISIBLE);
+            silShopArea.setVisibility(View.VISIBLE);
+            silShopMobile.setVisibility(View.VISIBLE);
+        }
         setSingleLine();
         getShopInfo(shopId);
     }
