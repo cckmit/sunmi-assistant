@@ -4,9 +4,11 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.StringRes;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -18,6 +20,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.commonlibrary.R;
+
+import sunmi.common.utils.CommonHelper;
 
 /**
  * @author yinhui
@@ -48,6 +52,7 @@ public class BottomDialog extends Dialog {
         private int titleTextColor = -1;
         private int cancelTextColor = -1;
         private int okTextColor = -1;
+        private int cornerRadius = 12;
         private OnClickListener cancelClickListener, okClickListener;
 
         public Builder(Context context) {
@@ -363,6 +368,11 @@ public class BottomDialog extends Dialog {
             return this;
         }
 
+        public Builder setCornerRadius(int cornerRadius) {
+            this.cornerRadius = cornerRadius;
+            return this;
+        }
+
         /**
          * 创建自定义的对话框
          */
@@ -383,6 +393,9 @@ public class BottomDialog extends Dialog {
 
             // 设置Btn
             setupBtn(dialog, layout);
+
+            // 设置圆角
+            setupCornerRadius(layout);
 
             // 设置内容Layout
             FrameLayout content = layout.findViewById(R.id.layout_dialog_content);
@@ -411,6 +424,19 @@ public class BottomDialog extends Dialog {
                     tvTitle.setTextColor(titleTextColor);
                 }
             }
+        }
+
+        protected void setupCornerRadius(View layout) {
+            GradientDrawable drawable = new GradientDrawable();
+            drawable.setShape(GradientDrawable.RECTANGLE);
+            float radius = CommonHelper.dp2px(context, cornerRadius);
+            drawable.setCornerRadii(new float[]{radius, radius, radius, radius, 0, 0, 0, 0});
+            if (bgColor != -1) {
+                drawable.setColor(bgColor);
+            } else {
+                drawable.setColor(ContextCompat.getColor(context, R.color.c_white));
+            }
+            layout.setBackground(drawable);
         }
 
         /**
