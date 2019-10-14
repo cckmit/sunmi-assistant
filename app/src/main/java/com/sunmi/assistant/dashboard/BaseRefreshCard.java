@@ -69,7 +69,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         init(source);
     }
 
-    protected void init(int source) {
+    public void init(int source) {
         for (Model model : mModels) {
             model.valid = false;
             model.init(source);
@@ -427,9 +427,10 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
     }
 
     public interface Presenter {
+
         Context getContext();
 
-        void switchPeriodTo(int period);
+        void setPeriod(int period);
 
         void showFailedTip();
     }

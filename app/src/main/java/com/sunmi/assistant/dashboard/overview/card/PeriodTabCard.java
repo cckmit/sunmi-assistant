@@ -65,11 +65,11 @@ public class PeriodTabCard extends BaseRefreshCard<PeriodTabCard.Model, Object> 
     public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
         BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
         holder.addOnClickListener(R.id.tv_dashboard_today, (h, model, position) ->
-                mPresenter.switchPeriodTo(Constants.TIME_PERIOD_TODAY));
+                mPresenter.setPeriod(Constants.TIME_PERIOD_TODAY));
         holder.addOnClickListener(R.id.tv_dashboard_week, (h, model, position) ->
-                mPresenter.switchPeriodTo(Constants.TIME_PERIOD_WEEK));
+                mPresenter.setPeriod(Constants.TIME_PERIOD_WEEK));
         holder.addOnClickListener(R.id.tv_dashboard_month, (h, model, position) ->
-                mPresenter.switchPeriodTo(Constants.TIME_PERIOD_MONTH));
+                mPresenter.setPeriod(Constants.TIME_PERIOD_MONTH));
         return holder;
     }
 

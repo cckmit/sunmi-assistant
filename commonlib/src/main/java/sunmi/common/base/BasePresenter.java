@@ -35,5 +35,4 @@ public class BasePresenter<V extends BaseView> {
         return mView != null;
     }
 
-
 }

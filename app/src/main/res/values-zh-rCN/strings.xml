@@ -35,6 +35,8 @@
     <string name="str_selected">请选择</string>
     <string name="tip_addr_empty">请输入详细地址</string>
 
+    <string name="dashboard_page_overview">实时数据</string>
+    <string name="dashboard_page_customer">客流分析</string>
     <string name="dashboard_data_format">%s%%</string>
     <string name="dashboard_today">今日</string>
     <string name="dashboard_this_week">本周</string>

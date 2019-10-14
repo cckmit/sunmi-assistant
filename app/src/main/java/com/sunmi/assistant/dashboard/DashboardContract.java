@@ -10,27 +10,56 @@ public interface DashboardContract {
 
     interface View extends BaseView {
 
-        void updateTab(int period);
+        int getHeaderHeight();
 
         void setShopList(List<ShopItem> list);
 
-        void setCards(List<BaseRefreshCard> data, int dataSource);
+        void setSource(int source);
+
+        void updateTab(int page, int period);
+
+        void updateTopPosition(int position);
+
+        void resetTop();
 
         void loadDataFailed();
 
     }
 
-    interface Presenter extends BaseRefreshCard.Presenter {
+    interface Presenter {
 
         void init(Context context);
 
         void reload();
 
-        boolean switchShopTo(ShopItem shop);
+        void setShop(ShopItem shop);
+
+        void setPeriod(int period);
+
+        void setPage(int index);
+
+        List<PageHost> getPages();
+
+        int getPeriod();
+
+    }
+
+    interface PagePresenter {
+
+        int getIndex();
+
+        void setSource(int source);
+
+        void setPeriod(int period);
+
+        int getPeriod();
 
         void refresh(boolean showLoading);
 
         void refresh(int position, boolean showLoading);
 
+        void showFailedTip();
+
+        void release();
     }
 }

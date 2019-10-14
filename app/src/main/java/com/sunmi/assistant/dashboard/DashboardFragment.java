@@ -1,5 +1,6 @@
 package com.sunmi.assistant.dashboard;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Handler;
@@ -7,20 +8,23 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Group;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.ui.RefreshLayout;
-import com.sunmi.assistant.dashboard.ui.RefreshViewHolder;
+import com.sunmi.assistant.dashboard.ui.ScrollableViewPager;
 import com.sunmi.ipc.config.IpcConstants;
 
 import org.androidannotations.annotations.AfterViews;
@@ -32,12 +36,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseMvpFragment;
-import sunmi.common.base.recycle.BaseArrayAdapter;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.DropdownMenu;
+import sunmi.common.view.tablayout.CommonTabLayout;
+import sunmi.common.view.tablayout.listener.CustomTabEntity;
+import sunmi.common.view.tablayout.listener.OnTabSelectListener;
 
 /**
  * 首页数据Dashboard的展示
@@ -47,27 +54,30 @@ import sunmi.common.view.DropdownMenu;
  */
 @EFragment(R.layout.dashboard_fragment_main)
 public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
-        implements DashboardContract.View, RefreshLayout.RefreshLayoutDelegate {
-
-    private static final int OFFSET_PARALLAX = 50;
+        implements DashboardContract.View {
 
     @ViewById(R.id.cl_dashboard_content)
     ConstraintLayout mContent;
-    @ViewById(R.id.layout_dashboard_refresh)
-    RefreshLayout mRefreshLayout;
-    @ViewById(R.id.rv_dashboard_list)
-    RecyclerView mCardList;
 
+    @ViewById(R.id.pager_dashboard_pager)
+    ScrollableViewPager mPager;
+    @ViewById(R.id.tab_dashboard_pager)
+    CommonTabLayout mPageTab;
+
+    @ViewById(R.id.layout_dashboard_tab)
+    FrameLayout mTopPageTab;
     @ViewById(R.id.layout_shop_title)
-    DropdownMenu mShopMenu;
+    DropdownMenu mTopShopMenu;
     private LinearLayout mShopMenuList;
     @ViewById(R.id.view_dashboard_overlay)
     View mOverlay;
 
     @ViewById(R.id.layout_top_period_tab)
-    ViewGroup mTopPeriodTab;
+    ViewGroup mTopStickyPeriodTab;
     @ViewById(R.id.tv_dashboard_top_today)
     TextView mTodayView;
+    @ViewById(R.id.tv_dashboard_top_yesterday)
+    TextView mYesterdayView;
     @ViewById(R.id.tv_dashboard_top_week)
     TextView mWeekView;
     @ViewById(R.id.tv_dashboard_top_month)
@@ -80,11 +90,9 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
-    private int mDataSource;
-    private BaseArrayAdapter<Object> mAdapter;
-    private LinearLayoutManager mLayoutManager;
-    private ItemStickyListener mStickyListener;
-    private RefreshViewHolder mRefreshHeaderHolder;
+    private List<PageHost> mPages;
+
+    private int mSource;
 
     private ShopMenuAdapter mShopMenuAdapter;
     private ShopMenuPopupHelper mShopMenuPopupHelper;
@@ -93,16 +101,21 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     private ShopItem mShopMenuItem;
 
     private int mStatusBarHeight;
-    private int mTopBarHeight;
+    private int mTopStickyPeriodHeight;
     private int mTopShopMenuHeight;
-    private boolean mIsStickyTop = false;
+    private int mTopPageTabHeight;
+    private int mTopRadiusHeight;
+    private int mTopHeaderHeight;
+
+    private boolean mIsStickyPeriodTop = false;
+    private boolean mIsStickyShopMenu = false;
 
     @AfterViews
     void init() {
         mPresenter = new DashboardPresenter();
         mPresenter.attachView(this);
         showLoadingDialog();
-        initView();
+        mHandler.post(this::initView);
         mPresenter.init(getContext());
     }
 
@@ -113,14 +126,16 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         }
         initDimens(context);
         initTopBar(context);
-        initRefreshLayout(context);
-        initRecycler(context);
+        initViewPager(context);
     }
 
     private void initDimens(Context context) {
         mStatusBarHeight = Utils.getStatusBarHeight(context);
-        mTopBarHeight = (int) context.getResources().getDimension(R.dimen.dp_44) + mStatusBarHeight;
-        mTopShopMenuHeight = (int) context.getResources().getDimension(R.dimen.dp_64) + mStatusBarHeight;
+        mTopStickyPeriodHeight = mTopStickyPeriodTab.getMeasuredHeight() + mStatusBarHeight;
+        mTopShopMenuHeight = mTopShopMenu.getMeasuredHeight() + mStatusBarHeight;
+        mTopPageTabHeight = mTopPageTab.getMeasuredHeight();
+        mTopRadiusHeight = (int) context.getResources().getDimension(R.dimen.dp_16);
+        mTopHeaderHeight = mTopShopMenuHeight + mTopPageTabHeight;
     }
 
     private void initTopBar(Context context) {
@@ -131,102 +146,123 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         }
 
         // 初始化设置TopBar高度和Padding
-        mTopPeriodTab.getLayoutParams().height = mTopBarHeight;
-        mTopPeriodTab.setPadding(0, mStatusBarHeight, 0, 0);
-        mShopMenu.getLayoutParams().height = mTopShopMenuHeight;
-        mShopMenu.setPadding(0, mStatusBarHeight, 0, 0);
+        mTopStickyPeriodTab.getLayoutParams().height = mTopStickyPeriodHeight;
+        mTopStickyPeriodTab.setPadding(0, mStatusBarHeight, 0, 0);
+        mTopShopMenu.getLayoutParams().height = mTopShopMenuHeight;
+        mTopShopMenu.setPadding(0, mStatusBarHeight, 0, 0);
 
         // 初始化设置顶部门店选择下拉列表
         mShopMenuAdapter = new ShopMenuAdapter(context);
         mShopMenuAdapter.setOnItemClickListener((adapter, model, position) -> {
-            boolean changed = mPresenter.switchShopTo(model);
-            if (changed) {
-                showLoadingDialog();
-                List<ShopItem> shops = adapter.getData();
-                shops.remove(position);
-                shops.add(0, model);
-                adapter.notifyDataSetChanged();
+            if (position == 0) {
+                return;
             }
+            showLoadingDialog();
+            mPresenter.setShop(model);
+            List<ShopItem> shops = adapter.getData();
+            shops.remove(position);
+            shops.add(0, model);
+            adapter.notifyDataSetChanged();
         });
-        mShopMenu.setAdapter(mShopMenuAdapter);
+        mTopShopMenu.setAdapter(mShopMenuAdapter);
         mShopMenuTitle = mShopMenuAdapter.getTitle().getView(R.id.dropdown_item_title);
         mShopMenuTitleArrow = mShopMenuAdapter.getTitle().getView(R.id.dropdown_item_arrow);
         mShopMenuPopupHelper = new ShopMenuPopupHelper(context, mContent, mOverlay, mShopMenuTitleArrow);
-        mShopMenu.setLayoutManager(new ShopMenuLayoutManager(context));
-        mShopMenu.setPopupHelper(mShopMenuPopupHelper);
-        mOverlay.setOnClickListener(v -> mShopMenu.getPopup().dismiss(true));
+        mTopShopMenu.setLayoutManager(new ShopMenuLayoutManager(context));
+        mTopShopMenu.setPopupHelper(mShopMenuPopupHelper);
+        mOverlay.setOnClickListener(v -> mTopShopMenu.getPopup().dismiss(true));
     }
 
-    private void initRefreshLayout(Context context) {
-        mRefreshHeaderHolder = new RefreshViewHolder(getContext(), false);
-        mRefreshLayout.setDelegate(this);
-        mRefreshLayout.setRefreshViewHolder(mRefreshHeaderHolder, mTopShopMenuHeight);
-        mRefreshLayout.setPullDownRefreshEnable(true);
-        mRefreshLayout.setIsShowLoadingMoreView(false);
-    }
+    private void initViewPager(Context context) {
+        mPages = mPresenter.getPages();
+        mPager.setAdapter(new PageAdapter(getChildFragmentManager()));
+        mPager.addOnPageChangeListener(new PageListener());
+        ArrayList<CustomTabEntity> tabs = new ArrayList<>(mPages.size());
+        for (PageHost page : mPages) {
+            tabs.add(new CustomTabEntity() {
+                @Override
+                public String getTabTitle() {
+                    return getString(page.getTitle());
+                }
 
-    private void initRecycler(Context context) {
-        RecyclerView.ItemAnimator animator = mCardList.getItemAnimator();
-        if (animator instanceof SimpleItemAnimator) {
-            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+                @Override
+                public int getTabSelectedIcon() {
+                    return page.getIcon();
+                }
+
+                @Override
+                public int getTabUnselectedIcon() {
+                    return page.getIcon();
+                }
+            });
         }
-        mAdapter = new BaseArrayAdapter<>();
-        mLayoutManager = new LinearLayoutManager(getContext());
-        mCardList.setLayoutManager(mLayoutManager);
-        mStickyListener = new ItemStickyListener();
-        mCardList.addOnScrollListener(mStickyListener);
-        mCardList.setAdapter(mAdapter);
+        mPageTab.setTabData(tabs);
+        mPageTab.setCurrentTab(0);
+        mPageTab.setOnTabSelectListener(new OnTabSelectListener() {
+            @Override
+            public void onTabSelect(int position) {
+                mPager.setCurrentItem(position);
+            }
+
+            @Override
+            public void onTabReselect(int position) {
+            }
+        });
     }
 
     public void updateStatusBar() {
-        if (mIsStickyTop) {
+        if (mIsStickyPeriodTop) {
             StatusBarUtils.setStatusBarColor(getActivity(), StatusBarUtils.TYPE_DARK);
         } else {
             StatusBarUtils.setStatusBarFullTransparent(getActivity());
         }
-        if (mShopMenu.getPopup().isShowing()) {
-            mShopMenu.getPopup().dismiss(false);
+        if (mTopShopMenu.getPopup().isShowing()) {
+            mTopShopMenu.getPopup().dismiss(false);
         }
     }
 
     private void showContent() {
+        StatusBarUtils.setStatusBarFullTransparent(getActivity());
         mContentGroup.setVisibility(View.VISIBLE);
         mOverlay.setVisibility(View.GONE);
-        mTopPeriodTab.setVisibility(View.INVISIBLE);
+        mTopStickyPeriodTab.setVisibility(View.INVISIBLE);
         mLayoutError.setVisibility(View.GONE);
 
-        StatusBarUtils.setStatusBarFullTransparent(getActivity());
-        mStickyListener.reset();
-        mCardList.scrollToPosition(0);
-        mShopMenu.setBackgroundResource(R.drawable.dashboard_bg_top);
-        mShopMenu.setTranslationY(0);
-        mShopMenu.getPopup().dismiss(false);
+        mTopShopMenu.setBackgroundResource(R.drawable.dashboard_bg_top);
+        mTopShopMenu.setTranslationY(0);
+        mTopShopMenu.getPopup().dismiss(false);
         mShopMenuTitle.setTextColor(0xFFFFFFFF);
         mShopMenuTitleArrow.setImageResource(R.drawable.ic_arrow_drop_down_white);
         hideLoadingDialog();
     }
 
     private void showError() {
+        StatusBarUtils.setStatusBarFullTransparent(getActivity());
         mContentGroup.setVisibility(View.INVISIBLE);
         mOverlay.setVisibility(View.GONE);
-        mTopPeriodTab.setVisibility(View.INVISIBLE);
+        mTopStickyPeriodTab.setVisibility(View.INVISIBLE);
         mLayoutError.setVisibility(View.VISIBLE);
         hideLoadingDialog();
     }
 
     @Click(R.id.tv_dashboard_top_today)
     void clickPeriodToday() {
-        mPresenter.switchPeriodTo(Constants.TIME_PERIOD_TODAY);
+        mPresenter.setPeriod(Constants.TIME_PERIOD_TODAY);
+    }
+
+    @Click(R.id.tv_dashboard_top_yesterday)
+    void clickPeriodYesterday() {
+        mPresenter.setPeriod(Constants.TIME_PERIOD_YESTERDAY);
     }
 
     @Click(R.id.tv_dashboard_top_week)
     void clickPeriodWeek() {
-        mPresenter.switchPeriodTo(Constants.TIME_PERIOD_WEEK);
+        mPresenter.setPeriod(Constants.TIME_PERIOD_WEEK);
     }
 
     @Click(R.id.tv_dashboard_top_month)
     void clickPeriodMonth() {
-        mPresenter.switchPeriodTo(Constants.TIME_PERIOD_MONTH);
+        mPresenter.setPeriod(Constants.TIME_PERIOD_MONTH);
     }
 
     @Click(R.id.btn_refresh)
@@ -236,13 +272,8 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     @Override
-    public void updateTab(int period) {
-        mTodayView.setSelected(period == Constants.TIME_PERIOD_TODAY);
-        mTodayView.setTypeface(null, period == Constants.TIME_PERIOD_TODAY ? Typeface.BOLD : Typeface.NORMAL);
-        mWeekView.setSelected(period == Constants.TIME_PERIOD_WEEK);
-        mWeekView.setTypeface(null, period == Constants.TIME_PERIOD_WEEK ? Typeface.BOLD : Typeface.NORMAL);
-        mMonthView.setSelected(period == Constants.TIME_PERIOD_MONTH);
-        mMonthView.setTypeface(null, period == Constants.TIME_PERIOD_MONTH ? Typeface.BOLD : Typeface.NORMAL);
+    public int getHeaderHeight() {
+        return mTopHeaderHeight;
     }
 
     @Override
@@ -257,21 +288,61 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     @Override
-    public void setCards(List<BaseRefreshCard> data, int dataSource) {
-        mDataSource = dataSource;
+    public void setSource(int source) {
+        this.mSource = source;
         showContent();
-        if (mAdapter == null || data == null || data.isEmpty()) {
-            return;
+    }
+
+    @Override
+    public void updateTab(int page, int period) {
+        if (page == Constants.PAGE_OVERVIEW) {
+            mTodayView.setVisibility(View.VISIBLE);
+            mYesterdayView.setVisibility(View.GONE);
+        } else {
+            mTodayView.setVisibility(View.GONE);
+            mYesterdayView.setVisibility(View.VISIBLE);
         }
-        data.get(0).getModel().setMargin(0, mTopShopMenuHeight, 0, 0);
-        List<Object> list = new ArrayList<>(data.size());
-        int position = 0;
-        for (BaseRefreshCard card : data) {
-            card.registerIntoAdapter(mAdapter, position);
-            position += card.getModels().size();
-            list.addAll(card.getModels());
+        mTodayView.setSelected(period == Constants.TIME_PERIOD_TODAY);
+        mTodayView.setTypeface(null, period == Constants.TIME_PERIOD_TODAY ? Typeface.BOLD : Typeface.NORMAL);
+        mYesterdayView.setSelected(period == Constants.TIME_PERIOD_YESTERDAY);
+        mYesterdayView.setTypeface(null, period == Constants.TIME_PERIOD_YESTERDAY ? Typeface.BOLD : Typeface.NORMAL);
+        mWeekView.setSelected(period == Constants.TIME_PERIOD_WEEK);
+        mWeekView.setTypeface(null, period == Constants.TIME_PERIOD_WEEK ? Typeface.BOLD : Typeface.NORMAL);
+        mMonthView.setSelected(period == Constants.TIME_PERIOD_MONTH);
+        mMonthView.setTypeface(null, period == Constants.TIME_PERIOD_MONTH ? Typeface.BOLD : Typeface.NORMAL);
+    }
+
+    @Override
+    public void updateTopPosition(int position) {
+        LogCat.d(TAG, "onScroll=" + position + "; Top=" + mTopHeaderHeight);
+        int offset = Math.min(position - mTopHeaderHeight, 0);
+        if (mSource != 0) {
+            mTopShopMenu.setTranslationY(offset);
+            mTopPageTab.setTranslationY(offset);
+            mShopMenuPopupHelper.setOffset(offset);
+        } else {
+            mTopPageTab.setTranslationY(offset);
         }
-        mAdapter.setData(list);
+        FragmentActivity activity = getActivity();
+        if (position > mTopShopMenuHeight - mTopRadiusHeight) {
+            hideStickyPeriodTab(activity, true);
+            hideStickyShopMenu(activity, true);
+        } else if (position > 0) {
+            hideStickyPeriodTab(activity, true);
+            showStickyShopMenu(activity, true);
+        } else {
+            showStickyPeriodTab(activity, true);
+            showStickyShopMenu(activity, true);
+        }
+    }
+
+    @Override
+    public void resetTop() {
+        mTopShopMenu.setTranslationY(0);
+        mTopPageTab.setTranslationY(0);
+        mShopMenuPopupHelper.setOffset(0);
+        hideStickyPeriodTab(getActivity(), false);
+        hideStickyShopMenu(getActivity(), false);
     }
 
     @Override
@@ -279,15 +350,57 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         showError();
     }
 
-    @Override
-    public void onRefreshLayoutBeginRefreshing(RefreshLayout refreshLayout) {
-        mPresenter.refresh(true);
-        refreshLayout.postDelayed(refreshLayout::endRefreshing, 500);
+    private void showStickyPeriodTab(Activity activity, boolean animated) {
+        if (mIsStickyPeriodTop || activity == null || mSource == 0) {
+            return;
+        }
+        StatusBarUtils.setStatusBarColor(activity, StatusBarUtils.TYPE_DARK);
+        mTopShopMenu.setTranslationY(-mTopShopMenuHeight);
+        mTopShopMenu.setVisibility(View.INVISIBLE);
+        mTopPageTab.setVisibility(View.INVISIBLE);
+        mTopPageTab.setTranslationY(-mTopPageTabHeight);
+        mTopStickyPeriodTab.setVisibility(View.VISIBLE);
+        mPager.setScrollable(false);
+        mIsStickyPeriodTop = true;
     }
 
-    @Override
-    public boolean onRefreshLayoutBeginLoadingMore(RefreshLayout refreshLayout) {
-        return false;
+    private void hideStickyPeriodTab(Activity activity, boolean animated) {
+        if (!mIsStickyPeriodTop || activity == null || mSource == 0) {
+            return;
+        }
+        StatusBarUtils.setStatusBarFullTransparent(activity);
+        mTopShopMenu.setVisibility(View.VISIBLE);
+        mTopPageTab.setVisibility(View.VISIBLE);
+        mTopStickyPeriodTab.setVisibility(View.INVISIBLE);
+        mPager.setScrollable(true);
+        mIsStickyPeriodTop = false;
+    }
+
+    private void showStickyShopMenu(Activity activity, boolean animated) {
+        if (mIsStickyShopMenu || activity == null || mSource != 0) {
+            return;
+        }
+        StatusBarUtils.setStatusBarColor(activity, StatusBarUtils.TYPE_DARK);
+        mShopMenuTitle.setTextColor(ContextCompat.getColor(activity, R.color.color_303540));
+        mShopMenuTitleArrow.setImageResource(R.drawable.ic_arrow_drop_down_black);
+        mTopShopMenu.setBackgroundResource(R.drawable.dashboard_bg_white_with_divider);
+        mTopPageTab.setVisibility(View.INVISIBLE);
+        mTopPageTab.setTranslationY(-mTopPageTabHeight);
+        mPager.setScrollable(false);
+        mIsStickyShopMenu = true;
+    }
+
+    private void hideStickyShopMenu(Activity activity, boolean animated) {
+        if (!mIsStickyShopMenu || activity == null || mSource != 0) {
+            return;
+        }
+        StatusBarUtils.setStatusBarFullTransparent(activity);
+        mShopMenuTitle.setTextColor(0xFFFFFFFF);
+        mShopMenuTitleArrow.setImageResource(R.drawable.ic_arrow_drop_down_white);
+        mTopShopMenu.setBackgroundResource(R.drawable.dashboard_bg_top);
+        mTopPageTab.setVisibility(View.VISIBLE);
+        mPager.setScrollable(true);
+        mIsStickyShopMenu = false;
     }
 
     @Override
@@ -319,71 +432,36 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         }
     }
 
-    private void showStickyTop(Context context) {
-        StatusBarUtils.setStatusBarColor(getActivity(), StatusBarUtils.TYPE_DARK);
-        if (mDataSource != 0) {
-            mShopMenu.setTranslationY(-mTopShopMenuHeight);
-            mShopMenu.setVisibility(View.INVISIBLE);
-            mTopPeriodTab.setVisibility(View.VISIBLE);
-        } else {
-            mShopMenuTitle.setTextColor(ContextCompat.getColor(context, R.color.color_303540));
-            mShopMenuTitleArrow.setImageResource(R.drawable.ic_arrow_drop_down_black);
-            mShopMenu.setBackgroundResource(R.drawable.dashboard_bg_white_with_divider);
+    private class PageAdapter extends FragmentStatePagerAdapter {
+
+        public PageAdapter(FragmentManager fm) {
+            super(fm);
         }
-    }
-
-    private void hideStickyTop(Context context) {
-        StatusBarUtils.setStatusBarFullTransparent(getActivity());
-        if (mDataSource != 0) {
-            mShopMenu.setVisibility(View.VISIBLE);
-            mTopPeriodTab.setVisibility(View.INVISIBLE);
-        } else {
-            mShopMenuTitle.setTextColor(0xFFFFFFFF);
-            mShopMenuTitleArrow.setImageResource(R.drawable.ic_arrow_drop_down_white);
-            mShopMenu.setBackgroundResource(R.drawable.dashboard_bg_top);
-        }
-    }
-
-    private class ItemStickyListener extends RecyclerView.OnScrollListener {
-
-        private View topBar = null;
 
         @Override
-        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-            if (recyclerView.getChildCount() == 0) {
-                return;
-            }
-            int position = -1;
-            if (topBar == null) {
-                topBar = recyclerView.getChildAt(0);
-            }
-            if (topBar != null) {
-                int[] coordinate = new int[2];
-                topBar.getLocationInWindow(coordinate);
-                position = coordinate[1];
-            }
-//            LogCat.d(TAG, "onScroll=" + position + "; topHeight=" + mTopShopMenuHeight);
-            Context context = recyclerView.getContext();
-            if (mIsStickyTop && !showSticky(position)) {
-                mIsStickyTop = false;
-                hideStickyTop(context);
-            } else if (!mIsStickyTop && showSticky(position)) {
-                mIsStickyTop = true;
-                showStickyTop(context);
-            }
-            if (!showSticky(position) && mDataSource != 0) {
-                int offset = Math.min(position - mTopShopMenuHeight, 0);
-                mShopMenu.setTranslationY(offset);
-                mShopMenuPopupHelper.setOffset(offset);
-            }
+        public Fragment getItem(int i) {
+            return mPages.get(i).getFragment();
         }
 
-        private void reset() {
-            topBar = null;
+        @Override
+        public int getCount() {
+            return mPages.size();
+        }
+    }
+
+    private class PageListener implements ViewPager.OnPageChangeListener {
+
+        @Override
+        public void onPageScrolled(int i, float v, int i1) {
         }
 
-        private boolean showSticky(int position) {
-            return position <= 0;
+        @Override
+        public void onPageSelected(int position) {
+            mPageTab.setCurrentTab(position);
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int i) {
         }
     }
 
