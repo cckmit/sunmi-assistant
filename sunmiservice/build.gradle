@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: "com.cpdroid.fat-aar"
 
 android {
     compileSdkVersion COMPILE_SDK_VERSION
@@ -30,7 +31,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation fileTree(include: ['*.aar'], dir: 'libs')
+    embedded fileTree(include: ['*.aar'], dir: 'libs')
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
