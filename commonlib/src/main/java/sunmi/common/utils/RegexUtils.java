@@ -7,11 +7,11 @@ import java.util.regex.Pattern;
 
 public class RegexUtils {
 
-    public static boolean isCorrectAccount(String mobiles) {
+    public static boolean isCorrectAccount(String account) {
         if (CommonHelper.isGooglePlay()) {
-            return isEmail(mobiles);
+            return isEmail(account);
         } else {
-            return isChinaPhone(mobiles);
+            return isChinaPhone(account) || isEmail(account);
         }
     }
 

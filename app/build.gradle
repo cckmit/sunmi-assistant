@@ -122,6 +122,7 @@ dependencies {
 
     implementation project(':commonlib')//公共库
     implementation project(':ipc')
+//    implementation project(':apmanager')
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
