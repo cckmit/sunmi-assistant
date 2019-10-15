@@ -78,6 +78,8 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
     RecyclerView recyclerView;
     @ViewById(R.id.const_layout_poi)
     View constLayoutPoi;
+    @ViewById(R.id.tv_transparent)
+    TextView tvTransparent;
 
     @Extra
     ShopInfo mInfo;
@@ -115,6 +117,7 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
         poiCityName = cityName(mList);
         if (!TextUtils.isEmpty(mInfo.getRegionName())) {
             silAddress.setRightText(mInfo.getRegionName());
+            tvTransparent.setVisibility(View.GONE);
         }
         if (!TextUtils.isEmpty(mInfo.getAddress())) {
             cetDetailsAddress.setText(mInfo.getAddress());
@@ -151,6 +154,18 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
             }
         }
         return "";
+    }
+
+    @Click(R.id.tv_transparent)
+    void clickAddress() {
+        if (silAddress.getRightText().getText() == null ||
+                TextUtils.isEmpty(silAddress.getRightText().getText().toString())) {
+            shortTip(getString(R.string.shop_input_region_tip));
+            tvTransparent.setVisibility(View.VISIBLE);
+        } else {
+            tvTransparent.setVisibility(View.GONE);
+            cetDetailsAddress.requestFocus();
+        }
     }
 
     /**
@@ -311,7 +326,8 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
         lp.height = height - 300;
         dialogWindow.setAttributes(lp);
 
-        ImageView ivDelete = inflate.findViewById(R.id.iv_delete);
+        TextView tvCancel = inflate.findViewById(R.id.tv_cancel);
+        TextView tvConfirm = inflate.findViewById(R.id.tv_confirm);
         itemRecyclerView = inflate.findViewById(R.id.item_recycler_view);
         btnAreaPro = inflate.findViewById(R.id.btn_area_pro);
         btnAreaCity = inflate.findViewById(R.id.btn_area_city);
@@ -331,8 +347,15 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
                     mAreaId = -1;
                     mAdapter.setData(mList.get(mProvinceIndex).getChildren());
                     break;
-                case R.id.iv_delete:
+                case R.id.tv_cancel:
                     dialog.dismiss();
+                    break;
+                case R.id.tv_confirm:
+                    dialog.dismiss();
+                    tvTransparent.setVisibility(View.GONE);
+                    silAddress.setRightText(btnAreaPro.getText().toString() + "," +
+                            btnAreaCity.getText().toString() + "," +
+                            btnAreaRegion.getText().toString());
                     break;
                 default:
                     break;
@@ -340,7 +363,8 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
         };
         btnAreaPro.setOnClickListener(clickListener);
         btnAreaCity.setOnClickListener(clickListener);
-        ivDelete.setOnClickListener(clickListener);
+        tvCancel.setOnClickListener(clickListener);
+        tvConfirm.setOnClickListener(clickListener);
         dialog.setCancelable(true);
         dialog.show();
     }
@@ -472,13 +496,7 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
                 mAreaId = model.getCounty();
                 btnAreaRegion.setText(model.getName());
                 btnAreaRegion.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
-                //adapter.notifyDataSetChanged();
-                if (dialog != null) {
-                    dialog.dismiss();
-                    silAddress.setRightText(btnAreaPro.getText().toString() + "," +
-                            btnAreaCity.getText().toString() + "," +
-                            btnAreaRegion.getText().toString());
-                }
+                adapter.notifyDataSetChanged();
             });
         }
 

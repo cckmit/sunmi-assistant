@@ -175,7 +175,7 @@
     <string name="company_create_fail">商户创建失败</string>
     <string name="company_shop_create_name">门店名称</string>
     <string name="company_shop_contact">联系人</string>
-    <string name="company_shop_contact_really_name">联系人真实姓名</string>
+    <string name="company_shop_contact_really_name">请输入联系人名称</string>
     <string name="company_shop_mobile">联系方式</string>
     <string name="company_shop_select_one_or_more">您可以选择一家或多家门店</string>
     <string name="company_create_invalid_character">请输入有效的字符</string>
@@ -251,11 +251,17 @@
     <string name="tip_open_notification">开启消息通知，随时接收动态消息</string>
     <string name="str_go_open">去开启</string>
     <string name="shop_address">门店地址</string>
-    <string name="shop_input_region_tip">请先选择地区</string>
+    <string name="shop_input_region_tip">请先选择所在地区</string>
     <string name="str_create_company_alredy_exit">门店名称已存在</string>
     <string name="ipc_right_now_play">立即查看</string>
     <string name="ipc_device_model">设备型号：%s</string>
     <string name="ipc_device_name">设备名称：%s</string>
     <string name="ipc_device_msg_content">内容详情：%s</string>
     <string name="company_shop_into_log">进店日志</string>
+    <string name="company_shop_square_hint">请输入经营面积</string>
+    <string name="company_shop_location_hint">请输入门店所在位置</string>
+    <string name="company_shop_required_field">必填</string>
+    <string name="company_shop_select_category">请选择经营品类</string>
+    <string name="dialog_title_select_category">选择经营品类</string>
+    <string name="dialog_title_select_region">选择所在地区</string>
 </resources>

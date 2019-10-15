@@ -248,5 +248,11 @@
     <string name="ipc_device_name">Device Name：%s</string>
     <string name="ipc_device_msg_content">Content：%s</string>
     <string name="company_shop_into_log">进店日志</string>
+    <string name="company_shop_square_hint">请输入经营面积</string>
+    <string name="company_shop_location_hint">请输入门店所在位置</string>
+    <string name="company_shop_required_field">必填</string>
+    <string name="company_shop_select_category">请选择经营品类</string>
+    <string name="dialog_title_select_category">选择经营品类</string>
+    <string name="dialog_title_select_region">选择所在地区</string>
 
 </resources>

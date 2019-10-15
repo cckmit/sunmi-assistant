@@ -46,15 +46,33 @@ public class SunmiStoreApi {
 
     public static final String TAG = "SunmiStoreApi";
 
-    private static final class Singleton {
-        private static final SunmiStoreApi INSTANCE = new SunmiStoreApi();
+    private SunmiStoreApi() {
     }
 
     public static SunmiStoreApi getInstance() {
         return Singleton.INSTANCE;
     }
 
-    private SunmiStoreApi() {
+    /**
+     * 对参数进行加签
+     *
+     * @param params 参数
+     * @return 加签后的Map
+     */
+    private static HashMap<String, String> getSignedMap(String params) {
+        HashMap<String, String> map = new HashMap<>(6);
+        String timeStamp = DateTimeUtils.currentTimeSecond() + "";
+        String randomNum = (int) ((Math.random() * 9 + 1) * 100000) + "";
+        String isEncrypted = "0";
+        String sign = SecurityUtils.md5(params + isEncrypted +
+                timeStamp + randomNum + SecurityUtils.md5(CommonConfig.CLOUD_TOKEN));
+        map.put("timeStamp", timeStamp);
+        map.put("randomNum", randomNum);
+        map.put("isEncrypted", isEncrypted);
+        map.put("params", params);
+        map.put("sign", sign);
+        map.put("lang", "zh");
+        return map;
     }
 
     /**
@@ -469,12 +487,21 @@ public class SunmiStoreApi {
      * @param tel       否
      * @param callback  回调
      */
-    public void createShop(int companyId, String shopName, String person, String tel,
+    public void createShop(int companyId, String shopName, int province, int city, int area,
+                           String address, int typeOne, int typeTwo,
+                           float businessArea, String person, String tel,
                            RetrofitCallback<CreateShopInfo> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
                     .put("shop_name", shopName)
+                    .put("province", province)
+                    .put("city", city)
+                    .put("area", area)
+                    .put("address", address)
+                    .put("type_one", typeOne)
+                    .put("type_two", typeTwo)
+                    .put("business_area", businessArea)
                     .put("contact_person", person)
                     .put("contact_tel", tel)
                     .toString();
@@ -772,26 +799,8 @@ public class SunmiStoreApi {
         }
     }
 
-    /**
-     * 对参数进行加签
-     *
-     * @param params 参数
-     * @return 加签后的Map
-     */
-    private static HashMap<String, String> getSignedMap(String params) {
-        HashMap<String, String> map = new HashMap<>(6);
-        String timeStamp = DateTimeUtils.currentTimeSecond() + "";
-        String randomNum = (int) ((Math.random() * 9 + 1) * 100000) + "";
-        String isEncrypted = "0";
-        String sign = SecurityUtils.md5(params + isEncrypted +
-                timeStamp + randomNum + SecurityUtils.md5(CommonConfig.CLOUD_TOKEN));
-        map.put("timeStamp", timeStamp);
-        map.put("randomNum", randomNum);
-        map.put("isEncrypted", isEncrypted);
-        map.put("params", params);
-        map.put("sign", sign);
-        map.put("lang", "zh");
-        return map;
+    private static final class Singleton {
+        private static final SunmiStoreApi INSTANCE = new SunmiStoreApi();
     }
 
 }
