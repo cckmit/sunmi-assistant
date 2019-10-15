@@ -40,6 +40,7 @@ import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SmRecyclerView;
+import sunmi.common.view.TitleBarView;
 import sunmi.common.view.ViewHolder;
 import sunmi.common.view.activity.StartConfigSMDeviceActivity_;
 import sunmi.common.view.dialog.CommonDialog;
@@ -52,6 +53,8 @@ import sunmi.common.view.dialog.ListDialog;
 @EActivity(resName = "activity_ipc_config_completed")
 public class IpcConfigCompletedActivity extends BaseActivity {
 
+    @ViewById(resName = "title_bar")
+    TitleBarView titleBar;
     @ViewById(resName = "rv_result")
     SmRecyclerView rvResult;
     @ViewById(resName = "btn_complete")
@@ -106,6 +109,10 @@ public class IpcConfigCompletedActivity extends BaseActivity {
             }
         }
         list = sunmiDevices;
+        if (isSunmiLink) {
+            titleBar.setAppTitle(R.string.str_sunmi_link);
+            tvResult.setText(getString(R.string.str_wifi_config_finish));
+        }
         initList();
     }
 
