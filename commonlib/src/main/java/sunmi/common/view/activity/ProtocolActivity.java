@@ -62,11 +62,7 @@ public class ProtocolActivity extends BaseActivity {
     @AfterViews
     protected void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
-        if (CommonHelper.isGooglePlay()) {
-            initGoogle();
-        } else {
-            initNormal();
-        }
+        initNormal();
         // 设置标题
         WebChromeClient webChrome = new WebChromeClient() {
             @Override
@@ -80,13 +76,13 @@ public class ProtocolActivity extends BaseActivity {
 
     private void initNormal() {
         if (protocolType == USER_PROTOCOL) { //app注册协议
-            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) ? PROTOCOL_USER_ENGLISH : PROTOCOL_USER);
+            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) || CommonHelper.isGooglePlay() ? PROTOCOL_USER_ENGLISH : PROTOCOL_USER);
         } else if (protocolType == USER_PRIVATE) {
-            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) ? PROTOCOL_PRIVATE_ENGLISH : PROTOCOL_PRIVATE);
+            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) || CommonHelper.isGooglePlay() ? PROTOCOL_PRIVATE_ENGLISH : PROTOCOL_PRIVATE);
         } else if (protocolType == USER_AP_PROTOCOL) { //快速配置路由器协议
-            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) ? PROTOCOL_USER_ENGLISH : PROTOCOL_USER);
+            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) || CommonHelper.isGooglePlay() ? PROTOCOL_USER_ENGLISH : PROTOCOL_USER);
         } else if (protocolType == USER_AP_PRIVATE) {
-            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) ? PROTOCOL_PRIVATE_ENGLISH : PROTOCOL_PRIVATE);
+            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) || CommonHelper.isGooglePlay() ? PROTOCOL_PRIVATE_ENGLISH : PROTOCOL_PRIVATE);
         } else if (protocolType == USER_WX_HELP) {
             loadWebView(WX_AUTH_HELP);
         } else if (protocolType == USER_AUTH_PLATFORM) {//获取平台授权协议
@@ -94,15 +90,15 @@ public class ProtocolActivity extends BaseActivity {
         }
     }
 
-    private void initGoogle() {
+    private void localEnglishHtml() {
         if (protocolType == USER_PROTOCOL) { //app注册协议
-            loadWebView("file:///android_asset/Sunmi_user.html");
+            loadWebView("file:///android_asset/user_sunmi_english.html");
         } else if (protocolType == USER_PRIVATE) {
-            loadWebView("file:///android_asset/Sunmi_private.html");
+            loadWebView("file:///android_asset/private_sunmi_english.html");
         } else if (protocolType == USER_AP_PROTOCOL) { //快速配置路由器协议
-            loadWebView("file:///android_asset/Sunmi_user.html");
+            loadWebView("file:///android_asset/user_sunmi_english.html");
         } else if (protocolType == USER_AP_PRIVATE) {
-            loadWebView("file:///android_asset/Sunmi_private.html");
+            loadWebView("file:///android_asset/private_sunmi_english.html");
         } else if (protocolType == USER_WX_HELP) {
             loadWebView(WX_AUTH_HELP);
         } else if (protocolType == USER_AUTH_PLATFORM) {//获取平台授权协议
@@ -117,17 +113,25 @@ public class ProtocolActivity extends BaseActivity {
         this.overridePendingTransition(0, R.anim.activity_close_up_down);
     }
 
-    private void loadLocalHtml() {
+    private void localChineseHtml() {
         if (protocolType == USER_PROTOCOL) { //app注册协议
-            loadWebView("file:///android_asset/pro_sunmi.html");
+            loadWebView("file:///android_asset/user_sunmi.html");
         } else if (protocolType == USER_PRIVATE) {
             loadWebView("file:///android_asset/private_sunmi.html");
         } else if (protocolType == USER_AP_PROTOCOL) { //快速配置路由器协议
-            loadWebView("file:///android_asset/pro_sunmi.html");
+            loadWebView("file:///android_asset/user_sunmi.html");
         } else if (protocolType == USER_AP_PRIVATE) {
             loadWebView("file:///android_asset/private_sunmi.html");
         } else if (protocolType == USER_WX_HELP) {
             loadWebView(AUTH_PLATFORM);
+        }
+    }
+
+    private void loadLocalLanguage() {
+        if (CommonHelper.isGooglePlay() || TextUtils.equals("en_us", CommonHelper.getLanguage())) {
+            localEnglishHtml();
+        } else {
+            localChineseHtml();
         }
     }
 
@@ -138,7 +142,7 @@ public class ProtocolActivity extends BaseActivity {
             public void run() {
                 /* * 超时后,首先判断页面加载是否小于100,就执行超时后的动作 */
                 if (webView.getProgress() < 100) {
-                    loadLocalHtml();
+                    loadLocalLanguage();
                     timer.cancel();
                     timer.purge();
                 }
@@ -194,7 +198,7 @@ public class ProtocolActivity extends BaseActivity {
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 hideLoadingDialog();
-                loadLocalHtml();
+                loadLocalLanguage();
                 super.onReceivedError(view, errorCode, description, failingUrl);
             }
 
