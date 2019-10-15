@@ -496,7 +496,7 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
                 mAreaId = model.getCounty();
                 btnAreaRegion.setText(model.getName());
                 btnAreaRegion.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
-                adapter.notifyDataSetChanged();
+                getAdapter().notifyDataSetChanged();
             });
         }
 
