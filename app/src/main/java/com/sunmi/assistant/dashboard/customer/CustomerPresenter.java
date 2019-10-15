@@ -8,6 +8,7 @@ import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.card.CustomerDataCard;
 import com.sunmi.assistant.dashboard.card.CustomerPeriodCard;
+import com.sunmi.assistant.dashboard.card.CustomerTrendCard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
 
     private int mCompanyId;
     private int mShopId;
-    private int mSource = -1;
+    private int mSource;
     private int mPeriod;
 
     private List<BaseRefreshCard> mList = new ArrayList<>();
@@ -63,7 +64,7 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
 
     @Override
     public void load() {
-        if (!isViewAttached() || mSource < 0) {
+        if (!isViewAttached()) {
             return;
         }
 
@@ -79,9 +80,6 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
 
     @Override
     public void setSource(int source) {
-        if (mSource == source) {
-            return;
-        }
         mSource = source;
         initList(mSource);
         load();
@@ -89,9 +87,6 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
 
     @Override
     public void setPeriod(int period) {
-        if (mPeriod == period) {
-            return;
-        }
         mPeriod = period;
         for (BaseRefreshCard card : mList) {
             card.setPeriod(period, false);
@@ -137,6 +132,7 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
         if (Utils.hasCustomer(source)) {
             mList.add(CustomerPeriodCard.init(this, source));
             mList.add(CustomerDataCard.init(this, source));
+            mList.add(CustomerTrendCard.init(this, source));
         } else if (Utils.hasFs(source)) {
 
         } else {

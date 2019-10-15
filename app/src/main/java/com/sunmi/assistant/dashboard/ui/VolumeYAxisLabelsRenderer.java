@@ -8,11 +8,11 @@ import com.github.mikephil.charting.renderer.YAxisRenderer;
  * @author yinhui
  * @since 2019-07-03
  */
-public class BarYAxisLabelsRenderer extends YAxisRenderer {
+public class VolumeYAxisLabelsRenderer extends YAxisRenderer {
 
     private float[] labels;
 
-    public BarYAxisLabelsRenderer(BarLineChartBase chart) {
+    public VolumeYAxisLabelsRenderer(BarLineChartBase chart) {
         super(chart.getViewPortHandler(), chart.getAxisLeft(), chart.getTransformer(YAxis.AxisDependency.LEFT));
     }
 

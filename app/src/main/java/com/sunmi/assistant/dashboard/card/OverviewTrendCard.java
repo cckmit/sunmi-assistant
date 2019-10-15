@@ -25,11 +25,12 @@ import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.ui.BarChartMarkerView;
-import com.sunmi.assistant.dashboard.ui.BarYAxisLabelsRenderer;
+import com.sunmi.assistant.dashboard.ui.ChartEntry;
 import com.sunmi.assistant.dashboard.ui.LineChartMarkerView;
 import com.sunmi.assistant.dashboard.ui.LineYAxisLabelFormatter;
-import com.sunmi.assistant.dashboard.ui.LineYAxisLabelsRenderer;
+import com.sunmi.assistant.dashboard.ui.RateYAxisLabelsRenderer;
 import com.sunmi.assistant.dashboard.ui.RoundEdgeBarChartRenderer;
+import com.sunmi.assistant.dashboard.ui.VolumeYAxisLabelsRenderer;
 import com.sunmi.assistant.dashboard.ui.XAxisLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.XAxisLabelsRenderer;
 
@@ -55,9 +56,9 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
     private static OverviewTrendCard sInstance;
 
     private XAxisLabelsRenderer lineXAxisRenderer;
-    private LineYAxisLabelsRenderer lineYAxisRenderer;
+    private RateYAxisLabelsRenderer lineYAxisRenderer;
     private XAxisLabelsRenderer barXAxisRenderer;
-    private BarYAxisLabelsRenderer barYAxisRenderer;
+    private VolumeYAxisLabelsRenderer barYAxisRenderer;
     private LineChartMarkerView mLineChartMarker;
     private BarChartMarkerView mBarChartMarker;
     private float mDashLength;
@@ -113,9 +114,9 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
 
         // 设置图表坐标Label格式
         lineXAxisRenderer = new XAxisLabelsRenderer(lineChart);
-        lineYAxisRenderer = new LineYAxisLabelsRenderer(lineChart);
+        lineYAxisRenderer = new RateYAxisLabelsRenderer(lineChart);
         barXAxisRenderer = new XAxisLabelsRenderer(barChart);
-        barYAxisRenderer = new BarYAxisLabelsRenderer(barChart);
+        barYAxisRenderer = new VolumeYAxisLabelsRenderer(barChart);
         lineChart.setXAxisRenderer(lineXAxisRenderer);
         lineChart.setRendererLeftYAxis(lineYAxisRenderer);
         barChart.setXAxisRenderer(barXAxisRenderer);
@@ -215,9 +216,9 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
     @Override
     protected void setupModel(List<Model> models, CustomerRateResp response) {
         Model model = getModel();
-        List<BarEntry> rateList = model.dataSets.get(Constants.DATA_TYPE_RATE);
-        List<BarEntry> volumeList = model.dataSets.get(Constants.DATA_TYPE_VOLUME);
-        List<BarEntry> customerList = model.dataSets.get(Constants.DATA_TYPE_CUSTOMER);
+        List<ChartEntry> rateList = model.dataSets.get(Constants.DATA_TYPE_RATE);
+        List<ChartEntry> volumeList = model.dataSets.get(Constants.DATA_TYPE_VOLUME);
+        List<ChartEntry> customerList = model.dataSets.get(Constants.DATA_TYPE_CUSTOMER);
         rateList.clear();
         volumeList.clear();
         customerList.clear();
@@ -226,14 +227,17 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
             return;
         }
         List<CustomerRateResp.CountListBean> list = response.getCountList();
+        int size = list.size();
         for (CustomerRateResp.CountListBean bean : list) {
-            int time = Math.abs(bean.getTime());
+            int timeIndex = Math.abs(bean.getTime());
             int count = Math.abs(bean.getOrderCount());
             int customer = Math.abs(bean.getPassengerFlowCount());
-            float x = Utils.encodeChartXAxisFloat(model.period, time);
-            rateList.add(new BarEntry(x, customer == 0 ? 0f : Math.min((float) count / customer, 1f)));
-            volumeList.add(new BarEntry(x, count));
-            customerList.add(new BarEntry(x, customer));
+            float x = Utils.encodeChartXAxisFloat(model.period, timeIndex);
+            long time = Utils.getTime(model.period, timeIndex, size);
+            float rate = customer == 0 ? 0f : Math.min((float) count / customer, 1f);
+            rateList.add(new ChartEntry(x, rate, time));
+            volumeList.add(new ChartEntry(x, count, time));
+            customerList.add(new ChartEntry(x, customer, time));
         }
 
         // Test data
@@ -244,14 +248,15 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
 //        int min = count / 3;
 //        for (int i = 1; i < count + 1; i++) {
 //            float x = Utils.encodeChartXAxisFloat(model.period, i);
+//            long time = Utils.getTime(model.period, i, count);
 //            if (i <= min + 1) {
-//                rateList.add(new BarEntry(x, 0f));
-//                volumeList.add(new BarEntry(x, 0f));
-//                customerList.add(new BarEntry(x, 0f));
+//                rateList.add(new ChartEntry(x, 0f, time));
+//                volumeList.add(new ChartEntry(x, 0f, time));
+//                customerList.add(new ChartEntry(x, 0f, time));
 //            } else {
-//                rateList.add(new BarEntry(x, (float) Math.random()));
-//                volumeList.add(new BarEntry(x, (int) (Math.random() * 1000)));
-//                customerList.add(new BarEntry(x, (int) (Math.random() * 1000)));
+//                rateList.add(new ChartEntry(x, (float) Math.random(), time));
+//                volumeList.add(new ChartEntry(x, (int) (Math.random() * 1000), time));
+//                customerList.add(new ChartEntry(x, (int) (Math.random() * 1000), time));
 //            }
 //        }
     }
@@ -281,18 +286,18 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
         customer.setTypeface(null, model.type == Constants.DATA_TYPE_CUSTOMER ? Typeface.BOLD : Typeface.NORMAL);
 
         // Get data set from model
-        List<BarEntry> dataSet = model.dataSets.get(model.type);
+        List<ChartEntry> dataSet = model.dataSets.get(model.type);
         if (dataSet == null) {
             dataSet = new ArrayList<>();
             model.dataSets.put(model.type, dataSet);
         }
-        LogCat.d(TAG, "Period=" + model.period + "; type=" + model.type + "\nData set:" + dataSet);
+//        LogCat.d(TAG, "Period=" + model.period + "; type=" + model.type + "\nData set:" + dataSet);
 
         // Calculate min & max of axis value.
         Pair<Integer, Integer> xAxisRange = Utils.calcChartXAxisRange(model.period);
         int max = 0;
         float lastX = 0;
-        for (BarEntry entry : dataSet) {
+        for (ChartEntry entry : dataSet) {
             if (model.type == Constants.DATA_TYPE_RATE && entry.getY() > 1) {
                 entry.setY(1f);
             }
@@ -318,12 +323,7 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
 
         // Refresh data set
         if (model.type == Constants.DATA_TYPE_RATE) {
-            mLineChartMarker.setType(model.type);
-            if (model.period == Constants.TIME_PERIOD_MONTH) {
-                mLineChartMarker.setTip(Utils.getMonthName(dataSet));
-            } else {
-                mLineChartMarker.setTip("");
-            }
+            mLineChartMarker.setType(model.period, model.type);
             LineDataSet set;
             LineData data = line.getData();
             ArrayList<Entry> values = new ArrayList<>(dataSet);
@@ -350,12 +350,7 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
             line.highlightValue(lastX, 0);
             line.animateX(300);
         } else {
-            mBarChartMarker.setType(model.type);
-            if (model.period == Constants.TIME_PERIOD_MONTH) {
-                mBarChartMarker.setTip(Utils.getMonthName(dataSet));
-            } else {
-                mBarChartMarker.setTip("");
-            }
+            mBarChartMarker.setType(model.period, model.type);
             float barWidthRatio = calcBarWidth(model.period);
             int color = model.type == Constants.DATA_TYPE_VOLUME ?
                     ContextCompat.getColor(holder.getContext(), R.color.color_FFD0B3) :
@@ -416,7 +411,7 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
     public static class Model extends BaseRefreshCard.BaseModel {
         private String title;
         private int type;
-        private SparseArray<List<BarEntry>> dataSets = new SparseArray<>(3);
+        private SparseArray<List<ChartEntry>> dataSets = new SparseArray<>(3);
 
         public Model(String title) {
             this.title = title;

@@ -31,7 +31,7 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
 
     private int mCompanyId;
     private int mShopId;
-    private int mSource = -1;
+    private int mSource;
     private int mPeriod;
 
     private List<BaseRefreshCard> mList = new ArrayList<>();
@@ -69,7 +69,7 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
 
     @Override
     public void load() {
-        if (!isViewAttached() || mSource < 0) {
+        if (!isViewAttached()) {
             return;
         }
 
@@ -85,9 +85,6 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
 
     @Override
     public void setSource(int source) {
-        if (mSource == source) {
-            return;
-        }
         mSource = source;
         initList(mSource);
         load();
@@ -95,9 +92,6 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
 
     @Override
     public void setPeriod(int period) {
-        if (mPeriod == period) {
-            return;
-        }
         mPeriod = period;
         for (BaseRefreshCard card : mList) {
             card.setPeriod(period, false);

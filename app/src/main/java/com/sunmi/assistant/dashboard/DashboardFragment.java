@@ -39,7 +39,6 @@ import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.DropdownMenu;
 import sunmi.common.view.tablayout.CommonTabLayout;
 import sunmi.common.view.tablayout.listener.CustomTabEntity;
@@ -315,7 +314,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Override
     public void updateTopPosition(int position) {
-        LogCat.d(TAG, "onScroll=" + position + "; Top=" + mTopHeaderHeight);
+//        LogCat.d(TAG, "onScroll=" + position + "; Top=" + mTopHeaderHeight);
         int offset = Math.min(position - mTopHeaderHeight, 0);
         if (mHasData) {
             mTopShopMenu.setTranslationY(offset);

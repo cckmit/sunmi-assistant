@@ -8,11 +8,11 @@ import com.github.mikephil.charting.renderer.YAxisRenderer;
  * @author yinhui
  * @since 2019-07-03
  */
-public class LineYAxisLabelsRenderer extends YAxisRenderer {
+public class RateYAxisLabelsRenderer extends YAxisRenderer {
 
     private float[] labels = {0f, 0.2f, 0.4f, 0.6f, 0.8f, 1f};
 
-    public LineYAxisLabelsRenderer(BarLineChartBase chart) {
+    public RateYAxisLabelsRenderer(BarLineChartBase chart) {
         super(chart.getViewPortHandler(), chart.getAxisLeft(), chart.getTransformer(YAxis.AxisDependency.LEFT));
     }
 
