@@ -38,8 +38,6 @@
     <string name="dashboard_page_overview">实时数据</string>
     <string name="dashboard_page_customer">客流分析</string>
 
-    <string name="dashboard_data_format">%s%%</string>
-
     <string name="dashboard_period_today">今日</string>
     <string name="dashboard_period_week">本周</string>
     <string name="dashboard_period_month">本月</string>
