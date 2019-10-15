@@ -17,6 +17,9 @@ public interface OverviewContract {
 
         void setCards(List<BaseRefreshCard> data);
 
+        int getScrollY();
+
+        void scrollTo(int y);
     }
 
     interface Presenter extends DashboardContract.PagePresenter {

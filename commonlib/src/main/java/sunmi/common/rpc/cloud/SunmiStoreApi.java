@@ -17,6 +17,7 @@ import sunmi.common.model.CreateShopInfo;
 import sunmi.common.model.CustomerAgeGenderResp;
 import sunmi.common.model.CustomerAgeNewOldResp;
 import sunmi.common.model.CustomerCountResp;
+import sunmi.common.model.CustomerHistoryResp;
 import sunmi.common.model.CustomerRateResp;
 import sunmi.common.model.PlatformInfo;
 import sunmi.common.model.ShopCategoryResp;
@@ -626,6 +627,54 @@ public class SunmiStoreApi {
     }
 
     // -------------- 客流统计相关 --------------
+
+    /**
+     * 获取历史客流数据
+     *
+     * @param companyId 是	number	商户ID
+     * @param shopId    是	number	门店ID
+     * @param type      是	number	日: 1、周: 2、月: 3、昨日：4
+     */
+    public void getHistoryCustomer(int companyId, int shopId, int type,
+                                   RetrofitCallback<CustomerHistoryResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("type", type)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getHistoryCustomer(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取历史客流数据
+     *
+     * @param companyId 是	number	商户ID
+     * @param shopId    是	number	门店ID
+     * @param startTime 开始时间 “YYYY-MM-DD”
+     * @param endTime   结束时间 “YYYY-MM-DD” （如果需要查询某一天，开始和结束时间相同）
+     */
+    public void getHistoryCustomer(int companyId, int shopId, String startTime, String endTime,
+                                   RetrofitCallback<CustomerHistoryResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("start_time", startTime)
+                    .put("end_time", endTime)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getHistoryCustomerByRange(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * 获取最近时间维度客流量（今日、本周、本月，昨日、上周、上月）

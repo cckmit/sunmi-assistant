@@ -5,14 +5,15 @@ import android.content.Context;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
+import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.card.EmptyDataCard;
 import com.sunmi.assistant.dashboard.card.EmptyGapCard;
 import com.sunmi.assistant.dashboard.card.NoFsCard;
 import com.sunmi.assistant.dashboard.card.NoOrderCard;
-import com.sunmi.assistant.dashboard.overview.card.DataCard;
-import com.sunmi.assistant.dashboard.overview.card.DistributionChartCard;
-import com.sunmi.assistant.dashboard.overview.card.PeriodTabCard;
-import com.sunmi.assistant.dashboard.overview.card.TrendChartCard;
+import com.sunmi.assistant.dashboard.card.OverviewDataCard;
+import com.sunmi.assistant.dashboard.card.OverviewDistributionCard;
+import com.sunmi.assistant.dashboard.card.OverviewPeriodCard;
+import com.sunmi.assistant.dashboard.card.OverviewTrendCard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +42,24 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
     }
 
     @Override
-    public int getIndex() {
+    public int getType() {
         return Constants.PAGE_OVERVIEW;
+    }
+
+    @Override
+    public int getScrollY() {
+        if (isViewAttached()) {
+            return mView.getScrollY();
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
+    public void scrollTo(int y) {
+        if (isViewAttached()) {
+            mView.scrollTo(y);
+        }
     }
 
     @Override
@@ -63,7 +80,7 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
             card.init(mSource);
         }
         mView.setCards(mList);
-        refresh(true);
+        setPeriod(Constants.TIME_PERIOD_TODAY);
     }
 
     @Override
@@ -123,34 +140,30 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
 
     private void initList(int source) {
         mList.clear();
-        switch (mSource) {
-            case 0x3:
-                mList.add(PeriodTabCard.init(this, source));
-                mList.add(DataCard.init(this, source));
-                mList.add(TrendChartCard.init(this, source));
-                mList.add(DistributionChartCard.init(this, source));
-                mList.add(EmptyGapCard.init(this, source));
-                break;
-            case 0x2:
-                mList.add(PeriodTabCard.init(this, source));
-                mList.add(DataCard.init(this, source));
-                mList.add(TrendChartCard.init(this, source));
-                mList.add(NoFsCard.init(this, source));
-                mList.add(EmptyGapCard.init(this, source));
-                break;
-            case 0x1:
-                mList.add(PeriodTabCard.init(this, source));
-                mList.add(DataCard.init(this, source));
-                mList.add(TrendChartCard.init(this, source));
-                mList.add(DistributionChartCard.init(this, source));
-                mList.add(NoOrderCard.init(this, source));
-                mList.add(EmptyGapCard.init(this, source));
-                break;
-            default:
-                mList.add(EmptyDataCard.init(this, source));
-                mList.add(NoFsCard.init(this, source));
-                mList.add(NoOrderCard.init(this, source));
-                mList.add(EmptyGapCard.init(this, source));
+        if (Utils.hasSaas(source) && Utils.hasFs(source)) {
+            mList.add(OverviewPeriodCard.init(this, source));
+            mList.add(OverviewDataCard.init(this, source));
+            mList.add(OverviewTrendCard.init(this, source));
+            mList.add(OverviewDistributionCard.init(this, source));
+            mList.add(EmptyGapCard.init(this, source));
+        } else if (Utils.hasSaas(source) && !Utils.hasFs(source)) {
+            mList.add(OverviewPeriodCard.init(this, source));
+            mList.add(OverviewDataCard.init(this, source));
+            mList.add(OverviewTrendCard.init(this, source));
+            mList.add(NoFsCard.init(this, source));
+            mList.add(EmptyGapCard.init(this, source));
+        } else if (!Utils.hasSaas(source) && Utils.hasFs(source)) {
+            mList.add(OverviewPeriodCard.init(this, source));
+            mList.add(OverviewDataCard.init(this, source));
+            mList.add(OverviewTrendCard.init(this, source));
+            mList.add(OverviewDistributionCard.init(this, source));
+            mList.add(NoOrderCard.init(this, source));
+            mList.add(EmptyGapCard.init(this, source));
+        } else {
+            mList.add(EmptyDataCard.init(this, source));
+            mList.add(NoFsCard.init(this, source));
+            mList.add(NoOrderCard.init(this, source));
+            mList.add(EmptyGapCard.init(this, source));
         }
     }
 

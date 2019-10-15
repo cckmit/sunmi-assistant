@@ -56,6 +56,7 @@
     <string name="dashboard_data_sales_amount">总销售额</string>
     <string name="dashboard_data_sales_volume">交易笔数</string>
     <string name="dashboard_data_customer">进店客流</string>
+    <string name="dashboard_customer_data_last_month">上月日均</string>
     <string name="dashboard_data_transaction_rate">交易转化率</string>
     <string name="dashboard_page_overview">实时数据</string>
     <string name="dashboard_page_customer">客流分析</string>

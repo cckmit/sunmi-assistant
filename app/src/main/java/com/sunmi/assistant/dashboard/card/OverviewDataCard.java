@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.overview.card;
+package com.sunmi.assistant.dashboard.card;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -33,20 +33,20 @@ import sunmi.common.rpc.retrofit.RetrofitCallback;
  * @author yinhui
  * @since 2019-07-01
  */
-public class DataCard extends BaseRefreshCard<DataCard.Model, Object> {
+public class OverviewDataCard extends BaseRefreshCard<OverviewDataCard.Model, Object> {
 
-    private static DataCard sInstance;
+    private static OverviewDataCard sInstance;
 
     private static final int NUM_100_MILLION = 100000000;
     private static final int NUM_10_THOUSANDS = 10000;
 
-    private DataCard(Presenter presenter, int source) {
+    private OverviewDataCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static DataCard init(Presenter presenter, int source) {
+    public static OverviewDataCard init(Presenter presenter, int source) {
         if (sInstance == null) {
-            sInstance = new DataCard(presenter, source);
+            sInstance = new OverviewDataCard(presenter, source);
         } else {
             sInstance.init(source);
         }
@@ -55,7 +55,7 @@ public class DataCard extends BaseRefreshCard<DataCard.Model, Object> {
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_recycle_item_data;
+        return R.layout.dashboard_recycle_item_overview_data;
     }
 
     @Override
@@ -349,11 +349,6 @@ public class DataCard extends BaseRefreshCard<DataCard.Model, Object> {
         int lastCustomer;
         float rate;
         float lastRate;
-
-        @Override
-        public void init(int source) {
-            period = Constants.TIME_PERIOD_TODAY;
-        }
 
         public void init(Context context) {
             mNum10Thousands = context.getString(R.string.str_num_10_thousands);

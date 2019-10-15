@@ -40,13 +40,21 @@ public interface DashboardContract {
 
         List<PageHost> getPages();
 
+        int getPageIndex();
+
+        int getPageType();
+
         int getPeriod();
 
     }
 
     interface PagePresenter {
 
-        int getIndex();
+        int getType();
+
+        int getScrollY();
+
+        void scrollTo(int y);
 
         void setSource(int source);
 
@@ -58,8 +66,7 @@ public interface DashboardContract {
 
         void refresh(int position, boolean showLoading);
 
-        void showFailedTip();
-
         void release();
+
     }
 }

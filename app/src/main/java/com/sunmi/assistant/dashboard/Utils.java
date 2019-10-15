@@ -186,4 +186,17 @@ public class Utils {
         }
         return String.format(Locale.getDefault(), "%02d-", month + 1);
     }
+
+    public static boolean hasSaas(int source) {
+        return (source & Constants.DATA_SOURCE_SAAS) != 0;
+    }
+
+    public static boolean hasFs(int source) {
+        return (source & Constants.DATA_SOURCE_FS) != 0;
+    }
+
+    public static boolean hasCustomer(int source) {
+        return (source & Constants.DATA_SOURCE_CUSTOMER) != 0;
+    }
+
 }

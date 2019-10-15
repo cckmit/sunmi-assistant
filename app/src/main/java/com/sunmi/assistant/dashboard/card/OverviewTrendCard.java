@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.overview.card;
+package com.sunmi.assistant.dashboard.card;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -50,9 +50,9 @@ import sunmi.common.utils.log.LogCat;
  * @author yinhui
  * @since 2019-07-01
  */
-public class TrendChartCard extends BaseRefreshCard<TrendChartCard.Model, CustomerRateResp> {
+public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, CustomerRateResp> {
 
-    private static TrendChartCard sInstance;
+    private static OverviewTrendCard sInstance;
 
     private XAxisLabelsRenderer lineXAxisRenderer;
     private LineYAxisLabelsRenderer lineYAxisRenderer;
@@ -63,13 +63,13 @@ public class TrendChartCard extends BaseRefreshCard<TrendChartCard.Model, Custom
     private float mDashLength;
     private float mDashSpaceLength;
 
-    private TrendChartCard(Presenter presenter, int source) {
+    private OverviewTrendCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static TrendChartCard init(Presenter presenter, int source) {
+    public static OverviewTrendCard init(Presenter presenter, int source) {
         if (sInstance == null) {
-            sInstance = new TrendChartCard(presenter, source);
+            sInstance = new OverviewTrendCard(presenter, source);
         } else {
             sInstance.init(source);
         }
@@ -427,7 +427,6 @@ public class TrendChartCard extends BaseRefreshCard<TrendChartCard.Model, Custom
 
         @Override
         public void init(int source) {
-            period = Constants.TIME_PERIOD_TODAY;
             updateType(source);
             for (int i = 0, size = dataSets.size(); i < size; i++) {
                 int key = dataSets.keyAt(i);

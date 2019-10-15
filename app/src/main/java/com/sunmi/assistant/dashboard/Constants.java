@@ -9,6 +9,7 @@ public class Constants {
     public static final int PAGE_OVERVIEW = 0;
     public static final int PAGE_CUSTOMER = 1;
 
+    public static final int TIME_PERIOD_INIT = 0;
     public static final int TIME_PERIOD_TODAY = 1;
     public static final int TIME_PERIOD_WEEK = 2;
     public static final int TIME_PERIOD_MONTH = 3;
@@ -28,4 +29,6 @@ public class Constants {
     public static final int DATA_SOURCE_SAAS = 0x1;
     public static final int DATA_SOURCE_FS = 0x2;
     public static final int DATA_SOURCE_CUSTOMER = 0x4;
+
+    public static final int NO_CUSTOMER_DATA = 5087;
 }

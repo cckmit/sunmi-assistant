@@ -50,6 +50,8 @@
     <string name="dashboard_data_customer">进店客流</string>
     <string name="dashboard_data_transaction_rate">交易转化率</string>
 
+    <string name="dashboard_customer_data_last_month">上月日均</string>
+
     <string name="dashboard_chart_business_trend">经营趋势</string>
     <string name="dashboard_chart_rate">转化率</string>
     <string name="dashboard_chart_sales_volume">交易笔数</string>

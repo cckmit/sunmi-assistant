@@ -5,6 +5,9 @@ import android.content.Context;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
+import com.sunmi.assistant.dashboard.Utils;
+import com.sunmi.assistant.dashboard.card.CustomerDataCard;
+import com.sunmi.assistant.dashboard.card.CustomerPeriodCard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +36,24 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
     }
 
     @Override
-    public int getIndex() {
-        return Constants.PAGE_OVERVIEW;
+    public int getType() {
+        return Constants.PAGE_CUSTOMER;
+    }
+
+    @Override
+    public int getScrollY() {
+        if (isViewAttached()) {
+            return mView.getScrollY();
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
+    public void scrollTo(int y) {
+        if (isViewAttached()) {
+            mView.scrollTo(y);
+        }
     }
 
     @Override
@@ -55,7 +74,7 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
             card.init(mSource);
         }
         mView.setCards(mList);
-        refresh(true);
+        setPeriod(Constants.TIME_PERIOD_YESTERDAY);
     }
 
     @Override
@@ -115,14 +134,13 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
 
     private void initList(int source) {
         mList.clear();
-        switch (mSource) {
-            case 0x3:
-                break;
-            case 0x2:
-                break;
-            case 0x1:
-                break;
-            default:
+        if (Utils.hasCustomer(source)) {
+            mList.add(CustomerPeriodCard.init(this, source));
+            mList.add(CustomerDataCard.init(this, source));
+        } else if (Utils.hasFs(source)) {
+
+        } else {
+
         }
     }
 

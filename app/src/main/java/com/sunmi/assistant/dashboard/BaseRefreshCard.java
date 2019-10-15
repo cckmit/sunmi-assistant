@@ -75,22 +75,22 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
             model.init(source);
         }
         this.mState = STATE_INIT;
+        this.mPeriod = Constants.TIME_PERIOD_INIT;
         this.mSource = source;
-        this.mPeriod = getModel().period;
         this.mCompanyId = SpUtils.getCompanyId();
         this.mShopId = SpUtils.getShopId();
     }
 
     public boolean hasSaas() {
-        return (mSource & Constants.DATA_SOURCE_SAAS) != 0;
+        return Utils.hasSaas(mSource);
     }
 
     public boolean hasFs() {
-        return (mSource & Constants.DATA_SOURCE_FS) != 0;
+        return Utils.hasFs(mSource);
     }
 
     public boolean hasCustomer() {
-        return (mSource & Constants.DATA_SOURCE_CUSTOMER) != 0;
+        return Utils.hasCustomer(mSource);
     }
 
     public List<Model> getModels() {
@@ -190,6 +190,10 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
     }
 
     private void requestLoad(boolean showLoading) {
+        if (mPeriod == Constants.TIME_PERIOD_INIT) {
+            LogCat.d(TAG, "Period is not initialized, skip.");
+            return;
+        }
         if (mCall.isLoading() && mCall.isRequestSame(mCompanyId, mShopId, mPeriod)) {
             LogCat.d(TAG, "Data is loading, skip.");
             return;

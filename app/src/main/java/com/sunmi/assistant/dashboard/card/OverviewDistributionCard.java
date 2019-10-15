@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.overview.card;
+package com.sunmi.assistant.dashboard.card;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -49,7 +49,7 @@ import sunmi.common.utils.log.LogCat;
  * @author yinhui
  * @since 2019-07-01
  */
-public class DistributionChartCard extends BaseRefreshCard<DistributionChartCard.Model, Object> {
+public class OverviewDistributionCard extends BaseRefreshCard<OverviewDistributionCard.Model, Object> {
 
     private static final int NUM_10_THOUSANDS = 10000;
 
@@ -58,19 +58,19 @@ public class DistributionChartCard extends BaseRefreshCard<DistributionChartCard
     private static final int[] PIE_COLORS_AGE = {0xFFFADD4B, 0xFF45E6B0, 0xFF4BC0FA, 0xFF4B85FA, 0xFF7A62F5, 0xFFB87AF5, 0xFFFF6680, 0xFFFF884D};
     private static final int[] PIE_COLORS_EMPTY = {0xFFCED2D9};
 
-    private static DistributionChartCard sInstance;
+    private static OverviewDistributionCard sInstance;
 
     private PieChart mChart;
     private SparseArray<String> mAgeList;
     private OnPieSelectedListener mOnSelectedListener;
 
-    private DistributionChartCard(Presenter presenter, int source) {
+    private OverviewDistributionCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static DistributionChartCard init(Presenter presenter, int source) {
+    public static OverviewDistributionCard init(Presenter presenter, int source) {
         if (sInstance == null) {
-            sInstance = new DistributionChartCard(presenter, source);
+            sInstance = new OverviewDistributionCard(presenter, source);
         } else {
             sInstance.init(source);
         }
@@ -520,7 +520,6 @@ public class DistributionChartCard extends BaseRefreshCard<DistributionChartCard
 
         @Override
         public void init(int source) {
-            period = Constants.TIME_PERIOD_TODAY;
             for (int i = 0, size = dataSets.size(); i < size; i++) {
                 int key = dataSets.keyAt(i);
                 dataSets.get(key).clear();

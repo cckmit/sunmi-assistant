@@ -39,7 +39,6 @@ import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
-import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.DropdownMenu;
 import sunmi.common.view.tablayout.CommonTabLayout;
@@ -92,8 +91,6 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     private List<PageHost> mPages;
 
-    private int mSource;
-
     private ShopMenuAdapter mShopMenuAdapter;
     private ShopMenuPopupHelper mShopMenuPopupHelper;
     private TextView mShopMenuTitle;
@@ -107,6 +104,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     private int mTopRadiusHeight;
     private int mTopHeaderHeight;
 
+    private boolean mHasData = false;
     private boolean mIsStickyPeriodTop = false;
     private boolean mIsStickyShopMenu = false;
 
@@ -130,7 +128,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     private void initDimens(Context context) {
-        mStatusBarHeight = Utils.getStatusBarHeight(context);
+        mStatusBarHeight = sunmi.common.utils.Utils.getStatusBarHeight(context);
         mTopStickyPeriodHeight = mTopStickyPeriodTab.getMeasuredHeight() + mStatusBarHeight;
         mTopShopMenuHeight = mTopShopMenu.getMeasuredHeight() + mStatusBarHeight;
         mTopPageTabHeight = mTopPageTab.getMeasuredHeight();
@@ -289,12 +287,15 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Override
     public void setSource(int source) {
-        this.mSource = source;
+        mHasData = Utils.hasSaas(source) || Utils.hasFs(source);
         showContent();
     }
 
     @Override
     public void updateTab(int page, int period) {
+        if (page != mPresenter.getPageIndex()) {
+            return;
+        }
         if (page == Constants.PAGE_OVERVIEW) {
             mTodayView.setVisibility(View.VISIBLE);
             mYesterdayView.setVisibility(View.GONE);
@@ -316,7 +317,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     public void updateTopPosition(int position) {
         LogCat.d(TAG, "onScroll=" + position + "; Top=" + mTopHeaderHeight);
         int offset = Math.min(position - mTopHeaderHeight, 0);
-        if (mSource != 0) {
+        if (mHasData) {
             mTopShopMenu.setTranslationY(offset);
             mTopPageTab.setTranslationY(offset);
             mShopMenuPopupHelper.setOffset(offset);
@@ -351,7 +352,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     private void showStickyPeriodTab(Activity activity, boolean animated) {
-        if (mIsStickyPeriodTop || activity == null || mSource == 0) {
+        if (mIsStickyPeriodTop || activity == null || !mHasData) {
             return;
         }
         StatusBarUtils.setStatusBarColor(activity, StatusBarUtils.TYPE_DARK);
@@ -365,7 +366,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     private void hideStickyPeriodTab(Activity activity, boolean animated) {
-        if (!mIsStickyPeriodTop || activity == null || mSource == 0) {
+        if (!mIsStickyPeriodTop || activity == null || !mHasData) {
             return;
         }
         StatusBarUtils.setStatusBarFullTransparent(activity);
@@ -377,7 +378,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     private void showStickyShopMenu(Activity activity, boolean animated) {
-        if (mIsStickyShopMenu || activity == null || mSource != 0) {
+        if (mIsStickyShopMenu || activity == null || mHasData) {
             return;
         }
         StatusBarUtils.setStatusBarColor(activity, StatusBarUtils.TYPE_DARK);
@@ -391,7 +392,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     private void hideStickyShopMenu(Activity activity, boolean animated) {
-        if (!mIsStickyShopMenu || activity == null || mSource != 0) {
+        if (!mIsStickyShopMenu || activity == null || mHasData) {
             return;
         }
         StatusBarUtils.setStatusBarFullTransparent(activity);
@@ -458,6 +459,9 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         @Override
         public void onPageSelected(int position) {
             mPageTab.setCurrentTab(position);
+            mPresenter.setPage(position);
+            updateTab(mPresenter.getPageType(), mPresenter.getPeriod());
+            resetTop();
         }
 
         @Override

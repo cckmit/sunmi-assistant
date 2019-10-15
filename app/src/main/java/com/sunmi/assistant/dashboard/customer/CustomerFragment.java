@@ -85,7 +85,7 @@ public class CustomerFragment extends BaseMvpFragment<CustomerPresenter>
 
     @Override
     public void updateTab(int period) {
-        mParent.updateTab(mPresenter.getIndex(), period);
+        mParent.updateTab(mPresenter.getType(), period);
     }
 
     @Override
@@ -105,6 +105,16 @@ public class CustomerFragment extends BaseMvpFragment<CustomerPresenter>
         mAdapter.setData(list);
         mCardList.scrollToPosition(0);
         mParent.resetTop();
+    }
+
+    @Override
+    public int getScrollY() {
+        return mCardList.getScrollY();
+    }
+
+    @Override
+    public void scrollTo(int y) {
+        mCardList.scrollToPosition(y);
     }
 
     @Override

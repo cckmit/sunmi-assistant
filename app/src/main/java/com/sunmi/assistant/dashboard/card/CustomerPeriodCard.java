@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.overview.card;
+package com.sunmi.assistant.dashboard.card;
 
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
@@ -21,17 +21,17 @@ import sunmi.common.rpc.retrofit.BaseResponse;
  * @author yinhui
  * @since 2019-07-01
  */
-public class PeriodTabCard extends BaseRefreshCard<PeriodTabCard.Model, Object> {
+public class CustomerPeriodCard extends BaseRefreshCard<CustomerPeriodCard.Model, Object> {
 
-    private static PeriodTabCard sInstance;
+    private static CustomerPeriodCard sInstance;
 
-    private PeriodTabCard(Presenter presenter, int source) {
+    private CustomerPeriodCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static PeriodTabCard init(Presenter presenter, int source) {
+    public static CustomerPeriodCard init(Presenter presenter, int source) {
         if (sInstance == null) {
-            sInstance = new PeriodTabCard(presenter, source);
+            sInstance = new CustomerPeriodCard(presenter, source);
         } else {
             sInstance.init(source);
         }
@@ -64,22 +64,23 @@ public class PeriodTabCard extends BaseRefreshCard<PeriodTabCard.Model, Object> 
     @Override
     public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
         BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
-        holder.addOnClickListener(R.id.tv_dashboard_today, (h, model, position) ->
-                mPresenter.setPeriod(Constants.TIME_PERIOD_TODAY));
+        holder.addOnClickListener(R.id.tv_dashboard_yesterday, (h, model, position) ->
+                mPresenter.setPeriod(Constants.TIME_PERIOD_YESTERDAY));
         holder.addOnClickListener(R.id.tv_dashboard_week, (h, model, position) ->
                 mPresenter.setPeriod(Constants.TIME_PERIOD_WEEK));
         holder.addOnClickListener(R.id.tv_dashboard_month, (h, model, position) ->
                 mPresenter.setPeriod(Constants.TIME_PERIOD_MONTH));
+        holder.getView(R.id.tv_dashboard_yesterday).setVisibility(View.VISIBLE);
         return holder;
     }
 
     @Override
     protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-        TextView today = holder.getView(R.id.tv_dashboard_today);
+        TextView yesterday = holder.getView(R.id.tv_dashboard_yesterday);
         TextView week = holder.getView(R.id.tv_dashboard_week);
         TextView month = holder.getView(R.id.tv_dashboard_month);
-        today.setSelected(model.period == Constants.TIME_PERIOD_TODAY);
-        today.setTypeface(null, model.period == Constants.TIME_PERIOD_TODAY ? Typeface.BOLD : Typeface.NORMAL);
+        yesterday.setSelected(model.period == Constants.TIME_PERIOD_YESTERDAY);
+        yesterday.setTypeface(null, model.period == Constants.TIME_PERIOD_YESTERDAY ? Typeface.BOLD : Typeface.NORMAL);
         week.setSelected(model.period == Constants.TIME_PERIOD_WEEK);
         week.setTypeface(null, model.period == Constants.TIME_PERIOD_WEEK ? Typeface.BOLD : Typeface.NORMAL);
         month.setSelected(model.period == Constants.TIME_PERIOD_MONTH);
@@ -87,9 +88,5 @@ public class PeriodTabCard extends BaseRefreshCard<PeriodTabCard.Model, Object> 
     }
 
     public static class Model extends BaseRefreshCard.BaseModel {
-        @Override
-        public void init(int source) {
-            period = Constants.TIME_PERIOD_TODAY;
-        }
     }
 }
