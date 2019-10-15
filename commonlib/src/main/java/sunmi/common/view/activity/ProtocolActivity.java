@@ -78,42 +78,21 @@ public class ProtocolActivity extends BaseActivity {
         webView.setWebChromeClient(webChrome);
     }
 
-    private boolean isEnglish() {
-        return TextUtils.equals("en_us", CommonHelper.getLanguage());
-    }
-
     private void initNormal() {
         if (protocolType == USER_PROTOCOL) { //app注册协议
-            if (isEnglish()) {
-                loadWebView(PROTOCOL_USER_ENGLISH);
-            } else {
-                loadWebView(PROTOCOL_USER);
-            }
+            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) ? PROTOCOL_USER_ENGLISH : PROTOCOL_USER);
         } else if (protocolType == USER_PRIVATE) {
-            if (isEnglish()) {
-                loadWebView(PROTOCOL_PRIVATE_ENGLISH);
-            } else {
-                loadWebView(PROTOCOL_PRIVATE);
-            }
+            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) ? PROTOCOL_PRIVATE_ENGLISH : PROTOCOL_PRIVATE);
         } else if (protocolType == USER_AP_PROTOCOL) { //快速配置路由器协议
-            if (isEnglish()) {
-                loadWebView(PROTOCOL_USER_ENGLISH);
-            } else {
-                loadWebView(PROTOCOL_USER);
-            }
+            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) ? PROTOCOL_USER_ENGLISH : PROTOCOL_USER);
         } else if (protocolType == USER_AP_PRIVATE) {
-            if (isEnglish()) {
-                loadWebView(PROTOCOL_PRIVATE_ENGLISH);
-            } else {
-                loadWebView(PROTOCOL_PRIVATE);
-            }
+            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) ? PROTOCOL_PRIVATE_ENGLISH : PROTOCOL_PRIVATE);
         } else if (protocolType == USER_WX_HELP) {
             loadWebView(WX_AUTH_HELP);
         } else if (protocolType == USER_AUTH_PLATFORM) {//获取平台授权协议
             loadWebView(AUTH_PLATFORM);
         }
     }
-
 
     private void initGoogle() {
         if (protocolType == USER_PROTOCOL) { //app注册协议
