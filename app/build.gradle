@@ -49,8 +49,8 @@ android {
         debug {
             applicationIdSuffix ".test"
             manifestPlaceholders = [
-                    ENV_VALUE       : "ENV_TEST",
-//                    ENV_VALUE       : "ENV_RELEASE",
+//                    ENV_VALUE       : "ENV_TEST",
+                    ENV_VALUE       : "ENV_RELEASE",
                     DB_VERSION_VALUE: "2",
                     APP_NAME        : "商米助手test",
                     MTA_APPKEY      : "A6INR132MGAI",
@@ -122,6 +122,7 @@ dependencies {
 
     implementation project(':commonlib')//公共库
     implementation project(':ipc')
+    implementation project(':apmanager')
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

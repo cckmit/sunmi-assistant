@@ -15,7 +15,7 @@ public class LogCat {
      * 初始化LogCat日志
      */
     public static synchronized void init(boolean isOpen) {
-        mSwitch = isOpen;
+        mSwitch = true;
     }
 
     /**

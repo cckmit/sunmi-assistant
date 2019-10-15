@@ -55,6 +55,13 @@
             android:textSize="@dimen/sp_16"
             tools:ignore="MissingConstraints" />
 
+        <TextView
+            android:id="@+id/tv_transparent"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_112"
+            android:background="@color/transparent"
+            tools:ignore="MissingConstraints" />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/poi_recyclerView"
             android:layout_width="0dp"
