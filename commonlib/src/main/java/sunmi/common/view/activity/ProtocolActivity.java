@@ -3,6 +3,7 @@ package sunmi.common.view.activity;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.net.http.SslError;
+import android.text.TextUtils;
 import android.view.View;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
@@ -32,28 +33,28 @@ import sunmi.common.view.webview.SMWebView;
 @EActivity(resName = "activity_protocol")
 public class ProtocolActivity extends BaseActivity {
 
-    @ViewById(resName = "wv_protocol")
-    SMWebView webView;
-
-    @Extra
-    int protocolType;
-
     //用户协议
     public final static String PROTOCOL_USER = "https://account.sunmi.com/static/userAgreement.html";
     //隐私协议
     public final static String PROTOCOL_PRIVATE = "https://account.sunmi.com/static/privacyCn.html";
+    //用户协议英文
+    public final static String PROTOCOL_USER_ENGLISH = "https://account.sunmi.com/static/userAgreement-en.html";
+    //隐私协议英文
+    public final static String PROTOCOL_PRIVATE_ENGLISH = "https://account.sunmi.com/static/privacyEn.html";
     //微信
     public final static String WX_AUTH_HELP = "https://webapi.wap.sunmi.com/webapi/wap/app/static/wechat/index.html";
     //平台数据协议
     public final static String AUTH_PLATFORM = "file:///android_asset/auth_merchant.html";
-
     public static final int USER_PROTOCOL = 0;
     public static final int USER_PRIVATE = 1;
     public static final int USER_AP_PROTOCOL = 2;
     public static final int USER_AP_PRIVATE = 3;
     public static final int USER_WX_HELP = 4;
     public static final int USER_AUTH_PLATFORM = 5;
-
+    @ViewById(resName = "wv_protocol")
+    SMWebView webView;
+    @Extra
+    int protocolType;
     private Timer timer;//计时器
     private long timeout = 5000;//超时时间
 
@@ -77,23 +78,21 @@ public class ProtocolActivity extends BaseActivity {
         webView.setWebChromeClient(webChrome);
     }
 
-
     private void initNormal() {
         if (protocolType == USER_PROTOCOL) { //app注册协议
-            loadWebView(PROTOCOL_USER);
+            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) ? PROTOCOL_USER_ENGLISH : PROTOCOL_USER);
         } else if (protocolType == USER_PRIVATE) {
-            loadWebView(PROTOCOL_PRIVATE);
+            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) ? PROTOCOL_PRIVATE_ENGLISH : PROTOCOL_PRIVATE);
         } else if (protocolType == USER_AP_PROTOCOL) { //快速配置路由器协议
-            loadWebView(PROTOCOL_USER);
+            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) ? PROTOCOL_USER_ENGLISH : PROTOCOL_USER);
         } else if (protocolType == USER_AP_PRIVATE) {
-            loadWebView(PROTOCOL_PRIVATE);
+            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) ? PROTOCOL_PRIVATE_ENGLISH : PROTOCOL_PRIVATE);
         } else if (protocolType == USER_WX_HELP) {
             loadWebView(WX_AUTH_HELP);
         } else if (protocolType == USER_AUTH_PLATFORM) {//获取平台授权协议
             loadWebView(AUTH_PLATFORM);
         }
     }
-
 
     private void initGoogle() {
         if (protocolType == USER_PROTOCOL) { //app注册协议
