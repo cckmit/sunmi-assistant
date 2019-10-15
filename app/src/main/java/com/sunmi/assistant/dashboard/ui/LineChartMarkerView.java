@@ -52,11 +52,11 @@ public class LineChartMarkerView extends MarkerView {
 
     public void setType(int type) {
         if (type == Constants.DATA_TYPE_RATE) {
-            mTvTitle.setText(R.string.dashboard_chart_rate);
+            mTvTitle.setText(R.string.dashboard_chart_tab_rate);
         } else if (type == Constants.DATA_TYPE_VOLUME) {
-            mTvTitle.setText(R.string.dashboard_chart_sales_volume);
+            mTvTitle.setText(R.string.dashboard_chart_tab_volume);
         } else {
-            mTvTitle.setText(R.string.dashboard_chart_customer);
+            mTvTitle.setText(R.string.dashboard_chart_tab_customer);
         }
     }
 
@@ -68,7 +68,7 @@ public class LineChartMarkerView extends MarkerView {
     public void refreshContent(Entry e, Highlight highlight) {
         String value = String.format(Locale.getDefault(), "%.2f%%", e.getY() * 100);
         mTvValue.setText(value);
-        mTvLabel.setText(getResources().getString(R.string.dashboard_time, mTip,
+        mTvLabel.setText(getResources().getString(R.string.dashboard_chart_marker_time, mTip,
                 Utils.convertFloatToMarkerName(e.getX(), WEEK_NAME)));
         super.refreshContent(e, highlight);
     }

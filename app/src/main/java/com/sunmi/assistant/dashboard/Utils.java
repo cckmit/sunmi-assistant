@@ -1,12 +1,10 @@
 package com.sunmi.assistant.dashboard;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.util.Pair;
 import android.util.SparseArray;
 
 import com.github.mikephil.charting.data.BarEntry;
-import com.sunmi.assistant.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -31,17 +29,6 @@ public class Utils {
     private static SparseArray<Pair<Long, Long>> sPeriodCache = new SparseArray<>(3);
     private static Calendar sLastCalendar = Calendar.getInstance();
     private static Calendar sTempCalendar = Calendar.getInstance();
-
-    @Deprecated
-    public static String getTrendNameByPeriod(Context context, int period) {
-        if (period == Constants.TIME_PERIOD_TODAY) {
-            return context.getResources().getString(R.string.dashboard_day_ratio);
-        } else if (period == Constants.TIME_PERIOD_WEEK) {
-            return context.getResources().getString(R.string.dashboard_week_ratio);
-        } else {
-            return context.getResources().getString(R.string.dashboard_month_ratio);
-        }
-    }
 
     @Deprecated
     public static Pair<Long, Long> getPeriodTimestamp(int period) {

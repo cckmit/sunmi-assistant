@@ -151,8 +151,8 @@ public class OverviewDistributionCard extends BaseRefreshCard<OverviewDistributi
                             int ageCount = bean.getRegularCount() + bean.getStrangerCount();
                             ageList.add(new PieEntry(ageCount, mAgeList.get(bean.getAgeRangeCode())));
                         }
-                        String newName = mPresenter.getContext().getString(R.string.dashboard_chart_new);
-                        String oldName = mPresenter.getContext().getString(R.string.dashboard_chart_old);
+                        String newName = mPresenter.getContext().getString(R.string.dashboard_chart_tab_new);
+                        String oldName = mPresenter.getContext().getString(R.string.dashboard_chart_tab_old);
                         newOldList.add(new PieEntry(newCount, newName));
                         newOldList.add(new PieEntry(oldCount, oldName));
                         loadGender(companyId, shopId, start, end, callback);

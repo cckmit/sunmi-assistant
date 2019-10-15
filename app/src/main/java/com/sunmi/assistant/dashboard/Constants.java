@@ -26,6 +26,10 @@ public class Constants {
     public static final int DATA_TYPE_GENDER = 11;
     public static final int DATA_TYPE_AGE = 12;
 
+    public static final int DATA_TYPE_ALL = 20;
+    public static final int DATA_TYPE_NEW = 21;
+    public static final int DATA_TYPE_OLD = 22;
+
     public static final int DATA_SOURCE_SAAS = 0x1;
     public static final int DATA_SOURCE_FS = 0x2;
     public static final int DATA_SOURCE_CUSTOMER = 0x4;

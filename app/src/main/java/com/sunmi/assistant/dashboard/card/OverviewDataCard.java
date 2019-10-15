@@ -306,20 +306,20 @@ public class OverviewDataCard extends BaseRefreshCard<OverviewDataCard.Model, Ob
         }
         // 根据当前选择的时间筛选展示不同的文案
         if (period == Constants.TIME_PERIOD_TODAY) {
-            subtitle.setText(R.string.dashboard_yesterday);
-            volumeSubtitle.setText(R.string.dashboard_yesterday);
-            customerSubtitle.setText(R.string.dashboard_yesterday);
-            rateSubtitle.setText(R.string.dashboard_yesterday);
+            subtitle.setText(R.string.dashboard_period_yesterday);
+            volumeSubtitle.setText(R.string.dashboard_period_yesterday);
+            customerSubtitle.setText(R.string.dashboard_period_yesterday);
+            rateSubtitle.setText(R.string.dashboard_period_yesterday);
         } else if (period == Constants.TIME_PERIOD_WEEK) {
-            subtitle.setText(R.string.dashboard_last_week);
-            volumeSubtitle.setText(R.string.dashboard_last_week);
-            customerSubtitle.setText(R.string.dashboard_last_week);
-            rateSubtitle.setText(R.string.dashboard_last_week);
+            subtitle.setText(R.string.dashboard_period_last_week);
+            volumeSubtitle.setText(R.string.dashboard_period_last_week);
+            customerSubtitle.setText(R.string.dashboard_period_last_week);
+            rateSubtitle.setText(R.string.dashboard_period_last_week);
         } else {
-            subtitle.setText(R.string.dashboard_last_month);
-            volumeSubtitle.setText(R.string.dashboard_last_month);
-            customerSubtitle.setText(R.string.dashboard_last_month);
-            rateSubtitle.setText(R.string.dashboard_last_month);
+            subtitle.setText(R.string.dashboard_period_last_month);
+            volumeSubtitle.setText(R.string.dashboard_period_last_month);
+            customerSubtitle.setText(R.string.dashboard_period_last_month);
+            rateSubtitle.setText(R.string.dashboard_period_last_month);
         }
     }
 

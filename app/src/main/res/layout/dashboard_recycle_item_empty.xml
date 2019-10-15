@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_16"
-        android:text="@string/dashboard_empty_data_tip"
+        android:text="@string/dashboard_no_data_tip"
         android:textColor="@color/color_A1A7B3"
         android:textSize="@dimen/sp_12"
         app:layout_constraintEnd_toEndOf="parent"

@@ -37,36 +37,51 @@
 
     <string name="dashboard_page_overview">实时数据</string>
     <string name="dashboard_page_customer">客流分析</string>
+
     <string name="dashboard_data_format">%s%%</string>
-    <string name="dashboard_today">今日</string>
-    <string name="dashboard_this_week">本周</string>
-    <string name="dashboard_this_month">本月</string>
-    <string name="dashboard_yesterday">昨日</string>
-    <string name="dashboard_last_week">上周</string>
-    <string name="dashboard_last_month">上个月</string>
-    <string name="dashboard_time">时间 %s%s</string>
+
+    <string name="dashboard_period_today">今日</string>
+    <string name="dashboard_period_week">本周</string>
+    <string name="dashboard_period_month">本月</string>
+    <string name="dashboard_period_yesterday">昨日</string>
+    <string name="dashboard_period_last_week">上周</string>
+    <string name="dashboard_period_last_month">上个月</string>
+    <string name="dashboard_period_last_month_avg">上月日均</string>
+
+    <string name="dashboard_card_title_business_trend">经营趋势</string>
+    <string name="dashboard_card_title_distribution">客群分布</string>
+    <string name="dashboard_card_title_customer_trend">客流趋势</string>
+    <string name="dashboard_card_title_customer_analysis">客流分析</string>
+
     <string name="dashboard_data_sales_amount">总销售额</string>
     <string name="dashboard_data_sales_volume">交易笔数</string>
     <string name="dashboard_data_customer">进店客流</string>
     <string name="dashboard_data_transaction_rate">交易转化率</string>
 
-    <string name="dashboard_customer_data_last_month">上月日均</string>
+    <string name="dashboard_chart_tab_rate">转化率</string>
+    <string name="dashboard_chart_tab_volume">交易笔数</string>
+    <string name="dashboard_chart_tab_customer">客流量</string>
+    <string name="dashboard_chart_tab_new_old">新老</string>
+    <string name="dashboard_chart_tab_gender">性别</string>
+    <string name="dashboard_chart_tab_age">年龄</string>
+    <string name="dashboard_chart_tab_all">全部</string>
+    <string name="dashboard_chart_tab_new">新客</string>
+    <string name="dashboard_chart_tab_old">熟客</string>
 
-    <string name="dashboard_chart_business_trend">经营趋势</string>
-    <string name="dashboard_chart_rate">转化率</string>
-    <string name="dashboard_chart_sales_volume">交易笔数</string>
-    <string name="dashboard_chart_customer">客流量</string>
-    <string name="dashboard_chart_distribution">客群分布</string>
-    <string name="dashboard_chart_new_old">新老</string>
-    <string name="dashboard_chart_new">新客</string>
-    <string name="dashboard_chart_old">熟客</string>
-    <string name="dashboard_chart_gender">性别</string>
+    <string name="dashboard_chart_marker_time">时间 %s%s</string>
     <string name="dashboard_chart_male">男性</string>
     <string name="dashboard_chart_female">女性</string>
-    <string name="dashboard_chart_age">年龄</string>
     <string name="dashboard_chart_age_label">%s岁</string>
     <string name="dashboard_chart_pie_hole_ratio">%s占比</string>
-    <string name="dashboard_empty_data_tip">暂无门店数据，您可以尝试：</string>
+
+    <string name="dashboard_card_customer_tip">按照人数占比进行排列</string>
+    <string name="dashboard_card_customer_count">进店人数</string>
+    <string name="dashboard_card_customer_ratio">总人数占比</string>
+    <string name="dashboard_card_customer_old_ratio">熟客占比</string>
+    <string name="dashboard_card_customer_peak">到店高峰</string>
+    <string name="dashboard_card_customer_none">暂无客流数据</string>
+
+    <string name="dashboard_no_data_tip">暂无门店数据，您可以尝试：</string>
     <string name="dashboard_no_fs_title">添加AI识客摄像机</string>
     <string name="dashboard_no_fs_subtitle">支持统计实时客流、客群分析</string>
     <string name="dashboard_no_fs_add">添加</string>
@@ -74,18 +89,11 @@
     <string name="dashboard_no_order_title">导入软件订单数据</string>
     <string name="dashboard_no_order_subtitle">现已支持银豹、生意专家等38个软件</string>
     <string name="dashboard_no_order_inport">导入</string>
+    <string name="dashboard_no_customer_data_tip">暂无客流数据，您可以尝试：</string>
+    <string name="dashboard_no_customer_wait_tip">客流数据会在次日零点更新</string>
+    <string name="dashboard_no_customer_fs_tip">您已解绑了门店中的摄像机设备</string>
+    <string name="dashboard_no_customer_fs_add_btn">添加设备</string>
 
-    <string name="dashboard_day_ratio">日环比</string>
-    <string name="dashboard_week_ratio">周环比</string>
-    <string name="dashboard_month_ratio">月同比</string>
-    <string name="dashboard_by_sales">按销售额</string>
-    <string name="dashboard_by_order">按订单数</string>
-    <string name="dashboard_customer_price">客单价</string>
-    <string name="dashboard_total_refunds">退款笔数</string>
-    <string name="dashboard_time_distribution">交易时间分布</string>
-    <string name="dashboard_purchase_rank">支付方式</string>
-    <string name="dashboard_quantity_rank">商品销量排行</string>
-    <string name="dashboard_purchase_type_other">其他</string>
     <string name="str_platform_list">平台列表</string>
     <string name="str_platform_skip">跳过</string>
     <string name="str_button_check">验证</string>
