@@ -51,6 +51,18 @@ import sunmi.common.utils.SpUtils;
  */
 public class IpcCloudApi {
 
+    private IpcCloudApi() {
+
+    }
+
+    private static final class Single {
+        private static final IpcCloudApi INSTANCE = new IpcCloudApi();
+    }
+
+    public static IpcCloudApi getInstance() {
+        return Single.INSTANCE;
+    }
+
     /**
      * @param shopId    是	integer	店铺id
      * @param sn        是	string	设备序列号
@@ -59,8 +71,8 @@ public class IpcCloudApi {
      * @param longitude 是	float	经度
      * @param latitude  是	float	纬度
      */
-    public static void bindIpc(String companyId, String shopId, String sn, int bindMode, String bindToken,
-                               float longitude, float latitude, RetrofitCallback<Object> callback) {
+    public void bindIpc(String companyId, String shopId, String sn, int bindMode, String bindToken,
+                        float longitude, float latitude, RetrofitCallback<Object> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -90,8 +102,8 @@ public class IpcCloudApi {
      * @param shopId    是	integer	店铺id
      * @param deviceId  是	integer	设备id
      */
-    public static void unbindIpc(int companyId, int shopId,
-                                 int deviceId, RetrofitCallback<Object> callback) {
+    public void unbindIpc(int companyId, int shopId,
+                          int deviceId, RetrofitCallback<Object> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -110,7 +122,7 @@ public class IpcCloudApi {
      * @param companyId 是	int64	商户id
      * @param shopId    是	int64	店铺id
      */
-    public static void getDetailList(int companyId, int shopId, RetrofitCallback<IpcListResp> callback) {
+    public void getDetailList(int companyId, int shopId, RetrofitCallback<IpcListResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -132,8 +144,8 @@ public class IpcCloudApi {
      * @param deviceId   是	int64	IPC设备id
      * @param deviceName 是	string	IPC设备名称
      */
-    public static void updateBaseInfo(int companyId, int shopId, int deviceId, String deviceName,
-                                      RetrofitCallback<Object> callback) {
+    public void updateBaseInfo(int companyId, int shopId, int deviceId, String deviceName,
+                               RetrofitCallback<Object> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -156,8 +168,8 @@ public class IpcCloudApi {
      * @param shopId    是	int64	店铺id
      * @param deviceId  是	int64	IPC设备id
      */
-    public static void newFirmware(int companyId, int shopId, int deviceId,
-                                   RetrofitCallback<IpcNewFirmwareResp> callback) {
+    public void newFirmware(int companyId, int shopId, int deviceId,
+                            RetrofitCallback<IpcNewFirmwareResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -179,8 +191,8 @@ public class IpcCloudApi {
      * @param startTime 是	int	开始时间戳
      * @param endTime   是	int	结束时间戳
      */
-    public static void getTimeSlots(int deviceId, long startTime, long endTime,
-                                    RetrofitCallback<CloudTimeSlotResp> callback) {
+    public void getTimeSlots(int deviceId, long startTime, long endTime,
+                             RetrofitCallback<CloudTimeSlotResp> callback) {
         try {
             String params = new JSONObject()
                     .put("device_id", deviceId)
@@ -203,8 +215,8 @@ public class IpcCloudApi {
      * @param endTime   结束时间
      * @param callback  回调
      */
-    public static void getVideoList(int deviceId, long startTime, long endTime,
-                                    RetrofitCallback<VideoListResp> callback) {
+    public void getVideoList(int deviceId, long startTime, long endTime,
+                             RetrofitCallback<VideoListResp> callback) {
         try {
             String params = new JSONObject()
                     .put("device_id", deviceId)
@@ -223,8 +235,8 @@ public class IpcCloudApi {
      * -------------------- 人脸库相关 --------------------
      */
 
-    public static void getFaceAgeRange(int companyId, int shopId,
-                                       RetrofitCallback<FaceAgeRangeResp> callback) {
+    public void getFaceAgeRange(int companyId, int shopId,
+                                RetrofitCallback<FaceAgeRangeResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -238,7 +250,7 @@ public class IpcCloudApi {
         }
     }
 
-    public static Call<BaseResponse<FaceListResp>> getFaceList(
+    public Call<BaseResponse<FaceListResp>> getFaceList(
             int companyId, int shopId, int groupId, int gender, int age, String name, int page, int size,
             RetrofitCallback<FaceListResp> callback) {
         Call<BaseResponse<FaceListResp>> call = null;
@@ -273,9 +285,9 @@ public class IpcCloudApi {
      * @param sourceGroupId 当前人脸分组id
      * @param callback
      */
-    public static void updateFaceName(int companyId, int shopId, int faceId, int sourceGroupId,
-                                      String name,
-                                      RetrofitCallback<Object> callback) {
+    public void updateFaceName(int companyId, int shopId, int faceId, int sourceGroupId,
+                               String name,
+                               RetrofitCallback<Object> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -292,9 +304,9 @@ public class IpcCloudApi {
         }
     }
 
-    public static void updateFaceTargetGroupId(int companyId, int shopId, int faceId, int sourceGroupId,
-                                               int targetGroupId,
-                                               RetrofitCallback<Object> callback) {
+    public void updateFaceTargetGroupId(int companyId, int shopId, int faceId, int sourceGroupId,
+                                        int targetGroupId,
+                                        RetrofitCallback<Object> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -311,9 +323,9 @@ public class IpcCloudApi {
         }
     }
 
-    public static void updateFaceGender(int companyId, int shopId, int faceId, int sourceGroupId,
-                                        int gender,
-                                        RetrofitCallback<Object> callback) {
+    public void updateFaceGender(int companyId, int shopId, int faceId, int sourceGroupId,
+                                 int gender,
+                                 RetrofitCallback<Object> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -330,9 +342,9 @@ public class IpcCloudApi {
         }
     }
 
-    public static void updateFaceAgeRangeCode(int companyId, int shopId, int faceId, int sourceGroupId,
-                                              int ageRangeCode,
-                                              RetrofitCallback<Object> callback) {
+    public void updateFaceAgeRangeCode(int companyId, int shopId, int faceId, int sourceGroupId,
+                                       int ageRangeCode,
+                                       RetrofitCallback<Object> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -350,8 +362,8 @@ public class IpcCloudApi {
     }
 
 
-    public static void deleteFace(int companyId, int shopId, int groupId, List<Integer> faceIds,
-                                  RetrofitCallback<Object> callback) {
+    public void deleteFace(int companyId, int shopId, int groupId, List<Integer> faceIds,
+                           RetrofitCallback<Object> callback) {
         try {
             if (faceIds == null || faceIds.isEmpty()) {
                 callback.onSuccess(1, "Request Empty.", null);
@@ -372,8 +384,8 @@ public class IpcCloudApi {
         }
     }
 
-    public static void uploadFaceAndCheck(int companyId, int shopId, int groupId, File image,
-                                          RetrofitCallback<FaceCheckResp> callback) {
+    public void uploadFaceAndCheck(int companyId, int shopId, int groupId, File image,
+                                   RetrofitCallback<FaceCheckResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -395,8 +407,8 @@ public class IpcCloudApi {
         }
     }
 
-    public static void saveFace(int companyId, int shopId, int groupId, int faceId, List<String> faceImageList,
-                                RetrofitCallback<FaceSaveResp> callback) {
+    public void saveFace(int companyId, int shopId, int groupId, int faceId, List<String> faceImageList,
+                         RetrofitCallback<FaceSaveResp> callback) {
         try {
             if (faceImageList == null || faceImageList.isEmpty()) {
                 callback.onSuccess(1, "Request Empty.", null);
@@ -418,8 +430,8 @@ public class IpcCloudApi {
         }
     }
 
-    public static void moveFace(int companyId, int shopId, int sourceGroup, int targetGroup, List<Integer> faceIds,
-                                RetrofitCallback<Object> callback) {
+    public void moveFace(int companyId, int shopId, int sourceGroup, int targetGroup, List<Integer> faceIds,
+                         RetrofitCallback<Object> callback) {
         try {
             if (faceIds == null || faceIds.isEmpty()) {
                 callback.onSuccess(1, "Request Empty.", null);
@@ -442,7 +454,7 @@ public class IpcCloudApi {
         }
     }
 
-    public static void getFaceGroup(int companyId, int shopId, RetrofitCallback<FaceGroupListResp> callback) {
+    public void getFaceGroup(int companyId, int shopId, RetrofitCallback<FaceGroupListResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -456,21 +468,21 @@ public class IpcCloudApi {
         }
     }
 
-    public static void createFaceGroup(FaceGroupCreateReq request, RetrofitCallback<FaceGroupCreateResp> callback) {
+    public void createFaceGroup(FaceGroupCreateReq request, RetrofitCallback<FaceGroupCreateResp> callback) {
         String params = new Gson().toJson(request);
         SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
                 .createGroup(new BaseRequest(params))
                 .enqueue(callback);
     }
 
-    public static void updateFaceGroup(FaceGroupUpdateReq request, RetrofitCallback<Object> callback) {
+    public void updateFaceGroup(FaceGroupUpdateReq request, RetrofitCallback<Object> callback) {
         String params = new Gson().toJson(request);
         SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
                 .updateGroup(new BaseRequest(params))
                 .enqueue(callback);
     }
 
-    public static void deleteFaceGroup(int companyId, int shopId, int groupId, RetrofitCallback<Object> callback) {
+    public void deleteFaceGroup(int companyId, int shopId, int groupId, RetrofitCallback<Object> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -485,8 +497,8 @@ public class IpcCloudApi {
         }
     }
 
-    public static void arrivalListFaceGroup(int companyId, int shopId, int faceId, int pageNum, int pageSize,
-                                            RetrofitCallback<FaceEntryHistoryResp> callback) {
+    public void arrivalListFaceGroup(int companyId, int shopId, int faceId, int pageNum, int pageSize,
+                                     RetrofitCallback<FaceEntryHistoryResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -502,6 +514,7 @@ public class IpcCloudApi {
             e.printStackTrace();
         }
     }
+    
 
     /**
      * 对参数进行加签

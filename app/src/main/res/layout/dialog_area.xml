@@ -5,87 +5,109 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_shap_top_radus_left_right">
 
-    <ImageView
-        android:id="@+id/iv_delete"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+    <TextView
+        android:id="@+id/tv_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_25"
-        android:layout_marginTop="@dimen/dp_20"
-        android:background="@mipmap/ic_pro_quit" />
+        android:layout_marginTop="@dimen/dp_18"
+        android:text="@string/sm_cancel"
+        android:textColor="@color/colorText_60"
+        android:textSize="@dimen/sp_14" />
 
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dp_20"
-        android:text="@string/str_choose_please"
-        android:textColor="@color/colorText"
-        android:textSize="@dimen/sp_18"
-        tools:ignore="MissingConstraints" />
-
-    <Button
-        android:id="@+id/btn_area_pro"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_title"
-        android:layout_marginStart="@dimen/dp_25"
-        android:layout_marginTop="@dimen/dp_30"
-        android:background="@null"
-        android:ellipsize="end"
-        android:gravity="start"
-        android:maxLength="6"
-        android:text="@string/str_choose_please"
+        android:layout_marginTop="@dimen/dp_14"
+        android:text="@string/dialog_title_select_region"
         android:textColor="@color/colorText"
         android:textSize="@dimen/sp_16"
         android:textStyle="bold"
         tools:ignore="MissingConstraints" />
 
-    <Button
-        android:id="@+id/btn_area_city"
+    <TextView
+        android:id="@+id/tv_confirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_title"
-        android:layout_alignBaseline="@id/btn_area_pro"
-        android:layout_marginStart="@dimen/dp_2"
-        android:layout_toEndOf="@id/btn_area_pro"
-        android:background="@null"
-        android:ellipsize="end"
-        android:maxLength="6"
-        android:textColor="@color/colorText"
-        android:textSize="@dimen/sp_16"
-        android:textStyle="bold"
-        tools:ignore="MissingConstraints" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/dp_18"
+        android:layout_marginEnd="@dimen/dp_25"
+        android:text="@string/str_confirm"
+        android:textColor="@color/colorOrange"
+        android:textSize="@dimen/sp_14" />
 
-    <Button
-        android:id="@+id/btn_area_region"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_title"
-        android:layout_alignBaseline="@id/btn_area_pro"
-        android:layout_marginStart="@dimen/dp_2"
-        android:layout_toEndOf="@id/btn_area_city"
-        android:background="@null"
-        android:ellipsize="end"
-        android:maxLength="6"
-        android:textColor="@color/colorText"
-        android:textSize="@dimen/sp_16"
-        android:textStyle="bold"
-        tools:ignore="MissingConstraints" />
-
-    <View
-        android:id="@+id/vw_line"
+    <RelativeLayout
+        android:id="@+id/rl_area"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_below="@id/btn_area_pro"
-        android:layout_marginTop="@dimen/dp_12"
-        android:background="@color/colorText_5" />
+        android:layout_height="@dimen/dp_48"
+        android:layout_below="@id/tv_title"
+        android:layout_marginTop="@dimen/dp_14">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_alignParentTop="true"
+            android:background="@color/colorText_5" />
+
+        <Button
+            android:id="@+id/btn_area_pro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_25"
+            android:background="@null"
+            android:ellipsize="end"
+            android:gravity="start|center_vertical"
+            android:maxLength="6"
+            android:text="@string/str_choose_please"
+            android:textColor="@color/colorText"
+            android:textSize="@dimen/sp_16"
+            android:textStyle="bold"
+            tools:ignore="MissingConstraints" />
+
+        <Button
+            android:id="@+id/btn_area_city"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dp_2"
+            android:layout_toEndOf="@id/btn_area_pro"
+            android:background="@null"
+            android:ellipsize="end"
+            android:maxLength="6"
+            android:textColor="@color/colorText"
+            android:textSize="@dimen/sp_16"
+            android:textStyle="bold"
+            tools:ignore="MissingConstraints" />
+
+        <Button
+            android:id="@+id/btn_area_region"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dp_2"
+            android:layout_toEndOf="@id/btn_area_city"
+            android:background="@null"
+            android:ellipsize="end"
+            android:maxLength="6"
+            android:textColor="@color/colorText"
+            android:textSize="@dimen/sp_16"
+            android:textStyle="bold"
+            tools:ignore="MissingConstraints" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorText_5" />
+    </RelativeLayout>
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/item_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/vw_line" />
-
+        android:layout_below="@id/rl_area" />
 
 </RelativeLayout>

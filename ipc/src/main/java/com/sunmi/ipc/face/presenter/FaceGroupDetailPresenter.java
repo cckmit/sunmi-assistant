@@ -44,7 +44,7 @@ public class FaceGroupDetailPresenter extends BasePresenter<FaceGroupDetailContr
         }
         FaceGroupUpdateReq request = new FaceGroupUpdateReq(SpUtils.getCompanyId(), mShopId, mFaceGroup);
         request.setName(name);
-        IpcCloudApi.updateFaceGroup(request, new RetrofitCallback<Object>() {
+        IpcCloudApi.getInstance().updateFaceGroup(request, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
@@ -79,7 +79,7 @@ public class FaceGroupDetailPresenter extends BasePresenter<FaceGroupDetailContr
         }
         FaceGroupUpdateReq request = new FaceGroupUpdateReq(SpUtils.getCompanyId(), mShopId, mFaceGroup);
         request.setCapacity(capacity);
-        IpcCloudApi.updateFaceGroup(request, new RetrofitCallback<Object>() {
+        IpcCloudApi.getInstance().updateFaceGroup(request, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 mFaceGroup.setCapacity(capacity);
@@ -114,7 +114,7 @@ public class FaceGroupDetailPresenter extends BasePresenter<FaceGroupDetailContr
         }
         FaceGroupUpdateReq request = new FaceGroupUpdateReq(SpUtils.getCompanyId(), mShopId, mFaceGroup);
         request.setThreshold(times, days);
-        IpcCloudApi.updateFaceGroup(request, new RetrofitCallback<Object>() {
+        IpcCloudApi.getInstance().updateFaceGroup(request, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 mFaceGroup.setThreshold(times, days);
@@ -149,7 +149,7 @@ public class FaceGroupDetailPresenter extends BasePresenter<FaceGroupDetailContr
         }
         FaceGroupUpdateReq request = new FaceGroupUpdateReq(SpUtils.getCompanyId(), mShopId, mFaceGroup);
         request.setMark(mark);
-        IpcCloudApi.updateFaceGroup(request, new RetrofitCallback<Object>() {
+        IpcCloudApi.getInstance().updateFaceGroup(request, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 mFaceGroup.setMark(mark);
@@ -176,7 +176,7 @@ public class FaceGroupDetailPresenter extends BasePresenter<FaceGroupDetailContr
         if (isViewAttached()) {
             mView.showLoadingDialog();
         }
-        IpcCloudApi.deleteFaceGroup(SpUtils.getCompanyId(), mShopId, mFaceGroup.getGroupId(),
+        IpcCloudApi.getInstance().deleteFaceGroup(SpUtils.getCompanyId(), mShopId, mFaceGroup.getGroupId(),
                 new RetrofitCallback<Object>() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {

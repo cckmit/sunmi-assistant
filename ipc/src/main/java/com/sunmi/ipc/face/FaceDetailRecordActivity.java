@@ -84,7 +84,7 @@ public class FaceDetailRecordActivity extends BaseActivity implements BGARefresh
             list.clear();
             pageNumFlag = 1;
         }
-        IpcCloudApi.arrivalListFaceGroup(SpUtils.getCompanyId(), mShopId, mFace.getFaceId(),
+        IpcCloudApi.getInstance().arrivalListFaceGroup(SpUtils.getCompanyId(), mShopId, mFace.getFaceId(),
                 pageNumFlag, PAGE_SIZE, new RetrofitCallback<FaceEntryHistoryResp>() {
                     @Override
                     public void onSuccess(int code, String msg, FaceEntryHistoryResp data) {

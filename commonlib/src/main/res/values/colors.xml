@@ -109,6 +109,8 @@
     <color name="color_4B7AFA">#6CBBFF</color>
     <color name="color_6CBBFF_60">#996CBBFF</color>
     <color name="color_4B7AFA_60">#996CBBFF</color>
+    <color name="color_525866">#525866</color>
+    <color name="color_303540">#303540</color>
 
     <color name="colorText_0">#00333C4F</color>
     <color name="colorText_5">#0E333C4F</color>
