@@ -2,6 +2,7 @@ package com.sunmi.ipc.view.activity;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.annotation.StringRes;
 import android.text.TextUtils;
 import android.view.View;
@@ -125,7 +126,13 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                 chooseFsAdjust();
             }
         } else {
-            GotoActivityUtils.gotoMainActivity(context);
+            if (isSunmiLink) {
+                Intent intent = new Intent();
+                intent.putExtra("isComplete", true);
+                setResult(RESULT_OK, intent);
+            } else {
+                GotoActivityUtils.gotoMainActivity(context);
+            }
             finish();
         }
     }
