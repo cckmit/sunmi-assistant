@@ -56,6 +56,8 @@ public class FaceArrivalLogResp {
         private int companyId;
         @SerializedName("shop_id")
         private int shopId;
+        @SerializedName("face_id")
+        private int faceId;
         @SerializedName("history_id")
         private int historyId;
         @SerializedName("img_url")
@@ -89,6 +91,14 @@ public class FaceArrivalLogResp {
 
         public void setShopId(int shopId) {
             this.shopId = shopId;
+        }
+
+        public int getFaceId() {
+            return faceId;
+        }
+
+        public void setFaceId(int faceId) {
+            this.faceId = faceId;
         }
 
         public int getHistoryId() {
