@@ -41,6 +41,16 @@ public class ProtocolActivity extends BaseActivity {
     public final static String PROTOCOL_USER_ENGLISH = "https://account.sunmi.com/static/userAgreement-en.html";
     //隐私协议英文
     public final static String PROTOCOL_PRIVATE_ENGLISH = "https://account.sunmi.com/static/privacyEn.html";
+
+    //本地用户协议
+    public final static String LOCAL_PROTOCOL_USER = "file:///android_asset/user_sunmi.html";
+    //本地隐私协议
+    public final static String LOCAL_PROTOCOL_PRIVATE = "file:///android_asset/private_sunmi.html";
+    //本地用户协议英文
+    public final static String LOCAL_PROTOCOL_USER_ENGLISH = "file:///android_asset/user_sunmi_english.html";
+    //本地隐私协议英文
+    public final static String LOCAL_PROTOCOL_PRIVATE_ENGLISH = "file:///android_asset/private_sunmi_english.html";
+
     //微信
     public final static String WX_AUTH_HELP = "https://webapi.wap.sunmi.com/webapi/wap/app/static/wechat/index.html";
     //平台数据协议
@@ -76,13 +86,13 @@ public class ProtocolActivity extends BaseActivity {
 
     private void initNormal() {
         if (protocolType == USER_PROTOCOL) { //app注册协议
-            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) || CommonHelper.isGooglePlay() ? PROTOCOL_USER_ENGLISH : PROTOCOL_USER);
+            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) ? PROTOCOL_USER_ENGLISH : PROTOCOL_USER);
         } else if (protocolType == USER_PRIVATE) {
-            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) || CommonHelper.isGooglePlay() ? PROTOCOL_PRIVATE_ENGLISH : PROTOCOL_PRIVATE);
+            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) ? PROTOCOL_PRIVATE_ENGLISH : PROTOCOL_PRIVATE);
         } else if (protocolType == USER_AP_PROTOCOL) { //快速配置路由器协议
-            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) || CommonHelper.isGooglePlay() ? PROTOCOL_USER_ENGLISH : PROTOCOL_USER);
+            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) ? PROTOCOL_USER_ENGLISH : PROTOCOL_USER);
         } else if (protocolType == USER_AP_PRIVATE) {
-            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) || CommonHelper.isGooglePlay() ? PROTOCOL_PRIVATE_ENGLISH : PROTOCOL_PRIVATE);
+            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) ? PROTOCOL_PRIVATE_ENGLISH : PROTOCOL_PRIVATE);
         } else if (protocolType == USER_WX_HELP) {
             loadWebView(WX_AUTH_HELP);
         } else if (protocolType == USER_AUTH_PLATFORM) {//获取平台授权协议
@@ -90,15 +100,18 @@ public class ProtocolActivity extends BaseActivity {
         }
     }
 
-    private void localEnglishHtml() {
+    /**
+     * 本地协议
+     */
+    private void localHtml() {
         if (protocolType == USER_PROTOCOL) { //app注册协议
-            loadWebView("file:///android_asset/user_sunmi_english.html");
+            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) ? LOCAL_PROTOCOL_USER_ENGLISH : LOCAL_PROTOCOL_USER);
         } else if (protocolType == USER_PRIVATE) {
-            loadWebView("file:///android_asset/private_sunmi_english.html");
+            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) ? LOCAL_PROTOCOL_PRIVATE_ENGLISH : LOCAL_PROTOCOL_PRIVATE);
         } else if (protocolType == USER_AP_PROTOCOL) { //快速配置路由器协议
-            loadWebView("file:///android_asset/user_sunmi_english.html");
+            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) ? LOCAL_PROTOCOL_USER_ENGLISH : LOCAL_PROTOCOL_USER);
         } else if (protocolType == USER_AP_PRIVATE) {
-            loadWebView("file:///android_asset/private_sunmi_english.html");
+            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) ? LOCAL_PROTOCOL_PRIVATE_ENGLISH : LOCAL_PROTOCOL_PRIVATE);
         } else if (protocolType == USER_WX_HELP) {
             loadWebView(WX_AUTH_HELP);
         } else if (protocolType == USER_AUTH_PLATFORM) {//获取平台授权协议
@@ -113,28 +126,6 @@ public class ProtocolActivity extends BaseActivity {
         this.overridePendingTransition(0, R.anim.activity_close_up_down);
     }
 
-    private void localChineseHtml() {
-        if (protocolType == USER_PROTOCOL) { //app注册协议
-            loadWebView("file:///android_asset/user_sunmi.html");
-        } else if (protocolType == USER_PRIVATE) {
-            loadWebView("file:///android_asset/private_sunmi.html");
-        } else if (protocolType == USER_AP_PROTOCOL) { //快速配置路由器协议
-            loadWebView("file:///android_asset/user_sunmi.html");
-        } else if (protocolType == USER_AP_PRIVATE) {
-            loadWebView("file:///android_asset/private_sunmi.html");
-        } else if (protocolType == USER_WX_HELP) {
-            loadWebView(AUTH_PLATFORM);
-        }
-    }
-
-    private void loadLocalLanguage() {
-        if (CommonHelper.isGooglePlay() || TextUtils.equals("en_us", CommonHelper.getLanguage())) {
-            localEnglishHtml();
-        } else {
-            localChineseHtml();
-        }
-    }
-
     private void startTimer() {
         timer = new Timer();
         TimerTask tt = new TimerTask() {
@@ -142,7 +133,7 @@ public class ProtocolActivity extends BaseActivity {
             public void run() {
                 /* * 超时后,首先判断页面加载是否小于100,就执行超时后的动作 */
                 if (webView.getProgress() < 100) {
-                    loadLocalLanguage();
+                    localHtml();
                     timer.cancel();
                     timer.purge();
                 }
@@ -198,7 +189,7 @@ public class ProtocolActivity extends BaseActivity {
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 hideLoadingDialog();
-                loadLocalLanguage();
+                localHtml();
                 super.onReceivedError(view, errorCode, description, failingUrl);
             }
 
