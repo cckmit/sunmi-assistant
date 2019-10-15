@@ -185,18 +185,18 @@
         <activity
             android:name=".mine.shop.ShopEditAddressActivity_"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".importorder.ImportOrderPreviewActivity_"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".importorder.ImportOrderSelectShopActivity_"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".importorder.ImportOrderSelectPlatformActivity_"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".importorder.ImportOrderPlatformMobileActivity_"
-            android:screenOrientation="portrait" />
+        <!--        <activity-->
+        <!--            android:name=".importorder.ImportOrderPreviewActivity_"-->
+        <!--            android:screenOrientation="portrait" />-->
+        <!--        <activity-->
+        <!--            android:name=".importorder.ImportOrderSelectShopActivity_"-->
+        <!--            android:screenOrientation="portrait" />-->
+        <!--        <activity-->
+        <!--            android:name=".importorder.ImportOrderSelectPlatformActivity_"-->
+        <!--            android:screenOrientation="portrait" />-->
+        <!--        <activity-->
+        <!--            android:name=".importorder.ImportOrderPlatformMobileActivity_"-->
+        <!--            android:screenOrientation="portrait" />-->
         <activity
             android:name=".mine.shop.CreateShopNewActivity_"
             android:screenOrientation="portrait" />
