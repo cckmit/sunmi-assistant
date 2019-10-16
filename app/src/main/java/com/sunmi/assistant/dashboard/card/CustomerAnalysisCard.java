@@ -149,10 +149,6 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
         mAdapter = new DetailListAdapter(context);
         lv.setDividerHeight(0);
         lv.setAdapter(mAdapter);
-//        lv.setOnTouchListener((v, event) -> {
-//            //  Action will not be forwarded
-//            return event.getAction() == MotionEvent.ACTION_MOVE;
-//        });
         return holder;
     }
 
@@ -171,37 +167,41 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
             Item e = new Item();
             e.setError();
             model.list.add(e);
-            return;
-        }
-        List<CustomerHistoryDetailResp.Item> list = response.getCountList();
-        List<Item> result = new ArrayList<>();
-        int total = 0;
-        for (CustomerHistoryDetailResp.Item item : list) {
-            if (item.getMaleCount() == 0 && item.getFemaleCount() == 0) {
-                continue;
-            }
-            String ageName = mAgeList.get(item.getAgeRangeCode());
-            String maleName = String.format("%s | %s%s", mMaleLabel, ageName, mAgeLabel);
-            String femaleName = String.format("%s | %s%s", mFemaleLabel, ageName, mAgeLabel);
-            result.add(new Item(item.getAgeRangeCode(), 1, maleName, item.getMaleCount()));
-            result.add(new Item(item.getAgeRangeCode(), 2, femaleName, item.getFemaleCount()));
-            total = total + item.getFemaleCount() + item.getMaleCount();
-        }
-        Collections.sort(result, (o1, o2) -> o1.count - o2.count);
-        if (result.size() > 3) {
-            model.list.addAll(result.subList(0, 3));
         } else {
-            model.list.addAll(result);
+            List<CustomerHistoryDetailResp.Item> list = response.getCountList();
+            List<Item> result = new ArrayList<>();
+            int total = 0;
+            for (CustomerHistoryDetailResp.Item item : list) {
+                if (item.getMaleCount() == 0 && item.getFemaleCount() == 0) {
+                    continue;
+                }
+                String ageName = mAgeList.get(item.getAgeRangeCode());
+                String maleName = String.format("%s  |  %s%s", mMaleLabel, ageName, mAgeLabel);
+                String femaleName = String.format("%s  |  %s%s", mFemaleLabel, ageName, mAgeLabel);
+                result.add(new Item(item.getAgeRangeCode(), 1, maleName, item.getMaleCount()));
+                result.add(new Item(item.getAgeRangeCode(), 2, femaleName, item.getFemaleCount()));
+                total = total + item.getFemaleCount() + item.getMaleCount();
+            }
+            Collections.sort(result, (o1, o2) -> o2.count - o1.count);
+            if (result.size() > 3) {
+                model.list.addAll(result.subList(0, 3));
+            } else {
+                model.list.addAll(result);
+            }
+            for (Item item : model.list) {
+                item.setTotal(total);
+            }
         }
-        for (Item item : model.list) {
-            item.setTotal(total);
-        }
+
+        // Test data
+//        model.random(mAgeList, mAgeLabel, mMaleLabel, mFemaleLabel);
     }
 
     @Override
     protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         mAdapter.setDatas(model.list);
         mAdapter.notifyDataSetChanged();
+        holder.getView(R.id.lv_dashboard_list).requestLayout();
     }
 
     @Override
@@ -256,8 +256,9 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
                 avatar.setImageResource(item.gender == 1 ?
                         R.mipmap.dashboard_customer_avatar_male : R.mipmap.dashboard_customer_avatar_female);
                 title.setText(item.name);
-                count.setText(item.count);
-                ratio.setText(String.format(Locale.getDefault(), "%.0f%%", (float) item.count / item.total));
+                count.setText(String.valueOf(item.count));
+                ratio.setText(String.format(Locale.getDefault(), "%.0f%%",
+                        (float) item.count * 100 / item.total));
                 oldRatio.setText(DATA_NONE);
                 peak.setText(DATA_NONE);
             }
@@ -324,6 +325,35 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
         @Override
         public void init(int source) {
             list.clear();
+        }
+
+        public void random(SparseArray<String> ageList, String ageLabel, String maleLabel, String femaleLabel) {
+            List<Pair<Integer, Integer>> pool = new ArrayList<>();
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 2; j++) {
+                    pool.add(new Pair<>(i + 1, j + 1));
+                }
+            }
+            list.clear();
+            int itemCount = (int) (Math.random() * 1000 % 4) + 1;
+            int total = 0;
+            for (int i = 0; i < itemCount; i++) {
+                int size = pool.size();
+                Pair<Integer, Integer> item = pool.remove((int) (Math.random() * 1000 % size));
+                String ageName = ageList.get(item.first);
+                String genderName = item.second == 1 ? maleLabel : femaleLabel;
+                String name = String.format("%s  |  %s%s", genderName, ageName, ageLabel);
+                int count = (int) (Math.random() * 1000);
+                total += count;
+                list.add(new Item(item.first, item.second, name, count));
+            }
+            Collections.sort(list, (o1, o2) -> o2.count - o1.count);
+            if (list.size() > 3) {
+                list.subList(3, list.size()).clear();
+            }
+            for (Item item : list) {
+                item.setTotal(total);
+            }
         }
     }
 }

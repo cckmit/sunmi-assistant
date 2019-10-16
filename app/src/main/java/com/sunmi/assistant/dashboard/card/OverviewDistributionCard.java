@@ -260,17 +260,8 @@ public class OverviewDistributionCard extends BaseRefreshCard<OverviewDistributi
 
     @Override
     protected void setupModel(List<Model> models, Object response) {
-//        List<PieEntry> entries = model.dataSets.get(Constants.DATA_TYPE_NEW_OLD);
-//        for (PieEntry entry : entries) {
-//            entry.setY((int)(Math.random() * 1000));
-//        }
-//
-//        model.dataSets.get(Constants.DATA_TYPE_GENDER).clear();
-//
-//        entries = model.dataSets.get(Constants.DATA_TYPE_AGE);
-//        for (PieEntry entry : entries) {
-//            entry.setY((int)(Math.random() * 1000));
-//        }
+        // Test data
+//        models.get(0).random();
     }
 
     @Override
@@ -533,6 +524,20 @@ public class OverviewDistributionCard extends BaseRefreshCard<OverviewDistributi
             for (int i = 0, size = dataSets.size(); i < size; i++) {
                 int key = dataSets.keyAt(i);
                 dataSets.get(key).clear();
+            }
+        }
+
+        public void random() {
+            List<PieEntry> entries = dataSets.get(Constants.DATA_TYPE_NEW_OLD);
+            for (PieEntry entry : entries) {
+                entry.setY((int) (Math.random() * 1000));
+            }
+
+            dataSets.get(Constants.DATA_TYPE_GENDER).clear();
+
+            entries = dataSets.get(Constants.DATA_TYPE_AGE);
+            for (PieEntry entry : entries) {
+                entry.setY((int) (Math.random() * 1000));
             }
         }
     }

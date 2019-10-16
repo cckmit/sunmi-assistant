@@ -74,7 +74,6 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
 
     @Override
     public void init(Context context) {
-
     }
 
     @Override
@@ -203,48 +202,24 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
         allList.clear();
         newList.clear();
         oldList.clear();
-        if (response == null || response.getCountList() == null) {
-            return;
-        }
-        List<CustomerHistoryTrendResp.Item> list = response.getCountList();
-        int size = list.size();
-        int timeIndex = 1;
-        for (CustomerHistoryTrendResp.Item item : list) {
-            float x = Utils.encodeChartXAxisFloat(model.period, timeIndex);
-            long time = Utils.getTime(model.period, timeIndex, size);
-            ChartEntry all = new ChartEntry(x, item.getTotalCount(), time);
-            all.setData(new CustomerEntry(item.getTime(), item.getStrangerCount(), item.getRegularCount()));
-            allList.add(all);
-            newList.add(new ChartEntry(x, item.getStrangerCount(), time));
-            oldList.add(new ChartEntry(x, item.getRegularCount(), time));
-            timeIndex++;
+        if (response != null && response.getCountList() != null) {
+            List<CustomerHistoryTrendResp.Item> list = response.getCountList();
+            int size = list.size();
+            int timeIndex = 1;
+            for (CustomerHistoryTrendResp.Item item : list) {
+                float x = Utils.encodeChartXAxisFloat(model.period, timeIndex);
+                long time = Utils.getTime(model.period, timeIndex, size);
+                ChartEntry all = new ChartEntry(x, item.getTotalCount(), time);
+                all.setData(new CustomerEntry(item.getTime(), item.getStrangerCount(), item.getRegularCount()));
+                allList.add(all);
+                newList.add(new ChartEntry(x, item.getStrangerCount(), time));
+                oldList.add(new ChartEntry(x, item.getRegularCount(), time));
+                timeIndex++;
+            }
         }
 
         // Test data
-//        allList.clear();
-//        newList.clear();
-//        oldList.clear();
-//        int count = model.period == Constants.TIME_PERIOD_WEEK ? 5 : 20;
-//        int min = count / 3;
-//        for (int i = 1; i < count + 1; i++) {
-//            float x = Utils.encodeChartXAxisFloat(model.period, i);
-//            long time = Utils.getTime(model.period, i, count);
-//            if (i <= min + 1) {
-//                ChartEntry all = new ChartEntry(x, 0f, time);
-//                all.setData(new CustomerEntry("test time " + i, 0, 0));
-//                allList.add(all);
-//                newList.add(new ChartEntry(x, 0f, time));
-//                oldList.add(new ChartEntry(x, 0f, time));
-//            } else {
-//                int n = (int) (Math.random() * 1000);
-//                int o = (int) (Math.random() * 1000);
-//                ChartEntry all = new ChartEntry(x, n + o, time);
-//                all.setData(new CustomerEntry("test time " + i, n, o));
-//                allList.add(all);
-//                newList.add(new ChartEntry(x, n, time));
-//                oldList.add(new ChartEntry(x, o, time));
-//            }
-//        }
+//        model.random();
     }
 
     @Override
@@ -289,6 +264,8 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
         lineXAxisRenderer.setPeriod(model.period, maxDay);
         line.getXAxis().setAxisMinimum(xAxisRange.first);
         line.getXAxis().setAxisMaximum(xAxisRange.second);
+        float maxAxis = lineYAxisRenderer.setMaxValue(max);
+        line.getAxisLeft().setAxisMaximum(maxAxis);
 
         // Get color of line
         int color;
@@ -318,6 +295,7 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
             set = (LineDataSet) data.getDataSetByIndex(0);
             set.setColor(color);
             set.setCircleColor(color);
+            set.setHighLightColor(color);
             set.setValues(values);
             data.notifyDataChanged();
             line.notifyDataSetChanged();
@@ -325,6 +303,7 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
             set = new LineDataSet(values, "data");
             set.setColor(color);
             set.setCircleColor(color);
+            set.setHighLightColor(color);
             set.setLineWidth(2f);
             set.setDrawValues(false);
             set.setDrawCircleHole(false);
@@ -395,6 +374,36 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
             for (int i = 0, size = dataSets.size(); i < size; i++) {
                 int key = dataSets.keyAt(i);
                 dataSets.get(key).clear();
+            }
+        }
+
+        public void random() {
+            List<ChartEntry> allList = dataSets.get(Constants.DATA_TYPE_ALL);
+            List<ChartEntry> newList = dataSets.get(Constants.DATA_TYPE_NEW);
+            List<ChartEntry> oldList = dataSets.get(Constants.DATA_TYPE_OLD);
+            allList.clear();
+            newList.clear();
+            oldList.clear();
+            int count = period == Constants.TIME_PERIOD_WEEK ? 5 : 20;
+            int min = count / 3;
+            for (int i = 1; i < count + 1; i++) {
+                float x = Utils.encodeChartXAxisFloat(period, i);
+                long time = Utils.getTime(period, i, count);
+                if (i <= min + 1) {
+                    ChartEntry all = new ChartEntry(x, 0f, time);
+                    all.setData(new CustomerEntry("test time " + i, 0, 0));
+                    allList.add(all);
+                    newList.add(new ChartEntry(x, 0f, time));
+                    oldList.add(new ChartEntry(x, 0f, time));
+                } else {
+                    int n = (int) (Math.random() * 1000);
+                    int o = (int) (Math.random() * 1000);
+                    ChartEntry all = new ChartEntry(x, n + o, time);
+                    all.setData(new CustomerEntry("test time " + i, n, o));
+                    allList.add(all);
+                    newList.add(new ChartEntry(x, n, time));
+                    oldList.add(new ChartEntry(x, o, time));
+                }
             }
         }
 

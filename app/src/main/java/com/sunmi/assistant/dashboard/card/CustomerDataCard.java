@@ -145,6 +145,8 @@ public class CustomerDataCard extends BaseRefreshCard<CustomerDataCard.Model, Ob
 
     @Override
     protected void setupModel(List<Model> models, Object response) {
+        // Test data
+//        models.get(0).random();
     }
 
     @NonNull
@@ -320,6 +322,14 @@ public class CustomerDataCard extends BaseRefreshCard<CustomerDataCard.Model, Ob
             }
         }
 
+        public void random() {
+            newCustomer = (int) (Math.random() * 1000);
+            lastNewCustomer = (int) (Math.random() * 30);
+            oldCustomer = (int) (Math.random() * 1000);
+            lastOldCustomer = (int) (Math.random() * 30);
+            customer = newCustomer + oldCustomer;
+            lastCustomer = lastNewCustomer + lastOldCustomer;
+        }
 
     }
 }

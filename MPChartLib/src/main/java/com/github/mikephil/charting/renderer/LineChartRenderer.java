@@ -779,9 +779,6 @@ public class LineChartRenderer extends LineRadarRenderer {
                     || circleColors.length != size) {
                 circleBitmaps = new Bitmap[size];
                 circleColors = new int[size];
-                for (int i = 0; i < size; i++) {
-                    circleColors[i] = set.getCircleColor(i);
-                }
                 changeRequired = true;
             }
             if (!changeRequired) {
@@ -790,6 +787,11 @@ public class LineChartRenderer extends LineRadarRenderer {
                         changeRequired = true;
                         break;
                     }
+                }
+            }
+            if (changeRequired) {
+                for (int i = 0; i < size; i++) {
+                    circleColors[i] = set.getCircleColor(i);
                 }
             }
 

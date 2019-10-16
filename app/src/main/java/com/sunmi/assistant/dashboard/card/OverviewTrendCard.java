@@ -245,24 +245,7 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
         }
 
         // Test data
-//        rateList.clear();
-//        volumeList.clear();
-//        customerList.clear();
-//        int count = model.period == Constants.TIME_PERIOD_WEEK ? 5 : 20;
-//        int min = count / 3;
-//        for (int i = 1; i < count + 1; i++) {
-//            float x = Utils.encodeChartXAxisFloat(model.period, i);
-//            long time = Utils.getTime(model.period, i, count);
-//            if (i <= min + 1) {
-//                rateList.add(new ChartEntry(x, 0f, time));
-//                volumeList.add(new ChartEntry(x, 0f, time));
-//                customerList.add(new ChartEntry(x, 0f, time));
-//            } else {
-//                rateList.add(new ChartEntry(x, (float) Math.random(), time));
-//                volumeList.add(new ChartEntry(x, (int) (Math.random() * 1000), time));
-//                customerList.add(new ChartEntry(x, (int) (Math.random() * 1000), time));
-//            }
-//        }
+//        model.random();
     }
 
     @Override
@@ -327,7 +310,9 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
 
         // Refresh data set
         if (model.type == Constants.DATA_TYPE_RATE) {
+            int color = ContextCompat.getColor(holder.getContext(), R.color.colorOrange);
             mLineChartMarker.setType(model.period, model.type);
+            mLineChartMarker.setPointColor(color);
             LineDataSet set;
             LineData data = line.getData();
             ArrayList<Entry> values = new ArrayList<>(dataSet);
@@ -338,14 +323,14 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
                 line.notifyDataSetChanged();
             } else {
                 set = new LineDataSet(values, "data");
-                int color = ContextCompat.getColor(holder.getContext(), R.color.colorOrange);
-                set.setColor(color);
-                set.setLineWidth(2f);
                 set.setDrawValues(false);
                 set.setDrawCircleHole(false);
-                set.setCircleColor(color);
-                set.setCircleRadius(1f);
                 set.setDrawHorizontalHighlightIndicator(false);
+                set.setColor(color);
+                set.setCircleColor(color);
+                set.setHighLightColor(color);
+                set.setLineWidth(2f);
+                set.setCircleRadius(1f);
                 set.setHighlightLineWidth(1f);
                 set.enableDashedHighlightLine(mDashLength, mDashSpaceLength, 0);
                 data = new LineData(set);
@@ -440,6 +425,30 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
                 type = Constants.DATA_TYPE_VOLUME;
             } else {
                 type = Constants.DATA_TYPE_CUSTOMER;
+            }
+        }
+
+        public void random() {
+            List<ChartEntry> rateList = dataSets.get(Constants.DATA_TYPE_RATE);
+            List<ChartEntry> volumeList = dataSets.get(Constants.DATA_TYPE_VOLUME);
+            List<ChartEntry> customerList = dataSets.get(Constants.DATA_TYPE_CUSTOMER);
+            rateList.clear();
+            volumeList.clear();
+            customerList.clear();
+            int count = period == Constants.TIME_PERIOD_WEEK ? 5 : 20;
+            int min = count / 3;
+            for (int i = 1; i < count + 1; i++) {
+                float x = Utils.encodeChartXAxisFloat(period, i);
+                long time = Utils.getTime(period, i, count);
+                if (i <= min + 1) {
+                    rateList.add(new ChartEntry(x, 0f, time));
+                    volumeList.add(new ChartEntry(x, 0f, time));
+                    customerList.add(new ChartEntry(x, 0f, time));
+                } else {
+                    rateList.add(new ChartEntry(x, (float) Math.random(), time));
+                    volumeList.add(new ChartEntry(x, (int) (Math.random() * 1000), time));
+                    customerList.add(new ChartEntry(x, (int) (Math.random() * 1000), time));
+                }
             }
         }
 

@@ -316,7 +316,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     public void updateTopPosition(int position) {
 //        LogCat.d(TAG, "onScroll=" + position + "; Top=" + mTopHeaderHeight);
         int offset = Math.min(position - mTopHeaderHeight, 0);
-        if (mHasData) {
+        if (mHasData || mPresenter.getPageIndex() != 0) {
             mTopShopMenu.setTranslationY(offset);
             mTopPageTab.setTranslationY(offset);
             mShopMenuPopupHelper.setOffset(offset);
@@ -351,7 +351,8 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     private void showStickyPeriodTab(Activity activity, boolean animated) {
-        if (mIsStickyPeriodTop || activity == null || !mHasData) {
+        boolean shouldSticky = mHasData || mPresenter.getPageIndex() != 0;
+        if (mIsStickyPeriodTop || activity == null || !shouldSticky) {
             return;
         }
         StatusBarUtils.setStatusBarColor(activity, StatusBarUtils.TYPE_DARK);
@@ -365,7 +366,8 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     private void hideStickyPeriodTab(Activity activity, boolean animated) {
-        if (!mIsStickyPeriodTop || activity == null || !mHasData) {
+        boolean shouldSticky = mHasData || mPresenter.getPageIndex() != 0;
+        if (!mIsStickyPeriodTop || activity == null || !shouldSticky) {
             return;
         }
         StatusBarUtils.setStatusBarFullTransparent(activity);
@@ -377,7 +379,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     private void showStickyShopMenu(Activity activity, boolean animated) {
-        if (mIsStickyShopMenu || activity == null || mHasData) {
+        if (mIsStickyShopMenu || activity == null || mHasData || mPresenter.getPageIndex() != 0) {
             return;
         }
         StatusBarUtils.setStatusBarColor(activity, StatusBarUtils.TYPE_DARK);
@@ -391,7 +393,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     private void hideStickyShopMenu(Activity activity, boolean animated) {
-        if (!mIsStickyShopMenu || activity == null || mHasData) {
+        if (!mIsStickyShopMenu || activity == null || mHasData || mPresenter.getPageIndex() != 0) {
             return;
         }
         StatusBarUtils.setStatusBarFullTransparent(activity);
