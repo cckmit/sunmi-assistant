@@ -33,13 +33,17 @@ public class NoOrderCard extends BaseRefreshCard<NoOrderCard.Model, Object> {
         super(presenter, source);
     }
 
-    public static NoOrderCard init(Presenter presenter, int source) {
+    public static NoOrderCard get(Presenter presenter, int source) {
         if (sInstance == null) {
             sInstance = new NoOrderCard(presenter, source);
         } else {
-            sInstance.init(source);
+            sInstance.reset(source);
         }
         return sInstance;
+    }
+
+    @Override
+    public void init(Context context) {
     }
 
     @Override

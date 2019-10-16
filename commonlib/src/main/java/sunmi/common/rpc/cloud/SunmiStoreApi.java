@@ -17,6 +17,7 @@ import sunmi.common.model.CreateShopInfo;
 import sunmi.common.model.CustomerAgeGenderResp;
 import sunmi.common.model.CustomerAgeNewOldResp;
 import sunmi.common.model.CustomerCountResp;
+import sunmi.common.model.CustomerHistoryDetailResp;
 import sunmi.common.model.CustomerHistoryResp;
 import sunmi.common.model.CustomerHistoryTrendResp;
 import sunmi.common.model.CustomerRateResp;
@@ -801,7 +802,7 @@ public class SunmiStoreApi {
     }
 
     /**
-     * 获取客流变化趋势（今日、本周、本月，昨日）
+     * 获取历史客流变化趋势（今日、本周、本月，昨日）
      *
      * @param companyId 是	number	商户ID
      * @param shopId    是	number	门店ID
@@ -819,6 +820,31 @@ public class SunmiStoreApi {
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
                     .getHistoryCustomerTrend(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取历史客流详情（今日、本周、本月，昨日）
+     *
+     * @param companyId 是	number	商户ID
+     * @param shopId    是	number	门店ID
+     * @param startTime 开始时间 “YYYY-MM-DD”
+     * @param endTime   结束时间 “YYYY-MM-DD” （如果需要查询某一天，开始和结束时间相同）
+     */
+    public void getHistoryCustomerDetail(int companyId, int shopId, String startTime, String endTime,
+                                         RetrofitCallback<CustomerHistoryDetailResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("start_time", startTime)
+                    .put("end_time", endTime)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getHistoryCustomerDetail(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();

@@ -48,7 +48,7 @@ public class LineChartMarkerView extends MarkerView {
         mTvLabel = findViewById(R.id.tv_dashboard_marker_label);
         mIvPoint = findViewById(R.id.iv_dashboard_marker_point);
         mOffsetPoint = mIvPoint.getWidth() / 2;
-        label = context.getString(R.string.dashboard_chart_marker_time);
+        label = context.getString(R.string.dashboard_card_marker_time);
     }
 
     public void setType(int period, int type) {
@@ -56,31 +56,31 @@ public class LineChartMarkerView extends MarkerView {
         this.type = type;
         switch (type) {
             case Constants.DATA_TYPE_RATE:
-                mTvTitle.setText(R.string.dashboard_chart_tab_rate);
+                mTvTitle.setText(R.string.dashboard_card_tab_rate);
                 break;
             case Constants.DATA_TYPE_VOLUME:
-                mTvTitle.setText(R.string.dashboard_chart_tab_volume);
+                mTvTitle.setText(R.string.dashboard_card_tab_volume);
                 break;
             case Constants.DATA_TYPE_CUSTOMER:
-                mTvTitle.setText(R.string.dashboard_chart_tab_customer);
+                mTvTitle.setText(R.string.dashboard_card_tab_customer);
                 break;
             case Constants.DATA_TYPE_NEW_OLD:
-                mTvTitle.setText(R.string.dashboard_chart_tab_new_old);
+                mTvTitle.setText(R.string.dashboard_card_tab_new_old);
                 break;
             case Constants.DATA_TYPE_GENDER:
-                mTvTitle.setText(R.string.dashboard_chart_tab_gender);
+                mTvTitle.setText(R.string.dashboard_card_tab_gender);
                 break;
             case Constants.DATA_TYPE_AGE:
-                mTvTitle.setText(R.string.dashboard_chart_tab_age);
+                mTvTitle.setText(R.string.dashboard_card_tab_age);
                 break;
             case Constants.DATA_TYPE_ALL:
-                mTvTitle.setText(R.string.dashboard_chart_tab_all);
+                mTvTitle.setText(R.string.dashboard_card_tab_all);
                 break;
             case Constants.DATA_TYPE_NEW:
-                mTvTitle.setText(R.string.dashboard_chart_tab_new);
+                mTvTitle.setText(R.string.dashboard_card_tab_new);
                 break;
             case Constants.DATA_TYPE_OLD:
-                mTvTitle.setText(R.string.dashboard_chart_tab_old);
+                mTvTitle.setText(R.string.dashboard_card_tab_old);
                 break;
             default:
         }

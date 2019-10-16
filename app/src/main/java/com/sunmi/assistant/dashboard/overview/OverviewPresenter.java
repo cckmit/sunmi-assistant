@@ -1,7 +1,5 @@
 package com.sunmi.assistant.dashboard.overview;
 
-import android.content.Context;
-
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
@@ -27,19 +25,12 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
 
     private static final String TAG = OverviewPresenter.class.getSimpleName();
 
-    private Context mContext;
-
     private int mCompanyId;
     private int mShopId;
     private int mSource;
     private int mPeriod;
 
     private List<BaseRefreshCard> mList = new ArrayList<>();
-
-    @Override
-    public Context getContext() {
-        return mContext;
-    }
 
     @Override
     public int getType() {
@@ -63,11 +54,6 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
     }
 
     @Override
-    public void init(Context context) {
-        mContext = context;
-    }
-
-    @Override
     public void load() {
         if (!isViewAttached()) {
             return;
@@ -77,7 +63,8 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
         mShopId = SpUtils.getShopId();
 
         for (BaseRefreshCard card : mList) {
-            card.init(mSource);
+            card.reset(mSource);
+            card.init(mView.getContext());
         }
         mView.setCards(mList);
         setPeriod(Constants.TIME_PERIOD_TODAY);
@@ -135,36 +122,35 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
     private void initList(int source) {
         mList.clear();
         if (Utils.hasSaas(source) && Utils.hasFs(source)) {
-            mList.add(OverviewPeriodCard.init(this, source));
-            mList.add(OverviewDataCard.init(this, source));
-            mList.add(OverviewTrendCard.init(this, source));
-            mList.add(OverviewDistributionCard.init(this, source));
-            mList.add(EmptyGapCard.init(this, source));
+            mList.add(OverviewPeriodCard.get(this, source));
+            mList.add(OverviewDataCard.get(this, source));
+            mList.add(OverviewTrendCard.get(this, source));
+            mList.add(OverviewDistributionCard.get(this, source));
+            mList.add(EmptyGapCard.get(this, source));
         } else if (Utils.hasSaas(source) && !Utils.hasFs(source)) {
-            mList.add(OverviewPeriodCard.init(this, source));
-            mList.add(OverviewDataCard.init(this, source));
-            mList.add(OverviewTrendCard.init(this, source));
-            mList.add(NoFsCard.init(this, source));
-            mList.add(EmptyGapCard.init(this, source));
+            mList.add(OverviewPeriodCard.get(this, source));
+            mList.add(OverviewDataCard.get(this, source));
+            mList.add(OverviewTrendCard.get(this, source));
+            mList.add(NoFsCard.get(this, source));
+            mList.add(EmptyGapCard.get(this, source));
         } else if (!Utils.hasSaas(source) && Utils.hasFs(source)) {
-            mList.add(OverviewPeriodCard.init(this, source));
-            mList.add(OverviewDataCard.init(this, source));
-            mList.add(OverviewTrendCard.init(this, source));
-            mList.add(OverviewDistributionCard.init(this, source));
-            mList.add(NoOrderCard.init(this, source));
-            mList.add(EmptyGapCard.init(this, source));
+            mList.add(OverviewPeriodCard.get(this, source));
+            mList.add(OverviewDataCard.get(this, source));
+            mList.add(OverviewTrendCard.get(this, source));
+            mList.add(OverviewDistributionCard.get(this, source));
+            mList.add(NoOrderCard.get(this, source));
+            mList.add(EmptyGapCard.get(this, source));
         } else {
-            mList.add(EmptyDataCard.init(this, source));
-            mList.add(NoFsCard.init(this, source));
-            mList.add(NoOrderCard.init(this, source));
-            mList.add(EmptyGapCard.init(this, source));
+            mList.add(EmptyDataCard.get(this, source));
+            mList.add(NoFsCard.get(this, source));
+            mList.add(NoOrderCard.get(this, source));
+            mList.add(EmptyGapCard.get(this, source));
         }
     }
 
     @Override
     public void detachView() {
         super.detachView();
-        mContext = null;
         for (BaseRefreshCard card : mList) {
             card.cancelLoad();
         }

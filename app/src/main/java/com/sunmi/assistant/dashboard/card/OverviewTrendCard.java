@@ -68,13 +68,17 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
         super(presenter, source);
     }
 
-    public static OverviewTrendCard init(Presenter presenter, int source) {
+    public static OverviewTrendCard get(Presenter presenter, int source) {
         if (sInstance == null) {
             sInstance = new OverviewTrendCard(presenter, source);
         } else {
-            sInstance.init(source);
+            sInstance.reset(source);
         }
         return sInstance;
+    }
+
+    @Override
+    public void init(Context context) {
     }
 
     @Override

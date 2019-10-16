@@ -44,13 +44,17 @@ public class OverviewDataCard extends BaseRefreshCard<OverviewDataCard.Model, Ob
         super(presenter, source);
     }
 
-    public static OverviewDataCard init(Presenter presenter, int source) {
+    public static OverviewDataCard get(Presenter presenter, int source) {
         if (sInstance == null) {
             sInstance = new OverviewDataCard(presenter, source);
         } else {
-            sInstance.init(source);
+            sInstance.reset(source);
         }
         return sInstance;
+    }
+
+    @Override
+    public void init(Context context) {
     }
 
     @Override

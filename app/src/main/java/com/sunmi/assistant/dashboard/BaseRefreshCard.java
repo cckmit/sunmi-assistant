@@ -66,10 +66,10 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         if (mModels == null || mModels.isEmpty()) {
             throw new RuntimeException("createModel() must return NON-NULL & NON-EMPTY model list!");
         }
-        init(source);
+        reset(source);
     }
 
-    public void init(int source) {
+    public void reset(int source) {
         for (Model model : mModels) {
             model.valid = false;
             model.init(source);
@@ -252,6 +252,8 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         }
     }
 
+    public abstract void init(Context context);
+
     /**
      * 加载数据，如果有API请求，请使用callback回调；如果无需网络请求，直接使用callback.success();
      *
@@ -431,8 +433,6 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
     }
 
     public interface Presenter {
-
-        Context getContext();
 
         void setPeriod(int period);
 

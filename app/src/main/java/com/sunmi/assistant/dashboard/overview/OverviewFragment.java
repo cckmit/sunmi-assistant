@@ -55,7 +55,6 @@ public class OverviewFragment extends BaseMvpFragment<OverviewPresenter>
             return;
         }
         mPresenter.attachView(this);
-        mPresenter.init(context);
         showLoadingDialog();
         initRefreshLayout(context);
         initRecycler(context);

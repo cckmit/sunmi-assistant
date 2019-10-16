@@ -36,13 +36,17 @@ public class NoFsCard extends BaseRefreshCard<NoFsCard.Model, Object> {
         super(presenter, source);
     }
 
-    public static NoFsCard init(Presenter presenter, int source) {
+    public static NoFsCard get(Presenter presenter, int source) {
         if (sInstance == null) {
             sInstance = new NoFsCard(presenter, source);
         } else {
-            sInstance.init(source);
+            sInstance.reset(source);
         }
         return sInstance;
+    }
+
+    @Override
+    public void init(Context context) {
     }
 
     @Override

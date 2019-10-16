@@ -3,7 +3,6 @@ package com.sunmi.assistant.dashboard;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Pair;
-import android.util.SparseArray;
 
 import com.sunmi.assistant.R;
 
@@ -31,55 +30,43 @@ public class Utils {
 
     private static String[] sWeekName;
 
-    private static SparseArray<Pair<Long, Long>> sPeriodCache = new SparseArray<>(3);
-    private static Calendar sLastCalendar = Calendar.getInstance();
-    private static Calendar sTempCalendar = Calendar.getInstance();
+    private static Calendar temp = Calendar.getInstance();
 
-    @Deprecated
     public static Pair<Long, Long> getPeriodTimestamp(int period) {
-        sTempCalendar = Calendar.getInstance();
-        if (sLastCalendar != null
-                && (sTempCalendar.get(Calendar.DAY_OF_YEAR) != sLastCalendar.get(Calendar.DAY_OF_YEAR)
-                || sTempCalendar.get(Calendar.YEAR) != sLastCalendar.get(Calendar.YEAR)
-                || sTempCalendar.get(Calendar.ERA) != sLastCalendar.get(Calendar.ERA))) {
-            sPeriodCache.clear();
-        }
-        sLastCalendar = sTempCalendar;
-        sTempCalendar = Calendar.getInstance();
-        Pair<Long, Long> periodTimestamp = sPeriodCache.get(period);
-        if (periodTimestamp != null) {
-            return periodTimestamp;
-        }
+        temp.setTimeInMillis(System.currentTimeMillis());
         long timeStart;
         long timeEnd;
-        Calendar c = sTempCalendar;
-        int year = c.get(Calendar.YEAR);
-        int month = c.get(Calendar.MONTH);
-        int date = c.get(Calendar.DATE);
-        c.clear();
-        c.setFirstDayOfWeek(Calendar.MONDAY);
-        c.set(year, month, date);
-        if (period == Constants.TIME_PERIOD_MONTH) {
-            c.clear();
-            c.set(year, month, 1);
-            timeStart = c.getTimeInMillis();
-            c.add(Calendar.MONTH, 1);
-            timeEnd = c.getTimeInMillis();
+        int year = temp.get(Calendar.YEAR);
+        int month = temp.get(Calendar.MONTH);
+        int date = temp.get(Calendar.DATE);
+        temp.clear();
+        temp.setFirstDayOfWeek(Calendar.MONDAY);
+        temp.set(year, month, date);
+
+        if (period == Constants.TIME_PERIOD_TODAY) {
+            timeStart = temp.getTimeInMillis();
+            temp.add(Calendar.DATE, 1);
+            timeEnd = temp.getTimeInMillis();
+        } else if (period == Constants.TIME_PERIOD_YESTERDAY) {
+            temp.add(Calendar.DATE, -1);
+            timeStart = temp.getTimeInMillis();
+            temp.add(Calendar.DATE, 1);
+            timeEnd = temp.getTimeInMillis();
         } else if (period == Constants.TIME_PERIOD_WEEK) {
-            int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
-            int offset = c.getFirstDayOfWeek() - dayOfWeek;
-            c.add(Calendar.DATE, offset > 0 ? offset - 7 : offset);
-            timeStart = c.getTimeInMillis();
-            c.add(Calendar.DATE, 7);
-            timeEnd = c.getTimeInMillis();
+            int dayOfWeek = temp.get(Calendar.DAY_OF_WEEK);
+            int offset = temp.getFirstDayOfWeek() - dayOfWeek;
+            temp.add(Calendar.DATE, offset > 0 ? offset - 7 : offset);
+            timeStart = temp.getTimeInMillis();
+            temp.add(Calendar.DATE, 7);
+            timeEnd = temp.getTimeInMillis();
         } else {
-            timeStart = c.getTimeInMillis();
-            c.add(Calendar.DATE, 1);
-            timeEnd = c.getTimeInMillis();
+            temp.clear();
+            temp.set(Calendar.DATE, 1);
+            timeStart = temp.getTimeInMillis();
+            temp.add(Calendar.MONTH, 1);
+            timeEnd = temp.getTimeInMillis();
         }
-        periodTimestamp = new Pair<>(timeStart / 1000, timeEnd / 1000);
-        sPeriodCache.put(period, periodTimestamp);
-        return periodTimestamp;
+        return new Pair<>(timeStart / 1000, timeEnd / 1000);
     }
 
     /**
@@ -97,8 +84,39 @@ public class Utils {
         } else if (period == Constants.TIME_PERIOD_WEEK) {
             return new Pair<>(100, 108);
         } else {
-            Calendar c = Calendar.getInstance();
-            return new Pair<>(10000, c.getActualMaximum(Calendar.DAY_OF_MONTH) + 10001);
+            temp.setTimeInMillis(System.currentTimeMillis());
+            return new Pair<>(10000, temp.getActualMaximum(Calendar.DAY_OF_MONTH) + 10001);
+        }
+    }
+
+    public static long getTime(int period, int timeIndex, int size) {
+        temp.setTimeInMillis(System.currentTimeMillis());
+        int year = temp.get(Calendar.YEAR);
+        int month = temp.get(Calendar.MONTH);
+        int day = temp.get(Calendar.DATE);
+        temp.clear();
+        if (period == Constants.TIME_PERIOD_TODAY) {
+            temp.set(year, month, day);
+            return temp.getTimeInMillis() / 1000 + (timeIndex - 1) * MILLIS_PER_HOUR;
+        } else if (period == Constants.TIME_PERIOD_YESTERDAY) {
+            temp.set(year, month, day);
+            temp.add(Calendar.DATE, -1);
+            return temp.getTimeInMillis() / 1000 + (timeIndex - 1) * MILLIS_PER_HOUR;
+        } else if (period == Constants.TIME_PERIOD_WEEK) {
+            temp.setFirstDayOfWeek(Calendar.MONDAY);
+            temp.set(year, month, day);
+            int dayOfWeek = temp.get(Calendar.DAY_OF_WEEK);
+            int offset = temp.getFirstDayOfWeek() - dayOfWeek;
+            temp.add(Calendar.DATE, offset > 0 ? offset - 7 : offset);
+            return temp.getTimeInMillis() / 1000 + (timeIndex - 1) * MILLIS_PER_DAY;
+        } else {
+            if (day == 1 && size >= 28) {
+                month = (month + 11) % 12;
+            } else if (day >= 28 && size == 1) {
+                month = (month + 1) % 12;
+            }
+            temp.set(year, month, timeIndex);
+            return temp.getTimeInMillis() / 1000;
         }
     }
 
@@ -138,18 +156,18 @@ public class Utils {
         if (sWeekName == null) {
             sWeekName = context.getResources().getStringArray(R.array.week_name);
         }
-        sTempCalendar.clear();
-        sTempCalendar.setTimeInMillis(time * 1000);
+        temp.clear();
+        temp.setTimeInMillis(time * 1000);
         if (period == Constants.TIME_PERIOD_TODAY || period == Constants.TIME_PERIOD_YESTERDAY) {
-            int hour = sTempCalendar.get(Calendar.HOUR_OF_DAY);
+            int hour = temp.get(Calendar.HOUR_OF_DAY);
             return String.format(Locale.getDefault(), "%02d:00-%02d:00", hour, hour + 1);
         } else if (period == Constants.TIME_PERIOD_WEEK) {
-            sTempCalendar.setFirstDayOfWeek(Calendar.MONDAY);
-            int dayOfWeek = sTempCalendar.get(Calendar.DAY_OF_WEEK) - 2;
+            temp.setFirstDayOfWeek(Calendar.MONDAY);
+            int dayOfWeek = temp.get(Calendar.DAY_OF_WEEK) - 2;
             return sWeekName[dayOfWeek < 0 ? dayOfWeek + 7 : dayOfWeek];
         } else {
-            int month = sTempCalendar.get(Calendar.MONTH) + 1;
-            int day = sTempCalendar.get(Calendar.DATE);
+            int month = temp.get(Calendar.MONTH) + 1;
+            int day = temp.get(Calendar.DATE);
             return String.format(Locale.getDefault(), "%02d-%02d", month, day);
         }
     }
@@ -163,37 +181,6 @@ public class Utils {
     public static String getDateTime(long timestamp) {
         synchronized (DATE_FORMAT_DATE_TIME) {
             return DATE_FORMAT_DATE_TIME.format(new Date(timestamp));
-        }
-    }
-
-    public static long getTime(int period, int timeIndex, int size) {
-        Calendar c = Calendar.getInstance();
-        int year = c.get(Calendar.YEAR);
-        int month = c.get(Calendar.MONTH);
-        int day = c.get(Calendar.DATE);
-        c.clear();
-        if (period == Constants.TIME_PERIOD_TODAY) {
-            c.set(year, month, day);
-            return c.getTimeInMillis() / 1000 + (timeIndex - 1) * MILLIS_PER_HOUR;
-        } else if (period == Constants.TIME_PERIOD_YESTERDAY) {
-            c.set(year, month, day);
-            c.add(Calendar.DATE, -1);
-            return c.getTimeInMillis() / 1000 + (timeIndex - 1) * MILLIS_PER_HOUR;
-        } else if (period == Constants.TIME_PERIOD_WEEK) {
-            c.setFirstDayOfWeek(Calendar.MONDAY);
-            c.set(year, month, day);
-            int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
-            int offset = c.getFirstDayOfWeek() - dayOfWeek;
-            c.add(Calendar.DATE, offset > 0 ? offset - 7 : offset);
-            return c.getTimeInMillis() / 1000 + (timeIndex - 1) * MILLIS_PER_DAY;
-        } else {
-            if (day == 1 && size >= 28) {
-                month = (month + 11) % 12;
-            } else if (day >= 28 && size == 1) {
-                month = (month + 1) % 12;
-            }
-            c.set(year, month, timeIndex);
-            return c.getTimeInMillis() / 1000;
         }
     }
 

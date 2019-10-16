@@ -60,6 +60,12 @@ public class OverviewDistributionCard extends BaseRefreshCard<OverviewDistributi
 
     private static OverviewDistributionCard sInstance;
 
+    private String mAgeLabel;
+    private String mNewLabel;
+    private String mOldLabel;
+    private String mMaleLabel;
+    private String mFemaleLabel;
+
     private PieChart mChart;
     private SparseArray<String> mAgeList;
     private OnPieSelectedListener mOnSelectedListener;
@@ -68,13 +74,22 @@ public class OverviewDistributionCard extends BaseRefreshCard<OverviewDistributi
         super(presenter, source);
     }
 
-    public static OverviewDistributionCard init(Presenter presenter, int source) {
+    public static OverviewDistributionCard get(Presenter presenter, int source) {
         if (sInstance == null) {
             sInstance = new OverviewDistributionCard(presenter, source);
         } else {
-            sInstance.init(source);
+            sInstance.reset(source);
         }
         return sInstance;
+    }
+
+    @Override
+    public void init(Context context) {
+        mAgeLabel = context.getString(R.string.dashboard_card_age_label);
+        mNewLabel = context.getString(R.string.dashboard_card_tab_new);
+        mOldLabel = context.getString(R.string.dashboard_card_tab_old);
+        mMaleLabel = context.getString(R.string.dashboard_card_male);
+        mFemaleLabel = context.getString(R.string.dashboard_card_female);
     }
 
     @Override
@@ -111,8 +126,7 @@ public class OverviewDistributionCard extends BaseRefreshCard<OverviewDistributi
                 Collections.sort(list, (o1, o2) -> (o1.getCode() - o2.getCode()));
                 mAgeList = new SparseArray<>(list.size());
                 for (FaceAge age : list) {
-                    mAgeList.put(age.getCode(), mPresenter.getContext().
-                            getString(R.string.dashboard_chart_age_label, age.getName()));
+                    mAgeList.put(age.getCode(), age.getName() + mAgeLabel);
                 }
                 loadNewOld(companyId, shopId, start, end, callback);
             }
@@ -151,10 +165,8 @@ public class OverviewDistributionCard extends BaseRefreshCard<OverviewDistributi
                             int ageCount = bean.getRegularCount() + bean.getStrangerCount();
                             ageList.add(new PieEntry(ageCount, mAgeList.get(bean.getAgeRangeCode())));
                         }
-                        String newName = mPresenter.getContext().getString(R.string.dashboard_chart_tab_new);
-                        String oldName = mPresenter.getContext().getString(R.string.dashboard_chart_tab_old);
-                        newOldList.add(new PieEntry(newCount, newName));
-                        newOldList.add(new PieEntry(oldCount, oldName));
+                        newOldList.add(new PieEntry(newCount, mNewLabel));
+                        newOldList.add(new PieEntry(oldCount, mOldLabel));
                         loadGender(companyId, shopId, start, end, callback);
                     }
 
@@ -188,10 +200,8 @@ public class OverviewDistributionCard extends BaseRefreshCard<OverviewDistributi
                             maleCount += bean.getMaleCount();
                             femaleCount += bean.getFemaleCount();
                         }
-                        String maleName = mPresenter.getContext().getString(R.string.dashboard_chart_male);
-                        String femaleName = mPresenter.getContext().getString(R.string.dashboard_chart_female);
-                        genderList.add(new PieEntry(maleCount, maleName));
-                        genderList.add(new PieEntry(femaleCount, femaleName));
+                        genderList.add(new PieEntry(maleCount, mMaleLabel));
+                        genderList.add(new PieEntry(femaleCount, mFemaleLabel));
                         callback.onSuccess();
                     }
 

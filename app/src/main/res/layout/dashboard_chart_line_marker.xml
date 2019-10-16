@@ -29,7 +29,7 @@
             android:id="@+id/tv_dashboard_marker_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/dashboard_chart_tab_rate"
+            android:text="@string/dashboard_card_tab_rate"
             android:textColor="@color/color_777E8C"
             android:textSize="8sp" />
 

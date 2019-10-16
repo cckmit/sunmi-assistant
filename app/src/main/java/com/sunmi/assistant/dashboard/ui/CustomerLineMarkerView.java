@@ -42,8 +42,8 @@ public class CustomerLineMarkerView extends MarkerView {
      */
     public CustomerLineMarkerView(Context context) {
         super(context, R.layout.dashboard_chart_line_complex_marker);
-        mNewName = context.getString(R.string.dashboard_chart_tab_new) + ":";
-        mOldName = context.getString(R.string.dashboard_chart_tab_old) + ":";
+        mNewName = context.getString(R.string.dashboard_card_tab_new) + ":";
+        mOldName = context.getString(R.string.dashboard_card_tab_old) + ":";
         mTvTitle = findViewById(R.id.tv_dashboard_marker_title);
         mTvValue = findViewById(R.id.tv_dashboard_marker_value);
         mTvLabel1 = findViewById(R.id.tv_dashboard_marker_label1);

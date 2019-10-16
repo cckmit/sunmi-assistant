@@ -45,18 +45,18 @@ public class BarChartMarkerView extends MarkerView {
         mTvValue = findViewById(R.id.tv_dashboard_marker_value);
         mTvLabel = findViewById(R.id.tv_dashboard_marker_label);
         mGap = getResources().getDimension(R.dimen.dp_4);
-        label = context.getString(R.string.dashboard_chart_marker_time);
+        label = context.getString(R.string.dashboard_card_marker_time);
     }
 
     public void setType(int period, int type) {
         this.period = period;
         this.type = type;
         if (type == Constants.DATA_TYPE_RATE) {
-            mTvTitle.setText(R.string.dashboard_chart_tab_rate);
+            mTvTitle.setText(R.string.dashboard_card_tab_rate);
         } else if (type == Constants.DATA_TYPE_VOLUME) {
-            mTvTitle.setText(R.string.dashboard_chart_tab_volume);
+            mTvTitle.setText(R.string.dashboard_card_tab_volume);
         } else {
-            mTvTitle.setText(R.string.dashboard_chart_tab_customer);
+            mTvTitle.setText(R.string.dashboard_card_tab_customer);
         }
     }
 

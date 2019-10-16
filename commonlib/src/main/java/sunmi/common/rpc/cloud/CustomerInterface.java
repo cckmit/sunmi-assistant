@@ -6,6 +6,7 @@ import retrofit2.http.POST;
 import sunmi.common.model.CustomerAgeGenderResp;
 import sunmi.common.model.CustomerAgeNewOldResp;
 import sunmi.common.model.CustomerCountResp;
+import sunmi.common.model.CustomerHistoryDetailResp;
 import sunmi.common.model.CustomerHistoryResp;
 import sunmi.common.model.CustomerHistoryTrendResp;
 import sunmi.common.model.CustomerRateResp;
@@ -61,6 +62,12 @@ public interface CustomerInterface {
      */
     @POST(path + "history/getList")
     Call<BaseResponse<CustomerHistoryTrendResp>> getHistoryCustomerTrend(@Body BaseRequest request);
+
+    /**
+     * 获取客流变化趋势（今日、本周、本月，昨日）
+     */
+    @POST(path + "age/getHistoryWithAgeAndGender")
+    Call<BaseResponse<CustomerHistoryDetailResp>> getHistoryCustomerDetail(@Body BaseRequest request);
 
 
 }

@@ -55,7 +55,6 @@ public class CustomerFragment extends BaseMvpFragment<CustomerPresenter>
             return;
         }
         mPresenter.attachView(this);
-        mPresenter.init(context);
         showLoadingDialog();
         initRefreshLayout(context);
         initRecycler(context);

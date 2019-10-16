@@ -1,11 +1,10 @@
 package com.sunmi.assistant.dashboard.customer;
 
-import android.content.Context;
-
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.Utils;
+import com.sunmi.assistant.dashboard.card.CustomerAnalysisCard;
 import com.sunmi.assistant.dashboard.card.CustomerDataCard;
 import com.sunmi.assistant.dashboard.card.CustomerPeriodCard;
 import com.sunmi.assistant.dashboard.card.CustomerTrendCard;
@@ -22,19 +21,12 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
 
     private static final String TAG = CustomerPresenter.class.getSimpleName();
 
-    private Context mContext;
-
     private int mCompanyId;
     private int mShopId;
     private int mSource;
     private int mPeriod;
 
     private List<BaseRefreshCard> mList = new ArrayList<>();
-
-    @Override
-    public Context getContext() {
-        return mContext;
-    }
 
     @Override
     public int getType() {
@@ -58,11 +50,6 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
     }
 
     @Override
-    public void init(Context context) {
-        mContext = context;
-    }
-
-    @Override
     public void load() {
         if (!isViewAttached()) {
             return;
@@ -72,7 +59,8 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
         mShopId = SpUtils.getShopId();
 
         for (BaseRefreshCard card : mList) {
-            card.init(mSource);
+            card.reset(mSource);
+            card.init(mView.getContext());
         }
         mView.setCards(mList);
         setPeriod(Constants.TIME_PERIOD_YESTERDAY);
@@ -130,9 +118,10 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
     private void initList(int source) {
         mList.clear();
         if (Utils.hasCustomer(source)) {
-            mList.add(CustomerPeriodCard.init(this, source));
-            mList.add(CustomerDataCard.init(this, source));
-            mList.add(CustomerTrendCard.init(this, source));
+            mList.add(CustomerPeriodCard.get(this, source));
+            mList.add(CustomerDataCard.get(this, source));
+            mList.add(CustomerTrendCard.get(this, source));
+            mList.add(CustomerAnalysisCard.get(this, source));
         } else if (Utils.hasFs(source)) {
 
         } else {
@@ -143,7 +132,6 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
     @Override
     public void detachView() {
         super.detachView();
-        mContext = null;
         for (BaseRefreshCard card : mList) {
             card.cancelLoad();
         }

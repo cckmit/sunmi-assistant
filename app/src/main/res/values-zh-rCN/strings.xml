@@ -56,21 +56,23 @@
     <string name="dashboard_data_customer">进店客流</string>
     <string name="dashboard_data_transaction_rate">交易转化率</string>
 
-    <string name="dashboard_chart_tab_rate">转化率</string>
-    <string name="dashboard_chart_tab_volume">交易笔数</string>
-    <string name="dashboard_chart_tab_customer">客流量</string>
-    <string name="dashboard_chart_tab_new_old">新老</string>
-    <string name="dashboard_chart_tab_gender">性别</string>
-    <string name="dashboard_chart_tab_age">年龄</string>
-    <string name="dashboard_chart_tab_all">全部</string>
-    <string name="dashboard_chart_tab_new">新客</string>
-    <string name="dashboard_chart_tab_old">熟客</string>
+    <string name="dashboard_card_tab_rate">转化率</string>
+    <string name="dashboard_card_tab_volume">交易笔数</string>
+    <string name="dashboard_card_tab_customer">客流量</string>
+    <string name="dashboard_card_tab_new_old">新老</string>
+    <string name="dashboard_card_tab_gender">性别</string>
+    <string name="dashboard_card_tab_age">年龄</string>
+    <string name="dashboard_card_tab_all">全部</string>
+    <string name="dashboard_card_tab_new">新客</string>
+    <string name="dashboard_card_tab_old">熟客</string>
 
-    <string name="dashboard_chart_marker_time">时间</string>
-    <string name="dashboard_chart_male">男性</string>
-    <string name="dashboard_chart_female">女性</string>
-    <string name="dashboard_chart_age_label">%s岁</string>
-    <string name="dashboard_chart_pie_hole_ratio">%s占比</string>
+    <string name="dashboard_card_marker_time">时间</string>
+    <string name="dashboard_card_male">男性</string>
+    <string name="dashboard_card_female">女性</string>
+    <string name="dashboard_card_male_label">男</string>
+    <string name="dashboard_card_female_label">女</string>
+    <string name="dashboard_card_age_label">岁</string>
+    <string name="dashboard_card_pie_hole_ratio">%s占比</string>
 
     <string name="dashboard_card_customer_tip">按照人数占比进行排列</string>
     <string name="dashboard_card_customer_count">进店人数</string>

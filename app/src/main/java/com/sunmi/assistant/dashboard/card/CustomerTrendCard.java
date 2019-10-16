@@ -63,13 +63,18 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
         super(presenter, source);
     }
 
-    public static CustomerTrendCard init(Presenter presenter, int source) {
+    public static CustomerTrendCard get(Presenter presenter, int source) {
         if (sInstance == null) {
             sInstance = new CustomerTrendCard(presenter, source);
         } else {
-            sInstance.init(source);
+            sInstance.reset(source);
         }
         return sInstance;
+    }
+
+    @Override
+    public void init(Context context) {
+
     }
 
     @Override

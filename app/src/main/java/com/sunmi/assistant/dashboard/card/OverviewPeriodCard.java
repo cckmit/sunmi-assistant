@@ -1,5 +1,6 @@
 package com.sunmi.assistant.dashboard.card;
 
+import android.content.Context;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -29,13 +30,17 @@ public class OverviewPeriodCard extends BaseRefreshCard<OverviewPeriodCard.Model
         super(presenter, source);
     }
 
-    public static OverviewPeriodCard init(Presenter presenter, int source) {
+    public static OverviewPeriodCard get(Presenter presenter, int source) {
         if (sInstance == null) {
             sInstance = new OverviewPeriodCard(presenter, source);
         } else {
-            sInstance.init(source);
+            sInstance.reset(source);
         }
         return sInstance;
+    }
+
+    @Override
+    public void init(Context context) {
     }
 
     @Override

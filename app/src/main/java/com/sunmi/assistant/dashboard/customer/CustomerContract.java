@@ -13,6 +13,8 @@ public interface CustomerContract {
 
     interface View extends BaseView {
 
+        Context getContext();
+
         void updateTab(int period);
 
         void setCards(List<BaseRefreshCard> data);
@@ -23,8 +25,6 @@ public interface CustomerContract {
     }
 
     interface Presenter extends DashboardContract.PagePresenter {
-
-        void init(Context context);
 
         void load();
 

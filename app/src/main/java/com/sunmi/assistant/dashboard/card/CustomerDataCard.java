@@ -42,13 +42,17 @@ public class CustomerDataCard extends BaseRefreshCard<CustomerDataCard.Model, Ob
         super(presenter, source);
     }
 
-    public static CustomerDataCard init(Presenter presenter, int source) {
+    public static CustomerDataCard get(Presenter presenter, int source) {
         if (sInstance == null) {
             sInstance = new CustomerDataCard(presenter, source);
         } else {
-            sInstance.init(source);
+            sInstance.reset(source);
         }
         return sInstance;
+    }
+
+    @Override
+    public void init(Context context) {
     }
 
     @Override
