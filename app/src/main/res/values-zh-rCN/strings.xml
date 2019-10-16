@@ -268,4 +268,5 @@
     <string name="import_order_continue_try">继续尝试</string>
     <string name="import_order_agree_auth_shop">同意授权表示使用该平台数据</string>
     <string name="import_order_explain">1.接入门店收银数据，实现线下门店数字化。\t \n2.您可以随时了解门店经营动态。\t \n3.商米助手提供多维度分析经营状态，帮您提升经营决策质量。</string>
+    <string name="import_order_access_shop_data">接入门店收银系统</string>
 </resources>
