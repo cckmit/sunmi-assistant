@@ -74,7 +74,7 @@ public class ImportOrderSelectShopActivity extends BaseActivity {
         }
         showLoadingDialog();
         SunmiStoreApi.getInstance().authorizeSaas(SpUtils.getCompanyId(), SpUtils.getShopId(),
-                selectBean.getSaas_source(), selectBean.getShop_no(), selectBean.getSaas_name(),
+                selectBean.getSaas_source(), selectBean.getShop_no(), selectBean.getSaas_name(), 2,
                 new RetrofitCallback<Object>() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
