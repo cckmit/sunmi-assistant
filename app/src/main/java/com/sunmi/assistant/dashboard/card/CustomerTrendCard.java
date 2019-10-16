@@ -285,14 +285,6 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
         line.getXAxis().setAxisMinimum(xAxisRange.first);
         line.getXAxis().setAxisMaximum(xAxisRange.second);
 
-        // Use correct chart marker & update it.
-        if (model.type == Constants.DATA_TYPE_ALL) {
-            line.setMarker(mLineComplexMarker);
-        } else {
-            line.setMarker(mLineChartMarker);
-            mLineChartMarker.setType(model.period, model.type);
-        }
-
         // Get color of line
         int color;
         if (model.type == Constants.DATA_TYPE_NEW) {
@@ -301,6 +293,16 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
             color = COLOR_OLD;
         } else {
             color = COLOR_ALL;
+        }
+
+        // Use correct chart marker & update it.
+        if (model.type == Constants.DATA_TYPE_ALL) {
+            line.setMarker(mLineComplexMarker);
+            mLineComplexMarker.setPointColor(color);
+        } else {
+            line.setMarker(mLineChartMarker);
+            mLineChartMarker.setType(model.period, model.type);
+            mLineChartMarker.setPointColor(color);
         }
 
         // Refresh data set

@@ -2,6 +2,9 @@ package com.sunmi.assistant.dashboard.ui;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -80,6 +83,24 @@ public class LineChartMarkerView extends MarkerView {
                 mTvTitle.setText(R.string.dashboard_chart_tab_old);
                 break;
             default:
+        }
+    }
+
+    public void setPointColor(int color) {
+        Drawable drawable = mIvPoint.getDrawable();
+        GradientDrawable target = null;
+        if (drawable instanceof LayerDrawable) {
+            LayerDrawable layer = (LayerDrawable) drawable;
+            int count = layer.getNumberOfLayers();
+            Drawable last = layer.getDrawable(Math.max(0, count - 1));
+            if (last instanceof GradientDrawable) {
+                target = (GradientDrawable) last;
+            }
+        } else if (drawable instanceof GradientDrawable) {
+            target = (GradientDrawable) drawable;
+        }
+        if (target != null) {
+            target.setColor(color);
         }
     }
 
