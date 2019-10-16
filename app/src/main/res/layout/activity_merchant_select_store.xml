@@ -21,10 +21,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/title_bar"
-        android:paddingBottom="@dimen/dp_8"
-        android:paddingEnd="@dimen/dp_20"
         android:paddingStart="@dimen/dp_20"
         android:paddingTop="@dimen/dp_8"
+        android:paddingEnd="@dimen/dp_20"
+        android:paddingBottom="@dimen/dp_8"
         android:text="@string/company_shop_select_one_or_more"
         android:textSize="@dimen/sp_12" />
 
@@ -33,10 +33,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/tv_tip"
-        android:layout_marginBottom="@dimen/dp_84">
+        android:layout_marginBottom="@dimen/dp_84"
+        android:background="@color/c_white">
 
     </android.support.v7.widget.RecyclerView>
-
 
     <Button
         android:id="@+id/btnComplete"

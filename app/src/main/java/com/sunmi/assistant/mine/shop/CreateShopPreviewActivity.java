@@ -143,11 +143,20 @@ public class CreateShopPreviewActivity extends BaseActivity {
     }
 
     private void gotoCreateShopActivity() {
-        CreateShopActivity_.intent(context)
-                .companyId(companyId)
-                .companyName(companyName)
-                .saasExist(saasExist)
-                .isLoginSuccessSwitchCompany(isLoginSuccessSwitchCompany)
-                .start();
+        if (CommonHelper.isGooglePlay()) {
+            CreateShopActivity_.intent(context)
+                    .companyId(companyId)
+                    .companyName(companyName)
+                    .saasExist(saasExist)
+                    .isLoginSuccessSwitchCompany(isLoginSuccessSwitchCompany)
+                    .start();
+        } else {
+            CreateShopNewActivity_.intent(context)
+                    .companyId(companyId)
+                    .companyName(companyName)
+                    .saasExist(saasExist)
+                    .isLoginSuccessSwitchCompany(isLoginSuccessSwitchCompany)
+                    .start();
+        }
     }
 }
