@@ -192,7 +192,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
                 mDeleteDialog = new CommonDialog.Builder(this)
                         .setTitle(getString(R.string.ipc_face_group_delete_title,
                                 Utils.getGroupName(this, mFaceGroup)))
-                        .setConfirmButton(R.string.ipc_setting_delete, R.color.colorOrange,
+                        .setConfirmButton(R.string.ipc_setting_delete, R.color.common_orange,
                                 new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {

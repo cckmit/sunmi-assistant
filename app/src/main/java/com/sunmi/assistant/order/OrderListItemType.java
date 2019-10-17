@@ -36,7 +36,7 @@ public class OrderListItemType extends ItemType<OrderInfo, BaseViewHolder<OrderI
         if (model.getAmount() < 0) {
             orderAmount.setTextColor(holder.getContext().getResources().getColor(R.color.color_F35000));
         } else {
-            orderAmount.setTextColor(holder.getContext().getResources().getColor(R.color.color_333338));
+            orderAmount.setTextColor(holder.getContext().getResources().getColor(R.color.colorText));
         }
     }
 

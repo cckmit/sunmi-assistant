@@ -377,11 +377,11 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         }
         llVideoQuality.setVisibility(llVideoQuality.isShown() ? View.GONE : View.VISIBLE);
         if (qualityType == 0) {
-            tvFHDQuality.setTextColor(ContextCompat.getColor(this, R.color.colorOrange));
+            tvFHDQuality.setTextColor(ContextCompat.getColor(this, R.color.common_orange));
             tvHDQuality.setTextColor(ContextCompat.getColor(this, R.color.c_white));
         } else {
             tvFHDQuality.setTextColor(ContextCompat.getColor(this, R.color.c_white));
-            tvHDQuality.setTextColor(ContextCompat.getColor(this, R.color.colorOrange));
+            tvHDQuality.setTextColor(ContextCompat.getColor(this, R.color.common_orange));
         }
     }
 
