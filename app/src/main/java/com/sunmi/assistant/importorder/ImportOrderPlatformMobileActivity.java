@@ -1,11 +1,8 @@
-package com.sunmi.assistant.mine.platform;
+package com.sunmi.assistant.importorder;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.CountDownTimer;
-import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -16,15 +13,12 @@ import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.PlatformMobileContract;
 import com.sunmi.assistant.mine.presenter.PlatformMobilePresenter;
-import com.sunmi.assistant.mine.shop.CreateShopActivity_;
-import com.sunmi.assistant.mine.shop.CreateShopNewActivity_;
 import com.sunmi.assistant.ui.activity.merchant.AuthDialog;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
-import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
@@ -32,21 +26,23 @@ import java.util.ArrayList;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.AuthStoreInfo;
-import sunmi.common.utils.CommonHelper;
+import sunmi.common.model.PlatformInfo;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.dialog.CommonDialog;
 
-import static com.sunmi.assistant.mine.shop.ShopListActivity.REQUEST_CODE_SHOP;
-
 /**
  * @author YangShiJie
- * @date 2019/6/27
+ * @date 2019/10/14
  */
 @SuppressLint("Registered")
 @EActivity(R.layout.activity_merchant_check_mobile)
-public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresenter>
+public class ImportOrderPlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresenter>
         implements PlatformMobileContract.View {
 
+    /**
+     * 倒计时对象,总共的时间,每隔多少秒更新一次时间
+     */
+    final MyCountDownTimer mTimer = new MyCountDownTimer(AppConfig.SMS_TIME, 1000);
     @ViewById(R.id.tv_select_platform)
     TextView tvSelectPlatform;
     @ViewById(R.id.et_mobile)
@@ -57,30 +53,15 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
     TextView tvGetCode;
     @ViewById(R.id.btn_check)
     Button btnCheck;
+    @Extra
+    PlatformInfo.SaasListBean selectPlatformBean;
 
-    @Extra
-    String platform;
-    @Extra
-    int saasSource;
-    @Extra
-    int companyId;
-    @Extra
-    String companyName;
-    @Extra
-    int saasExist;
-    @Extra
-    boolean isLoginSuccessSwitchCompany;
-
-
-    /**
-     * 倒计时对象,总共的时间,每隔多少秒更新一次时间
-     */
-    final MyCountDownTimer mTimer = new MyCountDownTimer(AppConfig.SMS_TIME, 1000);
+    private boolean isTimerFinish;
 
     @AfterViews
     void init() {
         new SomeMonitorEditText().setMonitorEditText(btnCheck, etMobile, etCode);
-        tvSelectPlatform.setText(getString(R.string.str_please_input_platform_mobile, platform));
+        tvSelectPlatform.setText(getString(R.string.import_order_platform_mobile_search_data, selectPlatformBean.getSaas_name()));
         mPresenter = new PlatformMobilePresenter();
         mPresenter.attachView(this);
     }
@@ -108,7 +89,7 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
                     return;
                 }
                 showLoadingDialog();
-                mPresenter.checkMobileCode(mobile, code, saasSource);
+                mPresenter.checkMobileCode(mobile, code, selectPlatformBean.getSaas_source());
                 break;
             default:
         }
@@ -119,74 +100,43 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
         if (list.size() > 0) {
             showSelectShopDialog(list);
         } else {
-            showCreateShopDialog();
+            matchNoShopDialog();
         }
     }
 
     private void showSelectShopDialog(ArrayList<AuthStoreInfo.SaasUserInfoListBean> target) {
         new AuthDialog.Builder(this)
-                .setMessage(getString(R.string.str_dialog_auth_message, platform))
-                .setAllowButton(new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        SelectStoreActivity_.intent(context)
-                                .isBack(true)
-                                .list(target)
-                                .companyId(companyId)
-                                .companyName(companyName)
-                                .saasExist(saasExist)
-                                .isLoginSuccessSwitchCompany(isLoginSuccessSwitchCompany)
-                                .startForResult(REQUEST_CODE_SHOP);
+                .setMessage(getString(R.string.str_dialog_auth_message, selectPlatformBean.getSaas_name()))
+                .setAllowButton((dialog, which) -> ImportOrderSelectShopActivity_.intent(context)
+                        .list(target)
+                        .start())
+                .setCancelButton((dialog, which) -> dialog.dismiss())
+                .create().show();
+    }
+
+    private void matchNoShopDialog() {
+        new CommonDialog.Builder(this)
+                .setTitle(R.string.import_order_check_mobile_no_data)
+                .setCancelButton(R.string.str_retry, (dialog, which) -> {
+                    dialog.dismiss();
+                    if (!isTimerFinish) {
+                        stopDownTimer();
                     }
                 })
-                .setCancelButton((dialog, which) ->
-                        gotoCreateShopActivity())
                 .create().show();
-    }
-
-    private void showCreateShopDialog() {
-        new CommonDialog.Builder(this).setTitle(getString(R.string.str_dialog_auto_create_store))
-                .setCancelButton(com.sunmi.apmanager.R.string.sm_cancel)
-                .setConfirmButton(R.string.company_shop_new_create, (dialog, which) ->
-                        gotoCreateShopActivity())
-                .create().show();
-    }
-
-    private void gotoCreateShopActivity() {
-        if (CommonHelper.isGooglePlay()) {
-            CreateShopActivity_.intent(context)
-                    .companyId(companyId)
-                    .companyName(companyName)
-                    .saasExist(saasExist)
-                    .isLoginSuccessSwitchCompany(isLoginSuccessSwitchCompany)
-                    .startForResult(REQUEST_CODE_SHOP);
-        } else {
-            CreateShopNewActivity_.intent(context)
-                    .companyId(companyId)
-                    .companyName(companyName)
-                    .saasExist(saasExist)
-                    .isLoginSuccessSwitchCompany(isLoginSuccessSwitchCompany)
-                    .startForResult(REQUEST_CODE_SHOP);
-        }
     }
 
     private void startDownTimer() {
+        isTimerFinish = false;
         mTimer.start();
     }
 
     @UiThread
     void stopDownTimer() {
+        isTimerFinish = true;
         mTimer.cancel();
         tvGetCode.setText(getResources().getString(R.string.str_resend));
         tvGetCode.setClickable(true);
-    }
-
-    @OnActivityResult(REQUEST_CODE_SHOP)
-    void onResult(int resultCode, @Nullable Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            setResult(RESULT_OK);
-            finish();
-        }
     }
 
     @Override
@@ -200,6 +150,12 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
         shortTip(R.string.str_platform_sms_code_error);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopDownTimer();
+    }
+
     //倒计时函数
     private class MyCountDownTimer extends CountDownTimer {
         MyCountDownTimer(long millisInFuture, long countDownInterval) {
@@ -209,8 +165,8 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
         //计时过程
         @Override
         public void onTick(long l) {
-            tvGetCode.setClickable(false);//防止计时过程中重复点击
-            tvGetCode.setTextColor(getResources().getColor(R.color.common_orange_alpha));
+            tvGetCode.setClickable(false);
+            tvGetCode.setTextColor(ContextCompat.getColor(context, R.color.common_orange_alpha));
             tvGetCode.setText(String.format(getString(R.string.str_count_down_second), l / 1000));
         }
 
@@ -218,17 +174,9 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
         @Override
         public void onFinish() {
             stopDownTimer();
-            tvGetCode.setTextColor(getResources().getColor(R.color.common_orange));
-            tvGetCode.setText(getResources().getString(R.string.str_resend));//重新给Button设置文字
+            tvGetCode.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
+            tvGetCode.setText(getResources().getString(R.string.str_resend));
             tvGetCode.setClickable(true);
         }
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        stopDownTimer();
-    }
-
-
 }

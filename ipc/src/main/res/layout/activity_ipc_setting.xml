@@ -52,7 +52,6 @@
                 app:rightPadding="@dimen/dp_20"
                 app:rightTextColor="@color/colorText_60" />
 
-
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_camera_adjust"
                 android:layout_width="match_parent"
@@ -104,7 +103,6 @@
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
                 app:rightTextColor="@color/colorText_60" />
-
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_night_style"
@@ -189,12 +187,23 @@
                 app:rightPadding="@dimen/dp_20"
                 app:rightTextColor="@color/colorText_60" />
 
+            <sunmi.common.view.SettingItemLayout
+                android:id="@+id/sil_sd_manager"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:background="@color/c_white"
+                app:imageRight="@mipmap/ic_right_arrow_small"
+                app:leftPadding="@dimen/dp_10"
+                app:leftText="@string/str_sd_manager"
+                app:parentHeight="@dimen/dp_60"
+                app:rightPadding="@dimen/dp_20" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_wifi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/dp_16"
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
                 app:leftPadding="@dimen/dp_10"
@@ -203,7 +212,6 @@
                 app:rightPadding="@dimen/dp_20"
                 app:rightText="@string/ipc_setting_unknown"
                 app:rightTextColor="@color/colorText_60" />
-
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_ipc_version"

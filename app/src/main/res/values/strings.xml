@@ -250,5 +250,22 @@
     <string name="company_shop_select_category">请选择经营品类</string>
     <string name="dialog_title_select_category">选择经营品类</string>
     <string name="dialog_title_select_region">选择所在地区</string>
+    <string name="import_order_support_platform_tip">现已支持接入银豹、生意专家等38个收银软件平台，接入后可获得3个月的历史数据，实时展示新增数据</string>
+    <string name="import_order_current_mobile">当前手机号接入</string>
+    <string name="import_order_other_mobile">其他手机号接入</string>
+    <string name="import_order_platform_mobile_search_data">请输入您在%s中使用的手机号，以搜索门店的订单数据</string>
+    <string name="import_order_check_mobile_no_data">该手机号暂时未发现门店，您可以更换手机号重试</string>
+    <string name="import_order_select_cash_register_software">选择收银软件</string>
+    <string name="import_order_select_shop_cash_register_software">请先选择您的门店经营使用的收银软件，方便找到门店数据</string>
+    <string name="import_order_selecte_shop">为您找到以下门店的收银系统，您可以选择接入其中一家</string>
+    <string name="import_order_access_data">接入</string>
+    <string name="import_order_access_data_success">接入成功</string>
+    <string name="import_order_access_fail">接入失败</string>
+    <string name="import_order_no_find_shop">未发现门店</string>
+    <string name="import_order_mobile_no_match_shop">可能当前手机号暂未关联门店或关联的门店收银软件超出获取范围</string>
+    <string name="import_order_continue_try">继续尝试</string>
+    <string name="import_order_agree_auth_shop">同意授权表示使用该平台数据</string>
+    <string name="import_order_explain">1.接入门店收银数据，实现线下门店数字化。\t \n2.您可以随时了解门店经营动态。\t \n3.商米助手提供多维度分析经营状态，帮您提升经营决策质量。</string>
+    <string name="import_order_access_shop_data">接入门店收银系统</string>
 
 </resources>

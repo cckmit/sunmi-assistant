@@ -94,7 +94,7 @@
     <string name="ipc_setting_dialog_upgrade">Update</string>
     <string name="ipc_setting_dialog_upgrade_download_time">Download time is expected to take %s minutes</string>
     <string name="ipc_setting_dialog_upgrade_ok">Update now</string>
-    <string name="ipc_setting_dialog_upgrade_cancel">Update later</string>
+    <string name="str_in_later">Update later</string>
     <string name="ipc_setting_dialog_upgrade_progress">Downloading…%s%%</string>
     <string name="ipc_setting_dialog_upgrade_fail">Update failed</string>
     <string name="ipc_setting_dialog_upgrade_fail_content">Download v-%s failed</string>
@@ -263,6 +263,17 @@
     <string name="ipc_dynamic_request_external_storage">暂未授予存储权限，请授权后重试</string>
     <string name="ipc_video_play_loading">视频加载中，请稍候</string>
     <string name="str_wifi_config_finish">Internet connected</string>
+    <string name="str_sd_manager">存储卡管理</string>
+    <string name="str_sd_format">格式化</string>
+    <string name="str_sd_format_success">格式化成功</string>
+    <string name="tip_sd_format_success">存储卡可以正常使用</string>
+    <string name="str_sd_format_fail">格式化失败</string>
+    <string name="tip_sd_format_fail">请检查后重新操作</string>
+    <string name="msg_sdcard_format_confirm">格式化操作后，存储卡将被清空，请提前保存存储卡内重要资料。</string>
+    <string name="str_format_in_progress">格式化中…%d%%</string>
+    <string name="msg_duration_sd_format">请耐心等候，大约需要15s</string>
+    <string name="tip_sdcard_unformat">存储卡未格式化</string>
+    <string name="msg_sdcard_should_format">检测到的存储卡需格式化后才可使用，请提前保存重要资料</string>
 
 </resources>
 

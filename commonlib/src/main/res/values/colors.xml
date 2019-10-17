@@ -109,8 +109,6 @@
     <color name="color_4B7AFA">#6CBBFF</color>
     <color name="color_6CBBFF_60">#996CBBFF</color>
     <color name="color_4B7AFA_60">#996CBBFF</color>
-    <color name="color_525866">#525866</color>
-    <color name="color_303540">#303540</color>
 
     <color name="colorText_0">#00333C4F</color>
     <color name="colorText_5">#0E333C4F</color>
@@ -126,4 +124,13 @@
     <color name="pop_item_bg_pressed">#EBEBEB</color>
     <color name="pop_action_sheet_title">#4d4d4d</color>
     <color name="pop_action_sheet_message">#8f8f8f</color>
+
+    <color name="color_303540">#303540</color>
+    <color name="text_title">#303540</color>
+    <color name="color_525866">#525866</color>
+    <color name="text_body">#525866</color>
+    <color name="color_777E8C">#777E8C</color>
+    <color name="text_caption">#777E8C</color>
+    <color name="text_disable">#A1A7B3</color>
+
 </resources>

@@ -133,4 +133,27 @@
         <item name="android:textColor">@color/color_333333</item>
     </style>
 
+    <style name="ProgressHorizontal">
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:progressDrawable">@drawable/progress_horizontal_color</item>
+        <item name="android:indeterminateDrawable">
+            @android:drawable/progress_indeterminate_horizontal
+        </item>
+        <item name="android:minHeight">@dimen/dp_12</item>
+        <item name="android:maxHeight">@dimen/dp_12</item>
+        <item name="android:mirrorForRtl">true</item>
+    </style>
+
+    <style name="dialogTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginStart">@dimen/dp_24</item>
+        <item name="android:layout_marginEnd">@dimen/dp_24</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/color_303540</item>
+        <item name="android:textSize">@dimen/sp_16</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>

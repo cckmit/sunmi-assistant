@@ -319,8 +319,8 @@ public class MqttManager {
      * 发布固件升级消息
      */
     public void pubIpcMessage(final String msgId, final int opCode, String model, String publishMessage) {
-        LogCat.e(TAG, "pubIpcMessage : publishMessage = " + publishMessage);
-        LogCat.e(TAG, "pubIpcMessage : publishMessage topic= " + getPubIpcTopic(clientId, model));
+        LogCat.e(TAG, "pubIpcMessage : publishMessage topic= " + getPubIpcTopic(clientId, model)
+                + ", publishMessage = " + publishMessage);
         if (!NetworkUtils.isNetworkAvailable(BaseApplication.getContext())
                 || mqttClient == null || !mqttClient.isConnected()) {
             ResponseBean res = new ResponseBean();
@@ -350,7 +350,6 @@ public class MqttManager {
             e.printStackTrace();
         }
     }
-
 
     private String getPubTopic(String clientId, String type) {
         return String.format("/APP/%s/%s/%s/pub", SpUtils.getUID(), clientId, type);

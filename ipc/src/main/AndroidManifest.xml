@@ -55,6 +55,9 @@
             android:name=".setting.IpcSettingRotateActivity_"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".setting.IpcSettingSdcardActivity_"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".setting.RecognitionSettingActivity_"
             android:hardwareAccelerated="false"
             android:largeHeap="true"
