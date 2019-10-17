@@ -40,7 +40,7 @@
         android:layout_height="@dimen/dp_60"
         android:layout_below="@id/tvVersion"
         android:layout_marginTop="@dimen/dp_38"
-        android:background="@color/colorWhite"
+        android:background="@color/c_white"
         android:visibility="gone">
 
         <TextView
@@ -88,7 +88,7 @@
             android:layout_marginBottom="@dimen/dp_50"
             android:drawableStart="@null"
             android:drawablePadding="@dimen/dp_3"
-            android:textColor="@color/colorOrange"
+            android:textColor="@color/common_orange"
             android:textSize="@dimen/sp_10" />
 
         <TextView

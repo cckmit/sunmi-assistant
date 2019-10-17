@@ -77,7 +77,7 @@
             android:background="@drawable/abc_list_selector_holo_light"
             android:gravity="center"
             android:text="@string/str_confirm"
-            android:textColor="@color/colorOrange"
+            android:textColor="@color/common_orange"
             android:textSize="14sp" />
 
     </LinearLayout>

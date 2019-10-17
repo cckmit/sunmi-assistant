@@ -166,7 +166,7 @@ public class ImportOrderPlatformMobileActivity extends BaseMvpActivity<PlatformM
         @Override
         public void onTick(long l) {
             tvGetCode.setClickable(false);
-            tvGetCode.setTextColor(ContextCompat.getColor(context, R.color.common_orange_alpha));
+            tvGetCode.setTextColor(ContextCompat.getColor(context, R.color.common_orange_60a));
             tvGetCode.setText(String.format(getString(R.string.str_count_down_second), l / 1000));
         }
 

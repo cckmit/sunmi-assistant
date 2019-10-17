@@ -35,7 +35,7 @@
         android:layout_marginTop="@dimen/dp_18"
         android:layout_marginEnd="@dimen/dp_25"
         android:text="@string/str_confirm"
-        android:textColor="@color/colorOrange"
+        android:textColor="@color/common_orange"
         android:textSize="@dimen/sp_14" />
 
     <RelativeLayout

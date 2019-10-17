@@ -210,7 +210,7 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
         @Override
         public void onTick(long l) {
             tvGetCode.setClickable(false);//防止计时过程中重复点击
-            tvGetCode.setTextColor(getResources().getColor(R.color.common_orange_alpha));
+            tvGetCode.setTextColor(getResources().getColor(R.color.common_orange_60a));
             tvGetCode.setText(String.format(getString(R.string.str_count_down_second), l / 1000));
         }
 

@@ -11,7 +11,7 @@
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorWhite"
+        android:background="@color/c_white"
         app:dividerShow="true"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
@@ -78,7 +78,7 @@
         android:layout_margin="@dimen/dp_20"
         android:background="@drawable/button_corners_solid_orange"
         android:text="@string/company_shop_enter_main"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/c_white"
         android:textSize="@dimen/sp_16" />
 
     <LinearLayout
