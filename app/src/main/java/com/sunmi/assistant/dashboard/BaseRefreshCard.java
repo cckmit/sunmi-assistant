@@ -100,7 +100,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
 
     public void registerIntoAdapter(BaseRecyclerAdapter<Object> adapter, int position) {
         this.mPositionMin = position;
-        this.mPositionMax = position + 1;
+        this.mPositionMax = position;
         //noinspection unchecked
         adapter.register((Class<Model>) mModel.getClass(), this);
     }
