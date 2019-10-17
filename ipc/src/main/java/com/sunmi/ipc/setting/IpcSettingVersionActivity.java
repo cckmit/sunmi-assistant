@@ -1,5 +1,6 @@
 package com.sunmi.ipc.setting;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.view.View;
 import android.widget.Button;
@@ -10,7 +11,6 @@ import com.sunmi.ipc.R;
 import com.sunmi.ipc.model.IpcNewFirmwareResp;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.OpcodeConstants;
-import com.sunmi.ipc.view.UpdateProgressDialog;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -30,6 +30,7 @@ import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.dialog.CommonDialog;
+import sunmi.common.view.dialog.CommonProgressDialog;
 
 import static com.sunmi.ipc.config.IpcConstants.FS_UPGRADE_TIME;
 import static com.sunmi.ipc.config.IpcConstants.SS_UPGRADE_TIME;
@@ -54,7 +55,7 @@ public class IpcSettingVersionActivity extends BaseActivity {
     @Extra
     IpcNewFirmwareResp mResp;
 
-    private UpdateProgressDialog dialog;
+    private CommonProgressDialog progressDialog;
     private Timer timer = null;
     private TimerTask timerTask = null;
     private int countdown, endNum;
@@ -79,10 +80,10 @@ public class IpcSettingVersionActivity extends BaseActivity {
         int countMinutes = isSS ? SS_UPGRADE_TIME : FS_UPGRADE_TIME;
         if (countdown == countMinutes) {
             stopTimer();
-            dialog.progressDismiss();
+            progressDialog.dismiss();
             upgradeVerFailDialog(mResp.getLatest_bin_version());
         } else if (countdown <= 90) {
-            dialog.setText(context, countdown);
+            progressDialog.setProgress(countdown);
         } else {
             if (isSS) {
                 if (countdown <= SS_UPGRADE_TIME) {
@@ -97,7 +98,7 @@ public class IpcSettingVersionActivity extends BaseActivity {
                     }
                 }
             }
-            dialog.setText(context, 90 + endNum);
+            progressDialog.setProgress(90 + endNum);
         }
     }
 
@@ -154,8 +155,12 @@ public class IpcSettingVersionActivity extends BaseActivity {
     private void upgrading() {
         IPCCall.getInstance().ipcUpgrade(this, mDevice.getModel(),
                 mDevice.getDeviceid(), mResp.getUrl(), mResp.getLatest_bin_version());
-        dialog = new UpdateProgressDialog.Builder(this).create();
-        dialog.canceledOnTouchOutside(false);
+        if (progressDialog == null) {
+            progressDialog = new CommonProgressDialog.Builder(context)
+                    .setProgressFormat(R.string.ipc_setting_dialog_upgrade_progress)
+                    .setProgressStyle(ProgressDialog.STYLE_HORIZONTAL).create();
+        }
+        progressDialog.showWithOutTouchableCancelable(false);
         startTimer();
     }
 
@@ -177,7 +182,7 @@ public class IpcSettingVersionActivity extends BaseActivity {
     void upgradeResult(ResponseBean res) {
         if (res.getDataErrCode() == 1) {
             stopTimer();
-            dialog.progressDismiss();
+            progressDialog.dismiss();
             tvVersion.setText(String.format("%s\n%s", mResp.getLatest_bin_version(), getString(R.string.ipc_setting_version_no_new)));
             btnUpgrade.setVisibility(View.GONE);
             BaseNotification.newInstance().postNotificationName(CommonNotifications.ipcUpgrade);

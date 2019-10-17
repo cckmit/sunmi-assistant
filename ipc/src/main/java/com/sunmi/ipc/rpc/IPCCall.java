@@ -96,13 +96,45 @@ public class IPCCall extends BaseIpcApi {
     }
 
     /**
-     * 获取SD卡状态信息
+     * 画面调整之前获取SD卡状态信息
      */
-    public void getSdState(Context context, String ip) {
+    public void getSdState(Context context, String sn) {
         int opCode = OpcodeConstants.getSdStatus;
         RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                 "0x" + Integer.toHexString(opCode), new JSONObject());
-        new IPCLocalApi(ip).post(context, "", requestBean.getMsgId(), opCode, requestBean.serialize());
+        post(context, sn, requestBean.getMsgId(), IpcConstants.getSdcardStatus, requestBean.serialize());
+    }
+
+    /**
+     * 进sd卡管理获取SD卡状态状态
+     */
+    public void getSdStatus(Context context, String sn, String model) {
+        try {
+            int opCode = OpcodeConstants.getSdStatus;
+            JSONObject object = new JSONObject();
+            object.put("sn", sn);
+            RequestBean requestBean = new RequestBean(Utils.getMsgId(),
+                    "0x" + Integer.toHexString(opCode), object);
+            post(context, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * SD卡格式化
+     */
+    public void sdcardFormat(Context context, String sn, String model) {
+        try {
+            int opCode = OpcodeConstants.sdcardFormat;
+            JSONObject object = new JSONObject();
+            object.put("sn", sn);
+            RequestBean requestBean = new RequestBean(Utils.getMsgId(),
+                    "0x" + Integer.toHexString(opCode), object);
+            post(context, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -401,13 +433,6 @@ public class IPCCall extends BaseIpcApi {
 
     /**
      * IPC setting
-     *
-     * @param context
-     * @param sn
-     * @param msgId
-     * @param opCode
-     * @param model
-     * @param json
      */
     @Override
     public void post(Context context, String sn, String msgId, int opCode, String model, String json) {

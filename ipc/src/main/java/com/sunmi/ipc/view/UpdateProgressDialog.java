@@ -15,10 +15,10 @@ import com.sunmi.ipc.R;
  * Created by YangShiJie on 2019/7/15.
  */
 public class UpdateProgressDialog extends Dialog {
-    TextView tvProgress;
-    ProgressBar showProgress;
+    private TextView tvProgress;
+    private ProgressBar showProgress;
 
-    UpdateProgressDialog(@NonNull Context context, int themeResId) {
+    private UpdateProgressDialog(@NonNull Context context, int themeResId) {
         super(context, themeResId);
     }
 
@@ -73,4 +73,5 @@ public class UpdateProgressDialog extends Dialog {
             return dialog;
         }
     }
+
 }
