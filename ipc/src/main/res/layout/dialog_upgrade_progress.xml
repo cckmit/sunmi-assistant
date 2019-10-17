@@ -10,7 +10,6 @@
         android:layout_centerInParent="true"
         android:background="@drawable/dialog_shap_white_solid">
 
-
         <TextView
             android:id="@+id/tv_progress"
             android:layout_width="wrap_content"
