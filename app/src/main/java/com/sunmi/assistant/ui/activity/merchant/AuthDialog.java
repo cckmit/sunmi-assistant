@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -37,6 +38,8 @@ public class AuthDialog extends Dialog {
     public static final class Builder {
         private Activity context;
         private String message;
+        private CharSequence authMessage;
+        private TextView tvProtocol;
         private OnClickListener cancelButtonClickListener, allowButtonClickListener;
 
         public Builder(Activity context) {
@@ -64,6 +67,14 @@ public class AuthDialog extends Dialog {
          */
         public Builder setCancelButton(DialogInterface.OnClickListener listener) {
             this.cancelButtonClickListener = listener;
+            return this;
+        }
+
+        /**
+         * 使用字符串设置对话框消息
+         */
+        public Builder setTextAuthTip(CharSequence authMessage) {
+            this.authMessage = authMessage;
             return this;
         }
 
@@ -100,10 +111,14 @@ public class AuthDialog extends Dialog {
             getWindow(dialog);
             TextView tvAuthPlatform = layout.findViewById(R.id.tv_auth_platform);
             tvAuthPlatform.setText(message);
-            TextView tvProtocol = layout.findViewById(R.id.tv_protocol);
-            tvProtocol.setText(Html.fromHtml(context.getString(R.string.str_auth_onclick_protocol)
-                    + "<font color= '#2896FE'>" + context.getString(R.string.str_auth_protocol_text)
-                    + "</font> "));
+            tvProtocol = layout.findViewById(R.id.tv_protocol);
+            if (TextUtils.isEmpty(authMessage)) {
+                tvProtocol.setText(Html.fromHtml(context.getString(R.string.str_auth_onclick_protocol)
+                        + "<font color= '#2896FE'>" + context.getString(R.string.str_auth_protocol_text)
+                        + "</font> "));
+            } else {
+                tvProtocol.setText(authMessage);
+            }
             Button btnAllow = layout.findViewById(R.id.btnAllow);
             Button btnCancel = layout.findViewById(R.id.btnCancel);
             View.OnClickListener listener = v -> {

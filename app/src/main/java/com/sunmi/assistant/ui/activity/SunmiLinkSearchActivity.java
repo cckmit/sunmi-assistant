@@ -166,7 +166,11 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_COMPLETE) {
-            startSunmiLink();
+            if (data != null && data.hasExtra("isComplete")) {
+                finish();
+            } else {
+                startSunmiLink();
+            }
         }
     }
 

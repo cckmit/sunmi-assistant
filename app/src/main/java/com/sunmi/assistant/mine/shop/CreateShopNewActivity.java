@@ -21,6 +21,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -59,6 +60,7 @@ import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.FileUtils;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.NumberValueFilter;
+import sunmi.common.utils.RegexUtils;
 import sunmi.common.utils.SoftKeyboardStateHelper;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -83,6 +85,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
     private static final int CREATE_SHOP_ALREADY_EXIST = 5035;
     private static final int SHOP_NAME_MAX_LENGTH = 40;
     private static final int POI_PAGE_SIZE = 20;
+    private static final int CONTACTS_MAX_LENGTH = 32;
 
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
@@ -95,9 +98,9 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
     @ViewById(R.id.et_shop_square)
     ClearableEditText etShopSquare;
     @ViewById(R.id.sel_contact)
-    SettingItemEdittextLayout etContact;
+    SettingItemEdittextLayout selContact;
     @ViewById(R.id.sel_tel)
-    SettingItemEdittextLayout etTel;
+    SettingItemEdittextLayout selTel;
     @ViewById(R.id.tv_region_text)
     TextView tvRegionText;
     @ViewById(R.id.tv_category_text)
@@ -155,6 +158,13 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
         //门店面积
         etShopSquare.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         etShopSquare.setFilters(new InputFilter[]{new NumberValueFilter()});
+        //联系人
+        selContact.getEditTextText().addTextChangedListener(new TextLengthWatcher(selContact.getEditTextText(), CONTACTS_MAX_LENGTH) {
+            @Override
+            public void onLengthExceed(EditText view, String content) {
+                shortTip(getString(R.string.editetxt_max_length));
+            }
+        });
         //区域列表
         mList = new Gson().fromJson(FileUtils.getStringFromAssets(context, "region.json"),
                 new TypeToken<List<RegionProvince>>() {
@@ -193,19 +203,23 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
     @Click(R.id.btn_complete)
     void completeClick() {
         String shopRegion = tvRegionText.getText() == null ? null : tvRegionText.getText().toString().trim();
-        String shopName = etShopName.getEditTextText().getText() == null ? null : etShopName.getEditTextText().getText().toString().trim();
         if (TextUtils.isEmpty(shopRegion)) {
-            shortTip(getString(R.string.shop_input_region_tip));
+            shortTip(R.string.shop_input_region_tip);
             return;
         }
+        String shopName = etShopName.getEditTextText().getText() == null ? null : etShopName.getEditTextText().getText().toString().trim();
         if (TextUtils.isEmpty(shopName)) {
             shortTip(R.string.company_shop_create_hint);
             return;
         }
+        String tel = selTel.getEditTextText().getText() == null ? "" : selTel.getEditTextText().getText().toString().trim();
+        if (!TextUtils.isEmpty(tel) && !RegexUtils.isCorrectAccount(tel)) {
+            shortTip(R.string.str_invalid_phone);
+            return;
+        }
         String address = etDetailAddress.getText() == null ? "" : etDetailAddress.getText().toString().trim();
         String square = etShopSquare.getText() == null ? "" : etShopSquare.getText().toString().trim();
-        String contact = etContact.getRightText().getText() == null ? "" : etContact.getRightText().getText().toString().trim();
-        String tel = etTel.getRightText().getText() == null ? "" : etTel.getRightText().getText().toString().trim();
+        String contact = selContact.getEditTextText().getText() == null ? "" : selContact.getEditTextText().getText().toString().trim();
         //create
         mPresenter.createShop(shopName, mProvinceId, mCityId, mAreaId, address,
                 mCategoryLeftCode, mCategoryRightCode,

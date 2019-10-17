@@ -103,7 +103,7 @@ public class SelectStorePresenter extends BasePresenter<SelectStoreContract.View
 
     private void authorizeSaas(SelectShopModel item) {
         SunmiStoreApi.getInstance().authorizeSaas(mCompanyId, item.getShopId(),
-                item.getSaasSource(), item.getShopNo(), item.getSaasName(), new RetrofitCallback<Object>() {
+                item.getSaasSource(), item.getShopNo(), item.getSaasName(), 1, new RetrofitCallback<Object>() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
                         mSaasExist = 1;

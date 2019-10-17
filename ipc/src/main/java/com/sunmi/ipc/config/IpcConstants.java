@@ -13,5 +13,6 @@ public class IpcConstants {
     public static final int refreshIpcList = totalEvents++;
     public static final int ipcDiscovered = totalEvents++;
     public static final int ipcNameChanged = totalEvents++;
+    public static final int getSdcardStatus = totalEvents++;//画面调整前获取sd卡状态
 
 }
