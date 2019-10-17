@@ -6,8 +6,11 @@ import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.card.CustomerAnalysisCard;
 import com.sunmi.assistant.dashboard.card.CustomerDataCard;
+import com.sunmi.assistant.dashboard.card.CustomerNoDataCard;
+import com.sunmi.assistant.dashboard.card.CustomerNoFsCard;
 import com.sunmi.assistant.dashboard.card.CustomerPeriodCard;
 import com.sunmi.assistant.dashboard.card.CustomerTrendCard;
+import com.sunmi.assistant.dashboard.card.CustomerWaitDataCard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,9 +126,10 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
             mList.add(CustomerTrendCard.get(this, source));
             mList.add(CustomerAnalysisCard.get(this, source));
         } else if (Utils.hasFs(source)) {
-
+            mList.add(CustomerWaitDataCard.get(this, source));
         } else {
-
+            mList.add(CustomerNoDataCard.get(this, source));
+            mList.add(CustomerNoFsCard.get(this, source));
         }
     }
 

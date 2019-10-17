@@ -246,7 +246,6 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                     public void onFail(int code, String msg, CustomerHistoryResp data) {
                         if (code == Constants.NO_CUSTOMER_DATA) {
                             mSource &= ~Constants.DATA_SOURCE_CUSTOMER;
-                            mSource |= Constants.DATA_SOURCE_CUSTOMER;
                             if (isViewAttached()) {
                                 mView.setSource(mSource);
                             }

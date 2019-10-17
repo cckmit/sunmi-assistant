@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cl_dashboard_content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/c_white">
 
     <View
         android:id="@+id/view_dashboard_refresh_bg"
@@ -50,13 +51,13 @@
             android:layout_gravity="top|center_horizontal"
             app:tl_indicator_bounce_enable="false"
             app:tl_indicator_corner_radius="@dimen/dp_1"
-            app:tl_textsize="@dimen/sp_14"
             app:tl_indicator_height="@dimen/dp_2"
             app:tl_indicator_width="@dimen/dp_16"
             app:tl_tab_padding="@dimen/dp_12"
             app:tl_textBold="SELECT"
             app:tl_textSelectColor="@color/c_white"
-            app:tl_textUnselectColor="@color/white_60a" />
+            app:tl_textUnselectColor="@color/white_60a"
+            app:tl_textsize="@dimen/sp_14" />
 
     </FrameLayout>
 
@@ -71,6 +72,48 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/layout_dashboard_no_fs_tip"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_40"
+        android:background="@color/color_303540_40a"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/tv_dashboard_no_fs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_20"
+            android:text="@string/dashboard_no_customer_fs_tip"
+            android:textColor="@color/c_white"
+            android:textSize="@dimen/sp_12"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_dashboard_tip_add_fs"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btn_dashboard_tip_add_fs"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="@dimen/dp_72"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:background="@drawable/dashboard_btn_no_fs_tip"
+            android:gravity="center"
+            android:text="@string/dashboard_no_fs_tip_add"
+            android:textColor="@color/c_white"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
 
     <include
         android:id="@+id/layout_top_period_tab"

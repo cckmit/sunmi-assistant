@@ -36,10 +36,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseMvpFragment;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.DropdownMenu;
+import sunmi.common.view.activity.StartConfigSMDeviceActivity_;
 import sunmi.common.view.tablayout.CommonTabLayout;
 import sunmi.common.view.tablayout.listener.CustomTabEntity;
 import sunmi.common.view.tablayout.listener.OnTabSelectListener;
@@ -83,6 +85,8 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @ViewById(R.id.group_dashboard_content)
     Group mContentGroup;
+    @ViewById(R.id.layout_dashboard_no_fs_tip)
+    View mNoFsTip;
     @ViewById(R.id.layout_dashboard_error)
     View mLayoutError;
 
@@ -262,6 +266,14 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mPresenter.setPeriod(Constants.TIME_PERIOD_MONTH);
     }
 
+    @Click(R.id.btn_dashboard_tip_add_fs)
+    void clickAddFs() {
+        StartConfigSMDeviceActivity_.intent(getContext())
+                .deviceType(CommonConstants.TYPE_IPC_FS)
+                .shopId(SpUtils.getShopId() + "")
+                .start();
+    }
+
     @Click(R.id.btn_refresh)
     void clickReload() {
         showLoadingDialog();
@@ -287,6 +299,8 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @Override
     public void setSource(int source) {
         mHasData = Utils.hasSaas(source) || Utils.hasFs(source);
+        mNoFsTip.setVisibility(!Utils.hasFs(source) && Utils.hasCustomer(source) ?
+                View.VISIBLE : View.INVISIBLE);
         showContent();
     }
 

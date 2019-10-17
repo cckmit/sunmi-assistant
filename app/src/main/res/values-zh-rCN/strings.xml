@@ -85,6 +85,7 @@
     <string name="dashboard_no_fs_title">添加AI识客摄像机</string>
     <string name="dashboard_no_fs_subtitle">支持统计实时客流、客群分析</string>
     <string name="dashboard_no_fs_add">添加</string>
+    <string name="dashboard_no_fs_tip_add">添加设备</string>
     <string name="dashboard_no_fs_buy">购买</string>
     <string name="dashboard_no_order_title">导入软件订单数据</string>
     <string name="dashboard_no_order_subtitle">现已支持银豹、生意专家等38个软件</string>
