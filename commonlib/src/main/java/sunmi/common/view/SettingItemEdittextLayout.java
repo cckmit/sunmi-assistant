@@ -161,7 +161,7 @@ public class SettingItemEdittextLayout extends RelativeLayout {
     }
 
     public void setLeftTextSize(float size) {
-        tvLeft.setTextSize(CommonHelper.dp2px(mContext, size));
+        tvLeft.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
     }
 
     public void setLeftTextColor(int color) {
@@ -178,7 +178,7 @@ public class SettingItemEdittextLayout extends RelativeLayout {
     }
 
     public void setRightTextSize(float size) {
-        tvRight.setTextSize(CommonHelper.dp2px(mContext, size));
+        tvRight.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
     }
 
     public void setRightTextColor(int color) {
@@ -195,7 +195,7 @@ public class SettingItemEdittextLayout extends RelativeLayout {
     }
 
     public void setEditTextSize(float size) {
-        etContent.setTextSize(CommonHelper.dp2px(mContext, size));
+        etContent.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
     }
 
     public void setEditTextColor(int color) {

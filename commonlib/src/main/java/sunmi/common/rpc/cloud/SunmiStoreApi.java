@@ -633,13 +633,14 @@ public class SunmiStoreApi {
      *
      * @param companyId
      * @param shopId
-     * @param saasSource Saas来源标识id
-     * @param shopNo     店铺在商米引擎的唯一标识
-     * @param saasName   Saas软件商名称
+     * @param saasSource    Saas来源标识id
+     * @param shopNo        店铺在商米引擎的唯一标识
+     * @param saasName      Saas软件商名称
+     * @param importPayment 是否导入历史订单数据， 默认值是 1 表是导入， 2 代表不导入
      * @param callback
      */
     public void authorizeSaas(int companyId, int shopId, int saasSource, String shopNo,
-                              String saasName, RetrofitCallback<Object> callback) {
+                              String saasName, int importPayment, RetrofitCallback<Object> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -647,6 +648,7 @@ public class SunmiStoreApi {
                     .put("saas_source", saasSource)
                     .put("shop_no", shopNo)
                     .put("saas_name", saasName)
+                    .put("import_payment", importPayment)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
                     .authorizeSaas(new BaseRequest(params))

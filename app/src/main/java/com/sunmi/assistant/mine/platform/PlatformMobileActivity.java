@@ -17,6 +17,7 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.PlatformMobileContract;
 import com.sunmi.assistant.mine.presenter.PlatformMobilePresenter;
 import com.sunmi.assistant.mine.shop.CreateShopActivity_;
+import com.sunmi.assistant.mine.shop.CreateShopNewActivity_;
 import com.sunmi.assistant.ui.activity.merchant.AuthDialog;
 
 import org.androidannotations.annotations.AfterViews;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.AuthStoreInfo;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.dialog.CommonDialog;
 
@@ -151,12 +153,21 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
     }
 
     private void gotoCreateShopActivity() {
-        CreateShopActivity_.intent(context)
-                .companyId(companyId)
-                .companyName(companyName)
-                .saasExist(saasExist)
-                .isLoginSuccessSwitchCompany(isLoginSuccessSwitchCompany)
-                .startForResult(REQUEST_CODE_SHOP);
+        if (CommonHelper.isGooglePlay()) {
+            CreateShopActivity_.intent(context)
+                    .companyId(companyId)
+                    .companyName(companyName)
+                    .saasExist(saasExist)
+                    .isLoginSuccessSwitchCompany(isLoginSuccessSwitchCompany)
+                    .startForResult(REQUEST_CODE_SHOP);
+        } else {
+            CreateShopNewActivity_.intent(context)
+                    .companyId(companyId)
+                    .companyName(companyName)
+                    .saasExist(saasExist)
+                    .isLoginSuccessSwitchCompany(isLoginSuccessSwitchCompany)
+                    .startForResult(REQUEST_CODE_SHOP);
+        }
     }
 
     private void startDownTimer() {

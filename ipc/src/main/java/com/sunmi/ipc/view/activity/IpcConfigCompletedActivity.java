@@ -2,6 +2,7 @@ package com.sunmi.ipc.view.activity;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.annotation.StringRes;
 import android.text.TextUtils;
 import android.view.View;
@@ -10,10 +11,11 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.model.IpcListResp;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcCloudApi;
-import com.sunmi.ipc.rpc.OpcodeConstants;
+import com.sunmi.ipc.setting.IpcSettingSdcardActivity_;
 import com.sunmi.ipc.setting.RecognitionSettingActivity_;
 
 import org.androidannotations.annotations.AfterViews;
@@ -40,6 +42,7 @@ import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SmRecyclerView;
+import sunmi.common.view.TitleBarView;
 import sunmi.common.view.ViewHolder;
 import sunmi.common.view.activity.StartConfigSMDeviceActivity_;
 import sunmi.common.view.dialog.CommonDialog;
@@ -52,6 +55,8 @@ import sunmi.common.view.dialog.ListDialog;
 @EActivity(resName = "activity_ipc_config_completed")
 public class IpcConfigCompletedActivity extends BaseActivity {
 
+    @ViewById(resName = "title_bar")
+    TitleBarView titleBar;
     @ViewById(resName = "rv_result")
     SmRecyclerView rvResult;
     @ViewById(resName = "btn_complete")
@@ -106,6 +111,10 @@ public class IpcConfigCompletedActivity extends BaseActivity {
             }
         }
         list = sunmiDevices;
+        if (isSunmiLink) {
+            titleBar.setAppTitle(R.string.str_sunmi_link);
+            tvResult.setText(getString(R.string.str_wifi_config_finish));
+        }
         initList();
     }
 
@@ -118,7 +127,13 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                 chooseFsAdjust();
             }
         } else {
-            GotoActivityUtils.gotoMainActivity(context);
+            if (isSunmiLink) {
+                Intent intent = new Intent();
+                intent.putExtra("isComplete", true);
+                setResult(RESULT_OK, intent);
+            } else {
+                GotoActivityUtils.gotoMainActivity(context);
+            }
             finish();
         }
     }
@@ -141,7 +156,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
 
     @Override
     public int[] getUnStickNotificationId() {
-        return new int[]{OpcodeConstants.getSdStatus};
+        return new int[]{IpcConstants.getSdcardStatus};
     }
 
     @Override
@@ -151,7 +166,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
             return;
         }
         ResponseBean res = (ResponseBean) args[0];
-        if (OpcodeConstants.getSdStatus == id) {
+        if (IpcConstants.getSdcardStatus == id) {
             try {
                 if (res.getDataErrCode() == 1) {
                     int status = res.getResult().getInt("sd_status_code");
@@ -164,8 +179,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                                     R.string.ipc_recognition_sd_none);
                             break;
                         case 1:
-                            showErrorDialog(R.string.tip_tf_uninitalized,
-                                    R.string.ipc_recognition_sd_uninitialized);
+                            showFormatDialog(deviceChoose);
                             break;
                         case 3:
                             showErrorDialog(R.string.tip_unrecognition_tf_card,
@@ -193,6 +207,18 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                 .setTitle(title)
                 .setMessage(msgResId)
                 .setConfirmButton(R.string.str_confirm).create().show();
+    }
+
+    @UiThread
+    public void showFormatDialog(SunmiDevice device) {
+        hideLoadingDialog();
+        new CommonDialog.Builder(context)
+                .setTitle(R.string.tip_sdcard_unformat)
+                .setMessage(R.string.msg_sdcard_should_format)
+                .setCancelButton(R.string.sm_cancel)
+                .setConfirmButton(R.string.str_sd_format, (dialog, which) -> {
+                    IpcSettingSdcardActivity_.intent(this).mDevice(device).start();
+                }).create().show();
     }
 
     private void initList() {

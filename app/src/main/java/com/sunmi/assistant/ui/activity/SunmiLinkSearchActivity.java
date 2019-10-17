@@ -97,7 +97,7 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
     void init() {
         mPresenter = new IpcConfiguringPresenter();
         mPresenter.attachView(this);
-        titleBar.setAppTitle(R.string.str_search_nearby_sunmi_devices);
+        titleBar.setAppTitle(R.string.str_sunmi_link);
         tvTipTitle.setText(R.string.tip_title_choose_device);
         tvSummary.setText(R.string.tip_support_multi_select);
         tvNoWifi.setText(R.string.tip_no_device_found);
@@ -166,7 +166,11 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_COMPLETE) {
-            startSunmiLink();
+            if (data != null && data.hasExtra("isComplete")) {
+                finish();
+            } else {
+                startSunmiLink();
+            }
         }
     }
 
