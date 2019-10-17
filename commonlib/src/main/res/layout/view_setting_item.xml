@@ -34,7 +34,7 @@
         android:layout_toStartOf="@+id/right_image"
         android:ellipsize="end"
         android:gravity="end"
-        android:maxLines="2" />
+        android:singleLine="true" />
 
     <ImageView
         android:id="@+id/right_image"
