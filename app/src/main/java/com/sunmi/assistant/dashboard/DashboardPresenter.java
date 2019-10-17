@@ -3,7 +3,7 @@ package com.sunmi.assistant.dashboard;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Handler;
-import android.os.HandlerThread;
+import android.os.Looper;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.customer.CustomerFragment;
@@ -23,6 +23,7 @@ import java.util.List;
 import sunmi.common.base.BasePresenter;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.CustomerHistoryResp;
+import sunmi.common.model.ShopAuthorizeInfoResp;
 import sunmi.common.model.ShopListResp;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
@@ -36,37 +37,37 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     private static final String TAG = DashboardPresenter.class.getSimpleName();
 
+    public static final int FLAG_SHOP = 0x1;
+    public static final int FLAG_SAAS = 0x2;
+    public static final int FLAG_FS = 0x4;
+    public static final int FLAG_CUSTOMER = 0x8;
+    public static final int FLAG_ALL_MASK = 0xF;
+
     @SuppressLint("SimpleDateFormat")
     private static final SimpleDateFormat DATE_FORMAT_PARAMS = new SimpleDateFormat("yyyy-MM-dd");
 
     private static final int REFRESH_TIME_PERIOD = 120_000;
-    private static final HandlerThread WORK_THREAD = new HandlerThread("RefreshTask");
-    private static final Handler WORK_HANDLER;
-
-    static {
-        WORK_THREAD.start();
-        WORK_HANDLER = new Handler(WORK_THREAD.getLooper());
-    }
+    private static final Handler WORK_HANDLER = new Handler(Looper.getMainLooper());
 
     private Context mContext;
     private List<DashboardContract.PagePresenter> mPages = new ArrayList<>(2);
+    private List<ShopItem> mShops = new ArrayList<>();
 
-    private ShopItem mShop;
     private int mCompanyId;
+    private int mShopId;
     private int mSource = 0;
-
     private int mPageIndex = 0;
+
+    private int mLoadFlag;
 
     private RefreshTask mTask;
 
     @Override
-    public void init(Context context) {
-        if (!isViewAttached()) {
-            return;
-        }
-        mContext = context;
+    public void init() {
         mCompanyId = SpUtils.getCompanyId();
-        loadShopList();
+        mShopId = SpUtils.getShopId();
+        mLoadFlag = FLAG_ALL_MASK;
+        load();
         if (mTask == null) {
             mTask = new RefreshTask();
             WORK_HANDLER.postDelayed(mTask, REFRESH_TIME_PERIOD);
@@ -74,20 +75,35 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     @Override
-    public void reload() {
-        if (mShop.isSaasExist()) {
-            mSource |= Constants.DATA_SOURCE_SAAS;
-        } else {
-            mSource &= ~Constants.DATA_SOURCE_SAAS;
-        }
-        loadFs();
+    public void reloadCompanySwitch() {
+        mCompanyId = SpUtils.getCompanyId();
+        mShopId = SpUtils.getShopId();
+        mLoadFlag = FLAG_ALL_MASK;
+        load();
+    }
+
+    @Override
+    public void reloadShopSwitch() {
+        mShopId = SpUtils.getShopId();
+        updateShops();
+        mLoadFlag = FLAG_SAAS | FLAG_FS | FLAG_CUSTOMER;
+        load();
+    }
+
+    @Override
+    public void reloadShopList() {
+        mLoadFlag = FLAG_SHOP;
+        load();
+    }
+
+    @Override
+    public void reloadFs() {
+        mLoadFlag = FLAG_FS;
+        load();
     }
 
     @Override
     public void setShop(ShopItem shop) {
-        mShop.setChecked(false);
-        mShop = shop;
-        shop.setChecked(true);
         SpUtils.setShopId(shop.getShopId());
         SpUtils.setShopName(shop.getShopName());
         SpUtils.setSaasExist(shop.isSaasExist() ? 1 : 0);
@@ -142,42 +158,94 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         return mPages.get(mPageIndex).getPeriod();
     }
 
-    private void loadShopList() {
+    private void updateShops() {
+        if (mShops.isEmpty()) {
+            mLoadFlag |= FLAG_SHOP;
+            load();
+        } else {
+            ShopItem current = null;
+            for (ShopItem shop : mShops) {
+                shop.setChecked(shop.getShopId() == mShopId);
+                if (shop.getShopId() == mShopId) {
+                    current = shop;
+                }
+            }
+            if (current == null) {
+                // TODO:
+                return;
+            }
+            mShops.remove(current);
+            mShops.add(0, current);
+            if (current.isSaasExist()) {
+                mSource |= Constants.DATA_SOURCE_AUTH;
+            } else {
+                mSource &= ~Constants.DATA_SOURCE_AUTH;
+            }
+            if (isViewAttached()) {
+                mView.setShopList(mShops);
+            }
+
+        }
+    }
+
+    private void load() {
+        if ((mLoadFlag & FLAG_SHOP) != 0) {
+            loadShop();
+        } else if ((mLoadFlag & FLAG_SAAS) != 0) {
+            loadSaas();
+        }
+        if ((mLoadFlag & FLAG_FS) != 0) {
+            loadFs();
+        }
+        if ((mLoadFlag & FLAG_CUSTOMER) != 0) {
+            loadCustomer();
+        }
+    }
+
+    private void loadShop() {
         SunmiStoreApi.getInstance().getShopList(mCompanyId, new RetrofitCallback<ShopListResp>() {
             @Override
             public void onSuccess(int code, String msg, ShopListResp data) {
-                if (data == null) {
+                if (data == null || data.getShop_list() == null) {
                     onFail(code, msg, null);
                     return;
                 }
+                mShops.clear();
                 List<ShopListResp.ShopInfo> shops = data.getShop_list();
-                if (shops == null) {
-                    onFail(code, msg, data);
-                    return;
-                }
-                List<ShopItem> result = new ArrayList<>(shops.size());
-                int shopId = SpUtils.getShopId();
+                ShopItem current = null;
                 for (ShopListResp.ShopInfo shop : shops) {
-                    if (shop.getShop_id() == shopId) {
+                    if (shop.getShop_id() == mShopId) {
                         ShopItem item = new ShopItem(shop.getShop_id(), shop.getShop_name(),
                                 shop.getSaas_exist() == 1);
                         item.setChecked(true);
-                        mShop = item;
-                        result.add(0, item);
+                        current = item;
+                        mShops.add(0, item);
                     } else {
-                        result.add(new ShopItem(shop.getShop_id(), shop.getShop_name(),
+                        mShops.add(new ShopItem(shop.getShop_id(), shop.getShop_name(),
                                 shop.getSaas_exist() == 1));
                     }
                 }
-                if (isViewAttached()) {
-                    mView.setShopList(result);
+                if (current == null) {
+                    // TODO:
+                    return;
                 }
-                if (mShop.isSaasExist()) {
-                    mSource |= Constants.DATA_SOURCE_SAAS;
+                if (current.isSaasExist()) {
+                    mSource |= Constants.DATA_SOURCE_AUTH;
                 } else {
-                    mSource &= ~Constants.DATA_SOURCE_SAAS;
+                    mSource &= ~Constants.DATA_SOURCE_AUTH;
                 }
-                loadFs();
+                mLoadFlag &= ~FLAG_SHOP;
+                if (isViewAttached()) {
+                    mView.setShopList(mShops);
+                }
+
+                if (current.isSaasExist() && (mLoadFlag & FLAG_SAAS) != 0) {
+                    loadSaas();
+                } else {
+                    mSource &= ~Constants.DATA_SOURCE_IMPORT;
+                    mLoadFlag &= ~FLAG_SAAS;
+                }
+                loadComplete();
             }
 
             @Override
@@ -190,8 +258,44 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         });
     }
 
+    private void loadSaas() {
+        SunmiStoreApi.getInstance().getAuthorizeInfo(mCompanyId, mShopId,
+                new RetrofitCallback<ShopAuthorizeInfoResp>() {
+                    @Override
+                    public void onSuccess(int code, String msg, ShopAuthorizeInfoResp data) {
+                        if (data == null || data.getAuthorizedList() == null) {
+                            onFail(code, msg, data);
+                            return;
+                        }
+                        List<ShopAuthorizeInfoResp.Info> list = data.getAuthorizedList();
+                        if (list.isEmpty()) {
+                            mSource &= ~Constants.DATA_SOURCE_AUTH;
+                            mSource &= ~Constants.DATA_SOURCE_IMPORT;
+                        } else {
+                            mSource |= Constants.DATA_SOURCE_AUTH;
+                            if (list.get(0).getImportStatus() == 2) {
+                                // 导入成功
+                                mSource |= Constants.DATA_SOURCE_IMPORT;
+                            } else {
+                                mSource &= ~Constants.DATA_SOURCE_IMPORT;
+                            }
+                        }
+                        mLoadFlag &= ~FLAG_SAAS;
+                        loadComplete();
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg, ShopAuthorizeInfoResp data) {
+                        LogCat.e(TAG, "Load saas import Failed. " + code + ":" + msg);
+                        if (isViewAttached()) {
+                            mView.loadDataFailed();
+                        }
+                    }
+                });
+    }
+
     private void loadFs() {
-        IpcCloudApi.getInstance().getDetailList(mCompanyId, mShop.getShopId(),
+        IpcCloudApi.getInstance().getDetailList(mCompanyId, mShopId,
                 new RetrofitCallback<IpcListResp>() {
                     @Override
                     public void onSuccess(int code, String msg, IpcListResp data) {
@@ -204,7 +308,8 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                         } else {
                             mSource &= ~Constants.DATA_SOURCE_FS;
                         }
-                        loadCustomer();
+                        mLoadFlag &= ~FLAG_FS;
+                        loadComplete();
                     }
 
                     @Override
@@ -225,7 +330,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         c.add(Calendar.MONTH, 2);
         c.add(Calendar.DATE, -1);
         String endTime = DATE_FORMAT_PARAMS.format(c.getTime());
-        SunmiStoreApi.getInstance().getHistoryCustomer(mCompanyId, mShop.getShopId(), startTime, endTime,
+        SunmiStoreApi.getInstance().getHistoryCustomer(mCompanyId, mShopId, startTime, endTime,
                 new RetrofitCallback<CustomerHistoryResp>() {
                     @Override
                     public void onSuccess(int code, String msg, CustomerHistoryResp data) {
@@ -234,24 +339,14 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                             return;
                         }
                         mSource |= Constants.DATA_SOURCE_CUSTOMER;
-                        if (isViewAttached()) {
-                            mView.setSource(mSource);
-                        }
-                        for (DashboardContract.PagePresenter page : mPages) {
-                            page.setSource(mSource);
-                        }
+                        success(code, msg, data);
                     }
 
                     @Override
                     public void onFail(int code, String msg, CustomerHistoryResp data) {
                         if (code == Constants.NO_CUSTOMER_DATA) {
                             mSource &= ~Constants.DATA_SOURCE_CUSTOMER;
-                            if (isViewAttached()) {
-                                mView.setSource(mSource);
-                            }
-                            for (DashboardContract.PagePresenter page : mPages) {
-                                page.setSource(mSource);
-                            }
+                            success(code, msg, data);
                         } else {
                             LogCat.e(TAG, "Load customer source Failed. " + code + ":" + msg);
                             if (isViewAttached()) {
@@ -259,7 +354,24 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                             }
                         }
                     }
+
+                    private void success(int code, String msg, CustomerHistoryResp data) {
+                        mLoadFlag &= ~FLAG_CUSTOMER;
+                        loadComplete();
+                    }
                 });
+    }
+
+    private void loadComplete() {
+        if (mLoadFlag != 0) {
+            return;
+        }
+        if (isViewAttached()) {
+            mView.setSource(mSource);
+        }
+        for (DashboardContract.PagePresenter page : mPages) {
+            page.setSource(mSource);
+        }
     }
 
     @Override
@@ -277,7 +389,11 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
         @Override
         public void run() {
-            mPages.get(0).refresh(false);
+            if (!Utils.hasAuth(mSource)) {
+                mLoadFlag |= FLAG_SAAS;
+                load();
+            }
+            mPages.get(mPageIndex).refresh(false);
             WORK_HANDLER.postDelayed(this, REFRESH_TIME_PERIOD);
         }
     }

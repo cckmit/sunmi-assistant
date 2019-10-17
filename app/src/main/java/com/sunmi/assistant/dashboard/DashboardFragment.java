@@ -117,7 +117,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mPresenter.attachView(this);
         showLoadingDialog();
         mHandler.post(this::initView);
-        mPresenter.init(getContext());
+        mPresenter.init();
     }
 
     private void initView() {
@@ -160,10 +160,6 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             }
             showLoadingDialog();
             mPresenter.setShop(model);
-            List<ShopItem> shops = adapter.getData();
-            shops.remove(position);
-            shops.add(0, model);
-            adapter.notifyDataSetChanged();
         });
         mTopShopMenu.setAdapter(mShopMenuAdapter);
         mShopMenuTitle = mShopMenuAdapter.getTitle().getView(R.id.dropdown_item_title);
@@ -277,7 +273,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @Click(R.id.btn_refresh)
     void clickReload() {
         showLoadingDialog();
-        mPresenter.init(getContext());
+        mPresenter.init();
     }
 
     @Override
@@ -298,7 +294,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Override
     public void setSource(int source) {
-        mHasData = Utils.hasSaas(source) || Utils.hasFs(source);
+        mHasData = Utils.hasAuth(source) || Utils.hasFs(source);
         mNoFsTip.setVisibility(!Utils.hasFs(source) && Utils.hasCustomer(source) ?
                 View.VISIBLE : View.INVISIBLE);
         showContent();
@@ -434,17 +430,19 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
-        if (id == CommonNotifications.companySwitch
-                || id == CommonNotifications.companyNameChanged) {
+        if (id == CommonNotifications.companySwitch) {
             mShopMenuPopupHelper.setCompanyName(SpUtils.getCompanyName());
-            mPresenter.init(getContext());
-        } else if (id == CommonNotifications.shopSwitched
-                || id == CommonNotifications.shopNameChanged
+            mPresenter.reloadCompanySwitch();
+        } else if (id == CommonNotifications.companyNameChanged) {
+            mShopMenuPopupHelper.setCompanyName(SpUtils.getCompanyName());
+        } else if (id == CommonNotifications.shopSwitched) {
+            mPresenter.reloadShopSwitch();
+        } else if (id == CommonNotifications.shopNameChanged
                 || id == CommonNotifications.importShop
                 || id == CommonNotifications.shopCreate) {
-            mPresenter.init(getContext());
+            mPresenter.reloadShopList();
         } else if (id == IpcConstants.refreshIpcList) {
-            mPresenter.reload();
+            mPresenter.reloadFs();
         }
     }
 

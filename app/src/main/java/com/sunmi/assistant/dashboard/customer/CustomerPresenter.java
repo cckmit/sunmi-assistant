@@ -71,6 +71,9 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
 
     @Override
     public void setSource(int source) {
+        if (mSource == source) {
+            return;
+        }
         mSource = source;
         initList(mSource);
         load();

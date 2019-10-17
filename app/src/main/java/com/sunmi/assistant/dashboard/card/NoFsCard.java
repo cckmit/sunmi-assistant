@@ -90,8 +90,8 @@ public class NoFsCard extends BaseRefreshCard<NoFsCard.Model, Object> {
     protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         View root = holder.getView(R.id.layout_dashboard_root);
         View content = holder.getView(R.id.layout_dashboard_content);
-        root.setBackgroundColor(!hasSaas() && !hasFs() ? mColorWhite : mColorGray);
-        mContentBg.setColor(!hasSaas() && !hasFs() ? mColorGray : mColorWhite);
+        root.setBackgroundColor(!hasAuth() && !hasFs() ? mColorWhite : mColorGray);
+        mContentBg.setColor(!hasAuth() && !hasFs() ? mColorGray : mColorWhite);
         content.setBackground(mContentBg);
     }
 

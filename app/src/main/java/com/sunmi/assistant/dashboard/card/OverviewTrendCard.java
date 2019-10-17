@@ -257,8 +257,8 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
         BarChart bar = holder.getView(R.id.view_dashboard_bar_chart);
 
         // Set visible & button selected
-        rate.setVisibility(hasFs() && hasSaas() ? View.VISIBLE : View.GONE);
-        volume.setVisibility(hasSaas() ? View.VISIBLE : View.GONE);
+        rate.setVisibility(hasFs() && hasAuth() ? View.VISIBLE : View.GONE);
+        volume.setVisibility(hasAuth() ? View.VISIBLE : View.GONE);
         customer.setVisibility(hasFs() ? View.VISIBLE : View.GONE);
         line.setVisibility(model.type == Constants.DATA_TYPE_RATE ? View.VISIBLE : View.INVISIBLE);
         bar.setVisibility(model.type != Constants.DATA_TYPE_RATE ? View.VISIBLE : View.INVISIBLE);
@@ -416,9 +416,9 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
         }
 
         public void updateType(int source) {
-            if ((source & Constants.DATA_SOURCE_FS) != 0 && (source & Constants.DATA_SOURCE_SAAS) != 0) {
+            if ((source & Constants.DATA_SOURCE_FS) != 0 && (source & Constants.DATA_SOURCE_AUTH) != 0) {
                 type = Constants.DATA_TYPE_RATE;
-            } else if ((source & Constants.DATA_SOURCE_SAAS) != 0) {
+            } else if ((source & Constants.DATA_SOURCE_AUTH) != 0) {
                 type = Constants.DATA_TYPE_VOLUME;
             } else {
                 type = Constants.DATA_TYPE_CUSTOMER;

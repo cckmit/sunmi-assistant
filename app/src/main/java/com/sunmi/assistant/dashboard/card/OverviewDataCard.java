@@ -63,7 +63,7 @@ public class OverviewDataCard extends BaseRefreshCard<OverviewDataCard.Model, Ob
 
     @Override
     protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, CardCallback callback) {
-        if (hasSaas()) {
+        if (hasAuth()) {
             loadSales(companyId, shopId, period, callback);
         } else if (hasFs()) {
             loadCustomer(companyId, shopId, period, callback);
@@ -149,7 +149,7 @@ public class OverviewDataCard extends BaseRefreshCard<OverviewDataCard.Model, Ob
                         Model model = getModel();
                         model.customer = data.getLatestCount();
                         model.lastCustomer = data.getEarlyCount();
-                        if (hasSaas()) {
+                        if (hasAuth()) {
                             model.rate = model.customer == 0 ?
                                     0f : Math.min((float) model.volume / model.customer, 1f);
                             model.lastRate = model.lastCustomer == 0 ?
@@ -180,7 +180,7 @@ public class OverviewDataCard extends BaseRefreshCard<OverviewDataCard.Model, Ob
         BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
         Context context = holder.getContext();
         holder.addOnClickListener(R.id.layout_dashboard_main, (h, model, position) -> {
-            if (!hasSaas() && hasFs()) {
+            if (!hasAuth() && hasFs()) {
                 goToCustomerList(context);
             } else {
                 goToOrderList(context);
@@ -204,12 +204,12 @@ public class OverviewDataCard extends BaseRefreshCard<OverviewDataCard.Model, Ob
         TextView customerSubdata = holder.getView(R.id.tv_dashboard_customer_subdata);
         TextView rateValue = holder.getView(R.id.tv_dashboard_rate);
         TextView rateSubdata = holder.getView(R.id.tv_dashboard_rate_subdata);
-        if (hasSaas() && !hasFs()) {
+        if (hasAuth() && !hasFs()) {
             value.setText(model.getSales());
             subdata.setText(model.getLastSales());
             volumeValue.setText(model.getVolume());
             volumeSubdata.setText(model.getLastVolume());
-        } else if (!hasSaas() && hasFs()) {
+        } else if (!hasAuth() && hasFs()) {
             value.setText(model.getCustomer());
             subdata.setText(model.getLastCustomer());
         } else {
@@ -231,7 +231,7 @@ public class OverviewDataCard extends BaseRefreshCard<OverviewDataCard.Model, Ob
         View customer = holder.getView(R.id.layout_dashboard_customer);
         View rate = holder.getView(R.id.layout_dashboard_rate);
         ImageView loading = holder.getView(R.id.iv_dashboard_loading);
-        if (!hasSaas() && hasFs()) {
+        if (!hasAuth() && hasFs()) {
             main.setVisibility(View.INVISIBLE);
             volume.setVisibility(View.GONE);
             customer.setVisibility(View.GONE);
@@ -283,13 +283,13 @@ public class OverviewDataCard extends BaseRefreshCard<OverviewDataCard.Model, Ob
         TextView rateSubtitle = holder.getView(R.id.tv_dashboard_rate_subtitle);
         holder.getView(R.id.iv_dashboard_loading).setVisibility(View.GONE);
         // 根据数据来源变更View展示的部分和文案
-        if (hasSaas() && !hasFs()) {
+        if (hasAuth() && !hasFs()) {
             main.setVisibility(View.VISIBLE);
             volume.setVisibility(View.VISIBLE);
             customer.setVisibility(View.GONE);
             rate.setVisibility(View.GONE);
             title.setText(R.string.dashboard_data_sales_amount);
-        } else if (!hasSaas() && hasFs()) {
+        } else if (!hasAuth() && hasFs()) {
             main.setVisibility(View.VISIBLE);
             volume.setVisibility(View.GONE);
             customer.setVisibility(View.GONE);

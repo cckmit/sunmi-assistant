@@ -184,8 +184,12 @@ public class Utils {
         }
     }
 
-    public static boolean hasSaas(int source) {
-        return (source & Constants.DATA_SOURCE_SAAS) != 0;
+    public static boolean hasAuth(int source) {
+        return (source & Constants.DATA_SOURCE_AUTH) != 0;
+    }
+
+    public static boolean hasImport(int source) {
+        return (source & Constants.DATA_SOURCE_IMPORT) != 0;
     }
 
     public static boolean hasFs(int source) {

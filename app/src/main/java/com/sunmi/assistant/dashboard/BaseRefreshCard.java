@@ -78,8 +78,12 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         this.mShopId = SpUtils.getShopId();
     }
 
-    public boolean hasSaas() {
-        return Utils.hasSaas(mSource);
+    public boolean hasAuth() {
+        return Utils.hasAuth(mSource);
+    }
+
+    public boolean hasImport() {
+        return Utils.hasImport(mSource);
     }
 
     public boolean hasFs() {

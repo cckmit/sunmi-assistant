@@ -87,9 +87,9 @@
     <string name="dashboard_no_fs_add">添加</string>
     <string name="dashboard_no_fs_tip_add">添加设备</string>
     <string name="dashboard_no_fs_buy">购买</string>
-    <string name="dashboard_no_order_title">导入软件订单数据</string>
-    <string name="dashboard_no_order_subtitle">现已支持银豹、生意专家等38个软件</string>
-    <string name="dashboard_no_order_inport">导入</string>
+    <string name="dashboard_no_order_title">接入门店收银系统</string>
+    <string name="dashboard_no_order_subtitle">随时展示门店经营动态，提供多维度经营分析</string>
+    <string name="dashboard_no_order_import">接入</string>
     <string name="dashboard_no_customer_data_tip">暂无客流数据，您可以尝试：</string>
     <string name="dashboard_no_customer_wait_tip">客流数据会在次日零点更新</string>
     <string name="dashboard_no_customer_fs_tip">您已解绑了门店中的摄像机设备</string>

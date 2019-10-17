@@ -22,6 +22,7 @@ import sunmi.common.model.CustomerHistoryResp;
 import sunmi.common.model.CustomerHistoryTrendResp;
 import sunmi.common.model.CustomerRateResp;
 import sunmi.common.model.PlatformInfo;
+import sunmi.common.model.ShopAuthorizeInfoResp;
 import sunmi.common.model.ShopCategoryResp;
 import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopInfoResp;
@@ -649,6 +650,23 @@ public class SunmiStoreApi {
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
                     .authorizeSaas(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取门店对接信息，包括授权状态，授权时间，数据导入状态
+     */
+    public void getAuthorizeInfo(int companyId, int shopId, RetrofitCallback<ShopAuthorizeInfoResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
+                    .getAuthorizeInfo(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();

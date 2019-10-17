@@ -63,12 +63,12 @@ public class EmptyGapCard extends BaseRefreshCard<EmptyGapCard.Model, Object> {
         Context context = holder.getContext();
         int color;
         int height;
-        if (hasSaas() || hasFs()) {
+        if (hasAuth() || hasFs()) {
             color = ContextCompat.getColor(context, R.color.color_F5F7FA);
         } else {
             color = 0xFFFFFFFF;
         }
-        if (hasSaas() && hasFs()) {
+        if (hasAuth() && hasFs()) {
             height = (int) context.getResources().getDimension(R.dimen.dp_24);
         } else {
             height = (int) context.getResources().getDimension(R.dimen.dp_32);

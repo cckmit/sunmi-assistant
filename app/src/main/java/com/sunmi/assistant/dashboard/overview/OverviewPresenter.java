@@ -27,8 +27,8 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
 
     private int mCompanyId;
     private int mShopId;
-    private int mSource;
-    private int mPeriod;
+    private int mSource = -1;
+    private int mPeriod = -1;
 
     private List<BaseRefreshCard> mList = new ArrayList<>();
 
@@ -72,6 +72,9 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
 
     @Override
     public void setSource(int source) {
+        if (mSource == source) {
+            return;
+        }
         mSource = source;
         initList(mSource);
         load();
@@ -121,19 +124,19 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
 
     private void initList(int source) {
         mList.clear();
-        if (Utils.hasSaas(source) && Utils.hasFs(source)) {
+        if (Utils.hasAuth(source) && Utils.hasFs(source)) {
             mList.add(OverviewPeriodCard.get(this, source));
             mList.add(OverviewDataCard.get(this, source));
             mList.add(OverviewTrendCard.get(this, source));
             mList.add(OverviewDistributionCard.get(this, source));
             mList.add(EmptyGapCard.get(this, source));
-        } else if (Utils.hasSaas(source) && !Utils.hasFs(source)) {
+        } else if (Utils.hasAuth(source) && !Utils.hasFs(source)) {
             mList.add(OverviewPeriodCard.get(this, source));
             mList.add(OverviewDataCard.get(this, source));
             mList.add(OverviewTrendCard.get(this, source));
             mList.add(NoFsCard.get(this, source));
             mList.add(EmptyGapCard.get(this, source));
-        } else if (!Utils.hasSaas(source) && Utils.hasFs(source)) {
+        } else if (!Utils.hasAuth(source) && Utils.hasFs(source)) {
             mList.add(OverviewPeriodCard.get(this, source));
             mList.add(OverviewDataCard.get(this, source));
             mList.add(OverviewTrendCard.get(this, source));
@@ -142,8 +145,8 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
             mList.add(EmptyGapCard.get(this, source));
         } else {
             mList.add(EmptyDataCard.get(this, source));
-            mList.add(NoFsCard.get(this, source));
             mList.add(NoOrderCard.get(this, source));
+            mList.add(NoFsCard.get(this, source));
             mList.add(EmptyGapCard.get(this, source));
         }
     }

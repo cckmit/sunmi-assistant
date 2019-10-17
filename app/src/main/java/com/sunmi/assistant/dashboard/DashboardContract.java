@@ -1,7 +1,5 @@
 package com.sunmi.assistant.dashboard;
 
-import android.content.Context;
-
 import java.util.List;
 
 import sunmi.common.base.BaseView;
@@ -28,9 +26,15 @@ public interface DashboardContract {
 
     interface Presenter {
 
-        void init(Context context);
+        void init();
 
-        void reload();
+        void reloadCompanySwitch();
+
+        void reloadShopSwitch();
+
+        void reloadShopList();
+
+        void reloadFs();
 
         void setShop(ShopItem shop);
 
