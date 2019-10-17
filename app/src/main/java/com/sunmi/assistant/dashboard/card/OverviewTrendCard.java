@@ -211,15 +211,12 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
     }
 
     @Override
-    protected List<Model> createModel() {
-        ArrayList<Model> models = new ArrayList<>();
-        models.add(new Model(""));
-        return models;
+    protected Model createModel() {
+        return new Model("");
     }
 
     @Override
-    protected void setupModel(List<Model> models, CustomerRateResp response) {
-        Model model = getModel();
+    protected void setupModel(Model model, CustomerRateResp response) {
         List<ChartEntry> rateList = model.dataSets.get(Constants.DATA_TYPE_RATE);
         List<ChartEntry> volumeList = model.dataSets.get(Constants.DATA_TYPE_VOLUME);
         List<ChartEntry> customerList = model.dataSets.get(Constants.DATA_TYPE_CUSTOMER);

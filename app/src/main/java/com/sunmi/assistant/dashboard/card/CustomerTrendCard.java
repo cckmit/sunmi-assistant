@@ -187,15 +187,12 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
     }
 
     @Override
-    protected List<Model> createModel() {
-        ArrayList<Model> models = new ArrayList<>();
-        models.add(new Model(""));
-        return models;
+    protected Model createModel() {
+        return new Model("");
     }
 
     @Override
-    protected void setupModel(List<Model> models, CustomerHistoryTrendResp response) {
-        Model model = getModel();
+    protected void setupModel(Model model, CustomerHistoryTrendResp response) {
         List<ChartEntry> allList = model.dataSets.get(Constants.DATA_TYPE_ALL);
         List<ChartEntry> newList = model.dataSets.get(Constants.DATA_TYPE_NEW);
         List<ChartEntry> oldList = model.dataSets.get(Constants.DATA_TYPE_OLD);

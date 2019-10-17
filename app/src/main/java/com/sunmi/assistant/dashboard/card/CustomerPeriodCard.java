@@ -10,9 +10,6 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
@@ -56,14 +53,12 @@ public class CustomerPeriodCard extends BaseRefreshCard<CustomerPeriodCard.Model
     }
 
     @Override
-    protected List<Model> createModel() {
-        ArrayList<Model> models = new ArrayList<>();
-        models.add(new Model());
-        return models;
+    protected Model createModel() {
+        return new Model();
     }
 
     @Override
-    protected void setupModel(List<Model> models, Object response) {
+    protected void setupModel(Model model, Object response) {
     }
 
     @NonNull

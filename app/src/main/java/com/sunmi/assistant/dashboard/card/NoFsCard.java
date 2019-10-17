@@ -9,9 +9,6 @@ import android.view.View;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
@@ -61,14 +58,12 @@ public class NoFsCard extends BaseRefreshCard<NoFsCard.Model, Object> {
     }
 
     @Override
-    protected List<Model> createModel() {
-        ArrayList<Model> models = new ArrayList<>();
-        models.add(new Model());
-        return models;
+    protected Model createModel() {
+        return new Model();
     }
 
     @Override
-    protected void setupModel(List<Model> models, Object response) {
+    protected void setupModel(Model model, Object response) {
     }
 
     @NonNull

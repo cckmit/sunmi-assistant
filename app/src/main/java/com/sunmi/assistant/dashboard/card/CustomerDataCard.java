@@ -12,9 +12,7 @@ import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
@@ -53,6 +51,7 @@ public class CustomerDataCard extends BaseRefreshCard<CustomerDataCard.Model, Ob
 
     @Override
     public void init(Context context) {
+        getModel().init(context);
     }
 
     @Override
@@ -137,16 +136,14 @@ public class CustomerDataCard extends BaseRefreshCard<CustomerDataCard.Model, Ob
     }
 
     @Override
-    protected List<Model> createModel() {
-        ArrayList<Model> models = new ArrayList<>();
-        models.add(new Model());
-        return models;
+    protected Model createModel() {
+        return new Model();
     }
 
     @Override
-    protected void setupModel(List<Model> models, Object response) {
+    protected void setupModel(Model model, Object response) {
         // Test data
-//        models.get(0).random();
+//        model.random();
     }
 
     @NonNull
@@ -154,9 +151,6 @@ public class CustomerDataCard extends BaseRefreshCard<CustomerDataCard.Model, Ob
     public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
         BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
         Context context = holder.getContext();
-        for (Model model : getModels()) {
-            model.init(context);
-        }
         holder.addOnClickListener(R.id.layout_dashboard_main, (h, model, position)
                 -> goToCustomerList(context));
         return holder;

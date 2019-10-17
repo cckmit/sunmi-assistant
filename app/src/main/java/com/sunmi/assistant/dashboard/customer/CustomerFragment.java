@@ -98,8 +98,8 @@ public class CustomerFragment extends BaseMvpFragment<CustomerPresenter>
         int position = 0;
         for (BaseRefreshCard card : data) {
             card.registerIntoAdapter(mAdapter, position);
-            position += card.getModels().size();
-            list.addAll(card.getModels());
+            list.add(card.getModel());
+            position++;
         }
         mAdapter.setData(list);
         mCardList.scrollToPosition(0);

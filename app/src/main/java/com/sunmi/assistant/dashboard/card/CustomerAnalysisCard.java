@@ -153,14 +153,12 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
     }
 
     @Override
-    protected List<Model> createModel() {
-        ArrayList<Model> models = new ArrayList<>();
-        models.add(new Model());
-        return models;
+    protected Model createModel() {
+        return new Model();
     }
 
     @Override
-    protected void setupModel(List<Model> models, CustomerHistoryDetailResp response) {
+    protected void setupModel(Model models, CustomerHistoryDetailResp response) {
         Model model = getModel();
         model.list.clear();
         if (response == null || response.getCountList() == null) {

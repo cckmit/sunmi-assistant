@@ -252,14 +252,12 @@ public class OverviewDistributionCard extends BaseRefreshCard<OverviewDistributi
     }
 
     @Override
-    protected List<Model> createModel() {
-        ArrayList<Model> models = new ArrayList<>();
-        models.add(new Model("", Constants.DATA_TYPE_NEW_OLD));
-        return models;
+    protected Model createModel() {
+        return new Model("", Constants.DATA_TYPE_NEW_OLD);
     }
 
     @Override
-    protected void setupModel(List<Model> models, Object response) {
+    protected void setupModel(Model model, Object response) {
         // Test data
 //        models.get(0).random();
     }

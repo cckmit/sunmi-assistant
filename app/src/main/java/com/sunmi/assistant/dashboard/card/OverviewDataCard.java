@@ -17,8 +17,6 @@ import com.sunmi.assistant.data.response.OrderTotalCountResp;
 import com.sunmi.assistant.order.OrderListActivity_;
 import com.sunmi.assistant.order.model.OrderInfo;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import retrofit2.Call;
@@ -55,6 +53,7 @@ public class OverviewDataCard extends BaseRefreshCard<OverviewDataCard.Model, Ob
 
     @Override
     public void init(Context context) {
+        getModel().init(context);
     }
 
     @Override
@@ -167,14 +166,12 @@ public class OverviewDataCard extends BaseRefreshCard<OverviewDataCard.Model, Ob
     }
 
     @Override
-    protected List<Model> createModel() {
-        ArrayList<Model> models = new ArrayList<>();
-        models.add(new Model());
-        return models;
+    protected Model createModel() {
+        return new Model();
     }
 
     @Override
-    protected void setupModel(List<Model> models, Object response) {
+    protected void setupModel(Model model, Object response) {
     }
 
     @NonNull
@@ -182,9 +179,6 @@ public class OverviewDataCard extends BaseRefreshCard<OverviewDataCard.Model, Ob
     public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
         BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
         Context context = holder.getContext();
-        for (Model model : getModels()) {
-            model.init(context);
-        }
         holder.addOnClickListener(R.id.layout_dashboard_main, (h, model, position) -> {
             if (!hasSaas() && hasFs()) {
                 goToCustomerList(context);

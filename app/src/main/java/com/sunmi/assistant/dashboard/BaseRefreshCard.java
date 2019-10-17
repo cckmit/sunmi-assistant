@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.view.ViewGroup;
 
 import java.text.DecimalFormat;
-import java.util.List;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseRecyclerAdapter;
@@ -49,7 +48,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private RequestCall<Resp> mCall = new RequestCall<>();
-    private List<Model> mModels;
+    private Model mModel;
     private int mPositionMin = -1;
     private int mPositionMax = -1;
 
@@ -62,18 +61,16 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
 
     protected BaseRefreshCard(Presenter presenter, int source) {
         this.mPresenter = presenter;
-        this.mModels = createModel();
-        if (mModels == null || mModels.isEmpty()) {
-            throw new RuntimeException("createModel() must return NON-NULL & NON-EMPTY model list!");
+        this.mModel = createModel();
+        if (this.mModel == null) {
+            throw new RuntimeException("createModel() must return NON-NULL model!");
         }
         reset(source);
     }
 
     public void reset(int source) {
-        for (Model model : mModels) {
-            model.valid = false;
-            model.init(source);
-        }
+        mModel.valid = false;
+        mModel.init(source);
         this.mState = STATE_INIT;
         this.mPeriod = Constants.TIME_PERIOD_INIT;
         this.mSource = source;
@@ -93,63 +90,59 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         return Utils.hasCustomer(mSource);
     }
 
-    public List<Model> getModels() {
-        return mModels;
-    }
-
     public Model getModel() {
-        return mModels.get(0);
+        return mModel;
     }
 
     public void registerIntoAdapter(BaseRecyclerAdapter<Object> adapter, int position) {
         this.mPositionMin = position;
-        this.mPositionMax = position + mModels.size() - 1;
+        this.mPositionMax = position + 1;
         //noinspection unchecked
-        adapter.register((Class<Model>) mModels.get(0).getClass(), this);
+        adapter.register((Class<Model>) mModel.getClass(), this);
     }
-
-    protected void updateModels() {
-        if (Looper.myLooper() != Looper.getMainLooper()) {
-            mHandler.post(this::updateModels);
-            return;
-        }
-        mModels.clear();
-        mPositionMin = -1;
-        mPositionMax = -1;
-        BaseRecyclerAdapter adapter = getAdapter();
-        int count = adapter.getItemCount();
-        int min = count;
-        int max = -1;
-        for (int i = count - 1; i >= 0; i--) {
-            if (adapter.getItemType(i) == this) {
-                min = Math.min(min, i);
-                max = Math.max(max, i);
-                //noinspection unchecked
-                mModels.add((Model) adapter.getItem(i));
-            }
-        }
-        if (min <= max) {
-            mPositionMin = min;
-            mPositionMax = max;
-        }
-    }
-
-    protected void clearModels() {
-        if (Looper.myLooper() != Looper.getMainLooper()) {
-            mHandler.post(this::clearModels);
-            return;
-        }
-        mModels.clear();
-        mPositionMin = -1;
-        mPositionMax = -1;
-        BaseRecyclerAdapter adapter = getAdapter();
-        int count = adapter.getItemCount();
-        for (int i = count - 1; i >= 0; i--) {
-            if (adapter.getItemType(i) == this) {
-                adapter.remove(i);
-            }
-        }
-    }
+//
+//    protected void updateModels() {
+//        if (Looper.myLooper() != Looper.getMainLooper()) {
+//            mHandler.post(this::updateModels);
+//            return;
+//        }
+//        mModels.clear();
+//        mPositionMin = -1;
+//        mPositionMax = -1;
+//        BaseRecyclerAdapter adapter = getAdapter();
+//        int count = adapter.getItemCount();
+//        int min = count;
+//        int max = -1;
+//        for (int i = count - 1; i >= 0; i--) {
+//            if (adapter.getItemType(i) == this) {
+//                min = Math.min(min, i);
+//                max = Math.max(max, i);
+//                //noinspection unchecked
+//                mModels.add((Model) adapter.getItem(i));
+//            }
+//        }
+//        if (min <= max) {
+//            mPositionMin = min;
+//            mPositionMax = max;
+//        }
+//    }
+//
+//    protected void clearModels() {
+//        if (Looper.myLooper() != Looper.getMainLooper()) {
+//            mHandler.post(this::clearModels);
+//            return;
+//        }
+//        mModels.clear();
+//        mPositionMin = -1;
+//        mPositionMax = -1;
+//        BaseRecyclerAdapter adapter = getAdapter();
+//        int count = adapter.getItemCount();
+//        for (int i = count - 1; i >= 0; i--) {
+//            if (adapter.getItemType(i) == this) {
+//                adapter.remove(i);
+//            }
+//        }
+//    }
 
     public void setShop(int companyId, int shopId, boolean forceLoad) {
         if (!forceLoad && this.mCompanyId == companyId && this.mShopId == shopId) {
@@ -157,9 +150,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         }
         this.mCompanyId = companyId;
         this.mShopId = shopId;
-        for (Model model : mModels) {
-            model.valid = false;
-        }
+        mModel.valid = false;
         requestLoad(true);
     }
 
@@ -168,17 +159,13 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
             return;
         }
         this.mPeriod = period;
-        for (Model model : mModels) {
-            model.valid = false;
-        }
+        mModel.valid = false;
         requestLoad(true);
     }
 
     public void refresh(boolean showLoading) {
         if (showLoading) {
-            for (Model model : mModels) {
-                model.valid = false;
-            }
+            mModel.valid = false;
         }
         requestLoad(showLoading);
     }
@@ -213,7 +200,6 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
             mHandler.post(this::updateViews);
             return;
         }
-        updateModels();
         if (mPositionMin < 0 || mPositionMax < 0) {
             return;
         }
@@ -270,15 +256,15 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
      *
      * @return ViewModel
      */
-    protected abstract List<Model> createModel();
+    protected abstract Model createModel();
 
     /**
      * 对ViewModel进行更新，一般用于接口回调成功时
      *
-     * @param models   ViewModels
+     * @param model    ViewModel
      * @param response 接口响应数据
      */
-    protected abstract void setupModel(List<Model> models, Resp response);
+    protected abstract void setupModel(Model model, Resp response);
 
     /**
      * 对View进行更新，一般在ViewModel更新后被调用
@@ -325,12 +311,10 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         public void onSuccess() {
             LogCat.d(TAG, "Dashboard card load data pass. ");
             mState = STATE_SUCCESS;
-            for (Model item : mModels) {
-                item.valid = true;
-                item.source = this.source;
-                item.period = this.period;
-            }
-            setupModel(mModels, null);
+            mModel.valid = true;
+            mModel.source = this.source;
+            mModel.period = this.period;
+            setupModel(mModel, null);
             updateViews();
         }
 
@@ -339,12 +323,10 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         public void onSuccess(int code, String msg, Resp data) {
             LogCat.d(TAG, "Dashboard card load Success. " + msg);
             mState = STATE_SUCCESS;
-            for (Model item : mModels) {
-                item.valid = true;
-                item.source = this.source;
-                item.period = this.period;
-            }
-            setupModel(mModels, data);
+            mModel.valid = true;
+            mModel.source = this.source;
+            mModel.period = this.period;
+            setupModel(mModel, data);
             updateViews();
         }
 
@@ -353,10 +335,8 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         public void onFail(int code, String msg, Resp data) {
             LogCat.e(TAG, "Dashboard card load Failed. " + msg);
             mState = STATE_FAILED;
-            for (Model item : mModels) {
-                item.source = this.source;
-                item.period = this.period;
-            }
+            mModel.source = this.source;
+            mModel.period = this.period;
             mPresenter.showFailedTip();
             updateViews();
         }
