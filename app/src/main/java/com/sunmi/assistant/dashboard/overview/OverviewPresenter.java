@@ -17,7 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.model.ShopAuthorizeInfoResp;
+import sunmi.common.rpc.cloud.SunmiStoreApi;
+import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.log.LogCat;
 
 
 public class OverviewPresenter extends BasePresenter<OverviewContract.View>
@@ -28,7 +32,7 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
     private int mCompanyId;
     private int mShopId;
     private int mSource = -1;
-    private int mPeriod = -1;
+    private int mPeriod = Constants.TIME_PERIOD_INIT;
 
     private List<BaseRefreshCard> mList = new ArrayList<>();
 
@@ -72,12 +76,16 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
 
     @Override
     public void setSource(int source) {
-        if (mSource == source) {
-            return;
+        boolean needReload = mSource != source
+                || mCompanyId != SpUtils.getCompanyId()
+                || mShopId != SpUtils.getShopId();
+        if (mSource != source) {
+            mSource = source;
+            initList(mSource);
         }
-        mSource = source;
-        initList(mSource);
-        load();
+        if (needReload) {
+            load();
+        }
     }
 
     @Override
@@ -98,6 +106,9 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
 
     @Override
     public void refresh(boolean showLoading) {
+        if (!Utils.hasAuth(mSource)) {
+            loadSaas();
+        }
         for (BaseRefreshCard card : mList) {
             card.refresh(showLoading);
         }
@@ -149,6 +160,33 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
             mList.add(NoFsCard.get(this, source));
             mList.add(EmptyGapCard.get(this, source));
         }
+    }
+
+    private void loadSaas() {
+        SunmiStoreApi.getInstance().getAuthorizeInfo(mCompanyId, mShopId,
+                new RetrofitCallback<ShopAuthorizeInfoResp>() {
+                    @Override
+                    public void onSuccess(int code, String msg, ShopAuthorizeInfoResp data) {
+                        if (data == null || data.getAuthorizedList() == null) {
+                            onFail(code, msg, data);
+                            return;
+                        }
+                        int source = mSource;
+                        List<ShopAuthorizeInfoResp.Info> list = data.getAuthorizedList();
+                        if (list.isEmpty()) {
+                            source &= ~Constants.DATA_SOURCE_AUTH;
+                        } else {
+                            source |= Constants.DATA_SOURCE_AUTH;
+                        }
+                        setSource(source);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg, ShopAuthorizeInfoResp data) {
+                        LogCat.e(TAG, "Load saas import Failed. " + code + ":" + msg);
+                        showFailedTip();
+                    }
+                });
     }
 
     @Override

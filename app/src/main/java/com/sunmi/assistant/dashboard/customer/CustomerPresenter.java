@@ -26,8 +26,8 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
 
     private int mCompanyId;
     private int mShopId;
-    private int mSource;
-    private int mPeriod;
+    private int mSource = -1;
+    private int mPeriod = Constants.TIME_PERIOD_INIT;
 
     private List<BaseRefreshCard> mList = new ArrayList<>();
 
@@ -71,12 +71,16 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
 
     @Override
     public void setSource(int source) {
-        if (mSource == source) {
-            return;
+        boolean needReload = mSource != source
+                || mCompanyId != SpUtils.getCompanyId()
+                || mShopId != SpUtils.getShopId();
+        if (mSource != source) {
+            mSource = source;
+            initList(mSource);
         }
-        mSource = source;
-        initList(mSource);
-        load();
+        if (needReload) {
+            load();
+        }
     }
 
     @Override

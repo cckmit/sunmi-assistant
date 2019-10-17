@@ -60,7 +60,6 @@ public class Utils {
             temp.add(Calendar.DATE, 7);
             timeEnd = temp.getTimeInMillis();
         } else {
-            temp.clear();
             temp.set(Calendar.DATE, 1);
             timeStart = temp.getTimeInMillis();
             temp.add(Calendar.MONTH, 1);
