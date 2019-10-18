@@ -357,7 +357,6 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
                 bar.notifyDataSetChanged();
             } else {
                 set = new BarDataSet(values, "data");
-                set.setColor(ContextCompat.getColor(holder.getContext(), R.color.color_2997FF));
                 set.setDrawValues(false);
                 set.setColor(color);
                 set.setHighLightColor(colorHighlight);

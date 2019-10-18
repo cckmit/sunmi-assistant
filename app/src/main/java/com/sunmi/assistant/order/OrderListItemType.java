@@ -34,7 +34,7 @@ public class OrderListItemType extends ItemType<OrderInfo, BaseViewHolder<OrderI
                 R.string.order_pay_method_colon, model.getPurchaseType()));
         orderTime.setText(Utils.getHourMinute(model.getPurchaseTime()));
         if (model.getAmount() < 0) {
-            orderAmount.setTextColor(holder.getContext().getResources().getColor(R.color.color_F35000));
+            orderAmount.setTextColor(holder.getContext().getResources().getColor(R.color.c_primary));
         } else {
             orderAmount.setTextColor(holder.getContext().getResources().getColor(R.color.text_main));
         }

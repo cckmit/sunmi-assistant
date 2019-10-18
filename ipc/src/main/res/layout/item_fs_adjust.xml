@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:layout_centerVertical="true"
         android:gravity="center"
-        android:textColor="@color/color_333333"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_16" />
 
     <CheckBox

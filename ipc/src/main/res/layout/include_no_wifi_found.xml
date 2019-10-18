@@ -13,7 +13,7 @@
         android:drawableTop="@mipmap/ic_ipc_no_wifi"
         android:drawablePadding="@dimen/dp_16"
         android:text="@string/tip_no_wifi_for_ipc"
-        android:textColor="@color/color_333333"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_20" />
 
     <TextView

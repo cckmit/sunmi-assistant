@@ -64,7 +64,7 @@ public class EmptyGapCard extends BaseRefreshCard<EmptyGapCard.Model, Object> {
         int color;
         int height;
         if (hasAuth() || hasFs()) {
-            color = ContextCompat.getColor(context, R.color.color_F5F7FA);
+            color = ContextCompat.getColor(context, R.color.common_fill);
         } else {
             color = 0xFFFFFFFF;
         }

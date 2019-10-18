@@ -14,7 +14,7 @@
         android:drawablePadding="@dimen/dp_16"
         android:gravity="center"
         android:text="@string/tip_no_ipc_found"
-        android:textColor="@color/color_333333"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_20" />
 
     <TextView

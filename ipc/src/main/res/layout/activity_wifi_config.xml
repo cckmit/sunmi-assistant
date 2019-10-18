@@ -31,7 +31,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_24"
             android:text="@string/tip_choose_wifi_to_connect"
-            android:textColor="@color/color_333333"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_28"
             android:textStyle="bold" />
 

@@ -19,7 +19,7 @@
         android:layout_below="@+id/iv_pic"
         android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:textColor="@color/color_333333"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_12" />
 
 </RelativeLayout>

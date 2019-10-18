@@ -104,7 +104,7 @@
             android:layout_marginTop="@dimen/dp_8"
             android:gravity="center"
             android:text="@string/dashboard_card_tab_new"
-            android:textColor="@color/color_5A97FC"
+            android:textColor="@color/assist_secondary"
             android:textSize="@dimen/sp_12"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
