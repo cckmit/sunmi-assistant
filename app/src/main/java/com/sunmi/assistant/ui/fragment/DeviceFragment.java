@@ -740,7 +740,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         }
         new CommonDialog.Builder(mActivity).setMessage(msg)
                 .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.str_delete, R.color.read_deep_more,
+                .setConfirmButton(R.string.str_delete, R.color.caution_primary,
                         (dialog, which) -> {
                             dialog.dismiss();
                             if (-1 == NetworkUtils.getNetStatus(mActivity)) {

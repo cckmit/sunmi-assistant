@@ -11,12 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/c_white"
-        app:dividerColor="@color/colorText_10"
+        app:dividerColor="@color/c_divider"
         app:dividerShow="true"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/str_printer_manage"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <TextView
         android:id="@+id/tv_top"
@@ -49,7 +49,7 @@
                 android:id="@+id/divider"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_0_5"
-                android:background="@color/color_divider"
+                android:background="@color/c_divider"
                 android:visibility="visible" />
 
             <sunmi.common.view.SmRecyclerView
@@ -118,7 +118,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_8"
             android:text="@string/str_tip_check_network"
-            android:textColor="@color/color_666666"
+            android:textColor="@color/text_normal"
             android:textSize="@dimen/sp_12" />
 
         <Button

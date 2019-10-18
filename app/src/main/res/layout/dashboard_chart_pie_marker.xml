@@ -9,7 +9,7 @@
         android:id="@+id/tv_dashboard_marker_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/text_body"
+        android:textColor="@color/text_normal"
         android:textSize="@dimen/sp_10"
         android:textStyle="bold" />
 

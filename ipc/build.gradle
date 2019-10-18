@@ -42,7 +42,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation fileTree(include: ['*.aar'], dir: 'libs')
-//    implementation project(':datelibrary')
+    implementation project(':datelibrary')
     implementation project(':commonlib')//公共库
 
     api "com.android.support:appcompat-v7:${SUPPORT_VERSION}"

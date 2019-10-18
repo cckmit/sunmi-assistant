@@ -13,7 +13,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_0_5"
-        android:background="@color/color_CED2D9" />
+        android:background="@color/c_divider" />
 
     <sunmi.common.view.MyFragmentTabHost
         android:id="@android:id/tabhost"

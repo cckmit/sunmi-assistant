@@ -63,10 +63,6 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
     Button btnLogin;
     @ViewById(R.id.btnRegister)
     Button btnRegister;
-    @ViewById(R.id.btnFixPassword)
-    Button btnFixPassword;
-    @ViewById(R.id.btnLogout)
-    Button btnLogout;
     @ViewById(R.id.tvLogo)
     TextView tvLogo;
 
@@ -85,7 +81,7 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
         mPresenter.attachView(this);
         PermissionUtils.checkPermissionActivity(this);//手机权限
         HelpUtils.setStatusBarFullTransparent(this);//透明标题栏
-        if(CommonHelper.isGooglePlay()){
+        if (CommonHelper.isGooglePlay()) {
             tvSMSLogin.setVisibility(View.GONE);
             etUser.setHint(R.string.hint_input_email);
             tvLogo.setBackgroundResource(R.mipmap.ic_sunmi_logo_en);
@@ -149,8 +145,8 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
         }
     }
 
-    @Click({R.id.btnLogin, R.id.btnRegister, R.id.btnFixPassword, R.id.ib_visible,
-            R.id.btnLogout, R.id.tvForgetPassword, R.id.tvSMSLogin})
+    @Click({R.id.btnLogin, R.id.btnRegister, R.id.ib_visible,
+            R.id.tvForgetPassword, R.id.tvSMSLogin})
     public void onClick(View v) {
         mobile = etUser.getText().toString().trim();
         String password = etPassword.getText().toString();

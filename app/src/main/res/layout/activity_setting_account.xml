@@ -14,7 +14,7 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/str_account_safety"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <RelativeLayout
         android:id="@+id/rlPassword"
@@ -29,7 +29,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_25"
             android:text="@string/str_password"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16" />
 
         <TextView
@@ -41,7 +41,7 @@
             android:gravity="end"
             android:maxLines="1"
             android:text="@string/str_modify"
-            android:textColor="@color/colorText_60"
+            android:textColor="@color/text_caption"
             android:textSize="@dimen/sp_14" />
 
         <RelativeLayout
@@ -62,7 +62,7 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_alignParentBottom="true"
-            android:background="@color/colorText_10" />
+            android:background="@color/c_divider" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -79,7 +79,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_25"
             android:text="@string/str_phone"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16" />
 
         <TextView
@@ -92,7 +92,7 @@
             android:gravity="end"
             android:maxLines="1"
             android:text="@string/str_bound"
-            android:textColor="@color/colorText_60"
+            android:textColor="@color/text_caption"
             android:textSize="@dimen/sp_14" />
 
         <RelativeLayout
@@ -113,7 +113,7 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_alignParentBottom="true"
-            android:background="@color/colorText_10" />
+            android:background="@color/c_divider" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -130,7 +130,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_25"
             android:text="@string/str_email_address"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16" />
 
         <TextView
@@ -143,7 +143,7 @@
             android:gravity="end"
             android:maxLines="1"
             android:text="@string/str_unbind"
-            android:textColor="@color/colorText_60"
+            android:textColor="@color/text_caption"
             android:textSize="@dimen/sp_14" />
 
         <RelativeLayout
@@ -164,7 +164,7 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_alignParentBottom="true"
-            android:background="@color/colorText_10" />
+            android:background="@color/c_divider" />
     </RelativeLayout>
 
 

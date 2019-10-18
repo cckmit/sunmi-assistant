@@ -15,7 +15,7 @@
         app:leftIcon="@drawable/ic_back_dark"
         app:rightText="@string/str_save"
         app:titleText="@string/str_business_category"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <LinearLayout
         android:layout_width="match_parent"

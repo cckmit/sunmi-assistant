@@ -15,7 +15,7 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/str_store_info"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_shop_name"
@@ -27,7 +27,7 @@
         app:leftText="@string/str_store_name"
         app:parentHeight="@dimen/dp_60"
         app:rightPadding="@dimen/dp_20"
-        app:rightTextColor="@color/colorText_60" />
+        app:rightTextColor="@color/text_caption" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_shop_category"
@@ -41,7 +41,7 @@
         app:leftText="@string/str_business_category"
         app:parentHeight="@dimen/dp_60"
         app:rightPadding="@dimen/dp_20"
-        app:rightTextColor="@color/colorText_60" />
+        app:rightTextColor="@color/text_caption" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_shop_region"
@@ -55,7 +55,7 @@
         app:leftText="@string/str_area"
         app:parentHeight="@dimen/dp_60"
         app:rightPadding="@dimen/dp_20"
-        app:rightTextColor="@color/colorText_60" />
+        app:rightTextColor="@color/text_caption" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_shop_address"
@@ -69,7 +69,7 @@
         app:leftText="@string/str_detail_addr"
         app:parentHeight="@dimen/dp_60"
         app:rightPadding="@dimen/dp_20"
-        app:rightTextColor="@color/colorText_60" />
+        app:rightTextColor="@color/text_caption" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_shop_area"
@@ -83,7 +83,7 @@
         app:leftText="@string/company_shop_area"
         app:parentHeight="@dimen/dp_60"
         app:rightPadding="@dimen/dp_20"
-        app:rightTextColor="@color/colorText_60" />
+        app:rightTextColor="@color/text_caption" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_shop_contact"
@@ -96,7 +96,7 @@
         app:leftText="@string/company_shop_contact"
         app:parentHeight="@dimen/dp_60"
         app:rightPadding="@dimen/dp_20"
-        app:rightTextColor="@color/colorText_60" />
+        app:rightTextColor="@color/text_caption" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_shop_mobile"
@@ -110,7 +110,7 @@
         app:leftText="@string/company_shop_mobile"
         app:parentHeight="@dimen/dp_60"
         app:rightPadding="@dimen/dp_20"
-        app:rightTextColor="@color/colorText_60" />
+        app:rightTextColor="@color/text_caption" />
 
 
 </LinearLayout>

@@ -14,7 +14,7 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/str_setting_ipc_camera"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/nsv_setting"
@@ -37,7 +37,7 @@
                 app:leftText="@string/ipc_setting_name"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
-                app:rightTextColor="@color/colorText_60" />
+                app:rightTextColor="@color/text_caption" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_camera_detail"
@@ -50,7 +50,7 @@
                 app:leftText="@string/ipc_setting_detail"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
-                app:rightTextColor="@color/colorText_60" />
+                app:rightTextColor="@color/text_caption" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_camera_adjust"
@@ -63,7 +63,7 @@
                 app:leftText="@string/str_adjust_screen"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
-                app:rightTextColor="@color/colorText_60" />
+                app:rightTextColor="@color/text_caption" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_voice_exception"
@@ -76,7 +76,7 @@
                 app:leftText="@string/ipc_setting_sound_abnormal_detection"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
-                app:rightTextColor="@color/colorText_60" />
+                app:rightTextColor="@color/text_caption" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_active_exception"
@@ -89,7 +89,7 @@
                 app:leftText="@string/ipc_setting_active_abnormal_detection"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
-                app:rightTextColor="@color/colorText_60" />
+                app:rightTextColor="@color/text_caption" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_time_setting"
@@ -102,7 +102,7 @@
                 app:leftText="@string/ipc_setting_detection_time"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
-                app:rightTextColor="@color/colorText_60" />
+                app:rightTextColor="@color/text_caption" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_night_style"
@@ -115,7 +115,7 @@
                 app:leftText="@string/ipc_setting_night_vision_mode"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
-                app:rightTextColor="@color/colorText_60" />
+                app:rightTextColor="@color/text_caption" />
 
             <RelativeLayout
                 android:id="@+id/rl_wdr"
@@ -131,7 +131,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/dp_20"
                     android:text="@string/ipc_setting_state_wdr"
-                    android:textColor="@color/colorText"
+                    android:textColor="@color/text_main"
                     android:textSize="@dimen/sp_16" />
 
                 <Switch
@@ -159,7 +159,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/dp_20"
                     android:text="@string/ipc_setting_state_light"
-                    android:textColor="@color/colorText"
+                    android:textColor="@color/text_main"
                     android:textSize="@dimen/sp_16" />
 
                 <Switch
@@ -185,7 +185,7 @@
                 app:leftText="@string/ipc_setting_rotate"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
-                app:rightTextColor="@color/colorText_60" />
+                app:rightTextColor="@color/text_caption" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_sd_manager"
@@ -211,7 +211,7 @@
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
                 app:rightText="@string/ipc_setting_unknown"
-                app:rightTextColor="@color/colorText_60" />
+                app:rightTextColor="@color/text_caption" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_ipc_version"
@@ -224,7 +224,7 @@
                 app:leftText="@string/ipc_setting_version_current_name"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
-                app:rightTextColor="@color/colorText_60" />
+                app:rightTextColor="@color/text_caption" />
 
         </LinearLayout>
 
