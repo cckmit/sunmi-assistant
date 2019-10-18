@@ -50,7 +50,7 @@
         android:drawableEnd="@mipmap/ic_right_arrow_small"
         android:drawablePadding="@dimen/dp_4"
         android:text="@string/str_adjust_screen"
-        android:textColor="@color/color_666666"
+        android:textColor="@color/text_normal"
         android:textSize="@dimen/sp_14" />
 
 </RelativeLayout>

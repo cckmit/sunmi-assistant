@@ -4,7 +4,7 @@
 
     <stroke
         android:width="0.5dp"
-        android:color="@color/color_sms_edge" />
+        android:color="@color/c_divider" />
 
     <solid android:color="@color/c_white" />
 

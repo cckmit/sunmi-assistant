@@ -98,7 +98,7 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
 
     private void initTitle() {
         mTitleBar.getRightText().setEnabled(true);
-        mTitleBar.setRightTextViewColor(R.color.colorText);
+        mTitleBar.setRightTextViewColor(R.color.text_main);
         mTitleBar.setRightTextViewText(R.string.ipc_face_upload_btn);
         mTitleBar.getRightText().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,7 +138,7 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
 
     private void upload() {
         mTitleBar.getRightText().setEnabled(false);
-        mTitleBar.setRightTextViewColor(R.color.colorText_40);
+        mTitleBar.setRightTextViewColor(R.color.text_caption);
         for (UploadImage image : mImages) {
             image.setState(UploadImage.STATE_UPLOADING);
         }
@@ -179,7 +179,7 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
                 }
             }
             mTitleBar.getRightText().setEnabled(false);
-            mTitleBar.setRightTextViewColor(R.color.colorText_40);
+            mTitleBar.setRightTextViewColor(R.color.text_caption);
             if (mRetryDialog == null) {
                 mRetryDialog = new CommonDialog.Builder(this)
                         .setTitle(R.string.ipc_face_error_upload)
@@ -197,7 +197,7 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
             mRetryDialog.show();
         } else {
             mTitleBar.getRightText().setEnabled(true);
-            mTitleBar.setRightTextViewColor(R.color.colorText);
+            mTitleBar.setRightTextViewColor(R.color.text_main);
             mTitleBar.getRightText().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

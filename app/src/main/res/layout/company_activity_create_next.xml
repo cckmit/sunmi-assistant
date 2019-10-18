@@ -17,7 +17,7 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/company_new_create"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <TextView
         android:id="@+id/tv_title_tip"
@@ -47,8 +47,8 @@
         android:paddingStart="@dimen/dp_25"
         android:paddingRight="@dimen/dp_25"
         android:singleLine="true"
-        android:textColor="@color/colorText"
-        android:textColorHint="@color/colorText_40"
+        android:textColor="@color/text_main"
+        android:textColorHint="@color/text_caption"
         android:textSize="@dimen/sp_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -14,7 +14,7 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/str_about"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <ImageView
         android:id="@+id/ivLogo"
@@ -47,7 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_alignParentTop="true"
-            android:background="@color/colorText_10" />
+            android:background="@color/c_divider" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -55,7 +55,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_25"
             android:text="@string/str_version_update"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16" />
 
         <RelativeLayout
@@ -99,7 +99,7 @@
             android:layout_marginTop="@dimen/dp_10"
             android:layout_marginBottom="@dimen/dp_32"
             android:text="@string/str_sunmi_copyright_sound"
-            android:textColor="@color/colorText_40"
+            android:textColor="@color/text_caption"
             android:textSize="@dimen/sp_10" />
     </RelativeLayout>
 

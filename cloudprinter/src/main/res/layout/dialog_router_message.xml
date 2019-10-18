@@ -22,7 +22,7 @@
             android:layout_marginTop="@dimen/dp_20"
             android:gravity="center"
             android:text="@string/str_tip_link_router"
-            android:textColor="@color/color_dialog_content"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_18"
             android:textStyle="bold" />
 
@@ -36,7 +36,7 @@
             android:gravity="center"
             android:paddingLeft="@dimen/dp_24"
             android:paddingRight="@dimen/dp_24"
-            android:textColor="@color/color_85858A"
+            android:textColor="@color/text_normal"
             android:textSize="@dimen/sp_14" />
 
         <sunmi.common.view.ClearableEditText
@@ -55,8 +55,8 @@
             android:maxLines="1"
             android:paddingLeft="@dimen/dp_10"
             android:paddingRight="@dimen/dp_10"
-            android:textColor="@color/colorText"
-            android:textColorHint="@color/colorText_40"
+            android:textColor="@color/text_main"
+            android:textColorHint="@color/text_caption"
             android:textSize="@dimen/sp_16" />
 
         <RelativeLayout
@@ -70,7 +70,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_0_5"
-                android:background="@color/dialog_divider" />
+                android:background="@color/c_divider" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -84,7 +84,7 @@
                     android:background="@null"
                     android:gravity="center"
                     android:text="@string/sm_cancel"
-                    android:textColor="@color/color_dialog_cancel"
+                    android:textColor="@color/text_normal"
                     android:textSize="@dimen/sp_14"
                     android:textStyle="bold"
                     android:visibility="visible" />
@@ -93,7 +93,7 @@
                     android:id="@+id/vLine"
                     android:layout_width="@dimen/dp_0_5"
                     android:layout_height="match_parent"
-                    android:background="@color/dialog_divider"
+                    android:background="@color/c_divider"
                     android:visibility="visible" />
 
                 <Button

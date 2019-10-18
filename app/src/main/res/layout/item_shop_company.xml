@@ -12,7 +12,7 @@
         app:imageRight="@mipmap/ic_right_arrow_small"
         app:leftPadding="@dimen/dp_16"
         app:leftText="@string/str_nickname"
-        app:leftTextColor="@color/colorText"
+        app:leftTextColor="@color/text_main"
         app:leftTextSize="@dimen/dp_16"
         app:parentHeight="@dimen/dp_60"
         app:rightPadding="@dimen/dp_25" />

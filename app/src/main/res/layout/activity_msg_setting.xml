@@ -15,13 +15,13 @@
         app:dividerShow="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/str_msg_setting"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/nsv_setting"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorText_0">
+        android:background="@color/transparent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,7 +34,7 @@
                 android:layout_marginStart="@dimen/dp_25"
                 android:gravity="center_vertical"
                 android:text="@string/str_device_setting"
-                android:textColor="@color/colorText_60"
+                android:textColor="@color/text_caption"
                 android:textSize="@dimen/sp_14" />
 
             <sunmi.common.view.SmRecyclerView
@@ -51,7 +51,7 @@
                 android:layout_marginStart="@dimen/dp_25"
                 android:gravity="center_vertical"
                 android:text="@string/str_system_setting"
-                android:textColor="@color/colorText_60"
+                android:textColor="@color/text_caption"
                 android:textSize="@dimen/sp_14" />
 
             <RelativeLayout
@@ -65,7 +65,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/dp_25"
                     android:text="@string/str_task_msg"
-                    android:textColor="@color/colorText"
+                    android:textColor="@color/text_main"
                     android:textSize="@dimen/sp_16" />
 
                 <Switch
@@ -92,7 +92,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/dp_25"
                     android:text="@string/str_service_msg"
-                    android:textColor="@color/colorText"
+                    android:textColor="@color/text_main"
                     android:textSize="@dimen/sp_16" />
 
                 <Switch
@@ -119,7 +119,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/dp_25"
                     android:text="@string/str_promotion_msg"
-                    android:textColor="@color/colorText"
+                    android:textColor="@color/text_main"
                     android:textSize="@dimen/sp_16" />
 
                 <Switch

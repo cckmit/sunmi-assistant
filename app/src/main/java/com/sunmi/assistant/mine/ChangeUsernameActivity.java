@@ -41,7 +41,7 @@ public class ChangeUsernameActivity extends BaseMvpActivity<ChangeUsernamePresen
         mPresenter.attachView(this);
         mPresenter.getUsername();
         titleBar.setRightTextViewText(R.string.str_complete);
-        titleBar.setRightTextViewColor(R.color.colorText);
+        titleBar.setRightTextViewColor(R.color.text_main);
         titleBar.getRightTextView().setOnClickListener(this);
         cetUserName.addTextChangedListener(this);
         cetUserName.requestFocus();
@@ -92,10 +92,10 @@ public class ChangeUsernameActivity extends BaseMvpActivity<ChangeUsernamePresen
     @Override
     public void afterTextChanged(Editable s) {
         if (TextUtils.isEmpty(s.toString())) {
-            titleBar.setRightTextViewColor(R.color.colorText_40);
+            titleBar.setRightTextViewColor(R.color.text_caption);
             titleBar.getRightTextView().setClickable(false);
         } else {
-            titleBar.setRightTextViewColor(R.color.colorText);
+            titleBar.setRightTextViewColor(R.color.text_main);
             titleBar.getRightTextView().setClickable(true);
         }
     }

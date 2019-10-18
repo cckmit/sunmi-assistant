@@ -25,7 +25,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_8"
         android:text="@string/tip_check_ipc_wifi"
-        android:textColor="@color/color_666666"
+        android:textColor="@color/text_normal"
         android:textSize="@dimen/sp_12" />
 
     <Button

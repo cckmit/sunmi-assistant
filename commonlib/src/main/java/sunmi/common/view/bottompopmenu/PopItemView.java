@@ -28,9 +28,9 @@ public class PopItemView extends AppCompatTextView implements View.OnClickListen
         setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         if (popItemAction != null) {
             if (popItemAction.getStyle() == PopItemAction.PopItemStyle.Normal) {
-                setTextColor(getResources().getColor(R.color.pop_item_text_normal_color));
+                setTextColor(getResources().getColor(R.color.text_main));
             } else if (popItemAction.getStyle() == PopItemAction.PopItemStyle.Cancel) {
-                setTextColor(getResources().getColor(R.color.pop_item_text_normal_color));
+                setTextColor(getResources().getColor(R.color.text_main));
                 getPaint().setFakeBoldText(true);
             } else if (popItemAction.getStyle() == PopItemAction.PopItemStyle.Warning) {
                 setTextColor(getResources().getColor(R.color.common_orange));

@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         app:dividerShow="true"
         app:titleText="@string/str_title_ipc_set"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <RelativeLayout
         android:id="@+id/rl_loading"

@@ -26,7 +26,7 @@
                 android:id="@+id/rlNetException"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorText_10"
+                android:background="@color/c_divider"
                 android:gravity="center"
                 android:visibility="gone">
 
@@ -45,7 +45,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="@dimen/dp_15"
                     android:text="@string/str_net_exception"
-                    android:textColor="@color/colorText_60"
+                    android:textColor="@color/text_caption"
                     android:textSize="@dimen/sp_14" />
 
                 <Button

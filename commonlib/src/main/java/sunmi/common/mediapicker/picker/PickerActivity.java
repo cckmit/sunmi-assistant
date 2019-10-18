@@ -173,10 +173,10 @@ public class PickerActivity extends BaseMvpActivity<PickerPresenter>
         TextView down = mTitleBar.getRightText();
         if (mPresenter.getSelectSize() == 0) {
             down.setEnabled(false);
-            down.setTextColor(ContextCompat.getColor(this, R.color.colorText_60));
+            down.setTextColor(ContextCompat.getColor(this, R.color.text_caption));
         } else {
             down.setEnabled(true);
-            down.setTextColor(ContextCompat.getColor(this, R.color.colorText));
+            down.setTextColor(ContextCompat.getColor(this, R.color.text_main));
         }
     }
 

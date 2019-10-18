@@ -117,7 +117,7 @@ public class ImportOrderSelectPlatformActivity extends BaseActivity {
                 tvPlatform.setTextColor(ContextCompat.getColor(mContext, R.color.common_orange));
                 ivSelect.setVisibility(View.VISIBLE);
             } else {
-                tvPlatform.setTextColor(ContextCompat.getColor(mContext, R.color.colorText));
+                tvPlatform.setTextColor(ContextCompat.getColor(mContext, R.color.text_main));
                 ivSelect.setVisibility(View.GONE);
             }
         }

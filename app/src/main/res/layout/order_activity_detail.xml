@@ -19,7 +19,7 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/order_detail_title"
-        app:titleTextColor="@color/color_333338" />
+        app:titleTextColor="@color/text_main" />
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/order_detail_scroll"
@@ -45,7 +45,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_32"
-                    android:textColor="@color/color_333338"
+                    android:textColor="@color/text_main"
                     android:textSize="@dimen/sp_28"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -58,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_8"
                     android:text="@string/order_success"
-                    android:textColor="@color/color_85858A"
+                    android:textColor="@color/text_caption"
                     android:textSize="@dimen/sp_14"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -83,7 +83,7 @@
                     android:layout_marginStart="@dimen/dp_20"
                     android:layout_marginTop="@dimen/dp_20"
                     android:text="@string/order_no"
-                    android:textColor="@color/color_85858A"
+                    android:textColor="@color/text_caption"
                     android:textSize="@dimen/sp_14"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/order_detail_line_decoration" />
@@ -98,7 +98,7 @@
                     android:ellipsize="end"
                     android:gravity="end"
                     android:maxLines="1"
-                    android:textColor="@color/color_333338"
+                    android:textColor="@color/text_main"
                     android:textSize="@dimen/sp_14"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1"
@@ -112,7 +112,7 @@
                     android:layout_marginStart="@dimen/dp_20"
                     android:layout_marginTop="@dimen/dp_20"
                     android:text="@string/order_time"
-                    android:textColor="@color/color_85858A"
+                    android:textColor="@color/text_caption"
                     android:textSize="@dimen/sp_14"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/order_id_label" />
@@ -123,7 +123,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_20"
                     android:layout_marginEnd="@dimen/dp_20"
-                    android:textColor="@color/color_333338"
+                    android:textColor="@color/text_main"
                     android:textSize="@dimen/sp_14"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/order_id_label" />
@@ -135,7 +135,7 @@
                     android:layout_marginStart="@dimen/dp_20"
                     android:layout_marginTop="@dimen/dp_20"
                     android:text="@string/order_pay_method"
-                    android:textColor="@color/color_85858A"
+                    android:textColor="@color/text_caption"
                     android:textSize="@dimen/sp_14"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/order_time_label" />
@@ -150,7 +150,7 @@
                     android:ellipsize="end"
                     android:gravity="end"
                     android:maxLines="1"
-                    android:textColor="@color/color_333338"
+                    android:textColor="@color/text_main"
                     android:textSize="@dimen/sp_14"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1"
@@ -162,7 +162,7 @@
                     android:layout_width="0dp"
                     android:layout_height="@dimen/dp_8"
                     android:layout_marginTop="@dimen/dp_20"
-                    android:background="@color/color_FAFAFA"
+                    android:background="@color/bg_common"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/order_type_label" />
@@ -190,7 +190,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_32"
-                android:background="@color/color_FAFAFA" />
+                android:background="@color/bg_common" />
 
         </LinearLayout>
 

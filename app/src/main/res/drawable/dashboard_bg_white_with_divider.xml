@@ -5,7 +5,7 @@
             <solid android:color="@color/c_white" />
             <stroke
                 android:width="0.5dp"
-                android:color="@color/color_CED2D9" />
+                android:color="@color/c_divider" />
         </shape>
     </item>
 </layer-list>
