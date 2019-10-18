@@ -15,7 +15,7 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_light"
         app:titleText="@string/str_set_password"
-        app:titleTextColor="@color/colorWhite" />
+        app:titleTextColor="@color/c_white" />
 
     <LinearLayout
         android:id="@+id/ll_register_step"
@@ -50,7 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_157"
         android:text="@string/str_input_captcha"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/c_white"
         android:textSize="@dimen/sp_28" />
 
     <RelativeLayout
@@ -72,7 +72,7 @@
             android:hint="@string/tip_input_captcha"
             android:inputType="number"
             android:maxLength="4"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/c_white"
             android:textColorHint="@color/white_40a"
             android:textSize="@dimen/sp_16" />
 

@@ -3,6 +3,8 @@ package com.sunmi.ipc.rpc;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.sunmi.ipc.face.model.FaceArrivalCount;
+import com.sunmi.ipc.face.model.FaceArrivalLogResp;
 import com.sunmi.ipc.model.CloudTimeSlotResp;
 import com.sunmi.ipc.model.FaceAgeRangeResp;
 import com.sunmi.ipc.model.FaceCheckResp;
@@ -514,7 +516,82 @@ public class IpcCloudApi {
             e.printStackTrace();
         }
     }
-    
+
+    /**
+     * companyId company_id	是	int64	商户id
+     * shop_id	是	int64	店铺id
+     * start_time	否	string	起始时间 YYYY-MM-DD （不传为查询全部）
+     * end_time	否	string	结束时间 YYYY-MM-DD （不传为查询全部） 起始时间必须同时传才生效
+     * group_id	否	int64	人脸库id （不传为查询全部）
+     * device_id	否	int64	设备id （不传为查询全部）
+     * age_range	否	array[int64]	年龄范围 （不传为查询全部）
+     * gender	否	int64	性别 （不传为查询全部）
+     * page_num	否	int32	页码 （不传为查询全部不分页）
+     * page_size	否	int32	每页条数 （不传为查询全部不分页）
+     */
+    public void getArrivalListByTimeRange(int companyId, int shopId, String startTime, String endTime, int groupId,
+                                          int deviceId, List<Integer> ageRange, int gender, int pageNum,
+                                          int pageSize, RetrofitCallback<FaceArrivalLogResp> callback) {
+        try {
+            JSONObject params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId);
+            if (startTime != null) {
+                params.put("start_time", startTime);
+            }
+            if (endTime != null) {
+                params.put("end_time", endTime);
+            }
+            if (groupId != 0) {
+                params.put("group_id", groupId);
+            }
+            if (deviceId != 0) {
+                params.put("device_id", deviceId);
+            }
+            if (ageRange != null) {
+                params.put("age_range", ageRange);
+            }
+            if (gender != 0) {
+                params.put("gender", gender);
+            }
+            params.put("page_num", pageNum);
+            params.put("page_size", pageSize);
+            SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
+                    .getArrivalListByTimeRange(new BaseRequest(params.toString()))
+                    .enqueue(callback);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * company_id	是	int64	商户id
+     * shop_id	是	int64	店铺id
+     * start_time	否	string	起始时间 YYYY-MM-DD （不传为查询全部）
+     * end_time	否	string	结束时间 YYYY-MM-DD （不传为查询全部）
+     * face_id	是	int64	人脸id
+     */
+    public void getArrivalCountByTimeRange(int companyId, int shopId, String startTime, String endTime, int faceId,
+                                           RetrofitCallback<FaceArrivalCount> callback) {
+        try {
+            JSONObject params = new JSONObject()
+                    .put("company_id",companyId)
+                    .put("shop_id",shopId);
+            if (startTime!=null){
+                params.put("start_time",startTime);
+            }
+            if (endTime!=null){
+                params.put("end_time",endTime);
+            }
+            params.put("face_id",faceId);
+            SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
+                    .getArrivalCountByTimeRange(new BaseRequest(params.toString()))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * 对参数进行加签

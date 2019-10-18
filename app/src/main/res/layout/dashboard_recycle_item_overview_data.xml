@@ -30,7 +30,7 @@
             android:id="@+id/tv_dashboard_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorOrange"
+            android:textColor="@color/common_orange"
             android:textSize="@dimen/sp_40"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"

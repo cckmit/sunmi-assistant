@@ -72,6 +72,21 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.sign
         }
+        googleplay {
+            defaultConfig.versionCode Integer.parseInt(GOOGLE_VERSION_CODE)
+            defaultConfig.versionName GOOGLE_VERSION_NAME
+            manifestPlaceholders = [
+                    ENV_VALUE       : "ENV_RELEASE",
+                    DB_VERSION_VALUE: "2",
+                    APP_NAME        : "@string/app_name",
+                    MTA_APPKEY      : "A6INR132MGAI",
+                    MTA_CHANNEL     : "google"]
+            //Zipalign优化
+            zipAlignEnabled true
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.sign
+        }
     }
 
     sourceSets {
@@ -99,6 +114,7 @@ android {
     packagingOptions {
         exclude 'META-INF/proguard/androidx-annotations.pro'
     }
+
 }
 
 repositories {
@@ -122,7 +138,9 @@ dependencies {
 
     implementation project(':commonlib')//公共库
     implementation project(':ipc')
-//    implementation project(':apmanager')
+    implementation project(':sunmiservice')
+    implementation project(':apmanager')
+    implementation project(':cloudprinter')
     implementation project(':MPChartLib')
 
     testImplementation 'junit:junit:4.12'

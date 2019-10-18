@@ -32,8 +32,6 @@ import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.ViewHolder;
-import sunmi.common.view.bottompopmenu.BottomPopMenu;
-import sunmi.common.view.bottompopmenu.PopItemAction;
 
 /**
  * 我的店铺
@@ -72,18 +70,7 @@ public class ShopListActivity extends BaseActivity {
     void onAddClick() {
         CommonUtils.trackCommonEvent(context, "addStore",
                 "主页_我的_我的店铺_添加店铺", Constants.EVENT_MY_INFO);
-        BottomPopMenu.Builder builder = new BottomPopMenu.Builder(this);
-        builder.setTitle(R.string.company_shop_new_create_or_import)
-                .setIsShowCircleBackground(true)
-                .addItemAction(new PopItemAction(R.string.company_shop_new_create,
-                        PopItemAction.PopItemStyle.Normal, this::createShop));
-        if (!CommonHelper.isGooglePlay()) {
-            builder.addItemAction(new PopItemAction(R.string.company_shop_import,
-                    PopItemAction.PopItemStyle.Normal, this::importShop));
-        }
-        builder.addItemAction(new PopItemAction(R.string.sm_cancel,
-                PopItemAction.PopItemStyle.Cancel))
-                .create().show();
+        createShop();
     }
 
     private void createShop() {

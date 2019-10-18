@@ -44,7 +44,7 @@ public class AboutActivity extends BaseActivity {
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        ViewUtils.setPrivacy(this, ctvPrivacy, R.color.colorOrange, false);
+        ViewUtils.setPrivacy(this, ctvPrivacy, R.color.common_orange, false);
         tvVersion.setText(getString(R.string.str_version, CommonHelper.getAppVersionName(this)));
         if (!CommonHelper.isGooglePlay()){
             rlVersion.setVisibility(View.VISIBLE);

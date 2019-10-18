@@ -307,7 +307,7 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
 
         // Refresh data set
         if (model.type == Constants.DATA_TYPE_RATE) {
-            int color = ContextCompat.getColor(holder.getContext(), R.color.colorOrange);
+            int color = ContextCompat.getColor(holder.getContext(), R.color.common_orange);
             mLineChartMarker.setType(model.period, model.type);
             mLineChartMarker.setPointColor(color);
             LineDataSet set;
@@ -342,7 +342,7 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
                     ContextCompat.getColor(holder.getContext(), R.color.color_FFD0B3) :
                     ContextCompat.getColor(holder.getContext(), R.color.color_AFC3FA);
             int colorHighlight = model.type == Constants.DATA_TYPE_VOLUME ?
-                    ContextCompat.getColor(holder.getContext(), R.color.colorOrange) :
+                    ContextCompat.getColor(holder.getContext(), R.color.common_orange) :
                     ContextCompat.getColor(holder.getContext(), R.color.color_4B7AFA);
             BarDataSet set;
             BarData data = bar.getData();

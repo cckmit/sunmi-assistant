@@ -23,11 +23,11 @@ public class DiffuseView extends View {
     /**
      * 扩散圆圈颜色
      */
-    private int mColor = getResources().getColor(R.color.colorOrange);
+    private int mColor = getResources().getColor(R.color.common_orange);
     /**
      * 圆圈中心颜色
      */
-    private int mCoreColor = getResources().getColor(R.color.colorOrange);
+    private int mCoreColor = getResources().getColor(R.color.common_orange);
     /**
      * 圆圈中心图片
      */

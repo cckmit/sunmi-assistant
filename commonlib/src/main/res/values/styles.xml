@@ -4,7 +4,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorOrange</item>
+        <item name="colorAccent">@color/common_orange</item>
 
         <!--上方状态栏-->
         <item name="android:windowTranslucentStatus">true</item>
@@ -90,8 +90,8 @@
     </style>
 
     <style name="MyEditText" parent="Theme.AppCompat.Light">
-        <item name="colorControlNormal">@color/colorOrange</item>
-        <item name="colorControlActivated">@color/colorOrange</item>
+        <item name="colorControlNormal">@color/common_orange</item>
+        <item name="colorControlActivated">@color/common_orange</item>
     </style>
 
     <style name="BtnOrange">

@@ -5,7 +5,7 @@
     <size
         android:width="@dimen/dp_18"
         android:height="@dimen/dp_18" />
-    <solid android:color="@color/colorOrange" />
+    <solid android:color="@color/common_orange" />
 
     <stroke
         android:width="@dimen/dp_5"
