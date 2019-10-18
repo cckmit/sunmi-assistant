@@ -131,7 +131,7 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
         lineXAxis.setDrawAxisLine(true);
         lineXAxis.setDrawGridLines(false);
         lineXAxis.setTextSize(10f);
-        lineXAxis.setTextColor(ContextCompat.getColor(context, R.color.color_A1A7B3));
+        lineXAxis.setTextColor(ContextCompat.getColor(context, R.color.text_disable));
         lineXAxis.setValueFormatter(new XAxisLabelFormatter(context));
         lineXAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
@@ -141,7 +141,7 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
         lineYAxis.setGranularityEnabled(true);
         lineYAxis.setGranularity(1f);
         lineYAxis.setTextSize(10f);
-        lineYAxis.setTextColor(ContextCompat.getColor(context, R.color.color_A1A7B3));
+        lineYAxis.setTextColor(ContextCompat.getColor(context, R.color.text_disable));
         lineYAxis.setAxisMinimum(0f);
         lineYAxis.setDrawGridLines(true);
         lineYAxis.setGridColor(ContextCompat.getColor(context, R.color.black_10));

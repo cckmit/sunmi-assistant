@@ -12,7 +12,7 @@
         android:layout_marginStart="@dimen/dp_24"
         android:layout_marginTop="@dimen/dp_24"
         android:text="@string/dashboard_card_title_customer_trend"
-        android:textColor="@color/color_303540"
+        android:textColor="@color/text_title"
         android:textSize="@dimen/sp_14"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"

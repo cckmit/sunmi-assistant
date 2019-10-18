@@ -151,13 +151,13 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
         lineXAxis.setDrawAxisLine(true);
         lineXAxis.setDrawGridLines(false);
         lineXAxis.setTextSize(10f);
-        lineXAxis.setTextColor(ContextCompat.getColor(context, R.color.color_A1A7B3));
+        lineXAxis.setTextColor(ContextCompat.getColor(context, R.color.text_disable));
         lineXAxis.setValueFormatter(new XAxisLabelFormatter(context));
         lineXAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         barXAxis.setDrawAxisLine(true);
         barXAxis.setDrawGridLines(false);
         barXAxis.setTextSize(10f);
-        barXAxis.setTextColor(ContextCompat.getColor(context, R.color.color_A1A7B3));
+        barXAxis.setTextColor(ContextCompat.getColor(context, R.color.text_disable));
         barXAxis.setValueFormatter(new XAxisLabelFormatter(context));
         barXAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
@@ -168,7 +168,7 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
         lineYAxis.setGranularityEnabled(true);
         lineYAxis.setGranularity(0.2f);
         lineYAxis.setTextSize(10f);
-        lineYAxis.setTextColor(ContextCompat.getColor(context, R.color.color_A1A7B3));
+        lineYAxis.setTextColor(ContextCompat.getColor(context, R.color.text_disable));
         lineYAxis.setAxisMinimum(0f);
         lineYAxis.setAxisMaximum(1f);
         lineYAxis.setDrawGridLines(true);
@@ -179,7 +179,7 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
         barYAxis.setGranularityEnabled(true);
         barYAxis.setGranularity(1f);
         barYAxis.setTextSize(10f);
-        barYAxis.setTextColor(ContextCompat.getColor(context, R.color.color_A1A7B3));
+        barYAxis.setTextColor(ContextCompat.getColor(context, R.color.text_disable));
         barYAxis.setAxisMinimum(0f);
         barYAxis.setDrawGridLines(true);
         barYAxis.setGridColor(ContextCompat.getColor(context, R.color.black_10));

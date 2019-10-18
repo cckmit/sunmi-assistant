@@ -30,7 +30,7 @@
             android:id="@+id/tv_dashboard_marker_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/color_777E8C"
+            android:textColor="@color/text_caption"
             android:textSize="8sp"
             tool:text="2019.01.01 18:00" />
 
@@ -38,7 +38,7 @@
             android:id="@+id/tv_dashboard_marker_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/color_303540"
+            android:textColor="@color/text_title"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold"
             tool:text="150" />
@@ -47,7 +47,7 @@
             android:id="@+id/tv_dashboard_marker_label1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/color_777E8C"
+            android:textColor="@color/text_caption"
             android:textSize="@dimen/sp_10"
             tool:text="标签1: 50" />
 
@@ -55,7 +55,7 @@
             android:id="@+id/tv_dashboard_marker_label2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/color_777E8C"
+            android:textColor="@color/text_caption"
             android:textSize="@dimen/sp_10"
             tool:text="标签2: 100" />
 
