@@ -36,6 +36,10 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
 
     private List<BaseRefreshCard> mList = new ArrayList<>();
 
+    public OverviewPresenter() {
+        LogCat.d(TAG, "Create OverviewPresenter");
+    }
+
     @Override
     public int getType() {
         return Constants.PAGE_OVERVIEW;
@@ -90,6 +94,7 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
 
     @Override
     public void setPeriod(int period) {
+        LogCat.d(TAG, "Set period: " + period);
         mPeriod = period;
         for (BaseRefreshCard card : mList) {
             card.setPeriod(period, false);

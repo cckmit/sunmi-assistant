@@ -140,6 +140,9 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         mPages.add(customerPresenter);
         pages.add(new PageHost(R.string.dashboard_page_customer, 0, customerFragment));
 
+        LogCat.d(TAG, "getPages; Fragment=" + mView + "; Presenter=" + this);
+        LogCat.d(TAG, "OverviewFragment=" + overviewFragment + "; Presenter=" + overviewPresenter);
+        LogCat.d(TAG, "CustomerFragment=" + customerFragment + "; Presenter=" + customerPresenter);
         return pages;
     }
 
