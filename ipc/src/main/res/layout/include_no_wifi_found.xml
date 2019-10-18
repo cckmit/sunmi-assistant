@@ -13,7 +13,7 @@
         android:drawableTop="@mipmap/ic_ipc_no_wifi"
         android:drawablePadding="@dimen/dp_16"
         android:text="@string/tip_no_wifi_for_ipc"
-        android:textColor="@color/color_333333"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_20" />
 
     <TextView
@@ -24,7 +24,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_8"
         android:text="@string/tip_check_network"
-        android:textColor="@color/color_666666"
+        android:textColor="@color/text_normal"
         android:textSize="@dimen/sp_12" />
 
     <Button

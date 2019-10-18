@@ -15,7 +15,7 @@
         app:leftIcon="@drawable/ic_back_dark"
         app:rightText="@string/str_save"
         app:titleText="@string/str_select_area"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <LinearLayout
         android:id="@+id/linear"
@@ -33,7 +33,7 @@
             android:background="@null"
             android:gravity="start|center_vertical"
             android:text="@string/str_choose_please"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold" />
 
@@ -44,7 +44,7 @@
             android:layout_weight="1"
             android:background="@null"
             android:gravity="start"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold" />
 
@@ -55,7 +55,7 @@
             android:layout_weight="1"
             android:background="@null"
             android:gravity="start"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold" />
     </LinearLayout>

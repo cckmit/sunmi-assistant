@@ -53,9 +53,9 @@ public class PopUpView extends LinearLayout {
     }
 
     private void initTextAndMessage() {
-        mTitleColor = getResources().getColor(R.color.pop_action_sheet_title);
+        mTitleColor = getResources().getColor(R.color.text_normal);
         mTitleTextSize = getResources().getDimensionPixelOffset(R.dimen.sp_16);
-        mMessageColor = getResources().getColor(R.color.pop_action_sheet_message);
+        mMessageColor = getResources().getColor(R.color.text_caption);
         mMessageTextSize = getResources().getDimensionPixelOffset(R.dimen.sp_14);
     }
 
@@ -129,7 +129,7 @@ public class PopUpView extends LinearLayout {
     public void setIsShowCircleBackground(boolean isShow) {
         mIsShowCircleBackground = isShow;
         if (!isShow) {
-            mContanierLl.setBackgroundColor(getContext().getResources().getColor(R.color.color_F9F9F9));
+            mContanierLl.setBackgroundColor(getContext().getResources().getColor(R.color.common_fill));
             if (mCancelItemView != null) {
                 mCancelItemView.setBackgroundResource(R.drawable.pop_selector_cancel);
             }

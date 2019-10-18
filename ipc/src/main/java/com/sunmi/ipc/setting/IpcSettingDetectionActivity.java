@@ -122,15 +122,15 @@ public class IpcSettingDetectionActivity extends BaseActivity {
         mSensitivitySeekBar.setEnabled(enable);
         mSensitivitySeekBar.setProgress(sensitivity);
         if (enable) {
-            mSensitivityTitle.setTextColor(ContextCompat.getColor(this, R.color.colorText));
-            mSensitivityLow.setTextColor(ContextCompat.getColor(this, R.color.colorText_60));
-            mSensitivityMid.setTextColor(ContextCompat.getColor(this, R.color.colorText_60));
-            mSensitivityHigh.setTextColor(ContextCompat.getColor(this, R.color.colorText_60));
+            mSensitivityTitle.setTextColor(ContextCompat.getColor(this, R.color.text_main));
+            mSensitivityLow.setTextColor(ContextCompat.getColor(this, R.color.text_caption));
+            mSensitivityMid.setTextColor(ContextCompat.getColor(this, R.color.text_caption));
+            mSensitivityHigh.setTextColor(ContextCompat.getColor(this, R.color.text_caption));
         } else {
-            mSensitivityTitle.setTextColor(ContextCompat.getColor(this, R.color.color_BBBBC7));
-            mSensitivityLow.setTextColor(ContextCompat.getColor(this, R.color.color_BBBBC7));
-            mSensitivityMid.setTextColor(ContextCompat.getColor(this, R.color.color_BBBBC7));
-            mSensitivityHigh.setTextColor(ContextCompat.getColor(this, R.color.color_BBBBC7));
+            mSensitivityTitle.setTextColor(ContextCompat.getColor(this, R.color.text_disable));
+            mSensitivityLow.setTextColor(ContextCompat.getColor(this, R.color.text_disable));
+            mSensitivityMid.setTextColor(ContextCompat.getColor(this, R.color.text_disable));
+            mSensitivityHigh.setTextColor(ContextCompat.getColor(this, R.color.text_disable));
         }
     }
 

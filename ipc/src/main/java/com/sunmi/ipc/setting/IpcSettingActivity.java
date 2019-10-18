@@ -199,7 +199,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             lp.topMargin = (int) getResources().getDimension(R.dimen.dp_16);
             mSoundDetection.setLayoutParams(lp);
         } else if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
-            mAdjustScreen.setLeftTextColor(ContextCompat.getColor(this, R.color.colorText_40));
+            mAdjustScreen.setLeftTextColor(ContextCompat.getColor(this, R.color.text_caption));
         }
     }
 
@@ -523,8 +523,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             mWifiName.setRightText(wifiSsid);
             if (wifiIsWire == 0) {
                 mWifiName.setRightText(getString(R.string.ipc_setting_unknown));
-                mWifiName.setLeftTextColor(ContextCompat.getColor(this, R.color.colorText_40));
-                mWifiName.setRightTextColor(ContextCompat.getColor(this, R.color.colorText_40));
+                mWifiName.setLeftTextColor(ContextCompat.getColor(this, R.color.text_caption));
+                mWifiName.setRightTextColor(ContextCompat.getColor(this, R.color.text_caption));
             }
         }
     }
@@ -555,10 +555,10 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     void isCanSetWdr(int nightMode) {
         if (nightMode == 1) {
             swWdr.setEnabled(false);
-            tvWdr.setTextColor(ContextCompat.getColor(this, R.color.colorText_40));
+            tvWdr.setTextColor(ContextCompat.getColor(this, R.color.text_caption));
         } else {
             swWdr.setEnabled(true);
-            tvWdr.setTextColor(ContextCompat.getColor(this, R.color.colorText));
+            tvWdr.setTextColor(ContextCompat.getColor(this, R.color.text_main));
         }
     }
 
@@ -763,15 +763,15 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     @UiThread
     void setWifiUnknown() {
         mWifiName.setRightText(getString(R.string.ipc_setting_unknown));
-        mWifiName.setLeftTextColor(ContextCompat.getColor(context, R.color.colorText_40));
-        mWifiName.setRightTextColor(ContextCompat.getColor(context, R.color.colorText_40));
+        mWifiName.setLeftTextColor(ContextCompat.getColor(context, R.color.text_caption));
+        mWifiName.setRightTextColor(ContextCompat.getColor(context, R.color.text_caption));
     }
 
     @UiThread
     void showWifiName(String ssid) {
         mWifiName.setRightText(ssid);
-        mWifiName.setLeftTextColor(ContextCompat.getColor(context, R.color.colorText));
-        mWifiName.setRightTextColor(ContextCompat.getColor(context, R.color.colorText_60));
+        mWifiName.setLeftTextColor(ContextCompat.getColor(context, R.color.text_main));
+        mWifiName.setRightTextColor(ContextCompat.getColor(context, R.color.text_caption));
     }
 
     @UiThread
@@ -1023,7 +1023,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         CommonDialog commonDialog = new CommonDialog.Builder(this)
                 .setTitle(getString(R.string.ipc_setting_tip))
                 .setMessage(getString(R.string.ipc_setting_check_wireless))
-                .setConfirmButton(R.string.str_confirm, R.color.colorText, (dialog, which) -> {
+                .setConfirmButton(R.string.str_confirm, R.color.text_main, (dialog, which) -> {
                     dialog.dismiss();
                     gotoIpcSettingWiFiActivity();
                 }).setCancelButton(R.string.sm_cancel, R.color.common_orange).create();

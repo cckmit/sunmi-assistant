@@ -134,7 +134,7 @@ public class ImportOrderSelectShopActivity extends BaseActivity {
                 tvName.setTextColor(ContextCompat.getColor(mContext, R.color.common_orange));
                 ivSelect.setVisibility(View.VISIBLE);
             } else {
-                tvName.setTextColor(ContextCompat.getColor(mContext, R.color.colorText));
+                tvName.setTextColor(ContextCompat.getColor(mContext, R.color.text_main));
                 ivSelect.setVisibility(View.GONE);
             }
         }

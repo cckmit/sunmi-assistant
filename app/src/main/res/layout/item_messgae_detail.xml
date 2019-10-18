@@ -28,7 +28,7 @@
         android:layout_marginEnd="@dimen/dp_25"
         android:ellipsize="end"
         android:singleLine="true"
-        android:textColor="@color/color_333338"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_16"
         android:textStyle="bold" />
 
@@ -42,7 +42,7 @@
         android:layout_marginEnd="@dimen/dp_25"
         android:ellipsize="end"
         android:singleLine="true"
-        android:textColor="@color/color_666666"
+        android:textColor="@color/text_normal"
         android:textSize="@dimen/sp_14" />
 
     <View
@@ -61,7 +61,7 @@
         android:layout_marginStart="@dimen/dp_25"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_25"
-        android:textColor="@color/color_666666"
+        android:textColor="@color/text_normal"
         android:textSize="@dimen/sp_12" />
 
     <TextView
@@ -72,7 +72,7 @@
         android:layout_marginStart="@dimen/dp_25"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_25"
-        android:textColor="@color/color_666666"
+        android:textColor="@color/text_normal"
         android:textSize="@dimen/sp_12" />
 
     <TextView
@@ -83,7 +83,7 @@
         android:layout_marginStart="@dimen/dp_25"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_25"
-        android:textColor="@color/color_666666"
+        android:textColor="@color/text_normal"
         android:textSize="@dimen/sp_12" />
 
     <View
@@ -114,7 +114,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_25"
-        android:background="@drawable/button_corners_edge_orange_solid_white"
+        android:background="@drawable/button_corners_edge_orange"
         android:text="@string/ipc_right_now_play"
         android:textColor="@color/common_orange"
         android:textSize="@dimen/sp_10" />

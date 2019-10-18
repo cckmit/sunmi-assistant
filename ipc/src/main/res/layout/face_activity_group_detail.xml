@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_FAFAFA"
+    android:background="@color/bg_common"
     android:orientation="vertical"
     tools:context=".setting.IpcSettingDetailActivity">
 
@@ -16,7 +16,7 @@
         app:dividerShow="true"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <TextView
         android:id="@+id/tv_face_group_tip"
@@ -25,7 +25,7 @@
         android:gravity="center_vertical"
         android:paddingStart="@dimen/dp_20"
         android:paddingEnd="@dimen/dp_20"
-        android:textColor="@color/colorText_60"
+        android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_14" />
 
     <sunmi.common.view.SettingItemLayout
@@ -37,11 +37,11 @@
         app:imageRight="@mipmap/ic_right_arrow_small"
         app:leftPadding="@dimen/dp_10"
         app:leftText="@string/ipc_face_group_name"
-        app:leftTextColor="@color/colorText"
+        app:leftTextColor="@color/text_main"
         app:leftTextSize="@dimen/sp_16"
         app:parentHeight="@dimen/dp_60"
         app:rightPadding="@dimen/dp_20"
-        app:rightTextColor="@color/colorText_60"
+        app:rightTextColor="@color/text_caption"
         app:rightTextSize="@dimen/sp_14" />
 
     <sunmi.common.view.SettingItemLayout
@@ -53,11 +53,11 @@
         app:imageRight="@mipmap/ic_right_arrow_small"
         app:leftPadding="@dimen/dp_10"
         app:leftText="@string/ipc_face_group_capacity"
-        app:leftTextColor="@color/colorText"
+        app:leftTextColor="@color/text_main"
         app:leftTextSize="@dimen/sp_16"
         app:parentHeight="@dimen/dp_60"
         app:rightPadding="@dimen/dp_20"
-        app:rightTextColor="@color/colorText_60"
+        app:rightTextColor="@color/text_caption"
         app:rightTextSize="@dimen/sp_14" />
 
     <sunmi.common.view.SettingItemLayout
@@ -69,11 +69,11 @@
         app:imageRight="@mipmap/ic_right_arrow_small"
         app:leftPadding="@dimen/dp_10"
         app:leftText="@string/ipc_face_group_threshold"
-        app:leftTextColor="@color/colorText"
+        app:leftTextColor="@color/text_main"
         app:leftTextSize="@dimen/sp_16"
         app:parentHeight="@dimen/dp_60"
         app:rightPadding="@dimen/dp_20"
-        app:rightTextColor="@color/colorText_60"
+        app:rightTextColor="@color/text_caption"
         app:rightTextSize="@dimen/sp_14" />
 
     <sunmi.common.view.SettingItemLayout
@@ -85,11 +85,11 @@
         app:imageRight="@mipmap/ic_right_arrow_small"
         app:leftPadding="@dimen/dp_10"
         app:leftText="@string/ipc_face_group_mark"
-        app:leftTextColor="@color/colorText"
+        app:leftTextColor="@color/text_main"
         app:leftTextSize="@dimen/sp_16"
         app:parentHeight="@dimen/dp_60"
         app:rightPadding="@dimen/dp_20"
-        app:rightTextColor="@color/colorText_60"
+        app:rightTextColor="@color/text_caption"
         app:rightTextSize="@dimen/sp_14" />
 
     <android.support.constraint.ConstraintLayout
@@ -103,7 +103,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_20"
             android:text="@string/ipc_face_group_notification"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -131,11 +131,11 @@
         app:imageRight="@mipmap/ic_right_arrow_small"
         app:leftPadding="@dimen/dp_10"
         app:leftText="@string/ipc_face_group_manage"
-        app:leftTextColor="@color/colorText"
+        app:leftTextColor="@color/text_main"
         app:leftTextSize="@dimen/sp_16"
         app:parentHeight="@dimen/dp_60"
         app:rightPadding="@dimen/dp_20"
-        app:rightTextColor="@color/colorText_60"
+        app:rightTextColor="@color/text_caption"
         app:rightTextSize="@dimen/sp_14" />
 
 </LinearLayout>

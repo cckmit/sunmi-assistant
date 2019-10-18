@@ -24,7 +24,7 @@
         android:layout_marginTop="@dimen/dp_16"
         android:ellipsize="end"
         android:singleLine="true"
-        android:textColor="@color/colorText"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_16" />
 
     <TextView
@@ -36,7 +36,7 @@
         android:layout_marginTop="@dimen/dp_6"
         android:ellipsize="end"
         android:singleLine="true"
-        android:textColor="@color/colorText_40"
+        android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_12" />
 
     <View

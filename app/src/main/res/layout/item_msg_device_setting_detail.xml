@@ -12,7 +12,7 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/dp_25"
         android:text="@string/str_service_msg"
-        android:textColor="@color/colorText"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_16" />
 
     <Switch

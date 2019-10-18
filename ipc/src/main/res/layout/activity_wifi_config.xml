@@ -14,7 +14,7 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/str_title_ipc_set"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <RelativeLayout
         android:id="@+id/rl_main"
@@ -31,7 +31,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_24"
             android:text="@string/tip_choose_wifi_to_connect"
-            android:textColor="@color/color_333333"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_28"
             android:textStyle="bold" />
 
@@ -54,7 +54,7 @@
                     android:id="@+id/divider"
                     android:layout_width="wrap_content"
                     android:layout_height="1dp"
-                    android:background="@color/color_divider"
+                    android:background="@color/c_divider"
                     android:visibility="gone" />
 
                 <android.support.v7.widget.RecyclerView

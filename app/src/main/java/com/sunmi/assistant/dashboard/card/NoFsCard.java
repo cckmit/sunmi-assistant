@@ -71,7 +71,7 @@ public class NoFsCard extends BaseRefreshCard<NoFsCard.Model, Object> {
     public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
         BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
         Context context = holder.getContext();
-        this.mColorGray = ContextCompat.getColor(context, R.color.color_F5F7FA);
+        this.mColorGray = ContextCompat.getColor(context, R.color.common_fill);
         this.mColorWhite = 0xFFFFFFFF;
         float radius = context.getResources().getDimension(R.dimen.dp_12);
         this.mContentBg = new GradientDrawable();

@@ -284,7 +284,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
                     shopItem.setRightImage(ContextCompat.getDrawable(context, com.sunmi.ipc.R.mipmap.ic_yes));
                     shopItem.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.common_orange));
                 } else {
-                    shopItem.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.colorText));
+                    shopItem.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.text_main));
                     shopItem.setRightImage(null);
                 }
             }

@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="color_FAFAFA">#FAFAFA</color>
     <color name="shimmer_color">#a2878787</color>
 
-    <color name="color_E6E8EB">#E6E8EB</color>
-    <color name="color_F5F7FA">#F5F7FA</color>
     <color name="color_FF6000_30">#4CFF6000</color>
     <color name="color_FFD0B3">#FFD0B3</color>
-    <color name="color_AFC3FA">#AFC3FA</color>
     <color name="color_F0F2F5">#F0F2F5</color>
     <color name="color_FF8000">#FF8000</color>
-    <color name="color_5A97FC">#5A97FC</color>
     <color name="color_FF8133">#FF8133</color>
+    <color name="color_AFC3FA">#AFC3FA</color>
+    <color name="color_4B7AFA">#6CBBFF</color>
+
 </resources>

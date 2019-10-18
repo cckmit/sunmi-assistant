@@ -18,7 +18,7 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/import_order_access_shop_data"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <ImageView
         android:id="@+id/iv_import_order"
@@ -39,7 +39,7 @@
         android:layout_marginTop="@dimen/dp_92"
         android:layout_marginEnd="@dimen/dp_40"
         android:lineSpacingExtra="@dimen/dp_3"
-        android:textColor="@color/text_title"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_16"
         app:layout_constraintTop_toBottomOf="@id/title_bar" />
 
@@ -53,7 +53,7 @@
         android:gravity="center"
         android:lineSpacingExtra="@dimen/dp_3"
         android:text="@string/import_order_support_platform_tip"
-        android:textColor="@color/text_title"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintBottom_toTopOf="@id/btn_import_current_mobile"

@@ -59,7 +59,7 @@
             android:background="@drawable/abc_list_selector_holo_light"
             android:gravity="center"
             android:text="@string/sm_cancel"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="14sp" />
 
         <ImageView

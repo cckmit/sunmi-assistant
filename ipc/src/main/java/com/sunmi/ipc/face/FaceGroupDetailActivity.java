@@ -365,7 +365,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
                 } else {
                     etInput.setBackgroundResource(R.drawable.edittext_edge_grey2);
                     errorTip.setText(getString(R.string.ipc_face_photo_num_remainder, nowCapacity));
-                    errorTip.setTextColor(ContextCompat.getColor(context, R.color.colorText_40));
+                    errorTip.setTextColor(ContextCompat.getColor(context, R.color.text_caption));
                 }
             }
 

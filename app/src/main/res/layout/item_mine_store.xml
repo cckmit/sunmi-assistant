@@ -15,13 +15,13 @@
         app:leftPadding="@dimen/dp_10"
         app:parentHeight="@dimen/dp_60"
         app:rightPadding="@dimen/dp_20"
-        app:rightTextColor="@color/colorText_60" />
+        app:rightTextColor="@color/text_caption" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/colorText_10" />
+        android:background="@color/c_divider" />
 
 
 </RelativeLayout>
