@@ -154,7 +154,7 @@ public class ShopTitlePopupWindow extends PopupWindow implements View.OnTouchLis
                 dropdownItemName.setTextColor(ContextCompat.getColor(mContext, R.color.common_orange));
             } else {
                 dropdownItemCheckbox.setVisibility(View.GONE);
-                dropdownItemName.setTextColor(ContextCompat.getColor(mContext, R.color.color_525866));
+                dropdownItemName.setTextColor(ContextCompat.getColor(mContext, R.color.text_body));
             }
             holder.itemView.setOnClickListener(v -> {
                 SpUtils.setShopId(shopInfo.getShop_id());

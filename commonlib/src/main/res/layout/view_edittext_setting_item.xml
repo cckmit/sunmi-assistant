@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/dp_20"
-        android:textColor="@color/color_525866"
+        android:textColor="@color/text_body"
         android:textSize="@dimen/sp_16" />
 
     <sunmi.common.view.ClearableEditText
@@ -33,8 +33,8 @@
         android:ellipsize="end"
         android:gravity="center_vertical"
         android:maxLines="1"
-        android:textColor="@color/color_303540"
-        android:textColorHint="@color/color_A1A7B3"
+        android:textColor="@color/text_title"
+        android:textColorHint="@color/text_disable"
         android:textSize="@dimen/sp_16" />
 
     <TextView
@@ -44,7 +44,7 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/dp_20"
-        android:textColor="@color/color_A1A7B3"
+        android:textColor="@color/text_disable"
         android:textSize="@dimen/sp_12" />
 
     <View

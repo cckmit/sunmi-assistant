@@ -393,7 +393,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             return;
         }
         StatusBarUtils.setStatusBarColor(activity, StatusBarUtils.TYPE_DARK);
-        mShopMenuTitle.setTextColor(ContextCompat.getColor(activity, R.color.color_303540));
+        mShopMenuTitle.setTextColor(ContextCompat.getColor(activity, R.color.text_title));
         mShopMenuTitleArrow.setImageResource(R.drawable.ic_arrow_drop_down_black);
         mTopShopMenu.setBackgroundResource(R.drawable.dashboard_bg_white_with_divider);
         mTopPageTab.setVisibility(View.INVISIBLE);
