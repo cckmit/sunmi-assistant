@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/color_777E8C"
-            android:textSize="8sp"
+            android:textSize="@dimen/sp_10"
             tool:text="2019.01.01 18:00" />
 
         <TextView
@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/color_303540"
-            android:textSize="@dimen/sp_16"
+            android:textSize="@dimen/sp_14"
             android:textStyle="bold"
             tool:text="150" />
 
