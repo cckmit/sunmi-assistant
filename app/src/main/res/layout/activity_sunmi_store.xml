@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/colorWhite">
+    android:background="@color/c_white">
 
     <sunmi.common.view.TitleBarView
         android:id="@+id/title_bar"

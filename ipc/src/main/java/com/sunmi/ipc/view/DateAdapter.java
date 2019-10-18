@@ -68,7 +68,7 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.ViewHolder> {
         if (apCloudList != null) {
             for (int j = 0; j < apCloudList.size(); j++) {
                 if (date > apCloudList.get(j).getStartTime() && date < apCloudList.get(j).getEndTime()) {
-                    viewHolder.rlItem.setBackgroundResource(R.color.colorOrangeLight);
+                    viewHolder.rlItem.setBackgroundResource(R.color.common_orange_20a);
 //                        if (apCloudList.get(j).isApPlay())
 //                            viewHolder.rlItem.setBackgroundResource(R.color.colorOrangeLight);
 //                        else

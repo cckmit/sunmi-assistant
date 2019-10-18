@@ -22,7 +22,7 @@
         android:id="@+id/rl_notice"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_40"
-        android:background="@color/color_FF6000"
+        android:background="@color/common_orange"
         android:visibility="gone">
 
         <TextView
@@ -44,7 +44,7 @@
             android:background="@drawable/bg_shape_notification"
             android:gravity="center"
             android:text="@string/str_go_open"
-            android:textColor="@color/color_FF6000"
+            android:textColor="@color/common_orange"
             android:textSize="@dimen/sp_12" />
 
     </RelativeLayout>
@@ -55,7 +55,7 @@
         android:layout_height="@dimen/dp_44"
         android:background="@color/c_white"
         app:tl_iconVisible="false"
-        app:tl_textSelectColor="@color/color_FF6000"
+        app:tl_textSelectColor="@color/common_orange"
         app:tl_textUnselectColor="@color/colorText"
         app:tl_textsize="@dimen/sp_14" />
 

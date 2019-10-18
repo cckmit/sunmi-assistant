@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="color_FF3838">#FF3838</color>
+    <color name="bg_badge">#FF3838</color>
 </resources>

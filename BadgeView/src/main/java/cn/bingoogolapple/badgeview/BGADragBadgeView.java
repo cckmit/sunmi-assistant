@@ -144,7 +144,7 @@ class BGADragBadgeView extends View {
         try {
             if (mExplosionAnimator == null) {
                 if (mBadgeViewHelper.isShowDrawable()) {
-                    if (mBadgeViewHelper.getBadgeBgColor() == R.color.color_FF3838) {
+                    if (mBadgeViewHelper.getBadgeBgColor() == R.color.bg_badge) {
                         mBadgePaint.setColor(mBadgeViewHelper.getBitmap().getPixel(mBadgeViewHelper.getBitmap().getWidth() / 2,
                                 mBadgeViewHelper.getBitmap().getHeight() / 2));
                     } else {

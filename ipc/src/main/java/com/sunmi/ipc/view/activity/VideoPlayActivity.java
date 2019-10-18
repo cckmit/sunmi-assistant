@@ -439,11 +439,11 @@ public class VideoPlayActivity extends BaseMvpActivity<VideoPlayPresenter>
         }
         llVideoQuality.setVisibility(llVideoQuality.isShown() ? View.GONE : View.VISIBLE);
         if (qualityType == 0) {
-            tvHDQuality.setTextColor(ContextCompat.getColor(this, R.color.colorOrange));
+            tvHDQuality.setTextColor(ContextCompat.getColor(this, R.color.common_orange));
             tvSDQuality.setTextColor(ContextCompat.getColor(this, R.color.c_white));
         } else {
             tvHDQuality.setTextColor(ContextCompat.getColor(this, R.color.c_white));
-            tvSDQuality.setTextColor(ContextCompat.getColor(this, R.color.colorOrange));
+            tvSDQuality.setTextColor(ContextCompat.getColor(this, R.color.common_orange));
         }
     }
 

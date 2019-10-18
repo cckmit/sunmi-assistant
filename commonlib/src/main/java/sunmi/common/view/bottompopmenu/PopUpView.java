@@ -129,7 +129,7 @@ public class PopUpView extends LinearLayout {
     public void setIsShowCircleBackground(boolean isShow) {
         mIsShowCircleBackground = isShow;
         if (!isShow) {
-            mContanierLl.setBackgroundColor(getContext().getResources().getColor(R.color.pop_bg_content));
+            mContanierLl.setBackgroundColor(getContext().getResources().getColor(R.color.color_F9F9F9));
             if (mCancelItemView != null) {
                 mCancelItemView.setBackgroundResource(R.drawable.pop_selector_cancel);
             }

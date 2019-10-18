@@ -51,7 +51,7 @@
             android:paddingTop="@dimen/dp_20"
             android:paddingEnd="@dimen/dp_25"
             android:paddingBottom="@dimen/dp_20"
-            android:textColor="@color/text_color"
+            android:textColor="@color/colorText"
             android:textSize="@dimen/sp_16"
             tools:ignore="MissingConstraints" />
 

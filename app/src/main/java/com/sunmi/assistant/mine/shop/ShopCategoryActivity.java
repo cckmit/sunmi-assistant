@@ -145,10 +145,10 @@ public class ShopCategoryActivity extends BaseMvpActivity<ShopCategoryPresenter>
                 mRightAdapter.setData(model.getChild());
             });
             if (mCategory1 == model.getId()) {
-                textView.setTextColor(ContextCompat.getColor(mContext, R.color.color_FF6000));
+                textView.setTextColor(ContextCompat.getColor(mContext, R.color.common_orange));
                 rlLeft.setBackgroundColor(ContextCompat.getColor(mContext, R.color.c_white));
             } else {
-                rlLeft.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorTextF9));
+                rlLeft.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_F9F9F9));
                 textView.setTextColor(ContextCompat.getColor(mContext, R.color.colorText));
             }
         }
@@ -175,7 +175,7 @@ public class ShopCategoryActivity extends BaseMvpActivity<ShopCategoryPresenter>
                 notifyDataSetChanged();
             });
             if (mCategory2 == model.getId()) {
-                textView.setTextColor(ContextCompat.getColor(mContext, R.color.color_FF6000));
+                textView.setTextColor(ContextCompat.getColor(mContext, R.color.common_orange));
             } else {
                 textView.setTextColor(ContextCompat.getColor(mContext, R.color.colorText));
             }

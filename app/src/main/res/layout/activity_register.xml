@@ -15,7 +15,7 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_light"
         app:titleText="@string/str_register"
-        app:titleTextColor="@color/colorWhite" />
+        app:titleTextColor="@color/c_white" />
 
     <TextView
         android:id="@+id/tv"
@@ -25,7 +25,7 @@
         android:layout_below="@id/title_bar"
         android:layout_marginTop="@dimen/dp_96"
         android:text="@string/tip_input_phone_number"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/c_white"
         android:textSize="@dimen/sp_28" />
 
     <RelativeLayout
@@ -44,7 +44,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_20"
             android:text="@string/str_86"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/c_white"
             android:textSize="@dimen/sp_16"
             android:visibility="gone" />
 
@@ -69,7 +69,7 @@
             android:layout_toEndOf="@+id/tvLine"
             android:background="@null"
             android:inputType="phone"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/c_white"
             android:textSize="@dimen/sp_16" />
     </RelativeLayout>
 
@@ -82,7 +82,7 @@
         android:layout_marginTop="@dimen/dp_24"
         android:background="@drawable/button_corners_solid_orange"
         android:text="@string/str_get_captcha"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/c_white"
         android:textSize="@dimen/sp_18" />
 
     <CheckedTextView

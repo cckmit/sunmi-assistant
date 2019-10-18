@@ -26,12 +26,15 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        googleplay {}
     }
+
     sourceSets {
         main {
             jniLibs.srcDirs 'libs'
         }
     }
+
     //so 文件
     splits {
         abi {
