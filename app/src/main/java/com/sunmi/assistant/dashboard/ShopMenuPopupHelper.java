@@ -66,7 +66,7 @@ public class ShopMenuPopupHelper implements DropdownMenu.PopupHelper {
                     LinearLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT));
             mShopMenuList.addView(list);
             // Add view into ConstraintLayout.
-            int index = mContent.indexOfChild(mOverlay) + 1;
+            int index = mContent.indexOfChild(mOverlay) + 2;
             mContent.addView(mShopMenuList, index);
         } else {
             mHeader = mShopMenuList.findViewById(R.id.shop_menu_title);

@@ -578,8 +578,8 @@ public class LineChartRenderer extends LineRadarRenderer {
                         Utils.drawImage(
                                 c,
                                 icon,
-                                (int)(x + iconsOffset.x),
-                                (int)(y + iconsOffset.y),
+                                (int) (x + iconsOffset.x),
+                                (int) (y + iconsOffset.y),
                                 icon.getIntrinsicWidth(),
                                 icon.getIntrinsicHeight());
                     }
@@ -759,6 +759,7 @@ public class LineChartRenderer extends LineRadarRenderer {
 
         private Path mCirclePathBuffer = new Path();
 
+        private int[] circleColors;
         private Bitmap[] circleBitmaps;
 
         /**
@@ -772,12 +773,26 @@ public class LineChartRenderer extends LineRadarRenderer {
             int size = set.getCircleColorCount();
             boolean changeRequired = false;
 
-            if (circleBitmaps == null) {
+            if (circleBitmaps == null
+                    || circleColors == null
+                    || circleBitmaps.length != size
+                    || circleColors.length != size) {
                 circleBitmaps = new Bitmap[size];
+                circleColors = new int[size];
                 changeRequired = true;
-            } else if (circleBitmaps.length != size) {
-                circleBitmaps = new Bitmap[size];
-                changeRequired = true;
+            }
+            if (!changeRequired) {
+                for (int i = 0; i < size; i++) {
+                    if (circleColors[i] != set.getCircleColor(i)) {
+                        changeRequired = true;
+                        break;
+                    }
+                }
+            }
+            if (changeRequired) {
+                for (int i = 0; i < size; i++) {
+                    circleColors[i] = set.getCircleColor(i);
+                }
             }
 
             return changeRequired;

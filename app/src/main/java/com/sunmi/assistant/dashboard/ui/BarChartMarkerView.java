@@ -13,13 +13,13 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.Utils;
 
+import java.util.Locale;
+
 /**
  * @author yinhui
  * @date 2019-09-11
  */
 public class BarChartMarkerView extends MarkerView {
-
-    private static String[] WEEK_NAME;
 
     private ImageView mIvPoint;
     private TextView mTvTitle;
@@ -28,9 +28,11 @@ public class BarChartMarkerView extends MarkerView {
 
     private MPPointF mOffset;
     private MPPointF mRealOffset;
-
     private float mGap;
-    private String mTip = "";
+
+    private String label;
+    private int period;
+    private int type;
 
     /**
      * Constructor. Sets up the MarkerView with a custom layout resource.
@@ -39,33 +41,36 @@ public class BarChartMarkerView extends MarkerView {
      */
     public BarChartMarkerView(Context context) {
         super(context, R.layout.dashboard_chart_bar_marker);
-        WEEK_NAME = context.getResources().getStringArray(R.array.week_name);
         mTvTitle = findViewById(R.id.tv_dashboard_marker_title);
         mTvValue = findViewById(R.id.tv_dashboard_marker_value);
         mTvLabel = findViewById(R.id.tv_dashboard_marker_label);
         mGap = getResources().getDimension(R.dimen.dp_4);
+        label = context.getString(R.string.dashboard_card_marker_time);
     }
 
-
-    public void setType(int type) {
+    public void setType(int period, int type) {
+        this.period = period;
+        this.type = type;
         if (type == Constants.DATA_TYPE_RATE) {
-            mTvTitle.setText(R.string.dashboard_chart_rate);
+            mTvTitle.setText(R.string.dashboard_card_tab_rate);
         } else if (type == Constants.DATA_TYPE_VOLUME) {
-            mTvTitle.setText(R.string.dashboard_chart_sales_volume);
+            mTvTitle.setText(R.string.dashboard_card_tab_volume);
         } else {
-            mTvTitle.setText(R.string.dashboard_chart_consumer);
+            mTvTitle.setText(R.string.dashboard_card_tab_customer);
         }
-    }
-
-    public void setTip(String tip) {
-        this.mTip = tip;
     }
 
     @Override
     public void refreshContent(Entry e, Highlight highlight) {
-        mTvValue.setText(String.valueOf((int) e.getY()));
-        mTvLabel.setText(getResources().getString(R.string.dashboard_time, mTip,
-                Utils.convertFloatToMarkerName(e.getX(), WEEK_NAME)));
+        if (e instanceof ChartEntry) {
+            if (type == Constants.DATA_TYPE_RATE) {
+                mTvValue.setText(String.format(Locale.getDefault(), "%.2f%%", e.getY() * 100));
+            } else {
+                mTvValue.setText(String.valueOf((int) e.getY()));
+            }
+            mTvLabel.setText(String.format("%s %s", label,
+                    Utils.convertXToMarkerName(getContext(), period, ((ChartEntry) e).getTime())));
+        }
         super.refreshContent(e, highlight);
     }
 

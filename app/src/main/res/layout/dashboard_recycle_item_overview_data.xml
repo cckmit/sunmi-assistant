@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/c_white">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/layout_dashboard_main"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_128"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_dashboard_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:text="@string/dashboard_data_sales_amount"
+            android:textColor="@color/color_525866"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_dashboard_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/common_orange"
+            android:textSize="@dimen/sp_40"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_title"
+            tools:text="19,990.00" />
+
+        <TextView
+            android:id="@+id/tv_dashboard_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_28"
+            android:text="@string/dashboard_period_yesterday"
+            android:textColor="@color/color_777E8C"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tv_dashboard_subdata"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_value" />
+
+        <TextView
+            android:id="@+id/tv_dashboard_subdata"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_28"
+            android:textColor="@color/color_777E8C"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/tv_dashboard_subtitle"
+            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_value"
+            tools:text="8,900.34" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/layout_dashboard_volume"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_98"
+        android:layout_marginStart="@dimen/dp_24"
+        app:layout_goneMarginEnd="@dimen/dp_24"
+        app:layout_constraintEnd_toStartOf="@+id/layout_dashboard_customer"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_dashboard_main">
+
+        <TextView
+            android:id="@+id/tv_dashboard_volume_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/dashboard_data_sales_volume"
+            android:textColor="@color/color_525866"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_dashboard_volume"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/color_303540"
+            android:textSize="@dimen/sp_24"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_volume_title"
+            tools:text="189" />
+
+        <TextView
+            android:id="@+id/tv_dashboard_volume_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_32"
+            android:text="@string/dashboard_period_yesterday"
+            android:textColor="@color/color_777E8C"
+            android:textSize="@dimen/sp_10"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tv_dashboard_volume_subdata"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_volume" />
+
+        <TextView
+            android:id="@+id/tv_dashboard_volume_subdata"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_32"
+            android:textColor="@color/color_777E8C"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_dashboard_volume_subtitle"
+            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_volume"
+            tools:text="290" />
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/layout_dashboard_customer"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_98"
+        app:layout_constraintEnd_toStartOf="@+id/layout_dashboard_rate"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/layout_dashboard_volume"
+        app:layout_constraintTop_toBottomOf="@id/layout_dashboard_main">
+
+        <TextView
+            android:id="@+id/tv_dashboard_customer_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/dashboard_data_customer"
+            android:textColor="@color/color_525866"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_dashboard_customer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/color_303540"
+            android:textSize="@dimen/sp_24"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_customer_title"
+            tools:text="1,920" />
+
+        <TextView
+            android:id="@+id/tv_dashboard_customer_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_32"
+            android:text="@string/dashboard_period_yesterday"
+            android:textColor="@color/color_777E8C"
+            android:textSize="@dimen/sp_10"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tv_dashboard_customer_subdata"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_customer" />
+
+
+        <TextView
+            android:id="@+id/tv_dashboard_customer_subdata"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_32"
+            android:textColor="@color/color_777E8C"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_dashboard_customer_subtitle"
+            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_customer"
+            tools:text="900" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/layout_dashboard_rate"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_98"
+        android:layout_marginEnd="@dimen/dp_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/layout_dashboard_customer"
+        app:layout_constraintTop_toBottomOf="@id/layout_dashboard_main">
+
+        <TextView
+            android:id="@+id/tv_dashboard_rate_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/dashboard_data_transaction_rate"
+            android:textColor="@color/color_525866"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_dashboard_rate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/color_303540"
+            android:textSize="@dimen/sp_24"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_rate_title"
+            tools:text="51.23%" />
+
+        <TextView
+            android:id="@+id/tv_dashboard_rate_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_32"
+            android:text="@string/dashboard_period_yesterday"
+            android:textColor="@color/color_777E8C"
+            android:textSize="@dimen/sp_10"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tv_dashboard_rate_subdata"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_rate"
+            tools:layout_editor_absoluteY="55dp" />
+
+        <TextView
+            android:id="@+id/tv_dashboard_rate_subdata"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_32"
+            android:textColor="@color/color_777E8C"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_dashboard_rate_subtitle"
+            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_rate"
+            tools:layout_editor_absoluteY="54dp"
+            tools:text="42.21%" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/iv_dashboard_loading"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

@@ -1,9 +1,5 @@
 package com.sunmi.assistant.dashboard;
 
-import android.content.Context;
-
-import com.sunmi.assistant.dashboard.card.BaseRefreshItem;
-
 import java.util.List;
 
 import sunmi.common.base.BaseView;
@@ -12,13 +8,17 @@ public interface DashboardContract {
 
     interface View extends BaseView {
 
-        Context getContext();
-
-        void updateTab(int period);
+        int getHeaderHeight();
 
         void setShopList(List<ShopItem> list);
 
-        void setCards(List<BaseRefreshItem> data, int dataSource);
+        void setSource(int source);
+
+        void updateTab(int page, int period);
+
+        void updateTopPosition(int position);
+
+        void resetTop();
 
         void loadDataFailed();
 
@@ -28,17 +28,49 @@ public interface DashboardContract {
 
         void init();
 
-        void reload();
+        void reloadCompanySwitch();
 
-        boolean switchShopTo(ShopItem shop);
+        void reloadShopSwitch();
 
-        void switchPeriodTo(int period);
+        void reloadShopList();
+
+        void reloadFs();
+
+        void setShop(ShopItem shop);
+
+        void setPeriod(int period);
+
+        void setPage(int index);
+
+        List<PageHost> getPages();
+
+        int getPageIndex();
+
+        int getPageType();
+
+        int getPeriod();
+
+    }
+
+    interface PagePresenter {
+
+        int getType();
+
+        int getScrollY();
+
+        void scrollTo(int y);
+
+        void setSource(int source);
+
+        void setPeriod(int period);
+
+        int getPeriod();
 
         void refresh(boolean showLoading);
 
         void refresh(int position, boolean showLoading);
 
-        void showFailedTip();
+        void release();
 
     }
 }

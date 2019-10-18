@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:id="@+id/layout_dashboard_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/layout_dashboard_content"
+        android:layout_width="@dimen/dp_327"
+        android:layout_height="@dimen/dp_72"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="@dimen/dp_24"
+        android:background="@drawable/dashboard_bg_card_round_white">
+
+        <TextView
+            android:id="@+id/tv_dashboard_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_16"
+            android:text="@string/dashboard_card_import_title"
+            android:textColor="@color/color_303540"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_dashboard_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_20"
+            android:textColor="@color/color_777E8C"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_title"
+            tool:text="导入成功，可在订单分析中查看数据" />
+
+        <Button
+            android:id="@+id/btn_dashboard_import"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="@dimen/dp_68"
+            android:layout_height="@dimen/dp_28"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:background="@drawable/dashboard_btn_round_orange"
+            android:text="@string/dashboard_card_import_btn"
+            android:textColor="@color/c_white"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintBaseline_toBaselineOf="@+id/tv_dashboard_title"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</FrameLayout>

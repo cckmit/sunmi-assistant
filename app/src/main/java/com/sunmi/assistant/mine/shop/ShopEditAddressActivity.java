@@ -419,7 +419,7 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
     private class ProvinceType extends ItemType<RegionProvince, BaseViewHolder<RegionProvince>> {
 
         private ProvinceType() {
-            setOnItemClickListener((adapter, holder, model, position) -> {
+            setOnItemClickListener((holder, model, position) -> {
                 mProvinceId = model.getProvince();
                 mCityId = -1;
                 mAreaId = -1;
@@ -456,7 +456,7 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
     private class CityType extends ItemType<RegionProvince.City, BaseViewHolder<RegionProvince.City>> {
 
         private CityType() {
-            setOnItemClickListener((adapter, holder, model, position) -> {
+            setOnItemClickListener((holder, model, position) -> {
                 mCityId = model.getCity();
                 mAreaId = -1;
                 poiCityName = model.getName();
@@ -492,11 +492,11 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
     private class AreaType extends ItemType<RegionProvince.Area, BaseViewHolder<RegionProvince.Area>> {
 
         private AreaType() {
-            setOnItemClickListener((adapter, holder, model, position) -> {
+            setOnItemClickListener((holder, model, position) -> {
                 mAreaId = model.getCounty();
                 btnAreaRegion.setText(model.getName());
                 btnAreaRegion.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
-                adapter.notifyDataSetChanged();
+                getAdapter().notifyDataSetChanged();
             });
         }
 

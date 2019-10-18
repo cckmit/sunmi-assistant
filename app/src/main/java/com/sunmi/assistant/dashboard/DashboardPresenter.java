@@ -1,29 +1,29 @@
 package com.sunmi.assistant.dashboard;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Handler;
-import android.os.HandlerThread;
-import android.support.v4.content.ContextCompat;
+import android.os.Looper;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.card.BaseRefreshItem;
-import com.sunmi.assistant.dashboard.card.DataCard;
-import com.sunmi.assistant.dashboard.card.DistributionChartCard;
-import com.sunmi.assistant.dashboard.card.EmptyDataCard;
-import com.sunmi.assistant.dashboard.card.EmptyGapCard;
-import com.sunmi.assistant.dashboard.card.NoFsCard;
-import com.sunmi.assistant.dashboard.card.NoOrderCard;
-import com.sunmi.assistant.dashboard.card.PeriodTabCard;
-import com.sunmi.assistant.dashboard.card.TrendChartCard;
+import com.sunmi.assistant.dashboard.customer.CustomerFragment;
+import com.sunmi.assistant.dashboard.customer.CustomerFragment_;
+import com.sunmi.assistant.dashboard.customer.CustomerPresenter;
+import com.sunmi.assistant.dashboard.overview.OverviewFragment;
+import com.sunmi.assistant.dashboard.overview.OverviewFragment_;
+import com.sunmi.assistant.dashboard.overview.OverviewPresenter;
 import com.sunmi.ipc.model.IpcListResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Calendar;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.constant.CommonNotifications;
+import sunmi.common.model.CustomerHistoryResp;
+import sunmi.common.model.ShopAuthorizeInfoResp;
 import sunmi.common.model.ShopListResp;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
@@ -37,34 +37,37 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     private static final String TAG = DashboardPresenter.class.getSimpleName();
 
-    private static final int REFRESH_TIME_PERIOD = 120_000;
-    private static final HandlerThread WORK_THREAD = new HandlerThread("RefreshTask");
-    private static final Handler WORK_HANDLER;
+    public static final int FLAG_SHOP = 0x1;
+    public static final int FLAG_SAAS = 0x2;
+    public static final int FLAG_FS = 0x4;
+    public static final int FLAG_CUSTOMER = 0x8;
+    public static final int FLAG_ALL_MASK = 0xF;
 
-    static {
-        WORK_THREAD.start();
-        WORK_HANDLER = new Handler(WORK_THREAD.getLooper());
-    }
+    @SuppressLint("SimpleDateFormat")
+    private static final SimpleDateFormat DATE_FORMAT_PARAMS = new SimpleDateFormat("yyyy-MM-dd");
+
+    private static final int REFRESH_TIME_PERIOD = 120_000;
+    private static final Handler WORK_HANDLER = new Handler(Looper.getMainLooper());
+
+    private Context mContext;
+    private List<DashboardContract.PagePresenter> mPages = new ArrayList<>(2);
+    private List<ShopItem> mShops = new ArrayList<>();
 
     private int mCompanyId;
-    private ShopItem mShop;
-    private boolean mSaasExist;
+    private int mShopId;
+    private int mSource = 0;
+    private int mPageIndex = 0;
 
-    private int mDataSource = 0;
-
-    private HashMap<Class<?>, BaseRefreshItem> mCardMap = new HashMap<>(8);
-    private List<ShopItem> mShopList;
-    private List<BaseRefreshItem> mList = new ArrayList<>();
+    private int mLoadFlag;
 
     private RefreshTask mTask;
 
     @Override
     public void init() {
-        if (!isViewAttached()) {
-            return;
-        }
         mCompanyId = SpUtils.getCompanyId();
-        loadShopList();
+        mShopId = SpUtils.getShopId();
+        mLoadFlag = FLAG_ALL_MASK;
+        load();
         if (mTask == null) {
             mTask = new RefreshTask();
             WORK_HANDLER.postDelayed(mTask, REFRESH_TIME_PERIOD);
@@ -72,89 +75,177 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     @Override
-    public void reload() {
-        loadDataSource(mShop.isSaasExist());
+    public void reloadCompanySwitch() {
+        mCompanyId = SpUtils.getCompanyId();
+        mShopId = SpUtils.getShopId();
+        mLoadFlag = FLAG_ALL_MASK;
+        load();
     }
 
     @Override
-    public boolean switchShopTo(ShopItem shop) {
-        if (mShop.getShopId() != shop.getShopId()) {
-            mShop.setChecked(false);
-            mShop = shop;
-            shop.setChecked(true);
-            SpUtils.setShopId(shop.getShopId());
-            SpUtils.setShopName(shop.getShopName());
-            SpUtils.setSaasExist(shop.isSaasExist() ? 1 : 0);
-            BaseNotification.newInstance().postNotificationName(CommonNotifications.shopSwitched);
-            return true;
+    public void reloadShopSwitch() {
+        mShopId = SpUtils.getShopId();
+        updateShops();
+        mLoadFlag = FLAG_SAAS | FLAG_FS | FLAG_CUSTOMER;
+        load();
+    }
+
+    @Override
+    public void reloadShopList() {
+        mLoadFlag = FLAG_SHOP;
+        load();
+    }
+
+    @Override
+    public void reloadFs() {
+        mLoadFlag = FLAG_FS;
+        load();
+    }
+
+    @Override
+    public void setShop(ShopItem shop) {
+        SpUtils.setShopId(shop.getShopId());
+        SpUtils.setShopName(shop.getShopName());
+        SpUtils.setSaasExist(shop.isSaasExist() ? 1 : 0);
+        BaseNotification.newInstance().postNotificationName(CommonNotifications.shopSwitched);
+    }
+
+    @Override
+    public void setPeriod(int period) {
+        mPages.get(mPageIndex).setPeriod(period);
+    }
+
+    @Override
+    public void setPage(int index) {
+        mPages.get(mPageIndex).scrollTo(0);
+        mPageIndex = index;
+    }
+
+    @Override
+    public List<PageHost> getPages() {
+        List<PageHost> pages = new ArrayList<>();
+        if (!isViewAttached()) {
+            return pages;
+        }
+        mPages.clear();
+        OverviewPresenter overviewPresenter = new OverviewPresenter();
+        OverviewFragment overviewFragment = new OverviewFragment_();
+        overviewFragment.inject(mView, overviewPresenter);
+        mPages.add(overviewPresenter);
+        pages.add(new PageHost(R.string.dashboard_page_overview, 0, overviewFragment));
+
+        CustomerPresenter customerPresenter = new CustomerPresenter();
+        CustomerFragment customerFragment = new CustomerFragment_();
+        customerFragment.inject(mView, customerPresenter);
+        mPages.add(customerPresenter);
+        pages.add(new PageHost(R.string.dashboard_page_customer, 0, customerFragment));
+
+        return pages;
+    }
+
+    @Override
+    public int getPageIndex() {
+        return mPageIndex;
+    }
+
+    @Override
+    public int getPageType() {
+        return mPages.get(mPageIndex).getType();
+    }
+
+    @Override
+    public int getPeriod() {
+        return mPages.get(mPageIndex).getPeriod();
+    }
+
+    private void updateShops() {
+        if (mShops.isEmpty()) {
+            mLoadFlag |= FLAG_SHOP;
+            load();
         } else {
-            return false;
+            ShopItem current = null;
+            for (ShopItem shop : mShops) {
+                shop.setChecked(shop.getShopId() == mShopId);
+                if (shop.getShopId() == mShopId) {
+                    current = shop;
+                }
+            }
+            if (current == null) {
+                // TODO:
+                return;
+            }
+            mShops.remove(current);
+            mShops.add(0, current);
+            if (current.isSaasExist()) {
+                mSource |= Constants.DATA_SOURCE_AUTH;
+            } else {
+                mSource &= ~Constants.DATA_SOURCE_AUTH;
+            }
+            if (isViewAttached()) {
+                mView.setShopList(mShops);
+            }
+
         }
     }
 
-    @Override
-    public void switchPeriodTo(int period) {
-        for (BaseRefreshItem card : mList) {
-            card.setPeriod(period);
+    private void load() {
+        if ((mLoadFlag & FLAG_SHOP) != 0) {
+            loadShop();
+        } else if ((mLoadFlag & FLAG_SAAS) != 0) {
+            loadSaas();
         }
-        if (isViewAttached()) {
-            mView.updateTab(period);
+        if ((mLoadFlag & FLAG_FS) != 0) {
+            loadFs();
         }
-    }
-
-    @Override
-    public void refresh(boolean showLoading) {
-        for (BaseRefreshItem card : mList) {
-            card.refresh(showLoading);
+        if ((mLoadFlag & FLAG_CUSTOMER) != 0) {
+            loadCustomer();
         }
     }
 
-    @Override
-    public void refresh(int position, boolean showLoading) {
-        if (mList.size() > position) {
-            mList.get(position).refresh(showLoading);
-        }
-    }
-
-    @Override
-    public void showFailedTip() {
-        if (isViewAttached()) {
-            mView.shortTip(R.string.toast_network_Exception);
-        }
-    }
-
-    private void loadShopList() {
+    private void loadShop() {
         SunmiStoreApi.getInstance().getShopList(mCompanyId, new RetrofitCallback<ShopListResp>() {
             @Override
             public void onSuccess(int code, String msg, ShopListResp data) {
-                if (data == null) {
+                if (data == null || data.getShop_list() == null) {
                     onFail(code, msg, null);
                     return;
                 }
+                mShops.clear();
                 List<ShopListResp.ShopInfo> shops = data.getShop_list();
-                if (shops == null) {
-                    onFail(code, msg, data);
-                    return;
-                }
-                List<ShopItem> result = new ArrayList<>(shops.size());
-                int shopId = SpUtils.getShopId();
+                ShopItem current = null;
                 for (ShopListResp.ShopInfo shop : shops) {
-                    if (shop.getShop_id() == shopId) {
+                    if (shop.getShop_id() == mShopId) {
                         ShopItem item = new ShopItem(shop.getShop_id(), shop.getShop_name(),
                                 shop.getSaas_exist() == 1);
                         item.setChecked(true);
-                        mShop = item;
-                        result.add(0, item);
+                        current = item;
+                        mShops.add(0, item);
                     } else {
-                        result.add(new ShopItem(shop.getShop_id(), shop.getShop_name(),
+                        mShops.add(new ShopItem(shop.getShop_id(), shop.getShop_name(),
                                 shop.getSaas_exist() == 1));
                     }
                 }
-                mShopList = result;
-                if (isViewAttached()) {
-                    mView.setShopList(result);
+                if (current == null) {
+                    // TODO:
+                    return;
                 }
-                loadDataSource(mShop.isSaasExist());
+                if (current.isSaasExist()) {
+                    mSource |= Constants.DATA_SOURCE_AUTH;
+                } else {
+                    mSource &= ~Constants.DATA_SOURCE_AUTH;
+                }
+                mLoadFlag &= ~FLAG_SHOP;
+                if (isViewAttached()) {
+                    mView.setShopList(mShops);
+                }
+
+                if (current.isSaasExist() && (mLoadFlag & FLAG_SAAS) != 0) {
+                    loadSaas();
+                } else {
+                    mSource &= ~Constants.DATA_SOURCE_IMPORT;
+                    mLoadFlag &= ~FLAG_SAAS;
+                }
+                loadComplete();
             }
 
             @Override
@@ -167,277 +258,142 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         });
     }
 
-    private void loadDataSource(boolean saasExist) {
-        int old = mDataSource;
-        if (saasExist) {
-            mDataSource |= Constants.DATA_SOURCE_SAAS;
-        } else {
-            mDataSource &= ~Constants.DATA_SOURCE_SAAS;
-        }
-        IpcCloudApi.getInstance().getDetailList(mCompanyId, mShop.getShopId(), new RetrofitCallback<IpcListResp>() {
-            @Override
-            public void onSuccess(int code, String msg, IpcListResp data) {
-                if (data == null) {
-                    onFail(code, msg, null);
-                    return;
-                }
-                if (data.getFs_list() != null && data.getFs_list().size() > 0) {
-                    mDataSource |= Constants.DATA_SOURCE_FS;
-                } else {
-                    mDataSource &= ~Constants.DATA_SOURCE_FS;
-                }
-                int changed = mDataSource ^ old;
-                // 如果数据来源无变化（是否有FS以及是否有订单数据），那么直接更新卡片商户和门店
-                if (changed == 0 && !mList.isEmpty()) {
-                    for (BaseRefreshItem card : mList) {
-                        card.setCompanyId(mCompanyId, mShop.getShopId());
+    private void loadSaas() {
+        SunmiStoreApi.getInstance().getAuthorizeInfo(mCompanyId, mShopId,
+                new RetrofitCallback<ShopAuthorizeInfoResp>() {
+                    @Override
+                    public void onSuccess(int code, String msg, ShopAuthorizeInfoResp data) {
+                        if (data == null || data.getAuthorizedList() == null) {
+                            onFail(code, msg, data);
+                            return;
+                        }
+                        List<ShopAuthorizeInfoResp.Info> list = data.getAuthorizedList();
+                        if (list.isEmpty()) {
+                            mSource &= ~Constants.DATA_SOURCE_AUTH;
+                            mSource &= ~Constants.DATA_SOURCE_IMPORT;
+                        } else {
+                            mSource |= Constants.DATA_SOURCE_AUTH;
+                            if (list.get(0).getImportStatus() == 2) {
+                                // 导入成功
+                                mSource |= Constants.DATA_SOURCE_IMPORT;
+                            } else {
+                                mSource &= ~Constants.DATA_SOURCE_IMPORT;
+                            }
+                        }
+                        mLoadFlag &= ~FLAG_SAAS;
+                        loadComplete();
                     }
-                    refresh(true);
-                    if (isViewAttached()) {
-                        mView.hideLoadingDialog();
+
+                    @Override
+                    public void onFail(int code, String msg, ShopAuthorizeInfoResp data) {
+                        LogCat.e(TAG, "Load saas import Failed. " + code + ":" + msg);
+                        if (isViewAttached()) {
+                            mView.loadDataFailed();
+                        }
                     }
-                    return;
-                }
-                // 初始化列表
-                mList.clear();
-//                mDataSource = 3;
-                // 根据数据来源，变更卡片
-                switch (mDataSource) {
-                    case 0x3:
-                        initList(mDataSource);
-                        break;
-                    case 0x1:
-                        initNoFsList(mDataSource);
-                        break;
-                    case 0x2:
-                        initNoOrderList(mDataSource);
-                        break;
-                    default:
-                        initNoDataList(mDataSource);
-                }
-                if (isViewAttached()) {
-                    mView.setCards(mList, mDataSource);
-                    switchPeriodTo(Constants.TIME_PERIOD_TODAY);
-                    refresh(true);
-                }
-            }
-
-            @Override
-            public void onFail(int code, String msg, IpcListResp data) {
-                LogCat.e(TAG, "Load data source Failed. " + code + ":" + msg);
-                mView.loadDataFailed();
-            }
-        });
+                });
     }
 
-    private void initList(int source) {
-        if (!isViewAttached()) {
-            return;
-        }
-        Context context = mView.getContext();
-        BaseRefreshItem card;
+    private void loadFs() {
+        IpcCloudApi.getInstance().getDetailList(mCompanyId, mShopId,
+                new RetrofitCallback<IpcListResp>() {
+                    @Override
+                    public void onSuccess(int code, String msg, IpcListResp data) {
+                        if (data == null) {
+                            onFail(code, msg, null);
+                            return;
+                        }
+                        if (data.getFs_list() != null && data.getFs_list().size() > 0) {
+                            mSource |= Constants.DATA_SOURCE_FS;
+                        } else {
+                            mSource &= ~Constants.DATA_SOURCE_FS;
+                        }
+                        mLoadFlag &= ~FLAG_FS;
+                        loadComplete();
+                    }
 
-        card = mCardMap.get(PeriodTabCard.class);
-        if (card == null) {
-            card = new PeriodTabCard(context, this);
-            mCardMap.put(PeriodTabCard.class, card);
-        }
-        card.initConfig(source);
-        mList.add(card);
-
-        card = mCardMap.get(DataCard.class);
-        if (card == null) {
-            card = new DataCard(context, this);
-            mCardMap.put(DataCard.class, card);
-        }
-        card.initConfig(source);
-        mList.add(card);
-
-        card = mCardMap.get(TrendChartCard.class);
-        if (card == null) {
-            card = new TrendChartCard(context, this);
-            mCardMap.put(TrendChartCard.class, card);
-        }
-        card.initConfig(source);
-        mList.add(card);
-
-        card = mCardMap.get(DistributionChartCard.class);
-        if (card == null) {
-            card = new DistributionChartCard(context, this);
-            mCardMap.put(DistributionChartCard.class, card);
-        }
-        card.initConfig(source);
-        mList.add(card);
-
-        card = mCardMap.get(EmptyGapCard.class);
-        if (card == null) {
-            card = new EmptyGapCard();
-            mCardMap.put(EmptyGapCard.class, card);
-        }
-        ((EmptyGapCard) card).setHeightAndColor((int) context.getResources().getDimension(R.dimen.dp_24),
-                ContextCompat.getColor(context, R.color.color_F5F7FA));
-        mList.add(card);
+                    @Override
+                    public void onFail(int code, String msg, IpcListResp data) {
+                        LogCat.e(TAG, "Load fs source Failed. " + code + ":" + msg);
+                        if (isViewAttached()) {
+                            mView.loadDataFailed();
+                        }
+                    }
+                });
     }
 
-    private void initNoOrderList(int source) {
-        if (!isViewAttached()) {
-            return;
-        }
-        Context context = mView.getContext();
-        BaseRefreshItem card;
+    private void loadCustomer() {
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.MONTH, -1);
+        c.set(c.get(Calendar.YEAR), c.get(Calendar.MONTH), 1);
+        String startTime = DATE_FORMAT_PARAMS.format(c.getTime());
+        c.add(Calendar.MONTH, 2);
+        c.add(Calendar.DATE, -1);
+        String endTime = DATE_FORMAT_PARAMS.format(c.getTime());
+        SunmiStoreApi.getInstance().getHistoryCustomer(mCompanyId, mShopId, startTime, endTime,
+                new RetrofitCallback<CustomerHistoryResp>() {
+                    @Override
+                    public void onSuccess(int code, String msg, CustomerHistoryResp data) {
+                        if (data == null) {
+                            onFail(code, msg, null);
+                            return;
+                        }
+                        mSource |= Constants.DATA_SOURCE_CUSTOMER;
+                        success(code, msg, data);
+                    }
 
-        card = mCardMap.get(PeriodTabCard.class);
-        if (card == null) {
-            card = new PeriodTabCard(context, this);
-            mCardMap.put(PeriodTabCard.class, card);
-        }
-        card.initConfig(source);
-        mList.add(card);
+                    @Override
+                    public void onFail(int code, String msg, CustomerHistoryResp data) {
+                        if (code == Constants.NO_CUSTOMER_DATA) {
+                            mSource &= ~Constants.DATA_SOURCE_CUSTOMER;
+                            success(code, msg, data);
+                        } else {
+                            LogCat.e(TAG, "Load customer source Failed. " + code + ":" + msg);
+                            if (isViewAttached()) {
+                                mView.loadDataFailed();
+                            }
+                        }
+                    }
 
-        card = mCardMap.get(DataCard.class);
-        if (card == null) {
-            card = new DataCard(context, this);
-            mCardMap.put(DataCard.class, card);
-        }
-        card.initConfig(source);
-        mList.add(card);
-
-        card = mCardMap.get(TrendChartCard.class);
-        if (card == null) {
-            card = new TrendChartCard(context, this);
-            mCardMap.put(TrendChartCard.class, card);
-        }
-        card.initConfig(source);
-        mList.add(card);
-
-        card = mCardMap.get(DistributionChartCard.class);
-        if (card == null) {
-            card = new DistributionChartCard(context, this);
-            mCardMap.put(DistributionChartCard.class, card);
-        }
-        card.initConfig(source);
-        mList.add(card);
-
-        card = mCardMap.get(NoOrderCard.class);
-        if (card == null) {
-            card = new NoOrderCard(context, this);
-            mCardMap.put(NoOrderCard.class, card);
-        }
-        ((NoOrderCard) card).setIsAllEmpty(false);
-        mList.add(card);
-
-        card = mCardMap.get(EmptyGapCard.class);
-        if (card == null) {
-            card = new EmptyGapCard();
-            mCardMap.put(EmptyGapCard.class, card);
-        }
-        ((EmptyGapCard) card).setHeightAndColor((int) context.getResources().getDimension(R.dimen.dp_32),
-                ContextCompat.getColor(context, R.color.color_F5F7FA));
-        mList.add(card);
+                    private void success(int code, String msg, CustomerHistoryResp data) {
+                        mLoadFlag &= ~FLAG_CUSTOMER;
+                        loadComplete();
+                    }
+                });
     }
 
-    private void initNoFsList(int source) {
-        if (!isViewAttached()) {
+    private void loadComplete() {
+        if (mLoadFlag != 0) {
             return;
         }
-        Context context = mView.getContext();
-        BaseRefreshItem card;
-
-        card = mCardMap.get(PeriodTabCard.class);
-        if (card == null) {
-            card = new PeriodTabCard(context, this);
-            mCardMap.put(PeriodTabCard.class, card);
+        if (isViewAttached()) {
+            mView.setSource(mSource);
         }
-        card.initConfig(source);
-        mList.add(card);
-
-        card = mCardMap.get(DataCard.class);
-        if (card == null) {
-            card = new DataCard(context, this);
-            mCardMap.put(DataCard.class, card);
+        for (DashboardContract.PagePresenter page : mPages) {
+            page.setSource(mSource);
         }
-        card.initConfig(source);
-        mList.add(card);
-
-        card = mCardMap.get(TrendChartCard.class);
-        if (card == null) {
-            card = new TrendChartCard(context, this);
-            mCardMap.put(TrendChartCard.class, card);
-        }
-        card.initConfig(source);
-        mList.add(card);
-
-        card = mCardMap.get(NoFsCard.class);
-        if (card == null) {
-            card = new NoFsCard(context, this);
-            mCardMap.put(NoFsCard.class, card);
-        }
-        ((NoFsCard) card).setIsAllEmpty(false);
-        mList.add(card);
-
-        card = mCardMap.get(EmptyGapCard.class);
-        if (card == null) {
-            card = new EmptyGapCard();
-            mCardMap.put(EmptyGapCard.class, card);
-        }
-        ((EmptyGapCard) card).setHeightAndColor((int) context.getResources().getDimension(R.dimen.dp_32),
-                ContextCompat.getColor(context, R.color.color_F5F7FA));
-        mList.add(card);
-    }
-
-    private void initNoDataList(int source) {
-        if (!isViewAttached()) {
-            return;
-        }
-        Context context = mView.getContext();
-        BaseRefreshItem card;
-
-        card = mCardMap.get(EmptyDataCard.class);
-        if (card == null) {
-            card = new EmptyDataCard();
-            mCardMap.put(EmptyDataCard.class, card);
-        }
-        mList.add(card);
-
-        card = mCardMap.get(NoFsCard.class);
-        if (card == null) {
-            card = new NoFsCard(context, this);
-            mCardMap.put(NoFsCard.class, card);
-        }
-        ((NoFsCard) card).setIsAllEmpty(true);
-        mList.add(card);
-
-        card = mCardMap.get(NoOrderCard.class);
-        if (card == null) {
-            card = new NoOrderCard(context, this);
-            mCardMap.put(NoOrderCard.class, card);
-        }
-        ((NoOrderCard) card).setIsAllEmpty(true);
-        mList.add(card);
-
-        card = mCardMap.get(EmptyGapCard.class);
-        if (card == null) {
-            card = new EmptyGapCard();
-            mCardMap.put(EmptyGapCard.class, card);
-        }
-        ((EmptyGapCard) card).setHeightAndColor((int) context.getResources().getDimension(R.dimen.dp_32), 0xFFFFFFFF);
-        mList.add(card);
     }
 
     @Override
     public void detachView() {
         super.detachView();
+        mContext = null;
         WORK_HANDLER.removeCallbacks(mTask);
-        for (BaseRefreshItem card : mList) {
-            card.cancelLoad();
+        for (DashboardContract.PagePresenter page : mPages) {
+            page.release();
         }
+        mPages.clear();
     }
 
     private class RefreshTask implements Runnable {
 
         @Override
         public void run() {
-            refresh(false);
+            if (!Utils.hasAuth(mSource)) {
+                mLoadFlag |= FLAG_SAAS;
+                load();
+            }
+            mPages.get(mPageIndex).refresh(false);
             WORK_HANDLER.postDelayed(this, REFRESH_TIME_PERIOD);
         }
     }
