@@ -104,7 +104,7 @@
         <item name="android:layout_height">@dimen/dp_44</item>
         <item name="android:background">@drawable/bg_gray_rounded_corner</item>
         <item name="android:textSize">@dimen/sp_16</item>
-        <item name="android:textColor">@color/color_333333</item>
+        <item name="android:textColor">@color/text_main</item>
     </style>
 
     <style name="configTitleText">
@@ -112,7 +112,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginStart">@dimen/dp_30</item>
         <item name="android:layout_marginTop">@dimen/dp_24</item>
-        <item name="android:textColor">@color/color_333333</item>
+        <item name="android:textColor">@color/text_main</item>
         <item name="android:textSize">@dimen/sp_28</item>
         <item name="android:textStyle">bold</item>
     </style>
@@ -123,7 +123,7 @@
         <item name="android:layout_marginStart">@dimen/dp_25</item>
         <item name="android:layout_marginEnd">@dimen/dp_25</item>
         <item name="android:textSize">@dimen/sp_12</item>
-        <item name="android:textColor">@color/color_333333</item>
+        <item name="android:textColor">@color/text_main</item>
     </style>
 
     <style name="ProgressHorizontal">

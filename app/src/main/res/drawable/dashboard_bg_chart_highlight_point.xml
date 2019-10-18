@@ -9,7 +9,7 @@
                 android:width="4dp"
                 android:height="4dp" />
 
-            <solid android:color="@color/color_F5F7FA" />
+            <solid android:color="@color/common_fill" />
 
         </shape>
 

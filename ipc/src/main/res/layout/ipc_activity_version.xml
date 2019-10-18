@@ -35,7 +35,7 @@
         android:layout_below="@id/iv_ipc"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_24"
-        android:textColor="@color/color_333333"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_24" />
 
     <TextView

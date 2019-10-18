@@ -26,10 +26,6 @@
     <color name="caution_secondary">#FF6680</color>
     <color name="success_secondary">#4CC3FF</color>
 
-    <color name="color_2896FE">#2896FE</color>
-    <color name="color_2997FF">#2997FF</color>
-    <color name="color_4B7AFA">#6CBBFF</color>
-
     <!--white 模糊程度-->
     <color name="white_5a">#0DFFFFFF</color>
     <color name="white_10a">#1AFFFFFF</color>
@@ -60,7 +56,6 @@
     <color name="colorLoadingStart">#FF5A00</color>
     <color name="colorLoadingCenter">#FD935F</color>
     <color name="colorLoadingEnd">#FFFBF8</color>
-    <color name="color_333333">#333333</color>
     <color name="color_333333_60">#99333333</color>
 
     <color name="common_orange">#FF6000</color>
@@ -70,8 +65,6 @@
     <color name="color_999999">#9985858A</color>
 
     <color name="color_85858A_20a">#3385858A</color>
-    <color name="color_979797_20a">#33979797</color>
-    <color name="color_F35000">#F35000</color>
     <color name="color_FF7F00">#FF7F00</color>
     <color name="color_FF7F00_60">#99FF7F00</color>
 

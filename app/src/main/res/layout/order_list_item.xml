@@ -25,7 +25,7 @@
         android:layout_marginEnd="@dimen/dp_8"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/color_2896FE"
+        android:textColor="@color/assist_secondary"
         android:textSize="@dimen/sp_14"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/order_item_amount"

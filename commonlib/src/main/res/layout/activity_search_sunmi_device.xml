@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:textColor="@color/color_333333"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_20" />
     </RelativeLayout>
 
@@ -75,7 +75,7 @@
             android:layout_below="@id/iv_router"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_24"
-            android:textColor="@color/color_333333"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_20" />
 
         <TextView
@@ -125,7 +125,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="24dp"
             android:text="@string/str_primary_search_on_find"
-            android:textColor="@color/color_333333"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_20" />
 
         <TextView

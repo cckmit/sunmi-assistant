@@ -11,7 +11,7 @@
                 android:topLeftRadius="@dimen/dp_16"
                 android:topRightRadius="@dimen/dp_16" />
 
-            <solid android:color="@color/color_F5F7FA" />
+            <solid android:color="@color/common_fill" />
         </shape>
     </item>
 </layer-list>
