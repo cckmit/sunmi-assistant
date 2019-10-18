@@ -16,7 +16,7 @@
         android:layout_marginTop="@dimen/dp_25"
         android:gravity="center"
         android:textSize="@dimen/sp_12"
-        app:mv_backgroundColor="@color/color_FF3838"
+        app:mv_backgroundColor="@color/caution_primary"
         app:mv_isRadiusHalfHeight="true" />
 
     <TextView

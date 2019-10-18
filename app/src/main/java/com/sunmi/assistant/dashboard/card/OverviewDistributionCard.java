@@ -230,7 +230,7 @@ public class OverviewDistributionCard extends BaseRefreshCard<OverviewDistributi
         mChart.setTransparentCircleRadius(0f);
         mChart.setExtraOffsets(10, 13, 10, 13);
         mChart.setCenterTextSize(24);
-        mChart.setCenterTextColor(ContextCompat.getColor(context, R.color.color_525866));
+        mChart.setCenterTextColor(ContextCompat.getColor(context, R.color.text_body));
 
         mOnSelectedListener = new OnPieSelectedListener(mChart);
         mChart.setOnChartValueSelectedListener(mOnSelectedListener);

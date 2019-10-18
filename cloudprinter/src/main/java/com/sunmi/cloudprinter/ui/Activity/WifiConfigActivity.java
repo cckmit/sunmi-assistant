@@ -134,7 +134,7 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
         };
         builder.setSpan(clickableSpan, len, len + skip.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         tvSkip.setText(builder);
-        builder.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.c_text_blue)),
+        builder.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.assist_primary)),
                 len, len + skip.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         tvSkip.setText(builder);
         tvSkip.setMovementMethod(LinkMovementMethod.getInstance());
