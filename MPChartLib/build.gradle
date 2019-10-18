@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 
-group='com.github.philjay'
+group = 'com.github.philjay'
 
 android {
     compileSdkVersion 28
@@ -16,6 +16,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        googleplay {}
     }
     testOptions {
         unitTests.returnDefaultValues = true // this prevents "not mocked" error
@@ -34,7 +35,7 @@ task sourcesJar(type: Jar) {
 
 task javadoc(type: Javadoc) {
     options.charSet = 'UTF-8'
-    failOnError  false
+    failOnError false
     source = android.sourceSets.main.java.sourceFiles
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
 }
