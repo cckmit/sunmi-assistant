@@ -22,7 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.AuthStoreInfo;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.GotoActivityUtils;
@@ -80,6 +82,7 @@ public class ImportOrderSelectShopActivity extends BaseActivity {
                     public void onSuccess(int code, String msg, Object data) {
                         hideLoadingDialog();
                         shortTip(R.string.import_order_access_data_success);
+                        BaseNotification.newInstance().postNotificationName(CommonNotifications.shopSaasDock);
                         GotoActivityUtils.gotoMainActivity(context);
                     }
 

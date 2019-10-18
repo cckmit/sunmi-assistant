@@ -90,7 +90,7 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
 
     @Override
     public void setPeriod(int period) {
-        LogCat.d(TAG, "Set period: " + period);
+        LogCat.d(TAG, "Set period: " + period + "; List=" + mList.size());
         mPeriod = period;
         for (BaseRefreshCard card : mList) {
             card.setPeriod(period, false);

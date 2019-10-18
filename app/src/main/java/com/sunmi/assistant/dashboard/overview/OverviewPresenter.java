@@ -10,6 +10,7 @@ import com.sunmi.assistant.dashboard.card.NoFsCard;
 import com.sunmi.assistant.dashboard.card.NoOrderCard;
 import com.sunmi.assistant.dashboard.card.OverviewDataCard;
 import com.sunmi.assistant.dashboard.card.OverviewDistributionCard;
+import com.sunmi.assistant.dashboard.card.OverviewOrderImportCard;
 import com.sunmi.assistant.dashboard.card.OverviewPeriodCard;
 import com.sunmi.assistant.dashboard.card.OverviewTrendCard;
 
@@ -94,7 +95,7 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
 
     @Override
     public void setPeriod(int period) {
-        LogCat.d(TAG, "Set period: " + period);
+        LogCat.d(TAG, "Set period: " + period + "; List=" + mList.size());
         mPeriod = period;
         for (BaseRefreshCard card : mList) {
             card.setPeriod(period, false);
@@ -140,31 +141,39 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
 
     private void initList(int source) {
         mList.clear();
-        if (Utils.hasAuth(source) && Utils.hasFs(source)) {
-            mList.add(OverviewPeriodCard.get(this, source));
-            mList.add(OverviewDataCard.get(this, source));
-            mList.add(OverviewTrendCard.get(this, source));
-            mList.add(OverviewDistributionCard.get(this, source));
-            mList.add(EmptyGapCard.get(this, source));
-        } else if (Utils.hasAuth(source) && !Utils.hasFs(source)) {
-            mList.add(OverviewPeriodCard.get(this, source));
-            mList.add(OverviewDataCard.get(this, source));
-            mList.add(OverviewTrendCard.get(this, source));
-            mList.add(NoFsCard.get(this, source));
-            mList.add(EmptyGapCard.get(this, source));
-        } else if (!Utils.hasAuth(source) && Utils.hasFs(source)) {
-            mList.add(OverviewPeriodCard.get(this, source));
-            mList.add(OverviewDataCard.get(this, source));
-            mList.add(OverviewTrendCard.get(this, source));
-            mList.add(OverviewDistributionCard.get(this, source));
-            mList.add(NoOrderCard.get(this, source));
-            mList.add(EmptyGapCard.get(this, source));
-        } else {
+        // No any data
+        if (!Utils.hasAuth(source) && !Utils.hasFs(source)) {
             mList.add(EmptyDataCard.get(this, source));
             mList.add(NoOrderCard.get(this, source));
             mList.add(NoFsCard.get(this, source));
             mList.add(EmptyGapCard.get(this, source));
+            return;
         }
+
+        // Time tab & data & trend card
+        if (Utils.hasAuth(source) || Utils.hasFs(source)) {
+            mList.add(OverviewPeriodCard.get(this, source));
+            mList.add(OverviewDataCard.get(this, source));
+            mList.add(OverviewTrendCard.get(this, source));
+        }
+
+        // Distribution card
+        if (Utils.hasFs(source)) {
+            mList.add(OverviewDistributionCard.get(this, source));
+        }
+
+        // No order card or import card
+        if (!Utils.hasAuth(source)) {
+            mList.add(NoOrderCard.get(this, source));
+        } else if (!Utils.hasImport(source)) {
+            mList.add(OverviewOrderImportCard.get(this, source));
+        }
+
+        // No fs card
+        if (!Utils.hasFs(source)) {
+            mList.add(NoFsCard.get(this, source));
+        }
+        mList.add(EmptyGapCard.get(this, source));
     }
 
     private void loadSaas() {
