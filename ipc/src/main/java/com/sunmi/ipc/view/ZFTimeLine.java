@@ -74,7 +74,7 @@ public class ZFTimeLine extends View {
         pWhite.setStrokeWidth(dip2px(1));
 
         pOrange = new Paint();
-        pOrange.setColor(ContextCompat.getColor(getContext(), R.color.colorOrangeLight));
+        pOrange.setColor(ContextCompat.getColor(getContext(), R.color.common_orange_20a));
 
         pCenterLine = new Paint();
         pCenterLine.setStrokeWidth(dip2px(1));

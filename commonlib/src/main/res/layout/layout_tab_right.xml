@@ -37,7 +37,7 @@
         android:textColor="@color/c_white"
         android:textSize="@dimen/sp_12"
         android:visibility="gone"
-        mv:mv_backgroundColor="@color/color_FF3838"
+        mv:mv_backgroundColor="@color/caution_primary"
         mv:mv_isRadiusHalfHeight="true"
         mv:mv_strokeColor="@color/c_white"
         mv:mv_strokeWidth="@dimen/dp_1"/>

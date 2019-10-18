@@ -125,7 +125,7 @@ public class InputCaptchaActivity extends BaseMvpActivity<InputCaptchaPresenter>
         @Override
         public void onTick(long l) {
             btnSendSMS.setClickable(false);//防止计时过程中重复点击
-            btnSendSMS.setTextColor(getResources().getColor(R.color.common_orange_alpha));
+            btnSendSMS.setTextColor(getResources().getColor(R.color.common_orange_60a));
             btnSendSMS.setText(String.format(getString(R.string.str_count_down_second), l / 1000));
         }
 

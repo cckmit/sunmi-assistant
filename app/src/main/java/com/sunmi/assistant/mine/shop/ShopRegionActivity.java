@@ -126,21 +126,21 @@ public class ShopRegionActivity extends BaseMvpActivity<ShopRegionPresenter>
                 mProvinceIndex = i;
                 recyclerView.scrollToPosition(i);
                 btnArea1.setText(province.getName());
-                btnArea1.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
+                btnArea1.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                 btnArea2.setText(R.string.str_choose_please);
                 btnArea2.setTextColor(ContextCompat.getColor(context, R.color.colorText));
             }
             for (RegionProvince.City city : province.getChildren()) {
                 if (mCityId == city.getCity()) {
                     btnArea2.setText(city.getName());
-                    btnArea2.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
+                    btnArea2.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                     btnArea3.setText(R.string.str_choose_please);
                     btnArea3.setTextColor(ContextCompat.getColor(context, R.color.colorText));
                 }
                 for (RegionProvince.Area area : city.getChildren()) {
                     if (mAreaId == area.getCounty()) {
                         btnArea3.setText(area.getName());
-                        btnArea3.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
+                        btnArea3.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                     }
                 }
             }
@@ -179,12 +179,12 @@ public class ShopRegionActivity extends BaseMvpActivity<ShopRegionPresenter>
     private class ProvinceType extends ItemType<RegionProvince, BaseViewHolder<RegionProvince>> {
 
         private ProvinceType() {
-            setOnItemClickListener((adapter, holder, model, position) -> {
+            setOnItemClickListener((holder, model, position) -> {
                 mProvinceId = model.getProvince();
                 mCityId = -1;
                 mAreaId = -1;
                 btnArea1.setText(model.getName());
-                btnArea1.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
+                btnArea1.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                 btnArea2.setText(R.string.str_choose_please);
                 btnArea2.setTextColor(ContextCompat.getColor(context, R.color.colorText));
                 btnArea3.setText("");
@@ -204,7 +204,7 @@ public class ShopRegionActivity extends BaseMvpActivity<ShopRegionPresenter>
             final String name = model.getName();
             tvArea.setText(name);
             if (mProvinceId == model.getProvince()) {
-                tvArea.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
+                tvArea.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                 imageView.setVisibility(View.VISIBLE);
             } else {
                 tvArea.setTextColor(ContextCompat.getColor(context, R.color.colorText));
@@ -216,11 +216,11 @@ public class ShopRegionActivity extends BaseMvpActivity<ShopRegionPresenter>
     private class CityType extends ItemType<RegionProvince.City, BaseViewHolder<RegionProvince.City>> {
 
         private CityType() {
-            setOnItemClickListener((adapter, holder, model, position) -> {
+            setOnItemClickListener((holder, model, position) -> {
                 mCityId = model.getCity();
                 mAreaId = -1;
                 btnArea2.setText(model.getName());
-                btnArea2.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
+                btnArea2.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                 btnArea3.setText(R.string.str_choose_please);
                 btnArea3.setTextColor(ContextCompat.getColor(context, R.color.colorText));
                 mAdapter.setData(model.getChildren());
@@ -239,7 +239,7 @@ public class ShopRegionActivity extends BaseMvpActivity<ShopRegionPresenter>
             final String name = model.getName();
             tvArea.setText(name);
             if (mCityId == model.getCity()) {
-                tvArea.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
+                tvArea.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                 imageView.setVisibility(View.VISIBLE);
             } else {
                 tvArea.setTextColor(ContextCompat.getColor(context, R.color.colorText));
@@ -251,11 +251,11 @@ public class ShopRegionActivity extends BaseMvpActivity<ShopRegionPresenter>
     private class AreaType extends ItemType<RegionProvince.Area, BaseViewHolder<RegionProvince.Area>> {
 
         private AreaType() {
-            setOnItemClickListener((adapter, holder, model, position) -> {
+            setOnItemClickListener((holder, model, position) -> {
                 mAreaId = model.getCounty();
                 btnArea3.setText(model.getName());
-                btnArea3.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
-                adapter.notifyDataSetChanged();
+                btnArea3.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
+                getAdapter().notifyDataSetChanged();
             });
         }
 
@@ -271,7 +271,7 @@ public class ShopRegionActivity extends BaseMvpActivity<ShopRegionPresenter>
             final String name = model.getName();
             tvArea.setText(name);
             if (mAreaId == model.getCounty()) {
-                tvArea.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
+                tvArea.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                 imageView.setVisibility(View.VISIBLE);
             } else {
                 tvArea.setTextColor(ContextCompat.getColor(context, R.color.colorText));

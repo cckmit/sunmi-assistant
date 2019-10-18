@@ -16,7 +16,7 @@
         android:layout_marginTop="@dimen/dp_25"
         android:gravity="center"
         android:textSize="@dimen/sp_12"
-        app:mv_backgroundColor="@color/color_FF3838"
+        app:mv_backgroundColor="@color/caution_primary"
         app:mv_isRadiusHalfHeight="true" />
 
     <TextView
@@ -116,7 +116,7 @@
         android:layout_marginEnd="@dimen/dp_25"
         android:background="@drawable/button_corners_edge_orange_solid_white"
         android:text="@string/ipc_right_now_play"
-        android:textColor="@color/colorOrange"
+        android:textColor="@color/common_orange"
         android:textSize="@dimen/sp_10" />
 
 </RelativeLayout>

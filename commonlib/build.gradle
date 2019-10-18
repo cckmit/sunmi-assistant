@@ -39,6 +39,13 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        googleplay {
+            manifestPlaceholders = [
+                    MI_PERMISSION_NAME: "com.sunmi.assistant.permission.MIPUSH_RECEIVE",
+                    GAO_MAP_KEY       : "443a7ffc55db3d44dba621365618e3ee"]
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
     }
     // 编译并发布AAR (删除旧AAR，编译新AAR，拷贝新AAR至同一目录)
     //Gradle-->Task-->Other-->aarRelease
@@ -66,7 +73,6 @@ dependencies {
 
 //    api project(':shortcutbadger')
 //    api project(':BadgeView')
-//    implementation(name: 'BadgeView', ext: 'aar')
 
     api "com.android.support:appcompat-v7:${SUPPORT_VERSION}"
     api 'com.android.support.constraint:constraint-layout:1.1.3'

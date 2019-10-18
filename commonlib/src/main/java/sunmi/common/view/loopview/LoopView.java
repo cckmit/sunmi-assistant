@@ -1,5 +1,6 @@
 package sunmi.common.view.loopview;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -157,19 +158,19 @@ public class LoopView extends View {
         flingGestureDetector = new GestureDetector(context, new LoopViewGestureListener(this));
         flingGestureDetector.setIsLongpressEnabled(false);
 
-        TypedArray typedArray = context.obtainStyledAttributes(attributeset, R.styleable.androidWheelView);
-        textSize = typedArray.getInteger(R.styleable.androidWheelView_awv_textsize, DEFAULT_TEXT_SIZE);
+        TypedArray typedArray = context.obtainStyledAttributes(attributeset, R.styleable.LoopView);
+        textSize = typedArray.getInteger(R.styleable.LoopView_awv_textsize, DEFAULT_TEXT_SIZE);
         textSize = (int) (Resources.getSystem().getDisplayMetrics().density * textSize);
-        lineSpacingMultiplier = typedArray.getFloat(R.styleable.androidWheelView_awv_lineSpace, DEFAULT_LINE_SPACE);
-        centerTextColor = typedArray.getInteger(R.styleable.androidWheelView_awv_centerTextColor, 0xff313131);
-        outerTextColor = typedArray.getInteger(R.styleable.androidWheelView_awv_outerTextColor, 0xffafafaf);
-        dividerColor = typedArray.getInteger(R.styleable.androidWheelView_awv_dividerTextColor, 0xffc5c5c5);
+        lineSpacingMultiplier = typedArray.getFloat(R.styleable.LoopView_awv_lineSpace, DEFAULT_LINE_SPACE);
+        centerTextColor = typedArray.getInteger(R.styleable.LoopView_awv_centerTextColor, 0xff313131);
+        outerTextColor = typedArray.getInteger(R.styleable.LoopView_awv_outerTextColor, 0xffafafaf);
+        dividerColor = typedArray.getInteger(R.styleable.LoopView_awv_dividerTextColor, 0xffc5c5c5);
         itemsVisibleCount =
-                typedArray.getInteger(R.styleable.androidWheelView_awv_itemsVisibleCount, DEFAULT_VISIBIE_ITEMS);
+                typedArray.getInteger(R.styleable.LoopView_awv_itemsVisibleCount, DEFAULT_VISIBIE_ITEMS);
         if (itemsVisibleCount % 2 == 0) {
             itemsVisibleCount = DEFAULT_VISIBIE_ITEMS;
         }
-        isLoop = typedArray.getBoolean(R.styleable.androidWheelView_awv_isLoop, true);
+        isLoop = typedArray.getBoolean(R.styleable.LoopView_awv_isLoop, true);
         typedArray.recycle();
 
 //        drawingStrings = new String[itemsVisibleCount];

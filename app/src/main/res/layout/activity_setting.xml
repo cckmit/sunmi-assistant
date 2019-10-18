@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_60"
         android:layout_below="@id/title_bar"
-        android:background="@color/colorWhite">
+        android:background="@color/c_white">
 
         <TextView
             android:layout_width="wrap_content"
@@ -58,7 +58,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_60"
         android:layout_below="@id/rlAccountSafe"
-        android:background="@color/colorWhite">
+        android:background="@color/c_white">
 
         <TextView
             android:layout_width="wrap_content"
@@ -108,7 +108,7 @@
         android:layout_height="@dimen/dp_60"
         android:layout_below="@id/rlAbout"
         android:layout_marginTop="@dimen/dp_16"
-        android:background="@color/colorWhite"
+        android:background="@color/c_white"
         android:visibility="gone">
 
         <TextView
@@ -159,7 +159,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_60"
         android:layout_alignParentBottom="true"
-        android:background="@color/colorWhite"
+        android:background="@color/c_white"
         android:gravity="center"
         android:text="@string/str_logout"
         android:textColor="@color/common_orange"

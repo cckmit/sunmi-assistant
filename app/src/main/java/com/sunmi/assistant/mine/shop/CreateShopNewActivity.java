@@ -390,7 +390,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
                 if (index == holder.getAdapterPosition()) {
                     holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.black_15));
                 } else {
-                    holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorWhite));
+                    holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.c_white));
                 }
             }
         });
@@ -577,21 +577,21 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
                 mProvinceIndex = i;
                 recyclerViewRegion.scrollToPosition(i);
                 btnAreaPro.setText(province.getName());
-                btnAreaPro.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
+                btnAreaPro.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                 btnAreaCity.setText(R.string.str_choose_please);
                 btnAreaCity.setTextColor(ContextCompat.getColor(context, R.color.colorText));
             }
             for (RegionProvince.City city : province.getChildren()) {
                 if (mCityId == city.getCity()) {
                     btnAreaCity.setText(city.getName());
-                    btnAreaCity.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
+                    btnAreaCity.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                     btnAreaRegion.setText(R.string.str_choose_please);
                     btnAreaRegion.setTextColor(ContextCompat.getColor(context, R.color.colorText));
                 }
                 for (RegionProvince.Area area : city.getChildren()) {
                     if (mAreaId == area.getCounty()) {
                         btnAreaRegion.setText(area.getName());
-                        btnAreaRegion.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
+                        btnAreaRegion.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                     }
                 }
             }
@@ -624,7 +624,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
                 mRightAdapter.setData(model.getChild());
             });
             if (mCategoryLeftCode == model.getId()) {
-                textView.setTextColor(ContextCompat.getColor(mContext, R.color.color_FF6000));
+                textView.setTextColor(ContextCompat.getColor(mContext, R.color.common_orange));
                 rlLeft.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_FAFAFA));
             } else {
                 rlLeft.setBackgroundColor(ContextCompat.getColor(mContext, R.color.c_white));
@@ -657,7 +657,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
                 notifyDataSetChanged();
             });
             if (mCategoryRightCode == model.getId()) {
-                textView.setTextColor(ContextCompat.getColor(mContext, R.color.color_FF6000));
+                textView.setTextColor(ContextCompat.getColor(mContext, R.color.common_orange));
             } else {
                 textView.setTextColor(ContextCompat.getColor(mContext, R.color.colorText));
             }
@@ -667,12 +667,12 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
     private class ProvinceType extends ItemType<RegionProvince, BaseViewHolder<RegionProvince>> {
 
         private ProvinceType() {
-            setOnItemClickListener((adapter, holder, model, position) -> {
+            setOnItemClickListener((holder, model, position) -> {
                 mProvinceId = model.getProvince();
                 mCityId = -1;
                 mAreaId = -1;
                 btnAreaPro.setText(model.getName());
-                btnAreaPro.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
+                btnAreaPro.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                 btnAreaCity.setText(R.string.str_choose_please);
                 btnAreaCity.setTextColor(ContextCompat.getColor(context, R.color.colorText));
                 btnAreaRegion.setText("");
@@ -692,7 +692,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
             final String name = model.getName();
             tvArea.setText(name);
             if (mProvinceId == model.getProvince()) {
-                tvArea.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
+                tvArea.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                 imageView.setVisibility(View.VISIBLE);
             } else {
                 tvArea.setTextColor(ContextCompat.getColor(context, R.color.colorText));
@@ -704,12 +704,12 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
     private class CityType extends ItemType<RegionProvince.City, BaseViewHolder<RegionProvince.City>> {
 
         private CityType() {
-            setOnItemClickListener((adapter, holder, model, position) -> {
+            setOnItemClickListener((holder, model, position) -> {
                 mCityId = model.getCity();
                 mAreaId = -1;
                 poiCityName = model.getName();
                 btnAreaCity.setText(model.getName());
-                btnAreaCity.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
+                btnAreaCity.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                 btnAreaRegion.setText(R.string.str_choose_please);
                 btnAreaRegion.setTextColor(ContextCompat.getColor(context, R.color.colorText));
                 mAdapter.setData(model.getChildren());
@@ -728,7 +728,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
             final String name = model.getName();
             tvArea.setText(name);
             if (mCityId == model.getCity()) {
-                tvArea.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
+                tvArea.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                 imageView.setVisibility(View.VISIBLE);
             } else {
                 tvArea.setTextColor(ContextCompat.getColor(context, R.color.colorText));
@@ -740,11 +740,11 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
     private class AreaType extends ItemType<RegionProvince.Area, BaseViewHolder<RegionProvince.Area>> {
 
         private AreaType() {
-            setOnItemClickListener((adapter, holder, model, position) -> {
+            setOnItemClickListener((holder, model, position) -> {
                 mAreaId = model.getCounty();
                 btnAreaRegion.setText(model.getName());
-                btnAreaRegion.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
-                adapter.notifyDataSetChanged();
+                btnAreaRegion.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
+                getAdapter().notifyDataSetChanged();
             });
         }
 
@@ -760,7 +760,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
             final String name = model.getName();
             tvArea.setText(name);
             if (mAreaId == model.getCounty()) {
-                tvArea.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
+                tvArea.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                 imageView.setVisibility(View.VISIBLE);
             } else {
                 tvArea.setTextColor(ContextCompat.getColor(context, R.color.colorText));

@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.Utils;
 
 /**
@@ -13,14 +12,14 @@ import com.sunmi.assistant.dashboard.Utils;
  */
 public class XAxisLabelFormatter extends ValueFormatter {
 
-    private static String[] sWeekName;
+    private Context context;
 
     public XAxisLabelFormatter(Context context) {
-        sWeekName = context.getResources().getStringArray(R.array.week_name);
+        this.context = context;
     }
 
     @Override
     public String getAxisLabel(float value, AxisBase axis) {
-        return Utils.convertFloatToXAxisName(value, sWeekName);
+        return Utils.convertXToXAxisName(context, value);
     }
 }

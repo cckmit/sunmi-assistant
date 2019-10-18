@@ -13,12 +13,16 @@ import okhttp3.RequestBody;
 import retrofit2.Callback;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.model.CompanyInfoResp;
-import sunmi.common.model.ConsumerAgeGenderResp;
-import sunmi.common.model.ConsumerAgeNewOldResp;
-import sunmi.common.model.ConsumerCountResp;
-import sunmi.common.model.ConsumerRateResp;
 import sunmi.common.model.CreateShopInfo;
+import sunmi.common.model.CustomerAgeGenderResp;
+import sunmi.common.model.CustomerAgeNewOldResp;
+import sunmi.common.model.CustomerCountResp;
+import sunmi.common.model.CustomerHistoryDetailResp;
+import sunmi.common.model.CustomerHistoryResp;
+import sunmi.common.model.CustomerHistoryTrendResp;
+import sunmi.common.model.CustomerRateResp;
 import sunmi.common.model.PlatformInfo;
+import sunmi.common.model.ShopAuthorizeInfoResp;
 import sunmi.common.model.ShopCategoryResp;
 import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopInfoResp;
@@ -654,6 +658,23 @@ public class SunmiStoreApi {
         }
     }
 
+    /**
+     * 获取门店对接信息，包括授权状态，授权时间，数据导入状态
+     */
+    public void getAuthorizeInfo(int companyId, int shopId, RetrofitCallback<ShopAuthorizeInfoResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
+                    .getAuthorizeInfo(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     // -------------- 客流统计相关 --------------
 
     /**
@@ -663,16 +684,16 @@ public class SunmiStoreApi {
      * @param shopId    是	number	门店ID
      * @param timeType  是	number	日: 1、周: 2、月: 3
      */
-    public void getConsumer(int companyId, int shopId, int timeType,
-                            RetrofitCallback<ConsumerCountResp> callback) {
+    public void getCustomer(int companyId, int shopId, int timeType,
+                            RetrofitCallback<CustomerCountResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
                     .put("shop_id", shopId)
                     .put("type", timeType)
                     .toString();
-            SunmiStoreRetrofitClient.getInstance().create(ConsumerInterface.class)
-                    .getConsumer(new BaseRequest(params))
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getCustomer(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -686,16 +707,16 @@ public class SunmiStoreApi {
      * @param shopId    是	number	门店ID
      * @param timeType  是	number	日: 1、周: 2、月: 3
      */
-    public void getConsumerRate(int companyId, int shopId, int timeType,
-                                RetrofitCallback<ConsumerRateResp> callback) {
+    public void getCustomerRate(int companyId, int shopId, int timeType,
+                                RetrofitCallback<CustomerRateResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
                     .put("shop_id", shopId)
                     .put("type", timeType)
                     .toString();
-            SunmiStoreRetrofitClient.getInstance().create(ConsumerInterface.class)
-                    .getConsumerRate(new BaseRequest(params))
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getCustomerRate(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -710,8 +731,8 @@ public class SunmiStoreApi {
      * @param startTime 是	string	筛选开始时间 “YYYY-MM-DD”(“YYYY-MM-DD HH-MM-SS” 暂未启用）
      * @param endTime   是	string	筛选结束时间 “YYYY-MM-DD”(“YYYY-MM-DD HH-MM-SS” 暂未启用）
      */
-    public void getConsumerByAgeGender(int companyId, int shopId, String startTime, String endTime,
-                                       RetrofitCallback<ConsumerAgeGenderResp> callback) {
+    public void getCustomerByAgeGender(int companyId, int shopId, String startTime, String endTime,
+                                       RetrofitCallback<CustomerAgeGenderResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -719,8 +740,8 @@ public class SunmiStoreApi {
                     .put("start_time", startTime)
                     .put("end_time", endTime)
                     .toString();
-            SunmiStoreRetrofitClient.getInstance().create(ConsumerInterface.class)
-                    .getConsumerByAgeGender(new BaseRequest(params))
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getCustomerByAgeGender(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -735,8 +756,8 @@ public class SunmiStoreApi {
      * @param startTime 是	string	筛选开始时间 “YYYY-MM-DD”(“YYYY-MM-DD HH-MM-SS” 暂未启用）
      * @param endTime   是	string	筛选结束时间 “YYYY-MM-DD”(“YYYY-MM-DD HH-MM-SS” 暂未启用）
      */
-    public void getConsumerByAgeNewOld(int companyId, int shopId, String startTime, String endTime,
-                                       RetrofitCallback<ConsumerAgeNewOldResp> callback) {
+    public void getCustomerByAgeNewOld(int companyId, int shopId, String startTime, String endTime,
+                                       RetrofitCallback<CustomerAgeNewOldResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -744,8 +765,106 @@ public class SunmiStoreApi {
                     .put("start_time", startTime)
                     .put("end_time", endTime)
                     .toString();
-            SunmiStoreRetrofitClient.getInstance().create(ConsumerInterface.class)
-                    .getConsumerByAgeNewOld(new BaseRequest(params))
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getCustomerByAgeNewOld(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取历史客流数据
+     *
+     * @param companyId 是	number	商户ID
+     * @param shopId    是	number	门店ID
+     * @param type      是	number	日: 1、周: 2、月: 3、昨日：4
+     */
+    public void getHistoryCustomer(int companyId, int shopId, int type,
+                                   RetrofitCallback<CustomerHistoryResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("type", type)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getHistoryCustomer(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取历史客流数据
+     *
+     * @param companyId 是	number	商户ID
+     * @param shopId    是	number	门店ID
+     * @param startTime 开始时间 “YYYY-MM-DD”
+     * @param endTime   结束时间 “YYYY-MM-DD” （如果需要查询某一天，开始和结束时间相同）
+     */
+    public void getHistoryCustomer(int companyId, int shopId, String startTime, String endTime,
+                                   RetrofitCallback<CustomerHistoryResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("start_time", startTime)
+                    .put("end_time", endTime)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getHistoryCustomerByRange(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取历史客流变化趋势（今日、本周、本月，昨日）
+     *
+     * @param companyId 是	number	商户ID
+     * @param shopId    是	number	门店ID
+     * @param type      是	number	日: 1、周: 2、月: 3、昨日：4
+     * @param group     是	string	“hour”、”day”（”week”、”month”）
+     */
+    public void getHistoryCustomerTrend(int companyId, int shopId, int type, String group,
+                                        RetrofitCallback<CustomerHistoryTrendResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("type", type)
+                    .put("group_by", group)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getHistoryCustomerTrend(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取历史客流详情（今日、本周、本月，昨日）
+     *
+     * @param companyId 是	number	商户ID
+     * @param shopId    是	number	门店ID
+     * @param startTime 开始时间 “YYYY-MM-DD”
+     * @param endTime   结束时间 “YYYY-MM-DD” （如果需要查询某一天，开始和结束时间相同）
+     */
+    public void getHistoryCustomerDetail(int companyId, int shopId, String startTime, String endTime,
+                                         RetrofitCallback<CustomerHistoryDetailResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("start_time", startTime)
+                    .put("end_time", endTime)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getHistoryCustomerDetail(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();

@@ -20,20 +20,32 @@
             android:textStyle="bold"
             android:layout_marginTop="@dimen/dp_20"
             android:text="@string/dashboard_no_order_title"
-            android:textColor="@color/color_303540"
+            android:textColor="@color/text_title"
             android:textSize="@dimen/sp_20"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/tv_dashboard_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_2"
+            android:text="@string/dashboard_no_order_subtitle"
+            android:textColor="@color/text_caption"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_title" />
+
         <Button
-            android:id="@+id/btn_dashboard_coming_soon"
+            android:id="@+id/btn_dashboard_dock"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="@dimen/dp_96"
             android:layout_height="@dimen/dp_40"
             android:layout_marginStart="@dimen/dp_24"
             android:layout_marginBottom="@dimen/dp_20"
-            android:background="@drawable/dashboard_btn_round_gray"
-            android:text="@string/str_coming_soon"
+            android:background="@drawable/dashboard_btn_round_orange"
+            android:text="@string/dashboard_no_order_dock"
             android:textColor="@color/c_white"
             android:textSize="@dimen/sp_14"
             app:layout_constraintBottom_toBottomOf="parent"
