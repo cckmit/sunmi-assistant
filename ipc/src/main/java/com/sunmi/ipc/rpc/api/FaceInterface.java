@@ -1,5 +1,6 @@
 package com.sunmi.ipc.rpc.api;
 
+import com.sunmi.ipc.face.model.FaceArrivalCount;
 import com.sunmi.ipc.face.model.FaceArrivalLogResp;
 import com.sunmi.ipc.model.FaceAgeRangeResp;
 import com.sunmi.ipc.model.FaceCheckResp;
@@ -218,7 +219,15 @@ public interface FaceInterface {
      * @param request
      * @return
      */
-    @POST(URL+"/history/arrival/getListByTimeRange")
-    Call<BaseResponse<FaceArrivalLogResp>> getListByTimeRange(@Body BaseRequest request);
+    @POST(URL+"history/arrival/getListByTimeRange")
+    Call<BaseResponse<FaceArrivalLogResp>> getArrivalListByTimeRange(@Body BaseRequest request);
+
+    /**
+     * 用户获取某个人进店次数统计
+     * @param request
+     * @return
+     */
+    @POST(URL+"history/arrival/getCountByTimeRange")
+    Call<BaseResponse<FaceArrivalCount>> getArrivalCountByTimeRange(@Body BaseRequest request);
 
 }

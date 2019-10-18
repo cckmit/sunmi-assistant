@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SUNMI</string>
+    <string name="app_name">SUNMI Assistant</string>
     <string name="str_text_lead_remote">Remote Management</string>
     <string name="str_text_lead_query_status">Check the status of your store anywhere anytime</string>
     <string name="str_text_lead_tem">Terminal Management</string>
@@ -145,7 +145,7 @@
     <string name="company_select">Please select the shop you want to enter</string>
     <string name="company_shop_select">Please select the shop you want to enter</string>
     <string name="company_create">Create new shop</string>
-    <string name="company_new_create">Create new shop</string>
+    <string name="company_new_create">Create new company</string>
     <string name="company_create_hint">Please enter the company name</string>
     <string name="company_shop_create_hint">Please enter the shop name</string>
     <string name="company_new_try_create">You can create a new company</string>
