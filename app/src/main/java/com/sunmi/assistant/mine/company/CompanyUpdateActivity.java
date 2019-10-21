@@ -50,6 +50,7 @@ public class CompanyUpdateActivity extends BaseActivity
     TitleBarView titleBar;
     @ViewById(R.id.cet_username)
     ClearableEditText cetUserInfo;
+
     @Extra
     CompanyInfoResp mInfo;
     @Extra
