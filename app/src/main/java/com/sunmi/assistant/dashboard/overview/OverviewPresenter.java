@@ -130,6 +130,7 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
 
     private void initList(int source) {
         mList.clear();
+        mList.add(OverviewPeriodCard.get(this, source));
         // No any data
         if (!Utils.hasAuth(source) && !Utils.hasFs(source)) {
             mList.add(EmptyDataCard.get(this, source));
@@ -141,7 +142,6 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
 
         // Time tab & data & trend card
         if (Utils.hasAuth(source) || Utils.hasFs(source)) {
-            mList.add(OverviewPeriodCard.get(this, source));
             mList.add(OverviewDataCard.get(this, source));
             mList.add(OverviewTrendCard.get(this, source));
         }

@@ -129,8 +129,8 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
 
     private void initList(int source) {
         mList.clear();
+        mList.add(CustomerPeriodCard.get(this, source));
         if (Utils.hasCustomer(source)) {
-            mList.add(CustomerPeriodCard.get(this, source));
             mList.add(CustomerDataCard.get(this, source));
             mList.add(CustomerTrendCard.get(this, source));
             mList.add(CustomerAnalysisCard.get(this, source));
