@@ -176,6 +176,7 @@
     <string name="tip_no_tf_card">未插入TF卡</string>
     <string name="tip_tf_uninitalized">未格式化</string>
     <string name="tip_unrecognition_tf_card">TF卡无法识别</string>
+    <string name="tip_tf_card_removed_software">存储卡已被软件移除，请重新插入</string>
     <string name="ipc_time_over_current_time">超过了当前时间</string>
     <string name="ipc_time_over_back_time">超过了日期回放时间</string>
 

@@ -46,9 +46,8 @@
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
         android:layout_marginTop="@dimen/dp_4"
-        android:textColor="@color/color_333333_60"
+        android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_18" />
-
 
     <Button
         android:id="@+id/btn_upgrade"
