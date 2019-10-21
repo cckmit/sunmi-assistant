@@ -37,7 +37,7 @@
         android:layout_below="@+id/tv_name"
         android:layout_alignStart="@+id/tv_name"
         android:layout_alignParentEnd="true"
-        android:textColor="@color/color_999999"
+        android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_14" />
 
     <TextView

@@ -17,7 +17,7 @@
 
     <TextView
         android:id="@+id/tv_result"
-        style="@style/configTitleText"
+        style="@style/ConfigTitleText"
         android:layout_below="@+id/title_bar"
         android:text="@string/tip_ipc_config_complete" />
 

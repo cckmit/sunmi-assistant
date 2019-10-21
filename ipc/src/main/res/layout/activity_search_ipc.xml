@@ -24,7 +24,7 @@
 
         <TextView
             android:id="@+id/tv_1"
-            style="@style/configTitleText"
+            style="@style/ConfigTitleText"
             android:text="@string/tip_select_ipc" />
 
         <TextView

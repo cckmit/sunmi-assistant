@@ -16,7 +16,7 @@
 
         <TextView
             android:id="@+id/tv_title"
-            style="@style/dialogTitle"
+            style="@style/DialogTitle"
             android:layout_marginTop="@dimen/dp_25" />
 
         <EditText

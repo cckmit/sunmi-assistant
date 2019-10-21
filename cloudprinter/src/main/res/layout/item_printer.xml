@@ -43,7 +43,7 @@
         android:layout_toEndOf="@+id/iv_device"
         android:ellipsize="end"
         android:singleLine="true"
-        android:textColor="@color/color_999999"
+        android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_14" />
 
     <CheckBox

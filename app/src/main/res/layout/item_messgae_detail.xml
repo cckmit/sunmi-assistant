@@ -103,7 +103,7 @@
         android:layout_marginStart="@dimen/dp_25"
         android:layout_marginTop="@dimen/dp_13"
         android:layout_marginBottom="@dimen/dp_13"
-        android:textColor="@color/color_999999"
+        android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_12" />
 
     <Button
