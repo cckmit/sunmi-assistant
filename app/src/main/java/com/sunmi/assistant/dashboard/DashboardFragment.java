@@ -312,7 +312,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         if (pageIndex != mPresenter.getPageIndex()) {
             return;
         }
-        if (pageIndex == Constants.PAGE_OVERVIEW) {
+        if (pageIndex == 0) {
             mTodayView.setVisibility(View.VISIBLE);
             mYesterdayView.setVisibility(View.GONE);
         } else {
