@@ -37,14 +37,13 @@
         android:layout_height="0dp"
         android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_10"
-        android:paddingTop="@dimen/dp_10"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rl_shop_title"
         app:ptrHeaderTextColor="@color/text_main">
 
-        <android.support.v7.widget.RecyclerView
+        <sunmi.common.view.SmRecyclerView
             android:id="@+id/rv_device"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
