@@ -675,6 +675,31 @@ public class SunmiStoreApi {
         }
     }
 
+    /**
+     * 门店导入Saas历史数据
+     *
+     * @param companyId  是	number	商户id
+     * @param shopId     是	number	店铺id
+     * @param shopNo     是	string	对接店铺号
+     * @param saasSource 是	number	saas source id
+     */
+    public void importSaas(int companyId, int shopId, String shopNo, int saasSource,
+                           RetrofitCallback<Object> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("shop_no", shopNo)
+                    .put("saas_source", saasSource)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
+                    .importSaas(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     // -------------- 客流统计相关 --------------
 
     /**

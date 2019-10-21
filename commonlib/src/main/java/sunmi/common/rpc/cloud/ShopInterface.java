@@ -79,4 +79,10 @@ public interface ShopInterface {
     @POST(saasPath + "getAuthorizeInfo")
     Call<BaseResponse<ShopAuthorizeInfoResp>> getAuthorizeInfo(@Body BaseRequest request);
 
+    /**
+     * 门店导入Saas历史数据
+     */
+    @POST(saasPath + "importPaymentHistory")
+    Call<BaseResponse<Object>> importSaas(@Body BaseRequest request);
+
 }
