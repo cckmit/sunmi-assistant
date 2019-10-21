@@ -164,7 +164,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_16"
                 android:layout_below="@+id/rlStore"
-                android:background="@color/c_divider"
+                android:background="@color/bg_common"
                 android:visibility="gone"/>
 
             <cn.bingoogolapple.badgeview.BGABadgeRelativeLayout
@@ -359,7 +359,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_16"
                 android:layout_below="@+id/rlCoupon"
-                android:background="@color/c_divider" />
+                android:background="@color/bg_common" />
 
             <RelativeLayout
                 android:id="@+id/rlHelp"

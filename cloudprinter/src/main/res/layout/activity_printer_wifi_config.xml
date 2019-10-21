@@ -88,7 +88,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/dp_32"
         android:text="@string/tip_use_2g"
-        android:textColor="@color/color_999999"
+        android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_14" />
 
     <RelativeLayout

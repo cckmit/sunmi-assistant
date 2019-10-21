@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--主题色-->
-    <color name="c_primary">#FF6000</color>
     <color name="c_primary_dark">#303F9F</color>
+    <color name="common_orange">#FF6000</color>
+    <color name="common_orange_20a">#33FF6000</color>
+    <color name="common_orange_60a">#99FF6000</color>
 
     <!--文字颜色-->
     <color name="text_main">#303540</color>
@@ -11,10 +13,6 @@
     <color name="text_disable">#A1A7B3</color>
 
     <!--通用-->
-    <color name="transparent">#00000000</color>
-    <color name="c_white">#FFFFFF</color>
-    <color name="c_black">#000000</color>
-
     <color name="bg_common">#FAFAFA</color>
     <color name="common_fill">#F5F7FA</color>
     <color name="c_divider">#E6E8EB</color>
@@ -25,6 +23,10 @@
     <color name="assist_secondary">#5A97FC</color>
     <color name="caution_secondary">#FF6680</color>
     <color name="success_secondary">#4CC3FF</color>
+
+    <color name="transparent">#00000000</color>
+    <color name="c_white">#FFFFFF</color>
+    <color name="c_black">#000000</color>
 
     <!--white 模糊程度-->
     <color name="white_5a">#0DFFFFFF</color>
@@ -47,25 +49,5 @@
     <color name="black_40">#66000000</color>
     <color name="black_60">#99000000</color>
     <color name="black_70">#B3000000</color>
-
-    <!--old-->
-    <color name="color_303540_40a">#66303540</color>
-    <color name="result_minor_text">#ffc0c0c0</color>
-    <color name="c_gray">#828180</color>
-
-    <color name="colorLoadingStart">#FF5A00</color>
-    <color name="colorLoadingCenter">#FD935F</color>
-    <color name="colorLoadingEnd">#FFFBF8</color>
-    <color name="color_333333_60">#99333333</color>
-
-    <color name="common_orange">#FF6000</color>
-    <color name="common_orange_20a">#33FF6000</color>
-    <color name="common_orange_60a">#99FF6000</color>
-    <color name="color_FF7F00">#FF7F00</color>
-    <color name="color_FF7F00_60">#99FF7F00</color>
-
-    <color name="color_999999">#9985858A</color>
-
-    <color name="color_85858A_20a">#3385858A</color>
 
 </resources>

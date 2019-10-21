@@ -8,5 +8,8 @@
     <color name="color_FF8000">#FF8000</color>
     <color name="color_AFC3FA">#AFC3FA</color>
     <color name="color_4B7AFA">#6CBBFF</color>
+    <color name="color_FF7F00">#FF7F00</color>
+    <color name="color_FF7F00_60">#99FF7F00</color>
+    <color name="color_303540_40a">#66303540</color>
 
 </resources>

@@ -29,7 +29,7 @@
         android:layout_marginTop="@dimen/dp_4"
         android:gravity="center"
         android:text="@string/network_error_tip"
-        android:textColor="@color/color_999999"
+        android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_12"
         app:layout_constraintBottom_toTopOf="@+id/btn_refresh"
         app:layout_constraintEnd_toEndOf="parent"
