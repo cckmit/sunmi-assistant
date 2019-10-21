@@ -5,7 +5,6 @@
     android:layout_height="@dimen/dp_120"
     android:layout_centerInParent="true"
     android:layout_gravity="center"
-    android:layout_marginBottom="@dimen/dp_8"
     android:background="@drawable/bg_card_white_corner_rounded">
 
     <TextView
@@ -39,7 +38,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_device_more_setting" />
-
     </LinearLayout>
 
     <TextView
