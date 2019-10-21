@@ -371,7 +371,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             return;
         }
         showLoadingDialog();
-        IPCCall.getInstance().getSdState(context, device.getDeviceid());
+        IPCCall.getInstance().getSdState(context, device.getModel(), device.getDeviceid());
     }
 
     @Click(resName = "sil_voice_exception")
@@ -615,7 +615,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     @Click(resName = "sil_sd_manager")
     void sdManagerClick() {
         showLoadingDialog();
-        IPCCall.getInstance().getSdStatus(context, mDevice.getDeviceid(), mDevice.getModel());
+        IPCCall.getInstance().getSdStatus(context, mDevice.getModel(), mDevice.getDeviceid());
     }
 
     @Override
