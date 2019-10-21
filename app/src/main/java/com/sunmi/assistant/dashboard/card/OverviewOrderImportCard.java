@@ -1,8 +1,8 @@
 package com.sunmi.assistant.dashboard.card;
 
 import android.content.Context;
-import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.Button;
@@ -32,9 +32,10 @@ public class OverviewOrderImportCard extends BaseRefreshCard<OverviewOrderImport
 
     private static OverviewOrderImportCard sInstance;
 
-    private int mColorGray;
-    private int mColorWhite;
-    private GradientDrawable mContentBg;
+    private int mColorNormal;
+    private int mColorOk;
+    private int mColorError;
+
     private int mRequestCount;
 
     private OverviewOrderImportCard(Presenter presenter, int source) {
@@ -52,6 +53,9 @@ public class OverviewOrderImportCard extends BaseRefreshCard<OverviewOrderImport
 
     @Override
     public void init(Context context) {
+        mColorNormal = ContextCompat.getColor(context, R.color.text_caption);
+        mColorOk = ContextCompat.getColor(context, R.color.assist_primary);
+        mColorError = ContextCompat.getColor(context, R.color.caution_primary);
     }
 
     @Override
@@ -139,6 +143,7 @@ public class OverviewOrderImportCard extends BaseRefreshCard<OverviewOrderImport
             String time = DateUtils.formatDateTime(context, model.authTime * 1000,
                     DateUtils.FORMAT_SHOW_YEAR);
             tip.setText(context.getString(R.string.dashboard_card_import_tip_import, time));
+            tip.setTextColor(mColorNormal);
             tip.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);
             tip.setCompoundDrawablePadding(0);
             btn.setEnabled(true);
@@ -146,6 +151,7 @@ public class OverviewOrderImportCard extends BaseRefreshCard<OverviewOrderImport
 
         } else if (model.state == Constants.IMPORT_DOING) {
             tip.setText(R.string.dashboard_card_import_tip_loading);
+            tip.setTextColor(mColorOk);
             tip.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);
             tip.setCompoundDrawablePadding(0);
             btn.setEnabled(false);
@@ -153,6 +159,7 @@ public class OverviewOrderImportCard extends BaseRefreshCard<OverviewOrderImport
 
         } else if (model.state == Constants.IMPORT_SUCCESS) {
             tip.setText(R.string.dashboard_card_import_tip_ok);
+            tip.setTextColor(mColorOk);
             tip.setCompoundDrawablesRelativeWithIntrinsicBounds(R.mipmap.dashboard_import_ok,
                     0, 0, 0);
             tip.setCompoundDrawablePadding((int) context.getResources().getDimension(R.dimen.dp_4));
@@ -161,6 +168,7 @@ public class OverviewOrderImportCard extends BaseRefreshCard<OverviewOrderImport
 
         } else if (model.state == Constants.IMPORT_FAIL) {
             tip.setText(R.string.dashboard_card_import_tip_error);
+            tip.setTextColor(mColorError);
             tip.setCompoundDrawablesRelativeWithIntrinsicBounds(R.mipmap.dashboard_import_error,
                     0, 0, 0);
             tip.setCompoundDrawablePadding((int) context.getResources().getDimension(R.dimen.dp_4));
@@ -168,8 +176,7 @@ public class OverviewOrderImportCard extends BaseRefreshCard<OverviewOrderImport
             btn.setText(R.string.str_retry);
 
         } else {
-            holder.itemView.setVisibility(View.GONE);
-            holder.itemView.getParent().requestLayout();
+            holder.itemView.post(() -> getAdapter().remove(position));
         }
     }
 
