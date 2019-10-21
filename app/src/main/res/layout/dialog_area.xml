@@ -49,7 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_alignParentTop="true"
-            android:background="@color/colorText_5" />
+            android:background="@color/bg_common" />
 
         <Button
             android:id="@+id/btn_area_pro"
@@ -100,7 +100,7 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_alignParentBottom="true"
-            android:background="@color/colorText_5" />
+            android:background="@color/bg_common" />
     </RelativeLayout>
 
 

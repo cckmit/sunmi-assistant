@@ -676,7 +676,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 switch (getSdcardStatus(res)) {
                     case 1:
                     case 2:
-                    case 4:
                         IpcSettingSdcardActivity_.intent(this).mDevice(mDevice).start();
                         break;
                     case 0:
@@ -685,6 +684,10 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                     case 3:
                         showErrorDialog(R.string.tip_unrecognition_tf_card,
                                 R.string.ipc_recognition_sd_unknown);
+                        break;
+                    case 4:
+                        showErrorDialog(R.string.tip_unrecognition_tf_card,
+                                R.string.tip_tf_card_removed_software);
                         break;
                     default:
                         shortTip(R.string.network_wifi_low);
@@ -705,6 +708,10 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                     case 3:
                         showErrorDialog(R.string.tip_unrecognition_tf_card,
                                 R.string.ipc_recognition_sd_unknown);
+                        break;
+                    case 4:
+                        showErrorDialog(R.string.tip_unrecognition_tf_card,
+                                R.string.tip_tf_card_removed_software);
                         break;
                     default:
                         shortTip(R.string.network_wifi_low);

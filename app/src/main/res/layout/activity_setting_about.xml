@@ -77,7 +77,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/rlVersion"
-        android:background="@color/colorText_5">
+        android:background="@color/bg_common">
 
         <CheckedTextView
             android:id="@+id/ctv_privacy"

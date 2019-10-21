@@ -65,7 +65,7 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_below="@+id/linear"
-        android:background="@color/colorText_5" />
+        android:background="@color/bg_common" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"

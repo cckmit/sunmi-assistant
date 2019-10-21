@@ -61,14 +61,11 @@
     <color name="common_orange">#FF6000</color>
     <color name="common_orange_20a">#33FF6000</color>
     <color name="common_orange_60a">#99FF6000</color>
+    <color name="color_FF7F00">#FF7F00</color>
+    <color name="color_FF7F00_60">#99FF7F00</color>
 
     <color name="color_999999">#9985858A</color>
 
     <color name="color_85858A_20a">#3385858A</color>
-    <color name="color_FF7F00">#FF7F00</color>
-    <color name="color_FF7F00_60">#99FF7F00</color>
-
-    <color name="colorText_5">#0E333C4F</color>
-    <color name="colorText_20">#33333C4F</color>
 
 </resources>
