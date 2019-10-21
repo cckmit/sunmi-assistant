@@ -85,7 +85,7 @@
         <item name="android:textColor">@color/text_main</item>
     </style>
 
-    <style name="configTitleText">
+    <style name="ConfigTitleText">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginStart">@dimen/dp_30</item>
@@ -115,7 +115,7 @@
         <item name="android:mirrorForRtl">true</item>
     </style>
 
-    <style name="dialogTitle">
+    <style name="DialogTitle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center</item>
