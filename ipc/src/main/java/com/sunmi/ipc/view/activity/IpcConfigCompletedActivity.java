@@ -115,6 +115,9 @@ public class IpcConfigCompletedActivity extends BaseActivity {
             titleBar.setAppTitle(R.string.str_sunmi_link);
             tvResult.setText(getString(R.string.str_wifi_config_finish));
         }
+        if (CommonConstants.TYPE_IPC_FS == deviceType) {
+            btnFinish.setText(R.string.str_jump_adjust);
+        }
         initList();
     }
 

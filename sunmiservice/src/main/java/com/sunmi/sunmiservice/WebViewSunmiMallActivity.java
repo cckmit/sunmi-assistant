@@ -88,7 +88,6 @@ public class WebViewSunmiMallActivity extends BaseActivity
 
         JSCall jsCall = new JSCall(this, webView);
         webView.addJavascriptInterface(jsCall, SsConstants.JS_INTERFACE_NAME);
-        //webView.setWebViewClient(new WebViewClient());
         webView.setWebChromeClient(new H5FaceWebChromeClient(this, this));
         webView.setWebViewClient(new SMWebViewClient(this) {
             @Override

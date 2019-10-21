@@ -13,7 +13,6 @@ import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.cloud.SunmiStoreRetrofitClient;
 import sunmi.common.rpc.http.HttpCallback;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
-import sunmi.common.utils.RegexUtils;
 import sunmi.common.utils.SpUtils;
 
 /**
@@ -25,30 +24,28 @@ public class LoginPresenter extends BasePresenter<LoginContract.View>
 
     @Override
     public void userMerge(String user, String mobile, String password) {
-        if (RegexUtils.isCorrectAccount(user)) {
-            SSOApi.checkUserName(user, new HttpCallback<String>(null) {
-                @Override
-                public void onSuccess(int code, String msg, String data) {
-                    if (!isViewAttached()) {
-                        return;
-                    }
-                    try {
-                        JSONObject object = new JSONObject(data);
-                        if (object.has("needMerge")) {
-                            int needMerge = object.getInt("needMerge");//是否需要合并 0-否 1-是
-                            String url = object.getString("url");
-                            if (needMerge == 1) {
-                                mView.showMergeDialog(url);
-                            } else {
-                                login(mobile, password);
-                            }
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+        SSOApi.checkUserName(user, new HttpCallback<String>(null) {
+            @Override
+            public void onSuccess(int code, String msg, String data) {
+                if (!isViewAttached()) {
+                    return;
                 }
-            });
-        }
+                try {
+                    JSONObject object = new JSONObject(data);
+                    if (object.has("needMerge")) {
+                        int needMerge = object.getInt("needMerge");//是否需要合并 0-否 1-是
+                        String url = object.getString("url");
+                        if (needMerge == 1) {
+                            mView.showMergeDialog(url);
+                        } else {
+                            login(mobile, password);
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
