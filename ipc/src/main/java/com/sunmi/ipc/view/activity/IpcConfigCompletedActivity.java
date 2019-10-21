@@ -185,6 +185,10 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                             showErrorDialog(R.string.tip_unrecognition_tf_card,
                                     R.string.ipc_recognition_sd_unknown);
                             break;
+                        case 4:
+                            showErrorDialog(R.string.tip_unrecognition_tf_card,
+                                    R.string.tip_tf_card_removed_software);
+                            break;
                         default:
                             shortTip(R.string.network_wifi_low);
                             break;
@@ -378,12 +382,9 @@ public class IpcConfigCompletedActivity extends BaseActivity {
         public void convert(final ViewHolder holder, SunmiDevice device) {
             CheckBox cb = holder.getView(R.id.cb_item);
             holder.setText(R.id.tv_name, device.getDeviceid());
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    selectedIndex = holder.getAdapterPosition();
-                    notifyDataSetChanged();
-                }
+            holder.itemView.setOnClickListener(v -> {
+                selectedIndex = holder.getAdapterPosition();
+                notifyDataSetChanged();
             });
             cb.setChecked(selectedIndex == holder.getAdapterPosition());
         }

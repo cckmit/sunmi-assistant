@@ -617,7 +617,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
             });
             selectedItem(selectedIndex, holder, item);
             if (count == 0) {
-                item.setLeftTextColor(ContextCompat.getColor(context, R.color.colorText_20));
+                item.setLeftTextColor(ContextCompat.getColor(context, R.color.text_disable));
                 item.setRightImage(null);
             }
         }
