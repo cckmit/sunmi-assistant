@@ -10,9 +10,10 @@ import android.view.View;
 import android.webkit.DownloadListener;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import com.sunmi.cloudprinter.R;
 import com.sunmi.cloudprinter.bean.PrinterJSCall;
@@ -31,6 +32,7 @@ import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.webview.SMWebView;
+import sunmi.common.view.webview.SMWebViewClient;
 
 @EActivity(resName = "activity_printer_manage")
 public class PrinterManageActivity extends BaseActivity {
@@ -75,7 +77,6 @@ public class PrinterManageActivity extends BaseActivity {
         };
         // 设置setWebChromeClient对象
         webView.setWebChromeClient(webChrome);
-        webView.setWebViewClient(new WebViewClient());
         loadWebView(PrinterConfig.IOT_H5_URL);
     }
 
@@ -103,7 +104,7 @@ public class PrinterManageActivity extends BaseActivity {
         webView.getSettings().setLoadWithOverviewMode(true);
         webSetting.setJavaScriptCanOpenWindowsAutomatically(true);
         // 不用启动客户端的浏览器来加载未加载出来的数据
-        webView.setWebViewClient(new WebViewClient() {
+        webView.setWebViewClient(new SMWebViewClient(this) {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
@@ -120,20 +121,23 @@ public class PrinterManageActivity extends BaseActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
+                hideLoadingDialog();
                 timerCancel();
             }
 
+
             @Override
-            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                super.onReceivedError(view, errorCode, description, failingUrl);
+            protected void receiverError(WebView view, WebResourceRequest request, WebResourceError error) {
+                hideLoadingDialog();
                 timerCancel();
             }
 
             @Override
             public void onReceivedSslError(WebView view, final SslErrorHandler handler,
                                            SslError error) {
+                hideLoadingDialog();
                 timerCancel();
-                handler.proceed();
+                super.onReceivedSslError(view, handler, error);
             }
         });
     }

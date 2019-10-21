@@ -7,9 +7,10 @@ import android.text.TextUtils;
 import android.view.View;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import com.commonlibrary.R;
 
@@ -26,6 +27,7 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.webview.SMWebView;
+import sunmi.common.view.webview.SMWebViewClient;
 
 /**
  * 用户协议，隐私
@@ -165,7 +167,7 @@ public class ProtocolActivity extends BaseActivity {
         webView.getSettings().setMixedContentMode(
                 WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
         // 不用启动客户端的浏览器来加载未加载出来的数据
-        webView.setWebViewClient(new WebViewClient() {
+        webView.setWebViewClient(new SMWebViewClient(this) {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
@@ -187,16 +189,9 @@ public class ProtocolActivity extends BaseActivity {
             }
 
             @Override
-            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+            protected void receiverError(WebView view, WebResourceRequest request, WebResourceError error) {
                 hideLoadingDialog();
                 localHtml();
-                super.onReceivedError(view, errorCode, description, failingUrl);
-            }
-
-            @Override
-            public void onReceivedSslError(WebView view, final SslErrorHandler handler,
-                                           SslError error) {
-                handler.proceed();
             }
         });
     }
