@@ -58,7 +58,7 @@ public class IpcSettingDetailActivity extends BaseActivity {
         String msg = getString(R.string.tip_delete_ipc);
         new CommonDialog.Builder(this).setMessage(msg)
                 .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.ipc_setting_delete, R.color.read_deep_more,
+                .setConfirmButton(R.string.ipc_setting_delete, R.color.caution_primary,
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

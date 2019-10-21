@@ -29,7 +29,7 @@
             android:drawableTop="@mipmap/ic_exception"
             android:drawablePadding="@dimen/dp_4"
             android:text="@string/tip_no_device_please_add"
-            android:textColor="@color/color_999999"
+            android:textColor="@color/text_caption"
             android:textSize="@dimen/sp_12" />
 
         <Button

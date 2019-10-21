@@ -35,7 +35,7 @@
             android:gravity="center"
             android:paddingLeft="@dimen/dp_20"
             android:paddingRight="@dimen/dp_20"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_17"
             android:visibility="gone" />
 
@@ -81,7 +81,7 @@
             android:gravity="center"
             android:maxWidth="@dimen/dp_256"
             android:singleLine="true"
-            android:textColor="@color/c_primary"
+            android:textColor="@color/common_orange"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold" />
 
@@ -137,7 +137,7 @@
             android:gravity="center"
             android:paddingLeft="@dimen/dp_12"
             android:paddingRight="@dimen/dp_12"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16"
             android:visibility="gone" />
 
@@ -150,7 +150,7 @@
             android:gravity="center"
             android:paddingLeft="@dimen/dp_12"
             android:paddingRight="@dimen/dp_12"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16"
             android:visibility="gone" />
 
@@ -159,7 +159,7 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_alignParentBottom="true"
-            android:background="@color/colorText_10" />
+            android:background="@color/c_divider" />
     </RelativeLayout>
 
 </RelativeLayout>

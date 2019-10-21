@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorText_5"
+    android:background="@color/bg_common"
     android:orientation="vertical">
 
     <sunmi.common.view.TitleBarView
@@ -15,7 +15,7 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/str_set_username"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <sunmi.common.view.ClearableEditText
         android:id="@+id/cet_username"
@@ -26,7 +26,7 @@
         android:paddingLeft="@dimen/dp_25"
         android:paddingRight="@dimen/dp_25"
         android:singleLine="true"
-        android:textColor="@color/colorText"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_18" />
 
 </LinearLayout>

@@ -1333,8 +1333,11 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private void initManageList() {
         rvManager.init(0);
         List<IpcManageBean> list = new ArrayList<>();
-        list.add(new IpcManageBean(R.mipmap.ipc_manage_face_history, getString(R.string.str_face_history),
-                getString(R.string.str_view_face_history), getString(R.string.str_coming_soon)));
+        if (!isSS1()) {
+            list.add(new IpcManageBean(R.mipmap.ipc_manage_face_history,
+                    getString(R.string.str_face_history),
+                    getString(R.string.str_view_face_history), getString(R.string.str_coming_soon)));
+        }
         list.add(new IpcManageBean(R.mipmap.ipc_manage_md, getString(R.string.str_motion_detection),
                 getString(R.string.str_md_exception), getString(R.string.str_coming_soon)));
         CommonListAdapter adapter = new CommonListAdapter<IpcManageBean>(context,

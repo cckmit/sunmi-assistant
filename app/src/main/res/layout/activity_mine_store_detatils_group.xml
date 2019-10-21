@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/color_FAFAFA">
+    android:background="@color/bg_common">
 
     <sunmi.common.view.TitleBarView
         android:id="@+id/title_bar"
@@ -15,7 +15,7 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/str_store_info"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_shop_detail"

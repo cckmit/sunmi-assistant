@@ -30,7 +30,7 @@
         android:layout_marginBottom="@dimen/dp_40"
         android:gravity="center"
         android:text="@string/str_config_child_tip"
-        android:textColor="@color/colorText"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_16" />
 
 </RelativeLayout>

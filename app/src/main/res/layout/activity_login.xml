@@ -129,30 +129,5 @@
             android:textColor="@color/colorOrangeText"
             android:textSize="@dimen/sp_18" />
 
-        <Button
-            android:id="@+id/btnFixPassword"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_40"
-            android:layout_below="@+id/btnRegister"
-            android:layout_marginTop="@dimen/dp_10"
-            android:layout_weight="0.5"
-            android:background="@drawable/button_selector_edge2"
-            android:text="@string/str_change_password"
-            android:textColor="@color/c_white"
-            android:textSize="@dimen/sp_18"
-            android:visibility="gone" />
-
-        <Button
-            android:id="@+id/btnLogout"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_54"
-            android:layout_below="@+id/btnFixPassword"
-            android:layout_marginTop="@dimen/dp_10"
-            android:background="@drawable/button_selector_edge2"
-            android:text="@string/str_logout"
-            android:textColor="@color/c_white"
-            android:textSize="@dimen/sp_18"
-            android:visibility="gone" />
-
     </RelativeLayout>
 </RelativeLayout>

@@ -19,7 +19,7 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/company_shop_new_create"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <TextView
         android:id="@+id/tv_title_tip"
@@ -59,7 +59,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_20"
             android:text="@string/str_area"
-            android:textColor="@color/text_body"
+            android:textColor="@color/text_normal"
             android:textSize="@dimen/sp_16" />
 
         <TextView
@@ -71,7 +71,7 @@
             android:layout_marginEnd="@dimen/dp_36"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/text_title"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16" />
 
         <ImageView
@@ -129,7 +129,7 @@
             android:layout_marginStart="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_12"
             android:text="@string/str_detail_addr"
-            android:textColor="@color/text_body"
+            android:textColor="@color/text_normal"
             android:textSize="@dimen/sp_16" />
 
         <sunmi.common.view.ClearableEditText
@@ -141,7 +141,7 @@
             android:layout_marginEnd="@dimen/dp_20"
             android:background="@null"
             android:hint="@string/company_shop_location_hint"
-            android:textColor="@color/text_title"
+            android:textColor="@color/text_main"
             android:textColorHint="@color/text_disable"
             android:textSize="@dimen/sp_16" />
 
@@ -170,7 +170,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_20"
             android:text="@string/str_business_category"
-            android:textColor="@color/text_body"
+            android:textColor="@color/text_normal"
             android:textSize="@dimen/sp_16" />
 
         <TextView
@@ -182,7 +182,7 @@
             android:layout_marginEnd="@dimen/dp_36"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/text_title"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16" />
 
         <ImageView
@@ -212,7 +212,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_20"
             android:text="@string/company_shop_area"
-            android:textColor="@color/text_body"
+            android:textColor="@color/text_normal"
             android:textSize="@dimen/sp_16" />
 
         <sunmi.common.view.ClearableEditText
@@ -227,7 +227,7 @@
             android:paddingStart="@dimen/dp_108"
             android:paddingEnd="@dimen/dp_80"
             android:singleLine="true"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textColorHint="@color/text_disable"
             android:textSize="@dimen/sp_16" />
 
@@ -238,7 +238,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/dp_48"
-            android:background="@color/colorText_40" />
+            android:background="@color/text_caption" />
 
         <TextView
             android:id="@+id/tv_square_unit"
@@ -249,7 +249,7 @@
             android:layout_marginBottom="@dimen/dp_2"
             android:gravity="center_vertical"
             android:text="@string/company_square"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_20" />
     </RelativeLayout>
 

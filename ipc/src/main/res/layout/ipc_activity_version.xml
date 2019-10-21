@@ -15,7 +15,7 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/ipc_setting_version_current_name"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <ImageView
         android:id="@+id/iv_ipc"
@@ -35,7 +35,7 @@
         android:layout_below="@id/iv_ipc"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_24"
-        android:textColor="@color/color_333333"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_24" />
 
     <TextView
@@ -46,9 +46,8 @@
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
         android:layout_marginTop="@dimen/dp_4"
-        android:textColor="@color/color_333333_60"
+        android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_18" />
-
 
     <Button
         android:id="@+id/btn_upgrade"

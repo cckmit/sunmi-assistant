@@ -23,7 +23,7 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:leftText="@string/sm_cancel"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_face_list"

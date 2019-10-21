@@ -47,7 +47,7 @@ public class SimpleRecyclerViewAdapter extends RecyclerView.Adapter<SimpleRecycl
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         viewHolder.tvName.setTextColor(ContextCompat.getColor(BaseApplication.getContext(),
-                i == mNames.length - 1 ? R.color.color_999999 : R.color.color_333333));
+                i == mNames.length - 1 ? R.color.text_caption : R.color.text_main));
         viewHolder.tvName.setText(mNames[i]);
         viewHolder.imageView.setImageResource(mIcons[i]);
     }

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorText_5"
+    android:background="@color/bg_common"
     android:orientation="vertical">
 
     <sunmi.common.view.TitleBarView
@@ -15,7 +15,7 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/str_user_info"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <RelativeLayout
         android:id="@+id/rl_avatar"
@@ -29,7 +29,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_20"
             android:text="@string/str_avatar"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16" />
 
         <sunmi.common.view.CircleImage
@@ -47,7 +47,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/colorText_10" />
+        android:background="@color/c_divider" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_nickname"
@@ -64,7 +64,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/colorText_10" />
+        android:background="@color/c_divider" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_phone"
@@ -80,7 +80,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/colorText_10" />
+        android:background="@color/c_divider" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_email"
@@ -96,6 +96,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/colorText_10" />
+        android:background="@color/c_divider" />
 
 </LinearLayout>

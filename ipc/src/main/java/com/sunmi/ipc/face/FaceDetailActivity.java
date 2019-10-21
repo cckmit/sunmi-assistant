@@ -617,7 +617,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
             });
             selectedItem(selectedIndex, holder, item);
             if (count == 0) {
-                item.setLeftTextColor(ContextCompat.getColor(context, R.color.colorText_20));
+                item.setLeftTextColor(ContextCompat.getColor(context, R.color.text_disable));
                 item.setRightImage(null);
             }
         }
@@ -660,7 +660,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
             item.setRightImage(ContextCompat.getDrawable(context, com.sunmi.ipc.R.mipmap.ic_yes));
             item.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.common_orange));
         } else {
-            item.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.colorText));
+            item.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.text_main));
             item.setRightImage(null);
         }
     }

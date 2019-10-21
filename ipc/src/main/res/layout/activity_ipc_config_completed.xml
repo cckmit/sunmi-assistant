@@ -13,11 +13,11 @@
         app:dividerShow="true"
         app:leftDefaultClickEnable="true"
         app:titleText="@string/str_title_ipc_set"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <TextView
         android:id="@+id/tv_result"
-        style="@style/configTitleText"
+        style="@style/ConfigTitleText"
         android:layout_below="@+id/title_bar"
         android:text="@string/tip_ipc_config_complete" />
 
@@ -30,7 +30,7 @@
         android:layout_marginTop="@dimen/dp_4"
         android:layout_marginEnd="@dimen/dp_50"
         android:text="@string/tip_adjust_first"
-        android:textColor="@color/color_666666"
+        android:textColor="@color/text_normal"
         android:textSize="@dimen/sp_16"
         android:visibility="gone" />
 
@@ -42,7 +42,7 @@
         android:layout_marginStart="@dimen/dp_30"
         android:layout_marginTop="@dimen/dp_86"
         android:layout_marginEnd="@dimen/dp_30"
-        android:background="@color/color_divider" />
+        android:background="@color/c_divider" />
 
     <sunmi.common.view.SmRecyclerView
         android:id="@+id/rv_result"

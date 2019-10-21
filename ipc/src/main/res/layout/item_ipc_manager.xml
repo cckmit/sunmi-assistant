@@ -22,7 +22,7 @@
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_26"
         android:layout_toEndOf="@+id/iv_icon"
-        android:textColor="@color/colorText"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_16"
         android:textStyle="bold" />
 
@@ -34,7 +34,7 @@
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_4"
         android:layout_toEndOf="@+id/iv_icon"
-        android:textColor="@color/colorText_60"
+        android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_12" />
 
     <TextView

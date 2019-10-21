@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorText_5">
+    android:background="@color/bg_common">
 
     <sunmi.common.view.TitleBarView
         android:id="@+id/title_bar"
@@ -14,7 +14,7 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/str_setting"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <RelativeLayout
         android:id="@+id/rlAccountSafe"
@@ -29,7 +29,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_25"
             android:text="@string/str_account_safety"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16" />
 
         <RelativeLayout
@@ -50,7 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_alignParentBottom="true"
-            android:background="@color/colorText_10" />
+            android:background="@color/c_divider" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -66,7 +66,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_25"
             android:text="@string/str_about"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16" />
 
         <TextView
@@ -78,7 +78,7 @@
             android:layout_marginEnd="@dimen/dp_40"
             android:gravity="end"
             android:maxLines="1"
-            android:textColor="@color/colorText_60"
+            android:textColor="@color/text_caption"
             android:textSize="@dimen/sp_14" />
 
         <RelativeLayout
@@ -99,7 +99,7 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_alignParentBottom="true"
-            android:background="@color/colorText_10" />
+            android:background="@color/c_divider" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -117,7 +117,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_25"
             android:text="@string/str_clear_cache"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16" />
 
         <TextView
@@ -129,7 +129,7 @@
             android:layout_marginEnd="@dimen/dp_40"
             android:gravity="end"
             android:maxLines="1"
-            android:textColor="@color/colorText_60"
+            android:textColor="@color/text_caption"
             android:textSize="@dimen/sp_14" />
 
         <RelativeLayout
@@ -150,7 +150,7 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_alignParentBottom="true"
-            android:background="@color/colorText_10" />
+            android:background="@color/c_divider" />
     </RelativeLayout>
 
 

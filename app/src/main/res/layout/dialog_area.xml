@@ -12,7 +12,7 @@
         android:layout_marginStart="@dimen/dp_25"
         android:layout_marginTop="@dimen/dp_18"
         android:text="@string/sm_cancel"
-        android:textColor="@color/colorText_60"
+        android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_14" />
 
     <TextView
@@ -22,7 +22,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_14"
         android:text="@string/dialog_title_select_region"
-        android:textColor="@color/colorText"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_16"
         android:textStyle="bold"
         tools:ignore="MissingConstraints" />
@@ -49,7 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_alignParentTop="true"
-            android:background="@color/colorText_5" />
+            android:background="@color/bg_common" />
 
         <Button
             android:id="@+id/btn_area_pro"
@@ -61,7 +61,7 @@
             android:gravity="start|center_vertical"
             android:maxLength="6"
             android:text="@string/str_choose_please"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold"
             tools:ignore="MissingConstraints" />
@@ -76,7 +76,7 @@
             android:background="@null"
             android:ellipsize="end"
             android:maxLength="6"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold"
             tools:ignore="MissingConstraints" />
@@ -91,7 +91,7 @@
             android:background="@null"
             android:ellipsize="end"
             android:maxLength="6"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold"
             tools:ignore="MissingConstraints" />
@@ -100,7 +100,7 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_alignParentBottom="true"
-            android:background="@color/colorText_5" />
+            android:background="@color/bg_common" />
     </RelativeLayout>
 
 

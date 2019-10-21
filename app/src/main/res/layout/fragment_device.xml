@@ -44,7 +44,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rl_shop_title"
-        ptr:ptrHeaderTextColor="@color/colorText">
+        app:ptrHeaderTextColor="@color/text_main">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_device"

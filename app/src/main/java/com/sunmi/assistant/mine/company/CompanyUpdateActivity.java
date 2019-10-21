@@ -50,6 +50,7 @@ public class CompanyUpdateActivity extends BaseActivity
     TitleBarView titleBar;
     @ViewById(R.id.cet_username)
     ClearableEditText cetUserInfo;
+
     @Extra
     CompanyInfoResp mInfo;
     @Extra
@@ -59,7 +60,7 @@ public class CompanyUpdateActivity extends BaseActivity
     @AfterViews
     void init() {
         titleBar.setRightTextViewText(R.string.str_save);
-        titleBar.setRightTextViewColor(R.color.colorText);
+        titleBar.setRightTextViewColor(R.color.text_main);
         titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
         titleBar.getRightTextView().setOnClickListener(this);
         if (type == CompanyDetailActivity.TYPE_EMAIL) {
@@ -224,10 +225,10 @@ public class CompanyUpdateActivity extends BaseActivity
     @Override
     public void afterTextChanged(Editable s) {
         if (TextUtils.isEmpty(s.toString())) {
-            titleBar.setRightTextViewColor(com.sunmi.assistant.R.color.colorText_40);
+            titleBar.setRightTextViewColor(com.sunmi.assistant.R.color.text_caption);
             titleBar.getRightTextView().setClickable(false);
         } else {
-            titleBar.setRightTextViewColor(com.sunmi.assistant.R.color.colorText);
+            titleBar.setRightTextViewColor(com.sunmi.assistant.R.color.text_main);
             titleBar.getRightTextView().setClickable(true);
         }
     }

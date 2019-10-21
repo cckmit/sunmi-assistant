@@ -31,6 +31,31 @@ public class RegexUtils {
         return m.matches();
     }
 
+    public static String handleIllegalCharacter(String s) {
+        if (TextUtils.isEmpty(s)) {
+            return s;
+        }
+        // 前后空格
+        s = s.trim();
+
+        //去除：空格\s,回车\n,水平制表符即tab \t,换行\r
+        Pattern p = Pattern.compile("\\s|\n|\t|\r");
+        Matcher m = p.matcher(s);
+        s = m.replaceAll("");
+
+        // Excel文档中非法字符
+        if (s.contains("\u202C")) {
+            s = s.replace("\u202C", "").trim();
+        }
+        if (s.contains("\u202D")) {
+            s = s.replace("\u202D", "").trim();
+        }
+        if (s.contains("\u202E")) {
+            s = s.replace("\u202E", "").trim();
+        }
+        return s;
+    }
+
     public static boolean isFixedPhone(String phone) {
         Pattern p1, p2;
         Matcher m;

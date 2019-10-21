@@ -23,7 +23,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_24"
         android:text="@string/ipc_setting_data_get_fail"
-        android:textColor="@color/color_333333"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_20" />
 
     <TextView
@@ -34,7 +34,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_8"
         android:text="@string/ipc_setting_check_net_refresh"
-        android:textColor="@color/color_333333_60"
+        android:textColor="@color/black_40"
         android:textSize="@dimen/sp_12" />
 
     <Button

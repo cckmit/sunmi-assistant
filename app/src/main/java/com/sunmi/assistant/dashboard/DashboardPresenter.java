@@ -23,6 +23,7 @@ import java.util.List;
 import sunmi.common.base.BasePresenter;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.CustomerHistoryResp;
+import sunmi.common.model.FilterItem;
 import sunmi.common.model.ShopAuthorizeInfoResp;
 import sunmi.common.model.ShopListResp;
 import sunmi.common.notification.BaseNotification;
@@ -37,12 +38,6 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     private static final String TAG = DashboardPresenter.class.getSimpleName();
 
-    public static final int FLAG_SHOP = 0x1;
-    public static final int FLAG_SAAS = 0x2;
-    public static final int FLAG_FS = 0x4;
-    public static final int FLAG_CUSTOMER = 0x8;
-    public static final int FLAG_ALL_MASK = 0xF;
-
     @SuppressLint("SimpleDateFormat")
     private static final SimpleDateFormat DATE_FORMAT_PARAMS = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -51,7 +46,6 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     private Context mContext;
     private List<DashboardContract.PagePresenter> mPages = new ArrayList<>(2);
-    private List<ShopItem> mShops = new ArrayList<>();
 
     private int mCompanyId;
     private int mShopId;
@@ -66,7 +60,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     public void init() {
         mCompanyId = SpUtils.getCompanyId();
         mShopId = SpUtils.getShopId();
-        mLoadFlag = FLAG_ALL_MASK;
+        mLoadFlag = Constants.FLAG_ALL_MASK;
         load();
         if (mTask == null) {
             mTask = new RefreshTask();
@@ -75,38 +69,17 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     @Override
-    public void reloadCompanySwitch() {
+    public void reload(int flag) {
         mCompanyId = SpUtils.getCompanyId();
         mShopId = SpUtils.getShopId();
-        mLoadFlag = FLAG_ALL_MASK;
+        mLoadFlag = flag;
         load();
     }
 
     @Override
-    public void reloadShopSwitch() {
-        mShopId = SpUtils.getShopId();
-        updateShops();
-        mLoadFlag = FLAG_SAAS | FLAG_FS | FLAG_CUSTOMER;
-        load();
-    }
-
-    @Override
-    public void reloadShopList() {
-        mLoadFlag = FLAG_SHOP;
-        load();
-    }
-
-    @Override
-    public void reloadFs() {
-        mLoadFlag = FLAG_FS;
-        load();
-    }
-
-    @Override
-    public void setShop(ShopItem shop) {
-        SpUtils.setShopId(shop.getShopId());
-        SpUtils.setShopName(shop.getShopName());
-        SpUtils.setSaasExist(shop.isSaasExist() ? 1 : 0);
+    public void setShop(FilterItem shop) {
+        SpUtils.setShopId(shop.getId());
+        SpUtils.setShopName(shop.getItemName());
         BaseNotification.newInstance().postNotificationName(CommonNotifications.shopSwitched);
     }
 
@@ -140,6 +113,9 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         mPages.add(customerPresenter);
         pages.add(new PageHost(R.string.dashboard_page_customer, 0, customerFragment));
 
+        LogCat.d(TAG, "getPages; Fragment=" + mView + "; Presenter=" + this);
+        LogCat.d(TAG, "OverviewFragment=" + overviewFragment + "; Presenter=" + overviewPresenter);
+        LogCat.d(TAG, "CustomerFragment=" + customerFragment + "; Presenter=" + customerPresenter);
         return pages;
     }
 
@@ -158,46 +134,16 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         return mPages.get(mPageIndex).getPeriod();
     }
 
-    private void updateShops() {
-        if (mShops.isEmpty()) {
-            mLoadFlag |= FLAG_SHOP;
-            load();
-        } else {
-            ShopItem current = null;
-            for (ShopItem shop : mShops) {
-                shop.setChecked(shop.getShopId() == mShopId);
-                if (shop.getShopId() == mShopId) {
-                    current = shop;
-                }
-            }
-            if (current == null) {
-                // TODO:
-                return;
-            }
-            mShops.remove(current);
-            mShops.add(0, current);
-            if (current.isSaasExist()) {
-                mSource |= Constants.DATA_SOURCE_AUTH;
-            } else {
-                mSource &= ~Constants.DATA_SOURCE_AUTH;
-            }
-            if (isViewAttached()) {
-                mView.setShopList(mShops);
-            }
-
-        }
-    }
-
     private void load() {
-        if ((mLoadFlag & FLAG_SHOP) != 0) {
+        if ((mLoadFlag & Constants.FLAG_SHOP) != 0) {
             loadShop();
-        } else if ((mLoadFlag & FLAG_SAAS) != 0) {
+        } else if ((mLoadFlag & Constants.FLAG_SAAS) != 0) {
             loadSaas();
         }
-        if ((mLoadFlag & FLAG_FS) != 0) {
+        if ((mLoadFlag & Constants.FLAG_FS) != 0) {
             loadFs();
         }
-        if ((mLoadFlag & FLAG_CUSTOMER) != 0) {
+        if ((mLoadFlag & Constants.FLAG_CUSTOMER) != 0) {
             loadCustomer();
         }
     }
@@ -210,40 +156,29 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                     onFail(code, msg, null);
                     return;
                 }
-                mShops.clear();
                 List<ShopListResp.ShopInfo> shops = data.getShop_list();
-                ShopItem current = null;
+                List<FilterItem> result = new ArrayList<>(shops.size());
+                boolean isSaasDocked = true;
                 for (ShopListResp.ShopInfo shop : shops) {
                     if (shop.getShop_id() == mShopId) {
-                        ShopItem item = new ShopItem(shop.getShop_id(), shop.getShop_name(),
-                                shop.getSaas_exist() == 1);
+                        FilterItem item = new FilterItem(shop.getShop_id(), shop.getShop_name());
                         item.setChecked(true);
-                        current = item;
-                        mShops.add(0, item);
+                        isSaasDocked = shop.getSaas_exist() == 1;
+                        result.add(0, item);
                     } else {
-                        mShops.add(new ShopItem(shop.getShop_id(), shop.getShop_name(),
-                                shop.getSaas_exist() == 1));
+                        result.add(new FilterItem(shop.getShop_id(), shop.getShop_name()));
                     }
                 }
-                if (current == null) {
-                    // TODO:
-                    return;
-                }
-                if (current.isSaasExist()) {
-                    mSource |= Constants.DATA_SOURCE_AUTH;
-                } else {
-                    mSource &= ~Constants.DATA_SOURCE_AUTH;
-                }
-                mLoadFlag &= ~FLAG_SHOP;
+                mLoadFlag &= ~Constants.FLAG_SHOP;
                 if (isViewAttached()) {
-                    mView.setShopList(mShops);
+                    mView.setShopList(result);
                 }
 
-                if (current.isSaasExist() && (mLoadFlag & FLAG_SAAS) != 0) {
+                if (isSaasDocked && (mLoadFlag & Constants.FLAG_SAAS) != 0) {
                     loadSaas();
                 } else {
                     mSource &= ~Constants.DATA_SOURCE_IMPORT;
-                    mLoadFlag &= ~FLAG_SAAS;
+                    mLoadFlag &= ~Constants.FLAG_SAAS;
                 }
                 loadComplete();
             }
@@ -280,7 +215,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                                 mSource &= ~Constants.DATA_SOURCE_IMPORT;
                             }
                         }
-                        mLoadFlag &= ~FLAG_SAAS;
+                        mLoadFlag &= ~Constants.FLAG_SAAS;
                         loadComplete();
                     }
 
@@ -308,7 +243,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                         } else {
                             mSource &= ~Constants.DATA_SOURCE_FS;
                         }
-                        mLoadFlag &= ~FLAG_FS;
+                        mLoadFlag &= ~Constants.FLAG_FS;
                         loadComplete();
                     }
 
@@ -356,7 +291,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                     }
 
                     private void success(int code, String msg, CustomerHistoryResp data) {
-                        mLoadFlag &= ~FLAG_CUSTOMER;
+                        mLoadFlag &= ~Constants.FLAG_CUSTOMER;
                         loadComplete();
                     }
                 });
@@ -390,7 +325,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         @Override
         public void run() {
             if (!Utils.hasAuth(mSource)) {
-                mLoadFlag |= FLAG_SAAS;
+                mLoadFlag |= Constants.FLAG_SAAS;
                 load();
             }
             mPages.get(mPageIndex).refresh(false);

@@ -206,9 +206,9 @@ public class WebViewActivity extends BaseActivity
         ShareBoardConfig config = new ShareBoardConfig();//新建ShareBoardConfig
         config.setMenuItemBackgroundShape(ShareBoardConfig.BG_SHAPE_NONE);
         config.setTitleText(getString(R.string.str_share_to));
-        config.setTitleTextColor(getResources().getColor(R.color.color_555555));
-        config.setCancelButtonTextColor(getResources().getColor(R.color.color_8E8E93));
-        config.setMenuItemTextColor(getResources().getColor(R.color.color_999999));
+        config.setTitleTextColor(getResources().getColor(R.color.text_main));
+        config.setCancelButtonTextColor(getResources().getColor(R.color.text_normal));
+        config.setMenuItemTextColor(getResources().getColor(R.color.text_normal));
         config.setShareboardBackgroundColor(getResources().getColor(R.color.c_white));
         config.setIndicatorVisibility(false);
         config.setCancelButtonText(getString(R.string.sm_cancel));

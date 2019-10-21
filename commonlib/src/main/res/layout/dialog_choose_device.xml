@@ -11,7 +11,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_24"
         android:text="@string/choose_device_type"
-        android:textColor="@color/color_dialog_content"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_20"
         android:textStyle="bold" />
 

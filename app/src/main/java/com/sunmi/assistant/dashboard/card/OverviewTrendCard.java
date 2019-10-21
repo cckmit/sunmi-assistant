@@ -343,7 +343,7 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
                     ContextCompat.getColor(holder.getContext(), R.color.color_AFC3FA);
             int colorHighlight = model.type == Constants.DATA_TYPE_VOLUME ?
                     ContextCompat.getColor(holder.getContext(), R.color.common_orange) :
-                    ContextCompat.getColor(holder.getContext(), R.color.color_4B7AFA);
+                    ContextCompat.getColor(holder.getContext(), R.color.assist_primary);
             BarDataSet set;
             BarData data = bar.getData();
             ArrayList<BarEntry> values = new ArrayList<>(dataSet);
@@ -357,7 +357,6 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
                 bar.notifyDataSetChanged();
             } else {
                 set = new BarDataSet(values, "data");
-                set.setColor(ContextCompat.getColor(holder.getContext(), R.color.color_2997FF));
                 set.setDrawValues(false);
                 set.setColor(color);
                 set.setHighLightColor(colorHighlight);

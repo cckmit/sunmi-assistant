@@ -6,51 +6,52 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 
+import sunmi.common.model.FilterItem;
 import sunmi.common.view.DropdownMenu;
 
 /**
  * @author yinhui
  * @date 18-1-17
  */
-public class ShopMenuAdapter extends DropdownMenu.BaseAdapter<ShopItem> {
+public class ShopMenuAdapter extends DropdownMenu.BaseAdapter<FilterItem> {
 
     public ShopMenuAdapter(Context context) {
         super(context, R.layout.dashboard_dropdown_title, R.layout.dropdown_item);
     }
 
     @Override
-    protected DropdownMenu.BaseTitleViewHolder<ShopItem> createTitle(View view) {
+    protected DropdownMenu.BaseTitleViewHolder<FilterItem> createTitle(View view) {
         return new TitleHolder(view);
     }
 
     @Override
-    protected DropdownMenu.BaseItemViewHolder<ShopItem> createItem(View view) {
+    protected DropdownMenu.BaseItemViewHolder<FilterItem> createItem(View view) {
         return new ItemHolder(view, this);
     }
 
-    public static class TitleHolder extends DropdownMenu.BaseTitleViewHolder<ShopItem> {
+    public static class TitleHolder extends DropdownMenu.BaseTitleViewHolder<FilterItem> {
 
         TitleHolder(View v) {
             super(v);
         }
 
         @Override
-        public void setUpView(ShopItem model, int position) {
+        public void setUpView(FilterItem model, int position) {
             TextView title = getView(R.id.dropdown_item_title);
-            title.setText(model.getShopName());
+            title.setText(model.getTitleName());
         }
     }
 
-    public static class ItemHolder extends DropdownMenu.BaseItemViewHolder<ShopItem> {
+    public static class ItemHolder extends DropdownMenu.BaseItemViewHolder<FilterItem> {
 
-        ItemHolder(View v, DropdownMenu.BaseAdapter<ShopItem> adapter) {
+        ItemHolder(View v, DropdownMenu.BaseAdapter<FilterItem> adapter) {
             super(v, adapter);
         }
 
         @Override
-        public void setUpView(ShopItem model, int position) {
+        public void setUpView(FilterItem model, int position) {
             TextView name = getView(R.id.dropdown_item_name);
-            name.setText(model.getShopName());
+            name.setText(model.getItemName());
             name.setSelected(model.isChecked());
             getView(R.id.dropdown_item_checkbox).setVisibility(model.isChecked() ?
                     View.VISIBLE : View.INVISIBLE);

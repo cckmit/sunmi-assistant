@@ -136,27 +136,27 @@ public class IpcSettingDetectionTimeActivity extends BaseActivity {
         Drawable drawable = getResources().getDrawable(R.drawable.ic_right_arrow_24dp, getTheme());
         drawable = DrawableCompat.wrap(drawable);
         if (isAllTime) {
-            DrawableCompat.setTint(drawable, ContextCompat.getColor(this, R.color.color_BBBBC7));
+            DrawableCompat.setTint(drawable, ContextCompat.getColor(this, R.color.text_disable));
             mSilDaysCount.setRightImage(drawable);
             mSilTimeStart.setRightImage(drawable);
             mSilTimeEnd.setRightImage(drawable);
-            mSilDaysCount.setLeftTextColor(ContextCompat.getColor(this, R.color.color_BBBBC7));
-            mSilDaysCount.setRightTextColor(ContextCompat.getColor(this, R.color.color_BBBBC7));
-            mSilTimeStart.setLeftTextColor(ContextCompat.getColor(this, R.color.color_BBBBC7));
-            mSilTimeStart.setRightTextColor(ContextCompat.getColor(this, R.color.color_BBBBC7));
-            mSilTimeEnd.setLeftTextColor(ContextCompat.getColor(this, R.color.color_BBBBC7));
-            mSilTimeEnd.setRightTextColor(ContextCompat.getColor(this, R.color.color_BBBBC7));
+            mSilDaysCount.setLeftTextColor(ContextCompat.getColor(this, R.color.text_disable));
+            mSilDaysCount.setRightTextColor(ContextCompat.getColor(this, R.color.text_disable));
+            mSilTimeStart.setLeftTextColor(ContextCompat.getColor(this, R.color.text_disable));
+            mSilTimeStart.setRightTextColor(ContextCompat.getColor(this, R.color.text_disable));
+            mSilTimeEnd.setLeftTextColor(ContextCompat.getColor(this, R.color.text_disable));
+            mSilTimeEnd.setRightTextColor(ContextCompat.getColor(this, R.color.text_disable));
         } else {
-            DrawableCompat.setTint(drawable, ContextCompat.getColor(this, R.color.colorText_60));
+            DrawableCompat.setTint(drawable, ContextCompat.getColor(this, R.color.text_caption));
             mSilDaysCount.setRightImage(drawable);
             mSilTimeStart.setRightImage(drawable);
             mSilTimeEnd.setRightImage(drawable);
-            mSilDaysCount.setLeftTextColor(ContextCompat.getColor(this, R.color.colorText));
-            mSilDaysCount.setRightTextColor(ContextCompat.getColor(this, R.color.colorText));
-            mSilTimeStart.setLeftTextColor(ContextCompat.getColor(this, R.color.colorText));
-            mSilTimeStart.setRightTextColor(ContextCompat.getColor(this, R.color.colorText));
-            mSilTimeEnd.setLeftTextColor(ContextCompat.getColor(this, R.color.colorText));
-            mSilTimeEnd.setRightTextColor(ContextCompat.getColor(this, R.color.colorText));
+            mSilDaysCount.setLeftTextColor(ContextCompat.getColor(this, R.color.text_main));
+            mSilDaysCount.setRightTextColor(ContextCompat.getColor(this, R.color.text_main));
+            mSilTimeStart.setLeftTextColor(ContextCompat.getColor(this, R.color.text_main));
+            mSilTimeStart.setRightTextColor(ContextCompat.getColor(this, R.color.text_main));
+            mSilTimeEnd.setLeftTextColor(ContextCompat.getColor(this, R.color.text_main));
+            mSilTimeEnd.setRightTextColor(ContextCompat.getColor(this, R.color.text_main));
         }
     }
 

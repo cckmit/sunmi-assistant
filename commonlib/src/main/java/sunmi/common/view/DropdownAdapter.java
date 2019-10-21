@@ -9,7 +9,6 @@ import com.commonlibrary.R;
 import sunmi.common.model.FilterItem;
 
 /**
- *
  * @author yinhui
  * @date 18-1-17
  */

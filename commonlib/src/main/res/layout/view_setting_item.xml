@@ -66,6 +66,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_0_5"
         android:layout_alignParentBottom="true"
-        android:background="@color/colorText_10" />
+        android:background="@color/c_divider" />
 
 </RelativeLayout>

@@ -562,7 +562,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
         recyclerViewRegion.setAdapter(mAdapter);
 
         btnAreaPro.setText(R.string.str_choose_please);
-        btnAreaPro.setTextColor(ContextCompat.getColor(context, R.color.colorText));
+        btnAreaPro.setTextColor(ContextCompat.getColor(context, R.color.text_main));
         btnAreaCity.setText("");
         btnAreaRegion.setText("");
 
@@ -579,14 +579,14 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
                 btnAreaPro.setText(province.getName());
                 btnAreaPro.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                 btnAreaCity.setText(R.string.str_choose_please);
-                btnAreaCity.setTextColor(ContextCompat.getColor(context, R.color.colorText));
+                btnAreaCity.setTextColor(ContextCompat.getColor(context, R.color.text_main));
             }
             for (RegionProvince.City city : province.getChildren()) {
                 if (mCityId == city.getCity()) {
                     btnAreaCity.setText(city.getName());
                     btnAreaCity.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                     btnAreaRegion.setText(R.string.str_choose_please);
-                    btnAreaRegion.setTextColor(ContextCompat.getColor(context, R.color.colorText));
+                    btnAreaRegion.setTextColor(ContextCompat.getColor(context, R.color.text_main));
                 }
                 for (RegionProvince.Area area : city.getChildren()) {
                     if (mAreaId == area.getCounty()) {
@@ -625,10 +625,10 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
             });
             if (mCategoryLeftCode == model.getId()) {
                 textView.setTextColor(ContextCompat.getColor(mContext, R.color.common_orange));
-                rlLeft.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_FAFAFA));
+                rlLeft.setBackgroundColor(ContextCompat.getColor(mContext, R.color.bg_common));
             } else {
                 rlLeft.setBackgroundColor(ContextCompat.getColor(mContext, R.color.c_white));
-                textView.setTextColor(ContextCompat.getColor(mContext, R.color.colorText));
+                textView.setTextColor(ContextCompat.getColor(mContext, R.color.text_main));
             }
         }
     }
@@ -648,7 +648,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
             RelativeLayout rlLeft = holder.getView(R.id.rlLeft);
             View vLine = holder.getView(R.id.v_line);
             vLine.setVisibility(View.GONE);
-            rlLeft.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_FAFAFA));
+            rlLeft.setBackgroundColor(ContextCompat.getColor(mContext, R.color.bg_common));
             final String nameRight = model.getName();
             textView.setText(nameRight);
             holder.itemView.setOnClickListener(v -> {
@@ -659,7 +659,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
             if (mCategoryRightCode == model.getId()) {
                 textView.setTextColor(ContextCompat.getColor(mContext, R.color.common_orange));
             } else {
-                textView.setTextColor(ContextCompat.getColor(mContext, R.color.colorText));
+                textView.setTextColor(ContextCompat.getColor(mContext, R.color.text_main));
             }
         }
     }
@@ -674,7 +674,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
                 btnAreaPro.setText(model.getName());
                 btnAreaPro.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                 btnAreaCity.setText(R.string.str_choose_please);
-                btnAreaCity.setTextColor(ContextCompat.getColor(context, R.color.colorText));
+                btnAreaCity.setTextColor(ContextCompat.getColor(context, R.color.text_main));
                 btnAreaRegion.setText("");
                 mAdapter.setData(model.getChildren());
             });
@@ -695,7 +695,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
                 tvArea.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                 imageView.setVisibility(View.VISIBLE);
             } else {
-                tvArea.setTextColor(ContextCompat.getColor(context, R.color.colorText));
+                tvArea.setTextColor(ContextCompat.getColor(context, R.color.text_main));
                 imageView.setVisibility(View.GONE);
             }
         }
@@ -711,7 +711,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
                 btnAreaCity.setText(model.getName());
                 btnAreaCity.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                 btnAreaRegion.setText(R.string.str_choose_please);
-                btnAreaRegion.setTextColor(ContextCompat.getColor(context, R.color.colorText));
+                btnAreaRegion.setTextColor(ContextCompat.getColor(context, R.color.text_main));
                 mAdapter.setData(model.getChildren());
             });
         }
@@ -731,7 +731,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
                 tvArea.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                 imageView.setVisibility(View.VISIBLE);
             } else {
-                tvArea.setTextColor(ContextCompat.getColor(context, R.color.colorText));
+                tvArea.setTextColor(ContextCompat.getColor(context, R.color.text_main));
                 imageView.setVisibility(View.GONE);
             }
         }
@@ -763,7 +763,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
                 tvArea.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                 imageView.setVisibility(View.VISIBLE);
             } else {
-                tvArea.setTextColor(ContextCompat.getColor(context, R.color.colorText));
+                tvArea.setTextColor(ContextCompat.getColor(context, R.color.text_main));
                 imageView.setVisibility(View.GONE);
             }
         }

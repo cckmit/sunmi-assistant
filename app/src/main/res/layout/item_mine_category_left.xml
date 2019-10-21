@@ -3,7 +3,7 @@
     android:id="@+id/rlLeft"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_48"
-    android:background="@color/color_F9F9F9">
+    android:background="@color/common_fill">
 
     <TextView
         android:id="@+id/tvName"
@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/dp_25"
-        android:textColor="@color/colorText"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_16" />
 
     <View
@@ -19,6 +19,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_0_5"
         android:layout_alignParentBottom="true"
-        android:background="@color/colorText_10" />
+        android:background="@color/c_divider" />
 
 </RelativeLayout>

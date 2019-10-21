@@ -328,11 +328,11 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
 
     private void updateBtnEnable(boolean enable) {
         mTvSelectedMove.setEnabled(enable);
-        mTvSelectedMove.setTextColor(enable ? ContextCompat.getColor(this, R.color.colorText)
-                : ContextCompat.getColor(this, R.color.colorText_60));
+        mTvSelectedMove.setTextColor(enable ? ContextCompat.getColor(this, R.color.text_main)
+                : ContextCompat.getColor(this, R.color.text_caption));
         mTvSelectedDelete.setEnabled(enable);
-        mTvSelectedDelete.setTextColor(enable ? ContextCompat.getColor(this, R.color.colorText)
-                : ContextCompat.getColor(this, R.color.colorText_60));
+        mTvSelectedDelete.setTextColor(enable ? ContextCompat.getColor(this, R.color.text_main)
+                : ContextCompat.getColor(this, R.color.text_caption));
     }
 
     @Click(resName = "tv_face_selected_move")
@@ -440,10 +440,10 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     public void updateList(List<Face> list, boolean hasMore) {
         mLayoutError.setVisibility(View.GONE);
         if (list.isEmpty()) {
-            mTitleBar.setRightTextViewColor(R.color.colorText_60);
+            mTitleBar.setRightTextViewColor(R.color.text_caption);
             mTitleBar.setRightTextViewEnable(false);
         } else {
-            mTitleBar.setRightTextViewColor(R.color.colorText);
+            mTitleBar.setRightTextViewColor(R.color.text_main);
             mTitleBar.setRightTextViewEnable(true);
         }
         if (mState == STATE_NORMAL) {
@@ -845,11 +845,11 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
             int remain = model.getCapacity() - model.getCount();
             content.setText(holder.getContext().getString(R.string.ipc_face_remain, remain));
             if (selectedCount > remain) {
-                name.setTextColor(ContextCompat.getColor(holder.getContext(), R.color.colorText_40));
-                content.setTextColor(ContextCompat.getColor(holder.getContext(), R.color.colorText_40));
+                name.setTextColor(ContextCompat.getColor(holder.getContext(), R.color.text_caption));
+                content.setTextColor(ContextCompat.getColor(holder.getContext(), R.color.text_caption));
             } else {
-                name.setTextColor(ContextCompat.getColor(holder.getContext(), R.color.colorText));
-                content.setTextColor(ContextCompat.getColor(holder.getContext(), R.color.colorText_60));
+                name.setTextColor(ContextCompat.getColor(holder.getContext(), R.color.text_main));
+                content.setTextColor(ContextCompat.getColor(holder.getContext(), R.color.text_caption));
             }
         }
 

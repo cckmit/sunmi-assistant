@@ -38,6 +38,7 @@ import java.util.List;
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
+import sunmi.common.model.FilterItem;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.DropdownMenu;
@@ -98,7 +99,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     private ShopMenuPopupHelper mShopMenuPopupHelper;
     private TextView mShopMenuTitle;
     private ImageView mShopMenuTitleArrow;
-    private ShopItem mShopMenuItem;
+    private FilterItem mShopMenuItem;
 
     private int mStatusBarHeight;
     private int mTopStickyPeriodHeight;
@@ -160,6 +161,13 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             }
             showLoadingDialog();
             mPresenter.setShop(model);
+            mShopMenuItem.setChecked(false);
+            mShopMenuItem = model;
+            model.setChecked(true);
+            List<FilterItem> data = adapter.getData();
+            data.remove(position);
+            data.add(0, model);
+            adapter.notifyItemRangeChanged(0, position + 1);
         });
         mTopShopMenu.setAdapter(mShopMenuAdapter);
         mShopMenuTitle = mShopMenuAdapter.getTitle().getView(R.id.dropdown_item_title);
@@ -282,8 +290,8 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     @Override
-    public void setShopList(List<ShopItem> list) {
-        for (ShopItem item : list) {
+    public void setShopList(List<FilterItem> list) {
+        for (FilterItem item : list) {
             if (item.isChecked()) {
                 mShopMenuItem = item;
                 break;
@@ -301,11 +309,11 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     @Override
-    public void updateTab(int page, int period) {
-        if (page != mPresenter.getPageIndex()) {
+    public void updateTab(int pageType, int period) {
+        if (pageType != mPresenter.getPageType()) {
             return;
         }
-        if (page == Constants.PAGE_OVERVIEW) {
+        if (pageType == Constants.PAGE_OVERVIEW) {
             mTodayView.setVisibility(View.VISIBLE);
             mYesterdayView.setVisibility(View.GONE);
         } else {
@@ -393,7 +401,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             return;
         }
         StatusBarUtils.setStatusBarColor(activity, StatusBarUtils.TYPE_DARK);
-        mShopMenuTitle.setTextColor(ContextCompat.getColor(activity, R.color.text_title));
+        mShopMenuTitle.setTextColor(ContextCompat.getColor(activity, R.color.text_main));
         mShopMenuTitleArrow.setImageResource(R.drawable.ic_arrow_drop_down_black);
         mTopShopMenu.setBackgroundResource(R.drawable.dashboard_bg_white_with_divider);
         mTopPageTab.setVisibility(View.INVISIBLE);
@@ -424,6 +432,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
                 CommonNotifications.shopNameChanged,
                 CommonNotifications.importShop,
                 CommonNotifications.shopCreate,
+                CommonNotifications.shopSaasDock,
                 IpcConstants.refreshIpcList
         };
     }
@@ -432,17 +441,19 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     public void didReceivedNotification(int id, Object... args) {
         if (id == CommonNotifications.companySwitch) {
             mShopMenuPopupHelper.setCompanyName(SpUtils.getCompanyName());
-            mPresenter.reloadCompanySwitch();
+            mPresenter.reload(Constants.FLAG_ALL_MASK);
         } else if (id == CommonNotifications.companyNameChanged) {
             mShopMenuPopupHelper.setCompanyName(SpUtils.getCompanyName());
         } else if (id == CommonNotifications.shopSwitched) {
-            mPresenter.reloadShopSwitch();
+            mPresenter.reload(Constants.FLAG_SAAS | Constants.FLAG_FS | Constants.FLAG_CUSTOMER);
         } else if (id == CommonNotifications.shopNameChanged
                 || id == CommonNotifications.importShop
                 || id == CommonNotifications.shopCreate) {
-            mPresenter.reloadShopList();
+            mPresenter.reload(Constants.FLAG_SHOP);
+        } else if (id == CommonNotifications.shopSaasDock) {
+            mPresenter.reload(Constants.FLAG_SAAS);
         } else if (id == IpcConstants.refreshIpcList) {
-            mPresenter.reloadFs();
+            mPresenter.reload(Constants.FLAG_FS);
         }
     }
 

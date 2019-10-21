@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         app:dividerShow="true"
         app:titleText="@string/str_title_ipc_set"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <RelativeLayout
         android:id="@+id/rl_loading"
@@ -45,7 +45,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_30"
         android:text="@string/tip_setting_ipc"
-        android:textColor="@color/color_333333"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_28"
         android:textStyle="bold" />
 
@@ -56,7 +56,7 @@
         android:layout_below="@+id/tv_1"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_16"
-        android:textColor="@color/color_333333"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_16" />
 
 </RelativeLayout>

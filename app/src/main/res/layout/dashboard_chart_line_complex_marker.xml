@@ -31,15 +31,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/text_caption"
-            android:textSize="8sp"
+            android:textSize="@dimen/sp_10"
             tool:text="2019.01.01 18:00" />
 
         <TextView
             android:id="@+id/tv_dashboard_marker_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_title"
-            android:textSize="@dimen/sp_16"
+            android:textColor="@color/text_main"
+            android:textSize="@dimen/sp_14"
             android:textStyle="bold"
             tool:text="150" />
 
