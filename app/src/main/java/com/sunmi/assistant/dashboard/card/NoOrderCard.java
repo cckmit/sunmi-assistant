@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
+import com.sunmi.assistant.importorder.ImportOrderPreviewActivity_;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
@@ -73,6 +74,11 @@ public class NoOrderCard extends BaseRefreshCard<NoOrderCard.Model, Object> {
         float radius = context.getResources().getDimension(R.dimen.dp_12);
         this.mContentBg = new GradientDrawable();
         this.mContentBg.setCornerRadii(new float[]{radius, radius, radius, radius, radius, radius, radius, radius});
+
+        holder.addOnClickListener(R.id.btn_dashboard_dock, (h, model, position) -> {
+            ImportOrderPreviewActivity_.intent(context).start();
+        });
+
         return holder;
     }
 

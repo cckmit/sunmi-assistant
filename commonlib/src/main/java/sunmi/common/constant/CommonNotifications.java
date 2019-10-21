@@ -14,8 +14,9 @@ public class CommonNotifications {
     public static final int shopNameChanged = totalEvents++;      //修改店铺名称
     public static final int shopSwitched = totalEvents++;         //店铺切换
     public static final int shopCreate = totalEvents++;           //新建门店
+    public static final int shopSaasDock = totalEvents++;         //门店接入SAAS成功
     public static final int companyNameChanged = totalEvents++;   //修改商户名称
-    public static final int companySwitch = totalEvents++;         //商户切换
+    public static final int companySwitch = totalEvents++;        //商户切换
 
     public static final int homePageBadgeUpdate = totalEvents++;  //消息中心有消息更新
     public static final int msgCenterBadgeUpdate = totalEvents++; //消息已读或接收状态改变

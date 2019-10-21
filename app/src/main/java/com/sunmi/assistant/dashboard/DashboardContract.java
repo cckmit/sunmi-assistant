@@ -3,6 +3,7 @@ package com.sunmi.assistant.dashboard;
 import java.util.List;
 
 import sunmi.common.base.BaseView;
+import sunmi.common.model.FilterItem;
 
 public interface DashboardContract {
 
@@ -10,7 +11,7 @@ public interface DashboardContract {
 
         int getHeaderHeight();
 
-        void setShopList(List<ShopItem> list);
+        void setShopList(List<FilterItem> list);
 
         void setSource(int source);
 
@@ -28,15 +29,9 @@ public interface DashboardContract {
 
         void init();
 
-        void reloadCompanySwitch();
+        void reload(int flag);
 
-        void reloadShopSwitch();
-
-        void reloadShopList();
-
-        void reloadFs();
-
-        void setShop(ShopItem shop);
+        void setShop(FilterItem shop);
 
         void setPeriod(int period);
 

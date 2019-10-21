@@ -4,7 +4,8 @@
     xmlns:tool="http://schemas.android.com/tools"
     android:id="@+id/layout_dashboard_root"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/common_fill">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/layout_dashboard_content"
@@ -31,6 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_5"
             android:textColor="@color/text_caption"
             android:textSize="@dimen/sp_12"
             app:layout_constraintStart_toStartOf="parent"
@@ -43,9 +45,10 @@
             android:layout_width="@dimen/dp_68"
             android:layout_height="@dimen/dp_28"
             android:layout_marginEnd="@dimen/dp_20"
-            android:background="@drawable/dashboard_btn_round_orange"
+            android:background="@drawable/dashboard_btn_import"
+            android:enabled="false"
             android:text="@string/dashboard_card_import_btn"
-            android:textColor="@color/c_white"
+            android:textColor="@color/dashboard_btn_import_text"
             android:textSize="@dimen/sp_14"
             app:layout_constraintBaseline_toBaselineOf="@+id/tv_dashboard_title"
             app:layout_constraintEnd_toEndOf="parent" />
