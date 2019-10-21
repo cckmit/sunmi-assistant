@@ -2,12 +2,9 @@
 <resources>
     <color name="shimmer_color">#a2878787</color>
 
-    <color name="color_FF6000_30">#4CFF6000</color>
-    <color name="color_FFD0B3">#FFD0B3</color>
     <color name="color_F0F2F5">#F0F2F5</color>
     <color name="color_FF8000">#FF8000</color>
-    <color name="color_FF8133">#FF8133</color>
+    <color name="color_FFD0B3">#FFD0B3</color>
     <color name="color_AFC3FA">#AFC3FA</color>
-    <color name="color_4B7AFA">#6CBBFF</color>
 
 </resources>
