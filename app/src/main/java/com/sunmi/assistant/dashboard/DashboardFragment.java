@@ -332,7 +332,6 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Override
     public void updateTopPosition(int position) {
-//        LogCat.d(TAG, "onScroll=" + position + "; Top=" + mTopHeaderHeight);
         int offset = Math.min(position - mTopHeaderHeight, 0);
         if (mHasData || mPresenter.getPageIndex() != 0) {
             mTopShopMenu.setTranslationY(offset);

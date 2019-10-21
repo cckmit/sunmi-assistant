@@ -21,6 +21,10 @@ import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
 
 
+/**
+ * @author yinhui
+ * @date 2019-10-14
+ */
 public class CustomerPresenter extends BasePresenter<CustomerContract.View>
         implements CustomerContract.Presenter, BaseRefreshCard.Presenter {
 

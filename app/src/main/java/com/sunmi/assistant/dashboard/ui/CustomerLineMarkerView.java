@@ -14,8 +14,11 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.Constants;
+import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.card.CustomerTrendCard;
 
+import java.util.Calendar;
 import java.util.Locale;
 
 /**
@@ -37,6 +40,8 @@ public class CustomerLineMarkerView extends MarkerView {
     private MPPointF mOffset;
     private MPPointF mRealOffset;
 
+    private int mPeriod;
+
     /**
      * Constructor. Sets up the MarkerView with a custom layout resource.
      */
@@ -50,6 +55,10 @@ public class CustomerLineMarkerView extends MarkerView {
         mTvLabel2 = findViewById(R.id.tv_dashboard_marker_label2);
         mIvPoint = findViewById(R.id.iv_dashboard_marker_point);
         mOffsetPoint = mIvPoint.getWidth() / 2;
+    }
+
+    public void setPeriod(int period) {
+        this.mPeriod = period;
     }
 
     public void setPointColor(int color) {
@@ -74,8 +83,24 @@ public class CustomerLineMarkerView extends MarkerView {
     public void refreshContent(Entry e, Highlight highlight) {
         Object data = e.getData();
         if (data instanceof CustomerTrendCard.CustomerEntry) {
+            String title = "";
             CustomerTrendCard.CustomerEntry entry = (CustomerTrendCard.CustomerEntry) data;
-            mTvTitle.setText(entry.getTime());
+            long time = entry.getTime();
+            if (mPeriod == Constants.TIME_PERIOD_YESTERDAY) {
+                title = Utils.getDateTime(time);
+            } else if (mPeriod == Constants.TIME_PERIOD_WEEK) {
+                Calendar c = Calendar.getInstance();
+                c.setTimeInMillis(time);
+                int timeIndex = c.get(Calendar.DAY_OF_WEEK) - 1;
+                if (timeIndex <= 0) {
+                    timeIndex += 7;
+                }
+                title = Utils.formatDateTime("MM.dd", time) + " "
+                        + Utils.getWeekName(getContext(), timeIndex);
+            } else if (mPeriod == Constants.TIME_PERIOD_MONTH) {
+                title = Utils.formatDateTime("MM.dd", time);
+            }
+            mTvTitle.setText(title);
             mTvValue.setText(String.valueOf((int) e.getY()));
             mTvLabel1.setText(String.format(Locale.getDefault(), "%s%d",
                     mNewName, entry.getNewCustomer()));
