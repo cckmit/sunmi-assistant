@@ -148,7 +148,10 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
     @Click({R.id.btnLogin, R.id.btnRegister, R.id.ib_visible,
             R.id.tvForgetPassword, R.id.tvSMSLogin})
     public void onClick(View v) {
-        mobile = etUser.getText().toString().trim();
+        if (etUser.getText() == null || etPassword.getText() == null) {
+            return;
+        }
+        mobile = RegexUtils.handleIllegalCharacter(etUser.getText().toString().trim());
         String password = etPassword.getText().toString();
         switch (v.getId()) {
             case R.id.btnLogin: //密码登录
@@ -216,12 +219,9 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
 
     //账号合并
     private void userMerge(final String password) {
-        if (etUser.getText() == null) {
-            return;
-        }
         CommonUtils.trackCommonEvent(context, "login", "登录", Constants.EVENT_LOGIN);
         showLoadingDialog();
-        mPresenter.userMerge(etUser.getText().toString(), mobile, password);
+        mPresenter.userMerge(mobile, mobile, password);
     }
 
     @UiThread

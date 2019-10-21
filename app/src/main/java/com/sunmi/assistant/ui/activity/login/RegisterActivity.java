@@ -67,10 +67,10 @@ public class RegisterActivity extends BaseMvpActivity<InputMobilePresenter>
 
     @Click(R.id.btnNext)
     public void onClick(View v) {
-        if (isFastClick(1500)) {
+        if (isFastClick(1500) || etMobile.getText() == null) {
             return;
         }
-        mobile = etMobile.getText().toString().trim();
+        mobile = RegexUtils.handleIllegalCharacter(etMobile.getText().toString().trim());
         if (!ctvPrivacy.isChecked()) {
             shortTip(R.string.tip_agree_protocol);
             return;
@@ -151,4 +151,5 @@ public class RegisterActivity extends BaseMvpActivity<InputMobilePresenter>
                 .extra("source", "register")
                 .start();
     }
+
 }
