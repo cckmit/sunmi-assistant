@@ -309,11 +309,11 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     @Override
-    public void updateTab(int pageType, int period) {
-        if (pageType != mPresenter.getPageType()) {
+    public void updateTab(int pageIndex, int period) {
+        if (pageIndex != mPresenter.getPageIndex()) {
             return;
         }
-        if (pageType == Constants.PAGE_OVERVIEW) {
+        if (pageIndex == Constants.PAGE_OVERVIEW) {
             mTodayView.setVisibility(View.VISIBLE);
             mYesterdayView.setVisibility(View.GONE);
         } else {
@@ -484,7 +484,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         public void onPageSelected(int position) {
             mPageTab.setCurrentTab(position);
             mPresenter.setPage(position);
-            updateTab(mPresenter.getPageType(), mPresenter.getPeriod());
+            updateTab(mPresenter.getPageIndex(), mPresenter.getPeriod());
             resetTop();
         }
 

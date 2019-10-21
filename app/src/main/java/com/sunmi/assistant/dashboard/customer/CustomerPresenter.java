@@ -3,6 +3,7 @@ package com.sunmi.assistant.dashboard.customer;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
+import com.sunmi.assistant.dashboard.PageContract;
 import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.card.CustomerAnalysisCard;
 import com.sunmi.assistant.dashboard.card.CustomerDataCard;
@@ -30,31 +31,15 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
     private int mSource = -1;
     private int mPeriod = Constants.TIME_PERIOD_INIT;
 
+    private PageContract.ParentPresenter mParent;
+    private int mPageIndex;
+
     private List<BaseRefreshCard> mList = new ArrayList<>();
 
-    public CustomerPresenter() {
-        LogCat.d(TAG, "Create OverviewPresenter");
-    }
-
-    @Override
-    public int getType() {
-        return Constants.PAGE_CUSTOMER;
-    }
-
-    @Override
-    public int getScrollY() {
-        if (isViewAttached()) {
-            return mView.getScrollY();
-        } else {
-            return 0;
-        }
-    }
-
-    @Override
-    public void scrollTo(int y) {
-        if (isViewAttached()) {
-            mView.scrollTo(y);
-        }
+    public CustomerPresenter(PageContract.ParentPresenter parent, int index) {
+        this.mParent = parent;
+        this.mPageIndex = index;
+        LogCat.d("yinhui", "Create OverviewPresenter");
     }
 
     @Override
@@ -75,7 +60,7 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
     }
 
     @Override
-    public void setSource(int source) {
+    public void setSource(int source, boolean showLoading) {
         boolean needReload = mSource != source
                 || mCompanyId != SpUtils.getCompanyId()
                 || mShopId != SpUtils.getShopId();
@@ -85,12 +70,16 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
         }
         if (needReload) {
             load();
+        } else {
+            for (BaseRefreshCard card : mList) {
+                card.refresh(showLoading);
+            }
         }
     }
 
     @Override
     public void setPeriod(int period) {
-        LogCat.d(TAG, "Set period: " + period + "; List=" + mList.size());
+        LogCat.d("yinhui", "Set period: " + period + "; List=" + mList.size() + "; Presenter=" + this);
         mPeriod = period;
         for (BaseRefreshCard card : mList) {
             card.setPeriod(period, false);
@@ -101,22 +90,25 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
     }
 
     @Override
-    public int getPeriod() {
-        return mPeriod;
+    public void scrollToTop() {
+        if (isViewAttached()) {
+            mView.scrollToTop();
+        }
     }
 
     @Override
     public void refresh(boolean showLoading) {
-        for (BaseRefreshCard card : mList) {
-            card.refresh(showLoading);
-        }
+        mParent.refresh(showLoading);
     }
 
     @Override
-    public void refresh(int position, boolean showLoading) {
-        if (mList.size() > position) {
-            mList.get(position).refresh(showLoading);
-        }
+    public int getIndex() {
+        return mPageIndex;
+    }
+
+    @Override
+    public int getPeriod() {
+        return mPeriod;
     }
 
     @Override

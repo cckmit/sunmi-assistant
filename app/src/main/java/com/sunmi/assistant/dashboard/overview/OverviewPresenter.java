@@ -3,6 +3,7 @@ package com.sunmi.assistant.dashboard.overview;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
+import com.sunmi.assistant.dashboard.PageContract;
 import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.card.EmptyDataCard;
 import com.sunmi.assistant.dashboard.card.EmptyGapCard;
@@ -18,9 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
-import sunmi.common.model.ShopAuthorizeInfoResp;
-import sunmi.common.rpc.cloud.SunmiStoreApi;
-import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
 
@@ -35,31 +33,15 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
     private int mSource = -1;
     private int mPeriod = Constants.TIME_PERIOD_INIT;
 
+    private PageContract.ParentPresenter mParent;
+    private int mPageIndex;
+
     private List<BaseRefreshCard> mList = new ArrayList<>();
 
-    public OverviewPresenter() {
-        LogCat.d(TAG, "Create OverviewPresenter");
-    }
-
-    @Override
-    public int getType() {
-        return Constants.PAGE_OVERVIEW;
-    }
-
-    @Override
-    public int getScrollY() {
-        if (isViewAttached()) {
-            return mView.getScrollY();
-        } else {
-            return 0;
-        }
-    }
-
-    @Override
-    public void scrollTo(int y) {
-        if (isViewAttached()) {
-            mView.scrollTo(y);
-        }
+    public OverviewPresenter(PageContract.ParentPresenter parent, int index) {
+        this.mParent = parent;
+        this.mPageIndex = index;
+        LogCat.d("yinhui", "Create OverviewPresenter");
     }
 
     @Override
@@ -80,7 +62,7 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
     }
 
     @Override
-    public void setSource(int source) {
+    public void setSource(int source, boolean showLoading) {
         boolean needReload = mSource != source
                 || mCompanyId != SpUtils.getCompanyId()
                 || mShopId != SpUtils.getShopId();
@@ -90,12 +72,16 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
         }
         if (needReload) {
             load();
+        } else {
+            for (BaseRefreshCard card : mList) {
+                card.refresh(showLoading);
+            }
         }
     }
 
     @Override
     public void setPeriod(int period) {
-        LogCat.d(TAG, "Set period: " + period + "; List=" + mList.size());
+        LogCat.d("yinhui", "Set period: " + period + "; List=" + mList.size() + "; Presenter=" + this);
         mPeriod = period;
         for (BaseRefreshCard card : mList) {
             card.setPeriod(period, false);
@@ -106,25 +92,25 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
     }
 
     @Override
-    public int getPeriod() {
-        return mPeriod;
+    public void scrollToTop() {
+        if (isViewAttached()) {
+            mView.scrollToTop();
+        }
     }
 
     @Override
     public void refresh(boolean showLoading) {
-        if (!Utils.hasAuth(mSource)) {
-            loadSaas();
-        }
-        for (BaseRefreshCard card : mList) {
-            card.refresh(showLoading);
-        }
+        mParent.refresh(showLoading);
     }
 
     @Override
-    public void refresh(int position, boolean showLoading) {
-        if (mList.size() > position) {
-            mList.get(position).refresh(showLoading);
-        }
+    public int getIndex() {
+        return mPageIndex;
+    }
+
+    @Override
+    public int getPeriod() {
+        return mPeriod;
     }
 
     @Override
@@ -174,33 +160,6 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
             mList.add(NoFsCard.get(this, source));
         }
         mList.add(EmptyGapCard.get(this, source));
-    }
-
-    private void loadSaas() {
-        SunmiStoreApi.getInstance().getAuthorizeInfo(mCompanyId, mShopId,
-                new RetrofitCallback<ShopAuthorizeInfoResp>() {
-                    @Override
-                    public void onSuccess(int code, String msg, ShopAuthorizeInfoResp data) {
-                        if (data == null || data.getAuthorizedList() == null) {
-                            onFail(code, msg, data);
-                            return;
-                        }
-                        int source = mSource;
-                        List<ShopAuthorizeInfoResp.Info> list = data.getAuthorizedList();
-                        if (list.isEmpty()) {
-                            source &= ~Constants.DATA_SOURCE_AUTH;
-                        } else {
-                            source |= Constants.DATA_SOURCE_AUTH;
-                        }
-                        setSource(source);
-                    }
-
-                    @Override
-                    public void onFail(int code, String msg, ShopAuthorizeInfoResp data) {
-                        LogCat.e(TAG, "Load saas import Failed. " + code + ":" + msg);
-                        showFailedTip();
-                    }
-                });
     }
 
     @Override
