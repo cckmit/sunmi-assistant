@@ -197,7 +197,7 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
         }
         MainTab[] mainTabs = MainTab.values();
         for (MainTab mainTab : mainTabs) {
-            if (isHideTab(mainTab.getResName())) {//saas平台需要显示数据tab
+            if (isHideTab(mainTab.getResName())) {
                 continue;
             }
             TabHost.TabSpec tab = mTabHost.newTabSpec(getString(mainTab.getResName()));
