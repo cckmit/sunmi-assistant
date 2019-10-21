@@ -5,13 +5,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.net.http.SslError;
 import android.text.TextUtils;
 import android.view.View;
-import android.webkit.SslErrorHandler;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.assistant.R;
@@ -25,6 +24,7 @@ import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.webview.SMWebChromeClient;
+import sunmi.common.view.webview.SMWebViewClient;
 
 /**
  * 用户协议，隐私
@@ -85,7 +85,7 @@ public class HelpActivity extends BaseActivity implements View.OnClickListener {
         webSetting.setJavaScriptEnabled(true);
         webSetting.setAllowFileAccess(true);
         //不用启动客户端的浏览器来加载未加载出来的数据
-        webView.setWebViewClient(new WebViewClient() {
+        webView.setWebViewClient(new SMWebViewClient(this) {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (!TextUtils.isEmpty(url) && url.startsWith("weixin://")) {
@@ -110,16 +110,8 @@ public class HelpActivity extends BaseActivity implements View.OnClickListener {
             }
 
             @Override
-            public void onReceivedError(WebView view, int errorCode,
-                                        String description, String failingUrl) {
+            protected void receiverError(WebView view, WebResourceRequest request, WebResourceError error) {
                 hideLoadingDialog();
-                super.onReceivedError(view, errorCode, description, failingUrl);
-            }
-
-            @Override
-            public void onReceivedSslError(WebView view, final SslErrorHandler handler,
-                                           SslError error) {
-                handler.proceed();
             }
         });
     }

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:ptr="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cl_dashboard_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -23,22 +22,20 @@
             android:layout_marginStart="@dimen/dp_25"
             android:layout_marginEnd="@dimen/dp_25"
             android:drawableEnd="@drawable/ic_arrow_drop_down_white"
+            android:drawablePadding="@dimen/dp_4"
             android:ellipsize="end"
             android:gravity="center"
             android:maxLines="1"
-            android:drawablePadding="@dimen/dp_4"
             android:textColor="@color/c_white"
             android:textSize="@dimen/sp_18"
             android:textStyle="bold" />
     </RelativeLayout>
-
 
     <cn.bingoogolapple.refreshlayout.BGARefreshLayout
         android:id="@+id/bga_refresh"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginLeft="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_10"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -46,7 +43,7 @@
         app:layout_constraintTop_toBottomOf="@id/rl_shop_title"
         app:ptrHeaderTextColor="@color/text_main">
 
-        <android.support.v7.widget.RecyclerView
+        <sunmi.common.view.SmRecyclerView
             android:id="@+id/rv_device"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

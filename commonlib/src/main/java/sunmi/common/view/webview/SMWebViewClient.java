@@ -1,6 +1,7 @@
 package sunmi.common.view.webview;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.net.http.SslError;
 import android.os.Message;
 import android.webkit.SslErrorHandler;
@@ -9,25 +10,18 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.commonlibrary.R;
+
+import sunmi.common.view.dialog.CommonDialog;
+
 public abstract class SMWebViewClient extends WebViewClient {
 
     public Activity mContext;
 
-//    private JumpUtil jumpUtil;
-
-    public SMWebViewClient(Activity context) {
+    public SMWebViewClient(Activity activity) {
         super();
-        this.mContext = context;
+        this.mContext = activity;
     }
-
-//    public SMWebViewClient(Activity context, JumpUtil jumpUtil) {
-//        super();
-//        this.mContext = context;
-//        this.jumpUtil = jumpUtil;
-//        if (null == this.jumpUtil) {
-//            this.jumpUtil = new JumpUtil(mContext);
-//        }
-//    }
 
     /**
      * (1) 当请求的方式是"POST"方式时这个回调是不会通知的。
@@ -46,24 +40,18 @@ public abstract class SMWebViewClient extends WebViewClient {
     @Override
     public void onReceivedSslError(WebView view, final SslErrorHandler handler,
                                    SslError error) {
-//        final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-//        builder.setMessage(R.string.str_ssl_error);
-//        builder.setPositiveButton(mContext.getString(R.string.str_confirm),
-//                new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-        handler.proceed();
-//                    }
-//                });
-//        builder.setNegativeButton(mContext.getString(R.string.sm_cancel),
-//                new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        handler.cancel();
-//                    }
-//                });
-//        final AlertDialog dialog = builder.create();
-//        dialog.show();
+        new CommonDialog.Builder(mContext).setTitle(R.string.str_ssl_error)
+                .setCancelButton(R.string.sm_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        handler.cancel();
+                    }
+                }).setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                handler.proceed();
+            }
+        });
     }
 
     /**
@@ -76,10 +64,6 @@ public abstract class SMWebViewClient extends WebViewClient {
 
     /**
      * 加载异常
-     *
-     * @param view
-     * @param request
-     * @param error
      */
     @Override
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
@@ -88,4 +72,5 @@ public abstract class SMWebViewClient extends WebViewClient {
     }
 
     protected abstract void receiverError(WebView view, WebResourceRequest request, WebResourceError error);
+
 }

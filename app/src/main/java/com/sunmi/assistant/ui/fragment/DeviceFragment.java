@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,6 +73,7 @@ import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.ClearableEditText;
+import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.dialog.ChooseDeviceDialog;
 import sunmi.common.view.dialog.CommonDialog;
 
@@ -91,7 +90,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     @ViewById(R.id.bga_refresh)
     BGARefreshLayout refreshView;
     @ViewById(R.id.rv_device)
-    RecyclerView rvDevice;
+    SmRecyclerView rvDevice;
     @ViewById(R.id.btn_add)
     TextView btnAdd;
     @ViewById(R.id.rl_shop_title)
@@ -110,7 +109,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     private List<SunmiDevice> deviceList = new ArrayList<>();//设备列表全集
     private Timer timer = null, timerException = null;
     private DeviceListAdapter deviceListAdapter;
-    private LinearLayoutManager layoutManager;
     private DeviceSettingMenu deviceSettingMenu;
     private Dialog dialogPassword = null;
     private String password = "";    //路由管理密码
@@ -146,8 +144,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     protected void initViews() {
         tvShopTitle.setText(SpUtils.getShopName());
         initRefreshLayout();
-        layoutManager = new LinearLayoutManager(mActivity);
-        rvDevice.setLayoutManager(layoutManager);
+        rvDevice.init(R.drawable.divider_transparent_8dp);
         deviceListAdapter = new DeviceListAdapter(mActivity, deviceList);
         View headerView = getLayoutInflater().inflate(R.layout.include_banner,
                 (ViewGroup) refreshView.getParent(), false);
@@ -168,7 +165,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     private void initRefreshLayout() {
         refreshView.setDelegate(this);
         // 设置下拉刷新和上拉加载更多的风格(参数1：应用程序上下文，参数2：是否具有上拉加载更多功能)
-        BGANormalRefreshViewHolder refreshViewHolder = new BGANormalRefreshViewHolder(mActivity, false); // 设置下拉刷新和上拉加载更多的风格
+        BGANormalRefreshViewHolder refreshViewHolder =
+                new BGANormalRefreshViewHolder(mActivity, false);
         refreshViewHolder.setRefreshingText(getString(R.string.str_refresh_loading));
         refreshViewHolder.setPullDownRefreshText(getString(R.string.str_refresh_pull));
         refreshViewHolder.setReleaseRefreshText(getString(R.string.str_refresh_release));
@@ -330,8 +328,11 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         } else {
             deviceSettingMenu = new DeviceSettingMenu(mActivity, item);
             deviceSettingMenu.setOnSettingsClickListener(this);
-            deviceSettingMenu.show(layoutManager.findViewByPosition(position)
-                    .findViewById(R.id.iv_more));
+            if (rvDevice.getLayoutManager() != null &&
+                    rvDevice.getLayoutManager().findViewByPosition(position) != null) {
+                deviceSettingMenu.show(rvDevice.getLayoutManager()
+                        .findViewByPosition(position).findViewById(R.id.iv_more));
+            }
         }
     }
 
@@ -716,9 +717,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     //检查ap版本
     private void checkApVersion(String sn, int status) {
-        ApCompatibleUtils.getInstance().checkVersion(mActivity, sn, (isCompatible, currSn) -> {
-            gotoRouterManager(sn, DeviceStatus.valueOf(status).getValue());
-        });
+        ApCompatibleUtils.getInstance().checkVersion(mActivity, sn, (isCompatible, currSn) ->
+                gotoRouterManager(sn, DeviceStatus.valueOf(status).getValue()));
     }
 
     private void gotoRouterManager(String sn, String status) {

@@ -26,8 +26,8 @@ import sunmi.common.base.BaseApplication;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.SSLSocketFactoryGenerator;
+import sunmi.common.rpc.retrofit.HttpsUtils;
 import sunmi.common.utils.NetworkUtils;
-import sunmi.common.utils.OKHttpUtils;
 import sunmi.common.utils.ToastUtils;
 import sunmi.common.utils.log.LogCat;
 
@@ -80,7 +80,7 @@ public abstract class BaseLocalApi extends BaseApi {
         //OkHttpClient
         OkHttpClient.Builder mBuilder = new OkHttpClient.Builder();
         mBuilder.sslSocketFactory(getSSLSocketFactory());
-        mBuilder.hostnameVerifier(new OKHttpUtils.TrustAllHostnameVerifier());
+        mBuilder.hostnameVerifier(HttpsUtils.UnSafeHostnameVerifier);
         mBuilder.connectTimeout(timeout, TimeUnit.SECONDS);
         mBuilder.readTimeout(timeout, TimeUnit.SECONDS);
         mBuilder.writeTimeout(timeout, TimeUnit.SECONDS);
