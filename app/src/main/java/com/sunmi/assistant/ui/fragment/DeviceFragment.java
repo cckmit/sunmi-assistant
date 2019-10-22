@@ -738,7 +738,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         } else if (TextUtils.equals(device.getType(), "PRINTER")) {
             msg = getString(R.string.tip_delete_printer);
         }
-        new CommonDialog.Builder(mActivity).setMessage(msg)
+        new CommonDialog.Builder(mActivity).setTitle(msg)
                 .setCancelButton(R.string.sm_cancel)
                 .setConfirmButton(R.string.str_delete, R.color.caution_primary,
                         (dialog, which) -> {
@@ -760,7 +760,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     //无网络
     private void unBindNetDisConnected() {
         new CommonDialog.Builder(mActivity)
-                .setMessage(getString(R.string.str_dialog_net_disconnected))
+                .setTitle(R.string.str_dialog_net_disconnected)
                 .setCancelButton(R.string.str_confirm, (dialog, which) -> dialog.dismiss()).create().show();
     }
 }
