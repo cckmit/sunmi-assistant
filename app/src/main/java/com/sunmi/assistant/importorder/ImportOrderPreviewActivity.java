@@ -97,7 +97,7 @@ public class ImportOrderPreviewActivity extends BaseActivity {
     }
 
     private void cannotSaasDialog() {
-        CommonDialog commonDialog = new CommonDialog.Builder(this)
+        CommonDialog commonDialog = new CommonDialog.Builder(context)
                 .setTitle(R.string.import_order_no_find_shop)
                 .setMessage(R.string.import_order_mobile_no_match_shop)
                 .setConfirmButton(getString(R.string.import_order_continue_try), new DialogInterface.OnClickListener() {

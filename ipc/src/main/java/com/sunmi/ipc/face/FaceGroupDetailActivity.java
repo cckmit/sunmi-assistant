@@ -179,7 +179,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
     private void clickDelete() {
         if (mFaceGroup.getCount() > 0) {
             if (mDeleteForbiddenDialog == null) {
-                mDeleteForbiddenDialog = new CommonDialog.Builder(this)
+                mDeleteForbiddenDialog = new CommonDialog.Builder(context)
                         .setTitle(getString(R.string.ipc_face_group_delete_title,
                                 Utils.getGroupName(this, mFaceGroup)))
                         .setMessage(R.string.ipc_face_group_delete_error)

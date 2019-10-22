@@ -492,7 +492,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     public void uploadSuccess() {
         mUploadDialog.dismiss();
         resetView();
-        new CommonDialog.Builder(this)
+        new CommonDialog.Builder(context)
                 .setMessage(R.string.ipc_face_tip_album_upload_success)
                 .setMessageDrawable(0, R.mipmap.face_ic_ok, 0, 0)
                 .setMessageDrawablePadding(R.dimen.dp_8)
@@ -657,8 +657,8 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CODE_UPLOAD) {
                 mPresenter.init();
-                new CommonDialog.Builder(this)
-                        .setMessage(R.string.ipc_face_tip_album_upload_success)
+                new CommonDialog.Builder(context)
+                        .setTitle(R.string.ipc_face_tip_album_upload_success)
                         .setMessageDrawable(0, R.mipmap.face_ic_ok, 0, 0)
                         .setMessageDrawablePadding(R.dimen.dp_8)
                         .setConfirmButton(R.string.str_confirm)
@@ -757,7 +757,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                             @Override
                             public void onResourceReady(@NonNull Drawable resource,
                                                         @Nullable Transition<? super Drawable> transition) {
-                                mUploadDialog = new CommonDialog.Builder(FaceListActivity.this)
+                                mUploadDialog = new CommonDialog.Builder(context)
                                         .setTitle(R.string.ipc_face_tip_photo_uploading_title)
                                         .setMessage(R.string.ipc_face_tip_photo_uploading_content)
                                         .setMessageDrawablePadding(R.dimen.dp_12)
