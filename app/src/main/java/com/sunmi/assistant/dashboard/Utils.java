@@ -6,6 +6,7 @@ import android.util.Pair;
 
 import com.sunmi.assistant.R;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -22,15 +23,21 @@ public class Utils {
     @SuppressLint("SimpleDateFormat")
     private static final SimpleDateFormat DATE_FORMAT_DATE_TIME = new SimpleDateFormat("yyyy.MM.dd HH:mm");
 
+    private static final Object LOCK = new Object();
+
     private static final int PERIOD_WEEK_OFFSET = 100;
     private static final int PERIOD_MONTH_OFFSET = 10000;
 
     private static final long MILLIS_PER_HOUR = 3600;
     private static final long MILLIS_PER_DAY = 3600 * 24;
 
+    private static final int MIN_DAYS_OF_MONTH = 28;
+
     private static String[] sWeekName;
 
     private static Calendar temp = Calendar.getInstance();
+    @SuppressLint("SimpleDateFormat")
+    private static SimpleDateFormat tempFormat = new SimpleDateFormat();
 
     public static Pair<Long, Long> getPeriodTimestamp(int period) {
         temp.setTimeInMillis(System.currentTimeMillis());
@@ -109,9 +116,9 @@ public class Utils {
             temp.add(Calendar.DATE, offset > 0 ? offset - 7 : offset);
             return temp.getTimeInMillis() / 1000 + (timeIndex - 1) * MILLIS_PER_DAY;
         } else {
-            if (day == 1 && size >= 28) {
+            if (day == 1 && size >= MIN_DAYS_OF_MONTH) {
                 month = (month + 11) % 12;
-            } else if (day >= 28 && size == 1) {
+            } else if (day >= MIN_DAYS_OF_MONTH && size == 1) {
                 month = (month + 1) % 12;
             }
             temp.set(year, month, timeIndex);
@@ -180,6 +187,27 @@ public class Utils {
     public static String getDateTime(long timestamp) {
         synchronized (DATE_FORMAT_DATE_TIME) {
             return DATE_FORMAT_DATE_TIME.format(new Date(timestamp));
+        }
+    }
+
+    public static String getWeekName(Context context, int timeIndex) {
+        if (sWeekName == null) {
+            sWeekName = context.getResources().getStringArray(R.array.week_name);
+        }
+        return sWeekName[timeIndex - 1];
+    }
+
+    public static long parseDateTime(String pattern, String str) throws ParseException {
+        synchronized (LOCK) {
+            tempFormat.applyPattern(pattern);
+            return tempFormat.parse(str).getTime();
+        }
+    }
+
+    public static String formatDateTime(String pattern, long timestamp) {
+        synchronized (LOCK) {
+            tempFormat.applyPattern(pattern);
+            return tempFormat.format(new Date(timestamp));
         }
     }
 

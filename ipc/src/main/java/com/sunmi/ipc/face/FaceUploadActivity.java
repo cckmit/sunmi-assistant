@@ -181,7 +181,7 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
             mTitleBar.getRightText().setEnabled(false);
             mTitleBar.setRightTextViewColor(R.color.text_caption);
             if (mRetryDialog == null) {
-                mRetryDialog = new CommonDialog.Builder(this)
+                mRetryDialog = new CommonDialog.Builder(context)
                         .setTitle(R.string.ipc_face_error_upload)
                         .setMessage(networkFailed ? R.string.ipc_face_error_image_all_network
                                 : R.string.ipc_face_error_image_all)

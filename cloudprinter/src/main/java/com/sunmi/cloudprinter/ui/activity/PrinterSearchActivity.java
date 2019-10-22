@@ -1,4 +1,4 @@
-package com.sunmi.cloudprinter.ui.Activity;
+package com.sunmi.cloudprinter.ui.activity;
 
 import android.os.Handler;
 import android.support.annotation.NonNull;

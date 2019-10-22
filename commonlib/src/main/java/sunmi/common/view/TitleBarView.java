@@ -163,11 +163,9 @@ public class TitleBarView extends RelativeLayout {
         //状态栏
         isAdjustResize = typedArray.getBoolean(R.styleable.TitleBarView_topview_isAdjustResize, false);
         if (isAdjustResize) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                SystemBarTintManager tintManager = new SystemBarTintManager((Activity) mContext);
-                tintManager.setStatusBarTintEnabled(true);
-                tintManager.setStatusBarTintResource(R.color.c_black);
-            }
+            SystemBarTintManager tintManager = new SystemBarTintManager((Activity) mContext);
+            tintManager.setStatusBarTintEnabled(true);
+            tintManager.setStatusBarTintResource(R.color.c_black);
         } else {
             WindowManager.LayoutParams winParams = ((Activity) mContext).getWindow().getAttributes();
             int bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
@@ -494,7 +492,7 @@ public class TitleBarView extends RelativeLayout {
         return this;
     }
 
-    private void closeActivity() {//todo
+    private void closeActivity() {
         if (mContext instanceof Activity) {
             ((Activity) mContext).finish();
         }

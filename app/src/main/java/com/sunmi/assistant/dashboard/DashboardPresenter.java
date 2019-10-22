@@ -45,7 +45,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     private static final Handler WORK_HANDLER = new Handler(Looper.getMainLooper());
 
     private Context mContext;
-    private List<DashboardContract.PagePresenter> mPages = new ArrayList<>(2);
+    private List<PageContract.PagePresenter> mPages = new ArrayList<>(2);
 
     private int mCompanyId;
     private int mShopId;
@@ -53,6 +53,8 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     private int mPageIndex = 0;
 
     private int mLoadFlag;
+    private boolean mLoadAllPage;
+    private boolean mShowLoading;
 
     private RefreshTask mTask;
 
@@ -60,8 +62,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     public void init() {
         mCompanyId = SpUtils.getCompanyId();
         mShopId = SpUtils.getShopId();
-        mLoadFlag = Constants.FLAG_ALL_MASK;
-        load();
+        load(Constants.FLAG_ALL_MASK, true, true);
         if (mTask == null) {
             mTask = new RefreshTask();
             WORK_HANDLER.postDelayed(mTask, REFRESH_TIME_PERIOD);
@@ -72,8 +73,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     public void reload(int flag) {
         mCompanyId = SpUtils.getCompanyId();
         mShopId = SpUtils.getShopId();
-        mLoadFlag = flag;
-        load();
+        load(flag, true, true);
     }
 
     @Override
@@ -90,8 +90,27 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     @Override
     public void setPage(int index) {
-        mPages.get(mPageIndex).scrollTo(0);
+        mPages.get(mPageIndex).scrollToTop();
         mPageIndex = index;
+    }
+
+    @Override
+    public void refresh(boolean showLoading) {
+        int flag = 0;
+        if (!Utils.hasAuth(mSource)) {
+            flag |= Constants.FLAG_SAAS;
+        }
+        if (!Utils.hasFs(mSource)) {
+            flag |= Constants.FLAG_FS;
+        }
+        if (!Utils.hasCustomer(mSource)) {
+            flag |= Constants.FLAG_CUSTOMER;
+        }
+        if (flag != 0) {
+            load(flag, false, showLoading);
+        } else {
+            mPages.get(mPageIndex).setSource(mSource, showLoading);
+        }
     }
 
     @Override
@@ -101,21 +120,21 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             return pages;
         }
         mPages.clear();
-        OverviewPresenter overviewPresenter = new OverviewPresenter();
+        OverviewPresenter overviewPresenter = new OverviewPresenter(this, 0);
         OverviewFragment overviewFragment = new OverviewFragment_();
         overviewFragment.inject(mView, overviewPresenter);
         mPages.add(overviewPresenter);
         pages.add(new PageHost(R.string.dashboard_page_overview, 0, overviewFragment));
 
-        CustomerPresenter customerPresenter = new CustomerPresenter();
+        CustomerPresenter customerPresenter = new CustomerPresenter(this, 1);
         CustomerFragment customerFragment = new CustomerFragment_();
         customerFragment.inject(mView, customerPresenter);
         mPages.add(customerPresenter);
         pages.add(new PageHost(R.string.dashboard_page_customer, 0, customerFragment));
 
-        LogCat.d(TAG, "getPages; Fragment=" + mView + "; Presenter=" + this);
-        LogCat.d(TAG, "OverviewFragment=" + overviewFragment + "; Presenter=" + overviewPresenter);
-        LogCat.d(TAG, "CustomerFragment=" + customerFragment + "; Presenter=" + customerPresenter);
+        LogCat.d("yinhui", "getPages; Fragment=" + mView + "; Presenter=" + this);
+        LogCat.d("yinhui", "OverviewFragment=" + overviewFragment + "; Presenter=" + overviewPresenter);
+        LogCat.d("yinhui", "CustomerFragment=" + customerFragment + "; Presenter=" + customerPresenter);
         return pages;
     }
 
@@ -125,25 +144,23 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     @Override
-    public int getPageType() {
-        return mPages.get(mPageIndex).getType();
-    }
-
-    @Override
     public int getPeriod() {
         return mPages.get(mPageIndex).getPeriod();
     }
 
-    private void load() {
-        if ((mLoadFlag & Constants.FLAG_SHOP) != 0) {
+    private void load(int loadFlag, boolean allPage, boolean showLoading) {
+        this.mLoadFlag = loadFlag;
+        this.mLoadAllPage = allPage;
+        this.mShowLoading = showLoading;
+        if ((loadFlag & Constants.FLAG_SHOP) != 0) {
             loadShop();
-        } else if ((mLoadFlag & Constants.FLAG_SAAS) != 0) {
+        } else if ((loadFlag & Constants.FLAG_SAAS) != 0) {
             loadSaas();
         }
-        if ((mLoadFlag & Constants.FLAG_FS) != 0) {
+        if ((loadFlag & Constants.FLAG_FS) != 0) {
             loadFs();
         }
-        if ((mLoadFlag & Constants.FLAG_CUSTOMER) != 0) {
+        if ((loadFlag & Constants.FLAG_CUSTOMER) != 0) {
             loadCustomer();
         }
     }
@@ -208,7 +225,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                             mSource &= ~Constants.DATA_SOURCE_IMPORT;
                         } else {
                             mSource |= Constants.DATA_SOURCE_AUTH;
-                            if (list.get(0).getImportStatus() == 2) {
+                            if (list.get(0).getImportStatus() == Constants.IMPORT_SUCCESS) {
                                 // 导入成功
                                 mSource |= Constants.DATA_SOURCE_IMPORT;
                             } else {
@@ -304,8 +321,12 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         if (isViewAttached()) {
             mView.setSource(mSource);
         }
-        for (DashboardContract.PagePresenter page : mPages) {
-            page.setSource(mSource);
+        if (mLoadAllPage) {
+            for (PageContract.PagePresenter page : mPages) {
+                page.setSource(mSource, mShowLoading);
+            }
+        } else {
+            mPages.get(mPageIndex).setSource(mSource, mShowLoading);
         }
     }
 
@@ -314,7 +335,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         super.detachView();
         mContext = null;
         WORK_HANDLER.removeCallbacks(mTask);
-        for (DashboardContract.PagePresenter page : mPages) {
+        for (PageContract.PagePresenter page : mPages) {
             page.release();
         }
         mPages.clear();
@@ -324,11 +345,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
         @Override
         public void run() {
-            if (!Utils.hasAuth(mSource)) {
-                mLoadFlag |= Constants.FLAG_SAAS;
-                load();
-            }
-            mPages.get(mPageIndex).refresh(false);
+            refresh(false);
             WORK_HANDLER.postDelayed(this, REFRESH_TIME_PERIOD);
         }
     }

@@ -371,7 +371,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             return;
         }
         showLoadingDialog();
-        IPCCall.getInstance().getSdState(context, device.getDeviceid());
+        IPCCall.getInstance().getSdState(context, device.getModel(), device.getDeviceid());
     }
 
     @Click(resName = "sil_voice_exception")
@@ -615,7 +615,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     @Click(resName = "sil_sd_manager")
     void sdManagerClick() {
         showLoadingDialog();
-        IPCCall.getInstance().getSdStatus(context, mDevice.getDeviceid(), mDevice.getModel());
+        IPCCall.getInstance().getSdStatus(context, mDevice.getModel(), mDevice.getDeviceid());
     }
 
     @Override
@@ -996,9 +996,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
      * 更新版本成功
      */
     private void upgradeVerSuccessDialog() {
-        CommonDialog commonDialog = new CommonDialog.Builder(this)
+        CommonDialog commonDialog = new CommonDialog.Builder(context)
                 .setTitle(R.string.ipc_setting_dialog_upgrade_success)
-                .setMessage(getString(R.string.ipc_setting_dialog_upgrade_success_content))
+                .setMessage(R.string.ipc_setting_dialog_upgrade_success_content)
                 .setConfirmButton(R.string.str_confirm, (dialog, which) -> {
                     dialog.dismiss();
                     mPresenter.currentVersion();
@@ -1027,9 +1027,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
      * 检测wifi是否有线连接
      */
     private void checkWirelessDialog() {
-        CommonDialog commonDialog = new CommonDialog.Builder(this)
+        CommonDialog commonDialog = new CommonDialog.Builder(context)
                 .setTitle(getString(R.string.ipc_setting_tip))
-                .setMessage(getString(R.string.ipc_setting_check_wireless))
+                .setMessage(R.string.ipc_setting_check_wireless)
                 .setConfirmButton(R.string.str_confirm, R.color.text_main, (dialog, which) -> {
                     dialog.dismiss();
                     gotoIpcSettingWiFiActivity();

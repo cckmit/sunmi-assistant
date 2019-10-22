@@ -53,7 +53,7 @@ public class IpcSettingSdcardActivity extends BaseActivity {
                 .setMessage(R.string.msg_sdcard_format_confirm)
                 .setCancelButton(R.string.sm_cancel)
                 .setConfirmButton(R.string.str_sd_format, (dialog, which) -> {
-                    IPCCall.getInstance().sdcardFormat(context, mDevice.getDeviceid(), mDevice.getModel());
+                    IPCCall.getInstance().sdcardFormat(context, mDevice.getModel(), mDevice.getDeviceid());
                     showProgressDialog();
                 }).create().show();
     }
@@ -124,21 +124,13 @@ public class IpcSettingSdcardActivity extends BaseActivity {
                     return;
                 }
 
-                if (result.has("errcode") && result.getInt("errcode") == 1
+                if (result.has("errcode")
                         && result.has("sd_status_code")) {
                     int sdStatusCode = result.getInt("sd_status_code");
                     if (sdStatusCode == 2) {
                         showResultDialog(true);
                     } else {
-                        if (sdStatusCode == 0) {
-                            shortTip(R.string.ipc_recognition_sd_none);
-                        } else if (sdStatusCode == 1) {
-                            shortTip(R.string.ipc_recognition_sd_uninitialized);
-                        } else if (sdStatusCode == 3) {
-                            shortTip(R.string.ipc_recognition_sd_unknown);
-                        } else {
-                            shortTip(R.string.toast_networkIsExceptional);
-                        }
+                        tipSdcardError(sdStatusCode);
                     }
                     return;
                 }
@@ -146,6 +138,18 @@ public class IpcSettingSdcardActivity extends BaseActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void tipSdcardError(int sdStatusCode) {
+        if (sdStatusCode == 0) {
+            shortTip(R.string.ipc_recognition_sd_none);
+        } else if (sdStatusCode == 1) {
+            shortTip(R.string.ipc_recognition_sd_uninitialized);
+        } else if (sdStatusCode == 3) {
+            shortTip(R.string.ipc_recognition_sd_unknown);
+        } else {
+            shortTip(R.string.toast_networkIsExceptional);
         }
     }
 
