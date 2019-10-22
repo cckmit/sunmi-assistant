@@ -9,6 +9,7 @@ import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.sunmicall.RequestBean;
 import sunmi.common.rpc.sunmicall.ResponseBean;
@@ -38,6 +39,12 @@ public class SMMqttCallback implements MqttCallbackExtended {
         if (TextUtils.equals(topic, MqttManager.tokenRequestSub)) {
             ResponseBean res = new ResponseBean(message.toString(), "params");
             MessageManager.newInstance().notice(res, MessageManager.REQUEST_CHANNEL);
+        }
+        if (TextUtils.equals(topic, MqttManager.tokenWEBSS1EventSub) ||
+                TextUtils.equals(topic, MqttManager.tokenWEBFS1EventSub) ||
+                TextUtils.equals(topic, MqttManager.tokenWEBFM010EventSub) ||
+                TextUtils.equals(topic, MqttManager.tokenWEBFM020EventSub)) {
+            BaseNotification.newInstance().postNotificationName(CommonNotifications.ipcDeviceStatus, message.toString());
         } else {
             ResponseBean res = new ResponseBean(message);
             Log.e(TAG, "mqtt messageArrived " + ", thread id  = " + Process.myTid()
@@ -48,8 +55,8 @@ public class SMMqttCallback implements MqttCallbackExtended {
                 MqttManager.getInstance().removeMessage(res.getMsgId());
             } else {
                 BaseNotification.newInstance().postNotificationName(
-                        Integer.parseInt(res.getOpcode().substring(2,
-                                res.getOpcode().length()), 16), res, topic);
+                        Integer.parseInt(res.getOpcode().substring(2
+                        ), 16), res, topic);
             }
         }
     }

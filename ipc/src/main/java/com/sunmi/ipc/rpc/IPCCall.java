@@ -288,6 +288,26 @@ public class IPCCall extends BaseIpcApi {
     }
 
     /**
+     * ipc升级 查询升级状态
+     *
+     * @param context
+     * @param sn
+     */
+    public void ipcQueryUpgradeStatus(Context context, String model, String sn) {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("sn", sn);
+            int opCode = OpcodeConstants.ipcQueryUpgradeStatus;
+            RequestBean requestBean = new RequestBean(Utils.getMsgId(),
+                    "0x" + Integer.toHexString(opCode), object);
+            new IpcRemoteSettingApi().post(context, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
      * 获取  夜视模式 指示灯 旋转信息
      *
      * @param context

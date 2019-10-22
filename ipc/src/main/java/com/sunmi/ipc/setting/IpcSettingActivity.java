@@ -1,6 +1,5 @@
 package com.sunmi.ipc.setting;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
@@ -38,11 +37,10 @@ import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.nio.charset.Charset;
 import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
@@ -56,11 +54,8 @@ import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.dialog.CommonDialog;
-import sunmi.common.view.dialog.CommonProgressDialog;
 import sunmi.common.view.dialog.InputDialog;
 
-import static com.sunmi.ipc.config.IpcConstants.FS_UPGRADE_TIME;
-import static com.sunmi.ipc.config.IpcConstants.SS_UPGRADE_TIME;
 import static com.sunmi.ipc.setting.entity.DetectionConfig.INTENT_EXTRA_DETECTION_CONFIG;
 
 /**
@@ -78,6 +73,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     private static final int REQUEST_CODE_WIFI = 1004;
     private static final int REQUEST_CODE_ROTATE = 1005;
     private static final int REQUEST_COMPLETE = 1000;
+    private static final int REQUEST_VERSION = 1006;
     private final int SWITCH_UNCHECK = 0;
     private final int SWITCH_CHECK = 1;
     private final int WIFI_WIRE_DEFAULT = -1;
@@ -120,62 +116,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     private int wifiIsWire = WIFI_WIRE_DEFAULT; //-1默认 0无线 1有线
     private boolean isShowWireDialog;//是否显示有线dialog
 
-    // 升级
-    private CommonProgressDialog progressDialog;
-    private Timer timer = null;
-    private TimerTask timerTask = null;
-    private int countdown, endNum;
     private boolean isRun;
-
-    //开启计时
-    private void startTimer() {
-        stopTimer();
-        timer = new Timer();
-        timer.schedule(timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                showDownloadProgress();
-            }
-        }, 0, 1000);
-    }
-
-    @UiThread
-    void showDownloadProgress() {
-        countdown++;
-        int countMinutes = DeviceTypeUtils.getInstance().isSS1(mDevice.getModel()) ? SS_UPGRADE_TIME : FS_UPGRADE_TIME;
-        if (countdown == countMinutes) {
-            stopTimer();
-            progressDialog.dismiss();
-            upgradeVerFailDialog(mResp.getLatest_bin_version());
-        } else if (countdown <= 90) {
-            progressDialog.setProgress(countdown);
-        } else {
-            if (DeviceTypeUtils.getInstance().isSS1(mDevice.getModel()) && countdown <= SS_UPGRADE_TIME) {
-                if ((countdown - 90) % 6 == 0) {
-                    endNum++;
-                }
-            } else if (DeviceTypeUtils.getInstance().isFS1(mDevice.getModel()) && countdown <= FS_UPGRADE_TIME) {
-                if ((countdown - 90) % 37 == 0) {
-                    endNum++;
-                }
-            }
-            progressDialog.setProgress(90 + endNum);
-        }
-    }
-
-    // 停止计时
-    private void stopTimer() {
-        countdown = 0;
-        endNum = 0;
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-        }
-        if (timerTask != null) {
-            timerTask.cancel();
-            timerTask = null;
-        }
-    }
 
     @AfterViews
     void init() {
@@ -207,6 +148,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     protected void onResume() {
         super.onResume();
         isRun = true;
+        //查询升级状态
+        IPCCall.getInstance().ipcQueryUpgradeStatus(this, mDevice.getModel(), mDevice.getDeviceid());
     }
 
     @Override
@@ -222,15 +165,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stopTimer();
         timeoutStop();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (countdown == 0) {
-            super.onBackPressed();
-        }
     }
 
     @Override
@@ -257,11 +192,12 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         mResp = resp;
         int upgradeRequired = resp.getUpgrade_required();
         if (upgradeRequired == 1) {
-            mVersion.setIvToTextLeftImage(R.mipmap.ic_ipc_new_ver);
+            mVersion.getIvToTextLeft().setVisibility(View.VISIBLE);
+            mVersion.getIvToTextLeft().setText(R.string.ipc_setting_new);
             newVersionDialog();
         } else {
             mVersion.setRightText(resp.getLatest_bin_version());
-            mVersion.setIvToTextLeftImage(0);
+            mVersion.getIvToTextLeft().setVisibility(View.GONE);
         }
     }
 
@@ -481,7 +417,21 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             mPresenter.currentVersion();
             return;
         }
-        IpcSettingVersionActivity_.intent(this).mResp(mResp).mDevice(mDevice).start();
+        gotoIpcSettingVersionActivity();
+    }
+
+    private void gotoIpcSettingVersionActivity() {
+        IpcSettingVersionActivity_.intent(this)
+                .mResp(mResp)
+                .mDevice(mDevice)
+                .startForResult(REQUEST_VERSION);
+    }
+
+    @OnActivityResult(REQUEST_VERSION)
+    void onVersionUpgradeResult(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            mPresenter.currentVersion();
+        }
     }
 
     @Click(resName = "sil_wifi")
@@ -503,7 +453,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             IPCCall.getInstance().getIsWire(context, bean.getIp());
         }, 2000);
     }
-
 
     private void gotoIpcSettingWiFiActivity() {
         IpcSettingWiFiActivity_.intent(this)
@@ -624,7 +573,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 OpcodeConstants.setIpcNightIdeRotation, OpcodeConstants.getIpcDetection,
                 OpcodeConstants.ipcUpgrade, OpcodeConstants.getIsWire, CommonNotifications.netConnected,
                 CommonNotifications.netDisconnection, CommonNotifications.ipcUpgrade,
-                CommonNotifications.mqttResponseTimeout};
+                CommonNotifications.mqttResponseTimeout, OpcodeConstants.ipcQueryUpgradeStatus};
     }
 
     @Override
@@ -717,7 +666,33 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                         shortTip(R.string.network_wifi_low);
                         break;
                 }
+            } else if (id == OpcodeConstants.ipcQueryUpgradeStatus) {
+                if (res.getDataErrCode() == 1) {
+                    try {
+                        JSONObject object = res.getResult();
+                        int status = object.getInt("status");
+                        showDevStatus(status);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
+        }
+    }
+
+    @UiThread
+    void showDevStatus(int status) {
+        mVersion.getIvToTextLeft().setVisibility(View.VISIBLE);
+        switch (status) {
+            case 0:
+                mVersion.getIvToTextLeft().setText(R.string.ipc_setting_downloading);
+                break;
+            case 1:
+            case 2:
+                mVersion.getIvToTextLeft().setText(R.string.ipc_setting_upgrading);
+                break;
+            default:
+                break;
         }
     }
 
@@ -952,16 +927,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @UiThread
     void upgradeResult(ResponseBean res) {
-        if (res.getDataErrCode() == 1) {//升级成功
-            stopTimer();
-            progressDialog.dismiss();
-            mDevice.setFirmware(mResp.getLatest_bin_version());
-            mVersion.setRightText(mResp.getLatest_bin_version());
-            BaseNotification.newInstance().postNotificationName(CommonNotifications.ipcUpgradeComplete);
-            upgradeVerSuccessDialog();
-        } else {
-            upgradeVerFailDialog(mResp.getLatest_bin_version());
-        }
+        mDevice.setFirmware(mResp.getLatest_bin_version());
+        mVersion.setRightText(mResp.getLatest_bin_version());
+        BaseNotification.newInstance().postNotificationName(CommonNotifications.ipcUpgradeComplete);
     }
 
     /**
@@ -973,55 +941,12 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 .setMessage(getString(R.string.ipc_setting_version_current, mDevice.getFirmware()) + "\n" +
                         getString(R.string.ipc_setting_dialog_upgrade_download_time,
                                 DeviceTypeUtils.getInstance().isSS1(mDevice.getModel()) ? "2" : "6"))
-                .setConfirmButton(R.string.ipc_setting_dialog_upgrade_ok, (dialog, which) -> upgrading())
-                .setCancelButton(R.string.str_in_later).create();
-        commonDialog.showWithOutTouchable(false);
-    }
-
-    /**
-     * 更新版本失败
-     *
-     * @param version
-     */
-    private void upgradeVerFailDialog(String version) {
-        CommonDialog commonDialog = new CommonDialog.Builder(this)
-                .setTitle(R.string.ipc_setting_dialog_upgrade_fail)
-                .setMessage(getString(R.string.ipc_setting_dialog_upgrade_fail_content, version))
-                .setConfirmButton(R.string.str_retry, (dialog, which) -> upgrading())
+                .setConfirmButton(R.string.ipc_setting_dialog_upgrade_ok, (dialog, which) -> {
+                    gotoIpcSettingVersionActivity();
+                })
                 .setCancelButton(R.string.sm_cancel).create();
         commonDialog.showWithOutTouchable(false);
     }
-
-    /**
-     * 更新版本成功
-     */
-    private void upgradeVerSuccessDialog() {
-        CommonDialog commonDialog = new CommonDialog.Builder(context)
-                .setTitle(R.string.ipc_setting_dialog_upgrade_success)
-                .setMessage(R.string.ipc_setting_dialog_upgrade_success_content)
-                .setConfirmButton(R.string.str_confirm, (dialog, which) -> {
-                    dialog.dismiss();
-                    mPresenter.currentVersion();
-                }).create();
-        commonDialog.showWithOutTouchable(false);
-    }
-
-    /**
-     * 升级中
-     */
-    private void upgrading() {
-        IPCCall.getInstance().ipcUpgrade(IpcSettingActivity.this, mDevice.getModel(),
-                mDevice.getDeviceid(), mResp.getUrl(), mResp.getLatest_bin_version());
-
-        if (progressDialog == null) {
-            progressDialog = new CommonProgressDialog.Builder(context)
-                    .setProgressFormat(R.string.ipc_setting_dialog_upgrade_progress)
-                    .setProgressStyle(ProgressDialog.STYLE_HORIZONTAL).create();
-        }
-        progressDialog.showWithOutTouchableCancelable(false);
-        startTimer();
-    }
-
 
     /**
      * 检测wifi是否有线连接

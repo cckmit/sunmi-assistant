@@ -52,12 +52,20 @@
         android:layout_toStartOf="@+id/right_image"
         android:visibility="gone" />
 
-    <ImageView
+    <TextView
         android:id="@+id/to_right_text_left_image"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_22"
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/dp_50"
+        android:gravity="center"
+        android:textSize="@dimen/sp_10"
+        android:paddingTop="@dimen/dp_2"
+        android:paddingBottom="@dimen/dp_2"
+        android:paddingLeft="@dimen/dp_6"
+        android:paddingRight="@dimen/dp_6"
+        android:textColor="@color/c_white"
+        android:background="@drawable/button_corners_solid_orange"
         android:layout_toStartOf="@+id/right_image"
         android:visibility="gone" />
 

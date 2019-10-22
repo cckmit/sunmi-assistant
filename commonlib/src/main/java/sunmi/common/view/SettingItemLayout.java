@@ -23,20 +23,20 @@ import sunmi.common.utils.CommonHelper;
  */
 public class SettingItemLayout extends RelativeLayout {
 
-    private Context mContext;
-
     public RelativeLayout parentLayout;
     public ImageView ivLeft;
-    private TextView tvLeft;
-    private TextView tvRight;
     public ImageView ivRight;
     public ImageView ivRightTip;
-    public ImageView ivToTextLeftImage;
+    public TextView ivToTextLeft;
+    private Context mContext;
+    private TextView tvLeft;
+    private TextView tvRight;
     private View divider;
 
     private float height;
     private String leftText = "";
     private String rightText = "";
+    private String ivToTextLeftText = "";
     private float leftTextSize = 0;
     private float rightTextSize = 0;
     private int leftTextColor = 0;
@@ -55,11 +55,11 @@ public class SettingItemLayout extends RelativeLayout {
     private int defaultDividerColor = 0x1A333C4F;
 
     public SettingItemLayout(Context context) {
-       this(context,null);
+        this(context, null);
     }
 
     public SettingItemLayout(Context context, AttributeSet attrs) {
-        this(context,attrs,0);
+        this(context, attrs, 0);
     }
 
     public SettingItemLayout(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -77,7 +77,7 @@ public class SettingItemLayout extends RelativeLayout {
         ivLeft = view.findViewById(R.id.left_image);
         ivRight = view.findViewById(R.id.right_image);
         ivRightTip = view.findViewById(R.id.right_tip_image);
-        ivToTextLeftImage = view.findViewById(R.id.to_right_text_left_image);
+        ivToTextLeft = view.findViewById(R.id.to_right_text_left_image);
         divider = view.findViewById(R.id.divider);
 
         if (parentLayout != null) {
@@ -106,6 +106,8 @@ public class SettingItemLayout extends RelativeLayout {
         ivRight.setImageDrawable(rightImage);
         ivRight.setPadding(0, 0, (int) rightPadding, 0);
 
+        ivToTextLeft.setText(ivToTextLeftText);
+
         if (dividerShow) {
             divider.setVisibility(VISIBLE);
             divider.setBackgroundColor(dividerColor);
@@ -125,6 +127,7 @@ public class SettingItemLayout extends RelativeLayout {
         height = a.getDimension(R.styleable.SettingItemLayout_parentHeight, CommonHelper.dp2px(mContext, 45));
         leftText = a.getString(R.styleable.SettingItemLayout_leftText);
         rightText = a.getString(R.styleable.SettingItemLayout_rightText);
+        ivToTextLeftText = a.getString(R.styleable.SettingItemLayout_toTextLeftText);
         leftTextSize = a.getDimensionPixelSize(R.styleable.SettingItemLayout_leftTextSize, CommonHelper.dp2px(mContext, 16));
         rightTextSize = a.getDimensionPixelSize(R.styleable.SettingItemLayout_rightTextSize, CommonHelper.dp2px(mContext, 14));
         leftTextColor = a.getColor(R.styleable.SettingItemLayout_leftTextColor, defaultColor);
@@ -153,11 +156,6 @@ public class SettingItemLayout extends RelativeLayout {
         tvLeft.setTextColor(color);
     }
 
-    public void setRightText(String text) {
-        rightText = text;
-        tvRight.setText(rightText);
-    }
-
     public void setRightTextColor(int color) {
         tvRight.setTextColor(color);
     }
@@ -175,13 +173,12 @@ public class SettingItemLayout extends RelativeLayout {
         ivRightTip.setImageResource(resId);
     }
 
-    public ImageView getIvToTextLeftImage() {
-        return ivToTextLeftImage;
+    public TextView getIvToTextLeft() {
+        return ivToTextLeft;
     }
 
-    public void setIvToTextLeftImage(int resId) {
-        ivToTextLeftImage.setVisibility(VISIBLE);
-        ivToTextLeftImage.setImageResource(resId);
+    public void setIvToTextLeftVisible() {
+        ivToTextLeft.setVisibility(VISIBLE);
     }
 
     public void setLeftImage(Drawable drawable) {
@@ -197,13 +194,18 @@ public class SettingItemLayout extends RelativeLayout {
         return ivRight;
     }
 
+    public void setRightImage(Drawable drawable) {
+        rightImage = drawable;
+        ivRight.setImageDrawable(rightImage);
+    }
+
     public TextView getRightText() {
         return tvRight;
     }
 
-    public void setRightImage(Drawable drawable) {
-        rightImage = drawable;
-        ivRight.setImageDrawable(rightImage);
+    public void setRightText(String text) {
+        rightText = text;
+        tvRight.setText(rightText);
     }
 
 }

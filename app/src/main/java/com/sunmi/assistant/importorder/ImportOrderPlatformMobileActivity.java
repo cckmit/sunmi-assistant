@@ -110,7 +110,12 @@ public class ImportOrderPlatformMobileActivity extends BaseMvpActivity<PlatformM
                 .setAllowButton((dialog, which) -> ImportOrderSelectShopActivity_.intent(context)
                         .list(target)
                         .start())
-                .setCancelButton((dialog, which) -> dialog.dismiss())
+                .setCancelButton((dialog, which) -> {
+                    dialog.dismiss();
+                    if (!isTimerFinish) {
+                        stopDownTimer();
+                    }
+                })
                 .create().show();
     }
 

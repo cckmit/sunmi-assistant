@@ -87,7 +87,7 @@
     <string name="ipc_setting_version_current_name">当前版本</string>
     <string name="ipc_setting_version_current">当前版本：%s</string>
     <string name="ipc_setting_version_find_new">发现新版本：%s</string>
-    <string name="ipc_setting_version_get_new">获取最新版本</string>
+    <string name="ipc_setting_version_get_new">下载并安装最新版本</string>
     <string name="ipc_setting_version_no_new">您的设备已经是最新版本</string>
     <string name="ipc_setting_tip_network_detection">正在检测网络环境，请稍后…</string>
     <string name="ipc_setting_tip_network_dismatch">当前设备与手机不在同一路由器下</string>
@@ -277,7 +277,27 @@
     <string name="msg_sdcard_should_format">检测到的存储卡需格式化后才可使用，请提前保存重要资料</string>
     <string name="str_jump_adjust">暂不调整</string>
     <string name="str_sn">SN：%s</string>
-
+    <string name="ipc_setting_downloading">下载中…</string>
+    <string name="ipc_setting_upgrading">升级中…</string>
+    <string name="ipc_setting_new">NEW</string>
+    <string name="import_order_dialog_cannot_get_status">无法获取当前设备状态</string>
+    <string name="import_order_dialog_upgrading">设备更新中</string>
+    <string name="import_order_dialog_red_light">红灯闪烁</string>
+    <string name="import_order_dialog_relanuch">设备重启中</string>
+    <string name="import_order_dialog_green_light">绿灯闪烁</string>
+    <string name="import_order_dialog_net_exception">设备网络异常</string>
+    <string name="import_order_dialog_green_light_alway_on">绿灯常亮&#160;&#160;&#160;&#160;</string>
+    <string name="import_order_dialog_look_light_status">您可以查看摄像机当前具体的闪灯情况\t\n以判断属于下述哪种状态：</string>
+    <string name="ipc_setting_dialog_upgrade_title">下载并安装最新版本</string>
+    <string name="ipc_setting_dialog_download_install">下载并安装</string>
+    <string name="ipc_setting_dialog_progress_need_time">该过程会耗费一定的时间，\t\n 且不能关闭该流程。</string>
+    <string name="ipc_setting_upgrade_fail_net_exception">网络异常，请稍后再试</string>
+    <string name="ipc_setting_status_downloading">下载中…%d%%</string>
+    <string name="ipc_setting_status_upgrading">更新中…%d%%</string>
+    <string name="ipc_setting_status_relaunch">重启中…%d%%</string>
+    <string name="ipc_setting_status_downloading_tip">正在下载最新固件，\t\n请保持设备在线，切勿断电！</string>
+    <string name="ipc_setting_status_upgrading_tip">正在写入固件，需要4分钟左右\t\n请保持设备在线，切勿断电！</string>
+    <string name="ipc_setting_status_relaunch_tip">正在重启，\t\n请保持设备在线，切勿断电！</string>
 </resources>
 
 
