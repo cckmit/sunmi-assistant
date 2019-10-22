@@ -35,14 +35,10 @@
         android:background="@color/c_white"
         app:dividerShow="true"
         app:imageRight="@mipmap/ic_right_arrow_small"
-        app:leftPadding="@dimen/dp_10"
+        app:leftPadding="@dimen/dp_20"
         app:leftText="@string/ipc_face_group_name"
-        app:leftTextColor="@color/text_main"
-        app:leftTextSize="@dimen/sp_16"
         app:parentHeight="@dimen/dp_60"
-        app:rightPadding="@dimen/dp_20"
-        app:rightTextColor="@color/text_caption"
-        app:rightTextSize="@dimen/sp_14" />
+        app:rightPadding="@dimen/dp_20" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_face_group_capacity"
@@ -51,14 +47,10 @@
         android:background="@color/c_white"
         app:dividerShow="true"
         app:imageRight="@mipmap/ic_right_arrow_small"
-        app:leftPadding="@dimen/dp_10"
+        app:leftPadding="@dimen/dp_20"
         app:leftText="@string/ipc_face_group_capacity"
-        app:leftTextColor="@color/text_main"
-        app:leftTextSize="@dimen/sp_16"
         app:parentHeight="@dimen/dp_60"
-        app:rightPadding="@dimen/dp_20"
-        app:rightTextColor="@color/text_caption"
-        app:rightTextSize="@dimen/sp_14" />
+        app:rightPadding="@dimen/dp_20" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_face_group_threshold"
@@ -67,14 +59,10 @@
         android:background="@color/c_white"
         app:dividerShow="true"
         app:imageRight="@mipmap/ic_right_arrow_small"
-        app:leftPadding="@dimen/dp_10"
+        app:leftPadding="@dimen/dp_20"
         app:leftText="@string/ipc_face_group_threshold"
-        app:leftTextColor="@color/text_main"
-        app:leftTextSize="@dimen/sp_16"
         app:parentHeight="@dimen/dp_60"
-        app:rightPadding="@dimen/dp_20"
-        app:rightTextColor="@color/text_caption"
-        app:rightTextSize="@dimen/sp_14" />
+        app:rightPadding="@dimen/dp_20" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_face_group_mark"
@@ -83,14 +71,10 @@
         android:background="@color/c_white"
         app:dividerShow="true"
         app:imageRight="@mipmap/ic_right_arrow_small"
-        app:leftPadding="@dimen/dp_10"
+        app:leftPadding="@dimen/dp_20"
         app:leftText="@string/ipc_face_group_mark"
-        app:leftTextColor="@color/text_main"
-        app:leftTextSize="@dimen/sp_16"
         app:parentHeight="@dimen/dp_60"
-        app:rightPadding="@dimen/dp_20"
-        app:rightTextColor="@color/text_caption"
-        app:rightTextSize="@dimen/sp_14" />
+        app:rightPadding="@dimen/dp_20" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/layout_face_group_notification"
@@ -129,13 +113,9 @@
         android:layout_marginTop="@dimen/dp_16"
         android:background="@color/c_white"
         app:imageRight="@mipmap/ic_right_arrow_small"
-        app:leftPadding="@dimen/dp_10"
+        app:leftPadding="@dimen/dp_20"
         app:leftText="@string/ipc_face_group_manage"
-        app:leftTextColor="@color/text_main"
-        app:leftTextSize="@dimen/sp_16"
         app:parentHeight="@dimen/dp_60"
-        app:rightPadding="@dimen/dp_20"
-        app:rightTextColor="@color/text_caption"
-        app:rightTextSize="@dimen/sp_14" />
+        app:rightPadding="@dimen/dp_20" />
 
 </LinearLayout>
