@@ -2,7 +2,6 @@ package com.sunmi.assistant.mine;
 
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sunmi.apmanager.constant.Constants;
@@ -32,6 +31,7 @@ import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StringHelper;
 import sunmi.common.view.CircleImage;
+import sunmi.common.view.SettingItemLayout;
 
 /**
  * 我的页面
@@ -48,18 +48,16 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     TextView tvName;
     @ViewById(R.id.tv_account)
     TextView tvAccount;
-    @ViewById(R.id.rlMsg)
+    @ViewById(R.id.rl_msg)
     BGABadgeRelativeLayout rlMsg;
-    @ViewById(R.id.rlOrder)
-    RelativeLayout rlOrder;
-    @ViewById(R.id.rlAddress)
-    RelativeLayout rlAddress;
-    @ViewById(R.id.rlCoupon)
-    RelativeLayout rlCoupon;
-    @ViewById(R.id.rlHelp)
-    RelativeLayout rlHelp;
-    @ViewById(R.id.v1)
-    View divider;
+    @ViewById(R.id.sil_order)
+    SettingItemLayout silOrder;
+    @ViewById(R.id.sil_address)
+    SettingItemLayout silAddress;
+    @ViewById(R.id.sil_coupon)
+    SettingItemLayout silCoupon;
+    @ViewById(R.id.sil_help)
+    SettingItemLayout silHelp;
 
     @AfterViews
     void init() {
@@ -71,12 +69,11 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
 
     private void initView() {
         if (!CommonHelper.isGooglePlay()) {
-            rlOrder.setVisibility(View.VISIBLE);
-            rlAddress.setVisibility(View.VISIBLE);
-            rlCoupon.setVisibility(View.VISIBLE);
-            rlHelp.setVisibility(View.VISIBLE);
+            silOrder.setVisibility(View.VISIBLE);
+            silAddress.setVisibility(View.VISIBLE);
+            silCoupon.setVisibility(View.VISIBLE);
+            silHelp.setVisibility(View.VISIBLE);
             rlMsg.setVisibility(View.VISIBLE);
-            divider.setVisibility(View.VISIBLE);
         }
         initAvatar(false);
         setMsgBadge();
@@ -137,7 +134,7 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     /**
      * 当前商户
      */
-    @Click(R.id.rlCompany)
+    @Click(R.id.sil_company)
     public void companyClick() {
         CompanyDetailActivity_.intent(mActivity).start();
     }
@@ -145,14 +142,14 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     /**
      * 门店管理
      */
-    @Click(R.id.rlStore)
+    @Click(R.id.sil_shop)
     public void storeClick() {
         CommonUtils.trackCommonEvent(mActivity, "myStore",
                 "主页_我的_我的店铺", Constants.EVENT_MY_INFO);
         ShopListActivity_.intent(this).start();
     }
 
-    @Click(R.id.rlMsg)
+    @Click(R.id.rl_msg)
     public void msgClick() {
         MsgCenterActivity_.intent(mActivity).start();
     }
@@ -160,7 +157,7 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     /**
      * 我的订单
      */
-    @Click(R.id.rlOrder)
+    @Click(R.id.sil_order)
     public void orderClick() {
         WebViewSunmiMallActivity_.intent(mActivity).mUrl(SunmiServiceConfig.SUNMI_MALL_HOST
                 + "my-order?channel=2&subchannel=4").start();
@@ -169,7 +166,7 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     /**
      * 收货地址
      */
-    @Click(R.id.rlAddress)
+    @Click(R.id.sil_address)
     public void addressClick() {
         WebViewSunmiMallActivity_.intent(mActivity).mUrl(SunmiServiceConfig.SUNMI_MALL_HOST
                 + "select-address?channel=2&subchannel=4").start();
@@ -179,7 +176,7 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     /**
      * 优惠券
      */
-    @Click(R.id.rlCoupon)
+    @Click(R.id.sil_coupon)
     public void couponClick() {
         WebViewSunmiMallActivity_.intent(mActivity).mUrl(SunmiServiceConfig.SUNMI_MALL_HOST
                 + "my-coupon?channel=2&subchannel=4").start();
@@ -188,7 +185,7 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     /**
      * 帮助与反馈
      */
-    @Click(R.id.rlHelp)
+    @Click(R.id.sil_help)
     public void helpClick() {
         CommonUtils.trackCommonEvent(mActivity, "feedback",
                 "主页_我的_帮助与反馈", Constants.EVENT_MY_INFO);
@@ -198,7 +195,7 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     /**
      * 我的设置
      */
-    @Click(R.id.rlSetting)
+    @Click(R.id.sil_setting)
     public void settingClick() {
         SettingActivity_.intent(mActivity).start();
     }
