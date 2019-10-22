@@ -86,7 +86,7 @@ import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
         implements ShopCreateContract.View, PoiSearch.OnPoiSearchListener {
 
-    private static final int CREATE_SHOP_ALREADY_EXIST = 5035;
+    private static final int CREATE_SHOP_ALREADY_EXIST = 5034;
     private static final int SHOP_NAME_MAX_LENGTH = 40;
     private static final int POI_PAGE_SIZE = 20;
     private static final int CONTACTS_MAX_LENGTH = 32;
