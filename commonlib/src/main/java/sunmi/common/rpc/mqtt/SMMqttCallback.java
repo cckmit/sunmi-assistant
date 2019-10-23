@@ -9,7 +9,6 @@ import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.sunmicall.RequestBean;
 import sunmi.common.rpc.sunmicall.ResponseBean;
@@ -44,7 +43,9 @@ public class SMMqttCallback implements MqttCallbackExtended {
                 TextUtils.equals(topic, MqttManager.tokenWEBFS1EventSub) ||
                 TextUtils.equals(topic, MqttManager.tokenWEBFM010EventSub) ||
                 TextUtils.equals(topic, MqttManager.tokenWEBFM020EventSub)) {
-            BaseNotification.newInstance().postNotificationName(CommonNotifications.ipcDeviceStatus, message.toString());
+            ResponseBean res = new ResponseBean(message.toString(), "params");
+            BaseNotification.newInstance().postNotificationName(
+                    Integer.parseInt(res.getOpcode().substring(2)), res, topic);
         } else {
             ResponseBean res = new ResponseBean(message);
             Log.e(TAG, "mqtt messageArrived " + ", thread id  = " + Process.myTid()

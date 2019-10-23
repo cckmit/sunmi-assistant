@@ -298,6 +298,8 @@
     <string name="ipc_setting_status_downloading_tip">正在下载最新固件，\t\n请保持设备在线，切勿断电！</string>
     <string name="ipc_setting_status_upgrading_tip">正在写入固件，需要4分钟左右\t\n请保持设备在线，切勿断电！</string>
     <string name="ipc_setting_status_relaunch_tip">正在重启，\t\n请保持设备在线，切勿断电！</string>
+    <string name="import_order_dialog_upgrade_success">设备升级成功</string>
+    <string name="import_order_dialog_blue_light_alway_on">蓝灯常亮&#160;&#160;&#160;&#160;</string>
 </resources>
 
 

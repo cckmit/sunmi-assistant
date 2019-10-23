@@ -210,7 +210,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
     @Click(R.id.btn_complete)
     void completeClick() {
         String shopRegion = tvRegionText.getText() == null ? null : tvRegionText.getText().toString().trim();
-        if (TextUtils.isEmpty(shopRegion)) {
+        if (TextUtils.isEmpty(shopRegion) || mProvinceId <= 0 || mCityId <= 0 || mAreaId <= 0) {
             shortTip(R.string.shop_input_region_tip);
             return;
         }

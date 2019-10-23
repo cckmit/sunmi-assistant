@@ -1,11 +1,9 @@
 package com.sunmi.ipc.setting;
 
-import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.CountDownTimer;
+import android.support.constraint.Group;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -23,12 +21,10 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import sunmi.common.base.BaseActivity;
-import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DeviceTypeUtils;
@@ -42,6 +38,8 @@ import sunmi.common.view.dialog.CommonDialog;
  */
 @EActivity(resName = "ipc_activity_version")
 public class IpcSettingVersionActivity extends BaseActivity {
+    private static final int IPC_EVENT_OPCODE_STATUS = 4103;
+    private static final int IPC_EVENT_OPCODE_ONLINE = 4200;
     /**
      * 升级类型
      */
@@ -81,6 +79,8 @@ public class IpcSettingVersionActivity extends BaseActivity {
     ImageView ivIpc;
     @ViewById(resName = "pBar_progress")
     ProgressBar mProgress;
+    @ViewById(resName = "ipc_setting_upgrade_group")
+    Group ipcSettingUpgradeGroup;
     @Extra
     SunmiDevice mDevice;
     @Extra
@@ -169,7 +169,8 @@ public class IpcSettingVersionActivity extends BaseActivity {
     public int[] getUnStickNotificationId() {
         return new int[]{OpcodeConstants.ipcUpgrade,
                 OpcodeConstants.ipcQueryUpgradeStatus,
-                CommonNotifications.ipcDeviceStatus};
+                IPC_EVENT_OPCODE_STATUS,
+                IPC_EVENT_OPCODE_ONLINE};
     }
 
     /**
@@ -180,11 +181,6 @@ public class IpcSettingVersionActivity extends BaseActivity {
     public void didReceivedNotification(int id, Object... args) {
         if (args == null) {
             return;
-        }
-        if (id == CommonNotifications.ipcDeviceStatus) {
-            //升级命令返回的升级状态0x4103 / 0x4200设备重新上线
-            String result = (String) args[0];
-            eventResult(result);
         }
         ResponseBean res = (ResponseBean) args[0];
         if (id == OpcodeConstants.ipcQueryUpgradeStatus) {
@@ -200,6 +196,28 @@ public class IpcSettingVersionActivity extends BaseActivity {
                     e.printStackTrace();
                 }
             }
+        } else if (id == IPC_EVENT_OPCODE_STATUS) {
+            //升级命令返回的升级状态 0x4103
+            try {
+                JSONObject object = res.getResult();
+                int status = object.getInt("status");
+                upgradeStatus(status, object);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else if (id == IPC_EVENT_OPCODE_ONLINE) {
+            //设备重新上线 0x4200
+            try {
+                JSONObject object = res.getResult();
+                String sn = object.getString("sn");
+                if (TextUtils.equals(sn, mDevice.getDeviceid())) {
+                    stopTimerCountDown(mUpgradeStatus);
+                    setText(IPC_RELAUNCH, 100);
+                    upgradeVerSuccessDialog();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -208,35 +226,6 @@ public class IpcSettingVersionActivity extends BaseActivity {
         btnUpgrade.setVisibility(View.GONE);
     }
 
-    /**
-     * 升级命令返回的升级状态 0x4103
-     * 设备重新上线 0x4200
-     *
-     * @param result result
-     */
-    @UiThread
-    void eventResult(String result) {
-        try {
-            JSONObject object = new JSONObject(result);
-            JSONArray jsonArray = object.getJSONArray("params");
-            JSONObject object1 = (JSONObject) jsonArray.opt(0);
-            String opcode = object1.getString("opcode");
-            JSONObject object2 = object1.getJSONObject("param");
-            String sn = object2.getString("sn");
-            if (TextUtils.equals("0x4103", opcode)) {
-                int status = object2.getInt("status");
-                upgradeStatus(status, object2);
-            } else if (TextUtils.equals("0x4200", opcode)) {
-                if (TextUtils.equals(sn, mDevice.getDeviceid())) {
-                    stopTimerCountDown(mUpgradeStatus);
-                    setText(IPC_RELAUNCH, 100);
-                    upgradeVerSuccessDialog();
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 
     /**
      * 0: 正在下载固
@@ -297,7 +286,8 @@ public class IpcSettingVersionActivity extends BaseActivity {
     /**
      * 更新版本成功
      */
-    private void upgradeVerSuccessDialog() {
+    @UiThread
+    void upgradeVerSuccessDialog() {
         CommonDialog commonDialog = new CommonDialog.Builder(this)
                 .setTitle(R.string.ipc_setting_dialog_upgrade_success)
                 .setMessage(getString(R.string.ipc_setting_dialog_upgrade_success_content))
@@ -326,18 +316,11 @@ public class IpcSettingVersionActivity extends BaseActivity {
      */
     @UiThread
     void dialogUpgradeTip() {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        Dialog dialog = new Dialog(context, R.style.Son_dialog);
-        assert inflater != null;
-        View view = inflater.inflate(R.layout.dialog_ipc_upgrade_warning, null);
-        view.findViewById(R.id.tv_confirm).setOnClickListener(v -> {
-            dialog.dismiss();
-            IpcSettingVersionActivity.this.finish();
-        });
-        dialog.setContentView(view);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.create();
-        dialog.show();
+        ipcSettingUpgradeGroup.setVisibility(View.VISIBLE);
+        tvIpcStatus.setVisibility(View.GONE);
+        tvIpcUpgradeTip.setVisibility(View.GONE);
+        mProgress.setVisibility(View.GONE);
+        btnUpgrade.setVisibility(View.GONE);
     }
 
     private void startTimerCountDown(int status) {
