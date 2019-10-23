@@ -223,24 +223,17 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     private void showContent() {
-        StatusBarUtils.setStatusBarFullTransparent(getActivity());
+        updateStickyPeriodTab(getActivity(), mIsStickyPeriodTop, false);
         mContentGroup.setVisibility(View.VISIBLE);
         mOverlay.setVisibility(View.GONE);
-        mTopStickyPeriodTab.setVisibility(View.INVISIBLE);
         mLayoutError.setVisibility(View.GONE);
-
-        mTopShopMenu.setBackgroundResource(R.drawable.dashboard_bg_top);
-        mTopShopMenu.setTranslationY(0);
-        mTopShopMenu.getPopup().dismiss(false);
-        mShopMenuTitle.setTextColor(0xFFFFFFFF);
-        mShopMenuTitleArrow.setImageResource(R.drawable.ic_arrow_drop_down_white);
         hideLoadingDialog();
     }
 
     private void showError() {
         StatusBarUtils.setStatusBarFullTransparent(getActivity());
         mContentGroup.setVisibility(View.INVISIBLE);
-        mOverlay.setVisibility(View.GONE);
+        mOverlay.setVisibility(View.INVISIBLE);
         mTopStickyPeriodTab.setVisibility(View.INVISIBLE);
         mLayoutError.setVisibility(View.VISIBLE);
         hideLoadingDialog();
@@ -329,31 +322,22 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @Override
     public void updateTopPosition(int position) {
         int offset = Math.min(position - mTopHeaderHeight, 0);
-//        if (mHasData || mPresenter.getPageIndex() != 0) {
         mTopShopMenu.setTranslationY(offset);
         mTopPageTab.setTranslationY(offset);
         mShopMenuPopupHelper.setOffset(offset);
-//        } else {
-//            mTopPageTab.setTranslationY(offset);
-//        }
+
         FragmentActivity activity = getActivity();
         if (activity == null) {
             return;
         }
-//        if (position > mTopShopMenuHeight - mTopRadiusHeight) {
-//            hideStickyPeriodTab(activity, true);
-//            hideStickyShopMenu(activity, true);
-//        } else if (position > 0) {
-//            hideStickyPeriodTab(activity, true);
-//            showStickyShopMenu(activity, true);
-//        } else {
-//            showStickyPeriodTab(activity, true);
-//            showStickyShopMenu(activity, true);
-//        }
         if (position > 0) {
-            hideStickyPeriodTab(activity, true);
+            if (mIsStickyPeriodTop) {
+                updateStickyPeriodTab(activity, false, true);
+            }
         } else {
-            showStickyPeriodTab(activity, true);
+            if (!mIsStickyPeriodTop) {
+                updateStickyPeriodTab(activity, true, true);
+            }
         }
     }
 
@@ -362,8 +346,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mTopShopMenu.setTranslationY(0);
         mTopPageTab.setTranslationY(0);
         mShopMenuPopupHelper.setOffset(0);
-        hideStickyPeriodTab(getActivity(), false);
-//        hideStickyShopMenu(getActivity(), false);
+        updateStickyPeriodTab(getActivity(), false, false);
     }
 
     @Override
@@ -371,66 +354,26 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         showError();
     }
 
-    private void showStickyPeriodTab(Activity activity, boolean animated) {
-//        boolean shouldSticky = mHasData || mPresenter.getPageIndex() != 0;
-//        if (mIsStickyPeriodTop || activity == null || !shouldSticky) {
-//            return;
-//        }
-        if (mIsStickyPeriodTop) {
+    private void updateStickyPeriodTab(Activity activity, boolean isShow, boolean animated) {
+        if (activity == null) {
             return;
         }
-        StatusBarUtils.setStatusBarColor(activity, StatusBarUtils.TYPE_DARK);
-        mTopShopMenu.setTranslationY(-mTopShopMenuHeight);
-        mTopShopMenu.setVisibility(View.INVISIBLE);
-        mTopPageTab.setVisibility(View.INVISIBLE);
-        mTopPageTab.setTranslationY(-mTopPageTabHeight);
-        mTopStickyPeriodTab.setVisibility(View.VISIBLE);
-        mPager.setScrollable(false);
-        mIsStickyPeriodTop = true;
-    }
-
-    private void hideStickyPeriodTab(Activity activity, boolean animated) {
-//        boolean shouldSticky = mHasData || mPresenter.getPageIndex() != 0;
-//        if (!mIsStickyPeriodTop || activity == null || !shouldSticky) {
-//            return;
-//        }
-        if (!mIsStickyPeriodTop) {
-            return;
+        if (isShow) {
+            StatusBarUtils.setStatusBarColor(activity, StatusBarUtils.TYPE_DARK);
+            mTopShopMenu.setVisibility(View.INVISIBLE);
+            mTopPageTab.setVisibility(View.INVISIBLE);
+            mTopStickyPeriodTab.setVisibility(View.VISIBLE);
+            mPager.setScrollable(false);
+            mIsStickyPeriodTop = true;
+        } else {
+            StatusBarUtils.setStatusBarFullTransparent(activity);
+            mTopShopMenu.setVisibility(View.VISIBLE);
+            mTopPageTab.setVisibility(View.VISIBLE);
+            mTopStickyPeriodTab.setVisibility(View.INVISIBLE);
+            mPager.setScrollable(true);
+            mIsStickyPeriodTop = false;
         }
-        StatusBarUtils.setStatusBarFullTransparent(activity);
-        mTopShopMenu.setVisibility(View.VISIBLE);
-        mTopPageTab.setVisibility(View.VISIBLE);
-        mTopStickyPeriodTab.setVisibility(View.INVISIBLE);
-        mPager.setScrollable(true);
-        mIsStickyPeriodTop = false;
     }
-//
-//    private void showStickyShopMenu(Activity activity, boolean animated) {
-//        if (mIsStickyShopMenu || activity == null || mHasData || mPresenter.getPageIndex() != 0) {
-//            return;
-//        }
-//        StatusBarUtils.setStatusBarColor(activity, StatusBarUtils.TYPE_DARK);
-//        mShopMenuTitle.setTextColor(ContextCompat.getColor(activity, R.color.text_main));
-//        mShopMenuTitleArrow.setImageResource(R.drawable.ic_arrow_drop_down_black);
-//        mTopShopMenu.setBackgroundResource(R.drawable.dashboard_bg_white_with_divider);
-//        mTopPageTab.setVisibility(View.INVISIBLE);
-//        mTopPageTab.setTranslationY(-mTopPageTabHeight);
-//        mPager.setScrollable(false);
-//        mIsStickyShopMenu = true;
-//    }
-//
-//    private void hideStickyShopMenu(Activity activity, boolean animated) {
-//        if (!mIsStickyShopMenu || activity == null || mHasData || mPresenter.getPageIndex() != 0) {
-//            return;
-//        }
-//        StatusBarUtils.setStatusBarFullTransparent(activity);
-//        mShopMenuTitle.setTextColor(0xFFFFFFFF);
-//        mShopMenuTitleArrow.setImageResource(R.drawable.ic_arrow_drop_down_white);
-//        mTopShopMenu.setBackgroundResource(R.drawable.dashboard_bg_top);
-//        mTopPageTab.setVisibility(View.VISIBLE);
-//        mPager.setScrollable(true);
-//        mIsStickyShopMenu = false;
-//    }
 
     @Override
     public int[] getStickNotificationId() {
