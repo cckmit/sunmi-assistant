@@ -51,6 +51,7 @@
         <attr name="rightText" />
         <attr name="rightTextSize" />
         <attr name="rightTextColor" />
+        <attr name="toTextLeftText" format="string" />
         <attr name="imageLeft" />
         <attr name="imageLeftSize" />
         <attr name="imageRight" format="reference" />

@@ -32,7 +32,7 @@ public class SettingItemLayout extends RelativeLayout {
     private TextView tvRight;
     public ImageView ivRight;
     public ImageView ivRightTip;
-    public ImageView ivToTextLeftImage;
+    public TextView ivToTextLeft;
     private View divider;
 
     private Drawable leftImage;
@@ -61,7 +61,7 @@ public class SettingItemLayout extends RelativeLayout {
         ivLeft = view.findViewById(R.id.left_image);
         ivRight = view.findViewById(R.id.right_image);
         ivRightTip = view.findViewById(R.id.right_tip_image);
-        ivToTextLeftImage = view.findViewById(R.id.to_right_text_left_image);
+        ivToTextLeft = view.findViewById(R.id.to_right_text_left_image);
         divider = view.findViewById(R.id.divider);
     }
 
@@ -101,7 +101,13 @@ public class SettingItemLayout extends RelativeLayout {
             int rightTextColor = a.getColor(R.styleable.SettingItemLayout_rightTextColor, -1);
             tvRight.setTextColor(rightTextColor);
         }
-
+        String toLeftText = a.getString(R.styleable.SettingItemLayout_toTextLeftText);
+        if (!TextUtils.isEmpty(toLeftText)) {
+            ivToTextLeft.setText(toLeftText);
+            ivToTextLeft.setVisibility(VISIBLE);
+        } else {
+            ivToTextLeft.setVisibility(GONE);
+        }
         float leftPadding = a.getDimension(R.styleable.SettingItemLayout_leftPadding, -1);
         leftImage = a.getDrawable(R.styleable.SettingItemLayout_imageLeft);
         if (leftImage != null) {
@@ -184,13 +190,8 @@ public class SettingItemLayout extends RelativeLayout {
         ivRightTip.setImageResource(resId);
     }
 
-    public ImageView getIvToTextLeftImage() {
-        return ivToTextLeftImage;
-    }
-
-    public void setIvToTextLeftImage(int resId) {
-        ivToTextLeftImage.setVisibility(VISIBLE);
-        ivToTextLeftImage.setImageResource(resId);
+    public TextView getIvToTextLeft() {
+        return ivToTextLeft;
     }
 
     public void setLeftImage(Drawable drawable) {

@@ -22,26 +22,42 @@
 
     <ImageView
         android:id="@+id/iv_import_order"
-        android:layout_width="@dimen/dp_235"
-        android:layout_height="@dimen/dp_235"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/dp_300"
+        android:background="@mipmap/ic_import_order_create_shop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_bar"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:ignore="ContentDescription" />
 
+    <TextView
+        android:id="@+id/tv_import_order_title_explain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_40"
+        android:text="@string/import_order_data_service"
+        android:textColor="@color/text_main"
+        android:textSize="@dimen/sp_20"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_bar" />
 
     <TextView
         android:id="@+id/tv_import_order_explain"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_40"
-        android:layout_marginTop="@dimen/dp_92"
-        android:layout_marginEnd="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_8"
+        android:gravity="center"
         android:lineSpacingExtra="@dimen/dp_3"
-        android:textColor="@color/text_main"
-        android:textSize="@dimen/sp_16"
-        app:layout_constraintTop_toBottomOf="@id/title_bar" />
+        android:text="@string/import_order_explain"
+        android:textColor="@color/text_caption"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_import_order_title_explain" />
 
     <TextView
         android:id="@+id/tv_support_platform"
@@ -49,12 +65,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_20"
-        android:layout_marginBottom="@dimen/dp_32"
+        android:layout_marginBottom="@dimen/dp_16"
         android:gravity="center"
         android:lineSpacingExtra="@dimen/dp_3"
         android:text="@string/import_order_support_platform_tip"
-        android:textColor="@color/text_main"
-        android:textSize="@dimen/sp_16"
+        android:textColor="@color/text_caption"
+        android:textSize="@dimen/sp_12"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintBottom_toTopOf="@id/btn_import_current_mobile"
         app:layout_constraintEnd_toEndOf="parent"
@@ -67,11 +83,10 @@
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_20"
         android:layout_marginBottom="@dimen/dp_20"
-        android:background="@drawable/button_corners_edge_orange"
+        android:background="@drawable/button_corners_solid_orange"
         android:text="@string/import_order_current_mobile"
-        android:textColor="@color/colorOrangeText"
+        android:textColor="@color/c_white"
         android:textSize="@dimen/sp_16"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintBottom_toTopOf="@id/btn_import_other_mobile" />
 
@@ -82,10 +97,9 @@
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_20"
         android:layout_marginBottom="@dimen/dp_20"
-        android:background="@drawable/button_corners_edge_orange"
+        android:background="@drawable/button_corners_solid_blue"
         android:text="@string/import_order_other_mobile"
-        android:textStyle="bold"
-        android:textColor="@color/colorOrangeText"
+        android:textColor="@color/c_white"
         android:textSize="@dimen/sp_16"
         app:layout_constraintBottom_toBottomOf="parent" />
 
