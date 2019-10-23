@@ -26,6 +26,7 @@ import com.sunmi.assistant.dashboard.ui.VolumeYAxisLabelsRenderer;
 import com.sunmi.assistant.dashboard.ui.XAxisLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.XAxisLabelsRenderer;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -38,7 +39,6 @@ import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.CommonHelper;
-import sunmi.common.utils.log.LogCat;
 
 /**
  * @author yinhui
@@ -199,20 +199,45 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
         allList.clear();
         newList.clear();
         oldList.clear();
-        if (response != null && response.getCountList() != null) {
+        if (response == null || response.getCountList() == null) {
+            return;
+        }
+        try {
             List<CustomerHistoryTrendResp.Item> list = response.getCountList();
             int size = list.size();
-            int timeIndex = 1;
+            Calendar c = Calendar.getInstance();
+            long timestamp;
+            int timeIndex;
             for (CustomerHistoryTrendResp.Item item : list) {
+                if (model.period == Constants.TIME_PERIOD_YESTERDAY) {
+                    timestamp = Utils.parseDateTime("yyyy-MM-dd HH:mm", item.getTime());
+                    c.setTimeInMillis(timestamp);
+                    timeIndex = c.get(Calendar.HOUR_OF_DAY) + 1;
+                } else if (model.period == Constants.TIME_PERIOD_WEEK) {
+                    timestamp = Utils.parseDateTime("yyyy-MM-dd", item.getTime());
+                    c.setTimeInMillis(timestamp);
+                    timeIndex = c.get(Calendar.DAY_OF_WEEK) - 1;
+                    if (timeIndex <= 0) {
+                        timeIndex += 7;
+                    }
+                } else {
+                    timestamp = Utils.parseDateTime("yyyy-MM-dd", item.getTime());
+                    c.setTimeInMillis(timestamp);
+                    timeIndex = c.get(Calendar.DATE);
+                }
                 float x = Utils.encodeChartXAxisFloat(model.period, timeIndex);
                 long time = Utils.getTime(model.period, timeIndex, size);
                 ChartEntry all = new ChartEntry(x, item.getTotalCount(), time);
-                all.setData(new CustomerEntry(item.getTime(), item.getStrangerCount(), item.getRegularCount()));
+                all.setData(new CustomerEntry(timestamp, item.getStrangerCount(), item.getRegularCount()));
                 allList.add(all);
                 newList.add(new ChartEntry(x, item.getStrangerCount(), time));
                 oldList.add(new ChartEntry(x, item.getRegularCount(), time));
-                timeIndex++;
             }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            allList.clear();
+            newList.clear();
+            oldList.clear();
         }
 
         // Test data
@@ -243,7 +268,6 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
             dataSet = new ArrayList<>();
             model.dataSets.put(model.type, dataSet);
         }
-        LogCat.d(TAG, "Period=" + model.period + "; type=" + model.type + "\nData set:" + dataSet);
 
         // Calculate min & max of axis value.
         Pair<Integer, Integer> xAxisRange = Utils.calcChartXAxisRange(model.period);
@@ -278,6 +302,7 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
         if (model.type == Constants.DATA_TYPE_ALL) {
             line.setMarker(mLineComplexMarker);
             mLineComplexMarker.setPointColor(color);
+            mLineComplexMarker.setPeriod(model.period);
         } else {
             line.setMarker(mLineChartMarker);
             mLineChartMarker.setType(model.period, model.type);
@@ -330,17 +355,17 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
     }
 
     public static class CustomerEntry {
-        private String time;
+        private long time;
         private int newCustomer;
         private int oldCustomer;
 
-        public CustomerEntry(String time, int newCustomer, int oldCustomer) {
+        public CustomerEntry(long time, int newCustomer, int oldCustomer) {
             this.time = time;
             this.newCustomer = newCustomer;
             this.oldCustomer = oldCustomer;
         }
 
-        public String getTime() {
+        public long getTime() {
             return time;
         }
 
@@ -388,7 +413,7 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
                 long time = Utils.getTime(period, i, count);
                 if (i <= min + 1) {
                     ChartEntry all = new ChartEntry(x, 0f, time);
-                    all.setData(new CustomerEntry("test time " + i, 0, 0));
+                    all.setData(new CustomerEntry(System.currentTimeMillis(), 0, 0));
                     allList.add(all);
                     newList.add(new ChartEntry(x, 0f, time));
                     oldList.add(new ChartEntry(x, 0f, time));
@@ -396,7 +421,7 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
                     int n = (int) (Math.random() * 1000);
                     int o = (int) (Math.random() * 1000);
                     ChartEntry all = new ChartEntry(x, n + o, time);
-                    all.setData(new CustomerEntry("test time " + i, n, o));
+                    all.setData(new CustomerEntry(System.currentTimeMillis(), n, o));
                     allList.add(all);
                     newList.add(new ChartEntry(x, n, time));
                     oldList.add(new ChartEntry(x, o, time));

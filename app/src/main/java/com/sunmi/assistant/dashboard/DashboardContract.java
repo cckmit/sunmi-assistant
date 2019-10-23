@@ -25,7 +25,7 @@ public interface DashboardContract {
 
     }
 
-    interface Presenter {
+    interface Presenter extends PageContract.ParentPresenter {
 
         void init();
 
@@ -41,31 +41,23 @@ public interface DashboardContract {
 
         int getPageIndex();
 
-        int getPageType();
-
         int getPeriod();
 
     }
-
-    interface PagePresenter {
-
-        int getType();
-
-        int getScrollY();
-
-        void scrollTo(int y);
-
-        void setSource(int source);
-
-        void setPeriod(int period);
-
-        int getPeriod();
-
-        void refresh(boolean showLoading);
-
-        void refresh(int position, boolean showLoading);
-
-        void release();
-
-    }
+//
+//    interface PagePresenter {
+//
+//        int getType();
+//
+//        int getScrollY();
+//
+//        void scrollTo(int y);
+//
+//        void refresh(boolean showLoading);
+//
+//        void refresh(int position, boolean showLoading);
+//
+//
+//
+//    }
 }
