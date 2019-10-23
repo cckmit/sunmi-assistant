@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
+import android.util.Pair;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
@@ -78,8 +79,6 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
     float mVideoRatio;
 
     private int mStepIndex;
-    private int[] mLineStart = new int[2];
-    private int[] mLineEnd = new int[2];
 
     private SparseArray<String> mResTitle = new SparseArray<>(4);
     private SparseArray<String> mResNext = new SparseArray<>(4);
@@ -183,7 +182,18 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
             mPresenter.updateState();
         } else if (mStepIndex == RecognitionSettingContract.STEP_4_LINE) {
             showLoadingDialog();
-            mPresenter.line(mLineStart, mLineEnd);
+            Pair<DoorLineView.Point, DoorLineView.Point> points = mLineView.getPoints();
+            DoorLineView.Point start = points.first.getX() < points.second.getX() ?
+                    points.first : points.second;
+            DoorLineView.Point end = points.first.getX() < points.second.getX() ?
+                    points.second : points.first;
+
+            int[] lineStart = {(int) (start.getX() * STANDARD_VIDEO_WIDTH / mVideoView.getWidth()),
+                    (int) (start.getY() * STANDARD_VIDEO_HEIGHT / mVideoView.getHeight())};
+            int[] lineEnd = {(int) (end.getX() * STANDARD_VIDEO_WIDTH / mVideoView.getWidth()),
+                    (int) (end.getY() * STANDARD_VIDEO_HEIGHT / mVideoView.getHeight())};
+
+            mPresenter.line(lineStart, lineEnd);
         } else {
             updateViewsStepTo(++mStepIndex);
         }
@@ -423,7 +433,7 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
     private class DoorLineStateChangeListener implements DoorLineView.OnStateChangeListener {
 
         @Override
-        public void onStateChanged(int state, float[] lineStart, float[] lineEnd) {
+        public void onStateChanged(int state) {
             updateTitle(mResLineTitle.get(state), mResNext.get(RecognitionSettingContract.STEP_4_LINE));
             switch (state) {
                 case DoorLineView.STATE_INIT:
@@ -431,27 +441,16 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
                     updateNextEnable(false);
                     break;
                 case DoorLineView.STATE_END:
-                    if (lineEnd[0] > lineStart[0]) {
-                        mLineStart[0] = (int) (lineStart[0] * STANDARD_VIDEO_WIDTH / mVideoView.getWidth());
-                        mLineStart[1] = (int) (lineStart[1] * STANDARD_VIDEO_HEIGHT / mVideoView.getHeight());
-                        mLineEnd[0] = (int) (lineEnd[0] * STANDARD_VIDEO_WIDTH / mVideoView.getWidth());
-                        mLineEnd[1] = (int) (lineEnd[1] * STANDARD_VIDEO_HEIGHT / mVideoView.getHeight());
-                    } else {
-                        mLineStart[0] = (int) (lineEnd[0] * STANDARD_VIDEO_WIDTH / mVideoView.getWidth());
-                        mLineStart[1] = (int) (lineEnd[1] * STANDARD_VIDEO_HEIGHT / mVideoView.getHeight());
-                        mLineEnd[0] = (int) (lineStart[0] * STANDARD_VIDEO_WIDTH / mVideoView.getWidth());
-                        mLineEnd[1] = (int) (lineStart[1] * STANDARD_VIDEO_HEIGHT / mVideoView.getHeight());
-                    }
                     updateNextEnable(true);
                 default:
             }
         }
 
         @Override
-        public boolean isLineInvalid(float start, float end) {
-            start = start * STANDARD_VIDEO_WIDTH / mVideoView.getWidth();
-            end = end * STANDARD_VIDEO_WIDTH / mVideoView.getWidth();
-            boolean invalid = Math.abs(end - start) < 100;
+        public boolean isLineInvalid(DoorLineView.Point start, DoorLineView.Point end) {
+            float x1 = start.getX() * STANDARD_VIDEO_WIDTH / mVideoView.getWidth();
+            float x2 = end.getX() * STANDARD_VIDEO_WIDTH / mVideoView.getWidth();
+            boolean invalid = Math.abs(x1 - x2) < 100;
             if (invalid) {
                 shortTip(R.string.ipc_recognition_line_error);
             }
