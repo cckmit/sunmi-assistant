@@ -318,9 +318,13 @@ public class DoorLineView extends ViewGroup {
                 mState = STATE_START;
                 mStart.setCoordinate(x, y);
                 mStart.setPressed(true);
-                if (mListener != null) {
-                    mListener.onStateChanged(mState);
-                }
+                postDelayed(() -> {
+                    mStart.setPressed(false);
+                    invalidate();
+                    if (mListener != null) {
+                        mListener.onStateChanged(mState);
+                    }
+                }, 500);
                 break;
 
             case STATE_START:
@@ -331,9 +335,13 @@ public class DoorLineView extends ViewGroup {
                 mStart.setPressed(false);
                 mEnd.setPressed(true);
                 mEnd.setCoordinate(x, y);
-                if (mListener != null) {
-                    mListener.onStateChanged(mState);
-                }
+                postDelayed(() -> {
+                    mEnd.setPressed(false);
+                    invalidate();
+                    if (mListener != null) {
+                        mListener.onStateChanged(mState);
+                    }
+                }, 500);
                 break;
 
             case STATE_END:
