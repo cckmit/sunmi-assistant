@@ -18,7 +18,7 @@
         android:id="@+id/v_setting_top_mask"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_64"
-        android:background="@mipmap/setting_recognition_top_mask"
+        android:background="@mipmap/adjust_top_mask"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -86,10 +86,20 @@
         android:layout_height="@dimen/dp_32"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_24"
-        android:background="@mipmap/setting_recognition_reset"
+        android:background="@mipmap/adjust_reset"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_setting_btn_minus" />
+
+    <com.sunmi.ipc.view.DoorLineView
+        android:id="@+id/v_line_draw"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/sv_setting_video"
+        app:layout_constraintEnd_toEndOf="@+id/sv_setting_video"
+        app:layout_constraintStart_toStartOf="@id/sv_setting_video"
+        app:layout_constraintTop_toTopOf="@id/sv_setting_video" />
 
     <View
         android:id="@+id/v_setting_tip_mask"
@@ -138,19 +148,10 @@
         android:layout_width="@dimen/dp_80"
         android:layout_height="@dimen/dp_80"
         android:scaleType="centerCrop"
-        android:src="@mipmap/setting_recognition_face_case"
+        android:src="@mipmap/adjust_face_case"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <com.sunmi.ipc.view.DoorLineView
-        android:id="@+id/v_line_draw"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@id/sv_setting_video"
-        app:layout_constraintEnd_toEndOf="@+id/sv_setting_video"
-        app:layout_constraintStart_toStartOf="@id/sv_setting_video"
-        app:layout_constraintTop_toTopOf="@id/sv_setting_video" />
 
 </android.support.constraint.ConstraintLayout>

@@ -46,7 +46,7 @@ public class OverviewDataCard extends BaseRefreshCard<OverviewDataCard.Model, Ob
         if (sInstance == null) {
             sInstance = new OverviewDataCard(presenter, source);
         } else {
-            sInstance.reset(source);
+            sInstance.reset(presenter, source);
         }
         return sInstance;
     }

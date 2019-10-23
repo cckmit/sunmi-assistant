@@ -37,6 +37,8 @@ public interface DashboardContract {
 
         void setPage(int index);
 
+        void scrollToTop();
+
         List<PageHost> getPages();
 
         int getPageIndex();

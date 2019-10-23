@@ -35,7 +35,7 @@ public class NoOrderCard extends BaseRefreshCard<NoOrderCard.Model, Object> {
         if (sInstance == null) {
             sInstance = new NoOrderCard(presenter, source);
         } else {
-            sInstance.reset(source);
+            sInstance.reset(presenter, source);
         }
         return sInstance;
     }

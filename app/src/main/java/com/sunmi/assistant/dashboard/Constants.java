@@ -6,9 +6,6 @@ package com.sunmi.assistant.dashboard;
  */
 public class Constants {
 
-    public static final int PAGE_OVERVIEW = 10;
-    public static final int PAGE_CUSTOMER = 11;
-
     public static final int FLAG_SHOP = 0x1;
     public static final int FLAG_SAAS = 0x2;
     public static final int FLAG_FS = 0x4;

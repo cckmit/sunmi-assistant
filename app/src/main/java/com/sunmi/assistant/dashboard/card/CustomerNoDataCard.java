@@ -29,7 +29,7 @@ public class CustomerNoDataCard extends BaseRefreshCard<CustomerNoDataCard.Model
         if (sInstance == null) {
             sInstance = new CustomerNoDataCard(presenter, source);
         } else {
-            sInstance.reset(source);
+            sInstance.reset(presenter, source);
         }
         return sInstance;
     }

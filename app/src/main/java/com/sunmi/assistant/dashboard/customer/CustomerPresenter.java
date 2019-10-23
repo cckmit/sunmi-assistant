@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
-import sunmi.common.utils.SpUtils;
-import sunmi.common.utils.log.LogCat;
 
 
 /**
@@ -30,8 +28,6 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
 
     private static final String TAG = CustomerPresenter.class.getSimpleName();
 
-    private int mCompanyId;
-    private int mShopId;
     private int mSource = -1;
     private int mPeriod = Constants.TIME_PERIOD_INIT;
 
@@ -43,7 +39,6 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
     public CustomerPresenter(PageContract.ParentPresenter parent, int index) {
         this.mParent = parent;
         this.mPageIndex = index;
-        LogCat.d("yinhui", "Create OverviewPresenter");
     }
 
     @Override
@@ -52,11 +47,7 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
             return;
         }
 
-        mCompanyId = SpUtils.getCompanyId();
-        mShopId = SpUtils.getShopId();
-
         for (BaseRefreshCard card : mList) {
-            card.reset(mSource);
             card.init(mView.getContext());
         }
         mView.setCards(mList);
@@ -65,14 +56,9 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
 
     @Override
     public void setSource(int source, boolean showLoading) {
-        boolean needReload = mSource != source
-                || mCompanyId != SpUtils.getCompanyId()
-                || mShopId != SpUtils.getShopId();
         if (mSource != source) {
             mSource = source;
             initList(mSource);
-        }
-        if (needReload) {
             load();
         } else {
             for (BaseRefreshCard card : mList) {
@@ -83,7 +69,6 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
 
     @Override
     public void setPeriod(int period) {
-        LogCat.d("yinhui", "Set period: " + period + "; List=" + mList.size() + "; Presenter=" + this);
         mPeriod = period;
         for (BaseRefreshCard card : mList) {
             card.setPeriod(period, false);
@@ -129,8 +114,8 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
 
     private void initList(int source) {
         mList.clear();
+        mList.add(CustomerPeriodCard.get(this, source));
         if (Utils.hasCustomer(source)) {
-            mList.add(CustomerPeriodCard.get(this, source));
             mList.add(CustomerDataCard.get(this, source));
             mList.add(CustomerTrendCard.get(this, source));
             mList.add(CustomerAnalysisCard.get(this, source));

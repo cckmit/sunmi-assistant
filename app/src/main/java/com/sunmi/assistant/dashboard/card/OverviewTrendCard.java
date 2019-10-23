@@ -72,7 +72,7 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
         if (sInstance == null) {
             sInstance = new OverviewTrendCard(presenter, source);
         } else {
-            sInstance.reset(source);
+            sInstance.reset(presenter, source);
         }
         return sInstance;
     }
