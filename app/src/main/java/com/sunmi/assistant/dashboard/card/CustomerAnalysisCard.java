@@ -59,7 +59,8 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
         if (sInstance == null) {
             sInstance = new CustomerAnalysisCard(presenter, source);
         } else {
-            sInstance.reset(source);
+            sInstance.mPresenter = presenter;
+            sInstance.reset(presenter, source);
         }
         return sInstance;
     }

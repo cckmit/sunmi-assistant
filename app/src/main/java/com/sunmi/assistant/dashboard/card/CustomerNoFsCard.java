@@ -37,7 +37,7 @@ public class CustomerNoFsCard extends BaseRefreshCard<CustomerNoFsCard.Model, Ob
         if (sInstance == null) {
             sInstance = new CustomerNoFsCard(presenter, source);
         } else {
-            sInstance.reset(source);
+            sInstance.reset(presenter, source);
         }
         return sInstance;
     }

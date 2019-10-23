@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
-import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
 
 /**
@@ -31,8 +30,6 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
 
     private static final String TAG = OverviewPresenter.class.getSimpleName();
 
-    private int mCompanyId;
-    private int mShopId;
     private int mSource = -1;
     private int mPeriod = Constants.TIME_PERIOD_INIT;
 
@@ -53,11 +50,7 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
             return;
         }
 
-        mCompanyId = SpUtils.getCompanyId();
-        mShopId = SpUtils.getShopId();
-
         for (BaseRefreshCard card : mList) {
-            card.reset(mSource);
             card.init(mView.getContext());
         }
         mView.setCards(mList);
@@ -66,14 +59,9 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
 
     @Override
     public void setSource(int source, boolean showLoading) {
-        boolean needReload = mSource != source
-                || mCompanyId != SpUtils.getCompanyId()
-                || mShopId != SpUtils.getShopId();
         if (mSource != source) {
             mSource = source;
             initList(mSource);
-        }
-        if (needReload) {
             load();
         } else {
             for (BaseRefreshCard card : mList) {

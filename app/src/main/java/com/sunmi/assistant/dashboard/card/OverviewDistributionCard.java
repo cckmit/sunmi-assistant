@@ -78,7 +78,7 @@ public class OverviewDistributionCard extends BaseRefreshCard<OverviewDistributi
         if (sInstance == null) {
             sInstance = new OverviewDistributionCard(presenter, source);
         } else {
-            sInstance.reset(source);
+            sInstance.reset(presenter, source);
         }
         return sInstance;
     }

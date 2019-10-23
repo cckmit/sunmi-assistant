@@ -46,7 +46,7 @@ public class OverviewOrderImportCard extends BaseRefreshCard<OverviewOrderImport
         if (sInstance == null) {
             sInstance = new OverviewOrderImportCard(presenter, source);
         } else {
-            sInstance.reset(source);
+            sInstance.reset(presenter, source);
         }
         return sInstance;
     }
