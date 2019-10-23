@@ -359,7 +359,7 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
     @UiThread
     public void showErrorDialog(@StringRes int content) {
         hideLoadingDialog();
-        new CommonDialog.Builder(this)
+        new CommonDialog.Builder(context)
                 .setTitle(R.string.ipc_setting_tip)
                 .setMessage(content)
                 .setConfirmButton(R.string.str_confirm)

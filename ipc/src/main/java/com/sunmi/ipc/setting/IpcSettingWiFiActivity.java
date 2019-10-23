@@ -2,7 +2,6 @@ package com.sunmi.ipc.setting;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -298,15 +297,11 @@ public class IpcSettingWiFiActivity extends BaseMvpActivity<IpcSettingWifiPresen
 
     private void netExceptionDialog() {
         if (commonDialog != null) return;
-        commonDialog = new CommonDialog.Builder(this)
+        commonDialog = new CommonDialog.Builder(context)
                 .setTitle(R.string.ipc_setting_dialog_wifi_net_error)
-                .setMessage(getString(R.string.ipc_setting_dialog_wifi_net_error_content))
-                .setConfirmButton(R.string.str_retry, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        connectWifi(mSsid, mMgmt, mPassword);
-                    }
-                }).setCancelButton(R.string.str_close).create();
+                .setMessage(R.string.ipc_setting_dialog_wifi_net_error_content)
+                .setConfirmButton(R.string.str_retry, (dialog, which)
+                        -> connectWifi(mSsid, mMgmt, mPassword)).setCancelButton(R.string.str_close).create();
         commonDialog.showWithOutTouchable(false);
     }
 

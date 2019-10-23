@@ -2,6 +2,7 @@ package com.sunmi.ipc.setting;
 
 import android.app.ProgressDialog;
 import android.os.CountDownTimer;
+import android.text.TextUtils;
 
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.rpc.IPCCall;
@@ -12,9 +13,12 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.dialog.CommonProgressDialog;
@@ -49,14 +53,13 @@ public class IpcSettingSdcardActivity extends BaseActivity {
                 .setMessage(R.string.msg_sdcard_format_confirm)
                 .setCancelButton(R.string.sm_cancel)
                 .setConfirmButton(R.string.str_sd_format, (dialog, which) -> {
-                    IPCCall.getInstance().sdcardFormat(context, mDevice.getDeviceid(), mDevice.getModel());
+                    IPCCall.getInstance().sdcardFormat(context, mDevice.getModel(), mDevice.getDeviceid());
                     showProgressDialog();
                 }).create().show();
     }
 
     @UiThread
     void showResultDialog(boolean isSuccess) {
-        progressDialogDismiss();
         new CommonDialog.Builder(context)
                 .setTitle(isSuccess ? R.string.str_sd_format_success : R.string.str_sd_format_fail)
                 .setMessage(isSuccess ? R.string.tip_sd_format_success : R.string.tip_sd_format_fail)
@@ -80,6 +83,7 @@ public class IpcSettingSdcardActivity extends BaseActivity {
 
             @Override
             public void onFinish() {
+                progressDialogDismiss();
                 showResultDialog(false);
             }
         };
@@ -110,7 +114,41 @@ public class IpcSettingSdcardActivity extends BaseActivity {
     public void didReceivedNotification(int id, Object... args) {
         if (id == OpcodeConstants.sdcardFormat) {
             formatTimer.cancel();
-            showResultDialog(true);
+            progressDialogDismiss();
+            if (args == null) return;
+            ResponseBean res = (ResponseBean) args[0];
+            try {
+                JSONObject result = res.getResult();
+                if (result == null || (result.has("sn")
+                        && !TextUtils.equals(result.getString("sn"), mDevice.getDeviceid()))) {
+                    return;
+                }
+
+                if (result.has("sd_status_code")) {
+                    int sdStatusCode = result.getInt("sd_status_code");
+                    if (sdStatusCode == 2) {
+                        showResultDialog(true);
+                    } else {
+                        tipSdcardError(sdStatusCode);
+                    }
+                    return;
+                }
+                shortTip(R.string.toast_networkIsExceptional);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void tipSdcardError(int sdStatusCode) {
+        if (sdStatusCode == 0) {
+            shortTip(R.string.ipc_recognition_sd_none);
+        } else if (sdStatusCode == 1) {
+            shortTip(R.string.ipc_recognition_sd_uninitialized);
+        } else if (sdStatusCode == 3) {
+            shortTip(R.string.ipc_recognition_sd_unknown);
+        } else {
+            shortTip(R.string.toast_networkIsExceptional);
         }
     }
 

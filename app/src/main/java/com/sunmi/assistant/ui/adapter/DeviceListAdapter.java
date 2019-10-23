@@ -13,7 +13,7 @@ import sunmi.common.model.SunmiDevice;
 import sunmi.common.utils.DeviceTypeUtils;
 
 /**
- * Description:
+ * Description: 设备列表adapter
  * Created by bruce on 2019/6/28.
  */
 public class DeviceListAdapter extends BaseQuickAdapter<SunmiDevice, BaseViewHolder> {

@@ -15,10 +15,12 @@ import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,6 +49,7 @@ import org.androidannotations.annotations.ViewById;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.base.recycle.BaseArrayAdapter;
@@ -64,6 +67,7 @@ import sunmi.common.utils.RegexUtils;
 import sunmi.common.utils.SoftKeyboardStateHelper;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SettingItemEdittextLayout;
@@ -82,10 +86,11 @@ import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
         implements ShopCreateContract.View, PoiSearch.OnPoiSearchListener {
 
-    private static final int CREATE_SHOP_ALREADY_EXIST = 5035;
+    private static final int CREATE_SHOP_ALREADY_EXIST = 5034;
     private static final int SHOP_NAME_MAX_LENGTH = 40;
     private static final int POI_PAGE_SIZE = 20;
     private static final int CONTACTS_MAX_LENGTH = 32;
+    private static final int ADDRESS_MAX_LENGTH = 100;
 
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
@@ -107,6 +112,10 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
     TextView tvCategoryText;
     @ViewById(R.id.poi_recyclerView)
     RecyclerView recyclerViewPoi;
+    @ViewById(R.id.rl_shop_name)
+    RelativeLayout rlShopName;
+    @ViewById(R.id.rl_detail_address)
+    RelativeLayout rlDetailAddress;
     @ViewById(R.id.tv_name_transparent)
     TextView tvNameTransparent;
     @ViewById(R.id.tv_address_transparent)
@@ -140,7 +149,6 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
     private String mCategoryLeftName, mCategoryRightName;
     private LeftCategoryAdapter mLeftAdapter;
     private RightCategoryAdapter mRightAdapter;
-
     private boolean isSetRecyclerViewPoiHeight;
 
     @AfterViews
@@ -155,6 +163,12 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
     private void initSet() {
         recyclerViewPoi.setLayoutManager(new LinearLayoutManager(this));
         selShopNamePoi.setRightTextSize(12f);
+        etDetailAddress.addTextChangedListener(new TextLengthWatcher(etDetailAddress, ADDRESS_MAX_LENGTH) {
+            @Override
+            public void onLengthExceed(EditText view, String content) {
+                shortTip(getString(R.string.editetxt_max_length));
+            }
+        });
         //门店面积
         etShopSquare.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         etShopSquare.setFilters(new InputFilter[]{new NumberValueFilter()});
@@ -203,7 +217,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
     @Click(R.id.btn_complete)
     void completeClick() {
         String shopRegion = tvRegionText.getText() == null ? null : tvRegionText.getText().toString().trim();
-        if (TextUtils.isEmpty(shopRegion)) {
+        if (TextUtils.isEmpty(shopRegion) || mProvinceId <= 0 || mCityId <= 0 || mAreaId <= 0) {
             shortTip(R.string.shop_input_region_tip);
             return;
         }
@@ -235,8 +249,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
     @FocusChange(R.id.et_content)
     void poiSearchFocusChange(View v, boolean hasFocus) {
         if (hasFocus) {
-            group.setVisibility(View.GONE);
-            groupPoi.setVisibility(View.VISIBLE);
+            showAllItemGroup(false);
             selShopNamePoi.getEditTextText().requestFocus();
             InputMethodManager inputManager = (InputMethodManager) selShopNamePoi.getEditTextText()
                     .getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -262,6 +275,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
     public void getCategoryFailed() {
 
     }
+
 
     /**
      * 门店创建成功
@@ -301,19 +315,31 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
         }
     }
 
+    private void showAllItemGroup(boolean allItem) {
+        if (allItem) {
+            rlShopName.setVisibility(View.VISIBLE);
+            rlDetailAddress.setVisibility(View.VISIBLE);
+            group.setVisibility(View.VISIBLE);
+            groupPoi.setVisibility(View.GONE);
+        } else {
+            group.setVisibility(View.GONE);
+            rlShopName.setVisibility(View.GONE);
+            rlDetailAddress.setVisibility(View.GONE);
+            groupPoi.setVisibility(View.VISIBLE);
+        }
+    }
+
     /**
      * 门店名称 高德搜索poi搜索
      */
     private void poiSearchShopName() {
+        selShopNamePoi.getEditTextText().setImeOptions(EditorInfo.IME_ACTION_DONE);
         SoftKeyboardStateHelper softKeyboardStateHelper = new SoftKeyboardStateHelper(findViewById(R.id.const_layout));
         softKeyboardStateHelper.addSoftKeyboardStateListener(new SoftKeyboardStateHelper.SoftKeyboardStateListener() {
             @Override
             public void onSoftKeyboardOpened(int keyboardHeightInPx) {
-                if (!isSetRecyclerViewPoiHeight && selShopNamePoi.getEditTextText().hasFocus()) {
-                    isSetRecyclerViewPoiHeight = true;
-                    recyclerViewPoi.getLayoutParams().height = CommonHelper.getScreenHeight(context) -
-                            (int) context.getResources().getDimension(R.dimen.dp_48) - keyboardHeightInPx;
-                }
+                recyclerViewPoi.getLayoutParams().height = CommonHelper.getScreenHeight(context) -
+                        (int) context.getResources().getDimension(R.dimen.dp_48) - keyboardHeightInPx;
             }
 
             @Override
@@ -321,9 +347,8 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
                 if (group.getVisibility() == View.VISIBLE) {
                     return;
                 }
-                group.setVisibility(View.VISIBLE);
-                groupPoi.setVisibility(View.GONE);
-                etShopName.setEditTextText(selShopNamePoi.getEditTextText().getText().toString());
+                showAllItemGroup(true);
+                etShopName.setEditTextText(Objects.requireNonNull(selShopNamePoi.getEditTextText().getText()).toString());
             }
         });
         //字数统计
@@ -336,6 +361,29 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
                 doSearchQuery(poiKey);
             }
         });
+        //监听键盘按钮事件
+        selShopNamePoi.getEditTextText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId,
+                                          KeyEvent event) {
+                LogCat.e(TAG, "111 onEditorAction");
+                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_GO || actionId == EditorInfo.IME_ACTION_NEXT) {
+                    hideSoftInputWindow();
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    private void hideSoftInputWindow() {
+        showAllItemGroup(true);
+        etShopName.setEditTextText(Objects.requireNonNull(selShopNamePoi.getEditTextText().getText()).toString());
+
+        InputMethodManager inputManager = (InputMethodManager) selShopNamePoi.getEditTextText()
+                .getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        assert inputManager != null;
+        inputManager.hideSoftInputFromWindow(selShopNamePoi.getEditTextText().getWindowToken(), 0);
     }
 
 
@@ -386,6 +434,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
                     etDetailAddress.setText(poiItem.getSnippet());
 
                     notifyDataSetChanged();
+                    hideSoftInputWindow();
                 });
                 if (index == holder.getAdapterPosition()) {
                     holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.black_15));

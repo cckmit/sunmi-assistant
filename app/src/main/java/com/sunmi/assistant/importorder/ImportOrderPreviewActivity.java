@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.text.Html;
 import android.view.View;
-import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.merchant.AuthDialog;
@@ -13,7 +12,6 @@ import com.sunmi.assistant.ui.activity.merchant.AuthDialog;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +21,7 @@ import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.dialog.CommonDialog;
 
 /**
@@ -32,12 +31,10 @@ import sunmi.common.view.dialog.CommonDialog;
 @SuppressLint("Registered")
 @EActivity(R.layout.import_order_activity_preview)
 public class ImportOrderPreviewActivity extends BaseActivity {
-    @ViewById(R.id.tv_import_order_explain)
-    TextView tvImportOrderExplain;
 
     @AfterViews
     void init() {
-        tvImportOrderExplain.setText(getString(R.string.import_order_explain));
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
     }
 
     @Click(R.id.btn_import_current_mobile)
@@ -97,7 +94,7 @@ public class ImportOrderPreviewActivity extends BaseActivity {
     }
 
     private void cannotSaasDialog() {
-        CommonDialog commonDialog = new CommonDialog.Builder(this)
+        CommonDialog commonDialog = new CommonDialog.Builder(context)
                 .setTitle(R.string.import_order_no_find_shop)
                 .setMessage(R.string.import_order_mobile_no_match_shop)
                 .setConfirmButton(getString(R.string.import_order_continue_try), new DialogInterface.OnClickListener() {

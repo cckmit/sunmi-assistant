@@ -89,7 +89,7 @@ public class ChooseDeviceDialog extends Dialog {
     private void gotoPrinterConfig() {
         try {
             Class<?> printerSearchActivity =
-                    Class.forName("com.sunmi.cloudprinter.ui.Activity.StartConfigPrinterActivity_");
+                    Class.forName("com.sunmi.cloudprinter.ui.activity.StartConfigPrinterActivity_");
             Intent intent = new Intent(getContext(), printerSearchActivity);
             intent.putExtra("shopId", shopId);
             getContext().startActivity(intent);

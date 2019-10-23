@@ -33,6 +33,7 @@ import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.TitleBarView;
@@ -179,7 +180,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
     private void clickDelete() {
         if (mFaceGroup.getCount() > 0) {
             if (mDeleteForbiddenDialog == null) {
-                mDeleteForbiddenDialog = new CommonDialog.Builder(this)
+                mDeleteForbiddenDialog = new CommonDialog.Builder(context)
                         .setTitle(getString(R.string.ipc_face_group_delete_title,
                                 Utils.getGroupName(this, mFaceGroup)))
                         .setMessage(R.string.ipc_face_group_delete_error)
@@ -252,7 +253,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
     }
 
     private void modifyGroupName() {
-        new InputDialog.Builder(this)
+        new InputDialog.Builder(context)
                 .setTitle(R.string.ipc_face_group_name)
                 .setHint(getString(R.string.ipc_face_input_name_tip))
                 .setInitInputContent(mFaceGroup.getGroupName())
@@ -292,11 +293,11 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
     }
 
     private void modifyMarks() {
-        new InputDialog.Builder(this)
+        new InputDialog.Builder(context)
                 .setTitle(R.string.ipc_face_group_mark)
                 .setHint(getString(R.string.ipc_face_input_marks_tip))
                 .setInitInputContent(mFaceGroup.getMark())
-                .setEditTextHeight(true, 400, 40, 0, 40, 40)
+                .setEditTextHeight(CommonHelper.dp2px(context, 130))
                 .setInputWatcher(new InputDialog.TextChangeListener() {
                     @Override
                     public void onTextChange(EditText view, Editable s) {

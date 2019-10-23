@@ -96,48 +96,6 @@ public class IPCCall extends BaseIpcApi {
     }
 
     /**
-     * 画面调整之前获取SD卡状态信息
-     */
-    public void getSdState(Context context, String sn) {
-        int opCode = OpcodeConstants.getSdStatus;
-        RequestBean requestBean = new RequestBean(Utils.getMsgId(),
-                "0x" + Integer.toHexString(opCode), new JSONObject());
-        post(context, sn, requestBean.getMsgId(), IpcConstants.getSdcardStatus, requestBean.serialize());
-    }
-
-    /**
-     * 进sd卡管理获取SD卡状态状态
-     */
-    public void getSdStatus(Context context, String sn, String model) {
-        try {
-            int opCode = OpcodeConstants.getSdStatus;
-            JSONObject object = new JSONObject();
-            object.put("sn", sn);
-            RequestBean requestBean = new RequestBean(Utils.getMsgId(),
-                    "0x" + Integer.toHexString(opCode), object);
-            post(context, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * SD卡格式化
-     */
-    public void sdcardFormat(Context context, String sn, String model) {
-        try {
-            int opCode = OpcodeConstants.sdcardFormat;
-            JSONObject object = new JSONObject();
-            object.put("sn", sn);
-            RequestBean requestBean = new RequestBean(Utils.getMsgId(),
-                    "0x" + Integer.toHexString(opCode), object);
-            post(context, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * 设置缩放
      *
      * @param zoom 0-500
@@ -259,16 +217,49 @@ public class IPCCall extends BaseIpcApi {
     }
 
     /**
-     * 夜间模式
-     *
-     * @param set 1-夜间
+     * 画面调整之前获取SD卡状态信息
      */
-    public void fsIrMode(int set, Context context) {
+    public void getSdState(Context context, String model, String sn) {
         try {
+            int opCode = OpcodeConstants.getSdStatus;
             JSONObject object = new JSONObject();
-            object.put("set", set);
-            post(context, "", OpcodeConstants.fsIrMode, object);
-        } catch (JSONException e) {
+            object.put("sn", sn);
+            RequestBean requestBean = new RequestBean(Utils.getMsgId(),
+                    "0x" + Integer.toHexString(opCode), object);
+            post(context, sn, requestBean.getMsgId(), IpcConstants.getSdcardStatus, model, requestBean.serialize());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 进sd卡管理获取SD卡状态状态
+     */
+    public void getSdStatus(Context context, String model, String sn) {
+        try {
+            int opCode = OpcodeConstants.getSdStatus;
+            JSONObject object = new JSONObject();
+            object.put("sn", sn);
+            RequestBean requestBean = new RequestBean(Utils.getMsgId(),
+                    "0x" + Integer.toHexString(opCode), object);
+            post(context, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * SD卡格式化
+     */
+    public void sdcardFormat(Context context, String model, String sn) {
+        try {
+            int opCode = OpcodeConstants.sdcardFormat;
+            JSONObject object = new JSONObject();
+            object.put("sn", sn);
+            RequestBean requestBean = new RequestBean(Utils.getMsgId(),
+                    "0x" + Integer.toHexString(opCode), object);
+            post(context, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -295,6 +286,26 @@ public class IPCCall extends BaseIpcApi {
             e.printStackTrace();
         }
     }
+
+    /**
+     * ipc升级 查询升级状态
+     *
+     * @param context
+     * @param sn
+     */
+    public void ipcQueryUpgradeStatus(Context context, String model, String sn) {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("sn", sn);
+            int opCode = OpcodeConstants.ipcQueryUpgradeStatus;
+            RequestBean requestBean = new RequestBean(Utils.getMsgId(),
+                    "0x" + Integer.toHexString(opCode), object);
+            new IpcRemoteSettingApi().post(context, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * 获取  夜视模式 指示灯 旋转信息
@@ -325,7 +336,8 @@ public class IPCCall extends BaseIpcApi {
      * @param ledIndicator 指示灯 0:关闭/1:开启
      * @param rotation     旋转 0:关闭/1:开启
      */
-    public void setIpcNightIdeRotation(Context context, String model, String sn, int night, int wdrMode, int ledIndicator, int rotation) {
+    public void setIpcNightIdeRotation(Context context, String model, String sn, int night,
+                                       int wdrMode, int ledIndicator, int rotation) {
         try {
             JSONObject object = new JSONObject();
             object.put("sn", sn);
@@ -416,19 +428,9 @@ public class IPCCall extends BaseIpcApi {
         }
     }
 
-    private void post(Context context, String sn, int opCode, JSONObject jsonObject) {
-        RequestBean requestBean = new RequestBean(Utils.getMsgId(), "0x" + Integer.toHexString(opCode), jsonObject);
-        post(context, sn, requestBean.getMsgId(), opCode, requestBean.serialize());
-    }
-
     @Override
     public void post(Context context, String sn, String msgId, int opCode, String json) {
-        SunmiDevice device = CommonConstants.SUNMI_DEVICE_MAP.get(sn);
-        if (device != null) {
-            new IPCLocalApi(device.getIp()).post(context, sn, msgId, opCode, json);
-        } else {
-            new IpcRemoteApApi().post(context, sn, msgId, opCode, json);
-        }
+
     }
 
     /**

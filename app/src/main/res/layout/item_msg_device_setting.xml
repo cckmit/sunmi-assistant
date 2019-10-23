@@ -8,13 +8,10 @@
         android:id="@+id/sil_device"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:imageRight="@mipmap/ic_right_arrow_small"
+        app:leftPadding="@dimen/dp_20"
         app:leftText="@string/msg_ipc"
         app:parentHeight="@dimen/dp_60"
-        app:leftTextSize="@dimen/sp_16"
-        app:leftTextColor="@color/text_main"
-        app:leftPadding="@dimen/dp_15"
-        app:rightText="@string/sm_enable"
-        app:rightTextSize="@dimen/sp_14"
-        app:imageRight="@mipmap/ic_right_arrow_small"/>
+        app:rightText="@string/sm_enable" />
 
 </RelativeLayout>

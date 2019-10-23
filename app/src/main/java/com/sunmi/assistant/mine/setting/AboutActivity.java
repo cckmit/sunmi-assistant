@@ -95,7 +95,7 @@ public class AboutActivity extends BaseActivity {
     }
 
     private CommonDialog getUpgradeDialog(final String url) {
-        CommonDialog commonDialog = new CommonDialog.Builder(this)
+        CommonDialog commonDialog = new CommonDialog.Builder(context)
                 .setTitle(R.string.tip_title_upgrade)
                 .setMessage(R.string.tip_message_upgrade_set)
                 .setConfirmButton(R.string.go_upgrade, (dialog, which) -> AppUpdate.versionUpdate((Activity) context, url))

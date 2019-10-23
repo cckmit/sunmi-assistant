@@ -307,7 +307,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
             hideLoadingDialog();
             return;
         }
-        IPCCall.getInstance().getSdState(context, sunmiDevice.getIp());
+        IPCCall.getInstance().getSdState(context, sunmiDevice.getModel(), sunmiDevice.getDeviceid());
     }
 
     /**

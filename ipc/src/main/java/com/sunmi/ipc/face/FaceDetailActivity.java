@@ -181,7 +181,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
     }
 
     private void takePhoto() {
-        new CommonDialog.Builder(this)
+        new CommonDialog.Builder(context)
                 .setTitle(R.string.ipc_face_tip_album_title)
                 .setMessage(R.string.ipc_face_tip_album_content)
                 .setMessageDrawable(0, 0, 0, R.mipmap.face_tip_image)
@@ -197,7 +197,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
     }
 
     private void openPicker() {
-        new CommonDialog.Builder(this)
+        new CommonDialog.Builder(context)
                 .setTitle(R.string.ipc_face_tip_album_title)
                 .setMessage(R.string.ipc_face_tip_album_content)
                 .setMessageDrawable(0, 0, 0, R.mipmap.face_tip_image)

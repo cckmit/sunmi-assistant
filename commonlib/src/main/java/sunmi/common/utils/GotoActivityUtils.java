@@ -32,6 +32,7 @@ public class GotoActivityUtils {
                 && !className.contains("CreateCompanyActivity")
                 && !className.contains("CreateCompanyNextActivity")
                 && !className.contains("CreateShopActivity")
+                && !className.contains("CreateShopNewActivity")
                 && !className.contains("CreateShopPreviewActivity")
                 ) {
             LogCat.e("TAG", "gotoLoginActivity= " + className);
