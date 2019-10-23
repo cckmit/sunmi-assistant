@@ -90,6 +90,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
     private static final int SHOP_NAME_MAX_LENGTH = 40;
     private static final int POI_PAGE_SIZE = 20;
     private static final int CONTACTS_MAX_LENGTH = 32;
+    private static final int ADDRESS_MAX_LENGTH = 100;
 
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
@@ -162,6 +163,12 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
     private void initSet() {
         recyclerViewPoi.setLayoutManager(new LinearLayoutManager(this));
         selShopNamePoi.setRightTextSize(12f);
+        etDetailAddress.addTextChangedListener(new TextLengthWatcher(etDetailAddress, ADDRESS_MAX_LENGTH) {
+            @Override
+            public void onLengthExceed(EditText view, String content) {
+                shortTip(getString(R.string.editetxt_max_length));
+            }
+        });
         //门店面积
         etShopSquare.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         etShopSquare.setFilters(new InputFilter[]{new NumberValueFilter()});
