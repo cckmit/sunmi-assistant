@@ -126,10 +126,10 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
         mResLineTitle.put(DoorLineView.STATE_INIT, getString(R.string.ipc_recognition_line_start));
         mResLineTitle.put(DoorLineView.STATE_START, getString(R.string.ipc_recognition_line_end));
         mResLineTitle.put(DoorLineView.STATE_END, getString(R.string.ipc_recognition_line_end));
-        mResZoomIn = ContextCompat.getDrawable(this, R.drawable.setting_recognition_zoom_in);
-        mResZoomOut = ContextCompat.getDrawable(this, R.drawable.setting_recognition_zoom_out);
-        mResFocusPlus = ContextCompat.getDrawable(this, R.drawable.setting_recognition_focus_plus);
-        mResFocusMinus = ContextCompat.getDrawable(this, R.drawable.setting_recognition_focus_minus);
+        mResZoomIn = ContextCompat.getDrawable(this, R.drawable.adjust_zoom_in);
+        mResZoomOut = ContextCompat.getDrawable(this, R.drawable.adjust_zoom_out);
+        mResFocusPlus = ContextCompat.getDrawable(this, R.drawable.adjust_focus_plus);
+        mResFocusMinus = ContextCompat.getDrawable(this, R.drawable.adjust_focus_minus);
         mResLoading = getString(R.string.ipc_recognition_loading);
     }
 
@@ -143,7 +143,7 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
     public void updateViewsStepTo(int step) {
         mStepIndex = step;
         updateTitle(mResTitle.get(step), mResNext.get(step));
-        updateTip(mResTip.get(step));
+        updateTip(mResTip.get(step), 0);
         updateTipShow(true);
         updateControlBtnShow(false);
         mFaceCase.setVisibility(View.INVISIBLE);
@@ -156,6 +156,13 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
             case RecognitionSettingContract.STEP_3_FOCUS:
                 updateControlBtn(mResFocusPlus, mResFocusMinus);
                 mPresenter.updateControlBtnEnable(false);
+                break;
+            case RecognitionSettingContract.STEP_4_LINE:
+                updateTipShow(false);
+                Rect boundary = new Rect(0, Math.max(0, mTvTitle.getBottom() - mVideoView.getTop()),
+                        mVideoView.getWidth(), mVideoView.getHeight());
+                mLineView.init(boundary);
+                mLineView.setVisibility(View.VISIBLE);
                 break;
             default:
         }
@@ -251,10 +258,10 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
                 updateControlBtnShow(true);
                 break;
             case RecognitionSettingContract.STEP_4_LINE:
-                Rect boundary = new Rect(0, Math.max(0, mTvTitle.getBottom() - mVideoView.getTop()),
-                        mVideoView.getWidth(), mVideoView.getHeight());
-                mLineView.init(boundary);
                 mLineView.setVisibility(View.VISIBLE);
+                if (mLineView.getState() != DoorLineView.DRAG_STATE_END) {
+                    mTvNext.setEnabled(false);
+                }
                 break;
             default:
         }
@@ -274,7 +281,17 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
         mTvNext.setText(nextText);
     }
 
-    private void updateTip(String content) {
+    private void updateTip(String content, int imageRes) {
+        if (imageRes == 0) {
+            mTvTipContent.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);
+            mTvTipContent.setCompoundDrawablePadding(0);
+            mTvTipContent.setBackgroundResource(R.drawable.setting_bg_tip_text);
+        } else {
+            mTvTipContent.setCompoundDrawablesRelativeWithIntrinsicBounds(0,
+                    imageRes, 0, 0);
+            mTvTipContent.setCompoundDrawablePadding((int) context.getResources().getDimension(R.dimen.dp_16));
+            mTvTipContent.setBackground(null);
+        }
         mTvTipContent.setText(content);
     }
 
@@ -437,10 +454,21 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
             updateTitle(mResLineTitle.get(state), mResNext.get(RecognitionSettingContract.STEP_4_LINE));
             switch (state) {
                 case DoorLineView.STATE_INIT:
+                    updateTipShow(true);
+                    updateTip(getString(R.string.ipc_recognition_line_tip1), R.mipmap.adjust_line_tip1);
+                    mTvTitle.setText(R.string.ipc_recognition_line_title1);
+                    updateNextEnable(false);
+                    break;
                 case DoorLineView.STATE_START:
+                    updateTipShow(true);
+                    updateTip(getString(R.string.ipc_recognition_line_tip2), R.mipmap.adjust_line_tip2);
+                    mTvTitle.setText(R.string.ipc_recognition_line_title2);
                     updateNextEnable(false);
                     break;
                 case DoorLineView.STATE_END:
+                    updateTipShow(true);
+                    updateTip(getString(R.string.ipc_recognition_line_tip3), R.mipmap.adjust_line_tip3);
+                    mTvTitle.setText(R.string.ipc_recognition_line_title3);
                     updateNextEnable(true);
                 default:
             }

@@ -86,12 +86,12 @@ public class DoorLineView extends ViewGroup {
         mPaint.setStrokeWidth(getResources().getDimension(R.dimen.dp_1));
         mPaint.setPathEffect(new DashPathEffect(new float[]{15, 10}, 0));
         mPath = new Path();
-        Drawable small = ContextCompat.getDrawable(context, R.mipmap.setting_recognition_line_point_small);
+        Drawable small = ContextCompat.getDrawable(context, R.mipmap.adjust_line_point_small);
         if (small != null) {
             mSmallRadius = small.getIntrinsicWidth() >> 1;
             small.setBounds(-mSmallRadius, -mSmallRadius, mSmallRadius, mSmallRadius);
         }
-        Drawable big = ContextCompat.getDrawable(context, R.mipmap.setting_recognition_line_point_big);
+        Drawable big = ContextCompat.getDrawable(context, R.mipmap.adjust_line_point_big);
         if (big != null) {
             mBigRadius = big.getIntrinsicWidth() >> 1;
             big.setBounds(-mBigRadius, -mBigRadius, mBigRadius, mBigRadius);
@@ -116,6 +116,10 @@ public class DoorLineView extends ViewGroup {
 
     public void setStateChangeListener(OnStateChangeListener l) {
         mListener = l;
+    }
+
+    public int getState() {
+        return mState;
     }
 
     public Pair<Point, Point> getPoints() {
