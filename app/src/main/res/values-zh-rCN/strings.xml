@@ -115,7 +115,7 @@
     <string name="str_platform_sms_code_error">验证码错误，请重新输入</string>
     <string name="str_button_auto_create">自动创建</string>
     <string name="str_dialog_auto_create_store">该手机号暂时未发现门店信息，您可以更换手机号重试或手动新建门店</string>
-    <string name="str_dialog_auth_message">申请获取您在%s的门店数据。</string>
+    <string name="str_dialog_auth_message">申请获取您在%s的订单数据。</string>
     <string name="str_unkunw_store">%s的门店</string>
     <string name="str_create_store_fail">门店创建失败</string>
     <string name="str_create_store_alredy_exit">门店名称已存在</string>
@@ -290,4 +290,6 @@
     <string name="import_order_explain">接入门店收银数据，实现线下门店数字化 \t\n您可以随时了解门店经营动态 \t\n提供多维度分析经营状态，帮您提升经营决策质量</string>
     <string name="import_order_access_shop_data">接入门店收银系统</string>
     <string name="import_order_data_service">订单数据分析服务</string>
+    <string name="import_order_access_already_auth">该门店收银系统已被授权，无法再次授权</string>
+    <string name="import_order_access_no_auth_more">已授权过门店收银系统，无法授权更多</string>
 </resources>

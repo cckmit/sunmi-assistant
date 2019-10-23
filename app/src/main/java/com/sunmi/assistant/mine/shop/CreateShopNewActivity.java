@@ -149,7 +149,6 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
     private String mCategoryLeftName, mCategoryRightName;
     private LeftCategoryAdapter mLeftAdapter;
     private RightCategoryAdapter mRightAdapter;
-    private boolean isSetRecyclerViewPoiHeight;
 
     @AfterViews
     void init() {
@@ -230,6 +229,10 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
         if (!TextUtils.isEmpty(tel) && !RegexUtils.isCorrectAccount(tel)) {
             shortTip(R.string.str_invalid_phone);
             return;
+        }
+        if (mCategoryLeftCode <= 0 || mCategoryRightCode <= 0) {
+            mCategoryLeftCode = 0;
+            mCategoryRightCode = 0;
         }
         String address = etDetailAddress.getText() == null ? "" : etDetailAddress.getText().toString().trim();
         String square = etShopSquare.getText() == null ? "" : etShopSquare.getText().toString().trim();
@@ -584,6 +587,10 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
                     dialog.dismiss();
                     break;
                 case R.id.tv_confirm:
+                    if (mProvinceId <= 0 || mCityId <= 0 || mAreaId <= 0) {
+                        shortTip(R.string.shop_input_region_tip);
+                        return;
+                    }
                     dialog.dismiss();
                     tvRegionText.setText(String.format("%s %s %s", btnAreaPro.getText().toString(),
                             btnAreaCity.getText().toString(), btnAreaRegion.getText().toString()));
@@ -668,7 +675,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
                 mCategoryLeftCode = model.getId();
                 mCategoryLeftName = name;
                 mCategoryRightName = "";
-                mCategoryRightCode = -1;
+                mCategoryRightCode = 0;
                 notifyDataSetChanged();
                 mRightAdapter.setData(model.getChild());
             });
