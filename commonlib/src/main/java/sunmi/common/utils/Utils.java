@@ -6,6 +6,8 @@ import android.content.pm.PackageManager;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
+import java.util.Random;
+
 /**
  * Description:
  * Created by bruce on 2019/2/13.
@@ -45,8 +47,14 @@ public class Utils {
         return result;
     }
 
+    private static Random mRandom = new Random();
+
     public static String getMsgId() {
-        return String.format("%s%d", SpUtils.getUID(), System.currentTimeMillis());
+        if (mRandom == null) {
+            mRandom = new Random();
+        }
+        mRandom.setSeed(System.currentTimeMillis());
+        return (mRandom.nextInt(11) + 10) + String.valueOf(System.currentTimeMillis()).substring(5);
     }
 
 }

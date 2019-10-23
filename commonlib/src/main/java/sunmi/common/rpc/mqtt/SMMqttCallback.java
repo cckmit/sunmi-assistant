@@ -38,6 +38,14 @@ public class SMMqttCallback implements MqttCallbackExtended {
         if (TextUtils.equals(topic, MqttManager.tokenRequestSub)) {
             ResponseBean res = new ResponseBean(message.toString(), "params");
             MessageManager.newInstance().notice(res, MessageManager.REQUEST_CHANNEL);
+        }
+        if (TextUtils.equals(topic, MqttManager.tokenWEBSS1EventSub) ||
+                TextUtils.equals(topic, MqttManager.tokenWEBFS1EventSub) ||
+                TextUtils.equals(topic, MqttManager.tokenWEBFM010EventSub) ||
+                TextUtils.equals(topic, MqttManager.tokenWEBFM020EventSub)) {
+            ResponseBean res = new ResponseBean(message.toString(), "params");
+            BaseNotification.newInstance().postNotificationName(
+                    Integer.parseInt(res.getOpcode().substring(2)), res, topic);
         } else {
             ResponseBean res = new ResponseBean(message);
             Log.e(TAG, "mqtt messageArrived " + ", thread id  = " + Process.myTid()
@@ -48,8 +56,8 @@ public class SMMqttCallback implements MqttCallbackExtended {
                 MqttManager.getInstance().removeMessage(res.getMsgId());
             } else {
                 BaseNotification.newInstance().postNotificationName(
-                        Integer.parseInt(res.getOpcode().substring(2,
-                                res.getOpcode().length()), 16), res, topic);
+                        Integer.parseInt(res.getOpcode().substring(2
+                        ), 16), res, topic);
             }
         }
     }

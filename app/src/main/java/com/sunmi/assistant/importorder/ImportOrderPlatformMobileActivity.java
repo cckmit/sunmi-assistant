@@ -110,7 +110,9 @@ public class ImportOrderPlatformMobileActivity extends BaseMvpActivity<PlatformM
                 .setAllowButton((dialog, which) -> ImportOrderSelectShopActivity_.intent(context)
                         .list(target)
                         .start())
-                .setCancelButton((dialog, which) -> dialog.dismiss())
+                .setCancelButton((dialog, which) -> {
+                    stopDownTimer();
+                })
                 .create().show();
     }
 
@@ -118,10 +120,7 @@ public class ImportOrderPlatformMobileActivity extends BaseMvpActivity<PlatformM
         new CommonDialog.Builder(this)
                 .setTitle(R.string.import_order_check_mobile_no_data)
                 .setCancelButton(R.string.str_retry, (dialog, which) -> {
-                    dialog.dismiss();
-                    if (!isTimerFinish) {
-                        stopDownTimer();
-                    }
+                    stopDownTimer();
                 })
                 .create().show();
     }
@@ -133,6 +132,9 @@ public class ImportOrderPlatformMobileActivity extends BaseMvpActivity<PlatformM
 
     @UiThread
     void stopDownTimer() {
+        if (isTimerFinish) {
+            return;
+        }
         isTimerFinish = true;
         mTimer.cancel();
         tvGetCode.setText(getResources().getString(R.string.str_resend));
