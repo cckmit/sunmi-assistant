@@ -166,9 +166,8 @@ public class IpcSettingVersionActivity extends BaseActivity {
     }
 
     @Override
-    public int[] getUnStickNotificationId() {
-        return new int[]{OpcodeConstants.ipcUpgrade,
-                OpcodeConstants.ipcQueryUpgradeStatus,
+    public int[] getStickNotificationId() {
+        return new int[]{OpcodeConstants.ipcQueryUpgradeStatus,
                 IPC_EVENT_OPCODE_STATUS,
                 IPC_EVENT_OPCODE_ONLINE};
     }
