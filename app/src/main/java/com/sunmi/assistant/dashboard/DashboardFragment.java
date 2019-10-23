@@ -215,11 +215,8 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     public void updateStatusBar() {
-        if (mIsStickyPeriodTop) {
-            StatusBarUtils.setStatusBarColor(getActivity(), StatusBarUtils.TYPE_DARK);
-        } else {
-            StatusBarUtils.setStatusBarFullTransparent(getActivity());
-        }
+        resetTop();
+        mPresenter.scrollToTop();
         if (mTopShopMenu.getPopup().isShowing()) {
             mTopShopMenu.getPopup().dismiss(false);
         }

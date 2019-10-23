@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
-import sunmi.common.utils.log.LogCat;
 
 /**
  * @author yinhui
@@ -41,7 +40,6 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
     public OverviewPresenter(PageContract.ParentPresenter parent, int index) {
         this.mParent = parent;
         this.mPageIndex = index;
-        LogCat.d("yinhui", "Create OverviewPresenter");
     }
 
     @Override
@@ -72,7 +70,6 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
 
     @Override
     public void setPeriod(int period) {
-        LogCat.d("yinhui", "Set period: " + period + "; List=" + mList.size() + "; Presenter=" + this);
         mPeriod = period;
         for (BaseRefreshCard card : mList) {
             card.setPeriod(period, false);

@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
-import sunmi.common.utils.log.LogCat;
 
 
 /**
@@ -40,7 +39,6 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
     public CustomerPresenter(PageContract.ParentPresenter parent, int index) {
         this.mParent = parent;
         this.mPageIndex = index;
-        LogCat.d("yinhui", "Create OverviewPresenter");
     }
 
     @Override
@@ -71,7 +69,6 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
 
     @Override
     public void setPeriod(int period) {
-        LogCat.d("yinhui", "Set period: " + period + "; List=" + mList.size() + "; Presenter=" + this);
         mPeriod = period;
         for (BaseRefreshCard card : mList) {
             card.setPeriod(period, false);
