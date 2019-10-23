@@ -90,8 +90,13 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     @Override
     public void setPage(int index) {
-        mPages.get(mPageIndex).scrollToTop();
+        scrollToTop();
         mPageIndex = index;
+    }
+
+    @Override
+    public void scrollToTop() {
+        mPages.get(mPageIndex).scrollToTop();
     }
 
     @Override
@@ -132,9 +137,6 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         mPages.add(customerPresenter);
         pages.add(new PageHost(R.string.dashboard_page_customer, 0, customerFragment));
 
-        LogCat.d("yinhui", "getPages; Fragment=" + mView + "; Presenter=" + this);
-        LogCat.d("yinhui", "OverviewFragment=" + overviewFragment + "; Presenter=" + overviewPresenter);
-        LogCat.d("yinhui", "CustomerFragment=" + customerFragment + "; Presenter=" + customerPresenter);
         return pages;
     }
 

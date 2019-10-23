@@ -29,7 +29,7 @@ public class CustomerWaitDataCard extends BaseRefreshCard<CustomerWaitDataCard.M
         if (sInstance == null) {
             sInstance = new CustomerWaitDataCard(presenter, source);
         } else {
-            sInstance.reset(source);
+            sInstance.reset(presenter, source);
         }
         return sInstance;
     }

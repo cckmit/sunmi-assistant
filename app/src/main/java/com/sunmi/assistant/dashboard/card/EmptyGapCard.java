@@ -29,7 +29,7 @@ public class EmptyGapCard extends BaseRefreshCard<EmptyGapCard.Model, Object> {
         if (sInstance == null) {
             sInstance = new EmptyGapCard(presenter, source);
         } else {
-            sInstance.reset(source);
+            sInstance.reset(presenter, source);
         }
         return sInstance;
     }

@@ -121,6 +121,12 @@
     <string name="ipc_recognition_tip_zoom">Resize the screen and move the position of the face frame so that the face just fills the entire face frame</string>
     <string name="ipc_recognition_tip_focus">If the auto focus is not clear, you can adjust the face clearly by manual focus.</string>
     <string name="ipc_recognition_tip_line">点击画面任意两点，即可设置进店门槛线\n（为保证识别率，门槛线需画在门的下方位置）</string>
+    <string name="ipc_recognition_line_title1">点击画面中任意一点，以设置进店门槛线的初始位置</string>
+    <string name="ipc_recognition_line_title2">点击画面中任意另一点，以设置进店门槛线的终点位置</string>
+    <string name="ipc_recognition_line_title3">调整门槛线位置</string>
+    <string name="ipc_recognition_line_tip1">点击画面中任意一点，以设置进店门槛线的初始位置\n（为保证摄像头能够准确识别进店人次，尽量确保初始点靠近画面中门槛位置）</string>
+    <string name="ipc_recognition_line_tip2">点击画面中任意另一点，以设置进店门槛线的终点位置\n（为保证摄像头能够准确识别进店人次，尽量确保终点靠近画面中门槛下方）</string>
+    <string name="ipc_recognition_line_tip3">为保证识别精确性，您还可以移动已设置好的进店门槛线位置\n或拖拽门槛线端点更改门槛线的长度</string>
     <string name="ipc_recognition_line_start">点击以设置门槛线起点</string>
     <string name="ipc_recognition_line_end">再次点击以设置门槛线终点</string>
     <string name="ipc_recognition_line_cancel">Cancel</string>

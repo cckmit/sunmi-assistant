@@ -46,7 +46,7 @@ public class OverviewOrderImportCard extends BaseRefreshCard<OverviewOrderImport
         if (sInstance == null) {
             sInstance = new OverviewOrderImportCard(presenter, source);
         } else {
-            sInstance.reset(source);
+            sInstance.reset(presenter, source);
         }
         return sInstance;
     }
@@ -146,7 +146,7 @@ public class OverviewOrderImportCard extends BaseRefreshCard<OverviewOrderImport
             tip.setTextColor(mColorNormal);
             tip.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);
             tip.setCompoundDrawablePadding(0);
-            btn.setEnabled(true);
+            btn.setVisibility(View.VISIBLE);
             btn.setText(R.string.dashboard_card_import_btn);
 
         } else if (model.state == Constants.IMPORT_DOING) {
@@ -154,8 +154,7 @@ public class OverviewOrderImportCard extends BaseRefreshCard<OverviewOrderImport
             tip.setTextColor(mColorOk);
             tip.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);
             tip.setCompoundDrawablePadding(0);
-            btn.setEnabled(false);
-            btn.setText(R.string.dashboard_card_import_btn);
+            btn.setVisibility(View.INVISIBLE);
 
         } else if (model.state == Constants.IMPORT_SUCCESS) {
             tip.setText(R.string.dashboard_card_import_tip_ok);
@@ -163,7 +162,7 @@ public class OverviewOrderImportCard extends BaseRefreshCard<OverviewOrderImport
             tip.setCompoundDrawablesRelativeWithIntrinsicBounds(R.mipmap.dashboard_import_ok,
                     0, 0, 0);
             tip.setCompoundDrawablePadding((int) context.getResources().getDimension(R.dimen.dp_4));
-            btn.setEnabled(true);
+            btn.setVisibility(View.VISIBLE);
             btn.setText(R.string.str_confirm);
 
         } else if (model.state == Constants.IMPORT_FAIL) {
@@ -172,7 +171,7 @@ public class OverviewOrderImportCard extends BaseRefreshCard<OverviewOrderImport
             tip.setCompoundDrawablesRelativeWithIntrinsicBounds(R.mipmap.dashboard_import_error,
                     0, 0, 0);
             tip.setCompoundDrawablePadding((int) context.getResources().getDimension(R.dimen.dp_4));
-            btn.setEnabled(true);
+            btn.setVisibility(View.VISIBLE);
             btn.setText(R.string.str_retry);
 
         } else {

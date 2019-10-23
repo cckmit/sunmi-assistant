@@ -19,10 +19,13 @@ import com.sunmi.ipc.face.model.FaceAge;
 import com.sunmi.ipc.model.FaceAgeRangeResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 import retrofit2.Call;
 import sunmi.common.base.adapter.CommonAdapter;
@@ -59,7 +62,8 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
         if (sInstance == null) {
             sInstance = new CustomerAnalysisCard(presenter, source);
         } else {
-            sInstance.reset(source);
+            sInstance.mPresenter = presenter;
+            sInstance.reset(presenter, source);
         }
         return sInstance;
     }
@@ -193,13 +197,15 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
 
         // Test data
 //        model.random(mAgeList, mAgeLabel, mMaleLabel, mFemaleLabel);
+
+        mAdapter.setDatas(model.list);
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
     protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-        mAdapter.setDatas(model.list);
-        mAdapter.notifyDataSetChanged();
-        holder.getView(R.id.lv_dashboard_list).requestLayout();
+        View list = holder.getView(R.id.lv_dashboard_list);
+        list.requestLayout();
     }
 
     @Override
@@ -226,8 +232,11 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
 
     private static class DetailListAdapter extends CommonAdapter<Item> {
 
+        private String mNum10Thousands;
+
         private DetailListAdapter(Context context) {
             super(context, R.layout.dashboard_recycle_item_customer_detail_item);
+            mNum10Thousands = context.getString(R.string.str_num_10_thousands);
         }
 
         @Override
@@ -254,7 +263,9 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
                 avatar.setImageResource(item.gender == 1 ?
                         R.mipmap.dashboard_customer_avatar_male : R.mipmap.dashboard_customer_avatar_female);
                 title.setText(item.name);
-                count.setText(String.valueOf(item.count));
+                count.setText(item.count > NUM_10_THOUSANDS ?
+                        FORMAT_THOUSANDS_DOUBLE_DECIMAL.format((float) item.count / NUM_10_THOUSANDS) + mNum10Thousands
+                        : String.valueOf(item.count));
                 ratio.setText(String.format(Locale.getDefault(), "%.0f%%",
                         (float) item.count * 100 / item.total));
                 oldRatio.setText(DATA_NONE);
@@ -315,6 +326,15 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
         public void setError() {
             this.state = STATE_ERROR;
         }
+
+        @NotNull
+        @Override
+        public String toString() {
+            return "Item{" +
+                    "name='" + name + '\'' +
+                    ", count=" + count +
+                    '}';
+        }
     }
 
     public static class Model extends BaseRefreshCard.BaseModel {
@@ -326,6 +346,7 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
         }
 
         public void random(SparseArray<String> ageList, String ageLabel, String maleLabel, String femaleLabel) {
+            Random random = new Random();
             List<Pair<Integer, Integer>> pool = new ArrayList<>();
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 2; j++) {
@@ -333,15 +354,15 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
                 }
             }
             list.clear();
-            int itemCount = (int) (Math.random() * 1000 % 4) + 1;
+            int itemCount = random.nextInt(5) + 1;
             int total = 0;
             for (int i = 0; i < itemCount; i++) {
                 int size = pool.size();
-                Pair<Integer, Integer> item = pool.remove((int) (Math.random() * 1000 % size));
+                Pair<Integer, Integer> item = pool.remove(random.nextInt(10000) % size);
                 String ageName = ageList.get(item.first);
                 String genderName = item.second == 1 ? maleLabel : femaleLabel;
                 String name = String.format("%s  |  %s%s", genderName, ageName, ageLabel);
-                int count = (int) (Math.random() * 1000);
+                int count = random.nextInt(1000);
                 total += count;
                 list.add(new Item(item.first, item.second, name, count));
             }
@@ -351,6 +372,14 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
             }
             for (Item item : list) {
                 item.setTotal(total);
+            }
+            int type = random.nextInt(10000) % 3;
+            for (Item item : list) {
+                if (type == 1) {
+                    item.setLoading();
+                } else if (type == 2) {
+                    item.setError();
+                }
             }
         }
     }

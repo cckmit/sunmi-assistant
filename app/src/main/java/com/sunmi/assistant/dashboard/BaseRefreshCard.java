@@ -56,26 +56,22 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
     protected int mState;
     protected int mSource;
     protected int mPeriod;
-    private int mCompanyId;
-    private int mShopId;
 
     protected BaseRefreshCard(Presenter presenter, int source) {
-        this.mPresenter = presenter;
         this.mModel = createModel();
         if (this.mModel == null) {
             throw new RuntimeException("createModel() must return NON-NULL model!");
         }
-        reset(source);
+        reset(presenter, source);
     }
 
-    public void reset(int source) {
+    public void reset(Presenter presenter, int source) {
         mModel.valid = false;
         mModel.init(source);
+        this.mPresenter = presenter;
         this.mState = STATE_INIT;
         this.mPeriod = Constants.TIME_PERIOD_INIT;
         this.mSource = source;
-        this.mCompanyId = SpUtils.getCompanyId();
-        this.mShopId = SpUtils.getShopId();
     }
 
     public boolean hasAuth() {
@@ -148,16 +144,6 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
 //        }
 //    }
 
-    public void setShop(int companyId, int shopId, boolean forceLoad) {
-        if (!forceLoad && this.mCompanyId == companyId && this.mShopId == shopId) {
-            return;
-        }
-        this.mCompanyId = companyId;
-        this.mShopId = shopId;
-        mModel.valid = false;
-        requestLoad(true);
-    }
-
     public void setPeriod(int period, boolean forceLoad) {
         if (!forceLoad && this.mPeriod == period) {
             return;
@@ -185,7 +171,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
             LogCat.d(TAG, "Period is not initialized, skip.");
             return;
         }
-        if (mCall.isLoading() && mCall.isRequestSame(mCompanyId, mShopId, mPeriod)) {
+        if (mCall.isLoading() && mCall.isRequestSame(SpUtils.getCompanyId(), SpUtils.getShopId(), mPeriod)) {
             LogCat.d(TAG, "Data is loading, skip.");
             return;
         }
@@ -195,8 +181,8 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
             updateViews();
         }
         CardCallback callback = new CardCallback(mSource, mPeriod);
-        Call<BaseResponse<Resp>> call = load(mCompanyId, mShopId, mPeriod, callback);
-        mCall.set(call, mCompanyId, mShopId, mPeriod);
+        Call<BaseResponse<Resp>> call = load(SpUtils.getCompanyId(), SpUtils.getShopId(), mPeriod, callback);
+        mCall.set(call, SpUtils.getCompanyId(), SpUtils.getShopId(), mPeriod);
     }
 
     protected void updateViews() {

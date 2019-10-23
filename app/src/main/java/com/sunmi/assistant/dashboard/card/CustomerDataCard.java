@@ -44,7 +44,7 @@ public class CustomerDataCard extends BaseRefreshCard<CustomerDataCard.Model, Ob
         if (sInstance == null) {
             sInstance = new CustomerDataCard(presenter, source);
         } else {
-            sInstance.reset(source);
+            sInstance.reset(presenter, source);
         }
         return sInstance;
     }
