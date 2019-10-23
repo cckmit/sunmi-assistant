@@ -103,7 +103,10 @@ public class SettingItemLayout extends RelativeLayout {
         }
         String toLeftText = a.getString(R.styleable.SettingItemLayout_toTextLeftText);
         if (!TextUtils.isEmpty(toLeftText)) {
-            ivToTextLeft.setText(rightText);
+            ivToTextLeft.setText(toLeftText);
+            ivToTextLeft.setVisibility(VISIBLE);
+        } else {
+            ivToTextLeft.setVisibility(GONE);
         }
         float leftPadding = a.getDimension(R.styleable.SettingItemLayout_leftPadding, -1);
         leftImage = a.getDrawable(R.styleable.SettingItemLayout_imageLeft);

@@ -682,7 +682,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @UiThread
     void showDevStatus(int status) {
-        mVersion.getIvToTextLeft().setVisibility(View.VISIBLE);
         switch (status) {
             case 0:
                 mVersion.getIvToTextLeft().setText(R.string.ipc_setting_downloading);
