@@ -60,7 +60,7 @@
         <ImageView
             android:id="@+id/iv_import_order"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dp_228"
+            android:layout_height="@dimen/dp_248"
             android:background="@mipmap/ic_import_order_create_shop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -71,7 +71,7 @@
 
     <TextView
         android:id="@+id/tv_support_platform"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_20"
@@ -88,7 +88,7 @@
 
     <Button
         android:id="@+id/btn_import_current_mobile"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="@dimen/dp_44"
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_20"
@@ -98,11 +98,13 @@
         android:textColor="@color/c_white"
         android:textSize="@dimen/sp_16"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/btn_import_other_mobile" />
+        app:layout_constraintBottom_toTopOf="@id/btn_import_other_mobile"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btn_import_other_mobile"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="@dimen/dp_44"
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_20"
@@ -111,7 +113,9 @@
         android:text="@string/import_order_other_mobile"
         android:textColor="@color/c_white"
         android:textSize="@dimen/sp_16"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <sunmi.common.view.TitleBarView
         android:id="@+id/title_bar"

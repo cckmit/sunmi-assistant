@@ -91,9 +91,9 @@ public class ImportOrderSelectShopActivity extends BaseActivity {
                         LogCat.e(TAG, "Authorize shop Failed. " + msg);
                         hideLoadingDialog();
                         if (code == 3) {
-                            shortTip(R.string.import_order_access_no_auth_more);
-                        } else if (code == 2) {
                             shortTip(R.string.import_order_access_already_auth);
+                        } else if (code == 2) {
+                            shortTip(R.string.import_order_access_no_auth_more);
                         } else {
                             shortTip(R.string.import_order_access_fail);
                         }
