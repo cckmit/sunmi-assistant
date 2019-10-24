@@ -10,7 +10,7 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/layout_dashboard_content"
         android:layout_width="@dimen/dp_327"
-        android:layout_height="@dimen/dp_72"
+        android:layout_height="@dimen/dp_76"
         android:layout_gravity="center_horizontal|top"
         android:layout_marginTop="@dimen/dp_24"
         android:background="@drawable/dashboard_bg_card_round_white">
@@ -22,6 +22,7 @@
             android:layout_marginStart="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_16"
             android:text="@string/dashboard_card_import_title"
+            android:textStyle="bold"
             android:textColor="@color/text_main"
             android:textSize="@dimen/sp_14"
             app:layout_constraintStart_toStartOf="parent"
@@ -32,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_20"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_8"
             android:gravity="center_vertical"
             android:textColor="@color/text_caption"
             android:textSize="@dimen/sp_12"

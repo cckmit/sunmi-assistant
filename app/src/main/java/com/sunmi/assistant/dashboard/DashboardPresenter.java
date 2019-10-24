@@ -100,18 +100,12 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     @Override
-    public void refresh(boolean showLoading) {
-        int flag = 0;
-        if (!Utils.hasAuth(mSource)) {
+    public void refresh(boolean forceReload, boolean showLoading) {
+        if (forceReload) {
+            int flag = 0;
             flag |= Constants.FLAG_SAAS;
-        }
-        if (!Utils.hasFs(mSource)) {
             flag |= Constants.FLAG_FS;
-        }
-        if (!Utils.hasCustomer(mSource)) {
             flag |= Constants.FLAG_CUSTOMER;
-        }
-        if (flag != 0) {
             load(flag, false, showLoading);
         } else {
             mPages.get(mPageIndex).setSource(mSource, showLoading);
@@ -347,7 +341,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
         @Override
         public void run() {
-            refresh(false);
+            refresh(true, false);
             WORK_HANDLER.postDelayed(this, REFRESH_TIME_PERIOD);
         }
     }
