@@ -87,7 +87,7 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
 
     @Override
     public void refresh(boolean showLoading) {
-        mParent.refresh(showLoading);
+        mParent.refresh(true, showLoading);
     }
 
     @Override
@@ -98,6 +98,20 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
     @Override
     public int getPeriod() {
         return mPeriod;
+    }
+
+    @Override
+    public void showLoading() {
+        if (isViewAttached()) {
+            mView.showLoadingDialog();
+        }
+    }
+
+    @Override
+    public void hideLoading() {
+        if (isViewAttached()) {
+            mView.hideLoadingDialog();
+        }
     }
 
     @Override

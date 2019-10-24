@@ -25,12 +25,17 @@ import sunmi.common.base.BasePresenter;
  * @date 2019-10-14
  */
 public class OverviewPresenter extends BasePresenter<OverviewContract.View>
-        implements OverviewContract.Presenter, BaseRefreshCard.Presenter {
+        implements OverviewContract.Presenter, BaseRefreshCard.Presenter,
+        OverviewOrderImportCard.OnImportStateChangeListener {
 
     private static final String TAG = OverviewPresenter.class.getSimpleName();
 
+    private static final int IMPORT_STATE_SHOW = 0;
+    private static final int IMPORT_STATE_DISMISS = 1;
+
     private int mSource = -1;
     private int mPeriod = Constants.TIME_PERIOD_INIT;
+    private int mImportState = IMPORT_STATE_DISMISS;
 
     private PageContract.ParentPresenter mParent;
     private int mPageIndex;
@@ -88,7 +93,7 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
 
     @Override
     public void refresh(boolean showLoading) {
-        mParent.refresh(showLoading);
+        mParent.refresh(true, showLoading);
     }
 
     @Override
@@ -102,9 +107,32 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
     }
 
     @Override
+    public void showLoading() {
+        if (isViewAttached()) {
+            mView.showLoadingDialog();
+        }
+    }
+
+    @Override
+    public void hideLoading() {
+        if (isViewAttached()) {
+            mView.hideLoadingDialog();
+        }
+    }
+
+    @Override
     public void showFailedTip() {
         if (isViewAttached()) {
             mView.shortTip(R.string.toast_network_Exception);
+        }
+    }
+
+    @Override
+    public void onImportStateChange(int state) {
+        if (state == Constants.IMPORT_COMPLETE) {
+            this.mImportState = IMPORT_STATE_DISMISS;
+        } else {
+            this.mImportState = IMPORT_STATE_SHOW;
         }
     }
 
@@ -139,8 +167,10 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
         // No order card or import card
         if (!Utils.hasAuth(source)) {
             mList.add(NoOrderCard.get(this, source));
-        } else if (!Utils.hasImport(source)) {
-            mList.add(OverviewOrderImportCard.get(this, source));
+        } else if (!Utils.hasImport(source) || mImportState == IMPORT_STATE_SHOW) {
+            OverviewOrderImportCard card = OverviewOrderImportCard.get(this, source);
+            card.setListener(this);
+            mList.add(card);
         }
 
         // No fs card
