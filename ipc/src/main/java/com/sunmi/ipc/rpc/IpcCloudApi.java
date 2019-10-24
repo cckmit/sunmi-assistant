@@ -197,6 +197,8 @@ public class IpcCloudApi {
                              RetrofitCallback<CloudTimeSlotResp> callback) {
         try {
             String params = new JSONObject()
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", SpUtils.getShopId())
                     .put("device_id", deviceId)
                     .put("start_time", startTime)
                     .put("end_time", endTime)
@@ -221,6 +223,8 @@ public class IpcCloudApi {
                              RetrofitCallback<VideoListResp> callback) {
         try {
             String params = new JSONObject()
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", SpUtils.getShopId())
                     .put("device_id", deviceId)
                     .put("start_time", startTime)
                     .put("end_time", endTime)
@@ -236,7 +240,6 @@ public class IpcCloudApi {
     /**
      * -------------------- 人脸库相关 --------------------
      */
-
     public void getFaceAgeRange(int companyId, int shopId,
                                 RetrofitCallback<FaceAgeRangeResp> callback) {
         try {
@@ -362,7 +365,6 @@ public class IpcCloudApi {
             e.printStackTrace();
         }
     }
-
 
     public void deleteFace(int companyId, int shopId, int groupId, List<Integer> faceIds,
                            RetrofitCallback<Object> callback) {
@@ -576,15 +578,15 @@ public class IpcCloudApi {
                                            RetrofitCallback<FaceArrivalCount> callback) {
         try {
             JSONObject params = new JSONObject()
-                    .put("company_id",companyId)
-                    .put("shop_id",shopId);
-            if (startTime!=null){
-                params.put("start_time",startTime);
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId);
+            if (startTime != null) {
+                params.put("start_time", startTime);
             }
-            if (endTime!=null){
-                params.put("end_time",endTime);
+            if (endTime != null) {
+                params.put("end_time", endTime);
             }
-            params.put("face_id",faceId);
+            params.put("face_id", faceId);
             SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
                     .getArrivalCountByTimeRange(new BaseRequest(params.toString()))
                     .enqueue(callback);

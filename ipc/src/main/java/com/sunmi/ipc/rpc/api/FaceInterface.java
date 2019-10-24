@@ -84,7 +84,6 @@ public interface FaceInterface {
      *                shop_id	是	integer	店铺id
      *                group_id	是	integer	人脸分组id
      *                file	是	file	人员照片
-     * @param file    人员照片
      * @return Response
      */
     @POST(URL + "group/uploadFace")
@@ -216,18 +215,20 @@ public interface FaceInterface {
 
     /**
      * 用户获取进店记录
+     *
      * @param request
      * @return
      */
-    @POST(URL+"history/arrival/getListByTimeRange")
+    @POST(URL + "history/arrival/getListByTimeRange")
     Call<BaseResponse<FaceArrivalLogResp>> getArrivalListByTimeRange(@Body BaseRequest request);
 
     /**
      * 用户获取某个人进店次数统计
+     *
      * @param request
      * @return
      */
-    @POST(URL+"history/arrival/getCountByTimeRange")
+    @POST(URL + "history/arrival/getCountByTimeRange")
     Call<BaseResponse<FaceArrivalCount>> getArrivalCountByTimeRange(@Body BaseRequest request);
 
 }

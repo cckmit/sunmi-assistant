@@ -84,7 +84,7 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
         mFilterCurrent.put(0, order.get(0));
         mView.updateFilter(0, order);
 
-        PaymentApi.get().getOrderPurchaseTypeList(new RetrofitCallback<OrderPayTypeListResp>() {
+        PaymentApi.get().getOrderPurchaseTypeList(mCompanyId, mShopId, new RetrofitCallback<OrderPayTypeListResp>() {
             @Override
             public void onSuccess(int code, String msg, OrderPayTypeListResp data) {
                 List<OrderPayTypeListResp.PayType> list = data.getPurchase_type_list();
@@ -107,7 +107,7 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
             }
         });
 
-        PaymentApi.get().getOrderTypeList(new RetrofitCallback<OrderTypeListResp>() {
+        PaymentApi.get().getOrderTypeList(mCompanyId, mShopId, new RetrofitCallback<OrderTypeListResp>() {
             @Override
             public void onSuccess(int code, String msg, OrderTypeListResp data) {
                 List<OrderTypeListResp.OrderType> list = data.getOrder_type_list();

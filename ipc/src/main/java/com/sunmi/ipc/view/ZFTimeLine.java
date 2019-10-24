@@ -141,11 +141,9 @@ public class ZFTimeLine extends View {
                 if ((startInterval > leftInterval && startInterval < rightInterval)
                         || (endInterval > leftInterval && endInterval < rightInterval)
                         || (startInterval < leftInterval && endInterval > rightInterval)) {
-                    canvas.drawRect((startInterval - leftInterval) / secondsOfIntervalValue()
-                            , displayTop,
-                            (endInterval - leftInterval) / secondsOfIntervalValue(),
-                            displayBottom,
-                            pOrange);
+                    canvas.drawRect((startInterval - leftInterval) / secondsOfIntervalValue(),
+                            displayTop, (endInterval - leftInterval) / secondsOfIntervalValue(),
+                            displayBottom, pOrange);
                 }
             }
         }
