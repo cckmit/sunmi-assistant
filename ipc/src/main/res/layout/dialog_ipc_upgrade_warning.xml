@@ -27,7 +27,7 @@
         android:id="@+id/tv_upgrade"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_18"
         android:text="@string/import_order_dialog_upgrading"
         android:textColor="@color/text_main"
         android:textSize="@dimen/sp_12"
