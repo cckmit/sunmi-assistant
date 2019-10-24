@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
-        app:titleText="@string/shop_create"
+        app:titleText="@string/shop_create_new"
         app:titleTextColor="@color/text_main" />
 
     <ImageView

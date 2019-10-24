@@ -16,8 +16,11 @@ import org.androidannotations.annotations.UiThread;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.TreeSet;
+
 import sunmi.common.base.BaseActivity;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.dialog.CommonDialog;
@@ -32,6 +35,7 @@ public class IpcSettingSdcardActivity extends BaseActivity {
 
     @Extra
     SunmiDevice mDevice;
+
     private static final int DURATION_FORMAT = 15_000;
     private static final int INTERVAL_PROGRESS = 200;
 
@@ -46,6 +50,51 @@ public class IpcSettingSdcardActivity extends BaseActivity {
     @Click(resName = "sil_sd_format")
     void formatClick() {
         showConfirmDialog();
+        TreeSet<String> sunmiDevices = new TreeSet<>();
+        String ss = "aaa";
+        sunmiDevices.add(ss);
+        sunmiDevices.add(ss);
+
+    }
+
+    @Override
+    public int[] getUnStickNotificationId() {
+        return new int[]{OpcodeConstants.sdcardFormat};
+    }
+
+    @Override
+    public void didReceivedNotification(int id, Object... args) {
+        if (id == OpcodeConstants.sdcardFormat) {
+            formatTimer.cancel();
+            progressDialogDismiss();
+            if (args == null) return;
+            ResponseBean res = (ResponseBean) args[0];
+            if (TextUtils.equals(RpcErrorCode.RPC_COMMON_ERROR + "", res.getErrCode())
+                    || TextUtils.equals(RpcErrorCode.RPC_ERR_TIMEOUT + "", res.getErrCode())) {
+                shortTip(R.string.toast_networkIsExceptional);
+                return;
+            }
+            try {
+                JSONObject result = res.getResult();
+                if (result == null || (result.has("sn")
+                        && !TextUtils.equals(result.getString("sn"), mDevice.getDeviceid()))) {
+                    return;
+                }
+
+                if (result.has("sd_status_code")) {
+                    int sdStatusCode = result.getInt("sd_status_code");
+                    if (sdStatusCode == 2) {
+                        showResultDialog(true);
+                    } else {
+                        tipSdcardError(sdStatusCode);
+                    }
+                    return;
+                }
+                shortTip(R.string.toast_networkIsExceptional);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     void showConfirmDialog() {
@@ -102,41 +151,6 @@ public class IpcSettingSdcardActivity extends BaseActivity {
         if (progressDialog != null) {
             progressDialog.setProgress(100);
             progressDialog.dismiss();
-        }
-    }
-
-    @Override
-    public int[] getUnStickNotificationId() {
-        return new int[]{OpcodeConstants.sdcardFormat};
-    }
-
-    @Override
-    public void didReceivedNotification(int id, Object... args) {
-        if (id == OpcodeConstants.sdcardFormat) {
-            formatTimer.cancel();
-            progressDialogDismiss();
-            if (args == null) return;
-            ResponseBean res = (ResponseBean) args[0];
-            try {
-                JSONObject result = res.getResult();
-                if (result == null || (result.has("sn")
-                        && !TextUtils.equals(result.getString("sn"), mDevice.getDeviceid()))) {
-                    return;
-                }
-
-                if (result.has("sd_status_code")) {
-                    int sdStatusCode = result.getInt("sd_status_code");
-                    if (sdStatusCode == 2) {
-                        showResultDialog(true);
-                    } else {
-                        tipSdcardError(sdStatusCode);
-                    }
-                    return;
-                }
-                shortTip(R.string.toast_networkIsExceptional);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
         }
     }
 

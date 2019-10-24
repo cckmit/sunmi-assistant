@@ -92,7 +92,7 @@
     <string name="ipc_setting_tip_network_detection">Checking the Internet，please wait…</string>
     <string name="ipc_setting_tip_network_dismatch">The current device and the mobile phone are not under the same router.</string>
     <string name="ipc_setting_dialog_upgrade">Update</string>
-    <string name="ipc_setting_dialog_upgrade_download_time">Download time is expected to take %s minutes</string>
+    <string name="ipc_setting_dialog_upgrade_download_time">Upgrade time is expected to take %s minutes</string>
     <string name="ipc_setting_dialog_upgrade_ok">Update now</string>
     <string name="str_in_later">Update later</string>
     <string name="ipc_setting_dialog_upgrade_progress">Downloading…%s%%</string>

@@ -92,7 +92,7 @@
     <string name="ipc_setting_tip_network_detection">正在检测网络环境，请稍后…</string>
     <string name="ipc_setting_tip_network_dismatch">当前设备与手机不在同一路由器下</string>
     <string name="ipc_setting_dialog_upgrade">版本更新</string>
-    <string name="ipc_setting_dialog_upgrade_download_time">下载时间预计需要%s分钟</string>
+    <string name="ipc_setting_dialog_upgrade_download_time">升级时间预计需要%s分钟</string>
     <string name="ipc_setting_dialog_upgrade_ok">现在更新</string>
     <string name="str_in_later">以后再说</string>
     <string name="ipc_setting_dialog_upgrade_progress">下载中…%s%%</string>
