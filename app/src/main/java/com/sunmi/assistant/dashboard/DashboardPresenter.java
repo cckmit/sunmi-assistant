@@ -106,7 +106,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             flag |= Constants.FLAG_SAAS;
             flag |= Constants.FLAG_FS;
             flag |= Constants.FLAG_CUSTOMER;
-            load(flag, true, showLoading);
+            load(flag, false, showLoading);
         } else {
             mPages.get(mPageIndex).setSource(mSource, showLoading);
         }
