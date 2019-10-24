@@ -216,6 +216,7 @@ public class IpcSettingVersionActivity extends BaseActivity {
                 if (TextUtils.equals(sn, mDevice.getDeviceid())) {
                     stopTimerCountDown(mUpgradeStatus);
                     setText(IPC_RELAUNCH, 100);
+                    setLayoutVisible();
                     upgradeVerSuccessDialog();
                 }
             } catch (JSONException e) {
@@ -356,7 +357,7 @@ public class IpcSettingVersionActivity extends BaseActivity {
 
     @UiThread
     void showProgress(int status, long l) {
-        if (isFastClick(500)) {
+        if (isFastClick(300)) {
             return;
         }
         if (status == IPC_CONNECT_TIMEOUT) {
@@ -414,7 +415,13 @@ public class IpcSettingVersionActivity extends BaseActivity {
             if (textProgress > PERCENT_DOWNLOAD + PERCENT_UPGRADE + PERCENT_RELAUNCH - 1) {
                 return;
             }
-            setText(IPC_RELAUNCH, textProgress);
+            if (((IPC_RELAUNCH_TIME - l) / 1000) < 55) {
+                //下载固件的时间提示40+15s
+                setText(IPC_UPGRADE_AI, textProgress);
+            } else {
+                //重启时间150+15s
+                setText(IPC_RELAUNCH, textProgress);
+            }
         }
     }
 

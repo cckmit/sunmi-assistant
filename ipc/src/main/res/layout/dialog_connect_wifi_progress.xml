@@ -8,7 +8,7 @@
         android:layout_width="@dimen/dp_120"
         android:layout_height="@dimen/dp_108"
         android:layout_centerInParent="true"
-        android:background="@drawable/dialog_shap_white_solid">
+        android:background="@drawable/bg_dialog">
 
         <ProgressBar
             android:id="@+id/pBar_progress"
