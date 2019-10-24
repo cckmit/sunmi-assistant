@@ -8,7 +8,7 @@
         android:layout_width="@dimen/dp_270"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:background="@drawable/dialog_shap_white_solid">
+        android:background="@drawable/bg_dialog">
 
         <TextView
             android:id="@+id/tv_progress"
