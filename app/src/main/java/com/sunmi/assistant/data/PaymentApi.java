@@ -1,15 +1,10 @@
 package com.sunmi.assistant.data;
 
-import com.sunmi.assistant.data.response.OrderAvgUnitSaleResp;
 import com.sunmi.assistant.data.response.OrderDetailListResp;
 import com.sunmi.assistant.data.response.OrderListResp;
 import com.sunmi.assistant.data.response.OrderPayTypeListResp;
-import com.sunmi.assistant.data.response.OrderPayTypeRankResp;
-import com.sunmi.assistant.data.response.OrderQuantityRankResp;
-import com.sunmi.assistant.data.response.OrderTimeDistributionResp;
 import com.sunmi.assistant.data.response.OrderTotalAmountResp;
 import com.sunmi.assistant.data.response.OrderTotalCountResp;
-import com.sunmi.assistant.data.response.OrderTotalRefundsResp;
 import com.sunmi.assistant.data.response.OrderTypeListResp;
 
 import org.json.JSONArray;
@@ -26,6 +21,7 @@ import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.SafeUtils;
+import sunmi.common.utils.SpUtils;
 
 /**
  * 订单管理远程接口
@@ -86,19 +82,16 @@ public class PaymentApi {
         return call;
     }
 
-    public Call<BaseResponse<OrderTotalRefundsResp>> getOrderRefundCount(int companyId, int shopId, long timeStart, long timeEnd,
-                                                                         int rateFlag, RetrofitCallback<OrderTotalRefundsResp> callback) {
-        Call<BaseResponse<OrderTotalRefundsResp>> call = null;
+    public Call<BaseResponse<OrderTypeListResp>> getOrderTypeList(
+            int companyId, int shopId, RetrofitCallback<OrderTypeListResp> callback) {
+        Call<BaseResponse<OrderTypeListResp>> call = null;
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
                     .put("shop_id", shopId)
-                    .put("time_range_start", timeStart)
-                    .put("time_range_end", timeEnd)
-                    .put("rate_required", rateFlag)
                     .toString();
             call = SunmiStoreRetrofitClient.getInstance().create(PaymentInterface.class)
-                    .getRefundCount(createRequestBody(params));
+                    .getOrderTypeList(createRequestBody(params));
             call.enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -106,56 +99,20 @@ public class PaymentApi {
         return call;
     }
 
-    public Call<BaseResponse<OrderAvgUnitSaleResp>> getOrderAvgUnitSale(int companyId, int shopId, long timeStart, long timeEnd,
-                                                                        int rateFlag, RetrofitCallback<OrderAvgUnitSaleResp> callback) {
-        Call<BaseResponse<OrderAvgUnitSaleResp>> call = null;
+    public Call<BaseResponse<OrderPayTypeListResp>> getOrderPurchaseTypeList(
+            int companyId, int shopId, RetrofitCallback<OrderPayTypeListResp> callback) {
+        Call<BaseResponse<OrderPayTypeListResp>> call = null;
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
                     .put("shop_id", shopId)
-                    .put("time_range_start", timeStart)
-                    .put("time_range_end", timeEnd)
-                    .put("rate_required", rateFlag)
                     .toString();
             call = SunmiStoreRetrofitClient.getInstance().create(PaymentInterface.class)
-                    .getAvgUnitSale(createRequestBody(params));
+                    .getPurchaseTypeList(createRequestBody(params));
             call.enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return call;
-    }
-
-    public Call<BaseResponse<OrderQuantityRankResp>> getOrderQuantityRank(int companyId, int shopId, long timeStart, long timeEnd,
-                                                                          RetrofitCallback<OrderQuantityRankResp> callback) {
-        Call<BaseResponse<OrderQuantityRankResp>> call = null;
-        try {
-            String params = new JSONObject()
-                    .put("company_id", companyId)
-                    .put("shop_id", shopId)
-                    .put("time_range_start", timeStart)
-                    .put("time_range_end", timeEnd)
-                    .toString();
-            call = SunmiStoreRetrofitClient.getInstance().create(PaymentInterface.class)
-                    .getQuantityRank(createRequestBody(params));
-            call.enqueue(callback);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return call;
-    }
-
-    public Call<BaseResponse<OrderTypeListResp>> getOrderTypeList(RetrofitCallback<OrderTypeListResp> callback) {
-        Call<BaseResponse<OrderTypeListResp>> call = SunmiStoreRetrofitClient.getInstance().create(PaymentInterface.class)
-                .getOrderTypeList(createRequestBody(""));
-        call.enqueue(callback);
-        return call;
-    }
-
-    public Call<BaseResponse<OrderPayTypeListResp>> getOrderPurchaseTypeList(RetrofitCallback<OrderPayTypeListResp> callback) {
-        Call<BaseResponse<OrderPayTypeListResp>> call = SunmiStoreRetrofitClient.getInstance().create(PaymentInterface.class)
-                .getPurchaseTypeList(createRequestBody(""));
-        call.enqueue(callback);
         return call;
     }
 
@@ -197,10 +154,13 @@ public class PaymentApi {
         return call;
     }
 
-    public Call<BaseResponse<OrderDetailListResp>> getOrderDetailList(int orderId, RetrofitCallback<OrderDetailListResp> callback) {
+    public Call<BaseResponse<OrderDetailListResp>> getOrderDetailList(int orderId,
+                                                                      RetrofitCallback<OrderDetailListResp> callback) {
         Call<BaseResponse<OrderDetailListResp>> call = null;
         try {
             String params = new JSONObject()
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", SpUtils.getShopId())
                     .put("order_id", orderId)
                     .toString();
             call = SunmiStoreRetrofitClient.getInstance().create(PaymentInterface.class)
@@ -212,48 +172,7 @@ public class PaymentApi {
         return call;
     }
 
-    public Call<BaseResponse<OrderPayTypeRankResp>> getOrderPurchaseTypeRank(
-            int companyId, int shopId, long timeStart, long timeEnd,
-            RetrofitCallback<OrderPayTypeRankResp> callback) {
-        Call<BaseResponse<OrderPayTypeRankResp>> call = null;
-        try {
-            String params = new JSONObject()
-                    .put("company_id", companyId)
-                    .put("shop_id", shopId)
-                    .put("start_time", timeStart)
-                    .put("end_time", timeEnd)
-                    .toString();
-            call = SunmiStoreRetrofitClient.getInstance().create(PaymentInterface.class)
-                    .getPurchaseTypeRank(createRequestBody(params));
-            call.enqueue(callback);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return call;
-    }
-
-    public Call<BaseResponse<OrderTimeDistributionResp>> getOrderTimeDistribution(
-            int companyId, int shopId, long timeStart, long timeEnd,
-            int interval, RetrofitCallback<OrderTimeDistributionResp> callback) {
-        Call<BaseResponse<OrderTimeDistributionResp>> call = null;
-        try {
-            String params = new JSONObject()
-                    .put("company_id", companyId)
-                    .put("shop_id", shopId)
-                    .put("start_time", timeStart)
-                    .put("end_time", timeEnd)
-                    .put("time_interval", interval)
-                    .toString();
-            call = SunmiStoreRetrofitClient.getInstance().create(PaymentInterface.class)
-                    .getTimeDistribution(createRequestBody(params));
-            call.enqueue(callback);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return call;
-    }
-
-    public BaseRequest createRequestBody(String params) {
+    private BaseRequest createRequestBody(String params) {
         String timeStamp = DateTimeUtils.currentTimeSecond() + "";
         String randomNum = (int) ((Math.random() * 9 + 1) * 100000) + "";
         String isEncrypted = "0";
@@ -267,4 +186,5 @@ public class PaymentApi {
                 .setSign(sign)
                 .setLang("zh").createBaseRequest();
     }
+
 }
