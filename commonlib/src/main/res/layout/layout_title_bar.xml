@@ -29,14 +29,13 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:background="@drawable/right_image_selector"
             android:gravity="center"
             android:paddingLeft="@dimen/dp_20"
             android:paddingRight="@dimen/dp_20"
             android:textColor="@color/text_main"
-            android:textSize="@dimen/sp_17"
+            android:textSize="@dimen/sp_14"
             android:visibility="gone" />
 
         <LinearLayout
@@ -82,7 +81,7 @@
             android:maxWidth="@dimen/dp_256"
             android:singleLine="true"
             android:textAllCaps="true"
-            android:textColor="@color/common_orange"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold" />
 
@@ -152,13 +151,13 @@
             android:paddingLeft="@dimen/dp_12"
             android:paddingRight="@dimen/dp_12"
             android:textColor="@color/text_main"
-            android:textSize="@dimen/sp_16"
+            android:textSize="@dimen/sp_14"
             android:visibility="gone" />
 
         <View
             android:id="@+id/divider"
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"
+            android:layout_height="@dimen/dp_0_5"
             android:layout_alignParentBottom="true"
             android:background="@color/c_divider" />
     </RelativeLayout>

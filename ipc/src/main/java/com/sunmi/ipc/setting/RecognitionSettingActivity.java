@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
+import android.util.Pair;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
@@ -78,8 +79,6 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
     float mVideoRatio;
 
     private int mStepIndex;
-    private int[] mLineStart = new int[2];
-    private int[] mLineEnd = new int[2];
 
     private SparseArray<String> mResTitle = new SparseArray<>(4);
     private SparseArray<String> mResNext = new SparseArray<>(4);
@@ -127,10 +126,10 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
         mResLineTitle.put(DoorLineView.STATE_INIT, getString(R.string.ipc_recognition_line_start));
         mResLineTitle.put(DoorLineView.STATE_START, getString(R.string.ipc_recognition_line_end));
         mResLineTitle.put(DoorLineView.STATE_END, getString(R.string.ipc_recognition_line_end));
-        mResZoomIn = ContextCompat.getDrawable(this, R.drawable.setting_recognition_zoom_in);
-        mResZoomOut = ContextCompat.getDrawable(this, R.drawable.setting_recognition_zoom_out);
-        mResFocusPlus = ContextCompat.getDrawable(this, R.drawable.setting_recognition_focus_plus);
-        mResFocusMinus = ContextCompat.getDrawable(this, R.drawable.setting_recognition_focus_minus);
+        mResZoomIn = ContextCompat.getDrawable(this, R.drawable.adjust_zoom_in);
+        mResZoomOut = ContextCompat.getDrawable(this, R.drawable.adjust_zoom_out);
+        mResFocusPlus = ContextCompat.getDrawable(this, R.drawable.adjust_focus_plus);
+        mResFocusMinus = ContextCompat.getDrawable(this, R.drawable.adjust_focus_minus);
         mResLoading = getString(R.string.ipc_recognition_loading);
     }
 
@@ -144,7 +143,7 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
     public void updateViewsStepTo(int step) {
         mStepIndex = step;
         updateTitle(mResTitle.get(step), mResNext.get(step));
-        updateTip(mResTip.get(step));
+        updateTip(mResTip.get(step), 0);
         updateTipShow(true);
         updateControlBtnShow(false);
         mFaceCase.setVisibility(View.INVISIBLE);
@@ -157,6 +156,13 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
             case RecognitionSettingContract.STEP_3_FOCUS:
                 updateControlBtn(mResFocusPlus, mResFocusMinus);
                 mPresenter.updateControlBtnEnable(false);
+                break;
+            case RecognitionSettingContract.STEP_4_LINE:
+                updateTipShow(false);
+                Rect boundary = new Rect(0, Math.max(0, mTvTitle.getBottom() - mVideoView.getTop()),
+                        mVideoView.getWidth(), mVideoView.getHeight());
+                mLineView.init(boundary);
+                mLineView.setVisibility(View.VISIBLE);
                 break;
             default:
         }
@@ -183,7 +189,18 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
             mPresenter.updateState();
         } else if (mStepIndex == RecognitionSettingContract.STEP_4_LINE) {
             showLoadingDialog();
-            mPresenter.line(mLineStart, mLineEnd);
+            Pair<DoorLineView.Point, DoorLineView.Point> points = mLineView.getPoints();
+            DoorLineView.Point start = points.first.getX() < points.second.getX() ?
+                    points.first : points.second;
+            DoorLineView.Point end = points.first.getX() < points.second.getX() ?
+                    points.second : points.first;
+
+            int[] lineStart = {(int) (start.getX() * STANDARD_VIDEO_WIDTH / mVideoView.getWidth()),
+                    (int) (start.getY() * STANDARD_VIDEO_HEIGHT / mVideoView.getHeight())};
+            int[] lineEnd = {(int) (end.getX() * STANDARD_VIDEO_WIDTH / mVideoView.getWidth()),
+                    (int) (end.getY() * STANDARD_VIDEO_HEIGHT / mVideoView.getHeight())};
+
+            mPresenter.line(lineStart, lineEnd);
         } else {
             updateViewsStepTo(++mStepIndex);
         }
@@ -241,10 +258,10 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
                 updateControlBtnShow(true);
                 break;
             case RecognitionSettingContract.STEP_4_LINE:
-                Rect boundary = new Rect(0, Math.max(0, mTvTitle.getBottom() - mVideoView.getTop()),
-                        mVideoView.getWidth(), mVideoView.getHeight());
-                mLineView.init(boundary);
                 mLineView.setVisibility(View.VISIBLE);
+                if (mLineView.getState() != DoorLineView.DRAG_STATE_END) {
+                    mTvNext.setEnabled(false);
+                }
                 break;
             default:
         }
@@ -264,7 +281,17 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
         mTvNext.setText(nextText);
     }
 
-    private void updateTip(String content) {
+    private void updateTip(String content, int imageRes) {
+        if (imageRes == 0) {
+            mTvTipContent.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);
+            mTvTipContent.setCompoundDrawablePadding(0);
+            mTvTipContent.setBackgroundResource(R.drawable.setting_bg_tip_text);
+        } else {
+            mTvTipContent.setCompoundDrawablesRelativeWithIntrinsicBounds(0,
+                    imageRes, 0, 0);
+            mTvTipContent.setCompoundDrawablePadding((int) context.getResources().getDimension(R.dimen.dp_16));
+            mTvTipContent.setBackground(null);
+        }
         mTvTipContent.setText(content);
     }
 
@@ -423,35 +450,35 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
     private class DoorLineStateChangeListener implements DoorLineView.OnStateChangeListener {
 
         @Override
-        public void onStateChanged(int state, float[] lineStart, float[] lineEnd) {
+        public void onStateChanged(int state) {
             updateTitle(mResLineTitle.get(state), mResNext.get(RecognitionSettingContract.STEP_4_LINE));
             switch (state) {
                 case DoorLineView.STATE_INIT:
+                    updateTipShow(true);
+                    updateTip(getString(R.string.ipc_recognition_line_tip1), R.mipmap.adjust_line_tip1);
+                    mTvTitle.setText(R.string.ipc_recognition_line_title1);
+                    updateNextEnable(false);
+                    break;
                 case DoorLineView.STATE_START:
+                    updateTipShow(true);
+                    updateTip(getString(R.string.ipc_recognition_line_tip2), R.mipmap.adjust_line_tip2);
+                    mTvTitle.setText(R.string.ipc_recognition_line_title2);
                     updateNextEnable(false);
                     break;
                 case DoorLineView.STATE_END:
-                    if (lineEnd[0] > lineStart[0]) {
-                        mLineStart[0] = (int) (lineStart[0] * STANDARD_VIDEO_WIDTH / mVideoView.getWidth());
-                        mLineStart[1] = (int) (lineStart[1] * STANDARD_VIDEO_HEIGHT / mVideoView.getHeight());
-                        mLineEnd[0] = (int) (lineEnd[0] * STANDARD_VIDEO_WIDTH / mVideoView.getWidth());
-                        mLineEnd[1] = (int) (lineEnd[1] * STANDARD_VIDEO_HEIGHT / mVideoView.getHeight());
-                    } else {
-                        mLineStart[0] = (int) (lineEnd[0] * STANDARD_VIDEO_WIDTH / mVideoView.getWidth());
-                        mLineStart[1] = (int) (lineEnd[1] * STANDARD_VIDEO_HEIGHT / mVideoView.getHeight());
-                        mLineEnd[0] = (int) (lineStart[0] * STANDARD_VIDEO_WIDTH / mVideoView.getWidth());
-                        mLineEnd[1] = (int) (lineStart[1] * STANDARD_VIDEO_HEIGHT / mVideoView.getHeight());
-                    }
+                    updateTipShow(true);
+                    updateTip(getString(R.string.ipc_recognition_line_tip3), R.mipmap.adjust_line_tip3);
+                    mTvTitle.setText(R.string.ipc_recognition_line_title3);
                     updateNextEnable(true);
                 default:
             }
         }
 
         @Override
-        public boolean isLineInvalid(float start, float end) {
-            start = start * STANDARD_VIDEO_WIDTH / mVideoView.getWidth();
-            end = end * STANDARD_VIDEO_WIDTH / mVideoView.getWidth();
-            boolean invalid = Math.abs(end - start) < 100;
+        public boolean isLineInvalid(DoorLineView.Point start, DoorLineView.Point end) {
+            float x1 = start.getX() * STANDARD_VIDEO_WIDTH / mVideoView.getWidth();
+            float x2 = end.getX() * STANDARD_VIDEO_WIDTH / mVideoView.getWidth();
+            boolean invalid = Math.abs(x1 - x2) < 100;
             if (invalid) {
                 shortTip(R.string.ipc_recognition_line_error);
             }

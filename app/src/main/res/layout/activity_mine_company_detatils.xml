@@ -24,11 +24,10 @@
         android:background="@color/c_white"
         app:imageRight="@mipmap/ic_right_arrow_small"
         app:layout_constraintTop_toBottomOf="@id/title_bar"
-        app:leftPadding="@dimen/dp_10"
+        app:leftPadding="@dimen/dp_20"
         app:leftText="@string/company_name"
         app:parentHeight="@dimen/dp_60"
-        app:rightPadding="@dimen/dp_20"
-        app:rightTextColor="@color/text_caption" />
+        app:rightPadding="@dimen/dp_16" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_company_id"
@@ -38,11 +37,10 @@
         android:background="@color/c_white"
         app:imageRight="@mipmap/ic_right_arrow_small"
         app:layout_constraintTop_toBottomOf="@id/sil_company_name"
-        app:leftPadding="@dimen/dp_10"
+        app:leftPadding="@dimen/dp_20"
         app:leftText="@string/company_id"
         app:parentHeight="@dimen/dp_60"
-        app:rightPadding="@dimen/dp_20"
-        app:rightTextColor="@color/text_caption" />
+        app:rightPadding="@dimen/dp_16" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_company_create_time"
@@ -52,11 +50,10 @@
         android:background="@color/c_white"
         app:imageRight="@mipmap/ic_right_arrow_small"
         app:layout_constraintTop_toBottomOf="@id/sil_company_id"
-        app:leftPadding="@dimen/dp_10"
+        app:leftPadding="@dimen/dp_20"
         app:leftText="@string/company_create_time"
         app:parentHeight="@dimen/dp_60"
-        app:rightPadding="@dimen/dp_20"
-        app:rightTextColor="@color/text_caption" />
+        app:rightPadding="@dimen/dp_16" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_company_contact"
@@ -66,11 +63,10 @@
         android:background="@color/c_white"
         app:imageRight="@mipmap/ic_right_arrow_small"
         app:layout_constraintTop_toBottomOf="@id/sil_company_create_time"
-        app:leftPadding="@dimen/dp_10"
+        app:leftPadding="@dimen/dp_20"
         app:leftText="@string/company_shop_contact"
         app:parentHeight="@dimen/dp_60"
-        app:rightPadding="@dimen/dp_20"
-        app:rightTextColor="@color/text_caption" />
+        app:rightPadding="@dimen/dp_16" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_company_contact_tel"
@@ -81,11 +77,10 @@
         android:visibility="gone"
         app:imageRight="@mipmap/ic_right_arrow_small"
         app:layout_constraintTop_toBottomOf="@id/sil_company_contact"
-        app:leftPadding="@dimen/dp_10"
+        app:leftPadding="@dimen/dp_20"
         app:leftText="@string/company_shop_mobile"
         app:parentHeight="@dimen/dp_60"
-        app:rightPadding="@dimen/dp_20"
-        app:rightTextColor="@color/text_caption" />
+        app:rightPadding="@dimen/dp_16" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_company_email"
@@ -95,11 +90,10 @@
         android:background="@color/c_white"
         app:imageRight="@mipmap/ic_right_arrow_small"
         app:layout_constraintTop_toBottomOf="@id/sil_company_contact_tel"
-        app:leftPadding="@dimen/dp_10"
+        app:leftPadding="@dimen/dp_20"
         app:leftText="@string/company_email"
         app:parentHeight="@dimen/dp_60"
-        app:rightPadding="@dimen/dp_20"
-        app:rightTextColor="@color/text_caption" />
+        app:rightPadding="@dimen/dp_16" />
 
 
     <RelativeLayout

@@ -19,7 +19,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_120"
+        android:layout_height="@dimen/dp_168"
         android:layout_below="@+id/title_bar"
         android:background="@color/c_white">
 
@@ -30,7 +30,7 @@
             android:background="@null"
             android:gravity="start"
             android:hint="@string/tip_addr_empty"
-            android:maxLength="47"
+            android:maxLength="101"
             android:paddingStart="@dimen/dp_25"
             android:paddingTop="@dimen/dp_20"
             android:scrollbars="vertical"

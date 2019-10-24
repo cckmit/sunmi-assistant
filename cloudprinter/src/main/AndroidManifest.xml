@@ -12,16 +12,16 @@
 
     <application>
         <activity
-            android:name=".ui.Activity.PrinterSearchActivity_"
+            android:name=".ui.activity.PrinterSearchActivity_"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.Activity.WifiConfigActivity_"
+            android:name=".ui.activity.WifiConfigActivity_"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.Activity.PrinterManageActivity_"
+            android:name=".ui.activity.PrinterManageActivity_"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.Activity.StartConfigPrinterActivity_"
+            android:name=".ui.activity.StartConfigPrinterActivity_"
             android:screenOrientation="portrait" />
     </application>
 

@@ -31,7 +31,7 @@ public class OverviewPeriodCard extends BaseRefreshCard<OverviewPeriodCard.Model
         if (sInstance == null) {
             sInstance = new OverviewPeriodCard(presenter, source);
         } else {
-            sInstance.reset(source);
+            sInstance.reset(presenter, source);
         }
         return sInstance;
     }

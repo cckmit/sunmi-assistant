@@ -31,7 +31,7 @@ public class CustomerPeriodCard extends BaseRefreshCard<CustomerPeriodCard.Model
         if (sInstance == null) {
             sInstance = new CustomerPeriodCard(presenter, source);
         } else {
-            sInstance.reset(source);
+            sInstance.reset(presenter, source);
         }
         return sInstance;
     }

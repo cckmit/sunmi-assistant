@@ -84,7 +84,7 @@ public class CustomerFragment extends BaseMvpFragment<CustomerPresenter>
 
     @Override
     public void updateTab(int period) {
-        mParent.updateTab(mPresenter.getType(), period);
+        mParent.updateTab(mPresenter.getIndex(), period);
     }
 
     @Override
@@ -107,13 +107,8 @@ public class CustomerFragment extends BaseMvpFragment<CustomerPresenter>
     }
 
     @Override
-    public int getScrollY() {
-        return mCardList.getScrollY();
-    }
-
-    @Override
-    public void scrollTo(int y) {
-        mCardList.scrollToPosition(y);
+    public void scrollToTop() {
+        mCardList.smoothScrollToPosition(0);
     }
 
     @Override

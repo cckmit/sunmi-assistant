@@ -124,8 +124,7 @@ public class IpcSettingSdcardActivity extends BaseActivity {
                     return;
                 }
 
-                if (result.has("errcode")
-                        && result.has("sd_status_code")) {
+                if (result.has("sd_status_code")) {
                     int sdStatusCode = result.getInt("sd_status_code");
                     if (sdStatusCode == 2) {
                         showResultDialog(true);

@@ -37,7 +37,7 @@ public class CustomerNoFsCard extends BaseRefreshCard<CustomerNoFsCard.Model, Ob
         if (sInstance == null) {
             sInstance = new CustomerNoFsCard(presenter, source);
         } else {
-            sInstance.reset(source);
+            sInstance.reset(presenter, source);
         }
         return sInstance;
     }
@@ -76,6 +76,7 @@ public class CustomerNoFsCard extends BaseRefreshCard<CustomerNoFsCard.Model, Ob
         float radius = context.getResources().getDimension(R.dimen.dp_12);
         this.mContentBg = new GradientDrawable();
         this.mContentBg.setCornerRadii(new float[]{radius, radius, radius, radius, radius, radius, radius, radius});
+        view.setPaddingRelative(0, 0, 0, (int) context.getResources().getDimension(R.dimen.dp_32));
 
         holder.addOnClickListener(R.id.btn_dashboard_add, (h, model, position) ->
                 StartConfigSMDeviceActivity_.intent(context)

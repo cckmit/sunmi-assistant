@@ -30,24 +30,25 @@ import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 
 public class MqttManager {
-    private String TAG = "IPC" + getClass().getSimpleName();
+    public static String tokenSS1ResponseSub;//订阅的Response ipc
+    public static String tokenFS1ResponseSub;//订阅的Response ipc
+    public static String tokenFM010ResponseSub;//订阅的Response ipc
+    public static String tokenFM020ResponseSub;//订阅的Response ipc
 
-    private static MqttManager instance = null;
+    public static String tokenWEBSS1ResponseSub;//订阅的Response ipc
+    public static String tokenWEBFS1ResponseSub;//订阅的Response ipc
+    public static String tokenWEBFM010ResponseSub;//订阅的Response ipc
+    public static String tokenWEBFM020ResponseSub;//订阅的Response ipc
 
-    private static String clientId;//由客户端生成，连接后唯一，重连更换
+    static String tokenWEBSS1EventSub;//订阅的event ipc
+    static String tokenWEBFS1EventSub;//订阅的event ipc
+    static String tokenWEBFM010EventSub;//订阅的event ipc
+    static String tokenWEBFM020EventSub;//订阅的event ipc
     static String tokenRequestSub;//订阅的request token
-    public static String tokenSS1EventSub;//订阅的event ipc
-    public static String tokenFS1EventSub;//订阅的event ipc
-    public static String tokenFM010EventSub;//订阅的event ipc
-    public static String tokenFM020EventSub;//订阅的event ipc
-
-    public static String tokenWEBSS1EventSub;//订阅的event ipc
-    public static String tokenWEBFS1EventSub;//订阅的event ipc
-    public static String tokenWEBFM010EventSub;//订阅的event ipc
-    public static String tokenWEBFM020EventSub;//订阅的event ipc
-
+    private static MqttManager instance = null;
+    private static String clientId;//由客户端生成，连接后唯一，重连更换
     private static Map<String, Integer> messages = new ConcurrentHashMap<>(2);
-
+    private String TAG = "IPC" + getClass().getSimpleName();
     private boolean isRegister;
     private boolean isConnecting;
 
@@ -183,10 +184,13 @@ public class MqttManager {
     }
 
     private String[] getTokens() {
-        return new String[]{tokenSS1EventSub, tokenFM010EventSub,
-                tokenFS1EventSub, tokenFM020EventSub,
-                tokenWEBSS1EventSub, tokenWEBFM010EventSub,
-                tokenWEBFS1EventSub, tokenWEBFM020EventSub};//初始化所有门店下的设备dev状态
+        return new String[]{tokenSS1ResponseSub, tokenFM010ResponseSub,
+                tokenFS1ResponseSub, tokenFM020ResponseSub,
+                tokenWEBSS1ResponseSub, tokenWEBFM010ResponseSub,
+                tokenWEBFS1ResponseSub, tokenWEBFM020ResponseSub,
+                tokenWEBSS1EventSub, tokenWEBFS1EventSub,
+                tokenWEBFM010EventSub, tokenWEBFM020EventSub
+        };
     }
 
     /**
@@ -364,14 +368,19 @@ public class MqttManager {
      * 订阅发布消息
      */
     private void initSubToken() {// /APP/userid/client_id/SS1/response/sub
-        tokenSS1EventSub = String.format("/APP/%s/%s/SS1/response/sub", SpUtils.getUID(), clientId);
-        tokenFS1EventSub = String.format("/APP/%s/%s/FS1/response/sub", SpUtils.getUID(), clientId);
-        tokenFM010EventSub = String.format("/APP/%s/%s/FM010/response/sub", SpUtils.getUID(), clientId);
-        tokenFM020EventSub = String.format("/APP/%s/%s/FM020/response/sub", SpUtils.getUID(), clientId);
-        tokenWEBSS1EventSub = String.format("/WEB/%s/%s/SS1/response/sub", SpUtils.getUID(), clientId);
-        tokenWEBFS1EventSub = String.format("/WEB/%s/%s/FS1/response/sub", SpUtils.getUID(), clientId);
-        tokenWEBFM010EventSub = String.format("/WEB/%s/%s/FM010/response/sub", SpUtils.getUID(), clientId);
-        tokenWEBFM020EventSub = String.format("/WEB/%s/%s/FM020/response/sub", SpUtils.getUID(), clientId);
+        tokenSS1ResponseSub = String.format("/APP/%s/%s/SS1/response/sub", SpUtils.getUID(), clientId);
+        tokenFS1ResponseSub = String.format("/APP/%s/%s/FS1/response/sub", SpUtils.getUID(), clientId);
+        tokenFM010ResponseSub = String.format("/APP/%s/%s/FM010/response/sub", SpUtils.getUID(), clientId);
+        tokenFM020ResponseSub = String.format("/APP/%s/%s/FM020/response/sub", SpUtils.getUID(), clientId);
+        tokenWEBSS1ResponseSub = String.format("/WEB/%s/%s/SS1/response/sub", SpUtils.getUID(), clientId);
+        tokenWEBFS1ResponseSub = String.format("/WEB/%s/%s/FS1/response/sub", SpUtils.getUID(), clientId);
+        tokenWEBFM010ResponseSub = String.format("/WEB/%s/%s/FM010/response/sub", SpUtils.getUID(), clientId);
+        tokenWEBFM020ResponseSub = String.format("/WEB/%s/%s/FM020/response/sub", SpUtils.getUID(), clientId);
+        //0x4200设备重新上线 / 推送升级状态0x4103
+        tokenWEBSS1EventSub = String.format("/WEB/%s/%s/SS1/event/sub", SpUtils.getUID(), clientId);
+        tokenWEBFS1EventSub = String.format("/WEB/%s/%s/FS1/event/sub", SpUtils.getUID(), clientId);
+        tokenWEBFM010EventSub = String.format("/WEB/%s/%s/FM010/event/sub", SpUtils.getUID(), clientId);
+        tokenWEBFM020EventSub = String.format("/WEB/%s/%s/FM020/event/sub", SpUtils.getUID(), clientId);
     }
 
     /**

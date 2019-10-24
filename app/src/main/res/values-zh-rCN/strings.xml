@@ -82,7 +82,7 @@
     <string name="dashboard_card_customer_none">暂无客流数据</string>
 
     <string name="dashboard_card_import_title">导入历史订单</string>
-    <string name="dashboard_card_import_tip_import">支持%s前3个月的历史订单</string>
+    <string name="dashboard_card_import_tip_import">支持%s前2个月的订单</string>
     <string name="dashboard_card_import_tip_loading">历史订单导入中，大约需要等待5–10分钟</string>
     <string name="dashboard_card_import_tip_ok">导入成功，可在订单分析中查看数据</string>
     <string name="dashboard_card_import_tip_error">门店数据导入失败，请稍后重试</string>
@@ -115,7 +115,7 @@
     <string name="str_platform_sms_code_error">验证码错误，请重新输入</string>
     <string name="str_button_auto_create">自动创建</string>
     <string name="str_dialog_auto_create_store">该手机号暂时未发现门店信息，您可以更换手机号重试或手动新建门店</string>
-    <string name="str_dialog_auth_message">申请获取您在%s的门店数据。</string>
+    <string name="str_dialog_auth_message">申请获取您在%s的订单数据。</string>
     <string name="str_unkunw_store">%s的门店</string>
     <string name="str_create_store_fail">门店创建失败</string>
     <string name="str_create_store_alredy_exit">门店名称已存在</string>
@@ -160,7 +160,7 @@
     <string name="tip_image_captcha_refresh_fail">图片验证码刷新失败</string>
     <string name="tip_get_captcha_too_often">发送短信验证码太频繁，请稍后再试</string>
     <string name="tip_get_captcha_fail">发送短信验证码失败</string>
-    <string name="str_authorization_permission">允许授权</string>
+    <string name="str_authorization_permission">同意授权</string>
     <string name="str_authorization_deny">暂不授权</string>
     <string name="str_version_placeholder">版本%s</string>
 
@@ -272,7 +272,7 @@
     <string name="company_shop_select_category">请选择经营品类</string>
     <string name="dialog_title_select_category">选择经营品类</string>
     <string name="dialog_title_select_region">选择所在地区</string>
-    <string name="import_order_support_platform_tip">现已支持接入银豹、生意专家等38个收银软件平台，接入后可获得3个月的历史数据，实时展示新增数据</string>
+    <string name="import_order_support_platform_tip">现已支持接入多家收银软件平台，支持3个月的历史订单导入</string>
     <string name="import_order_current_mobile">当前手机号接入</string>
     <string name="import_order_other_mobile">其他手机号接入</string>
     <string name="import_order_platform_mobile_search_data">请输入您在%s中使用的手机号，以搜索门店的订单数据</string>
@@ -287,6 +287,9 @@
     <string name="import_order_mobile_no_match_shop">可能当前手机号暂未关联门店或关联的门店收银软件超出获取范围</string>
     <string name="import_order_continue_try">继续尝试</string>
     <string name="import_order_agree_auth_shop">同意授权表示使用该平台数据</string>
-    <string name="import_order_explain">1.接入门店收银数据，实现线下门店数字化。\t \n2.您可以随时了解门店经营动态。\t \n3.商米助手提供多维度分析经营状态，帮您提升经营决策质量。</string>
+    <string name="import_order_explain">接入门店收银数据，实现线下门店数字化 \t\n您可以随时了解门店经营动态 \t\n提供多维度分析经营状态，帮您提升经营决策质量</string>
     <string name="import_order_access_shop_data">接入门店收银系统</string>
+    <string name="import_order_data_service">订单数据分析服务</string>
+    <string name="import_order_access_already_auth">该门店收银系统已被授权，无法再次授权</string>
+    <string name="import_order_access_no_auth_more">已授权过门店收银系统，无法授权更多</string>
 </resources>
