@@ -414,7 +414,13 @@ public class IpcSettingVersionActivity extends BaseActivity {
             if (textProgress > PERCENT_DOWNLOAD + PERCENT_UPGRADE + PERCENT_RELAUNCH - 1) {
                 return;
             }
-            setText(IPC_RELAUNCH, textProgress);
+            if (((IPC_RELAUNCH_TIME - l) / 1000) < 55) {
+                //下载固件的时间提示40+15s
+                setText(IPC_UPGRADE_AI, textProgress);
+            } else {
+                //重启时间150+15s
+                setText(IPC_RELAUNCH, textProgress);
+            }
         }
     }
 

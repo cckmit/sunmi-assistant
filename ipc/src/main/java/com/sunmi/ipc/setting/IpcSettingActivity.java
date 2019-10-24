@@ -595,6 +595,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             mDevice.setFirmware(mResp.getLatest_bin_version());
             mPresenter.currentVersion();
         } else if (id == CommonNotifications.mqttResponseTimeout) { //连接超时
+            if (!isRun) {
+                return;
+            }
             shortTip(R.string.str_server_exception);
         }
         if (!isRun || args == null || args.length < 1) {
@@ -746,6 +749,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         mWifiName.setRightText(getString(R.string.ipc_setting_unknown));
         mWifiName.setLeftTextColor(ContextCompat.getColor(context, R.color.text_caption));
         mWifiName.setRightTextColor(ContextCompat.getColor(context, R.color.text_caption));
+        mAdjustScreen.setLeftTextColor(ContextCompat.getColor(this, R.color.text_caption));
     }
 
     @UiThread
@@ -763,6 +767,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 setWifiUnknown();
             } else {
                 IPCCall.getInstance().getIsWire(IpcSettingActivity.this, bean.getIp());
+                if (CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
+                    mAdjustScreen.setLeftTextColor(ContextCompat.getColor(this, R.color.text_main));
+                }
             }
         }, 1200);
 
