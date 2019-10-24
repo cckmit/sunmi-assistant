@@ -14,7 +14,7 @@ public interface PageContract {
 
     interface ParentPresenter {
 
-        void refresh(boolean showLoading);
+        void refresh(boolean forceReload, boolean showLoading);
 
     }
 

@@ -82,7 +82,7 @@
     <string name="dashboard_card_customer_none">暂无客流数据</string>
 
     <string name="dashboard_card_import_title">导入历史订单</string>
-    <string name="dashboard_card_import_tip_import">支持%s前2个月的历史订单</string>
+    <string name="dashboard_card_import_tip_import">支持%s前2个月的订单</string>
     <string name="dashboard_card_import_tip_loading">历史订单导入中，大约需要等待5–10分钟</string>
     <string name="dashboard_card_import_tip_ok">导入成功，可在订单分析中查看数据</string>
     <string name="dashboard_card_import_tip_error">门店数据导入失败，请稍后重试</string>

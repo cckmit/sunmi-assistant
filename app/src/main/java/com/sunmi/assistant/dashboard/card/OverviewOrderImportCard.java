@@ -32,11 +32,14 @@ public class OverviewOrderImportCard extends BaseRefreshCard<OverviewOrderImport
 
     private static OverviewOrderImportCard sInstance;
 
+    private OnImportStateChangeListener mListener;
+
     private int mColorNormal;
     private int mColorOk;
     private int mColorError;
 
     private int mRequestCount;
+    private int mFailedCount;
 
     private OverviewOrderImportCard(Presenter presenter, int source) {
         super(presenter, source);
@@ -58,6 +61,10 @@ public class OverviewOrderImportCard extends BaseRefreshCard<OverviewOrderImport
         mColorError = ContextCompat.getColor(context, R.color.caution_primary);
     }
 
+    public void setListener(OnImportStateChangeListener l) {
+        this.mListener = l;
+    }
+
     @Override
     public int getLayoutId(int type) {
         return R.layout.dashboard_recycle_item_order_import;
@@ -76,6 +83,14 @@ public class OverviewOrderImportCard extends BaseRefreshCard<OverviewOrderImport
         return new Model();
     }
 
+    private void switchState(Model model, int state, boolean updateView) {
+        model.state = state;
+        if (mListener != null) {
+            mListener.onImportStateChange(model.state);
+        }
+        updateViews();
+    }
+
     @NonNull
     @Override
     public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
@@ -84,8 +99,9 @@ public class OverviewOrderImportCard extends BaseRefreshCard<OverviewOrderImport
             if (model.state == Constants.IMPORT_NONE || model.state == Constants.IMPORT_FAIL) {
                 // Import
                 mRequestCount = 0;
-                model.state = Constants.IMPORT_DOING;
-                updateViews();
+                mFailedCount = 0;
+                mPresenter.showLoading();
+                switchState(model, Constants.IMPORT_DOING, true);
                 int companyId = SpUtils.getCompanyId();
                 int shopId = SpUtils.getShopId();
                 for (Model.Item item : model.saasList) {
@@ -94,22 +110,27 @@ public class OverviewOrderImportCard extends BaseRefreshCard<OverviewOrderImport
                                 @Override
                                 public void onSuccess(int code, String msg, Object data) {
                                     mRequestCount++;
+                                    if (mRequestCount >= model.saasCount) {
+                                        mPresenter.hideLoading();
+                                    }
                                 }
 
                                 @Override
                                 public void onFail(int code, String msg, Object data) {
                                     mRequestCount++;
-                                    if (mRequestCount >= model.saasCount
-                                            && model.state != Constants.IMPORT_SUCCESS) {
-                                        model.state = Constants.IMPORT_FAIL;
-                                        updateViews();
+                                    if (mRequestCount >= model.saasCount) {
+                                        mPresenter.hideLoading();
+                                    }
+
+                                    mFailedCount++;
+                                    if (mFailedCount >= model.saasCount) {
+                                        switchState(model, Constants.IMPORT_FAIL, true);
                                     }
                                 }
                             });
                 }
             } else if (model.state == Constants.IMPORT_SUCCESS) {
-                model.state = Constants.IMPORT_COMPLETE;
-                updateViews();
+                switchState(model, Constants.IMPORT_COMPLETE, true);
             }
         });
         return holder;
@@ -124,7 +145,7 @@ public class OverviewOrderImportCard extends BaseRefreshCard<OverviewOrderImport
         }
         List<ShopAuthorizeInfoResp.Info> list = response.getAuthorizedList();
         ShopAuthorizeInfoResp.Info info = list.get(0);
-        model.state = info.getImportStatus();
+        switchState(model, info.getImportStatus(), false);
         model.authTime = info.getAuthorizedTime();
         model.saasList.clear();
         model.saasCount = list.size();
@@ -194,5 +215,10 @@ public class OverviewOrderImportCard extends BaseRefreshCard<OverviewOrderImport
                 this.saasSource = saasSource;
             }
         }
+    }
+
+    public interface OnImportStateChangeListener {
+
+        void onImportStateChange(int state);
     }
 }
