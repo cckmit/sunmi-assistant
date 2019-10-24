@@ -292,9 +292,6 @@ public class IpcSettingVersionActivity extends BaseActivity {
      */
     @UiThread
     void upgradeVerSuccessDialog() {
-        if (isFastClick(300)) {
-            return;
-        }
         CommonDialog commonDialog = new CommonDialog.Builder(this)
                 .setTitle(R.string.ipc_setting_dialog_upgrade_success)
                 .setMessage(getString(R.string.ipc_setting_dialog_upgrade_success_content))
