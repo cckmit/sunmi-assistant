@@ -49,7 +49,7 @@ public class IPCListAdapter extends RecyclerView.Adapter<IPCListAdapter.ViewHold
         holder.ivDevice.setImageResource(DeviceTypeUtils.getInstance()
                 .getSunmiDeviceImage(data.get(position).getModel()));
         holder.tvName.setText(data.get(position).getModel());
-        holder.tvSn.setText(context.getString(R.string.str_sn, data.get(position).getDeviceid()));
+        holder.tvSn.setText(context.getString(R.string.ipc_sn, data.get(position).getDeviceid()));
     }
 
     @Override

@@ -55,7 +55,7 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
 
     private MsgDetailAdapter adapter;
     private int pageNum, pageSize;
-    private boolean loadFinish;
+    private boolean loadFinish = false;
     List<MessageListBean.MsgListBean> dataList = new ArrayList<>();
     private int deletePosition;
 
@@ -191,6 +191,7 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
     private void reloadMessageList(boolean needUpdateStatus) {
         pageNum = 1;
         pageSize = 10;
+        loadFinish = false;
         mPresenter.getMessageList(modelId, pageNum, pageSize, needUpdateStatus);
     }
 

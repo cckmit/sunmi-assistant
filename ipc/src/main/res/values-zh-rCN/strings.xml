@@ -276,7 +276,6 @@
     <string name="tip_sdcard_unformat">存储卡未格式化</string>
     <string name="msg_sdcard_should_format">检测到的存储卡需格式化后才可使用，请提前保存重要资料</string>
     <string name="str_jump_adjust">暂不调整</string>
-    <string name="str_sn">SN：%s</string>
 
 </resources>
 

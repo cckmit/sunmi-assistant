@@ -114,7 +114,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_25"
-        android:background="@drawable/button_corners_edge_orange"
+        android:background="@drawable/button_corners_edge_orange60"
         android:text="@string/ipc_right_now_play"
         android:textColor="@color/common_orange"
         android:textSize="@dimen/sp_10" />
