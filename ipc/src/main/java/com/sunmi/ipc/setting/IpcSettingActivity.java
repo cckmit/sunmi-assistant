@@ -950,7 +950,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 .setConfirmButton(R.string.ipc_setting_dialog_upgrade_ok, (dialog, which) -> {
                     gotoIpcSettingVersionActivity();
                 })
-                .setCancelButton(R.string.sm_cancel).create();
+                .setCancelButton(R.string.str_in_later).create();
         commonDialog.showWithOutTouchable(false);
     }
 

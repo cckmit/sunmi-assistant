@@ -216,6 +216,7 @@ public class IpcSettingVersionActivity extends BaseActivity {
                 if (TextUtils.equals(sn, mDevice.getDeviceid())) {
                     stopTimerCountDown(mUpgradeStatus);
                     setText(IPC_RELAUNCH, 100);
+                    setLayoutVisible();
                     upgradeVerSuccessDialog();
                 }
             } catch (JSONException e) {
@@ -356,7 +357,7 @@ public class IpcSettingVersionActivity extends BaseActivity {
 
     @UiThread
     void showProgress(int status, long l) {
-        if (isFastClick(500)) {
+        if (isFastClick(300)) {
             return;
         }
         if (status == IPC_CONNECT_TIMEOUT) {
