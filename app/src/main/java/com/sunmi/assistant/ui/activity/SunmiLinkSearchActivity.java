@@ -345,7 +345,7 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
                     JSONObject object = (JSONObject) array.opt(i);
                     sd.setModel(object.getString("model"));
                     sd.setSelected(true);
-                    String mac = object.getString("mac");
+                    String mac = object.getString("mac").toUpperCase();
                     sd.setMac(mac);
                     if (object.has("devid")) {
                         String sn = object.getString("devid");

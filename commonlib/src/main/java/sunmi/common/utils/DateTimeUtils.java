@@ -1,6 +1,9 @@
 package sunmi.common.utils;
 
+import android.content.Context;
 import android.text.TextUtils;
+
+import com.commonlibrary.R;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -75,6 +78,13 @@ public class DateTimeUtils {
             return format.format(msgDate);
         }
     }
+
+    public static String secondToPeriod(long second, Context context) {
+        long days = second / (3600 * 24);
+        long hours = second % (3600 * 24) / 3600;
+        return context.getString(R.string.str_period, days, hours);
+    }
+
 
     public enum DateTimePattern {
         /**
