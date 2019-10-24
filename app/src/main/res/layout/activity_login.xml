@@ -124,7 +124,7 @@
             android:layout_below="@+id/rlForget"
             android:layout_marginTop="@dimen/dp_50"
             android:layout_weight="0.5"
-            android:background="@drawable/button_corners_edge_orange"
+            android:background="@drawable/button_corners_edge_orange60"
             android:text="@string/str_register"
             android:textColor="@color/colorOrangeText"
             android:textSize="@dimen/sp_18" />

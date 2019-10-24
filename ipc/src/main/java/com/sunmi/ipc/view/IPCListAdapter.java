@@ -48,8 +48,8 @@ public class IPCListAdapter extends RecyclerView.Adapter<IPCListAdapter.ViewHold
         holder.checkBox.setChecked(data.get(position).isSelected());
         holder.ivDevice.setImageResource(DeviceTypeUtils.getInstance()
                 .getSunmiDeviceImage(data.get(position).getModel()));
+        holder.tvSn.setText(context.getString(R.string.ipc_sn, data.get(position).getDeviceid()));
         holder.tvName.setText(context.getString(R.string.str_model_name, data.get(position).getModel()));
-        holder.tvSn.setText(context.getString(R.string.str_sn, data.get(position).getDeviceid()));
     }
 
     @Override

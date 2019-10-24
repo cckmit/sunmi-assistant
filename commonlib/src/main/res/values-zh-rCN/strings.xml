@@ -119,5 +119,11 @@
     <string name="str_num_people_total">总人数</string>
     <string name="str_cancel_setting">确定取消设置吗?</string>
     <string name="str_sunmi_link">SUNMI Link</string>
-
+    <string name="str_tab_support">服务</string>
+    <string name="str_support_manage">服务管理</string>
+    <string name="str_cloud_manage">云存储服务管理</string>
+    <string name="str_remaining_validity_period">剩余有效期：%s</string>
+    <string name="ipc_device_name">设备名称：%s</string>
+    <string name="ipc_sn">SN：%s</string>
+    <string name="str_period">%d天%d小时</string>
 </resources>

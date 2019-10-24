@@ -5,7 +5,6 @@
         <item name="colorPrimary">@color/common_orange</item>
         <item name="colorPrimaryDark">@color/c_primary_dark</item>
         <item name="colorAccent">@color/common_orange</item>
-        <item name="android:textAllCaps">false</item>
         <item name="android:windowBackground">@color/bg_common</item>
         <item name="android:editTextColor">@color/text_main</item>
         <item name="android:textColor">@color/text_main</item>
@@ -125,6 +124,15 @@
         <item name="android:textColor">@color/text_main</item>
         <item name="android:textSize">@dimen/sp_16</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="BtnEdgeOrange">
+        <item name="android:layout_width">@dimen/dp_56</item>
+        <item name="android:layout_height">@dimen/dp_26</item>
+        <item name="android:textColor">@color/common_orange</item>
+        <item name="android:background">@drawable/button_corner_edge_orange</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/sp_10</item>
     </style>
 
 </resources>

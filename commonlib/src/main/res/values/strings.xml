@@ -10,7 +10,7 @@
     <string name="str_continue">Continue</string>
     <string name="str_exit">Exit</string>
     <string name="str_next">Next</string>
-    <string name="str_close">Close</string>
+    <string name="str_close">Disable</string>
     <string name="str_setting">Settings</string>
     <string name="str_click_consent">By clicking the button of "Start Configuration", you agree</string>
     <string name="sunmi_user_protocol">《Sunmi User Protocol》</string>
@@ -30,7 +30,7 @@
     <string name="permission_granted">The permission is granted from your mobile phon</string>
     <string name="str_new_version_now">Present new version</string>
     <string name="str_title_selected_pic">Select picture</string>
-    <string name="str_ssl_error">SSL Error</string>
+    <string name="str_ssl_error">SSL error</string>
     <string name="tip_agree_protocol">Please check the box to agree the User Protocol</string>
     <string name="toast_network_Exception">Network connection exception</string>
     <string name="network_wifi_low">Network connection failure</string>
@@ -38,7 +38,7 @@
     <string name="tip_set_complete">Setup complete</string>
     <string name="tip_set_fail">Setup failed</string>
     <string name="choose_device_type">Choose the device</string>
-    <string name="str_title_ap_set">Router setup</string>
+    <string name="str_title_ap_set">Router management</string>
     <string name="str_title_ipc_set">Setup IP camera</string>
     <string name="str_title_printer_set">Setup printer</string>
     <string name="str_text_password_no_null">The password can not be null</string>
@@ -61,7 +61,7 @@
     <string name="str_start_set">Start</string>
     <string name="str_config_child_tip">If you already had a connected Sunmi router, you could add more routers in「Router Management」</string>
     <string name="btn_start_config">Start configuration</string>
-    <string name="textView_config_title">Setup Wizard</string>
+    <string name="textView_config_title">Setup wizard</string>
     <string name="str_primary_search_check_line">Please check whether the router has been powered on with the network cable connected</string>
     <string name="str_primary_search_on_find">No router found</string>
     <string name="str_primary_search_searching_ap">Searching your router</string>
@@ -85,9 +85,9 @@
     <string name="str_delete_success">Delete successfully</string>
     <string name="str_delete_fail">Delete failed</string>
     <string name="tip_play_fail">Playback failed</string>
-    <string name="company_shop_new_create_or_import">You can create a new shop or import from other software platforms</string>
-    <string name="company_shop_new_create">Create Shop</string>
-    <string name="company_shop_import">Import Shop</string>
+    <string name="company_shop_new_create_or_import">You can create a new store or import from other software platforms</string>
+    <string name="company_shop_new_create">Create store</string>
+    <string name="company_shop_import">Import store</string>
     <string name="update_app_exception">版本更新异常,请检查网络连接状态是否良好。</string>
     <string name="str_loding_more">Loading</string>
     <string name="tip_no_more_data">No more data</string>
@@ -119,5 +119,11 @@
     <string name="str_num_people_total">总人数</string>
     <string name="str_cancel_setting">Are you sure to cancel the setting?</string>
     <string name="str_sunmi_link">SUNMI Link</string>
-
+    <string name="str_tab_support">Service</string>
+    <string name="str_support_manage">服务管理</string>
+    <string name="str_cloud_manage">云存储服务管理</string>
+    <string name="str_remaining_validity_period">剩余有效期：%s</string>
+    <string name="ipc_device_name">Device Name：%s</string>
+    <string name="ipc_sn">SN：%s</string>
+    <string name="str_period">%d天%d小时</string>
 </resources>

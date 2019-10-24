@@ -126,6 +126,7 @@ public class IpcSettingVersionActivity extends BaseActivity {
      * 查询升级状态
      */
     private void queryIpcUpgradeStatus() {
+        showLoadingDialog();
         mUpgradeStatus = IPC_CONNECT_TIMEOUT;
         startTimerCountDown(IPC_CONNECT_TIMEOUT);
         IPCCall.getInstance().ipcQueryUpgradeStatus(this,
@@ -138,7 +139,9 @@ public class IpcSettingVersionActivity extends BaseActivity {
     private void upgrading() {
         setText(IPC_DOWNLOAD, 0);
         btnUpgrade.setVisibility(View.GONE);
-        mProgress.setVisibility(View.VISIBLE);
+        tvIpcStatus.setVisibility(View.VISIBLE);
+        tvIpcUpgradeTip.setVisibility(View.VISIBLE);
+        ipcSettingUpgradeGroup.setVisibility(View.GONE);
         IPCCall.getInstance().ipcUpgrade(this, mDevice.getModel(),
                 mDevice.getDeviceid(), mResp.getUrl(), mResp.getLatest_bin_version());
     }
@@ -153,6 +156,7 @@ public class IpcSettingVersionActivity extends BaseActivity {
      * close 计时器
      */
     private void stopTimeoutTimer() {
+        hideLoadingDialog();
         stopTimerCountDown(IPC_CONNECT_TIMEOUT);
         stopTimerCountDown(mUpgradeStatus);
     }
@@ -212,6 +216,7 @@ public class IpcSettingVersionActivity extends BaseActivity {
                 if (TextUtils.equals(sn, mDevice.getDeviceid())) {
                     stopTimerCountDown(mUpgradeStatus);
                     setText(IPC_RELAUNCH, 100);
+                    setLayoutVisible();
                     upgradeVerSuccessDialog();
                 }
             } catch (JSONException e) {
@@ -306,7 +311,8 @@ public class IpcSettingVersionActivity extends BaseActivity {
                 .setTitle(R.string.ipc_setting_dialog_upgrade_fail)
                 .setMessage(R.string.ipc_setting_upgrade_fail_net_exception)
                 .setConfirmButton(R.string.str_retry, (dialog, which) -> upgrading())
-                .setCancelButton(R.string.sm_cancel).create();
+                .setCancelButton(R.string.sm_cancel, (dialog, which) -> finish())
+                .create();
         commonDialog.showWithOutTouchable(false);
     }
 
@@ -315,6 +321,7 @@ public class IpcSettingVersionActivity extends BaseActivity {
      */
     @UiThread
     void dialogUpgradeTip() {
+        hideLoadingDialog();
         ipcSettingUpgradeGroup.setVisibility(View.VISIBLE);
         tvIpcStatus.setVisibility(View.GONE);
         tvIpcUpgradeTip.setVisibility(View.GONE);
@@ -348,49 +355,11 @@ public class IpcSettingVersionActivity extends BaseActivity {
         }
     }
 
-//    @UiThread
-//    void showProgress(int status, long l) {
-//        if (status == IPC_CONNECT_TIMEOUT) {
-//            LogCat.e(TAG, "mqtt timeout query status , " + l / 1000);
-//            if (l / 1000 == 0) {
-//                stopTimerCountDown(status);
-//                dialogUpgradeTip();
-//            }
-//            return;
-//        }
-//        int downRate;
-//        if (status == IPC_DOWNLOAD) {
-//            downRate = (int) (IPC_DOWNLOAD_TIME / PERCENT_DOWNLOAD / 1000) + 1;
-//            if ((l / 1000) % downRate == 0) {
-//                setProgress++;
-//            }
-//            setText(IPC_DOWNLOAD, setProgress);
-//
-//        } else if (status == IPC_UPGRADE_AI) {
-//            downRate = (int) (IPC_UPGRADE_TIME_AI / PERCENT_UPGRADE / 1000) + 1;
-//            if ((l / 1000) % downRate == 0) {
-//                setProgress++;
-//            }
-//            int textProgress = PERCENT_DOWNLOAD + setProgress;
-//            setText(IPC_UPGRADE_AI, textProgress);
-//
-//        } else if (status == IPC_RELAUNCH) {
-//            downRate = (int) (IPC_RELAUNCH_TIME / PERCENT_RELAUNCH / 1000) + 1;
-//            if ((l / 1000) % downRate == 0) {
-//                setProgress++;
-//            }
-//            int textProgress = PERCENT_DOWNLOAD + PERCENT_UPGRADE + setProgress;
-//            setText(IPC_RELAUNCH, textProgress);
-//        }
-//        //当倒计时完成时，提示更新失败
-//        if (l / 1000 == 0) {
-//            stopTimerCountDown(status);
-//            upgradeVerFailDialog();
-//        }
-//    }
-
     @UiThread
     void showProgress(int status, long l) {
+        if (isFastClick(300)) {
+            return;
+        }
         if (status == IPC_CONNECT_TIMEOUT) {
             if (l / 1000 == 0) {
                 stopTimerCountDown(status);
@@ -398,35 +367,74 @@ public class IpcSettingVersionActivity extends BaseActivity {
             }
             return;
         }
+        int downRate;
         if (status == IPC_DOWNLOAD) {
-            if (setProgress++ > PERCENT_DOWNLOAD) {
+            if (showUpgradeFail(l, IPC_DOWNLOAD)) {
+                return;
+            }
+            downRate = (int) (IPC_DOWNLOAD_TIME / PERCENT_DOWNLOAD / 1000 + 1);
+            if ((l / 1000) % downRate == 0) {
+                setProgress++;
+            }
+            if (setProgress > PERCENT_DOWNLOAD) {
                 return;
             }
             setText(IPC_DOWNLOAD, setProgress);
         } else if (status == IPC_UPGRADE_AI) {
             isAiUpgrade = true;
-            int textProgress = PERCENT_DOWNLOAD + setProgress++;
+            if (showUpgradeFail(l, IPC_UPGRADE_AI)) {
+                return;
+            }
+            downRate = (int) (IPC_UPGRADE_TIME_AI / PERCENT_UPGRADE / 1000 + 1);
+            if ((l / 1000) % downRate == 0) {
+                setProgress++;
+            }
+            int textProgress = PERCENT_DOWNLOAD + setProgress;
             if (textProgress > PERCENT_UPGRADE + PERCENT_DOWNLOAD) {
                 return;
             }
             setText(IPC_UPGRADE_AI, textProgress);
         } else if (status == IPC_RELAUNCH) {
-            int textProgress;
-            if (isAiUpgrade) {
-                textProgress = mProgress.getProgress() + setProgress++;
-            } else {
-                textProgress = PERCENT_DOWNLOAD + PERCENT_UPGRADE + setProgress++;
-            }
-            if (textProgress > PERCENT_DOWNLOAD + PERCENT_UPGRADE + PERCENT_RELAUNCH - 2) {
+            if (showUpgradeFail(l, IPC_RELAUNCH)) {
                 return;
             }
-            setText(IPC_RELAUNCH, textProgress);
+            if (isAiUpgrade) {
+                downRate = (int) (IPC_RELAUNCH_TIME / PERCENT_RELAUNCH / 1000 + 1);
+            } else {
+                downRate = (int) (IPC_RELAUNCH_TIME / (PERCENT_UPGRADE + PERCENT_RELAUNCH) / 1000 + 1);
+            }
+            if ((l / 1000) % downRate == 0) {
+                setProgress++;
+            }
+            int textProgress;
+            if (isAiUpgrade) {
+                textProgress = PERCENT_DOWNLOAD + PERCENT_UPGRADE + setProgress;
+            } else {
+                textProgress = PERCENT_DOWNLOAD + setProgress;
+            }
+            if (textProgress > PERCENT_DOWNLOAD + PERCENT_UPGRADE + PERCENT_RELAUNCH - 1) {
+                return;
+            }
+            if (((IPC_RELAUNCH_TIME - l) / 1000) < 55) {
+                //下载固件的时间提示40+15s
+                setText(IPC_UPGRADE_AI, textProgress);
+            } else {
+                //重启时间150+15s
+                setText(IPC_RELAUNCH, textProgress);
+            }
         }
-        //当倒计时完成时，提示更新失败
-        if (l / 1000 == 0) {
+    }
+
+    /*
+     *当倒计时完成时，提示更新失败
+     */
+    private boolean showUpgradeFail(long time, int status) {
+        if (time / 1000 == 0) {
             stopTimerCountDown(status);
             upgradeVerFailDialog();
+            return true;
         }
+        return false;
     }
 
     @UiThread
