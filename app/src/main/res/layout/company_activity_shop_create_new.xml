@@ -73,6 +73,7 @@
             android:layout_marginEnd="@dimen/dp_36"
             android:ellipsize="end"
             android:maxLines="1"
+            android:hint="@string/company_shop_region_hint"
             android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16" />
 
@@ -194,6 +195,7 @@
             android:layout_marginEnd="@dimen/dp_36"
             android:ellipsize="end"
             android:maxLines="1"
+            android:hint="@string/company_shop_select_category"
             android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16" />
 
