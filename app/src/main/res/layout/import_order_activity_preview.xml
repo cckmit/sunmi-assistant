@@ -93,7 +93,7 @@
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_20"
         android:layout_marginBottom="@dimen/dp_20"
-        android:background="@drawable/button_corners_edge_orange60"
+        android:background="@drawable/button_corners_solid_orange"
         android:text="@string/import_order_current_mobile"
         android:textColor="@color/c_white"
         android:textSize="@dimen/sp_16"

@@ -224,6 +224,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         if (bean == null) {
             setWifiUnknown();
         } else {
+            showLoadingDialog();
             IPCCall.getInstance().getIpcConnectApMsg(context, bean.getIp());
         }
     }
@@ -687,8 +688,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     void showDevStatus(int status) {
         switch (status) {
             case 0:
-                mVersion.getIvToTextLeft().setText(R.string.ipc_setting_downloading);
-                break;
             case 1:
             case 2:
                 mVersion.getIvToTextLeft().setText(R.string.ipc_setting_upgrading);
@@ -946,7 +945,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 .setTitle(R.string.ipc_setting_dialog_upgrade)
                 .setMessage(getString(R.string.ipc_setting_version_current, mDevice.getFirmware()) + "\n" +
                         getString(R.string.ipc_setting_dialog_upgrade_download_time,
-                                DeviceTypeUtils.getInstance().isSS1(mDevice.getModel()) ? "2" : "6"))
+                                DeviceTypeUtils.getInstance().isSS1(mDevice.getModel()) ? "8" : "12"))
                 .setConfirmButton(R.string.ipc_setting_dialog_upgrade_ok, (dialog, which) -> {
                     gotoIpcSettingVersionActivity();
                 })
