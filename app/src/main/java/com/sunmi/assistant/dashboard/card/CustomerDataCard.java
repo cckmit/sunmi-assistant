@@ -114,9 +114,9 @@ public class CustomerDataCard extends BaseRefreshCard<CustomerDataCard.Model, Ob
                             return;
                         }
                         Model model = getModel();
-                        model.lastCustomer = (int) Math.ceil((float) data.getTotalCount() / count);
                         model.lastNewCustomer = (int) Math.ceil((float) data.getStrangerCount() / count);
                         model.lastOldCustomer = (int) Math.ceil((float) data.getRegularCount() / count);
+                        model.lastCustomer = model.lastNewCustomer + model.lastOldCustomer;
                         callback.onSuccess();
                     }
 
