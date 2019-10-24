@@ -42,9 +42,9 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     private static final SimpleDateFormat DATE_FORMAT_PARAMS = new SimpleDateFormat("yyyy-MM-dd");
 
     private static final int REFRESH_TIME_PERIOD = 120_000;
-    private static final Handler WORK_HANDLER = new Handler(Looper.getMainLooper());
 
     private Context mContext;
+    private Handler mHandler = new Handler(Looper.getMainLooper());
     private List<PageContract.PagePresenter> mPages = new ArrayList<>(2);
 
     private int mCompanyId;
@@ -65,7 +65,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         load(Constants.FLAG_ALL_MASK, true, true);
         if (mTask == null) {
             mTask = new RefreshTask();
-            WORK_HANDLER.postDelayed(mTask, REFRESH_TIME_PERIOD);
+            mHandler.postDelayed(mTask, REFRESH_TIME_PERIOD);
         }
     }
 
@@ -330,7 +330,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     public void detachView() {
         super.detachView();
         mContext = null;
-        WORK_HANDLER.removeCallbacks(mTask);
+        mHandler.removeCallbacks(mTask);
         for (PageContract.PagePresenter page : mPages) {
             page.release();
         }
@@ -342,7 +342,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         @Override
         public void run() {
             refresh(true, false);
-            WORK_HANDLER.postDelayed(this, REFRESH_TIME_PERIOD);
+            mHandler.postDelayed(this, REFRESH_TIME_PERIOD);
         }
     }
 
