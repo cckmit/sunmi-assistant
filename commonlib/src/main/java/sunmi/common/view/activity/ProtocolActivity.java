@@ -2,10 +2,8 @@ package sunmi.common.view.activity;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
-import android.net.http.SslError;
 import android.text.TextUtils;
 import android.view.View;
-import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -63,13 +61,14 @@ public class ProtocolActivity extends BaseActivity {
     public static final int USER_AP_PRIVATE = 3;
     public static final int USER_WX_HELP = 4;
     public static final int USER_AUTH_PLATFORM = 5;
+
     @ViewById(resName = "wv_protocol")
     SMWebView webView;
     @Extra
     int protocolType;
     private Timer timer;//计时器
     private long timeout = 5000;//超时时间
-
+    private boolean loadFail;
 
     @AfterViews
     protected void init() {
@@ -107,17 +106,17 @@ public class ProtocolActivity extends BaseActivity {
      */
     private void localHtml() {
         if (protocolType == USER_PROTOCOL) { //app注册协议
-            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) ? LOCAL_PROTOCOL_USER_ENGLISH : LOCAL_PROTOCOL_USER);
+            webView.loadUrl(TextUtils.equals("en_us", CommonHelper.getLanguage()) ? LOCAL_PROTOCOL_USER_ENGLISH : LOCAL_PROTOCOL_USER);
         } else if (protocolType == USER_PRIVATE) {
-            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) ? LOCAL_PROTOCOL_PRIVATE_ENGLISH : LOCAL_PROTOCOL_PRIVATE);
+            webView.loadUrl(TextUtils.equals("en_us", CommonHelper.getLanguage()) ? LOCAL_PROTOCOL_PRIVATE_ENGLISH : LOCAL_PROTOCOL_PRIVATE);
         } else if (protocolType == USER_AP_PROTOCOL) { //快速配置路由器协议
-            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) ? LOCAL_PROTOCOL_USER_ENGLISH : LOCAL_PROTOCOL_USER);
+            webView.loadUrl(TextUtils.equals("en_us", CommonHelper.getLanguage()) ? LOCAL_PROTOCOL_USER_ENGLISH : LOCAL_PROTOCOL_USER);
         } else if (protocolType == USER_AP_PRIVATE) {
-            loadWebView(TextUtils.equals("en_us", CommonHelper.getLanguage()) ? LOCAL_PROTOCOL_PRIVATE_ENGLISH : LOCAL_PROTOCOL_PRIVATE);
+            webView.loadUrl(TextUtils.equals("en_us", CommonHelper.getLanguage()) ? LOCAL_PROTOCOL_PRIVATE_ENGLISH : LOCAL_PROTOCOL_PRIVATE);
         } else if (protocolType == USER_WX_HELP) {
-            loadWebView(WX_AUTH_HELP);
+            webView.loadUrl(WX_AUTH_HELP);
         } else if (protocolType == USER_AUTH_PLATFORM) {//获取平台授权协议
-            loadWebView(AUTH_PLATFORM);
+            webView.loadUrl(AUTH_PLATFORM);
         }
     }
 
@@ -190,8 +189,11 @@ public class ProtocolActivity extends BaseActivity {
 
             @Override
             protected void receiverError(WebView view, WebResourceRequest request, WebResourceError error) {
-                hideLoadingDialog();
-                localHtml();
+                if (!loadFail) {
+                    loadFail = true;
+                    hideLoadingDialog();
+                    localHtml();
+                }
             }
         });
     }
