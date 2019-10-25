@@ -29,7 +29,7 @@ public interface ShopCreateContract {
 
         void getCategory();
 
-        void createShop(String shopName, int province, int city, int area,
+        void createShop(int companyId, String shopName, int province, int city, int area,
                         String address, int typeOne, int typeTwo,
                         float businessArea, String person, String tel);
 

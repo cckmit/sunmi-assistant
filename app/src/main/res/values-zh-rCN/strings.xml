@@ -293,5 +293,5 @@
     <string name="import_order_access_already_auth">该门店收银系统已被授权，无法再次授权</string>
     <string name="import_order_access_no_auth_more">已授权过门店收银系统，无法授权更多</string>
     <string name="company_shop_region_hint">必选</string>
-    <string name="shop_create_new">新建门店</string>
+    <string name="shop_create_new">创建门店</string>
 </resources>

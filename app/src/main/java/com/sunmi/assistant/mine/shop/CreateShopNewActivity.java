@@ -238,7 +238,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
         String square = etShopSquare.getText() == null ? "" : etShopSquare.getText().toString().trim();
         String contact = selContact.getEditTextText().getText() == null ? "" : selContact.getEditTextText().getText().toString().trim();
         //create
-        mPresenter.createShop(shopName, mProvinceId, mCityId, mAreaId, address,
+        mPresenter.createShop(companyId, shopName, mProvinceId, mCityId, mAreaId, address,
                 mCategoryLeftCode, mCategoryRightCode,
                 TextUtils.isEmpty(square) ? 0 : Float.parseFloat(square), contact, tel);
     }

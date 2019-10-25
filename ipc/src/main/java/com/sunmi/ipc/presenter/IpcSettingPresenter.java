@@ -80,6 +80,7 @@ public class IpcSettingPresenter extends BasePresenter<IpcSettingContract.View>
                 LogCat.e(TAG, "IPC currentVersion Failed. code=" + code + "; msg=" + msg);
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();
+                    mView.currentVersionFailView();
                     mView.shortTip(R.string.str_net_exception);
                 }
             }
