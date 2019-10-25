@@ -431,11 +431,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         isClickVersionUpgrade = true;
         showLoadingDialog();
         mPresenter.currentVersion();
-//        if (mResp == null) {
-//            mPresenter.currentVersion();
-//            return;
-//        }
-//        gotoIpcSettingVersionActivity();
     }
 
     private void gotoIpcSettingVersionActivity() {
@@ -784,6 +779,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             } else {
                 IPCCall.getInstance().getIsWire(IpcSettingActivity.this, bean.getIp());
                 if (CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
+                    mWifiName.setLeftTextColor(ContextCompat.getColor(context, R.color.text_main));
+                    mWifiName.setRightTextColor(ContextCompat.getColor(context, R.color.text_main));
                     mAdjustScreen.setLeftTextColor(ContextCompat.getColor(this, R.color.text_main));
                 }
             }
