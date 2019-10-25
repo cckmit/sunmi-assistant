@@ -196,7 +196,10 @@ public class OverviewOrderImportCard extends BaseRefreshCard<OverviewOrderImport
             btn.setText(R.string.str_retry);
 
         } else {
-            holder.itemView.postDelayed(() -> getAdapter().remove(position), 200);
+            holder.itemView.postDelayed(() -> {
+                getAdapter().remove(position);
+                mPresenter.refresh(true);
+            }, 200);
         }
     }
 

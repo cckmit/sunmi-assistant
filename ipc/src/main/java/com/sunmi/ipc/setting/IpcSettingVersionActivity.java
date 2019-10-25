@@ -92,6 +92,8 @@ public class IpcSettingVersionActivity extends BaseActivity {
     private int mUpgradeStatus;
     //固件是否包含ai升级
     private boolean isAiUpgrade;
+    //是否可以系统返回
+    private boolean isSystemBack;
 
     @AfterViews
     void init() {

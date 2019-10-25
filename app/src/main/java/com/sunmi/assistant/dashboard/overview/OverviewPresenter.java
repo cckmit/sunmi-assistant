@@ -132,7 +132,6 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
         if (state == Constants.IMPORT_COMPLETE) {
             this.mImportState = IMPORT_STATE_DISMISS;
             scrollToTop();
-            refresh(true);
         } else {
             this.mImportState = IMPORT_STATE_SHOW;
         }

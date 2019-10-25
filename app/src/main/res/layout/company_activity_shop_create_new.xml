@@ -74,6 +74,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:hint="@string/company_shop_region_hint"
+            android:textColorHint="@color/text_disable"
             android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16" />
 
@@ -196,6 +197,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:hint="@string/company_shop_select_category"
+            android:textColorHint="@color/text_disable"
             android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16" />
 
@@ -330,7 +332,7 @@
         android:layout_marginTop="@dimen/dp_1"
         android:background="@color/c_white"
         app:editTextBackground="@null"
-        app:editTextHint="@string/company_shop_required_field"
+        app:editTextHint="@string/company_shop_create_hint"
         app:editTextInputType="text"
         app:editTextRightPadding="@dimen/dp_50"
         app:editTextSize="@dimen/sp_16"
