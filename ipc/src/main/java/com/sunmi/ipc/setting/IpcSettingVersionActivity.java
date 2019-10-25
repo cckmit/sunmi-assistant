@@ -95,6 +95,9 @@ public class IpcSettingVersionActivity extends BaseActivity {
     //是否升级失败
     private boolean isUpgradeFail;
     private CommonDialog failDialog;
+    //是否升级成功
+    private boolean isUpgradeSuccess;
+    private CommonDialog successDialog;
     //是否升级过程中
     private boolean isUpgradeProcess;
 
@@ -156,6 +159,8 @@ public class IpcSettingVersionActivity extends BaseActivity {
         super.onResume();
         if (isUpgradeFail) {
             upgradeVerFailDialog();
+        } else if (isUpgradeSuccess) {
+            upgradeVerSuccessDialog();
         }
     }
 
@@ -229,6 +234,7 @@ public class IpcSettingVersionActivity extends BaseActivity {
                 JSONObject object = res.getResult();
                 String sn = object.getString("sn");
                 if (isUpgradeProcess && TextUtils.equals(sn, mDevice.getDeviceid())) {
+                    isUpgradeSuccess = true;
                     stopTimerCountDown(mUpgradeStatus);
                     setText(IPC_RELAUNCH, 100);
                     setLayoutVisible();
@@ -305,18 +311,21 @@ public class IpcSettingVersionActivity extends BaseActivity {
      */
     @UiThread
     void upgradeVerSuccessDialog() {
-        if (isFastClick(300)) {
+        if (isFastClick(200)) {
             return;
         }
-        CommonDialog commonDialog = new CommonDialog.Builder(this)
+        if (successDialog != null && successDialog.isShowing()) {
+            successDialog.dismiss();
+        }
+        successDialog = new CommonDialog.Builder(this)
                 .setTitle(R.string.ipc_setting_dialog_upgrade_success)
                 .setMessage(getString(R.string.ipc_setting_dialog_upgrade_success_content))
                 .setConfirmButton(R.string.str_confirm, (dialog, which) -> {
                     setResult(RESULT_OK, new Intent());
                     finish();
                 }).create();
-        commonDialog.showWithOutTouchable(false);
-        commonDialog.setCancelable(false);
+        successDialog.showWithOutTouchable(false);
+        successDialog.setCancelable(false);
     }
 
     /**
@@ -325,8 +334,8 @@ public class IpcSettingVersionActivity extends BaseActivity {
     private void upgradeVerFailDialog() {
         isAiUpgrade = false;
         isUpgradeProcess = false;
-        if (failDialog != null) {
-            return;
+        if (failDialog != null && failDialog.isShowing()) {
+            failDialog.dismiss();
         }
         failDialog = new CommonDialog.Builder(this)
                 .setTitle(R.string.ipc_setting_dialog_upgrade_fail)
@@ -379,6 +388,9 @@ public class IpcSettingVersionActivity extends BaseActivity {
 
     @UiThread
     void showProgress(int status, long l) {
+        if (l / 1000 == 1) {
+            isUpgradeFail = true;
+        }
         if (isFastClick(300)) {
             return;
         }
@@ -454,7 +466,6 @@ public class IpcSettingVersionActivity extends BaseActivity {
      */
     private boolean showUpgradeFail(long time, int status) {
         if (time / 1000 == 1) {
-            isUpgradeFail = true;
             stopTimerCountDown(status);
             upgradeVerFailDialog();
             return true;
@@ -480,7 +491,6 @@ public class IpcSettingVersionActivity extends BaseActivity {
         mProgress.setProgress(progress);
         tvIpcStatus.setText(strStatus);
         tvIpcUpgradeTip.setText(strStatusTip);
-
     }
 
     /**
