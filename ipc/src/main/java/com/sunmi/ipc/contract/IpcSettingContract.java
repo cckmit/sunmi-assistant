@@ -21,6 +21,8 @@ public interface IpcSettingContract {
 
         void currentVersionView(IpcNewFirmwareResp resp);
 
+        void currentVersionFailView();
+
     }
 
     interface Presenter {
