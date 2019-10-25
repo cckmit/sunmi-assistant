@@ -261,6 +261,18 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        resumePlay();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        pausePlay();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         stopPlay();
@@ -470,16 +482,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             videoDecoder = new H264Decoder(holder.getSurface(), 0);
             initP2pLive();
         } else {
-            if (llPlayFail != null && llPlayFail.isShown()) {
-                return;
-            }
-            setPanelVisible(View.VISIBLE);
-            if (playType == PLAY_TYPE_LIVE && iotcClient != null) {
-                showVideoLoading();
-                iotcClient.startPlay();
-            } else if (playType == PLAY_TYPE_PLAYBACK_DEV && videoDecoder != null) {
-                videoDecoder.startDecode();
-            }
+            resumePlay();
         }
     }
 
@@ -488,17 +491,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     }
 
-    //放后台
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        if (playType != PLAY_TYPE_LIVE && !isPaused) {
-            pausePlayClick();
-        } else if (playType == PLAY_TYPE_LIVE && iotcClient != null) {
-            iotcClient.stopLive();
-            if (audioDecoder != null) {
-                audioDecoder.stopRunning();
-            }
-        }
     }
 
     @Override
@@ -629,6 +623,30 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                     device.setName(sd.getName());
                     titleBar.setAppTitle(device.getName());
                 }
+            }
+        }
+    }
+
+    private void resumePlay() {
+        if (llPlayFail != null && llPlayFail.isShown() || videoDecoder == null) {
+            return;
+        }
+        setPanelVisible(View.VISIBLE);
+        if (playType == PLAY_TYPE_LIVE && iotcClient != null) {
+            showVideoLoading();
+            iotcClient.startPlay();
+        } else if (playType == PLAY_TYPE_PLAYBACK_DEV) {
+            videoDecoder.startDecode();
+        }
+    }
+
+    private void pausePlay() {
+        if (playType != PLAY_TYPE_LIVE && !isPaused) {
+            pausePlayClick();
+        } else if (playType == PLAY_TYPE_LIVE && iotcClient != null) {
+            iotcClient.stopLive();
+            if (audioDecoder != null) {
+                audioDecoder.stopRunning();
             }
         }
     }

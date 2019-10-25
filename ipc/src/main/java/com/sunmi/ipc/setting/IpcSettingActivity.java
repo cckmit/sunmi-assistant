@@ -224,6 +224,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         if (bean == null) {
             setWifiUnknown();
         } else {
+            showLoadingDialog();
             IPCCall.getInstance().getIpcConnectApMsg(context, bean.getIp());
         }
     }
@@ -595,6 +596,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             mDevice.setFirmware(mResp.getLatest_bin_version());
             mPresenter.currentVersion();
         } else if (id == CommonNotifications.mqttResponseTimeout) { //连接超时
+            if (!isRun) {
+                return;
+            }
             shortTip(R.string.str_server_exception);
         }
         if (!isRun || args == null || args.length < 1) {
@@ -684,8 +688,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     void showDevStatus(int status) {
         switch (status) {
             case 0:
-                mVersion.getIvToTextLeft().setText(R.string.ipc_setting_downloading);
-                break;
             case 1:
             case 2:
                 mVersion.getIvToTextLeft().setText(R.string.ipc_setting_upgrading);
@@ -746,6 +748,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         mWifiName.setRightText(getString(R.string.ipc_setting_unknown));
         mWifiName.setLeftTextColor(ContextCompat.getColor(context, R.color.text_caption));
         mWifiName.setRightTextColor(ContextCompat.getColor(context, R.color.text_caption));
+        mAdjustScreen.setLeftTextColor(ContextCompat.getColor(this, R.color.text_caption));
     }
 
     @UiThread
@@ -763,6 +766,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 setWifiUnknown();
             } else {
                 IPCCall.getInstance().getIsWire(IpcSettingActivity.this, bean.getIp());
+                if (CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
+                    mAdjustScreen.setLeftTextColor(ContextCompat.getColor(this, R.color.text_main));
+                }
             }
         }, 1200);
 
@@ -939,11 +945,11 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 .setTitle(R.string.ipc_setting_dialog_upgrade)
                 .setMessage(getString(R.string.ipc_setting_version_current, mDevice.getFirmware()) + "\n" +
                         getString(R.string.ipc_setting_dialog_upgrade_download_time,
-                                DeviceTypeUtils.getInstance().isSS1(mDevice.getModel()) ? "2" : "6"))
+                                DeviceTypeUtils.getInstance().isSS1(mDevice.getModel()) ? "8" : "12"))
                 .setConfirmButton(R.string.ipc_setting_dialog_upgrade_ok, (dialog, which) -> {
                     gotoIpcSettingVersionActivity();
                 })
-                .setCancelButton(R.string.sm_cancel).create();
+                .setCancelButton(R.string.str_in_later).create();
         commonDialog.showWithOutTouchable(false);
     }
 

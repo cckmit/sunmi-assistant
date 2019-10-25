@@ -471,6 +471,7 @@ public class SunmiStoreApi {
     public void getShopInfo(int shopId, RetrofitCallback<ShopInfoResp> callback) {
         try {
             String params = new JSONObject()
+                    .put("company_id", SpUtils.getCompanyId())
                     .put("shop_id", shopId)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
@@ -544,7 +545,6 @@ public class SunmiStoreApi {
             e.printStackTrace();
         }
     }
-
 
     public void getShopCategory(RetrofitCallback<ShopCategoryResp> callback) {
         try {

@@ -227,6 +227,9 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mContentGroup.setVisibility(View.VISIBLE);
         mOverlay.setVisibility(View.GONE);
         mLayoutError.setVisibility(View.GONE);
+        if (mTopShopMenu.getPopup().isShowing()) {
+            mTopShopMenu.getPopup().dismiss(true);
+        }
         hideLoadingDialog();
     }
 

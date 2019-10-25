@@ -92,7 +92,7 @@
     <string name="ipc_setting_tip_network_detection">Checking the Internet，please wait…</string>
     <string name="ipc_setting_tip_network_dismatch">The current device and the mobile phone are not under the same router.</string>
     <string name="ipc_setting_dialog_upgrade">Update</string>
-    <string name="ipc_setting_dialog_upgrade_download_time">Download time is expected to take %s minutes</string>
+    <string name="ipc_setting_dialog_upgrade_download_time">Upgrade time is expected to take %s minutes</string>
     <string name="ipc_setting_dialog_upgrade_ok">Update now</string>
     <string name="str_in_later">Update later</string>
     <string name="ipc_setting_dialog_upgrade_progress">Downloading…%s%%</string>
@@ -305,6 +305,7 @@
     <string name="ipc_setting_status_relaunch_tip">正在重启，\t\n请保持设备在线，切勿断电！</string>
     <string name="import_order_dialog_upgrade_success">设备升级成功</string>
     <string name="import_order_dialog_blue_light_alway_on">蓝灯常亮&#160;&#160;&#160;&#160;</string>
+    <string name="msg_dialog_format_sd_before_adjust">存储卡需要格式化后才能使用调整画面功能，点击确认将进入格式化操作页面。</string>
 </resources>
 
 

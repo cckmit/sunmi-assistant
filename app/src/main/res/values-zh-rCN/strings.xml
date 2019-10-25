@@ -170,7 +170,7 @@
     <string name="company_new_create">新建商户</string>
     <string name="company_create_hint">请输入商户名称</string>
     <string name="company_shop_create_hint">请输入门店名称</string>
-    <string name="company_new_try_create">您可以尝试创建新商户</string>
+    <string name="company_new_try_create">商户一般为企业或个体经营主体。\t\n支持同一商户下创建多家门店的连锁经营场景</string>
     <string name="company_shop_enter_main">进入首页</string>
     <string name="company_create_tip">商户一般为企业或个体经营主体，例如：星巴克</string>
     <string name="company_shop_create_tip">门店一般为商户旗下的店铺经营场所：例如：五角场店</string>
@@ -232,7 +232,7 @@
     <string name="company_can_switch">可切换商户</string>
     <string name="company_shop_details">门店详情</string>
     <string name="company_shop_face_group">人脸分组</string>
-    <string name="company_shop_to_create">该商户暂无门店，您可以新建门店，或者从其他软件平台中导入门店</string>
+    <string name="company_shop_to_create">门店是商户下的店铺经营场所。\t\n在门店里，您可以进行添加智能设备、查看经营状态等工作</string>
     <string name="shop_create">创建门店</string>
     <string name="msg_ipc_tf_non_exist">网络摄像机%s的存储卡未插入或被拔出，请检查</string>
     <string name="msg_ipc_tf_exist">网络摄像机%s检测到有新存储卡插入，建议格式化，用于本地存储监控视频</string>
@@ -272,7 +272,7 @@
     <string name="company_shop_select_category">请选择经营品类</string>
     <string name="dialog_title_select_category">选择经营品类</string>
     <string name="dialog_title_select_region">选择所在地区</string>
-    <string name="import_order_support_platform_tip">现已支持接入多家收银软件平台，支持3个月的历史订单导入</string>
+    <string name="import_order_support_platform_tip">现已支持接入多家收银软件平台，支持2个月的历史订单导入</string>
     <string name="import_order_current_mobile">当前手机号接入</string>
     <string name="import_order_other_mobile">其他手机号接入</string>
     <string name="import_order_platform_mobile_search_data">请输入您在%s中使用的手机号，以搜索门店的订单数据</string>
@@ -292,4 +292,6 @@
     <string name="import_order_data_service">订单数据分析服务</string>
     <string name="import_order_access_already_auth">该门店收银系统已被授权，无法再次授权</string>
     <string name="import_order_access_no_auth_more">已授权过门店收银系统，无法授权更多</string>
+    <string name="company_shop_region_hint">必选</string>
+    <string name="shop_create_new">新建门店</string>
 </resources>
