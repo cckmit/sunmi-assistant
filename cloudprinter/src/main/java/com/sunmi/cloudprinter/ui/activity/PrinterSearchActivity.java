@@ -100,6 +100,9 @@ public class PrinterSearchActivity extends BaseActivity
     protected void onStop() {
         super.onStop();
         stopScan();
+        if (sunmiPrinterClient != null) {
+            sunmiPrinterClient.disconnect(bleAddress);
+        }
     }
 
     @Override
