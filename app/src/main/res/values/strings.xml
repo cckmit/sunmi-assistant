@@ -5,7 +5,7 @@
     <string name="str_text_lead_tem">Terminal Management</string>
     <string name="str_text_lead_set_perm">Accurately identify the key terminals, set up the internet access permission easily</string>
     <string name="str_text_lead_service">The core business can work properly even during network congestion</string>
-    <string name="str_text_lead_search_dev">Search Sunmi devices</string>
+    <string name="str_text_lead_search_dev">Search Sunmi Devices</string>
     <string name="str_text_lead_set_connected">One-Key to connect the Sunmi devices to the internet, fast and safe</string>
     <string name="tip_old_and_new_psw_same">The old and new password cannot be the same</string>
     <string name="str_version_update">Version Update</string>
@@ -168,10 +168,10 @@
     <string name="company_create_check_length">The company name is too long. Please enter it again</string>
     <string name="company_create_shop_max_length">The store name is too long. Please enter it again</string>
     <string name="company_create_check_name">The company name already exists. Please enter it again</string>
-    <string name="company_create_shop_success">store created successfully</string>
+    <string name="company_create_shop_success">Store created successfully</string>
     <string name="company_create_success">Company created successfully</string>
     <string name="company_create_fail">Company created failed</string>
-    <string name="company_shop_create_name">store name</string>
+    <string name="company_shop_create_name">Store name</string>
     <string name="company_shop_contact">Contact person</string>
     <string name="company_shop_contact_really_name">Name of contact person</string>
     <string name="company_shop_mobile">Contact information</string>
@@ -200,7 +200,7 @@
     <string name="tip_esl_offline">检测到基站离线</string>
     <string name="str_task_erp">ERP对接提醒</string>
     <string name="tip_task_erp">ERP对接完成</string>
-    <string name="company_shop_area">store area</string>
+    <string name="company_shop_area">Store area</string>
     <string name="company_shop_contact_tip">Please enter contact person</string>
     <string name="company_shop_contact_tel_tip">Please enter contact information</string>
     <string name="company_shop_area_tip">Please enter your store area</string>
@@ -235,7 +235,7 @@
     <string name="msg_esl_ota">价签%s已发布新版固件%s，请更新</string>
     <string name="msg_task_erp_finish">已于%s完成与%s的对接，成功获取%s条商品信息</string>
     <string name="msg_task_erp_fail">Failed to docking to %s, please try again</string>
-    <string name="company_shop_create_success">store created successfully</string>
+    <string name="company_shop_create_success">Store created successfully</string>
     <string name="editetxt_max_length">The word is too long, please enter again</string>
     <string name="check_mobile_fixedphone_tip">Please enter the correct phone number</string>
     <string name="str_msg_setting">Notification Settings</string>
