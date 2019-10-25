@@ -170,12 +170,17 @@
                 app:parentHeight="@dimen/dp_72"
                 app:rightPadding="@dimen/dp_20" />
 
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_16"
+                android:background="@color/transparent"/>
+
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_help"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
                 android:background="@color/c_white"
+                android:visibility="gone"
                 app:dividerShow="true"
                 app:imageLeft="@mipmap/ic_help"
                 app:imageRight="@mipmap/ic_right_arrow_small"

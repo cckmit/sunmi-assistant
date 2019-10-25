@@ -7,7 +7,6 @@ import sunmi.common.model.CreateShopInfo;
 import sunmi.common.model.ShopCategoryResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
-import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
 
 /**
@@ -42,11 +41,11 @@ public class ShopCreatePresenter extends BasePresenter<ShopCreateContract.View>
     }
 
     @Override
-    public void createShop(String shopName, int province, int city, int area,
+    public void createShop(int companyId, String shopName, int province, int city, int area,
                            String address, int typeOne, int typeTwo,
                            float businessArea, String person, String tel) {
         mView.showLoadingDialog();
-        SunmiStoreApi.getInstance().createShop(SpUtils.getCompanyId(), shopName, province, city, area,
+        SunmiStoreApi.getInstance().createShop(companyId, shopName, province, city, area,
                 address, typeOne, typeTwo, businessArea, person, tel, new RetrofitCallback<CreateShopInfo>() {
                     @Override
                     public void onSuccess(int code, String msg, CreateShopInfo data) {

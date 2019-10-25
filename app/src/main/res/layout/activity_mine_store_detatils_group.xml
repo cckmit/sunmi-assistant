@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/c_white"
-        android:visibility="visible"
+        android:visibility="gone"
         app:imageRight="@mipmap/ic_right_arrow_small"
         app:leftPadding="@dimen/dp_20"
         app:leftText="@string/company_shop_face_group"

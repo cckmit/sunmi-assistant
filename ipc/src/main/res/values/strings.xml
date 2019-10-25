@@ -265,8 +265,7 @@
     <string name="str_md_exception">异常人员进入</string>
     <string name="str_cashier">收银审计</string>
     <string name="str_view_flow_video">查看交易流水视频</string>
-    <string name="str_cloud_storage">云存储</string>
-    <string name="str_cloud_storage_service">云存储服务</string>
+
     <string name="ipc_dynamic_request_external_storage">暂未授予存储权限，请授权后重试</string>
     <string name="ipc_video_play_loading">视频加载中，请稍候</string>
     <string name="str_wifi_config_finish">Internet connected</string>
@@ -306,6 +305,7 @@
     <string name="ipc_setting_status_relaunch_tip">正在重启，\t\n请保持设备在线，切勿断电！</string>
     <string name="import_order_dialog_upgrade_success">设备升级成功</string>
     <string name="import_order_dialog_blue_light_alway_on">蓝灯常亮&#160;&#160;&#160;&#160;</string>
+    <string name="msg_dialog_format_sd_before_adjust">存储卡需要格式化后才能使用调整画面功能，点击确认将进入格式化操作页面。</string>
 </resources>
 
 
