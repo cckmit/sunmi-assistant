@@ -39,7 +39,6 @@ import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.TitleBarView;
@@ -200,7 +199,6 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                     shortTip(R.string.network_wifi_low);
                 }
             } catch (JSONException e) {
-                LogCat.e(TAG, "Parse json ERROR: " + res.getResult());
                 shortTip(R.string.network_wifi_low);
             }
         }
@@ -221,9 +219,9 @@ public class IpcConfigCompletedActivity extends BaseActivity {
         hideLoadingDialog();
         new CommonDialog.Builder(context)
                 .setTitle(R.string.tip_sdcard_unformat)
-                .setMessage(R.string.msg_sdcard_should_format)
+                .setMessage(R.string.msg_dialog_format_sd_before_adjust)
                 .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.str_sd_format, (dialog, which) -> {
+                .setConfirmButton(R.string.str_confirm, (dialog, which) -> {
                     IpcSettingSdcardActivity_.intent(this).mDevice(device).start();
                 }).create().show();
     }
