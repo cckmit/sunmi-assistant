@@ -406,6 +406,8 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
 
         void setPeriod(int period);
 
+        void refresh(boolean showLoading);
+
         void showLoading();
 
         void hideLoading();
