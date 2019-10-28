@@ -15,12 +15,14 @@ import android.widget.TextView;
 
 import com.commonlibrary.R;
 
+import sunmi.common.utils.CommonHelper;
+import sunmi.common.view.ClearableEditText;
+
 /**
  * Description:
  * Created by bruce on 2019/3/29.
  */
 public class InputDialog extends Dialog {
-    EditText etInput;
 
     private InputDialog(Context context, int theme) {
         super(context, theme);
@@ -189,6 +191,11 @@ public class InputDialog extends Dialog {
             return this;
         }
 
+        public Builder setHint(int hint) {
+            this.hint = (String) context.getText(hint);
+            return this;
+        }
+
         /**
          * 创建自定义的对话框
          */
@@ -209,7 +216,8 @@ public class InputDialog extends Dialog {
                 tvTitle.setText(title);
             }
 
-            final EditText etInput = layout.findViewById(R.id.et_input);
+            final ClearableEditText etInput = layout.findViewById(R.id.et_input);
+            CommonHelper.setSelectionEnd(etInput);
             //动态设置输入框高度
             if (etHeight > 0) {
                 ViewGroup.LayoutParams params = etInput.getLayoutParams();

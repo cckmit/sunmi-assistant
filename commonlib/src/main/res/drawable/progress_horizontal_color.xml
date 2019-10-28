@@ -11,18 +11,6 @@
         </shape>
     </item>
 
-    <item android:id="@android:id/secondaryProgress">
-        <clip>
-            <shape>
-                <corners android:radius="@dimen/dp_12" />
-                <gradient
-                    android:angle="270"
-                    android:endColor="@color/common_orange"
-                    android:startColor="@color/common_orange" />
-            </shape>
-        </clip>
-    </item>
-
     <item android:id="@android:id/progress">
         <clip>
             <shape>

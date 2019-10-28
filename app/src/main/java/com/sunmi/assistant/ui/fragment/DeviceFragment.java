@@ -2,6 +2,7 @@ package com.sunmi.assistant.ui.fragment;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -76,6 +77,7 @@ import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.dialog.ChooseDeviceDialog;
 import sunmi.common.view.dialog.CommonDialog;
+import sunmi.common.view.dialog.InputDialog;
 
 /**
  * Description:
@@ -110,7 +112,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     private Timer timer = null, timerException = null;
     private DeviceListAdapter deviceListAdapter;
     private DeviceSettingMenu deviceSettingMenu;
-    private Dialog dialogPassword = null;
+    private InputDialog dialogPassword = null;
     private String password = "";    //路由管理密码
     private String mPassword;
     private SunmiDevice clickedDevice;
@@ -490,37 +492,28 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @UiThread
     void saveMangerPasswordDialog(String type) {
-        if (mActivity == null) return;
         hideLoadingDialog();
-        if (dialogPassword != null) {
+        if (mActivity == null || dialogPassword != null) {
             dialogPassword = null;
             return;
         }
-        dialogPassword = new Dialog(mActivity, R.style.Son_dialog);
-        LayoutInflater inflater = mActivity.getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_manger_password, null);
-        final ClearableEditText etPassword = view.findViewById(R.id.et_password);
-        TextView tvContent = view.findViewById(R.id.tvContent);
-        if (TextUtils.equals(type, "0")) {
-            tvContent.setText(R.string.curr_router_manager_password);
-        } else {
-            tvContent.setText(R.string.curr_router_error_password);
-        }
+
         password = "";
-        view.findViewById(R.id.btnCancel).setOnClickListener(v -> {
-            dialogPassword.dismiss();
-            dialogPassword = null;
-        });
-        view.findViewById(R.id.btnSure).setOnClickListener(v -> {
-            if (isFastClick(1500)) return;
-            password = etPassword.getText().toString().trim();
-            if (TextUtils.isEmpty(password)) {
-                shortTip(R.string.hint_input_manger_password);
-                return;
-            }
-            APCall.getInstance().checkLoginAgain(mActivity, password);//todo opcode
-        });
-        dialogPassword.setContentView(view);
+        dialogPassword = new InputDialog.Builder(mActivity)
+                .setTitle(TextUtils.equals(type, "0") ?
+                        R.string.curr_router_manager_password : R.string.curr_router_error_password)
+                .setHint(R.string.hint_input_manger_password)
+                .setCancelButton(com.sunmi.apmanager.R.string.sm_cancel, (dialog, which) -> dialogPassword = null)
+                .setConfirmButton(com.sunmi.apmanager.R.string.str_confirm, (dialog, input) -> {
+                    if (isFastClick(1500)) return;
+                    password = input;
+                    if (TextUtils.isEmpty(password)) {
+                        shortTip(R.string.hint_input_manger_password);
+                        return;
+                    }
+                    dialog.dismiss();
+                    APCall.getInstance().checkLoginAgain(mActivity, password);//todo opcode
+                }).create();
         dialogPassword.setCancelable(false);
         dialogPassword.show();
     }

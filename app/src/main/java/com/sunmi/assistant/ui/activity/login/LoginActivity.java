@@ -1,6 +1,5 @@
 package com.sunmi.assistant.ui.activity.login;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -130,7 +129,7 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
     @Override
     protected void onResume() {
         super.onResume();
-        HelpUtils.setSelectionEnd(etUser);
+        CommonHelper.setSelectionEnd(etUser);
     }
 
     @Override
@@ -234,18 +233,15 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
     @UiThread
     @Override
     public void mobileUnregister() {
-        new CommonDialog.Builder(LoginActivity.this)
+        new CommonDialog.Builder(context)
                 .setTitle(R.string.tip_unregister)
                 .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.str_register_now, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        CommonUtils.trackCommonEvent(context, "loginUnRegisterDialogRegister",
-                                "登录_未注册弹框-立即注册", Constants.EVENT_LOGIN);
-                        RegisterActivity_.intent(context)
-                                .extra("mobile", RegexUtils.isCorrectAccount(mobile) ? mobile : "")
-                                .start();
-                    }
+                .setConfirmButton(R.string.str_register_now, (dialog, which) -> {
+                    CommonUtils.trackCommonEvent(context, "loginUnRegisterDialogRegister",
+                            "登录_未注册弹框-立即注册", Constants.EVENT_LOGIN);
+                    RegisterActivity_.intent(context)
+                            .extra("mobile", RegexUtils.isCorrectAccount(mobile) ? mobile : "")
+                            .start();
                 }).create().show();
     }
 
@@ -258,13 +254,11 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
     @Override
     public void getCompanyListSuccess(List<CompanyInfoResp> companyList) {
         if (companyList.size() == 0) {
-            CreateCompanyActivity_.intent(context)
-                    .createCompanyCannotBack(true)
-                    .start();
-            return;
+            CreateCompanyActivity_.intent(context).createCompanyCannotBack(true).start();
+        } else {
+            LoginChooseShopActivity_.intent(context)
+                    .action(CommonConstants.ACTION_LOGIN_CHOOSE_COMPANY).start();
         }
-        LoginChooseShopActivity_.intent(context)
-                .action(CommonConstants.ACTION_LOGIN_CHOOSE_COMPANY).start();
     }
 
     @Override
