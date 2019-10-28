@@ -31,6 +31,8 @@ import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.SettingItemLayout;
 
+import static sunmi.common.utils.CommonHelper.isGooglePlay;
+
 /**
  * 我的商户
  *
@@ -73,6 +75,9 @@ public class CompanyDetailActivity extends BaseActivity {
     @AfterViews
     protected void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
+        if (!isGooglePlay()) {
+            silCompanyContactTel.setVisibility(View.VISIBLE);
+        }
         setSingleLine();
         silCompanyId.setRightImage(null);
         silCompanyCreateTime.setRightImage(null);

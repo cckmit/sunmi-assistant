@@ -1,44 +1,65 @@
 package com.sunmi.assistant.dashboard;
 
-import android.content.Context;
-
-import com.sunmi.assistant.dashboard.card.BaseRefreshItem;
-
 import java.util.List;
 
 import sunmi.common.base.BaseView;
+import sunmi.common.model.FilterItem;
 
 public interface DashboardContract {
 
     interface View extends BaseView {
 
-        Context getContext();
+        int getHeaderHeight();
 
-        void updateTab(int period);
+        void setShopList(List<FilterItem> list);
 
-        void setShopList(List<ShopItem> list);
+        void setSource(int source);
 
-        void setCards(List<BaseRefreshItem> data, int dataSource);
+        void updateTab(int page, int period);
+
+        void updateTopPosition(int position);
+
+        void resetTop();
 
         void loadDataFailed();
 
     }
 
-    interface Presenter {
+    interface Presenter extends PageContract.ParentPresenter {
 
         void init();
 
-        void reload();
+        void reload(int flag);
 
-        boolean switchShopTo(ShopItem shop);
+        void setShop(FilterItem shop);
 
-        void switchPeriodTo(int period);
+        void setPeriod(int period);
 
-        void refresh(boolean showLoading);
+        void setPage(int index);
 
-        void refresh(int position, boolean showLoading);
+        void scrollToTop();
 
-        void showFailedTip();
+        List<PageHost> getPages();
+
+        int getPageIndex();
+
+        int getPeriod();
 
     }
+//
+//    interface PagePresenter {
+//
+//        int getType();
+//
+//        int getScrollY();
+//
+//        void scrollTo(int y);
+//
+//        void refresh(boolean showLoading);
+//
+//        void refresh(int position, boolean showLoading);
+//
+//
+//
+//    }
 }

@@ -5,13 +5,12 @@ import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.webkit.WebViewClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
@@ -20,6 +19,7 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.webview.SMWebView;
+import sunmi.common.view.webview.SMWebViewClient;
 
 /**
  * Description:
@@ -61,7 +61,12 @@ public class WebViewWithCloseActivity extends BaseActivity
     }
 
     private void initWebView() {
-        webView.setWebViewClient(new WebViewClient());
+        webView.setWebViewClient(new SMWebViewClient(this) {
+            @Override
+            protected void receiverError(WebView view, WebResourceRequest request, WebResourceError error) {
+
+            }
+        });
         webView.setWebChromeClient(new H5FaceWebChromeClient(this, this));
         WBH5FaceVerifySDK.getInstance().setWebViewSettings(webView, getApplicationContext());
     }

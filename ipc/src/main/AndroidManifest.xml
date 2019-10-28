@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <application>
+        <activity android:name=".face.FaceHistoryArrivalActivity"></activity>
         <activity
             android:name=".view.activity.WifiConfigActivity_"
             android:screenOrientation="portrait" />
@@ -54,11 +55,13 @@
             android:name=".setting.IpcSettingRotateActivity_"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".setting.IpcSettingSdcardActivity_"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".setting.RecognitionSettingActivity_"
             android:hardwareAccelerated="false"
             android:largeHeap="true"
             android:screenOrientation="landscape" />
-
         <activity
             android:name=".face.FaceGroupListActivity_"
             android:screenOrientation="portrait" />
@@ -91,7 +94,6 @@
             android:hardwareAccelerated="false"
             android:largeHeap="true"
             android:screenOrientation="landscape" />
-
     </application>
 
 </manifest>

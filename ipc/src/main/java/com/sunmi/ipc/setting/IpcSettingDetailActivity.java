@@ -1,6 +1,5 @@
 package com.sunmi.ipc.setting;
 
-import android.content.DialogInterface;
 import android.view.View;
 
 import com.sunmi.ipc.R;
@@ -55,38 +54,29 @@ public class IpcSettingDetailActivity extends BaseActivity {
     }
 
     private void deleteDevice(final SunmiDevice device) {
-        String msg = getString(R.string.tip_delete_ipc);
-        new CommonDialog.Builder(this).setMessage(msg)
+        new CommonDialog.Builder(context).setTitle(R.string.tip_delete_ipc)
                 .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.ipc_setting_delete, R.color.read_deep_more,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                if (-1 == NetworkUtils.getNetStatus(IpcSettingDetailActivity.this)) {
-                                    unBindNetDisConnected();
-                                    return;
-                                }
-                                unbindIpc(device.getId());
+                .setConfirmButton(R.string.ipc_setting_delete, R.color.caution_primary,
+                        (dialog, which) -> {
+                            dialog.dismiss();
+                            if (-1 == NetworkUtils.getNetStatus(IpcSettingDetailActivity.this)) {
+                                unBindNetDisConnected();
+                                return;
                             }
+                            unbindIpc(device.getId());
                         }).create().show();
     }
 
     private void unBindNetDisConnected() {
-        new CommonDialog.Builder(this)
-                .setMessage(getString(R.string.str_dialog_net_disconnected))
-                .setCancelButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
+        new CommonDialog.Builder(context)
+                .setTitle(R.string.str_dialog_net_disconnected)
+                .setCancelButton(R.string.str_confirm, (dialog, which) -> dialog.dismiss())
                 .create()
                 .show();
     }
 
     private void unbindIpc(int deviceId) {
-        IpcCloudApi.unbindIpc(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId,
+        IpcCloudApi.getInstance().unbindIpc(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId,
                 new RetrofitCallback<Object>() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {

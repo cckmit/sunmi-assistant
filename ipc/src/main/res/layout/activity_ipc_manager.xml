@@ -4,7 +4,7 @@
     android:id="@+id/rl_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_f5f5f5"
+    android:background="@color/common_fill"
     android:orientation="vertical">
 
     <sunmi.common.view.TitleBarView
@@ -15,7 +15,7 @@
         app:dividerShow="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:rightText="@string/str_setting"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="wrap_content"

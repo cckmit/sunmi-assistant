@@ -1,13 +1,13 @@
 package sunmi.common.rpc.cloud;
 
 
-
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.model.CreateShopInfo;
 import sunmi.common.model.PlatformInfo;
+import sunmi.common.model.ShopAuthorizeInfoResp;
 import sunmi.common.model.ShopCategoryResp;
 import sunmi.common.model.ShopInfoResp;
 import sunmi.common.model.ShopListResp;
@@ -72,5 +72,17 @@ public interface ShopInterface {
     //用户授权获取Saas平台数据
     @POST(saasPath + "authorize")
     Call<BaseResponse<Object>> authorizeSaas(@Body BaseRequest request);
+
+    /**
+     * 获取门店Saas对接信息，包括授权状态，授权时间，数据导入状态
+     */
+    @POST(saasPath + "getAuthorizeInfo")
+    Call<BaseResponse<ShopAuthorizeInfoResp>> getAuthorizeInfo(@Body BaseRequest request);
+
+    /**
+     * 门店导入Saas历史数据
+     */
+    @POST(saasPath + "importPaymentHistory")
+    Call<BaseResponse<Object>> importSaas(@Body BaseRequest request);
 
 }

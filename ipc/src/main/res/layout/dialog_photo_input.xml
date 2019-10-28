@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:background="@drawable/dialog_shap_white_solid"
+        android:background="@drawable/bg_dialog"
         android:orientation="vertical">
 
         <TextView
@@ -24,7 +24,7 @@
             android:layout_marginTop="@dimen/dp_25"
             android:gravity="center"
             android:text="@string/ipc_face_group_capacity_dialog"
-            android:textColor="@color/color_dialog_content"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_18"
             android:textStyle="bold" />
 
@@ -42,7 +42,7 @@
             android:paddingLeft="@dimen/dp_10"
             android:paddingRight="@dimen/dp_10"
             android:singleLine="true"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16" />
 
         <TextView
@@ -53,14 +53,14 @@
             android:layout_marginRight="@dimen/dp_15"
             android:layout_marginTop="@dimen/dp_2"
             android:gravity="left"
-            android:textColor="@color/colorText_40"
+            android:textColor="@color/text_caption"
             android:textSize="@dimen/sp_12" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.3dp"
             android:layout_marginTop="@dimen/dp_15"
-            android:background="@color/dialog_divider" />
+            android:background="@color/c_divider" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -75,7 +75,7 @@
                 android:background="@null"
                 android:gravity="center"
                 android:text="@string/sm_cancel"
-                android:textColor="@color/color_dialog_cancel"
+                android:textColor="@color/text_normal"
                 android:textSize="@dimen/sp_14"
                 android:visibility="visible" />
 
@@ -83,7 +83,7 @@
                 android:id="@+id/btn_divider"
                 android:layout_width="0.3dp"
                 android:layout_height="match_parent"
-                android:background="@color/dialog_divider"
+                android:background="@color/c_divider"
                 android:visibility="visible" />
 
             <Button
@@ -94,7 +94,7 @@
                 android:background="@null"
                 android:gravity="center"
                 android:text="@string/ipc_setting_save"
-                android:textColor="@color/color_dialog_sure"
+                android:textColor="@color/common_orange"
                 android:textSize="@dimen/sp_14"
                 android:visibility="visible" />
         </LinearLayout>

@@ -14,6 +14,7 @@ import java.util.List;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.SpUtils;
 
 /**
  * Description:
@@ -24,7 +25,7 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
 
     @Override
     public void getTimeSlots(int deviceId, final long startTime, final long endTime) {
-        IpcCloudApi.getTimeSlots(deviceId, startTime, endTime, new RetrofitCallback<CloudTimeSlotResp>() {
+        IpcCloudApi.getInstance().getTimeSlots(deviceId, startTime, endTime, new RetrofitCallback<CloudTimeSlotResp>() {
             @Override
             public void onSuccess(int code, String msg, CloudTimeSlotResp data) {
                 if (!isViewAttached()) {
@@ -121,7 +122,7 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
             mView.shortTip("设备信息不完整");
             return;
         }
-        IpcCloudApi.getVideoList(deviceId, start, end, new RetrofitCallback<VideoListResp>() {
+        IpcCloudApi.getInstance().getVideoList(deviceId, start, end, new RetrofitCallback<VideoListResp>() {
             @Override
             public void onSuccess(int code, String msg, VideoListResp data) {
                 if (isViewAttached()) {

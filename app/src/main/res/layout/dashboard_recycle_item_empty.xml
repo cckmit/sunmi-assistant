@@ -1,29 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_256"
-    android:background="@drawable/dashboard_bg_top_white_radius">
+    android:layout_height="wrap_content"
+    android:background="@color/c_white"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/dp_40"
+    android:paddingBottom="@dimen/dp_16">
 
     <ImageView
         android:id="@+id/iv_dashboard_empty_image"
         android:layout_width="@dimen/dp_280"
         android:layout_height="@dimen/dp_182"
-        android:layout_marginTop="@dimen/dp_40"
         android:src="@mipmap/dashboard_empty_data"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/tv_dashboard_tip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_16"
-        android:text="@string/dashboard_empty_data_tip"
-        android:textColor="@color/color_A1A7B3"
+        android:text="@string/dashboard_no_data_tip"
+        android:textColor="@color/text_disable"
         android:textSize="@dimen/sp_12"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_dashboard_empty_image" />
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

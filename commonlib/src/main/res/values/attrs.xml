@@ -8,6 +8,11 @@
     <attr name="rightText" format="string" />
     <attr name="rightTextSize" format="dimension" />
     <attr name="rightTextColor" format="color" />
+    <attr name="parentWidth" format="dimension" />
+    <attr name="parentHeight" format="dimension" />
+    <attr name="imageLeft" format="reference" />
+    <attr name="imageLeftSize" format="dimension" />
+    <attr name="dividerHeight" format="dimension" />
 
     <declare-styleable name="TitleBarView">
         <!--左边icon-->
@@ -38,22 +43,54 @@
     </declare-styleable>
 
     <declare-styleable name="SettingItemLayout">
-        <attr name="parentWidth" format="dimension" />
-        <attr name="parentHeight" format="dimension" />
+        <attr name="parentWidth" />
+        <attr name="parentHeight" />
         <attr name="leftText" />
         <attr name="leftTextSize" />
         <attr name="leftTextColor" />
         <attr name="rightText" />
         <attr name="rightTextSize" />
         <attr name="rightTextColor" />
-        <attr name="imageLeft" format="reference" />
-        <attr name="imageLeftSize" format="dimension" />
+        <attr name="toTextLeftText" format="string" />
+        <attr name="imageLeft" />
+        <attr name="imageLeftSize" />
         <attr name="imageRight" format="reference" />
         <attr name="leftPadding" format="dimension" />
         <attr name="rightPadding" format="dimension" />
         <attr name="dividerShow" />
         <attr name="dividerColor" />
-        <attr name="dividerHeight" format="dimension" />
+        <attr name="dividerHeight" />
+    </declare-styleable>
+
+    <declare-styleable name="SettingItemEdittextLayout">
+        <attr name="parentWidth" />
+        <attr name="parentHeight" />
+        <attr name="imageLeft" />
+        <attr name="imageLeftSize" />
+        <attr name="leftText" />
+        <attr name="leftTextSize" />
+        <attr name="leftTextColor" />
+        <attr name="editTextContent" format="string" />
+        <attr name="editTextHint" format="string" />
+        <attr name="editTextSize" format="dimension" />
+        <attr name="editTextColor" format="color" />
+        <attr name="editTextHintColor" format="color" />
+        <attr name="editTextBackground" format="reference" />
+        <attr name="editTextRightPadding" format="dimension" />
+        <attr name="rightText" />
+        <attr name="rightTextSize" />
+        <attr name="rightTextColor" />
+        <attr name="dividerShow" />
+        <attr name="dividerColor" />
+        <attr name="dividerHeight" />
+        <attr name="editTextInputType">
+            <flag name="none" value="0x00000000" />
+            <flag name="text" value="0x00000001" />
+            <flag name="textMultiLine" value="0x00020001" />
+            <flag name="number" value="0x00000002" />
+            <flag name="numberDecimal" value="0x00002002" />
+            <flag name="phone" value="0x00000003" />
+        </attr>
     </declare-styleable>
 
     <declare-styleable name="VerifyCodeInputView">
@@ -200,7 +237,7 @@
         <attr name="tl_iconMargin" format="dimension" />
 
     </declare-styleable>
-    <declare-styleable name="androidWheelView">
+    <declare-styleable name="LoopView">
         <attr name="awv_textsize" format="integer" />
         <attr name="awv_lineSpace" format="float" />
         <attr name="awv_centerTextColor" format="integer" />
@@ -210,6 +247,12 @@
         <attr name="awv_isLoop" format="boolean" />
         <attr name="awv_initialPosition" format="integer" />
         <attr name="awv_scaleX" format="float" />
+    </declare-styleable>
+    
+    <declare-styleable name="LabelTextView">
+        <attr name="backgroundColor" format="color"/>
+        <attr name="strokeWidth" format="dimension"/>
+        <attr name="strokeColor" format="color"/>
     </declare-styleable>
 
 </resources>

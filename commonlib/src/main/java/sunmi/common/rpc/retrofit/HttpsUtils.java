@@ -15,6 +15,8 @@
  */
 package sunmi.common.rpc.retrofit;
 
+import android.text.TextUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyManagementException;
@@ -24,6 +26,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.KeyManager;
@@ -191,6 +194,9 @@ public class HttpsUtils {
         }
     };
 
+    //Google play HostnameVerifier 的实施方式不安全
+    private static String[] VERIFY_HOST_NAME_ARRAY = new String[]{};
+
     /**
      * 此类是用于主机名验证的基接口。 在握手期间，如果 URL 的主机名和服务器的标识主机名不匹配，
      * 则验证机制可以回调此接口的实现程序来确定是否应该允许此连接。策略可以是基于证书的或依赖于其他验证方案。
@@ -199,7 +205,10 @@ public class HttpsUtils {
     public static HostnameVerifier UnSafeHostnameVerifier = new HostnameVerifier() {
         @Override
         public boolean verify(String hostname, SSLSession session) {
-            return true;
+            if (TextUtils.isEmpty(hostname)) {
+                return false;
+            }
+            return !Arrays.asList(VERIFY_HOST_NAME_ARRAY).contains(hostname);
         }
     };
 

@@ -181,7 +181,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
     }
 
     private void takePhoto() {
-        new CommonDialog.Builder(this)
+        new CommonDialog.Builder(context)
                 .setTitle(R.string.ipc_face_tip_album_title)
                 .setMessage(R.string.ipc_face_tip_album_content)
                 .setMessageDrawable(0, 0, 0, R.mipmap.face_tip_image)
@@ -197,7 +197,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
     }
 
     private void openPicker() {
-        new CommonDialog.Builder(this)
+        new CommonDialog.Builder(context)
                 .setTitle(R.string.ipc_face_tip_album_title)
                 .setMessage(R.string.ipc_face_tip_album_content)
                 .setMessageDrawable(0, 0, 0, R.mipmap.face_tip_image)
@@ -617,7 +617,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
             });
             selectedItem(selectedIndex, holder, item);
             if (count == 0) {
-                item.setLeftTextColor(ContextCompat.getColor(context, R.color.colorText_20));
+                item.setLeftTextColor(ContextCompat.getColor(context, R.color.text_disable));
                 item.setRightImage(null);
             }
         }
@@ -660,7 +660,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
             item.setRightImage(ContextCompat.getDrawable(context, com.sunmi.ipc.R.mipmap.ic_yes));
             item.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.common_orange));
         } else {
-            item.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.colorText));
+            item.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.text_main));
             item.setRightImage(null);
         }
     }

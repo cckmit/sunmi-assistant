@@ -87,14 +87,14 @@
     <string name="ipc_setting_version_current_name">当前版本</string>
     <string name="ipc_setting_version_current">当前版本：%s</string>
     <string name="ipc_setting_version_find_new">发现新版本：%s</string>
-    <string name="ipc_setting_version_get_new">获取最新版本</string>
+    <string name="ipc_setting_version_get_new">下载并安装最新版本</string>
     <string name="ipc_setting_version_no_new">您的设备已经是最新版本</string>
     <string name="ipc_setting_tip_network_detection">正在检测网络环境，请稍后…</string>
     <string name="ipc_setting_tip_network_dismatch">当前设备与手机不在同一路由器下</string>
     <string name="ipc_setting_dialog_upgrade">版本更新</string>
-    <string name="ipc_setting_dialog_upgrade_download_time">下载时间预计需要%s分钟</string>
+    <string name="ipc_setting_dialog_upgrade_download_time">升级时间预计需要%s分钟</string>
     <string name="ipc_setting_dialog_upgrade_ok">现在更新</string>
-    <string name="ipc_setting_dialog_upgrade_cancel">以后再说</string>
+    <string name="str_in_later">以后再说</string>
     <string name="ipc_setting_dialog_upgrade_progress">下载中…%s%%</string>
     <string name="ipc_setting_dialog_upgrade_fail">更新失败</string>
     <string name="ipc_setting_dialog_upgrade_fail_content">下载“版本%s”时出错</string>
@@ -124,6 +124,12 @@
     <string name="ipc_recognition_tip_zoom">调整画面大小并移动人脸框的位置，使人脸刚好填充整个人脸框</string>
     <string name="ipc_recognition_tip_focus">若自动对焦不清晰，可以手动对焦调整人脸清晰</string>
     <string name="ipc_recognition_tip_line">点击画面任意两点，即可设置进店门槛线\n（为保证识别率，门槛线需画在门的下方位置）</string>
+    <string name="ipc_recognition_line_title1">点击画面中任意一点，以设置进店门槛线的初始位置</string>
+    <string name="ipc_recognition_line_title2">点击画面中任意另一点，以设置进店门槛线的终点位置</string>
+    <string name="ipc_recognition_line_title3">调整门槛线位置</string>
+    <string name="ipc_recognition_line_tip1">点击画面中任意一点，以设置进店门槛线的初始位置\n（为保证摄像头能够准确识别进店人次，尽量确保初始点靠近画面中门槛位置）</string>
+    <string name="ipc_recognition_line_tip2">点击画面中任意另一点，以设置进店门槛线的终点位置\n（为保证摄像头能够准确识别进店人次，尽量确保终点靠近画面中门槛下方）</string>
+    <string name="ipc_recognition_line_tip3">为保证识别精确性，您还可以移动已设置好的进店门槛线位置\n或拖拽门槛线端点更改门槛线的长度</string>
     <string name="ipc_recognition_line_start">点击以设置门槛线起点</string>
     <string name="ipc_recognition_line_end">再次点击以设置门槛线终点</string>
     <string name="ipc_recognition_line_cancel">撤销</string>
@@ -173,9 +179,10 @@
     <string name="tip_error_company_or_shop_id">错误的商户id或者店铺id</string>
     <string name="tip_adjust_first">为了能正常使用人脸识别功能，请点击下方【调整画面】按钮</string>
     <string name="str_choose_fs_adjust">选择要换面调整的摄像机</string>
-    <string name="tip_no_tf_card">未插入TF卡</string>
+    <string name="tip_no_tf_card">未插入存储卡</string>
     <string name="tip_tf_uninitalized">未格式化</string>
-    <string name="tip_unrecognition_tf_card">TF卡无法识别</string>
+    <string name="tip_unrecognition_tf_card">存储卡无法识别</string>
+    <string name="tip_tf_card_removed_software">存储卡已被软件移除，请重新插入</string>
     <string name="ipc_time_over_current_time">超过了当前时间</string>
     <string name="ipc_time_over_back_time">超过了日期回放时间</string>
 
@@ -258,11 +265,46 @@
     <string name="str_md_exception">异常人员进入</string>
     <string name="str_cashier">收银审计</string>
     <string name="str_view_flow_video">查看交易流水视频</string>
-    <string name="str_cloud_storage">云存储</string>
-    <string name="str_cloud_storage_service">云存储服务</string>
     <string name="ipc_dynamic_request_external_storage">暂未授予存储权限，请授权后重试</string>
     <string name="ipc_video_play_loading">视频加载中，请稍候</string>
-
+    <string name="str_wifi_config_finish">设备联网完成</string>
+    <string name="str_sd_manager">存储卡管理</string>
+    <string name="str_sd_format">格式化</string>
+    <string name="str_sd_format_success">格式化成功</string>
+    <string name="tip_sd_format_success">存储卡可以正常使用</string>
+    <string name="str_sd_format_fail">格式化失败</string>
+    <string name="tip_sd_format_fail">请检查后重新操作</string>
+    <string name="msg_sdcard_format_confirm">格式化操作后，存储卡将被清空，请提前保存存储卡内重要资料。</string>
+    <string name="str_format_in_progress">格式化中…%d%%</string>
+    <string name="msg_duration_sd_format">请耐心等候，大约需要15s</string>
+    <string name="tip_sdcard_unformat">存储卡未格式化</string>
+    <string name="msg_sdcard_should_format">检测到的存储卡需格式化后才可使用，请提前保存重要资料</string>
+    <string name="str_jump_adjust">暂不调整</string>
+    <string name="str_model_name">产品型号：%s</string>
+    <string name="ipc_setting_downloading">下载中…</string>
+    <string name="ipc_setting_upgrading">升级中…</string>
+    <string name="ipc_setting_new">NEW</string>
+    <string name="import_order_dialog_cannot_get_status">无法获取当前设备状态</string>
+    <string name="import_order_dialog_upgrading">设备更新中</string>
+    <string name="import_order_dialog_red_light">红灯闪烁</string>
+    <string name="import_order_dialog_relanuch">设备重启中</string>
+    <string name="import_order_dialog_green_light">绿灯闪烁</string>
+    <string name="import_order_dialog_net_exception">设备网络异常</string>
+    <string name="import_order_dialog_green_light_alway_on">绿灯常亮&#160;&#160;&#160;&#160;</string>
+    <string name="import_order_dialog_look_light_status">您可以查看摄像机当前具体的闪灯情况\t\n以判断属于下述哪种状态：</string>
+    <string name="ipc_setting_dialog_upgrade_title">下载并安装最新版本</string>
+    <string name="ipc_setting_dialog_download_install">下载并安装</string>
+    <string name="ipc_setting_dialog_progress_need_time">该过程会耗费一定的时间，\t\n 且不能关闭该流程。</string>
+    <string name="ipc_setting_upgrade_fail_net_exception">网络异常，请稍后再试</string>
+    <string name="ipc_setting_status_downloading">下载中…%d%%</string>
+    <string name="ipc_setting_status_upgrading">更新中…%d%%</string>
+    <string name="ipc_setting_status_relaunch">重启中…%d%%</string>
+    <string name="ipc_setting_status_downloading_tip">正在下载最新固件，\t\n请保持设备在线，切勿断电！</string>
+    <string name="ipc_setting_status_upgrading_tip">正在写入固件，需要4分钟左右\t\n请保持设备在线，切勿断电！</string>
+    <string name="ipc_setting_status_relaunch_tip">正在重启，\t\n请保持设备在线，切勿断电！</string>
+    <string name="import_order_dialog_upgrade_success">设备升级成功</string>
+    <string name="import_order_dialog_blue_light_alway_on">蓝灯常亮&#160;&#160;&#160;&#160;</string>
+    <string name="msg_dialog_format_sd_before_adjust">存储卡需要格式化后才能使用调整画面功能，点击确认将进入格式化操作页面。</string>
 </resources>
 
 

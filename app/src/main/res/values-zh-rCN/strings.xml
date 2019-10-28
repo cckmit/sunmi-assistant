@@ -35,53 +35,73 @@
     <string name="str_selected">请选择</string>
     <string name="tip_addr_empty">请输入详细地址</string>
 
-    <string name="dashboard_data_format">%s%%</string>
-    <string name="dashboard_today">今日</string>
-    <string name="dashboard_this_week">本周</string>
-    <string name="dashboard_this_month">本月</string>
-    <string name="dashboard_yesterday">昨日</string>
-    <string name="dashboard_last_week">上周</string>
-    <string name="dashboard_last_month">上个月</string>
-    <string name="dashboard_time">时间 %s%s</string>
+    <string name="dashboard_page_overview">实时数据</string>
+    <string name="dashboard_page_customer">客流分析</string>
+
+    <string name="dashboard_period_today">今日</string>
+    <string name="dashboard_period_week">本周</string>
+    <string name="dashboard_period_month">本月</string>
+    <string name="dashboard_period_yesterday">昨日</string>
+    <string name="dashboard_period_last_week">上周</string>
+    <string name="dashboard_period_last_month">上个月</string>
+    <string name="dashboard_period_last_month_avg">上月日均</string>
+
+    <string name="dashboard_card_title_business_trend">经营趋势</string>
+    <string name="dashboard_card_title_distribution">客群分布</string>
+    <string name="dashboard_card_title_customer_trend">客流趋势</string>
+    <string name="dashboard_card_title_customer_analysis">客流分析</string>
+
     <string name="dashboard_data_sales_amount">总销售额</string>
     <string name="dashboard_data_sales_volume">交易笔数</string>
-    <string name="dashboard_data_consumer">进店客流</string>
+    <string name="dashboard_data_customer">进店客流</string>
     <string name="dashboard_data_transaction_rate">交易转化率</string>
 
-    <string name="dashboard_chart_business_trend">经营趋势</string>
-    <string name="dashboard_chart_rate">转化率</string>
-    <string name="dashboard_chart_sales_volume">交易笔数</string>
-    <string name="dashboard_chart_consumer">客流量</string>
-    <string name="dashboard_chart_distribution">客群分布</string>
-    <string name="dashboard_chart_new_old">新老</string>
-    <string name="dashboard_chart_new">新客</string>
-    <string name="dashboard_chart_old">熟客</string>
-    <string name="dashboard_chart_gender">性别</string>
-    <string name="dashboard_chart_male">男性</string>
-    <string name="dashboard_chart_female">女性</string>
-    <string name="dashboard_chart_age">年龄</string>
-    <string name="dashboard_chart_age_label">%s岁</string>
-    <string name="dashboard_chart_pie_hole_ratio">%s占比</string>
-    <string name="dashboard_empty_data_tip">暂无门店数据，您可以尝试：</string>
+    <string name="dashboard_card_tab_rate">转化率</string>
+    <string name="dashboard_card_tab_volume">交易笔数</string>
+    <string name="dashboard_card_tab_customer">客流量</string>
+    <string name="dashboard_card_tab_new_old">新老</string>
+    <string name="dashboard_card_tab_gender">性别</string>
+    <string name="dashboard_card_tab_age">年龄</string>
+    <string name="dashboard_card_tab_all">全部</string>
+    <string name="dashboard_card_tab_new">新客</string>
+    <string name="dashboard_card_tab_old">熟客</string>
+
+    <string name="dashboard_card_marker_time">时间</string>
+    <string name="dashboard_card_male">男性</string>
+    <string name="dashboard_card_female">女性</string>
+    <string name="dashboard_card_male_label">男</string>
+    <string name="dashboard_card_female_label">女</string>
+    <string name="dashboard_card_age_label">岁</string>
+    <string name="dashboard_card_pie_hole_ratio">%s占比</string>
+
+    <string name="dashboard_card_customer_tip">按照人数占比进行排列</string>
+    <string name="dashboard_card_customer_count">进店人数</string>
+    <string name="dashboard_card_customer_ratio">总人数占比</string>
+    <string name="dashboard_card_customer_old_ratio">熟客占比</string>
+    <string name="dashboard_card_customer_peak">到店高峰</string>
+    <string name="dashboard_card_customer_none">暂无客流数据</string>
+
+    <string name="dashboard_card_import_title">导入历史订单</string>
+    <string name="dashboard_card_import_tip_import">支持%s前2个月的订单</string>
+    <string name="dashboard_card_import_tip_loading">历史订单导入中，大约需要等待5–10分钟</string>
+    <string name="dashboard_card_import_tip_ok">导入成功，可在订单分析中查看数据</string>
+    <string name="dashboard_card_import_tip_error">门店数据导入失败，请稍后重试</string>
+    <string name="dashboard_card_import_btn">导入</string>
+
+    <string name="dashboard_no_data_tip">暂无门店数据，您可以尝试：</string>
     <string name="dashboard_no_fs_title">添加AI识客摄像机</string>
     <string name="dashboard_no_fs_subtitle">支持统计实时客流、客群分析</string>
     <string name="dashboard_no_fs_add">添加</string>
+    <string name="dashboard_no_fs_tip_add">添加设备</string>
     <string name="dashboard_no_fs_buy">购买</string>
-    <string name="dashboard_no_order_title">导入软件订单数据</string>
-    <string name="dashboard_no_order_subtitle">现已支持银豹、生意专家等38个软件</string>
-    <string name="dashboard_no_order_inport">导入</string>
+    <string name="dashboard_no_order_title">接入门店收银系统</string>
+    <string name="dashboard_no_order_subtitle">随时展示门店经营动态，提供多维度经营分析</string>
+    <string name="dashboard_no_order_dock">接入</string>
+    <string name="dashboard_no_customer_data_tip">暂无客流数据，您可以尝试：</string>
+    <string name="dashboard_no_customer_wait_tip">客流数据会在次日零点更新</string>
+    <string name="dashboard_no_customer_fs_tip">您已解绑了门店中的摄像机设备</string>
+    <string name="dashboard_no_customer_fs_add_btn">添加设备</string>
 
-    <string name="dashboard_day_ratio">日环比</string>
-    <string name="dashboard_week_ratio">周环比</string>
-    <string name="dashboard_month_ratio">月同比</string>
-    <string name="dashboard_by_sales">按销售额</string>
-    <string name="dashboard_by_order">按订单数</string>
-    <string name="dashboard_customer_price">客单价</string>
-    <string name="dashboard_total_refunds">退款笔数</string>
-    <string name="dashboard_time_distribution">交易时间分布</string>
-    <string name="dashboard_purchase_rank">支付方式</string>
-    <string name="dashboard_quantity_rank">商品销量排行</string>
-    <string name="dashboard_purchase_type_other">其他</string>
     <string name="str_platform_list">平台列表</string>
     <string name="str_platform_skip">跳过</string>
     <string name="str_button_check">验证</string>
@@ -95,7 +115,7 @@
     <string name="str_platform_sms_code_error">验证码错误，请重新输入</string>
     <string name="str_button_auto_create">自动创建</string>
     <string name="str_dialog_auto_create_store">该手机号暂时未发现门店信息，您可以更换手机号重试或手动新建门店</string>
-    <string name="str_dialog_auth_message">申请获取您在%s的门店数据。</string>
+    <string name="str_dialog_auth_message">申请获取您在%s的订单数据。</string>
     <string name="str_unkunw_store">%s的门店</string>
     <string name="str_create_store_fail">门店创建失败</string>
     <string name="str_create_store_alredy_exit">门店名称已存在</string>
@@ -140,7 +160,7 @@
     <string name="tip_image_captcha_refresh_fail">图片验证码刷新失败</string>
     <string name="tip_get_captcha_too_often">发送短信验证码太频繁，请稍后再试</string>
     <string name="tip_get_captcha_fail">发送短信验证码失败</string>
-    <string name="str_authorization_permission">允许授权</string>
+    <string name="str_authorization_permission">同意授权</string>
     <string name="str_authorization_deny">暂不授权</string>
     <string name="str_version_placeholder">版本%s</string>
 
@@ -150,7 +170,7 @@
     <string name="company_new_create">新建商户</string>
     <string name="company_create_hint">请输入商户名称</string>
     <string name="company_shop_create_hint">请输入门店名称</string>
-    <string name="company_new_try_create">您可以尝试创建新商户</string>
+    <string name="company_new_try_create">商户一般为企业或个体经营主体。\t\n支持同一商户下创建多家门店的连锁经营场景</string>
     <string name="company_shop_enter_main">进入首页</string>
     <string name="company_create_tip">商户一般为企业或个体经营主体，例如：星巴克</string>
     <string name="company_shop_create_tip">门店一般为商户旗下的店铺经营场所：例如：五角场店</string>
@@ -163,7 +183,7 @@
     <string name="company_create_fail">商户创建失败</string>
     <string name="company_shop_create_name">门店名称</string>
     <string name="company_shop_contact">联系人</string>
-    <string name="company_shop_contact_really_name">联系人真实姓名</string>
+    <string name="company_shop_contact_really_name">请输入联系人名称</string>
     <string name="company_shop_mobile">联系方式</string>
     <string name="company_shop_select_one_or_more">您可以选择一家或多家门店</string>
     <string name="company_create_invalid_character">请输入有效的字符</string>
@@ -212,7 +232,7 @@
     <string name="company_can_switch">可切换商户</string>
     <string name="company_shop_details">门店详情</string>
     <string name="company_shop_face_group">人脸分组</string>
-    <string name="company_shop_to_create">该商户暂无门店，您可以新建门店，或者从其他软件平台中导入门店</string>
+    <string name="company_shop_to_create">门店是商户下的店铺经营场所。\t\n在门店里，您可以进行添加智能设备、查看经营状态等工作</string>
     <string name="shop_create">创建门店</string>
     <string name="msg_ipc_tf_non_exist">网络摄像机%s的存储卡未插入或被拔出，请检查</string>
     <string name="msg_ipc_tf_exist">网络摄像机%s检测到有新存储卡插入，建议格式化，用于本地存储监控视频</string>
@@ -239,10 +259,39 @@
     <string name="tip_open_notification">开启消息通知，随时接收动态消息</string>
     <string name="str_go_open">去开启</string>
     <string name="shop_address">门店地址</string>
-    <string name="shop_input_region_tip">请先选择地区</string>
+    <string name="shop_input_region_tip">请先选择所在地区</string>
     <string name="str_create_company_alredy_exit">门店名称已存在</string>
     <string name="ipc_right_now_play">立即查看</string>
     <string name="ipc_device_model">设备型号：%s</string>
-    <string name="ipc_device_name">设备名称：%s</string>
+
     <string name="ipc_device_msg_content">内容详情：%s</string>
+    <string name="company_shop_into_log">进店日志</string>
+    <string name="company_shop_square_hint">请输入经营面积</string>
+    <string name="company_shop_location_hint">请输入门店所在位置</string>
+    <string name="company_shop_required_field">必填</string>
+    <string name="company_shop_select_category">请选择经营品类</string>
+    <string name="dialog_title_select_category">选择经营品类</string>
+    <string name="dialog_title_select_region">选择所在地区</string>
+    <string name="import_order_support_platform_tip">现已支持接入多家收银软件平台，支持2个月的历史订单导入</string>
+    <string name="import_order_current_mobile">当前手机号接入</string>
+    <string name="import_order_other_mobile">其他手机号接入</string>
+    <string name="import_order_platform_mobile_search_data">请输入您在%s中使用的手机号，以搜索门店的订单数据</string>
+    <string name="import_order_check_mobile_no_data">该手机号暂时未发现门店，您可以更换手机号重试</string>
+    <string name="import_order_select_cash_register_software">选择收银软件</string>
+    <string name="import_order_select_shop_cash_register_software">请先选择您的门店经营使用的收银软件，方便找到门店数据</string>
+    <string name="import_order_selecte_shop">为您找到以下门店的收银系统，您可以选择接入其中一家</string>
+    <string name="import_order_access_data">接入</string>
+    <string name="import_order_access_data_success">接入成功</string>
+    <string name="import_order_access_fail">接入失败</string>
+    <string name="import_order_no_find_shop">未发现门店</string>
+    <string name="import_order_mobile_no_match_shop">可能当前手机号暂未关联门店或关联的门店收银软件超出获取范围</string>
+    <string name="import_order_continue_try">继续尝试</string>
+    <string name="import_order_agree_auth_shop">同意授权表示使用该平台数据</string>
+    <string name="import_order_explain">接入门店收银数据，实现线下门店数字化 \t\n您可以随时了解门店经营动态 \t\n提供多维度分析经营状态，帮您提升经营决策质量</string>
+    <string name="import_order_access_shop_data">接入门店收银系统</string>
+    <string name="import_order_data_service">订单数据分析服务</string>
+    <string name="import_order_access_already_auth">该门店收银系统已被授权，无法再次授权</string>
+    <string name="import_order_access_no_auth_more">已授权过门店收银系统，无法授权更多</string>
+    <string name="company_shop_region_hint">必选</string>
+    <string name="shop_create_new">创建门店</string>
 </resources>

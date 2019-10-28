@@ -27,7 +27,6 @@ import java.util.List;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.base.recycle.BaseArrayAdapter;
-import sunmi.common.base.recycle.BaseRecyclerAdapter;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
 import sunmi.common.base.recycle.listener.OnItemClickListener;
@@ -80,7 +79,7 @@ public class FaceGroupListActivity extends BaseActivity {
         FaceGroupType groupType = new FaceGroupType();
         groupType.setOnItemClickListener(new OnItemClickListener<FaceGroup>() {
             @Override
-            public void onClick(BaseRecyclerAdapter<FaceGroup> adapter, BaseViewHolder<FaceGroup> holder, FaceGroup model, int position) {
+            public void onClick(BaseViewHolder<FaceGroup> holder, FaceGroup model, int position) {
                 LogCat.d(TAG, "FaceGroup: " + model);
                 openGroupDetail(model);
             }
@@ -92,7 +91,7 @@ public class FaceGroupListActivity extends BaseActivity {
 
     private void getGroup() {
         showLoadingDialog();
-        IpcCloudApi.getFaceGroup(SpUtils.getCompanyId(), mShopId, new RetrofitCallback<FaceGroupListResp>() {
+        IpcCloudApi.getInstance().getFaceGroup(SpUtils.getCompanyId(), mShopId, new RetrofitCallback<FaceGroupListResp>() {
             @Override
             public void onSuccess(int code, String msg, FaceGroupListResp data) {
                 hideLoadingDialog();

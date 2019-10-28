@@ -14,7 +14,7 @@
         android:text="@string/company_shop_new_create_or_import"
         android:layout_marginEnd="@dimen/dp_25"
         android:layout_marginStart="@dimen/dp_25"
-        android:textColor="@color/text_color"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_18"
         android:textStyle="bold" />
 
@@ -27,7 +27,7 @@
         android:layout_marginTop="@dimen/dp_20"
         android:background="@drawable/button_corners_solid_orange"
         android:text="@string/company_shop_new_create"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/c_white"
         android:textSize="@dimen/sp_16" />
 
     <Button
@@ -38,8 +38,8 @@
         android:layout_marginEnd="@dimen/dp_25"
         android:layout_marginStart="@dimen/dp_25"
         android:layout_marginTop="@dimen/dp_16"
-        android:background="@drawable/button_corners_edge_orange"
+        android:background="@drawable/button_corners_edge_orange60"
         android:text="@string/company_shop_import"
-        android:textColor="@color/colorOrange"
+        android:textColor="@color/common_orange"
         android:textSize="@dimen/sp_16" />
 </LinearLayout>

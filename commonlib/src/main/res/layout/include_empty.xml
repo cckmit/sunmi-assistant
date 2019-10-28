@@ -6,6 +6,6 @@
     android:drawableTop="@mipmap/ic_empty"
     android:drawablePadding="@dimen/dp_4"
     android:text="@string/info_empty"
-    android:textColor="@color/color_999999"
+    android:textColor="@color/text_caption"
     android:textSize="@dimen/sp_12"
     android:visibility="gone" />

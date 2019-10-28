@@ -63,10 +63,6 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
     Button btnLogin;
     @ViewById(R.id.btnRegister)
     Button btnRegister;
-    @ViewById(R.id.btnFixPassword)
-    Button btnFixPassword;
-    @ViewById(R.id.btnLogout)
-    Button btnLogout;
     @ViewById(R.id.tvLogo)
     TextView tvLogo;
 
@@ -85,7 +81,7 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
         mPresenter.attachView(this);
         PermissionUtils.checkPermissionActivity(this);//手机权限
         HelpUtils.setStatusBarFullTransparent(this);//透明标题栏
-        if(CommonHelper.isGooglePlay()){
+        if (CommonHelper.isGooglePlay()) {
             tvSMSLogin.setVisibility(View.GONE);
             etUser.setHint(R.string.hint_input_email);
             tvLogo.setBackgroundResource(R.mipmap.ic_sunmi_logo_en);
@@ -149,10 +145,13 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
         }
     }
 
-    @Click({R.id.btnLogin, R.id.btnRegister, R.id.btnFixPassword, R.id.ib_visible,
-            R.id.btnLogout, R.id.tvForgetPassword, R.id.tvSMSLogin})
+    @Click({R.id.btnLogin, R.id.btnRegister, R.id.ib_visible,
+            R.id.tvForgetPassword, R.id.tvSMSLogin})
     public void onClick(View v) {
-        mobile = etUser.getText().toString().trim();
+        if (etUser.getText() == null || etPassword.getText() == null) {
+            return;
+        }
+        mobile = RegexUtils.handleIllegalCharacter(etUser.getText().toString().trim());
         String password = etPassword.getText().toString();
         switch (v.getId()) {
             case R.id.btnLogin: //密码登录
@@ -220,12 +219,9 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
 
     //账号合并
     private void userMerge(final String password) {
-        if (etUser.getText() == null) {
-            return;
-        }
         CommonUtils.trackCommonEvent(context, "login", "登录", Constants.EVENT_LOGIN);
         showLoadingDialog();
-        mPresenter.userMerge(etUser.getText().toString(), mobile, password);
+        mPresenter.userMerge(mobile, mobile, password);
     }
 
     @UiThread

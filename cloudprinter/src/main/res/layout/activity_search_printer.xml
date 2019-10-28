@@ -14,11 +14,11 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/str_printer_manage"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <TextView
         android:id="@+id/tv_top"
-        style="@style/configTitleText"
+        style="@style/ConfigTitleText"
         android:layout_below="@+id/title_bar"
         android:text="@string/tip_title_add_printer" />
 
@@ -42,7 +42,7 @@
                 android:id="@+id/divider"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_0_5"
-                android:background="@color/color_divider" />
+                android:background="@color/c_divider" />
 
             <sunmi.common.view.SmRecyclerView
                 android:id="@+id/rv_ble"
@@ -90,7 +90,7 @@
             android:drawablePadding="@dimen/dp_16"
             android:gravity="center"
             android:text="@string/tip_no_printer_found"
-            android:textColor="@color/color_333333"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_20" />
 
         <TextView
@@ -104,7 +104,7 @@
             android:paddingLeft="@dimen/dp_20"
             android:paddingRight="@dimen/dp_20"
             android:text="@string/hint_retry_scan_printer"
-            android:textColor="@color/color_666666"
+            android:textColor="@color/text_normal"
             android:textSize="@dimen/sp_12" />
 
         <Button

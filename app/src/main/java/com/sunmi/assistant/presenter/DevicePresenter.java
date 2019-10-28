@@ -33,6 +33,7 @@ import sunmi.common.rpc.http.RpcCallback;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.DBUtils;
 import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.ThreadPool;
 
 /**
  * Description:
@@ -71,20 +72,22 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
         CloudApi.getBindDeviceList(SpUtils.getShopId(), new RpcCallback(null) {
             @Override
             public void onSuccess(int code, String msg, String data) {
-                DBUtils.deleteSunmiDeviceByType("ROUTER");
-                List<SunmiDevice> list = new ArrayList<>();
-                try {
-                    JSONArray jsonArray = new JSONArray(data);
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        list.add(getRouterDevice((JSONObject) jsonArray.opt(i)));
+                ThreadPool.getCachedThreadPool().submit(() -> {
+                    DBUtils.deleteSunmiDeviceByType("ROUTER");
+                    List<SunmiDevice> list = new ArrayList<>();
+                    try {
+                        JSONArray jsonArray = new JSONArray(data);
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            list.add(getRouterDevice((JSONObject) jsonArray.opt(i)));
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                if (isViewAttached()) {
-                    mView.endRefresh();
-                    mView.getRouterListSuccess(list);
-                }
+                    if (isViewAttached()) {
+                        mView.endRefresh();
+                        mView.getRouterListSuccess(list);
+                    }
+                });
             }
 
             @Override
@@ -119,28 +122,30 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
 
     @Override
     public void getIpcList() {
-        IpcCloudApi.getDetailList(SpUtils.getCompanyId(), SpUtils.getShopId(),
+        IpcCloudApi.getInstance().getDetailList(SpUtils.getCompanyId(), SpUtils.getShopId(),
                 new RetrofitCallback<IpcListResp>() {
                     @Override
                     public void onSuccess(int code, String msg, IpcListResp data) {
-                        DBUtils.deleteSunmiDeviceByType("IPC");
-                        List<SunmiDevice> list = new ArrayList<>();
-                        if (data.getFs_list() != null && data.getFs_list().size() > 0) {
-                            for (IpcListResp.SsListBean bean : data.getFs_list()) {
-                                SunmiDevice device = getIpcDevice(bean);
-                                list.add(device);
+                        ThreadPool.getCachedThreadPool().submit(() -> {
+                            DBUtils.deleteSunmiDeviceByType("IPC");
+                            List<SunmiDevice> list = new ArrayList<>();
+                            if (data.getFs_list() != null && data.getFs_list().size() > 0) {
+                                for (IpcListResp.SsListBean bean : data.getFs_list()) {
+                                    SunmiDevice device = getIpcDevice(bean);
+                                    list.add(device);
+                                }
                             }
-                        }
-                        if (data.getSs_list() != null && data.getSs_list().size() > 0) {
-                            for (IpcListResp.SsListBean bean : data.getSs_list()) {
-                                SunmiDevice device = getIpcDevice(bean);
-                                list.add(device);
+                            if (data.getSs_list() != null && data.getSs_list().size() > 0) {
+                                for (IpcListResp.SsListBean bean : data.getSs_list()) {
+                                    SunmiDevice device = getIpcDevice(bean);
+                                    list.add(device);
+                                }
                             }
-                        }
-                        if (isViewAttached()) {
-                            mView.endRefresh();
-                            mView.getIpcListSuccess(list);
-                        }
+                            if (isViewAttached()) {
+                                mView.endRefresh();
+                                mView.getIpcListSuccess(list);
+                            }
+                        });
                     }
 
                     @Override
@@ -154,7 +159,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
 
     @Override
     public void unbindIPC(int deviceId) {
-        IpcCloudApi.unbindIpc(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId,
+        IpcCloudApi.getInstance().unbindIpc(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId,
                 new RetrofitCallback<Object>() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {

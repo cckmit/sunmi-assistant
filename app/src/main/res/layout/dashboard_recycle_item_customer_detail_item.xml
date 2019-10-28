@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_144">
+
+    <ImageView
+        android:id="@+id/iv_dashboard_avatar"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginStart="@dimen/dp_18"
+        android:layout_marginTop="@dimen/dp_16"
+        android:scaleType="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_dashboard_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_12"
+        android:textColor="@color/text_main"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintBottom_toBottomOf="@id/iv_dashboard_avatar"
+        app:layout_constraintStart_toEndOf="@id/iv_dashboard_avatar"
+        app:layout_constraintTop_toTopOf="@id/iv_dashboard_avatar"
+        tool:text="男 | 20-25岁" />
+
+    <View
+        android:id="@+id/view_dashboard_skeleton_title"
+        android:layout_width="@dimen/dp_96"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginStart="@dimen/dp_12"
+        android:background="@drawable/dashboard_bg_skeleton_rectangle"
+        app:layout_constraintBottom_toBottomOf="@id/iv_dashboard_avatar"
+        app:layout_constraintStart_toEndOf="@id/iv_dashboard_avatar"
+        app:layout_constraintTop_toTopOf="@id/iv_dashboard_avatar" />
+
+    <View
+        android:id="@+id/view_dashboard_bg"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_24"
+        android:background="@drawable/dashboard_bg_card_round_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_dashboard_avatar" />
+
+    <LinearLayout
+        android:id="@+id/layout_dashboard_count"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@id/view_dashboard_bg"
+        app:layout_constraintEnd_toStartOf="@+id/layout_dashboard_ratio"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@id/view_dashboard_bg"
+        app:layout_constraintTop_toTopOf="@id/view_dashboard_bg">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dashboard_card_customer_count"
+            android:textColor="@color/text_normal"
+            android:textSize="@dimen/sp_10" />
+
+        <TextView
+            android:id="@+id/tv_dashboard_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"
+            android:textColor="@color/text_normal"
+            android:textSize="@dimen/sp_16"
+            android:textStyle="bold"
+            tool:text="666" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_dashboard_ratio"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@id/view_dashboard_bg"
+        app:layout_constraintEnd_toStartOf="@+id/layout_dashboard_old_ratio"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/layout_dashboard_count"
+        app:layout_constraintTop_toTopOf="@id/view_dashboard_bg">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dashboard_card_customer_ratio"
+            android:textColor="@color/text_normal"
+            android:textSize="@dimen/sp_10" />
+
+        <TextView
+            android:id="@+id/tv_dashboard_ratio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"
+            android:textColor="@color/text_normal"
+            android:textSize="@dimen/sp_16"
+            android:textStyle="bold"
+            tool:text="55%" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_dashboard_old_ratio"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@id/view_dashboard_bg"
+        app:layout_constraintEnd_toStartOf="@+id/layout_dashboard_peak"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/layout_dashboard_ratio"
+        app:layout_constraintTop_toTopOf="@id/view_dashboard_bg">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dashboard_card_customer_old_ratio"
+            android:textColor="@color/text_normal"
+            android:textSize="@dimen/sp_10" />
+
+        <TextView
+            android:id="@+id/tv_dashboard_old_ratio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"
+            android:textColor="@color/text_normal"
+            android:textSize="@dimen/sp_16"
+            android:textStyle="bold"
+            tool:text="66%" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_dashboard_peak"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@id/view_dashboard_bg"
+        app:layout_constraintEnd_toEndOf="@id/view_dashboard_bg"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/layout_dashboard_old_ratio"
+        app:layout_constraintTop_toTopOf="@id/view_dashboard_bg">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dashboard_card_customer_peak"
+            android:textColor="@color/text_normal"
+            android:textSize="@dimen/sp_10" />
+
+        <TextView
+            android:id="@+id/tv_dashboard_peak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"
+            android:textColor="@color/text_normal"
+            android:textSize="@dimen/sp_16"
+            android:textStyle="bold"
+            tool:text="8日" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view_dashboard_skeleton1"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:background="@drawable/dashboard_bg_skeleton_rectangle"
+        app:layout_constraintBottom_toTopOf="@+id/view_dashboard_skeleton2"
+        app:layout_constraintEnd_toEndOf="@id/view_dashboard_bg"
+        app:layout_constraintStart_toStartOf="@id/view_dashboard_bg"
+        app:layout_constraintTop_toTopOf="@id/view_dashboard_bg"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <View
+        android:id="@+id/view_dashboard_skeleton2"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:background="@drawable/dashboard_bg_skeleton_rectangle"
+        app:layout_constraintBottom_toBottomOf="@id/view_dashboard_bg"
+        app:layout_constraintEnd_toEndOf="@id/view_dashboard_bg"
+        app:layout_constraintStart_toStartOf="@id/view_dashboard_bg"
+        app:layout_constraintTop_toBottomOf="@+id/view_dashboard_skeleton1" />
+
+    <android.support.constraint.Group
+        android:id="@+id/group_dashboard_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:constraint_referenced_ids="tv_dashboard_title,layout_dashboard_count,layout_dashboard_ratio,layout_dashboard_old_ratio,layout_dashboard_peak" />
+
+    <android.support.constraint.Group
+        android:id="@+id/group_dashboard_skeleton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="view_dashboard_skeleton_title,view_dashboard_skeleton1,view_dashboard_skeleton2" />
+
+</android.support.constraint.ConstraintLayout>

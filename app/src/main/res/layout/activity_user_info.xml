@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorText_5"
+    android:background="@color/bg_common"
     android:orientation="vertical">
 
     <sunmi.common.view.TitleBarView
@@ -15,13 +15,13 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/str_user_info"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <RelativeLayout
         android:id="@+id/rl_avatar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_60"
-        android:background="@color/colorWhite">
+        android:background="@color/c_white">
 
         <TextView
             android:layout_width="wrap_content"
@@ -29,7 +29,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_20"
             android:text="@string/str_avatar"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16" />
 
         <sunmi.common.view.CircleImage
@@ -47,24 +47,20 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/colorText_10" />
+        android:background="@color/c_divider" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_nickname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/c_white"
+        app:dividerShow="true"
         app:imageRight="@mipmap/ic_right_arrow_small"
-        app:leftPadding="@dimen/dp_10"
+        app:leftPadding="@dimen/dp_20"
         app:leftText="@string/str_nickname"
         app:parentHeight="@dimen/dp_60"
         app:rightPadding="@dimen/dp_20"
         app:rightText="@string/str_default_nickname" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/colorText_10" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_phone"
@@ -72,15 +68,11 @@
         android:layout_height="wrap_content"
         android:background="@color/c_white"
         android:visibility="gone"
-        app:leftPadding="@dimen/dp_10"
+        app:dividerShow="true"
+        app:leftPadding="@dimen/dp_20"
         app:leftText="@string/str_phone"
         app:parentHeight="@dimen/dp_60"
         app:rightPadding="@dimen/dp_20" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/colorText_10" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_email"
@@ -88,14 +80,10 @@
         android:layout_height="wrap_content"
         android:background="@color/c_white"
         android:visibility="gone"
-        app:leftPadding="@dimen/dp_10"
+        app:dividerShow="true"
+        app:leftPadding="@dimen/dp_20"
         app:leftText="@string/str_email_address"
         app:parentHeight="@dimen/dp_60"
         app:rightPadding="@dimen/dp_20" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/colorText_10" />
 
 </LinearLayout>

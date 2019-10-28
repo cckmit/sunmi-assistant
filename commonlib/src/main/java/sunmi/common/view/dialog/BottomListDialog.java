@@ -19,7 +19,6 @@ import android.widget.FrameLayout;
 
 import com.commonlibrary.R;
 
-import sunmi.common.base.recycle.BaseRecyclerAdapter;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.SimpleArrayAdapter;
 
@@ -105,8 +104,7 @@ public class BottomListDialog extends Dialog {
             if (mListener != null) {
                 mAdapter.setOnItemClickListener(new sunmi.common.base.recycle.listener.OnItemClickListener<T>() {
                     @Override
-                    public void onClick(BaseRecyclerAdapter<T> adapter, BaseViewHolder<T> holder,
-                                        T model, int position) {
+                    public void onClick(BaseViewHolder<T> holder, T model, int position) {
                         dialog.dismiss();
                         mListener.onClick(dialog, holder, model);
                     }

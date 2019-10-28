@@ -121,7 +121,7 @@ public class OrderListActivity extends BaseMvpActivity<OrderListPresenter>
 
         mOrderListAdapter = new BaseArrayAdapter<>();
         OrderListItemType orderItem = new OrderListItemType();
-        orderItem.setOnItemClickListener((adapter, holder, model, position) ->
+        orderItem.setOnItemClickListener((holder, model, position) ->
                 OrderDetailActivity_.intent(this).mOrderInfo(model).start());
         mOrderListAdapter.register(OrderInfo.class, orderItem);
         mOrderListAdapter.register(Object.class, new OrderListEmptyType());

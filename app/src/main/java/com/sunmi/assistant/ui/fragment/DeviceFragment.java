@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +19,7 @@ import com.sunmi.apmanager.constant.enums.DeviceStatus;
 import com.sunmi.apmanager.receiver.MyNetworkCallback;
 import com.sunmi.apmanager.rpc.ap.APCall;
 import com.sunmi.apmanager.ui.activity.config.PrimaryRouteStartActivity;
-import com.sunmi.apmanager.ui.activity.router.RouterManagerNewActivity;
+import com.sunmi.apmanager.ui.activity.router.RouterManagerActivity;
 import com.sunmi.apmanager.utils.ApCompatibleUtils;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.EncryptUtils;
@@ -33,7 +31,7 @@ import com.sunmi.assistant.ui.DeviceSettingMenu;
 import com.sunmi.assistant.ui.adapter.DeviceListAdapter;
 import com.sunmi.assistant.utils.GlideImageLoader;
 import com.sunmi.assistant.utils.ShopTitlePopupWindow;
-import com.sunmi.cloudprinter.ui.Activity.PrinterManageActivity_;
+import com.sunmi.cloudprinter.ui.activity.PrinterManageActivity_;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.setting.IpcSettingActivity_;
 import com.sunmi.ipc.view.activity.IpcManagerActivity_;
@@ -75,6 +73,7 @@ import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.ClearableEditText;
+import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.dialog.ChooseDeviceDialog;
 import sunmi.common.view.dialog.CommonDialog;
 
@@ -91,7 +90,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     @ViewById(R.id.bga_refresh)
     BGARefreshLayout refreshView;
     @ViewById(R.id.rv_device)
-    RecyclerView rvDevice;
+    SmRecyclerView rvDevice;
     @ViewById(R.id.btn_add)
     TextView btnAdd;
     @ViewById(R.id.rl_shop_title)
@@ -110,7 +109,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     private List<SunmiDevice> deviceList = new ArrayList<>();//设备列表全集
     private Timer timer = null, timerException = null;
     private DeviceListAdapter deviceListAdapter;
-    private LinearLayoutManager layoutManager;
     private DeviceSettingMenu deviceSettingMenu;
     private Dialog dialogPassword = null;
     private String password = "";    //路由管理密码
@@ -122,7 +120,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         initDimens(mActivity);
         mPresenter = new DevicePresenter();
         mPresenter.attachView(this);
-        adList.addAll(DataSupport.findAll(AdListBean.class));
+        if (!CommonHelper.isGooglePlay()) {
+            adList.addAll(DataSupport.findAll(AdListBean.class));
+        }
         deviceList.addAll(DataSupport.findAll(SunmiDevice.class));
         for (SunmiDevice device : deviceList) {
             device.setStatus(DeviceStatus.UNKNOWN.ordinal());
@@ -144,15 +144,17 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     protected void initViews() {
         tvShopTitle.setText(SpUtils.getShopName());
         initRefreshLayout();
-        initBanner();
-        layoutManager = new LinearLayoutManager(mActivity);
-        rvDevice.setLayoutManager(layoutManager);
+        rvDevice.init(R.drawable.divider_transparent_8dp);
         deviceListAdapter = new DeviceListAdapter(mActivity, deviceList);
         View headerView = getLayoutInflater().inflate(R.layout.include_banner,
                 (ViewGroup) refreshView.getParent(), false);
         deviceListAdapter.addHeaderView(headerView);
         rlNoDevice = headerView.findViewById(R.id.rl_empty);
         vpBanner = headerView.findViewById(R.id.vp_banner);
+        if (!CommonHelper.isGooglePlay()) {
+            vpBanner.setVisibility(View.VISIBLE);
+            initBanner();
+        }
         headerView.findViewById(R.id.btn_add_device).setOnClickListener(this);
         deviceListAdapter.setClickListener(this);
         rvDevice.setAdapter(deviceListAdapter);
@@ -164,15 +166,18 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         refreshView.setDelegate(this);
         // 设置下拉刷新和上拉加载更多的风格(参数1：应用程序上下文，参数2：是否具有上拉加载更多功能)
         BGANormalRefreshViewHolder refreshViewHolder =
-                new BGANormalRefreshViewHolder(getActivity(), false);
-        refreshView.setRefreshViewHolder(refreshViewHolder);
-        refreshView.setIsShowLoadingMoreView(false); // 设置正在加载更多时的文本
+                new BGANormalRefreshViewHolder(mActivity, false);
+        refreshViewHolder.setRefreshingText(getString(R.string.str_refresh_loading));
+        refreshViewHolder.setPullDownRefreshText(getString(R.string.str_refresh_pull));
+        refreshViewHolder.setReleaseRefreshText(getString(R.string.str_refresh_release));
+        refreshView.setRefreshViewHolder(refreshViewHolder); // 为了增加下拉刷新头部和加载更多的通用性，提供了以下可选配置选项
+        refreshView.setIsShowLoadingMoreView(false); // 设置正在加载更多时的文本// 设置正在加载更多时的文本
     }
 
     private void loadData() {
-        mPresenter.getBannerList();
         mPresenter.getRouterList();
         if (!CommonHelper.isGooglePlay()) {
+            mPresenter.getBannerList();
             mPresenter.getIpcList();
             mPresenter.getPrinterList();
         }
@@ -323,8 +328,11 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         } else {
             deviceSettingMenu = new DeviceSettingMenu(mActivity, item);
             deviceSettingMenu.setOnSettingsClickListener(this);
-            deviceSettingMenu.show(layoutManager.findViewByPosition(position)
-                    .findViewById(R.id.iv_more));
+            if (rvDevice.getLayoutManager() != null &&
+                    rvDevice.getLayoutManager().findViewByPosition(position) != null) {
+                deviceSettingMenu.show(rvDevice.getLayoutManager()
+                        .findViewByPosition(position).findViewById(R.id.iv_more));
+            }
         }
     }
 
@@ -383,7 +391,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 CommonNotifications.netDisconnection, NotificationConstant.updateConnectComplete,
                 NotificationConstant.connectedTosunmiDevice, NotificationConstant.unBindRouterChanged,
                 CommonNotifications.ipcUpgradeComplete, CommonNotifications.ipcUpgrade, IpcConstants.refreshIpcList,
-                CommonNotifications.companyNameChanged, CommonNotifications.companySwitch};
+                CommonNotifications.companyNameChanged, CommonNotifications.companySwitch,
+                CommonNotifications.shopNameChanged};
     }
 
     @Override
@@ -708,9 +717,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     //检查ap版本
     private void checkApVersion(String sn, int status) {
-        ApCompatibleUtils.getInstance().checkVersion(mActivity, sn, (isCompatible, currSn) -> {
-            gotoRouterManager(sn, DeviceStatus.valueOf(status).getValue());
-        });
+        ApCompatibleUtils.getInstance().checkVersion(mActivity, sn, (isCompatible, currSn) ->
+                gotoRouterManager(sn, DeviceStatus.valueOf(status).getValue()));
     }
 
     private void gotoRouterManager(String sn, String status) {
@@ -718,7 +726,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         bundle.putString("shopId", SpUtils.getShopId() + "");
         bundle.putString("sn", sn);
         bundle.putString("status", status);
-        openActivity(mActivity, RouterManagerNewActivity.class, bundle);
+        openActivity(mActivity, RouterManagerActivity.class, bundle);
     }
 
     private void deleteDevice(SunmiDevice device) {
@@ -730,9 +738,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         } else if (TextUtils.equals(device.getType(), "PRINTER")) {
             msg = getString(R.string.tip_delete_printer);
         }
-        new CommonDialog.Builder(mActivity).setMessage(msg)
+        new CommonDialog.Builder(mActivity).setTitle(msg)
                 .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.str_delete, R.color.read_deep_more,
+                .setConfirmButton(R.string.str_delete, R.color.caution_primary,
                         (dialog, which) -> {
                             dialog.dismiss();
                             if (-1 == NetworkUtils.getNetStatus(mActivity)) {
@@ -752,7 +760,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     //无网络
     private void unBindNetDisConnected() {
         new CommonDialog.Builder(mActivity)
-                .setMessage(getString(R.string.str_dialog_net_disconnected))
+                .setTitle(R.string.str_dialog_net_disconnected)
                 .setCancelButton(R.string.str_confirm, (dialog, which) -> dialog.dismiss()).create().show();
     }
 }

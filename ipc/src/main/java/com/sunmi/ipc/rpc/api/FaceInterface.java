@@ -1,5 +1,7 @@
 package com.sunmi.ipc.rpc.api;
 
+import com.sunmi.ipc.face.model.FaceArrivalCount;
+import com.sunmi.ipc.face.model.FaceArrivalLogResp;
 import com.sunmi.ipc.model.FaceAgeRangeResp;
 import com.sunmi.ipc.model.FaceCheckResp;
 import com.sunmi.ipc.model.FaceEntryHistoryResp;
@@ -82,7 +84,6 @@ public interface FaceInterface {
      *                shop_id	是	integer	店铺id
      *                group_id	是	integer	人脸分组id
      *                file	是	file	人员照片
-     * @param file    人员照片
      * @return Response
      */
     @POST(URL + "group/uploadFace")
@@ -212,5 +213,22 @@ public interface FaceInterface {
     @POST(URL + "history/arrival/delete")
     Call<BaseResponse<Object>> deleteArrivalHistory(@Body BaseRequest request);
 
+    /**
+     * 用户获取进店记录
+     *
+     * @param request
+     * @return
+     */
+    @POST(URL + "history/arrival/getListByTimeRange")
+    Call<BaseResponse<FaceArrivalLogResp>> getArrivalListByTimeRange(@Body BaseRequest request);
+
+    /**
+     * 用户获取某个人进店次数统计
+     *
+     * @param request
+     * @return
+     */
+    @POST(URL + "history/arrival/getCountByTimeRange")
+    Call<BaseResponse<FaceArrivalCount>> getArrivalCountByTimeRange(@Body BaseRequest request);
 
 }

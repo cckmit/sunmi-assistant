@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorText_5"
+    android:background="@color/bg_common"
     android:orientation="vertical"
     tools:context=".setting.IpcSettingDetailActivity">
 
@@ -18,7 +18,7 @@
         app:leftIcon="@drawable/ic_back_dark"
         app:rightText="@string/ipc_setting_delete"
         app:titleText="@string/ipc_setting_detail"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_camera_model"
@@ -26,11 +26,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_0_5"
         android:background="@color/c_white"
-        app:leftPadding="@dimen/dp_10"
+        app:leftPadding="@dimen/dp_20"
         app:leftText="@string/ipc_setting_detail_model"
         app:parentHeight="@dimen/dp_60"
-        app:rightPadding="@dimen/dp_20"
-        app:rightTextColor="@color/colorText_60" />
+        app:rightPadding="@dimen/dp_20" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_camera_sn"
@@ -38,10 +37,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_0_5"
         android:background="@color/c_white"
-        app:leftPadding="@dimen/dp_10"
+        app:leftPadding="@dimen/dp_20"
         app:leftText="@string/ipc_setting_detail_sn"
         app:parentHeight="@dimen/dp_60"
-        app:rightPadding="@dimen/dp_20"
-        app:rightTextColor="@color/colorText_60" />
+        app:rightPadding="@dimen/dp_20" />
 
 </LinearLayout>

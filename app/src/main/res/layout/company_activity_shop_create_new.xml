@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/const_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_common">
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/c_white"
+        app:dividerShow="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:leftDefaultClickEnable="true"
+        app:leftIcon="@drawable/ic_back_dark"
+        app:titleText="@string/company_shop_new_create"
+        app:titleTextColor="@color/text_main" />
+
+    <TextView
+        android:id="@+id/tv_title_tip"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_34"
+        android:layout_below="@id/title_bar"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/dp_20"
+        android:paddingEnd="@dimen/dp_25"
+        android:text="@string/company_shop_create_tip"
+        android:textSize="@dimen/sp_12"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_bar" />
+
+
+    <RelativeLayout
+        android:id="@+id/rl_region"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_48"
+        android:background="@color/c_white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title_tip">
+
+        <ImageView
+            android:id="@+id/iv_region_mark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dp_10"
+            android:background="@mipmap/ic_required" />
+
+        <TextView
+            android:id="@+id/tv_region"
+            android:layout_width="@dimen/dp_68"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dp_20"
+            android:text="@string/str_area"
+            android:textColor="@color/text_normal"
+            android:textSize="@dimen/sp_16" />
+
+        <TextView
+            android:id="@+id/tv_region_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dp_108"
+            android:layout_marginEnd="@dimen/dp_36"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:hint="@string/company_shop_region_hint"
+            android:textColorHint="@color/text_disable"
+            android:textColor="@color/text_main"
+            android:textSize="@dimen/sp_16" />
+
+        <ImageView
+            android:id="@+id/iv_region_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:background="@mipmap/ic_right_arrow_small" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_shop_name"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginTop="@dimen/dp_1"
+        android:background="@color/c_white"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rl_region">
+
+        <sunmi.common.view.SettingItemEdittextLayout
+            android:id="@+id/sel_shop_name"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_48"
+            android:layout_marginTop="@dimen/dp_1"
+            android:background="@color/c_white"
+            app:editTextBackground="@null"
+            app:editTextHint="@string/company_shop_required_field"
+            app:editTextInputType="text"
+            app:editTextSize="@dimen/sp_16"
+            app:imageLeft="@mipmap/ic_required"
+            app:leftText="@string/company_shop_create_name"
+            app:leftTextSize="@dimen/sp_16" />
+
+        <TextView
+            android:id="@+id/tv_name_transparent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_108"
+            android:background="@color/transparent"
+            android:visibility="visible" />
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/rl_detail_address"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_72"
+        android:layout_marginTop="@dimen/dp_1"
+        android:background="@color/c_white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rl_shop_name">
+
+        <TextView
+            android:id="@+id/tv_detail_address"
+            android:layout_width="@dimen/dp_68"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_12"
+            android:text="@string/str_detail_addr"
+            android:textColor="@color/text_normal"
+            android:textSize="@dimen/sp_16" />
+
+        <sunmi.common.view.ClearableEditText
+            android:id="@+id/et_detail_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_108"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:background="@null"
+            android:hint="@string/company_shop_location_hint"
+            android:textColor="@color/text_main"
+            android:textColorHint="@color/text_disable"
+            android:textSize="@dimen/sp_16" />
+
+        <TextView
+            android:id="@+id/tv_address_transparent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_108"
+            android:background="@color/transparent"
+            android:visibility="visible" />
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/rl_category"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginTop="@dimen/dp_10"
+        android:background="@color/c_white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rl_detail_address">
+
+        <TextView
+            android:id="@+id/tv_category"
+            android:layout_width="@dimen/dp_68"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dp_20"
+            android:text="@string/str_business_category"
+            android:textColor="@color/text_normal"
+            android:textSize="@dimen/sp_16" />
+
+        <TextView
+            android:id="@+id/tv_category_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dp_108"
+            android:layout_marginEnd="@dimen/dp_36"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:hint="@string/company_shop_select_category"
+            android:textColorHint="@color/text_disable"
+            android:textColor="@color/text_main"
+            android:textSize="@dimen/sp_16" />
+
+        <ImageView
+            android:id="@+id/iv_category_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:background="@mipmap/ic_right_arrow_small" />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/rl_square"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginTop="@dimen/dp_1"
+        android:background="@color/c_white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rl_category">
+
+        <TextView
+            android:id="@+id/tv_square"
+            android:layout_width="@dimen/dp_68"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dp_20"
+            android:text="@string/company_shop_area"
+            android:textColor="@color/text_normal"
+            android:textSize="@dimen/sp_16" />
+
+        <sunmi.common.view.ClearableEditText
+            android:id="@+id/et_shop_square"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:background="@null"
+            android:hint="@string/company_shop_square_hint"
+            android:imeOptions="actionSearch"
+            android:maxLength="40"
+            android:paddingStart="@dimen/dp_108"
+            android:paddingEnd="@dimen/dp_80"
+            android:singleLine="true"
+            android:textColor="@color/text_main"
+            android:textColorHint="@color/text_disable"
+            android:textSize="@dimen/sp_16" />
+
+        <View
+            android:id="@+id/vw_line"
+            android:layout_width="@dimen/dp_1"
+            android:layout_height="@dimen/dp_16"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_48"
+            android:background="@color/text_caption" />
+
+        <TextView
+            android:id="@+id/tv_square_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_2"
+            android:gravity="center_vertical"
+            android:text="@string/company_square"
+            android:textColor="@color/text_main"
+            android:textSize="@dimen/sp_20" />
+    </RelativeLayout>
+
+    <sunmi.common.view.SettingItemEdittextLayout
+        android:id="@+id/sel_contact"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginTop="@dimen/dp_1"
+        android:background="@color/c_white"
+        app:editTextBackground="@null"
+        app:editTextHint="@string/company_shop_contact_really_name"
+        app:editTextInputType="text"
+        app:editTextSize="@dimen/sp_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rl_square"
+        app:leftText="@string/company_shop_contact"
+        app:leftTextSize="@dimen/sp_16" />
+
+    <sunmi.common.view.SettingItemEdittextLayout
+        android:id="@+id/sel_tel"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginTop="@dimen/dp_1"
+        android:background="@color/c_white"
+        app:editTextBackground="@null"
+        app:editTextHint="@string/str_please_input_mobile"
+        app:editTextInputType="phone"
+        app:editTextSize="@dimen/sp_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sel_contact"
+        app:leftText="@string/company_shop_mobile"
+        app:leftTextSize="@dimen/sp_16" />
+
+    <Button
+        android:id="@+id/btn_complete"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_44"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_25"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:background="@drawable/button_corners_solid_orange"
+        android:text="@string/str_complete"
+        android:textColor="@color/c_white"
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sel_tel" />
+
+    <android.support.constraint.Group
+        android:id="@+id/group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:constraint_referenced_ids="sel_contact,sel_tel,rl_square,rl_category,rl_region,tv_title_tip,btn_complete" />
+
+    <sunmi.common.view.SettingItemEdittextLayout
+        android:id="@+id/sel_shop_name_poi"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginTop="@dimen/dp_1"
+        android:background="@color/c_white"
+        app:editTextBackground="@null"
+        app:editTextHint="@string/company_shop_create_hint"
+        app:editTextInputType="text"
+        app:editTextRightPadding="@dimen/dp_50"
+        app:editTextSize="@dimen/sp_16"
+        app:imageLeft="@mipmap/ic_required"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_bar"
+        app:leftText="@string/company_shop_create_name"
+        app:leftTextSize="@dimen/sp_16"
+        app:rightText="0/40" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/poi_recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        android:background="@color/c_white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sel_shop_name_poi"
+        tools:ignore="MissingConstraints" />
+
+    <android.support.constraint.Group
+        android:id="@+id/group_poi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="sel_shop_name_poi,poi_recyclerView" />
+
+</android.support.constraint.ConstraintLayout>

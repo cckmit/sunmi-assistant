@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="@dimen/dp_34"
-    android:background="@mipmap/setting_recognition_bg_line_tip"
+    android:background="@mipmap/adjust_bg_line_tip"
     android:gravity="center"
     android:orientation="horizontal">
 
@@ -25,6 +25,6 @@
         android:layout_width="@dimen/dp_10"
         android:layout_height="@dimen/dp_10"
         android:layout_marginEnd="@dimen/dp_4"
-        android:src="@mipmap/setting_recognition_line_cancel" />
+        android:src="@mipmap/adjust_line_cancel" />
 
 </LinearLayout>

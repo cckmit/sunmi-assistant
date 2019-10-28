@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorText_5">
+    android:background="@color/bg_common">
 
     <sunmi.common.view.TitleBarView
         android:id="@+id/title_bar"
@@ -14,7 +14,7 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/str_setting_ipc_camera"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/nsv_setting"
@@ -33,11 +33,10 @@
                 android:layout_height="wrap_content"
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_10"
+                app:leftPadding="@dimen/dp_20"
                 app:leftText="@string/ipc_setting_name"
                 app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20"
-                app:rightTextColor="@color/colorText_60" />
+                app:rightPadding="@dimen/dp_20" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_camera_detail"
@@ -46,12 +45,10 @@
                 android:layout_marginTop="@dimen/dp_0_5"
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_10"
+                app:leftPadding="@dimen/dp_20"
                 app:leftText="@string/ipc_setting_detail"
                 app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20"
-                app:rightTextColor="@color/colorText_60" />
-
+                app:rightPadding="@dimen/dp_20" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_camera_adjust"
@@ -60,11 +57,10 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_10"
+                app:leftPadding="@dimen/dp_20"
                 app:leftText="@string/str_adjust_screen"
                 app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20"
-                app:rightTextColor="@color/colorText_60" />
+                app:rightPadding="@dimen/dp_20" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_voice_exception"
@@ -73,11 +69,10 @@
                 android:layout_marginTop="@dimen/dp_0_5"
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_10"
+                app:leftPadding="@dimen/dp_20"
                 app:leftText="@string/ipc_setting_sound_abnormal_detection"
                 app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20"
-                app:rightTextColor="@color/colorText_60" />
+                app:rightPadding="@dimen/dp_20" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_active_exception"
@@ -86,11 +81,10 @@
                 android:layout_marginTop="@dimen/dp_0_5"
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_10"
+                app:leftPadding="@dimen/dp_20"
                 app:leftText="@string/ipc_setting_active_abnormal_detection"
                 app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20"
-                app:rightTextColor="@color/colorText_60" />
+                app:rightPadding="@dimen/dp_20" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_time_setting"
@@ -99,12 +93,10 @@
                 android:layout_marginTop="@dimen/dp_0_5"
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_10"
+                app:leftPadding="@dimen/dp_20"
                 app:leftText="@string/ipc_setting_detection_time"
                 app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20"
-                app:rightTextColor="@color/colorText_60" />
-
+                app:rightPadding="@dimen/dp_20" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_night_style"
@@ -113,11 +105,10 @@
                 android:layout_marginTop="16dp"
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_10"
+                app:leftPadding="@dimen/dp_20"
                 app:leftText="@string/ipc_setting_night_vision_mode"
                 app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20"
-                app:rightTextColor="@color/colorText_60" />
+                app:rightPadding="@dimen/dp_20" />
 
             <RelativeLayout
                 android:id="@+id/rl_wdr"
@@ -133,7 +124,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/dp_20"
                     android:text="@string/ipc_setting_state_wdr"
-                    android:textColor="@color/colorText"
+                    android:textColor="@color/text_main"
                     android:textSize="@dimen/sp_16" />
 
                 <Switch
@@ -161,7 +152,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/dp_20"
                     android:text="@string/ipc_setting_state_light"
-                    android:textColor="@color/colorText"
+                    android:textColor="@color/text_main"
                     android:textSize="@dimen/sp_16" />
 
                 <Switch
@@ -183,27 +174,35 @@
                 android:layout_marginTop="@dimen/dp_0_5"
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_10"
+                app:leftPadding="@dimen/dp_20"
                 app:leftText="@string/ipc_setting_rotate"
                 app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20"
-                app:rightTextColor="@color/colorText_60" />
+                app:rightPadding="@dimen/dp_20" />
 
+            <sunmi.common.view.SettingItemLayout
+                android:id="@+id/sil_sd_manager"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:background="@color/c_white"
+                app:imageRight="@mipmap/ic_right_arrow_small"
+                app:leftPadding="@dimen/dp_20"
+                app:leftText="@string/str_sd_manager"
+                app:parentHeight="@dimen/dp_60"
+                app:rightPadding="@dimen/dp_20" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_wifi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/dp_16"
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_10"
+                app:leftPadding="@dimen/dp_20"
                 app:leftText="@string/ipc_setting_wifi"
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20"
-                app:rightText="@string/ipc_setting_unknown"
-                app:rightTextColor="@color/colorText_60" />
-
+                app:rightText="@string/ipc_setting_unknown" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_ipc_version"
@@ -212,11 +211,10 @@
                 android:layout_marginTop="16dp"
                 android:background="@color/c_white"
                 app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_10"
+                app:leftPadding="@dimen/dp_20"
                 app:leftText="@string/ipc_setting_version_current_name"
                 app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20"
-                app:rightTextColor="@color/colorText_60" />
+                app:rightPadding="@dimen/dp_20" />
 
         </LinearLayout>
 

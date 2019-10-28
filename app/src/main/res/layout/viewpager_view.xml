@@ -16,7 +16,7 @@
         android:layout_marginEnd="@dimen/dp_30"
         android:background="@drawable/edittext_edge_gold2"
         android:text="@string/str_skip"
-        android:textColor="@color/colorWhite_30"
+        android:textColor="@color/white_30a"
         android:textSize="12sp"
         android:textStyle="bold"
         android:visibility="visible" />

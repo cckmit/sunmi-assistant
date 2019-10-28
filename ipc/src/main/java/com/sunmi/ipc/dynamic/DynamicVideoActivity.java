@@ -252,12 +252,6 @@ public class DynamicVideoActivity extends BaseActivity implements
             isInitTakeScreenShot = false;
             errorView();
             e.printStackTrace();
-        } finally {
-            try {
-                retriever.release();
-            } catch (RuntimeException ex) {
-                LogCat.e(TAG, ex.getCause() + "," + ex.getMessage());
-            }
         }
     }
 
@@ -271,7 +265,7 @@ public class DynamicVideoActivity extends BaseActivity implements
         if (iVideoPlayer.getCurrentPosition() > 0 && retriever != null) {
             tvTip.setVisibility(View.VISIBLE);
             final Bitmap bitmap = retriever.getFrameAtTime(iVideoPlayer.getCurrentPosition() * 1000,
-                    FFmpegMediaMetadataRetriever.OPTION_NEXT_SYNC);
+                    FFmpegMediaMetadataRetriever.OPTION_CLOSEST);
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -450,9 +444,9 @@ public class DynamicVideoActivity extends BaseActivity implements
             isShowBottomView();
             timeoutStop();
             iVideoPlayer.startVideo();
-//            if (!isInitTakeScreenShot) {
-//                initTakeScreenShot();
-//            }
+            if (!isInitTakeScreenShot) {
+                initTakeScreenShot();
+            }
             //设置seekBar的最大限度值，当前视频的总时长（毫秒）
             long duration = iVideoPlayer.getDuration();
             //不足一秒补一秒
@@ -521,6 +515,9 @@ public class DynamicVideoActivity extends BaseActivity implements
         timeoutStop();
         if (mHandler != null) {
             mHandler.removeCallbacksAndMessages(null);
+        }
+        if (retriever != null) {
+            retriever.release();
         }
     }
 

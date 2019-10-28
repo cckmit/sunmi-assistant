@@ -9,7 +9,7 @@
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorWhite"
+        android:background="@color/c_white"
         app:dividerShow="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -17,7 +17,7 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/company_shop_new_create"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <TextView
         android:id="@+id/tv_title_tip"
@@ -52,7 +52,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_25"
             android:text="@string/company_shop_create_name"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16" />
 
         <sunmi.common.view.ClearableEditText
@@ -85,7 +85,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_25"
             android:text="@string/company_shop_contact"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16" />
 
         <sunmi.common.view.ClearableEditText
@@ -120,7 +120,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_25"
             android:text="@string/str_mobile"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16" />
 
         <sunmi.common.view.ClearableEditText
@@ -147,7 +147,7 @@
         android:layout_marginTop="@dimen/dp_30"
         android:background="@drawable/button_corners_solid_orange"
         android:text="@string/str_complete"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/c_white"
         android:textSize="@dimen/sp_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

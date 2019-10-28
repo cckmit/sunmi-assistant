@@ -1,6 +1,5 @@
 package com.sunmi.assistant.ui.activity.login;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -68,10 +67,10 @@ public class RegisterActivity extends BaseMvpActivity<InputMobilePresenter>
 
     @Click(R.id.btnNext)
     public void onClick(View v) {
-        if (isFastClick(1500)) {
+        if (isFastClick(1500) || etMobile.getText() == null) {
             return;
         }
-        mobile = etMobile.getText().toString().trim();
+        mobile = RegexUtils.handleIllegalCharacter(etMobile.getText().toString().trim());
         if (!ctvPrivacy.isChecked()) {
             shortTip(R.string.tip_agree_protocol);
             return;
@@ -90,25 +89,17 @@ public class RegisterActivity extends BaseMvpActivity<InputMobilePresenter>
 
     //手机号已注册
     private void mobileRegistered() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                new CommonDialog.Builder(RegisterActivity.this)
-                        .setTitle(R.string.tip_register_already)
-                        .setCancelButton(R.string.sm_cancel)
-                        .setConfirmButton(R.string.str_goto_register, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                CommonUtils.trackCommonEvent(context, "registerDialogLogin",
-                                        "注册_账号已注册_弹窗_立即登录", Constants.EVENT_REGISTER);
-                                LoginActivity_.intent(context)
-                                        .extra("mobile", mobile)
-                                        .start();
-                                finish();
-                            }
-                        }).create().show();
-            }
-        });
+        runOnUiThread(() -> new CommonDialog.Builder(RegisterActivity.this)
+                .setTitle(R.string.tip_register_already)
+                .setCancelButton(R.string.sm_cancel)
+                .setConfirmButton(R.string.str_goto_register, (dialog, which) -> {
+                    CommonUtils.trackCommonEvent(context, "registerDialogLogin",
+                            "注册_账号已注册_弹窗_立即登录", Constants.EVENT_REGISTER);
+                    LoginActivity_.intent(context)
+                            .extra("mobile", mobile)
+                            .start();
+                    finish();
+                }).create().show());
     }
 
     //账号合并
@@ -160,4 +151,5 @@ public class RegisterActivity extends BaseMvpActivity<InputMobilePresenter>
                 .extra("source", "register")
                 .start();
     }
+
 }

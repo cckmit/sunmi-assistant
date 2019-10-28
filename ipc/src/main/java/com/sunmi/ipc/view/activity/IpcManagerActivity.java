@@ -261,6 +261,18 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        resumePlay();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        pausePlay();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         stopPlay();
@@ -377,11 +389,11 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         }
         llVideoQuality.setVisibility(llVideoQuality.isShown() ? View.GONE : View.VISIBLE);
         if (qualityType == 0) {
-            tvFHDQuality.setTextColor(ContextCompat.getColor(this, R.color.colorOrange));
+            tvFHDQuality.setTextColor(ContextCompat.getColor(this, R.color.common_orange));
             tvHDQuality.setTextColor(ContextCompat.getColor(this, R.color.c_white));
         } else {
             tvFHDQuality.setTextColor(ContextCompat.getColor(this, R.color.c_white));
-            tvHDQuality.setTextColor(ContextCompat.getColor(this, R.color.colorOrange));
+            tvHDQuality.setTextColor(ContextCompat.getColor(this, R.color.common_orange));
         }
     }
 
@@ -470,16 +482,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             videoDecoder = new H264Decoder(holder.getSurface(), 0);
             initP2pLive();
         } else {
-            if (llPlayFail != null && llPlayFail.isShown()) {
-                return;
-            }
-            setPanelVisible(View.VISIBLE);
-            if (playType == PLAY_TYPE_LIVE && iotcClient != null) {
-                showVideoLoading();
-                iotcClient.startPlay();
-            } else if (playType == PLAY_TYPE_PLAYBACK_DEV && videoDecoder != null) {
-                videoDecoder.startDecode();
-            }
+            resumePlay();
         }
     }
 
@@ -488,17 +491,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     }
 
-    //放后台
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        if (playType != PLAY_TYPE_LIVE && !isPaused) {
-            pausePlayClick();
-        } else if (playType == PLAY_TYPE_LIVE && iotcClient != null) {
-            iotcClient.stopLive();
-            if (audioDecoder != null) {
-                audioDecoder.stopRunning();
-            }
-        }
     }
 
     @Override
@@ -629,6 +623,30 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                     device.setName(sd.getName());
                     titleBar.setAppTitle(device.getName());
                 }
+            }
+        }
+    }
+
+    private void resumePlay() {
+        if (llPlayFail != null && llPlayFail.isShown() || videoDecoder == null) {
+            return;
+        }
+        setPanelVisible(View.VISIBLE);
+        if (playType == PLAY_TYPE_LIVE && iotcClient != null) {
+            showVideoLoading();
+            iotcClient.startPlay();
+        } else if (playType == PLAY_TYPE_PLAYBACK_DEV) {
+            videoDecoder.startDecode();
+        }
+    }
+
+    private void pausePlay() {
+        if (playType != PLAY_TYPE_LIVE && !isPaused) {
+            pausePlayClick();
+        } else if (playType == PLAY_TYPE_LIVE && iotcClient != null) {
+            iotcClient.stopLive();
+            if (audioDecoder != null) {
+                audioDecoder.stopRunning();
             }
         }
     }
@@ -1333,8 +1351,11 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private void initManageList() {
         rvManager.init(0);
         List<IpcManageBean> list = new ArrayList<>();
-        list.add(new IpcManageBean(R.mipmap.ipc_manage_face_history, getString(R.string.str_face_history),
-                getString(R.string.str_view_face_history), getString(R.string.str_coming_soon)));
+        if (!isSS1()) {
+            list.add(new IpcManageBean(R.mipmap.ipc_manage_face_history,
+                    getString(R.string.str_face_history),
+                    getString(R.string.str_view_face_history), getString(R.string.str_coming_soon)));
+        }
         list.add(new IpcManageBean(R.mipmap.ipc_manage_md, getString(R.string.str_motion_detection),
                 getString(R.string.str_md_exception), getString(R.string.str_coming_soon)));
         CommonListAdapter adapter = new CommonListAdapter<IpcManageBean>(context,

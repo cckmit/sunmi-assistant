@@ -130,6 +130,7 @@ public class DatePicker extends BaseWheelPick {
         minuteView.setCurrentItem(datePicker.findIndextByValue(datePicker.getToady(DatePickerHelper.Type.MINUTE), minutArr));
     }
 
+    @Override
     protected String[] convertData(WheelView wheelView, Integer[] data) {
         if (wheelView == yearView) {
             return datePicker.getDisplayValue(data, "年");

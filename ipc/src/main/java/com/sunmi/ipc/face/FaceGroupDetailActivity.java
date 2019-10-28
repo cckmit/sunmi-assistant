@@ -33,6 +33,7 @@ import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.TitleBarView;
@@ -179,7 +180,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
     private void clickDelete() {
         if (mFaceGroup.getCount() > 0) {
             if (mDeleteForbiddenDialog == null) {
-                mDeleteForbiddenDialog = new CommonDialog.Builder(this)
+                mDeleteForbiddenDialog = new CommonDialog.Builder(context)
                         .setTitle(getString(R.string.ipc_face_group_delete_title,
                                 Utils.getGroupName(this, mFaceGroup)))
                         .setMessage(R.string.ipc_face_group_delete_error)
@@ -192,7 +193,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
                 mDeleteDialog = new CommonDialog.Builder(this)
                         .setTitle(getString(R.string.ipc_face_group_delete_title,
                                 Utils.getGroupName(this, mFaceGroup)))
-                        .setConfirmButton(R.string.ipc_setting_delete, R.color.colorOrange,
+                        .setConfirmButton(R.string.ipc_setting_delete, R.color.common_orange,
                                 new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -252,7 +253,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
     }
 
     private void modifyGroupName() {
-        new InputDialog.Builder(this)
+        new InputDialog.Builder(context)
                 .setTitle(R.string.ipc_face_group_name)
                 .setHint(getString(R.string.ipc_face_input_name_tip))
                 .setInitInputContent(mFaceGroup.getGroupName())
@@ -292,11 +293,11 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
     }
 
     private void modifyMarks() {
-        new InputDialog.Builder(this)
+        new InputDialog.Builder(context)
                 .setTitle(R.string.ipc_face_group_mark)
                 .setHint(getString(R.string.ipc_face_input_marks_tip))
                 .setInitInputContent(mFaceGroup.getMark())
-                .setEditTextHeight(true, 400, 40, 0, 40, 40)
+                .setEditTextHeight(CommonHelper.dp2px(context, 130))
                 .setInputWatcher(new InputDialog.TextChangeListener() {
                     @Override
                     public void onTextChange(EditText view, Editable s) {
@@ -361,11 +362,11 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
                         Integer.valueOf(s.toString().trim()) > nowCapacity) {
                     etInput.setBackgroundResource(R.drawable.edittext_edge_red);
                     errorTip.setText(getString(R.string.ipc_face_photo_num_max_more));
-                    errorTip.setTextColor(ContextCompat.getColor(context, R.color.color_FF3838));
+                    errorTip.setTextColor(ContextCompat.getColor(context, R.color.caution_primary));
                 } else {
                     etInput.setBackgroundResource(R.drawable.edittext_edge_grey2);
                     errorTip.setText(getString(R.string.ipc_face_photo_num_remainder, nowCapacity));
-                    errorTip.setTextColor(ContextCompat.getColor(context, R.color.colorText_40));
+                    errorTip.setTextColor(ContextCompat.getColor(context, R.color.text_caption));
                 }
             }
 
@@ -384,7 +385,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
                 int num = Integer.valueOf(etInput.getText().toString().trim());
                 if (num > nowCapacity) {
                     errorTip.setText(getString(R.string.ipc_face_photo_num_max_more));
-                    errorTip.setTextColor(ContextCompat.getColor(context, R.color.color_FF3838));
+                    errorTip.setTextColor(ContextCompat.getColor(context, R.color.caution_primary));
                     return;
                 }
                 mPresenter.updateCapacity(num);

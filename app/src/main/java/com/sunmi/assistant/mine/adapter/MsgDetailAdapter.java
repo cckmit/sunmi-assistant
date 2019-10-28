@@ -1,6 +1,7 @@
 package com.sunmi.assistant.mine.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -12,11 +13,17 @@ import com.sunmi.assistant.mine.model.MessageListBean;
 import com.sunmi.assistant.mine.model.MsgTag;
 import com.sunmi.assistant.utils.MessageUtils;
 import com.sunmi.ipc.dynamic.DynamicVideoActivity_;
+import com.sunmi.ipc.model.IpcListResp;
+import com.sunmi.ipc.rpc.IpcCloudApi;
+import com.sunmi.ipc.setting.IpcSettingSdcardActivity_;
 
 import java.util.List;
 import java.util.Map;
 
+import sunmi.common.model.SunmiDevice;
+import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.DateTimeUtils;
+import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.tablayout.utils.UnreadMsgUtils;
 import sunmi.common.view.tablayout.widget.MsgView;
 
@@ -61,7 +68,12 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
         setMsgDetail(helper, MessageUtils.getInstance().getMsgFirst(titleTag.getTag()));
         //动态侦测视频
         Button btnPlay = helper.getView(R.id.btn_play);
-        if (!TextUtils.isEmpty(item.getMajorButtonLink()) && item.getMajorButtonLink().contains("url")) {
+
+        if (TextUtils.equals(item.getMajorButtonName(), "notif-device-ipc-tf-card-detect-tf-exist-btn1")) {
+            btnPlay.setText(R.string.str_sd_format);
+            btnPlay.setVisibility(View.VISIBLE);
+            btnPlay.setOnClickListener(v -> showFormatDialog(item));
+        } else if (!TextUtils.isEmpty(item.getMajorButtonLink()) && item.getMajorButtonLink().contains("url")) {
             btnPlay.setVisibility(View.VISIBLE);
             MsgTag urlTag = item.getMajorButtonLinkTag();
             Map<String, String> urlMap = urlTag.getMsgMap();
@@ -70,17 +82,16 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
             helper.setText(R.id.tv_msg_device_model, context.getString(R.string.ipc_device_model, deviceModel));
             btnPlay.setOnClickListener(v -> {
                 msgView.setVisibility(View.GONE);
-                DynamicVideoActivity_.intent(context)
-                        .url(url)
-                        .deviceModel(deviceModel)
-                        .start();
+                DynamicVideoActivity_.intent(context).url(url)
+                        .deviceModel(deviceModel).start();
             });
         } else {
             btnPlay.setVisibility(View.GONE);
         }
         helper.itemView.setOnLongClickListener(v -> {
             if (listener != null) {
-                listener.onLongClick(helper.getView(R.id.tv_msg_detail), item.getMsgId(), helper.getAdapterPosition());
+                listener.onLongClick(helper.getView(R.id.tv_msg_detail),
+                        item.getMsgId(), helper.getAdapterPosition());
             }
             return false;
         });
@@ -126,7 +137,74 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
         helper.setText(R.id.tv_msg_detail, context.getString(R.string.ipc_device_msg_content, detail));
     }
 
+    public void showFormatDialog(MessageListBean.MsgListBean msgListBean) {
+        new CommonDialog.Builder(context)
+                .setTitle(com.sunmi.ipc.R.string.tip_sdcard_unformat)
+                .setMessage(com.sunmi.ipc.R.string.msg_sdcard_should_format)
+                .setCancelButton(com.sunmi.ipc.R.string.str_in_later)
+                .setConfirmButton(com.sunmi.ipc.R.string.str_sd_format, (dialog, which) -> {
+                    getIpcList(msgListBean);
+                }).create().show();
+    }
+
+    private void getIpcList(MessageListBean.MsgListBean msgListBean) {
+        MsgTag urlTag = msgListBean.getMajorButtonLinkTag();
+        Map<String, String> urlMap = urlTag.getMsgMap();
+        String sn = urlMap.get("device_sn");
+        if (TextUtils.isEmpty(sn)) {
+            return;
+        }
+        IpcCloudApi.getInstance().getDetailList(msgListBean.getCompanyId(), msgListBean.getShopId(),
+                new RetrofitCallback<IpcListResp>() {
+                    @Override
+                    public void onSuccess(int code, String msg, IpcListResp data) {
+                        if (data.getFs_list() != null && data.getFs_list().size() > 0) {
+                            for (IpcListResp.SsListBean bean : data.getFs_list()) {
+                                if (TextUtils.equals(sn, bean.getSn())) {
+                                    gotoSdcardActivity(sn, bean);
+                                    return;
+                                }
+                            }
+                        }
+                        if (data.getSs_list() != null && data.getSs_list().size() > 0) {
+                            for (IpcListResp.SsListBean bean : data.getSs_list()) {
+                                if (TextUtils.equals(sn, bean.getSn())) {
+                                    gotoSdcardActivity(sn, bean);
+                                    return;
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg, IpcListResp data) {
+
+                    }
+                });
+    }
+
+    private void gotoSdcardActivity(String sn, IpcListResp.SsListBean bean) {
+        IpcSettingSdcardActivity_.intent(context).mDevice(getIpcDevice(bean)).start();
+    }
+
+    @NonNull
+    private SunmiDevice getIpcDevice(IpcListResp.SsListBean bean) {
+        SunmiDevice device = new SunmiDevice();
+        device.setType("IPC");
+        device.setStatus(bean.getActive_status());
+        device.setDeviceid(bean.getSn());
+        device.setModel(bean.getModel());
+        device.setName(bean.getDevice_name());
+        device.setIp(bean.getCdn_address());
+        device.setUid(bean.getUid());
+        device.setShopId(bean.getShop_id());
+        device.setId(bean.getId());
+        device.setFirmware(bean.getBin_version());
+        return device;
+    }
+
     public interface OnMsgLongClickListener {
         void onLongClick(View view, int msgId, int position);
     }
+
 }

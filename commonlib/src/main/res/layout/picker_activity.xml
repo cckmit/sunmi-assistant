@@ -40,7 +40,7 @@
         app:leftIcon="@drawable/ic_back_dark"
         app:rightText="@string/str_confirm"
         app:titleText="@string/picker_title"
-        app:rightTextColor="@color/colorText"
-        app:titleTextColor="@color/colorText" />
+        app:rightTextColor="@color/text_main"
+        app:titleTextColor="@color/text_main" />
 
 </android.support.constraint.ConstraintLayout>

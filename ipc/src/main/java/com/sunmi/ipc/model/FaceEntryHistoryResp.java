@@ -15,16 +15,11 @@ public class FaceEntryHistoryResp {
      * total_count : 11
      */
 
-    @SerializedName("return_count")
-    private int returnCount;
     @SerializedName("total_count")
     private int totalCount;
     @SerializedName("history_list")
     private List<EntryHistory> historyList;
 
-    public int getReturnCount() {
-        return returnCount;
-    }
 
     public int getTotalCount() {
         return totalCount;
@@ -42,6 +37,7 @@ public class FaceEntryHistoryResp {
          * shop_id : 123
          * device_name : 智能摄像机2
          * device_id : 567
+         * "arrival_date":"2019-07-26 12:40:00"
          */
 
         @SerializedName("history_id")
@@ -56,6 +52,8 @@ public class FaceEntryHistoryResp {
         private String deviceName;
         @SerializedName("device_id")
         private int deviceId;
+        @SerializedName("arrival_date")
+        private String arrivalDate;
 
         public int getHistoryId() {
             return historyId;
@@ -79,6 +77,10 @@ public class FaceEntryHistoryResp {
 
         public int getDeviceId() {
             return deviceId;
+        }
+
+        public String getArrivalDate() {
+            return arrivalDate;
         }
     }
 }

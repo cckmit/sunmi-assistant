@@ -13,12 +13,16 @@ import okhttp3.RequestBody;
 import retrofit2.Callback;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.model.CompanyInfoResp;
-import sunmi.common.model.ConsumerAgeGenderResp;
-import sunmi.common.model.ConsumerAgeNewOldResp;
-import sunmi.common.model.ConsumerCountResp;
-import sunmi.common.model.ConsumerRateResp;
 import sunmi.common.model.CreateShopInfo;
+import sunmi.common.model.CustomerAgeGenderResp;
+import sunmi.common.model.CustomerAgeNewOldResp;
+import sunmi.common.model.CustomerCountResp;
+import sunmi.common.model.CustomerHistoryDetailResp;
+import sunmi.common.model.CustomerHistoryResp;
+import sunmi.common.model.CustomerHistoryTrendResp;
+import sunmi.common.model.CustomerRateResp;
 import sunmi.common.model.PlatformInfo;
+import sunmi.common.model.ShopAuthorizeInfoResp;
 import sunmi.common.model.ShopCategoryResp;
 import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopInfoResp;
@@ -45,15 +49,33 @@ public class SunmiStoreApi {
 
     public static final String TAG = "SunmiStoreApi";
 
-    private static final class Singleton {
-        private static final SunmiStoreApi INSTANCE = new SunmiStoreApi();
+    private SunmiStoreApi() {
     }
 
     public static SunmiStoreApi getInstance() {
         return Singleton.INSTANCE;
     }
 
-    private SunmiStoreApi() {
+    /**
+     * 对参数进行加签
+     *
+     * @param params 参数
+     * @return 加签后的Map
+     */
+    private static HashMap<String, String> getSignedMap(String params) {
+        HashMap<String, String> map = new HashMap<>(6);
+        String timeStamp = DateTimeUtils.currentTimeSecond() + "";
+        String randomNum = (int) ((Math.random() * 9 + 1) * 100000) + "";
+        String isEncrypted = "0";
+        String sign = SecurityUtils.md5(params + isEncrypted +
+                timeStamp + randomNum + SecurityUtils.md5(CommonConfig.CLOUD_TOKEN));
+        map.put("timeStamp", timeStamp);
+        map.put("randomNum", randomNum);
+        map.put("isEncrypted", isEncrypted);
+        map.put("params", params);
+        map.put("sign", sign);
+        map.put("lang", "zh");
+        return map;
     }
 
     /**
@@ -449,6 +471,7 @@ public class SunmiStoreApi {
     public void getShopInfo(int shopId, RetrofitCallback<ShopInfoResp> callback) {
         try {
             String params = new JSONObject()
+                    .put("company_id", SpUtils.getCompanyId())
                     .put("shop_id", shopId)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
@@ -468,12 +491,21 @@ public class SunmiStoreApi {
      * @param tel       否
      * @param callback  回调
      */
-    public void createShop(int companyId, String shopName, String person, String tel,
+    public void createShop(int companyId, String shopName, int province, int city, int area,
+                           String address, int typeOne, int typeTwo,
+                           float businessArea, String person, String tel,
                            RetrofitCallback<CreateShopInfo> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
                     .put("shop_name", shopName)
+                    .put("province", province)
+                    .put("city", city)
+                    .put("area", area)
+                    .put("address", address)
+                    .put("type_one", typeOne)
+                    .put("type_two", typeTwo)
+                    .put("business_area", businessArea)
                     .put("contact_person", person)
                     .put("contact_tel", tel)
                     .toString();
@@ -513,7 +545,6 @@ public class SunmiStoreApi {
             e.printStackTrace();
         }
     }
-
 
     public void getShopCategory(RetrofitCallback<ShopCategoryResp> callback) {
         try {
@@ -602,13 +633,14 @@ public class SunmiStoreApi {
      *
      * @param companyId
      * @param shopId
-     * @param saasSource Saas来源标识id
-     * @param shopNo     店铺在商米引擎的唯一标识
-     * @param saasName   Saas软件商名称
+     * @param saasSource    Saas来源标识id
+     * @param shopNo        店铺在商米引擎的唯一标识
+     * @param saasName      Saas软件商名称
+     * @param importPayment 是否导入历史订单数据， 默认值是 1 表是导入， 2 代表不导入
      * @param callback
      */
     public void authorizeSaas(int companyId, int shopId, int saasSource, String shopNo,
-                              String saasName, RetrofitCallback<Object> callback) {
+                              String saasName, int importPayment, RetrofitCallback<Object> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -616,9 +648,52 @@ public class SunmiStoreApi {
                     .put("saas_source", saasSource)
                     .put("shop_no", shopNo)
                     .put("saas_name", saasName)
+                    .put("import_payment", importPayment)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
                     .authorizeSaas(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取门店对接信息，包括授权状态，授权时间，数据导入状态
+     */
+    public void getAuthorizeInfo(int companyId, int shopId, RetrofitCallback<ShopAuthorizeInfoResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
+                    .getAuthorizeInfo(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 门店导入Saas历史数据
+     *
+     * @param companyId  是	number	商户id
+     * @param shopId     是	number	店铺id
+     * @param shopNo     是	string	对接店铺号
+     * @param saasSource 是	number	saas source id
+     */
+    public void importSaas(int companyId, int shopId, String shopNo, int saasSource,
+                           RetrofitCallback<Object> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("shop_no", shopNo)
+                    .put("saas_source", saasSource)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
+                    .importSaas(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -634,16 +709,16 @@ public class SunmiStoreApi {
      * @param shopId    是	number	门店ID
      * @param timeType  是	number	日: 1、周: 2、月: 3
      */
-    public void getConsumer(int companyId, int shopId, int timeType,
-                            RetrofitCallback<ConsumerCountResp> callback) {
+    public void getCustomer(int companyId, int shopId, int timeType,
+                            RetrofitCallback<CustomerCountResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
                     .put("shop_id", shopId)
                     .put("type", timeType)
                     .toString();
-            SunmiStoreRetrofitClient.getInstance().create(ConsumerInterface.class)
-                    .getConsumer(new BaseRequest(params))
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getCustomer(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -657,16 +732,16 @@ public class SunmiStoreApi {
      * @param shopId    是	number	门店ID
      * @param timeType  是	number	日: 1、周: 2、月: 3
      */
-    public void getConsumerRate(int companyId, int shopId, int timeType,
-                                RetrofitCallback<ConsumerRateResp> callback) {
+    public void getCustomerRate(int companyId, int shopId, int timeType,
+                                RetrofitCallback<CustomerRateResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
                     .put("shop_id", shopId)
                     .put("type", timeType)
                     .toString();
-            SunmiStoreRetrofitClient.getInstance().create(ConsumerInterface.class)
-                    .getConsumerRate(new BaseRequest(params))
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getCustomerRate(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -681,8 +756,8 @@ public class SunmiStoreApi {
      * @param startTime 是	string	筛选开始时间 “YYYY-MM-DD”(“YYYY-MM-DD HH-MM-SS” 暂未启用）
      * @param endTime   是	string	筛选结束时间 “YYYY-MM-DD”(“YYYY-MM-DD HH-MM-SS” 暂未启用）
      */
-    public void getConsumerByAgeGender(int companyId, int shopId, String startTime, String endTime,
-                                       RetrofitCallback<ConsumerAgeGenderResp> callback) {
+    public void getCustomerByAgeGender(int companyId, int shopId, String startTime, String endTime,
+                                       RetrofitCallback<CustomerAgeGenderResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -690,8 +765,8 @@ public class SunmiStoreApi {
                     .put("start_time", startTime)
                     .put("end_time", endTime)
                     .toString();
-            SunmiStoreRetrofitClient.getInstance().create(ConsumerInterface.class)
-                    .getConsumerByAgeGender(new BaseRequest(params))
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getCustomerByAgeGender(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -706,8 +781,8 @@ public class SunmiStoreApi {
      * @param startTime 是	string	筛选开始时间 “YYYY-MM-DD”(“YYYY-MM-DD HH-MM-SS” 暂未启用）
      * @param endTime   是	string	筛选结束时间 “YYYY-MM-DD”(“YYYY-MM-DD HH-MM-SS” 暂未启用）
      */
-    public void getConsumerByAgeNewOld(int companyId, int shopId, String startTime, String endTime,
-                                       RetrofitCallback<ConsumerAgeNewOldResp> callback) {
+    public void getCustomerByAgeNewOld(int companyId, int shopId, String startTime, String endTime,
+                                       RetrofitCallback<CustomerAgeNewOldResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -715,8 +790,8 @@ public class SunmiStoreApi {
                     .put("start_time", startTime)
                     .put("end_time", endTime)
                     .toString();
-            SunmiStoreRetrofitClient.getInstance().create(ConsumerInterface.class)
-                    .getConsumerByAgeNewOld(new BaseRequest(params))
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getCustomerByAgeNewOld(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -724,25 +799,105 @@ public class SunmiStoreApi {
     }
 
     /**
-     * 对参数进行加签
+     * 获取历史客流数据
      *
-     * @param params 参数
-     * @return 加签后的Map
+     * @param companyId 是	number	商户ID
+     * @param shopId    是	number	门店ID
+     * @param type      是	number	日: 1、周: 2、月: 3、昨日：4
      */
-    private static HashMap<String, String> getSignedMap(String params) {
-        HashMap<String, String> map = new HashMap<>(6);
-        String timeStamp = DateTimeUtils.currentTimeSecond() + "";
-        String randomNum = (int) ((Math.random() * 9 + 1) * 100000) + "";
-        String isEncrypted = "0";
-        String sign = SecurityUtils.md5(params + isEncrypted +
-                timeStamp + randomNum + SecurityUtils.md5(CommonConfig.CLOUD_TOKEN));
-        map.put("timeStamp", timeStamp);
-        map.put("randomNum", randomNum);
-        map.put("isEncrypted", isEncrypted);
-        map.put("params", params);
-        map.put("sign", sign);
-        map.put("lang", "zh");
-        return map;
+    public void getHistoryCustomer(int companyId, int shopId, int type,
+                                   RetrofitCallback<CustomerHistoryResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("type", type)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getHistoryCustomer(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取历史客流数据
+     *
+     * @param companyId 是	number	商户ID
+     * @param shopId    是	number	门店ID
+     * @param startTime 开始时间 “YYYY-MM-DD”
+     * @param endTime   结束时间 “YYYY-MM-DD” （如果需要查询某一天，开始和结束时间相同）
+     */
+    public void getHistoryCustomer(int companyId, int shopId, String startTime, String endTime,
+                                   RetrofitCallback<CustomerHistoryResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("start_time", startTime)
+                    .put("end_time", endTime)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getHistoryCustomerByRange(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取历史客流变化趋势（今日、本周、本月，昨日）
+     *
+     * @param companyId 是	number	商户ID
+     * @param shopId    是	number	门店ID
+     * @param type      是	number	日: 1、周: 2、月: 3、昨日：4
+     * @param group     是	string	“hour”、”day”（”week”、”month”）
+     */
+    public void getHistoryCustomerTrend(int companyId, int shopId, int type, String group,
+                                        RetrofitCallback<CustomerHistoryTrendResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("type", type)
+                    .put("group_by", group)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getHistoryCustomerTrend(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取历史客流详情（今日、本周、本月，昨日）
+     *
+     * @param companyId 是	number	商户ID
+     * @param shopId    是	number	门店ID
+     * @param startTime 开始时间 “YYYY-MM-DD”
+     * @param endTime   结束时间 “YYYY-MM-DD” （如果需要查询某一天，开始和结束时间相同）
+     */
+    public void getHistoryCustomerDetail(int companyId, int shopId, String startTime, String endTime,
+                                         RetrofitCallback<CustomerHistoryDetailResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("start_time", startTime)
+                    .put("end_time", endTime)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getHistoryCustomerDetail(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static final class Singleton {
+        private static final SunmiStoreApi INSTANCE = new SunmiStoreApi();
     }
 
 }

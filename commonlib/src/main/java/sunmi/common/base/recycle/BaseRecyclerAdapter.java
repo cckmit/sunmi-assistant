@@ -72,7 +72,7 @@ public abstract class BaseRecyclerAdapter<T>
         mTypePool.clear();
     }
 
-    protected abstract T getItem(int position);
+    public abstract T getItem(int position);
 
     public abstract void add(@NonNull T data);
 

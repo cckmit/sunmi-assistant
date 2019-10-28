@@ -17,7 +17,7 @@
         app:leftIcon="@drawable/ic_back_dark"
         app:rightText="@string/str_save"
         app:titleText="@string/shop_address"
-        app:titleTextColor="@color/colorText"
+        app:titleTextColor="@color/text_main"
         tools:ignore="MissingConstraints" />
 
     <sunmi.common.view.SettingItemLayout
@@ -27,11 +27,10 @@
         android:background="@color/c_white"
         app:imageRight="@mipmap/ic_right_arrow_small"
         app:layout_constraintTop_toBottomOf="@id/title_bar"
-        app:leftPadding="@dimen/dp_15"
+        app:leftPadding="@dimen/dp_16"
         app:leftText="@string/str_area"
         app:parentHeight="@dimen/dp_60"
         app:rightPadding="@dimen/dp_20"
-        app:rightTextColor="@color/colorText_60"
         tools:ignore="MissingConstraints" />
 
     <android.support.constraint.ConstraintLayout
@@ -51,8 +50,15 @@
             android:paddingTop="@dimen/dp_20"
             android:paddingEnd="@dimen/dp_25"
             android:paddingBottom="@dimen/dp_20"
-            android:textColor="@color/text_color"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/tv_transparent"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_112"
+            android:background="@color/transparent"
             tools:ignore="MissingConstraints" />
 
         <android.support.v7.widget.RecyclerView

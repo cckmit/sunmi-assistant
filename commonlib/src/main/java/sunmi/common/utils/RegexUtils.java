@@ -7,11 +7,11 @@ import java.util.regex.Pattern;
 
 public class RegexUtils {
 
-    public static boolean isCorrectAccount(String mobiles) {
-        if (mobiles.contains("@")) {
-            return isEmail(mobiles);
+    public static boolean isCorrectAccount(String account) {
+        if (CommonHelper.isGooglePlay()) {
+            return isEmail(account);
         } else {
-            return isChinaPhone(mobiles);
+            return isChinaPhone(account) || isEmail(account);
         }
     }
 
@@ -26,9 +26,34 @@ public class RegexUtils {
      * 198，199
      */
     public static boolean isChinaPhone(String mobiles) {
-        Pattern p = Pattern.compile("^((13[0-9])|(14[57])|(15[^4,\\D])|(16[56])|(17[0-9])|(18[0-9])|(19[8-9]))\\d{8}$");
+        Pattern p = Pattern.compile("^((13[0-9])|(14[0-9])|(15[0-9])|(16[0-9])|(17[0-9])|(18[0-9])|(19[8-9]))\\d{8}$");
         Matcher m = p.matcher(mobiles);
         return m.matches();
+    }
+
+    public static String handleIllegalCharacter(String s) {
+        if (TextUtils.isEmpty(s)) {
+            return s;
+        }
+        // 前后空格
+        s = s.trim();
+
+        //去除：空格\s,回车\n,水平制表符即tab \t,换行\r
+        Pattern p = Pattern.compile("\\s|\n|\t|\r");
+        Matcher m = p.matcher(s);
+        s = m.replaceAll("");
+
+        // Excel文档中非法字符
+        if (s.contains("\u202C")) {
+            s = s.replace("\u202C", "").trim();
+        }
+        if (s.contains("\u202D")) {
+            s = s.replace("\u202D", "").trim();
+        }
+        if (s.contains("\u202E")) {
+            s = s.replace("\u202E", "").trim();
+        }
+        return s;
     }
 
     public static boolean isFixedPhone(String phone) {

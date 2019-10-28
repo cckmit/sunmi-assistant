@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_FAFAFA"
+    android:background="@color/bg_common"
     android:focusable="true"
     android:focusableInTouchMode="true">
 
@@ -21,7 +21,7 @@
         app:leftIcon="@drawable/ic_back_dark"
         app:rightText="@string/ipc_setting_delete"
         app:titleText="@string/str_details"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -40,8 +40,8 @@
                 android:layout_width="@dimen/dp_120"
                 android:layout_height="@dimen/dp_120"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="@dimen/dp_24"
                 android:layout_marginTop="@dimen/dp_24"
+                android:layout_marginBottom="@dimen/dp_24"
                 tools:ignore="ContentDescription" />
 
             <sunmi.common.view.SettingItemLayout
@@ -51,11 +51,10 @@
                 android:background="@color/c_white"
                 app:dividerShow="true"
                 app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_10"
+                app:leftPadding="@dimen/dp_20"
                 app:leftText="@string/ipc_face_name"
                 app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20"
-                app:rightTextColor="@color/colorText_60" />
+                app:rightPadding="@dimen/dp_20" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_face_id"
@@ -64,11 +63,10 @@
                 android:background="@color/c_white"
                 app:dividerShow="true"
                 app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_10"
+                app:leftPadding="@dimen/dp_20"
                 app:leftText="@string/ipc_face_id"
                 app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20"
-                app:rightTextColor="@color/colorText_60" />
+                app:rightPadding="@dimen/dp_20" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_face_sex"
@@ -77,11 +75,10 @@
                 android:background="@color/c_white"
                 app:dividerShow="true"
                 app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_10"
+                app:leftPadding="@dimen/dp_20"
                 app:leftText="@string/ipc_face_gender"
                 app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20"
-                app:rightTextColor="@color/colorText_60" />
+                app:rightPadding="@dimen/dp_20" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_face_age"
@@ -90,11 +87,10 @@
                 android:background="@color/c_white"
                 app:dividerShow="true"
                 app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_10"
+                app:leftPadding="@dimen/dp_20"
                 app:leftText="@string/ipc_face_age"
                 app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20"
-                app:rightTextColor="@color/colorText_60" />
+                app:rightPadding="@dimen/dp_20" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_face_enter_shop_num"
@@ -104,11 +100,10 @@
                 android:background="@color/c_white"
                 app:dividerShow="true"
                 app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_10"
+                app:leftPadding="@dimen/dp_20"
                 app:leftText="@string/ipc_face_total_enter_shop"
                 app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20"
-                app:rightTextColor="@color/colorText_60" />
+                app:rightPadding="@dimen/dp_20" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_face_register_time"
@@ -117,11 +112,10 @@
                 android:background="@color/c_white"
                 app:dividerShow="true"
                 app:imageRight="@null"
-                app:leftPadding="@dimen/dp_10"
+                app:leftPadding="@dimen/dp_20"
                 app:leftText="@string/ipc_face_register_time"
                 app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20"
-                app:rightTextColor="@color/colorText_60" />
+                app:rightPadding="@dimen/dp_20" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_face_new_enter_shop_time"
@@ -130,11 +124,10 @@
                 android:background="@color/c_white"
                 app:dividerShow="true"
                 app:imageRight="@null"
-                app:leftPadding="@dimen/dp_10"
+                app:leftPadding="@dimen/dp_20"
                 app:leftText="@string/ipc_face_new_enter_shop_time"
                 app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20"
-                app:rightTextColor="@color/colorText_60" />
+                app:rightPadding="@dimen/dp_20" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_face_enter_shop_time_list"
@@ -143,11 +136,10 @@
                 android:background="@color/c_white"
                 app:dividerShow="true"
                 app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_10"
+                app:leftPadding="@dimen/dp_20"
                 app:leftText="@string/ipc_face_every_enter_time"
                 app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20"
-                app:rightTextColor="@color/colorText_60" />
+                app:rightPadding="@dimen/dp_20" />
         </LinearLayout>
 
 

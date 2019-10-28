@@ -33,7 +33,7 @@ import sunmi.common.view.TitleBarView;
 @EActivity(R.layout.activity_mine_address_details)
 public class ShopAddressActivity extends BaseActivity {
 
-    private static final int MAX_LENGTH = 46;
+    private static final int MAX_LENGTH = 100;
 
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
