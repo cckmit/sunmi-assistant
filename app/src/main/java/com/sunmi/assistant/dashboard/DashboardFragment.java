@@ -381,6 +381,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @Override
     public int[] getStickNotificationId() {
         return new int[]{
+                CommonNotifications.netConnected,
                 CommonNotifications.companySwitch,
                 CommonNotifications.companyNameChanged,
                 CommonNotifications.shopSwitched,
@@ -394,7 +395,9 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
-        if (id == CommonNotifications.companySwitch) {
+        if (id == CommonNotifications.netConnected) {
+            mPresenter.reload(Constants.FLAG_ALL_MASK);
+        } else if (id == CommonNotifications.companySwitch) {
             mShopMenuPopupHelper.setCompanyName(SpUtils.getCompanyName());
             mPresenter.reload(Constants.FLAG_ALL_MASK);
         } else if (id == CommonNotifications.companyNameChanged) {
