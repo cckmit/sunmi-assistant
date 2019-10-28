@@ -149,7 +149,6 @@ public abstract class BaseActivity extends FragmentActivity
                 if (loadingDialog == null || loadingDialog.isShowing()) {
                     return;
                 }
-                loadingDialog.setCancelable(false);
                 if (!TextUtils.isEmpty(text))
                     loadingDialog.setLoadingContent(text);
                 loadingDialog.show();

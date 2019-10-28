@@ -117,6 +117,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     private boolean isShowWireDialog;//是否显示有线dialog
 
     private boolean isRun;
+    private boolean isClickVersionUpgrade;
 
     @AfterViews
     void init() {
@@ -194,10 +195,23 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         if (upgradeRequired == 1) {
             mVersion.getIvToTextLeft().setVisibility(View.VISIBLE);
             mVersion.getIvToTextLeft().setText(R.string.ipc_setting_new);
-            newVersionDialog();
+            if (!isClickVersionUpgrade) {
+                newVersionDialog();
+            }
         } else {
             mVersion.setRightText(resp.getLatest_bin_version());
             mVersion.getIvToTextLeft().setVisibility(View.GONE);
+        }
+        if (isClickVersionUpgrade) {
+            isClickVersionUpgrade = false;
+            gotoIpcSettingVersionActivity();
+        }
+    }
+
+    @Override
+    public void currentVersionFailView() {
+        if (isClickVersionUpgrade) {
+            isClickVersionUpgrade = false;
         }
     }
 
@@ -414,11 +428,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         if (noNetCannotClick(true)) {
             return;
         }
-        if (mResp == null) {
-            mPresenter.currentVersion();
-            return;
-        }
-        gotoIpcSettingVersionActivity();
+        isClickVersionUpgrade = true;
+        showLoadingDialog();
+        mPresenter.currentVersion();
     }
 
     private void gotoIpcSettingVersionActivity() {
@@ -767,6 +779,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             } else {
                 IPCCall.getInstance().getIsWire(IpcSettingActivity.this, bean.getIp());
                 if (CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
+                    mWifiName.setLeftTextColor(ContextCompat.getColor(context, R.color.text_main));
+                    mWifiName.setRightTextColor(ContextCompat.getColor(context, R.color.text_main));
                     mAdjustScreen.setLeftTextColor(ContextCompat.getColor(this, R.color.text_main));
                 }
             }

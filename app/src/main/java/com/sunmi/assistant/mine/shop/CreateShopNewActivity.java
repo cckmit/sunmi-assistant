@@ -33,7 +33,6 @@ import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.ShopCreateContract;
 import com.sunmi.assistant.mine.model.RegionProvince;
@@ -238,7 +237,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
         String square = etShopSquare.getText() == null ? "" : etShopSquare.getText().toString().trim();
         String contact = selContact.getEditTextText().getText() == null ? "" : selContact.getEditTextText().getText().toString().trim();
         //create
-        mPresenter.createShop(shopName, mProvinceId, mCityId, mAreaId, address,
+        mPresenter.createShop(companyId, shopName, mProvinceId, mCityId, mAreaId, address,
                 mCategoryLeftCode, mCategoryRightCode,
                 TextUtils.isEmpty(square) ? 0 : Float.parseFloat(square), contact, tel);
     }
@@ -432,7 +431,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
                 holder.itemView.setOnClickListener(v -> {
                     index = holder.getAdapterPosition();
                     selShopNamePoi.setEditTextText(poiItem.getTitle());
-                    HelpUtils.setSelectionEnd(selShopNamePoi.getEditTextText());
+                    CommonHelper.setSelectionEnd(selShopNamePoi.getEditTextText());
                     etShopName.setEditTextText(poiItem.getTitle());
                     etDetailAddress.setText(poiItem.getSnippet());
 
