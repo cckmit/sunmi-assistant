@@ -40,6 +40,7 @@ platform :android do
         "android.injected.signing.key.password" => "SUNMIwireless388",
       } )
   end
+  
   lane :uatEnv do
     gradle(
       task: "clean assemble",
