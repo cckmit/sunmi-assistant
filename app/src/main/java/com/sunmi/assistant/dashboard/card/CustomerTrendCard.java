@@ -333,6 +333,8 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
             set.setDrawHorizontalHighlightIndicator(false);
             set.setHighlightLineWidth(1f);
             set.enableDashedHighlightLine(mDashLength, mDashSpaceLength, 0);
+            set.setLineContinuous(false);
+            set.setLinePhase(1f);
             data = new LineData(set);
             line.setData(data);
         }
