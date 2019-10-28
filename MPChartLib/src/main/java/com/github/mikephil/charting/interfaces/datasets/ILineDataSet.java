@@ -94,10 +94,15 @@ public interface ILineDataSet extends ILineRadarDataSet<Entry> {
      */
     boolean isDashedLineEnabled();
 
+    boolean isLineContinuous();
+
+    float getLinePhase();
+
     /**
      * Returns the IFillFormatter that is set for this DataSet.
      *
      * @return
      */
     IFillFormatter getFillFormatter();
+
 }

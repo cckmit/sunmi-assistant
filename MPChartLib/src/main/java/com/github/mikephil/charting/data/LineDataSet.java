@@ -64,6 +64,10 @@ public class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
 
     private boolean mDrawCircleHole = true;
 
+    private boolean mLineContinuous = true;
+
+    private float mLinePhase = 1f;
+
 
     public LineDataSet(List<Entry> yVals, String label) {
         super(yVals, label);
@@ -233,7 +237,7 @@ public class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
 
     @Override
     public boolean isDashedLineEnabled() {
-        return mDashPathEffect == null ? false : true;
+        return mDashPathEffect != null;
     }
 
     @Override
@@ -387,6 +391,24 @@ public class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
     @Override
     public boolean isDrawCircleHoleEnabled() {
         return mDrawCircleHole;
+    }
+
+    public void setLineContinuous(boolean enable) {
+        this.mLineContinuous = enable;
+    }
+
+    @Override
+    public boolean isLineContinuous() {
+        return mLineContinuous;
+    }
+
+    public void setLinePhase(float mLinePhase) {
+        this.mLinePhase = mLinePhase;
+    }
+
+    @Override
+    public float getLinePhase() {
+        return mLinePhase;
     }
 
     /**

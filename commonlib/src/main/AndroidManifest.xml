@@ -67,6 +67,10 @@
                 android:resource="@xml/photo_file_paths" />
         </provider>
 
+        <service
+            android:name="org.eclipse.paho.android.service.MqttService"
+            android:enabled="true" />
+
         <!-- 小米推送start -->
         <service
             android:name="com.xiaomi.push.service.XMPushService"

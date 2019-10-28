@@ -6,9 +6,6 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.customer.CustomerFragment;
-import com.sunmi.assistant.dashboard.customer.CustomerFragment_;
-import com.sunmi.assistant.dashboard.customer.CustomerPresenter;
 import com.sunmi.assistant.dashboard.overview.OverviewFragment;
 import com.sunmi.assistant.dashboard.overview.OverviewFragment_;
 import com.sunmi.assistant.dashboard.overview.OverviewPresenter;
@@ -125,11 +122,11 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         mPages.add(overviewPresenter);
         pages.add(new PageHost(R.string.dashboard_page_overview, 0, overviewFragment));
 
-        CustomerPresenter customerPresenter = new CustomerPresenter(this, 1);
-        CustomerFragment customerFragment = new CustomerFragment_();
-        customerFragment.inject(mView, customerPresenter);
-        mPages.add(customerPresenter);
-        pages.add(new PageHost(R.string.dashboard_page_customer, 0, customerFragment));
+//        CustomerPresenter customerPresenter = new CustomerPresenter(this, 1);
+//        CustomerFragment customerFragment = new CustomerFragment_();
+//        customerFragment.inject(mView, customerPresenter);
+//        mPages.add(customerPresenter);
+//        pages.add(new PageHost(R.string.dashboard_page_customer, 0, customerFragment));
 
         return pages;
     }

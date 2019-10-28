@@ -1,13 +1,10 @@
 package com.sunmi.assistant.ui.fragment;
 
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -73,7 +70,6 @@ import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
-import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.dialog.ChooseDeviceDialog;
 import sunmi.common.view.dialog.CommonDialog;
@@ -735,8 +731,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 .setCancelButton(R.string.sm_cancel)
                 .setConfirmButton(R.string.str_delete, R.color.caution_primary,
                         (dialog, which) -> {
-                            dialog.dismiss();
-                            if (-1 == NetworkUtils.getNetStatus(mActivity)) {
+                            if (!NetworkUtils.isNetworkAvailable(mActivity)) {
                                 unBindNetDisConnected();
                                 return;
                             }
