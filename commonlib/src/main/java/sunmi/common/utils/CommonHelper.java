@@ -15,10 +15,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.LocaleList;
 import android.support.v4.app.NotificationCompat;
+import android.text.Selection;
 import android.text.TextUtils;
 import android.view.Display;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.meituan.android.walle.WalleChannelReader;
 import com.tencent.bugly.crashreport.CrashReport;
@@ -451,5 +453,15 @@ public class CommonHelper {
                 CommonConstants.GOOGLE_PLAY);
     }
 
+    /**
+     * 光标后置
+     *
+     * @param et 输入框
+     */
+    public static void setSelectionEnd(EditText et) {
+        String str = et.getText().toString();
+        if (TextUtils.isEmpty(str)) return;
+        Selection.setSelection(et.getText(), str.length());
+    }
 
 }
