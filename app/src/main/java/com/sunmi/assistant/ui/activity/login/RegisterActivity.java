@@ -23,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.RegexUtils;
 import sunmi.common.utils.ViewUtils;
 import sunmi.common.view.ClearableEditText;
@@ -58,7 +59,7 @@ public class RegisterActivity extends BaseMvpActivity<InputMobilePresenter>
             String mobile = bundle.getString("mobile");
             if (!TextUtils.isEmpty(mobile)) {
                 etMobile.setText(mobile);
-                HelpUtils.setSelectionEnd(etMobile);
+                CommonHelper.setSelectionEnd(etMobile);
             }
         }
         CommonUtils.trackDurationEventBegin(context, "registerUsernameDuration",

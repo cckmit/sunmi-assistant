@@ -61,7 +61,7 @@ public class CommonConfig extends BaseConfig {
 
     @Override
     protected void initUat(Context context, String env) {
-        SUNMI_STORE_URL = "https://uat-store.sunmi.com/";
+        SUNMI_STORE_URL = "https://store.uat.sunmi.com/";
         CLOUD_TOKEN = "Jihewobox15";
         DES_IV = "98765432";
         DES_KEY = "jihexxkj";

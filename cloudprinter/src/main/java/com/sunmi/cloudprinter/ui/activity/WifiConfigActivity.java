@@ -13,7 +13,6 @@ import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -41,10 +40,10 @@ import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.ToastUtils;
-import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.dialog.CommonDialog;
+import sunmi.common.view.dialog.InputDialog;
 
 /**
  * Description:
@@ -282,44 +281,37 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
     }
 
     private void showMessageDialog(final Router router) {
-        passwordDialog = new Dialog(context, R.style.Son_dialog);
-        LayoutInflater inflater = this.getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_router_message, null);
-        TextView title = view.findViewById(R.id.tv_title);
-        final ClearableEditText etPassword = view.findViewById(R.id.et_password);
         if (!router.isHasPwd()) {
-            title.setText(getString(R.string.title_confirm_connect_to_wifi, router.getName()));
-            view.findViewById(R.id.et_password).setVisibility(View.GONE);
+            new CommonDialog.Builder(context)
+                    .setTitle(getString(R.string.title_confirm_connect_to_wifi, router.getName()))
+                    .setCancelButton(R.string.sm_cancel)
+                    .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            showLoadingDialog();
+                            if (printerClient != null) {
+                                printerClient.setPrinterWifi(bleAddress, router.getEssid(), "");
+                            }
+                        }
+                    }).create().show();
         } else {
-            title.setText(R.string.title_input_wifi_password);
-            ((TextView) view.findViewById(R.id.tv_msg))
-                    .setText(getString(R.string.dialog_msg_input_password, router.getName()));
+            new InputDialog.Builder(context)
+                    .setTitle(getString(R.string.dialog_msg_input_password, router.getName()))
+                    .setCancelButton(R.string.sm_cancel)
+                    .setConfirmButton(R.string.str_confirm, new InputDialog.ConfirmClickListener() {
+                        @Override
+                        public void onConfirmClick(InputDialog dialog, String input) {
+                            if (TextUtils.isEmpty(input)) {
+                                shortTip(R.string.hint_input_router_pwd);
+                                return;
+                            }
+                            showLoadingDialog();
+                            if (printerClient != null) {
+                                printerClient.setPrinterWifi(bleAddress, router.getEssid(), input);
+                            }
+                        }
+                    }).create().show();
         }
-        view.findViewById(R.id.btnCancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                passwordDialog.dismiss();
-                passwordDialog = null;
-            }
-        });
-        view.findViewById(R.id.btnSure).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showLoadingDialog();
-                passwordDialog.dismiss();
-                String psw = etPassword.getText().toString().trim();
-                if (router.isHasPwd() && TextUtils.isEmpty(psw)) {
-                    shortTip(R.string.hint_input_router_pwd);
-                    return;
-                }
-                if (printerClient != null) {
-                    printerClient.setPrinterWifi(bleAddress, router.getEssid(), psw);
-                }
-            }
-        });
-        passwordDialog.setContentView(view);
-        passwordDialog.setCancelable(false);
-        passwordDialog.show();
     }
 
     private void showErrorDialog(int msgResId) {

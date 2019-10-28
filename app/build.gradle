@@ -55,8 +55,19 @@ android {
                     APP_NAME        : "商米助手test",
                     MTA_APPKEY      : "A6INR132MGAI",
                     MTA_CHANNEL     : "myapp"]
-//            minifyEnabled false
-//            signingConfig signingConfigs.sign
+        }
+
+        uat {
+            manifestPlaceholders = [
+                    ENV_VALUE       : "ENV_UAT",
+                    DB_VERSION_VALUE: "2",
+                    APP_NAME        : "商米助手UAT",
+                    MTA_APPKEY      : "A6INR132MGAI",
+                    MTA_CHANNEL     : "myapp"]
+            zipAlignEnabled true
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.sign
         }
 
         release {
@@ -72,6 +83,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.sign
         }
+
         googleplay {
             defaultConfig.versionCode Integer.parseInt(GOOGLE_VERSION_CODE)
             defaultConfig.versionName GOOGLE_VERSION_NAME

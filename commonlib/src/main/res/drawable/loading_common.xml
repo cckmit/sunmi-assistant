@@ -14,7 +14,7 @@
             android:centerColor="@color/common_orange_60a"
             android:centerY="0.50"
             android:endColor="@color/common_orange"
-            android:startColor="@color/c_white"
+            android:startColor="@color/transparent"
             android:type="sweep" />
     </shape>
 </rotate>

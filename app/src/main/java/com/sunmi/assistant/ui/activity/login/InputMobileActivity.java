@@ -80,7 +80,7 @@ public class InputMobileActivity extends BaseMvpActivity<InputMobilePresenter>
         new SomeMonitorEditText().setMonitorEditText(btnNext, etMobile);
         if (!TextUtils.isEmpty(mobile)) {
             etMobile.setText(mobile);
-            HelpUtils.setSelectionEnd(etMobile);
+            CommonHelper.setSelectionEnd(etMobile);
         }
         switch (checkSource) {
             case SOURCE_REGISTER:
