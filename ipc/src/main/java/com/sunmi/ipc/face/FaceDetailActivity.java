@@ -284,8 +284,8 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                             shortTip(getString(R.string.ipc_face_input_name_tip));
                             return;
                         }
-                        mPresenter.updateName(input);
                         dialog.dismiss();
+                        mPresenter.updateName(input);
                     }
                 })
                 .create()
