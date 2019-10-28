@@ -11,9 +11,9 @@ pipeline{
         {
           script{
             try{
-              git(branch: 'onl', credentialsId: 'lukai@sunmi.com', url: 'https://code.sunmi.com/wbu-app/sunmi-assistant-android.git', poll: true)
+              git(branch: 'uat', credentialsId: 'lukai@sunmi.com', url: 'https://code.sunmi.com/wbu-app/sunmi-assistant-android.git', poll: true)
               dir('apmanager'){
-                git(branch: 'onl', credentialsId: 'lukai@sunmi.com', url: 'https://code.sunmi.com/wbu-app/sunmi-assistant-android-ap-manager.git', poll: true)
+                git(branch: 'uat', credentialsId: 'lukai@sunmi.com', url: 'https://code.sunmi.com/wbu-app/sunmi-assistant-android-ap-manager.git', poll: true)
               }
               sh('''
                 export PATH="/usr/local/bin/:$PATH"
@@ -25,7 +25,7 @@ pipeline{
                 echo $ANDROID_HOME
                 mkdir -p build
                 rm -rf apmanager/build/outputs/*
-                fastlane releaseEnv
+                fastlane uatEnv
                 ''') 
               stash(includes: 'app/build/outputs/apk/**/app-universal-*.apk', name: 'apk')
             }catch(e){
@@ -41,7 +41,7 @@ pipeline{
         }
       }
     }
-    stage('Release') {
+    stage('UAT') {
       agent{node{label('ios')}}
       when{
         not{equals(expected:"FAILURE", actual:currentBuild.result)}
@@ -53,9 +53,9 @@ pipeline{
             unstash(name: 'apk')
             sh('''
               export ANDROID_HOME=/Users/admin/Library/Android/sdk
-              export apk_path=app/build/outputs/apk/release/
-              mkdir -p release
-              rm -rf release/*
+              export apk_path=app/build/outputs/apk/uat/
+              mkdir -p uat
+              rm -rf uat/*
               cd $apk_path
               apk=`ls *universal*`
               cd $WORKSPACE
@@ -64,18 +64,18 @@ pipeline{
               icon=`$ANDROID_HOME/build-tools/28.0.3/aapt dump badging $apk_path$apk | grep application: | awk '{print $3}' | sed s/icon=//g | sed s/\\'//g`
               echo name=$name > version.txt
               echo version=$version >> version.txt
-              cp version.txt release
+              cp version.txt uat
               unzip -u $apk_path$apk -d ./apk
-              cp apk/$icon release/logo.png
+              cp apk/$icon uat/logo.png
               java -jar 360jiagu/jiagu/jiagu.jar -login lukai@sunmi.com sunmi388
               java -jar 360jiagu/jiagu/jiagu.jar -importsign Keystore.jks SUNMIwireless388 SUNMI_Key SUNMIwireless388
-              java -jar 360jiagu/jiagu/jiagu.jar -jiagu $apk_path$apk release/ -autosign
-              zip -jv release/$version.zip release/*
+              java -jar 360jiagu/jiagu/jiagu.jar -jiagu $apk_path$apk uat/ -autosign
+              zip -jv uat/$version.zip uat/*
               rm -rf latest
               ''')
-            archiveArtifacts(artifacts: 'release/*', onlyIfSuccessful: true)
+            archiveArtifacts(artifacts: 'uat/*', onlyIfSuccessful: true)
           }catch(e){
-            def stageName = 'release'
+            def stageName = 'uat'
             if(currentBuild.currentResult == "FAILURE"){
               NotifyBuild(currentBuild.result, stageName)
             }
@@ -91,7 +91,7 @@ pipeline{
             def recipient_list = 'lukai@sunmi.com,xiaoxinwu@sunmi.com,yangshijie@sunmi.com,yangjibin@sunmi.com,lvsiwen@sunmi.com,ningrulin@sunmi.com,hanruifeng@sunmi.com,simayujing@sunmi.com,linianhan@sunmi.com,liuxiaoliang@sunmi.com'
             def changeString = getChangeString()
             def details = """<p>请从以下URL下载： "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>"</p><br/>更新内容：<br/>""" 
-            emailext(attachLog: false, body: details + changeString, mimeType: 'text/html', subject: 'Android Release Build 已加固完成', to: recipient_list)
+            emailext(attachLog: false, body: details + changeString, mimeType: 'text/html', subject: 'Android UAT Build 已加固完成', to: recipient_list)
           }
         } 
       }
@@ -150,19 +150,19 @@ def NotifyBuild(String buildStatus = 'STARTED', String stage){
 
   switch(stage){
     case 'build':
-      emailext(attachLog: false, body: details, mimeType: 'text/html', subject: 'Android Release Branch 构建出错', to: recipient_list)
+      emailext(attachLog: false, body: details, mimeType: 'text/html', subject: 'Android UAT Branch 构建出错', to: recipient_list)
       break
 
     case 'deploy':
-      emailext(attachLog: false, body: details, mimeType: 'text/html', subject: 'Android Release Branch 部署出错', to: recipient_list)
+      emailext(attachLog: false, body: details, mimeType: 'text/html', subject: 'Android UAT Branch 部署出错', to: recipient_list)
       break
 
     case 'test':
-      emailext(attachLog: false, body: details, mimeType: 'text/html', subject: 'Android Release Branch 测试步骤出错', to: recipient_list)
+      emailext(attachLog: false, body: details, mimeType: 'text/html', subject: 'Android UAT Branch 测试步骤出错', to: recipient_list)
       break
 
     case 'release':
-      emailext(attachLog: false, body: details, mimeType: 'text/html', subject: 'Android Release Branch 加固步骤出错', to: recipient_list)
+      emailext(attachLog: false, body: details, mimeType: 'text/html', subject: 'Android UAT Branch 加固步骤出错', to: recipient_list)
       break
   }
 }
