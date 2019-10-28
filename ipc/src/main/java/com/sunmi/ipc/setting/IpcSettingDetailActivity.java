@@ -1,7 +1,5 @@
 package com.sunmi.ipc.setting;
 
-import android.view.View;
-
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.rpc.IpcCloudApi;
@@ -45,26 +43,20 @@ public class IpcSettingDetailActivity extends BaseActivity {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         mCameraModel.setRightText(mDevice.getModel());
         mCameraSn.setRightText(mDevice.getDeviceid());
-        mTitleBar.getRightText().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteDevice(mDevice);
-            }
-        });
+        mTitleBar.getRightText().setOnClickListener(v -> deleteDevice(mDevice));
     }
 
     private void deleteDevice(final SunmiDevice device) {
         new CommonDialog.Builder(context).setTitle(R.string.tip_delete_ipc)
                 .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.ipc_setting_delete, R.color.caution_primary,
-                        (dialog, which) -> {
-                            dialog.dismiss();
-                            if (-1 == NetworkUtils.getNetStatus(IpcSettingDetailActivity.this)) {
-                                unBindNetDisConnected();
-                                return;
-                            }
-                            unbindIpc(device.getId());
-                        }).create().show();
+                .setConfirmButton(R.string.ipc_setting_delete, R.color.caution_primary, (dialog, which) -> {
+                    dialog.dismiss();
+                    if (!NetworkUtils.isNetworkAvailable(context)) {
+                        unBindNetDisConnected();
+                        return;
+                    }
+                    unbindIpc(device.getId());
+                }).create().show();
     }
 
     private void unBindNetDisConnected() {

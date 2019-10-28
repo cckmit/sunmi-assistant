@@ -4,7 +4,6 @@ import android.content.Context;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.NetworkInfo.State;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.telephony.TelephonyManager;
@@ -125,22 +124,6 @@ public class NetworkUtils {
             return true;
         }
         return false;
-    }
-
-    public static int getNetStatus(Context context) {
-        ConnectivityManager mConnectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        int netType = -1;
-        if (mConnectivityManager != null) {
-            State mMobile = mConnectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
-            State mWifi = mConnectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
-            if (mMobile == State.CONNECTING || mWifi == State.CONNECTING) {
-            } else if (mMobile == State.CONNECTED) {
-                netType = ConnectivityManager.TYPE_MOBILE;
-            } else if (mWifi == State.CONNECTED) {
-                netType = ConnectivityManager.TYPE_WIFI;
-            }
-        }
-        return netType;
     }
 
     /**
