@@ -17,10 +17,12 @@ import com.sunmi.ipc.model.FaceListResp;
 import com.sunmi.ipc.model.FaceSaveResp;
 import com.sunmi.ipc.model.IpcListResp;
 import com.sunmi.ipc.model.IpcNewFirmwareResp;
+import com.sunmi.ipc.model.StorageListResp;
 import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.rpc.api.DeviceInterface;
 import com.sunmi.ipc.rpc.api.FaceInterface;
 import com.sunmi.ipc.rpc.api.MediaInterface;
+import com.sunmi.ipc.rpc.api.StorageInterface;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -589,6 +591,26 @@ public class IpcCloudApi {
             params.put("face_id", faceId);
             SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
                     .getArrivalCountByTimeRange(new BaseRequest(params.toString()))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * company_id	是	int64	商户id
+     * shop_id	是	int64	店铺id
+     * device_id	否	int64	设备id 不传为查询所有设
+     */
+    public void getStorageInfo(int deviceId, RetrofitCallback<StorageListResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", SpUtils.getShopId())
+                    .put("device_id", deviceId)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(StorageInterface.class)
+                    .getStorageInfo(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();

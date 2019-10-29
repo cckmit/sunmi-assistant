@@ -10,5 +10,32 @@
     <string name="str_text_edit_sharing_content">Edit sharing content</string>
     <string name="str_text_follow_official_weibo">Follow the official blogs</string>
     <string name="str_unknown">Unknown</string>
+    <string name="str_renewal">续费</string>
+
+    <string name="tip_device_unbind">原绑定设备已解绑</string>
+    <string name="tip_not_open_cloud">您尚未开通云存储服务</string>
+    <string name="str_go_open">去开通</string>
+    <string name="str_service_detail">服务详情</string>
+    <string name="service_device_name">设备名称</string>
+    <string name="service_device_model">设备型号</string>
+    <string name="service_device_sn">设备SN</string>
+    <string name="service_order_info">订单信息</string>
+    <string name="service_subscribe_time">订阅时间</string>
+    <string name="service_expire_time">到期时间</string>
+    <string name="service_remaining">剩余有效期</string>
+    <string name="service_number">服务编号</string>
+    <string name="service_order_number">关联订单号</string>
+    <string name="tip_cloud_storage">灵活查看，信息安全，存储方便</string>
+
+    <string name="str_after_sales">售后</string>
+    <string name="str_after_sales_service">售后服务</string>
+    <string name="tip_after_sales">快速申请保修、查询维修网点和配件价格</string>
+    <string name="str_apply_repair">申请报修</string>
+    <string name="str_sunmi_store">商城</string>
+    <string name="str_sunmi_store_service">耗材采购</string>
+    <string name="tip_sunmi_store">更多配为您随时准备</string>
+    <string name="str_enter_store">进入商城</string>
+    <string name="tip_renewal_less_three_days">云存储服务剩余有效期小于3天才可续费，请确认后重试</string>
+    <string name="str_promotion">推广</string>
 
 </resources>

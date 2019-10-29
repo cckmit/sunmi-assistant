@@ -28,6 +28,7 @@ import com.sunmi.ipc.R;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.IpcManagerContract;
 import com.sunmi.ipc.model.IpcManageBean;
+import com.sunmi.ipc.model.StorageListResp;
 import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.model.VideoTimeSlotBean;
 import com.sunmi.ipc.presenter.IpcManagerPresenter;
@@ -200,10 +201,13 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     //竖屏切换高清
     private BottomPopMenu qualityPop;
 
+    private IpcManageBean cloudStroage;
+
     @AfterViews
     void init() {
         mPresenter = new IpcManagerPresenter();
         mPresenter.attachView(this);
+        mPresenter.getStorageInfo(device.getId());
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//保持屏幕常亮
@@ -605,6 +609,33 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             tvQuality.setText(R.string.str_HD);
             tvQualityP.setText(R.string.str_HD);
             shortTip(R.string.tip_video_quality_hd);
+        }
+    }
+
+    @Override
+    public void getStorageSuccess(StorageListResp.DeviceListBean data) {
+        cloudStroage = new IpcManageBean(R.mipmap.ipc_cloud_storage, getString(R.string.str_cloud_storage));
+        if (data != null) {
+            switch (data.getStatus()) {
+                case 1:
+                    cloudStroage.setSummary(getString(R.string.str_remaining_validity_period,
+                            DateTimeUtils.secondToPeriod(data.getValidTime(), context)));
+                    cloudStroage.setRightText(getString(R.string.str_setting_detail));
+                    break;
+                case 2:
+                    cloudStroage.setSummary(getString(R.string.str_subscribe_free));
+                    cloudStroage.setRightText(getString(R.string.str_use_free));
+                    break;
+                case 3:
+                    cloudStroage.setSummary(getString(R.string.str_expired));
+                    cloudStroage.setRightText(getString(R.string.str_setting_detail));
+                    break;
+                default:
+                    break;
+            }
+            cloudStroage.setEnabled(true);
+        }else {
+            cloudStroage.setEnabled(false);
         }
     }
 
@@ -1354,19 +1385,26 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         if (!isSS1()) {
             list.add(new IpcManageBean(R.mipmap.ipc_manage_face_history,
                     getString(R.string.str_face_history),
-                    getString(R.string.str_view_face_history), getString(R.string.str_coming_soon)));
-        }
+                    getString(R.string.str_view_face_history), getString(R.string.str_coming_soon), false));
+        } /*else {
+            list.add(new IpcManageBean(R.mipmap.ipc_cloud_storage,
+                    getString(R.string.str_cloud_storage),
+                    getString()));
+        }*/
         list.add(new IpcManageBean(R.mipmap.ipc_manage_md, getString(R.string.str_motion_detection),
-                getString(R.string.str_md_exception), getString(R.string.str_coming_soon)));
+                getString(R.string.str_md_exception), getString(R.string.str_coming_soon), false));
         CommonListAdapter adapter = new CommonListAdapter<IpcManageBean>(context,
                 R.layout.item_ipc_manager, list) {
             @Override
             public void convert(ViewHolder holder, IpcManageBean bean) {
+                TextView tvDetail = holder.getView(R.id.tv_detail);
                 holder.setImageResource(R.id.iv_icon, bean.getLeftImageResId());
                 holder.setText(R.id.tv_title, bean.getTitle());
                 holder.setText(R.id.tv_summary, bean.getSummary());
                 holder.setText(R.id.tv_detail, bean.getRightText());
-                holder.setOnClickListener(R.id.tv_detail, v -> {
+                tvDetail.setEnabled(bean.isEnabled());
+                tvDetail.setOnClickListener(v -> {
+
                 });
             }
         };

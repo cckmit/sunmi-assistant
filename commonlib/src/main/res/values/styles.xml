@@ -145,5 +145,13 @@
         <item name="android:textSize">@dimen/sp_10</item>
     </style>
 
-   
+    <style name="BtnSolidWhite">
+        <item name="android:layout_width">@dimen/dp_96</item>
+        <item name="android:layout_height">@dimen/dp_32</item>
+        <item name="android:background">@drawable/button_corners_solid_white</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/common_orange</item>
+        <item name="android:textSize">@dimen/sp_14</item>
+    </style>
+
 </resources>
