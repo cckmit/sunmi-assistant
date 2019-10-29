@@ -82,7 +82,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     @Override
     public void setPeriod(int period) {
-        PageContract.PagePresenter current = getPage();
+        PageContract.PagePresenter current = getCurrent();
         if (current != null) {
             current.setPeriod(period);
         }
@@ -96,7 +96,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     @Override
     public void scrollToTop() {
-        PageContract.PagePresenter current = getPage();
+        PageContract.PagePresenter current = getCurrent();
         if (current != null) {
             current.scrollToTop();
         }
@@ -121,7 +121,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     @Override
     public int getPeriod() {
-        PageContract.PagePresenter current = getPage();
+        PageContract.PagePresenter current = getCurrent();
         if (current != null) {
             return current.getPeriod();
         } else {
@@ -143,18 +143,17 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             flag |= Constants.FLAG_CUSTOMER;
             load(flag, false, showLoading);
         } else {
-            PageContract.PagePresenter current = getPage();
+            PageContract.PagePresenter current = getCurrent();
             if (current != null) {
                 current.setSource(mSource, showLoading);
             }
         }
     }
 
-    private PageContract.PagePresenter getPage() {
+    private PageContract.PagePresenter getCurrent() {
         PageContract.PagePresenter current = mPages.get(mPageType);
         if (current == null) {
             LogCat.e(TAG, "Page type of " + mPageType + " is ERROR.");
-            return null;
         }
         return current;
     }
@@ -339,7 +338,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 page.setSource(mSource, mShowLoading);
             }
         } else {
-            PageContract.PagePresenter current = getPage();
+            PageContract.PagePresenter current = getCurrent();
             if (current != null) {
                 current.setSource(mSource, mShowLoading);
             }
