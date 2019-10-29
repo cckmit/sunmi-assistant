@@ -156,7 +156,7 @@
     <string name="str_version_placeholder">v%s</string>
     <string name="company_select">Please select the company you want to enter</string>
     <string name="company_shop_select">Please select the store you want to enter</string>
-    <string name="company_create">Create new store</string>
+    <string name="company_create">Create new company</string>
     <string name="company_new_create">Create new company</string>
     <string name="company_create_hint">Please enter the company name</string>
     <string name="company_shop_create_hint">Please enter the store name</string>
