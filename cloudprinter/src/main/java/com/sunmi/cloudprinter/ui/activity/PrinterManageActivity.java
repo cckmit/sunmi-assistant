@@ -173,6 +173,7 @@ public class PrinterManageActivity extends BaseActivity {
 
     @UiThread
     void loadPageTimeout() {
+        if (isDestroyed()) return;
         new CommonDialog.Builder(this)
                 .setTitle(R.string.tip_load_page_timeout)
                 .setConfirmButton(R.string.str_confirm).create().show();

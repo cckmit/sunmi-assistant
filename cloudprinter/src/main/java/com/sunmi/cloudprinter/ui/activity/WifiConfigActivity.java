@@ -330,7 +330,6 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
                 .setCancelButton(R.string.sm_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
                         if (wifiConfigTimer != null) {
                             wifiConfigTimer.cancel();
                         }
@@ -339,7 +338,6 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
                 }).setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
                         if (wifiConfigTimer != null) {
                             wifiConfigTimer.cancel();
                         }

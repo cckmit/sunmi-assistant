@@ -7,6 +7,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.Thread.UncaughtExceptionHandler;
 
+import sunmi.common.base.BaseApplication;
 import sunmi.common.utils.log.LogCat;
 
 public class UnknownException implements UncaughtExceptionHandler {
@@ -40,6 +41,7 @@ public class UnknownException implements UncaughtExceptionHandler {
                 LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage(), e);
             }
         }
+        BaseApplication.getInstance().quit();//捕获异常保存日志后直接闪退
     }
 
     /**
