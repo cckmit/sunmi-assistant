@@ -178,8 +178,11 @@ public class MqttManager {
                         exception.printStackTrace();
                 }
             });
-        } catch (MqttException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
+            if (ex instanceof java.lang.IllegalStateException) {
+                BaseApplication.getInstance().quit();
+            }
         }
     }
 

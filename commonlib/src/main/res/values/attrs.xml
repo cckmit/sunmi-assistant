@@ -43,23 +43,23 @@
     </declare-styleable>
 
     <declare-styleable name="SettingItemLayout">
-        <attr name="parentWidth" />
-        <attr name="parentHeight" />
-        <attr name="leftText" />
-        <attr name="leftTextSize" />
-        <attr name="leftTextColor" />
-        <attr name="rightText" />
-        <attr name="rightTextSize" />
-        <attr name="rightTextColor" />
-        <attr name="toTextLeftText" format="string" />
-        <attr name="imageLeft" />
-        <attr name="imageLeftSize" />
-        <attr name="imageRight" format="reference" />
-        <attr name="leftPadding" format="dimension" />
-        <attr name="rightPadding" format="dimension" />
-        <attr name="dividerShow" />
-        <attr name="dividerColor" />
-        <attr name="dividerHeight" />
+        <attr name="parentWidth" /> <!--宽度-->
+        <attr name="parentHeight" /> <!--高度-->
+        <attr name="leftText" /> <!-- 左边文字内容-->
+        <attr name="leftTextSize" /><!-- 左边文字大小-->
+        <attr name="leftTextColor" /><!-- 左边文字颜色-->
+        <attr name="rightText" /><!-- 右边文字内容-->
+        <attr name="rightTextSize" /><!-- 右边文字大小-->
+        <attr name="rightTextColor" /><!-- 右边文字颜色-->
+        <attr name="toTextLeftText" format="string" /><!-- -->
+        <attr name="imageLeft" /><!-- 左边图片-->
+        <attr name="imageLeftSize" /><!-- 左边图片尺寸-->
+        <attr name="imageRight" format="reference" /><!-- 右边图片-->
+        <attr name="leftPadding" format="dimension" /><!-- 左边边距-->
+        <attr name="rightPadding" format="dimension" /><!-- 右边边距-->
+        <attr name="dividerShow" /><!-- 底部分割线是否显示-->
+        <attr name="dividerColor" /><!-- 底部分割线颜色-->
+        <attr name="dividerHeight" /><!-- 底部分割线高度-->
     </declare-styleable>
 
     <declare-styleable name="SettingItemEdittextLayout">
@@ -248,11 +248,11 @@
         <attr name="awv_initialPosition" format="integer" />
         <attr name="awv_scaleX" format="float" />
     </declare-styleable>
-    
+
     <declare-styleable name="LabelTextView">
-        <attr name="backgroundColor" format="color"/>
-        <attr name="strokeWidth" format="dimension"/>
-        <attr name="strokeColor" format="color"/>
+        <attr name="backgroundColor" format="color" />
+        <attr name="strokeWidth" format="dimension" />
+        <attr name="strokeColor" format="color" />
     </declare-styleable>
 
 </resources>
