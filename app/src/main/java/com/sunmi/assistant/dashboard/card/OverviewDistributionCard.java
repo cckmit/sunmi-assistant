@@ -461,6 +461,9 @@ public class OverviewDistributionCard extends BaseRefreshCard<OverviewDistributi
         }
 
         private SpannableString createCenterText(Context context, String name, float value) {
+            if (name == null) {
+                return new SpannableString("");
+            }
             int percent = total > 0 ? Math.round(value / total * 100) : 0;
             SpannableString s = new SpannableString(
                     new StringBuilder(name).append("\n").append(percent).append("%"));

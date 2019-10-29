@@ -47,11 +47,9 @@ public class MyApplication extends BaseApplication {
         // 初始化组件化相关
         Component.init(this, BuildConfig.DEBUG);
 
-
         // 装载各个业务组件
-        ModuleManager.getInstance().registerArr(
-                "app", "ipc"
-        );
+        ModuleManager.getInstance().registerArr("app", "ipc");
+
         if (BuildConfig.DEBUG) {
             ModuleManager.getInstance().check();
         }
