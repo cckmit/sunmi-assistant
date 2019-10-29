@@ -2,6 +2,7 @@ package com.sunmi.assistant.dashboard.customer;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.base.recycle.BaseArrayAdapter;
+import sunmi.common.utils.log.LogCat;
 
 /**
  * @author yinhui
@@ -43,17 +45,19 @@ public class CustomerFragment extends BaseMvpFragment<CustomerPresenter>
     private ItemStickyListener mStickyListener;
     private RefreshViewHolder mRefreshHeaderHolder;
 
-    public void inject(DashboardContract.View parent, CustomerPresenter presenter) {
-        this.mParent = parent;
-        this.mPresenter = presenter;
-    }
-
     @AfterViews
     void init() {
         Context context = getContext();
         if (context == null) {
             return;
         }
+        Fragment parent = getParentFragment();
+        if (!(parent instanceof DashboardContract.View)) {
+            LogCat.e(TAG, "Parent is not DashboardFragment. CustomerFragment must be used in dashboard.");
+            return;
+        }
+        mParent = (DashboardContract.View) parent;
+        mPresenter = new CustomerPresenter(mParent.getPresenter());
         mPresenter.attachView(this);
         showLoadingDialog();
         initRefreshLayout(context);
@@ -84,7 +88,7 @@ public class CustomerFragment extends BaseMvpFragment<CustomerPresenter>
 
     @Override
     public void updateTab(int period) {
-        mParent.updateTab(mPresenter.getIndex(), period);
+        mParent.updateTab(mPresenter.getType(), period);
     }
 
     @Override

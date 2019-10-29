@@ -9,6 +9,8 @@ public interface DashboardContract {
 
     interface View extends BaseView {
 
+        PageContract.ParentPresenter getPresenter();
+
         int getHeaderHeight();
 
         void setShopList(List<FilterItem> list);
@@ -35,31 +37,16 @@ public interface DashboardContract {
 
         void setPeriod(int period);
 
-        void setPage(int index);
+        void setPage(int type);
 
         void scrollToTop();
 
-        List<PageHost> getPages();
+        List<PageHost> createPages();
 
-        int getPageIndex();
+        int getPageType();
 
         int getPeriod();
 
     }
-//
-//    interface PagePresenter {
-//
-//        int getType();
-//
-//        int getScrollY();
-//
-//        void scrollTo(int y);
-//
-//        void refresh(boolean showLoading);
-//
-//        void refresh(int position, boolean showLoading);
-//
-//
-//
-//    }
+
 }

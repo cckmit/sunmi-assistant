@@ -11,11 +11,13 @@ public class PageHost {
     private int title;
     private int icon;
     private Fragment fragment;
+    private int type;
 
-    public PageHost(int title, int icon, Fragment fragment) {
+    public PageHost(int title, int icon, Fragment fragment, int type) {
         this.title = title;
         this.icon = icon;
         this.fragment = fragment;
+        this.type = type;
     }
 
     public int getTitle() {
@@ -28,5 +30,9 @@ public class PageHost {
 
     public Fragment getFragment() {
         return fragment;
+    }
+
+    public int getType() {
+        return type;
     }
 }
