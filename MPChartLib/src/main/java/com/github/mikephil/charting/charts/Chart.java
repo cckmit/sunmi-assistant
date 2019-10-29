@@ -13,10 +13,8 @@ import android.graphics.Paint.Align;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore.Images;
-import androidx.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -25,7 +23,6 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 
 import com.github.mikephil.charting.animation.ChartAnimator;
-import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.animation.Easing.EasingFunction;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.IMarker;
@@ -54,6 +51,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+
+import androidx.annotation.RequiresApi;
 
 /**
  * Baseclass of all Chart-Views.
@@ -552,7 +551,8 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      * Highlights any y-value at the given x-value in the given DataSet.
      * Provide -1 as the dataSetIndex to undo all highlighting.
      * This method will call the listener.
-     * @param x The x-value to highlight
+     *
+     * @param x            The x-value to highlight
      * @param dataSetIndex The dataset index to search in
      */
     public void highlightValue(float x, int dataSetIndex) {
@@ -563,8 +563,9 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      * Highlights the value at the given x-value and y-value in the given DataSet.
      * Provide -1 as the dataSetIndex to undo all highlighting.
      * This method will call the listener.
-     * @param x The x-value to highlight
-     * @param y The y-value to highlight. Supply `NaN` for "any"
+     *
+     * @param x            The x-value to highlight
+     * @param y            The y-value to highlight. Supply `NaN` for "any"
      * @param dataSetIndex The dataset index to search in
      */
     public void highlightValue(float x, float y, int dataSetIndex) {
@@ -574,7 +575,8 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
     /**
      * Highlights any y-value at the given x-value in the given DataSet.
      * Provide -1 as the dataSetIndex to undo all highlighting.
-     * @param x The x-value to highlight
+     *
+     * @param x            The x-value to highlight
      * @param dataSetIndex The dataset index to search in
      * @param callListener Should the listener be called for this change
      */
@@ -585,8 +587,9 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
     /**
      * Highlights any y-value at the given x-value in the given DataSet.
      * Provide -1 as the dataSetIndex to undo all highlighting.
-     * @param x The x-value to highlight
-     * @param y The y-value to highlight. Supply `NaN` for "any"
+     *
+     * @param x            The x-value to highlight
+     * @param y            The y-value to highlight. Supply `NaN` for "any"
      * @param dataSetIndex The dataset index to search in
      * @param callListener Should the listener be called for this change
      */
@@ -618,13 +621,11 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      * @param callListener - call the listener
      */
     public void highlightValue(Highlight high, boolean callListener) {
-
         Entry e = null;
 
         if (high == null)
             mIndicesToHighlight = null;
         else {
-
             if (mLogEnabled)
                 Log.i(LOG_TAG, "Highlighted: " + high.toString());
 
@@ -633,18 +634,14 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
                 mIndicesToHighlight = null;
                 high = null;
             } else {
-
                 // set the indices to highlight
-                mIndicesToHighlight = new Highlight[]{
-                        high
-                };
+                mIndicesToHighlight = new Highlight[]{high};
             }
         }
 
         setLastHighlighted(mIndicesToHighlight);
 
         if (callListener && mSelectionListener != null) {
-
             if (!valuesToHighlight())
                 mSelectionListener.onNothingSelected();
             else {
@@ -846,7 +843,7 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      *
      * @param durationMillisX
      * @param durationMillisY
-     * @param easing         a custom easing function to be used on the animation phase
+     * @param easing          a custom easing function to be used on the animation phase
      */
     @RequiresApi(11)
     public void animateXY(int durationMillisX, int durationMillisY, EasingFunction easing) {
@@ -1467,7 +1464,6 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
      * @return returns true on success, false on error
      */
     public boolean saveToPath(String title, String pathOnSD) {
-
 
 
         Bitmap b = getChartBitmap();

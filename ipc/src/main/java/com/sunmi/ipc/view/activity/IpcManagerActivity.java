@@ -793,7 +793,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     //开始直播
     @Background
     void initP2pLive() {
-        iotcClient.init();
+        if (iotcClient != null) {
+            iotcClient.init();
+        }
     }
 
     @UiThread
