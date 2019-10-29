@@ -82,12 +82,10 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     @Override
     public void setPeriod(int period) {
-        PageContract.PagePresenter current = mPages.get(mPageType);
-        if (current == null) {
-            LogCat.e(TAG, "Page type of " + mPageType + " is ERROR.");
-            return;
+        PageContract.PagePresenter current = getPage();
+        if (current != null) {
+            current.setPeriod(period);
         }
-        current.setPeriod(period);
     }
 
     @Override
@@ -98,12 +96,10 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     @Override
     public void scrollToTop() {
-        PageContract.PagePresenter current = mPages.get(mPageType);
-        if (current == null) {
-            LogCat.e(TAG, "Page type of " + mPageType + " is ERROR.");
-            return;
+        PageContract.PagePresenter current = getPage();
+        if (current != null) {
+            current.scrollToTop();
         }
-        current.scrollToTop();
     }
 
     @Override
@@ -125,12 +121,12 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     @Override
     public int getPeriod() {
-        PageContract.PagePresenter current = mPages.get(mPageType);
-        if (current == null) {
-            LogCat.e(TAG, "Page type of " + mPageType + " is ERROR.");
+        PageContract.PagePresenter current = getPage();
+        if (current != null) {
+            return current.getPeriod();
+        } else {
             return Constants.TIME_PERIOD_INIT;
         }
-        return current.getPeriod();
     }
 
     @Override
@@ -147,13 +143,20 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             flag |= Constants.FLAG_CUSTOMER;
             load(flag, false, showLoading);
         } else {
-            PageContract.PagePresenter current = mPages.get(mPageType);
-            if (current == null) {
-                LogCat.e(TAG, "Page type of " + mPageType + " is ERROR.");
-                return;
+            PageContract.PagePresenter current = getPage();
+            if (current != null) {
+                current.setSource(mSource, showLoading);
             }
-            current.setSource(mSource, showLoading);
         }
+    }
+
+    private PageContract.PagePresenter getPage() {
+        PageContract.PagePresenter current = mPages.get(mPageType);
+        if (current == null) {
+            LogCat.e(TAG, "Page type of " + mPageType + " is ERROR.");
+            return null;
+        }
+        return current;
     }
 
     private void load(int loadFlag, boolean allPage, boolean showLoading) {
@@ -336,12 +339,10 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 page.setSource(mSource, mShowLoading);
             }
         } else {
-            PageContract.PagePresenter current = mPages.get(mPageType);
-            if (current == null) {
-                LogCat.e(TAG, "Page type of " + mPageType + " is ERROR.");
-                return;
+            PageContract.PagePresenter current = getPage();
+            if (current != null) {
+                current.setSource(mSource, mShowLoading);
             }
-            current.setSource(mSource, mShowLoading);
         }
     }
 
