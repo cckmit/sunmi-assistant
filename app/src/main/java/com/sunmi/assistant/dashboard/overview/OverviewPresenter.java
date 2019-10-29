@@ -38,13 +38,12 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
     private int mImportState = IMPORT_STATE_DISMISS;
 
     private PageContract.ParentPresenter mParent;
-    private int mPageIndex;
 
     private List<BaseRefreshCard> mList = new ArrayList<>();
 
-    public OverviewPresenter(PageContract.ParentPresenter parent, int index) {
+    public OverviewPresenter(PageContract.ParentPresenter parent) {
         this.mParent = parent;
-        this.mPageIndex = index;
+        this.mParent.onChildCreate(getType(), this);
     }
 
     @Override
@@ -97,8 +96,8 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
     }
 
     @Override
-    public int getIndex() {
-        return mPageIndex;
+    public int getType() {
+        return Constants.PAGE_OVERVIEW;
     }
 
     @Override

@@ -178,7 +178,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     private void initViewPager(Context context) {
-        mPages = mPresenter.getPages();
+        mPages = mPresenter.createPages();
         mPager.setAdapter(new PageAdapter(getChildFragmentManager()));
         mPager.addOnPageChangeListener(new PageListener());
         ArrayList<CustomTabEntity> tabs = new ArrayList<>(mPages.size());
@@ -277,6 +277,11 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     @Override
+    public PageContract.ParentPresenter getPresenter() {
+        return mPresenter;
+    }
+
+    @Override
     public int getHeaderHeight() {
         return mTopHeaderHeight;
     }
@@ -301,11 +306,14 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     @Override
-    public void updateTab(int pageIndex, int period) {
-        if (pageIndex != mPresenter.getPageIndex()) {
+    public void updateTab(int pageType, int period) {
+        if (period == Constants.TIME_PERIOD_INIT) {
             return;
         }
-        if (pageIndex == 0) {
+        if (pageType != mPresenter.getPageType()) {
+            return;
+        }
+        if (pageType == Constants.PAGE_OVERVIEW) {
             mTodayView.setVisibility(View.VISIBLE);
             mYesterdayView.setVisibility(View.GONE);
         } else {
@@ -441,8 +449,8 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         @Override
         public void onPageSelected(int position) {
             mPageTab.setCurrentTab(position);
-            mPresenter.setPage(position);
-            updateTab(mPresenter.getPageIndex(), mPresenter.getPeriod());
+            mPresenter.setPage(mPages.get(position).getType());
+            updateTab(mPresenter.getPageType(), mPresenter.getPeriod());
             resetTop();
         }
 

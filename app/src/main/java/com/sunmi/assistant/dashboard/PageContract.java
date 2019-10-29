@@ -14,6 +14,8 @@ public interface PageContract {
 
     interface ParentPresenter {
 
+        void onChildCreate(int pageType, PagePresenter presenter);
+
         void refresh(boolean forceReload, boolean showLoading);
 
     }
@@ -41,7 +43,7 @@ public interface PageContract {
 
         void refresh(boolean showLoading);
 
-        int getIndex();
+        int getType();
 
         int getPeriod();
 

@@ -32,13 +32,12 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
     private int mPeriod = Constants.TIME_PERIOD_INIT;
 
     private PageContract.ParentPresenter mParent;
-    private int mPageIndex;
 
     private List<BaseRefreshCard> mList = new ArrayList<>();
 
-    public CustomerPresenter(PageContract.ParentPresenter parent, int index) {
+    public CustomerPresenter(PageContract.ParentPresenter parent) {
         this.mParent = parent;
-        this.mPageIndex = index;
+        this.mParent.onChildCreate(getType(), this);
     }
 
     @Override
@@ -91,8 +90,8 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
     }
 
     @Override
-    public int getIndex() {
-        return mPageIndex;
+    public int getType() {
+        return Constants.PAGE_CUSTOMER;
     }
 
     @Override
