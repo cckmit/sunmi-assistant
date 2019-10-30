@@ -35,4 +35,5 @@
     <string name="str_enter_store">进入商城</string>
     <string name="tip_renewal_less_three_days">云存储服务剩余有效期小于3天才可续费，请确认后重试</string>
     <string name="str_promotion">推广</string>
+    <string name="str_unbind">已解绑</string>
 </resources>

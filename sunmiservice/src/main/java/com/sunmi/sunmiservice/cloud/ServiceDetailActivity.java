@@ -1,7 +1,6 @@
 package com.sunmi.sunmiservice.cloud;
 
 import android.content.Intent;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -45,6 +44,8 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
     RelativeLayout rlOrder;
     @ViewById(resName = "tv_service_name")
     TextView tvServiceName;
+    @ViewById(resName = "tv_status")
+    TextView tvStatus;
     @ViewById(resName = "tv_device_name")
     TextView tvDeviceName;
     @ViewById(resName = "tv_device_model")
@@ -98,25 +99,30 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
     public void getServiceDetail(ServiceDetailBean bean) {
         if (bean != null) {
             initNetworkNormal();
+            status = bean.getRenewStatus();
+            errorCode = bean.getRenewErrorCode();
             String sn = bean.getDeviceSn();
             SunmiDevice device = DataSupport.where("deviceid=?", sn).findFirst(SunmiDevice.class);
             tvServiceName.setText(bean.getServiceName());
             if (device != null) {
                 tvDeviceName.setText(device.getName());
             } else {
-                tvDeviceName.setTextColor(ContextCompat.getColor(context, R.color.caution_primary));
-                tvDeviceName.setText(R.string.tip_device_unbind);
+                tvDeviceName.setText("- -");
+                tvStatus.setText(R.string.str_unbind);
                 btnRenewal.setVisibility(View.GONE);
             }
             tvDeviceModel.setText(bean.getDeviceModel());
             tvDeviceSn.setText(sn);
             tvSubScribeTime.setText(DateTimeUtils.secondToDate(bean.getSubscribeTime(), "yyyy-MM-dd HH:mm"));
             tvExpireTime.setText(DateTimeUtils.secondToDate(bean.getExpireTime(), "yyyy-MM-dd HH:mm"));
-            tvRemaining.setText(DateTimeUtils.secondToPeriod(bean.getValidTime(), context));
+            if (status != 3) {
+                tvRemaining.setText(DateTimeUtils.secondToPeriod(bean.getValidTime(), context));
+            } else {
+                tvStatus.setText(R.string.str_expired);
+                tvRemaining.setText("- -");
+            }
             tvServiceNum.setText(bean.getServiceNo());
             tvOrderNum.setText(bean.getOrderNo());
-            status = bean.getRenewStatus();
-            errorCode = bean.getRenewErrorCode();
 
         } else {
             initNetworkError();
