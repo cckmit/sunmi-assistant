@@ -29,7 +29,7 @@ public class ServiceListAdapter extends BaseQuickAdapter<ServiceDetailBean, Base
     private OnServiceClickListener listener;
     private List<SunmiDevice> devices;
 
-    public ServiceListAdapter(List<ServiceDetailBean> data, Context context,List<SunmiDevice> devices) {
+    public ServiceListAdapter(List<ServiceDetailBean> data, Context context, List<SunmiDevice> devices) {
         super(R.layout.item_service_detail, data);
         this.context = context;
         this.devices = devices;
@@ -74,6 +74,7 @@ public class ServiceListAdapter extends BaseQuickAdapter<ServiceDetailBean, Base
         });
         if (devices.size() <= 0) {
             tvDeviceSn.setText(context.getString(R.string.ipc_sn, sn));
+            tvDeviceName.setText(context.getString(R.string.ipc_device_name, "- -"));
             return;
         }
         SunmiDevice device = DataSupport.where("deviceid=?", sn).findFirst(SunmiDevice.class);
