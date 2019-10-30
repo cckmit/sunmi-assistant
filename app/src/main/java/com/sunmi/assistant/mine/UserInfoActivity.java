@@ -212,9 +212,9 @@ public class UserInfoActivity extends BaseMvpActivity<UserInfoPresenter>
                 case REQUEST_GALLERY:
                     if (FileUtils.isSDExist()) {
                         cropImageUri = Uri.fromFile(imageFile);
-                        Uri newUri = Uri.parse(PhotoUtils.getPath(this, data.getData()));
+                        Uri newUri = Uri.parse(PhotoUtils.getPath(context, data.getData()));
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            newUri = FileProvider.getUriForFile(this,
+                            newUri = FileProvider.getUriForFile(context,
                                     CommonConstants.FILE_PROVIDER_AUTHORITY, new File(newUri.getPath()));
                         }
                         PhotoUtils.cropImageUri(this, newUri, cropImageUri, 1, 1,

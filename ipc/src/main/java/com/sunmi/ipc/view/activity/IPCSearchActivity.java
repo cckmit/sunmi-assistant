@@ -40,7 +40,6 @@ import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.SMDeviceDiscoverUtils;
-import sunmi.common.utils.log.LogCat;
 
 /**
  * Description: 搜索ipc设备
@@ -209,7 +208,6 @@ public class IPCSearchActivity extends BaseActivity
                     hideLoadingDialog();
                     return;
                 }
-                LogCat.e(TAG, "getIsWire res = " + res);
                 if (res.getResult() != null && res.getResult().has("wire")
                         && res.getResult().getInt("wire") == 1
                         || res.getResult().has("wireless")
