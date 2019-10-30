@@ -10,13 +10,13 @@ import com.sunmi.bean.ServiceDetailBean;
 import com.sunmi.contract.CloudServiceMangeContract;
 import com.sunmi.presenter.CloudServiceMangePresenter;
 import com.sunmi.sunmiservice.R;
-import com.sunmi.sunmiservice.SunmiServiceConfig;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +25,9 @@ import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.constant.CommonConfig;
+import sunmi.common.constant.CommonNotifications;
+import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -46,20 +49,24 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
     private List<ServiceDetailBean> dataList = new ArrayList<>();
     private ServiceListAdapter adapter;
     private boolean loadFinish = false;
+    private List<SunmiDevice> devices;
 
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         mPresenter = new CloudServiceMangePresenter();
         mPresenter.attachView(this);
+        devices = DataSupport.where("type=?", "IPC").find(SunmiDevice.class);
         reloadSubscriptionList();
         showLoadingDialog();
+        initServiceList();
         refreshLayout.setDelegate(this);
         BGARefreshViewHolder viewHolder = new BGANormalRefreshViewHolder(context, true);
         viewHolder.setLoadingMoreText(getString(R.string.str_loding_more));
         viewHolder.setLoadMoreBackgroundColorRes(R.color.bg_common);
         // 设置下拉刷新和上拉加载更多的风格(参数1：应用程序上下文，参数2：是否具有上拉加载更多功能)
         refreshLayout.setRefreshViewHolder(viewHolder);
+
     }
 
     @Override
@@ -86,6 +93,13 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
     }
 
     @Override
+    public void getIpcDetailListSuccess() {
+        devices = DataSupport.where("type=?", "IPC").find(SunmiDevice.class);
+        adapter.setDevices(devices);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void getSubscriptionListFail(int code, String msg) {
         refreshLayout.endRefreshing();
         refreshLayout.endLoadingMore();
@@ -97,7 +111,6 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
     @UiThread
     protected void addData(List<ServiceDetailBean> beans, boolean isRefresh) {
         if (beans.size() > 0) {
-            initServiceList();
             if (isRefresh) {
                 dataList.clear();
             }
@@ -113,14 +126,14 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
 
     @Click(resName = "btn_open")
     void onpenClick() {
-        WebViewCloudServiceActivity_.intent(context).mUrl(SunmiServiceConfig.CLOUD_STORAGE_SERVICE).start();
+        WebViewCloudServiceActivity_.intent(context).mUrl(CommonConfig.CLOUD_STORAGE_URL).start();
     }
 
     private void initServiceList() {
         if (adapter == null) {
             LinearLayoutManager layoutManager = new LinearLayoutManager(context);
             rvService.setLayoutManager(layoutManager);
-            adapter = new ServiceListAdapter(dataList, context);
+            adapter = new ServiceListAdapter(dataList, context, devices);
             adapter.setOnServiceClickListener(new ServiceListAdapter.OnServiceClickListener() {
                 @Override
                 public void onRenewalClick(ServiceDetailBean bean) {
@@ -129,7 +142,7 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
 
                     } else {
                         WebViewCloudServiceActivity_.intent(context).deviceSn(bean.getDeviceSn())
-                                .mUrl(SunmiServiceConfig.CLOUD_STORAGE_SERVICE).start();
+                                .mUrl(CommonConfig.CLOUD_STORAGE_URL).start();
                     }
                 }
             });
@@ -161,10 +174,25 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
         return false;
     }
 
+    @Override
+    public int[] getUnStickNotificationId() {
+        return new int[]{CommonNotifications.cloudStorageChange};
+    }
+
+    @Override
+    public void didReceivedNotification(int id, Object... args) {
+        if (CommonNotifications.cloudStorageChange == id) {
+            reloadSubscriptionList();
+        }
+    }
+
     private void reloadSubscriptionList() {
         pageNum = 1;
         pageSize = 10;
         loadFinish = false;
+        if (devices.size() <= 0) {
+            mPresenter.getIpcDetailList();
+        }
         mPresenter.getSubscriptionList(pageNum, pageSize);
     }
 }

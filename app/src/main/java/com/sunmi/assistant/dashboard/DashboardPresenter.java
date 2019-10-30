@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.SparseArray;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.overview.OverviewFragment;
@@ -15,6 +16,7 @@ import com.sunmi.ipc.rpc.IpcCloudApi;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
@@ -43,6 +45,8 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     private Context mContext;
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private List<PageContract.PagePresenter> mPages = new ArrayList<>(2);
+    private HashMap<Integer,String> map = new HashMap<>();
+    private SparseArray<String> array =new SparseArray<>();
 
     private int mCompanyId;
     private int mShopId;

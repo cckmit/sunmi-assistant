@@ -112,7 +112,8 @@ public class WebViewSunmiMallActivity extends BaseActivity
             }
 
             @Override
-            public boolean shouldOverrideUrlLoading(final WebView view, String url) {
+            public boolean shouldOverrideUrlLoading(final WebView view, WebResourceRequest request) {
+                String url = request.getUrl().toString();
                 //微信支付
                 if (url.startsWith("weixin://wap/pay?")) {
                     try {
@@ -168,6 +169,7 @@ public class WebViewSunmiMallActivity extends BaseActivity
                 return true;
             }
         });
+
     }
 
     @Override

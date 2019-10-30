@@ -6,6 +6,8 @@ import com.sunmi.sunmiservice.R;
 import com.sunmi.sunmiservice.ServiceManageActivity_;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.CommonNotifications;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.view.activity.ProtocolActivity;
 import sunmi.common.view.activity.ProtocolActivity_;
 
@@ -37,8 +39,8 @@ public class ServiceJSCall {
 
     @JavascriptInterface
     public void servicesPageBack() {
-        ServiceManageActivity_.intent(mActivity).start();
         mActivity.finish();
+        BaseNotification.newInstance().postNotificationName(CommonNotifications.cloudStorageChange);
     }
 
 }

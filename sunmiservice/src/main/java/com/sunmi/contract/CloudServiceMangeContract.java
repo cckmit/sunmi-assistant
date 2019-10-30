@@ -18,9 +18,13 @@ public interface CloudServiceMangeContract {
         void getSubscriptionListSuccess(List<ServiceDetailBean> beans, int totalCount);
 
         void getSubscriptionListFail(int code, String msg);
+
+        void getIpcDetailListSuccess();
     }
 
     interface Presenter {
         void getSubscriptionList(int pageNum, int pageSize);
+
+        void getIpcDetailList();
     }
 }

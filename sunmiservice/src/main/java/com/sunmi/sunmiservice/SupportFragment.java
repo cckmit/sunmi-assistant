@@ -20,6 +20,8 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseFragment;
+import sunmi.common.constant.CommonConfig;
+import sunmi.common.utils.NetworkUtils;
 import sunmi.common.view.TitleBarView;
 
 @EFragment(resName = "fragment_support")
@@ -52,7 +54,10 @@ public class SupportFragment extends BaseFragment
 
     @Click(resName = "ll_cloud_storage")
     void cloudStorageClick() {
-        WebViewCloudServiceActivity_.intent(mActivity).mUrl(SunmiServiceConfig.CLOUD_STORAGE_SERVICE).start();
+        if (!checkNetwork()) {
+            return;
+        }
+        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConfig.CLOUD_STORAGE_URL).start();
     }
 
     @Click(resName = "ll_after_sales")
@@ -61,15 +66,30 @@ public class SupportFragment extends BaseFragment
     }
 
     @Click(resName = "ll_sunmi_store")
-    void sunmiStoreClick(){
-        WebViewSunmiMallActivity_.intent(mActivity).mUrl(SunmiServiceConfig.SUNMI_MALL_HOST+"?channel=2&subchannel=4")
+    void sunmiStoreClick() {
+        if (!checkNetwork()) {
+            return;
+        }
+        WebViewSunmiMallActivity_.intent(mActivity).mUrl(SunmiServiceConfig.SUNMI_MALL_HOST + "?channel=2&subchannel=4")
                 .start();
     }
 
     @Click(resName = "tv_weBank")
-    void weBankClick(){
+    void weBankClick() {
+        if (!checkNetwork()) {
+            return;
+        }
         WebViewActivity_.intent(mActivity).url(SunmiServiceConfig.WE_BANK_HOST).start();
     }
+
+    private boolean checkNetwork(){
+        if (!NetworkUtils.isNetworkAvailable(mActivity)){
+            shortTip(R.string.toast_network_error);
+            return false;
+        }
+        return true;
+    }
+
 
     /*private void initRefreshLayout() {
         mRefreshLayout.setDelegate(this);

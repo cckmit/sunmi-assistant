@@ -22,6 +22,8 @@ import com.alipay.sdk.app.PayTask;
 import com.alipay.sdk.util.H5PayResultModel;
 import com.sunmi.sunmiservice.R;
 import com.sunmi.sunmiservice.SsConstants;
+import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.impl.RouterRequest;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -35,6 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.RouterConfig;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
@@ -60,6 +63,20 @@ public class WebViewCloudServiceActivity extends BaseActivity {
     String deviceSn;
 
     private boolean hasSendDeviceInfo = false;
+
+    /**
+     * 路由启动Activity
+     *
+     * @param request
+     * @return
+     */
+    @RouterAnno(
+            path = RouterConfig.SunmiService.WEB_VIEW_CLOUD
+    )
+    public static Intent start(RouterRequest request) {
+        Intent intent = new Intent(request.getRawContext(), WebViewCloudServiceActivity_.class);
+        return intent;
+    }
 
 
     @AfterViews
@@ -114,7 +131,8 @@ public class WebViewCloudServiceActivity extends BaseActivity {
         // 不用启动客户端的浏览器来加载未加载出来的数据
         webView.setWebViewClient(new SMWebViewClient(this) {
             @Override
-            public boolean shouldOverrideUrlLoading(final WebView view, String url) {
+            public boolean shouldOverrideUrlLoading(final WebView view, WebResourceRequest request) {
+                String url = request.getUrl().toString();
                 //微信支付
                 if (url.startsWith("weixin://wap/pay?")) {
                     try {
@@ -207,7 +225,7 @@ public class WebViewCloudServiceActivity extends BaseActivity {
             protected void receiverError(WebView view, WebResourceRequest request, WebResourceError error) {
                 hideLoadingDialog();
                 showTag(error);
-                // networkError.setVisibility(View.VISIBLE);
+                networkError.setVisibility(View.VISIBLE);
             }
 
             @Override

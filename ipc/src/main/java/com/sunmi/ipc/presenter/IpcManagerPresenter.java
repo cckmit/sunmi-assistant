@@ -165,7 +165,11 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
             @Override
             public void onSuccess(int code, String msg, StorageListResp data) {
                 if (isViewAttached()) {
-                    mView.getStorageSuccess(data.getDeviceList().get(0));
+                    if (data.getDeviceList().size() > 0) {
+                        mView.getStorageSuccess(data.getDeviceList().get(0));
+                    } else {
+                        mView.getStorageSuccess(null);
+                    }
                 }
             }
 

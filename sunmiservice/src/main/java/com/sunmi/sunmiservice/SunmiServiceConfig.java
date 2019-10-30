@@ -33,8 +33,7 @@ public class SunmiServiceConfig extends BaseConfig {
     public static String FUMINBAO_APP_ID = "";
     public static String FUMINBAO_SECRET = "";
 
-    //云存储
-    public static String CLOUD_STORAGE_SERVICE = "";
+
 
     @Override
     public void init(Context context, String env) {
@@ -55,7 +54,6 @@ public class SunmiServiceConfig extends BaseConfig {
         FUMINBAO_SECRET = "cce3387477aaac220b589c5d8c0b5f9d";
         WECHAT_MINI_PROGRAM_TYPE = 1;
         WE_BANK_HOST = "https://test.engine.sunmi.com/third-party/we-bank";
-        CLOUD_STORAGE_SERVICE = "http://172.16.1.137:8080/";
     }
 
     @Override
@@ -66,7 +64,6 @@ public class SunmiServiceConfig extends BaseConfig {
         FUMINBAO_SECRET = "cce3387477aaac220b589c5d8c0b5f9d";
         WECHAT_MINI_PROGRAM_TYPE = 1;
         WE_BANK_HOST = "https://test.engine.sunmi.com/third-party/we-bank";
-        CLOUD_STORAGE_SERVICE = "http://172.16.1.137:8080/";
     }
 
     @Override
@@ -77,7 +74,6 @@ public class SunmiServiceConfig extends BaseConfig {
         FUMINBAO_SECRET = "cce3387477aaac220b589c5d8c0b5f9d";
         WECHAT_MINI_PROGRAM_TYPE = 0;
         WE_BANK_HOST = "https://engine.sunmi.com/third-party/we-bank";
-        CLOUD_STORAGE_SERVICE = "http://172.16.1.137:8080/";
     }
 
     @Override
@@ -88,7 +84,6 @@ public class SunmiServiceConfig extends BaseConfig {
         FUMINBAO_SECRET = "cce3387477aaac220b589c5d8c0b5f9d";
         WECHAT_MINI_PROGRAM_TYPE = 2;
         WE_BANK_HOST = "https://uat.engine.sunmi.com/third-party/we-bank";
-        CLOUD_STORAGE_SERVICE = "http://172.16.1.137:8080/";
     }
 
 }

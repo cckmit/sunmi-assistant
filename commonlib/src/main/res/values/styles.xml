@@ -139,8 +139,8 @@
     <style name="BtnEdgeOrange">
         <item name="android:layout_width">@dimen/dp_56</item>
         <item name="android:layout_height">@dimen/dp_26</item>
-        <item name="android:textColor">@color/common_orange</item>
-        <item name="android:background">@drawable/button_corner_edge_orange</item>
+        <item name="android:textColor">@drawable/button_text_color_orange</item>
+        <item name="android:background">@drawable/button_selector_orange</item>
         <item name="android:gravity">center</item>
         <item name="android:textSize">@dimen/sp_10</item>
     </style>

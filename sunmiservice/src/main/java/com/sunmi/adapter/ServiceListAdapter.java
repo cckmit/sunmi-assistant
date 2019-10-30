@@ -27,10 +27,16 @@ public class ServiceListAdapter extends BaseQuickAdapter<ServiceDetailBean, Base
 
     private Context context;
     private OnServiceClickListener listener;
+    private List<SunmiDevice> devices;
 
-    public ServiceListAdapter(List<ServiceDetailBean> data, Context context) {
+    public ServiceListAdapter(List<ServiceDetailBean> data, Context context,List<SunmiDevice> devices) {
         super(R.layout.item_service_detail, data);
         this.context = context;
+        this.devices = devices;
+    }
+
+    public void setDevices(List<SunmiDevice> devices) {
+        this.devices = devices;
     }
 
     public void setOnServiceClickListener(OnServiceClickListener listener) {
@@ -51,19 +57,6 @@ public class ServiceListAdapter extends BaseQuickAdapter<ServiceDetailBean, Base
             helper.setTextColor(R.id.tv_remaining, R.color.caution_primary);
         }
         final String sn = item.getDeviceSn();
-        SunmiDevice device = DataSupport.where("deviceid=?", sn).findFirst(SunmiDevice.class);
-        if (device != null) {
-            tvDeviceSn.setText(context.getString(R.string.ipc_sn, sn));
-            tvDeviceName.setText(context.getString(R.string.ipc_device_name, device.getName()));
-        } else {
-            btnRenewal.setVisibility(View.GONE);
-            tvDeviceSn.setVisibility(View.GONE);
-            tvDeviceName.setVisibility(View.GONE);
-            helper.getView(R.id.tv_unbind).setVisibility(View.VISIBLE);
-        }
-        if (item.getRenewStatus() == 2) {
-            btnRenewal.setAlpha(0.4f);
-        }
         btnRenewal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,6 +72,20 @@ public class ServiceListAdapter extends BaseQuickAdapter<ServiceDetailBean, Base
                 ServiceDetailActivity_.intent(context).mSn(sn).start();
             }
         });
+        if (devices.size() <= 0) {
+            tvDeviceSn.setText(context.getString(R.string.ipc_sn, sn));
+            return;
+        }
+        SunmiDevice device = DataSupport.where("deviceid=?", sn).findFirst(SunmiDevice.class);
+        if (device != null) {
+            tvDeviceSn.setText(context.getString(R.string.ipc_sn, sn));
+            tvDeviceName.setText(context.getString(R.string.ipc_device_name, device.getName()));
+        } else {
+            btnRenewal.setVisibility(View.GONE);
+            tvDeviceSn.setVisibility(View.GONE);
+            tvDeviceName.setVisibility(View.GONE);
+            helper.getView(R.id.tv_unbind).setVisibility(View.VISIBLE);
+        }
     }
 
     public interface OnServiceClickListener {

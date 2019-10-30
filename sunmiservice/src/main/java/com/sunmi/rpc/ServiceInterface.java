@@ -1,5 +1,6 @@
 package com.sunmi.rpc;
 
+import com.sunmi.bean.IpcListResp;
 import com.sunmi.bean.ServiceDetailBean;
 import com.sunmi.bean.SubscriptionListBean;
 
@@ -17,6 +18,7 @@ import sunmi.common.rpc.retrofit.BaseResponse;
 public interface ServiceInterface {
 
     String path = "/api/service/";
+    String ipc = "ipc/api/device/";
 
     /**
      * 查看用户订阅服务记录列表
@@ -35,4 +37,10 @@ public interface ServiceInterface {
      */
     @POST(path + "subscription/getInfoByDevice")
     Call<BaseResponse<ServiceDetailBean>> getServiceDetailByDevice(@Body BaseRequest request);
+
+    /**
+     * 获取用户指定店铺下的摄像头首页列表
+     */
+    @POST(ipc + "getDetailList")
+    Call<BaseResponse<IpcListResp>> getDetailList(@Body BaseRequest request);
 }

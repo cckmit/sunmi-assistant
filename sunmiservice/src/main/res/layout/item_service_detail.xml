@@ -80,6 +80,7 @@
         <Button
             android:id="@+id/btn_setting_detail"
             style="@style/BtnEdgeOrange"
+            android:background="@drawable/button_selector_orange"
             android:layout_marginEnd="@dimen/dp_16"
             android:text="@string/str_setting_detail"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -91,6 +92,7 @@
             style="@style/BtnEdgeOrange"
             android:layout_marginEnd="@dimen/dp_12"
             android:text="@string/str_renewal"
+            android:background="@drawable/button_selector_orange"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btn_setting_detail"
             app:layout_constraintTop_toTopOf="parent" />

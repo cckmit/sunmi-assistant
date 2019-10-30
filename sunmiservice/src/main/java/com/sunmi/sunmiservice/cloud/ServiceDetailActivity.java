@@ -1,5 +1,6 @@
 package com.sunmi.sunmiservice.cloud;
 
+import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
@@ -10,7 +11,8 @@ import com.sunmi.bean.ServiceDetailBean;
 import com.sunmi.contract.ServiceDetailContract;
 import com.sunmi.presenter.ServiceDetailPresenter;
 import com.sunmi.sunmiservice.R;
-import com.sunmi.sunmiservice.SunmiServiceConfig;
+import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.impl.RouterRequest;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -21,6 +23,9 @@ import org.androidannotations.annotations.ViewById;
 import org.litepal.crud.DataSupport;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.constant.CommonConfig;
+import sunmi.common.constant.CommonNotifications;
+import sunmi.common.constant.RouterConfig;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.utils.DateTimeUtils;
@@ -66,6 +71,20 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
 
     private int status, errorCode;
 
+    /**
+     * 路由启动Activity
+     *
+     * @param request
+     * @return
+     */
+    @RouterAnno(
+            path = RouterConfig.SunmiService.SERVICE_DETAIL
+    )
+    public static Intent start(RouterRequest request) {
+        Intent intent = new Intent(request.getRawContext(), ServiceDetailActivity_.class);
+        return intent;
+    }
+
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
@@ -97,13 +116,22 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
             tvServiceNum.setText(bean.getServiceNo());
             tvOrderNum.setText(bean.getOrderNo());
             status = bean.getRenewStatus();
-            if (status == 2) {
-                btnRenewal.setAlpha(0.4f);
-            }
             errorCode = bean.getRenewErrorCode();
 
         } else {
             initNetworkError();
+        }
+    }
+
+    @Override
+    public int[] getUnStickNotificationId() {
+        return new int[]{CommonNotifications.cloudStorageChange};
+    }
+
+    @Override
+    public void didReceivedNotification(int id, Object... args) {
+        if (CommonNotifications.cloudStorageChange == id) {
+            mPresenter.getServiceDetailByDevice(mSn);
         }
     }
 
@@ -121,6 +149,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
         networkError.setVisibility(View.GONE);
     }
 
+
     @Click(resName = "btn_renewal")
     void renewalClick() {
         if (status == 2) {
@@ -131,8 +160,8 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
                 default:
                     break;
             }
-        }else {
-            WebViewCloudServiceActivity_.intent(context).deviceSn(mSn).mUrl(SunmiServiceConfig.CLOUD_STORAGE_SERVICE).start();
+        } else {
+            WebViewCloudServiceActivity_.intent(context).deviceSn(mSn).mUrl(CommonConfig.CLOUD_STORAGE_URL).start();
         }
     }
 

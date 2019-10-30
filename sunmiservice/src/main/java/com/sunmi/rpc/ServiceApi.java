@@ -1,5 +1,6 @@
 package com.sunmi.rpc;
 
+import com.sunmi.bean.IpcListResp;
 import com.sunmi.bean.ServiceDetailBean;
 import com.sunmi.bean.SubscriptionListBean;
 
@@ -34,7 +35,7 @@ public class ServiceApi {
         try {
             String params = new JSONObject()
                     .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id",SpUtils.getShopId())
+                    .put("shop_id", SpUtils.getShopId())
                     .put("page_num", pageNum)
                     .put("page_size", pageSize)
                     .toString();
@@ -46,15 +47,29 @@ public class ServiceApi {
         }
     }
 
-    public void getServiceDetailByDevice(String deviceSn, RetrofitCallback<ServiceDetailBean> callback){
+    public void getServiceDetailByDevice(String deviceSn, RetrofitCallback<ServiceDetailBean> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id",SpUtils.getShopId())
-                    .put("device_sn",deviceSn)
+                    .put("shop_id", SpUtils.getShopId())
+                    .put("device_sn", deviceSn)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(ServiceInterface.class)
                     .getServiceDetailByDevice(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getDetailList(RetrofitCallback<IpcListResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", SpUtils.getShopId())
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(ServiceInterface.class)
+                    .getDetailList(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
