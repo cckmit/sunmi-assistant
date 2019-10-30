@@ -246,7 +246,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
      */
     @Override
     public void didReceivedNotification(int id, Object... args) {
-        if (args == null) {
+        if (args == null || isUpgradeFail) {
             return;
         }
         ResponseBean res = (ResponseBean) args[0];

@@ -54,9 +54,9 @@
             android:paddingBottom="@dimen/dp_20"
             android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingConstraints" />
 
         <TextView
