@@ -48,7 +48,11 @@ public class CloudServiceMangePresenter extends BasePresenter<CloudServiceMangeC
                     @Override
                     public void run() {
                         DBUtils.deleteSunmiDeviceByType("IPC");
-
+                        if (data.getFs_list() != null && data.getFs_list().size() > 0) {
+                            for (IpcListResp.SsListBean bean : data.getFs_list()) {
+                                getIpcDevice(bean);
+                            }
+                        }
                         if (data.getSs_list() != null && data.getSs_list().size() > 0) {
                             for (IpcListResp.SsListBean bean : data.getSs_list()) {
                                 getIpcDevice(bean);
