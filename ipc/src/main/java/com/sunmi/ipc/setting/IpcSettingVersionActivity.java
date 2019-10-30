@@ -118,10 +118,8 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
             ivIpc.setImageResource(R.mipmap.ic_no_fs);
         }
         tvDeviceId.setText(mDevice.getDeviceid());
-        if (mDevice.getFirmware().contains(".")) {
-            String str = mDevice.getFirmware().replace(".", "");
-            mCurrentVersion = Integer.valueOf(str);
-        }
+        String str = mDevice.getFirmware().replace(".", "");
+        mCurrentVersion = Integer.valueOf(str);
         if (isQueryStatus()) {
             queryIpcUpgradeStatus();
         } else {
@@ -282,7 +280,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
                 JSONObject object = res.getResult();
                 String sn = object.getString("sn");
                 if (isUpgradeProcess && TextUtils.equals(sn, mDevice.getDeviceid())) {
-                    isUpgradeProcess = false;
+                    isUpgradeSuccess = true;
                     stopTimerCountDown(mUpgradeStatus);
                     setText(IPC_RELAUNCH, 100);
                     setLayoutVisible();
