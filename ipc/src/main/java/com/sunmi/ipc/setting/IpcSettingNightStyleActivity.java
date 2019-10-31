@@ -131,10 +131,14 @@ public class IpcSettingNightStyleActivity extends BaseActivity
         }
     }
 
+    private void stopTimer() {
+        TimeoutTimer.getInstance().stop();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        TimeoutTimer.getInstance().stop();
+        stopTimer();
     }
 
     @Override
@@ -157,6 +161,7 @@ public class IpcSettingNightStyleActivity extends BaseActivity
         }
         ResponseBean res = (ResponseBean) args[0];
         if (id == OpcodeConstants.setIpcNightIdeRotation) {
+            stopTimer();
             if (isNetException) {
                 return;
             }

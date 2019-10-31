@@ -40,7 +40,6 @@ public class PrinterListAdapter extends RecyclerView.Adapter<PrinterListAdapter.
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         viewHolder.tvBlueName.setText(data.get(i).getName());
         viewHolder.tvBlueAddress.setText(data.get(i).getAddress());
-
     }
 
     @Override
@@ -64,7 +63,7 @@ public class PrinterListAdapter extends RecyclerView.Adapter<PrinterListAdapter.
 
         @Override
         public void onClick(View v) {
-            if (listener != null) {
+            if (listener != null && getAdapterPosition() != -1) {
                 listener.onItemClick(data.get(getAdapterPosition()));
             }
         }

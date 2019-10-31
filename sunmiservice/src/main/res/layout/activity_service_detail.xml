@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/c_white"
+        app:dividerShow="true"
+        app:leftDefaultClickEnable="true"
+        app:leftIcon="@drawable/ic_back_dark"
+        app:titleText="@string/str_service_detail"
+        app:titleTextColor="@color/text_main" />
+
+    <RelativeLayout
+        android:id="@+id/rl_service"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_167"
+        android:background="@color/c_white"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16">
+
+        <TextView
+            android:id="@+id/tv_service_name"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_58"
+            android:gravity="center_vertical"
+            android:textColor="@color/text_main"
+            android:textSize="@dimen/sp_18"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_58"
+            android:gravity="center"
+            android:textSize="@dimen/sp_14"
+            android:textColor="@color/caution_primary"
+            android:layout_alignParentEnd="true" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_0_5"
+            android:layout_below="@id/tv_service_name"
+            android:background="@color/c_divider" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_service_name"
+            android:layout_marginTop="@dimen/dp_16"
+            android:text="@string/service_device_name"
+            android:textColor="@color/text_caption"
+            android:textSize="@dimen/sp_14" />
+
+        <TextView
+            android:id="@+id/tv_device_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_service_name"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/dp_16"
+            android:textColor="@color/text_main"
+            android:textSize="@dimen/sp_14" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_device_name"
+            android:layout_marginTop="@dimen/dp_8"
+            android:text="@string/service_device_model"
+            android:textColor="@color/text_caption"
+            android:textSize="@dimen/sp_14" />
+
+        <TextView
+            android:id="@+id/tv_device_model"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_device_name"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/dp_8"
+            android:textColor="@color/text_main"
+            android:textSize="@dimen/sp_14" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_device_model"
+            android:layout_marginTop="@dimen/dp_8"
+            android:text="@string/service_device_sn"
+            android:textColor="@color/text_caption"
+            android:textSize="@dimen/sp_14" />
+
+        <TextView
+            android:id="@+id/tv_device_sn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_device_model"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/dp_8"
+            android:textColor="@color/text_main"
+            android:textSize="@dimen/sp_14" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_order"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_234"
+        android:layout_marginTop="@dimen/dp_12"
+        android:background="@color/c_white"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16">
+
+        <TextView
+            android:id="@+id/tv_order_info"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_44"
+            android:gravity="center_vertical"
+            android:text="@string/service_order_info"
+            android:textColor="@color/text_main"
+            android:textSize="@dimen/sp_14" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_0_5"
+            android:layout_below="@id/tv_order_info"
+            android:background="@color/c_divider" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_order_info"
+            android:layout_marginTop="@dimen/dp_16"
+            android:text="@string/service_subscribe_time"
+            android:textColor="@color/text_caption"
+            android:textSize="@dimen/sp_14" />
+
+        <TextView
+            android:id="@+id/tv_subscribe_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_order_info"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/dp_16"
+            android:textColor="@color/text_main"
+            android:textSize="@dimen/sp_14" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_subscribe_time"
+            android:layout_marginTop="@dimen/dp_9"
+            android:text="@string/service_expire_time"
+            android:textColor="@color/text_caption"
+            android:textSize="@dimen/sp_14" />
+
+        <TextView
+            android:id="@+id/tv_expire_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_subscribe_time"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/dp_9"
+            android:textColor="@color/text_main"
+            android:textSize="@dimen/sp_14" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_expire_time"
+            android:layout_marginTop="@dimen/dp_8"
+            android:text="@string/service_remaining"
+            android:textColor="@color/text_caption"
+            android:textSize="@dimen/sp_14" />
+
+        <TextView
+            android:id="@+id/tv_remaining"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_expire_time"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/dp_8"
+            android:textColor="@color/common_orange"
+            android:textSize="@dimen/sp_14" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_0_5"
+            android:layout_below="@id/tv_remaining"
+            android:layout_marginTop="@dimen/dp_16"
+            android:background="@color/c_divider" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_remaining"
+            android:layout_marginTop="@dimen/dp_32"
+            android:text="@string/service_number"
+            android:textColor="@color/text_caption"
+            android:textSize="@dimen/sp_14" />
+
+        <TextView
+            android:id="@+id/tv_service_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_remaining"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/dp_32"
+            android:textColor="@color/text_main"
+            android:textSize="@dimen/sp_14" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_service_num"
+            android:layout_marginTop="@dimen/dp_9"
+            android:text="@string/service_order_number"
+            android:textColor="@color/text_caption"
+            android:textSize="@dimen/sp_14" />
+
+        <TextView
+            android:id="@+id/tv_order_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_service_num"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/dp_9"
+            android:textColor="@color/text_main"
+            android:textSize="@dimen/sp_14" />
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btn_renewal"
+        style="@style/BtnOrange"
+        android:layout_marginTop="@dimen/dp_24"
+        android:text="@string/str_renewal" />
+
+    <include
+        android:id="@+id/layout_network_error"
+        layout="@layout/include_network_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

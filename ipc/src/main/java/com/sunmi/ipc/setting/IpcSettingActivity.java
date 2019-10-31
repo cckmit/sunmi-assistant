@@ -443,7 +443,11 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     @OnActivityResult(REQUEST_VERSION)
     void onVersionUpgradeResult(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            mPresenter.currentVersion();
+            if (mResp != null) {
+                mVersion.setRightText(mResp.getLatest_bin_version());
+                mVersion.getIvToTextLeft().setVisibility(View.GONE);
+            }
+            BaseNotification.newInstance().postNotificationName(CommonNotifications.ipcUpgradeComplete);
         }
     }
 
@@ -959,7 +963,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 .setTitle(R.string.ipc_setting_dialog_upgrade)
                 .setMessage(getString(R.string.ipc_setting_version_current, mDevice.getFirmware()) + "\n" +
                         getString(R.string.ipc_setting_dialog_upgrade_download_time,
-                                DeviceTypeUtils.getInstance().isSS1(mDevice.getModel()) ? "8" : "12"))
+                                DeviceTypeUtils.getInstance().isSS1(mDevice.getModel()) ? "5" : "8"))
                 .setConfirmButton(R.string.ipc_setting_dialog_upgrade_ok, (dialog, which) -> {
                     gotoIpcSettingVersionActivity();
                 })

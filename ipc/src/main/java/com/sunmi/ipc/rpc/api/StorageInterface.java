@@ -23,5 +23,5 @@ public interface StorageInterface {
      * @return
      */
     @POST(path + "getList")
-    Call<BaseResponse<StorageListResp>> getStorageList(@Body BaseRequest request);
+    Call<BaseResponse<StorageListResp>> getStorageInfo(@Body BaseRequest request);
 }

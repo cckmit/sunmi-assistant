@@ -24,4 +24,6 @@ public class CommonNotifications {
     public static final int pushMsgArrived = totalEvents++;       //推送消息
 
     public static final int ipcDeviceStatus = totalEvents++;       //ipc设备状态
+
+    public static final int cloudStorageChange = totalEvents++;    //云存储订阅状态修改
 }

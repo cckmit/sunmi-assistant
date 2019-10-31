@@ -43,4 +43,13 @@ public class CommonConstants {
 
     public static final String GOOGLE_PLAY = "googleplay";
 
+    //云存储服务订阅状态
+    public static final int CLOUD_STORAGE_ALREADY_OPENED = 1;
+    public static final int CLOUD_STORAGE_NOT_OPENED = 2;
+    public static final int CLOUD_STORAGE_EXPIRED = 3;
+
+    //云存储续费状态
+    public static final int CLOUD_STORAGE_RENEWABLE = 1;
+    public static final int CLOUD_STORAGE_NOT_RENEWABLE = 2;
+
 }
