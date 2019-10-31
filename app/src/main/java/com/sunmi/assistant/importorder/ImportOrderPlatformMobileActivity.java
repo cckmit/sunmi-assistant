@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.model.PlatformInfo;
+import sunmi.common.utils.RegexUtils;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.dialog.CommonDialog;
 
@@ -74,6 +75,10 @@ public class ImportOrderPlatformMobileActivity extends BaseMvpActivity<PlatformM
             case R.id.tv_get_code:
                 if (TextUtils.isEmpty(mobile)) {
                     shortTip(R.string.str_please_input_mobile);
+                    return;
+                }
+                if (!RegexUtils.isCorrectAccount(mobile)) {
+                    shortTip(getString(R.string.str_invalid_phone));
                     return;
                 }
                 startDownTimer();
