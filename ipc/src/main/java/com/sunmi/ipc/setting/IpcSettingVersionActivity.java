@@ -30,6 +30,7 @@ import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
+import sunmi.common.view.TitleBarView;
 import sunmi.common.view.dialog.CommonDialog;
 
 /**
@@ -37,7 +38,7 @@ import sunmi.common.view.dialog.CommonDialog;
  * @date 2019/7/15
  */
 @EActivity(resName = "ipc_activity_version")
-public class IpcSettingVersionActivity extends BaseActivity {
+public class IpcSettingVersionActivity extends BaseActivity implements View.OnClickListener {
     private static final int IPC_EVENT_OPCODE_STATUS = 4103;
     private static final int IPC_EVENT_OPCODE_ONLINE = 4200;
     /**
@@ -60,13 +61,18 @@ public class IpcSettingVersionActivity extends BaseActivity {
     private static final int PERCENT_UPGRADE = 50;//升级进度50%
     private static final int PERCENT_RELAUNCH = 20;//重启进度20%
     /**
+     * ss,fs 版本
+     */
+    private static final int ssVersion = 126, fsVersion = 113;
+    /**
      * 开启定时
      */
     private final MyCountDownTimer downloadTimer = new MyCountDownTimer(IPC_DOWNLOAD_TIME, 1000);
     private final MyCountDownTimer upgradeAiTimer = new MyCountDownTimer(IPC_UPGRADE_TIME_AI, 1000);
     private final MyCountDownTimer relaunchTimer = new MyCountDownTimer(IPC_RELAUNCH_TIME, 1000);
     private final MyCountDownTimer mqttConnectTimeout = new MyCountDownTimer(15 * 1000, 1000);
-
+    @ViewById(resName = "title_bar")
+    TitleBarView titleBar;
     @ViewById(resName = "tv_device_id")
     TextView tvDeviceId;
     @ViewById(resName = "tv_ipc_status")
@@ -100,16 +106,38 @@ public class IpcSettingVersionActivity extends BaseActivity {
     private CommonDialog successDialog;
     //是否升级过程中
     private boolean isUpgradeProcess;
+    //当前设备版本
+    private int mCurrentVersion;
 
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
+        titleBar.getLeftImg().setOnClickListener(this);
         isSS = DeviceTypeUtils.getInstance().isSS1(mDevice.getModel());
         if (!isSS) {
             ivIpc.setImageResource(R.mipmap.ic_no_fs);
         }
         tvDeviceId.setText(mDevice.getDeviceid());
-        queryIpcUpgradeStatus();
+        String str = mDevice.getFirmware().replace(".", "");
+        mCurrentVersion = Integer.valueOf(str);
+        if (isQueryStatus()) {
+            queryIpcUpgradeStatus();
+        } else {
+            initSetButtonStatus();
+        }
+    }
+
+    /**
+     * 根据版本返回 是否调用查询升级状态命令
+     *
+     * @return true or false
+     */
+    private boolean isQueryStatus() {
+        if (isSS) {
+            return mCurrentVersion >= ssVersion;
+        } else {
+            return mCurrentVersion >= fsVersion;
+        }
     }
 
     /**
@@ -152,6 +180,24 @@ public class IpcSettingVersionActivity extends BaseActivity {
         timeoutMqtt();
         IPCCall.getInstance().ipcUpgrade(this, mDevice.getModel(),
                 mDevice.getDeviceid(), mResp.getUrl(), mResp.getLatest_bin_version());
+    }
+
+    @Override
+    public void onClick(View v) {
+        onBackPressed();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isQueryStatus()) {
+            super.onBackPressed();
+        } else {
+            if (isUpgradeProcess) {
+                backWarningDialog();
+            } else {
+                super.onBackPressed();
+            }
+        }
     }
 
     @Override
@@ -200,7 +246,7 @@ public class IpcSettingVersionActivity extends BaseActivity {
      */
     @Override
     public void didReceivedNotification(int id, Object... args) {
-        if (args == null) {
+        if (args == null || isUpgradeFail) {
             return;
         }
         ResponseBean res = (ResponseBean) args[0];
@@ -307,13 +353,21 @@ public class IpcSettingVersionActivity extends BaseActivity {
     }
 
     /**
+     * 返回提示
+     */
+    private void backWarningDialog() {
+        CommonDialog successDialog = new CommonDialog.Builder(this)
+                .setMessage(getString(R.string.ipc_setting_dialog_upgrade_warning, isSS ? "5" : "8"))
+                .setConfirmButton(R.string.str_confirm).create();
+        successDialog.showWithOutTouchable(true);
+        successDialog.setCancelable(false);
+    }
+
+    /**
      * 更新版本成功
      */
     @UiThread
     void upgradeVerSuccessDialog() {
-        if (isFastClick(200)) {
-            return;
-        }
         if (successDialog != null && successDialog.isShowing()) {
             successDialog.dismiss();
         }
@@ -332,6 +386,7 @@ public class IpcSettingVersionActivity extends BaseActivity {
      * 更新版本失败
      */
     private void upgradeVerFailDialog() {
+        stopTimeoutTimer();
         isAiUpgrade = false;
         isUpgradeProcess = false;
         if (failDialog != null && failDialog.isShowing()) {
@@ -512,6 +567,7 @@ public class IpcSettingVersionActivity extends BaseActivity {
         @Override
         public void onFinish() {
             LogCat.e(TAG, "onTick  onFinish");
+            upgradeVerFailDialog();
         }
     }
 }
