@@ -11,6 +11,7 @@ import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 
 import sunmi.common.base.BaseApplication;
+import sunmi.common.constant.RouterConfig;
 import sunmi.common.rpc.mqtt.MqttManager;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
@@ -48,8 +49,9 @@ public class MyApplication extends BaseApplication {
         Component.init(this, BuildConfig.DEBUG);
 
         // 装载各个业务组件
-        ModuleManager.getInstance().registerArr("app", "ipc");
-
+        ModuleManager.getInstance().registerArr(
+                RouterConfig.App.NAME, RouterConfig.Ipc.NAME, RouterConfig.SunmiService.NAME
+        );
         if (BuildConfig.DEBUG) {
             ModuleManager.getInstance().check();
         }

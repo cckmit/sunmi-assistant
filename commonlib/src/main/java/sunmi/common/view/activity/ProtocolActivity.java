@@ -2,6 +2,7 @@ package sunmi.common.view.activity;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
+import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.WebChromeClient;
@@ -17,9 +18,6 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.utils.CommonHelper;
@@ -66,7 +64,7 @@ public class ProtocolActivity extends BaseActivity {
     SMWebView webView;
     @Extra
     int protocolType;
-    private Timer timer;//计时器
+    private CountDownTimer countDownTimer;
     private long timeout = 5000;//超时时间
     private boolean loadFail;
 
@@ -128,25 +126,26 @@ public class ProtocolActivity extends BaseActivity {
     }
 
     private void startTimer() {
-        timer = new Timer();
-        TimerTask tt = new TimerTask() {
-            @Override
-            public void run() {
-                /* * 超时后,首先判断页面加载是否小于100,就执行超时后的动作 */
-                if (webView.getProgress() < 100) {
-                    localHtml();
-                    timer.cancel();
-                    timer.purge();
+        if (countDownTimer == null) {
+            countDownTimer = new CountDownTimer(timeout, timeout) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+
                 }
-            }
-        };
-        timer.schedule(tt, timeout, 1);
+
+                @Override
+                public void onFinish() {
+                    localHtml();
+                }
+            };
+        }
+        countDownTimer.start();
     }
 
     private void closeTimer() {
-        if (timer != null) {
-            timer.cancel();
-            timer.purge();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
         }
     }
 
@@ -167,9 +166,9 @@ public class ProtocolActivity extends BaseActivity {
                 WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
         // 不用启动客户端的浏览器来加载未加载出来的数据
         webView.setWebViewClient(new SMWebViewClient(this) {
+
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 startTimer();
                 return true;
             }
