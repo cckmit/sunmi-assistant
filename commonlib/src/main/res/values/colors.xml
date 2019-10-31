@@ -6,6 +6,11 @@
     <color name="common_orange_20a">#33FF6000</color><!--主色调20%透明-->
     <color name="common_orange_60a">#99FF6000</color><!--主色调60%透明-->
 
+    <!--渐变辅助色-->
+    <color name="common_orange_light">#FF7F00</color>        <!--主要渐变色（浅）-->
+    <color name="common_orange_press_light">#E67300</color>  <!--暗色渐变色（浅）-->
+    <color name="common_orange_press_dark">#E65600</color>   <!--暗色渐变色（深）-->
+
     <!--文字颜色-->
     <color name="text_main">#303540</color>          <!--主要-->
     <color name="text_normal">#525866</color>        <!--常规-->

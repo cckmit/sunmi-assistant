@@ -22,7 +22,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.meituan.android.walle.WalleChannelReader;
+import com.commonlibrary.BuildConfig;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xiaomi.mipush.sdk.MiPushClient;
 
@@ -449,8 +449,7 @@ public class CommonHelper {
     }
 
     public static boolean isGooglePlay() {
-        return TextUtils.equals(WalleChannelReader.getChannel(BaseApplication.getInstance()),
-                CommonConstants.GOOGLE_PLAY);
+        return TextUtils.equals(BuildConfig.FLAVOR, CommonConstants.GOOGLE_PLAY);
     }
 
     /**

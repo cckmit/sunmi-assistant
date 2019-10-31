@@ -68,6 +68,7 @@ import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.SmRecyclerView;
@@ -140,6 +141,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     }
 
     protected void initViews() {
+        StatusBarUtils.setStatusBarFullTransparent(getActivity());
         tvShopTitle.setText(SpUtils.getShopName());
         initRefreshLayout();
         rvDevice.init(R.drawable.divider_transparent_8dp);
