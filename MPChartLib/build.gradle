@@ -17,7 +17,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         uat {}
-        googleplay {}
     }
     testOptions {
         unitTests.returnDefaultValues = true // this prevents "not mocked" error

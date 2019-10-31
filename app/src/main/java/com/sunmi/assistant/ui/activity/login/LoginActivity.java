@@ -239,9 +239,8 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
                 .setConfirmButton(R.string.str_register_now, (dialog, which) -> {
                     CommonUtils.trackCommonEvent(context, "loginUnRegisterDialogRegister",
                             "登录_未注册弹框-立即注册", Constants.EVENT_LOGIN);
-                    RegisterActivity_.intent(context)
-                            .extra("mobile", RegexUtils.isCorrectAccount(mobile) ? mobile : "")
-                            .start();
+                    InputMobileActivity_.intent(context).mobile(RegexUtils.isCorrectAccount(mobile) ? mobile : "")
+                            .checkSource(InputMobileActivity.SOURCE_REGISTER).start();
                 }).create().show();
     }
 
