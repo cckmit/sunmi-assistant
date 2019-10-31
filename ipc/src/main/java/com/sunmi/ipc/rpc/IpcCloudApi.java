@@ -15,7 +15,6 @@ import com.sunmi.ipc.model.FaceGroupListResp;
 import com.sunmi.ipc.model.FaceGroupUpdateReq;
 import com.sunmi.ipc.model.FaceListResp;
 import com.sunmi.ipc.model.FaceSaveResp;
-import com.sunmi.ipc.model.IpcListResp;
 import com.sunmi.ipc.model.IpcNewFirmwareResp;
 import com.sunmi.ipc.model.StorageListResp;
 import com.sunmi.ipc.model.VideoListResp;
@@ -23,6 +22,7 @@ import com.sunmi.ipc.rpc.api.DeviceInterface;
 import com.sunmi.ipc.rpc.api.FaceInterface;
 import com.sunmi.ipc.rpc.api.MediaInterface;
 import com.sunmi.ipc.rpc.api.StorageInterface;
+import com.xiaojinzi.component.anno.ServiceAnno;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,6 +38,8 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import sunmi.common.constant.CommonConfig;
+import sunmi.common.router.IpcCloudApiAnno;
+import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.cloud.SunmiStoreRetrofitClient;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.BaseResponse;
@@ -53,11 +55,8 @@ import sunmi.common.utils.SpUtils;
  * @author Bruce
  * @date 2019/3/31
  */
-public class IpcCloudApi {
-
-    private IpcCloudApi() {
-
-    }
+@ServiceAnno(IpcCloudApiAnno.class)
+public class IpcCloudApi implements IpcCloudApiAnno {
 
     private static final class Single {
         private static final IpcCloudApi INSTANCE = new IpcCloudApi();
@@ -126,6 +125,7 @@ public class IpcCloudApi {
      * @param companyId 是	int64	商户id
      * @param shopId    是	int64	店铺id
      */
+    @Override
     public void getDetailList(int companyId, int shopId, RetrofitCallback<IpcListResp> callback) {
         try {
             String params = new JSONObject()

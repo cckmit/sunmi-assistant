@@ -69,6 +69,8 @@ public class ServiceDetailBean {
     @SerializedName("renew_error_code")
     private int renewErrorCode;
 
+    private boolean isBind;
+
     public int getId() {
         return id;
     }
@@ -219,5 +221,13 @@ public class ServiceDetailBean {
 
     public void setRenewErrorCode(int renewErrorCode) {
         this.renewErrorCode = renewErrorCode;
+    }
+
+    public boolean isBind() {
+        return isBind;
+    }
+
+    public void setBind(boolean bind) {
+        isBind = bind;
     }
 }

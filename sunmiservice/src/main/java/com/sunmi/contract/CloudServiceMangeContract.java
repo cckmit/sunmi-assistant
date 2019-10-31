@@ -25,6 +25,5 @@ public interface CloudServiceMangeContract {
     interface Presenter {
         void getSubscriptionList(int pageNum, int pageSize);
 
-        void getIpcDetailList();
     }
 }
