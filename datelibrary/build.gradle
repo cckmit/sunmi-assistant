@@ -23,20 +23,8 @@ android {
 
     flavorDimensions "default"
     productFlavors {
-        app {
-            manifestPlaceholders = [
-                    MTA_CHANNEL: "myapp"
-            ]
-        }
-
-        google {
-            manifestPlaceholders = [
-                    MTA_CHANNEL: "google"
-            ]
-            defaultConfig.versionCode Integer.parseInt(GOOGLE_VERSION_CODE)
-            defaultConfig.versionName GOOGLE_VERSION_NAME
-        }
-
+        myapp {}
+        google {}
     }
 
 }

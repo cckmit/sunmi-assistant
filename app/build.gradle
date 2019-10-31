@@ -89,7 +89,7 @@ android {
 
     flavorDimensions "default"
     productFlavors {
-        app {
+        myapp {
             manifestPlaceholders = [
                     MTA_CHANNEL: "myapp"
             ]
@@ -99,8 +99,8 @@ android {
             manifestPlaceholders = [
                     MTA_CHANNEL: "google"
             ]
-            defaultConfig.versionCode Integer.parseInt(GOOGLE_VERSION_CODE)
-            defaultConfig.versionName GOOGLE_VERSION_NAME
+            versionCode Integer.parseInt(GOOGLE_VERSION_CODE)
+            versionName GOOGLE_VERSION_NAME
         }
 
     }
