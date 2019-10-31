@@ -159,7 +159,6 @@ public class WebViewSunmiMallActivity extends BaseActivity
                         }
                     }
                 });
-
                 if (!isIntercepted) {
                     if (!(url.startsWith("http") || url.startsWith("https"))) {
                         return true;
@@ -169,7 +168,6 @@ public class WebViewSunmiMallActivity extends BaseActivity
                 return true;
             }
         });
-
     }
 
     @Override

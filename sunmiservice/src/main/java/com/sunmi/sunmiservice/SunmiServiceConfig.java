@@ -33,8 +33,6 @@ public class SunmiServiceConfig extends BaseConfig {
     public static String FUMINBAO_APP_ID = "";
     public static String FUMINBAO_SECRET = "";
 
-
-
     @Override
     public void init(Context context, String env) {
         super.init(context, env);

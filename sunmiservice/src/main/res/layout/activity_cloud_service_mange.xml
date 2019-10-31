@@ -32,7 +32,6 @@
 
     </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
 
-
     <include
         android:id="@+id/layout_network_error"
         layout="@layout/include_network_error"
@@ -69,7 +68,6 @@
             android:text="@string/str_go_open"
             android:textColor="@color/text_main"
             android:textSize="@dimen/sp_14" />
-
 
     </RelativeLayout>
 

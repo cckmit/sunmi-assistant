@@ -66,7 +66,6 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
         viewHolder.setLoadMoreBackgroundColorRes(R.color.bg_common);
         // 设置下拉刷新和上拉加载更多的风格(参数1：应用程序上下文，参数2：是否具有上拉加载更多功能)
         refreshLayout.setRefreshViewHolder(viewHolder);
-
     }
 
     @Override

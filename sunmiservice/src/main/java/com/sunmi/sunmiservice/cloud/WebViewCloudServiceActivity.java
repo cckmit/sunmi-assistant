@@ -178,7 +178,6 @@ public class WebViewCloudServiceActivity extends BaseActivity {
                         }
                     }
                 });
-
                 if (!isIntercepted) {
                     if (!(url.startsWith("http") || url.startsWith("https"))) {
                         return true;
@@ -216,7 +215,6 @@ public class WebViewCloudServiceActivity extends BaseActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
                 }
             }
 

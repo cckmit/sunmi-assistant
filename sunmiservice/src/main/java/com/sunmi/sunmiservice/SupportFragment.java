@@ -44,7 +44,6 @@ public class SupportFragment extends BaseFragment
     @AfterViews
     void init() {
         titleBar.getRightTextView().setOnClickListener(this);
-
     }
 
     @Override
@@ -82,14 +81,13 @@ public class SupportFragment extends BaseFragment
         WebViewActivity_.intent(mActivity).url(SunmiServiceConfig.WE_BANK_HOST).start();
     }
 
-    private boolean checkNetwork(){
-        if (!NetworkUtils.isNetworkAvailable(mActivity)){
+    private boolean checkNetwork() {
+        if (!NetworkUtils.isNetworkAvailable(mActivity)) {
             shortTip(R.string.toast_network_error);
             return false;
         }
         return true;
     }
-
 
     /*private void initRefreshLayout() {
         mRefreshLayout.setDelegate(this);
@@ -141,7 +139,6 @@ public class SupportFragment extends BaseFragment
         webView.setOnScrollChangeListener(this);
         webView.loadUrl(getBaseUrl());
     }*/
-
 
     private void launchMiniProgram(String userName, String path, int miniProgramType) {
         if (api == null) return;
