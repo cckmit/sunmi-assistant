@@ -3,6 +3,7 @@ package com.sunmi.ipc.presenter;
 import com.sunmi.ipc.contract.IpcManagerContract;
 import com.sunmi.ipc.model.CloudTimeSlotResp;
 import com.sunmi.ipc.model.IotcCmdResp;
+import com.sunmi.ipc.model.StorageListResp;
 import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.model.VideoTimeSlotBean;
 import com.sunmi.ipc.rpc.IpcCloudApi;
@@ -14,7 +15,6 @@ import java.util.List;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
-import sunmi.common.utils.SpUtils;
 
 /**
  * Description:
@@ -159,4 +159,26 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
         });
     }
 
+    @Override
+    public void getStorageInfo(int deviceId) {
+        IpcCloudApi.getInstance().getStorageInfo(deviceId, new RetrofitCallback<StorageListResp>() {
+            @Override
+            public void onSuccess(int code, String msg, StorageListResp data) {
+                if (isViewAttached()) {
+                    if (data.getDeviceList().size() > 0) {
+                        mView.getStorageSuccess(data.getDeviceList().get(0));
+                    } else {
+                        mView.getStorageSuccess(null);
+                    }
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, StorageListResp data) {
+                if (isViewAttached()) {
+                    mView.getStorageSuccess(null);
+                }
+            }
+        });
+    }
 }

@@ -29,6 +29,7 @@ public abstract class RetrofitCallback<T> implements Callback<BaseResponse<T>> {
                            @NonNull Response<BaseResponse<T>> response) {
         if (response.code() == RpcErrorCode.HTTP_RESP_FORBID) {//请求被拒
             ToastUtils.toastForShort(BaseApplication.getContext(), R.string.tip_forbid_by_server);
+            onFail(response.code(), response.message(), null);
         } else if (response.code() == RpcErrorCode.HTTP_RESP_UNKNOWN_REQUEST) {
             if (response.errorBody() != null) {
                 try {

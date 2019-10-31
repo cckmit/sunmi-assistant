@@ -1,60 +1,37 @@
 package com.sunmi.sunmiservice;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.webkit.DownloadListener;
-import android.webkit.WebResourceError;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebView;
-import android.widget.Button;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
+import com.sunmi.sunmiservice.cloud.WebViewCloudServiceActivity_;
 import com.tencent.mm.opensdk.constants.Build;
+import com.tencent.mm.opensdk.modelbiz.WXLaunchMiniProgram;
 import com.tencent.mm.opensdk.modelmsg.GetMessageFromWX;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.opensdk.modelmsg.WXMiniProgramObject;
 import com.tencent.mm.opensdk.modelmsg.WXTextObject;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
-import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
-import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseFragment;
-import sunmi.common.constant.CommonConstants;
-import sunmi.common.utils.CommonHelper;
+import sunmi.common.constant.CommonConfig;
 import sunmi.common.utils.NetworkUtils;
-import sunmi.common.utils.StatusBarUtils;
-import sunmi.common.utils.Utils;
-import sunmi.common.utils.log.LogCat;
-import sunmi.common.view.webview.SMWebChromeClient;
-import sunmi.common.view.webview.SMWebView;
-import sunmi.common.view.webview.SMWebViewClient;
+import sunmi.common.view.TitleBarView;
 
 @EFragment(resName = "fragment_support")
 public class SupportFragment extends BaseFragment
-        implements SMWebChromeClient.Callback, SMWebView.OnScrollChangeListener,
-        BGARefreshLayout.BGARefreshLayoutDelegate {
+        implements View.OnClickListener {
 
-    @ViewById(resName = "wv_support")
-    SMWebView webView;
-    @ViewById(resName = "relativeTitleBg")
-    RelativeLayout relativeTitleBg;
-    @ViewById(resName = "tvTitle")
-    TextView tvTitle;
-    @ViewById(resName = "btnTryAgain")
-    Button btnTryAgain;
-    @ViewById(resName = "rlNetException")
-    RelativeLayout rlNetException;
-    @ViewById(resName = "bga_refresh")
-    BGARefreshLayout mRefreshLayout;
+
+    @ViewById(resName = "title_bar")
+    TitleBarView titleBar;
+
 
     private IWXAPI api;// 第三方app和微信通信的openApi接口
 
@@ -66,21 +43,62 @@ public class SupportFragment extends BaseFragment
 
     @AfterViews
     void init() {
-        relativeTitleBg.setAlpha(0);
-        initWebView();
-        initRefreshLayout();
+        titleBar.getRightTextView().setOnClickListener(this);
     }
 
-    private void initRefreshLayout() {
+    @Override
+    public void onClick(View v) {
+        ServiceManageActivity_.intent(mActivity).start();
+    }
+
+    @Click(resName = "ll_cloud_storage")
+    void cloudStorageClick() {
+        if (!checkNetwork()) {
+            return;
+        }
+        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConfig.CLOUD_STORAGE_URL).start();
+    }
+
+    @Click(resName = "ll_after_sales")
+    void afterSalesClick() {
+        launchMiniProgram(SunmiServiceConfig.WECHART_USER_NAME, SunmiServiceConfig.WECHAT_PATH, SunmiServiceConfig.WECHAT_MINI_PROGRAM_TYPE);
+    }
+
+    @Click(resName = "ll_sunmi_store")
+    void sunmiStoreClick() {
+        if (!checkNetwork()) {
+            return;
+        }
+        WebViewSunmiMallActivity_.intent(mActivity).mUrl(SunmiServiceConfig.SUNMI_MALL_HOST + "?channel=2&subchannel=4")
+                .start();
+    }
+
+    @Click(resName = "tv_weBank")
+    void weBankClick() {
+        if (!checkNetwork()) {
+            return;
+        }
+        WebViewActivity_.intent(mActivity).url(SunmiServiceConfig.WE_BANK_HOST).start();
+    }
+
+    private boolean checkNetwork() {
+        if (!NetworkUtils.isNetworkAvailable(mActivity)) {
+            shortTip(R.string.toast_network_error);
+            return false;
+        }
+        return true;
+    }
+
+    /*private void initRefreshLayout() {
         mRefreshLayout.setDelegate(this);
         // 设置下拉刷新和上拉加载更多的风格     参数1：应用程序上下文，参数2：是否具有上拉加载更多功能
         BGANormalRefreshViewHolder refreshViewHolder =
                 new BGANormalRefreshViewHolder(getActivity(), false);
         mRefreshLayout.setRefreshViewHolder(refreshViewHolder);
         mRefreshLayout.setIsShowLoadingMoreView(false); // 设置正在加载更多时的文本
-    }
+    }*/
 
-    private void initWebView() {
+    /*private void initWebView() {
         JSCall jsCall = new JSCall(mActivity, webView);
         jsCall.setApi(api);
         webView.addJavascriptInterface(jsCall, SsConstants.JS_INTERFACE_NAME);
@@ -120,11 +138,27 @@ public class SupportFragment extends BaseFragment
         });
         webView.setOnScrollChangeListener(this);
         webView.loadUrl(getBaseUrl());
-    }
+    }*/
 
-    private String getBaseUrl() {
-        return SunmiServiceConfig.VALUE_ADDED_SERVICES + "?screenTop=" +
-                CommonHelper.px2dp(mActivity, Utils.getStatusBarHeight(mActivity));
+    private void launchMiniProgram(String userName, String path, int miniProgramType) {
+        if (api == null) return;
+        if (!api.isWXAppInstalled()) {
+            shortTip(R.string.tip_wechat_not_installed);
+            return;
+        }
+
+        int miniProgramTypeInt = WXMiniProgramObject.MINIPTOGRAM_TYPE_RELEASE;
+        try {
+            miniProgramTypeInt = miniProgramType;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        WXLaunchMiniProgram.Req miniProgramReq = new WXLaunchMiniProgram.Req();
+        miniProgramReq.userName = userName;// 小程序原始id
+        miniProgramReq.path = path; //拉起小程序页面的可带参路径，不填默认拉起小程序首页
+        miniProgramReq.miniprogramType = miniProgramTypeInt;// 可选打开 开发版，体验版和正式版
+        api.sendReq(miniProgramReq);
     }
 
     private void regToWx() {
@@ -181,7 +215,7 @@ public class SupportFragment extends BaseFragment
         api.sendResp(resp);
     }
 
-    @Override
+  /*  @Override
     public void onProgressChanged(int progress) {
         if (progress < 100)
             mActivity.showLoadingDialog();
@@ -196,12 +230,12 @@ public class SupportFragment extends BaseFragment
 
     @Override
     public void onReceivedTitle(String title) {
-        tvTitle.setText(title);
+        //tvTitle.setText(title);
     }
 
     @Override
     public void onPageEnd(int l, int t, int oldl, int oldt) {
-        int deltaY = t - oldt;
+        *//*int deltaY = t - oldt;
         //上滑 并且 正在显示底部栏
         if (deltaY > 0 && (Math.abs(deltaY) > 1)) {
             StatusBarUtils.StatusBarLightMode(mActivity);
@@ -212,7 +246,7 @@ public class SupportFragment extends BaseFragment
         if (t == 0) { //滑动到top了
             relativeTitleBg.setAlpha(0);
             StatusBarUtils.setStatusBarColor(getActivity(), StatusBarUtils.TYPE_DARK);//状态栏
-        }
+        }*//*
     }
 
     @Override
@@ -227,8 +261,8 @@ public class SupportFragment extends BaseFragment
 
     @UiThread
     void endRefresh() {
-        if (mRefreshLayout != null)
-            mRefreshLayout.endRefreshing();
+        *//*if (mRefreshLayout != null)
+            mRefreshLayout.endRefreshing();*//*
     }
 
     private void refreshService() {
@@ -237,11 +271,11 @@ public class SupportFragment extends BaseFragment
             endRefresh();
             return;
         }
-        rlNetException.setVisibility(View.GONE);
+        *//*rlNetException.setVisibility(View.GONE);
         webView.setVisibility(View.VISIBLE);
         webView.clearCache(true);
         webView.clearHistory();
-        webView.loadUrl(getBaseUrl());//services
+        webView.loadUrl(getBaseUrl());//services*//*
     }
 
     @Override
@@ -265,6 +299,6 @@ public class SupportFragment extends BaseFragment
     @Override
     public int[] getStickNotificationId() {
         return new int[]{CommonConstants.tabSupport};
-    }
+    }*/
 
 }
