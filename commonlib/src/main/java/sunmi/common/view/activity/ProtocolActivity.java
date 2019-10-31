@@ -183,7 +183,7 @@ public class ProtocolActivity extends BaseActivity {
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
                 hideLoadingDialog();
-                 closeTimer();
+                closeTimer();
             }
 
             @Override

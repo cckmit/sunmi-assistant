@@ -63,6 +63,7 @@ import java.util.concurrent.TimeUnit;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConfig;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.utils.CommonHelper;
@@ -205,13 +206,18 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     //竖屏切换高清
     private BottomPopMenu qualityPop;
 
+    private CommonListAdapter adapter;
+    private List<IpcManageBean> list = new ArrayList<>();
+
     private IpcManageBean cloudStroage;
 
     @AfterViews
     void init() {
         mPresenter = new IpcManagerPresenter();
         mPresenter.attachView(this);
-        mPresenter.getStorageInfo(device.getId());
+        if (isSS1()) {
+            mPresenter.getStorageInfo(device.getId());
+        }
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//保持屏幕常亮
@@ -222,7 +228,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         showVideoLoading();
         rlLoadingP.setOnTouchListener((v, event) -> true);
         initSurfaceView();
-
+        initManageList();
         handler.postDelayed(this::initControllerPanel, 200);
     }
 
@@ -623,16 +629,16 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         if (data != null) {
             cloudStroage.setStatus(data.getStatus());
             switch (data.getStatus()) {
-                case 1:
+                case CommonConstants.CLOUD_STORAGE_ALREADY_OPENED:
                     cloudStroage.setSummary(getString(R.string.str_remaining_validity_period,
                             DateTimeUtils.secondToPeriod(data.getValidTime(), context)));
                     cloudStroage.setRightText(getString(R.string.str_setting_detail));
                     break;
-                case 2:
+                case CommonConstants.CLOUD_STORAGE_NOT_OPENED:
                     cloudStroage.setSummary(getString(R.string.str_subscribe_free));
                     cloudStroage.setRightText(getString(R.string.str_use_free));
                     break;
-                case 3:
+                case CommonConstants.CLOUD_STORAGE_EXPIRED:
                     cloudStroage.setSummary(getString(R.string.str_expired));
                     cloudStroage.setRightText(getString(R.string.str_setting_detail));
                     break;
@@ -645,7 +651,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             shortTip(R.string.tip_cloud_storage_error);
             cloudStroage.setRightText(getString(R.string.str_coming_soon));
         }
-        initManageList();
+        list.add(0, cloudStroage);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -1394,17 +1401,14 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     private void initManageList() {
         rvManager.init(0);
-        List<IpcManageBean> list = new ArrayList<>();
         if (!isSS1()) {
             list.add(new IpcManageBean(R.mipmap.ipc_manage_face_history,
                     getString(R.string.str_face_history),
                     getString(R.string.str_view_face_history), getString(R.string.str_coming_soon), false));
-        } else {
-            list.add(cloudStroage);
         }
         list.add(new IpcManageBean(R.mipmap.ipc_manage_md, getString(R.string.str_motion_detection),
                 getString(R.string.str_md_exception), getString(R.string.str_coming_soon), false));
-        CommonListAdapter adapter = new CommonListAdapter<IpcManageBean>(context,
+        adapter = new CommonListAdapter<IpcManageBean>(context,
                 R.layout.item_ipc_manager, list) {
             @Override
             public void convert(ViewHolder holder, IpcManageBean bean) {
@@ -1416,7 +1420,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                 tvDetail.setEnabled(bean.isEnabled());
                 tvDetail.setOnClickListener(v -> {
                     if (bean.getTitle().equals(getString(R.string.str_cloud_storage))) {
-                        if (bean.getStatus() == 2) {
+                        if (bean.getStatus() == CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
                             Router.withApi(SunmiServiceApi.class).goToWebViewCloud(CommonConfig.CLOUD_STORAGE_URL, device.getDeviceid());
                         } else {
                             Router.withApi(SunmiServiceApi.class).goToServiceDetail(device.getDeviceid());

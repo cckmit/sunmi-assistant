@@ -23,6 +23,7 @@ import org.litepal.crud.DataSupport;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConfig;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.constant.RouterConfig;
 import sunmi.common.model.SunmiDevice;
@@ -115,7 +116,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
             tvDeviceSn.setText(sn);
             tvSubScribeTime.setText(DateTimeUtils.secondToDate(bean.getSubscribeTime(), "yyyy-MM-dd HH:mm"));
             tvExpireTime.setText(DateTimeUtils.secondToDate(bean.getExpireTime(), "yyyy-MM-dd HH:mm"));
-            if (status != 3) {
+            if (bean.getStatus() != CommonConstants.CLOUD_STORAGE_EXPIRED) {
                 tvRemaining.setText(DateTimeUtils.secondToPeriod(bean.getValidTime(), context));
             } else {
                 tvStatus.setText(R.string.str_expired);
@@ -158,7 +159,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
 
     @Click(resName = "btn_renewal")
     void renewalClick() {
-        if (status == 2) {
+        if (status == CommonConstants.CLOUD_STORAGE_NOT_RENEWABLE) {
             switch (errorCode) {
                 case RpcErrorCode.ERR_SERVICE_SUBSCRIBE_ERROR:
                     shortTip(R.string.tip_renewal_less_three_days);

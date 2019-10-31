@@ -15,6 +15,7 @@ import org.litepal.crud.DataSupport;
 
 import java.util.List;
 
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.utils.DateTimeUtils;
 
@@ -49,7 +50,7 @@ public class ServiceListAdapter extends BaseQuickAdapter<ServiceDetailBean, Base
         TextView tvDeviceSn = helper.getView(R.id.tv_device_sn);
         TextView tvDeviceName = helper.getView(R.id.tv_device_name);
         helper.setText(R.id.tv_service_name, item.getServiceName());
-        if (item.getStatus() != 3) {
+        if (item.getStatus() != CommonConstants.CLOUD_STORAGE_EXPIRED) {
             helper.setText(R.id.tv_remaining, context.getString(R.string.str_remaining_validity_period,
                     DateTimeUtils.secondToPeriod(item.getValidTime(), context)));
         } else {
