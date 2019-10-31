@@ -29,7 +29,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         uat {}
-        googleplay {}
+    }
+
+    flavorDimensions "default"
+    productFlavors {
+        myapp {}
+        google {}
     }
 }
 
