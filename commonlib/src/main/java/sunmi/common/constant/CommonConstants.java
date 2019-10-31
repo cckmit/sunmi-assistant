@@ -41,7 +41,7 @@ public class CommonConstants {
     public static int ACTION_LOGIN_CHOOSE_SHOP = 1;
     public static int ACTION_CHANGE_COMPANY = 2;
 
-    public static final String GOOGLE_PLAY = "googleplay";
+    public static final String GOOGLE_PLAY = "google";
 
     //云存储服务订阅状态
     public static final int CLOUD_STORAGE_ALREADY_OPENED = 1;
