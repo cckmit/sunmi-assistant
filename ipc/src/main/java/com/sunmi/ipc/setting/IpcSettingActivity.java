@@ -127,7 +127,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         mPresenter.attachView(this);
         mPresenter.loadConfig(mDevice);
         mPresenter.currentVersion();
-        mVersion.setRightText(mDevice.getFirmware());
+//        mVersion.setRightText(mDevice.getFirmware());
         mNameView.setRightText(mDevice.getName());
         TextView tvName = mNameView.getRightText();
         tvName.setSingleLine();
@@ -192,6 +192,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     public void currentVersionView(IpcNewFirmwareResp resp) {
         mResp = resp;
         int upgradeRequired = resp.getUpgrade_required();
+        mVersion.setRightText(resp.getLatest_bin_version());
         if (upgradeRequired == 1) {
             mVersion.getIvToTextLeft().setVisibility(View.VISIBLE);
             mVersion.getIvToTextLeft().setText(R.string.ipc_setting_new);
@@ -199,7 +200,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 newVersionDialog();
             }
         } else {
-            mVersion.setRightText(resp.getLatest_bin_version());
             mVersion.getIvToTextLeft().setVisibility(View.GONE);
         }
         if (isClickVersionUpgrade) {
@@ -588,7 +588,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     public int[] getStickNotificationId() {
         return new int[]{OpcodeConstants.getIpcConnectApMsg, OpcodeConstants.getIpcNightIdeRotation,
                 OpcodeConstants.setIpcNightIdeRotation, OpcodeConstants.getIpcDetection,
-                OpcodeConstants.ipcUpgrade, OpcodeConstants.getIsWire, CommonNotifications.netConnected,
+                OpcodeConstants.getIsWire, CommonNotifications.netConnected,
                 CommonNotifications.netDisconnection, CommonNotifications.ipcUpgrade,
                 CommonNotifications.mqttResponseTimeout, OpcodeConstants.ipcQueryUpgradeStatus};
     }
@@ -620,7 +620,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         if (!isRun || args == null || args.length < 1) {
             return;
         }
-
         if (args[0] instanceof ResponseBean) {
             ResponseBean res = (ResponseBean) args[0];
             if (id == OpcodeConstants.getIpcConnectApMsg) {
@@ -637,8 +636,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 } else {
                     shortTip(R.string.toast_network_Exception);
                 }
-            } else if (id == OpcodeConstants.ipcUpgrade) {
-                upgradeResult(res);
             } else if (id == OpcodeConstants.getIsWire) {
                 checkWire(res);
             } else if (id == OpcodeConstants.getSdStatus) {
@@ -946,13 +943,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         swWdr.setChecked(isSetWdr);
         rotateDegree(rotation);
         isCanSetWdr(nightMode);
-    }
-
-    @UiThread
-    void upgradeResult(ResponseBean res) {
-        mDevice.setFirmware(mResp.getLatest_bin_version());
-        mVersion.setRightText(mResp.getLatest_bin_version());
-        BaseNotification.newInstance().postNotificationName(CommonNotifications.ipcUpgradeComplete);
     }
 
     /**

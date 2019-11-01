@@ -255,13 +255,10 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
                 TextView address = holder.getView(R.id.tv_item_address);
                 name.setText(matcherSearchText(ContextCompat.getColor(context, R.color.common_orange), poiItem.getTitle(), poiKey));
                 address.setText(matcherSearchText(ContextCompat.getColor(context, R.color.common_orange), poiItem.getSnippet(), poiKey));
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        index = holder.getAdapterPosition();
-                        cetDetailsAddress.setText(poiItem.getSnippet());
-                        notifyDataSetChanged();
-                    }
+                holder.itemView.setOnClickListener(v -> {
+                    index = holder.getAdapterPosition();
+                    cetDetailsAddress.setText(poiItem.getSnippet());
+                    notifyDataSetChanged();
                 });
                 if (index == holder.getAdapterPosition()) {
                     holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.black_15));
@@ -300,8 +297,6 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
         btnAreaPro.setTextColor(ContextCompat.getColor(context, R.color.text_main));
         btnAreaCity.setText("");
         btnAreaRegion.setText("");
-
-
         showRegionList(mList);
     }
 
@@ -349,11 +344,17 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
                     break;
                 case R.id.tv_cancel:
                     dialog.dismiss();
+                    mProvinceId = mInfo.getProvince();
+                    mCityId = mInfo.getCity();
+                    mAreaId = mInfo.getArea();
                     break;
                 case R.id.tv_confirm:
                     if (mProvinceId <= 0 || mCityId <= 0 || mAreaId <= 0) {
                         shortTip(getString(R.string.shop_input_region_tip));
                         return;
+                    }
+                    if (mProvinceId != mInfo.getProvince() || mCityId != mInfo.getCity() || mAreaId != mInfo.getArea()) {
+                        cetDetailsAddress.setText("");
                     }
                     dialog.dismiss();
                     tvTransparent.setVisibility(View.GONE);
@@ -369,7 +370,8 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
         btnAreaCity.setOnClickListener(clickListener);
         tvCancel.setOnClickListener(clickListener);
         tvConfirm.setOnClickListener(clickListener);
-        dialog.setCancelable(true);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
 
