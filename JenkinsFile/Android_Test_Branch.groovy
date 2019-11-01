@@ -54,7 +54,7 @@ pipeline{
               export LC_ALL=en_US.UTF-8
               export LANG=en_US.UTF-8
               fir login 8abeee66a3604b68f707d9c2753f7fb4
-              fir publish app/build/outputs/apk/**/app-myapp-universal-*.apk
+              fir publish app/build/outputs/apk/myapp/debug/app-myapp-universal-*.apk
               ''')
           }catch(e){
             def stageName = 'release'
