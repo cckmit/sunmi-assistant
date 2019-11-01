@@ -8,8 +8,8 @@ import com.xiaojinzi.component.impl.service.ServiceManager;
 
 import org.litepal.crud.DataSupport;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
@@ -17,7 +17,6 @@ import sunmi.common.model.SunmiDevice;
 import sunmi.common.router.IpcCloudApiAnno;
 import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
-import sunmi.common.utils.DBUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.ThreadPool;
 
@@ -31,6 +30,7 @@ public class CloudServiceMangePresenter extends BasePresenter<CloudServiceMangeC
 
 
     private List<SunmiDevice> devices;
+    private HashMap<String, String> nameMap;
 
     public CloudServiceMangePresenter() {
         devices = DataSupport.where("type=?", "IPC").find(SunmiDevice.class);
@@ -42,30 +42,28 @@ public class CloudServiceMangePresenter extends BasePresenter<CloudServiceMangeC
             @Override
             public void onSuccess(int code, String msg, final SubscriptionListBean data) {
                 final List<ServiceDetailBean> beans = data.getServiceList();
-                ThreadPool.getCachedThreadPool().submit(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (devices.size() <= 0) {
-                            getIpcDetailList(beans, data.getTotalCount());
-                        } else {
-                            for (int i = 0; i < beans.size(); i++) {
-                                SunmiDevice device = DataSupport.where("deviceid=?",
-                                        beans.get(i).getDeviceSn()).findFirst(SunmiDevice.class);
-                                if (device != null) {
-                                    beans.get(i).setBind(true);
-                                    beans.get(i).setDeviceName(device.getName());
-                                } else {
-                                    beans.get(i).setBind(false);
+                final int total = data.getTotalCount();
+                if (total <= 0) {
+                    if (isViewAttached()) {
+                        mView.hideLoadingDialog();
+                        mView.getSubscriptionListSuccess(beans, total);
+                    }
+                } else {
+                    ThreadPool.getCachedThreadPool().submit(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (devices.size() <= 0) {
+                                getIpcDetailList(beans, data.getTotalCount());
+                            } else {
+                                nameMap = new HashMap<>(devices.size());
+                                for (SunmiDevice device : devices) {
+                                    nameMap.put(device.getDeviceid(), device.getName());
                                 }
-                            }
-                            if (isViewAttached()) {
-                                mView.hideLoadingDialog();
-                                mView.getSubscriptionListSuccess(beans, data.getTotalCount());
+                                setName(beans, nameMap, total);
                             }
                         }
-                    }
-                });
-
+                    });
+                }
             }
 
             @Override
@@ -78,61 +76,38 @@ public class CloudServiceMangePresenter extends BasePresenter<CloudServiceMangeC
         });
     }
 
-
     private void getIpcDetailList(final List<ServiceDetailBean> beans, final int total) {
-        final HashMap<String, ServiceDetailBean> beanHashMap = new HashMap<>(beans.size());
-        for (ServiceDetailBean bean : beans) {
-            bean.setBind(false);
-            beanHashMap.put(bean.getDeviceSn(), bean);
-        }
         final IpcCloudApiAnno ipcCloudApi = ServiceManager.get(IpcCloudApiAnno.class);
         if (ipcCloudApi != null) {
             ipcCloudApi.getDetailList(SpUtils.getCompanyId(), SpUtils.getShopId(),
                     new RetrofitCallback<IpcListResp>() {
                         @Override
                         public void onSuccess(int code, String msg, final IpcListResp data) {
-                            List<IpcListResp.SsListBean> fsList = data.getFs_list();
-                            List<IpcListResp.SsListBean> ssList = data.getSs_list();
-                            if (ssList != null && ssList.size() > 0) {
-                                for (IpcListResp.SsListBean bean : ssList) {
-                                    if (beanHashMap.get(bean.getSn()) != null) {
-                                        beanHashMap.get(bean.getSn()).setDeviceName(bean.getDevice_name());
-                                        beanHashMap.get(bean.getSn()).setBind(true);
-                                    }
+                            final List<IpcListResp.SsListBean> list = new ArrayList<>();
+                            if (data.getSs_list() != null && data.getSs_list().size() > 0) {
+                                list.addAll(data.getSs_list());
+                            }
+                            if (data.getFs_list() != null && data.getFs_list().size() > 0) {
+                                list.addAll(data.getFs_list());
+                            }
+                            if (list.size() > 0) {
+                                nameMap = new HashMap<>(list.size());
+                                for (IpcListResp.SsListBean bean : list) {
+                                    nameMap.put(bean.getSn(), bean.getDevice_name());
                                 }
+                                setName(beans, nameMap, total);
+                            } else {
+                                setName(beans, null, total);
                             }
-                            if (fsList != null && fsList.size() > 0) {
-                                for (IpcListResp.SsListBean bean : fsList) {
-                                    if (beanHashMap.get(bean.getSn()) != null) {
-                                        beanHashMap.get(bean.getSn()).setDeviceName(bean.getDevice_name());
-                                        beanHashMap.get(bean.getSn()).setBind(true);
-                                    }
-                                }
-                            }
-                            Iterator<ServiceDetailBean> iterator = beanHashMap.values().iterator();
-                            beans.clear();
-                            while (iterator.hasNext()) {
-                                beans.add(iterator.next());
-                            }
-                            if (isViewAttached()) {
-                                mView.hideLoadingDialog();
-                                mView.getSubscriptionListSuccess(beans, total);
-                            }
+
                             ThreadPool.getCachedThreadPool().submit(new Runnable() {
                                 @Override
                                 public void run() {
-                                    DBUtils.deleteSunmiDeviceByType("IPC");
-                                    if (data.getFs_list() != null && data.getFs_list().size() > 0) {
-                                        for (IpcListResp.SsListBean bean : data.getFs_list()) {
+                                    if (list.size() > 0) {
+                                        for (IpcListResp.SsListBean bean : list) {
                                             getIpcDevice(bean);
                                         }
                                     }
-                                    if (data.getSs_list() != null && data.getSs_list().size() > 0) {
-                                        for (IpcListResp.SsListBean bean : data.getSs_list()) {
-                                            getIpcDevice(bean);
-                                        }
-                                    }
-
                                 }
                             });
                         }
@@ -148,6 +123,27 @@ public class CloudServiceMangePresenter extends BasePresenter<CloudServiceMangeC
         }
     }
 
+    private void setName(List<ServiceDetailBean> beans, HashMap<String, String> map, int total) {
+        if (map != null) {
+            for (int i = 0; i < beans.size(); i++) {
+                String name = map.get(beans.get(i).getDeviceSn());
+                if (name != null) {
+                    beans.get(i).setBind(true);
+                    beans.get(i).setDeviceName(name);
+                } else {
+                    beans.get(i).setBind(false);
+                }
+            }
+        } else {
+            for (int i = 0; i < beans.size(); i++) {
+                beans.get(i).setBind(false);
+            }
+        }
+        if (isViewAttached()) {
+            mView.hideLoadingDialog();
+            mView.getSubscriptionListSuccess(beans, total);
+        }
+    }
 
     private void getIpcDevice(IpcListResp.SsListBean bean) {
         SunmiDevice device = new SunmiDevice();
