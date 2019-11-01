@@ -175,7 +175,7 @@
 
         <Button
             android:id="@+id/btn_next"
-            style="@style/BtnOrange"
+            style="@style/BtnBigOrange"
             android:layout_alignParentBottom="true"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_20"

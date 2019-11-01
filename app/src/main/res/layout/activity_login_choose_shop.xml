@@ -112,11 +112,11 @@
 
         <Button
             android:id="@+id/btn_refresh"
-            style="@style/BtnGrayRounded"
-            android:layout_width="@dimen/dp_108"
+            style="@style/BtnMediumWhite"
             android:layout_marginTop="@dimen/dp_24"
             android:gravity="center"
             android:text="@string/str_refresh" />
+
     </LinearLayout>
 
 </RelativeLayout>
