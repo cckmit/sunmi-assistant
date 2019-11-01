@@ -9,6 +9,7 @@ import com.xiaojinzi.component.impl.service.ServiceManager;
 import org.litepal.crud.DataSupport;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
@@ -27,6 +28,14 @@ import sunmi.common.utils.ThreadPool;
  */
 public class CloudServiceMangePresenter extends BasePresenter<CloudServiceMangeContract.View>
         implements CloudServiceMangeContract.Presenter {
+
+
+    private List<SunmiDevice> devices;
+
+    public CloudServiceMangePresenter() {
+        devices = DataSupport.where("type=?", "IPC").find(SunmiDevice.class);
+    }
+
     @Override
     public void getSubscriptionList(int pageNum, int pageSize) {
         ServiceApi.getInstance().getSubscriptionList(pageNum, pageSize, new RetrofitCallback<SubscriptionListBean>() {
@@ -36,9 +45,8 @@ public class CloudServiceMangePresenter extends BasePresenter<CloudServiceMangeC
                 ThreadPool.getCachedThreadPool().submit(new Runnable() {
                     @Override
                     public void run() {
-                        List<SunmiDevice> devices = DataSupport.where("type=?", "IPC").find(SunmiDevice.class);
                         if (devices.size() <= 0) {
-                            getIpcDetailList(beans);
+                            getIpcDetailList(beans, data.getTotalCount());
                         } else {
                             for (int i = 0; i < beans.size(); i++) {
                                 SunmiDevice device = DataSupport.where("deviceid=?",
@@ -71,17 +79,45 @@ public class CloudServiceMangePresenter extends BasePresenter<CloudServiceMangeC
     }
 
 
-    private void getIpcDetailList(List<ServiceDetailBean> beans) {
-        HashMap<String, ServiceDetailBean> beanHashMap = new HashMap<>(beans.size());
+    private void getIpcDetailList(final List<ServiceDetailBean> beans, final int total) {
+        final HashMap<String, ServiceDetailBean> beanHashMap = new HashMap<>(beans.size());
         for (ServiceDetailBean bean : beans) {
-            beanHashMap.put(bean.getDeviceSn(),bean);
+            bean.setBind(false);
+            beanHashMap.put(bean.getDeviceSn(), bean);
         }
-        IpcCloudApiAnno ipcCloudApi = ServiceManager.get(IpcCloudApiAnno.class);
+        final IpcCloudApiAnno ipcCloudApi = ServiceManager.get(IpcCloudApiAnno.class);
         if (ipcCloudApi != null) {
             ipcCloudApi.getDetailList(SpUtils.getCompanyId(), SpUtils.getShopId(),
                     new RetrofitCallback<IpcListResp>() {
                         @Override
                         public void onSuccess(int code, String msg, final IpcListResp data) {
+                            List<IpcListResp.SsListBean> fsList = data.getFs_list();
+                            List<IpcListResp.SsListBean> ssList = data.getSs_list();
+                            if (ssList != null && ssList.size() > 0) {
+                                for (IpcListResp.SsListBean bean : ssList) {
+                                    if (beanHashMap.get(bean.getSn()) != null) {
+                                        beanHashMap.get(bean.getSn()).setDeviceName(bean.getDevice_name());
+                                        beanHashMap.get(bean.getSn()).setBind(true);
+                                    }
+                                }
+                            }
+                            if (fsList != null && fsList.size() > 0) {
+                                for (IpcListResp.SsListBean bean : fsList) {
+                                    if (beanHashMap.get(bean.getSn()) != null) {
+                                        beanHashMap.get(bean.getSn()).setDeviceName(bean.getDevice_name());
+                                        beanHashMap.get(bean.getSn()).setBind(true);
+                                    }
+                                }
+                            }
+                            Iterator<ServiceDetailBean> iterator = beanHashMap.values().iterator();
+                            beans.clear();
+                            while (iterator.hasNext()) {
+                                beans.add(iterator.next());
+                            }
+                            if (isViewAttached()) {
+                                mView.hideLoadingDialog();
+                                mView.getSubscriptionListSuccess(beans, total);
+                            }
                             ThreadPool.getCachedThreadPool().submit(new Runnable() {
                                 @Override
                                 public void run() {
@@ -103,7 +139,10 @@ public class CloudServiceMangePresenter extends BasePresenter<CloudServiceMangeC
 
                         @Override
                         public void onFail(int code, String msg, IpcListResp data) {
-
+                            if (isViewAttached()) {
+                                mView.hideLoadingDialog();
+                                mView.getSubscriptionListFail(code, msg);
+                            }
                         }
                     });
         }

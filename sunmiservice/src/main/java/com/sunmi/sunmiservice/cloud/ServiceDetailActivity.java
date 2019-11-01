@@ -19,14 +19,12 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
-import org.litepal.crud.DataSupport;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.constant.RouterConfig;
-import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -70,6 +68,10 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
 
     @Extra
     String mSn;
+    @Extra
+    boolean isBind;
+    @Extra
+    String deviceName;
 
     private int status, errorCode;
 
@@ -103,10 +105,9 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
             status = bean.getRenewStatus();
             errorCode = bean.getRenewErrorCode();
             String sn = bean.getDeviceSn();
-            SunmiDevice device = DataSupport.where("deviceid=?", sn).findFirst(SunmiDevice.class);
             tvServiceName.setText(bean.getServiceName());
-            if (device != null) {
-                tvDeviceName.setText(device.getName());
+            if (isBind) {
+                tvDeviceName.setText(deviceName);
             } else {
                 tvDeviceName.setText("- -");
                 tvStatus.setText(R.string.str_unbind);

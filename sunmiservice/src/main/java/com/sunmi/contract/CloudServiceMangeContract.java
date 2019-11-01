@@ -19,7 +19,6 @@ public interface CloudServiceMangeContract {
 
         void getSubscriptionListFail(int code, String msg);
 
-        void getIpcDetailListSuccess();
     }
 
     interface Presenter {

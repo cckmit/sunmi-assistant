@@ -1423,7 +1423,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                         if (bean.getStatus() == CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
                             Router.withApi(SunmiServiceApi.class).goToWebViewCloud(CommonConfig.CLOUD_STORAGE_URL, device.getDeviceid());
                         } else {
-                            Router.withApi(SunmiServiceApi.class).goToServiceDetail(device.getDeviceid());
+                            Router.withApi(SunmiServiceApi.class).goToServiceDetail(device.getDeviceid(), true, device.getName());
                         }
                     }
                 });
