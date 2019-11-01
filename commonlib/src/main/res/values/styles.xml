@@ -75,7 +75,7 @@
     </style>
 
     <!-- 主要按钮样式 橙色大按钮 -->
-    <style name="BtnPrimary" parent="@style/Widget.AppCompat.Button.Borderless">
+    <style name="BtnBigOrange" parent="@style/Widget.AppCompat.Button.Borderless">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/dp_44</item>
         <item name="android:layout_marginLeft">@dimen/dp_20</item>
@@ -87,7 +87,7 @@
     </style>
 
     <!-- 次要按钮样式 无背景大按钮 -->
-    <style name="BtnSecondary" parent="@style/Widget.AppCompat.Button.Borderless">
+    <style name="BtnBigBlank" parent="@style/Widget.AppCompat.Button.Borderless">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/dp_44</item>
         <item name="android:layout_marginLeft">@dimen/dp_20</item>
@@ -99,7 +99,7 @@
     </style>
 
     <!-- 中等按钮样式 灰色按钮 常用于网络异常刷新 -->
-    <style name="BtnMedium" parent="@style/Widget.AppCompat.Button.Borderless">
+    <style name="BtnMediumWhite" parent="@style/Widget.AppCompat.Button.Borderless">
         <item name="android:layout_width">@dimen/dp_104</item>
         <item name="android:layout_height">@dimen/dp_36</item>
         <item name="android:background">@drawable/btn_common_bg_medium</item>
@@ -109,7 +109,7 @@
     </style>
 
     <!-- 小按钮样式 橙色边框按钮 -->
-    <style name="BtnSmall" parent="@style/Widget.AppCompat.Button.Borderless">
+    <style name="BtnSmallOrangeBorder" parent="@style/Widget.AppCompat.Button.Borderless">
         <item name="android:layout_width">@dimen/dp_72</item>
         <item name="android:layout_height">@dimen/dp_28</item>
         <item name="android:background">@drawable/btn_common_bg_small</item>

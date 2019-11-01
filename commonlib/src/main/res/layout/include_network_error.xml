@@ -38,7 +38,7 @@
 
     <Button
         android:id="@+id/btn_refresh"
-        style="@style/BtnMedium"
+        style="@style/BtnMediumWhite"
         android:layout_marginTop="@dimen/dp_16"
         android:text="@string/str_refresh"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -64,21 +64,21 @@
 
         <Button
             android:id="@+id/btn_complete"
-            style="@style/BtnPrimary"
+            style="@style/BtnBigOrange"
             android:layout_above="@+id/btn_finish"
             android:text="@string/str_complete"
             android:visibility="gone" />
 
         <Button
             android:id="@+id/btn_retry"
-            style="@style/BtnSecondary"
+            style="@style/BtnBigBlank"
             android:layout_above="@+id/btn_finish"
             android:text="@string/str_retry_add"
             android:visibility="gone" />
 
         <Button
             android:id="@+id/btn_finish"
-            style="@style/BtnSecondary"
+            style="@style/BtnBigBlank"
             android:layout_alignParentBottom="true"
             android:layout_marginTop="@dimen/dp_20"
             android:text="@string/str_go_home"

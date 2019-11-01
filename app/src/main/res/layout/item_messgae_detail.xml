@@ -108,7 +108,7 @@
 
     <Button
         android:id="@+id/btn_play"
-        style="@style/BtnSmall"
+        style="@style/BtnSmallOrangeBorder"
         android:layout_below="@+id/v_line_bottom"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/dp_8"
