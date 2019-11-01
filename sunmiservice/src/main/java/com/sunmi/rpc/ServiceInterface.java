@@ -36,6 +36,5 @@ public interface ServiceInterface {
      */
     @POST(path + "subscription/getInfoByDevice")
     Call<BaseResponse<ServiceDetailBean>> getServiceDetailByDevice(@Body BaseRequest request);
-
-
+    
 }
