@@ -237,7 +237,7 @@
 
     <Button
         android:id="@+id/btn_renewal"
-        style="@style/BtnOrange"
+        style="@style/BtnPrimary"
         android:layout_marginTop="@dimen/dp_24"
         android:text="@string/str_renewal" />
 

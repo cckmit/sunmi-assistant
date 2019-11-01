@@ -38,13 +38,9 @@
 
     <Button
         android:id="@+id/btn_refresh"
-        android:layout_width="@dimen/dp_160"
-        android:layout_height="@dimen/dp_44"
+        style="@style/BtnMedium"
         android:layout_marginTop="@dimen/dp_16"
-        android:background="@drawable/bg_btn_refresh"
         android:text="@string/str_refresh"
-        android:textColor="@color/text_main"
-        android:textSize="@dimen/sp_14"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

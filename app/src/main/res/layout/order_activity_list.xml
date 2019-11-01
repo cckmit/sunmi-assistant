@@ -120,7 +120,7 @@
 
     <Button
         android:id="@+id/btn_order_list_no_network_refresh"
-        style="@style/BtnGrayRounded"
+        style="@style/BtnMedium"
         android:layout_marginTop="@dimen/dp_32"
         android:text="@string/str_refresh"
         app:layout_constraintBottom_toBottomOf="parent"
