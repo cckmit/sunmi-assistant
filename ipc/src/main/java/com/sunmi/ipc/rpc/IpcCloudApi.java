@@ -55,7 +55,7 @@ import sunmi.common.utils.SpUtils;
  * @author Bruce
  * @date 2019/3/31
  */
-@ServiceAnno(IpcCloudApiAnno.class)
+@ServiceAnno(value = {IpcCloudApiAnno.class},singleTon = true)
 public class IpcCloudApi implements IpcCloudApiAnno {
 
     private static final class Single {

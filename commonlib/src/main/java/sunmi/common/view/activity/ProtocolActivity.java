@@ -3,7 +3,6 @@ package sunmi.common.view.activity;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.os.CountDownTimer;
-import android.text.TextUtils;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
@@ -85,13 +84,13 @@ public class ProtocolActivity extends BaseActivity {
 
     private void initNormal() {
         if (protocolType == USER_PROTOCOL) { //app注册协议
-            loadWebView(TextUtils.equals("zh", CommonHelper.getLanguage()) ? PROTOCOL_USER : PROTOCOL_USER_ENGLISH);
+            loadWebView(CommonHelper.isChinese() ? PROTOCOL_USER : PROTOCOL_USER_ENGLISH);
         } else if (protocolType == USER_PRIVATE) {
-            loadWebView(TextUtils.equals("zh", CommonHelper.getLanguage()) ? PROTOCOL_PRIVATE : PROTOCOL_PRIVATE_ENGLISH);
+            loadWebView(CommonHelper.isChinese() ? PROTOCOL_PRIVATE : PROTOCOL_PRIVATE_ENGLISH);
         } else if (protocolType == USER_AP_PROTOCOL) { //快速配置路由器协议
-            loadWebView(TextUtils.equals("zh", CommonHelper.getLanguage()) ? PROTOCOL_USER : PROTOCOL_USER_ENGLISH);
+            loadWebView(CommonHelper.isChinese() ? PROTOCOL_USER : PROTOCOL_USER_ENGLISH);
         } else if (protocolType == USER_AP_PRIVATE) {
-            loadWebView(TextUtils.equals("zh", CommonHelper.getLanguage()) ? PROTOCOL_PRIVATE : PROTOCOL_PRIVATE_ENGLISH);
+            loadWebView(CommonHelper.isChinese() ? PROTOCOL_PRIVATE : PROTOCOL_PRIVATE_ENGLISH);
         } else if (protocolType == USER_WX_HELP) {
             loadWebView(WX_AUTH_HELP);
         } else if (protocolType == USER_AUTH_PLATFORM) {//获取平台授权协议
@@ -104,13 +103,13 @@ public class ProtocolActivity extends BaseActivity {
      */
     private void localHtml() {
         if (protocolType == USER_PROTOCOL) { //app注册协议
-            webView.loadUrl(TextUtils.equals("zh", CommonHelper.getLanguage()) ? LOCAL_PROTOCOL_USER : LOCAL_PROTOCOL_USER_ENGLISH);
+            webView.loadUrl(CommonHelper.isChinese() ? LOCAL_PROTOCOL_USER : LOCAL_PROTOCOL_USER_ENGLISH);
         } else if (protocolType == USER_PRIVATE) {
-            webView.loadUrl(TextUtils.equals("zh", CommonHelper.getLanguage()) ? LOCAL_PROTOCOL_PRIVATE : LOCAL_PROTOCOL_PRIVATE_ENGLISH);
+            webView.loadUrl(CommonHelper.isChinese() ? LOCAL_PROTOCOL_PRIVATE : LOCAL_PROTOCOL_PRIVATE_ENGLISH);
         } else if (protocolType == USER_AP_PROTOCOL) { //快速配置路由器协议
-            webView.loadUrl(TextUtils.equals("zh", CommonHelper.getLanguage()) ? LOCAL_PROTOCOL_USER : LOCAL_PROTOCOL_USER_ENGLISH);
+            webView.loadUrl(CommonHelper.isChinese() ? LOCAL_PROTOCOL_USER : LOCAL_PROTOCOL_USER_ENGLISH);
         } else if (protocolType == USER_AP_PRIVATE) {
-            webView.loadUrl(TextUtils.equals("zh", CommonHelper.getLanguage()) ? LOCAL_PROTOCOL_PRIVATE : LOCAL_PROTOCOL_PRIVATE_ENGLISH);
+            webView.loadUrl(CommonHelper.isChinese() ? LOCAL_PROTOCOL_PRIVATE : LOCAL_PROTOCOL_PRIVATE_ENGLISH);
         } else if (protocolType == USER_WX_HELP) {
             webView.loadUrl(WX_AUTH_HELP);
         } else if (protocolType == USER_AUTH_PLATFORM) {//获取平台授权协议

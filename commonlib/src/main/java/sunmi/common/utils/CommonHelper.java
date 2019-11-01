@@ -45,7 +45,17 @@ public class CommonHelper {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             locale = LocaleList.getDefault().get(0);
         } else locale = Locale.getDefault();
-        return locale.getLanguage().toLowerCase();
+        return locale.getLanguage().toLowerCase() + "_" + locale.getCountry().toLowerCase();
+    }
+
+    public static boolean isChinese() {
+        Locale locale;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            locale = LocaleList.getDefault().get(0);
+        } else {
+            locale = Locale.getDefault();
+        }
+        return TextUtils.equals(locale.getLanguage().toLowerCase(), "zh");
     }
 
     /**
