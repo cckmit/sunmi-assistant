@@ -240,6 +240,7 @@
     <string name="msg_ipc_tf_non_capable">网络摄像机%s检测到插入的存储卡可能已损坏，请更换存储卡</string>
     <string name="msg_ipc_ota">网络摄像机%s已发布新版固件%s，请更新</string>
     <string name="msg_ipc_pic_detect">网络摄像机%s侦测到异常画面，请即刻查看</string>
+    <string name="msg_ipc_audio_detect">网络摄像机%s侦测到异常声音，请即刻查看</string>
     <string name="msg_ipc_offline">网络摄像机%s于%s离线，请检查设备状态</string>
     <string name="msg_esl_offline">基站%s于%s离线，请检查设备状态</string>
     <string name="msg_esl_ota">价签%s已发布新版固件%s，请更新</string>
