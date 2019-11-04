@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
+import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.DownloadListener;
@@ -52,17 +53,17 @@ import sunmi.common.view.webview.SMWebViewClient;
 @EActivity(resName = "activity_webview_cloud")
 public class WebViewCloudServiceActivity extends BaseActivity {
 
+    private final int timeout = 10_000;
     @ViewById(resName = "webView")
     SMWebView webView;
     @ViewById(resName = "layout_network_error")
     View networkError;
-
     @Extra
     String mUrl;
     @Extra
     String deviceSn;
-
     private boolean hasSendDeviceInfo = false;
+    private CountDownTimer countDownTimer;
 
     /**
      * 路由启动Activity
@@ -103,6 +104,30 @@ public class WebViewCloudServiceActivity extends BaseActivity {
         // 设置setWebChromeClient对象
         webView.setWebChromeClient(webChrome);
         loadWebView(mUrl);
+    }
+
+    private void startTimer() {
+        if (countDownTimer == null) {
+            countDownTimer = new CountDownTimer(timeout, timeout) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+
+                }
+
+                @Override
+                public void onFinish() {
+                    networkError.setVisibility(View.VISIBLE);
+                }
+            };
+        }
+        countDownTimer.start();
+    }
+
+    private void closeTimer() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+        }
     }
 
     @Click(resName = "img_back")
@@ -192,6 +217,7 @@ public class WebViewCloudServiceActivity extends BaseActivity {
                 super.onPageStarted(view, url, favicon);
                 networkError.setVisibility(View.GONE);
                 showLoadingDialog();
+                startTimer();
             }
 
             @Override
@@ -199,6 +225,7 @@ public class WebViewCloudServiceActivity extends BaseActivity {
                 super.onPageFinished(view, url);
                 hideLoadingDialog();
                 if (!hasSendDeviceInfo) {
+                    closeTimer();
                     try {
                         String params = new JSONObject()
                                 .put("token", SpUtils.getStoreToken())
@@ -222,7 +249,7 @@ public class WebViewCloudServiceActivity extends BaseActivity {
             @Override
             protected void receiverError(WebView view, WebResourceRequest request, WebResourceError error) {
                 hideLoadingDialog();
-                showTag(error);
+                closeTimer();
                 networkError.setVisibility(View.VISIBLE);
             }
 

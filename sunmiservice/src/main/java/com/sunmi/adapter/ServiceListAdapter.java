@@ -11,12 +11,9 @@ import com.sunmi.bean.ServiceDetailBean;
 import com.sunmi.sunmiservice.R;
 import com.sunmi.sunmiservice.cloud.ServiceDetailActivity_;
 
-import org.litepal.crud.DataSupport;
-
 import java.util.List;
 
 import sunmi.common.constant.CommonConstants;
-import sunmi.common.model.SunmiDevice;
 import sunmi.common.utils.DateTimeUtils;
 
 /**
@@ -28,17 +25,12 @@ public class ServiceListAdapter extends BaseQuickAdapter<ServiceDetailBean, Base
 
     private Context context;
     private OnServiceClickListener listener;
-    private List<SunmiDevice> devices;
 
-    public ServiceListAdapter(List<ServiceDetailBean> data, Context context, List<SunmiDevice> devices) {
+    public ServiceListAdapter(List<ServiceDetailBean> data, Context context) {
         super(R.layout.item_service_detail, data);
         this.context = context;
-        this.devices = devices;
     }
 
-    public void setDevices(List<SunmiDevice> devices) {
-        this.devices = devices;
-    }
 
     public void setOnServiceClickListener(OnServiceClickListener listener) {
         this.listener = listener;
@@ -57,7 +49,15 @@ public class ServiceListAdapter extends BaseQuickAdapter<ServiceDetailBean, Base
             helper.setText(R.id.tv_remaining, R.string.str_expired);
             helper.setTextColor(R.id.tv_remaining, R.color.caution_primary);
         }
-        final String sn = item.getDeviceSn();
+        if (item.isBind()) {
+            tvDeviceSn.setText(context.getString(R.string.ipc_sn, item.getDeviceSn()));
+            tvDeviceName.setText(context.getString(R.string.ipc_device_name, item.getDeviceName()));
+        } else {
+            btnRenewal.setVisibility(View.GONE);
+            tvDeviceSn.setVisibility(View.GONE);
+            tvDeviceName.setVisibility(View.GONE);
+            helper.getView(R.id.tv_unbind).setVisibility(View.VISIBLE);
+        }
         btnRenewal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,24 +70,11 @@ public class ServiceListAdapter extends BaseQuickAdapter<ServiceDetailBean, Base
         helper.getView(R.id.btn_setting_detail).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ServiceDetailActivity_.intent(context).mSn(sn).start();
+                ServiceDetailActivity_.intent(context).mSn(item.getDeviceSn())
+                        .deviceName(item.getDeviceName()).isBind(item.isBind()).start();
             }
         });
-        if (devices.size() <= 0) {
-            tvDeviceSn.setText(context.getString(R.string.ipc_sn, sn));
-            tvDeviceName.setText(context.getString(R.string.ipc_device_name, "- -"));
-            return;
-        }
-        SunmiDevice device = DataSupport.where("deviceid=?", sn).findFirst(SunmiDevice.class);
-        if (device != null) {
-            tvDeviceSn.setText(context.getString(R.string.ipc_sn, sn));
-            tvDeviceName.setText(context.getString(R.string.ipc_device_name, device.getName()));
-        } else {
-            btnRenewal.setVisibility(View.GONE);
-            tvDeviceSn.setVisibility(View.GONE);
-            tvDeviceName.setVisibility(View.GONE);
-            helper.getView(R.id.tv_unbind).setVisibility(View.VISIBLE);
-        }
+
     }
 
     public interface OnServiceClickListener {

@@ -16,7 +16,6 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
-import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,6 @@ import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonNotifications;
-import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -49,14 +47,12 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
     private List<ServiceDetailBean> dataList = new ArrayList<>();
     private ServiceListAdapter adapter;
     private boolean loadFinish = false;
-    private List<SunmiDevice> devices;
 
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         mPresenter = new CloudServiceMangePresenter();
         mPresenter.attachView(this);
-        devices = DataSupport.where("type=?", "IPC").find(SunmiDevice.class);
         reloadSubscriptionList();
         showLoadingDialog();
         initServiceList();
@@ -69,10 +65,13 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
     }
 
     @Override
+    @UiThread
     public void getSubscriptionListSuccess(List<ServiceDetailBean> beans, int total) {
-        networkError.setVisibility(View.GONE);
-        refreshLayout.endLoadingMore();
+        if (networkError.isShown()) {
+            networkError.setVisibility(View.GONE);
+        }
         refreshLayout.endRefreshing();
+        refreshLayout.endLoadingMore();
         if (total <= 0) {
             rlNoService.setVisibility(View.VISIBLE);
         } else {
@@ -91,14 +90,9 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
         }
     }
 
-    @Override
-    public void getIpcDetailListSuccess() {
-        devices = DataSupport.where("type=?", "IPC").find(SunmiDevice.class);
-        adapter.setDevices(devices);
-        adapter.notifyDataSetChanged();
-    }
 
     @Override
+    @UiThread
     public void getSubscriptionListFail(int code, String msg) {
         refreshLayout.endRefreshing();
         refreshLayout.endLoadingMore();
@@ -132,7 +126,7 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
         if (adapter == null) {
             LinearLayoutManager layoutManager = new LinearLayoutManager(context);
             rvService.setLayoutManager(layoutManager);
-            adapter = new ServiceListAdapter(dataList, context, devices);
+            adapter = new ServiceListAdapter(dataList, context);
             adapter.setOnServiceClickListener(new ServiceListAdapter.OnServiceClickListener() {
                 @Override
                 public void onRenewalClick(ServiceDetailBean bean) {
@@ -189,9 +183,6 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
         pageNum = 1;
         pageSize = 10;
         loadFinish = false;
-        if (devices.size() <= 0) {
-            mPresenter.getIpcDetailList();
-        }
         mPresenter.getSubscriptionList(pageNum, pageSize);
     }
 }
