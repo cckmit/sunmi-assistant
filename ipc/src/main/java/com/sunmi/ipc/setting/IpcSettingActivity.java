@@ -195,6 +195,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         if (upgradeRequired == 1) {
             mVersion.getIvToTextLeft().setVisibility(View.VISIBLE);
             mVersion.getIvToTextLeft().setText(R.string.ipc_setting_new);
+            mVersion.setRightText(mDevice.getFirmware());
             if (!isClickVersionUpgrade) {
                 newVersionDialog();
             }
@@ -446,6 +447,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             if (mResp != null) {
                 mVersion.setRightText(mResp.getLatest_bin_version());
                 mVersion.getIvToTextLeft().setVisibility(View.GONE);
+                isClickVersionUpgrade = false;
+                mPresenter.currentVersion();
             }
             BaseNotification.newInstance().postNotificationName(CommonNotifications.ipcUpgradeComplete);
         }
@@ -588,7 +591,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     public int[] getStickNotificationId() {
         return new int[]{OpcodeConstants.getIpcConnectApMsg, OpcodeConstants.getIpcNightIdeRotation,
                 OpcodeConstants.setIpcNightIdeRotation, OpcodeConstants.getIpcDetection,
-                OpcodeConstants.ipcUpgrade, OpcodeConstants.getIsWire, CommonNotifications.netConnected,
+                OpcodeConstants.getIsWire, CommonNotifications.netConnected,
                 CommonNotifications.netDisconnection, CommonNotifications.ipcUpgrade,
                 CommonNotifications.mqttResponseTimeout, OpcodeConstants.ipcQueryUpgradeStatus};
     }
@@ -620,7 +623,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         if (!isRun || args == null || args.length < 1) {
             return;
         }
-
         if (args[0] instanceof ResponseBean) {
             ResponseBean res = (ResponseBean) args[0];
             if (id == OpcodeConstants.getIpcConnectApMsg) {
@@ -637,8 +639,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 } else {
                     shortTip(R.string.toast_network_Exception);
                 }
-            } else if (id == OpcodeConstants.ipcUpgrade) {
-                upgradeResult(res);
             } else if (id == OpcodeConstants.getIsWire) {
                 checkWire(res);
             } else if (id == OpcodeConstants.getSdStatus) {
@@ -946,13 +946,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         swWdr.setChecked(isSetWdr);
         rotateDegree(rotation);
         isCanSetWdr(nightMode);
-    }
-
-    @UiThread
-    void upgradeResult(ResponseBean res) {
-        mDevice.setFirmware(mResp.getLatest_bin_version());
-        mVersion.setRightText(mResp.getLatest_bin_version());
-        BaseNotification.newInstance().postNotificationName(CommonNotifications.ipcUpgradeComplete);
     }
 
     /**

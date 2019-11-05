@@ -149,7 +149,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
             tvIpcStatus.setText(getString(R.string.ipc_setting_version_find_new, mResp.getLatest_bin_version()));
             btnUpgrade.setVisibility(View.VISIBLE);
         } else {
-            tvIpcStatus.setText(String.format("%s\n%s", mDevice.getFirmware(), getString(R.string.ipc_setting_version_no_new)));
+            tvIpcStatus.setText(String.format("%s\n%s", mResp.getLatest_bin_version(), getString(R.string.ipc_setting_version_no_new)));
             btnUpgrade.setVisibility(View.GONE);
         }
     }
