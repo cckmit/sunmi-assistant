@@ -25,8 +25,8 @@ pipeline{
                 mkdir -p build
                 fastlane testEnv
                 ''')
-              archiveArtifacts(artifacts: 'app/build/outputs/apk/**/app-universal-*.apk', onlyIfSuccessful: true)
-              stash(includes: 'app/build/outputs/apk/**/app-universal-*.apk', name: 'apk')
+              archiveArtifacts(artifacts: 'app/build/outputs/apk/**/app-myapp-universal-debug.apk', onlyIfSuccessful: true)
+              stash(includes: 'app/build/outputs/apk/**/app-myapp-universal-debug.apk', name: 'apk')
             }catch(e){
               def stageName = 'build'
               if(currentBuild.currentResult == "FAILURE"){
@@ -54,7 +54,7 @@ pipeline{
               export LC_ALL=en_US.UTF-8
               export LANG=en_US.UTF-8
               fir login 8abeee66a3604b68f707d9c2753f7fb4
-              fir publish app/build/outputs/apk/**/app-universal-*.apk
+              fir publish app/build/outputs/apk/myapp/debug/app-myapp-universal-*.apk
               ''')
           }catch(e){
             def stageName = 'release'

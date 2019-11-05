@@ -150,3 +150,11 @@
 -keep class com.amap.api.location.**{*;}
 -keep class com.amap.api.fence.**{*;}
 -keep class com.autonavi.aps.amapapi.model.**{*;}
+
+#compent
+-dontwarn com.xiaojinzi.component.**
+-keep class com.xiaojinzi.component.** {*;}
+-keep interface com.xiaojinzi.component.** {*;}
+-keep class * implements com.xiaojinzi.component.impl.RouterInterceptor{*;}
+-keep class * implements com.xiaojinzi.component.application.IComponentApplication{*;}
+-keep class * implements com.xiaojinzi.component.support.Inject{*;}

@@ -28,6 +28,10 @@ android {
         }
         multiDexEnabled true
 
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a'
+        }
+
         manifestPlaceholders = [
                 ENV_VALUE       : "ENV_TEST",
                 DB_VERSION_VALUE: "2",
@@ -53,8 +57,7 @@ android {
 //                    ENV_VALUE       : "ENV_RELEASE",
                     DB_VERSION_VALUE: "2",
                     APP_NAME        : "商米助手test",
-                    MTA_APPKEY      : "A6INR132MGAI",
-                    MTA_CHANNEL     : "myapp"]
+                    MTA_APPKEY      : "A6INR132MGAI"]
         }
 
         uat {
@@ -62,8 +65,7 @@ android {
                     ENV_VALUE       : "ENV_UAT",
                     DB_VERSION_VALUE: "2",
                     APP_NAME        : "商米助手UAT",
-                    MTA_APPKEY      : "A6INR132MGAI",
-                    MTA_CHANNEL     : "myapp"]
+                    MTA_APPKEY      : "A6INR132MGAI"]
             zipAlignEnabled true
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -75,8 +77,7 @@ android {
                     ENV_VALUE       : "ENV_RELEASE",
                     DB_VERSION_VALUE: "2",
                     APP_NAME        : "@string/app_name",
-                    MTA_APPKEY      : "A6INR132MGAI",
-                    MTA_CHANNEL     : "myapp"]
+                    MTA_APPKEY      : "A6INR132MGAI"]
             //Zipalign优化
             zipAlignEnabled true
             minifyEnabled false
@@ -84,21 +85,24 @@ android {
             signingConfig signingConfigs.sign
         }
 
-        googleplay {
-            defaultConfig.versionCode Integer.parseInt(GOOGLE_VERSION_CODE)
-            defaultConfig.versionName GOOGLE_VERSION_NAME
+    }
+
+    flavorDimensions "default"
+    productFlavors {
+        myapp {
             manifestPlaceholders = [
-                    ENV_VALUE       : "ENV_RELEASE",
-                    DB_VERSION_VALUE: "2",
-                    APP_NAME        : "@string/app_name",
-                    MTA_APPKEY      : "A6INR132MGAI",
-                    MTA_CHANNEL     : "google"]
-            //Zipalign优化
-            zipAlignEnabled true
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.sign
+                    MTA_CHANNEL: "myapp"
+            ]
         }
+
+        google {
+            manifestPlaceholders = [
+                    MTA_CHANNEL: "google"
+            ]
+            versionCode Integer.parseInt(GOOGLE_VERSION_CODE)
+            versionName GOOGLE_VERSION_NAME
+        }
+
     }
 
     sourceSets {
@@ -111,7 +115,7 @@ android {
         abi {
             enable true
             reset()
-            include 'arm64-v8a', 'armeabi-v7a', "x86", 'x86_64' //根据需求自己修改
+            include 'arm64-v8a', 'armeabi-v7a' //根据需求自己修改
             universalApk true
         }
     }
@@ -169,6 +173,6 @@ dependencies {
     //wechat
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
 
-    annotationProcessor "com.github.xiaojinzi123.Component:component-compiler:1.7.5"
+    annotationProcessor "com.github.xiaojinzi123.Component:component-compiler:${CVersion}"
 
 }

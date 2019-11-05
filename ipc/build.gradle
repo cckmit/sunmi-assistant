@@ -35,7 +35,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         uat {}
-        googleplay {}
+    }
+
+    flavorDimensions "default"
+    productFlavors {
+        myapp {}
+        google {}
     }
 
 }
@@ -55,5 +60,5 @@ dependencies {
 
     annotationProcessor "org.androidannotations:androidannotations:${AAVersion}"
 
-    annotationProcessor "com.github.xiaojinzi123.Component:component-compiler:1.7.5"
+    annotationProcessor "com.github.xiaojinzi123.Component:component-compiler:${CVersion}"
 }

@@ -351,6 +351,10 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
                     dialog.dismiss();
                     break;
                 case R.id.tv_confirm:
+                    if (mProvinceId <= 0 || mCityId <= 0 || mAreaId <= 0) {
+                        shortTip(getString(R.string.shop_input_region_tip));
+                        return;
+                    }
                     dialog.dismiss();
                     tvTransparent.setVisibility(View.GONE);
                     silAddress.setRightText(btnAreaPro.getText().toString() + "," +

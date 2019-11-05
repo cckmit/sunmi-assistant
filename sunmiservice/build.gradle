@@ -16,6 +16,8 @@ android {
         javaCompileOptions {
             annotationProcessorOptions {
                 includeCompileClasspath = true
+                // 配置业务模块的模块名称
+                arguments = ["HOST": "sunmiservice"]
             }
         }
         multiDexEnabled true
@@ -27,7 +29,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         uat {}
-        googleplay {}
+    }
+
+    flavorDimensions "default"
+    productFlavors {
+        myapp {}
+        google {}
     }
 }
 
@@ -45,5 +52,7 @@ dependencies {
 
     //wechat
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
+
+    annotationProcessor "com.github.xiaojinzi123.Component:component-compiler:${CVersion}"
 
 }

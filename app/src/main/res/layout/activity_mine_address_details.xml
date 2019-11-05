@@ -33,6 +33,7 @@
             android:maxLength="101"
             android:paddingStart="@dimen/dp_25"
             android:paddingTop="@dimen/dp_20"
+            android:paddingEnd="@dimen/dp_25"
             android:scrollbars="vertical"
             android:textColor="@color/text_main"
             android:textColorHint="@color/text_caption"

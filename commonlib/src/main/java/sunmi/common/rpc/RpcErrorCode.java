@@ -19,4 +19,8 @@ public class RpcErrorCode {
     public static int HTTP_EXPIRE_TOKEN = 5028;//store token expire
     public static int HTTP_JWT_TOKEN_EXPIRED = 5029;//jwt token expire
 
+
+    //服务相关错误码
+    public static final int ERR_SERVICE_SUBSCRIBE_ERROR = 5420;
+
 }

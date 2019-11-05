@@ -33,7 +33,7 @@
 
         <Button
             android:id="@+id/btn_add_device"
-            style="@style/BtnGrayRounded"
+            style="@style/BtnBigOrange"
             android:layout_below="@+id/tv_no_device"
             android:layout_marginTop="@dimen/dp_12"
             android:text="@string/str_add_device" />

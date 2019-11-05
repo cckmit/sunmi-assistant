@@ -15,12 +15,14 @@ import com.sunmi.ipc.model.FaceGroupListResp;
 import com.sunmi.ipc.model.FaceGroupUpdateReq;
 import com.sunmi.ipc.model.FaceListResp;
 import com.sunmi.ipc.model.FaceSaveResp;
-import com.sunmi.ipc.model.IpcListResp;
 import com.sunmi.ipc.model.IpcNewFirmwareResp;
+import com.sunmi.ipc.model.StorageListResp;
 import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.rpc.api.DeviceInterface;
 import com.sunmi.ipc.rpc.api.FaceInterface;
 import com.sunmi.ipc.rpc.api.MediaInterface;
+import com.sunmi.ipc.rpc.api.StorageInterface;
+import com.xiaojinzi.component.anno.ServiceAnno;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,6 +38,8 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import sunmi.common.constant.CommonConfig;
+import sunmi.common.router.IpcCloudApiAnno;
+import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.cloud.SunmiStoreRetrofitClient;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.BaseResponse;
@@ -51,11 +55,8 @@ import sunmi.common.utils.SpUtils;
  * @author Bruce
  * @date 2019/3/31
  */
-public class IpcCloudApi {
-
-    private IpcCloudApi() {
-
-    }
+@ServiceAnno(value = {IpcCloudApiAnno.class},singleTon = true)
+public class IpcCloudApi implements IpcCloudApiAnno {
 
     private static final class Single {
         private static final IpcCloudApi INSTANCE = new IpcCloudApi();
@@ -124,6 +125,7 @@ public class IpcCloudApi {
      * @param companyId 是	int64	商户id
      * @param shopId    是	int64	店铺id
      */
+    @Override
     public void getDetailList(int companyId, int shopId, RetrofitCallback<IpcListResp> callback) {
         try {
             String params = new JSONObject()
@@ -589,6 +591,26 @@ public class IpcCloudApi {
             params.put("face_id", faceId);
             SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
                     .getArrivalCountByTimeRange(new BaseRequest(params.toString()))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * company_id	是	int64	商户id
+     * shop_id	是	int64	店铺id
+     * device_id	否	int64	设备id 不传为查询所有设
+     */
+    public void getStorageInfo(int deviceId, RetrofitCallback<StorageListResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", SpUtils.getShopId())
+                    .put("device_id", deviceId)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(StorageInterface.class)
+                    .getStorageInfo(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
