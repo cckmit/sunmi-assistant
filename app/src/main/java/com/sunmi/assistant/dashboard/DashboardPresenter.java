@@ -7,6 +7,8 @@ import android.os.Looper;
 import android.util.SparseArray;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.customer.CustomerFragment;
+import com.sunmi.assistant.dashboard.customer.CustomerFragment_;
 import com.sunmi.assistant.dashboard.overview.OverviewFragment;
 import com.sunmi.assistant.dashboard.overview.OverviewFragment_;
 import com.sunmi.ipc.model.IpcListResp;
@@ -109,6 +111,9 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
         OverviewFragment overviewFragment = new OverviewFragment_();
         pages.add(new PageHost(R.string.dashboard_page_overview, 0, overviewFragment, Constants.PAGE_OVERVIEW));
+
+        CustomerFragment customerFragment = new CustomerFragment_();
+        pages.add(new PageHost(R.string.dashboard_page_customer, 0, customerFragment, Constants.PAGE_CUSTOMER));
         mPageType = Constants.PAGE_OVERVIEW;
 
         return pages;
@@ -163,8 +168,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         this.mLoadAllPage = allPage;
         this.mShowLoading = showLoading;
         if ((loadFlag & Constants.FLAG_CUSTOMER) != 0) {
-            mLoadFlag &= ~Constants.FLAG_CUSTOMER;
-//            loadCustomer();
+            loadCustomer();
         }
         if ((loadFlag & Constants.FLAG_SHOP) != 0) {
             loadShop();
