@@ -6,8 +6,7 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.MediaStore;
-
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 import java.io.File;
 
@@ -261,7 +260,7 @@ public class Image implements Parcelable {
         return result;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
         return "Image{" +
