@@ -3,7 +3,7 @@ package com.sunmi.ipc.presenter;
 import android.text.TextUtils;
 
 import com.sunmi.ipc.contract.IpcConfiguringContract;
-import com.sunmi.ipc.model.IpcListResp;
+import sunmi.common.router.model.IpcListResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
 import java.util.ArrayList;

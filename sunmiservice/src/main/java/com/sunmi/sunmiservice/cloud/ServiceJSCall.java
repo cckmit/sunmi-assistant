@@ -3,7 +3,6 @@ package com.sunmi.sunmiservice.cloud;
 import android.webkit.JavascriptInterface;
 
 import com.sunmi.sunmiservice.R;
-import com.sunmi.sunmiservice.ServiceManageActivity_;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonNotifications;
@@ -28,6 +27,7 @@ public class ServiceJSCall {
     @JavascriptInterface
     public void lastPageBack() {
         mActivity.finish();
+        BaseNotification.newInstance().postNotificationName(CommonNotifications.cloudStorageChange);
     }
 
     @JavascriptInterface

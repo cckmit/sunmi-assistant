@@ -11,7 +11,7 @@ import com.sunmi.assistant.dashboard.customer.CustomerFragment;
 import com.sunmi.assistant.dashboard.customer.CustomerFragment_;
 import com.sunmi.assistant.dashboard.overview.OverviewFragment;
 import com.sunmi.assistant.dashboard.overview.OverviewFragment_;
-import com.sunmi.ipc.model.IpcListResp;
+import sunmi.common.router.model.IpcListResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
 import java.text.SimpleDateFormat;
