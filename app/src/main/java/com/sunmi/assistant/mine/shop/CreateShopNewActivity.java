@@ -148,6 +148,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
     private String mCategoryLeftName, mCategoryRightName;
     private LeftCategoryAdapter mLeftAdapter;
     private RightCategoryAdapter mRightAdapter;
+    private String lat = "", lng = "";
 
     @AfterViews
     void init() {
@@ -239,7 +240,8 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
         //create
         mPresenter.createShop(companyId, shopName, mProvinceId, mCityId, mAreaId, address,
                 mCategoryLeftCode, mCategoryRightCode,
-                TextUtils.isEmpty(square) ? 0 : Float.parseFloat(square), contact, tel);
+                TextUtils.isEmpty(square) ? 0 : Float.parseFloat(square), contact, tel,
+                lat, lng);
     }
 
     /**
@@ -370,6 +372,8 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
                                           KeyEvent event) {
                 LogCat.e(TAG, "111 onEditorAction");
                 if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_GO || actionId == EditorInfo.IME_ACTION_NEXT) {
+                    lat = "";
+                    lng = "";
                     hideSoftInputWindow();
                     return true;
                 }
@@ -434,7 +438,8 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
                     CommonHelper.setSelectionEnd(selShopNamePoi.getEditTextText());
                     etShopName.setEditTextText(poiItem.getTitle());
                     etDetailAddress.setText(poiItem.getSnippet());
-
+                    lat = String.valueOf(poiItem.getLatLonPoint().getLatitude());
+                    lng = String.valueOf(poiItem.getLatLonPoint().getLongitude());
                     notifyDataSetChanged();
                     hideSoftInputWindow();
                 });

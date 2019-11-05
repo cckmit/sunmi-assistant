@@ -24,6 +24,25 @@ public class ShopInfo implements Parcelable {
     private String contactPerson;
     private String contactTel;
 
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public String getLng() {
+        return lng;
+    }
+
+    public void setLng(String lng) {
+        this.lng = lng;
+    }
+
+    private String lat;
+    private String lng;
+
     public ShopInfo(ShopInfoResp response) {
         shopId = response.getShopId();
         shopName = response.getShopName();
@@ -38,6 +57,8 @@ public class ShopInfo implements Parcelable {
         businessArea = response.getBusinessArea();
         contactPerson = response.getContactPerson();
         contactTel = response.getContactTel();
+        lat = response.getLat();
+        lng = response.getLng();
     }
 
     public int getShopId() {
@@ -161,6 +182,8 @@ public class ShopInfo implements Parcelable {
         businessArea = in.readFloat();
         contactPerson = in.readString();
         contactTel = in.readString();
+        lat = in.readString();
+        lng = in.readString();
     }
 
     @Override
@@ -178,6 +201,8 @@ public class ShopInfo implements Parcelable {
         dest.writeFloat(businessArea);
         dest.writeString(contactPerson);
         dest.writeString(contactTel);
+        dest.writeString(lat);
+        dest.writeString(lng);
     }
 
     @Override
