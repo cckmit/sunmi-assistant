@@ -1,6 +1,6 @@
 package com.sunmi.ipc.rpc.api;
 
-import com.sunmi.ipc.model.IpcListResp;
+import sunmi.common.router.model.IpcListResp;
 import com.sunmi.ipc.model.IpcNewFirmwareResp;
 
 import retrofit2.Call;

@@ -13,7 +13,7 @@ import com.sunmi.assistant.mine.model.MessageListBean;
 import com.sunmi.assistant.mine.model.MsgTag;
 import com.sunmi.assistant.utils.MessageUtils;
 import com.sunmi.ipc.dynamic.DynamicVideoActivity_;
-import com.sunmi.ipc.model.IpcListResp;
+import sunmi.common.router.model.IpcListResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.ipc.setting.IpcSettingSdcardActivity_;
 

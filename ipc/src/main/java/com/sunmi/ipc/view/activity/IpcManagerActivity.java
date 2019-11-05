@@ -15,6 +15,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -1412,18 +1413,18 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                 R.layout.item_ipc_manager, list) {
             @Override
             public void convert(ViewHolder holder, IpcManageBean bean) {
-                TextView tvDetail = holder.getView(R.id.tv_detail);
+                Button btnDetail = holder.getView(R.id.btn_detail);
                 holder.setImageResource(R.id.iv_icon, bean.getLeftImageResId());
                 holder.setText(R.id.tv_title, bean.getTitle());
                 holder.setText(R.id.tv_summary, bean.getSummary());
-                holder.setText(R.id.tv_detail, bean.getRightText());
-                tvDetail.setEnabled(bean.isEnabled());
-                tvDetail.setOnClickListener(v -> {
+                holder.setText(R.id.btn_detail, bean.getRightText());
+                btnDetail.setEnabled(bean.isEnabled());
+                btnDetail.setOnClickListener(v -> {
                     if (bean.getTitle().equals(getString(R.string.str_cloud_storage))) {
                         if (bean.getStatus() == CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
                             Router.withApi(SunmiServiceApi.class).goToWebViewCloud(CommonConfig.CLOUD_STORAGE_URL, device.getDeviceid());
                         } else {
-                            Router.withApi(SunmiServiceApi.class).goToServiceDetail(device.getDeviceid());
+                            Router.withApi(SunmiServiceApi.class).goToServiceDetail(device.getDeviceid(), true, device.getName());
                         }
                     }
                 });

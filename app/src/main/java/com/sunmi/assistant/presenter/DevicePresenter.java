@@ -9,7 +9,7 @@ import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
 import com.sunmi.cloudprinter.rpc.IOTCloudApi;
-import com.sunmi.ipc.model.IpcListResp;
+import sunmi.common.router.model.IpcListResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
 import org.json.JSONArray;

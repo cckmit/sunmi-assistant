@@ -1,6 +1,6 @@
 package com.sunmi.ipc.contract;
 
-import com.sunmi.ipc.model.IpcListResp;
+import sunmi.common.router.model.IpcListResp;
 
 import java.util.List;
 

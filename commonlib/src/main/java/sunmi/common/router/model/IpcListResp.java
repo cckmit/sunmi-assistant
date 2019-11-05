@@ -1,4 +1,4 @@
-package com.sunmi.ipc.model;
+package sunmi.common.router.model;
 
 import java.util.List;
 
