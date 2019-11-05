@@ -8,7 +8,7 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.sunmi.apmanager.utils.SomeMonitorEditText;
+import com.sunmi.apmanager.utils.SomeMonitorEditTextNew;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.utils.GetUserInfoUtils;
 
@@ -75,7 +75,7 @@ public class CreateShopActivity extends BaseActivity {
             rlMobile.setVisibility(View.VISIBLE);
             tvTitleTip.setVisibility(View.VISIBLE);
         }
-        new SomeMonitorEditText().setMonitorEditText(btnComplete, etShop);
+        new SomeMonitorEditTextNew().setMonitorEditText(btnComplete, etShop);
         etShop.addTextChangedListener(new TextLengthWatcher(etShop, SHOP_NAME_MAX_LENGTH) {
             @Override
             public void onLengthExceed(EditText view, String content) {

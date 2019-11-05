@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.sunmi.apmanager.config.AppConfig;
-import com.sunmi.apmanager.utils.SomeMonitorEditText;
+import com.sunmi.apmanager.utils.SomeMonitorEditTextNew;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.PlatformMobileContract;
 import com.sunmi.assistant.mine.presenter.PlatformMobilePresenter;
@@ -62,7 +62,7 @@ public class ImportOrderPlatformMobileActivity extends BaseMvpActivity<PlatformM
 
     @AfterViews
     void init() {
-        new SomeMonitorEditText().setMonitorEditText(btnCheck, etMobile, etCode);
+        new SomeMonitorEditTextNew().setMonitorEditText(btnCheck, etMobile, etCode);
         tvSelectPlatform.setText(getString(R.string.import_order_platform_mobile_search_data, selectPlatformBean.getSaas_name()));
         mPresenter = new PlatformMobilePresenter();
         mPresenter.attachView(this);

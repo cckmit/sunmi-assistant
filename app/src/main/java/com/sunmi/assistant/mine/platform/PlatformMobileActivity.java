@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.sunmi.apmanager.config.AppConfig;
-import com.sunmi.apmanager.utils.SomeMonitorEditText;
+import com.sunmi.apmanager.utils.SomeMonitorEditTextNew;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.PlatformMobileContract;
 import com.sunmi.assistant.mine.presenter.PlatformMobilePresenter;
@@ -80,7 +80,7 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
 
     @AfterViews
     void init() {
-        new SomeMonitorEditText().setMonitorEditText(btnCheck, etMobile, etCode);
+        new SomeMonitorEditTextNew().setMonitorEditText(btnCheck, etMobile, etCode);
         tvSelectPlatform.setText(getString(R.string.str_please_input_platform_mobile, platform));
         mPresenter = new PlatformMobilePresenter();
         mPresenter.attachView(this);
