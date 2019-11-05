@@ -43,7 +43,7 @@ public class SupportFragment extends BaseFragment
 
     @AfterViews
     void init() {
-        titleBar.getRightTextView().setOnClickListener(this);
+//        titleBar.getRightTextView().setOnClickListener(this);
     }
 
     @Override
