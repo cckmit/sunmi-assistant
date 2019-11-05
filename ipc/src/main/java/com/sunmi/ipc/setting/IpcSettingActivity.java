@@ -446,6 +446,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             if (mResp != null) {
                 mVersion.setRightText(mResp.getLatest_bin_version());
                 mVersion.getIvToTextLeft().setVisibility(View.GONE);
+                isClickVersionUpgrade = false;
+                mPresenter.currentVersion();
             }
             BaseNotification.newInstance().postNotificationName(CommonNotifications.ipcUpgradeComplete);
         }

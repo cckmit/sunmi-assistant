@@ -493,7 +493,7 @@ public class SunmiStoreApi {
      */
     public void createShop(int companyId, String shopName, int province, int city, int area,
                            String address, int typeOne, int typeTwo,
-                           float businessArea, String person, String tel,
+                           float businessArea, String person, String tel, String lat, String lng,
                            RetrofitCallback<CreateShopInfo> callback) {
         try {
             String params = new JSONObject()
@@ -508,6 +508,8 @@ public class SunmiStoreApi {
                     .put("business_area", businessArea)
                     .put("contact_person", person)
                     .put("contact_tel", tel)
+                    .put("lat", lat)
+                    .put("lng", lng)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
                     .createShop(new BaseRequest(params))
@@ -537,6 +539,8 @@ public class SunmiStoreApi {
                     .put("contact_person", shopInfo.getContactPerson())
                     .put("contact_tel", shopInfo.getContactTel())
                     .put("business_area", shopInfo.getBusinessArea())
+                    .put("lat", shopInfo.getLat())
+                    .put("lng", shopInfo.getLng())
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
                     .editShop(new BaseRequest(params))

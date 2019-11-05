@@ -1,6 +1,5 @@
 package com.sunmi.assistant.mine.shop;
 
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
@@ -17,6 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -44,7 +45,6 @@ import sunmi.common.base.recycle.BaseArrayAdapter;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
 import sunmi.common.model.ShopInfo;
-import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.FileUtils;
 import sunmi.common.utils.SoftKeyboardStateHelper;
 import sunmi.common.utils.StatusBarUtils;
@@ -66,7 +66,6 @@ import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter>
         implements ShopRegionContract.View, PoiSearch.OnPoiSearchListener {
     private static final int IPC_MARK_MAX_LENGTH = 100;
-    private static final int ANIMATOR_DURATION = 200;
     private static final int POI_PAGE_SIZE = 20;
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
@@ -78,6 +77,8 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
     RecyclerView recyclerView;
     @ViewById(R.id.const_layout_poi)
     View constLayoutPoi;
+    @ViewById(R.id.v_space)
+    View vSpace;
     @ViewById(R.id.tv_transparent)
     TextView tvTransparent;
 
@@ -100,6 +101,7 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
     private int mProvinceIndex;
     private int mCityId;
     private int mAreaId;
+    private String lat = "", lng = "";
 
     @AfterViews
     void init() {
@@ -114,6 +116,8 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
         mProvinceId = mInfo.getProvince();
         mCityId = mInfo.getCity();
         mAreaId = mInfo.getArea();
+        lat = mInfo.getLat();
+        lng = mInfo.getLng();
         poiCityName = cityName(mList);
         if (!TextUtils.isEmpty(mInfo.getRegionName())) {
             silAddress.setRightText(mInfo.getRegionName());
@@ -130,18 +134,26 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
         showDialog(this);
     }
 
-    private void upAnimator() {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(constLayoutPoi, "translationY",
-                -CommonHelper.dp2px(context, 1) * 72);
-        animator.setDuration(ANIMATOR_DURATION);
-        animator.start();
-    }
-
-    private void downAnimator() {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(constLayoutPoi, "translationY",
-                0);
-        animator.setDuration(ANIMATOR_DURATION);
-        animator.start();
+    private void isShowPoi(boolean hasShow) {
+        if (hasShow) {
+            cetDetailsAddress.requestFocus();
+            silAddress.setVisibility(View.GONE);
+            vSpace.setVisibility(View.GONE);
+            cetDetailsAddress.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
+        } else {
+            cetDetailsAddress.clearFocus();
+            silAddress.setVisibility(View.VISIBLE);
+            vSpace.setVisibility(View.VISIBLE);
+            cetDetailsAddress.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        }
+        if (silAddress.getRightText().getText() == null ||
+                TextUtils.isEmpty(silAddress.getRightText().getText().toString())) {
+            tvTransparent.setVisibility(View.VISIBLE);
+        } else {
+            tvTransparent.setVisibility(View.GONE);
+        }
     }
 
     public String cityName(List<RegionProvince> list) {
@@ -176,20 +188,12 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
         softKeyboardStateHelper.addSoftKeyboardStateListener(new SoftKeyboardStateHelper.SoftKeyboardStateListener() {
             @Override
             public void onSoftKeyboardOpened(int keyboardHeightInPx) {
-                if (silAddress.getRightText().getText() == null ||
-                        TextUtils.isEmpty(silAddress.getRightText().getText().toString())) {
-                    shortTip(getString(R.string.shop_input_region_tip));
-                    cetDetailsAddress.clearFocus();
-                    cetDetailsAddress.setText("");
-                } else {
-                    upAnimator();
-                }
             }
 
             @Override
             public void onSoftKeyboardClosed() {
                 cetDetailsAddress.clearFocus();
-                downAnimator();
+                isShowPoi(false);
             }
         });
         cetDetailsAddress.addTextChangedListener(new TextLengthWatcher(cetDetailsAddress, IPC_MARK_MAX_LENGTH) {
@@ -197,9 +201,62 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 super.onTextChanged(s, start, before, count);
                 poiKey = s.toString();
+                if (TextUtils.isEmpty(poiKey)) {
+                    lat = "";
+                    lng = "";
+                }
                 doSearchQuery(poiKey);
             }
         });
+        //监听键盘按钮事件
+        cetDetailsAddress.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE ||
+                    actionId == EditorInfo.IME_ACTION_GO ||
+                    actionId == EditorInfo.IME_ACTION_NEXT ||
+                    actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
+
+                String address = cetDetailsAddress.getText() == null ||
+                        TextUtils.isEmpty(cetDetailsAddress.getText().toString())
+                        ? "" : cetDetailsAddress.getText().toString();
+                if (!TextUtils.equals(address, mInfo.getAddress())) {
+                    lat = "";
+                    lng = "";
+                }
+                hideSoftInputWindow();
+                return true;
+            }
+            return false;
+        });
+        cetDetailsAddress.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                showSoftInputWindow();
+            } else {
+                isShowPoi(false);
+            }
+        });
+    }
+
+    private void showSoftInputWindow() {
+        if (silAddress.getRightText().getText() == null ||
+                TextUtils.isEmpty(silAddress.getRightText().getText().toString())) {
+            shortTip(getString(R.string.shop_input_region_tip));
+            cetDetailsAddress.clearFocus();
+            return;
+        }
+        isShowPoi(true);
+        InputMethodManager inputManager = (InputMethodManager) cetDetailsAddress
+                .getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        assert inputManager != null;
+        inputManager.showSoftInput(cetDetailsAddress, 0);
+    }
+
+    private void hideSoftInputWindow() {
+        cetDetailsAddress.clearFocus();
+        isShowPoi(false);
+        InputMethodManager inputManager = (InputMethodManager) cetDetailsAddress
+                .getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        assert inputManager != null;
+        inputManager.hideSoftInputFromWindow(cetDetailsAddress.getWindowToken(), 0);
     }
 
     private void save(View v) {
@@ -214,6 +271,8 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
         } else if (cetDetailsAddress.getText() == null || TextUtils.isEmpty(cetDetailsAddress.getText().toString())) {
             shortTip(R.string.tip_addr_empty);
         } else {
+            mInfo.setLat(lat);
+            mInfo.setLng(lng);
             mPresenter.updateRegion(mProvinceId, mCityId, mAreaId, address);
         }
     }
@@ -258,6 +317,9 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
                 holder.itemView.setOnClickListener(v -> {
                     index = holder.getAdapterPosition();
                     cetDetailsAddress.setText(poiItem.getSnippet());
+                    lat = String.valueOf(poiItem.getLatLonPoint().getLatitude());
+                    lng = String.valueOf(poiItem.getLatLonPoint().getLongitude());
+                    hideSoftInputWindow();
                     notifyDataSetChanged();
                 });
                 if (index == holder.getAdapterPosition()) {
