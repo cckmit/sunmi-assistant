@@ -126,7 +126,7 @@ def NotifyBuild(String buildStatus = 'STARTED', String stage){
     colorCode = '#FF0000'
   }
 
-  def recipient_list = 'lukai@sunmi.com,xiaoxinwu@sunmi.com,yangshijie@sunmi.com,yangjibin@sunmi.com,lvsiwen@sunmi.com,ningrulin@sunmi.com'
+  def recipient_list = 'lukai@sunmi.com,xiaoxinwu@sunmi.com,yangshijie@sunmi.com,yangjibin@sunmi.com,lvsiwen@sunmi.com,ningrulin@sunmi.com,lixuanzhen@sunmi.com,yangzhen@sunmi.com'
 
   switch(stage){
     case 'build':
