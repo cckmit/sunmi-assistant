@@ -27,7 +27,7 @@ pipeline{
                 rm -rf apmanager/build/outputs/*
                 fastlane uatEnv
                 ''') 
-              stash(includes: 'app/build/outputs/apk/**/app-universal-*.apk', name: 'apk')
+              stash(includes: 'app/build/outputs/apk/**/app-myapp-universal-uat.apk', name: 'apk')
             }catch(e){
               def stageName = 'build'
               echo "R ${currentBuild.result} C ${currentBuild.currentResult}"
@@ -53,7 +53,7 @@ pipeline{
             unstash(name: 'apk')
             sh('''
               export ANDROID_HOME=/Users/admin/Library/Android/sdk
-              export apk_path=app/build/outputs/apk/uat/
+              export apk_path=app/build/outputs/apk/myapp/uat/
               mkdir -p uat
               rm -rf uat/*
               cd $apk_path
@@ -66,6 +66,7 @@ pipeline{
               echo version=$version >> version.txt
               cp version.txt uat
               unzip -u $apk_path$apk -d ./apk
+			  
               cp apk/$icon uat/logo.png
               java -jar 360jiagu/jiagu/jiagu.jar -login lukai@sunmi.com sunmi388
               java -jar 360jiagu/jiagu/jiagu.jar -importsign Keystore.jks SUNMIwireless388 SUNMI_Key SUNMIwireless388
