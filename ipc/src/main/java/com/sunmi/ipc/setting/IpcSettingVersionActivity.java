@@ -134,9 +134,9 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
      */
     private boolean isQueryStatus() {
         if (isSS) {
-            return mCurrentVersion > ssVersion;
+            return mCurrentVersion >= ssVersion;
         } else {
-            return mCurrentVersion > fsVersion;
+            return mCurrentVersion >= fsVersion;
         }
     }
 
