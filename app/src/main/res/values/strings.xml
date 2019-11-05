@@ -219,7 +219,7 @@
     <string name="tip_input_company_email">Please enter your email address</string>
     <string name="tip_input_company_correct_email">Please enter the correct mail address</string>
     <string name="company_now_selected">Current company</string>
-    <string name="company_can_switch">可切换商户</string>
+    <string name="company_can_switch">You can switch the below companies</string>
     <string name="company_shop_details">Detail</string>
     <string name="company_shop_face_group">人脸分组</string>
     <string name="company_shop_to_create">No store now and please creat first</string>

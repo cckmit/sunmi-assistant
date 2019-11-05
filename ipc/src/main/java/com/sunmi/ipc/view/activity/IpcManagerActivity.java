@@ -216,9 +216,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     void init() {
         mPresenter = new IpcManagerPresenter();
         mPresenter.attachView(this);
-        if (isSS1()) {
+        /*if (isSS1()) {
             mPresenter.getStorageInfo(device.getId());
-        }
+        }*/
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//保持屏幕常亮
