@@ -17,7 +17,8 @@
         android:layout_height="@dimen/dp_238"
         android:layout_below="@+id/vp_banner"
         android:layout_marginTop="@dimen/dp_8"
-        android:background="@drawable/bg_card_white_corner_rounded">
+        android:background="@drawable/bg_card_white_corner_rounded"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tv_no_device"
