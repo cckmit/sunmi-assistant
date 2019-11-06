@@ -6,6 +6,7 @@ import java.util.List;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.model.CompanyListResp;
+import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopListResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -27,7 +28,7 @@ public class ChooseShopPresenter extends BasePresenter<ChooseShopContract.View>
             public void onSuccess(int code, String msg, ShopListResp data) {
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();
-                    List<ShopListResp.ShopInfo> shopList = data.getShop_list();
+                    List<ShopInfo> shopList = data.getShop_list();
                     if (shopList != null) {
                         mView.getShopListSuccess(shopList);
                     }
