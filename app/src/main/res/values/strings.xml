@@ -89,7 +89,7 @@
     <string name="dashboard_no_order_subtitle">随时展示门店经营动态，提供多维度经营分析</string>
     <string name="dashboard_no_order_dock">接入</string>
     <string name="dashboard_no_customer_data_tip">暂无客流数据，您可以尝试：</string>
-    <string name="dashboard_no_customer_wait_tip">客流数据会在次日零点更新</string>
+    <string name="dashboard_no_customer_wait_tip">客流数据会在次日01:00~02:00更新</string>
     <string name="dashboard_no_customer_fs_tip">您已解绑了门店中的摄像机设备</string>
     <string name="dashboard_no_customer_fs_add_btn">添加设备</string>
     <string name="str_platform_list">Platform list</string>
