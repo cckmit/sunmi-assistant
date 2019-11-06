@@ -33,14 +33,24 @@
         app:rightPadding="@dimen/dp_20"
         tools:ignore="MissingConstraints" />
 
+    <View
+        android:id="@+id/v_space"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_12"
+        android:background="@color/bg_common"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sil_address" />
+
     <android.support.constraint.ConstraintLayout
         android:id="@+id/const_layout_poi"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sil_address">
+        app:layout_constraintTop_toBottomOf="@id/v_space">
 
         <sunmi.common.view.ClearableEditText
             android:id="@+id/cet_details_address"
@@ -54,9 +64,10 @@
             android:paddingBottom="@dimen/dp_20"
             android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16"
-            app:layout_constraintTop_toTopOf="parent"
+            android:imeOptions="actionDone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingConstraints" />
 
         <TextView

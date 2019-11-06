@@ -78,7 +78,7 @@ public class SelectStorePresenter extends BasePresenter<SelectStoreContract.View
 
     private void createShop(SelectShopModel item) {
         SunmiStoreApi.getInstance().createShop(mCompanyId, item.getShopName(), 0, 0, 0, "",
-                0, 0, 0, "", "", new RetrofitCallback<CreateShopInfo>() {
+                0, 0, 0, "", "", "", "", new RetrofitCallback<CreateShopInfo>() {
                     @Override
                     public void onSuccess(int code, String msg, CreateShopInfo data) {
                         item.setShopId(data.getShop_id());
