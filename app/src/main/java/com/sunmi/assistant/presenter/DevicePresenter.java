@@ -9,7 +9,6 @@ import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
 import com.sunmi.cloudprinter.rpc.IOTCloudApi;
-import sunmi.common.router.model.IpcListResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
 import org.json.JSONArray;
@@ -25,8 +24,10 @@ import sunmi.common.base.BasePresenter;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.model.AdListBean;
 import sunmi.common.model.AdListResp;
+import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopListResp;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.http.HttpCallback;
 import sunmi.common.rpc.http.RpcCallback;
@@ -180,7 +181,9 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
 
     @Override
     public void getPrinterList() {
-        if (!CommonConfig.SUPPORT_PRINTER) return;
+        if (!CommonConfig.SUPPORT_PRINTER) {
+            return;
+        }
         IOTCloudApi.getPrinterList(SpUtils.getShopId(), new HttpCallback<String>(null) {
             @Override
             public void onSuccess(int code, String msg, String data) {
@@ -234,13 +237,13 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
             public void onSuccess(int code, String msg, ShopListResp data) {
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();
-                    List<ShopListResp.ShopInfo> shopList = data.getShop_list();
+                    List<ShopInfo> shopList = data.getShop_list();
                     if (shopList == null) {
                         return;
                     }
-                    List<ShopListResp.ShopInfo> newShopList = new ArrayList<>();
-                    for (ShopListResp.ShopInfo shop : shopList) {
-                        if (shop.getShop_id() == SpUtils.getShopId()) {
+                    List<ShopInfo> newShopList = new ArrayList<>();
+                    for (ShopInfo shop : shopList) {
+                        if (shop.getShopId() == SpUtils.getShopId()) {
                             newShopList.add(0, shop);
                         } else {
                             newShopList.add(shop);

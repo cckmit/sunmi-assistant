@@ -40,7 +40,7 @@ public class ShopNameActivity extends BaseActivity {
     ClearableEditText etName;
 
     @Extra
-    ShopInfo mInfo;
+    ShopInfo info;
 
     @AfterViews
     void init() {
@@ -48,9 +48,9 @@ public class ShopNameActivity extends BaseActivity {
         titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
         titleBar.getRightText().setOnClickListener(v -> save());
         etName.requestFocus();
-        if (!TextUtils.isEmpty(mInfo.getShopName())) {
-            etName.setText(mInfo.getShopName());
-            etName.setSelection(mInfo.getShopName().length());
+        if (!TextUtils.isEmpty(info.getShopName())) {
+            etName.setText(info.getShopName());
+            etName.setSelection(info.getShopName().length());
         }
         etName.addTextChangedListener(new TextLengthWatcher(etName, SHOP_NAME_MAX_LENGTH) {
             @Override
@@ -69,21 +69,21 @@ public class ShopNameActivity extends BaseActivity {
             shortTip(R.string.tip_input_name);
             return;
         }
-        if (TextUtils.equals(name, mInfo.getShopName())) {
+        if (TextUtils.equals(name, info.getShopName())) {
             finish();
             return;
         }
         showLoadingDialog();
-        mInfo.setShopName(name);
-        SunmiStoreApi.getInstance().updateShopInfo(mInfo, new RetrofitCallback<Object>() {
+        info.setShopName(name);
+        SunmiStoreApi.getInstance().updateShopInfo(info, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 hideLoadingDialog();
-                if (mInfo.getShopId() == SpUtils.getShopId()) {
+                if (info.getShopId() == SpUtils.getShopId()) {
                     SpUtils.setShopName(name);
                 }
                 BaseNotification.newInstance().postNotificationName(
-                        CommonNotifications.shopNameChanged, mInfo.getShopId(), name);
+                        CommonNotifications.shopNameChanged, info.getShopId(), name);
                 Intent intent = getIntent();
                 intent.putExtra(ShopDetailActivity.INTENT_EXTRA_NAME, name);
                 setResult(RESULT_OK, intent);
@@ -101,7 +101,7 @@ public class ShopNameActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (TextUtils.equals(mInfo.getShopName(),
+        if (TextUtils.equals(info.getShopName(),
                 etName.getText() == null ? null : etName.getText().toString().trim())) {
             super.onBackPressed();
         } else {
