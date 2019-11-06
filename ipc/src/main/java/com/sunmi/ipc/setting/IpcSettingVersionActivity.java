@@ -389,6 +389,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
         stopTimeoutTimer();
         isAiUpgrade = false;
         isUpgradeProcess = false;
+        isUpgradeFail = false;
         if (failDialog != null && failDialog.isShowing()) {
             failDialog.dismiss();
         }
@@ -490,9 +491,9 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
                 return;
             }
             if (isAiUpgrade) {
-                downRate = (int) (IPC_RELAUNCH_TIME / PERCENT_RELAUNCH / 1000 + 1);
+                downRate = (int) (IPC_RELAUNCH_TIME / PERCENT_RELAUNCH / 1000);
             } else {
-                downRate = (int) (IPC_RELAUNCH_TIME / (PERCENT_UPGRADE + PERCENT_RELAUNCH) / 1000 + 1);
+                downRate = (int) (IPC_RELAUNCH_TIME / (PERCENT_UPGRADE + PERCENT_RELAUNCH) / 1000);
             }
             if ((l / 1000) % downRate == 0) {
                 setProgress++;
@@ -503,11 +504,12 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
             } else {
                 textProgress = PERCENT_DOWNLOAD + setProgress;
             }
-            if (textProgress > PERCENT_DOWNLOAD + PERCENT_UPGRADE + PERCENT_RELAUNCH - 1) {
+            if (textProgress > PERCENT_DOWNLOAD + PERCENT_UPGRADE + PERCENT_RELAUNCH) {
                 return;
             }
+            LogCat.e(TAG, "1111 textProgress=" + textProgress);
             if (((IPC_RELAUNCH_TIME - l) / 1000) < 55) {
-                //下载固件的时间提示40+15s
+                //写入固件的时间提示40+15s
                 setText(IPC_UPGRADE_AI, textProgress);
             } else {
                 //重启时间150+15s
