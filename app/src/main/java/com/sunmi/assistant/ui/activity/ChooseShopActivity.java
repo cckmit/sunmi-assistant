@@ -21,6 +21,7 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.model.CompanyListResp;
+import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopListResp;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.SpUtils;
@@ -51,7 +52,7 @@ public class ChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter>
 
     @AfterViews
     void init() {
-        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         mPresenter = new ChooseShopPresenter();
         mPresenter.attachView(this);
         tvCurrShop.setText(SpUtils.getShopName());
@@ -60,10 +61,10 @@ public class ChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter>
     }
 
     @Override
-    public void getShopListSuccess(List<ShopListResp.ShopInfo> shopList) {
-        List<ShopListResp.ShopInfo> list = new ArrayList<>();
-        for (ShopListResp.ShopInfo shopInfo : shopList) {
-            if (shopInfo.getShop_id() != SpUtils.getShopId()) {
+    public void getShopListSuccess(List<ShopInfo> shopList) {
+        List<ShopInfo> list = new ArrayList<>();
+        for (ShopInfo shopInfo : shopList) {
+            if (shopInfo.getShopId() != SpUtils.getShopId()) {
                 list.add(shopInfo);
             }
         }
@@ -86,26 +87,23 @@ public class ChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter>
     }
 
     @UiThread
-    void initShopList(final List<ShopListResp.ShopInfo> data) {
+    void initShopList(final List<ShopInfo> data) {
         if (data.size() <= 0) {
             tvNoData.setVisibility(View.VISIBLE);
             return;
         }
         tvNoData.setVisibility(View.GONE);
-        rvChoose.setAdapter(new CommonListAdapter<ShopListResp.ShopInfo>(context,
+        rvChoose.setAdapter(new CommonListAdapter<ShopInfo>(context,
                 R.layout.item_shop_list, data) {
             @Override
-            public void convert(ViewHolder holder, final ShopListResp.ShopInfo shopInfo) {
-                holder.setText(R.id.tv_shop, shopInfo.getShop_name());
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        SpUtils.setShopId(shopInfo.getShop_id());
-                        SpUtils.setShopName(shopInfo.getShop_name());
-                        BaseNotification.newInstance().postNotificationName(
-                                CommonNotifications.shopSwitched);
-                        finish();
-                    }
+            public void convert(ViewHolder holder, final ShopInfo shopInfo) {
+                holder.setText(R.id.tv_shop, shopInfo.getShopName());
+                holder.itemView.setOnClickListener(v -> {
+                    SpUtils.setShopId(shopInfo.getShopId());
+                    SpUtils.setShopName(shopInfo.getShopName());
+                    BaseNotification.newInstance().postNotificationName(
+                            CommonNotifications.shopSwitched);
+                    finish();
                 });
             }
         });

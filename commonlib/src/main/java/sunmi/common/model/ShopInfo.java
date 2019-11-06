@@ -1,65 +1,85 @@
 package sunmi.common.model;
 
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * @author yinhui
- * @date 2019-08-08
+ * @date 2019-06-20
  */
 public class ShopInfo implements Parcelable {
 
+    /**
+     * shop_id : 8264
+     * shop_name : 测试
+     * type_one : 0
+     * type_two : 0
+     * type_name :
+     * sunmi_shop_no : 260988040206
+     * business_status : 0
+     * province : 0
+     * city : 0
+     * area : 0
+     * address : 上帝给他
+     * lat :
+     * lng :
+     * business_area : 0
+     * region :
+     * business_hours :
+     * contact_person : 大家参加
+     * contact_tel :
+     * contact_email :
+     * created_time : 1560324092
+     * modified_time : 1567580500
+     * saas_exist : 0
+     */
+
+    @SerializedName("shop_id")
     private int shopId;
+    @SerializedName("shop_name")
     private String shopName;
+    @SerializedName("type_one")
     private int typeOne;
+    @SerializedName("type_two")
     private int typeTwo;
+    @SerializedName("type_name")
     private String typeName;
+    @SerializedName("sunmi_shop_no")
+    private String sunmiShopNo;
+    @SerializedName("business_status")
+    private int businessStatus;
+    @SerializedName("province")
     private int province;
+    @SerializedName("city")
     private int city;
+    @SerializedName("area")
     private int area;
-    private String region;
+    @SerializedName("address")
     private String address;
-    private float businessArea;
-    private String contactPerson;
-    private String contactTel;
-
-    public String getLat() {
-        return lat;
-    }
-
-    public void setLat(String lat) {
-        this.lat = lat;
-    }
-
-    public String getLng() {
-        return lng;
-    }
-
-    public void setLng(String lng) {
-        this.lng = lng;
-    }
-
+    @SerializedName("lat")
     private String lat;
+    @SerializedName("lng")
     private String lng;
-
-    public ShopInfo(ShopInfoResp response) {
-        shopId = response.getShopId();
-        shopName = response.getShopName();
-        typeOne = response.getTypeOne();
-        typeTwo = response.getTypeTwo();
-        typeName = response.getTypeName();
-        province = response.getProvince();
-        city = response.getCity();
-        area = response.getArea();
-        region = response.getRegion();
-        address = response.getAddress();
-        businessArea = response.getBusinessArea();
-        contactPerson = response.getContactPerson();
-        contactTel = response.getContactTel();
-        lat = response.getLat();
-        lng = response.getLng();
-    }
+    @SerializedName("business_area")
+    private float businessArea;
+    @SerializedName("region")
+    private String region;
+    @SerializedName("business_hours")
+    private String businessHours;
+    @SerializedName("contact_person")
+    private String contactPerson;
+    @SerializedName("contact_tel")
+    private String contactTel;
+    @SerializedName("contact_email")
+    private String contactEmail;
+    @SerializedName("created_time")
+    private int createdTime;
+    @SerializedName("modified_time")
+    private int modifiedTime;
+    @SerializedName("saas_exist")
+    private int saasExist;
 
     public int getShopId() {
         return shopId;
@@ -81,6 +101,14 @@ public class ShopInfo implements Parcelable {
         return typeName;
     }
 
+    public String getSunmiShopNo() {
+        return sunmiShopNo;
+    }
+
+    public int getBusinessStatus() {
+        return businessStatus;
+    }
+
     public int getProvince() {
         return province;
     }
@@ -93,20 +121,63 @@ public class ShopInfo implements Parcelable {
         return area;
     }
 
-    public String getRegionName() {
+    public String getAddress() {
+        return address;
+    }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public String getLng() {
+        return lng;
+    }
+
+    public float getBusinessArea() {
+        return businessArea;
+    }
+
+    public String getRegion() {
         return region;
     }
 
-    public String getAddress() {
-        return address;
+    public String getBusinessHours() {
+        return businessHours;
+    }
+
+    public String getContactPerson() {
+        return contactPerson;
+    }
+
+    public String getContactTel() {
+        return contactTel;
+    }
+
+    public String getContactEmail() {
+        return contactEmail;
+    }
+
+    public int getCreatedTime() {
+        return createdTime;
+    }
+
+    public int getModifiedTime() {
+        return modifiedTime;
+    }
+
+    public int getSaasExist() {
+        return saasExist;
     }
 
     public void setShopName(String shopName) {
         this.shopName = shopName;
     }
 
-    public void setType(int typeOne, int typeTwo) {
+    public void setTypeOne(int typeOne) {
         this.typeOne = typeOne;
+    }
+
+    public void setTypeTwo(int typeTwo) {
         this.typeTwo = typeTwo;
     }
 
@@ -114,58 +185,72 @@ public class ShopInfo implements Parcelable {
         this.typeName = typeName;
     }
 
-    public void setRegion(int province, int city, int area) {
-        this.province = province;
-        this.city = city;
-        this.area = area;
+    public void setSunmiShopNo(String sunmiShopNo) {
+        this.sunmiShopNo = sunmiShopNo;
     }
 
-    public void setRegionName(String region) {
-        this.region = region;
+    public void setBusinessStatus(int businessStatus) {
+        this.businessStatus = businessStatus;
+    }
+
+    public void setProvince(int province) {
+        this.province = province;
+    }
+
+    public void setCity(int city) {
+        this.city = city;
+    }
+
+    public void setArea(int area) {
+        this.area = area;
     }
 
     public void setAddress(String address) {
         this.address = address;
     }
 
-    public float getBusinessArea() {
-        return businessArea;
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public void setLng(String lng) {
+        this.lng = lng;
     }
 
     public void setBusinessArea(float businessArea) {
         this.businessArea = businessArea;
     }
 
-    public String getContactPerson() {
-        return contactPerson;
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public void setBusinessHours(String businessHours) {
+        this.businessHours = businessHours;
     }
 
     public void setContactPerson(String contactPerson) {
         this.contactPerson = contactPerson;
     }
 
-    public String getContactTel() {
-        return contactTel;
-    }
-
     public void setContactTel(String contactTel) {
         this.contactTel = contactTel;
     }
 
-    @Override
-    public String toString() {
-        return "ShopInfo{" +
-                "shopId=" + shopId +
-                ", shopName='" + shopName + '\'' +
-                ", typeOne=" + typeOne +
-                ", typeTwo=" + typeTwo +
-                ", typeName='" + typeName + '\'' +
-                ", province=" + province +
-                ", city=" + city +
-                ", area=" + area +
-                ", region='" + region + '\'' +
-                ", address='" + address + '\'' +
-                '}';
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
+    }
+
+    public void setCreatedTime(int createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    public void setModifiedTime(int modifiedTime) {
+        this.modifiedTime = modifiedTime;
+    }
+
+    public void setSaasExist(int saasExist) {
+        this.saasExist = saasExist;
     }
 
     protected ShopInfo(Parcel in) {
@@ -174,16 +259,23 @@ public class ShopInfo implements Parcelable {
         typeOne = in.readInt();
         typeTwo = in.readInt();
         typeName = in.readString();
+        sunmiShopNo = in.readString();
+        businessStatus = in.readInt();
         province = in.readInt();
         city = in.readInt();
         area = in.readInt();
-        region = in.readString();
         address = in.readString();
-        businessArea = in.readFloat();
-        contactPerson = in.readString();
-        contactTel = in.readString();
         lat = in.readString();
         lng = in.readString();
+        businessArea = in.readFloat();
+        region = in.readString();
+        businessHours = in.readString();
+        contactPerson = in.readString();
+        contactTel = in.readString();
+        contactEmail = in.readString();
+        createdTime = in.readInt();
+        modifiedTime = in.readInt();
+        saasExist = in.readInt();
     }
 
     @Override
@@ -193,16 +285,23 @@ public class ShopInfo implements Parcelable {
         dest.writeInt(typeOne);
         dest.writeInt(typeTwo);
         dest.writeString(typeName);
+        dest.writeString(sunmiShopNo);
+        dest.writeInt(businessStatus);
         dest.writeInt(province);
         dest.writeInt(city);
         dest.writeInt(area);
-        dest.writeString(region);
         dest.writeString(address);
-        dest.writeFloat(businessArea);
-        dest.writeString(contactPerson);
-        dest.writeString(contactTel);
         dest.writeString(lat);
         dest.writeString(lng);
+        dest.writeFloat(businessArea);
+        dest.writeString(region);
+        dest.writeString(businessHours);
+        dest.writeString(contactPerson);
+        dest.writeString(contactTel);
+        dest.writeString(contactEmail);
+        dest.writeInt(createdTime);
+        dest.writeInt(modifiedTime);
+        dest.writeInt(saasExist);
     }
 
     @Override

@@ -54,7 +54,7 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
     RelativeLayout rlSquare;
 
     @Extra
-    ShopInfo mInfo;
+    ShopInfo info;
     @Extra
     int type;
 
@@ -74,9 +74,9 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
             etShopMessage.requestFocus();
             titleBar.setAppTitle(R.string.company_shop_contact);
             etShopMessage.setHint(R.string.company_shop_contact_tip);
-            if (!TextUtils.isEmpty(mInfo.getContactPerson())) {
-                etShopMessage.setText(mInfo.getContactPerson());
-                etShopMessage.setSelection(mInfo.getContactPerson().length());
+            if (!TextUtils.isEmpty(info.getContactPerson())) {
+                etShopMessage.setText(info.getContactPerson());
+                etShopMessage.setSelection(info.getContactPerson().length());
             }
             etShopMessage.addTextChangedListener(new TextLengthWatcher(etShopMessage, CONTACTS_MAX_LENGTH) {
                 @Override
@@ -90,9 +90,9 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
             titleBar.setAppTitle(R.string.company_shop_mobile);
             etShopMessage.setHint(R.string.company_shop_contact_tel_tip);
             etShopMessage.setInputType(InputType.TYPE_CLASS_PHONE);
-            if (!TextUtils.isEmpty(mInfo.getContactTel())) {
-                etShopMessage.setText(mInfo.getContactTel());
-                etShopMessage.setSelection(mInfo.getContactTel().length());
+            if (!TextUtils.isEmpty(info.getContactTel())) {
+                etShopMessage.setText(info.getContactTel());
+                etShopMessage.setSelection(info.getContactTel().length());
             }
             etShopMessage.addTextChangedListener(new TextLengthWatcher(etShopMessage, CONTACTS_MAX_LENGTH) {
                 @Override
@@ -107,9 +107,9 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
             rlSquare.setVisibility(View.VISIBLE);
             etShopMessage.setVisibility(View.GONE);
             etShopArea.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-            if (mInfo.getBusinessArea() > 0) {
-                etShopArea.setText(floatTrans(mInfo.getBusinessArea()));
-                etShopArea.setSelection(floatTrans(mInfo.getBusinessArea()).length());
+            if (info.getBusinessArea() > 0) {
+                etShopArea.setText(floatTrans(info.getBusinessArea()));
+                etShopArea.setSelection(floatTrans(info.getBusinessArea()).length());
             }
             //默认两位小数
             etShopArea.setFilters(new InputFilter[]{new NumberValueFilter()});
@@ -135,18 +135,18 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
                 shortTip(getString(R.string.specital_text_cannot_support));
                 return;
             }
-            if (TextUtils.equals(shopMessage, mInfo.getContactPerson())) {
+            if (TextUtils.equals(shopMessage, info.getContactPerson())) {
                 finish();
                 return;
             }
-            mInfo.setContactPerson(shopMessage);
+            info.setContactPerson(shopMessage);
         } else if (type == ShopDetailActivity.TYPE_CONTACT_TEL) {
             String shopMessage = shopMessageText(etShopMessage);
             if (TextUtils.isEmpty(shopMessage)) {
                 shortTip(getString(R.string.company_shop_contact_tel_tip));
                 return;
             }
-            if (TextUtils.equals(shopMessage, mInfo.getContactTel())) {
+            if (TextUtils.equals(shopMessage, info.getContactTel())) {
                 finish();
                 return;
             }
@@ -154,7 +154,7 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
                 shortTip(getString(R.string.str_invalid_phone));
                 return;
             }
-            mInfo.setContactTel(shopMessage);
+            info.setContactTel(shopMessage);
         } else if (type == ShopDetailActivity.TYPE_AREA) {
             String shopMessage = shopMessageText(etShopArea);
             if (TextUtils.isEmpty(shopMessage)) {
@@ -167,13 +167,13 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
                 shortTip(getString(R.string.company_shop_area_tip));
                 return;
             }
-            if (TextUtils.equals(shopMessage, String.valueOf(mInfo.getBusinessArea()))) {
+            if (TextUtils.equals(shopMessage, String.valueOf(info.getBusinessArea()))) {
                 finish();
                 return;
             }
-            mInfo.setBusinessArea(Float.parseFloat(shopMessage));
+            info.setBusinessArea(Float.parseFloat(shopMessage));
         }
-        mPresenter.editShopMessage(type, mInfo);
+        mPresenter.editShopMessage(type, info);
     }
 
     @Override
@@ -203,11 +203,11 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
     @Override
     public void onBackPressed() {
         if (type == ShopDetailActivity.TYPE_CONTACT &&
-                TextUtils.equals(mInfo.getContactPerson(), shopMessageText(etShopMessage))
+                TextUtils.equals(info.getContactPerson(), shopMessageText(etShopMessage))
                 || type == ShopDetailActivity.TYPE_CONTACT_TEL &&
-                TextUtils.equals(mInfo.getContactTel(), shopMessageText(etShopMessage))
+                TextUtils.equals(info.getContactTel(), shopMessageText(etShopMessage))
                 || type == ShopDetailActivity.TYPE_AREA &&
-                TextUtils.equals(floatTrans(mInfo.getBusinessArea()), shopMessageText(etShopArea))) {
+                TextUtils.equals(floatTrans(info.getBusinessArea()), shopMessageText(etShopArea))) {
             super.onBackPressed();
             return;
         }

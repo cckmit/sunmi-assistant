@@ -43,7 +43,7 @@ public class ShopAddressActivity extends BaseActivity {
     TextView tvCounts;
 
     @Extra
-    ShopInfo mInfo;
+    ShopInfo info;
 
     @AfterViews
     void init() {
@@ -51,10 +51,10 @@ public class ShopAddressActivity extends BaseActivity {
         titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
         titleBar.getRightText().setOnClickListener(this::save);
         etAddress.addTextChangedListener(new TextChecker());
-        etAddress.setText(mInfo.getAddress());
+        etAddress.setText(info.getAddress());
         etAddress.requestFocus();
-        if (!TextUtils.isEmpty(mInfo.getAddress())) {
-            etAddress.setSelection(mInfo.getAddress().length());
+        if (!TextUtils.isEmpty(info.getAddress())) {
+            etAddress.setSelection(info.getAddress().length());
         }
     }
 
@@ -67,7 +67,7 @@ public class ShopAddressActivity extends BaseActivity {
             shortTip(R.string.tip_addr_empty);
             return;
         }
-        if (TextUtils.equals(address, mInfo.getAddress())) {
+        if (TextUtils.equals(address, info.getAddress())) {
             finish();
             return;
         }
@@ -76,8 +76,8 @@ public class ShopAddressActivity extends BaseActivity {
 
     private void updateShopAddress(String address) {
         showLoadingDialog();
-        mInfo.setAddress(address);
-        SunmiStoreApi.getInstance().updateShopInfo(mInfo, new RetrofitCallback<Object>() {
+        info.setAddress(address);
+        SunmiStoreApi.getInstance().updateShopInfo(info, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 hideLoadingDialog();
@@ -99,7 +99,7 @@ public class ShopAddressActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         if (TextUtils.isEmpty(etAddress.getText()) ||
-                TextUtils.equals(mInfo.getAddress(), etAddress.getText() == null ? null : etAddress.getText().toString().trim())) {
+                TextUtils.equals(info.getAddress(), etAddress.getText() == null ? null : etAddress.getText().toString().trim())) {
             super.onBackPressed();
         } else {
             DialogUtils.isCancelSetting(this);

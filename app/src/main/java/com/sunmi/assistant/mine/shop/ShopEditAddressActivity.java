@@ -83,7 +83,7 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
     TextView tvTransparent;
 
     @Extra
-    ShopInfo mInfo;
+    ShopInfo info;
 
     Button btnAreaPro;
     Button btnAreaCity;
@@ -106,25 +106,25 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        mPresenter = new ShopRegionPresenter(mInfo);
+        mPresenter = new ShopRegionPresenter(info);
         mPresenter.attachView(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         titleBar.getRightText().setOnClickListener(this::save);
         mList = new Gson().fromJson(FileUtils.getStringFromAssets(context, "region.json"),
                 new TypeToken<List<RegionProvince>>() {
                 }.getType());
-        mProvinceId = mInfo.getProvince();
-        mCityId = mInfo.getCity();
-        mAreaId = mInfo.getArea();
-        lat = mInfo.getLat();
-        lng = mInfo.getLng();
+        mProvinceId = info.getProvince();
+        mCityId = info.getCity();
+        mAreaId = info.getArea();
+        lat = info.getLat();
+        lng = info.getLng();
         poiCityName = cityName(mList);
-        if (!TextUtils.isEmpty(mInfo.getRegionName())) {
-            silAddress.setRightText(mInfo.getRegionName());
+        if (!TextUtils.isEmpty(info.getRegion())) {
+            silAddress.setRightText(info.getRegion());
             tvTransparent.setVisibility(View.GONE);
         }
-        if (!TextUtils.isEmpty(mInfo.getAddress())) {
-            cetDetailsAddress.setText(mInfo.getAddress());
+        if (!TextUtils.isEmpty(info.getAddress())) {
+            cetDetailsAddress.setText(info.getAddress());
         }
         editTextChangedListener();
     }
@@ -160,7 +160,7 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
         for (int i = 0, size1 = list.size(); i < size1; i++) {
             RegionProvince province = list.get(i);
             for (RegionProvince.City city : province.getChildren()) {
-                if (mInfo.getCity() == city.getCity()) {
+                if (info.getCity() == city.getCity()) {
                     return city.getName();
                 }
             }
@@ -218,7 +218,7 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
                 String address = cetDetailsAddress.getText() == null ||
                         TextUtils.isEmpty(cetDetailsAddress.getText().toString())
                         ? "" : cetDetailsAddress.getText().toString();
-                if (!TextUtils.equals(address, mInfo.getAddress())) {
+                if (!TextUtils.equals(address, info.getAddress())) {
                     lat = "";
                     lng = "";
                 }
@@ -264,15 +264,15 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
                 ? "" : cetDetailsAddress.getText().toString();
         if (mProvinceId <= 0 || mCityId <= 0 || mAreaId <= 0) {
             shortTip(getString(R.string.shop_input_region_tip));
-        } else if (mInfo.getProvince() == mProvinceId && mInfo.getCity() == mCityId &&
-                mInfo.getArea() == mAreaId && TextUtils.equals(mInfo.getAddress(), address)) {
+        } else if (info.getProvince() == mProvinceId && info.getCity() == mCityId &&
+                info.getArea() == mAreaId && TextUtils.equals(info.getAddress(), address)) {
             setResult(RESULT_CANCELED);
             finish();
         } else if (cetDetailsAddress.getText() == null || TextUtils.isEmpty(cetDetailsAddress.getText().toString())) {
             shortTip(R.string.tip_addr_empty);
         } else {
-            mInfo.setLat(lat);
-            mInfo.setLng(lng);
+            info.setLat(lat);
+            info.setLng(lng);
             mPresenter.updateRegion(mProvinceId, mCityId, mAreaId, address);
         }
     }
@@ -406,16 +406,16 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
                     break;
                 case R.id.tv_cancel:
                     dialog.dismiss();
-                    mProvinceId = mInfo.getProvince();
-                    mCityId = mInfo.getCity();
-                    mAreaId = mInfo.getArea();
+                    mProvinceId = info.getProvince();
+                    mCityId = info.getCity();
+                    mAreaId = info.getArea();
                     break;
                 case R.id.tv_confirm:
                     if (mProvinceId <= 0 || mCityId <= 0 || mAreaId <= 0) {
                         shortTip(getString(R.string.shop_input_region_tip));
                         return;
                     }
-                    if (mProvinceId != mInfo.getProvince() || mCityId != mInfo.getCity() || mAreaId != mInfo.getArea()) {
+                    if (mProvinceId != info.getProvince() || mCityId != info.getCity() || mAreaId != info.getArea()) {
                         cetDetailsAddress.setText("");
                     }
                     dialog.dismiss();
