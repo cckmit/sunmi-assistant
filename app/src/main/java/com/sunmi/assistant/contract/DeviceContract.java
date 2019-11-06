@@ -4,7 +4,7 @@ import java.util.List;
 
 import sunmi.common.base.BaseView;
 import sunmi.common.model.AdListResp;
-import sunmi.common.model.ShopListResp;
+import sunmi.common.model.ShopInfo;
 import sunmi.common.model.SunmiDevice;
 
 /**
@@ -28,7 +28,7 @@ public interface DeviceContract {
 
         void endRefresh();
 
-        void getShopListSuccess(List<ShopListResp.ShopInfo> shopList);
+        void getShopListSuccess(List<ShopInfo> shopList);
     }
 
     interface Presenter {
