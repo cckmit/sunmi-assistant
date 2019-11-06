@@ -96,9 +96,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     RelativeLayout rlShopTitle;
     @ViewById(R.id.tv_shop_title)
     TextView tvShopTitle;
-
-    Banner vpBanner;
-    RelativeLayout rlNoDevice;
+    private Banner vpBanner;
+    private RelativeLayout rlNoDevice;
 
     List<AdListBean> adList = new ArrayList<>();//广告
     List<SunmiDevice> routerList = new ArrayList<>();
