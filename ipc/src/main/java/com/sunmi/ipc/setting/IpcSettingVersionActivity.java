@@ -308,6 +308,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
                 String sn = object.getString("sn");
                 if (isUpgradeProcess && TextUtils.equals(sn, mDevice.getDeviceid())) {
                     isUpgradeSuccess = true;
+                    isUpgradeProcess = false;
                     stopTimerCountDown(mUpgradeStatus);
                     setText(IPC_RELAUNCH, 100);
                     setLayoutVisible();
@@ -527,6 +528,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
             }
             setText(IPC_UPGRADE_AI, textProgress);
         } else if (status == IPC_RELAUNCH) {
+            isUpgradeProcess = true;
             if (showUpgradeFail(l, IPC_RELAUNCH)) {
                 return;
             }
