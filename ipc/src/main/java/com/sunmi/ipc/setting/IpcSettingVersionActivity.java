@@ -25,6 +25,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DeviceTypeUtils;
@@ -108,6 +109,8 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
     private boolean isUpgradeProcess;
     //当前设备版本
     private int mCurrentVersion;
+    //mqtt是否连接lost
+    private boolean isMqttConnectionLost;
 
     @AfterViews
     void init() {
@@ -203,10 +206,15 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
     @Override
     protected void onResume() {
         super.onResume();
-        if (isUpgradeFail) {
-            upgradeVerFailDialog();
-        } else if (isUpgradeSuccess) {
+        //新版本且需要升级
+        if (isUpgradeSuccess) {
             upgradeVerSuccessDialog();
+        } else {
+            if (isQueryStatus() && mResp.getUpgrade_required() == 1 && isMqttConnectionLost) {
+                LogCat.e(TAG, "1111 isMqttConnectionLost onResume");
+                isMqttConnectionLost = false;
+                queryIpcUpgradeStatus();
+            }
         }
     }
 
@@ -236,6 +244,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
     @Override
     public int[] getStickNotificationId() {
         return new int[]{OpcodeConstants.ipcQueryUpgradeStatus,
+                CommonNotifications.mqttConnectionLost,
                 IPC_EVENT_OPCODE_STATUS,
                 IPC_EVENT_OPCODE_ONLINE};
     }
@@ -246,6 +255,12 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
      */
     @Override
     public void didReceivedNotification(int id, Object... args) {
+        if (id == CommonNotifications.mqttConnectionLost) {
+            LogCat.e(TAG, "1111 isMqttConnectionLost didReceivedNotification");
+            isMqttConnectionLost = true;
+            stopTimerCountDown(mUpgradeStatus);
+            return;
+        }
         if (args == null || isUpgradeFail) {
             return;
         }
@@ -335,7 +350,12 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
         } else if (status == 10) {
             upgradeVerFailDialog();
         } else if (status == 11) {
-            initSetButtonStatus();
+            //没有升级状态的
+            if (isUpgradeFail) {
+                upgradeVerFailDialog();
+            } else {
+                initSetButtonStatus();
+            }
         }
     }
 
