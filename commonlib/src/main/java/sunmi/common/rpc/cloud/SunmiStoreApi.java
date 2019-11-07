@@ -25,7 +25,6 @@ import sunmi.common.model.PlatformInfo;
 import sunmi.common.model.ShopAuthorizeInfoResp;
 import sunmi.common.model.ShopCategoryResp;
 import sunmi.common.model.ShopInfo;
-import sunmi.common.model.ShopInfoResp;
 import sunmi.common.model.ShopListResp;
 import sunmi.common.model.ShopRegionResp;
 import sunmi.common.model.SsoTokenResp;
@@ -468,7 +467,7 @@ public class SunmiStoreApi {
         }
     }
 
-    public void getShopInfo(int shopId, RetrofitCallback<ShopInfoResp> callback) {
+    public void getShopInfo(int shopId, RetrofitCallback<ShopInfo> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", SpUtils.getCompanyId())

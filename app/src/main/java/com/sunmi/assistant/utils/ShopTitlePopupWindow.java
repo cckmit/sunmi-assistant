@@ -22,7 +22,7 @@ import com.sunmi.assistant.R;
 import java.util.List;
 
 import sunmi.common.constant.CommonNotifications;
-import sunmi.common.model.ShopListResp;
+import sunmi.common.model.ShopInfo;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.Utils;
@@ -45,7 +45,7 @@ public class ShopTitlePopupWindow extends PopupWindow implements View.OnTouchLis
 
     @SuppressLint("ClickableViewAccessibility")
     public ShopTitlePopupWindow(Activity activity, View topToPopupWindowView,
-                                List<ShopListResp.ShopInfo> shopList, TextView mSetViewImg) {
+                                List<ShopInfo> shopList, TextView mSetViewImg) {
         super();
         if (activity != null) {
             this.mContext = activity;
@@ -135,20 +135,20 @@ public class ShopTitlePopupWindow extends PopupWindow implements View.OnTouchLis
         super.showAsDropDown(anchor);
     }
 
-    private class ShopRecyclerViewAdapter extends CommonListAdapter<ShopListResp.ShopInfo> {
+    private class ShopRecyclerViewAdapter extends CommonListAdapter<ShopInfo> {
         /**
          * @param context 上下文
          * @param list    列表数据
          */
-        public ShopRecyclerViewAdapter(Context context, List<ShopListResp.ShopInfo> list) {
+        public ShopRecyclerViewAdapter(Context context, List<ShopInfo> list) {
             super(context, R.layout.dropdown_item, list);
         }
 
         @Override
-        public void convert(ViewHolder holder, ShopListResp.ShopInfo shopInfo) {
+        public void convert(ViewHolder holder, ShopInfo shopInfo) {
             TextView dropdownItemName = holder.getView(R.id.dropdown_item_name);
             ImageView dropdownItemCheckbox = holder.getView(R.id.dropdown_item_checkbox);
-            dropdownItemName.setText(shopInfo.getShop_name());
+            dropdownItemName.setText(shopInfo.getShopName());
             if (holder.getAdapterPosition() == 0) {
                 dropdownItemCheckbox.setVisibility(View.VISIBLE);
                 dropdownItemName.setTextColor(ContextCompat.getColor(mContext, R.color.common_orange));
@@ -157,8 +157,8 @@ public class ShopTitlePopupWindow extends PopupWindow implements View.OnTouchLis
                 dropdownItemName.setTextColor(ContextCompat.getColor(mContext, R.color.text_normal));
             }
             holder.itemView.setOnClickListener(v -> {
-                SpUtils.setShopId(shopInfo.getShop_id());
-                SpUtils.setShopName(shopInfo.getShop_name());
+                SpUtils.setShopId(shopInfo.getShopId());
+                SpUtils.setShopName(shopInfo.getShopName());
                 BaseNotification.newInstance().postNotificationName(CommonNotifications.shopSwitched);
                 BaseNotification.newInstance().postNotificationName(CommonNotifications.shopNameChanged);
                 dismiss();
