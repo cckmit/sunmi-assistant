@@ -27,6 +27,7 @@ import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.sunmi.apmanager.utils.DialogUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.ShopRegionContract;
 import com.sunmi.assistant.mine.model.RegionProvince;
@@ -64,7 +65,7 @@ import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 @SuppressLint("Registered")
 @EActivity(R.layout.activity_mine_store_address)
 public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter>
-        implements ShopRegionContract.View, PoiSearch.OnPoiSearchListener {
+        implements ShopRegionContract.View, PoiSearch.OnPoiSearchListener, View.OnClickListener {
     private static final int IPC_MARK_MAX_LENGTH = 100;
     private static final int POI_PAGE_SIZE = 20;
     @ViewById(R.id.title_bar)
@@ -106,6 +107,7 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
+        titleBar.getLeftImg().setOnClickListener(this);
         mPresenter = new ShopRegionPresenter(info);
         mPresenter.attachView(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -127,6 +129,24 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
             cetDetailsAddress.setText(info.getAddress());
         }
         editTextChangedListener();
+    }
+
+    @Override
+    public void onClick(View v) {
+        onBackPressed();
+    }
+
+    @Override
+    public void onBackPressed() {
+        String address = cetDetailsAddress.getText() == null ||
+                TextUtils.isEmpty(cetDetailsAddress.getText().toString())
+                ? "" : cetDetailsAddress.getText().toString();
+        if (info.getProvince() == mProvinceId && info.getCity() == mCityId &&
+                info.getArea() == mAreaId && TextUtils.equals(info.getAddress(), address)) {
+            super.onBackPressed();
+        } else {
+            DialogUtils.isCancelSetting(this);
+        }
     }
 
     @Click(R.id.sil_address)
