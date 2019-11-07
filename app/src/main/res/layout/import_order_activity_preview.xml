@@ -101,7 +101,7 @@
         style="@style/BtnBigOrange"
         android:layout_width="0dp"
         android:layout_marginBottom="@dimen/dp_20"
-        android:background="@drawable/btn_import_order_other"
+        android:background="@drawable/import_btn_order_other"
         android:text="@string/import_order_other_mobile"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
