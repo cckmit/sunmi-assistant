@@ -14,7 +14,7 @@
         app:dividerShow="true"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
-        app:titleText="@string/str_store_title_details"
+        app:titleText="@string/company_shop_details"
         app:titleTextColor="@color/text_main" />
 
     <sunmi.common.view.SettingItemLayout
@@ -50,7 +50,7 @@
         android:visibility="gone"
         app:imageRight="@mipmap/ic_right_arrow_small"
         app:leftPadding="@dimen/dp_20"
-        app:leftText="@string/shop_area_tip"
+        app:leftText="@string/shop_address"
         app:parentHeight="@dimen/dp_60"
         app:rightPadding="@dimen/dp_20" />
 

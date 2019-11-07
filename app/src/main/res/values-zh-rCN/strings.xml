@@ -297,7 +297,4 @@
     <string name="shop_create_new">创建门店</string>
     <string name="company_shop_mag">门店管理</string>
     <string name="shop_list_new_create">新建门店</string>
-    <string name="str_store_title_details">门店详情</string>
-    <string name="shop_area_tip">门店地址</string>
-    <string name="str_shop_name">门店名称</string>
 </resources>

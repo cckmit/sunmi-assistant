@@ -464,13 +464,21 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
     @UiThread
     void stopTimerCountDown(int status) {
         if (status == IPC_DOWNLOAD) {
-            downloadTimer.cancel();
+            if (downloadTimer != null) {
+                downloadTimer.cancel();
+            }
         } else if (status == IPC_UPGRADE_AI) {
-            upgradeAiTimer.cancel();
+            if (upgradeAiTimer != null) {
+                upgradeAiTimer.cancel();
+            }
         } else if (status == IPC_RELAUNCH) {
-            relaunchTimer.cancel();
+            if (relaunchTimer != null) {
+                relaunchTimer.cancel();
+            }
         } else if (status == IPC_CONNECT_TIMEOUT) {
-            mqttConnectTimeout.cancel();
+            if (mqttConnectTimeout != null) {
+                mqttConnectTimeout.cancel();
+            }
         }
     }
 

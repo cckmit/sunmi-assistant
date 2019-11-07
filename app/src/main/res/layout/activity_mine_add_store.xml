@@ -17,7 +17,7 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:rightText="@string/str_save"
-        app:titleText="@string/str_shop_name"
+        app:titleText="@string/company_shop_create_name"
         app:titleTextColor="@color/text_main" />
 
     <sunmi.common.view.ClearableEditText
