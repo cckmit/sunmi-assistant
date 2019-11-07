@@ -442,6 +442,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
     @UiThread
     void dialogUpgradeTip() {
         hideLoadingDialog();
+        isUpgradeProcess = false;
         ipcSettingUpgradeGroup.setVisibility(View.VISIBLE);
         tvIpcStatus.setVisibility(View.GONE);
         tvIpcUpgradeTip.setVisibility(View.GONE);
