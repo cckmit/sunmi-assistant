@@ -65,6 +65,7 @@
                     android:id="@+id/tv_cloud_storage"
                     style="@style/BtnSolidWhite"
                     android:layout_marginTop="@dimen/dp_20"
+                    android:clickable="false"
                     android:text="@string/str_use_free" />
             </LinearLayout>
 
@@ -108,6 +109,7 @@
                     android:id="@+id/tv_after_sales"
                     style="@style/BtnSolidWhite"
                     android:layout_marginTop="@dimen/dp_20"
+                    android:clickable="false"
                     android:text="@string/str_apply_repair" />
             </LinearLayout>
 
@@ -151,6 +153,7 @@
                     android:id="@+id/tv_sunmi_store"
                     style="@style/BtnSolidWhite"
                     android:layout_marginTop="@dimen/dp_20"
+                    android:clickable="false"
                     android:text="@string/str_enter_store" />
             </LinearLayout>
 

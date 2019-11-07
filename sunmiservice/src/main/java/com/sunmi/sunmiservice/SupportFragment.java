@@ -22,7 +22,6 @@ import org.androidannotations.annotations.ViewById;
 import sunmi.common.base.BaseFragment;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.utils.NetworkUtils;
-import sunmi.common.utils.Utils;
 import sunmi.common.view.TitleBarView;
 
 @EFragment(resName = "fragment_support")
@@ -52,7 +51,7 @@ public class SupportFragment extends BaseFragment
         ServiceManageActivity_.intent(mActivity).start();
     }
 
-    @Click(resName = {"ll_cloud_storage", "tv_cloud_storage"})
+    @Click(resName = "ll_cloud_storage")
     void cloudStorageClick() {
         if (!checkNetwork()) {
             return;
@@ -60,12 +59,12 @@ public class SupportFragment extends BaseFragment
         WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConfig.CLOUD_STORAGE_URL).start();
     }
 
-    @Click(resName = {"ll_after_sales", "tv_after_sales"})
+    @Click(resName = "ll_after_sales")
     void afterSalesClick() {
         launchMiniProgram(SunmiServiceConfig.WECHART_USER_NAME, SunmiServiceConfig.WECHAT_PATH, SunmiServiceConfig.WECHAT_MINI_PROGRAM_TYPE);
     }
 
-    @Click(resName = {"ll_sunmi_store", "tv_sunmi_store"})
+    @Click(resName = "ll_sunmi_store")
     void sunmiStoreClick() {
         if (!checkNetwork()) {
             return;
