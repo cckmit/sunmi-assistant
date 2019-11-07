@@ -34,6 +34,13 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        uat {}
+    }
+
+    flavorDimensions "default"
+    productFlavors {
+        myapp {}
+        google {}
     }
 
 }
@@ -41,17 +48,17 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation fileTree(include: ['*.aar'], dir: 'libs')
+    implementation project(':datelibrary')
+    implementation project(':commonlib')//公共库
 
     api "com.android.support:appcompat-v7:${SUPPORT_VERSION}"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-//    testImplementation 'org.mockito:mockito-core:2.19.0'
-
-    implementation project(':datelibrary')
-    implementation project(':commonlib')//公共库
+    testImplementation 'org.mockito:mockito-core:2.19.0'
+    androidTestImplementation 'org.mockito:mockito-core:2.19.0'
 
     annotationProcessor "org.androidannotations:androidannotations:${AAVersion}"
-//    implementation 'com.github.codbking:PickTime:v1.0.1'
-    annotationProcessor "com.github.xiaojinzi123.Component:component-compiler:1.7.5"
+
+    annotationProcessor "com.github.xiaojinzi123.Component:component-compiler:${CVersion}"
 }

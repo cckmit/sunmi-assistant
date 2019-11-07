@@ -27,7 +27,6 @@ import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.OpcodeConstants;
 import com.sunmi.ipc.setting.entity.DetectionConfig;
 import com.sunmi.ipc.utils.TimeoutTimer;
-import com.sunmi.ipc.view.UpdateProgressDialog;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.CheckedChange;
@@ -38,11 +37,10 @@ import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.nio.charset.Charset;
 import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
@@ -58,8 +56,6 @@ import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.dialog.InputDialog;
 
-import static com.sunmi.ipc.config.IpcConstants.FS_UPGRADE_TIME;
-import static com.sunmi.ipc.config.IpcConstants.SS_UPGRADE_TIME;
 import static com.sunmi.ipc.setting.entity.DetectionConfig.INTENT_EXTRA_DETECTION_CONFIG;
 
 /**
@@ -77,6 +73,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     private static final int REQUEST_CODE_WIFI = 1004;
     private static final int REQUEST_CODE_ROTATE = 1005;
     private static final int REQUEST_COMPLETE = 1000;
+    private static final int REQUEST_VERSION = 1006;
     private final int SWITCH_UNCHECK = 0;
     private final int SWITCH_CHECK = 1;
     private final int WIFI_WIRE_DEFAULT = -1;
@@ -104,6 +101,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     Switch swWdr;
     @ViewById(resName = "tv_wdr")
     TextView tvWdr;
+
     @Extra
     SunmiDevice mDevice;
     @Extra
@@ -118,62 +116,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     private int wifiIsWire = WIFI_WIRE_DEFAULT; //-1默认 0无线 1有线
     private boolean isShowWireDialog;//是否显示有线dialog
 
-    // 升级
-    private UpdateProgressDialog progressDialog;
-    private Timer timer = null;
-    private TimerTask timerTask = null;
-    private int countdown, endNum;
     private boolean isRun;
-
-    //开启计时
-    private void startTimer() {
-        stopTimer();
-        timer = new Timer();
-        timer.schedule(timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                showDownloadProgress();
-            }
-        }, 0, 1000);
-    }
-
-    @UiThread
-    void showDownloadProgress() {
-        countdown++;
-        int countMinutes = DeviceTypeUtils.getInstance().isSS1(mDevice.getModel()) ? SS_UPGRADE_TIME : FS_UPGRADE_TIME;
-        if (countdown == countMinutes) {
-            stopTimer();
-            progressDialog.progressDismiss();
-            upgradeVerFailDialog(mResp.getLatest_bin_version());
-        } else if (countdown <= 90) {
-            progressDialog.setText(context, countdown);
-        } else {
-            if (DeviceTypeUtils.getInstance().isSS1(mDevice.getModel()) && countdown <= SS_UPGRADE_TIME) {
-                if ((countdown - 90) % 6 == 0) {
-                    endNum++;
-                }
-            } else if (DeviceTypeUtils.getInstance().isFS1(mDevice.getModel()) && countdown <= FS_UPGRADE_TIME) {
-                if ((countdown - 90) % 37 == 0) {
-                    endNum++;
-                }
-            }
-            progressDialog.setText(context, 90 + endNum);
-        }
-    }
-
-    // 停止计时
-    private void stopTimer() {
-        countdown = 0;
-        endNum = 0;
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-        }
-        if (timerTask != null) {
-            timerTask.cancel();
-            timerTask = null;
-        }
-    }
+    private boolean isClickVersionUpgrade;
 
     @AfterViews
     void init() {
@@ -197,7 +141,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             lp.topMargin = (int) getResources().getDimension(R.dimen.dp_16);
             mSoundDetection.setLayoutParams(lp);
         } else if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
-            mAdjustScreen.setLeftTextColor(ContextCompat.getColor(this, R.color.colorText_40));
+            mAdjustScreen.setLeftTextColor(ContextCompat.getColor(this, R.color.text_caption));
         }
     }
 
@@ -205,6 +149,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     protected void onResume() {
         super.onResume();
         isRun = true;
+        //查询升级状态
+        IPCCall.getInstance().ipcQueryUpgradeStatus(this, mDevice.getModel(), mDevice.getDeviceid());
     }
 
     @Override
@@ -220,15 +166,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stopTimer();
         timeoutStop();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (countdown == 0) {
-            super.onBackPressed();
-        }
     }
 
     @Override
@@ -255,11 +193,26 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         mResp = resp;
         int upgradeRequired = resp.getUpgrade_required();
         if (upgradeRequired == 1) {
-            mVersion.setIvToTextLeftImage(R.mipmap.ic_ipc_new_ver);
-            newVersionDialog();
+            mVersion.getIvToTextLeft().setVisibility(View.VISIBLE);
+            mVersion.getIvToTextLeft().setText(R.string.ipc_setting_new);
+            mVersion.setRightText(mDevice.getFirmware());
+            if (!isClickVersionUpgrade) {
+                newVersionDialog();
+            }
         } else {
             mVersion.setRightText(resp.getLatest_bin_version());
-            mVersion.setIvToTextLeftImage(0);
+            mVersion.getIvToTextLeft().setVisibility(View.GONE);
+        }
+        if (isClickVersionUpgrade) {
+            isClickVersionUpgrade = false;
+            gotoIpcSettingVersionActivity();
+        }
+    }
+
+    @Override
+    public void currentVersionFailView() {
+        if (isClickVersionUpgrade) {
+            isClickVersionUpgrade = false;
         }
     }
 
@@ -286,6 +239,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         if (bean == null) {
             setWifiUnknown();
         } else {
+            showLoadingDialog();
             IPCCall.getInstance().getIpcConnectApMsg(context, bean.getIp());
         }
     }
@@ -369,7 +323,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             return;
         }
         showLoadingDialog();
-        IPCCall.getInstance().getSdState(context, device.getIp());
+        IPCCall.getInstance().getSdState(context, device.getModel(), device.getDeviceid());
     }
 
     @Click(resName = "sil_voice_exception")
@@ -475,14 +429,29 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         if (noNetCannotClick(true)) {
             return;
         }
-        if (mResp == null) {
-            mPresenter.currentVersion();
-            return;
-        }
+        isClickVersionUpgrade = true;
+        showLoadingDialog();
+        mPresenter.currentVersion();
+    }
+
+    private void gotoIpcSettingVersionActivity() {
         IpcSettingVersionActivity_.intent(this)
                 .mResp(mResp)
                 .mDevice(mDevice)
-                .start();
+                .startForResult(REQUEST_VERSION);
+    }
+
+    @OnActivityResult(REQUEST_VERSION)
+    void onVersionUpgradeResult(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (mResp != null) {
+                mVersion.setRightText(mResp.getLatest_bin_version());
+                mVersion.getIvToTextLeft().setVisibility(View.GONE);
+                isClickVersionUpgrade = false;
+                mPresenter.currentVersion();
+            }
+            BaseNotification.newInstance().postNotificationName(CommonNotifications.ipcUpgradeComplete);
+        }
     }
 
     @Click(resName = "sil_wifi")
@@ -505,7 +474,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         }, 2000);
     }
 
-
     private void gotoIpcSettingWiFiActivity() {
         IpcSettingWiFiActivity_.intent(this)
                 .mDevice(mDevice)
@@ -524,8 +492,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             mWifiName.setRightText(wifiSsid);
             if (wifiIsWire == 0) {
                 mWifiName.setRightText(getString(R.string.ipc_setting_unknown));
-                mWifiName.setLeftTextColor(ContextCompat.getColor(this, R.color.colorText_40));
-                mWifiName.setRightTextColor(ContextCompat.getColor(this, R.color.colorText_40));
+                mWifiName.setLeftTextColor(ContextCompat.getColor(this, R.color.text_caption));
+                mWifiName.setRightTextColor(ContextCompat.getColor(this, R.color.text_caption));
             }
         }
     }
@@ -556,10 +524,10 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     void isCanSetWdr(int nightMode) {
         if (nightMode == 1) {
             swWdr.setEnabled(false);
-            tvWdr.setTextColor(ContextCompat.getColor(this, R.color.colorText_40));
+            tvWdr.setTextColor(ContextCompat.getColor(this, R.color.text_caption));
         } else {
             swWdr.setEnabled(true);
-            tvWdr.setTextColor(ContextCompat.getColor(this, R.color.colorText));
+            tvWdr.setTextColor(ContextCompat.getColor(this, R.color.text_main));
         }
     }
 
@@ -579,16 +547,14 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             return;
         }
         if (isSetWdr == isChecked) {
-            LogCat.e(TAG, "kkkkkk 11");
             return;
         }
-        LogCat.e(TAG, "kkkkkk 22");
         isSetWdr = isChecked;
         isOnClickWdr = true;
         isOnClickLight = false;
         showLoadingDialog();
-        IPCCall.getInstance().setIpcNightIdeRotation(context, mDevice.getModel(),
-                mDevice.getDeviceid(), nightMode, isChecked ? SWITCH_CHECK : SWITCH_UNCHECK, ledIndicator, rotation);
+        IPCCall.getInstance().setIpcNightIdeRotation(context, mDevice.getModel(), mDevice.getDeviceid(),
+                nightMode, isChecked ? SWITCH_CHECK : SWITCH_UNCHECK, ledIndicator, rotation);
     }
 
 
@@ -615,13 +581,24 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         }
     }
 
+    @Click(resName = "sil_sd_manager")
+    void sdManagerClick() {
+        showLoadingDialog();
+        IPCCall.getInstance().getSdStatus(context, mDevice.getModel(), mDevice.getDeviceid());
+    }
+
     @Override
     public int[] getStickNotificationId() {
         return new int[]{OpcodeConstants.getIpcConnectApMsg, OpcodeConstants.getIpcNightIdeRotation,
                 OpcodeConstants.setIpcNightIdeRotation, OpcodeConstants.getIpcDetection,
-                OpcodeConstants.ipcUpgrade, OpcodeConstants.getIsWire, CommonNotifications.netConnected,
+                OpcodeConstants.getIsWire, CommonNotifications.netConnected,
                 CommonNotifications.netDisconnection, CommonNotifications.ipcUpgrade,
-                CommonNotifications.mqttResponseTimeout, OpcodeConstants.getSdStatus};
+                CommonNotifications.mqttResponseTimeout, OpcodeConstants.ipcQueryUpgradeStatus};
+    }
+
+    @Override
+    public int[] getUnStickNotificationId() {
+        return new int[]{OpcodeConstants.getSdStatus, IpcConstants.getSdcardStatus};
     }
 
     @Override
@@ -638,12 +615,14 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             mDevice.setFirmware(mResp.getLatest_bin_version());
             mPresenter.currentVersion();
         } else if (id == CommonNotifications.mqttResponseTimeout) { //连接超时
+            if (!isRun) {
+                return;
+            }
             shortTip(R.string.str_server_exception);
         }
         if (!isRun || args == null || args.length < 1) {
             return;
         }
-
         if (args[0] instanceof ResponseBean) {
             ResponseBean res = (ResponseBean) args[0];
             if (id == OpcodeConstants.getIpcConnectApMsg) {
@@ -660,46 +639,90 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 } else {
                     shortTip(R.string.toast_network_Exception);
                 }
-            } else if (id == OpcodeConstants.ipcUpgrade) {
-                upgradeResult(res);
             } else if (id == OpcodeConstants.getIsWire) {
                 checkWire(res);
             } else if (id == OpcodeConstants.getSdStatus) {
-                try {
-                    if (res.getDataErrCode() == 1) {
-                        int status = res.getResult().getInt("sd_status_code");
-                        switch (status) {
-                            case 2:
-                                RecognitionSettingActivity_.intent(this)
-                                        .mDevice(mDevice)
-                                        .mVideoRatio(16f / 9f)
-                                        .start();
-                                break;
-                            case 0:
-                                showErrorDialog(R.string.tip_no_tf_card,
-                                        R.string.ipc_recognition_sd_none);
-                                break;
-                            case 1:
-                                showErrorDialog(R.string.tip_tf_uninitalized,
-                                        R.string.ipc_recognition_sd_uninitialized);
-                                break;
-                            case 3:
-                                showErrorDialog(R.string.tip_unrecognition_tf_card,
-                                        R.string.ipc_recognition_sd_unknown);
-                                break;
-                            default:
-                                shortTip(R.string.network_wifi_low);
-                                break;
-                        }
-                    } else {
+                switch (getSdcardStatus(res)) {
+                    case 1:
+                    case 2:
+                        IpcSettingSdcardActivity_.intent(this).mDevice(mDevice).start();
+                        break;
+                    case 0:
+                        showErrorDialog(R.string.tip_no_tf_card, R.string.ipc_recognition_sd_none);
+                        break;
+                    case 3:
+                        showErrorDialog(R.string.tip_unrecognition_tf_card,
+                                R.string.ipc_recognition_sd_unknown);
+                        break;
+                    case 4:
+                        showErrorDialog(R.string.tip_unrecognition_tf_card,
+                                R.string.tip_tf_card_removed_software);
+                        break;
+                    default:
                         shortTip(R.string.network_wifi_low);
+                        break;
+                }
+            } else if (IpcConstants.getSdcardStatus == id) {
+                switch (getSdcardStatus(res)) {
+                    case 2:
+                        RecognitionSettingActivity_.intent(this).mDevice(mDevice)
+                                .mVideoRatio(16f / 9f).start();
+                        break;
+                    case 0:
+                        showErrorDialog(R.string.tip_no_tf_card, R.string.ipc_recognition_sd_none);
+                        break;
+                    case 1:
+                        showFormatDialog(mDevice);
+                        break;
+                    case 3:
+                        showErrorDialog(R.string.tip_unrecognition_tf_card,
+                                R.string.ipc_recognition_sd_unknown);
+                        break;
+                    case 4:
+                        showErrorDialog(R.string.tip_unrecognition_tf_card,
+                                R.string.tip_tf_card_removed_software);
+                        break;
+                    default:
+                        shortTip(R.string.network_wifi_low);
+                        break;
+                }
+            } else if (id == OpcodeConstants.ipcQueryUpgradeStatus) {
+                if (res.getDataErrCode() == 1) {
+                    try {
+                        JSONObject object = res.getResult();
+                        int status = object.getInt("status");
+                        showDevStatus(status);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    LogCat.e(TAG, "Parse json ERROR: " + res.getResult());
-                    shortTip(R.string.network_wifi_low);
                 }
             }
         }
+    }
+
+    @UiThread
+    void showDevStatus(int status) {
+        switch (status) {
+            case 0:
+            case 1:
+            case 2:
+                mVersion.getIvToTextLeft().setText(R.string.ipc_setting_upgrading);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private int getSdcardStatus(ResponseBean res) {
+        int status = -1;
+        if (res.getDataErrCode() == 1) {
+            try {
+                status = res.getResult().getInt("sd_status_code");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return status;
     }
 
     @UiThread
@@ -709,6 +732,18 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 .setTitle(title)
                 .setMessage(msgResId)
                 .setConfirmButton(R.string.str_confirm).create().show();
+    }
+
+    @UiThread
+    public void showFormatDialog(SunmiDevice device) {
+        hideLoadingDialog();
+        new CommonDialog.Builder(context)
+                .setTitle(R.string.tip_sdcard_unformat)
+                .setMessage(R.string.msg_sdcard_should_format)
+                .setCancelButton(R.string.sm_cancel)
+                .setConfirmButton(R.string.str_sd_format, (dialog, which) -> {
+                    IpcSettingSdcardActivity_.intent(this).mDevice(device).start();
+                }).create().show();
     }
 
     @UiThread
@@ -727,27 +762,30 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     @UiThread
     void setWifiUnknown() {
         mWifiName.setRightText(getString(R.string.ipc_setting_unknown));
-        mWifiName.setLeftTextColor(ContextCompat.getColor(context, R.color.colorText_40));
-        mWifiName.setRightTextColor(ContextCompat.getColor(context, R.color.colorText_40));
+        mWifiName.setLeftTextColor(ContextCompat.getColor(context, R.color.text_caption));
+        mWifiName.setRightTextColor(ContextCompat.getColor(context, R.color.text_caption));
+        mAdjustScreen.setLeftTextColor(ContextCompat.getColor(this, R.color.text_caption));
     }
 
     @UiThread
     void showWifiName(String ssid) {
         mWifiName.setRightText(ssid);
-        mWifiName.setLeftTextColor(ContextCompat.getColor(context, R.color.colorText));
-        mWifiName.setRightTextColor(ContextCompat.getColor(context, R.color.colorText_60));
+        mWifiName.setLeftTextColor(ContextCompat.getColor(context, R.color.text_main));
+        mWifiName.setRightTextColor(ContextCompat.getColor(context, R.color.text_caption));
     }
 
     @UiThread
     void connectedNet() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                SunmiDevice bean = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
-                if (bean == null) {
-                    setWifiUnknown();
-                } else {
-                    IPCCall.getInstance().getIsWire(IpcSettingActivity.this, bean.getIp());
+        new Handler().postDelayed(() -> {
+            SunmiDevice bean = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
+            if (bean == null) {
+                setWifiUnknown();
+            } else {
+                IPCCall.getInstance().getIsWire(IpcSettingActivity.this, bean.getIp());
+                if (CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
+                    mWifiName.setLeftTextColor(ContextCompat.getColor(context, R.color.text_main));
+                    mWifiName.setRightTextColor(ContextCompat.getColor(context, R.color.text_main));
+                    mAdjustScreen.setLeftTextColor(ContextCompat.getColor(this, R.color.text_main));
                 }
             }
         }, 1200);
@@ -760,7 +798,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         if (res.getResult() == null) {
             return;
         }
-        IpcConnectApResp device = new GsonBuilder().create().fromJson(res.getResult().toString(), IpcConnectApResp.class);
+        IpcConnectApResp device = new GsonBuilder().create().fromJson(
+                res.getResult().toString(), IpcConnectApResp.class);
         wifiSsid = device.getWireless().getSsid();
         wifiMgmt = device.getWireless().getKey_mgmt();
         showWifiName(device.getWireless().getSsid());
@@ -909,20 +948,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         isCanSetWdr(nightMode);
     }
 
-    @UiThread
-    void upgradeResult(ResponseBean res) {
-        if (res.getDataErrCode() == 1) {//升级成功
-            stopTimer();
-            progressDialog.progressDismiss();
-            mDevice.setFirmware(mResp.getLatest_bin_version());
-            mVersion.setRightText(mResp.getLatest_bin_version());
-            BaseNotification.newInstance().postNotificationName(CommonNotifications.ipcUpgradeComplete);
-            upgradeVerSuccessDialog();
-        } else {
-            upgradeVerFailDialog(mResp.getLatest_bin_version());
-        }
-    }
-
     /**
      * 有新版本
      */
@@ -931,61 +956,22 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 .setTitle(R.string.ipc_setting_dialog_upgrade)
                 .setMessage(getString(R.string.ipc_setting_version_current, mDevice.getFirmware()) + "\n" +
                         getString(R.string.ipc_setting_dialog_upgrade_download_time,
-                                DeviceTypeUtils.getInstance().isSS1(mDevice.getModel()) ? "2" : "6"))
-                .setConfirmButton(R.string.ipc_setting_dialog_upgrade_ok, (dialog, which) -> upgrading())
-                .setCancelButton(R.string.ipc_setting_dialog_upgrade_cancel).create();
+                                DeviceTypeUtils.getInstance().isSS1(mDevice.getModel()) ? "5" : "8"))
+                .setConfirmButton(R.string.ipc_setting_dialog_upgrade_ok, (dialog, which) -> {
+                    gotoIpcSettingVersionActivity();
+                })
+                .setCancelButton(R.string.str_in_later).create();
         commonDialog.showWithOutTouchable(false);
     }
-
-    /**
-     * 更新版本失败
-     *
-     * @param version
-     */
-    private void upgradeVerFailDialog(String version) {
-        CommonDialog commonDialog = new CommonDialog.Builder(this)
-                .setTitle(R.string.ipc_setting_dialog_upgrade_fail)
-                .setMessage(getString(R.string.ipc_setting_dialog_upgrade_fail_content, version))
-                .setConfirmButton(R.string.str_retry, (dialog, which) -> upgrading())
-                .setCancelButton(R.string.sm_cancel).create();
-        commonDialog.showWithOutTouchable(false);
-    }
-
-    /**
-     * 更新版本成功
-     */
-    private void upgradeVerSuccessDialog() {
-        CommonDialog commonDialog = new CommonDialog.Builder(this)
-                .setTitle(R.string.ipc_setting_dialog_upgrade_success)
-                .setMessage(getString(R.string.ipc_setting_dialog_upgrade_success_content))
-                .setConfirmButton(R.string.str_confirm, (dialog, which) -> {
-                    dialog.dismiss();
-                    mPresenter.currentVersion();
-                }).create();
-        commonDialog.showWithOutTouchable(false);
-    }
-
-    /**
-     * 升级中
-     */
-    private void upgrading() {
-        IPCCall.getInstance().ipcUpgrade(IpcSettingActivity.this, mDevice.getModel(),
-                mDevice.getDeviceid(), mResp.getUrl(), mResp.getLatest_bin_version());
-        progressDialog = new UpdateProgressDialog.Builder(this)
-                .create();
-        progressDialog.canceledOnTouchOutside(false);
-        startTimer();
-    }
-
 
     /**
      * 检测wifi是否有线连接
      */
     private void checkWirelessDialog() {
-        CommonDialog commonDialog = new CommonDialog.Builder(this)
+        CommonDialog commonDialog = new CommonDialog.Builder(context)
                 .setTitle(getString(R.string.ipc_setting_tip))
-                .setMessage(getString(R.string.ipc_setting_check_wireless))
-                .setConfirmButton(R.string.str_confirm, R.color.colorText, (dialog, which) -> {
+                .setMessage(R.string.ipc_setting_check_wireless)
+                .setConfirmButton(R.string.str_confirm, R.color.text_main, (dialog, which) -> {
                     dialog.dismiss();
                     gotoIpcSettingWiFiActivity();
                 }).setCancelButton(R.string.sm_cancel, R.color.common_orange).create();

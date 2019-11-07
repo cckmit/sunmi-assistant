@@ -43,6 +43,7 @@ import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.mqtt.MqttManager;
 import sunmi.common.utils.CommonHelper;
+import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.MyFragmentTabHost;
@@ -77,7 +78,7 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
             initIpc();
         }
         if (TextUtils.isEmpty(SpUtils.getCompanyName())) {
-            CommonUtils.gotoLoginActivity(context, "");
+            GotoActivityUtils.gotoLoginActivity(context, "");
         } else {
             initTabs();
             initMessageBadge();
@@ -196,7 +197,7 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
         }
         MainTab[] mainTabs = MainTab.values();
         for (MainTab mainTab : mainTabs) {
-            if (isHideTab(mainTab.getResName())) {//saas平台需要显示数据tab
+            if (isHideTab(mainTab.getResName())) {
                 continue;
             }
             TabHost.TabSpec tab = mTabHost.newTabSpec(getString(mainTab.getResName()));

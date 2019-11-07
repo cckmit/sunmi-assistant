@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorWhite">
+    android:background="@color/c_white">
 
     <sunmi.common.view.TitleBarView
         android:id="@+id/title_bar"
@@ -15,7 +15,7 @@
         app:leftIcon="@drawable/ic_back_dark"
         app:rightText="@string/str_save"
         app:titleText="@string/str_business_category"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <LinearLayout
         android:layout_width="match_parent"

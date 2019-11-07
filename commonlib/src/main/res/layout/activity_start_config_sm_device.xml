@@ -9,11 +9,11 @@
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:dividerColor="@color/colorText_10"
+        app:dividerColor="@color/c_divider"
         app:dividerShow="true"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <ImageView
         android:id="@+id/iv_image"
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/iv_image"
         android:layout_centerHorizontal="true"
-        android:textColor="@color/colorText"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_28" />
 
     <android.support.v4.widget.NestedScrollView
@@ -75,11 +75,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/ctv_privacy"
-        android:layout_marginStart="@dimen/dp_24"
         android:layout_marginTop="@dimen/dp_40"
         android:gravity="center_horizontal"
         android:text="@string/tip_has_ap_already"
-        android:textColor="@color/c_text_blue"
+        android:textColor="@color/assist_primary"
         android:textSize="@dimen/sp_14"
         android:visibility="gone" />
 
@@ -88,7 +87,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_0_5"
         android:layout_above="@+id/ctv_privacy"
-        android:background="@color/dialog_divider"
+        android:background="@color/c_divider"
         android:visibility="gone" />
 
     <CheckedTextView
@@ -109,7 +108,7 @@
 
     <Button
         android:id="@+id/btn_start"
-        style="@style/BtnOrange"
+        style="@style/BtnBigOrange"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_20"

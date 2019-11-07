@@ -12,8 +12,6 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.READ_SMS" />
-    <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -68,6 +66,10 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/photo_file_paths" />
         </provider>
+
+        <service
+            android:name="org.eclipse.paho.android.service.MqttService"
+            android:enabled="true" />
 
         <!-- 小米推送start -->
         <service

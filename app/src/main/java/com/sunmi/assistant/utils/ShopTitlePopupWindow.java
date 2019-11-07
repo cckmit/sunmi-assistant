@@ -22,9 +22,10 @@ import com.sunmi.assistant.R;
 import java.util.List;
 
 import sunmi.common.constant.CommonNotifications;
-import sunmi.common.model.ShopListResp;
+import sunmi.common.model.ShopInfo;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.Utils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.ViewHolder;
 
@@ -44,7 +45,7 @@ public class ShopTitlePopupWindow extends PopupWindow implements View.OnTouchLis
 
     @SuppressLint("ClickableViewAccessibility")
     public ShopTitlePopupWindow(Activity activity, View topToPopupWindowView,
-                                List<ShopListResp.ShopInfo> shopList, TextView mSetViewImg) {
+                                List<ShopInfo> shopList, TextView mSetViewImg) {
         super();
         if (activity != null) {
             this.mContext = activity;
@@ -73,6 +74,7 @@ public class ShopTitlePopupWindow extends PopupWindow implements View.OnTouchLis
         itemRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         itemRecyclerView.setAdapter(new ShopRecyclerViewAdapter(mContext, shopList));
         viewLayout.setOnTouchListener(this);
+        this.setTouchInterceptor(this);
     }
 
     /**
@@ -92,18 +94,26 @@ public class ShopTitlePopupWindow extends PopupWindow implements View.OnTouchLis
 
     private void setImageBackground() {
         if (mSetViewImg != null) {
-            mSetViewImg.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(mContext, R.drawable.ic_arrow_drop_down_white), null);
+            mSetViewImg.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                    ContextCompat.getDrawable(mContext, R.drawable.ic_arrow_drop_down_white), null);
         }
     }
+
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_OUTSIDE ||
                 event.getAction() == MotionEvent.ACTION_DOWN) {
-            dismiss();
-            setImageBackground();
-            return true;
+            //title+statusBar高度
+            int titleHeight = (int) mContext.getResources().getDimension(R.dimen.dp_64) + Utils.getStatusBarHeight(mContext);
+            //RecyclerView底部Y高度坐标
+            int recyclerViewBottomHeight = (int) (mContext.getResources().getDimension(R.dimen.dp_48) * 7.5 + (int) mContext.getResources().getDimension(R.dimen.dp_32));
+            if (this.isShowing() && event.getY() < titleHeight || event.getY() > recyclerViewBottomHeight) {
+                dismiss();
+                setImageBackground();
+                return true;
+            }
         }
         return false;
     }
@@ -125,30 +135,30 @@ public class ShopTitlePopupWindow extends PopupWindow implements View.OnTouchLis
         super.showAsDropDown(anchor);
     }
 
-    private class ShopRecyclerViewAdapter extends CommonListAdapter<ShopListResp.ShopInfo> {
+    private class ShopRecyclerViewAdapter extends CommonListAdapter<ShopInfo> {
         /**
          * @param context 上下文
          * @param list    列表数据
          */
-        public ShopRecyclerViewAdapter(Context context, List<ShopListResp.ShopInfo> list) {
+        public ShopRecyclerViewAdapter(Context context, List<ShopInfo> list) {
             super(context, R.layout.dropdown_item, list);
         }
 
         @Override
-        public void convert(ViewHolder holder, ShopListResp.ShopInfo shopInfo) {
+        public void convert(ViewHolder holder, ShopInfo shopInfo) {
             TextView dropdownItemName = holder.getView(R.id.dropdown_item_name);
             ImageView dropdownItemCheckbox = holder.getView(R.id.dropdown_item_checkbox);
-            dropdownItemName.setText(shopInfo.getShop_name());
+            dropdownItemName.setText(shopInfo.getShopName());
             if (holder.getAdapterPosition() == 0) {
                 dropdownItemCheckbox.setVisibility(View.VISIBLE);
                 dropdownItemName.setTextColor(ContextCompat.getColor(mContext, R.color.common_orange));
             } else {
                 dropdownItemCheckbox.setVisibility(View.GONE);
-                dropdownItemName.setTextColor(ContextCompat.getColor(mContext, R.color.color_525866));
+                dropdownItemName.setTextColor(ContextCompat.getColor(mContext, R.color.text_normal));
             }
             holder.itemView.setOnClickListener(v -> {
-                SpUtils.setShopId(shopInfo.getShop_id());
-                SpUtils.setShopName(shopInfo.getShop_name());
+                SpUtils.setShopId(shopInfo.getShopId());
+                SpUtils.setShopName(shopInfo.getShopName());
                 BaseNotification.newInstance().postNotificationName(CommonNotifications.shopSwitched);
                 BaseNotification.newInstance().postNotificationName(CommonNotifications.shopNameChanged);
                 dismiss();

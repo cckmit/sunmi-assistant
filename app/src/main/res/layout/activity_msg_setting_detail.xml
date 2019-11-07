@@ -15,13 +15,13 @@
         app:dividerShow="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/str_msg_setting_detail"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_60"
         android:layout_marginTop="@dimen/dp_0_5"
-        android:background="@color/colorWhite">
+        android:background="@color/c_white">
 
         <TextView
             android:id="@+id/tv_main"
@@ -31,7 +31,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_25"
             android:text="@string/str_promotion_msg"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16" />
 
         <Switch

@@ -9,7 +9,6 @@ import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
 import com.sunmi.cloudprinter.rpc.IOTCloudApi;
-import com.sunmi.ipc.model.IpcListResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
 import org.json.JSONArray;
@@ -25,14 +24,17 @@ import sunmi.common.base.BasePresenter;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.model.AdListBean;
 import sunmi.common.model.AdListResp;
+import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopListResp;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.http.HttpCallback;
 import sunmi.common.rpc.http.RpcCallback;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.DBUtils;
 import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.ThreadPool;
 
 /**
  * Description:
@@ -71,20 +73,22 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
         CloudApi.getBindDeviceList(SpUtils.getShopId(), new RpcCallback(null) {
             @Override
             public void onSuccess(int code, String msg, String data) {
-                DBUtils.deleteSunmiDeviceByType("ROUTER");
-                List<SunmiDevice> list = new ArrayList<>();
-                try {
-                    JSONArray jsonArray = new JSONArray(data);
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        list.add(getRouterDevice((JSONObject) jsonArray.opt(i)));
+                ThreadPool.getCachedThreadPool().submit(() -> {
+                    DBUtils.deleteSunmiDeviceByType("ROUTER");
+                    List<SunmiDevice> list = new ArrayList<>();
+                    try {
+                        JSONArray jsonArray = new JSONArray(data);
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            list.add(getRouterDevice((JSONObject) jsonArray.opt(i)));
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                if (isViewAttached()) {
-                    mView.endRefresh();
-                    mView.getRouterListSuccess(list);
-                }
+                    if (isViewAttached()) {
+                        mView.endRefresh();
+                        mView.getRouterListSuccess(list);
+                    }
+                });
             }
 
             @Override
@@ -119,28 +123,30 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
 
     @Override
     public void getIpcList() {
-        IpcCloudApi.getDetailList(SpUtils.getCompanyId(), SpUtils.getShopId(),
+        IpcCloudApi.getInstance().getDetailList(SpUtils.getCompanyId(), SpUtils.getShopId(),
                 new RetrofitCallback<IpcListResp>() {
                     @Override
                     public void onSuccess(int code, String msg, IpcListResp data) {
-                        DBUtils.deleteSunmiDeviceByType("IPC");
-                        List<SunmiDevice> list = new ArrayList<>();
-                        if (data.getFs_list() != null && data.getFs_list().size() > 0) {
-                            for (IpcListResp.SsListBean bean : data.getFs_list()) {
-                                SunmiDevice device = getIpcDevice(bean);
-                                list.add(device);
+                        ThreadPool.getCachedThreadPool().submit(() -> {
+                            DBUtils.deleteSunmiDeviceByType("IPC");
+                            List<SunmiDevice> list = new ArrayList<>();
+                            if (data.getFs_list() != null && data.getFs_list().size() > 0) {
+                                for (IpcListResp.SsListBean bean : data.getFs_list()) {
+                                    SunmiDevice device = getIpcDevice(bean);
+                                    list.add(device);
+                                }
                             }
-                        }
-                        if (data.getSs_list() != null && data.getSs_list().size() > 0) {
-                            for (IpcListResp.SsListBean bean : data.getSs_list()) {
-                                SunmiDevice device = getIpcDevice(bean);
-                                list.add(device);
+                            if (data.getSs_list() != null && data.getSs_list().size() > 0) {
+                                for (IpcListResp.SsListBean bean : data.getSs_list()) {
+                                    SunmiDevice device = getIpcDevice(bean);
+                                    list.add(device);
+                                }
                             }
-                        }
-                        if (isViewAttached()) {
-                            mView.endRefresh();
-                            mView.getIpcListSuccess(list);
-                        }
+                            if (isViewAttached()) {
+                                mView.endRefresh();
+                                mView.getIpcListSuccess(list);
+                            }
+                        });
                     }
 
                     @Override
@@ -154,7 +160,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
 
     @Override
     public void unbindIPC(int deviceId) {
-        IpcCloudApi.unbindIpc(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId,
+        IpcCloudApi.getInstance().unbindIpc(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId,
                 new RetrofitCallback<Object>() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
@@ -175,7 +181,9 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
 
     @Override
     public void getPrinterList() {
-        if (!CommonConfig.SUPPORT_PRINTER) return;
+        if (!CommonConfig.SUPPORT_PRINTER) {
+            return;
+        }
         IOTCloudApi.getPrinterList(SpUtils.getShopId(), new HttpCallback<String>(null) {
             @Override
             public void onSuccess(int code, String msg, String data) {
@@ -229,13 +237,13 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
             public void onSuccess(int code, String msg, ShopListResp data) {
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();
-                    List<ShopListResp.ShopInfo> shopList = data.getShop_list();
+                    List<ShopInfo> shopList = data.getShop_list();
                     if (shopList == null) {
                         return;
                     }
-                    List<ShopListResp.ShopInfo> newShopList = new ArrayList<>();
-                    for (ShopListResp.ShopInfo shop : shopList) {
-                        if (shop.getShop_id() == SpUtils.getShopId()) {
+                    List<ShopInfo> newShopList = new ArrayList<>();
+                    for (ShopInfo shop : shopList) {
+                        if (shop.getShopId() == SpUtils.getShopId()) {
                             newShopList.add(0, shop);
                         } else {
                             newShopList.add(shop);

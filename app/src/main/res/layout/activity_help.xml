@@ -12,7 +12,7 @@
         app:dividerShow="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/str_help_feedback"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <WebView
         android:id="@+id/wv_help"

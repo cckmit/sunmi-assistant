@@ -17,14 +17,13 @@ import com.xiaomi.mipush.sdk.MiPushClient;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import sunmi.common.constant.CommonConfig;
+import sunmi.common.rpc.retrofit.HttpsUtils;
 import sunmi.common.utils.DBUtils;
 import sunmi.common.utils.FileHelper;
 import sunmi.common.utils.SharedManager;
@@ -107,13 +106,9 @@ public class BootLoader {
             SSLContext sc = SSLContext.getInstance("TLS"); // trustAllCerts信任所有的证书
             sc.init(null, trustAllCerts, new SecureRandom());
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
-                @Override
-                public boolean verify(String hostname, SSLSession session) {
-                    return true;
-                }
-            });
-        } catch (Exception ignored) {
+            HttpsURLConnection.setDefaultHostnameVerifier(HttpsUtils.UnSafeHostnameVerifier);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

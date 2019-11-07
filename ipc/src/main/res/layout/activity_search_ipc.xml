@@ -14,7 +14,7 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/str_title_ipc_set"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <RelativeLayout
         android:id="@+id/rl_search"
@@ -24,7 +24,7 @@
 
         <TextView
             android:id="@+id/tv_1"
-            style="@style/configTitleText"
+            style="@style/ConfigTitleText"
             android:text="@string/tip_select_ipc" />
 
         <TextView
@@ -35,7 +35,7 @@
             android:layout_marginStart="@dimen/dp_30"
             android:layout_marginTop="@dimen/dp_4"
             android:text="@string/tip_choose_multi_ipc"
-            android:textColor="@color/color_666666"
+            android:textColor="@color/text_normal"
             android:textSize="@dimen/sp_16" />
 
         <android.support.v4.widget.NestedScrollView
@@ -57,7 +57,7 @@
                     android:id="@+id/divider"
                     android:layout_width="wrap_content"
                     android:layout_height="1dp"
-                    android:background="@color/color_divider" />
+                    android:background="@color/c_divider" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_ipc"
@@ -90,7 +90,7 @@
 
         <Button
             android:id="@+id/btn_config"
-            style="@style/BtnOrange"
+            style="@style/BtnBigOrange"
             android:layout_alignParentBottom="true"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_20"

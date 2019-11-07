@@ -58,7 +58,6 @@ import java.util.List;
 import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.base.recycle.BaseRecyclerAdapter;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.SimpleArrayAdapter;
 import sunmi.common.base.recycle.listener.OnViewClickListener;
@@ -329,11 +328,11 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
 
     private void updateBtnEnable(boolean enable) {
         mTvSelectedMove.setEnabled(enable);
-        mTvSelectedMove.setTextColor(enable ? ContextCompat.getColor(this, R.color.colorText)
-                : ContextCompat.getColor(this, R.color.colorText_60));
+        mTvSelectedMove.setTextColor(enable ? ContextCompat.getColor(this, R.color.text_main)
+                : ContextCompat.getColor(this, R.color.text_caption));
         mTvSelectedDelete.setEnabled(enable);
-        mTvSelectedDelete.setTextColor(enable ? ContextCompat.getColor(this, R.color.colorText)
-                : ContextCompat.getColor(this, R.color.colorText_60));
+        mTvSelectedDelete.setTextColor(enable ? ContextCompat.getColor(this, R.color.text_main)
+                : ContextCompat.getColor(this, R.color.text_caption));
     }
 
     @Click(resName = "tv_face_selected_move")
@@ -441,10 +440,10 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     public void updateList(List<Face> list, boolean hasMore) {
         mLayoutError.setVisibility(View.GONE);
         if (list.isEmpty()) {
-            mTitleBar.setRightTextViewColor(R.color.colorText_60);
+            mTitleBar.setRightTextViewColor(R.color.text_caption);
             mTitleBar.setRightTextViewEnable(false);
         } else {
-            mTitleBar.setRightTextViewColor(R.color.colorText);
+            mTitleBar.setRightTextViewColor(R.color.text_main);
             mTitleBar.setRightTextViewEnable(true);
         }
         if (mState == STATE_NORMAL) {
@@ -493,7 +492,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
     public void uploadSuccess() {
         mUploadDialog.dismiss();
         resetView();
-        new CommonDialog.Builder(this)
+        new CommonDialog.Builder(context)
                 .setMessage(R.string.ipc_face_tip_album_upload_success)
                 .setMessageDrawable(0, R.mipmap.face_ic_ok, 0, 0)
                 .setMessageDrawablePadding(R.dimen.dp_8)
@@ -658,8 +657,8 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CODE_UPLOAD) {
                 mPresenter.init();
-                new CommonDialog.Builder(this)
-                        .setMessage(R.string.ipc_face_tip_album_upload_success)
+                new CommonDialog.Builder(context)
+                        .setTitle(R.string.ipc_face_tip_album_upload_success)
                         .setMessageDrawable(0, R.mipmap.face_ic_ok, 0, 0)
                         .setMessageDrawablePadding(R.dimen.dp_8)
                         .setConfirmButton(R.string.str_confirm)
@@ -758,7 +757,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                             @Override
                             public void onResourceReady(@NonNull Drawable resource,
                                                         @Nullable Transition<? super Drawable> transition) {
-                                mUploadDialog = new CommonDialog.Builder(FaceListActivity.this)
+                                mUploadDialog = new CommonDialog.Builder(context)
                                         .setTitle(R.string.ipc_face_tip_photo_uploading_title)
                                         .setMessage(R.string.ipc_face_tip_photo_uploading_content)
                                         .setMessageDrawablePadding(R.dimen.dp_12)
@@ -846,11 +845,11 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
             int remain = model.getCapacity() - model.getCount();
             content.setText(holder.getContext().getString(R.string.ipc_face_remain, remain));
             if (selectedCount > remain) {
-                name.setTextColor(ContextCompat.getColor(holder.getContext(), R.color.colorText_40));
-                content.setTextColor(ContextCompat.getColor(holder.getContext(), R.color.colorText_40));
+                name.setTextColor(ContextCompat.getColor(holder.getContext(), R.color.text_caption));
+                content.setTextColor(ContextCompat.getColor(holder.getContext(), R.color.text_caption));
             } else {
-                name.setTextColor(ContextCompat.getColor(holder.getContext(), R.color.colorText));
-                content.setTextColor(ContextCompat.getColor(holder.getContext(), R.color.colorText_60));
+                name.setTextColor(ContextCompat.getColor(holder.getContext(), R.color.text_main));
+                content.setTextColor(ContextCompat.getColor(holder.getContext(), R.color.text_caption));
             }
         }
 
@@ -861,8 +860,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         public FaceListAdapter() {
             addOnViewClickListener(R.id.item_image, new OnViewClickListener<Face>() {
                 @Override
-                public void onClick(BaseRecyclerAdapter<Face> adapter, BaseViewHolder<Face> holder,
-                                    View v, Face model, int position) {
+                public void onClick(BaseViewHolder<Face> holder, Face model, int position) {
                     if (!model.isAddIcon()) {
                         FaceDetailActivity_.intent(context)
                                 .mShopId(mShopId)
@@ -902,8 +900,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
             });
             addOnViewClickListener(R.id.item_check_region, new OnViewClickListener<Face>() {
                 @Override
-                public void onClick(BaseRecyclerAdapter<Face> adapter, BaseViewHolder<Face> holder,
-                                    View v, Face model, int position) {
+                public void onClick(BaseViewHolder<Face> holder, Face model, int position) {
                     model.setChecked(!model.isChecked());
                     CheckBox checkBox = holder.getView(R.id.item_check_box);
                     checkBox.setChecked(model.isChecked());
@@ -977,8 +974,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         public FaceSelectedListAdapter() {
             addOnViewClickListener(R.id.item_image, new OnViewClickListener<Face>() {
                 @Override
-                public void onClick(BaseRecyclerAdapter<Face> adapter, BaseViewHolder<Face> holder,
-                                    View v, Face model, int position) {
+                public void onClick(BaseViewHolder<Face> holder, Face model, int position) {
                     model.setChecked(false);
                     remove(model);
                     List<Face> list = mAdapter.getData();

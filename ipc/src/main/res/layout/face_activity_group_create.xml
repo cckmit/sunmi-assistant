@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_FAFAFA"
+    android:background="@color/bg_common"
     tools:context=".setting.IpcSettingDetailActivity">
 
     <sunmi.common.view.TitleBarView
@@ -19,7 +19,7 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/ipc_face_group_create"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <TextView
         android:id="@+id/tv_face_group_name"
@@ -31,7 +31,7 @@
         android:paddingStart="@dimen/dp_25"
         android:paddingEnd="0dp"
         android:text="@string/ipc_face_group_name"
-        android:textColor="@color/colorText"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_16"
         app:layout_constraintEnd_toStartOf="@+id/cet_face_group_name"
         app:layout_constraintHorizontal_bias="0.5"
@@ -50,8 +50,8 @@
         android:paddingStart="@dimen/dp_15"
         android:paddingEnd="@dimen/dp_25"
         android:singleLine="true"
-        android:textColor="@color/colorText"
-        android:textColorHint="@color/colorText_40"
+        android:textColor="@color/text_main"
+        android:textColorHint="@color/text_caption"
         android:textSize="@dimen/sp_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -70,7 +70,7 @@
         android:paddingStart="@dimen/dp_25"
         android:paddingEnd="0dp"
         android:text="@string/ipc_face_group_create_capacity"
-        android:textColor="@color/colorText"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_16"
         app:layout_constraintEnd_toStartOf="@+id/cet_face_group_capacity"
         app:layout_constraintHorizontal_bias="0.5"
@@ -89,8 +89,8 @@
         android:paddingStart="@dimen/dp_15"
         android:paddingEnd="@dimen/dp_25"
         android:singleLine="true"
-        android:textColor="@color/colorText"
-        android:textColorHint="@color/colorText_40"
+        android:textColor="@color/text_main"
+        android:textColorHint="@color/text_caption"
         android:textSize="@dimen/sp_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -108,7 +108,7 @@
         android:paddingStart="@dimen/dp_25"
         android:paddingEnd="0dp"
         android:text="@string/ipc_face_group_mark"
-        android:textColor="@color/colorText"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_16"
         app:layout_constraintEnd_toStartOf="@+id/cet_face_group_mark"
         app:layout_constraintHorizontal_bias="0.5"
@@ -128,8 +128,8 @@
         android:paddingStart="@dimen/dp_15"
         android:paddingEnd="@dimen/dp_25"
         android:singleLine="true"
-        android:textColor="@color/colorText"
-        android:textColorHint="@color/colorText_40"
+        android:textColor="@color/text_main"
+        android:textColorHint="@color/text_caption"
         android:textSize="@dimen/sp_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

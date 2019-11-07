@@ -1,6 +1,5 @@
 package com.sunmi.assistant.ui.activity.login;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -63,10 +62,6 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
     Button btnLogin;
     @ViewById(R.id.btnRegister)
     Button btnRegister;
-    @ViewById(R.id.btnFixPassword)
-    Button btnFixPassword;
-    @ViewById(R.id.btnLogout)
-    Button btnLogout;
     @ViewById(R.id.tvLogo)
     TextView tvLogo;
 
@@ -85,7 +80,7 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
         mPresenter.attachView(this);
         PermissionUtils.checkPermissionActivity(this);//手机权限
         HelpUtils.setStatusBarFullTransparent(this);//透明标题栏
-        if(CommonHelper.isGooglePlay()){
+        if (CommonHelper.isGooglePlay()) {
             tvSMSLogin.setVisibility(View.GONE);
             etUser.setHint(R.string.hint_input_email);
             tvLogo.setBackgroundResource(R.mipmap.ic_sunmi_logo_en);
@@ -134,7 +129,7 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
     @Override
     protected void onResume() {
         super.onResume();
-        HelpUtils.setSelectionEnd(etUser);
+        CommonHelper.setSelectionEnd(etUser);
     }
 
     @Override
@@ -149,10 +144,13 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
         }
     }
 
-    @Click({R.id.btnLogin, R.id.btnRegister, R.id.btnFixPassword, R.id.ib_visible,
-            R.id.btnLogout, R.id.tvForgetPassword, R.id.tvSMSLogin})
+    @Click({R.id.btnLogin, R.id.btnRegister, R.id.ib_visible,
+            R.id.tvForgetPassword, R.id.tvSMSLogin})
     public void onClick(View v) {
-        mobile = etUser.getText().toString().trim();
+        if (etUser.getText() == null || etPassword.getText() == null) {
+            return;
+        }
+        mobile = RegexUtils.handleIllegalCharacter(etUser.getText().toString().trim());
         String password = etPassword.getText().toString();
         switch (v.getId()) {
             case R.id.btnLogin: //密码登录
@@ -220,12 +218,9 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
 
     //账号合并
     private void userMerge(final String password) {
-        if (etUser.getText() == null) {
-            return;
-        }
         CommonUtils.trackCommonEvent(context, "login", "登录", Constants.EVENT_LOGIN);
         showLoadingDialog();
-        mPresenter.userMerge(etUser.getText().toString(), mobile, password);
+        mPresenter.userMerge(mobile, mobile, password);
     }
 
     @UiThread
@@ -238,18 +233,14 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
     @UiThread
     @Override
     public void mobileUnregister() {
-        new CommonDialog.Builder(LoginActivity.this)
+        new CommonDialog.Builder(context)
                 .setTitle(R.string.tip_unregister)
                 .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.str_register_now, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        CommonUtils.trackCommonEvent(context, "loginUnRegisterDialogRegister",
-                                "登录_未注册弹框-立即注册", Constants.EVENT_LOGIN);
-                        RegisterActivity_.intent(context)
-                                .extra("mobile", RegexUtils.isCorrectAccount(mobile) ? mobile : "")
-                                .start();
-                    }
+                .setConfirmButton(R.string.str_register_now, (dialog, which) -> {
+                    CommonUtils.trackCommonEvent(context, "loginUnRegisterDialogRegister",
+                            "登录_未注册弹框-立即注册", Constants.EVENT_LOGIN);
+                    InputMobileActivity_.intent(context).mobile(RegexUtils.isCorrectAccount(mobile) ? mobile : "")
+                            .checkSource(InputMobileActivity.SOURCE_REGISTER).start();
                 }).create().show();
     }
 
@@ -262,13 +253,11 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
     @Override
     public void getCompanyListSuccess(List<CompanyInfoResp> companyList) {
         if (companyList.size() == 0) {
-            CreateCompanyActivity_.intent(context)
-                    .createCompanyCannotBack(true)
-                    .start();
-            return;
+            CreateCompanyActivity_.intent(context).createCompanyCannotBack(true).start();
+        } else {
+            LoginChooseShopActivity_.intent(context)
+                    .action(CommonConstants.ACTION_LOGIN_CHOOSE_COMPANY).start();
         }
-        LoginChooseShopActivity_.intent(context)
-                .action(CommonConstants.ACTION_LOGIN_CHOOSE_COMPANY).start();
     }
 
     @Override

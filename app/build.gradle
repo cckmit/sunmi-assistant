@@ -28,6 +28,10 @@ android {
         }
         multiDexEnabled true
 
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a'
+        }
+
         manifestPlaceholders = [
                 ENV_VALUE       : "ENV_TEST",
                 DB_VERSION_VALUE: "2",
@@ -53,10 +57,19 @@ android {
 //                    ENV_VALUE       : "ENV_RELEASE",
                     DB_VERSION_VALUE: "2",
                     APP_NAME        : "商米助手test",
-                    MTA_APPKEY      : "A6INR132MGAI",
-                    MTA_CHANNEL     : "myapp"]
-//            minifyEnabled false
-//            signingConfig signingConfigs.sign
+                    MTA_APPKEY      : "A6INR132MGAI"]
+        }
+
+        uat {
+            manifestPlaceholders = [
+                    ENV_VALUE       : "ENV_UAT",
+                    DB_VERSION_VALUE: "2",
+                    APP_NAME        : "商米助手UAT",
+                    MTA_APPKEY      : "A6INR132MGAI"]
+            zipAlignEnabled true
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.sign
         }
 
         release {
@@ -64,14 +77,32 @@ android {
                     ENV_VALUE       : "ENV_RELEASE",
                     DB_VERSION_VALUE: "2",
                     APP_NAME        : "@string/app_name",
-                    MTA_APPKEY      : "A6INR132MGAI",
-                    MTA_CHANNEL     : "myapp"]
+                    MTA_APPKEY      : "A6INR132MGAI"]
             //Zipalign优化
             zipAlignEnabled true
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.sign
         }
+
+    }
+
+    flavorDimensions "default"
+    productFlavors {
+        myapp {
+            manifestPlaceholders = [
+                    MTA_CHANNEL: "myapp"
+            ]
+        }
+
+        google {
+            manifestPlaceholders = [
+                    MTA_CHANNEL: "google"
+            ]
+            versionCode Integer.parseInt(GOOGLE_VERSION_CODE)
+            versionName GOOGLE_VERSION_NAME
+        }
+
     }
 
     sourceSets {
@@ -84,7 +115,7 @@ android {
         abi {
             enable true
             reset()
-            include 'arm64-v8a', 'armeabi-v7a', "x86", 'x86_64' //根据需求自己修改
+            include 'arm64-v8a', 'armeabi-v7a' //根据需求自己修改
             universalApk true
         }
     }
@@ -99,6 +130,7 @@ android {
     packagingOptions {
         exclude 'META-INF/proguard/androidx-annotations.pro'
     }
+
 }
 
 repositories {
@@ -107,31 +139,6 @@ repositories {
     }
 }
 
-dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-//    implementation fileTree(include: ['*.aar'], dir: 'libs')//不要提交！！！
-    implementation project(':apmanager')//不要提交！！！
-
-    implementation project(':commonlib')//公共库
-    implementation project(':sunmiservice')
-    implementation project(':cloudprinter')
-    implementation project(':ipc')
-//    implementation project(':MPChartLib')
-    implementation(name:'MPChartLib-release', ext:'aar')
-
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    annotationProcessor "org.androidannotations:androidannotations:${AAVersion}"
-
-    implementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
-
-    implementation 'com.youth.banner:banner:1.4.10'  //最新版本
-
-
-    annotationProcessor "com.github.xiaojinzi123.Component:component-compiler:1.7.5"
-
-}
 walle {
     //指定渠道包的输出路径
     apkOutputFolder = new File("${project.buildDir}/outputs/channels")
@@ -139,4 +146,33 @@ walle {
     apkFileNameFormat = 'app-${channel}.apk'
     //渠道配置文件
     channelFile = new File("${project.getProjectDir()}/channel")
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.aar'], dir: 'libs')
+
+    implementation project(':commonlib')//公共库
+    implementation project(':ipc')
+    implementation project(':sunmiservice')
+    implementation project(':apmanager')
+    implementation project(':cloudprinter')
+    implementation project(':MPChartLib')
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    annotationProcessor "org.androidannotations:androidannotations:${AAVersion}"
+    testImplementation 'org.mockito:mockito-core:2.19.0'
+    androidTestImplementation 'org.mockito:mockito-core:2.19.0'
+
+    implementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
+
+    implementation 'com.youth.banner:banner:1.4.10'  //最新版本
+
+    //wechat
+    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
+
+    annotationProcessor "com.github.xiaojinzi123.Component:component-compiler:${CVersion}"
+
 }

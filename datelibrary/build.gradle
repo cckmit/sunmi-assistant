@@ -3,8 +3,6 @@ apply plugin: 'com.android.library'
 android {
     compileSdkVersion 28
 
-
-
     defaultConfig {
         minSdkVersion 18
         targetSdkVersion 28
@@ -20,6 +18,13 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        uat {}
+    }
+
+    flavorDimensions "default"
+    productFlavors {
+        myapp {}
+        google {}
     }
 
 }

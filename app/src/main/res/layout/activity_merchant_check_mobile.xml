@@ -14,7 +14,7 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/str_check_mobile"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <TextView
         android:id="@+id/tv_select_platform"
@@ -25,7 +25,7 @@
         android:layout_marginEnd="@dimen/dp_20"
         android:layout_marginStart="@dimen/dp_25"
         android:layout_marginTop="@dimen/dp_8"
-        android:textColor="@color/colorText_60"
+        android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_12" />
 
     <RelativeLayout
@@ -42,7 +42,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_25"
             android:text="@string/str_mobile"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16" />
 
         <sunmi.common.view.ClearableEditText
@@ -83,7 +83,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_25"
             android:text="@string/str_sms_code"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16" />
 
         <sunmi.common.view.ClearableEditText
@@ -121,7 +121,7 @@
         android:layout_margin="@dimen/dp_20"
         android:background="@drawable/button_corners_solid_orange"
         android:text="@string/str_button_check"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/c_white"
         android:textSize="@dimen/sp_16" />
 
 </RelativeLayout>

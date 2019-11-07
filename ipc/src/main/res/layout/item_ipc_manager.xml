@@ -22,7 +22,7 @@
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_26"
         android:layout_toEndOf="@+id/iv_icon"
-        android:textColor="@color/colorText"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_16"
         android:textStyle="bold" />
 
@@ -34,21 +34,14 @@
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_4"
         android:layout_toEndOf="@+id/iv_icon"
-        android:textColor="@color/colorText_60"
+        android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_12" />
 
-    <TextView
-        android:id="@+id/tv_detail"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_32"
+    <Button
+        android:id="@+id/btn_detail"
+        style="@style/BtnSmallOrangeBorder"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="@dimen/dp_20"
-        android:background="@drawable/bg_circle_line_grey"
-        android:gravity="center"
-        android:paddingStart="@dimen/dp_12"
-        android:paddingEnd="@dimen/dp_12"
-        android:textColor="@color/color_A1A7B3"
-        android:textSize="@dimen/sp_12" />
+        android:layout_marginEnd="@dimen/dp_20" />
 
 </RelativeLayout>

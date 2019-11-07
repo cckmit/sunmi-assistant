@@ -11,10 +11,10 @@
         android:useLevel="false">
 
         <gradient
-            android:centerColor="@color/colorLoadingCenter"
+            android:centerColor="@color/common_orange_60a"
             android:centerY="0.50"
-            android:endColor="@color/colorLoadingStart"
-            android:startColor="@color/colorLoadingEnd"
+            android:endColor="@color/common_orange"
+            android:startColor="@color/transparent"
             android:type="sweep" />
     </shape>
 </rotate>

@@ -32,6 +32,7 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.model.CompanyListResp;
+import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopListResp;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.GotoActivityUtils;
@@ -81,7 +82,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     @Extra
     int saasExist;
     @Extra
-    ArrayList<ShopListResp.ShopInfo> shopList;
+    ArrayList<ShopInfo> shopList;
     @Extra
     boolean isRegisterEnterCompany;
     @Extra
@@ -206,7 +207,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     }
 
     @Override
-    public void getShopListSuccess(List<ShopListResp.ShopInfo> shopList) {
+    public void getShopListSuccess(List<ShopInfo> shopList) {
         if (shopList.size() == 0) {
             CreateShopPreviewActivity_.intent(context)
                     .companyId(companyId)
@@ -219,7 +220,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
                     .companyId(companyId)
                     .companyName(companyName)
                     .saasExist(saasExist)
-                    .shopList((ArrayList<ShopListResp.ShopInfo>) shopList)
+                    .shopList((ArrayList<ShopInfo>) shopList)
                     .isLoginSuccessSwitchCompany(isLoginSuccessSwitchCompany)
                     .action(CommonConstants.ACTION_LOGIN_CHOOSE_SHOP).start();
         }
@@ -258,33 +259,33 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     }
 
     @UiThread
-    void initShopList(final List<ShopListResp.ShopInfo> shopList) {
+    void initShopList(final List<ShopInfo> shopList) {
         activityVisible();
-        rvChoose.setAdapter(new CommonListAdapter<ShopListResp.ShopInfo>(context,
+        rvChoose.setAdapter(new CommonListAdapter<ShopInfo>(context,
                 R.layout.item_shop_company, shopList) {
             int selectedIndex = shopList.size() == 1 ? 0 : -1;
 
             @Override
-            public void convert(ViewHolder holder, final ShopListResp.ShopInfo item) {
+            public void convert(ViewHolder holder, final ShopInfo item) {
                 SettingItemLayout shopItem = holder.getView(R.id.sil_item);
-                shopItem.setLeftText(item.getShop_name());
+                shopItem.setLeftText(item.getShopName());
                 holder.itemView.setOnClickListener(v -> {
                     selectedIndex = holder.getAdapterPosition();
-                    shopId = item.getShop_id();
-                    shopName = item.getShop_name();
+                    shopId = item.getShopId();
+                    shopName = item.getShopName();
                     notifyDataSetChanged();
                     CommonHelper.isCanClick(btnEnterMain, true);
                 });
                 if (selectedIndex == holder.getAdapterPosition()) {
                     if (shopList.size() == 1) {
-                        shopId = item.getShop_id();
-                        shopName = item.getShop_name();
+                        shopId = item.getShopId();
+                        shopName = item.getShopName();
                         CommonHelper.isCanClick(btnEnterMain, true);
                     }
                     shopItem.setRightImage(ContextCompat.getDrawable(context, com.sunmi.ipc.R.mipmap.ic_yes));
                     shopItem.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.common_orange));
                 } else {
-                    shopItem.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.colorText));
+                    shopItem.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.text_main));
                     shopItem.setRightImage(null);
                 }
             }

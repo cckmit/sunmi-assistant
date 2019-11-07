@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_shap_top_radus_left_right">
+
+    <TextView
+        android:id="@+id/tv_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_25"
+        android:layout_marginTop="@dimen/dp_18"
+        android:text="@string/sm_cancel"
+        android:textColor="@color/text_caption"
+        android:textSize="@dimen/sp_14" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_14"
+        android:text="@string/dialog_title_select_category"
+        android:textColor="@color/text_main"
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/tv_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/dp_18"
+        android:layout_marginEnd="@dimen/dp_25"
+        android:text="@string/str_confirm"
+        android:textColor="@color/common_orange"
+        android:textSize="@dimen/sp_14" />
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/item_recycler_view_left"
+        android:layout_width="@dimen/dp_120"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tv_title"
+        android:layout_marginTop="@dimen/dp_13"
+        android:background="@color/bg_common" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/item_recycler_view_right"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tv_title"
+        android:layout_marginTop="@dimen/dp_13"
+        android:layout_toEndOf="@id/item_recycler_view_left"
+        android:background="@color/bg_common" />
+
+</RelativeLayout>

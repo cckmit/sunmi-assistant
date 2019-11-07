@@ -1,6 +1,5 @@
 package com.sunmi.assistant.mine.shop;
 
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
@@ -17,6 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -44,7 +45,6 @@ import sunmi.common.base.recycle.BaseArrayAdapter;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
 import sunmi.common.model.ShopInfo;
-import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.FileUtils;
 import sunmi.common.utils.SoftKeyboardStateHelper;
 import sunmi.common.utils.StatusBarUtils;
@@ -66,7 +66,6 @@ import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter>
         implements ShopRegionContract.View, PoiSearch.OnPoiSearchListener {
     private static final int IPC_MARK_MAX_LENGTH = 100;
-    private static final int ANIMATOR_DURATION = 200;
     private static final int POI_PAGE_SIZE = 20;
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
@@ -78,9 +77,13 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
     RecyclerView recyclerView;
     @ViewById(R.id.const_layout_poi)
     View constLayoutPoi;
+    @ViewById(R.id.v_space)
+    View vSpace;
+    @ViewById(R.id.tv_transparent)
+    TextView tvTransparent;
 
     @Extra
-    ShopInfo mInfo;
+    ShopInfo info;
 
     Button btnAreaPro;
     Button btnAreaCity;
@@ -98,26 +101,30 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
     private int mProvinceIndex;
     private int mCityId;
     private int mAreaId;
+    private String lat = "", lng = "";
 
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        mPresenter = new ShopRegionPresenter(mInfo);
+        mPresenter = new ShopRegionPresenter(info);
         mPresenter.attachView(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         titleBar.getRightText().setOnClickListener(this::save);
         mList = new Gson().fromJson(FileUtils.getStringFromAssets(context, "region.json"),
                 new TypeToken<List<RegionProvince>>() {
                 }.getType());
-        mProvinceId = mInfo.getProvince();
-        mCityId = mInfo.getCity();
-        mAreaId = mInfo.getArea();
+        mProvinceId = info.getProvince();
+        mCityId = info.getCity();
+        mAreaId = info.getArea();
+        lat = info.getLat();
+        lng = info.getLng();
         poiCityName = cityName(mList);
-        if (!TextUtils.isEmpty(mInfo.getRegionName())) {
-            silAddress.setRightText(mInfo.getRegionName());
+        if (!TextUtils.isEmpty(info.getRegion())) {
+            silAddress.setRightText(info.getRegion());
+            tvTransparent.setVisibility(View.GONE);
         }
-        if (!TextUtils.isEmpty(mInfo.getAddress())) {
-            cetDetailsAddress.setText(mInfo.getAddress());
+        if (!TextUtils.isEmpty(info.getAddress())) {
+            cetDetailsAddress.setText(info.getAddress());
         }
         editTextChangedListener();
     }
@@ -127,30 +134,50 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
         showDialog(this);
     }
 
-    private void upAnimator() {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(constLayoutPoi, "translationY",
-                -CommonHelper.dp2px(context, 1) * 72);
-        animator.setDuration(ANIMATOR_DURATION);
-        animator.start();
-    }
-
-    private void downAnimator() {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(constLayoutPoi, "translationY",
-                0);
-        animator.setDuration(ANIMATOR_DURATION);
-        animator.start();
+    private void isShowPoi(boolean hasShow) {
+        if (hasShow) {
+            cetDetailsAddress.requestFocus();
+            silAddress.setVisibility(View.GONE);
+            vSpace.setVisibility(View.GONE);
+            cetDetailsAddress.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
+        } else {
+            cetDetailsAddress.clearFocus();
+            silAddress.setVisibility(View.VISIBLE);
+            vSpace.setVisibility(View.VISIBLE);
+            cetDetailsAddress.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        }
+        if (silAddress.getRightText().getText() == null ||
+                TextUtils.isEmpty(silAddress.getRightText().getText().toString())) {
+            tvTransparent.setVisibility(View.VISIBLE);
+        } else {
+            tvTransparent.setVisibility(View.GONE);
+        }
     }
 
     public String cityName(List<RegionProvince> list) {
         for (int i = 0, size1 = list.size(); i < size1; i++) {
             RegionProvince province = list.get(i);
             for (RegionProvince.City city : province.getChildren()) {
-                if (mInfo.getCity() == city.getCity()) {
+                if (info.getCity() == city.getCity()) {
                     return city.getName();
                 }
             }
         }
         return "";
+    }
+
+    @Click(R.id.tv_transparent)
+    void clickAddress() {
+        if (silAddress.getRightText().getText() == null ||
+                TextUtils.isEmpty(silAddress.getRightText().getText().toString())) {
+            shortTip(getString(R.string.shop_input_region_tip));
+            tvTransparent.setVisibility(View.VISIBLE);
+        } else {
+            tvTransparent.setVisibility(View.GONE);
+            cetDetailsAddress.requestFocus();
+        }
     }
 
     /**
@@ -161,20 +188,12 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
         softKeyboardStateHelper.addSoftKeyboardStateListener(new SoftKeyboardStateHelper.SoftKeyboardStateListener() {
             @Override
             public void onSoftKeyboardOpened(int keyboardHeightInPx) {
-                if (silAddress.getRightText().getText() == null ||
-                        TextUtils.isEmpty(silAddress.getRightText().getText().toString())) {
-                    shortTip(getString(R.string.shop_input_region_tip));
-                    cetDetailsAddress.clearFocus();
-                    cetDetailsAddress.setText("");
-                } else {
-                    upAnimator();
-                }
             }
 
             @Override
             public void onSoftKeyboardClosed() {
                 cetDetailsAddress.clearFocus();
-                downAnimator();
+                isShowPoi(false);
             }
         });
         cetDetailsAddress.addTextChangedListener(new TextLengthWatcher(cetDetailsAddress, IPC_MARK_MAX_LENGTH) {
@@ -182,9 +201,62 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 super.onTextChanged(s, start, before, count);
                 poiKey = s.toString();
+                if (TextUtils.isEmpty(poiKey)) {
+                    lat = "";
+                    lng = "";
+                }
                 doSearchQuery(poiKey);
             }
         });
+        //监听键盘按钮事件
+        cetDetailsAddress.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE ||
+                    actionId == EditorInfo.IME_ACTION_GO ||
+                    actionId == EditorInfo.IME_ACTION_NEXT ||
+                    actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
+
+                String address = cetDetailsAddress.getText() == null ||
+                        TextUtils.isEmpty(cetDetailsAddress.getText().toString())
+                        ? "" : cetDetailsAddress.getText().toString();
+                if (!TextUtils.equals(address, info.getAddress())) {
+                    lat = "";
+                    lng = "";
+                }
+                hideSoftInputWindow();
+                return true;
+            }
+            return false;
+        });
+        cetDetailsAddress.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                showSoftInputWindow();
+            } else {
+                isShowPoi(false);
+            }
+        });
+    }
+
+    private void showSoftInputWindow() {
+        if (silAddress.getRightText().getText() == null ||
+                TextUtils.isEmpty(silAddress.getRightText().getText().toString())) {
+            shortTip(getString(R.string.shop_input_region_tip));
+            cetDetailsAddress.clearFocus();
+            return;
+        }
+        isShowPoi(true);
+        InputMethodManager inputManager = (InputMethodManager) cetDetailsAddress
+                .getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        assert inputManager != null;
+        inputManager.showSoftInput(cetDetailsAddress, 0);
+    }
+
+    private void hideSoftInputWindow() {
+        cetDetailsAddress.clearFocus();
+        isShowPoi(false);
+        InputMethodManager inputManager = (InputMethodManager) cetDetailsAddress
+                .getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        assert inputManager != null;
+        inputManager.hideSoftInputFromWindow(cetDetailsAddress.getWindowToken(), 0);
     }
 
     private void save(View v) {
@@ -192,13 +264,15 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
                 ? "" : cetDetailsAddress.getText().toString();
         if (mProvinceId <= 0 || mCityId <= 0 || mAreaId <= 0) {
             shortTip(getString(R.string.shop_input_region_tip));
-        } else if (mInfo.getProvince() == mProvinceId && mInfo.getCity() == mCityId &&
-                mInfo.getArea() == mAreaId && TextUtils.equals(mInfo.getAddress(), address)) {
+        } else if (info.getProvince() == mProvinceId && info.getCity() == mCityId &&
+                info.getArea() == mAreaId && TextUtils.equals(info.getAddress(), address)) {
             setResult(RESULT_CANCELED);
             finish();
         } else if (cetDetailsAddress.getText() == null || TextUtils.isEmpty(cetDetailsAddress.getText().toString())) {
             shortTip(R.string.tip_addr_empty);
         } else {
+            info.setLat(lat);
+            info.setLng(lng);
             mPresenter.updateRegion(mProvinceId, mCityId, mAreaId, address);
         }
     }
@@ -240,18 +314,18 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
                 TextView address = holder.getView(R.id.tv_item_address);
                 name.setText(matcherSearchText(ContextCompat.getColor(context, R.color.common_orange), poiItem.getTitle(), poiKey));
                 address.setText(matcherSearchText(ContextCompat.getColor(context, R.color.common_orange), poiItem.getSnippet(), poiKey));
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        index = holder.getAdapterPosition();
-                        cetDetailsAddress.setText(poiItem.getSnippet());
-                        notifyDataSetChanged();
-                    }
+                holder.itemView.setOnClickListener(v -> {
+                    index = holder.getAdapterPosition();
+                    cetDetailsAddress.setText(poiItem.getSnippet());
+                    lat = String.valueOf(poiItem.getLatLonPoint().getLatitude());
+                    lng = String.valueOf(poiItem.getLatLonPoint().getLongitude());
+                    hideSoftInputWindow();
+                    notifyDataSetChanged();
                 });
                 if (index == holder.getAdapterPosition()) {
                     holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.black_15));
                 } else {
-                    holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorWhite));
+                    holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.c_white));
                 }
             }
         });
@@ -282,11 +356,9 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
         itemRecyclerView.setAdapter(mAdapter);
 
         btnAreaPro.setText(R.string.str_choose_please);
-        btnAreaPro.setTextColor(ContextCompat.getColor(context, R.color.colorText));
+        btnAreaPro.setTextColor(ContextCompat.getColor(context, R.color.text_main));
         btnAreaCity.setText("");
         btnAreaRegion.setText("");
-
-
         showRegionList(mList);
     }
 
@@ -311,7 +383,8 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
         lp.height = height - 300;
         dialogWindow.setAttributes(lp);
 
-        ImageView ivDelete = inflate.findViewById(R.id.iv_delete);
+        TextView tvCancel = inflate.findViewById(R.id.tv_cancel);
+        TextView tvConfirm = inflate.findViewById(R.id.tv_confirm);
         itemRecyclerView = inflate.findViewById(R.id.item_recycler_view);
         btnAreaPro = inflate.findViewById(R.id.btn_area_pro);
         btnAreaCity = inflate.findViewById(R.id.btn_area_city);
@@ -331,8 +404,25 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
                     mAreaId = -1;
                     mAdapter.setData(mList.get(mProvinceIndex).getChildren());
                     break;
-                case R.id.iv_delete:
+                case R.id.tv_cancel:
                     dialog.dismiss();
+                    mProvinceId = info.getProvince();
+                    mCityId = info.getCity();
+                    mAreaId = info.getArea();
+                    break;
+                case R.id.tv_confirm:
+                    if (mProvinceId <= 0 || mCityId <= 0 || mAreaId <= 0) {
+                        shortTip(getString(R.string.shop_input_region_tip));
+                        return;
+                    }
+                    if (mProvinceId != info.getProvince() || mCityId != info.getCity() || mAreaId != info.getArea()) {
+                        cetDetailsAddress.setText("");
+                    }
+                    dialog.dismiss();
+                    tvTransparent.setVisibility(View.GONE);
+                    silAddress.setRightText(btnAreaPro.getText().toString() + "," +
+                            btnAreaCity.getText().toString() + "," +
+                            btnAreaRegion.getText().toString());
                     break;
                 default:
                     break;
@@ -340,8 +430,10 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
         };
         btnAreaPro.setOnClickListener(clickListener);
         btnAreaCity.setOnClickListener(clickListener);
-        ivDelete.setOnClickListener(clickListener);
-        dialog.setCancelable(true);
+        tvCancel.setOnClickListener(clickListener);
+        tvConfirm.setOnClickListener(clickListener);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
 
@@ -354,21 +446,21 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
                 mProvinceIndex = i;
                 itemRecyclerView.scrollToPosition(i);
                 btnAreaPro.setText(province.getName());
-                btnAreaPro.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
+                btnAreaPro.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                 btnAreaCity.setText(R.string.str_choose_please);
-                btnAreaCity.setTextColor(ContextCompat.getColor(context, R.color.colorText));
+                btnAreaCity.setTextColor(ContextCompat.getColor(context, R.color.text_main));
             }
             for (RegionProvince.City city : province.getChildren()) {
                 if (mCityId == city.getCity()) {
                     btnAreaCity.setText(city.getName());
-                    btnAreaCity.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
+                    btnAreaCity.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                     btnAreaRegion.setText(R.string.str_choose_please);
-                    btnAreaRegion.setTextColor(ContextCompat.getColor(context, R.color.colorText));
+                    btnAreaRegion.setTextColor(ContextCompat.getColor(context, R.color.text_main));
                 }
                 for (RegionProvince.Area area : city.getChildren()) {
                     if (mAreaId == area.getCounty()) {
                         btnAreaRegion.setText(area.getName());
-                        btnAreaRegion.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
+                        btnAreaRegion.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                     }
                 }
             }
@@ -395,14 +487,14 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
     private class ProvinceType extends ItemType<RegionProvince, BaseViewHolder<RegionProvince>> {
 
         private ProvinceType() {
-            setOnItemClickListener((adapter, holder, model, position) -> {
+            setOnItemClickListener((holder, model, position) -> {
                 mProvinceId = model.getProvince();
                 mCityId = -1;
                 mAreaId = -1;
                 btnAreaPro.setText(model.getName());
-                btnAreaPro.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
+                btnAreaPro.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                 btnAreaCity.setText(R.string.str_choose_please);
-                btnAreaCity.setTextColor(ContextCompat.getColor(context, R.color.colorText));
+                btnAreaCity.setTextColor(ContextCompat.getColor(context, R.color.text_main));
                 btnAreaRegion.setText("");
                 mAdapter.setData(model.getChildren());
             });
@@ -420,10 +512,10 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
             final String name = model.getName();
             tvArea.setText(name);
             if (mProvinceId == model.getProvince()) {
-                tvArea.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
+                tvArea.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                 imageView.setVisibility(View.VISIBLE);
             } else {
-                tvArea.setTextColor(ContextCompat.getColor(context, R.color.colorText));
+                tvArea.setTextColor(ContextCompat.getColor(context, R.color.text_main));
                 imageView.setVisibility(View.GONE);
             }
         }
@@ -432,14 +524,14 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
     private class CityType extends ItemType<RegionProvince.City, BaseViewHolder<RegionProvince.City>> {
 
         private CityType() {
-            setOnItemClickListener((adapter, holder, model, position) -> {
+            setOnItemClickListener((holder, model, position) -> {
                 mCityId = model.getCity();
                 mAreaId = -1;
                 poiCityName = model.getName();
                 btnAreaCity.setText(model.getName());
-                btnAreaCity.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
+                btnAreaCity.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                 btnAreaRegion.setText(R.string.str_choose_please);
-                btnAreaRegion.setTextColor(ContextCompat.getColor(context, R.color.colorText));
+                btnAreaRegion.setTextColor(ContextCompat.getColor(context, R.color.text_main));
                 mAdapter.setData(model.getChildren());
             });
         }
@@ -456,10 +548,10 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
             final String name = model.getName();
             tvArea.setText(name);
             if (mCityId == model.getCity()) {
-                tvArea.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
+                tvArea.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                 imageView.setVisibility(View.VISIBLE);
             } else {
-                tvArea.setTextColor(ContextCompat.getColor(context, R.color.colorText));
+                tvArea.setTextColor(ContextCompat.getColor(context, R.color.text_main));
                 imageView.setVisibility(View.GONE);
             }
         }
@@ -468,17 +560,11 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
     private class AreaType extends ItemType<RegionProvince.Area, BaseViewHolder<RegionProvince.Area>> {
 
         private AreaType() {
-            setOnItemClickListener((adapter, holder, model, position) -> {
+            setOnItemClickListener((holder, model, position) -> {
                 mAreaId = model.getCounty();
                 btnAreaRegion.setText(model.getName());
-                btnAreaRegion.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
-                //adapter.notifyDataSetChanged();
-                if (dialog != null) {
-                    dialog.dismiss();
-                    silAddress.setRightText(btnAreaPro.getText().toString() + "," +
-                            btnAreaCity.getText().toString() + "," +
-                            btnAreaRegion.getText().toString());
-                }
+                btnAreaRegion.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
+                getAdapter().notifyDataSetChanged();
             });
         }
 
@@ -494,10 +580,10 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
             final String name = model.getName();
             tvArea.setText(name);
             if (mAreaId == model.getCounty()) {
-                tvArea.setTextColor(ContextCompat.getColor(context, R.color.color_FF6000));
+                tvArea.setTextColor(ContextCompat.getColor(context, R.color.common_orange));
                 imageView.setVisibility(View.VISIBLE);
             } else {
-                tvArea.setTextColor(ContextCompat.getColor(context, R.color.colorText));
+                tvArea.setTextColor(ContextCompat.getColor(context, R.color.text_main));
                 imageView.setVisibility(View.GONE);
             }
         }

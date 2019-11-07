@@ -62,7 +62,7 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/order_list_title"
-        app:titleTextColor="@color/color_333338" />
+        app:titleTextColor="@color/text_main" />
 
     <sunmi.common.view.DropdownMenu
         android:id="@+id/order_filter_sort"
@@ -110,7 +110,7 @@
         android:drawableTop="@mipmap/ic_exception"
         android:drawablePadding="@dimen/dp_4"
         android:text="@string/tip_check_network"
-        android:textColor="@color/color_999999"
+        android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_12"
         app:layout_constraintBottom_toTopOf="@+id/btn_order_list_no_network_refresh"
         app:layout_constraintEnd_toEndOf="parent"
@@ -120,7 +120,7 @@
 
     <Button
         android:id="@+id/btn_order_list_no_network_refresh"
-        style="@style/BtnGrayRounded"
+        style="@style/BtnMediumWhite"
         android:layout_marginTop="@dimen/dp_32"
         android:text="@string/str_refresh"
         app:layout_constraintBottom_toBottomOf="parent"

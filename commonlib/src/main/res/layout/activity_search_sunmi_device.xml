@@ -9,11 +9,11 @@
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:dividerColor="@color/colorText_10"
+        app:dividerColor="@color/c_divider"
         app:dividerShow="true"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <RelativeLayout
         android:id="@+id/rl_searching_router"
@@ -35,8 +35,8 @@
             android:layout_width="@dimen/dp_255"
             android:layout_height="@dimen/dp_255"
             android:layout_centerHorizontal="true"
-            app:diffuse_color="@color/colorOrange"
-            app:diffuse_coreColor="@color/colorOrange"
+            app:diffuse_color="@color/common_orange"
+            app:diffuse_coreColor="@color/common_orange"
             app:diffuse_coreRadius="0"
             app:diffuse_maxWidth="800"
             app:diffuse_speed="10"
@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:textColor="@color/color_333333"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_20" />
     </RelativeLayout>
 
@@ -75,7 +75,7 @@
             android:layout_below="@id/iv_router"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_24"
-            android:textColor="@color/color_333333"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_20" />
 
         <TextView
@@ -85,7 +85,7 @@
             android:layout_below="@id/tv_find_tip"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_4"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_32" />
 
         <TextView
@@ -95,7 +95,7 @@
             android:layout_below="@id/tv_find_name"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_8"
-            android:textColor="@color/color_666666"
+            android:textColor="@color/text_normal"
             android:textSize="@dimen/sp_16"
             android:visibility="gone" />
     </RelativeLayout>
@@ -125,7 +125,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="24dp"
             android:text="@string/str_primary_search_on_find"
-            android:textColor="@color/color_333333"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_20" />
 
         <TextView
@@ -136,7 +136,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="8dp"
             android:text="@string/str_primary_search_check_line"
-            android:textColor="@color/color_666666"
+            android:textColor="@color/text_normal"
             android:textSize="@dimen/sp_12" />
 
         <Button
@@ -170,12 +170,12 @@
             android:drawablePadding="@dimen/dp_3"
             android:gravity="center_horizontal"
             android:text="@string/str_click_consent"
-            android:textColor="@color/colorText"
+            android:textColor="@color/text_main"
             android:textSize="@dimen/sp_10" />
 
         <Button
             android:id="@+id/btn_next"
-            style="@style/BtnOrange"
+            style="@style/BtnBigOrange"
             android:layout_alignParentBottom="true"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_20"

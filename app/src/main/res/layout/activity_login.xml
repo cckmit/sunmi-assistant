@@ -37,7 +37,7 @@
                 android:background="@null"
                 android:hint="@string/hint_input_user_name"
                 android:inputType="textEmailAddress"
-                android:textColor="@color/colorWhite"
+                android:textColor="@color/c_white"
                 android:textColorHint="@color/white_40a"
                 android:textSize="@dimen/sp_16" />
         </RelativeLayout>
@@ -61,7 +61,7 @@
                 android:hint="@string/hint_input_password"
                 android:inputType="textPassword"
                 android:maxLength="30"
-                android:textColor="@color/colorWhite"
+                android:textColor="@color/c_white"
                 android:textColorHint="@color/white_40a"
                 android:textSize="@dimen/sp_16" />
 
@@ -84,7 +84,7 @@
             android:layout_marginTop="@dimen/dp_15"
             android:background="@drawable/button_corners_solid_orange"
             android:text="@string/str_login"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/c_white"
             android:textSize="@dimen/sp_18" />
 
         <RelativeLayout
@@ -124,35 +124,10 @@
             android:layout_below="@+id/rlForget"
             android:layout_marginTop="@dimen/dp_50"
             android:layout_weight="0.5"
-            android:background="@drawable/button_corners_edge_orange"
+            android:background="@drawable/button_corners_edge_orange60"
             android:text="@string/str_register"
             android:textColor="@color/colorOrangeText"
             android:textSize="@dimen/sp_18" />
-
-        <Button
-            android:id="@+id/btnFixPassword"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_40"
-            android:layout_below="@+id/btnRegister"
-            android:layout_marginTop="@dimen/dp_10"
-            android:layout_weight="0.5"
-            android:background="@drawable/button_selector_edge2"
-            android:text="@string/str_change_password"
-            android:textColor="@color/colorWhite"
-            android:textSize="@dimen/sp_18"
-            android:visibility="gone" />
-
-        <Button
-            android:id="@+id/btnLogout"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_54"
-            android:layout_below="@+id/btnFixPassword"
-            android:layout_marginTop="@dimen/dp_10"
-            android:background="@drawable/button_selector_edge2"
-            android:text="@string/str_logout"
-            android:textColor="@color/colorWhite"
-            android:textSize="@dimen/sp_18"
-            android:visibility="gone" />
 
     </RelativeLayout>
 </RelativeLayout>

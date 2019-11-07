@@ -17,7 +17,7 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/company_shop_details"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -53,7 +53,7 @@
             android:drawablePadding="@dimen/dp_4"
             android:gravity="center"
             android:text="@string/btn_add_store"
-            android:textColor="@color/colorText_60"
+            android:textColor="@color/text_caption"
             android:textSize="@dimen/sp_16" />
 
     </FrameLayout>

@@ -108,33 +108,37 @@ public class IpcSettingNightStyleActivity extends BaseActivity
             silAutoSwitch.setRightImage(getResources().getDrawable(R.mipmap.ic_yes));
             silAutoSwitch.setLeftTextColor(getResources().getColor(R.color.common_orange));
             silOpen.setRightImage(null);
-            silOpen.setLeftTextColor(getResources().getColor(R.color.colorText));
+            silOpen.setLeftTextColor(getResources().getColor(R.color.text_main));
             silClose.setRightImage(null);
-            silClose.setLeftTextColor(getResources().getColor(R.color.colorText));
+            silClose.setLeftTextColor(getResources().getColor(R.color.text_main));
             nightMode = NIGHT_MODE_AUTO;
         } else if (type == NIGHT_MODE_ON) {
             silAutoSwitch.setRightImage(null);
-            silAutoSwitch.setLeftTextColor(getResources().getColor(R.color.colorText));
+            silAutoSwitch.setLeftTextColor(getResources().getColor(R.color.text_main));
             silOpen.setRightImage(getResources().getDrawable(R.mipmap.ic_yes));
             silOpen.setLeftTextColor(getResources().getColor(R.color.common_orange));
             silClose.setRightImage(null);
-            silClose.setLeftTextColor(getResources().getColor(R.color.colorText));
+            silClose.setLeftTextColor(getResources().getColor(R.color.text_main));
             nightMode = NIGHT_MODE_ON;
         } else if (type == NIGHT_MODE_OFF) {
             silAutoSwitch.setRightImage(null);
-            silAutoSwitch.setLeftTextColor(getResources().getColor(R.color.colorText));
+            silAutoSwitch.setLeftTextColor(getResources().getColor(R.color.text_main));
             silOpen.setRightImage(null);
-            silOpen.setLeftTextColor(getResources().getColor(R.color.colorText));
+            silOpen.setLeftTextColor(getResources().getColor(R.color.text_main));
             silClose.setRightImage(getResources().getDrawable(R.mipmap.ic_yes));
             silClose.setLeftTextColor(getResources().getColor(R.color.common_orange));
             nightMode = NIGHT_MODE_OFF;
         }
     }
 
+    private void stopTimer() {
+        TimeoutTimer.getInstance().stop();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        TimeoutTimer.getInstance().stop();
+        stopTimer();
     }
 
     @Override
@@ -157,6 +161,7 @@ public class IpcSettingNightStyleActivity extends BaseActivity
         }
         ResponseBean res = (ResponseBean) args[0];
         if (id == OpcodeConstants.setIpcNightIdeRotation) {
+            stopTimer();
             if (isNetException) {
                 return;
             }

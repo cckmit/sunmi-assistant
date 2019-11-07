@@ -140,7 +140,7 @@ public class JSCall {
 
     @JavascriptInterface
     public void popSunmiStore(final String arg) {//关闭商城
-        LogCat.e("JSCall", "popSunmiStore, close = "+arg);
+        LogCat.e("JSCall", "popSunmiStore, close = " + arg);
         context.finish();
     }
 

@@ -8,4 +8,13 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <style name="BtnSolidWhite" parent="@style/Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_width">@dimen/dp_96</item>
+        <item name="android:layout_height">@dimen/dp_32</item>
+        <item name="android:background">@drawable/button_corners_solid_white</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/common_orange</item>
+        <item name="android:textSize">@dimen/sp_14</item>
+    </style>
+
 </resources>

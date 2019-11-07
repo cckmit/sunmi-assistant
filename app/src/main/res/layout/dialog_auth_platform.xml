@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_25"
         android:layout_marginEnd="@dimen/dp_25"
-        android:textColor="@color/text_color"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_18"
         android:textStyle="bold" />
 
@@ -41,7 +41,7 @@
         android:layout_marginStart="@dimen/dp_25"
         android:layout_marginTop="@dimen/dp_12"
         android:layout_marginEnd="@dimen/dp_25"
-        android:textColor="@color/text_color_40"
+        android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_12" />
 
     <Button
@@ -53,7 +53,7 @@
         android:layout_marginEnd="@dimen/dp_25"
         android:background="@drawable/button_corners_solid_orange"
         android:text="@string/str_authorization_permission"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/c_white"
         android:textSize="@dimen/sp_16" />
 
     <Button
@@ -64,9 +64,9 @@
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_25"
         android:layout_marginBottom="@dimen/dp_32"
-        android:background="@drawable/button_corners_edge_orange"
+        android:background="@drawable/button_corners_edge_orange60"
         android:text="@string/str_authorization_deny"
-        android:textColor="@color/colorOrange"
+        android:textColor="@color/common_orange"
         android:textSize="@dimen/sp_16" />
 
 </LinearLayout>

@@ -21,6 +21,7 @@ platform :android do
     gradle(
       task: "clean assemble",
       build_type: "debug",
+	  flavor: "myapp",
       properties: {
         "android.injected.signing.store.file" => ENV["WORKSPACE"] + "/Keystore.jks",
         "android.injected.signing.store.password" => "SUNMIwireless388",
@@ -33,6 +34,19 @@ platform :android do
     gradle(
       task: "clean assemble",
       build_type: "release",
+	  flavor: "myapp",
+      properties: {
+        "android.injected.signing.store.file" => ENV["WORKSPACE"] + "/Keystore.jks",
+        "android.injected.signing.store.password" => "SUNMIwireless388",
+        "android.injected.signing.key.alias" => "SUNMI_Key",
+        "android.injected.signing.key.password" => "SUNMIwireless388",
+      } )
+  end
+  
+  lane :uatEnv do
+    gradle(
+      task: "clean assemble",
+      build_type: "uat",
       properties: {
         "android.injected.signing.store.file" => ENV["WORKSPACE"] + "/Keystore.jks",
         "android.injected.signing.store.password" => "SUNMIwireless388",

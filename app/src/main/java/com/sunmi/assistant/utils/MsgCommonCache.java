@@ -29,11 +29,11 @@ public class MsgCommonCache {
         lruCache = new LruCache<>(cacheSize);
     }
 
-    public void setMsgCount(MessageCountBean bean) {
-        lruCache.put(MSG_COUNT_BEAN, bean);
+    public void setMsgCount(MessageCountBean msgBean) {
+        lruCache.put(MSG_COUNT_BEAN, msgBean);
     }
 
     public MessageCountBean getMsgCount() {
-        return (MessageCountBean) lruCache.get(MSG_COUNT_BEAN);
+        return (MessageCountBean)lruCache.get(MSG_COUNT_BEAN);
     }
 }

@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/dp_20"
-        android:textColor="@color/colorText"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_16" />
 
     <ImageView
@@ -26,6 +26,6 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/colorText_5" />
+        android:background="@color/bg_common" />
 
 </RelativeLayout>

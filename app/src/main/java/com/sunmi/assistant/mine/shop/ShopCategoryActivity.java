@@ -46,7 +46,7 @@ public class ShopCategoryActivity extends BaseMvpActivity<ShopCategoryPresenter>
     private RightCategoryAdapter mRightAdapter;
 
     @Extra
-    ShopInfo mInfo;
+    ShopInfo info;
 
     private int mCategory1;
     private int mCategory2;
@@ -56,8 +56,8 @@ public class ShopCategoryActivity extends BaseMvpActivity<ShopCategoryPresenter>
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         titleBar.getRightText().setOnClickListener(this::save);
 
-        mCategory1 = mInfo.getTypeOne();
-        mCategory2 = mInfo.getTypeTwo();
+        mCategory1 = info.getTypeOne();
+        mCategory2 = info.getTypeTwo();
 
         mLeftAdapter = new LeftCategoryAdapter(this);
         recyclerViewLeft.setLayoutManager(new LinearLayoutManager(context));
@@ -67,7 +67,7 @@ public class ShopCategoryActivity extends BaseMvpActivity<ShopCategoryPresenter>
         recyclerViewRight.setLayoutManager(new LinearLayoutManager(context));
         recyclerViewRight.setAdapter(mRightAdapter);
 
-        mPresenter = new ShopCategoryPresenter(mInfo);
+        mPresenter = new ShopCategoryPresenter(info);
         mPresenter.attachView(this);
         mPresenter.getCategory();
         showLoadingDialog();
@@ -103,7 +103,7 @@ public class ShopCategoryActivity extends BaseMvpActivity<ShopCategoryPresenter>
     private void save(View v) {
         if (mCategory1 <= 0 || mCategory2 <= 0) {
             shortTip(R.string.str_selected);
-        } else if (mInfo.getTypeOne() == mCategory1 && mInfo.getTypeTwo() == mCategory2) {
+        } else if (info.getTypeOne() == mCategory1 && info.getTypeTwo() == mCategory2) {
             setResult(RESULT_CANCELED);
             finish();
         } else {
@@ -145,11 +145,11 @@ public class ShopCategoryActivity extends BaseMvpActivity<ShopCategoryPresenter>
                 mRightAdapter.setData(model.getChild());
             });
             if (mCategory1 == model.getId()) {
-                textView.setTextColor(ContextCompat.getColor(mContext, R.color.color_FF6000));
+                textView.setTextColor(ContextCompat.getColor(mContext, R.color.common_orange));
                 rlLeft.setBackgroundColor(ContextCompat.getColor(mContext, R.color.c_white));
             } else {
-                rlLeft.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorTextF9));
-                textView.setTextColor(ContextCompat.getColor(mContext, R.color.colorText));
+                rlLeft.setBackgroundColor(ContextCompat.getColor(mContext, R.color.common_fill));
+                textView.setTextColor(ContextCompat.getColor(mContext, R.color.text_main));
             }
         }
     }
@@ -175,9 +175,9 @@ public class ShopCategoryActivity extends BaseMvpActivity<ShopCategoryPresenter>
                 notifyDataSetChanged();
             });
             if (mCategory2 == model.getId()) {
-                textView.setTextColor(ContextCompat.getColor(mContext, R.color.color_FF6000));
+                textView.setTextColor(ContextCompat.getColor(mContext, R.color.common_orange));
             } else {
-                textView.setTextColor(ContextCompat.getColor(mContext, R.color.colorText));
+                textView.setTextColor(ContextCompat.getColor(mContext, R.color.text_main));
             }
         }
     }

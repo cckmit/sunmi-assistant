@@ -14,17 +14,17 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/company_shop_import"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <TextView
         android:id="@+id/tv_tip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/title_bar"
-        android:paddingBottom="@dimen/dp_8"
-        android:paddingEnd="@dimen/dp_20"
         android:paddingStart="@dimen/dp_20"
         android:paddingTop="@dimen/dp_8"
+        android:paddingEnd="@dimen/dp_20"
+        android:paddingBottom="@dimen/dp_8"
         android:text="@string/company_shop_select_one_or_more"
         android:textSize="@dimen/sp_12" />
 
@@ -33,10 +33,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/tv_tip"
-        android:layout_marginBottom="@dimen/dp_84">
+        android:layout_marginBottom="@dimen/dp_84"
+        android:background="@color/c_white">
 
     </android.support.v7.widget.RecyclerView>
-
 
     <Button
         android:id="@+id/btnComplete"
@@ -46,7 +46,7 @@
         android:layout_margin="@dimen/dp_20"
         android:background="@drawable/button_corners_solid_orange"
         android:text="@string/str_complete"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/c_white"
         android:textSize="@dimen/sp_16" />
 
 </RelativeLayout>

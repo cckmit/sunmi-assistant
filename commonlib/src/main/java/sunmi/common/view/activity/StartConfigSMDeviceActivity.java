@@ -139,7 +139,7 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
             }
         } else if (deviceType == CommonConstants.TYPE_PRINTER) {
             try {
-                Class<?> printerSearchActivity = Class.forName("com.sunmi.cloudprinter.ui.Activity.PrinterSearchActivity_");
+                Class<?> printerSearchActivity = Class.forName("com.sunmi.cloudprinter.ui.activity.PrinterSearchActivity_");
                 Intent intent = new Intent(context, printerSearchActivity);
                 intent.putExtra("shopId", shopId);
                 context.startActivity(intent);

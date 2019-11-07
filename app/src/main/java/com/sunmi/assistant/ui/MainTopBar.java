@@ -58,7 +58,7 @@ public class MainTopBar extends LinearLayout implements BaseNotification.Notific
         setBackgroundColor(Color.WHITE);
         setOrientation(VERTICAL);
         tvCompanyName = new TextView(mContext);
-        tvCompanyName.setTextColor(mContext.getResources().getColor(R.color.colorText));
+        tvCompanyName.setTextColor(mContext.getResources().getColor(R.color.text_main));
         tvCompanyName.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContext.getResources().getDimensionPixelSize(R.dimen.sp_16));
         tvCompanyName.setSingleLine();
         tvCompanyName.setEllipsize(TextUtils.TruncateAt.END);
@@ -71,7 +71,7 @@ public class MainTopBar extends LinearLayout implements BaseNotification.Notific
         addView(tvCompanyName, lpCompany);
 
         tvShopName = new TextView(mContext);
-        tvShopName.setTextColor(mContext.getResources().getColor(R.color.colorText));
+        tvShopName.setTextColor(mContext.getResources().getColor(R.color.text_main));
         tvShopName.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContext.getResources().getDimensionPixelSize(R.dimen.sp_28));
         tvShopName.setSingleLine();
         tvShopName.setEllipsize(TextUtils.TruncateAt.END);

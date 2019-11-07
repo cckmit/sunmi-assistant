@@ -30,7 +30,6 @@ import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.base.recycle.BaseCursorAdapter;
-import sunmi.common.base.recycle.BaseRecyclerAdapter;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
 import sunmi.common.base.recycle.listener.OnViewClickListener;
@@ -174,10 +173,10 @@ public class PickerActivity extends BaseMvpActivity<PickerPresenter>
         TextView down = mTitleBar.getRightText();
         if (mPresenter.getSelectSize() == 0) {
             down.setEnabled(false);
-            down.setTextColor(ContextCompat.getColor(this, R.color.colorText_60));
+            down.setTextColor(ContextCompat.getColor(this, R.color.text_caption));
         } else {
             down.setEnabled(true);
-            down.setTextColor(ContextCompat.getColor(this, R.color.colorText));
+            down.setTextColor(ContextCompat.getColor(this, R.color.text_main));
         }
     }
 
@@ -308,8 +307,7 @@ public class PickerActivity extends BaseMvpActivity<PickerPresenter>
             this.isMultiPicker = isMultiPicker;
             addOnViewClickListener(R.id.v_picker_item_check_region, new OnViewClickListener<Image>() {
                 @Override
-                public void onClick(BaseRecyclerAdapter<Image> adapter, BaseViewHolder<Image> holder,
-                                    View v, Image model, int position) {
+                public void onClick(BaseViewHolder<Image> holder, Image model, int position) {
                     CheckBox check = holder.getView(R.id.cb_picker_item_check);
                     if (!model.isChecked()
                             && mConfig.getPickLimit() != 0
@@ -331,8 +329,7 @@ public class PickerActivity extends BaseMvpActivity<PickerPresenter>
             });
             addOnViewClickListener(R.id.iv_picker_item_image, new OnViewClickListener<Image>() {
                 @Override
-                public void onClick(BaseRecyclerAdapter<Image> adapter, BaseViewHolder<Image> holder,
-                                    View v, Image model, int position) {
+                public void onClick(BaseViewHolder<Image> holder, Image model, int position) {
                     if (!isMultiPicker) {
                         model.setChecked(true);
                         mPresenter.clearSelectItem();

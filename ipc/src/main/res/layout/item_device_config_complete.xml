@@ -27,7 +27,7 @@
         android:layout_toEndOf="@+id/iv_device"
         android:ellipsize="end"
         android:singleLine="true"
-        android:textColor="@color/color_333333"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_16" />
 
     <TextView
@@ -37,7 +37,7 @@
         android:layout_below="@+id/tv_name"
         android:layout_alignStart="@+id/tv_name"
         android:layout_alignParentEnd="true"
-        android:textColor="@color/color_999999"
+        android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_14" />
 
     <TextView
@@ -50,7 +50,7 @@
         android:drawableEnd="@mipmap/ic_right_arrow_small"
         android:drawablePadding="@dimen/dp_4"
         android:text="@string/str_adjust_screen"
-        android:textColor="@color/color_666666"
+        android:textColor="@color/text_normal"
         android:textSize="@dimen/sp_14" />
 
 </RelativeLayout>

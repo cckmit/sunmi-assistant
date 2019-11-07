@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorText_5">
+    android:background="@color/bg_common">
 
     <sunmi.common.view.TitleBarView
         android:id="@+id/title_bar"
@@ -15,7 +15,7 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/ipc_setting_wifi"
-        app:titleTextColor="@color/colorText" />
+        app:titleTextColor="@color/text_main" />
 
     <include layout="@layout/include_net_exception" />
 
@@ -72,7 +72,7 @@
         android:ellipsize="end"
         android:gravity="center_vertical"
         android:singleLine="true"
-        android:textColor="@color/colorText_60"
+        android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_14" />
 
     <android.support.v7.widget.RecyclerView

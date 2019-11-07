@@ -77,32 +77,33 @@ public class SelectStorePresenter extends BasePresenter<SelectStoreContract.View
     }
 
     private void createShop(SelectShopModel item) {
-        SunmiStoreApi.getInstance().createShop(mCompanyId, item.getShopName(), "", "", new RetrofitCallback<CreateShopInfo>() {
-            @Override
-            public void onSuccess(int code, String msg, CreateShopInfo data) {
-                item.setShopId(data.getShop_id());
-                if (shopId == 0) {
-                    shopId = data.getShop_id();
-                    shopName = item.getShopName();
-                }
-                hasSuccess = true;
-                authorizeSaas(item);
-            }
+        SunmiStoreApi.getInstance().createShop(mCompanyId, item.getShopName(), 0, 0, 0, "",
+                0, 0, 0, "", "", "", "", new RetrofitCallback<CreateShopInfo>() {
+                    @Override
+                    public void onSuccess(int code, String msg, CreateShopInfo data) {
+                        item.setShopId(data.getShop_id());
+                        if (shopId == 0) {
+                            shopId = data.getShop_id();
+                            shopName = item.getShopName();
+                        }
+                        hasSuccess = true;
+                        authorizeSaas(item);
+                    }
 
-            @Override
-            public void onFail(int code, String msg, CreateShopInfo data) {
-                LogCat.e(TAG, "Create shop Failed. " + msg);
-                if (isViewAttached()) {
-                    mView.onFailedShopCreate(code);
-                }
-                createShopAdd();
-            }
-        });
+                    @Override
+                    public void onFail(int code, String msg, CreateShopInfo data) {
+                        LogCat.e(TAG, "Create shop Failed. " + msg);
+                        if (isViewAttached()) {
+                            mView.onFailedShopCreate(code);
+                        }
+                        createShopAdd();
+                    }
+                });
     }
 
     private void authorizeSaas(SelectShopModel item) {
         SunmiStoreApi.getInstance().authorizeSaas(mCompanyId, item.getShopId(),
-                item.getSaasSource(), item.getShopNo(), item.getSaasName(), new RetrofitCallback<Object>() {
+                item.getSaasSource(), item.getShopNo(), item.getSaasName(), 1, new RetrofitCallback<Object>() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
                         mSaasExist = 1;

@@ -72,7 +72,7 @@
         <item>@string/msg_ipc_tf_non_capable</item>
         <item>@string/msg_ipc_offline</item>
         <item>@string/msg_ipc_pic_detect</item>
-        <item>@string/msg_ipc_pic_detect</item>
+        <item>@string/msg_ipc_audio_detect</item>
         <item>@string/msg_ipc_ota</item>
         <item>@string/msg_esl_ota</item>
         <item>@string/msg_esl_offline</item>

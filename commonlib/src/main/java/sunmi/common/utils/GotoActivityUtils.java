@@ -32,6 +32,7 @@ public class GotoActivityUtils {
                 && !className.contains("CreateCompanyActivity")
                 && !className.contains("CreateCompanyNextActivity")
                 && !className.contains("CreateShopActivity")
+                && !className.contains("CreateShopNewActivity")
                 && !className.contains("CreateShopPreviewActivity")
                 ) {
             LogCat.e("TAG", "gotoLoginActivity= " + className);
@@ -109,6 +110,16 @@ public class GotoActivityUtils {
             Intent intent = new Intent(context, activity);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
                     Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void gotoRegisterActivity(Context context) {
+        try {
+            Class<?> registerActivity = Class.forName("com.sunmi.assistant.ui.activity.login.RegisterActivity");
+            Intent intent = new Intent(context, registerActivity);
             context.startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();

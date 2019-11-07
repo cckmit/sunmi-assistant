@@ -4,16 +4,14 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.meituan.android.walle.WalleChannelReader;
-import com.sunmi.apmanager.config.ApConfig;
 import com.sunmi.apmanager.rpc.mqtt.MQTTManager;
 import com.sunmi.assistant.config.BootLoader;
-import com.tencent.bugly.Bugly;
 import com.tencent.stat.StatService;
 import com.xiaojinzi.component.Component;
 import com.xiaojinzi.component.impl.application.ModuleManager;
 
 import sunmi.common.base.BaseApplication;
+import sunmi.common.constant.RouterConfig;
 import sunmi.common.rpc.mqtt.MqttManager;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
@@ -50,10 +48,9 @@ public class MyApplication extends BaseApplication {
         // 初始化组件化相关
         Component.init(this, BuildConfig.DEBUG);
 
-
         // 装载各个业务组件
         ModuleManager.getInstance().registerArr(
-                "app", "ipc"
+                RouterConfig.App.NAME, RouterConfig.Ipc.NAME, RouterConfig.SunmiService.NAME
         );
         if (BuildConfig.DEBUG) {
             ModuleManager.getInstance().check();

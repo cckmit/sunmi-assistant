@@ -3,6 +3,7 @@ package com.sunmi.ipc.presenter;
 import com.sunmi.ipc.contract.IpcManagerContract;
 import com.sunmi.ipc.model.CloudTimeSlotResp;
 import com.sunmi.ipc.model.IotcCmdResp;
+import com.sunmi.ipc.model.StorageListResp;
 import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.model.VideoTimeSlotBean;
 import com.sunmi.ipc.rpc.IpcCloudApi;
@@ -24,7 +25,7 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
 
     @Override
     public void getTimeSlots(int deviceId, final long startTime, final long endTime) {
-        IpcCloudApi.getTimeSlots(deviceId, startTime, endTime, new RetrofitCallback<CloudTimeSlotResp>() {
+        IpcCloudApi.getInstance().getTimeSlots(deviceId, startTime, endTime, new RetrofitCallback<CloudTimeSlotResp>() {
             @Override
             public void onSuccess(int code, String msg, CloudTimeSlotResp data) {
                 if (!isViewAttached()) {
@@ -121,7 +122,7 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
             mView.shortTip("设备信息不完整");
             return;
         }
-        IpcCloudApi.getVideoList(deviceId, start, end, new RetrofitCallback<VideoListResp>() {
+        IpcCloudApi.getInstance().getVideoList(deviceId, start, end, new RetrofitCallback<VideoListResp>() {
             @Override
             public void onSuccess(int code, String msg, VideoListResp data) {
                 if (isViewAttached()) {
@@ -158,4 +159,26 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
         });
     }
 
+    @Override
+    public void getStorageInfo(int deviceId) {
+        IpcCloudApi.getInstance().getStorageInfo(deviceId, new RetrofitCallback<StorageListResp>() {
+            @Override
+            public void onSuccess(int code, String msg, StorageListResp data) {
+                if (isViewAttached()) {
+                    if (data.getDeviceList().size() > 0) {
+                        mView.getStorageSuccess(data.getDeviceList().get(0));
+                    } else {
+                        mView.getStorageSuccess(null);
+                    }
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, StorageListResp data) {
+                if (isViewAttached()) {
+                    mView.getStorageSuccess(null);
+                }
+            }
+        });
+    }
 }

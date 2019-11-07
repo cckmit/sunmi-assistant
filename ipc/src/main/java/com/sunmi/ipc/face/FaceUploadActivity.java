@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.base.recycle.BaseRecyclerAdapter;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.SimpleArrayAdapter;
 import sunmi.common.base.recycle.listener.OnViewClickListener;
@@ -99,7 +98,7 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
 
     private void initTitle() {
         mTitleBar.getRightText().setEnabled(true);
-        mTitleBar.setRightTextViewColor(R.color.colorText);
+        mTitleBar.setRightTextViewColor(R.color.text_main);
         mTitleBar.setRightTextViewText(R.string.ipc_face_upload_btn);
         mTitleBar.getRightText().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,7 +138,7 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
 
     private void upload() {
         mTitleBar.getRightText().setEnabled(false);
-        mTitleBar.setRightTextViewColor(R.color.colorText_40);
+        mTitleBar.setRightTextViewColor(R.color.text_caption);
         for (UploadImage image : mImages) {
             image.setState(UploadImage.STATE_UPLOADING);
         }
@@ -180,9 +179,9 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
                 }
             }
             mTitleBar.getRightText().setEnabled(false);
-            mTitleBar.setRightTextViewColor(R.color.colorText_40);
+            mTitleBar.setRightTextViewColor(R.color.text_caption);
             if (mRetryDialog == null) {
-                mRetryDialog = new CommonDialog.Builder(this)
+                mRetryDialog = new CommonDialog.Builder(context)
                         .setTitle(R.string.ipc_face_error_upload)
                         .setMessage(networkFailed ? R.string.ipc_face_error_image_all_network
                                 : R.string.ipc_face_error_image_all)
@@ -198,7 +197,7 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
             mRetryDialog.show();
         } else {
             mTitleBar.getRightText().setEnabled(true);
-            mTitleBar.setRightTextViewColor(R.color.colorText);
+            mTitleBar.setRightTextViewColor(R.color.text_main);
             mTitleBar.getRightText().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -326,8 +325,7 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
             super(data);
             addOnViewClickListener(R.id.iv_face_item_image, new OnViewClickListener<UploadImage>() {
                 @Override
-                public void onClick(BaseRecyclerAdapter<UploadImage> adapter, BaseViewHolder<UploadImage> holder,
-                                    View v, UploadImage model, int position) {
+                public void onClick(BaseViewHolder<UploadImage> holder, UploadImage model, int position) {
                     if (model.getState() != UploadImage.STATE_ADD) {
                         return;
                     }
@@ -360,8 +358,7 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
             });
             addOnViewClickListener(R.id.v_face_item_region, new OnViewClickListener<UploadImage>() {
                 @Override
-                public void onClick(BaseRecyclerAdapter<UploadImage> adapter, BaseViewHolder<UploadImage> holder,
-                                    View v, UploadImage model, int position) {
+                public void onClick(BaseViewHolder<UploadImage> holder, UploadImage model, int position) {
                     boolean isAtLimit = mImages.size() >= Constants.IMAGE_PICKER_LIMIT;
                     remove(position);
                     if (isAtLimit) {

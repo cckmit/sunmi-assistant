@@ -27,7 +27,9 @@ public class ShopRegionPresenter extends BasePresenter<ShopRegionContract.View>
 
     @Override
     public void updateRegion(int province, int city, int area, String address) {
-        mInfo.setRegion(province, city, area);
+        mInfo.setProvince(province);
+        mInfo.setCity(city);
+        mInfo.setArea(area);
         if (!TextUtils.isEmpty(address)) {
             mInfo.setAddress(address);
         }

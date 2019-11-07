@@ -5,6 +5,6 @@
 
     <stroke
         android:width="@dimen/dp_1"
-        android:color="@color/colorText_20" />
+        android:color="@color/c_divider" />
 
 </shape>

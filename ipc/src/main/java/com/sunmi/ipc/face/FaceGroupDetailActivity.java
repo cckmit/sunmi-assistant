@@ -2,7 +2,6 @@ package com.sunmi.ipc.face;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
@@ -33,6 +32,7 @@ import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.TitleBarView;
@@ -40,7 +40,6 @@ import sunmi.common.view.dialog.BottomDialog;
 import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.dialog.InputDialog;
 import sunmi.common.view.loopview.LoopView;
-import sunmi.common.view.loopview.OnItemSelectedListener;
 
 /**
  * @author yinhui
@@ -96,12 +95,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
         } else {
             mTitleBar.setRightTextViewEnable(true);
             mTitleBar.setRightTextViewText(R.string.ipc_setting_delete);
-            mTitleBar.getRightText().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    clickDelete();
-                }
-            });
+            mTitleBar.getRightText().setOnClickListener(v -> clickDelete());
         }
 
         mTvTip.setVisibility(mFaceGroup.isSystemType() ? View.VISIBLE : View.GONE);
@@ -115,7 +109,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
             mTvTip.setText(R.string.ipc_face_group_black_desc);
         }
 
-        mSilName.setRightText(Utils.getGroupName(this, mFaceGroup));
+        mSilName.setRightText(Utils.getGroupName(context, mFaceGroup));
         mSilCapacity.setRightText(String.valueOf(mFaceGroup.getCapacity()));
 
         if (mFaceGroup.getType() == FaceGroup.FACE_GROUP_TYPE_NEW) {
@@ -179,7 +173,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
     private void clickDelete() {
         if (mFaceGroup.getCount() > 0) {
             if (mDeleteForbiddenDialog == null) {
-                mDeleteForbiddenDialog = new CommonDialog.Builder(this)
+                mDeleteForbiddenDialog = new CommonDialog.Builder(context)
                         .setTitle(getString(R.string.ipc_face_group_delete_title,
                                 Utils.getGroupName(this, mFaceGroup)))
                         .setMessage(R.string.ipc_face_group_delete_error)
@@ -189,16 +183,11 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
             mDeleteForbiddenDialog.show();
         } else {
             if (mDeleteDialog == null) {
-                mDeleteDialog = new CommonDialog.Builder(this)
+                mDeleteDialog = new CommonDialog.Builder(context)
                         .setTitle(getString(R.string.ipc_face_group_delete_title,
                                 Utils.getGroupName(this, mFaceGroup)))
-                        .setConfirmButton(R.string.ipc_setting_delete, R.color.colorOrange,
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        mPresenter.delete();
-                                    }
-                                })
+                        .setConfirmButton(R.string.ipc_setting_delete, R.color.common_orange,
+                                (dialog, which) -> mPresenter.delete())
                         .setCancelButton(R.string.sm_cancel)
                         .create();
             }
@@ -252,7 +241,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
     }
 
     private void modifyGroupName() {
-        new InputDialog.Builder(this)
+        new InputDialog.Builder(context)
                 .setTitle(R.string.ipc_face_group_name)
                 .setHint(getString(R.string.ipc_face_input_name_tip))
                 .setInitInputContent(mFaceGroup.getGroupName())
@@ -274,29 +263,26 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
                         }
                     }
                 }).setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.ipc_setting_save, new InputDialog.ConfirmClickListener() {
-                    @Override
-                    public void onConfirmClick(InputDialog dialog, String input) {
-                        if (input.length() > IPC_NAME_MAX_LENGTH) {
-                            shortTip(getString(R.string.ipc_face_name_length_tip));
-                            return;
-                        }
-                        if (input.trim().length() == 0) {
-                            shortTip(getString(R.string.ipc_face_input_name_tip));
-                            return;
-                        }
-                        mPresenter.updateName(input);
-                        dialog.dismiss();
+                .setConfirmButton(R.string.ipc_setting_save, (dialog, input) -> {
+                    if (input.length() > IPC_NAME_MAX_LENGTH) {
+                        shortTip(getString(R.string.ipc_face_name_length_tip));
+                        return;
                     }
+                    if (input.trim().length() == 0) {
+                        shortTip(getString(R.string.ipc_face_input_name_tip));
+                        return;
+                    }
+                    dialog.dismiss();
+                    mPresenter.updateName(input);
                 }).create().show();
     }
 
     private void modifyMarks() {
-        new InputDialog.Builder(this)
+        new InputDialog.Builder(context)
                 .setTitle(R.string.ipc_face_group_mark)
                 .setHint(getString(R.string.ipc_face_input_marks_tip))
                 .setInitInputContent(mFaceGroup.getMark())
-                .setEditTextHeight(true, 400, 40, 0, 40, 40)
+                .setEditTextHeight(CommonHelper.dp2px(context, 130))
                 .setInputWatcher(new InputDialog.TextChangeListener() {
                     @Override
                     public void onTextChange(EditText view, Editable s) {
@@ -316,20 +302,17 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
                     }
                 })
                 .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.ipc_setting_save, new InputDialog.ConfirmClickListener() {
-                    @Override
-                    public void onConfirmClick(InputDialog dialog, String input) {
-                        if (input.trim().length() == 0) {
-                            shortTip(getString(R.string.ipc_face_input_marks_tip));
-                            return;
-                        }
-                        if (input.trim().length() > IPC_MARK_MAX_LENGTH) {
-                            shortTip(getString(R.string.ipc_face_name_length100_tip));
-                            return;
-                        }
-                        mPresenter.updateMark(input);
-                        dialog.dismiss();
+                .setConfirmButton(R.string.ipc_setting_save, (dialog, input) -> {
+                    if (input.trim().length() == 0) {
+                        shortTip(getString(R.string.ipc_face_input_marks_tip));
+                        return;
                     }
+                    if (input.trim().length() > IPC_MARK_MAX_LENGTH) {
+                        shortTip(getString(R.string.ipc_face_name_length100_tip));
+                        return;
+                    }
+                    dialog.dismiss();
+                    mPresenter.updateMark(input);
                 }).create().show();
     }
 
@@ -343,12 +326,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
         final int nowCapacity = 10000 - mOccupiedCapacity + mFaceGroup.getCapacity();
         etInput.setHint(getString(R.string.ipc_face_photo_num_max));
         errorTip.setText(getString(R.string.ipc_face_photo_num_remainder, nowCapacity));
-        view.findViewById(com.commonlibrary.R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+        view.findViewById(com.commonlibrary.R.id.btn_cancel).setOnClickListener(v -> dialog.dismiss());
         etInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -361,11 +339,11 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
                         Integer.valueOf(s.toString().trim()) > nowCapacity) {
                     etInput.setBackgroundResource(R.drawable.edittext_edge_red);
                     errorTip.setText(getString(R.string.ipc_face_photo_num_max_more));
-                    errorTip.setTextColor(ContextCompat.getColor(context, R.color.color_FF3838));
+                    errorTip.setTextColor(ContextCompat.getColor(context, R.color.caution_primary));
                 } else {
                     etInput.setBackgroundResource(R.drawable.edittext_edge_grey2);
                     errorTip.setText(getString(R.string.ipc_face_photo_num_remainder, nowCapacity));
-                    errorTip.setTextColor(ContextCompat.getColor(context, R.color.colorText_40));
+                    errorTip.setTextColor(ContextCompat.getColor(context, R.color.text_caption));
                 }
             }
 
@@ -384,7 +362,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
                 int num = Integer.valueOf(etInput.getText().toString().trim());
                 if (num > nowCapacity) {
                     errorTip.setText(getString(R.string.ipc_face_photo_num_max_more));
-                    errorTip.setTextColor(ContextCompat.getColor(context, R.color.color_FF3838));
+                    errorTip.setTextColor(ContextCompat.getColor(context, R.color.caution_primary));
                     return;
                 }
                 mPresenter.updateCapacity(num);
@@ -404,12 +382,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
         new BottomDialog.Builder(this)
                 .setTitle(R.string.ipc_face_group_threshold)
                 .setCancelButton(R.string.sm_cancel)
-                .setOkButton(R.string.str_complete, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mPresenter.updateThreshold(times, days);
-                    }
-                })
+                .setOkButton(R.string.str_complete, (dialog, which) -> mPresenter.updateThreshold(times, days))
                 .setContent(wheelView(), layoutParams)
                 .create()
                 .show();
@@ -432,18 +405,8 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
 //        lvWheelLeft.setNotLoop();
 //        lvWheelRight.setNotLoop();
         //滚动监听
-        lvWheelLeft.setListener(new OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(int index) {
-                days = index + 1;
-            }
-        });
-        lvWheelRight.setListener(new OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(int index) {
-                times = index + 1;
-            }
-        });
+        lvWheelLeft.setListener(index -> days = index + 1);
+        lvWheelRight.setListener(index -> times = index + 1);
         //设置原始数据
         lvWheelLeft.setItems(listLeft);
         lvWheelRight.setItems(listRight);

@@ -3,7 +3,7 @@ package com.sunmi.ipc.presenter;
 import android.text.TextUtils;
 
 import com.sunmi.ipc.contract.IpcConfiguringContract;
-import com.sunmi.ipc.model.IpcListResp;
+import sunmi.common.router.model.IpcListResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public class IpcConfiguringPresenter extends BasePresenter<IpcConfiguringContrac
 
     @Override
     public void ipcBind(String shopId, final String sn, String token, float longitude, float latitude) {
-        IpcCloudApi.bindIpc(SpUtils.getCompanyId() + "", shopId, sn, TextUtils.isEmpty(token) ? 1 : 0,
+        IpcCloudApi.getInstance().bindIpc(SpUtils.getCompanyId() + "", shopId, sn, TextUtils.isEmpty(token) ? 1 : 0,
                 token, longitude, latitude, new RetrofitCallback<Object>() {
                     @Override
                     public void onSuccess(int code, String msg, Object data) {
@@ -41,7 +41,7 @@ public class IpcConfiguringPresenter extends BasePresenter<IpcConfiguringContrac
 
     @Override
     public void getIpcList(int companyId, String shopId) {
-        IpcCloudApi.getDetailList(companyId, SpUtils.getShopId(), new RetrofitCallback<IpcListResp>() {
+        IpcCloudApi.getInstance().getDetailList(companyId, SpUtils.getShopId(), new RetrofitCallback<IpcListResp>() {
             @Override
             public void onSuccess(int code, String msg, IpcListResp data) {
                 List<IpcListResp.SsListBean> ipcList = new ArrayList<>();

@@ -320,6 +320,9 @@ public class LineChartRenderer extends LineRadarRenderer {
             drawLinearFill(c, dataSet, trans, mXBounds);
         }
 
+        boolean continuous = dataSet.isLineContinuous();
+        float linePhase = dataSet.getLinePhase();
+
         // more than 1 color
         if (dataSet.getColors().size() > 1) {
 
@@ -328,28 +331,34 @@ public class LineChartRenderer extends LineRadarRenderer {
 
             for (int j = mXBounds.min; j <= mXBounds.range + mXBounds.min; j++) {
 
-                Entry e = dataSet.getEntryForIndex(j);
-                if (e == null) continue;
+                Entry e1 = dataSet.getEntryForIndex(j);
+                Entry e2 = j < mXBounds.max ? dataSet.getEntryForIndex(j + 1) : null;
+                if (e1 == null) {
+                    continue;
+                }
+                if (j < mXBounds.max && e2 == null) {
+                    break;
+                }
 
-                mLineBuffer[0] = e.getX();
-                mLineBuffer[1] = e.getY() * phaseY;
+                mLineBuffer[0] = e1.getX();
+                mLineBuffer[1] = e1.getY() * phaseY;
 
-                if (j < mXBounds.max) {
+                if (e2 != null) {
 
-                    e = dataSet.getEntryForIndex(j + 1);
-
-                    if (e == null) break;
+                    if (!continuous && linePhase > 0 && e2.getX() - e1.getX() > linePhase) {
+                        continue;
+                    }
 
                     if (isDrawSteppedEnabled) {
-                        mLineBuffer[2] = e.getX();
+                        mLineBuffer[2] = e2.getX();
                         mLineBuffer[3] = mLineBuffer[1];
                         mLineBuffer[4] = mLineBuffer[2];
                         mLineBuffer[5] = mLineBuffer[3];
-                        mLineBuffer[6] = e.getX();
-                        mLineBuffer[7] = e.getY() * phaseY;
+                        mLineBuffer[6] = e2.getX();
+                        mLineBuffer[7] = e2.getY() * phaseY;
                     } else {
-                        mLineBuffer[2] = e.getX();
-                        mLineBuffer[3] = e.getY() * phaseY;
+                        mLineBuffer[2] = e2.getX();
+                        mLineBuffer[3] = e2.getY() * phaseY;
                     }
 
                 } else {
@@ -359,15 +368,17 @@ public class LineChartRenderer extends LineRadarRenderer {
 
                 trans.pointValuesToPixel(mLineBuffer);
 
-                if (!mViewPortHandler.isInBoundsRight(mLineBuffer[0]))
+                if (!mViewPortHandler.isInBoundsRight(mLineBuffer[0])) {
                     break;
+                }
 
                 // make sure the lines don't do shitty things outside
                 // bounds
-                if (!mViewPortHandler.isInBoundsLeft(mLineBuffer[2])
-                        || (!mViewPortHandler.isInBoundsTop(mLineBuffer[1]) && !mViewPortHandler
-                        .isInBoundsBottom(mLineBuffer[3])))
+                boolean yInvalid = !mViewPortHandler.isInBoundsTop(mLineBuffer[1]) && !mViewPortHandler
+                        .isInBoundsBottom(mLineBuffer[3]);
+                if (!mViewPortHandler.isInBoundsLeft(mLineBuffer[2]) || yInvalid) {
                     continue;
+                }
 
                 // get the color that is set for this line-segment
                 mRenderPaint.setColor(dataSet.getColor(j));
@@ -387,12 +398,17 @@ public class LineChartRenderer extends LineRadarRenderer {
             if (e1 != null) {
 
                 int j = 0;
+                int count = 0;
                 for (int x = mXBounds.min; x <= mXBounds.range + mXBounds.min; x++) {
 
                     e1 = dataSet.getEntryForIndex(x == 0 ? 0 : (x - 1));
                     e2 = dataSet.getEntryForIndex(x);
 
                     if (e1 == null || e2 == null) continue;
+
+                    if (!continuous && linePhase > 0 && e2.getX() - e1.getX() > linePhase) {
+                        continue;
+                    }
 
                     mLineBuffer[j++] = e1.getX();
                     mLineBuffer[j++] = e1.getY() * phaseY;
@@ -406,12 +422,13 @@ public class LineChartRenderer extends LineRadarRenderer {
 
                     mLineBuffer[j++] = e2.getX();
                     mLineBuffer[j++] = e2.getY() * phaseY;
+                    count++;
                 }
 
                 if (j > 0) {
                     trans.pointValuesToPixel(mLineBuffer);
 
-                    final int size = Math.max((mXBounds.range + 1) * pointsPerEntryPair, pointsPerEntryPair) * 2;
+                    final int size = Math.max(count * pointsPerEntryPair, pointsPerEntryPair) * 2;
 
                     mRenderPaint.setColor(dataSet.getColor());
 
@@ -578,8 +595,8 @@ public class LineChartRenderer extends LineRadarRenderer {
                         Utils.drawImage(
                                 c,
                                 icon,
-                                (int)(x + iconsOffset.x),
-                                (int)(y + iconsOffset.y),
+                                (int) (x + iconsOffset.x),
+                                (int) (y + iconsOffset.y),
                                 icon.getIntrinsicWidth(),
                                 icon.getIntrinsicHeight());
                     }
@@ -759,6 +776,7 @@ public class LineChartRenderer extends LineRadarRenderer {
 
         private Path mCirclePathBuffer = new Path();
 
+        private int[] circleColors;
         private Bitmap[] circleBitmaps;
 
         /**
@@ -772,12 +790,26 @@ public class LineChartRenderer extends LineRadarRenderer {
             int size = set.getCircleColorCount();
             boolean changeRequired = false;
 
-            if (circleBitmaps == null) {
+            if (circleBitmaps == null
+                    || circleColors == null
+                    || circleBitmaps.length != size
+                    || circleColors.length != size) {
                 circleBitmaps = new Bitmap[size];
+                circleColors = new int[size];
                 changeRequired = true;
-            } else if (circleBitmaps.length != size) {
-                circleBitmaps = new Bitmap[size];
-                changeRequired = true;
+            }
+            if (!changeRequired) {
+                for (int i = 0; i < size; i++) {
+                    if (circleColors[i] != set.getCircleColor(i)) {
+                        changeRequired = true;
+                        break;
+                    }
+                }
+            }
+            if (changeRequired) {
+                for (int i = 0; i < size; i++) {
+                    circleColors[i] = set.getCircleColor(i);
+                }
             }
 
             return changeRequired;

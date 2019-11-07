@@ -26,12 +26,21 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        uat {}
     }
+
+    flavorDimensions "default"
+    productFlavors {
+        myapp {}
+        google {}
+    }
+
     sourceSets {
         main {
             jniLibs.srcDirs 'libs'
         }
     }
+
     //so 文件
     splits {
         abi {
@@ -52,7 +61,6 @@ repositories {
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
     implementation fileTree(include: ['*.aar'], dir: 'libs')
-    //公共库
     implementation project(':commonlib')
 
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'

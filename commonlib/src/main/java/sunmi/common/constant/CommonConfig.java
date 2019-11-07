@@ -26,6 +26,8 @@ public class CommonConfig extends BaseConfig {
      */
     public static String MI_PUSH_APP_KEY = "";
 
+    public static String CLOUD_STORAGE_URL = "";
+
     @Override
     protected void initDev(Context context, String env) {
         SUNMI_STORE_URL = "https://store.dev.sunmi.com/";
@@ -35,6 +37,8 @@ public class CommonConfig extends BaseConfig {
 
         MI_PUSH_APP_ID = "2882303761518131246";
         MI_PUSH_APP_KEY = "5601813178246";
+
+        CLOUD_STORAGE_URL = "http://test.cdn.sunmi.com/h5/cloud-storage/index.html#/cloudStorage";
     }
 
     @Override
@@ -46,6 +50,8 @@ public class CommonConfig extends BaseConfig {
 
         MI_PUSH_APP_ID = "2882303761518131246";
         MI_PUSH_APP_KEY = "5601813178246";
+
+        CLOUD_STORAGE_URL = "http://test.cdn.sunmi.com/h5/cloud-storage/index.html#/cloudStorage";
     }
 
     @Override
@@ -57,16 +63,20 @@ public class CommonConfig extends BaseConfig {
 
         MI_PUSH_APP_ID = "2882303761518131146";
         MI_PUSH_APP_KEY = "5611813137146";
+
+        CLOUD_STORAGE_URL = "http://test.cdn.sunmi.com/h5/cloud-storage/index.html#/cloudStorage";
     }
 
     @Override
     protected void initUat(Context context, String env) {
-        SUNMI_STORE_URL = "https://uat-store.sunmi.com/";
+        SUNMI_STORE_URL = "https://store.uat.sunmi.com/";
         CLOUD_TOKEN = "Jihewobox15";
         DES_IV = "98765432";
         DES_KEY = "jihexxkj";
         MI_PUSH_APP_ID = "2882303761518131146";
         MI_PUSH_APP_KEY = "5611813137146";
+
+        CLOUD_STORAGE_URL = "http://test.cdn.sunmi.com/h5/cloud-storage/index.html#/cloudStorage";
     }
 
 }

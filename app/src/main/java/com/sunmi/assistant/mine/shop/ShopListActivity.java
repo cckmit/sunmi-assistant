@@ -22,6 +22,7 @@ import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopListResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -32,8 +33,6 @@ import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.ViewHolder;
-import sunmi.common.view.bottompopmenu.BottomPopMenu;
-import sunmi.common.view.bottompopmenu.PopItemAction;
 
 /**
  * 我的店铺
@@ -72,27 +71,25 @@ public class ShopListActivity extends BaseActivity {
     void onAddClick() {
         CommonUtils.trackCommonEvent(context, "addStore",
                 "主页_我的_我的店铺_添加店铺", Constants.EVENT_MY_INFO);
-        BottomPopMenu.Builder builder = new BottomPopMenu.Builder(this);
-        builder.setTitle(R.string.company_shop_new_create_or_import)
-                .setIsShowCircleBackground(true)
-                .addItemAction(new PopItemAction(R.string.company_shop_new_create,
-                        PopItemAction.PopItemStyle.Normal, this::createShop));
-        if (!CommonHelper.isGooglePlay()) {
-            builder.addItemAction(new PopItemAction(R.string.company_shop_import,
-                    PopItemAction.PopItemStyle.Normal, this::importShop));
-        }
-        builder.addItemAction(new PopItemAction(R.string.sm_cancel,
-                PopItemAction.PopItemStyle.Cancel))
-                .create().show();
+        createShop();
     }
 
     private void createShop() {
-        CreateShopActivity_.intent(context)
-                .companyId(SpUtils.getCompanyId())
-                .companyName(SpUtils.getCompanyName())
-                .saasExist(SpUtils.getSaasExist())
-                .isLoginSuccessSwitchCompany(false)
-                .startForResult(REQUEST_CODE_SHOP);
+        if (CommonHelper.isGooglePlay()) {
+            CreateShopActivity_.intent(context)
+                    .companyId(SpUtils.getCompanyId())
+                    .companyName(SpUtils.getCompanyName())
+                    .saasExist(SpUtils.getSaasExist())
+                    .isLoginSuccessSwitchCompany(false)
+                    .startForResult(REQUEST_CODE_SHOP);
+        } else {
+            CreateShopNewActivity_.intent(context)
+                    .companyId(SpUtils.getCompanyId())
+                    .companyName(SpUtils.getCompanyName())
+                    .saasExist(SpUtils.getSaasExist())
+                    .isLoginSuccessSwitchCompany(false)
+                    .startForResult(REQUEST_CODE_SHOP);
+        }
     }
 
     private void importShop() {
@@ -136,22 +133,21 @@ public class ShopListActivity extends BaseActivity {
         });
     }
 
-    private static class ShopListAdapter extends CommonListAdapter<ShopListResp.ShopInfo> {
+    private static class ShopListAdapter extends CommonListAdapter<ShopInfo> {
 
         private ShopListAdapter(Context context) {
             super(context, R.layout.item_mine_store, null);
         }
 
         @Override
-        public void convert(ViewHolder holder, ShopListResp.ShopInfo info) {
+        public void convert(ViewHolder holder, ShopInfo info) {
             SettingItemLayout silCompanyDetail = holder.getView(R.id.tvName);
-            silCompanyDetail.setLeftText(info.getShop_name());
+            silCompanyDetail.setLeftText(info.getShopName());
             holder.itemView.setOnClickListener(v -> {
                 CommonUtils.trackCommonEvent(mContext, "defaultStore",
                         "主页_我的_我的店铺_默认店铺", Constants.EVENT_MY_INFO);
                 ShopDetailGroupActivity_.intent(mContext)
-                        .shopId(info.getShop_id())
-                        .shopName(info.getShop_name())
+                        .info(info)
                         .startForResult(REQUEST_CODE_SHOP);
             });
         }

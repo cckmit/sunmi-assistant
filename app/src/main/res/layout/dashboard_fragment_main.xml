@@ -3,32 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cl_dashboard_content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/c_white">
 
     <View
         android:id="@+id/view_dashboard_refresh_bg"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_150"
-        android:background="@color/color_303540"
+        android:background="@color/text_main"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layout_shop_title" />
+        app:layout_constraintTop_toBottomOf="@+id/layout_dashboard_tab" />
 
-    <com.sunmi.assistant.dashboard.ui.RefreshLayout
-        android:id="@+id/layout_dashboard_refresh"
+    <com.sunmi.assistant.dashboard.ui.ScrollableViewPager
+        android:id="@+id/pager_dashboard_pager"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_dashboard_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </com.sunmi.assistant.dashboard.ui.RefreshLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/view_dashboard_overlay"
@@ -39,12 +33,38 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layout_shop_title" />
+        app:layout_constraintTop_toBottomOf="@+id/layout_dashboard_tab" />
+
+    <FrameLayout
+        android:id="@+id/layout_dashboard_tab"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_44"
+        android:background="@color/text_main"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_shop_title">
+
+        <sunmi.common.view.tablayout.CommonTabLayout
+            android:id="@+id/tab_dashboard_pager"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_28"
+            android:layout_gravity="top|center_horizontal"
+            app:tl_indicator_bounce_enable="false"
+            app:tl_indicator_corner_radius="@dimen/dp_1"
+            app:tl_indicator_height="@dimen/dp_2"
+            app:tl_indicator_width="@dimen/dp_16"
+            app:tl_tab_padding="@dimen/dp_12"
+            app:tl_textBold="SELECT"
+            app:tl_textSelectColor="@color/c_white"
+            app:tl_textUnselectColor="@color/white_60a"
+            app:tl_textsize="@dimen/sp_14" />
+
+    </FrameLayout>
 
     <sunmi.common.view.DropdownMenu
         android:id="@+id/layout_shop_title"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_64"
+        android:layout_height="@dimen/dp_54"
         android:background="@drawable/dashboard_bg_top"
         android:gravity="center"
         android:paddingStart="@dimen/dp_20"
@@ -52,6 +72,48 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/layout_dashboard_no_fs_tip"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_40"
+        android:background="@color/color_303540_40a"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/tv_dashboard_no_fs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_20"
+            android:text="@string/dashboard_no_customer_fs_tip"
+            android:textColor="@color/c_white"
+            android:textSize="@dimen/sp_12"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_dashboard_tip_add_fs"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btn_dashboard_tip_add_fs"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="@dimen/dp_72"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:background="@drawable/dashboard_btn_no_fs_tip"
+            android:gravity="center"
+            android:text="@string/dashboard_no_fs_tip_add"
+            android:textColor="@color/c_white"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
 
     <include
         android:id="@+id/layout_top_period_tab"
@@ -75,11 +137,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.constraint.Group
-        android:visibility="invisible"
         android:id="@+id/group_dashboard_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="layout_shop_title,layout_dashboard_refresh,view_dashboard_refresh_bg" />
+        android:visibility="invisible"
+        app:constraint_referenced_ids="layout_shop_title,layout_dashboard_tab,pager_dashboard_pager,view_dashboard_refresh_bg" />
 
 </android.support.constraint.ConstraintLayout>
 

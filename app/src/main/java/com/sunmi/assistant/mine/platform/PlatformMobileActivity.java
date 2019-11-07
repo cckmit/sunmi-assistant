@@ -17,6 +17,7 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.PlatformMobileContract;
 import com.sunmi.assistant.mine.presenter.PlatformMobilePresenter;
 import com.sunmi.assistant.mine.shop.CreateShopActivity_;
+import com.sunmi.assistant.mine.shop.CreateShopNewActivity_;
 import com.sunmi.assistant.ui.activity.merchant.AuthDialog;
 
 import org.androidannotations.annotations.AfterViews;
@@ -31,6 +32,8 @@ import java.util.ArrayList;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.AuthStoreInfo;
+import sunmi.common.utils.CommonHelper;
+import sunmi.common.utils.RegexUtils;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.dialog.CommonDialog;
 
@@ -92,6 +95,10 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
                     shortTip(R.string.str_please_input_mobile);
                     return;
                 }
+                if (!RegexUtils.isCorrectAccount(mobile)) {
+                    shortTip(getString(R.string.str_invalid_phone));
+                    return;
+                }
                 startDownTimer();
                 mPresenter.sendMobileCode(mobile);
                 break;
@@ -151,12 +158,21 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
     }
 
     private void gotoCreateShopActivity() {
-        CreateShopActivity_.intent(context)
-                .companyId(companyId)
-                .companyName(companyName)
-                .saasExist(saasExist)
-                .isLoginSuccessSwitchCompany(isLoginSuccessSwitchCompany)
-                .startForResult(REQUEST_CODE_SHOP);
+        if (CommonHelper.isGooglePlay()) {
+            CreateShopActivity_.intent(context)
+                    .companyId(companyId)
+                    .companyName(companyName)
+                    .saasExist(saasExist)
+                    .isLoginSuccessSwitchCompany(isLoginSuccessSwitchCompany)
+                    .startForResult(REQUEST_CODE_SHOP);
+        } else {
+            CreateShopNewActivity_.intent(context)
+                    .companyId(companyId)
+                    .companyName(companyName)
+                    .saasExist(saasExist)
+                    .isLoginSuccessSwitchCompany(isLoginSuccessSwitchCompany)
+                    .startForResult(REQUEST_CODE_SHOP);
+        }
     }
 
     private void startDownTimer() {
@@ -199,7 +215,7 @@ public class PlatformMobileActivity extends BaseMvpActivity<PlatformMobilePresen
         @Override
         public void onTick(long l) {
             tvGetCode.setClickable(false);//防止计时过程中重复点击
-            tvGetCode.setTextColor(getResources().getColor(R.color.common_orange_alpha));
+            tvGetCode.setTextColor(getResources().getColor(R.color.common_orange_60a));
             tvGetCode.setText(String.format(getString(R.string.str_count_down_second), l / 1000));
         }
 

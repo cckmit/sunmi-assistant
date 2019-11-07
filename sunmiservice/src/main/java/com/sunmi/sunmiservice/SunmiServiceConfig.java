@@ -17,6 +17,15 @@ public class SunmiServiceConfig extends BaseConfig {
     public static String WECHAT_APP_ID = "wxd1d7c6ec2279cfdc";
     public static String WECHAT_SECRET = "cd5ffb1b5b5fbc24b0816514c9baae13";
 
+    //微信小程序相关
+    public static String WECHART_USER_NAME = "gh_933e62947669";
+    public static String WECHAT_PATH = "pages/index/index?from=app";
+    public static int WECHAT_MINI_PROGRAM_TYPE;
+
+    //微众银行
+    public static String WE_BANK_HOST = "";
+
+
     //umeng id
     public static String UMENG_ID = "5c25e82df1f556993d00008c";
 
@@ -41,6 +50,8 @@ public class SunmiServiceConfig extends BaseConfig {
         SUNMI_MALL_HOST = "https://test.h5.mall.sunmi.com/";
         FUMINBAO_APP_ID = "20190121639982";
         FUMINBAO_SECRET = "cce3387477aaac220b589c5d8c0b5f9d";
+        WECHAT_MINI_PROGRAM_TYPE = 1;
+        WE_BANK_HOST = "https://test.engine.sunmi.com/third-party/we-bank";
     }
 
     @Override
@@ -49,6 +60,8 @@ public class SunmiServiceConfig extends BaseConfig {
         SUNMI_MALL_HOST = "https://h5-mall.test.sunmi.com/";
         FUMINBAO_APP_ID = "20190121639982";
         FUMINBAO_SECRET = "cce3387477aaac220b589c5d8c0b5f9d";
+        WECHAT_MINI_PROGRAM_TYPE = 1;
+        WE_BANK_HOST = "https://test.engine.sunmi.com/third-party/we-bank";
     }
 
     @Override
@@ -57,6 +70,8 @@ public class SunmiServiceConfig extends BaseConfig {
         SUNMI_MALL_HOST = "https://h5.mall.sunmi.com/";
         FUMINBAO_APP_ID = "20190121639982";
         FUMINBAO_SECRET = "cce3387477aaac220b589c5d8c0b5f9d";
+        WECHAT_MINI_PROGRAM_TYPE = 0;
+        WE_BANK_HOST = "https://engine.sunmi.com/third-party/we-bank";
     }
 
     @Override
@@ -65,6 +80,8 @@ public class SunmiServiceConfig extends BaseConfig {
         SUNMI_MALL_HOST = "https://h5-mall.uat.sunmi.com/";
         FUMINBAO_APP_ID = "20190121639982";
         FUMINBAO_SECRET = "cce3387477aaac220b589c5d8c0b5f9d";
+        WECHAT_MINI_PROGRAM_TYPE = 2;
+        WE_BANK_HOST = "https://uat.engine.sunmi.com/third-party/we-bank";
     }
 
 }

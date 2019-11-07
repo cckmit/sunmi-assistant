@@ -6,23 +6,23 @@ import android.content.DialogInterface;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.commonlibrary.R;
+
+import sunmi.common.utils.CommonHelper;
+import sunmi.common.view.ClearableEditText;
 
 /**
  * Description:
  * Created by bruce on 2019/3/29.
  */
 public class InputDialog extends Dialog {
-    EditText etInput;
 
     private InputDialog(Context context, int theme) {
         super(context, theme);
@@ -48,8 +48,7 @@ public class InputDialog extends Dialog {
         private DialogInterface.OnClickListener cancelButtonClickListener;
         private ConfirmClickListener confirmClickListener;
         private TextChangeListener watcher;
-        private boolean isSetEdittextHeight;
-        private int edittextHeight, topMargin, bottomMargin, leftMargin, rightMargin;
+        private int etHeight;
 
         public Builder(Context context) {
             this.context = context;
@@ -182,19 +181,18 @@ public class InputDialog extends Dialog {
             return this;
         }
 
-        public Builder setEditTextHeight(boolean isSetEdittextHeight, int edittextHeight,
-                                         int topMargin, int bottomMargin, int leftMargin, int rightMargin) {
-            this.isSetEdittextHeight = isSetEdittextHeight;
-            this.edittextHeight = edittextHeight;
-            this.topMargin = topMargin;
-            this.bottomMargin = bottomMargin;
-            this.leftMargin = leftMargin;
-            this.rightMargin = rightMargin;
+        public Builder setEditTextHeight(int etHeight) {
+            this.etHeight = etHeight;
             return this;
         }
 
         public Builder setHint(String hint) {
             this.hint = hint;
+            return this;
+        }
+
+        public Builder setHint(int hint) {
+            this.hint = (String) context.getText(hint);
             return this;
         }
 
@@ -218,19 +216,16 @@ public class InputDialog extends Dialog {
                 tvTitle.setText(title);
             }
 
-            final EditText etInput = layout.findViewById(R.id.et_input);
-            //设置高度
-            if (isSetEdittextHeight) {
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, edittextHeight);
-                params.leftMargin = leftMargin;
-                params.rightMargin = rightMargin;
-                params.topMargin = topMargin;
-                params.bottomMargin = bottomMargin;
+            final ClearableEditText etInput = layout.findViewById(R.id.et_input);
+            CommonHelper.setSelectionEnd(etInput);
+            //动态设置输入框高度
+            if (etHeight > 0) {
+                ViewGroup.LayoutParams params = etInput.getLayoutParams();
+                params.height = etHeight;
                 etInput.setLayoutParams(params);
-                etInput.setGravity(Gravity.TOP | Gravity.START);
                 etInput.setSingleLine(false);
-                etInput.setPadding(20, 20, 20, 20);
             }
+
             if (!TextUtils.isEmpty(hint)) {
                 etInput.setHint(hint);
             }

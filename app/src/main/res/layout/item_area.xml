@@ -7,11 +7,11 @@
         android:id="@+id/tv_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_25"
+        android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_6"
         android:layout_marginEnd="@dimen/dp_20"
         android:maxLines="1"
-        android:textColor="@color/colorText"
+        android:textColor="@color/text_main"
         android:textSize="@dimen/sp_14" />
 
     <TextView
@@ -19,18 +19,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_item_name"
-        android:layout_marginStart="@dimen/dp_25"
+        android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_2"
         android:layout_marginEnd="@dimen/dp_20"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/colorText_60"
+        android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_12" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/colorText_5" />
+        android:background="@color/bg_common" />
 
 </RelativeLayout>

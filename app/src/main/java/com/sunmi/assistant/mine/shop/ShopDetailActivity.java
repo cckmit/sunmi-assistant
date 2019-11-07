@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.utils.CommonUtils;
@@ -18,7 +19,6 @@ import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.model.ShopInfo;
-import sunmi.common.model.ShopInfoResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.StatusBarUtils;
@@ -28,6 +28,7 @@ import sunmi.common.view.TitleBarView;
 
 import static com.sunmi.assistant.mine.shop.ShopDetailGroupActivity.INTENT_EXTRA_SHOP_NAME;
 import static sunmi.common.utils.CommonHelper.floatTrans;
+import static sunmi.common.utils.CommonHelper.isGooglePlay;
 
 /**
  * 我的店铺详情
@@ -72,8 +73,8 @@ public class ShopDetailActivity extends BaseActivity {
     SettingItemLayout silShopArea;
 
     @Extra
-    int shopId;
-    private ShopInfo mInfo;
+    ShopInfo info;
+
     /**
      * 是否更新了店铺信息
      */
@@ -83,8 +84,15 @@ public class ShopDetailActivity extends BaseActivity {
     protected void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
+        if (!isGooglePlay()) {
+            silShopCategory.setVisibility(View.VISIBLE);
+            silShopRegion.setVisibility(View.VISIBLE);
+            silShopArea.setVisibility(View.VISIBLE);
+            silShopMobile.setVisibility(View.VISIBLE);
+        }
         setSingleLine();
-        getShopInfo(shopId);
+        setupItems();
+        getShopInfo(info.getShopId());
     }
 
     private void setSingleLine() {
@@ -102,11 +110,23 @@ public class ShopDetailActivity extends BaseActivity {
         silShopMobile.getRightText().setEllipsize(TextUtils.TruncateAt.END);
     }
 
+    private void setupItems() {
+        silShopName.setRightText(info.getShopName());
+        silShopCategory.setRightText(info.getTypeName());
+        silShopRegion.setRightText(info.getRegion());
+        silShopAddress.setRightText(info.getAddress());
+        silShopContact.setRightText(info.getContactPerson());
+        silShopMobile.setRightText(info.getContactTel());
+        if (info.getBusinessArea() > 0) {
+            silShopArea.setRightText(floatTrans(info.getBusinessArea()) + "㎡");
+        }
+    }
+
     @Override
     public void onBackPressed() {
         if (isUpdateShopInfo) {
             Intent intent = getIntent();
-            intent.putExtra(INTENT_EXTRA_SHOP_NAME, mInfo.getShopName());
+            intent.putExtra(INTENT_EXTRA_SHOP_NAME, info.getShopName());
             setResult(RESULT_OK, intent);
         }
         super.onBackPressed();
@@ -114,28 +134,20 @@ public class ShopDetailActivity extends BaseActivity {
 
     private void getShopInfo(int shopId) {
         showLoadingDialog();
-        SunmiStoreApi.getInstance().getShopInfo(shopId, new RetrofitCallback<ShopInfoResp>() {
+        SunmiStoreApi.getInstance().getShopInfo(shopId, new RetrofitCallback<ShopInfo>() {
             @Override
-            public void onSuccess(int code, String msg, ShopInfoResp data) {
+            public void onSuccess(int code, String msg, ShopInfo data) {
                 hideLoadingDialog();
-                mInfo = new ShopInfo(data);
-                silShopName.setRightText(mInfo.getShopName());
-                silShopCategory.setRightText(mInfo.getTypeName());
-                silShopRegion.setRightText(mInfo.getRegionName());
-                silShopAddress.setRightText(mInfo.getAddress());
-                silShopContact.setRightText(mInfo.getContactPerson());
-                silShopMobile.setRightText(mInfo.getContactTel());
-                if (mInfo.getBusinessArea() > 0) {
-                    silShopArea.setRightText(floatTrans(mInfo.getBusinessArea()) + "㎡");
-                }
-                LogCat.d(TAG, "Shop info:" + mInfo);
+                info = data;
+                setupItems();
+                LogCat.d(TAG, "Shop info:" + info);
             }
 
             @Override
-            public void onFail(int code, String msg, ShopInfoResp data) {
+            public void onFail(int code, String msg, ShopInfo data) {
                 hideLoadingDialog();
                 LogCat.e(TAG, "Get shop info Failed. " + msg);
-                shortTip(R.string.toast_network_Exception);
+                shortTip(R.string.toast_network_error);
             }
         });
     }
@@ -144,48 +156,48 @@ public class ShopDetailActivity extends BaseActivity {
     public void toModifyName() {
         CommonUtils.trackCommonEvent(context, "defaultStoreName",
                 "主页_我的_我的店铺_默认店铺_门店名称", Constants.EVENT_MY_INFO);
-        ShopNameActivity_.intent(this).mInfo(mInfo).startForResult(REQUEST_CODE_NAME);
+        ShopNameActivity_.intent(this).info(info).startForResult(REQUEST_CODE_NAME);
     }
 
     @Click(R.id.sil_shop_category)
     public void toModifyCategory() {
         CommonUtils.trackCommonEvent(context, "defaultStoreType",
                 "主页_我的_我的店铺_默认店铺_经营品类", Constants.EVENT_MY_INFO);
-        ShopCategoryActivity_.intent(this).mInfo(mInfo).startForResult(REQUEST_CODE_CATEGORY);
+        ShopCategoryActivity_.intent(this).info(info).startForResult(REQUEST_CODE_CATEGORY);
     }
 
     @Click(R.id.sil_shop_region)
     public void toModifyRegion() {
         CommonUtils.trackCommonEvent(context, "defaultStoreAddress",
                 "主页_我的_我的店铺_默认店铺_门店地址", Constants.EVENT_MY_INFO);
-//        ShopEditAddressActivity_.intent(this).mInfo(mInfo).startForResult(REQUEST_CODE_REGION);
-        ShopRegionActivity_.intent(this).mInfo(mInfo).startForResult(REQUEST_CODE_REGION);
+        ShopEditAddressActivity_.intent(this).info(info).startForResult(REQUEST_CODE_REGION);
+//        ShopRegionActivity_.intent(this).info(info).startForResult(REQUEST_CODE_REGION);
     }
 
     @Click(R.id.sil_shop_address)
     public void toModifyAddress() {
         CommonUtils.trackCommonEvent(context, "defaultStoreAddressDetail",
                 "主页_我的_我的店铺_默认店铺_详细地址", Constants.EVENT_MY_INFO);
-        ShopAddressActivity_.intent(this).mInfo(mInfo).startForResult(REQUEST_CODE_ADDRESS);
+        ShopAddressActivity_.intent(this).info(info).startForResult(REQUEST_CODE_ADDRESS);
     }
 
     @Click(R.id.sil_shop_contact)
     public void toModifyContact() {
-        ShopContactsAreaActivity_.intent(this).mInfo(mInfo)
+        ShopContactsAreaActivity_.intent(this).info(info)
                 .type(TYPE_CONTACT)
                 .startForResult(REQUEST_CODE_CONTACT);
     }
 
     @Click(R.id.sil_shop_mobile)
     public void toModifyContactTel() {
-        ShopContactsAreaActivity_.intent(this).mInfo(mInfo)
+        ShopContactsAreaActivity_.intent(this).info(info)
                 .type(TYPE_CONTACT_TEL)
                 .startForResult(REQUEST_CODE_CONTACT_TEL);
     }
 
     @Click(R.id.sil_shop_area)
     public void toModifyArea() {
-        ShopContactsAreaActivity_.intent(this).mInfo(mInfo)
+        ShopContactsAreaActivity_.intent(this).info(info)
                 .type(TYPE_AREA)
                 .startForResult(REQUEST_CODE_AREA);
     }
@@ -194,8 +206,8 @@ public class ShopDetailActivity extends BaseActivity {
     public void onNameResult(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             isUpdateShopInfo = true;
-            mInfo.setShopName(data.getStringExtra(INTENT_EXTRA_NAME));
-            silShopName.setRightText(mInfo.getShopName());
+            info.setShopName(data.getStringExtra(INTENT_EXTRA_NAME));
+            silShopName.setRightText(info.getShopName());
         }
     }
 
@@ -203,7 +215,7 @@ public class ShopDetailActivity extends BaseActivity {
     public void onCategoryResult(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             isUpdateShopInfo = true;
-            getShopInfo(shopId);
+            getShopInfo(info.getShopId());
         }
     }
 
@@ -211,7 +223,7 @@ public class ShopDetailActivity extends BaseActivity {
     public void onRegionResult(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             isUpdateShopInfo = true;
-            getShopInfo(shopId);
+            getShopInfo(info.getShopId());
         }
     }
 
@@ -219,8 +231,8 @@ public class ShopDetailActivity extends BaseActivity {
     public void onAddressResult(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             isUpdateShopInfo = true;
-            mInfo.setAddress(data.getStringExtra(INTENT_EXTRA_ADDRESS));
-            silShopAddress.setRightText(mInfo.getAddress());
+            info.setAddress(data.getStringExtra(INTENT_EXTRA_ADDRESS));
+            silShopAddress.setRightText(info.getAddress());
         }
     }
 
@@ -228,8 +240,8 @@ public class ShopDetailActivity extends BaseActivity {
     public void onContactResult(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             isUpdateShopInfo = true;
-            mInfo.setContactPerson(data.getStringExtra(INTENT_EXTRA_CONTACT));
-            silShopContact.setRightText(mInfo.getContactPerson());
+            info.setContactPerson(data.getStringExtra(INTENT_EXTRA_CONTACT));
+            silShopContact.setRightText(info.getContactPerson());
         }
     }
 
@@ -237,8 +249,8 @@ public class ShopDetailActivity extends BaseActivity {
     public void onContactTelResult(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             isUpdateShopInfo = true;
-            mInfo.setContactTel(data.getStringExtra(INTENT_EXTRA_CONTACT_TEL));
-            silShopMobile.setRightText(mInfo.getContactTel());
+            info.setContactTel(data.getStringExtra(INTENT_EXTRA_CONTACT_TEL));
+            silShopMobile.setRightText(info.getContactTel());
         }
     }
 
@@ -246,8 +258,8 @@ public class ShopDetailActivity extends BaseActivity {
     public void onAreaResult(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             isUpdateShopInfo = true;
-            mInfo.setBusinessArea(Float.parseFloat(data.getStringExtra(INTENT_EXTRA_AREA)));
-            silShopArea.setRightText(floatTrans(mInfo.getBusinessArea()) + "㎡");
+            info.setBusinessArea(Float.parseFloat(data.getStringExtra(INTENT_EXTRA_AREA)));
+            silShopArea.setRightText(floatTrans(info.getBusinessArea()) + "㎡");
         }
     }
 
@@ -255,12 +267,12 @@ public class ShopDetailActivity extends BaseActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        mInfo = savedInstanceState.getParcelable(BUNDLE_STATE_SHOP);
+        info = savedInstanceState.getParcelable(BUNDLE_STATE_SHOP);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(BUNDLE_STATE_SHOP, mInfo);
+        outState.putParcelable(BUNDLE_STATE_SHOP, info);
     }
 }

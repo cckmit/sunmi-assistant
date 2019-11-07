@@ -15,23 +15,23 @@
         android:id="@+id/tv_dashboard_marker_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/dashboard_chart_rate"
-        android:textColor="@color/color_777E8C"
-        android:textSize="8sp" />
+        android:text="@string/dashboard_card_tab_rate"
+        android:textColor="@color/text_caption"
+        android:textSize="@dimen/sp_10" />
 
     <TextView
         android:id="@+id/tv_dashboard_marker_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/color_303540"
-        android:textSize="14sp"
+        android:textColor="@color/text_main"
+        android:textSize="@dimen/sp_14"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tv_dashboard_marker_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/color_777E8C"
-        android:textSize="8sp" />
+        android:textColor="@color/text_caption"
+        android:textSize="@dimen/sp_10" />
 
 </LinearLayout>

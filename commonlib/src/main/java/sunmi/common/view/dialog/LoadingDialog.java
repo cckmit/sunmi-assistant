@@ -18,12 +18,7 @@ public class LoadingDialog extends Dialog {
     private int layoutId;
 
     public LoadingDialog(Context context) {
-        super(context, R.style.Son_dialog);
-    }
-
-    public LoadingDialog(Context context, int layoutResId) {
-        super(context, R.style.Son_dialog);
-        this.layoutId = layoutResId;
+        super(context, R.style.LoadingDialog);
     }
 
     @Override

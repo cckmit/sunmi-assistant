@@ -88,7 +88,6 @@ public class WebViewSunmiMallActivity extends BaseActivity
 
         JSCall jsCall = new JSCall(this, webView);
         webView.addJavascriptInterface(jsCall, SsConstants.JS_INTERFACE_NAME);
-        //webView.setWebViewClient(new WebViewClient());
         webView.setWebChromeClient(new H5FaceWebChromeClient(this, this));
         webView.setWebViewClient(new SMWebViewClient(this) {
             @Override
@@ -113,7 +112,8 @@ public class WebViewSunmiMallActivity extends BaseActivity
             }
 
             @Override
-            public boolean shouldOverrideUrlLoading(final WebView view, String url) {
+            public boolean shouldOverrideUrlLoading(final WebView view, WebResourceRequest request) {
+                String url = request.getUrl().toString();
                 //微信支付
                 if (url.startsWith("weixin://wap/pay?")) {
                     try {
@@ -159,7 +159,6 @@ public class WebViewSunmiMallActivity extends BaseActivity
                         }
                     }
                 });
-
                 if (!isIntercepted) {
                     if (!(url.startsWith("http") || url.startsWith("https"))) {
                         return true;

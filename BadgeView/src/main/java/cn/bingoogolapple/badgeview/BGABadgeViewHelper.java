@@ -134,7 +134,7 @@ public class BGABadgeViewHelper {
     private void initDefaultAttrs(Context context, BadgeGravity defaultBadgeGravity) {
         mBadgeNumberRect = new Rect();
         mBadgeRectF = new RectF();
-        mBadgeBgColor = ContextCompat.getColor(context, R.color.color_FF3838);
+        mBadgeBgColor = ContextCompat.getColor(context, R.color.bg_badge);
         mBadgeTextColor = Color.WHITE;
         mBadgeTextSize = BGABadgeViewUtil.sp2px(context, 10);
 

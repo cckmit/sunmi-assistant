@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;
@@ -22,15 +21,12 @@ import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.base.recycle.BaseArrayAdapter;
-import sunmi.common.base.recycle.BaseRecyclerAdapter;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
-import sunmi.common.base.recycle.listener.OnItemClickListener;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -63,12 +59,7 @@ public class FaceGroupListActivity extends BaseActivity {
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        mTitleBar.getRightText().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createGroup();
-            }
-        });
+        mTitleBar.getRightText().setOnClickListener(v -> createGroup());
         initRecyclerView();
         getGroup();
     }
@@ -78,12 +69,9 @@ public class FaceGroupListActivity extends BaseActivity {
         mAdapter = new BaseArrayAdapter<>();
         FaceTitleType titleType = new FaceTitleType();
         FaceGroupType groupType = new FaceGroupType();
-        groupType.setOnItemClickListener(new OnItemClickListener<FaceGroup>() {
-            @Override
-            public void onClick(BaseRecyclerAdapter<FaceGroup> adapter, BaseViewHolder<FaceGroup> holder, FaceGroup model, int position) {
-                LogCat.d(TAG, "FaceGroup: " + model);
-                openGroupDetail(model);
-            }
+        groupType.setOnItemClickListener((holder, model, position) -> {
+            LogCat.d(TAG, "FaceGroup: " + model);
+            openGroupDetail(model);
         });
         mAdapter.register(String.class, titleType);
         mAdapter.register(FaceGroup.class, groupType);
@@ -92,36 +80,32 @@ public class FaceGroupListActivity extends BaseActivity {
 
     private void getGroup() {
         showLoadingDialog();
-        IpcCloudApi.getFaceGroup(SpUtils.getCompanyId(), mShopId, new RetrofitCallback<FaceGroupListResp>() {
-            @Override
-            public void onSuccess(int code, String msg, FaceGroupListResp data) {
-                hideLoadingDialog();
-                List<FaceGroup> list = data.getGroupList();
-                Collections.sort(list, new Comparator<FaceGroup>() {
+        IpcCloudApi.getInstance().getFaceGroup(SpUtils.getCompanyId(), mShopId,
+                new RetrofitCallback<FaceGroupListResp>() {
                     @Override
-                    public int compare(FaceGroup o1, FaceGroup o2) {
-                        return o1.getType() - o2.getType();
+                    public void onSuccess(int code, String msg, FaceGroupListResp data) {
+                        hideLoadingDialog();
+                        List<FaceGroup> list = data.getGroupList();
+                        Collections.sort(list, (o1, o2) -> o1.getType() - o2.getType());
+                        mFaceGroup.clear();
+                        mOccupiedCapacity = 0;
+                        mFaceGroup.addAll(list);
+                        for (FaceGroup group : list) {
+                            mOccupiedCapacity += group.getCapacity();
+                        }
+                        mFaceGroup.add(0, context.getString(R.string.ipc_face_group_default));
+                        if (mFaceGroup.size() > FaceGroup.FACE_GROUP_TYPE_CUSTOM) {
+                            mFaceGroup.add(FaceGroup.FACE_GROUP_TYPE_CUSTOM, context.getString(R.string.ipc_face_group_custom));
+                        }
+                        mAdapter.setData(mFaceGroup);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg, FaceGroupListResp data) {
+                        hideLoadingDialog();
+                        LogCat.e(TAG, "Get face group Failed. " + msg);
                     }
                 });
-                mFaceGroup.clear();
-                mOccupiedCapacity = 0;
-                mFaceGroup.addAll(list);
-                for (FaceGroup group : list) {
-                    mOccupiedCapacity += group.getCapacity();
-                }
-                mFaceGroup.add(0, context.getString(R.string.ipc_face_group_default));
-                if (mFaceGroup.size() > FaceGroup.FACE_GROUP_TYPE_CUSTOM) {
-                    mFaceGroup.add(FaceGroup.FACE_GROUP_TYPE_CUSTOM, context.getString(R.string.ipc_face_group_custom));
-                }
-                mAdapter.setData(mFaceGroup);
-            }
-
-            @Override
-            public void onFail(int code, String msg, FaceGroupListResp data) {
-                hideLoadingDialog();
-                LogCat.e(TAG, "Get face group Failed. " + msg);
-            }
-        });
     }
 
     @Click(resName = "tv_face_group_create")
