@@ -61,7 +61,7 @@ pipeline{
               cd $WORKSPACE
               version=`$ANDROID_HOME/build-tools/28.0.3/aapt dump badging $apk_path$apk | grep versionName | awk '{print $4}' | sed s/versionName=//g | sed s/\\'//g`
               name=`$ANDROID_HOME/build-tools/28.0.3/aapt dump badging $apk_path$apk | grep application: | awk '{print $2}' | sed s/label=//g | sed s/\\'//g`
-              icon=`$ANDROID_HOME/build-tools/28.0.3/aapt dump badging $apk_path$apk | grep application: | awk '{print $3}' | sed s/icon=//g | sed s/\\'//g`
+              icon=`$ANDROID_HOME/build-tools/28.0.3/aapt dump badging $apk_path$apk | grep application: | awk '{print $4}' | sed s/icon=//g | sed s/\\'//g`
               echo name=$name > version.txt
               echo version=$version >> version.txt
               cp version.txt release
