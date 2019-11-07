@@ -1,7 +1,6 @@
 package com.sunmi.sunmiservice.cloud;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -12,7 +11,6 @@ import android.view.View;
 import android.webkit.DownloadListener;
 import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
-import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -21,6 +19,8 @@ import android.webkit.WebView;
 import com.alipay.sdk.app.H5PayCallback;
 import com.alipay.sdk.app.PayTask;
 import com.alipay.sdk.util.H5PayResultModel;
+import com.sunmi.sunmiservice.H5FaceWebChromeClient;
+import com.sunmi.sunmiservice.JSCall;
 import com.sunmi.sunmiservice.R;
 import com.sunmi.sunmiservice.SsConstants;
 import com.xiaojinzi.component.anno.RouterAnno;
@@ -30,6 +30,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,9 +52,9 @@ import sunmi.common.view.webview.SMWebViewClient;
  * @author linyuanpeng on 2019-10-25.
  */
 @EActivity(resName = "activity_webview_cloud")
-public class WebViewCloudServiceActivity extends BaseActivity {
+public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceWebChromeClient.Callback {
 
-    private final int timeout = 10_000;
+    private final int timeout = 15_000;
     @ViewById(resName = "webView")
     SMWebView webView;
     @ViewById(resName = "layout_network_error")
@@ -63,6 +64,7 @@ public class WebViewCloudServiceActivity extends BaseActivity {
     @Extra
     String deviceSn;
     private boolean hasSendDeviceInfo = false;
+    private boolean beginLoading = false;
     private CountDownTimer countDownTimer;
 
     /**
@@ -83,27 +85,9 @@ public class WebViewCloudServiceActivity extends BaseActivity {
     @AfterViews
     protected void init() {
         StatusBarUtils.setStatusBarFullTransparent(this);//状态栏
-        ServiceJSCall jsCall = new ServiceJSCall(this);
-        webView.addJavascriptInterface(jsCall, SsConstants.JS_INTERFACE_NAME);
-        webView.setDownloadListener(new DownloadListener() {
-            @Override
-            public void onDownloadStart(String url, String userAgent, String contentDisposition,
-                                        String mimetype, long contentLength) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startActivity(intent);
-            }
-        });
-        // 设置标题
-        WebChromeClient webChrome = new WebChromeClient() {
-            @Override
-            public void onReceivedTitle(WebView view, String title) {
-                super.onReceivedTitle(view, title);
-            }
-
-        };
-        // 设置setWebChromeClient对象
-        webView.setWebChromeClient(webChrome);
-        loadWebView(mUrl);
+        initWebView();
+        webView.loadUrl(mUrl);
+        startTimer();
     }
 
     private void startTimer() {
@@ -116,7 +100,7 @@ public class WebViewCloudServiceActivity extends BaseActivity {
 
                 @Override
                 public void onFinish() {
-                    networkError.setVisibility(View.VISIBLE);
+                    loadError();
                 }
             };
         }
@@ -136,10 +120,8 @@ public class WebViewCloudServiceActivity extends BaseActivity {
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    private void loadWebView(String url) {
+    private void initWebView() {
         webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-        webView.loadUrl(url);
-        // 可以运行JavaScript
         WebSettings webSetting = webView.getSettings();
         webSetting.setSupportZoom(false);
         webSetting.setBuiltInZoomControls(true);
@@ -153,6 +135,18 @@ public class WebViewCloudServiceActivity extends BaseActivity {
         webView.getSettings().setUseWideViewPort(true);//将图片调整到适合webview的大小--关键点
         webView.getSettings().setLoadWithOverviewMode(true);
         webSetting.setJavaScriptCanOpenWindowsAutomatically(true);
+        // 可以运行JavaScript
+        JSCall jsCall = new JSCall(this, webView);
+        webView.addJavascriptInterface(jsCall, SsConstants.JS_INTERFACE_NAME);
+        webView.setDownloadListener(new DownloadListener() {
+            @Override
+            public void onDownloadStart(String url, String userAgent, String contentDisposition,
+                                        String mimetype, long contentLength) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(intent);
+            }
+        });
+        webView.setWebChromeClient(new H5FaceWebChromeClient(this, this));
         // 不用启动客户端的浏览器来加载未加载出来的数据
         webView.setWebViewClient(new SMWebViewClient(this) {
             @Override
@@ -215,9 +209,6 @@ public class WebViewCloudServiceActivity extends BaseActivity {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
-                networkError.setVisibility(View.GONE);
-                showLoadingDialog();
-                startTimer();
             }
 
             @Override
@@ -248,9 +239,8 @@ public class WebViewCloudServiceActivity extends BaseActivity {
 
             @Override
             protected void receiverError(WebView view, WebResourceRequest request, WebResourceError error) {
-                hideLoadingDialog();
-                closeTimer();
-                networkError.setVisibility(View.VISIBLE);
+                // loadError();
+                LogCat.e(TAG, "receiverError 111111" + " networkError");
             }
 
             @Override
@@ -259,17 +249,45 @@ public class WebViewCloudServiceActivity extends BaseActivity {
                 hideLoadingDialog();
                 super.onReceivedSslError(view, handler, error);
             }
+
         });
     }
 
     @Click(resName = "btn_refresh")
     void refreshClick() {
-        loadWebView(mUrl);
+        networkError.setVisibility(View.GONE);
+        webView.setVisibility(View.VISIBLE);
+        initWebView();
+        webView.loadUrl(mUrl);
+        startTimer();
     }
 
-    @TargetApi(23)
-    private void showTag(WebResourceError error) {
-        LogCat.e(TAG, "错误码：" + error.getErrorCode() + " 错误描述" + error.getDescription());
+    @UiThread
+    protected void loadError() {
+        closeTimer();
+        hideLoadingDialog();
+        webView.setVisibility(View.GONE);
+        networkError.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onProgressChanged(int progress) {
+        if (progress < 100 && !beginLoading) {
+            showLoadingDialog();
+            closeTimer();
+        } else {
+            hideLoadingDialog();
+        }
+    }
+
+    @Override
+    public void onProgressComplete() {
+
+    }
+
+    @Override
+    public void onReceivedTitle(String title) {
+
     }
 
     @Override

@@ -164,23 +164,20 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     @Extra
     SunmiDevice device;
-
+    //屏幕控件自动隐藏计时器
+    CountDownTimer hideControllerPanelTimer;
     private int screenW; //手机屏幕的宽
     private int playType;
     private boolean isPaused;//回放是否暂停
     private int qualityType = 0;//0-超清，1-高清
-
     private boolean isStartRecord;//是否开始录制
     private boolean isControlPanelShow = true;//是否点击屏幕
-
     private boolean isVideoLess1Minute;//视频片段是否小于一分钟
     private boolean isFirstScroll = true;//是否第一次滑动
-
     //日历
     private Calendar calendar;
     //当前时间 ，三天前秒数
     private long currentDateSeconds, threeDaysBeforeSeconds;
-
     //刻度尺移动定时器
     private ScheduledExecutorService executorService;
     //滑动停止的时间戳
@@ -189,16 +186,11 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private long selectedDate;
     //是否为选择的日期
     private boolean isSelectedDate;
-
     private Handler handler = new Handler();
-
     private IOTCClient iotcClient;
     private H264Decoder videoDecoder = null;
     private AACDecoder audioDecoder = null;
     private VolumeHelper volumeHelper = null;
-
-    //屏幕控件自动隐藏计时器
-    CountDownTimer hideControllerPanelTimer;
     private Drawable drawableLeft, drawableRight;
 
     private List<VideoTimeSlotBean> listAp = new ArrayList<>();
@@ -674,6 +666,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                 }
             }
         } else if (id == CommonNotifications.cloudStorageChange) {
+            list.remove(0);
             mPresenter.getStorageInfo(device.getId());
         }
     }
@@ -1403,11 +1396,11 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     private void initManageList() {
         rvManager.init(0);
-        if (!isSS1()) {
+      /*  if (!isSS1()) {
             list.add(new IpcManageBean(R.mipmap.ipc_manage_face_history,
                     getString(R.string.str_face_history),
                     getString(R.string.str_view_face_history), getString(R.string.str_coming_soon), false));
-        }
+        }*/
         list.add(new IpcManageBean(R.mipmap.ipc_manage_md, getString(R.string.str_motion_detection),
                 getString(R.string.str_md_exception), getString(R.string.str_coming_soon), false));
         adapter = new CommonListAdapter<IpcManageBean>(context,
