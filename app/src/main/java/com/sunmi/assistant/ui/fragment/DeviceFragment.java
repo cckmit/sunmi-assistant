@@ -61,7 +61,7 @@ import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.AdListBean;
 import sunmi.common.model.AdListResp;
-import sunmi.common.model.ShopListResp;
+import sunmi.common.model.ShopInfo;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.sunmicall.ResponseBean;
@@ -96,9 +96,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     RelativeLayout rlShopTitle;
     @ViewById(R.id.tv_shop_title)
     TextView tvShopTitle;
-
-    Banner vpBanner;
-    RelativeLayout rlNoDevice;
+    private Banner vpBanner;
+    private RelativeLayout rlNoDevice;
 
     List<AdListBean> adList = new ArrayList<>();//广告
     List<SunmiDevice> routerList = new ArrayList<>();
@@ -213,7 +212,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     }
 
     @Override
-    public void getShopListSuccess(List<ShopListResp.ShopInfo> shopList) {
+    public void getShopListSuccess(List<ShopInfo> shopList) {
         tvShopTitle.setCompoundDrawablesWithIntrinsicBounds(null, null,
                 ContextCompat.getDrawable(mActivity, R.drawable.ic_arrow_drop_up_white), null);
         popupWindow = new ShopTitlePopupWindow(mActivity, rlShopTitle, shopList, tvShopTitle);

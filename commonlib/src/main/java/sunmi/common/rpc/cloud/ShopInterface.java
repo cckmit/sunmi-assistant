@@ -9,7 +9,7 @@ import sunmi.common.model.CreateShopInfo;
 import sunmi.common.model.PlatformInfo;
 import sunmi.common.model.ShopAuthorizeInfoResp;
 import sunmi.common.model.ShopCategoryResp;
-import sunmi.common.model.ShopInfoResp;
+import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopListResp;
 import sunmi.common.model.ShopRegionResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
@@ -36,7 +36,7 @@ public interface ShopInterface {
      * 根据shopId获取门店信息
      */
     @POST(shopPath + "getInfo")
-    Call<BaseResponse<ShopInfoResp>> getInfo(@Body BaseRequest request);
+    Call<BaseResponse<ShopInfo>> getInfo(@Body BaseRequest request);
 
     //创建门店
     @POST(shopPath + "create")

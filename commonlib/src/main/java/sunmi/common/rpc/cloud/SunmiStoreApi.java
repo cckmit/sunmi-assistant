@@ -25,7 +25,6 @@ import sunmi.common.model.PlatformInfo;
 import sunmi.common.model.ShopAuthorizeInfoResp;
 import sunmi.common.model.ShopCategoryResp;
 import sunmi.common.model.ShopInfo;
-import sunmi.common.model.ShopInfoResp;
 import sunmi.common.model.ShopListResp;
 import sunmi.common.model.ShopRegionResp;
 import sunmi.common.model.SsoTokenResp;
@@ -468,7 +467,7 @@ public class SunmiStoreApi {
         }
     }
 
-    public void getShopInfo(int shopId, RetrofitCallback<ShopInfoResp> callback) {
+    public void getShopInfo(int shopId, RetrofitCallback<ShopInfo> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", SpUtils.getCompanyId())
@@ -493,7 +492,7 @@ public class SunmiStoreApi {
      */
     public void createShop(int companyId, String shopName, int province, int city, int area,
                            String address, int typeOne, int typeTwo,
-                           float businessArea, String person, String tel,
+                           float businessArea, String person, String tel, String lat, String lng,
                            RetrofitCallback<CreateShopInfo> callback) {
         try {
             String params = new JSONObject()
@@ -508,6 +507,8 @@ public class SunmiStoreApi {
                     .put("business_area", businessArea)
                     .put("contact_person", person)
                     .put("contact_tel", tel)
+                    .put("lat", lat)
+                    .put("lng", lng)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
                     .createShop(new BaseRequest(params))
@@ -537,6 +538,8 @@ public class SunmiStoreApi {
                     .put("contact_person", shopInfo.getContactPerson())
                     .put("contact_tel", shopInfo.getContactTel())
                     .put("business_area", shopInfo.getBusinessArea())
+                    .put("lat", shopInfo.getLat())
+                    .put("lng", shopInfo.getLng())
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
                     .editShop(new BaseRequest(params))

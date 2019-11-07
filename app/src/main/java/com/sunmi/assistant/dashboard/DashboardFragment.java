@@ -107,6 +107,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     private int mTopRadiusHeight;
     private int mTopHeaderHeight;
 
+    private boolean mHasInit = false;
     private boolean mHasData = false;
     private boolean mIsStickyPeriodTop = false;
     private boolean mIsStickyShopMenu = false;
@@ -299,6 +300,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Override
     public void setSource(int source) {
+        mHasInit = true;
         mHasData = Utils.hasAuth(source) || Utils.hasFs(source);
         mNoFsTip.setVisibility(!Utils.hasFs(source) && Utils.hasCustomer(source) ?
                 View.VISIBLE : View.INVISIBLE);
@@ -362,7 +364,11 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Override
     public void loadDataFailed() {
-        showError();
+        if (mHasInit) {
+            shortTip(R.string.toast_network_error);
+        } else {
+            showError();
+        }
     }
 
     private void updateStickyPeriodTab(Activity activity, boolean isShow, boolean animated) {
