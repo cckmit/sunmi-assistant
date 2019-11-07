@@ -13,8 +13,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.CommonNotifications;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
+import sunmi.common.view.activity.ProtocolActivity;
+import sunmi.common.view.activity.ProtocolActivity_;
 import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.webview.SMWebView;
 
@@ -80,8 +84,11 @@ public class JSCall {
         try {
             JSONObject jsonObject = new JSONObject(arg);
             LogCat.e("JSCall", "showLoading, jsonObject = " + jsonObject);
-            if (jsonObject.has("content"))
+            if (jsonObject.has("content")) {
                 context.showLoadingDialog(jsonObject.getString("content"));
+            } else {
+                context.showLoadingDialog();
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -161,6 +168,19 @@ public class JSCall {
             e.printStackTrace();
         }
         return "";
+    }
+
+    @JavascriptInterface
+    public void lastPageBack() {
+        context.finish();
+        BaseNotification.newInstance().postNotificationName(CommonNotifications.cloudStorageChange);
+    }
+
+    @JavascriptInterface
+    public void showCloudServiceAgreement() {
+        ProtocolActivity_.intent(context)
+                .protocolType(ProtocolActivity.USER_PROTOCOL).start();
+        context.overridePendingTransition(R.anim.activity_open_down_up, 0);
     }
 
     private void launchMiniProgram(String userName, String path, String miniProgramType) {
