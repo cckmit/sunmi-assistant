@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
-        app:titleText="@string/company_shop_details"
+        app:titleText="@string/company_shop_mag"
         app:titleTextColor="@color/text_main" />
 
     <android.support.v7.widget.RecyclerView
@@ -52,7 +52,7 @@
             android:drawableStart="@mipmap/ic_round_add"
             android:drawablePadding="@dimen/dp_4"
             android:gravity="center"
-            android:text="@string/btn_add_store"
+            android:text="@string/shop_list_new_create"
             android:textColor="@color/text_caption"
             android:textSize="@dimen/sp_16" />
 

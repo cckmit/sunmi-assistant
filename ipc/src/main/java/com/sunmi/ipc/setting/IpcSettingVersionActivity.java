@@ -148,6 +148,10 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
      */
     @UiThread
     void initSetButtonStatus() {
+        tvIpcStatus.setVisibility(View.VISIBLE);
+        mProgress.setVisibility(View.GONE);
+        tvIpcUpgradeTip.setVisibility(View.GONE);
+        ipcSettingUpgradeGroup.setVisibility(View.GONE);
         if (mResp.getUpgrade_required() == 1) {
             tvIpcStatus.setText(getString(R.string.ipc_setting_version_find_new, mResp.getLatest_bin_version()));
             btnUpgrade.setVisibility(View.VISIBLE);
@@ -181,6 +185,9 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
         tvIpcUpgradeTip.setVisibility(View.VISIBLE);
         ipcSettingUpgradeGroup.setVisibility(View.GONE);
         timeoutMqtt();
+        startTimerCountDown(IPC_DOWNLOAD);
+        startTimerCountDown(IPC_UPGRADE_AI);
+        startTimerCountDown(IPC_RELAUNCH);
         IPCCall.getInstance().ipcUpgrade(this, mDevice.getModel(),
                 mDevice.getDeviceid(), mResp.getUrl(), mResp.getLatest_bin_version());
     }
@@ -206,12 +213,14 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
     @Override
     protected void onResume() {
         super.onResume();
+        LogCat.e(TAG, "1111 onResume");
         //新版本且需要升级
         if (isUpgradeSuccess) {
             upgradeVerSuccessDialog();
         } else {
             if (isQueryStatus() && mResp.getUpgrade_required() == 1 && isMqttConnectionLost) {
                 LogCat.e(TAG, "1111 isMqttConnectionLost onResume");
+                stopTimeoutTimer();
                 isMqttConnectionLost = false;
                 queryIpcUpgradeStatus();
             }
@@ -230,7 +239,9 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
     private void stopTimeoutTimer() {
         hideLoadingDialog();
         stopTimerCountDown(IPC_CONNECT_TIMEOUT);
-        stopTimerCountDown(mUpgradeStatus);
+        stopTimerCountDown(IPC_DOWNLOAD);
+        stopTimerCountDown(IPC_UPGRADE_AI);
+        stopTimerCountDown(IPC_RELAUNCH);
     }
 
     /**
@@ -244,7 +255,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
     @Override
     public int[] getStickNotificationId() {
         return new int[]{OpcodeConstants.ipcQueryUpgradeStatus,
-                CommonNotifications.mqttConnectionLost,
+                CommonNotifications.netDisconnection,
                 IPC_EVENT_OPCODE_STATUS,
                 IPC_EVENT_OPCODE_ONLINE};
     }
@@ -255,10 +266,11 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
      */
     @Override
     public void didReceivedNotification(int id, Object... args) {
-        if (id == CommonNotifications.mqttConnectionLost) {
+        if (id == CommonNotifications.netDisconnection) {
             LogCat.e(TAG, "1111 isMqttConnectionLost didReceivedNotification");
             isMqttConnectionLost = true;
-            stopTimerCountDown(mUpgradeStatus);
+            stopTimeoutTimer();
+            dialogUpgradeTip();
             return;
         }
         if (args == null || isUpgradeFail) {
@@ -352,7 +364,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
         } else if (status == 11) {
             //没有升级状态的
             if (isUpgradeFail) {
-                upgradeVerFailDialog();
+                dialogUpgradeTip();
             } else {
                 initSetButtonStatus();
             }
