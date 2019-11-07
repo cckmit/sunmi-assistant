@@ -26,7 +26,7 @@ pipeline{
                 rm -rf apmanager/build/outputs/*
                 fastlane releaseEnv
                 ''') 
-              stash(includes: 'app/build/outputs/apk/**/app-universal-*.apk', name: 'apk')
+              stash(includes: 'app/build/outputs/apk/**/app-myapp-universal-*.apk', name: 'apk')
             }catch(e){
               def stageName = 'build'
               echo "R ${currentBuild.result} C ${currentBuild.currentResult}"
