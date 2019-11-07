@@ -285,12 +285,12 @@
     <string name="ipc_setting_upgrading">升级中…</string>
     <string name="ipc_setting_new">NEW</string>
     <string name="import_order_dialog_cannot_get_status">无法获取当前设备状态</string>
-    <string name="import_order_dialog_upgrading">设备更新中</string>
+    <string name="import_order_dialog_upgrading">设备升级中</string>
     <string name="import_order_dialog_red_light">红灯闪烁</string>
     <string name="import_order_dialog_relanuch">设备重启中</string>
-    <string name="import_order_dialog_green_light">绿灯闪烁</string>
+    <string name="import_order_dialog_green_light">绿灯闪烁&#160;&#160;&#160;&#160;</string>
     <string name="import_order_dialog_net_exception">设备网络异常</string>
-    <string name="import_order_dialog_green_light_alway_on">绿灯常亮&#160;&#160;&#160;&#160;</string>
+    <string name="import_order_dialog_green_light_alway_on">绿灯常亮</string>
     <string name="import_order_dialog_look_light_status">您可以查看摄像机当前具体的闪灯情况\t\n以判断属于下述哪种状态：</string>
     <string name="ipc_setting_dialog_upgrade_title">下载并安装最新版本</string>
     <string name="ipc_setting_dialog_download_install">下载并安装</string>
