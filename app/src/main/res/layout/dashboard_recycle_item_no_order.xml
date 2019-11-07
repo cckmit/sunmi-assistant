@@ -17,11 +17,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_24"
-            android:textStyle="bold"
             android:layout_marginTop="@dimen/dp_20"
             android:text="@string/dashboard_no_order_title"
             android:textColor="@color/text_main"
             android:textSize="@dimen/sp_20"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -39,14 +39,12 @@
 
         <Button
             android:id="@+id/btn_dashboard_dock"
-            style="?android:attr/borderlessButtonStyle"
+            style="@style/BtnBigOrange"
             android:layout_width="@dimen/dp_96"
             android:layout_height="@dimen/dp_40"
             android:layout_marginStart="@dimen/dp_24"
             android:layout_marginBottom="@dimen/dp_20"
-            android:background="@drawable/dashboard_btn_round_orange"
             android:text="@string/dashboard_no_order_dock"
-            android:textColor="@color/c_white"
             android:textSize="@dimen/sp_14"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
