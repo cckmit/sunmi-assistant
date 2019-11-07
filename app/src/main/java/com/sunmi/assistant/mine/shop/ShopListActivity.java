@@ -22,6 +22,7 @@ import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopListResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -132,22 +133,21 @@ public class ShopListActivity extends BaseActivity {
         });
     }
 
-    private static class ShopListAdapter extends CommonListAdapter<ShopListResp.ShopInfo> {
+    private static class ShopListAdapter extends CommonListAdapter<ShopInfo> {
 
         private ShopListAdapter(Context context) {
             super(context, R.layout.item_mine_store, null);
         }
 
         @Override
-        public void convert(ViewHolder holder, ShopListResp.ShopInfo info) {
+        public void convert(ViewHolder holder, ShopInfo info) {
             SettingItemLayout silCompanyDetail = holder.getView(R.id.tvName);
-            silCompanyDetail.setLeftText(info.getShop_name());
+            silCompanyDetail.setLeftText(info.getShopName());
             holder.itemView.setOnClickListener(v -> {
                 CommonUtils.trackCommonEvent(mContext, "defaultStore",
                         "主页_我的_我的店铺_默认店铺", Constants.EVENT_MY_INFO);
                 ShopDetailGroupActivity_.intent(mContext)
-                        .shopId(info.getShop_id())
-                        .shopName(info.getShop_name())
+                        .info(info)
                         .startForResult(REQUEST_CODE_SHOP);
             });
         }

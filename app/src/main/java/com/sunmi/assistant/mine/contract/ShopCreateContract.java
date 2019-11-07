@@ -31,7 +31,7 @@ public interface ShopCreateContract {
 
         void createShop(int companyId, String shopName, int province, int city, int area,
                         String address, int typeOne, int typeTwo,
-                        float businessArea, String person, String tel);
+                        float businessArea, String person, String tel, String lat, String lng);
 
     }
 }

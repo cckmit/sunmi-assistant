@@ -7,9 +7,10 @@ import android.os.Looper;
 import android.util.SparseArray;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.customer.CustomerFragment;
+import com.sunmi.assistant.dashboard.customer.CustomerFragment_;
 import com.sunmi.assistant.dashboard.overview.OverviewFragment;
 import com.sunmi.assistant.dashboard.overview.OverviewFragment_;
-import sunmi.common.router.model.IpcListResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
 import java.text.SimpleDateFormat;
@@ -22,8 +23,10 @@ import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.CustomerHistoryResp;
 import sunmi.common.model.FilterItem;
 import sunmi.common.model.ShopAuthorizeInfoResp;
+import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopListResp;
 import sunmi.common.notification.BaseNotification;
+import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
@@ -109,6 +112,9 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
         OverviewFragment overviewFragment = new OverviewFragment_();
         pages.add(new PageHost(R.string.dashboard_page_overview, 0, overviewFragment, Constants.PAGE_OVERVIEW));
+
+        CustomerFragment customerFragment = new CustomerFragment_();
+        pages.add(new PageHost(R.string.dashboard_page_customer, 0, customerFragment, Constants.PAGE_CUSTOMER));
         mPageType = Constants.PAGE_OVERVIEW;
 
         return pages;
@@ -163,8 +169,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         this.mLoadAllPage = allPage;
         this.mShowLoading = showLoading;
         if ((loadFlag & Constants.FLAG_CUSTOMER) != 0) {
-            mLoadFlag &= ~Constants.FLAG_CUSTOMER;
-//            loadCustomer();
+            loadCustomer();
         }
         if ((loadFlag & Constants.FLAG_SHOP) != 0) {
             loadShop();
@@ -184,17 +189,17 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                     onFail(code, msg, null);
                     return;
                 }
-                List<ShopListResp.ShopInfo> shops = data.getShop_list();
+                List<ShopInfo> shops = data.getShop_list();
                 List<FilterItem> result = new ArrayList<>(shops.size());
                 boolean isSaasDocked = true;
-                for (ShopListResp.ShopInfo shop : shops) {
-                    if (shop.getShop_id() == mShopId) {
-                        FilterItem item = new FilterItem(shop.getShop_id(), shop.getShop_name());
+                for (ShopInfo shop : shops) {
+                    if (shop.getShopId() == mShopId) {
+                        FilterItem item = new FilterItem(shop.getShopId(), shop.getShopName());
                         item.setChecked(true);
-                        isSaasDocked = shop.getSaas_exist() == 1;
+                        isSaasDocked = shop.getSaasExist() == 1;
                         result.add(0, item);
                     } else {
-                        result.add(new FilterItem(shop.getShop_id(), shop.getShop_name()));
+                        result.add(new FilterItem(shop.getShopId(), shop.getShopName()));
                     }
                 }
                 mLoadFlag &= ~Constants.FLAG_SHOP;
