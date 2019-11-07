@@ -89,8 +89,8 @@ pipeline{
           script{
             def recipient_list = 'lukai@sunmi.com,xiaoxinwu@sunmi.com,yangshijie@sunmi.com,yangjibin@sunmi.com,lvsiwen@sunmi.com,ningrulin@sunmi.com,hanruifeng@sunmi.com,simayujing@sunmi.com,linianhan@sunmi.com,liuxiaoliang@sunmi.com,lixuanzhen@sunmi.com,yangzhen@sunmi.com'
             def changeString = getChangeString()
-            def details = """<p>请从以下URL下载�?"<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>"</p><br/>更新内容�?br/>""" 
-            emailext(attachLog: false, body: details + changeString, mimeType: 'text/html', subject: 'Android Release Build 已加固完�?, to: recipient_list)
+            def details = """<p>请从以下URL下载： "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>"</p><br/>更新内容：<br/>""" 
+            emailext(attachLog: false, body: details + changeString, mimeType: 'text/html', subject: 'Android Release Build 已加固完成', to: recipient_list)
           }
         } 
       }
