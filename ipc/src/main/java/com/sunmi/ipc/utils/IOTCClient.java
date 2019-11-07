@@ -179,9 +179,7 @@ public class IOTCClient {
         startPlay(new P2pCmdCallback() {
             @Override
             public void onResponse(int cmd, IotcCmdResp result) {
-//                if (callback != null) {
-//                    callback.initSuccess();
-//                }
+
             }
 
             @Override
