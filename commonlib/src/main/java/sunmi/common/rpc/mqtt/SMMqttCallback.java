@@ -9,6 +9,7 @@ import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.sunmicall.RequestBean;
 import sunmi.common.rpc.sunmicall.ResponseBean;
@@ -30,6 +31,7 @@ public class SMMqttCallback implements MqttCallbackExtended {
     public void connectionLost(Throwable cause) {
         Log.e(TAG, "mqtt connectionLost");
 //        checkToken();
+        BaseNotification.newInstance().postNotificationName(CommonNotifications.mqttConnectionLost);
     }
 
     @Override

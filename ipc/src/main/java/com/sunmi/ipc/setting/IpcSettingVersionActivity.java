@@ -25,6 +25,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DeviceTypeUtils;
@@ -108,6 +109,8 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
     private boolean isUpgradeProcess;
     //当前设备版本
     private int mCurrentVersion;
+    //mqtt是否连接lost
+    private boolean isMqttConnectionLost;
 
     @AfterViews
     void init() {
@@ -145,6 +148,10 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
      */
     @UiThread
     void initSetButtonStatus() {
+        tvIpcStatus.setVisibility(View.VISIBLE);
+        mProgress.setVisibility(View.GONE);
+        tvIpcUpgradeTip.setVisibility(View.GONE);
+        ipcSettingUpgradeGroup.setVisibility(View.GONE);
         if (mResp.getUpgrade_required() == 1) {
             tvIpcStatus.setText(getString(R.string.ipc_setting_version_find_new, mResp.getLatest_bin_version()));
             btnUpgrade.setVisibility(View.VISIBLE);
@@ -178,6 +185,9 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
         tvIpcUpgradeTip.setVisibility(View.VISIBLE);
         ipcSettingUpgradeGroup.setVisibility(View.GONE);
         timeoutMqtt();
+        startTimerCountDown(IPC_DOWNLOAD);
+        startTimerCountDown(IPC_UPGRADE_AI);
+        startTimerCountDown(IPC_RELAUNCH);
         IPCCall.getInstance().ipcUpgrade(this, mDevice.getModel(),
                 mDevice.getDeviceid(), mResp.getUrl(), mResp.getLatest_bin_version());
     }
@@ -203,10 +213,17 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
     @Override
     protected void onResume() {
         super.onResume();
-        if (isUpgradeFail) {
-            upgradeVerFailDialog();
-        } else if (isUpgradeSuccess) {
+        LogCat.e(TAG, "1111 onResume");
+        //新版本且需要升级
+        if (isUpgradeSuccess) {
             upgradeVerSuccessDialog();
+        } else {
+            if (isQueryStatus() && mResp.getUpgrade_required() == 1 && isMqttConnectionLost) {
+                LogCat.e(TAG, "1111 isMqttConnectionLost onResume");
+                stopTimeoutTimer();
+                isMqttConnectionLost = false;
+                queryIpcUpgradeStatus();
+            }
         }
     }
 
@@ -222,7 +239,9 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
     private void stopTimeoutTimer() {
         hideLoadingDialog();
         stopTimerCountDown(IPC_CONNECT_TIMEOUT);
-        stopTimerCountDown(mUpgradeStatus);
+        stopTimerCountDown(IPC_DOWNLOAD);
+        stopTimerCountDown(IPC_UPGRADE_AI);
+        stopTimerCountDown(IPC_RELAUNCH);
     }
 
     /**
@@ -236,6 +255,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
     @Override
     public int[] getStickNotificationId() {
         return new int[]{OpcodeConstants.ipcQueryUpgradeStatus,
+                CommonNotifications.netDisconnection,
                 IPC_EVENT_OPCODE_STATUS,
                 IPC_EVENT_OPCODE_ONLINE};
     }
@@ -246,6 +266,13 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
      */
     @Override
     public void didReceivedNotification(int id, Object... args) {
+        if (id == CommonNotifications.netDisconnection) {
+            LogCat.e(TAG, "1111 isMqttConnectionLost didReceivedNotification");
+            isMqttConnectionLost = true;
+            stopTimeoutTimer();
+            dialogUpgradeTip();
+            return;
+        }
         if (args == null || isUpgradeFail) {
             return;
         }
@@ -281,6 +308,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
                 String sn = object.getString("sn");
                 if (isUpgradeProcess && TextUtils.equals(sn, mDevice.getDeviceid())) {
                     isUpgradeSuccess = true;
+                    isUpgradeProcess = false;
                     stopTimerCountDown(mUpgradeStatus);
                     setText(IPC_RELAUNCH, 100);
                     setLayoutVisible();
@@ -335,7 +363,12 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
         } else if (status == 10) {
             upgradeVerFailDialog();
         } else if (status == 11) {
-            initSetButtonStatus();
+            //没有升级状态的
+            if (isUpgradeFail) {
+                dialogUpgradeTip();
+            } else {
+                initSetButtonStatus();
+            }
         }
     }
 
@@ -409,6 +442,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
     @UiThread
     void dialogUpgradeTip() {
         hideLoadingDialog();
+        isUpgradeProcess = false;
         ipcSettingUpgradeGroup.setVisibility(View.VISIBLE);
         tvIpcStatus.setVisibility(View.GONE);
         tvIpcUpgradeTip.setVisibility(View.GONE);
@@ -432,13 +466,21 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
     @UiThread
     void stopTimerCountDown(int status) {
         if (status == IPC_DOWNLOAD) {
-            downloadTimer.cancel();
+            if (downloadTimer != null) {
+                downloadTimer.cancel();
+            }
         } else if (status == IPC_UPGRADE_AI) {
-            upgradeAiTimer.cancel();
+            if (upgradeAiTimer != null) {
+                upgradeAiTimer.cancel();
+            }
         } else if (status == IPC_RELAUNCH) {
-            relaunchTimer.cancel();
+            if (relaunchTimer != null) {
+                relaunchTimer.cancel();
+            }
         } else if (status == IPC_CONNECT_TIMEOUT) {
-            mqttConnectTimeout.cancel();
+            if (mqttConnectTimeout != null) {
+                mqttConnectTimeout.cancel();
+            }
         }
     }
 
@@ -487,6 +529,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
             }
             setText(IPC_UPGRADE_AI, textProgress);
         } else if (status == IPC_RELAUNCH) {
+            isUpgradeProcess = true;
             if (showUpgradeFail(l, IPC_RELAUNCH)) {
                 return;
             }
