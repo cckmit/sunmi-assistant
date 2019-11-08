@@ -77,7 +77,7 @@ public class SMDeviceDiscoverUtils {
         CRC32 crc = new CRC32();
         crc.update(ss);
         //crc16进制
-        CRC_NUMBER = ByteUtils.hexToBytes(String.valueOf(Long.toHexString(crc.getValue())));
+        CRC_NUMBER = ByteUtils.hexToBytes(Long.toHexString(crc.getValue()));
     }
 
     //UDP数据发送线程
@@ -161,6 +161,10 @@ public class SMDeviceDiscoverUtils {
 //        if (socket != null) {
 //            socket.close();
 //        }
+    }
+
+    public static void saveInfo(SunmiDevice bean) {
+        CommonConstants.SUNMI_DEVICE_MAP.put(bean.getDeviceid(), bean);
     }
 
 }
