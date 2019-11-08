@@ -28,8 +28,8 @@ public class Utils {
     private static final int PERIOD_WEEK_OFFSET = 100;
     private static final int PERIOD_MONTH_OFFSET = 10000;
 
-    private static final long MILLIS_PER_HOUR = 3600;
-    private static final long MILLIS_PER_DAY = 3600 * 24;
+    private static final long MILLIS_PER_HOUR = 3600000;
+    private static final long MILLIS_PER_DAY = 3600000 * 24;
 
     private static final int MIN_DAYS_OF_MONTH = 28;
 
@@ -72,7 +72,7 @@ public class Utils {
             temp.add(Calendar.MONTH, 1);
             timeEnd = temp.getTimeInMillis();
         }
-        return new Pair<>(timeStart / 1000, timeEnd / 1000);
+        return new Pair<>(timeStart, timeEnd);
     }
 
     /**
@@ -95,35 +95,35 @@ public class Utils {
         }
     }
 
-    public static long getTime(int period, int timeIndex, int size) {
+    public static long getTimeMillis(int period, int timeIndex) {
         temp.setTimeInMillis(System.currentTimeMillis());
         int year = temp.get(Calendar.YEAR);
         int month = temp.get(Calendar.MONTH);
         int day = temp.get(Calendar.DATE);
         temp.clear();
+
         if (period == Constants.TIME_PERIOD_TODAY) {
             temp.set(year, month, day);
-            return temp.getTimeInMillis() / 1000 + (timeIndex - 1) * MILLIS_PER_HOUR;
+            return temp.getTimeInMillis() + (timeIndex - 1) * MILLIS_PER_HOUR;
+
         } else if (period == Constants.TIME_PERIOD_YESTERDAY) {
             temp.set(year, month, day);
             temp.add(Calendar.DATE, -1);
-            return temp.getTimeInMillis() / 1000 + (timeIndex - 1) * MILLIS_PER_HOUR;
+            return temp.getTimeInMillis() + (timeIndex - 1) * MILLIS_PER_HOUR;
+
         } else if (period == Constants.TIME_PERIOD_WEEK) {
             temp.setFirstDayOfWeek(Calendar.MONDAY);
             temp.set(year, month, day);
             int dayOfWeek = temp.get(Calendar.DAY_OF_WEEK);
             int offset = temp.getFirstDayOfWeek() - dayOfWeek;
             temp.add(Calendar.DATE, offset > 0 ? offset - 7 : offset);
-            return temp.getTimeInMillis() / 1000 + (timeIndex - 1) * MILLIS_PER_DAY;
-        } else {
-            if (day == 1 && size >= MIN_DAYS_OF_MONTH) {
-                month = (month + 11) % 12;
-            } else if (day >= MIN_DAYS_OF_MONTH && size == 1) {
-                month = (month + 1) % 12;
-            }
+            return temp.getTimeInMillis() + (timeIndex - 1) * MILLIS_PER_DAY;
+
+        } else if (period == Constants.TIME_PERIOD_MONTH) {
             temp.set(year, month, timeIndex);
-            return temp.getTimeInMillis() / 1000;
+            return temp.getTimeInMillis();
         }
+        return 0;
     }
 
     /**
@@ -163,7 +163,7 @@ public class Utils {
             sWeekName = context.getResources().getStringArray(R.array.week_name);
         }
         temp.clear();
-        temp.setTimeInMillis(time * 1000);
+        temp.setTimeInMillis(time);
         if (period == Constants.TIME_PERIOD_TODAY || period == Constants.TIME_PERIOD_YESTERDAY) {
             int hour = temp.get(Calendar.HOUR_OF_DAY);
             return String.format(Locale.getDefault(), "%02d:00-%02d:00", hour, hour + 1);

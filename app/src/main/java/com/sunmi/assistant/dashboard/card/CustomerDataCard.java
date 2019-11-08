@@ -252,7 +252,7 @@ public class CustomerDataCard extends BaseRefreshCard<CustomerDataCard.Model, Ob
 
         public String getCustomerString() {
             if (customer < 0) {
-                return DATA_NONE;
+                return DATA_ZERO;
             } else if (customer > NUM_10_THOUSANDS) {
                 return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
                         (float) customer / NUM_10_THOUSANDS) + mNum10Thousands;
@@ -263,7 +263,7 @@ public class CustomerDataCard extends BaseRefreshCard<CustomerDataCard.Model, Ob
 
         public String getLastCustomerString() {
             if (lastCustomer < 0) {
-                return DATA_NONE;
+                return DATA_ZERO;
             } else if (lastCustomer > NUM_10_THOUSANDS) {
                 return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
                         (float) lastCustomer / NUM_10_THOUSANDS) + mNum10Thousands;
@@ -274,7 +274,7 @@ public class CustomerDataCard extends BaseRefreshCard<CustomerDataCard.Model, Ob
 
         public String getNewCustomerString() {
             if (newCustomer < 0) {
-                return DATA_NONE;
+                return DATA_ZERO;
             } else if (newCustomer > NUM_10_THOUSANDS) {
                 return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
                         (float) newCustomer / NUM_10_THOUSANDS) + mNum10Thousands;
@@ -285,7 +285,7 @@ public class CustomerDataCard extends BaseRefreshCard<CustomerDataCard.Model, Ob
 
         public String getLastNewCustomerString() {
             if (lastNewCustomer < 0) {
-                return DATA_NONE;
+                return DATA_ZERO;
             } else if (lastNewCustomer > NUM_10_THOUSANDS) {
                 return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
                         (float) lastNewCustomer / NUM_10_THOUSANDS) + mNum10Thousands;
@@ -296,7 +296,7 @@ public class CustomerDataCard extends BaseRefreshCard<CustomerDataCard.Model, Ob
 
         public String getOldCustomerString() {
             if (oldCustomer < 0) {
-                return DATA_NONE;
+                return DATA_ZERO;
             } else if (oldCustomer > NUM_10_THOUSANDS) {
                 return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
                         (float) oldCustomer / NUM_10_THOUSANDS) + mNum10Thousands;
@@ -307,7 +307,7 @@ public class CustomerDataCard extends BaseRefreshCard<CustomerDataCard.Model, Ob
 
         public String getLastOldCustomerString() {
             if (lastOldCustomer < 0) {
-                return DATA_NONE;
+                return DATA_ZERO;
             } else if (lastOldCustomer > NUM_10_THOUSANDS) {
                 return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
                         (float) lastOldCustomer / NUM_10_THOUSANDS) + mNum10Thousands;

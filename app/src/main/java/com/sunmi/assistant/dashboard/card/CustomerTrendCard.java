@@ -199,45 +199,98 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
         allList.clear();
         newList.clear();
         oldList.clear();
-        if (response == null || response.getCountList() == null) {
-            return;
-        }
-        try {
-            List<CustomerHistoryTrendResp.Item> list = response.getCountList();
-            int size = list.size();
-            Calendar c = Calendar.getInstance();
-            long timestamp;
-            int timeIndex;
-            for (CustomerHistoryTrendResp.Item item : list) {
-                if (model.period == Constants.TIME_PERIOD_YESTERDAY) {
-                    timestamp = Utils.parseDateTime("yyyy-MM-dd HH:mm", item.getTime());
-                    c.setTimeInMillis(timestamp);
-                    timeIndex = c.get(Calendar.HOUR_OF_DAY) + 1;
-                } else if (model.period == Constants.TIME_PERIOD_WEEK) {
-                    timestamp = Utils.parseDateTime("yyyy-MM-dd", item.getTime());
-                    c.setTimeInMillis(timestamp);
-                    timeIndex = c.get(Calendar.DAY_OF_WEEK) - 1;
-                    if (timeIndex <= 0) {
-                        timeIndex += 7;
-                    }
-                } else {
-                    timestamp = Utils.parseDateTime("yyyy-MM-dd", item.getTime());
-                    c.setTimeInMillis(timestamp);
-                    timeIndex = c.get(Calendar.DATE);
-                }
-                float x = Utils.encodeChartXAxisFloat(model.period, timeIndex);
-                long time = Utils.getTime(model.period, timeIndex, size);
-                ChartEntry all = new ChartEntry(x, item.getTotalCount(), time);
-                all.setData(new CustomerEntry(timestamp, item.getStrangerCount(), item.getRegularCount()));
-                allList.add(all);
-                newList.add(new ChartEntry(x, item.getStrangerCount(), time));
-                oldList.add(new ChartEntry(x, item.getRegularCount(), time));
+
+        SparseArray<ChartEntry> allMap = new SparseArray<>(31);
+        SparseArray<ChartEntry> newMap = new SparseArray<>(31);
+        SparseArray<ChartEntry> oldMap = new SparseArray<>(31);
+
+        long timeMillis = Utils.getTimeMillis(model.period, 1);
+        long yesterday = System.currentTimeMillis() - 3600000 * 24;
+        if (model.period == Constants.TIME_PERIOD_YESTERDAY) {
+            for (int i = 1; i < 25; i++) {
+                long target = timeMillis + (i - 1) * 3600000;
+                float x = Utils.encodeChartXAxisFloat(model.period, i);
+                ChartEntry all = new ChartEntry(x, 0, target);
+                all.setData(new CustomerEntry(target, 0, 0));
+                allMap.put(i, all);
+                newMap.put(i, new ChartEntry(x, 0, target));
+                oldMap.put(i, new ChartEntry(x, 0, target));
             }
-        } catch (ParseException e) {
-            e.printStackTrace();
-            allList.clear();
-            newList.clear();
-            oldList.clear();
+        } else if (model.period == Constants.TIME_PERIOD_WEEK) {
+            for (int i = 1; i < 8; i++) {
+                long target = timeMillis + (i - 1) * 3600000 * 24;
+                if (target > yesterday) {
+                    break;
+                }
+                float x = Utils.encodeChartXAxisFloat(model.period, i);
+                ChartEntry all = new ChartEntry(x, 0, target);
+                all.setData(new CustomerEntry(target, 0, 0));
+                allMap.put(i, all);
+                newMap.put(i, new ChartEntry(x, 0, target));
+                oldMap.put(i, new ChartEntry(x, 0, target));
+            }
+        } else {
+            for (int i = 1; i < 32; i++) {
+                long target = timeMillis + (i - 1) * 3600000 * 24;
+                if (target > yesterday) {
+                    break;
+                }
+                float x = Utils.encodeChartXAxisFloat(model.period, i);
+                ChartEntry all = new ChartEntry(x, 0, target);
+                all.setData(new CustomerEntry(target, 0, 0));
+                allMap.put(i, all);
+                newMap.put(i, new ChartEntry(x, 0, target));
+                oldMap.put(i, new ChartEntry(x, 0, target));
+            }
+        }
+
+        if (response != null && response.getCountList() != null) {
+            try {
+                List<CustomerHistoryTrendResp.Item> list = response.getCountList();
+                Calendar c = Calendar.getInstance();
+                long timestamp;
+                int timeIndex;
+                for (CustomerHistoryTrendResp.Item item : list) {
+                    if (model.period == Constants.TIME_PERIOD_YESTERDAY) {
+                        timestamp = Utils.parseDateTime("yyyy-MM-dd HH:mm", item.getTime());
+                        c.setTimeInMillis(timestamp);
+                        timeIndex = c.get(Calendar.HOUR_OF_DAY) + 1;
+                    } else if (model.period == Constants.TIME_PERIOD_WEEK) {
+                        timestamp = Utils.parseDateTime("yyyy-MM-dd", item.getTime());
+                        c.setTimeInMillis(timestamp);
+                        timeIndex = c.get(Calendar.DAY_OF_WEEK) - 1;
+                        if (timeIndex <= 0) {
+                            timeIndex += 7;
+                        }
+                    } else {
+                        timestamp = Utils.parseDateTime("yyyy-MM-dd", item.getTime());
+                        c.setTimeInMillis(timestamp);
+                        timeIndex = c.get(Calendar.DATE);
+                    }
+                    float x = Utils.encodeChartXAxisFloat(model.period, timeIndex);
+                    long time = Utils.getTimeMillis(model.period, timeIndex);
+                    ChartEntry all = new ChartEntry(x, item.getTotalCount(), time);
+                    all.setData(new CustomerEntry(timestamp, item.getStrangerCount(), item.getRegularCount()));
+                    allMap.put(timeIndex, all);
+                    newMap.put(timeIndex, new ChartEntry(x, item.getStrangerCount(), time));
+                    oldMap.put(timeIndex, new ChartEntry(x, item.getRegularCount(), time));
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+                allList.clear();
+                newList.clear();
+                oldList.clear();
+            }
+        }
+
+        for (int i = 0, size = allMap.size(); i < size; i++) {
+            allList.add(allMap.valueAt(i));
+        }
+        for (int i = 0, size = newMap.size(); i < size; i++) {
+            newList.add(newMap.valueAt(i));
+        }
+        for (int i = 0, size = oldMap.size(); i < size; i++) {
+            oldList.add(oldMap.valueAt(i));
         }
 
         // Test data
@@ -412,7 +465,7 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
             int min = count / 3;
             for (int i = 1; i < count + 1; i++) {
                 float x = Utils.encodeChartXAxisFloat(period, i);
-                long time = Utils.getTime(period, i, count);
+                long time = Utils.getTimeMillis(period, i);
                 if (i <= min + 1) {
                     ChartEntry all = new ChartEntry(x, 0f, time);
                     all.setData(new CustomerEntry(System.currentTimeMillis(), 0, 0));
