@@ -17,7 +17,6 @@ import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.receiver.MyNetworkCallback;
 import com.sunmi.apmanager.rpc.mqtt.MQTTManager;
 import com.sunmi.apmanager.utils.CommonUtils;
-import com.sunmi.apmanager.utils.UDPUtils;
 import com.sunmi.assistant.MyApplication;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.DashboardFragment;
@@ -151,8 +150,7 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{CommonNotifications.homePageBadgeUpdate, CommonNotifications.pushMsgArrived,
-                CommonNotifications.ipcUpgradeSuccessUdp};
+        return new int[]{CommonNotifications.homePageBadgeUpdate, CommonNotifications.pushMsgArrived};
     }
 
     @Override
@@ -173,8 +171,6 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
         } else if (CommonNotifications.homePageBadgeUpdate == id
                 || CommonNotifications.pushMsgArrived == id) {
             initMessageBadge();
-        } else if (CommonNotifications.ipcUpgradeSuccessUdp == id) {
-            UDPUtils.udpGetSn.initGetRouterSn(null, BaseApplication.getContext());
         }
     }
 

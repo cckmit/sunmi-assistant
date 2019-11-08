@@ -50,6 +50,7 @@ import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.NetworkUtils;
+import sunmi.common.utils.SMDeviceDiscoverUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.SettingItemLayout;
@@ -593,7 +594,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 OpcodeConstants.setIpcNightIdeRotation, OpcodeConstants.getIpcDetection,
                 OpcodeConstants.getIsWire, CommonNotifications.netConnected,
                 CommonNotifications.netDisconnection, CommonNotifications.ipcUpgrade,
-                CommonNotifications.mqttResponseTimeout, OpcodeConstants.ipcQueryUpgradeStatus};
+                CommonNotifications.mqttResponseTimeout, OpcodeConstants.ipcQueryUpgradeStatus,
+                IpcConstants.ipcDiscovered};
     }
 
     @Override
@@ -605,6 +607,11 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     public void didReceivedNotification(int id, Object... args) {
         super.didReceivedNotification(id, args);
         hideLoadingDialog();
+        if (id == IpcConstants.ipcDiscovered && args != null) {
+            LogCat.e(TAG, "1111111 ipcDiscovered");
+            SunmiDevice bean = (SunmiDevice) args[0];
+            SMDeviceDiscoverUtils.saveInfo(bean);
+        }
         if (id == CommonNotifications.netDisconnection) { //网络断开
             isShowWireDialog = false;
             setWifiUnknown();

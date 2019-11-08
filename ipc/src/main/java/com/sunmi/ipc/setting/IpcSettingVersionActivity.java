@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.model.IpcNewFirmwareResp;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.OpcodeConstants;
@@ -27,9 +28,9 @@ import org.json.JSONObject;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.SunmiDevice;
-import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DeviceTypeUtils;
+import sunmi.common.utils.SMDeviceDiscoverUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
@@ -410,7 +411,8 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
                 .setTitle(R.string.ipc_setting_dialog_upgrade_success)
                 .setMessage(getString(R.string.ipc_setting_dialog_upgrade_success_content))
                 .setConfirmButton(R.string.str_confirm, (dialog, which) -> {
-                    BaseNotification.newInstance().postNotificationName(CommonNotifications.ipcUpgradeSuccessUdp);
+                    //发送udp
+                    SMDeviceDiscoverUtils.scanDevice(context, IpcConstants.ipcDiscovered);
                     setResult(RESULT_OK, new Intent());
                     finish();
                 }).create();
