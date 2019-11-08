@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.model.IpcNewFirmwareResp;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.OpcodeConstants;
@@ -29,6 +30,7 @@ import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DeviceTypeUtils;
+import sunmi.common.utils.SMDeviceDiscoverUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
@@ -115,7 +117,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        titleBar.getLeftImg().setOnClickListener(this);
+        titleBar.getLeftLayout().setOnClickListener(this);
         isSS = DeviceTypeUtils.getInstance().isSS1(mDevice.getModel());
         if (!isSS) {
             ivIpc.setImageResource(R.mipmap.ic_no_fs);
@@ -185,9 +187,9 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
         tvIpcUpgradeTip.setVisibility(View.VISIBLE);
         ipcSettingUpgradeGroup.setVisibility(View.GONE);
         timeoutMqtt();
-        startTimerCountDown(IPC_DOWNLOAD);
-        startTimerCountDown(IPC_UPGRADE_AI);
-        startTimerCountDown(IPC_RELAUNCH);
+        stopTimerCountDown(IPC_DOWNLOAD);
+        stopTimerCountDown(IPC_UPGRADE_AI);
+        stopTimerCountDown(IPC_RELAUNCH);
         IPCCall.getInstance().ipcUpgrade(this, mDevice.getModel(),
                 mDevice.getDeviceid(), mResp.getUrl(), mResp.getLatest_bin_version());
     }
@@ -199,6 +201,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
 
     @Override
     public void onBackPressed() {
+        LogCat.e(TAG, "111111 onBackPressed=" + isUpgradeProcess);
         if (isQueryStatus()) {
             super.onBackPressed();
         } else {
@@ -308,9 +311,9 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
                 String sn = object.getString("sn");
                 if (isUpgradeProcess && TextUtils.equals(sn, mDevice.getDeviceid())) {
                     isUpgradeSuccess = true;
-                    stopTimerCountDown(mUpgradeStatus);
+                    isUpgradeProcess = false;
+                    stopTimeoutTimer();
                     setText(IPC_RELAUNCH, 100);
-                    setLayoutVisible();
                     upgradeVerSuccessDialog();
                 }
             } catch (JSONException e) {
@@ -388,6 +391,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
      * 返回提示
      */
     private void backWarningDialog() {
+        isUpgradeProcess = true;
         CommonDialog successDialog = new CommonDialog.Builder(this)
                 .setMessage(getString(R.string.ipc_setting_dialog_upgrade_warning, isSS ? "5" : "8"))
                 .setConfirmButton(R.string.str_confirm).create();
@@ -407,6 +411,8 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
                 .setTitle(R.string.ipc_setting_dialog_upgrade_success)
                 .setMessage(getString(R.string.ipc_setting_dialog_upgrade_success_content))
                 .setConfirmButton(R.string.str_confirm, (dialog, which) -> {
+                    //发送udp
+                    SMDeviceDiscoverUtils.scanDevice(context, IpcConstants.ipcDiscovered);
                     setResult(RESULT_OK, new Intent());
                     finish();
                 }).create();
@@ -441,6 +447,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
     @UiThread
     void dialogUpgradeTip() {
         hideLoadingDialog();
+        isUpgradeProcess = false;
         ipcSettingUpgradeGroup.setVisibility(View.VISIBLE);
         tvIpcStatus.setVisibility(View.GONE);
         tvIpcUpgradeTip.setVisibility(View.GONE);
@@ -527,6 +534,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
             }
             setText(IPC_UPGRADE_AI, textProgress);
         } else if (status == IPC_RELAUNCH) {
+            isUpgradeProcess = true;
             if (showUpgradeFail(l, IPC_RELAUNCH)) {
                 return;
             }
@@ -588,6 +596,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
         mProgress.setProgress(progress);
         tvIpcStatus.setText(strStatus);
         tvIpcUpgradeTip.setText(strStatusTip);
+        btnUpgrade.setVisibility(View.GONE);
     }
 
     /**
