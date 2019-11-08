@@ -26,5 +26,5 @@ public class CommonNotifications {
     public static final int ipcDeviceStatus = totalEvents++;       //ipc设备状态
 
     public static final int cloudStorageChange = totalEvents++;    //云存储订阅状态修改
-    public static final int mqttConnectionLost = totalEvents++;    //mqtt连接lost
+    public static final int ipcUpgradeSuccessUdp = totalEvents++;    //升级成功发送udp
 }
