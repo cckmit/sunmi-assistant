@@ -83,8 +83,8 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
     @Override
     protected Call<BaseResponse<CustomerHistoryDetailResp>> load(int companyId, int shopId, int period, CardCallback callback) {
         Pair<Long, Long> time = Utils.getPeriodTimestamp(period);
-        String start = DateFormat.format(DATE_FORMAT, time.first * 1000).toString();
-        String end = DateFormat.format(DATE_FORMAT, time.second * 1000 - 1).toString();
+        String start = DateFormat.format(DATE_FORMAT, time.first).toString();
+        String end = DateFormat.format(DATE_FORMAT, time.second - 1).toString();
         if (mAgeList == null) {
             loadAgeList(companyId, shopId, start, end, callback);
         } else {

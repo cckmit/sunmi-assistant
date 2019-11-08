@@ -228,13 +228,12 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
             return;
         }
         List<CustomerRateResp.CountListBean> list = response.getCountList();
-        int size = list.size();
         for (CustomerRateResp.CountListBean bean : list) {
             int timeIndex = Math.abs(bean.getTime());
             int count = Math.abs(bean.getOrderCount());
             int customer = Math.abs(bean.getPassengerFlowCount());
             float x = Utils.encodeChartXAxisFloat(model.period, timeIndex);
-            long time = Utils.getTime(model.period, timeIndex, size);
+            long time = Utils.getTimeMillis(model.period, timeIndex);
             float rate = customer == 0 ? 0f : Math.min((float) count / customer, 1f);
             rateList.add(new ChartEntry(x, rate, time));
             volumeList.add(new ChartEntry(x, count, time));
@@ -435,7 +434,7 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
             int min = count / 3;
             for (int i = 1; i < count + 1; i++) {
                 float x = Utils.encodeChartXAxisFloat(period, i);
-                long time = Utils.getTime(period, i, count);
+                long time = Utils.getTimeMillis(period, i);
                 if (i <= min + 1) {
                     rateList.add(new ChartEntry(x, 0f, time));
                     volumeList.add(new ChartEntry(x, 0f, time));
