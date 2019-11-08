@@ -211,7 +211,7 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View>
             mCurrentPage++;
         }
         PaymentApi.get().getOrderList(mCompanyId, mShopId,
-                mTimeStart, mTimeEnd, mFilterAmountSort, mFilterTimeSort,
+                mTimeStart / 1000, mTimeEnd / 1000, mFilterAmountSort, mFilterTimeSort,
                 mFilterOrderType, mFilterPayType, mCurrentPage, PAGE_SIZE,
                 new RetrofitCallback<OrderListResp>() {
                     @Override
