@@ -275,6 +275,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
         if (progress < 100 && !beginLoading) {
             showLoadingDialog();
             closeTimer();
+            beginLoading = true;
         } else {
             hideLoadingDialog();
         }

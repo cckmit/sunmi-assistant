@@ -29,6 +29,7 @@ import sunmi.common.constant.CommonNotifications;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.Utils;
 
 @EActivity(resName = "activity_cloud_service_mange")
 public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMangePresenter>
@@ -119,7 +120,7 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
 
     @Click(resName = "btn_open")
     void onpenClick() {
-        WebViewCloudServiceActivity_.intent(context).mUrl(CommonConfig.CLOUD_STORAGE_URL).start();
+        WebViewCloudServiceActivity_.intent(context).mUrl(CommonConfig.CLOUD_STORAGE_URL + Utils.getWebViewStatusBarHeight(context)).start();
     }
 
     private void initServiceList() {

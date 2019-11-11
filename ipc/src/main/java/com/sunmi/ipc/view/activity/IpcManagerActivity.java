@@ -72,6 +72,7 @@ import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.IVideoPlayer;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.Utils;
 import sunmi.common.utils.VolumeHelper;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
@@ -208,9 +209,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     void init() {
         mPresenter = new IpcManagerPresenter();
         mPresenter.attachView(this);
-        /*if (isSS1()) {
+        if (isSS1()) {
             mPresenter.getStorageInfo(device.getId());
-        }*/
+        }
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//保持屏幕常亮
@@ -1415,7 +1416,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                 btnDetail.setOnClickListener(v -> {
                     if (bean.getTitle().equals(getString(R.string.str_cloud_storage))) {
                         if (bean.getStatus() == CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
-                            Router.withApi(SunmiServiceApi.class).goToWebViewCloud(CommonConfig.CLOUD_STORAGE_URL, device.getDeviceid());
+                            Router.withApi(SunmiServiceApi.class).goToWebViewCloud(CommonConfig.CLOUD_STORAGE_URL +
+                                    Utils.getWebViewStatusBarHeight(context), device.getDeviceid());
                         } else {
                             Router.withApi(SunmiServiceApi.class).goToServiceDetail(device.getDeviceid(), true, device.getName());
                         }
