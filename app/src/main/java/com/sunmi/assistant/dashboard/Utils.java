@@ -28,9 +28,6 @@ public class Utils {
     private static final int PERIOD_WEEK_OFFSET = 100;
     private static final int PERIOD_MONTH_OFFSET = 10000;
 
-    private static final long MILLIS_PER_HOUR = 3600000;
-    private static final long MILLIS_PER_DAY = 3600000 * 24;
-
     private static final int MIN_DAYS_OF_MONTH = 28;
 
     private static String[] sWeekName;
@@ -95,7 +92,7 @@ public class Utils {
         }
     }
 
-    public static long getTimeMillis(int period, int timeIndex) {
+    public static long getStartTime(int period) {
         temp.setTimeInMillis(System.currentTimeMillis());
         int year = temp.get(Calendar.YEAR);
         int month = temp.get(Calendar.MONTH);
@@ -104,12 +101,12 @@ public class Utils {
 
         if (period == Constants.TIME_PERIOD_TODAY) {
             temp.set(year, month, day);
-            return temp.getTimeInMillis() + (timeIndex - 1) * MILLIS_PER_HOUR;
+            return temp.getTimeInMillis();
 
         } else if (period == Constants.TIME_PERIOD_YESTERDAY) {
             temp.set(year, month, day);
             temp.add(Calendar.DATE, -1);
-            return temp.getTimeInMillis() + (timeIndex - 1) * MILLIS_PER_HOUR;
+            return temp.getTimeInMillis();
 
         } else if (period == Constants.TIME_PERIOD_WEEK) {
             temp.setFirstDayOfWeek(Calendar.MONDAY);
@@ -117,10 +114,10 @@ public class Utils {
             int dayOfWeek = temp.get(Calendar.DAY_OF_WEEK);
             int offset = temp.getFirstDayOfWeek() - dayOfWeek;
             temp.add(Calendar.DATE, offset > 0 ? offset - 7 : offset);
-            return temp.getTimeInMillis() + (timeIndex - 1) * MILLIS_PER_DAY;
+            return temp.getTimeInMillis();
 
         } else if (period == Constants.TIME_PERIOD_MONTH) {
-            temp.set(year, month, timeIndex);
+            temp.set(year, month, 1);
             return temp.getTimeInMillis();
         }
         return 0;
@@ -132,16 +129,19 @@ public class Utils {
      * 101~107表示：周维度的周一到周日
      * 10001~100030表示：月维度的1~30日
      *
-     * @param timeIndex 从服务器获取的时间序列值，目前1代表第一个值（00:00、周一、1日）
+     * @param timestamp Unix时间戳
      * @return X轴值范围
      */
-    public static float encodeChartXAxisFloat(int period, int timeIndex) {
+    public static float encodeChartXAxisFloat(int period, long timestamp) {
+        temp.setTimeInMillis(timestamp);
         if (period == Constants.TIME_PERIOD_TODAY || period == Constants.TIME_PERIOD_YESTERDAY) {
-            return timeIndex;
+            return temp.get(Calendar.HOUR_OF_DAY) + 1;
         } else if (period == Constants.TIME_PERIOD_WEEK) {
-            return PERIOD_WEEK_OFFSET + timeIndex;
+            temp.setFirstDayOfWeek(Calendar.MONDAY);
+            int dayOfWeek = temp.get(Calendar.DAY_OF_WEEK) - 1;
+            return PERIOD_WEEK_OFFSET + (dayOfWeek < 1 ? dayOfWeek + 7 : dayOfWeek);
         } else {
-            return PERIOD_MONTH_OFFSET + timeIndex;
+            return PERIOD_MONTH_OFFSET + temp.get(Calendar.DATE);
         }
     }
 
@@ -162,7 +162,6 @@ public class Utils {
         if (sWeekName == null) {
             sWeekName = context.getResources().getStringArray(R.array.week_name);
         }
-        temp.clear();
         temp.setTimeInMillis(time);
         if (period == Constants.TIME_PERIOD_TODAY || period == Constants.TIME_PERIOD_YESTERDAY) {
             int hour = temp.get(Calendar.HOUR_OF_DAY);
