@@ -216,14 +216,17 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
     @Override
     protected void onResume() {
         super.onResume();
-        LogCat.e(TAG, "1111 onResume");
         //新版本且需要升级
+        LogCat.e(TAG, "1111 onResume isUpgradeSuccess=" + isUpgradeSuccess + ", isUpgradeFail=" + isUpgradeFail + ", isMqttConnectionLost=" + isMqttConnectionLost);
         if (isUpgradeSuccess) {
+            LogCat.e(TAG, "1111 onResume isUpgradeSuccess");
             upgradeVerSuccessDialog();
+        } else if (isUpgradeFail && !isMqttConnectionLost) {
+            LogCat.e(TAG, "1111 onResume isUpgradeFail");
+            upgradeVerFailDialog();
         } else {
             if (isQueryStatus() && mResp.getUpgrade_required() == 1 && isMqttConnectionLost) {
-                LogCat.e(TAG, "1111 isMqttConnectionLost onResume");
-                stopTimeoutTimer();
+                LogCat.e(TAG, "1111  onResume isMqttConnectionLost");
                 isMqttConnectionLost = false;
                 queryIpcUpgradeStatus();
             }
@@ -391,7 +394,6 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
      * 返回提示
      */
     private void backWarningDialog() {
-        isUpgradeProcess = true;
         CommonDialog successDialog = new CommonDialog.Builder(this)
                 .setMessage(getString(R.string.ipc_setting_dialog_upgrade_warning, isSS ? "5" : "8"))
                 .setConfirmButton(R.string.str_confirm).create();
@@ -427,14 +429,16 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
         stopTimeoutTimer();
         isAiUpgrade = false;
         isUpgradeProcess = false;
-        isUpgradeFail = false;
         if (failDialog != null && failDialog.isShowing()) {
             failDialog.dismiss();
         }
         failDialog = new CommonDialog.Builder(this)
                 .setTitle(R.string.ipc_setting_dialog_upgrade_fail)
                 .setMessage(R.string.ipc_setting_upgrade_fail_net_exception)
-                .setConfirmButton(R.string.str_retry, (dialog, which) -> upgrading())
+                .setConfirmButton(R.string.str_retry, (dialog, which) -> {
+                    isUpgradeFail = false;
+                    upgrading();
+                })
                 .setCancelButton(R.string.sm_cancel, (dialog, which) -> finish())
                 .create();
         failDialog.showWithOutTouchable(false);
@@ -492,6 +496,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
     @UiThread
     void showProgress(int status, long l) {
         if (l / 1000 == 1) {
+            isUpgradeProcess = false;
             isUpgradeFail = true;
         }
         if (isFastClick(300)) {

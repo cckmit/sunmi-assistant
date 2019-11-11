@@ -55,8 +55,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_35"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/dp_20"
-                android:layout_marginRight="@dimen/dp_60"
+                android:layout_marginStart="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_60"
                 android:background="@null"
                 android:hint="@string/hint_input_password"
                 android:inputType="textPassword"
@@ -69,12 +69,11 @@
                 android:id="@+id/ib_visible"
                 android:layout_width="@dimen/dp_24"
                 android:layout_height="@dimen/dp_24"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_20"
                 android:background="@mipmap/ic_eye_light_hide" />
         </RelativeLayout>
-
 
         <Button
             android:id="@+id/btnLogin"
@@ -97,7 +96,7 @@
                 android:id="@+id/tvForgetPassword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:paddingTop="@dimen/dp_12"
                 android:paddingBottom="@dimen/dp_12"
                 android:text="@string/tip_forget_psd"
@@ -108,7 +107,7 @@
                 android:id="@+id/tvSMSLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:gravity="right"
                 android:paddingTop="@dimen/dp_12"
                 android:paddingBottom="@dimen/dp_12"
@@ -123,7 +122,6 @@
             android:layout_height="@dimen/dp_54"
             android:layout_below="@+id/rlForget"
             android:layout_marginTop="@dimen/dp_50"
-            android:layout_weight="0.5"
             android:background="@drawable/button_corners_edge_orange60"
             android:text="@string/str_register"
             android:textColor="@color/colorOrangeText"
