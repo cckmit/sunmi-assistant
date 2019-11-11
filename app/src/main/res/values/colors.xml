@@ -2,12 +2,15 @@
 <resources>
     <color name="shimmer_color">#a2878787</color>
 
+    <!--辅助渐变色-->
+    <color name="assist_blue_light">#6CBBFF</color>        <!--主要渐变色（浅）-->
+    <color name="assist_blue_press_light">#61A8E6</color>  <!--暗色渐变色（浅）-->
+    <color name="assist_blue_press_dark">#436DE0</color>   <!--暗色渐变色（深）-->
+
     <color name="color_F0F2F5">#F0F2F5</color>
     <color name="color_FF8000">#FF8000</color>
     <color name="color_FFD0B3">#FFD0B3</color>
     <color name="color_AFC3FA">#AFC3FA</color>
-    <color name="color_FF7F00">#FF7F00</color>
-    <color name="color_FF7F00_60">#99FF7F00</color>
     <color name="color_303540_40a">#66303540</color>
 
 </resources>
