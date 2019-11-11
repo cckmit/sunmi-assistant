@@ -116,31 +116,71 @@
     <LinearLayout
         android:id="@+id/ll_floating"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_100"
-        android:orientation="vertical"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_height="wrap_content"
         android:background="@color/transparent"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <ImageView
+        <TextView
             android:id="@+id/iv_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:src="@mipmap/ic_close"
-            tools:ignore="ContentDescription" />
+            android:layout_marginEnd="@dimen/dp_16"
+            android:background="@mipmap/ic_close"
+            android:shadowDy="2" />
 
-        <android.support.constraint.ConstraintLayout
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_60"
-            android:background="">
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:background="@color/c_white"
+            android:visibility="gone"
+            app:cardCornerRadius="@dimen/dp_8"
+            app:cardElevation="@dimen/dp_2"
+            app:cardMaxElevation="@dimen/dp_8">
 
-            
-        </android.support.constraint.ConstraintLayout>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/dp_16"
+                android:src="@mipmap/ipc_cloud_storage"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_64"
+                android:layout_marginTop="@dimen/dp_11"
+                android:text="@string/str_cloud_storage"
+                android:textColor="@color/text_main"
+                android:textSize="@dimen/sp_14" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_64"
+                android:layout_marginTop="@dimen/dp_31"
+                android:text="@string/str_free_half_year"
+                android:textColor="@color/common_orange"
+                android:textSize="@dimen/sp_12" />
+
+            <Button
+                android:id="@+id/btn_floating"
+                style="@style/BtnBigOrange"
+                android:layout_width="@dimen/dp_72"
+                android:layout_height="@dimen/dp_28"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:text="@string/btn_free_collection"
+                android:textSize="@dimen/sp_12" />
+
+        </android.support.v7.widget.CardView>
 
     </LinearLayout>
 
@@ -170,7 +210,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="invisible"
-        app:constraint_referenced_ids="layout_shop_title,layout_dashboard_tab,pager_dashboard_pager,view_dashboard_refresh_bg" />
+        app:constraint_referenced_ids="layout_shop_title,layout_dashboard_tab,pager_dashboard_pager,view_dashboard_refresh_bg,ll_floating" />
 
 </android.support.constraint.ConstraintLayout>
 

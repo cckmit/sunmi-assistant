@@ -295,4 +295,6 @@
     <string name="import_order_access_no_auth_more">已授权过门店收银系统，无法授权更多</string>
     <string name="company_shop_region_hint">必选</string>
     <string name="shop_create_new">创建门店</string>
+    <string name="str_free_half_year">首次免半年</string>
+    <string name="btn_free_collection">免费领取</string>
 </resources>
