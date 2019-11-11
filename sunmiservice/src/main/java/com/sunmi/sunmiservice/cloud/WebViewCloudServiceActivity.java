@@ -42,6 +42,7 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.RouterConfig;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.webview.SMWebView;
 import sunmi.common.view.webview.SMWebViewClient;
@@ -86,7 +87,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
     protected void init() {
         StatusBarUtils.setStatusBarFullTransparent(this);//状态栏
         initWebView();
-        webView.loadUrl(mUrl);
+        webView.loadUrl(mUrl + Utils.getWebViewStatusBarHeight(context));
         startTimer();
     }
 

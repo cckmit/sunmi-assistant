@@ -22,7 +22,6 @@ import org.androidannotations.annotations.ViewById;
 import sunmi.common.base.BaseFragment;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.utils.NetworkUtils;
-import sunmi.common.utils.Utils;
 import sunmi.common.view.TitleBarView;
 
 @EFragment(resName = "fragment_support")
@@ -57,7 +56,7 @@ public class SupportFragment extends BaseFragment
         if (!checkNetwork()) {
             return;
         }
-        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConfig.CLOUD_STORAGE_URL+ Utils.getWebViewStatusBarHeight(mActivity)).start();
+        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConfig.CLOUD_STORAGE_URL).start();
     }
 
     @Click(resName = "ll_after_sales")

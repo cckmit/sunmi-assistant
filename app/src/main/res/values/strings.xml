@@ -251,7 +251,7 @@
     <string name="str_go_open">Enable</string>
     <string name="shop_address">Store Address</string>
     <string name="shop_input_region_tip">Please select the region</string>
-    <string name="str_create_company_alredy_exit">Store name already exists</string>
+    <string name="str_create_company_alredy_exit">Company name already exists</string>
     <string name="ipc_right_now_play">View</string>
     <string name="ipc_device_model">Device Model：%s</string>
 
