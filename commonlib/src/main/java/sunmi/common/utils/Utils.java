@@ -14,6 +14,8 @@ import java.util.Random;
  */
 public class Utils {
 
+    private static Random mRandom = new Random();
+
     /**
      * 获取manifest文件meta值
      */
@@ -47,7 +49,16 @@ public class Utils {
         return result;
     }
 
-    private static Random mRandom = new Random();
+    public static int getWebViewStatusBarHeight(Context context) {
+        int result = 0;
+        final float scale = context.getResources().getDisplayMetrics().density;
+        int resourceId = context.getResources()
+                .getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = context.getResources().getDimensionPixelSize(resourceId);
+        }
+        return (int) (result / scale + 0.5f);
+    }
 
     public static String getMsgId() {
         if (mRandom == null) {
