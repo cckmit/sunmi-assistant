@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/c_white">
@@ -107,7 +108,8 @@
         android:layout_below="@+id/title_bar"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_80"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <ImageView
             android:id="@+id/iv_no_router"
@@ -141,15 +143,12 @@
 
         <Button
             android:id="@+id/btn_refresh"
-            android:layout_width="@dimen/dp_108"
-            android:layout_height="@dimen/dp_44"
+            style="@style/BtnMediumWhite"
             android:layout_below="@id/tv_no_find_name"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_40"
-            android:background="@drawable/button_corners_solid_orange"
-            android:text="@string/str_refresh"
-            android:textColor="@color/c_white"
-            android:textSize="@dimen/sp_18" />
+            android:text="@string/str_refresh" />
+
     </RelativeLayout>
 
     <RelativeLayout
