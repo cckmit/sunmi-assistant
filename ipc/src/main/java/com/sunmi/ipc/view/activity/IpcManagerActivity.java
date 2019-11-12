@@ -202,15 +202,13 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private CommonListAdapter adapter;
     private List<IpcManageBean> list = new ArrayList<>();
 
-    private IpcManageBean cloudStroage;
-
     @AfterViews
     void init() {
         mPresenter = new IpcManagerPresenter();
         mPresenter.attachView(this);
-        /*if (isSS1()) {
+        if (isSS1()) {
             mPresenter.getStorageInfo(device.getId());
-        }*/
+        }
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//保持屏幕常亮
@@ -520,12 +518,14 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         setPlayFailVisibility(View.GONE);
         if (videoDecoder != null) {
             videoDecoder.setVideoData(videoBuffer);
-        }
-        if (playType == PLAY_TYPE_LIVE) {
-            hideVideoLoading();
-        } else if (playType == PLAY_TYPE_PLAYBACK_DEV && (tvTimeScroll != null && tvTimeScroll.isShown())) {
+            if (videoDecoder.isPlaying()) {
+                if (playType == PLAY_TYPE_LIVE) {
+                    hideVideoLoading();
+                } else if (playType == PLAY_TYPE_PLAYBACK_DEV && (tvTimeScroll != null && tvTimeScroll.isShown())) {
 //            hideVideoLoading();
-            hideTimeScroll();
+                    hideTimeScroll();
+                }
+            }
         }
     }
 
@@ -538,7 +538,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     @Override
     public void onStartPlay() {
-        hideVideoLoading();
+//        hideVideoLoading();
     }
 
     @Override
@@ -618,33 +618,34 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @UiThread
     @Override
     public void getStorageSuccess(StorageListResp.DeviceListBean data) {
-        cloudStroage = new IpcManageBean(R.mipmap.ipc_cloud_storage, getString(R.string.str_cloud_storage));
+        IpcManageBean cloudStorage = new IpcManageBean(R.mipmap.ipc_cloud_storage,
+                getString(R.string.str_cloud_storage));
         if (data != null) {
-            cloudStroage.setStatus(data.getStatus());
+            cloudStorage.setStatus(data.getStatus());
             switch (data.getStatus()) {
                 case CommonConstants.CLOUD_STORAGE_ALREADY_OPENED:
-                    cloudStroage.setSummary(getString(R.string.str_remaining_validity_period,
+                    cloudStorage.setSummary(getString(R.string.str_remaining_validity_period,
                             DateTimeUtils.secondToPeriod(data.getValidTime(), context)));
-                    cloudStroage.setRightText(getString(R.string.str_setting_detail));
+                    cloudStorage.setRightText(getString(R.string.str_setting_detail));
                     break;
                 case CommonConstants.CLOUD_STORAGE_NOT_OPENED:
-                    cloudStroage.setSummary(getString(R.string.str_subscribe_free));
-                    cloudStroage.setRightText(getString(R.string.str_use_free));
+                    cloudStorage.setSummary(getString(R.string.str_subscribe_free));
+                    cloudStorage.setRightText(getString(R.string.str_use_free));
                     break;
                 case CommonConstants.CLOUD_STORAGE_EXPIRED:
-                    cloudStroage.setSummary(getString(R.string.str_expired));
-                    cloudStroage.setRightText(getString(R.string.str_setting_detail));
+                    cloudStorage.setSummary(getString(R.string.str_expired));
+                    cloudStorage.setRightText(getString(R.string.str_setting_detail));
                     break;
                 default:
                     break;
             }
-            cloudStroage.setEnabled(true);
+            cloudStorage.setEnabled(true);
         } else {
-            cloudStroage.setEnabled(false);
+            cloudStorage.setEnabled(false);
             shortTip(R.string.tip_cloud_storage_error);
-            cloudStroage.setRightText(getString(R.string.str_coming_soon));
+            cloudStorage.setRightText(getString(R.string.str_coming_soon));
         }
-        list.add(0, cloudStroage);
+        list.add(0, cloudStorage);
         adapter.notifyDataSetChanged();
     }
 

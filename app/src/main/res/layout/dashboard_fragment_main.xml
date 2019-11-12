@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cl_dashboard_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -81,7 +82,8 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible">
 
         <TextView
             android:id="@+id/tv_dashboard_no_fs"
@@ -100,20 +102,87 @@
 
         <Button
             android:id="@+id/btn_dashboard_tip_add_fs"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="@dimen/dp_72"
-            android:layout_height="@dimen/dp_24"
+            style="@style/BtnSmallOrangeBorder"
             android:layout_marginEnd="@dimen/dp_20"
             android:background="@drawable/dashboard_btn_no_fs_tip"
-            android:gravity="center"
             android:text="@string/dashboard_no_fs_tip_add"
             android:textColor="@color/c_white"
-            android:textSize="@dimen/sp_12"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_floating"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/iv_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:background="@mipmap/ic_close"
+            android:shadowDy="2" />
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_60"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:background="@color/c_white"
+            app:cardCornerRadius="@dimen/dp_8"
+            app:cardElevation="@dimen/dp_2"
+            app:cardMaxElevation="@dimen/dp_8">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/dp_16"
+                android:src="@mipmap/ipc_cloud_storage"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_64"
+                android:layout_marginTop="@dimen/dp_11"
+                android:text="@string/str_cloud_storage"
+                android:textColor="@color/text_main"
+                android:textSize="@dimen/sp_14" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_64"
+                android:layout_marginTop="@dimen/dp_31"
+                android:text="@string/str_free_half_year"
+                android:textColor="@color/common_orange"
+                android:textSize="@dimen/sp_12" />
+
+            <Button
+                android:id="@+id/btn_floating"
+                style="@style/BtnBigOrange"
+                android:layout_width="@dimen/dp_72"
+                android:layout_height="@dimen/dp_28"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:text="@string/btn_free_collection"
+                android:textSize="@dimen/sp_12" />
+
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
 
     <include
         android:id="@+id/layout_top_period_tab"
@@ -141,7 +210,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="invisible"
-        app:constraint_referenced_ids="layout_shop_title,layout_dashboard_tab,pager_dashboard_pager,view_dashboard_refresh_bg" />
+        app:constraint_referenced_ids="layout_shop_title,layout_dashboard_tab,pager_dashboard_pager,view_dashboard_refresh_bg,ll_floating" />
 
 </android.support.constraint.ConstraintLayout>
 

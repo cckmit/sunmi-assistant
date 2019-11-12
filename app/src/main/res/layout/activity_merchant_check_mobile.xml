@@ -21,10 +21,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/title_bar"
-        android:layout_marginBottom="@dimen/dp_8"
-        android:layout_marginEnd="@dimen/dp_20"
         android:layout_marginStart="@dimen/dp_25"
         android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:layout_marginBottom="@dimen/dp_8"
         android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_12" />
 
@@ -50,9 +50,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_25"
             android:layout_toRightOf="@id/tv_mobile"
             android:background="@null"
-            android:layout_marginEnd="@dimen/dp_25"
             android:hint="@string/str_please_input_mobile"
             android:inputType="phone"
             android:maxLength="11"
@@ -91,8 +91,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toEndOf="@id/tv_code"
             android:layout_marginEnd="@dimen/dp_120"
+            android:layout_toEndOf="@id/tv_code"
             android:background="@null"
             android:hint="@string/str_please_input_sms_code"
             android:inputType="phone"
@@ -115,14 +115,11 @@
 
     <Button
         android:id="@+id/btn_check"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_44"
+        style="@style/BtnBigOrange"
         android:layout_below="@id/rl_code"
-        android:layout_margin="@dimen/dp_20"
-        android:background="@drawable/button_corners_solid_orange"
-        android:text="@string/str_button_check"
-        android:textColor="@color/c_white"
-        android:textSize="@dimen/sp_16" />
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginBottom="@dimen/dp_20"
+        android:text="@string/str_button_check" />
 
 </RelativeLayout>
 
