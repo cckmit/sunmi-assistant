@@ -92,7 +92,7 @@ public class SMDeviceDiscoverUtils {
         public void run() {
             try {
                 //报文协议
-                byte[] buf = ByteUtils.byteMergerAll(HEADER, PROTOCOL_VERSION, MESSAGE_TYPE, LENGTH, DATA, CRC_NUMBER);
+                    byte[] buf = ByteUtils.byteMergerAll(HEADER, PROTOCOL_VERSION, MESSAGE_TYPE, LENGTH, DATA, CRC_NUMBER);
                 // 创建DatagramSocket对象，端口
                 //方法一添加port
                 //sendSocket = new DatagramSocket(AppConfig.SEND_PORT);
