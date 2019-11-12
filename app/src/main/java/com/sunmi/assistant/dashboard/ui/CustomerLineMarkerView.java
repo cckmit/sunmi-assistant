@@ -81,10 +81,9 @@ public class CustomerLineMarkerView extends MarkerView {
 
     @Override
     public void refreshContent(Entry e, Highlight highlight) {
-        Object data = e.getData();
-        if (data instanceof CustomerTrendCard.CustomerEntry) {
+        if (e instanceof CustomerTrendCard.CustomerEntry) {
             String title = "";
-            CustomerTrendCard.CustomerEntry entry = (CustomerTrendCard.CustomerEntry) data;
+            CustomerTrendCard.CustomerEntry entry = (CustomerTrendCard.CustomerEntry) e;
             long time = entry.getTime();
             if (mPeriod == Constants.TIME_PERIOD_YESTERDAY) {
                 title = Utils.getDateTime(time);

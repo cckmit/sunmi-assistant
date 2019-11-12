@@ -13,6 +13,7 @@ import com.sunmi.assistant.dashboard.Constants;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Random;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
@@ -142,6 +143,11 @@ public class CustomerDataCard extends BaseRefreshCard<CustomerDataCard.Model, Ob
 
     @Override
     protected void setupModel(Model model, Object response) {
+        // Zero fall back
+        model.customer = Math.max(model.customer, 0);
+        model.newCustomer = Math.max(model.newCustomer, 0);
+        model.oldCustomer = Math.max(model.oldCustomer, 0);
+
         // Test data
 //        model.random();
     }
@@ -252,7 +258,7 @@ public class CustomerDataCard extends BaseRefreshCard<CustomerDataCard.Model, Ob
 
         public String getCustomerString() {
             if (customer < 0) {
-                return DATA_ZERO;
+                return DATA_NONE;
             } else if (customer > NUM_10_THOUSANDS) {
                 return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
                         (float) customer / NUM_10_THOUSANDS) + mNum10Thousands;
@@ -263,7 +269,7 @@ public class CustomerDataCard extends BaseRefreshCard<CustomerDataCard.Model, Ob
 
         public String getLastCustomerString() {
             if (lastCustomer < 0) {
-                return DATA_ZERO;
+                return DATA_NONE;
             } else if (lastCustomer > NUM_10_THOUSANDS) {
                 return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
                         (float) lastCustomer / NUM_10_THOUSANDS) + mNum10Thousands;
@@ -274,7 +280,7 @@ public class CustomerDataCard extends BaseRefreshCard<CustomerDataCard.Model, Ob
 
         public String getNewCustomerString() {
             if (newCustomer < 0) {
-                return DATA_ZERO;
+                return DATA_NONE;
             } else if (newCustomer > NUM_10_THOUSANDS) {
                 return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
                         (float) newCustomer / NUM_10_THOUSANDS) + mNum10Thousands;
@@ -285,7 +291,7 @@ public class CustomerDataCard extends BaseRefreshCard<CustomerDataCard.Model, Ob
 
         public String getLastNewCustomerString() {
             if (lastNewCustomer < 0) {
-                return DATA_ZERO;
+                return DATA_NONE;
             } else if (lastNewCustomer > NUM_10_THOUSANDS) {
                 return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
                         (float) lastNewCustomer / NUM_10_THOUSANDS) + mNum10Thousands;
@@ -296,7 +302,7 @@ public class CustomerDataCard extends BaseRefreshCard<CustomerDataCard.Model, Ob
 
         public String getOldCustomerString() {
             if (oldCustomer < 0) {
-                return DATA_ZERO;
+                return DATA_NONE;
             } else if (oldCustomer > NUM_10_THOUSANDS) {
                 return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
                         (float) oldCustomer / NUM_10_THOUSANDS) + mNum10Thousands;
@@ -307,7 +313,7 @@ public class CustomerDataCard extends BaseRefreshCard<CustomerDataCard.Model, Ob
 
         public String getLastOldCustomerString() {
             if (lastOldCustomer < 0) {
-                return DATA_ZERO;
+                return DATA_NONE;
             } else if (lastOldCustomer > NUM_10_THOUSANDS) {
                 return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
                         (float) lastOldCustomer / NUM_10_THOUSANDS) + mNum10Thousands;
@@ -317,10 +323,11 @@ public class CustomerDataCard extends BaseRefreshCard<CustomerDataCard.Model, Ob
         }
 
         public void random() {
-            newCustomer = (int) (Math.random() * 1000);
-            lastNewCustomer = (int) (Math.random() * 30);
-            oldCustomer = (int) (Math.random() * 1000);
-            lastOldCustomer = (int) (Math.random() * 30);
+            Random r = new Random(System.currentTimeMillis());
+            newCustomer = r.nextInt(100000000);
+            lastNewCustomer = r.nextInt(100000);
+            oldCustomer = r.nextInt(100000000);
+            lastOldCustomer = r.nextInt(100000);
             customer = newCustomer + oldCustomer;
             lastCustomer = lastNewCustomer + lastOldCustomer;
         }

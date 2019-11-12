@@ -186,6 +186,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
     }
 
     protected void updateViews() {
+        LogCat.d(TAG, "Post update views of card.");
         if (Looper.myLooper() != Looper.getMainLooper()) {
             mHandler.post(this::updateViews);
             return;
@@ -203,6 +204,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+        LogCat.d(TAG, "Set up views.");
         boolean isLoading = (mState == STATE_INIT || mState == STATE_LOADING);
         int[] margin = model.margin;
         int[] padding = model.padding;
