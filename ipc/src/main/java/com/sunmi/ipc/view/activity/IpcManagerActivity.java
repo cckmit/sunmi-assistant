@@ -29,7 +29,6 @@ import com.sunmi.ipc.R;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.IpcManagerContract;
 import com.sunmi.ipc.model.IpcManageBean;
-import com.sunmi.ipc.model.StorageListResp;
 import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.model.VideoTimeSlotBean;
 import com.sunmi.ipc.presenter.IpcManagerPresenter;
@@ -207,7 +206,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         mPresenter = new IpcManagerPresenter();
         mPresenter.attachView(this);
         if (isSS1()) {
-            mPresenter.getStorageInfo(device.getId());
+            mPresenter.getStorageList(device.getDeviceid());
         }
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
@@ -617,35 +616,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     @UiThread
     @Override
-    public void getStorageSuccess(StorageListResp.DeviceListBean data) {
-        IpcManageBean cloudStorage = new IpcManageBean(R.mipmap.ipc_cloud_storage,
-                getString(R.string.str_cloud_storage));
-        if (data != null) {
-            cloudStorage.setStatus(data.getStatus());
-            switch (data.getStatus()) {
-                case CommonConstants.CLOUD_STORAGE_ALREADY_OPENED:
-                    cloudStorage.setSummary(getString(R.string.str_remaining_validity_period,
-                            DateTimeUtils.secondToPeriod(data.getValidTime(), context)));
-                    cloudStorage.setRightText(getString(R.string.str_setting_detail));
-                    break;
-                case CommonConstants.CLOUD_STORAGE_NOT_OPENED:
-                    cloudStorage.setSummary(getString(R.string.str_subscribe_free));
-                    cloudStorage.setRightText(getString(R.string.str_use_free));
-                    break;
-                case CommonConstants.CLOUD_STORAGE_EXPIRED:
-                    cloudStorage.setSummary(getString(R.string.str_expired));
-                    cloudStorage.setRightText(getString(R.string.str_setting_detail));
-                    break;
-                default:
-                    break;
-            }
-            cloudStorage.setEnabled(true);
-        } else {
-            cloudStorage.setEnabled(false);
-            shortTip(R.string.tip_cloud_storage_error);
-            cloudStorage.setRightText(getString(R.string.str_coming_soon));
-        }
-        list.add(0, cloudStorage);
+    public void getStorageSuccess(IpcManageBean bean) {
+        list.add(0, bean);
         adapter.notifyDataSetChanged();
     }
 
@@ -667,7 +639,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             }
         } else if (id == CommonNotifications.cloudStorageChange) {
             list.remove(0);
-            mPresenter.getStorageInfo(device.getId());
+            mPresenter.getStorageList(device.getDeviceid());
         }
     }
 
@@ -1413,10 +1385,15 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                 holder.setText(R.id.tv_summary, bean.getSummary());
                 holder.setText(R.id.btn_detail, bean.getRightText());
                 btnDetail.setEnabled(bean.isEnabled());
+                if (bean.getTagImageResId() != -1) {
+                    holder.setImageResource(R.id.iv_tag, bean.getTagImageResId());
+                }
                 btnDetail.setOnClickListener(v -> {
                     if (bean.getTitle().equals(getString(R.string.str_cloud_storage))) {
                         if (bean.getStatus() == CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
-                            Router.withApi(SunmiServiceApi.class).goToWebViewCloud(CommonConfig.CLOUD_STORAGE_URL, device.getDeviceid());
+                            ArrayList<String> snList = new ArrayList<>();
+                            snList.add(device.getDeviceid());
+                            Router.withApi(SunmiServiceApi.class).goToWebViewCloud(CommonConfig.CLOUD_STORAGE_URL, snList);
                         } else {
                             Router.withApi(SunmiServiceApi.class).goToServiceDetail(device.getDeviceid(), true, device.getName());
                         }

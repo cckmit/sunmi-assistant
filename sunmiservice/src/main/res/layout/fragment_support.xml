@@ -71,7 +71,7 @@
                     android:layout_below="@id/tv_tip_cloud"
                     android:layout_marginTop="@dimen/dp_20"
                     android:clickable="false"
-                    android:text="@string/str_use_free" />
+                    android:text="@string/str_subscribe_now" />
 
                 <ImageView
                     android:id="@+id/iv_tip_free"

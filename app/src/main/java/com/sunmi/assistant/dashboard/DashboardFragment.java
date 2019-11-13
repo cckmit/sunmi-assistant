@@ -25,16 +25,19 @@ import android.widget.TextView;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.ui.ScrollableViewPager;
 import com.sunmi.ipc.config.IpcConstants;
+import com.sunmi.sunmiservice.cloud.WebViewCloudServiceActivity_;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseMvpFragment;
+import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.FilterItem;
@@ -89,6 +92,9 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     View mNoFsTip;
     @ViewById(R.id.layout_dashboard_error)
     View mLayoutError;
+
+    @ViewById(R.id.ll_floating)
+    LinearLayout llFloating;
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
@@ -277,6 +283,17 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mPresenter.init();
     }
 
+    @Click(R.id.iv_close)
+    void clickClose() {
+        llFloating.setVisibility(View.GONE);
+        mPresenter.saveShopBundledCloudInfo(false);
+    }
+
+    @Click(R.id.btn_floating)
+    void clickFloating() {
+        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConfig.CLOUD_STORAGE_URL).start();
+    }
+
     @Override
     public PageContract.ParentPresenter getPresenter() {
         return mPresenter;
@@ -371,6 +388,16 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         }
     }
 
+    @UiThread
+    @Override
+    public void updateFloating(boolean showFloating) {
+        if (showFloating) {
+            llFloating.setVisibility(View.VISIBLE);
+        } else {
+            llFloating.setVisibility(View.GONE);
+        }
+    }
+
     private void updateStickyPeriodTab(Activity activity, boolean isShow, boolean animated) {
         if (activity == null) {
             return;
@@ -417,7 +444,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         } else if (id == CommonNotifications.companyNameChanged) {
             mShopMenuPopupHelper.setCompanyName(SpUtils.getCompanyName());
         } else if (id == CommonNotifications.shopSwitched) {
-            mPresenter.reload(Constants.FLAG_SAAS | Constants.FLAG_FS | Constants.FLAG_CUSTOMER);
+            mPresenter.reload(Constants.FLAG_SAAS | Constants.FLAG_FS | Constants.FLAG_CUSTOMER | Constants.FLAG_BUNDLED_LIST);
         } else if (id == CommonNotifications.shopNameChanged
                 || id == CommonNotifications.importShop
                 || id == CommonNotifications.shopCreate) {
@@ -425,7 +452,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         } else if (id == CommonNotifications.shopSaasDock) {
             mPresenter.reload(Constants.FLAG_SAAS);
         } else if (id == IpcConstants.refreshIpcList) {
-            mPresenter.reload(Constants.FLAG_FS);
+            mPresenter.reload(Constants.FLAG_FS|Constants.FLAG_BUNDLED_LIST);
         }
     }
 

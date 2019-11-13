@@ -14,7 +14,8 @@ public class Constants {
     public static final int FLAG_SAAS = 0x2;
     public static final int FLAG_FS = 0x4;
     public static final int FLAG_CUSTOMER = 0x8;
-    public static final int FLAG_ALL_MASK = 0xF;
+    public static final int FLAG_BUNDLED_LIST = 0x10;
+    public static final int FLAG_ALL_MASK = 0x1F;
 
     public static final int TIME_PERIOD_INIT = 0;
     public static final int TIME_PERIOD_TODAY = 1;
@@ -41,6 +42,7 @@ public class Constants {
     public static final int DATA_SOURCE_IMPORT = 0x2;
     public static final int DATA_SOURCE_FS = 0x4;
     public static final int DATA_SOURCE_CUSTOMER = 0x8;
+    public static final int DATA_SOURCE_FLOATING = 0x10;
 
     public static final int IMPORT_NONE = 0;
     public static final int IMPORT_DOING = 1;
