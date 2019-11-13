@@ -23,7 +23,6 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.model.PlatformInfo;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
-import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
@@ -58,7 +57,7 @@ public class ImportOrderSelectPlatformActivity extends BaseActivity {
         tvTip.setText(R.string.import_order_select_shop_cash_register_software);
         btnComplete.setText(R.string.str_next);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        CommonHelper.isCanClick(btnComplete, false);
+        btnComplete.setEnabled(false);
         getPlatformList();
     }
 
@@ -111,7 +110,7 @@ public class ImportOrderSelectPlatformActivity extends BaseActivity {
                 selectedIndex = holder.getAdapterPosition();
                 selectPlatformBean = bean;
                 notifyDataSetChanged();
-                CommonHelper.isCanClick(btnComplete, true);
+                btnComplete.setEnabled(true);
             });
             if (selectedIndex == holder.getAdapterPosition()) {
                 tvPlatform.setTextColor(ContextCompat.getColor(mContext, R.color.common_orange));

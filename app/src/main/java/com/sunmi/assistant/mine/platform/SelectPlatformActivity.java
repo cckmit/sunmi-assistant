@@ -28,7 +28,6 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.model.PlatformInfo;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
-import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
@@ -72,7 +71,7 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         initRecycler();
-        CommonHelper.isCanClick(btnNext, false);
+        btnNext.setEnabled(false);
         getPlatformList();
     }
 
@@ -159,7 +158,7 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
                 selectPlatform = bean.getSaas_name();
                 selectSaasSource = bean.getSaas_source();
                 notifyDataSetChanged();
-                CommonHelper.isCanClick(btnNext, true);
+                btnNext.setEnabled(true);
             });
             if (selectedIndex == holder.getAdapterPosition()) {
                 tvPlatform.setTextColor(ContextCompat.getColor(mContext, R.color.common_orange));
