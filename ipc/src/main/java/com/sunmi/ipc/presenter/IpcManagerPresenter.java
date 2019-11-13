@@ -1,8 +1,12 @@
 package com.sunmi.ipc.presenter;
 
+import android.content.Context;
+
+import com.sunmi.ipc.R;
 import com.sunmi.ipc.contract.IpcManagerContract;
 import com.sunmi.ipc.model.CloudTimeSlotResp;
 import com.sunmi.ipc.model.IotcCmdResp;
+import com.sunmi.ipc.model.IpcManageBean;
 import com.sunmi.ipc.model.StorageListResp;
 import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.model.VideoTimeSlotBean;
@@ -13,8 +17,11 @@ import com.tutk.IOTC.P2pCmdCallback;
 import java.util.ArrayList;
 import java.util.List;
 
+import sunmi.common.base.BaseApplication;
 import sunmi.common.base.BasePresenter;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.DateTimeUtils;
 
 /**
  * Description:
@@ -160,15 +167,18 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
     }
 
     @Override
-    public void getStorageInfo(int deviceId) {
-        IpcCloudApi.getInstance().getStorageInfo(deviceId, new RetrofitCallback<StorageListResp>() {
+    public void getStorageList(String deviceSn) {
+        List<String> snList = new ArrayList<>();
+        snList.add(deviceSn);
+        IpcCloudApi.getInstance().getStorageList(snList, new RetrofitCallback<StorageListResp>() {
             @Override
             public void onSuccess(int code, String msg, StorageListResp data) {
                 if (isViewAttached()) {
                     if (data.getDeviceList().size() > 0) {
-                        mView.getStorageSuccess(data.getDeviceList().get(0));
+                        mView.getStorageSuccess(getStorage(data.getDeviceList().get(0), BaseApplication.getContext()));
                     } else {
-                        mView.getStorageSuccess(null);
+                        mView.getStorageSuccess(getStorage(null, BaseApplication.getContext()));
+                        mView.shortTip(R.string.tip_cloud_storage_error);
                     }
                 }
             }
@@ -176,9 +186,38 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
             @Override
             public void onFail(int code, String msg, StorageListResp data) {
                 if (isViewAttached()) {
-                    mView.getStorageSuccess(null);
+                    mView.getStorageSuccess(getStorage(null, BaseApplication.getContext()));
+                    mView.shortTip(R.string.tip_cloud_storage_error);
                 }
             }
         });
     }
+
+    private IpcManageBean getStorage(StorageListResp.DeviceListBean data, Context context) {
+        IpcManageBean cloudStorage = new IpcManageBean(R.mipmap.ipc_cloud_storage, context.getString(R.string.str_cloud_storage),
+                context.getString(R.string.str_setting_detail));
+        if (data != null) {
+            cloudStorage.setEnabled(true);
+            cloudStorage.setStatus(data.getStatus());
+            if (data.getActiveStatus() == CommonConstants.ACTIVE_CLOUD_INACTIVATED && data.getStatus() != CommonConstants.CLOUD_STORAGE_ALREADY_OPENED) {
+                cloudStorage.setSummary(context.getString(R.string.str_subscribe_free));
+                cloudStorage.setRightText(context.getString(R.string.str_use_free));
+                cloudStorage.setTagImageResId(R.mipmap.ipc_cloud_free_half_year);
+            } else if (data.getStatus() == CommonConstants.CLOUD_STORAGE_ALREADY_OPENED) {
+                cloudStorage.setTitle(data.getServiceName());
+                cloudStorage.setSummary(context.getString(R.string.str_remaining_validity_period,
+                        DateTimeUtils.secondToPeriod(data.getValidTime())));
+            } else if (data.getStatus() == CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
+                cloudStorage.setSummary(context.getString(R.string.str_subscribe_free));
+                cloudStorage.setRightText(context.getString(R.string.str_subscribe_now));
+            } else if (data.getStatus() == CommonConstants.CLOUD_STORAGE_EXPIRED) {
+                cloudStorage.setSummary(context.getString(R.string.str_expired));
+            }
+        } else {
+            cloudStorage.setRightText(context.getString(R.string.str_coming_soon));
+            cloudStorage.setEnabled(false);
+        }
+        return cloudStorage;
+    }
+
 }

@@ -134,7 +134,9 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
                         showErrror(bean.getRenewErrorCode());
 
                     } else {
-                        WebViewCloudServiceActivity_.intent(context).deviceSn(bean.getDeviceSn())
+                        ArrayList<String> snList = new ArrayList<>();
+                        snList.add(bean.getDeviceSn());
+                        WebViewCloudServiceActivity_.intent(context).snList(snList)
                                 .mUrl(CommonConfig.CLOUD_STORAGE_URL).start();
                     }
                 }

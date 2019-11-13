@@ -25,6 +25,8 @@ public interface DashboardContract {
 
         void loadDataFailed();
 
+        void updateFloating(boolean showFloating);
+
     }
 
     interface Presenter extends PageContract.ParentPresenter {

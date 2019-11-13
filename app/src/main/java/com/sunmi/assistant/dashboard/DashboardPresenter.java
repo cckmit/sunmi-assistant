@@ -11,18 +11,26 @@ import com.sunmi.assistant.dashboard.customer.CustomerFragment;
 import com.sunmi.assistant.dashboard.customer.CustomerFragment_;
 import com.sunmi.assistant.dashboard.overview.OverviewFragment;
 import com.sunmi.assistant.dashboard.overview.OverviewFragment_;
+import com.sunmi.bean.BundleServiceMsg;
 import com.sunmi.ipc.rpc.IpcCloudApi;
+import com.sunmi.rpc.ServiceApi;
+
+import org.litepal.crud.DataSupport;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.CustomerHistoryResp;
 import sunmi.common.model.FilterItem;
 import sunmi.common.model.ShopAuthorizeInfoResp;
+import sunmi.common.model.ShopBundledCloudInfo;
 import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopListResp;
 import sunmi.common.notification.BaseNotification;
@@ -30,6 +38,7 @@ import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.ThreadPool;
 import sunmi.common.utils.log.LogCat;
 
 
@@ -57,6 +66,10 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     private boolean mShowLoading;
 
     private RefreshTask mTask;
+
+    private ShopBundledCloudInfo info;
+
+    private boolean mShowFloating;
 
     @Override
     public void init() {
@@ -147,6 +160,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             flag |= Constants.FLAG_SAAS;
             flag |= Constants.FLAG_FS;
             flag |= Constants.FLAG_CUSTOMER;
+            flag |= Constants.FLAG_BUNDLED_LIST;
             load(flag, false, showLoading);
         } else {
             PageContract.PagePresenter current = getCurrent();
@@ -178,6 +192,10 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         }
         if ((loadFlag & Constants.FLAG_FS) != 0) {
             loadFs();
+        }
+
+        if ((loadFlag & Constants.FLAG_BUNDLED_LIST) != 0) {
+            loadBundledList();
         }
     }
 
@@ -330,6 +348,53 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 });
     }
 
+    private void loadBundledList() {
+        info = DataSupport.where("shopId=?", String.valueOf(mShopId)).findFirst(ShopBundledCloudInfo.class);
+        if (info == null) {
+            info = new ShopBundledCloudInfo(mShopId);
+        }
+        mShowFloating = info.isFloatingShow();
+        ServiceApi.getInstance().getBundledList(new RetrofitCallback<BundleServiceMsg>() {
+            @Override
+            public void onSuccess(int code, String msg, BundleServiceMsg data) {
+                List<BundleServiceMsg.SubscriptionListBean> beans = data.getSubscriptionList();
+                Set<String> oldSet = info.getSnSet();
+                Set<String> newSet = new HashSet<>();
+                if (beans != null && beans.size() > 0) {
+                    for (BundleServiceMsg.SubscriptionListBean bean : beans) {
+                        if (bean.getActiveStatus() == CommonConstants.ACTIVE_CLOUD_INACTIVATED) {
+                            newSet.add(bean.getDeviceSn());
+                            if (!oldSet.contains(bean.getDeviceSn())) {
+                                mShowFloating = true;
+                            }
+                        }
+                    }
+                    info.setSnSet(newSet);
+                }
+                mLoadFlag &= ~Constants.FLAG_BUNDLED_LIST;
+                if (mShowFloating) {
+                    mSource |= Constants.DATA_SOURCE_FLOATING;
+                } else {
+                    mSource &= ~Constants.DATA_SOURCE_FLOATING;
+                }
+                loadComplete();
+                if (isViewAttached()) {
+                    mView.updateFloating(mShowFloating);
+                }
+                saveShopBundledCloudInfo(mShowFloating);
+            }
+
+            @Override
+            public void onFail(int code, String msg, BundleServiceMsg data) {
+                mLoadFlag &= ~Constants.FLAG_BUNDLED_LIST;
+                loadComplete();
+                if (isViewAttached()) {
+                    mView.updateFloating(mShowFloating);
+                }
+            }
+        });
+    }
+
     private void loadComplete() {
         if (mLoadFlag != 0) {
             return;
@@ -360,6 +425,13 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             page.release();
         }
         mPages.clear();
+    }
+
+    public void saveShopBundledCloudInfo(boolean isShowFloating) {
+        info.setFloatingShow(isShowFloating);
+        ThreadPool.getCachedThreadPool().submit(() -> {
+            info.saveOrUpdate("shopId=?", String.valueOf(mShopId));
+        });
     }
 
     private class RefreshTask implements Runnable {

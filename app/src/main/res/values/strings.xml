@@ -286,6 +286,4 @@
     <string name="company_shop_region_hint">必选</string>
     <string name="shop_create_new">Create new store</string>
     <string name="str_free_half_year">首次免半年</string>
-    <string name="btn_free_collection">免费领取</string>
-
 </resources>

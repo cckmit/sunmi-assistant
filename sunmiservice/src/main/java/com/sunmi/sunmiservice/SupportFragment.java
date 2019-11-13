@@ -2,6 +2,8 @@ package com.sunmi.sunmiservice;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.sunmi.sunmiservice.cloud.WebViewCloudServiceActivity_;
 import com.tencent.mm.opensdk.constants.Build;
@@ -18,10 +20,13 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
+import org.litepal.crud.DataSupport;
 
 import sunmi.common.base.BaseFragment;
 import sunmi.common.constant.CommonConfig;
+import sunmi.common.model.ShopBundledCloudInfo;
 import sunmi.common.utils.NetworkUtils;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.view.TitleBarView;
 
 @EFragment(resName = "fragment_support")
@@ -31,6 +36,10 @@ public class SupportFragment extends BaseFragment
 
     @ViewById(resName = "title_bar")
     TitleBarView titleBar;
+    @ViewById(resName = "tv_cloud_storage")
+    TextView tvCloudStorage;
+    @ViewById(resName = "iv_tip_free")
+    ImageView ivTipFree;
 
 
     private IWXAPI api;// 第三方app和微信通信的openApi接口
@@ -44,6 +53,11 @@ public class SupportFragment extends BaseFragment
     @AfterViews
     void init() {
         titleBar.getRightTextView().setOnClickListener(this);
+        ShopBundledCloudInfo info = DataSupport.where("shopId=?", String.valueOf(SpUtils.getShopId())).findFirst(ShopBundledCloudInfo.class);
+        if (info != null && info.getSnSet().size() > 0) {
+            tvCloudStorage.setText(R.string.str_use_free);
+            ivTipFree.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

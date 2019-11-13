@@ -239,6 +239,7 @@
         android:id="@+id/btn_renewal"
         style="@style/BtnBigOrange"
         android:layout_marginTop="@dimen/dp_24"
+        android:visibility="gone"
         android:text="@string/str_renewal" />
 
     <include

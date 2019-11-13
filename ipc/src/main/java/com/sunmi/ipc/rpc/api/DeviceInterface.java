@@ -2,6 +2,7 @@ package com.sunmi.ipc.rpc.api;
 
 import sunmi.common.router.model.IpcListResp;
 import com.sunmi.ipc.model.IpcNewFirmwareResp;
+import com.sunmi.ipc.model.StorageListResp;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -45,5 +46,13 @@ public interface DeviceInterface {
      */
     @POST(path + "firmware/detect")
     Call<BaseResponse<IpcNewFirmwareResp>> newFirmware(@Body BaseRequest request);
+
+    /**
+     * 通过设备sn查询ipc设备捆绑云存储服务信息
+     * @param request
+     * @return
+     */
+    @POST(path + "getStorageList")
+    Call<BaseResponse<StorageListResp>> getStorageList(@Body BaseRequest request);
 
 }
