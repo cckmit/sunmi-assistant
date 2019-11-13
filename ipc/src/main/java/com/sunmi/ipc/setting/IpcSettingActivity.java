@@ -975,9 +975,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         CommonDialog commonDialog = new CommonDialog.Builder(this)
                 .setTitle(R.string.ipc_setting_dialog_upgrade)
                 .setMessage(getString(R.string.ipc_setting_version_current, mDevice.getFirmware()) + "\n" +
-                        getString(R.string.ipc_setting_dialog_upgrade_download_time,
-                                DeviceTypeUtils.getInstance().isSS1(mDevice.getModel()) ?
-                                        IpcConstants.SS_UPGRADE_TIME : IpcConstants.FS_UPGRADE_TIME))
+                        getString(DeviceTypeUtils.getInstance().isSS1(mDevice.getModel()) ?
+                                R.string.ipc_setting_dialog_upgrade_download_time_ss :
+                                R.string.ipc_setting_dialog_upgrade_download_time_fs))
                 .setConfirmButton(R.string.ipc_setting_dialog_upgrade_ok, (dialog, which) -> {
                     gotoIpcSettingVersionActivity();
                 })

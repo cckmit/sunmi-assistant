@@ -411,8 +411,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
      */
     private void backWarningDialog() {
         CommonDialog successDialog = new CommonDialog.Builder(this)
-                .setMessage(getString(R.string.ipc_setting_dialog_upgrade_warning,
-                        isSS ? IpcConstants.SS_UPGRADE_TIME : IpcConstants.FS_UPGRADE_TIME))
+                .setMessage(isSS ? R.string.ipc_setting_dialog_upgrade_warning_ss : R.string.ipc_setting_dialog_upgrade_warning_fs)
                 .setConfirmButton(R.string.str_confirm).create();
         successDialog.showWithOutTouchable(true);
         successDialog.setCancelable(false);
@@ -469,8 +468,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
     void dialogUpgradeTip() {
         hideLoadingDialog();
         isUpgradeProcess = false;
-        tvLightTip.setText(getString(R.string.import_order_dialog_look_light_status,
-                isSS ? IpcConstants.SS_UPGRADE_TIME : IpcConstants.FS_UPGRADE_TIME));
+        tvLightTip.setText(isSS ? R.string.import_order_dialog_look_light_status_ss : R.string.import_order_dialog_look_light_status_fs);
         ipcSettingUpgradeGroup.setVisibility(View.VISIBLE);
         tvIpcStatus.setVisibility(View.GONE);
         tvIpcUpgradeTip.setVisibility(View.GONE);

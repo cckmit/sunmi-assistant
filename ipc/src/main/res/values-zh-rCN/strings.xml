@@ -92,7 +92,6 @@
     <string name="ipc_setting_tip_network_detection">正在检测网络环境，请稍后…</string>
     <string name="ipc_setting_tip_network_dismatch">当前设备与手机不在同一路由器下</string>
     <string name="ipc_setting_dialog_upgrade">版本更新</string>
-    <string name="ipc_setting_dialog_upgrade_download_time">升级时间预计需要%s分钟</string>
     <string name="ipc_setting_dialog_upgrade_ok">现在更新</string>
     <string name="str_in_later">以后再说</string>
     <string name="ipc_setting_dialog_upgrade_progress">下载中…%s%%</string>
@@ -291,7 +290,8 @@
     <string name="import_order_dialog_green_light">绿灯闪烁</string>
     <string name="import_order_dialog_net_exception">设备网络异常</string>
     <string name="import_order_dialog_green_light_alway_on">绿灯常亮</string>
-    <string name="import_order_dialog_look_light_status">您升级过程切勿断电（约%s分钟）\t\n该期间指示灯会经过如下变化：</string>
+    <string name="import_order_dialog_look_light_status_ss">您升级过程切勿断电（约3分钟）\t\n该期间指示灯会经过如下变化：</string>
+    <string name="import_order_dialog_look_light_status_fs">您升级过程切勿断电（约6分钟）\t\n该期间指示灯会经过如下变化：</string>
     <string name="ipc_setting_dialog_upgrade_title">下载并安装最新版本</string>
     <string name="ipc_setting_dialog_download_install">下载并安装</string>
     <string name="ipc_setting_dialog_progress_need_time">该过程会耗费一定的时间，\t\n 且不能关闭该流程。</string>
@@ -305,7 +305,10 @@
     <string name="import_order_dialog_upgrade_success">升级成功</string>
     <string name="import_order_dialog_blue_light_alway_on">蓝灯常亮</string>
     <string name="msg_dialog_format_sd_before_adjust">存储卡需要格式化后才能使用调整画面功能，点击确认将进入格式化操作页面。</string>
-    <string name="ipc_setting_dialog_upgrade_warning">正在升级中，预计需要%s分钟左右，此过程请勿断电、断网等操作，否则可能会导致设备升级失败。</string>
+    <string name="ipc_setting_dialog_upgrade_warning_ss">正在升级中，预计需要3分钟左右，此过程请勿断电、断网等操作，否则可能会导致设备升级失败。</string>
+    <string name="ipc_setting_dialog_upgrade_warning_fs">正在升级中，预计需要6分钟左右，此过程请勿断电、断网等操作，否则可能会导致设备升级失败。</string>
+    <string name="ipc_setting_dialog_upgrade_download_time_ss">升级时间预计需要3分钟</string>
+    <string name="ipc_setting_dialog_upgrade_download_time_fs">升级时间预计需要6分钟</string>
     <string name="ipc_setting_dev_downloading">软件下载中</string>
     <string name="ipc_setting_dev_writing">软件写入中</string>
 </resources>
