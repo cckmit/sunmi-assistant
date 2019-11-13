@@ -319,7 +319,9 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     public void setSource(int source) {
         mHasInit = true;
         mHasData = Utils.hasAuth(source) || Utils.hasFs(source);
-        mNoFsTip.setVisibility(!Utils.hasFs(source) && Utils.hasCustomer(source) ?
+        mNoFsTip.setVisibility(!Utils.hasFs(source)
+                && Utils.hasCustomer(source)
+                && !Utils.hasFloating(source) ?
                 View.VISIBLE : View.INVISIBLE);
         showContent();
     }
@@ -452,7 +454,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         } else if (id == CommonNotifications.shopSaasDock) {
             mPresenter.reload(Constants.FLAG_SAAS);
         } else if (id == IpcConstants.refreshIpcList) {
-            mPresenter.reload(Constants.FLAG_FS|Constants.FLAG_BUNDLED_LIST);
+            mPresenter.reload(Constants.FLAG_FS | Constants.FLAG_BUNDLED_LIST);
         }
     }
 
