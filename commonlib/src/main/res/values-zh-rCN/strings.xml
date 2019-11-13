@@ -133,4 +133,6 @@
     <string name="str_subscribe_free">订阅云存储套餐</string>
     <string name="tip_cloud_storage_error">云存储服务数据无响应，请稍后重试</string>
     <string name="str_subscribe_now">立即订阅</string>
+    <string name="str_take_photo">拍照</string>
+    <string name="str_choose_from_album">从相册选择</string>
 </resources>
