@@ -20,6 +20,8 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
+import java.util.ArrayList;
+
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
@@ -118,7 +120,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
             tvSubScribeTime.setText(DateTimeUtils.secondToDate(bean.getSubscribeTime(), "yyyy-MM-dd HH:mm"));
             tvExpireTime.setText(DateTimeUtils.secondToDate(bean.getExpireTime(), "yyyy-MM-dd HH:mm"));
             if (bean.getStatus() != CommonConstants.CLOUD_STORAGE_EXPIRED) {
-                tvRemaining.setText(DateTimeUtils.secondToPeriod(bean.getValidTime(), context));
+                tvRemaining.setText(DateTimeUtils.secondToPeriod(bean.getValidTime()));
             } else {
                 tvStatus.setText(R.string.str_expired);
                 tvRemaining.setText("- -");
@@ -169,7 +171,9 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
                     break;
             }
         } else {
-            WebViewCloudServiceActivity_.intent(context).deviceSn(mSn).mUrl(CommonConfig.CLOUD_STORAGE_URL).start();
+            ArrayList<String> snList = new ArrayList<>();
+            snList.add(mSn);
+            WebViewCloudServiceActivity_.intent(context).snList(snList).mUrl(CommonConfig.CLOUD_STORAGE_URL).start();
         }
     }
 

@@ -52,4 +52,8 @@ public class CommonConstants {
     public static final int CLOUD_STORAGE_RENEWABLE = 1;
     public static final int CLOUD_STORAGE_NOT_RENEWABLE = 2;
 
+    //云存储捆绑服务状态
+    public static final int ACTIVE_CLOUD_INACTIVATED = 1;
+    public static final int ACTIVE_CLOUD_ACTIVATED=2;
+
 }

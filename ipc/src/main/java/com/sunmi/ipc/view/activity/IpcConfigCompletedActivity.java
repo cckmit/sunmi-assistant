@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.config.IpcConstants;
-import sunmi.common.router.model.IpcListResp;
+import com.sunmi.ipc.model.StorageListResp;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.ipc.setting.IpcSettingSdcardActivity_;
@@ -32,6 +32,7 @@ import java.util.List;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.rpc.sunmicall.ResponseBean;
@@ -68,6 +69,8 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     TextView tvResult;
     @ViewById(resName = "tv_tip")
     TextView tvTip;
+    @ViewById(resName = "btn_cloud")
+    Button btnCloud;
 
     @Extra
     String shopId;
@@ -77,12 +80,11 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     boolean isSunmiLink;
     @Extra
     ArrayList<SunmiDevice> sunmiDevices;
-
+    SunmiDevice deviceChoose;
     private List<SunmiDevice> list = new ArrayList<>();
     private List<SunmiDevice> successList = new ArrayList<>();
+    private List<String> snList = new ArrayList<>();
     private int failCount;
-
-    SunmiDevice deviceChoose;
 
     @AfterViews
     void init() {
@@ -92,6 +94,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                     failCount++;
                 } else {
                     successList.add(sm);
+                    snList.add(sm.getDeviceid());
                 }
             }
             if (failCount == sunmiDevices.size()) {
@@ -104,6 +107,8 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                     btnComplete.setText(R.string.str_adjust_screen);
                     btnComplete.setVisibility(View.VISIBLE);
                     btnFinish.setVisibility(View.VISIBLE);
+                } else if (CommonConstants.TYPE_IPC_SS == deviceType) {
+                    initSs();
                 } else {
                     btnComplete.setVisibility(View.VISIBLE);
                 }
@@ -154,6 +159,11 @@ public class IpcConfigCompletedActivity extends BaseActivity {
             StartConfigSMDeviceActivity_.intent(context)
                     .deviceType(deviceType).shopId(shopId).start();
         finish();
+    }
+
+    @Click(resName = "btn_cloud")
+    void cloudClick(){
+
     }
 
     @Override
@@ -224,6 +234,33 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                 .setConfirmButton(R.string.str_confirm, (dialog, which) -> {
                     IpcSettingSdcardActivity_.intent(this).mDevice(device).start();
                 }).create().show();
+    }
+
+
+    protected void initSs() {
+        IpcCloudApi.getInstance().getStorageList(snList, new RetrofitCallback<StorageListResp>() {
+            @Override
+            public void onSuccess(int code, String msg, StorageListResp data) {
+                List<StorageListResp.DeviceListBean> beans = data.getDeviceList();
+                snList.clear();
+                for (StorageListResp.DeviceListBean bean : beans) {
+                    if (bean.getActiveStatus() == CommonConstants.ACTIVE_CLOUD_INACTIVATED) {
+                        snList.add(bean.getDeviceSn());
+                    }
+                }
+                if (snList.size() > 0) {
+                    btnCloud.setVisibility(View.VISIBLE);
+                    btnFinish.setVisibility(View.VISIBLE);
+                } else {
+                    btnComplete.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, StorageListResp data) {
+                btnComplete.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     private void initList() {

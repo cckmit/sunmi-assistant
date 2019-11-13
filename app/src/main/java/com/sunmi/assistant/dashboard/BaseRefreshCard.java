@@ -90,6 +90,10 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         return Utils.hasCustomer(mSource);
     }
 
+    public boolean hasFloating() {
+        return Utils.hasFloating(mSource);
+    }
+
     public Model getModel() {
         return mModel;
     }

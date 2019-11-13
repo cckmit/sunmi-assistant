@@ -26,6 +26,8 @@ import com.commonlibrary.BuildConfig;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xiaomi.mipush.sdk.MiPushClient;
 
+import org.litepal.crud.DataSupport;
+
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -34,6 +36,7 @@ import java.util.Locale;
 import me.leolin.shortcutbadger.ShortcutBadger;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.model.ShopBundledCloudInfo;
 import sunmi.common.model.UserInfoBean;
 import sunmi.common.rpc.mqtt.MqttManager;
 import sunmi.common.utils.log.LogCat;
@@ -452,6 +455,7 @@ public class CommonHelper {
         SpUtils.setUnreadMsg(-1);
         SpUtils.setUnreadSystemMsg(-1);
         SpUtils.setUnreadDeviceMsg(-1);
+        DataSupport.deleteAll(ShopBundledCloudInfo.class);
         BaseApplication.isCheckedToken = false;
         ShortcutBadger.applyCount(BaseApplication.getInstance(), 0);
 //        MQTTManager.getInstance().disconnect();

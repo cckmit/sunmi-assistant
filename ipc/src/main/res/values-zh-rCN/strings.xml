@@ -306,6 +306,7 @@
     <string name="import_order_dialog_blue_light_alway_on">蓝灯常亮&#160;&#160;&#160;&#160;</string>
     <string name="msg_dialog_format_sd_before_adjust">存储卡需要格式化后才能使用调整画面功能，点击确认将进入格式化操作页面。</string>
     <string name="ipc_setting_dialog_upgrade_warning">正在升级中，预计需要%s分钟左右，此过程请勿断电、断网等操作，否则可能会导致设备升级失败。</string>
+    <string name="btn_cloud_free_half_year">半年云存储免费领取</string>
 </resources>
 
 

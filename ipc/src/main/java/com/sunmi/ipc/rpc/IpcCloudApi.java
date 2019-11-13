@@ -21,7 +21,6 @@ import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.rpc.api.DeviceInterface;
 import com.sunmi.ipc.rpc.api.FaceInterface;
 import com.sunmi.ipc.rpc.api.MediaInterface;
-import com.sunmi.ipc.rpc.api.StorageInterface;
 import com.xiaojinzi.component.anno.ServiceAnno;
 
 import org.json.JSONArray;
@@ -602,15 +601,15 @@ public class IpcCloudApi implements IpcCloudApiAnno {
      * shop_id	是	int64	店铺id
      * device_id	否	int64	设备id 不传为查询所有设
      */
-    public void getStorageInfo(int deviceId, RetrofitCallback<StorageListResp> callback) {
+    public void getStorageList(List<String> snList, RetrofitCallback<StorageListResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", SpUtils.getCompanyId())
                     .put("shop_id", SpUtils.getShopId())
-                    .put("device_id", deviceId)
+                    .put("device_sn_list", snList)
                     .toString();
-            SunmiStoreRetrofitClient.getInstance().create(StorageInterface.class)
-                    .getStorageInfo(new BaseRequest(params))
+            SunmiStoreRetrofitClient.getInstance().create(DeviceInterface.class)
+                    .getStorageList(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();

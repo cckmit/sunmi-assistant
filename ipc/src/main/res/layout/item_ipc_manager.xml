@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_96"
     android:layout_marginStart="@dimen/dp_15"
@@ -30,10 +31,9 @@
         android:id="@+id/iv_tag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/tv_title"
-        android:src="@mipmap/ipc_cloud_free_half_year"
         android:layout_marginTop="@dimen/dp_28"
-        android:visibility="gone"/>
+        android:layout_toEndOf="@id/tv_title"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tv_summary"

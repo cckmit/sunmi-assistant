@@ -226,4 +226,8 @@ public class Utils {
         return (source & Constants.DATA_SOURCE_CUSTOMER) != 0;
     }
 
+    public static boolean hasFloating(int source){
+        return (source & Constants.DATA_SOURCE_FLOATING) != 0;
+    }
+
 }

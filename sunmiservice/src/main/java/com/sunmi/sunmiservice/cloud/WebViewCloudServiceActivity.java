@@ -35,6 +35,7 @@ import org.androidannotations.annotations.ViewById;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,6 +45,7 @@ import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
+import sunmi.common.view.TitleBarView;
 import sunmi.common.view.webview.SMWebView;
 import sunmi.common.view.webview.SMWebViewClient;
 
@@ -53,17 +55,20 @@ import sunmi.common.view.webview.SMWebViewClient;
  * @author linyuanpeng on 2019-10-25.
  */
 @EActivity(resName = "activity_webview_cloud")
-public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceWebChromeClient.Callback {
+public class  WebViewCloudServiceActivity extends BaseActivity implements H5FaceWebChromeClient.Callback {
 
     private final int timeout = 15_000;
     @ViewById(resName = "webView")
     SMWebView webView;
     @ViewById(resName = "layout_network_error")
     View networkError;
+    @ViewById(resName = "title_bar")
+    TitleBarView titleBar;
+
     @Extra
     String mUrl;
     @Extra
-    String deviceSn;
+    ArrayList<String> snList;
     private boolean hasSendDeviceInfo = false;
     private boolean beginLoading = false;
     private CountDownTimer countDownTimer;
@@ -223,7 +228,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
                                 .put("token", SpUtils.getStoreToken())
                                 .put("company_id", SpUtils.getCompanyId())
                                 .put("shop_id", SpUtils.getShopId())
-                                .put("sn", deviceSn).toString();
+                                .put("sn_list", snList).toString();
                         webView.evaluateJavascript("javascript:getDeviceInfo('" + params + "')", new ValueCallback<String>() {
                             @Override
                             public void onReceiveValue(String value) {
@@ -257,6 +262,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
     @Click(resName = "btn_refresh")
     void refreshClick() {
         networkError.setVisibility(View.GONE);
+        titleBar.setVisibility(View.GONE);
         webView.setVisibility(View.VISIBLE);
         initWebView();
         webView.loadUrl(mUrl);
@@ -269,6 +275,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
         hideLoadingDialog();
         webView.setVisibility(View.GONE);
         networkError.setVisibility(View.VISIBLE);
+        titleBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -302,7 +309,6 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
             return;
         }
         webView.clearCache(true);
-        super.onBackPressed();
     }
 }
 

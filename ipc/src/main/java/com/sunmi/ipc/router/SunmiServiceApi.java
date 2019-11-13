@@ -5,6 +5,8 @@ import com.xiaojinzi.component.anno.router.HostAnno;
 import com.xiaojinzi.component.anno.router.PathAnno;
 import com.xiaojinzi.component.anno.router.RouterApiAnno;
 
+import java.util.ArrayList;
+
 import sunmi.common.constant.RouterConfig;
 
 /**
@@ -20,5 +22,5 @@ public interface SunmiServiceApi {
     void goToWebViewCloud(@ParameterAnno("mUrl") String url, @ParameterAnno("deviceSn") String sn);
 
     @PathAnno(RouterConfig.SunmiService.SERVICE_DETAIL)
-    void goToServiceDetail(@ParameterAnno("mSn") String sn, @ParameterAnno("isBind") boolean isBind, @ParameterAnno("deviceName") String deviceName);
+    void goToServiceDetail(@ParameterAnno("snList") ArrayList<String> sn, @ParameterAnno("isBind") boolean isBind, @ParameterAnno("deviceName") String deviceName);
 }
