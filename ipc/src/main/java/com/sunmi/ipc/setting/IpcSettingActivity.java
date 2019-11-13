@@ -201,7 +201,20 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 newVersionDialog();
             }
         } else {
-            mVersion.setRightText(resp.getLatest_bin_version());
+            //当前没有升级情况下
+            if (TextUtils.isEmpty(mDevice.getFirmware())) {
+                mVersion.setRightText(resp.getLatest_bin_version());
+            } else if (TextUtils.isEmpty(resp.getLatest_bin_version())) {
+                mVersion.setRightText(mDevice.getFirmware());
+            } else {
+                int mVerDve = Integer.valueOf(mDevice.getFirmware().replace(".", ""));
+                int mVerClo = Integer.valueOf(resp.getLatest_bin_version().replace(".", ""));
+                if (mVerDve >= mVerClo) {
+                    mVersion.setRightText(mDevice.getFirmware());
+                } else {
+                    mVersion.setRightText(resp.getLatest_bin_version());
+                }
+            }
             mVersion.getIvToTextLeft().setVisibility(View.GONE);
         }
         if (isClickVersionUpgrade) {
@@ -963,7 +976,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 .setTitle(R.string.ipc_setting_dialog_upgrade)
                 .setMessage(getString(R.string.ipc_setting_version_current, mDevice.getFirmware()) + "\n" +
                         getString(R.string.ipc_setting_dialog_upgrade_download_time,
-                                DeviceTypeUtils.getInstance().isSS1(mDevice.getModel()) ? "5" : "8"))
+                                DeviceTypeUtils.getInstance().isSS1(mDevice.getModel()) ?
+                                        IpcConstants.SS_UPGRADE_TIME : IpcConstants.FS_UPGRADE_TIME))
                 .setConfirmButton(R.string.ipc_setting_dialog_upgrade_ok, (dialog, which) -> {
                     gotoIpcSettingVersionActivity();
                 })

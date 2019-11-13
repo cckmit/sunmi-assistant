@@ -5,8 +5,8 @@ package com.sunmi.ipc.config;
  */
 public class IpcConstants {
     //ipc 升级时间
-    public static final int SS_UPGRADE_TIME = 150; //ss升级150秒
-    public static final int FS_UPGRADE_TIME = 360; //fs升级360秒
+    public static final String SS_UPGRADE_TIME = "3"; //ss升级分钟
+    public static final String FS_UPGRADE_TIME = "6"; //fs升级分钟
 
     private static int totalEvents = 0x3800;
     public static final int getIpcSettingMessage = totalEvents++;

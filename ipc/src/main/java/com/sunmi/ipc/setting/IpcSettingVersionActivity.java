@@ -90,6 +90,8 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
     ProgressBar mProgress;
     @ViewById(resName = "ipc_setting_upgrade_group")
     Group ipcSettingUpgradeGroup;
+    @ViewById(resName = "tv_light_tip")
+    TextView tvLightTip;
     @Extra
     SunmiDevice mDevice;
     @Extra
@@ -284,7 +286,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
         }
         ResponseBean res = (ResponseBean) args[0];
         if (id == OpcodeConstants.ipcQueryUpgradeStatus) {
-            //查询升级状态
+            //查询升级状态0x3141
             stopTimeoutTimer();
             setLayoutVisible();
             if (TextUtils.equals("1", res.getErrCode())) {
@@ -395,7 +397,8 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
      */
     private void backWarningDialog() {
         CommonDialog successDialog = new CommonDialog.Builder(this)
-                .setMessage(getString(R.string.ipc_setting_dialog_upgrade_warning, isSS ? "5" : "8"))
+                .setMessage(getString(R.string.ipc_setting_dialog_upgrade_warning,
+                        isSS ? IpcConstants.SS_UPGRADE_TIME : IpcConstants.FS_UPGRADE_TIME))
                 .setConfirmButton(R.string.str_confirm).create();
         successDialog.showWithOutTouchable(true);
         successDialog.setCancelable(false);
@@ -452,6 +455,8 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
     void dialogUpgradeTip() {
         hideLoadingDialog();
         isUpgradeProcess = false;
+        tvLightTip.setText(getString(R.string.import_order_dialog_look_light_status,
+                isSS ? IpcConstants.SS_UPGRADE_TIME : IpcConstants.FS_UPGRADE_TIME));
         ipcSettingUpgradeGroup.setVisibility(View.VISIBLE);
         tvIpcStatus.setVisibility(View.GONE);
         tvIpcUpgradeTip.setVisibility(View.GONE);
@@ -495,7 +500,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
 
     @UiThread
     void showProgress(int status, long l) {
-        if (l / 1000 == 1) {
+        if (l / 1000 == 1 && status != IPC_CONNECT_TIMEOUT) {
             isUpgradeProcess = false;
             isUpgradeFail = true;
         }
