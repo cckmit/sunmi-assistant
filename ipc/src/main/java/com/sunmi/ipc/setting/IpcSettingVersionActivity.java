@@ -90,6 +90,8 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
     ProgressBar mProgress;
     @ViewById(resName = "ipc_setting_upgrade_group")
     Group ipcSettingUpgradeGroup;
+    @ViewById(resName = "tv_light_tip")
+    TextView tvLightTip;
     @Extra
     SunmiDevice mDevice;
     @Extra
@@ -158,7 +160,21 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
             tvIpcStatus.setText(getString(R.string.ipc_setting_version_find_new, mResp.getLatest_bin_version()));
             btnUpgrade.setVisibility(View.VISIBLE);
         } else {
-            tvIpcStatus.setText(String.format("%s\n%s", mResp.getLatest_bin_version(), getString(R.string.ipc_setting_version_no_new)));
+            String strVersion;
+            if (TextUtils.isEmpty(mDevice.getFirmware())) {
+                strVersion = mResp.getLatest_bin_version();
+            } else if (TextUtils.isEmpty(mResp.getLatest_bin_version())) {
+                strVersion = mDevice.getFirmware();
+            } else {
+                int mVerDve = Integer.valueOf(mDevice.getFirmware().replace(".", ""));
+                int mVerClo = Integer.valueOf(mResp.getLatest_bin_version().replace(".", ""));
+                if (mVerDve >= mVerClo) {
+                    strVersion = mDevice.getFirmware();
+                } else {
+                    strVersion = mResp.getLatest_bin_version();
+                }
+            }
+            tvIpcStatus.setText(String.format("%s\n%s", strVersion, getString(R.string.ipc_setting_version_no_new)));
             btnUpgrade.setVisibility(View.GONE);
         }
     }
@@ -284,7 +300,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
         }
         ResponseBean res = (ResponseBean) args[0];
         if (id == OpcodeConstants.ipcQueryUpgradeStatus) {
-            //查询升级状态
+            //查询升级状态0x3141
             stopTimeoutTimer();
             setLayoutVisible();
             if (TextUtils.equals("1", res.getErrCode())) {
@@ -395,7 +411,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
      */
     private void backWarningDialog() {
         CommonDialog successDialog = new CommonDialog.Builder(this)
-                .setMessage(getString(R.string.ipc_setting_dialog_upgrade_warning, isSS ? "5" : "8"))
+                .setMessage(isSS ? R.string.ipc_setting_dialog_upgrade_warning_ss : R.string.ipc_setting_dialog_upgrade_warning_fs)
                 .setConfirmButton(R.string.str_confirm).create();
         successDialog.showWithOutTouchable(true);
         successDialog.setCancelable(false);
@@ -452,6 +468,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
     void dialogUpgradeTip() {
         hideLoadingDialog();
         isUpgradeProcess = false;
+        tvLightTip.setText(isSS ? R.string.import_order_dialog_look_light_status_ss : R.string.import_order_dialog_look_light_status_fs);
         ipcSettingUpgradeGroup.setVisibility(View.VISIBLE);
         tvIpcStatus.setVisibility(View.GONE);
         tvIpcUpgradeTip.setVisibility(View.GONE);
@@ -495,7 +512,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
 
     @UiThread
     void showProgress(int status, long l) {
-        if (l / 1000 == 1) {
+        if (l / 1000 == 1 && status != IPC_CONNECT_TIMEOUT) {
             isUpgradeProcess = false;
             isUpgradeFail = true;
         }

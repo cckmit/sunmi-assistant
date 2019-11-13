@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
@@ -9,133 +9,228 @@
     app:layout_constraintTop_toTopOf="parent">
 
     <TextView
-        android:id="@+id/tvTip"
+        android:id="@+id/tv_light_tip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_10"
         android:gravity="center"
-        android:text="@string/import_order_dialog_look_light_status"
-        android:textColor="@color/text_main"
+        android:text="@string/import_order_dialog_look_light_status_ss"
+        android:textColor="@color/text_normal"
         android:textSize="@dimen/sp_14"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tv_upgrade"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/rl_start_blue"
+        android:layout_width="@dimen/dp_72"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_18"
-        android:text="@string/import_order_dialog_upgrading"
-        android:textColor="@color/text_main"
-        android:textSize="@dimen/sp_12"
+        android:layout_marginTop="@dimen/dp_36"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/tv_upgrade_light"
-        app:layout_constraintTop_toBottomOf="@+id/tvTip" />
+        app:layout_constraintRight_toLeftOf="@+id/rl_red"
+        app:layout_constraintTop_toBottomOf="@+id/tv_light_tip">
 
-    <TextView
-        android:id="@+id/tv_upgrade_light"
-        android:layout_width="wrap_content"
+        <ImageView
+            android:id="@+id/iv_start_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@mipmap/oval_blue_solid" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1_5"
+            android:layout_marginTop="@dimen/dp_3"
+            android:layout_toEndOf="@id/iv_start_blue"
+            android:background="@color/common_fill" />
+
+        <TextView
+            android:id="@+id/tv_start_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_start_blue"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_8"
+            android:text="@string/import_order_dialog_blue_light_alway_on"
+            android:textColor="@color/text_main"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_start_blue"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_2"
+            android:text="@string/ipc_setting_dev_downloading"
+            android:textColor="@color/text_normal"
+            android:textSize="@dimen/sp_12" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_red"
+        android:layout_width="@dimen/dp_72"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_16"
-        android:text="@string/import_order_dialog_red_light"
-        android:textColor="@color/text_main"
-        android:textSize="@dimen/sp_14"
-        android:textStyle="bold"
-        app:layout_constraintLeft_toRightOf="@id/tv_upgrade"
+        android:layout_marginTop="@dimen/dp_36"
+        app:layout_constraintLeft_toRightOf="@id/rl_start_blue"
+        app:layout_constraintRight_toLeftOf="@id/rl_green"
+        app:layout_constraintTop_toBottomOf="@+id/tv_light_tip">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1_5"
+            android:layout_marginTop="@dimen/dp_3"
+            android:layout_toStartOf="@id/iv_red"
+            android:background="@color/common_fill" />
+
+        <ImageView
+            android:id="@+id/iv_red"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@mipmap/oval_red_hollow" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1_5"
+            android:layout_marginTop="@dimen/dp_3"
+            android:layout_toEndOf="@id/iv_red"
+            android:background="@color/common_fill" />
+
+        <TextView
+            android:id="@+id/tv_red"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_red"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_8"
+            android:text="@string/import_order_dialog_red_light"
+            android:textColor="@color/text_main"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_red"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_2"
+            android:text="@string/ipc_setting_dev_writing"
+            android:textColor="@color/text_normal"
+            android:textSize="@dimen/sp_12" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_green"
+        android:layout_width="@dimen/dp_72"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_36"
+        app:layout_constraintLeft_toRightOf="@id/rl_red"
+        app:layout_constraintRight_toLeftOf="@id/rl_end_blue"
+        app:layout_constraintTop_toBottomOf="@+id/tv_light_tip">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1_5"
+            android:layout_marginTop="@dimen/dp_3"
+            android:layout_toStartOf="@id/iv_green"
+            android:background="@color/common_fill" />
+
+        <ImageView
+            android:id="@+id/iv_green"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@mipmap/oval_green_hollow" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1_5"
+            android:layout_marginTop="@dimen/dp_3"
+            android:layout_toEndOf="@id/iv_green"
+            android:background="@color/common_fill" />
+
+        <TextView
+            android:id="@+id/tv_green"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_green"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_8"
+            android:text="@string/import_order_dialog_green_light"
+            android:textColor="@color/text_main"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_green"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_2"
+            android:text="@string/import_order_dialog_relanuch"
+            android:textColor="@color/text_normal"
+            android:textSize="@dimen/sp_12" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_end_blue"
+        android:layout_width="@dimen/dp_72"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_36"
+        app:layout_constraintLeft_toRightOf="@id/rl_green"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTip" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_light_tip">
 
-    <TextView
-        android:id="@+id/tv_relaunch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
-        android:text="@string/import_order_dialog_net_exception"
-        android:textColor="@color/text_main"
-        android:textSize="@dimen/sp_12"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/tv_relaunch_light"
-        app:layout_constraintTop_toBottomOf="@+id/tv_upgrade" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1_5"
+            android:layout_marginTop="@dimen/dp_3"
+            android:layout_toStartOf="@id/iv_end_blue"
+            android:background="@color/common_fill" />
 
-    <TextView
-        android:id="@+id/tv_relaunch_light"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_8"
-        android:text="@string/import_order_dialog_green_light"
-        android:textColor="@color/text_main"
-        android:textSize="@dimen/sp_14"
-        android:textStyle="bold"
-        app:layout_constraintLeft_toRightOf="@id/tv_relaunch"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_upgrade" />
+        <ImageView
+            android:id="@+id/iv_end_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@mipmap/oval_blue_solid" />
 
-    <TextView
-        android:id="@+id/tv_excep"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
-        android:text="@string/import_order_dialog_relanuch"
-        android:textColor="@color/text_main"
-        android:textSize="@dimen/sp_12"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/tv_excep_light"
-        app:layout_constraintTop_toBottomOf="@+id/tv_relaunch" />
+        <TextView
+            android:id="@+id/tv_end_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_end_blue"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_8"
+            android:text="@string/import_order_dialog_blue_light_alway_on"
+            android:textColor="@color/text_main"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/tv_excep_light"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_8"
-        android:text="@string/import_order_dialog_green_light_alway_on"
-        android:textColor="@color/text_main"
-        android:textSize="@dimen/sp_14"
-        android:textStyle="bold"
-        app:layout_constraintLeft_toRightOf="@id/tv_excep"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_relaunch" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_end_blue"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_2"
+            android:text="@string/import_order_dialog_upgrade_success"
+            android:textColor="@color/text_normal"
+            android:textSize="@dimen/sp_12" />
 
-    <TextView
-        android:id="@+id/tv_upgrade_success"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
-        android:text="@string/import_order_dialog_upgrade_success"
-        android:textColor="@color/text_main"
-        android:textSize="@dimen/sp_12"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/tv_upgrade_blue_light"
-        app:layout_constraintTop_toBottomOf="@+id/tv_excep" />
-
-    <TextView
-        android:id="@+id/tv_upgrade_blue_light"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_8"
-        android:text="@string/import_order_dialog_blue_light_alway_on"
-        android:textColor="@color/text_main"
-        android:textSize="@dimen/sp_14"
-        android:textStyle="bold"
-        app:layout_constraintLeft_toRightOf="@id/tv_upgrade_success"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_excep" />
+    </RelativeLayout>
 
     <android.support.constraint.Group
         android:id="@+id/ipc_setting_upgrade_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="tvTip,tv_upgrade,tv_upgrade_light,tv_relaunch,tv_relaunch_light,tv_excep,tv_excep_light,tv_upgrade_success,tv_upgrade_blue_light" />
-
+        app:constraint_referenced_ids="tv_light_tip,rl_start_blue,rl_red,rl_green,rl_end_blue" />
 </android.support.constraint.ConstraintLayout>

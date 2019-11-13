@@ -149,7 +149,7 @@ public class ByteUtils {
         return (b0 << 24) | (b1 << 16) | (b2 << 8) | b3;
     }
 
-    public static int byte4ToIntL(byte[] bytes){
+    public static int byte4ToIntL(byte[] bytes) {
         int b0 = bytes[3] & 0xFF;
         int b1 = bytes[2] & 0xFF;
         int b2 = bytes[1] & 0xFF;

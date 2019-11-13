@@ -96,16 +96,15 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     RelativeLayout rlShopTitle;
     @ViewById(R.id.tv_shop_title)
     TextView tvShopTitle;
-    private Banner vpBanner;
-    private RelativeLayout rlNoDevice;
-
     List<AdListBean> adList = new ArrayList<>();//广告
     List<SunmiDevice> routerList = new ArrayList<>();
     List<SunmiDevice> ipcList = new ArrayList<>();
     List<SunmiDevice> printerList = new ArrayList<>();
+    private Banner vpBanner;
+    private RelativeLayout rlNoDevice;
     private ShopTitlePopupWindow popupWindow;
     private List<SunmiDevice> deviceList = new ArrayList<>();//设备列表全集
-    private Timer timer = null, timerException = null;
+    private Timer timer = null;
     private DeviceListAdapter deviceListAdapter;
     private DeviceSettingMenu deviceSettingMenu;
     private InputDialog dialogPassword = null;
@@ -508,7 +507,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                         shortTip(R.string.hint_input_manger_password);
                         return;
                     }
-                    dialog.dismiss();
+//                    dialog.dismiss();
                     APCall.getInstance().checkLoginAgain(mActivity, password);//todo opcode
                 }).create();
         dialogPassword.setCancelable(false);
@@ -527,7 +526,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 RouterDBHelper.saveLocalMangerPassword(clickedDevice.getDeviceid(), password);//保存本地管理密码
                 dialogPasswordDismiss();
                 checkApVersion(clickedDevice.getDeviceid(), clickedDevice.getStatus());
-//                gotoRouterManager();
             } else if (TextUtils.equals(res.getErrCode(), AppConfig.ERROR_CODE_PASSWORD_ERROR)) {// 账户密码错误
                 shortTip(getString(R.string.tip_password_error));
             } else if (TextUtils.equals(res.getErrCode(), AppConfig.ERROR_CODE_PASSWORD_INCORRECT_MANY)) { // 账户密码错误次数过多
@@ -574,9 +572,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 String token = object3.getString("token");
                 SpUtils.saveRouterToken(token);//保存token
                 SpUtils.saveRouterMangerPassword(mPassword);//保存管理密码
-                //SpUtils.saveApMangerMsg(mSn, mPassword);
-                //跳转路由器管理页面
-//                gotoRouterManager();
+                //校验版本
                 checkApVersion(clickedDevice.getDeviceid(), clickedDevice.getStatus());
             } else if (TextUtils.equals(res.getErrCode(), AppConfig.ERROR_CODE_PASSWORD_ERROR)) {// 账户密码错误
                 dialogPassword = null;
@@ -621,23 +617,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     @UiThread
     void deviceListRefresh() {
         deviceListAdapter.notifyDataSetChanged();
-    }
-
-    private void startTimerExceptionRefreshList() {
-        timerException = new Timer();
-        timerException.schedule(new TimerTask() {
-            @Override
-            public void run() {
-//                getBindList(false);//刷新列表
-            }
-        }, 0, 1000 * 30);
-    }
-
-    private void closeTimerExceptionRefreshList() {
-        if (timerException != null) {
-            timerException.cancel();
-            timerException = null;
-        }
     }
 
     private void startTimer() {
