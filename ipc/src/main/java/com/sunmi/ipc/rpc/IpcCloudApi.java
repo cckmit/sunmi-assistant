@@ -54,7 +54,7 @@ import sunmi.common.utils.SpUtils;
  * @author Bruce
  * @date 2019/3/31
  */
-@ServiceAnno(value = {IpcCloudApiAnno.class},singleTon = true)
+@ServiceAnno(value = {IpcCloudApiAnno.class}, singleTon = true)
 public class IpcCloudApi implements IpcCloudApiAnno {
 
     private static final class Single {
@@ -603,10 +603,11 @@ public class IpcCloudApi implements IpcCloudApiAnno {
      */
     public void getStorageList(List<String> snList, RetrofitCallback<StorageListResp> callback) {
         try {
+            JSONArray array = new JSONArray(snList);
             String params = new JSONObject()
                     .put("company_id", SpUtils.getCompanyId())
                     .put("shop_id", SpUtils.getShopId())
-                    .put("device_sn_list", snList)
+                    .put("device_sn_list", array)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(DeviceInterface.class)
                     .getStorageList(new BaseRequest(params))

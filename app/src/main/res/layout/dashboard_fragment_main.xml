@@ -138,7 +138,7 @@
             android:layout_height="@dimen/dp_60"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_12"
             android:background="@color/c_white"
             app:cardCornerRadius="@dimen/dp_8"
             app:cardElevation="@dimen/dp_2"

@@ -13,10 +13,12 @@ import android.widget.TextView;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.model.StorageListResp;
+import com.sunmi.ipc.router.SunmiServiceApi;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.ipc.setting.IpcSettingSdcardActivity_;
 import com.sunmi.ipc.setting.RecognitionSettingActivity_;
+import com.xiaojinzi.component.impl.Router;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -30,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.router.model.IpcListResp;
@@ -83,7 +86,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     SunmiDevice deviceChoose;
     private List<SunmiDevice> list = new ArrayList<>();
     private List<SunmiDevice> successList = new ArrayList<>();
-    private List<String> snList = new ArrayList<>();
+    private ArrayList<String> snList = new ArrayList<>();
     private int failCount;
 
     @AfterViews
@@ -108,7 +111,11 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                     btnComplete.setVisibility(View.VISIBLE);
                     btnFinish.setVisibility(View.VISIBLE);
                 } else if (CommonConstants.TYPE_IPC_SS == deviceType) {
-                    initSs();
+                    if (snList.size() > 0) {
+                        initSs();
+                    } else {
+                        btnComplete.setVisibility(View.VISIBLE);
+                    }
                 } else {
                     btnComplete.setVisibility(View.VISIBLE);
                 }
@@ -162,8 +169,8 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     }
 
     @Click(resName = "btn_cloud")
-    void cloudClick(){
-
+    void cloudClick() {
+        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(CommonConfig.CLOUD_STORAGE_URL,snList);
     }
 
     @Override

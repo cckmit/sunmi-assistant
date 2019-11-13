@@ -19,8 +19,9 @@ import sunmi.common.constant.RouterConfig;
 public interface SunmiServiceApi {
 
     @PathAnno(RouterConfig.SunmiService.WEB_VIEW_CLOUD)
-    void goToWebViewCloud(@ParameterAnno("mUrl") String url, @ParameterAnno("deviceSn") String sn);
+    void goToWebViewCloud(@ParameterAnno("mUrl") String url, @ParameterAnno("snList") ArrayList<String> sn);
 
     @PathAnno(RouterConfig.SunmiService.SERVICE_DETAIL)
-    void goToServiceDetail(@ParameterAnno("snList") ArrayList<String> sn, @ParameterAnno("isBind") boolean isBind, @ParameterAnno("deviceName") String deviceName);
+    void goToServiceDetail(@ParameterAnno("mSn") String sn, @ParameterAnno("isBind") boolean isBind, @ParameterAnno("deviceName") String deviceName);
+
 }

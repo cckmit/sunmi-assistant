@@ -160,6 +160,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             flag |= Constants.FLAG_SAAS;
             flag |= Constants.FLAG_FS;
             flag |= Constants.FLAG_CUSTOMER;
+            flag |= Constants.FLAG_BUNDLED_LIST;
             load(flag, false, showLoading);
         } else {
             PageContract.PagePresenter current = getCurrent();

@@ -55,7 +55,7 @@ import sunmi.common.view.webview.SMWebViewClient;
  * @author linyuanpeng on 2019-10-25.
  */
 @EActivity(resName = "activity_webview_cloud")
-public class  WebViewCloudServiceActivity extends BaseActivity implements H5FaceWebChromeClient.Callback {
+public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceWebChromeClient.Callback {
 
     private final int timeout = 15_000;
     @ViewById(resName = "webView")
@@ -309,6 +309,7 @@ public class  WebViewCloudServiceActivity extends BaseActivity implements H5Face
             return;
         }
         webView.clearCache(true);
+        super.onBackPressed();
     }
 }
 

@@ -69,7 +69,7 @@ public class EmptyGapCard extends BaseRefreshCard<EmptyGapCard.Model, Object> {
             color = 0xFFFFFFFF;
         }
         if (hasFloating()){
-            height = (int) context.getResources().getDimension(R.dimen.dp_132);
+            height = (int) context.getResources().getDimension(R.dimen.dp_80);
         }else if (hasAuth() && hasFs()) {
             height = (int) context.getResources().getDimension(R.dimen.dp_24);
         } else {

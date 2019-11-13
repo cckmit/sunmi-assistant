@@ -205,9 +205,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     void init() {
         mPresenter = new IpcManagerPresenter();
         mPresenter.attachView(this);
-        /*f (isSS1()) {
+        if (isSS1()) {
             mPresenter.getStorageList(device.getDeviceid());
-        }*/
+        }
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//保持屏幕常亮
@@ -1388,11 +1388,11 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                 btnDetail.setOnClickListener(v -> {
                     if (bean.getTitle().equals(getString(R.string.str_cloud_storage))) {
                         if (bean.getStatus() == CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
-                            Router.withApi(SunmiServiceApi.class).goToWebViewCloud(CommonConfig.CLOUD_STORAGE_URL, device.getDeviceid());
-                        } else {
                             ArrayList<String> snList = new ArrayList<>();
                             snList.add(device.getDeviceid());
-                            Router.withApi(SunmiServiceApi.class).goToServiceDetail(snList, true, device.getName());
+                            Router.withApi(SunmiServiceApi.class).goToWebViewCloud(CommonConfig.CLOUD_STORAGE_URL, snList);
+                        } else {
+                            Router.withApi(SunmiServiceApi.class).goToServiceDetail(device.getDeviceid(), true, device.getName());
                         }
                     }
                 });

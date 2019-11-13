@@ -477,4 +477,13 @@ public class CommonHelper {
         Selection.setSelection(et.getText(), str.length());
     }
 
+    /**
+     * 是否华为手机品牌
+     *
+     * @return
+     */
+    public static boolean isHuaWeiBrand() {
+        String brand = Build.BRAND;
+        return brand.contains("HUAWEI") || brand.contains("HONOR");
+    }
 }
