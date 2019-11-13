@@ -110,12 +110,8 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                     btnComplete.setText(R.string.str_adjust_screen);
                     btnComplete.setVisibility(View.VISIBLE);
                     btnFinish.setVisibility(View.VISIBLE);
-                } else if (CommonConstants.TYPE_IPC_SS == deviceType) {
-                    if (snList.size() > 0) {
-                        initSs();
-                    } else {
-                        btnComplete.setVisibility(View.VISIBLE);
-                    }
+                } else if (CommonConstants.TYPE_IPC_SS == deviceType && snList.size() > 0) {
+                    initSs();
                 } else {
                     btnComplete.setVisibility(View.VISIBLE);
                 }
@@ -170,7 +166,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
 
     @Click(resName = "btn_cloud")
     void cloudClick() {
-        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(CommonConfig.CLOUD_STORAGE_URL,snList);
+        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(CommonConfig.CLOUD_STORAGE_URL, snList);
     }
 
     @Override

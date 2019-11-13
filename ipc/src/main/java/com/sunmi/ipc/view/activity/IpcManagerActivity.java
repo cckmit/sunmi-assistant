@@ -1385,6 +1385,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                 holder.setText(R.id.tv_summary, bean.getSummary());
                 holder.setText(R.id.btn_detail, bean.getRightText());
                 btnDetail.setEnabled(bean.isEnabled());
+                if (bean.getTagImageResId() != -1) {
+                    holder.setImageResource(R.id.iv_tag, bean.getTagImageResId());
+                }
                 btnDetail.setOnClickListener(v -> {
                     if (bean.getTitle().equals(getString(R.string.str_cloud_storage))) {
                         if (bean.getStatus() == CommonConstants.CLOUD_STORAGE_NOT_OPENED) {

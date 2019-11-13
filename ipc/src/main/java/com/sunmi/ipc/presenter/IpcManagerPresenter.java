@@ -173,11 +173,11 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
         IpcCloudApi.getInstance().getStorageList(snList, new RetrofitCallback<StorageListResp>() {
             @Override
             public void onSuccess(int code, String msg, StorageListResp data) {
-                if (data.getDeviceList().size() > 0) {
-                    setStorage(data.getDeviceList().get(0), BaseApplication.getContext());
-                } else {
-                    setStorage(null, BaseApplication.getContext());
-                    if (isViewAttached()) {
+                if (isViewAttached()) {
+                    if (data.getDeviceList().size() > 0) {
+                        mView.getStorageSuccess(getStorage(data.getDeviceList().get(0), BaseApplication.getContext()));
+                    } else {
+                        mView.getStorageSuccess(getStorage(null, BaseApplication.getContext()));
                         mView.shortTip(R.string.tip_cloud_storage_error);
                     }
                 }
@@ -185,15 +185,15 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
 
             @Override
             public void onFail(int code, String msg, StorageListResp data) {
-                setStorage(null, BaseApplication.getContext());
                 if (isViewAttached()) {
+                    mView.getStorageSuccess(getStorage(null, BaseApplication.getContext()));
                     mView.shortTip(R.string.tip_cloud_storage_error);
                 }
             }
         });
     }
 
-    private void setStorage(StorageListResp.DeviceListBean data, Context context) {
+    private IpcManageBean getStorage(StorageListResp.DeviceListBean data, Context context) {
         IpcManageBean cloudStorage = new IpcManageBean(R.mipmap.ipc_cloud_storage, context.getString(R.string.str_cloud_storage),
                 context.getString(R.string.str_setting_detail));
         if (data != null) {
@@ -217,9 +217,7 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
             cloudStorage.setRightText(context.getString(R.string.str_coming_soon));
             cloudStorage.setEnabled(false);
         }
-        if (isViewAttached()) {
-            mView.getStorageSuccess(cloudStorage);
-        }
+        return cloudStorage;
     }
 
 }

@@ -455,7 +455,6 @@ public class CommonHelper {
         SpUtils.setUnreadMsg(-1);
         SpUtils.setUnreadSystemMsg(-1);
         SpUtils.setUnreadDeviceMsg(-1);
-        DataSupport.deleteAll(ShopBundledCloudInfo.class);
         BaseApplication.isCheckedToken = false;
         ShortcutBadger.applyCount(BaseApplication.getInstance(), 0);
 //        MQTTManager.getInstance().disconnect();
