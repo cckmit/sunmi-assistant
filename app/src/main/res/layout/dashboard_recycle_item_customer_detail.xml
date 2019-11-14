@@ -34,7 +34,6 @@
         android:id="@+id/lv_dashboard_list"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_32"
         android:listSelector="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -112,7 +112,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
             btnEnterMain.setVisibility(View.GONE);
             mPresenter.getCompanyList();
         } else if (action == CommonConstants.ACTION_LOGIN_CHOOSE_SHOP) {
-            CommonHelper.isCanClick(btnEnterMain, false);
+            btnEnterMain.setEnabled(false);
             titleBar.setAppTitle(R.string.str_select_store);
             tvSelectType.setText(R.string.company_shop_select);
             btnEnterMain.setVisibility(View.VISIBLE);
@@ -274,13 +274,13 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
                     shopId = item.getShopId();
                     shopName = item.getShopName();
                     notifyDataSetChanged();
-                    CommonHelper.isCanClick(btnEnterMain, true);
+                    btnEnterMain.setEnabled(true);
                 });
                 if (selectedIndex == holder.getAdapterPosition()) {
                     if (shopList.size() == 1) {
                         shopId = item.getShopId();
                         shopName = item.getShopName();
-                        CommonHelper.isCanClick(btnEnterMain, true);
+                        btnEnterMain.setEnabled(true);
                     }
                     shopItem.setRightImage(ContextCompat.getDrawable(context, com.sunmi.ipc.R.mipmap.ic_yes));
                     shopItem.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.common_orange));

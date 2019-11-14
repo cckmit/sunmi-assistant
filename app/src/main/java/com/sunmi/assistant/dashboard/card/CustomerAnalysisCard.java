@@ -44,6 +44,7 @@ import sunmi.common.rpc.retrofit.RetrofitCallback;
 public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.Model, CustomerHistoryDetailResp> {
 
     private static final int NUM_10_THOUSANDS = 10000;
+    private static final int MAX_ITEM_COUNT = 3;
 
     private static CustomerAnalysisCard sInstance;
 
@@ -126,10 +127,6 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
                 new RetrofitCallback<CustomerHistoryDetailResp>() {
                     @Override
                     public void onSuccess(int code, String msg, CustomerHistoryDetailResp data) {
-                        if (data == null || data.getCountList() == null) {
-                            onFail(code, msg, data);
-                            return;
-                        }
                         callback.onSuccess(code, msg, data);
                     }
 
@@ -165,7 +162,7 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
     protected void setupModel(Model models, CustomerHistoryDetailResp response) {
         Model model = getModel();
         model.list.clear();
-        if (response == null || response.getCountList() == null) {
+        if (response == null || response.getCountList() == null || response.getCountList().isEmpty()) {
             Item e = new Item();
             e.setError();
             model.list.add(e);
@@ -185,7 +182,7 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
                 total = total + item.getFemaleCount() + item.getMaleCount();
             }
             Collections.sort(result, (o1, o2) -> o2.count - o1.count);
-            if (result.size() > 3) {
+            if (result.size() > MAX_ITEM_COUNT) {
                 model.list.addAll(result.subList(0, 3));
             } else {
                 model.list.addAll(result);
@@ -195,17 +192,26 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
             }
         }
 
-        // Test data
-//        model.random(mAgeList, mAgeLabel, mMaleLabel, mFemaleLabel);
-
         mAdapter.setDatas(model.list);
         mAdapter.notifyDataSetChanged();
     }
 
     @Override
     protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-        View list = holder.getView(R.id.lv_dashboard_list);
-        list.requestLayout();
+        // Test data
+        // model.random(mAgeList, mAgeLabel, mMaleLabel, mFemaleLabel);
+
+        Context context = holder.getContext();
+        View view = holder.itemView;
+        if (hasFloating()) {
+            int paddingBottom = (int) context.getResources().getDimension(R.dimen.dp_80);
+            view.setPaddingRelative(0, 0, 0, paddingBottom);
+        } else {
+            int paddingBottom = (int) context.getResources().getDimension(R.dimen.dp_32);
+            view.setPaddingRelative(0, 0, 0, paddingBottom);
+        }
+
+        holder.itemView.requestLayout();
     }
 
     @Override
@@ -216,6 +222,8 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
         for (Item item : model.list) {
             item.setLoading();
         }
+        mAdapter.setDatas(model.list);
+        mAdapter.notifyDataSetChanged();
         setupView(holder, model, position);
     }
 
@@ -227,6 +235,8 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
         for (Item item : model.list) {
             item.setError();
         }
+        mAdapter.setDatas(model.list);
+        mAdapter.notifyDataSetChanged();
         setupView(holder, model, position);
     }
 

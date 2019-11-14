@@ -115,6 +115,8 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
     private int mCurrentVersion;
     //mqtt是否连接lost
     private boolean isMqttConnectionLost;
+    //是否查询返回的升级状态
+    private boolean isQueryReturnStatus;
 
     @AfterViews
     void init() {
@@ -307,6 +309,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
                 try {
                     JSONObject object = res.getResult();
                     int status = object.getInt("status");
+                    isQueryReturnStatus = true;
                     upgradeStatus(status, object);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -319,6 +322,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
             try {
                 JSONObject object = res.getResult();
                 int status = object.getInt("status");
+                isQueryReturnStatus = false;
                 upgradeStatus(status, object);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -536,10 +540,18 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
             if ((l / 1000) % downRate == 0) {
                 setProgress++;
             }
-            if (setProgress > PERCENT_DOWNLOAD) {
-                return;
+            if (isQueryReturnStatus) {
+                //如果是查询状态初始下载进度20%
+                if (setProgress + 20 > PERCENT_DOWNLOAD) {
+                    return;
+                }
+                setText(IPC_DOWNLOAD, setProgress + 20);
+            } else {
+                if (setProgress > PERCENT_DOWNLOAD) {
+                    return;
+                }
+                setText(IPC_DOWNLOAD, setProgress);
             }
-            setText(IPC_DOWNLOAD, setProgress);
         } else if (status == IPC_UPGRADE_AI) {
             isAiUpgrade = true;
             isUpgradeProcess = true;

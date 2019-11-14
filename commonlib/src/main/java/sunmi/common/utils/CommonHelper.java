@@ -19,14 +19,11 @@ import android.text.Selection;
 import android.text.TextUtils;
 import android.view.Display;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 
 import com.commonlibrary.BuildConfig;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xiaomi.mipush.sdk.MiPushClient;
-
-import org.litepal.crud.DataSupport;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -36,7 +33,6 @@ import java.util.Locale;
 import me.leolin.shortcutbadger.ShortcutBadger;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.constant.CommonConstants;
-import sunmi.common.model.ShopBundledCloudInfo;
 import sunmi.common.model.UserInfoBean;
 import sunmi.common.rpc.mqtt.MqttManager;
 import sunmi.common.utils.log.LogCat;
@@ -380,20 +376,6 @@ public class CommonHelper {
             resId = defResId;//设置默认
         }
         return resId;
-    }
-
-    /**
-     * @param button  button
-     * @param isClick 按钮是否可点击
-     */
-    public static void isCanClick(Button button, boolean isClick) {
-        if (isClick) {
-            button.setAlpha(1f);
-            button.setEnabled(true);
-        } else {
-            button.setAlpha(0.5f);
-            button.setEnabled(false);
-        }
     }
 
     /**

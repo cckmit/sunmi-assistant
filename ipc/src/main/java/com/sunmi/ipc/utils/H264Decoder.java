@@ -143,7 +143,7 @@ public class H264Decoder {
         release();
         try {
             mediaCodec = MediaCodec.createDecoderByType("video/avc");
-            if (mediaCodec == null || format == null || surface == null) {
+            if (mediaCodec == null || format == null || surface == null || !surface.isValid()) {
                 ToastUtils.toastForShort(BaseApplication.getContext(), "播放失败，清重试");
                 return;
             }
