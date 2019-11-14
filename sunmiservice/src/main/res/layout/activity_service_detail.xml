@@ -37,10 +37,10 @@
             android:id="@+id/tv_status"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_58"
+            android:layout_alignParentEnd="true"
             android:gravity="center"
-            android:textSize="@dimen/sp_14"
             android:textColor="@color/caution_primary"
-            android:layout_alignParentEnd="true" />
+            android:textSize="@dimen/sp_14" />
 
         <View
             android:layout_width="match_parent"
@@ -59,11 +59,12 @@
 
         <TextView
             android:id="@+id/tv_device_name"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp_180"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_service_name"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="@dimen/dp_16"
+            android:singleLine="true"
             android:textColor="@color/text_main"
             android:textSize="@dimen/sp_14" />
 
@@ -239,8 +240,8 @@
         android:id="@+id/btn_renewal"
         style="@style/BtnBigOrange"
         android:layout_marginTop="@dimen/dp_24"
-        android:visibility="gone"
-        android:text="@string/str_renewal" />
+        android:text="@string/str_renewal"
+        android:visibility="gone" />
 
     <include
         android:id="@+id/layout_network_error"

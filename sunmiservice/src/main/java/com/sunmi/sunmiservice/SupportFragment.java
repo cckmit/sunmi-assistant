@@ -67,7 +67,7 @@ public class SupportFragment extends BaseFragment
 
     @Click(resName = "ll_cloud_storage")
     void cloudStorageClick() {
-        if (!checkNetwork()) {
+        if (!checkNetwork() || isFastClick(500)) {
             return;
         }
         WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConfig.CLOUD_STORAGE_URL).start();
@@ -75,12 +75,15 @@ public class SupportFragment extends BaseFragment
 
     @Click(resName = "ll_after_sales")
     void afterSalesClick() {
+        if (isFastClick(500)) {
+            return;
+        }
         launchMiniProgram(SunmiServiceConfig.WECHART_USER_NAME, SunmiServiceConfig.WECHAT_PATH, SunmiServiceConfig.WECHAT_MINI_PROGRAM_TYPE);
     }
 
     @Click(resName = "ll_sunmi_store")
     void sunmiStoreClick() {
-        if (!checkNetwork()) {
+        if (!checkNetwork() || isFastClick(500)) {
             return;
         }
         WebViewSunmiMallActivity_.intent(mActivity).mUrl(SunmiServiceConfig.SUNMI_MALL_HOST + "?channel=2&subchannel=4")
@@ -89,7 +92,7 @@ public class SupportFragment extends BaseFragment
 
     @Click(resName = "tv_weBank")
     void weBankClick() {
-        if (!checkNetwork()) {
+        if (!checkNetwork() || isFastClick(500)) {
             return;
         }
         WebViewActivity_.intent(mActivity).url(SunmiServiceConfig.WE_BANK_HOST).start();
