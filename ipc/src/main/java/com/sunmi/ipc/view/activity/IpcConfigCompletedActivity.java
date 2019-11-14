@@ -34,6 +34,7 @@ import java.util.List;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.RpcErrorCode;
@@ -122,9 +123,6 @@ public class IpcConfigCompletedActivity extends BaseActivity {
             titleBar.setAppTitle(R.string.str_sunmi_link);
             tvResult.setText(getString(R.string.str_wifi_config_finish));
         }
-        if (CommonConstants.TYPE_IPC_FS == deviceType) {
-            btnFinish.setText(R.string.str_jump_adjust);
-        }
         initList();
     }
 
@@ -158,9 +156,10 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     void retryClick() {
         if (isSunmiLink) {
             setResult(RESULT_OK);
-        } else
+        } else {
             StartConfigSMDeviceActivity_.intent(context)
                     .deviceType(deviceType).shopId(shopId).start();
+        }
         finish();
     }
 
@@ -171,7 +170,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
 
     @Override
     public int[] getUnStickNotificationId() {
-        return new int[]{IpcConstants.getSdcardStatus};
+        return new int[]{IpcConstants.getSdcardStatus, CommonNotifications.cloudStorageChange};
     }
 
     @Override
@@ -214,6 +213,8 @@ public class IpcConfigCompletedActivity extends BaseActivity {
             } catch (JSONException e) {
                 shortTip(R.string.network_wifi_low);
             }
+        } else if (CommonNotifications.cloudStorageChange == id) {
+            initSs();
         }
 
     }

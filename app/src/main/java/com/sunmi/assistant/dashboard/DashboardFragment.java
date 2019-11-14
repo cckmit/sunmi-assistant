@@ -291,6 +291,9 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Click(R.id.btn_floating)
     void clickFloating() {
+        if (isFastClick(500)) {
+            return;
+        }
         WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConfig.CLOUD_STORAGE_URL).start();
     }
 
