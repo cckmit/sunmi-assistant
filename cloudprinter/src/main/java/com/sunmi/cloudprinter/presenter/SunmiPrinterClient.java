@@ -165,9 +165,7 @@ public class SunmiPrinterClient implements BluetoothAdapter.LeScanCallback {
     @Override
     public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
         if (device != null && scanRecord.length > 11) {
-            if (!TextUtils.isEmpty(device.getName()) && (
-                    device.getName().startsWith("cloudprint_")
-                            || device.getName().startsWith("CloudPrint_"))) {
+            if (isCloudPrinter(device.getName())) {
                 PrinterDevice printerDevice = new PrinterDevice();
                 printerDevice.setAddress(device.getAddress());
                 printerDevice.setName(device.getName());
@@ -178,6 +176,11 @@ public class SunmiPrinterClient implements BluetoothAdapter.LeScanCallback {
         if (btAdapter.getState() == BluetoothAdapter.STATE_OFF) {
             btAdapter.enable();
         }
+    }
+
+    private boolean isCloudPrinter(String name) {
+        return !TextUtils.isEmpty(name) &&
+                (name.startsWith("cloudprint_") || name.startsWith("CloudPrint_"));
     }
 
     private void sendData(final String bleAddress, final int cmd, byte[] data) {
