@@ -1389,7 +1389,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                     holder.setImageResource(R.id.iv_tag, bean.getTagImageResId());
                 }
                 btnDetail.setOnClickListener(v -> {
-                    if (bean.getTitle().equals(getString(R.string.str_cloud_storage))) {
+                    if (bean.getLeftImageResId() == R.mipmap.ipc_cloud_storage) {
                         if (bean.getStatus() == CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
                             ArrayList<String> snList = new ArrayList<>();
                             snList.add(device.getDeviceid());

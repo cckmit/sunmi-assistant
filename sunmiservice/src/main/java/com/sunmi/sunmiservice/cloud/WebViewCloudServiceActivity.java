@@ -32,6 +32,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -224,11 +225,12 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
                 if (!hasSendDeviceInfo) {
                     closeTimer();
                     try {
+                        JSONArray array = new JSONArray(snList);
                         String params = new JSONObject()
                                 .put("token", SpUtils.getStoreToken())
                                 .put("company_id", SpUtils.getCompanyId())
                                 .put("shop_id", SpUtils.getShopId())
-                                .put("sn_list", snList).toString();
+                                .put("sn_list", array).toString();
                         webView.evaluateJavascript("javascript:getDeviceInfo('" + params + "')", new ValueCallback<String>() {
                             @Override
                             public void onReceiveValue(String value) {
@@ -301,15 +303,15 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
 
     @Override
     public void onBackPressed() {
-        if (webView == null) {
+       /* if (webView == null) {
             return;
         }
         if (webView.canGoBack()) {
             webView.goBack();
             return;
         }
-        webView.clearCache(true);
-        super.onBackPressed();
+        webView.clearCache(true);*/
+        return;
     }
 }
 
