@@ -75,6 +75,9 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
         if (total <= 0) {
             rlNoService.setVisibility(View.VISIBLE);
         } else {
+            if (rlNoService.isShown()) {
+                rlNoService.setVisibility(View.GONE);
+            }
             int returnCount = beans.size();
             if (beans.size() <= 0) {
                 return;

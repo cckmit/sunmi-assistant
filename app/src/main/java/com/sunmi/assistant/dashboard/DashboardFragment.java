@@ -435,7 +435,8 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
                 CommonNotifications.importShop,
                 CommonNotifications.shopCreate,
                 CommonNotifications.shopSaasDock,
-                IpcConstants.refreshIpcList
+                IpcConstants.refreshIpcList,
+                CommonNotifications.cloudStorageChange
         };
     }
 
@@ -458,6 +459,8 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             mPresenter.reload(Constants.FLAG_SAAS);
         } else if (id == IpcConstants.refreshIpcList) {
             mPresenter.reload(Constants.FLAG_FS | Constants.FLAG_BUNDLED_LIST);
+        } else if (id == CommonNotifications.cloudStorageChange) {
+            mPresenter.reload(Constants.FLAG_BUNDLED_LIST);
         }
     }
 
