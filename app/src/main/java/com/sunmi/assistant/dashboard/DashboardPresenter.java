@@ -160,7 +160,6 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             flag |= Constants.FLAG_SAAS;
             flag |= Constants.FLAG_FS;
             flag |= Constants.FLAG_CUSTOMER;
-            flag |= Constants.FLAG_BUNDLED_LIST;
             load(flag, false, showLoading);
         } else {
             PageContract.PagePresenter current = getCurrent();
@@ -428,6 +427,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     public void saveShopBundledCloudInfo(boolean isShowFloating) {
+        mSource &= ~Constants.DATA_SOURCE_FLOATING;
         info.setFloatingShow(isShowFloating);
         ThreadPool.getCachedThreadPool().submit(() -> {
             info.saveOrUpdate("shopId=?", String.valueOf(mShopId));
