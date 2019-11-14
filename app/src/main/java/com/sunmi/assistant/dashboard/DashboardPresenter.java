@@ -371,16 +371,11 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                     info.setSnSet(newSet);
                 }
                 mLoadFlag &= ~Constants.FLAG_BUNDLED_LIST;
-                if (mShowFloating) {
-                    mSource |= Constants.DATA_SOURCE_FLOATING;
-                } else {
-                    mSource &= ~Constants.DATA_SOURCE_FLOATING;
-                }
+                saveShopBundledCloudInfo(mShowFloating);
                 loadComplete();
                 if (isViewAttached()) {
                     mView.updateFloating(mShowFloating);
                 }
-                saveShopBundledCloudInfo(mShowFloating);
             }
 
             @Override
@@ -427,7 +422,11 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     public void saveShopBundledCloudInfo(boolean isShowFloating) {
-        mSource &= ~Constants.DATA_SOURCE_FLOATING;
+        if (isShowFloating) {
+            mSource |= Constants.DATA_SOURCE_FLOATING;
+        } else {
+            mSource &= ~Constants.DATA_SOURCE_FLOATING;
+        }
         info.setFloatingShow(isShowFloating);
         ThreadPool.getCachedThreadPool().submit(() -> {
             info.saveOrUpdate("shopId=?", String.valueOf(mShopId));
