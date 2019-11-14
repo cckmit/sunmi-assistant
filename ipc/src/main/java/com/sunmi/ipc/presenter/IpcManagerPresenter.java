@@ -199,6 +199,7 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
         if (data != null) {
             cloudStorage.setEnabled(true);
             cloudStorage.setStatus(data.getStatus());
+            cloudStorage.setActiveStatus(data.getActiveStatus());
             if (data.getActiveStatus() == CommonConstants.ACTIVE_CLOUD_INACTIVATED && data.getStatus() != CommonConstants.CLOUD_STORAGE_ALREADY_OPENED) {
                 cloudStorage.setSummary(context.getString(R.string.str_subscribe_free));
                 cloudStorage.setRightText(context.getString(R.string.str_use_free));

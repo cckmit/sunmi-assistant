@@ -1,7 +1,6 @@
 package com.sunmi.ipc.view.activity;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.StringRes;
 import android.text.TextUtils;
@@ -43,6 +42,7 @@ import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.NetworkUtils;
+import sunmi.common.utils.SMDeviceDiscoverUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SmRecyclerView;
@@ -124,6 +124,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
             tvResult.setText(getString(R.string.str_wifi_config_finish));
         }
         initList();
+        SMDeviceDiscoverUtils.scanDevice(context, IpcConstants.ipcDiscovered);
     }
 
     @Click(resName = "btn_complete")
@@ -170,13 +171,18 @@ public class IpcConfigCompletedActivity extends BaseActivity {
 
     @Override
     public int[] getUnStickNotificationId() {
-        return new int[]{IpcConstants.getSdcardStatus, CommonNotifications.cloudStorageChange};
+        return new int[]{IpcConstants.getSdcardStatus, CommonNotifications.cloudStorageChange,
+                IpcConstants.ipcDiscovered};
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
         hideLoadingDialog();
         if (args == null) {
+            return;
+        }
+        if (IpcConstants.ipcDiscovered == id) {
+            SMDeviceDiscoverUtils.saveInfo((SunmiDevice) args[0]);
             return;
         }
         ResponseBean res = (ResponseBean) args[0];
@@ -216,7 +222,6 @@ public class IpcConfigCompletedActivity extends BaseActivity {
         } else if (CommonNotifications.cloudStorageChange == id) {
             initSs();
         }
-
     }
 
     @UiThread
@@ -321,13 +326,10 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                 .setTitle(R.string.str_choose_fs_adjust)
                 .setAdapter(adapter)
                 .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (adapter.getSelectedIndex() != -1) {
-                            dialog.dismiss();
-                            getSDCardStatus(successList.get(adapter.getSelectedIndex()));
-                        }
+                .setConfirmButton(R.string.str_confirm, (dialog, which) -> {
+                    if (adapter.getSelectedIndex() != -1) {
+                        dialog.dismiss();
+                        getSDCardStatus(successList.get(adapter.getSelectedIndex()));
                     }
                 }).create().show();
     }
@@ -350,7 +352,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     }
 
     /**
-     * 绑定完的mqtt消息未给UID。。。校准需要看直播，必须要有UID。。。等云端mqtt返回UID可以去掉接口调用
+     * 绑定完的mqtt消息未给UID。。。校准需要看直播，必须要有UID。。。todo 等云端mqtt返回UID可以去掉接口调用
      */
     public void startCameraAdjust(final SunmiDevice device) {
         showLoadingDialog();
@@ -402,10 +404,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
             shortTip(R.string.ipc_setting_tip_network_dismatch);
             return;
         }
-        RecognitionSettingActivity_.intent(this)
-                .mDevice(device)
-                .mVideoRatio(16f / 9f)
-                .start();
+        RecognitionSettingActivity_.intent(this).mDevice(device).mVideoRatio(16f / 9f).start();
     }
 
     public static class FsAdjustAdapter extends CommonListAdapter<SunmiDevice> {
