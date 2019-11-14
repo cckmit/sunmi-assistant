@@ -38,7 +38,6 @@ public interface ServiceInterface {
     @POST(path + "subscription/getInfoByDevice")
     Call<BaseResponse<ServiceDetailBean>> getServiceDetailByDevice(@Body BaseRequest request);
 
-
     /**
      * 查询当前门店捆绑服务信息
      * @param request

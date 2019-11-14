@@ -81,7 +81,7 @@
             style="@style/BtnBigOrange"
             android:layout_above="@+id/btn_finish"
             android:text="@string/btn_cloud_free_half_year"
-            android:visibility="visible"/>
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/btn_finish"
@@ -89,7 +89,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginTop="@dimen/dp_2"
             android:text="@string/str_complete"
-            android:visibility="visible" />
+            android:visibility="gone" />
     </RelativeLayout>
 
 </RelativeLayout>

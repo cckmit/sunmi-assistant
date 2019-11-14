@@ -113,7 +113,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
             } else {
                 tvDeviceName.setText("- -");
                 tvStatus.setText(R.string.str_unbind);
-                btnRenewal.setVisibility(View.GONE);
+                // btnRenewal.setVisibility(View.GONE);
             }
             tvDeviceModel.setText(bean.getDeviceModel());
             tvDeviceSn.setText(sn);
@@ -148,14 +148,14 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
     private void initNetworkError() {
         rlService.setVisibility(View.GONE);
         rlOrder.setVisibility(View.GONE);
-        btnRenewal.setVisibility(View.GONE);
+        //btnRenewal.setVisibility(View.GONE);
         networkError.setVisibility(View.VISIBLE);
     }
 
     private void initNetworkNormal() {
         rlService.setVisibility(View.VISIBLE);
         rlOrder.setVisibility(View.VISIBLE);
-        btnRenewal.setVisibility(View.VISIBLE);
+        //btnRenewal.setVisibility(View.VISIBLE);
         networkError.setVisibility(View.GONE);
     }
 
