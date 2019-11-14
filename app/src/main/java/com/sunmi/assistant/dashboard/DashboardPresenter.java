@@ -323,7 +323,11 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                             onFail(code, msg, null);
                             return;
                         }
-                        mSource |= Constants.DATA_SOURCE_CUSTOMER;
+                        if (data.getTotalCount() == 0) {
+                            mSource &= ~Constants.DATA_SOURCE_CUSTOMER;
+                        } else {
+                            mSource |= Constants.DATA_SOURCE_CUSTOMER;
+                        }
                         success(code, msg, data);
                     }
 
