@@ -732,6 +732,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     private void setPortraitViewVisible(int visibility) {
+        if (rvManager == null) return;
         titleBar.setVisibility(visibility);
         llPortraitBar.setVisibility(visibility);
         rvManager.setVisibility(visibility);
