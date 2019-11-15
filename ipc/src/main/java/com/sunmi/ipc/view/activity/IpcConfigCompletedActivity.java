@@ -171,8 +171,12 @@ public class IpcConfigCompletedActivity extends BaseActivity {
 
     @Override
     public int[] getUnStickNotificationId() {
-        return new int[]{IpcConstants.getSdcardStatus, CommonNotifications.cloudStorageChange,
-                IpcConstants.ipcDiscovered};
+        return new int[]{IpcConstants.getSdcardStatus, IpcConstants.ipcDiscovered};
+    }
+
+    @Override
+    public int[] getStickNotificationId() {
+        return new int[]{CommonNotifications.cloudStorageChange};
     }
 
     @Override
@@ -183,6 +187,9 @@ public class IpcConfigCompletedActivity extends BaseActivity {
         }
         if (IpcConstants.ipcDiscovered == id) {
             SMDeviceDiscoverUtils.saveInfo((SunmiDevice) args[0]);
+            return;
+        } else if (CommonNotifications.cloudStorageChange == id) {
+            initSs();
             return;
         }
         ResponseBean res = (ResponseBean) args[0];
@@ -219,8 +226,6 @@ public class IpcConfigCompletedActivity extends BaseActivity {
             } catch (JSONException e) {
                 shortTip(R.string.network_wifi_low);
             }
-        } else if (CommonNotifications.cloudStorageChange == id) {
-            initSs();
         }
     }
 
@@ -262,6 +267,8 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                     btnFinish.setVisibility(View.VISIBLE);
                 } else {
                     btnComplete.setVisibility(View.VISIBLE);
+                    btnCloud.setVisibility(View.GONE);
+                    btnFinish.setVisibility(View.GONE);
                 }
             }
 

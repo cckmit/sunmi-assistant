@@ -172,20 +172,26 @@ public class JSCall {
 
     @JavascriptInterface
     public void lastPageBack() {
-        context.finish();
         BaseNotification.newInstance().postNotificationName(CommonNotifications.cloudStorageChange);
+        context.finish();
     }
 
     @JavascriptInterface
     public void setStatusBarDefaultColor(String arg) {
         try {
             JSONObject jsonObject = new JSONObject(arg);
-            String color = jsonObject.getString("color");
-            if (TextUtils.equals(color, SsConstants.JS_COLOR_WHITE)) {
-                StatusBarUtils.setStatusBarFullTransparent(context);
-            } else {
-                StatusBarUtils.StatusBarLightMode(context);
-            }
+            LogCat.e("JSCall", "showToast, jsonObject = " + jsonObject);
+            final String color = jsonObject.getString("color");
+            context.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (TextUtils.equals(color, SsConstants.JS_COLOR_WHITE)) {
+                        StatusBarUtils.setStatusBarFullTransparent(context);
+                    } else {
+                        StatusBarUtils.StatusBarLightMode(context);
+                    }
+                }
+            });
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -134,7 +134,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
     }
 
     @Override
-    public int[] getUnStickNotificationId() {
+    public int[] getStickNotificationId() {
         return new int[]{CommonNotifications.cloudStorageChange};
     }
 
