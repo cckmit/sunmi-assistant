@@ -63,7 +63,6 @@ import java.util.concurrent.TimeUnit;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConfig;
-import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.utils.CommonHelper;
@@ -1389,13 +1388,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                 holder.setImageResource(R.id.iv_tag, bean.getTagImageResId());
                 btnDetail.setOnClickListener(v -> {
                     if (bean.getLeftImageResId() == R.mipmap.ipc_cloud_storage) {
-                        if (bean.getStatus() == CommonConstants.CLOUD_STORAGE_NOT_OPENED ||
-                                bean.getActiveStatus() == CommonConstants.ACTIVE_CLOUD_INACTIVATED) {
+                        if (TextUtils.equals(bean.getRightText(), getString(R.string.str_setting_detail))) {
+                            Router.withApi(SunmiServiceApi.class).goToServiceDetail(device.getDeviceid(), true, device.getName());
+                        } else {
                             ArrayList<String> snList = new ArrayList<>();
                             snList.add(device.getDeviceid());
                             Router.withApi(SunmiServiceApi.class).goToWebViewCloud(CommonConfig.CLOUD_STORAGE_URL, snList);
-                        } else {
-                            Router.withApi(SunmiServiceApi.class).goToServiceDetail(device.getDeviceid(), true, device.getName());
                         }
                     }
                 });

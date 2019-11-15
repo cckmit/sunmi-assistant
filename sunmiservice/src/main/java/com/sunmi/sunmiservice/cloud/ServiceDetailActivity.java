@@ -97,6 +97,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
         mPresenter = new ServiceDetailPresenter();
         mPresenter.attachView(this);
         mPresenter.getServiceDetailByDevice(mSn);
+        showLoadingDialog();
     }
 
     @UiThread
