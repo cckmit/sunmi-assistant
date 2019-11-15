@@ -50,6 +50,9 @@ public class ServiceListAdapter extends BaseQuickAdapter<ServiceDetailBean, Base
             helper.setTextColor(R.id.tv_remaining, R.color.caution_primary);
         }
         if (item.isBind()) {
+            helper.getView(R.id.tv_unbind).setVisibility(View.GONE);
+            tvDeviceSn.setVisibility(View.VISIBLE);
+            tvDeviceName.setVisibility(View.VISIBLE);
             tvDeviceSn.setText(context.getString(R.string.ipc_sn, item.getDeviceSn()));
             tvDeviceName.setText(context.getString(R.string.ipc_device_name, item.getDeviceName()));
         } else {
