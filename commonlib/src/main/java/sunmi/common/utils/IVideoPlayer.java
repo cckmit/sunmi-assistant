@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import sunmi.common.utils.log.LogCat;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
@@ -215,7 +214,9 @@ public class IVideoPlayer extends RelativeLayout {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        cacheMediaPlayer.pause();
+                        if (cacheMediaPlayer != null) {
+                            cacheMediaPlayer.pause();
+                        }
                     }
                 }, 100);
             }
