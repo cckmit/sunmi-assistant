@@ -247,7 +247,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
 
             @Override
             protected void receiverError(WebView view, WebResourceRequest request, WebResourceError error) {
-                // loadError();
+                loadError();
                 LogCat.e(TAG, "receiverError 111111" + " networkError");
             }
 
@@ -303,15 +303,15 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
 
     @Override
     public void onBackPressed() {
-       /* if (webView == null) {
+        if (webView.isShown()) {
+            webView.evaluateJavascript("javascript:nativePageBack()", new ValueCallback<String>() {
+                @Override
+                public void onReceiveValue(String value) {
+                }
+            });
             return;
         }
-        if (webView.canGoBack()) {
-            webView.goBack();
-            return;
-        }
-        webView.clearCache(true);*/
-        return;
+        super.onBackPressed();
     }
 }
 

@@ -19,11 +19,13 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.litepal.crud.DataSupport;
 
 import sunmi.common.base.BaseFragment;
 import sunmi.common.constant.CommonConfig;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.ShopBundledCloudInfo;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
@@ -53,10 +55,18 @@ public class SupportFragment extends BaseFragment
     @AfterViews
     void init() {
         titleBar.getRightTextView().setOnClickListener(this);
+        changeCloudCard();
+    }
+
+    @UiThread
+    protected void changeCloudCard() {
         ShopBundledCloudInfo info = DataSupport.where("shopId=?", String.valueOf(SpUtils.getShopId())).findFirst(ShopBundledCloudInfo.class);
         if (info != null && info.getSnSet().size() > 0) {
             tvCloudStorage.setText(R.string.str_use_free);
             ivTipFree.setVisibility(View.VISIBLE);
+        } else {
+            tvCloudStorage.setText(R.string.str_subscribe_now);
+            ivTipFree.setVisibility(View.GONE);
         }
     }
 
@@ -156,6 +166,20 @@ public class SupportFragment extends BaseFragment
         webView.setOnScrollChangeListener(this);
         webView.loadUrl(getBaseUrl());
     }*/
+
+    @Override
+    public int[] getStickNotificationId() {
+        return new int[]{
+                CommonNotifications.activeCloudChange
+        };
+    }
+
+    @Override
+    public void didReceivedNotification(int id, Object... args) {
+        if (id == CommonNotifications.activeCloudChange) {
+            changeCloudCard();
+        }
+    }
 
     private void launchMiniProgram(String userName, String path, int miniProgramType) {
         if (api == null) return;

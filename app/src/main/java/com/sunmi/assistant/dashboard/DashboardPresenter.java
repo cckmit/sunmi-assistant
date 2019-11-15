@@ -437,6 +437,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         info.setFloatingShow(isShowFloating);
         ThreadPool.getCachedThreadPool().submit(() -> {
             info.saveOrUpdate("shopId=?", String.valueOf(mShopId));
+            BaseNotification.newInstance().postNotificationName(CommonNotifications.activeCloudChange);
         });
     }
 
