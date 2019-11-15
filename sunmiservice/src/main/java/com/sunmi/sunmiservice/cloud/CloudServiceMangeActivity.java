@@ -173,7 +173,7 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
     }
 
     @Override
-    public int[] getUnStickNotificationId() {
+    public int[] getStickNotificationId() {
         return new int[]{CommonNotifications.cloudStorageChange};
     }
 
