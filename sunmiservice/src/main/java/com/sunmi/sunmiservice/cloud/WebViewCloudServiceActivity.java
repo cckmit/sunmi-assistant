@@ -244,7 +244,6 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
                 }
             }
 
-
             @Override
             protected void receiverError(WebView view, WebResourceRequest request, WebResourceError error) {
                 loadError();
