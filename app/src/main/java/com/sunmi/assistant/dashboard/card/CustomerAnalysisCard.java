@@ -194,8 +194,6 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
             model.list.add(e);
         }
 
-        mAdapter.setDatas(model.list);
-        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -213,7 +211,9 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
             view.setPaddingRelative(0, 0, 0, paddingBottom);
         }
 
-        holder.itemView.requestLayout();
+        mAdapter.setDatas(model.list);
+        mAdapter.notifyDataSetChanged();
+        view.post(view::requestLayout);
     }
 
     @Override
@@ -224,8 +224,6 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
         for (Item item : model.list) {
             item.setLoading();
         }
-        mAdapter.setDatas(model.list);
-        mAdapter.notifyDataSetChanged();
         setupView(holder, model, position);
     }
 
@@ -237,8 +235,6 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
         for (Item item : model.list) {
             item.setError();
         }
-        mAdapter.setDatas(model.list);
-        mAdapter.notifyDataSetChanged();
         setupView(holder, model, position);
     }
 
