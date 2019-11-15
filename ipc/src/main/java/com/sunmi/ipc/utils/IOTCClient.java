@@ -1,5 +1,8 @@
 package com.sunmi.ipc.utils;
 
+import android.os.CountDownTimer;
+import android.os.Handler;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.sunmi.ipc.model.IotcCmdReq;
@@ -9,9 +12,10 @@ import com.tutk.IOTC.AVAPIs;
 import com.tutk.IOTC.IOTCAPIs;
 import com.tutk.IOTC.P2pCmdCallback;
 
+import org.androidannotations.api.BackgroundExecutor;
+
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import sunmi.common.utils.ByteUtils;
 import sunmi.common.utils.ThreadPool;
@@ -46,6 +50,8 @@ public class IOTCClient {
     private boolean alreadyQuit;
     private boolean isRunning = true;
     private Timer timer;
+    private CountDownTimer countDownTimer;
+    private Handler handler;
 
     private boolean isNewInterface;//是否用新接口发命令
 
@@ -84,24 +90,20 @@ public class IOTCClient {
             }
             return;
         }
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                timer.cancel();
-                if (alreadyQuit) {
-                    return;
-                }
-                if (IOTC_CONNECT_RESULT < 0) {
-                    LogCat.e(TAG, "IOTC_Connect_ByUID_Parallel timeout, quit");
-                    IOTCAPIs.IOTC_Connect_Stop_BySID(SID);
-                    AVAPIs.avDeInitialize();
-                    if (callback != null) {
-                        callback.initFail();
-                    }
+
+        BackgroundExecutor.execute(() -> {
+            if (alreadyQuit) {
+                return;
+            }
+            if (IOTC_CONNECT_RESULT < 0) {
+                LogCat.e(TAG, "IOTC_Connect_ByUID_Parallel timeout, quit");
+                IOTCAPIs.IOTC_Connect_Stop_BySID(SID);
+                AVAPIs.avDeInitialize();
+                if (callback != null) {
+                    callback.initFail();
                 }
             }
-        }, IOTC_CONNECT_TIMEOUT, 1000);
+        }, IOTC_CONNECT_TIMEOUT);
 
         IOTC_CONNECT_RESULT = IOTCAPIs.IOTC_Connect_ByUID_Parallel(uid, SID);//step 4
         LogCat.e(TAG, "IOTC_CONNECT_RESULT = " + IOTC_CONNECT_RESULT);
