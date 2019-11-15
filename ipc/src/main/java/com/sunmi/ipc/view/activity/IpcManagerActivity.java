@@ -911,6 +911,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
      * 播放云端回放
      */
     private void cloudPlay(List<String> urlList) {
+        hideVideoLoading();
         ivpCloud.setUrlQueue(urlList);
         try {
             ivpCloud.startPlay();
