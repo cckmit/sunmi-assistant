@@ -375,8 +375,10 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                     if (newSet.size() == 0) {
                         mShowFloating = false;
                     }
-                    info.setSnSet(newSet);
+                } else {
+                    mShowFloating = false;
                 }
+                info.setSnSet(newSet);
                 mLoadFlag &= ~Constants.FLAG_BUNDLED_LIST;
                 saveShopBundledCloudInfo(mShowFloating);
                 loadComplete();
