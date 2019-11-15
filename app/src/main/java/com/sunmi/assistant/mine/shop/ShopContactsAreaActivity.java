@@ -205,11 +205,22 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
         if (type == ShopDetailActivity.TYPE_CONTACT &&
                 TextUtils.equals(info.getContactPerson(), shopMessageText(etShopMessage))
                 || type == ShopDetailActivity.TYPE_CONTACT_TEL &&
-                TextUtils.equals(info.getContactTel(), shopMessageText(etShopMessage))
-                || type == ShopDetailActivity.TYPE_AREA &&
-                TextUtils.equals(floatTrans(info.getBusinessArea()), shopMessageText(etShopArea))) {
+                TextUtils.equals(info.getContactTel(), shopMessageText(etShopMessage))) {
             super.onBackPressed();
             return;
+        }
+        if (type == ShopDetailActivity.TYPE_AREA) {
+            if (TextUtils.equals(floatTrans(info.getBusinessArea()), shopMessageText(etShopArea))) {
+                super.onBackPressed();
+                return;
+            } else if (TextUtils.isEmpty(shopMessageText(etShopArea))) {
+                if (TextUtils.equals(floatTrans(info.getBusinessArea()), "0") ||
+                        TextUtils.equals(floatTrans(info.getBusinessArea()), "0.0") ||
+                        TextUtils.equals(floatTrans(info.getBusinessArea()), "0.00")) {
+                    super.onBackPressed();
+                    return;
+                }
+            }
         }
         DialogUtils.isCancelSetting(this);
     }

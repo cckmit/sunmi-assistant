@@ -1,5 +1,6 @@
 package com.sunmi.rpc;
 
+import com.sunmi.bean.BundleServiceMsg;
 import com.sunmi.bean.ServiceDetailBean;
 import com.sunmi.bean.SubscriptionListBean;
 
@@ -36,5 +37,13 @@ public interface ServiceInterface {
      */
     @POST(path + "subscription/getInfoByDevice")
     Call<BaseResponse<ServiceDetailBean>> getServiceDetailByDevice(@Body BaseRequest request);
+
+    /**
+     * 查询当前门店捆绑服务信息
+     * @param request
+     * @return
+     */
+    @POST(path+"storage/getBundledList")
+    Call<BaseResponse<BundleServiceMsg>> getBundledList(@Body BaseRequest request);
     
 }

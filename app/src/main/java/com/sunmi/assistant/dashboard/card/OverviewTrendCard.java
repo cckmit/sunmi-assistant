@@ -37,10 +37,12 @@ import com.sunmi.assistant.dashboard.ui.XAxisLabelsRenderer;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
+import sunmi.common.exception.TimeDateException;
 import sunmi.common.model.CustomerRateResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
@@ -86,14 +88,7 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
         return R.layout.dashboard_recycle_item_trend;
     }
 
-    @NonNull
-    @Override
-    public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
-        BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
-        Context context = view.getContext();
-
-        mDashLength = CommonHelper.dp2px(context, 4f);
-        mDashSpaceLength = CommonHelper.dp2px(context, 2f);
+    private void setupClick(BaseViewHolder<Model> holder) {
         holder.addOnClickListener(R.id.tv_dashboard_rate, (h, model, position) -> {
             if (model.type != Constants.DATA_TYPE_RATE) {
                 model.type = Constants.DATA_TYPE_RATE;
@@ -112,58 +107,36 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
                 updateViews();
             }
         });
+    }
 
-        LineChart lineChart = holder.getView(R.id.view_dashboard_line_chart);
-        BarChart barChart = holder.getView(R.id.view_dashboard_bar_chart);
-
+    private void setupLineChart(Context context, LineChart chart) {
         // 设置图表坐标Label格式
-        lineXAxisRenderer = new XAxisLabelsRenderer(lineChart);
-        lineYAxisRenderer = new RateYAxisLabelsRenderer(lineChart);
-        barXAxisRenderer = new XAxisLabelsRenderer(barChart);
-        barYAxisRenderer = new VolumeYAxisLabelsRenderer(barChart);
-        lineChart.setXAxisRenderer(lineXAxisRenderer);
-        lineChart.setRendererLeftYAxis(lineYAxisRenderer);
-        barChart.setXAxisRenderer(barXAxisRenderer);
-        barChart.setRendererLeftYAxis(barYAxisRenderer);
+        lineXAxisRenderer = new XAxisLabelsRenderer(chart);
+        lineYAxisRenderer = new RateYAxisLabelsRenderer(chart);
+        chart.setXAxisRenderer(lineXAxisRenderer);
+        chart.setRendererLeftYAxis(lineYAxisRenderer);
 
         // 设置通用图表
-        lineChart.setTouchEnabled(true);
-        lineChart.setScaleEnabled(false);
-        lineChart.setPinchZoom(false);
-        lineChart.setDoubleTapToZoomEnabled(false);
-        lineChart.getDescription().setEnabled(false);
-        lineChart.setDrawGridBackground(false);
-        lineChart.getLegend().setEnabled(false);
-        lineChart.getAxisRight().setEnabled(false);
-        barChart.setTouchEnabled(true);
-        barChart.setDragEnabled(false);
-        barChart.setScaleEnabled(false);
-        barChart.setPinchZoom(false);
-        barChart.setDoubleTapToZoomEnabled(false);
-        barChart.getDescription().setEnabled(false);
-        barChart.setDrawGridBackground(false);
-        barChart.getLegend().setEnabled(false);
-        barChart.getAxisRight().setEnabled(false);
+        chart.setTouchEnabled(true);
+        chart.setScaleEnabled(false);
+        chart.setPinchZoom(false);
+        chart.setDoubleTapToZoomEnabled(false);
+        chart.getDescription().setEnabled(false);
+        chart.setDrawGridBackground(false);
+        chart.getLegend().setEnabled(false);
+        chart.getAxisRight().setEnabled(false);
 
         // 设置X轴
-        XAxis lineXAxis = lineChart.getXAxis();
-        XAxis barXAxis = barChart.getXAxis();
+        XAxis lineXAxis = chart.getXAxis();
         lineXAxis.setDrawAxisLine(true);
         lineXAxis.setDrawGridLines(false);
         lineXAxis.setTextSize(10f);
         lineXAxis.setTextColor(ContextCompat.getColor(context, R.color.text_disable));
         lineXAxis.setValueFormatter(new XAxisLabelFormatter(context));
         lineXAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        barXAxis.setDrawAxisLine(true);
-        barXAxis.setDrawGridLines(false);
-        barXAxis.setTextSize(10f);
-        barXAxis.setTextColor(ContextCompat.getColor(context, R.color.text_disable));
-        barXAxis.setValueFormatter(new XAxisLabelFormatter(context));
-        barXAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
         // 设置Y轴
-        YAxis lineYAxis = lineChart.getAxisLeft();
-        YAxis barYAxis = barChart.getAxisLeft();
+        YAxis lineYAxis = chart.getAxisLeft();
         lineYAxis.setDrawAxisLine(false);
         lineYAxis.setGranularityEnabled(true);
         lineYAxis.setGranularity(0.2f);
@@ -175,6 +148,43 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
         lineYAxis.setGridColor(ContextCompat.getColor(context, R.color.black_10));
         lineYAxis.setValueFormatter(new LineYAxisLabelFormatter());
         lineYAxis.setMinWidth(36f);
+
+        // 设置Marker
+        mLineChartMarker = new LineChartMarkerView(context);
+        mLineChartMarker.setChartView(chart);
+        chart.setMarker(mLineChartMarker);
+    }
+
+    private void setupBarChart(Context context, BarChart chart) {
+
+        // 设置图表坐标Label格式
+        barXAxisRenderer = new XAxisLabelsRenderer(chart);
+        barYAxisRenderer = new VolumeYAxisLabelsRenderer(chart);
+        chart.setXAxisRenderer(barXAxisRenderer);
+        chart.setRendererLeftYAxis(barYAxisRenderer);
+
+        // 设置通用图表
+        chart.setTouchEnabled(true);
+        chart.setDragEnabled(false);
+        chart.setScaleEnabled(false);
+        chart.setPinchZoom(false);
+        chart.setDoubleTapToZoomEnabled(false);
+        chart.getDescription().setEnabled(false);
+        chart.setDrawGridBackground(false);
+        chart.getLegend().setEnabled(false);
+        chart.getAxisRight().setEnabled(false);
+
+        // 设置X轴
+        XAxis barXAxis = chart.getXAxis();
+        barXAxis.setDrawAxisLine(true);
+        barXAxis.setDrawGridLines(false);
+        barXAxis.setTextSize(10f);
+        barXAxis.setTextColor(ContextCompat.getColor(context, R.color.text_disable));
+        barXAxis.setValueFormatter(new XAxisLabelFormatter(context));
+        barXAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+        // 设置Y轴
+        YAxis barYAxis = chart.getAxisLeft();
         barYAxis.setDrawAxisLine(false);
         barYAxis.setGranularityEnabled(true);
         barYAxis.setGranularity(1f);
@@ -185,22 +195,32 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
         barYAxis.setGridColor(ContextCompat.getColor(context, R.color.black_10));
         barYAxis.setMinWidth(36f);
 
-        // 设置Line图
-        mLineChartMarker = new LineChartMarkerView(context);
-        mLineChartMarker.setChartView(lineChart);
-        lineChart.setMarker(mLineChartMarker);
-
-        // 设置Bar图
+        // 设置Marker和Bar样式
         float barRadius = CommonHelper.dp2px(context, 1f);
-        RoundEdgeBarChartRenderer renderer = new RoundEdgeBarChartRenderer(barChart, barRadius);
-        barChart.setRenderer(renderer);
-        barChart.setFitBars(true);
-        barChart.setDrawBarShadow(false);
-
+        RoundEdgeBarChartRenderer renderer = new RoundEdgeBarChartRenderer(chart, barRadius);
+        chart.setRenderer(renderer);
+        chart.setFitBars(true);
+        chart.setDrawBarShadow(false);
         mBarChartMarker = new BarChartMarkerView(context);
-        mBarChartMarker.setChartView(barChart);
-        barChart.setMarker(mBarChartMarker);
+        mBarChartMarker.setChartView(chart);
+        chart.setMarker(mBarChartMarker);
+    }
 
+    @NonNull
+    @Override
+    public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
+        BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
+        setupClick(holder);
+        Context context = view.getContext();
+
+        mDashLength = CommonHelper.dp2px(context, 4f);
+        mDashSpaceLength = CommonHelper.dp2px(context, 2f);
+
+        LineChart lineChart = holder.getView(R.id.view_dashboard_line_chart);
+        BarChart barChart = holder.getView(R.id.view_dashboard_bar_chart);
+
+        setupLineChart(context, lineChart);
+        setupBarChart(context, barChart);
         return holder;
     }
 
@@ -223,36 +243,37 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
         rateList.clear();
         volumeList.clear();
         customerList.clear();
-        if (response == null || response.getCountList() == null) {
-            LogCat.e(TAG, "Trend data load Failed. Response is null.");
+        if (response == null || response.getCountList() == null || response.getCountList().isEmpty()) {
+            LogCat.e(TAG, "Response is empty.");
             return;
         }
-        List<CustomerRateResp.CountListBean> list = response.getCountList();
-        int size = list.size();
-        for (CustomerRateResp.CountListBean bean : list) {
-            int timeIndex = Math.abs(bean.getTime());
-            int count = Math.abs(bean.getOrderCount());
-            int customer = Math.abs(bean.getPassengerFlowCount());
-            float x = Utils.encodeChartXAxisFloat(model.period, timeIndex);
-            long time = Utils.getTime(model.period, timeIndex, size);
-            float rate = customer == 0 ? 0f : Math.min((float) count / customer, 1f);
-            rateList.add(new ChartEntry(x, rate, time));
-            volumeList.add(new ChartEntry(x, count, time));
-            customerList.add(new ChartEntry(x, customer, time));
+        try {
+            response.init(model.period);
+            List<CustomerRateResp.Item> list = response.getCountList();
+            for (CustomerRateResp.Item bean : list) {
+                long timestamp = Math.abs(bean.getTime());
+                int count = Math.abs(bean.getOrderCount());
+                int customer = Math.abs(bean.getPassengerFlowCount());
+                float x = Utils.encodeChartXAxisFloat(model.period, timestamp);
+                float rate = customer == 0 ? 0f : Math.min((float) count / customer, 1f);
+                rateList.add(new ChartEntry(x, rate, timestamp));
+                volumeList.add(new ChartEntry(x, count, timestamp));
+                customerList.add(new ChartEntry(x, customer, timestamp));
+            }
+        } catch (TimeDateException e) {
+            LogCat.e(TAG, e.getMessage());
+            LogCat.d(TAG, "Code: " + e.getCode() + ", " + e.getDetail());
+            rateList.clear();
+            volumeList.clear();
+            customerList.clear();
         }
-
-        // Test data
-//        model.random();
     }
 
-    @Override
-    protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+    private void setupLabelState(@NonNull BaseViewHolder<Model> holder, Model model) {
         // Get views
-        TextView title = holder.getView(R.id.tv_dashboard_title);
         TextView rate = holder.getView(R.id.tv_dashboard_rate);
         TextView volume = holder.getView(R.id.tv_dashboard_volume);
         TextView customer = holder.getView(R.id.tv_dashboard_customer);
-
         LineChart line = holder.getView(R.id.view_dashboard_line_chart);
         BarChart bar = holder.getView(R.id.view_dashboard_bar_chart);
 
@@ -268,6 +289,96 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
         volume.setTypeface(null, model.type == Constants.DATA_TYPE_VOLUME ? Typeface.BOLD : Typeface.NORMAL);
         customer.setSelected(model.type == Constants.DATA_TYPE_CUSTOMER);
         customer.setTypeface(null, model.type == Constants.DATA_TYPE_CUSTOMER ? Typeface.BOLD : Typeface.NORMAL);
+    }
+
+    private void setupLineData(LineChart line, Model model,
+                               Pair<Integer, Integer> xAxisRange, int maxX, float lastX) {
+        int maxDay = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
+        lineXAxisRenderer.setPeriod(model.period, maxDay);
+        line.getXAxis().setAxisMinimum(xAxisRange.first);
+        line.getXAxis().setAxisMaximum(xAxisRange.second);
+
+        int color = ContextCompat.getColor(line.getContext(), R.color.common_orange);
+        mLineChartMarker.setType(model.period, model.type);
+        LineDataSet set;
+        LineData data = line.getData();
+        List<ChartEntry> dataSet = model.dataSets.get(model.type);
+        ArrayList<Entry> values = new ArrayList<>(dataSet);
+        if (data != null && data.getDataSetCount() > 0) {
+            set = (LineDataSet) data.getDataSetByIndex(0);
+            set.setValues(values);
+            data.notifyDataChanged();
+            line.notifyDataSetChanged();
+        } else {
+            set = new LineDataSet(values, "data");
+            set.setDrawValues(false);
+            set.setDrawCircleHole(false);
+            set.setDrawHorizontalHighlightIndicator(false);
+            set.setColor(color);
+            set.setCircleColor(color);
+            set.setHighLightColor(color);
+            set.setLineWidth(2f);
+            set.setCircleRadius(1f);
+            set.setHighlightLineWidth(1f);
+            set.enableDashedHighlightLine(mDashLength, mDashSpaceLength, 0);
+            mLineChartMarker.setPointColor(color);
+            data = new LineData(set);
+            line.setData(data);
+        }
+        line.highlightValue(lastX, 0);
+        line.animateX(300);
+    }
+
+    private void setupBarData(BarChart bar, Model model,
+                              Pair<Integer, Integer> xAxisRange, int maxX, float lastX) {
+        int maxDay = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
+        barXAxisRenderer.setPeriod(model.period, maxDay);
+        float maxAxis = barYAxisRenderer.setMaxValue(maxX);
+        bar.getXAxis().setAxisMinimum(xAxisRange.first);
+        bar.getXAxis().setAxisMaximum(xAxisRange.second);
+        bar.getAxisLeft().setAxisMaximum(maxAxis);
+
+        mBarChartMarker.setType(model.period, model.type);
+        float barWidthRatio = calcBarWidth(model.period);
+        int color = model.type == Constants.DATA_TYPE_VOLUME ?
+                ContextCompat.getColor(bar.getContext(), R.color.color_FFD0B3) :
+                ContextCompat.getColor(bar.getContext(), R.color.color_AFC3FA);
+        int colorHighlight = model.type == Constants.DATA_TYPE_VOLUME ?
+                ContextCompat.getColor(bar.getContext(), R.color.common_orange) :
+                ContextCompat.getColor(bar.getContext(), R.color.assist_primary);
+        BarDataSet set;
+        BarData data = bar.getData();
+        List<ChartEntry> dataSet = model.dataSets.get(model.type);
+        ArrayList<BarEntry> values = new ArrayList<>(dataSet);
+        if (data != null && data.getDataSetCount() > 0) {
+            set = (BarDataSet) data.getDataSetByIndex(0);
+            set.setColor(color);
+            set.setHighLightColor(colorHighlight);
+            set.setValues(values);
+            data.setBarWidth(barWidthRatio);
+            data.notifyDataChanged();
+            bar.notifyDataSetChanged();
+        } else {
+            set = new BarDataSet(values, "data");
+            set.setDrawValues(false);
+            set.setColor(color);
+            set.setHighLightColor(colorHighlight);
+            data = new BarData(set);
+            data.setBarWidth(barWidthRatio);
+            bar.setData(data);
+        }
+        bar.highlightValue(lastX, 0);
+        bar.animateY(300, Easing.EaseOutCubic);
+    }
+
+    @Override
+    protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+        // Test data
+//        model.random();
+
+        setupLabelState(holder, model);
+        LineChart line = holder.getView(R.id.view_dashboard_line_chart);
+        BarChart bar = holder.getView(R.id.view_dashboard_bar_chart);
 
         // Get data set from model
         List<ChartEntry> dataSet = model.dataSets.get(model.type);
@@ -275,7 +386,6 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
             dataSet = new ArrayList<>();
             model.dataSets.put(model.type, dataSet);
         }
-//        LogCat.d(TAG, "Period=" + model.period + "; type=" + model.type + "\nData set:" + dataSet);
 
         // Calculate min & max of axis value.
         Pair<Integer, Integer> xAxisRange = Utils.calcChartXAxisRange(model.period);
@@ -292,80 +402,12 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
                 max = (int) Math.ceil(entry.getY());
             }
         }
-        int maxDay = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
-        if (model.type == Constants.DATA_TYPE_RATE) {
-            lineXAxisRenderer.setPeriod(model.period, maxDay);
-            line.getXAxis().setAxisMinimum(xAxisRange.first);
-            line.getXAxis().setAxisMaximum(xAxisRange.second);
-        } else {
-            barXAxisRenderer.setPeriod(model.period, maxDay);
-            float maxAxis = barYAxisRenderer.setMaxValue(max);
-            bar.getXAxis().setAxisMinimum(xAxisRange.first);
-            bar.getXAxis().setAxisMaximum(xAxisRange.second);
-            bar.getAxisLeft().setAxisMaximum(maxAxis);
-        }
 
         // Refresh data set
         if (model.type == Constants.DATA_TYPE_RATE) {
-            int color = ContextCompat.getColor(holder.getContext(), R.color.common_orange);
-            mLineChartMarker.setType(model.period, model.type);
-            mLineChartMarker.setPointColor(color);
-            LineDataSet set;
-            LineData data = line.getData();
-            ArrayList<Entry> values = new ArrayList<>(dataSet);
-            if (data != null && data.getDataSetCount() > 0) {
-                set = (LineDataSet) data.getDataSetByIndex(0);
-                set.setValues(values);
-                data.notifyDataChanged();
-                line.notifyDataSetChanged();
-            } else {
-                set = new LineDataSet(values, "data");
-                set.setDrawValues(false);
-                set.setDrawCircleHole(false);
-                set.setDrawHorizontalHighlightIndicator(false);
-                set.setColor(color);
-                set.setCircleColor(color);
-                set.setHighLightColor(color);
-                set.setLineWidth(2f);
-                set.setCircleRadius(1f);
-                set.setHighlightLineWidth(1f);
-                set.enableDashedHighlightLine(mDashLength, mDashSpaceLength, 0);
-                data = new LineData(set);
-                line.setData(data);
-            }
-            line.highlightValue(lastX, 0);
-            line.animateX(300);
+            setupLineData(line, model, xAxisRange, max, lastX);
         } else {
-            mBarChartMarker.setType(model.period, model.type);
-            float barWidthRatio = calcBarWidth(model.period);
-            int color = model.type == Constants.DATA_TYPE_VOLUME ?
-                    ContextCompat.getColor(holder.getContext(), R.color.color_FFD0B3) :
-                    ContextCompat.getColor(holder.getContext(), R.color.color_AFC3FA);
-            int colorHighlight = model.type == Constants.DATA_TYPE_VOLUME ?
-                    ContextCompat.getColor(holder.getContext(), R.color.common_orange) :
-                    ContextCompat.getColor(holder.getContext(), R.color.assist_primary);
-            BarDataSet set;
-            BarData data = bar.getData();
-            ArrayList<BarEntry> values = new ArrayList<>(dataSet);
-            if (data != null && data.getDataSetCount() > 0) {
-                set = (BarDataSet) data.getDataSetByIndex(0);
-                set.setColor(color);
-                set.setHighLightColor(colorHighlight);
-                set.setValues(values);
-                data.setBarWidth(barWidthRatio);
-                data.notifyDataChanged();
-                bar.notifyDataSetChanged();
-            } else {
-                set = new BarDataSet(values, "data");
-                set.setDrawValues(false);
-                set.setColor(color);
-                set.setHighLightColor(colorHighlight);
-                data = new BarData(set);
-                data.setBarWidth(barWidthRatio);
-                bar.setData(data);
-            }
-            bar.highlightValue(lastX, 0);
-            bar.animateY(300, Easing.EaseOutCubic);
+            setupBarData(bar, model, xAxisRange, max, lastX);
         }
     }
 
@@ -431,19 +473,22 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
             rateList.clear();
             volumeList.clear();
             customerList.clear();
+            Random r = new Random(System.currentTimeMillis());
             int count = period == Constants.TIME_PERIOD_WEEK ? 5 : 20;
             int min = count / 3;
+            long time = Utils.getStartTime(period);
+            boolean inDay = period == Constants.TIME_PERIOD_TODAY || period == Constants.TIME_PERIOD_YESTERDAY;
             for (int i = 1; i < count + 1; i++) {
-                float x = Utils.encodeChartXAxisFloat(period, i);
-                long time = Utils.getTime(period, i, count);
+                time = time + (i - 1) * (inDay ? 3600000 : 86400000);
+                float x = Utils.encodeChartXAxisFloat(period, time);
                 if (i <= min + 1) {
                     rateList.add(new ChartEntry(x, 0f, time));
                     volumeList.add(new ChartEntry(x, 0f, time));
                     customerList.add(new ChartEntry(x, 0f, time));
                 } else {
-                    rateList.add(new ChartEntry(x, (float) Math.random(), time));
-                    volumeList.add(new ChartEntry(x, (int) (Math.random() * 1000), time));
-                    customerList.add(new ChartEntry(x, (int) (Math.random() * 1000), time));
+                    rateList.add(new ChartEntry(x, r.nextFloat(), time));
+                    volumeList.add(new ChartEntry(x, r.nextInt(1000), time));
+                    customerList.add(new ChartEntry(x, r.nextInt(1000), time));
                 }
             }
         }

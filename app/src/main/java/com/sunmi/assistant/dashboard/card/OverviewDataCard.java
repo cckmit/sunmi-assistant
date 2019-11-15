@@ -73,7 +73,8 @@ public class OverviewDataCard extends BaseRefreshCard<OverviewDataCard.Model, Ob
 
     private void loadSales(int companyId, int shopId, int period, CardCallback callback) {
         Pair<Long, Long> time = Utils.getPeriodTimestamp(Constants.TIME_PERIOD_TODAY);
-        PaymentApi.get().getOrderTotalAmount(companyId, shopId, time.first, time.second, 1,
+        PaymentApi.get().getOrderTotalAmount(companyId, shopId,
+                time.first / 1000, time.second / 1000, 1,
                 new RetrofitCallback<OrderTotalAmountResp>() {
                     @Override
                     public void onSuccess(int code, String msg, OrderTotalAmountResp data) {
@@ -104,7 +105,8 @@ public class OverviewDataCard extends BaseRefreshCard<OverviewDataCard.Model, Ob
 
     private void loadVolume(int companyId, int shopId, int period, CardCallback callback) {
         Pair<Long, Long> time = Utils.getPeriodTimestamp(Constants.TIME_PERIOD_TODAY);
-        PaymentApi.get().getOrderTotalCount(companyId, shopId, time.first, time.second, 1,
+        PaymentApi.get().getOrderTotalCount(companyId, shopId,
+                time.first / 1000, time.second / 1000, 1,
                 new RetrofitCallback<OrderTotalCountResp>() {
                     @Override
                     public void onSuccess(int code, String msg, OrderTotalCountResp data) {

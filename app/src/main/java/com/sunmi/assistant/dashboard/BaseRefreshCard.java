@@ -39,6 +39,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
     protected static final CharSequence DATE_FORMAT = "yyyy-MM-dd";
     protected static final String DATA_NONE = "--";
     protected static final String DATA_ZERO = "0";
+    protected static final String DATA_ZERO_RATIO = "0%";
     protected static final String FORMAT_FLOAT_NO_DECIMAL = "%.0f";
     protected static final String FORMAT_FLOAT_DOUBLE_DECIMAL = "%.2f";
     protected static final String FORMAT_FLOAT_DOUBLE_PERCENT = "%.2f%%";
@@ -88,6 +89,10 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
 
     public boolean hasCustomer() {
         return Utils.hasCustomer(mSource);
+    }
+
+    public boolean hasFloating() {
+        return Utils.hasFloating(mSource);
     }
 
     public Model getModel() {
@@ -186,6 +191,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
     }
 
     protected void updateViews() {
+        LogCat.d(TAG, "Post update views of card.");
         if (Looper.myLooper() != Looper.getMainLooper()) {
             mHandler.post(this::updateViews);
             return;
@@ -203,6 +209,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+        LogCat.d(TAG, "Set up views.");
         boolean isLoading = (mState == STATE_INIT || mState == STATE_LOADING);
         int[] margin = model.margin;
         int[] padding = model.padding;

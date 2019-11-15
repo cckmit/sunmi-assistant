@@ -38,14 +38,12 @@
 
         <Button
             android:id="@+id/btn_dashboard_add"
-            style="?android:attr/borderlessButtonStyle"
+            style="@style/BtnBigOrange"
             android:layout_width="@dimen/dp_96"
             android:layout_height="@dimen/dp_40"
             android:layout_marginStart="@dimen/dp_24"
             android:layout_marginBottom="@dimen/dp_20"
-            android:background="@drawable/dashboard_btn_round_orange"
             android:text="@string/dashboard_no_fs_add"
-            android:textColor="@color/c_white"
             android:textSize="@dimen/sp_14"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

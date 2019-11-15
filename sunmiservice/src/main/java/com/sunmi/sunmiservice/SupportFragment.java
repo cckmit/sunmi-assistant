@@ -2,6 +2,8 @@ package com.sunmi.sunmiservice;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.sunmi.sunmiservice.cloud.WebViewCloudServiceActivity_;
 import com.tencent.mm.opensdk.constants.Build;
@@ -17,11 +19,16 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.litepal.crud.DataSupport;
 
 import sunmi.common.base.BaseFragment;
 import sunmi.common.constant.CommonConfig;
+import sunmi.common.constant.CommonNotifications;
+import sunmi.common.model.ShopBundledCloudInfo;
 import sunmi.common.utils.NetworkUtils;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.view.TitleBarView;
 
 @EFragment(resName = "fragment_support")
@@ -31,6 +38,10 @@ public class SupportFragment extends BaseFragment
 
     @ViewById(resName = "title_bar")
     TitleBarView titleBar;
+    @ViewById(resName = "tv_cloud_storage")
+    TextView tvCloudStorage;
+    @ViewById(resName = "iv_tip_free")
+    ImageView ivTipFree;
 
 
     private IWXAPI api;// 第三方app和微信通信的openApi接口
@@ -43,7 +54,20 @@ public class SupportFragment extends BaseFragment
 
     @AfterViews
     void init() {
-//        titleBar.getRightTextView().setOnClickListener(this);
+        titleBar.getRightTextView().setOnClickListener(this);
+        changeCloudCard();
+    }
+
+    @UiThread
+    protected void changeCloudCard() {
+        ShopBundledCloudInfo info = DataSupport.where("shopId=?", String.valueOf(SpUtils.getShopId())).findFirst(ShopBundledCloudInfo.class);
+        if (info != null && info.getSnSet().size() > 0) {
+            tvCloudStorage.setText(R.string.str_use_free);
+            ivTipFree.setVisibility(View.VISIBLE);
+        } else {
+            tvCloudStorage.setText(R.string.str_subscribe_now);
+            ivTipFree.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -53,7 +77,7 @@ public class SupportFragment extends BaseFragment
 
     @Click(resName = "ll_cloud_storage")
     void cloudStorageClick() {
-        if (!checkNetwork()) {
+        if (!checkNetwork() || isFastClick(500)) {
             return;
         }
         WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConfig.CLOUD_STORAGE_URL).start();
@@ -61,12 +85,15 @@ public class SupportFragment extends BaseFragment
 
     @Click(resName = "ll_after_sales")
     void afterSalesClick() {
+        if (isFastClick(500)) {
+            return;
+        }
         launchMiniProgram(SunmiServiceConfig.WECHART_USER_NAME, SunmiServiceConfig.WECHAT_PATH, SunmiServiceConfig.WECHAT_MINI_PROGRAM_TYPE);
     }
 
     @Click(resName = "ll_sunmi_store")
     void sunmiStoreClick() {
-        if (!checkNetwork()) {
+        if (!checkNetwork() || isFastClick(500)) {
             return;
         }
         WebViewSunmiMallActivity_.intent(mActivity).mUrl(SunmiServiceConfig.SUNMI_MALL_HOST + "?channel=2&subchannel=4")
@@ -75,7 +102,7 @@ public class SupportFragment extends BaseFragment
 
     @Click(resName = "tv_weBank")
     void weBankClick() {
-        if (!checkNetwork()) {
+        if (!checkNetwork() || isFastClick(500)) {
             return;
         }
         WebViewActivity_.intent(mActivity).url(SunmiServiceConfig.WE_BANK_HOST).start();
@@ -139,6 +166,20 @@ public class SupportFragment extends BaseFragment
         webView.setOnScrollChangeListener(this);
         webView.loadUrl(getBaseUrl());
     }*/
+
+    @Override
+    public int[] getStickNotificationId() {
+        return new int[]{
+                CommonNotifications.activeCloudChange
+        };
+    }
+
+    @Override
+    public void didReceivedNotification(int id, Object... args) {
+        if (id == CommonNotifications.activeCloudChange) {
+            changeCloudCard();
+        }
+    }
 
     private void launchMiniProgram(String userName, String path, int miniProgramType) {
         if (api == null) return;

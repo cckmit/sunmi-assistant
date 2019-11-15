@@ -1,12 +1,12 @@
 package com.sunmi.rpc;
 
+import com.sunmi.bean.BundleServiceMsg;
 import com.sunmi.bean.ServiceDetailBean;
 import com.sunmi.bean.SubscriptionListBean;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.cloud.SunmiStoreRetrofitClient;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -56,6 +56,20 @@ public class ServiceApi {
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(ServiceInterface.class)
                     .getServiceDetailByDevice(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getBundledList(RetrofitCallback<BundleServiceMsg> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", SpUtils.getShopId())
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(ServiceInterface.class)
+                    .getBundledList(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();

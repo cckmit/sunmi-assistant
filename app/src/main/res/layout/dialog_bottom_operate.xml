@@ -10,36 +10,25 @@
         android:id="@+id/tv_tip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_32"
-        android:text="@string/company_shop_new_create_or_import"
-        android:layout_marginEnd="@dimen/dp_25"
         android:layout_marginStart="@dimen/dp_25"
+        android:layout_marginTop="@dimen/dp_32"
+        android:layout_marginEnd="@dimen/dp_25"
+        android:text="@string/company_shop_new_create_or_import"
         android:textColor="@color/text_main"
         android:textSize="@dimen/sp_18"
         android:textStyle="bold" />
 
     <Button
         android:id="@+id/btn_create_shop"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_44"
-        android:layout_marginEnd="@dimen/dp_25"
-        android:layout_marginStart="@dimen/dp_25"
+        style="@style/BtnBigOrange"
         android:layout_marginTop="@dimen/dp_20"
-        android:background="@drawable/button_corners_solid_orange"
-        android:text="@string/company_shop_new_create"
-        android:textColor="@color/c_white"
-        android:textSize="@dimen/sp_16" />
+        android:text="@string/company_shop_new_create" />
 
     <Button
         android:id="@+id/btn_shop_import"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_44"
-        android:layout_marginBottom="@dimen/dp_32"
-        android:layout_marginEnd="@dimen/dp_25"
-        android:layout_marginStart="@dimen/dp_25"
+        style="@style/BtnBigWhite"
         android:layout_marginTop="@dimen/dp_16"
-        android:background="@drawable/button_corners_edge_orange60"
-        android:text="@string/company_shop_import"
-        android:textColor="@color/common_orange"
-        android:textSize="@dimen/sp_16" />
+        android:layout_marginBottom="@dimen/dp_32"
+        android:text="@string/company_shop_import" />
+
 </LinearLayout>

@@ -25,8 +25,7 @@
     <string name="service_remaining">剩余有效期</string>
     <string name="service_number">服务编号</string>
     <string name="service_order_number">关联订单号</string>
-    <string name="tip_cloud_storage">灵活查看，信息安全，存储方便</string>
-
+    <string name="tip_cloud_storage">视频云端存储，随时回看</string>
     <string name="str_after_sales">售后</string>
     <string name="str_after_sales_service">售后服务</string>
     <string name="tip_after_sales">快速申请保修、查询维修网点和配件价格</string>
