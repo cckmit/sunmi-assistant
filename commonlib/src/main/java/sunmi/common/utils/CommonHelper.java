@@ -19,7 +19,6 @@ import android.text.Selection;
 import android.text.TextUtils;
 import android.view.Display;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 
 import com.commonlibrary.BuildConfig;
@@ -44,7 +43,9 @@ public class CommonHelper {
         Locale locale;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             locale = LocaleList.getDefault().get(0);
-        } else locale = Locale.getDefault();
+        } else {
+            locale = Locale.getDefault();
+        }
         return locale.getLanguage().toLowerCase() + "_" + locale.getCountry().toLowerCase();
     }
 
@@ -380,20 +381,6 @@ public class CommonHelper {
     }
 
     /**
-     * @param button  button
-     * @param isClick 按钮是否可点击
-     */
-    public static void isCanClick(Button button, boolean isClick) {
-        if (isClick) {
-            button.setAlpha(1f);
-            button.setEnabled(true);
-        } else {
-            button.setAlpha(0.5f);
-            button.setEnabled(false);
-        }
-    }
-
-    /**
      * 如果小数点后为零显示整数否则保留
      *
      * @param num
@@ -473,4 +460,13 @@ public class CommonHelper {
         Selection.setSelection(et.getText(), str.length());
     }
 
+    /**
+     * 是否华为手机品牌
+     *
+     * @return
+     */
+    public static boolean isHuaWeiBrand() {
+        String brand = Build.BRAND;
+        return brand.contains("HUAWEI") || brand.contains("HONOR");
+    }
 }

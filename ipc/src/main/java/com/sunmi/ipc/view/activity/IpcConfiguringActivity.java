@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.IpcConfiguringContract;
-import sunmi.common.router.model.IpcListResp;
 import com.sunmi.ipc.presenter.IpcConfiguringPresenter;
 import com.sunmi.ipc.rpc.OpcodeConstants;
 
@@ -29,12 +28,14 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.notification.BaseNotification;
+import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.mqtt.MqttManager;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.dialog.CommonDialog;
 
 /**
@@ -60,7 +61,7 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
     Set<String> deviceIds = new HashSet<>();
     private boolean isTimeoutStart;
 
-    private int retryCount;
+    private int retryCount;//调云端bind接口失败次数，最多二十次
 
     @AfterViews
     void init() {
@@ -70,11 +71,12 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
         mPresenter = new IpcConfiguringPresenter();
         mPresenter.attachView(this);
         tvTip.setText(Html.fromHtml(getString(R.string.tip_keep_same_network)));
-        bind();
+        new Handler().postDelayed(this::bind, 500);
     }
 
     private void bind() {
         if (!NetworkUtils.isNetworkAvailable(context)) {
+            LogCat.e(TAG, "no net tip");
             configFailDialog(R.string.tip_set_fail, R.string.str_bind_net_error);
             return;
         }
@@ -98,13 +100,11 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
     private synchronized void startCountDown() {
         if (!isTimeoutStart) {
             isTimeoutStart = true;
-            new Handler().postDelayed(new Runnable() {
-                public void run() {
-                    if (deviceIds.isEmpty()) {
-                        return;
-                    }
-                    mPresenter.getIpcList(SpUtils.getCompanyId(), shopId);
+            new Handler().postDelayed(() -> {
+                if (deviceIds.isEmpty()) {
+                    return;
                 }
+                mPresenter.getIpcList(SpUtils.getCompanyId(), shopId);
             }, 30000);
         }
     }
@@ -112,19 +112,17 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
     @UiThread
     @Override
     public void ipcBindFail(final String sn, final int code, String msg) {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (sunmiDevices.size() > 1 || retryCount == 20
-                        || code == 5501 || code == 5508 || code == 5509 || code == 5510
-                        || code == 5511 || code == 5512 || code == 5013 || code == 5514) {
-                    startCountDown();
-                    setDeviceStatus(sn, code);
-                    return;
-                }
-                retryCount++;
-                bind();
+        new Handler().postDelayed(() -> {
+            if (sunmiDevices.size() > 1//多个设备的情况（局域网模式）不进行重试
+                    || retryCount == 20//20次已经尝试完
+                    || code == 5501 || code == 5508 || code == 5509 || code == 5510
+                    || code == 5511 || code == 5512 || code == 5013 || code == 5514) {
+                startCountDown();
+                setDeviceStatus(sn, code);
+                return;
             }
+            retryCount++;
+            bind();
         }, 2000);
     }
 
@@ -204,9 +202,7 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
 
     @UiThread
     void configFailDialog(int titleRes, int messageRes) {
-        new CommonDialog.Builder(context)
-                .setTitle(titleRes)
-                .setMessage(messageRes)
+        new CommonDialog.Builder(context).setTitle(titleRes).setMessage(messageRes)
                 .setCancelButton(R.string.str_quit_config,
                         (dialogInterface, i) -> GotoActivityUtils.gotoMainActivity(context))
                 .setConfirmButton(R.string.str_retry, (dialogInterface, i) -> bind()).create().show();

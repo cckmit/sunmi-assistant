@@ -29,7 +29,6 @@ import com.sunmi.ipc.R;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.IpcManagerContract;
 import com.sunmi.ipc.model.IpcManageBean;
-import com.sunmi.ipc.model.StorageListResp;
 import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.model.VideoTimeSlotBean;
 import com.sunmi.ipc.presenter.IpcManagerPresenter;
@@ -64,7 +63,6 @@ import java.util.concurrent.TimeUnit;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConfig;
-import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.utils.CommonHelper;
@@ -202,15 +200,13 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private CommonListAdapter adapter;
     private List<IpcManageBean> list = new ArrayList<>();
 
-    private IpcManageBean cloudStroage;
-
     @AfterViews
     void init() {
         mPresenter = new IpcManagerPresenter();
         mPresenter.attachView(this);
-        /*if (isSS1()) {
-            mPresenter.getStorageInfo(device.getId());
-        }*/
+        if (isSS1()) {
+            mPresenter.getStorageList(device.getDeviceid());
+        }
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//保持屏幕常亮
@@ -520,12 +516,14 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         setPlayFailVisibility(View.GONE);
         if (videoDecoder != null) {
             videoDecoder.setVideoData(videoBuffer);
-        }
-        if (playType == PLAY_TYPE_LIVE) {
-            hideVideoLoading();
-        } else if (playType == PLAY_TYPE_PLAYBACK_DEV && (tvTimeScroll != null && tvTimeScroll.isShown())) {
+            if (videoDecoder.isPlaying()) {
+                if (playType == PLAY_TYPE_LIVE) {
+                    hideVideoLoading();
+                } else if (playType == PLAY_TYPE_PLAYBACK_DEV && (tvTimeScroll != null && tvTimeScroll.isShown())) {
 //            hideVideoLoading();
-            hideTimeScroll();
+                    hideTimeScroll();
+                }
+            }
         }
     }
 
@@ -538,7 +536,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     @Override
     public void onStartPlay() {
-        hideVideoLoading();
+//        hideVideoLoading();
     }
 
     @Override
@@ -617,34 +615,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     @UiThread
     @Override
-    public void getStorageSuccess(StorageListResp.DeviceListBean data) {
-        cloudStroage = new IpcManageBean(R.mipmap.ipc_cloud_storage, getString(R.string.str_cloud_storage));
-        if (data != null) {
-            cloudStroage.setStatus(data.getStatus());
-            switch (data.getStatus()) {
-                case CommonConstants.CLOUD_STORAGE_ALREADY_OPENED:
-                    cloudStroage.setSummary(getString(R.string.str_remaining_validity_period,
-                            DateTimeUtils.secondToPeriod(data.getValidTime(), context)));
-                    cloudStroage.setRightText(getString(R.string.str_setting_detail));
-                    break;
-                case CommonConstants.CLOUD_STORAGE_NOT_OPENED:
-                    cloudStroage.setSummary(getString(R.string.str_subscribe_free));
-                    cloudStroage.setRightText(getString(R.string.str_use_free));
-                    break;
-                case CommonConstants.CLOUD_STORAGE_EXPIRED:
-                    cloudStroage.setSummary(getString(R.string.str_expired));
-                    cloudStroage.setRightText(getString(R.string.str_setting_detail));
-                    break;
-                default:
-                    break;
-            }
-            cloudStroage.setEnabled(true);
-        } else {
-            cloudStroage.setEnabled(false);
-            shortTip(R.string.tip_cloud_storage_error);
-            cloudStroage.setRightText(getString(R.string.str_coming_soon));
-        }
-        list.add(0, cloudStroage);
+    public void getStorageSuccess(IpcManageBean bean) {
+        list.add(0, bean);
         adapter.notifyDataSetChanged();
     }
 
@@ -666,7 +638,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             }
         } else if (id == CommonNotifications.cloudStorageChange) {
             list.remove(0);
-            mPresenter.getStorageInfo(device.getId());
+            mPresenter.getStorageList(device.getDeviceid());
         }
     }
 
@@ -938,6 +910,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
      * 播放云端回放
      */
     private void cloudPlay(List<String> urlList) {
+        hideVideoLoading();
         ivpCloud.setUrlQueue(urlList);
         try {
             ivpCloud.startPlay();
@@ -1412,12 +1385,15 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                 holder.setText(R.id.tv_summary, bean.getSummary());
                 holder.setText(R.id.btn_detail, bean.getRightText());
                 btnDetail.setEnabled(bean.isEnabled());
+                holder.setImageResource(R.id.iv_tag, bean.getTagImageResId());
                 btnDetail.setOnClickListener(v -> {
-                    if (bean.getTitle().equals(getString(R.string.str_cloud_storage))) {
-                        if (bean.getStatus() == CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
-                            Router.withApi(SunmiServiceApi.class).goToWebViewCloud(CommonConfig.CLOUD_STORAGE_URL, device.getDeviceid());
-                        } else {
+                    if (bean.getLeftImageResId() == R.mipmap.ipc_cloud_storage) {
+                        if (TextUtils.equals(bean.getRightText(), getString(R.string.str_setting_detail))) {
                             Router.withApi(SunmiServiceApi.class).goToServiceDetail(device.getDeviceid(), true, device.getName());
+                        } else {
+                            ArrayList<String> snList = new ArrayList<>();
+                            snList.add(device.getDeviceid());
+                            Router.withApi(SunmiServiceApi.class).goToWebViewCloud(CommonConfig.CLOUD_STORAGE_URL, snList);
                         }
                     }
                 });

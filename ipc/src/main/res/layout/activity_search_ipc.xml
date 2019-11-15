@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/c_white">
@@ -75,15 +76,12 @@
 
                 <Button
                     android:id="@+id/btn_refresh"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_44"
+                    style="@style/BtnMediumWhite"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/dp_24"
-                    android:background="@drawable/button_corners_solid_orange"
                     android:text="@string/str_refresh"
-                    android:textColor="@color/c_white"
-                    android:textSize="@dimen/sp_16"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    tools:visibility="visible" />
 
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
@@ -95,6 +93,7 @@
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_20"
             android:text="@string/str_next" />
+
     </RelativeLayout>
 
     <include

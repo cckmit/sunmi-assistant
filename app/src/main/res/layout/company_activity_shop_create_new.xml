@@ -72,10 +72,10 @@
             android:layout_marginStart="@dimen/dp_108"
             android:layout_marginEnd="@dimen/dp_36"
             android:ellipsize="end"
-            android:maxLines="1"
             android:hint="@string/company_shop_region_hint"
-            android:textColorHint="@color/text_disable"
+            android:maxLines="1"
             android:textColor="@color/text_main"
+            android:textColorHint="@color/text_disable"
             android:textSize="@dimen/sp_16" />
 
         <ImageView
@@ -195,10 +195,10 @@
             android:layout_marginStart="@dimen/dp_108"
             android:layout_marginEnd="@dimen/dp_36"
             android:ellipsize="end"
-            android:maxLines="1"
             android:hint="@string/company_shop_select_category"
-            android:textColorHint="@color/text_disable"
+            android:maxLines="1"
             android:textColor="@color/text_main"
+            android:textColorHint="@color/text_disable"
             android:textSize="@dimen/sp_16" />
 
         <ImageView
@@ -305,15 +305,10 @@
 
     <Button
         android:id="@+id/btn_complete"
+        style="@style/BtnBigOrange"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_44"
-        android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_25"
-        android:layout_marginEnd="@dimen/dp_20"
-        android:background="@drawable/button_corners_solid_orange"
         android:text="@string/str_complete"
-        android:textColor="@color/c_white"
-        android:textSize="@dimen/sp_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/sel_tel" />

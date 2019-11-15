@@ -261,7 +261,7 @@
     <string name="str_go_open">去开启</string>
     <string name="shop_address">门店地址</string>
     <string name="shop_input_region_tip">请先选择所在地区</string>
-    <string name="str_create_company_alredy_exit">门店名称已存在</string>
+    <string name="str_create_company_alredy_exit">商户名称已存在</string>
     <string name="ipc_right_now_play">立即查看</string>
     <string name="ipc_device_model">设备型号：%s</string>
 
@@ -295,4 +295,5 @@
     <string name="import_order_access_no_auth_more">已授权过门店收银系统，无法授权更多</string>
     <string name="company_shop_region_hint">必选</string>
     <string name="shop_create_new">创建门店</string>
+    <string name="str_free_half_year">首次免半年</string>
 </resources>

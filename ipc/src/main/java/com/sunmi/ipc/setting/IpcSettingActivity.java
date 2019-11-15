@@ -50,6 +50,7 @@ import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.NetworkUtils;
+import sunmi.common.utils.SMDeviceDiscoverUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.SettingItemLayout;
@@ -200,7 +201,20 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 newVersionDialog();
             }
         } else {
-            mVersion.setRightText(resp.getLatest_bin_version());
+            //当前没有升级情况下
+            if (TextUtils.isEmpty(mDevice.getFirmware())) {
+                mVersion.setRightText(resp.getLatest_bin_version());
+            } else if (TextUtils.isEmpty(resp.getLatest_bin_version())) {
+                mVersion.setRightText(mDevice.getFirmware());
+            } else {
+                int mVerDve = Integer.valueOf(mDevice.getFirmware().replace(".", ""));
+                int mVerClo = Integer.valueOf(resp.getLatest_bin_version().replace(".", ""));
+                if (mVerDve >= mVerClo) {
+                    mVersion.setRightText(mDevice.getFirmware());
+                } else {
+                    mVersion.setRightText(resp.getLatest_bin_version());
+                }
+            }
             mVersion.getIvToTextLeft().setVisibility(View.GONE);
         }
         if (isClickVersionUpgrade) {
@@ -593,7 +607,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 OpcodeConstants.setIpcNightIdeRotation, OpcodeConstants.getIpcDetection,
                 OpcodeConstants.getIsWire, CommonNotifications.netConnected,
                 CommonNotifications.netDisconnection, CommonNotifications.ipcUpgrade,
-                CommonNotifications.mqttResponseTimeout, OpcodeConstants.ipcQueryUpgradeStatus};
+                CommonNotifications.mqttResponseTimeout, OpcodeConstants.ipcQueryUpgradeStatus,
+                IpcConstants.ipcDiscovered};
     }
 
     @Override
@@ -605,6 +620,11 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     public void didReceivedNotification(int id, Object... args) {
         super.didReceivedNotification(id, args);
         hideLoadingDialog();
+        if (id == IpcConstants.ipcDiscovered && args != null) {
+            LogCat.e(TAG, "1111111 ipcDiscovered");
+            SunmiDevice bean = (SunmiDevice) args[0];
+            SMDeviceDiscoverUtils.saveInfo(bean);
+        }
         if (id == CommonNotifications.netDisconnection) { //网络断开
             isShowWireDialog = false;
             setWifiUnknown();
@@ -955,8 +975,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         CommonDialog commonDialog = new CommonDialog.Builder(this)
                 .setTitle(R.string.ipc_setting_dialog_upgrade)
                 .setMessage(getString(R.string.ipc_setting_version_current, mDevice.getFirmware()) + "\n" +
-                        getString(R.string.ipc_setting_dialog_upgrade_download_time,
-                                DeviceTypeUtils.getInstance().isSS1(mDevice.getModel()) ? "5" : "8"))
+                        getString(DeviceTypeUtils.getInstance().isSS1(mDevice.getModel()) ?
+                                R.string.ipc_setting_dialog_upgrade_download_time_ss :
+                                R.string.ipc_setting_dialog_upgrade_download_time_fs))
                 .setConfirmButton(R.string.ipc_setting_dialog_upgrade_ok, (dialog, which) -> {
                     gotoIpcSettingVersionActivity();
                 })

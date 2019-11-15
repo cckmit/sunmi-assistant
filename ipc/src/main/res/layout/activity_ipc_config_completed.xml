@@ -60,7 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/dp_20">
+        android:layout_marginBottom="@dimen/dp_12">
 
         <Button
             android:id="@+id/btn_complete"
@@ -77,11 +77,18 @@
             android:visibility="gone" />
 
         <Button
+            android:id="@+id/btn_cloud"
+            style="@style/BtnBigOrange"
+            android:layout_above="@+id/btn_finish"
+            android:text="@string/btn_cloud_free_half_year"
+            android:visibility="gone"/>
+
+        <Button
             android:id="@+id/btn_finish"
             style="@style/BtnBigBlank"
             android:layout_alignParentBottom="true"
-            android:layout_marginTop="@dimen/dp_20"
-            android:text="@string/str_go_home"
+            android:layout_marginTop="@dimen/dp_2"
+            android:text="@string/str_complete"
             android:visibility="gone" />
     </RelativeLayout>
 

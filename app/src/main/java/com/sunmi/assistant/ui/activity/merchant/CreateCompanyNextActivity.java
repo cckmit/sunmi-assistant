@@ -7,7 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.sunmi.apmanager.utils.SomeMonitorEditText;
+import com.sunmi.apmanager.utils.SomeMonitorEditTextNew;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.shop.CreateShopPreviewActivity_;
 import com.sunmi.assistant.ui.activity.contract.CreateCompanyContract;
@@ -55,7 +55,7 @@ public class CreateCompanyNextActivity extends BaseMvpActivity<CreateCompanyPres
         if (!CommonHelper.isGooglePlay()){
             tvTitleTip.setVisibility(View.VISIBLE);
         }
-        new SomeMonitorEditText().setMonitorEditText(btnCreateCompany, etCompany);
+        new SomeMonitorEditTextNew().setMonitorEditText(btnCreateCompany, etCompany);
         mPresenter = new CreateCompanyPresenter();
         mPresenter.attachView(this);
         etCompany.addTextChangedListener(new TextLengthWatcher(etCompany, COMPANY_NAME_MAX_LENGTH) {

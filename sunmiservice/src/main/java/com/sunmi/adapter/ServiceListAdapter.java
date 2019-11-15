@@ -44,12 +44,15 @@ public class ServiceListAdapter extends BaseQuickAdapter<ServiceDetailBean, Base
         helper.setText(R.id.tv_service_name, item.getServiceName());
         if (item.getStatus() != CommonConstants.CLOUD_STORAGE_EXPIRED) {
             helper.setText(R.id.tv_remaining, context.getString(R.string.str_remaining_validity_period,
-                    DateTimeUtils.secondToPeriod(item.getValidTime(), context)));
+                    DateTimeUtils.secondToPeriod(item.getValidTime())));
         } else {
             helper.setText(R.id.tv_remaining, R.string.str_expired);
             helper.setTextColor(R.id.tv_remaining, R.color.caution_primary);
         }
         if (item.isBind()) {
+            helper.getView(R.id.tv_unbind).setVisibility(View.GONE);
+            tvDeviceSn.setVisibility(View.VISIBLE);
+            tvDeviceName.setVisibility(View.VISIBLE);
             tvDeviceSn.setText(context.getString(R.string.ipc_sn, item.getDeviceSn()));
             tvDeviceName.setText(context.getString(R.string.ipc_device_name, item.getDeviceName()));
         } else {

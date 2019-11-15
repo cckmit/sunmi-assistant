@@ -13,6 +13,7 @@ import com.sunmi.assistant.dashboard.Constants;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Random;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
@@ -142,6 +143,11 @@ public class CustomerDataCard extends BaseRefreshCard<CustomerDataCard.Model, Ob
 
     @Override
     protected void setupModel(Model model, Object response) {
+        // Zero fall back
+//        model.customer = Math.max(model.customer, 0);
+//        model.newCustomer = Math.max(model.newCustomer, 0);
+//        model.oldCustomer = Math.max(model.oldCustomer, 0);
+
         // Test data
 //        model.random();
     }
@@ -317,10 +323,11 @@ public class CustomerDataCard extends BaseRefreshCard<CustomerDataCard.Model, Ob
         }
 
         public void random() {
-            newCustomer = (int) (Math.random() * 1000);
-            lastNewCustomer = (int) (Math.random() * 30);
-            oldCustomer = (int) (Math.random() * 1000);
-            lastOldCustomer = (int) (Math.random() * 30);
+            Random r = new Random(System.currentTimeMillis());
+            newCustomer = r.nextInt(100000000);
+            lastNewCustomer = r.nextInt(100000);
+            oldCustomer = r.nextInt(100000000);
+            lastOldCustomer = r.nextInt(100000);
             customer = newCustomer + oldCustomer;
             lastCustomer = lastNewCustomer + lastOldCustomer;
         }

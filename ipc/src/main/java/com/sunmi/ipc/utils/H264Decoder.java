@@ -42,6 +42,7 @@ public class H264Decoder {
     private long deltaTime = 0;
     private long counterTime = System.currentTimeMillis();
     private boolean isRunning = false;
+    private boolean isPlaying;
 
     private byte[] h264Header = {0x00, 0x00, 0x00, 0x01};//h264标准头，所有数据都要拼上
 
@@ -119,9 +120,14 @@ public class H264Decoder {
         format.setInteger(MediaFormat.KEY_FRAME_RATE, fps);
     }
 
+    public boolean isPlaying() {
+        return isPlaying;
+    }
+
     public void release() {
         stopRunning();
         isRunning = false;
+        isPlaying = false;
         if (mediaCodec != null) {
             try {
                 mediaCodec.stop();
@@ -137,7 +143,7 @@ public class H264Decoder {
         release();
         try {
             mediaCodec = MediaCodec.createDecoderByType("video/avc");
-            if (mediaCodec == null || format == null || surface == null) {
+            if (mediaCodec == null || format == null || surface == null || !surface.isValid()) {
                 ToastUtils.toastForShort(BaseApplication.getContext(), "播放失败，清重试");
                 return;
             }
@@ -208,6 +214,7 @@ public class H264Decoder {
                         case MediaCodec.INFO_TRY_AGAIN_LATER:
                             break;
                         default:
+                            isPlaying = true;
                             mediaCodec.releaseOutputBuffer(outIndex, true);
                             frameCount++;
                             deltaTime = System.currentTimeMillis() - counterTime;

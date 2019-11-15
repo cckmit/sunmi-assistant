@@ -19,8 +19,8 @@
 
     <ImageView
         android:id="@+id/iv_ipc"
-        android:layout_width="@dimen/dp_255"
-        android:layout_height="@dimen/dp_255"
+        android:layout_width="@dimen/dp_200"
+        android:layout_height="@dimen/dp_200"
         android:layout_below="@id/title_bar"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_80"
@@ -34,17 +34,17 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/iv_ipc"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_66"
         android:textColor="@color/text_main"
         android:textSize="@dimen/sp_20"
         android:textStyle="bold" />
 
     <include
-        android:layout_centerHorizontal="true"
+        layout="@layout/dialog_ipc_upgrade_warning"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_device_id"
-        layout="@layout/dialog_ipc_upgrade_warning" />
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/tv_ipc_status"
@@ -83,15 +83,10 @@
 
     <Button
         android:id="@+id/btn_upgrade"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_44"
+        style="@style/BtnBigOrange"
         android:layout_alignParentBottom="true"
-        android:layout_margin="@dimen/dp_20"
         android:layout_marginBottom="@dimen/dp_20"
-        android:background="@drawable/button_corners_solid_orange"
         android:text="@string/ipc_setting_version_get_new"
-        android:textColor="@color/c_white"
-        android:textSize="@dimen/sp_16"
         android:visibility="gone" />
 
 </RelativeLayout>

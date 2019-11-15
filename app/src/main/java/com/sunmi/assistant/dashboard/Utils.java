@@ -28,9 +28,6 @@ public class Utils {
     private static final int PERIOD_WEEK_OFFSET = 100;
     private static final int PERIOD_MONTH_OFFSET = 10000;
 
-    private static final long MILLIS_PER_HOUR = 3600;
-    private static final long MILLIS_PER_DAY = 3600 * 24;
-
     private static final int MIN_DAYS_OF_MONTH = 28;
 
     private static String[] sWeekName;
@@ -72,7 +69,7 @@ public class Utils {
             temp.add(Calendar.MONTH, 1);
             timeEnd = temp.getTimeInMillis();
         }
-        return new Pair<>(timeStart / 1000, timeEnd / 1000);
+        return new Pair<>(timeStart, timeEnd);
     }
 
     /**
@@ -95,35 +92,35 @@ public class Utils {
         }
     }
 
-    public static long getTime(int period, int timeIndex, int size) {
+    public static long getStartTime(int period) {
         temp.setTimeInMillis(System.currentTimeMillis());
         int year = temp.get(Calendar.YEAR);
         int month = temp.get(Calendar.MONTH);
         int day = temp.get(Calendar.DATE);
         temp.clear();
+
         if (period == Constants.TIME_PERIOD_TODAY) {
             temp.set(year, month, day);
-            return temp.getTimeInMillis() / 1000 + (timeIndex - 1) * MILLIS_PER_HOUR;
+            return temp.getTimeInMillis();
+
         } else if (period == Constants.TIME_PERIOD_YESTERDAY) {
             temp.set(year, month, day);
             temp.add(Calendar.DATE, -1);
-            return temp.getTimeInMillis() / 1000 + (timeIndex - 1) * MILLIS_PER_HOUR;
+            return temp.getTimeInMillis();
+
         } else if (period == Constants.TIME_PERIOD_WEEK) {
             temp.setFirstDayOfWeek(Calendar.MONDAY);
             temp.set(year, month, day);
             int dayOfWeek = temp.get(Calendar.DAY_OF_WEEK);
             int offset = temp.getFirstDayOfWeek() - dayOfWeek;
             temp.add(Calendar.DATE, offset > 0 ? offset - 7 : offset);
-            return temp.getTimeInMillis() / 1000 + (timeIndex - 1) * MILLIS_PER_DAY;
-        } else {
-            if (day == 1 && size >= MIN_DAYS_OF_MONTH) {
-                month = (month + 11) % 12;
-            } else if (day >= MIN_DAYS_OF_MONTH && size == 1) {
-                month = (month + 1) % 12;
-            }
-            temp.set(year, month, timeIndex);
-            return temp.getTimeInMillis() / 1000;
+            return temp.getTimeInMillis();
+
+        } else if (period == Constants.TIME_PERIOD_MONTH) {
+            temp.set(year, month, 1);
+            return temp.getTimeInMillis();
         }
+        return 0;
     }
 
     /**
@@ -132,16 +129,19 @@ public class Utils {
      * 101~107表示：周维度的周一到周日
      * 10001~100030表示：月维度的1~30日
      *
-     * @param timeIndex 从服务器获取的时间序列值，目前1代表第一个值（00:00、周一、1日）
+     * @param timestamp Unix时间戳
      * @return X轴值范围
      */
-    public static float encodeChartXAxisFloat(int period, int timeIndex) {
+    public static float encodeChartXAxisFloat(int period, long timestamp) {
+        temp.setTimeInMillis(timestamp);
         if (period == Constants.TIME_PERIOD_TODAY || period == Constants.TIME_PERIOD_YESTERDAY) {
-            return timeIndex;
+            return temp.get(Calendar.HOUR_OF_DAY) + 1;
         } else if (period == Constants.TIME_PERIOD_WEEK) {
-            return PERIOD_WEEK_OFFSET + timeIndex;
+            temp.setFirstDayOfWeek(Calendar.MONDAY);
+            int dayOfWeek = temp.get(Calendar.DAY_OF_WEEK) - 1;
+            return PERIOD_WEEK_OFFSET + (dayOfWeek < 1 ? dayOfWeek + 7 : dayOfWeek);
         } else {
-            return PERIOD_MONTH_OFFSET + timeIndex;
+            return PERIOD_MONTH_OFFSET + temp.get(Calendar.DATE);
         }
     }
 
@@ -162,8 +162,7 @@ public class Utils {
         if (sWeekName == null) {
             sWeekName = context.getResources().getStringArray(R.array.week_name);
         }
-        temp.clear();
-        temp.setTimeInMillis(time * 1000);
+        temp.setTimeInMillis(time);
         if (period == Constants.TIME_PERIOD_TODAY || period == Constants.TIME_PERIOD_YESTERDAY) {
             int hour = temp.get(Calendar.HOUR_OF_DAY);
             return String.format(Locale.getDefault(), "%02d:00-%02d:00", hour, hour + 1);
@@ -225,6 +224,10 @@ public class Utils {
 
     public static boolean hasCustomer(int source) {
         return (source & Constants.DATA_SOURCE_CUSTOMER) != 0;
+    }
+
+    public static boolean hasFloating(int source){
+        return (source & Constants.DATA_SOURCE_FLOATING) != 0;
     }
 
 }

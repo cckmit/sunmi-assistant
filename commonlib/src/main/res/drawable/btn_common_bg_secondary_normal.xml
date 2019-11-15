@@ -3,6 +3,8 @@
 
     <corners android:radius="@dimen/dp_100" />
 
-    <solid android:color="@color/c_divider" />
+    <stroke
+        android:width="@dimen/dp_0_5"
+        android:color="@color/text_disable" />
 
 </shape>

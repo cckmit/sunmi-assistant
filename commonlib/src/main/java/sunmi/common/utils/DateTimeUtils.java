@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import sunmi.common.base.BaseApplication;
 import sunmi.common.utils.log.LogCat;
 
 public class DateTimeUtils {
@@ -79,10 +80,10 @@ public class DateTimeUtils {
         }
     }
 
-    public static String secondToPeriod(long second, Context context) {
+    public static String secondToPeriod(long second) {
         long days = second / (3600 * 24);
         long hours = second % (3600 * 24) / 3600;
-        return context.getString(R.string.str_period, days, hours);
+        return BaseApplication.getContext().getString(R.string.str_period, days, hours);
     }
 
 
