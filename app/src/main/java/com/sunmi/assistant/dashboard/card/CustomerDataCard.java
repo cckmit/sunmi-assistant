@@ -144,9 +144,9 @@ public class CustomerDataCard extends BaseRefreshCard<CustomerDataCard.Model, Ob
     @Override
     protected void setupModel(Model model, Object response) {
         // Zero fall back
-        model.customer = Math.max(model.customer, 0);
-        model.newCustomer = Math.max(model.newCustomer, 0);
-        model.oldCustomer = Math.max(model.oldCustomer, 0);
+//        model.customer = Math.max(model.customer, 0);
+//        model.newCustomer = Math.max(model.newCustomer, 0);
+//        model.oldCustomer = Math.max(model.oldCustomer, 0);
 
         // Test data
 //        model.random();
