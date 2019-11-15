@@ -876,6 +876,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
      * 切到云端回放
      */
     void switch2CloudPlayback(long start, long end) {
+        if (iotcClient == null) {
+            return;
+        }
         showVideoLoading();
         if (playType == PLAY_TYPE_PLAYBACK_DEV) {
             iotcClient.stopPlayback();//先停止设备回放
