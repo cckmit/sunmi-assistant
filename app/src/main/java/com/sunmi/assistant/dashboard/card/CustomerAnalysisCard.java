@@ -162,12 +162,8 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
     protected void setupModel(Model models, CustomerHistoryDetailResp response) {
         Model model = getModel();
         model.list.clear();
-        if (response == null || response.getCountList() == null || response.getCountList().isEmpty()) {
-            Item e = new Item();
-            e.setError();
-            model.list.add(e);
-        } else {
-            List<CustomerHistoryDetailResp.Item> list = response.getCountList();
+        if (response != null && response.getList() != null && !response.getList().isEmpty()) {
+            List<CustomerHistoryDetailResp.Item> list = response.getList();
             List<Item> result = new ArrayList<>();
             int total = 0;
             for (CustomerHistoryDetailResp.Item item : list) {
@@ -190,6 +186,12 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
             for (Item item : model.list) {
                 item.setTotal(total);
             }
+        }
+
+        if (model.list.isEmpty()) {
+            Item e = new Item();
+            e.setError();
+            model.list.add(e);
         }
 
         mAdapter.setDatas(model.list);
@@ -265,8 +267,8 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
             if (item.state == Item.STATE_ERROR) {
                 avatar.setImageResource(R.mipmap.dashboard_customer_avatar_error);
                 title.setText(R.string.dashboard_card_customer_none);
-                count.setText(DATA_NONE);
-                ratio.setText(DATA_NONE);
+                count.setText(DATA_ZERO);
+                ratio.setText(DATA_ZERO_RATIO);
                 oldRatio.setText(DATA_NONE);
                 peak.setText(DATA_NONE);
             } else {

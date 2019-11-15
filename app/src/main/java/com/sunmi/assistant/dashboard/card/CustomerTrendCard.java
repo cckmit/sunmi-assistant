@@ -259,7 +259,7 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
         SparseArray<ChartEntry> newMap = new SparseArray<>(31);
         SparseArray<ChartEntry> oldMap = new SparseArray<>(31);
 
-        initValue(model.period, allMap, newMap, oldMap);
+//        initValue(model.period, allMap, newMap, oldMap);
         if (response == null || response.getCountList() == null || response.getCountList().isEmpty()) {
             fillValue(allList, allMap);
             fillValue(newList, newMap);

@@ -13,7 +13,7 @@ public class CustomerHistoryDetailResp {
     @SerializedName("count_list")
     private List<Item> countList;
 
-    public List<Item> getCountList() {
+    public List<Item> getList() {
         return countList;
     }
 
