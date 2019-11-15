@@ -27,4 +27,5 @@ public class CommonNotifications {
 
     public static final int cloudStorageChange = totalEvents++;    //云存储订阅状态修改
     public static final int ipcUpgradeSuccessUdp = totalEvents++;    //升级成功发送udp
+    public static final int activeCloudChange = totalEvents++;       //云存储绑定服务的状态修改
 }

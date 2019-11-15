@@ -3,6 +3,7 @@ package com.sunmi.sunmiservice;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.webkit.JavascriptInterface;
 
 import com.tencent.mm.opensdk.modelbiz.WXLaunchMiniProgram;
@@ -16,9 +17,8 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
-import sunmi.common.view.activity.ProtocolActivity;
-import sunmi.common.view.activity.ProtocolActivity_;
 import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.webview.SMWebView;
 
@@ -177,10 +177,18 @@ public class JSCall {
     }
 
     @JavascriptInterface
-    public void showCloudServiceAgreement() {
-        ProtocolActivity_.intent(context)
-                .protocolType(ProtocolActivity.USER_PROTOCOL).start();
-        context.overridePendingTransition(R.anim.activity_open_down_up, 0);
+    public void setStatusBarDefaultColor(String arg) {
+        try {
+            JSONObject jsonObject = new JSONObject(arg);
+            String color = jsonObject.getString("color");
+            if (TextUtils.equals(color, SsConstants.JS_COLOR_WHITE)) {
+                StatusBarUtils.setStatusBarFullTransparent(context);
+            } else {
+                StatusBarUtils.StatusBarLightMode(context);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void launchMiniProgram(String userName, String path, String miniProgramType) {

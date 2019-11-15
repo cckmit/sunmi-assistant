@@ -162,12 +162,8 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
     protected void setupModel(Model models, CustomerHistoryDetailResp response) {
         Model model = getModel();
         model.list.clear();
-        if (response == null || response.getCountList() == null || response.getCountList().isEmpty()) {
-            Item e = new Item();
-            e.setError();
-            model.list.add(e);
-        } else {
-            List<CustomerHistoryDetailResp.Item> list = response.getCountList();
+        if (response != null && response.getList() != null && !response.getList().isEmpty()) {
+            List<CustomerHistoryDetailResp.Item> list = response.getList();
             List<Item> result = new ArrayList<>();
             int total = 0;
             for (CustomerHistoryDetailResp.Item item : list) {
@@ -192,8 +188,12 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
             }
         }
 
-        mAdapter.setDatas(model.list);
-        mAdapter.notifyDataSetChanged();
+        if (model.list.isEmpty()) {
+            Item e = new Item();
+            e.setError();
+            model.list.add(e);
+        }
+
     }
 
     @Override
@@ -211,7 +211,9 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
             view.setPaddingRelative(0, 0, 0, paddingBottom);
         }
 
-        holder.itemView.requestLayout();
+        mAdapter.setDatas(model.list);
+        mAdapter.notifyDataSetChanged();
+        view.post(view::requestLayout);
     }
 
     @Override
@@ -222,8 +224,6 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
         for (Item item : model.list) {
             item.setLoading();
         }
-        mAdapter.setDatas(model.list);
-        mAdapter.notifyDataSetChanged();
         setupView(holder, model, position);
     }
 
@@ -235,8 +235,6 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
         for (Item item : model.list) {
             item.setError();
         }
-        mAdapter.setDatas(model.list);
-        mAdapter.notifyDataSetChanged();
         setupView(holder, model, position);
     }
 
@@ -265,8 +263,8 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
             if (item.state == Item.STATE_ERROR) {
                 avatar.setImageResource(R.mipmap.dashboard_customer_avatar_error);
                 title.setText(R.string.dashboard_card_customer_none);
-                count.setText(DATA_NONE);
-                ratio.setText(DATA_NONE);
+                count.setText(DATA_ZERO);
+                ratio.setText(DATA_ZERO_RATIO);
                 oldRatio.setText(DATA_NONE);
                 peak.setText(DATA_NONE);
             } else {

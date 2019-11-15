@@ -64,7 +64,7 @@ public class CommonConfig extends BaseConfig {
         MI_PUSH_APP_ID = "2882303761518131146";
         MI_PUSH_APP_KEY = "5611813137146";
 
-        CLOUD_STORAGE_URL = "https://sunmi-test.oss-cn-hangzhou.aliyuncs.com/h5/cloud-storage/index.html#/cloudStorage?topPadding=";
+        CLOUD_STORAGE_URL = "https://wifi.cdn.sunmi.com/H5/CloudStorage/index.html#/cloudStorage?topPadding=";
     }
 
     @Override
