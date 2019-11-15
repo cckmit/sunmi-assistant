@@ -4,12 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.net.http.SslError;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.DownloadListener;
-import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -128,20 +126,22 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
 
     @SuppressLint("SetJavaScriptEnabled")
     private void initWebView() {
-        webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-        WebSettings webSetting = webView.getSettings();
-        webSetting.setSupportZoom(false);
-        webSetting.setBuiltInZoomControls(true);
-        webSetting.setUseWideViewPort(true);
-        webSetting.setJavaScriptEnabled(true);
-        webSetting.setAllowFileAccess(true);// 设置允许访问文件数据
-        //自适应屏幕
-        webSetting.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-        webSetting.setLoadWithOverviewMode(true);
-        webSetting.setDomStorageEnabled(true);
-        webView.getSettings().setUseWideViewPort(true);//将图片调整到适合webview的大小--关键点
-        webView.getSettings().setLoadWithOverviewMode(true);
-        webSetting.setJavaScriptCanOpenWindowsAutomatically(true);
+        final WebSettings webSettings = webView.getSettings();
+        webSettings.setDomStorageEnabled(true);//设置DOM Storage缓存
+        webSettings.setDatabaseEnabled(true);//设置可使用数据库
+        webSettings.setJavaScriptEnabled(true);//支持js脚本
+        webSettings.setUseWideViewPort(true);//将图片调整到适合webview的大小
+        webSettings.setSupportZoom(false);//支持缩放
+        webSettings.setBuiltInZoomControls(false);//支持缩放
+        webSettings.setSupportMultipleWindows(false);//多窗口
+        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);//关闭webview中缓存
+        webSettings.setAllowFileAccess(true);//设置可以访问文件
+        webSettings.setNeedInitialFocus(true);//当webview调用requestFocus时为webview设置节点
+        webSettings.setJavaScriptCanOpenWindowsAutomatically(true);//支持通过JS打开新窗口
+        webSettings.setLoadsImagesAutomatically(true);//支持自动加载图片N
+        webSettings.setGeolocationEnabled(true);//启用地理定位
+        webSettings.setAllowFileAccessFromFileURLs(true);//使用允许访问文件的urls
+        webSettings.setAllowUniversalAccessFromFileURLs(true);//使用允许访问文件的urls
         // 可以运行JavaScript
         JSCall jsCall = new JSCall(this, webView);
         webView.addJavascriptInterface(jsCall, SsConstants.JS_INTERFACE_NAME);
@@ -250,13 +250,6 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
                 LogCat.e(TAG, "receiverError 111111" + " networkError");
             }
 
-            @Override
-            public void onReceivedSslError(WebView view, final SslErrorHandler handler,
-                                           SslError error) {
-                hideLoadingDialog();
-                super.onReceivedSslError(view, handler, error);
-            }
-
         });
     }
 
@@ -266,27 +259,26 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
         titleBar.setVisibility(View.GONE);
         webView.setVisibility(View.VISIBLE);
         initWebView();
-        webView.loadUrl(mUrl);
+        webView.loadUrl(mUrl + Utils.getWebViewStatusBarHeight(context));
         startTimer();
     }
 
     @UiThread
     protected void loadError() {
         closeTimer();
-        hideLoadingDialog();
         webView.setVisibility(View.GONE);
         networkError.setVisibility(View.VISIBLE);
         titleBar.setVisibility(View.VISIBLE);
+        hideLoadingDialog();
     }
 
     @Override
     public void onProgressChanged(int progress) {
-        if (progress < 100 && !beginLoading) {
+        if (progress < 100) {
             showLoadingDialog();
-            closeTimer();
-            beginLoading = true;
         } else {
             hideLoadingDialog();
+            closeTimer();
         }
     }
 

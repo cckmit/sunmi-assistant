@@ -13,7 +13,6 @@ public class IpcManageBean {
     private boolean isEnabled;
     private int status;
     private int tagImageResId = -1;
-    private int activeStatus;
 
     public IpcManageBean(int leftImageResId, String title, String rightText) {
         this.leftImageResId = leftImageResId;
@@ -83,13 +82,5 @@ public class IpcManageBean {
 
     public void setTagImageResId(int tagImageResId) {
         this.tagImageResId = tagImageResId;
-    }
-
-    public int getActiveStatus() {
-        return activeStatus;
-    }
-
-    public void setActiveStatus(int activeStatus) {
-        this.activeStatus = activeStatus;
     }
 }
