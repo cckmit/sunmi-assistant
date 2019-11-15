@@ -180,7 +180,6 @@ public class JSCall {
     public void setStatusBarDefaultColor(String arg) {
         try {
             JSONObject jsonObject = new JSONObject(arg);
-            LogCat.e("JSCall", "showToast, jsonObject = " + jsonObject);
             final String color = jsonObject.getString("color");
             context.runOnUiThread(new Runnable() {
                 @Override
