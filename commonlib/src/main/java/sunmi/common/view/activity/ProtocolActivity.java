@@ -30,14 +30,14 @@ import sunmi.common.view.webview.SMWebViewClient;
 @EActivity(resName = "activity_protocol")
 public class ProtocolActivity extends BaseActivity {
 
-    //用户协议
-    public final static String PROTOCOL_USER = "https://account.sunmi.com/static/userAgreement.html";
-    //隐私协议
-    public final static String PROTOCOL_PRIVATE = "https://account.sunmi.com/static/privacyCn.html";
+    //用户协议 https://wifi.cdn.sunmi.com/Privacy/user_sunmi.html
+    public final static String PROTOCOL_USER = "https://wifi.cdn.sunmi.com/Privacy/user_sunmi.html";
     //用户协议英文
-    public final static String PROTOCOL_USER_ENGLISH = "https://account.sunmi.com/static/userAgreement-en.html";
+    public final static String PROTOCOL_USER_ENGLISH = "https://wifi.cdn.sunmi.com/Privacy/user_sunmi_english.html";
+    //隐私协议
+    public final static String PROTOCOL_PRIVATE = "https://wifi.cdn.sunmi.com/Privacy/private_sunmi.html";
     //隐私协议英文
-    public final static String PROTOCOL_PRIVATE_ENGLISH = "https://account.sunmi.com/static/privacyEn.html";
+    public final static String PROTOCOL_PRIVATE_ENGLISH = "https://wifi.cdn.sunmi.com/Privacy/private_sunmi_english.html";
 
     //本地用户协议
     public final static String LOCAL_PROTOCOL_USER = "file:///android_asset/user_sunmi.html";
@@ -63,6 +63,7 @@ public class ProtocolActivity extends BaseActivity {
     SMWebView webView;
     @Extra
     int protocolType;
+
     private CountDownTimer countDownTimer;
     private long timeout = 5000;//超时时间
     private boolean loadFail;
