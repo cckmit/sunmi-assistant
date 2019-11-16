@@ -11,9 +11,7 @@ import java.util.Arrays;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import sunmi.common.base.BaseApplication;
 import sunmi.common.utils.ThreadPool;
-import sunmi.common.utils.ToastUtils;
 
 /**
  * Description:视频解析
@@ -144,7 +142,6 @@ public class H264Decoder {
         try {
             mediaCodec = MediaCodec.createDecoderByType("video/avc");
             if (mediaCodec == null || format == null || surface == null || !surface.isValid()) {
-                ToastUtils.toastForShort(BaseApplication.getContext(), "播放失败，清重试");
                 return;
             }
             mediaCodec.configure(format, surface, null, 0);
@@ -156,7 +153,6 @@ public class H264Decoder {
             isRunning = true;
         } catch (IOException e) {
             e.printStackTrace();
-            ToastUtils.toastForShort(BaseApplication.getContext(), "播放失败，清重试");
         }
     }
 
