@@ -387,7 +387,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     private void fsAdjust(SunmiDevice device) {
         deviceChoose = device;
         String versionName = device.getFirmware();
-        if (Utils.isVersionSdcardCheck(versionName)) {
+        if (Utils.getVersionCode(versionName) < IpcConstants.IPC_VERSION_NO_SDCARD_CHECK) {
             getSdCardStatus(device);
         } else {
             startFsAdjust(device);

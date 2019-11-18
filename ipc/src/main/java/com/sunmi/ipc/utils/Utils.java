@@ -13,7 +13,6 @@ public class Utils {
     private static final String TAG = "IpcUtils";
 
     private static final Pattern IPC_VERSION_NAME = Pattern.compile("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$");
-    private static final int IPC_VERSION_NO_SDCARD_CHECK = 1002000;
 
     public static int getVersionCode(String version) {
         if (!isVersionValid(version)) {
@@ -32,7 +31,4 @@ public class Utils {
         return IPC_VERSION_NAME.matcher(version).matches();
     }
 
-    public static boolean isVersionSdcardCheck(String version) {
-        return getVersionCode(version) < IPC_VERSION_NO_SDCARD_CHECK;
-    }
 }
