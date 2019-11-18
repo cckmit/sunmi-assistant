@@ -27,6 +27,7 @@ import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.OpcodeConstants;
 import com.sunmi.ipc.setting.entity.DetectionConfig;
 import com.sunmi.ipc.utils.TimeoutTimer;
+import com.sunmi.ipc.utils.Utils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.CheckedChange;
@@ -337,7 +338,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             return;
         }
         showLoadingDialog();
-        IPCCall.getInstance().getSdState(context, device.getModel(), device.getDeviceid());
+        fsAdjust(mDevice);
     }
 
     @Click(resName = "sil_voice_exception")
@@ -459,6 +460,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     void onVersionUpgradeResult(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (mResp != null) {
+                mDevice.setFirmware(mResp.getLatest_bin_version());
                 mVersion.setRightText(mResp.getLatest_bin_version());
                 mVersion.getIvToTextLeft().setVisibility(View.GONE);
                 isClickVersionUpgrade = false;
@@ -601,6 +603,34 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         IPCCall.getInstance().getSdStatus(context, mDevice.getModel(), mDevice.getDeviceid());
     }
 
+    /**
+     * FS画面调整入口，需要判断版本，新版无需SD卡就绪
+     */
+    private void fsAdjust(SunmiDevice device) {
+        String versionName = device.getFirmware();
+        if (Utils.getVersionCode(versionName) < IpcConstants.IPC_VERSION_NO_SDCARD_CHECK) {
+            getSdCardStatus(device);
+        } else {
+            startFsAdjust(device);
+        }
+    }
+
+    private void getSdCardStatus(SunmiDevice device) {
+        IPCCall.getInstance().getSdState(context, device.getModel(), device.getDeviceid());
+    }
+
+    private void startFsAdjust(SunmiDevice device) {
+        hideLoadingDialog();
+        if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(device.getDeviceid())) {
+            shortTip(R.string.ipc_setting_tip_network_dismatch);
+            return;
+        }
+        RecognitionSettingActivity_.intent(this)
+                .mDevice(device)
+                .mVideoRatio(16f / 9f)
+                .start();
+    }
+
     @Override
     public int[] getStickNotificationId() {
         return new int[]{OpcodeConstants.getIpcConnectApMsg, OpcodeConstants.getIpcNightIdeRotation,
@@ -662,6 +692,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             } else if (id == OpcodeConstants.getIsWire) {
                 checkWire(res);
             } else if (id == OpcodeConstants.getSdStatus) {
+                // 进sd卡管理获取SD卡状态状态
                 switch (getSdcardStatus(res)) {
                     case 1:
                     case 2:
@@ -683,10 +714,10 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                         break;
                 }
             } else if (IpcConstants.getSdcardStatus == id) {
+                // 画面调整前进行SD卡状态获取
                 switch (getSdcardStatus(res)) {
                     case 2:
-                        RecognitionSettingActivity_.intent(this).mDevice(mDevice)
-                                .mVideoRatio(16f / 9f).start();
+                        startFsAdjust(mDevice);
                         break;
                     case 0:
                         showErrorDialog(R.string.tip_no_tf_card, R.string.ipc_recognition_sd_none);
