@@ -21,6 +21,7 @@ public class ServiceDetailPresenter extends BasePresenter<ServiceDetailContract.
             @Override
             public void onSuccess(int code, String msg, ServiceDetailBean data) {
                 if (isViewAttached()) {
+                    mView.hideLoadingDialog();
                     mView.getServiceDetail(data);
                 }
             }
@@ -28,6 +29,7 @@ public class ServiceDetailPresenter extends BasePresenter<ServiceDetailContract.
             @Override
             public void onFail(int code, String msg, ServiceDetailBean data) {
                 if (isViewAttached()) {
+                    mView.hideLoadingDialog();
                     mView.getServiceDetail(null);
                 }
             }

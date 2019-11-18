@@ -97,6 +97,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
         mPresenter = new ServiceDetailPresenter();
         mPresenter.attachView(this);
         mPresenter.getServiceDetailByDevice(mSn);
+        showLoadingDialog();
     }
 
     @UiThread
@@ -134,7 +135,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
     }
 
     @Override
-    public int[] getUnStickNotificationId() {
+    public int[] getStickNotificationId() {
         return new int[]{CommonNotifications.cloudStorageChange};
     }
 

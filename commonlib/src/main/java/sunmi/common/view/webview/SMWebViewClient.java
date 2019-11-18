@@ -12,11 +12,13 @@ import android.webkit.WebViewClient;
 
 import com.commonlibrary.R;
 
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.dialog.CommonDialog;
 
 public abstract class SMWebViewClient extends WebViewClient {
 
     public Activity mContext;
+    private CommonDialog sslDialog;
 
     public SMWebViewClient(Activity activity) {
         super();
@@ -40,18 +42,25 @@ public abstract class SMWebViewClient extends WebViewClient {
     @Override
     public void onReceivedSslError(WebView view, final SslErrorHandler handler,
                                    SslError error) {
-        new CommonDialog.Builder(mContext).setTitle(R.string.str_ssl_error)
-                .setCancelButton(R.string.sm_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        handler.cancel();
-                    }
-                }).setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                handler.proceed();
-            }
-        });
+        LogCat.e("smwebviewclient", "onReceivedSslError error = " + error.toString());
+        if (sslDialog == null) {
+            sslDialog = new CommonDialog.Builder(mContext).setTitle(R.string.str_ssl_error)
+                    .setCancelButton(R.string.sm_cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            handler.cancel();
+                        }
+                    })
+                    .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            handler.proceed();
+                        }
+                    }).create();
+        }
+        if (!sslDialog.isShowing()) {
+            sslDialog.show();
+        }
     }
 
     /**
