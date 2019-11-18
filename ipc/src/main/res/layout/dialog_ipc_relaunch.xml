@@ -16,7 +16,7 @@
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_10"
         android:gravity="center"
-        android:text="重启大约需要2分钟左右，您可以通过\n摄像机的闪灯情况判断其当前状态："
+        android:text="@string/ipc_setting_reboot_need_min2"
         android:textColor="@color/text_normal"
         android:textSize="@dimen/sp_14"
         app:layout_constraintEnd_toEndOf="parent"

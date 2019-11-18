@@ -28,9 +28,6 @@ public class RelaunchStartSettingActivity extends BaseActivity {
     TextView tvDeviceId;
     @ViewById(resName = "iv_ipc")
     ImageView ivIpc;
-    @ViewById(resName = "tv_light_tip")
-    TextView tvLightTip;
-
     @Extra
     SunmiDevice mDevice;
 
@@ -46,7 +43,6 @@ public class RelaunchStartSettingActivity extends BaseActivity {
             ivIpc.setImageResource(R.mipmap.ic_no_fs);
         }
         tvDeviceId.setText(mDevice.getDeviceid());
-        tvLightTip.setText(getString(R.string.ipc_setting_reboot_need_min2));
     }
 
     @Override

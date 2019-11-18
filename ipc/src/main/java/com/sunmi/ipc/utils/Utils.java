@@ -22,7 +22,7 @@ public class Utils {
         String[] split = version.split("\\.");
         int versionCode = 0;
         for (int i = 0, size = split.length; i < size; i++) {
-            versionCode += Integer.valueOf(split[i]) * (int) Math.pow(1000, 2 - i);
+            versionCode += Integer.valueOf(split[i]) * (int) Math.pow(100, 2 - i);
         }
         return versionCode;
     }
