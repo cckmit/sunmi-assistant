@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <TextView
+        android:id="@+id/tv_light_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:gravity="center"
+        android:text="重启大约需要2分钟左右，您可以通过\n摄像机的闪灯情况判断其当前状态："
+        android:textColor="@color/text_normal"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RelativeLayout
+        android:id="@+id/rl_green"
+        android:layout_width="@dimen/dp_76"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_36"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/rl_end_blue"
+        app:layout_constraintTop_toBottomOf="@+id/tv_light_tip">
+
+        <ImageView
+            android:id="@+id/iv_green"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@mipmap/oval_green_hollow" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1_5"
+            android:layout_marginTop="@dimen/dp_3"
+            android:layout_toEndOf="@id/iv_green"
+            android:background="@color/common_fill" />
+
+        <TextView
+            android:id="@+id/tv_green"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_green"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_8"
+            android:text="@string/import_order_dialog_green_light"
+            android:textColor="@color/text_main"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_green"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_2"
+            android:text="@string/import_order_dialog_relanuch"
+            android:textColor="@color/text_normal"
+            android:textSize="@dimen/sp_12" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_end_blue"
+        android:layout_width="@dimen/dp_76"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_36"
+        app:layout_constraintLeft_toRightOf="@id/rl_green"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_light_tip">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1_5"
+            android:layout_marginTop="@dimen/dp_3"
+            android:layout_toStartOf="@id/iv_end_blue"
+            android:background="@color/common_fill" />
+
+        <ImageView
+            android:id="@+id/iv_end_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@mipmap/oval_blue_solid" />
+
+        <TextView
+            android:id="@+id/tv_end_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_end_blue"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_8"
+            android:text="@string/import_order_dialog_blue_light_alway_on"
+            android:textColor="@color/text_main"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_end_blue"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_2"
+            android:text="@string/ipc_setting_online_success"
+            android:textColor="@color/text_normal"
+            android:textSize="@dimen/sp_12" />
+
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>

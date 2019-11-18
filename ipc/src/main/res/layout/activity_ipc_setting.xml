@@ -216,6 +216,17 @@
                 app:parentHeight="@dimen/dp_60"
                 app:rightPadding="@dimen/dp_20" />
 
+            <sunmi.common.view.SettingItemLayout
+                android:id="@+id/sil_ipc_relaunch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_0_5"
+                android:background="@color/c_white"
+                app:imageRight="@mipmap/ic_right_arrow_small"
+                app:leftPadding="@dimen/dp_20"
+                app:leftText="@string/ipc_setting_relaunch"
+                app:parentHeight="@dimen/dp_60"
+                app:rightPadding="@dimen/dp_20" />
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>

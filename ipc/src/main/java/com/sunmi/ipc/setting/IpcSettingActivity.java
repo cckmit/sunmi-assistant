@@ -51,7 +51,6 @@ import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.NetworkUtils;
-import sunmi.common.utils.SMDeviceDiscoverUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.SettingItemLayout;
@@ -208,9 +207,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             } else if (TextUtils.isEmpty(resp.getLatest_bin_version())) {
                 mVersion.setRightText(mDevice.getFirmware());
             } else {
-                int mVerDve = Integer.valueOf(mDevice.getFirmware().replace(".", ""));
-                int mVerClo = Integer.valueOf(resp.getLatest_bin_version().replace(".", ""));
-                if (mVerDve >= mVerClo) {
+                if (Utils.getVersionCode(mDevice.getFirmware()) >=
+                        Utils.getVersionCode(mResp.getLatest_bin_version())) {
                     mVersion.setRightText(mDevice.getFirmware());
                 } else {
                     mVersion.setRightText(resp.getLatest_bin_version());
@@ -631,14 +629,24 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 .start();
     }
 
+    /**
+     * 重启
+     */
+    @Click(resName = "sil_ipc_relaunch")
+    void relaunchClick() {
+        RelaunchSettingActivity_.intent(this)
+                .mDevice(mDevice)
+                .start();
+    }
+
+
     @Override
     public int[] getStickNotificationId() {
         return new int[]{OpcodeConstants.getIpcConnectApMsg, OpcodeConstants.getIpcNightIdeRotation,
                 OpcodeConstants.setIpcNightIdeRotation, OpcodeConstants.getIpcDetection,
                 OpcodeConstants.getIsWire, CommonNotifications.netConnected,
                 CommonNotifications.netDisconnection, CommonNotifications.ipcUpgrade,
-                CommonNotifications.mqttResponseTimeout, OpcodeConstants.ipcQueryUpgradeStatus,
-                IpcConstants.ipcDiscovered};
+                CommonNotifications.mqttResponseTimeout, OpcodeConstants.ipcQueryUpgradeStatus};
     }
 
     @Override
@@ -650,11 +658,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     public void didReceivedNotification(int id, Object... args) {
         super.didReceivedNotification(id, args);
         hideLoadingDialog();
-        if (id == IpcConstants.ipcDiscovered && args != null) {
-            LogCat.e(TAG, "1111111 ipcDiscovered");
-            SunmiDevice bean = (SunmiDevice) args[0];
-            SMDeviceDiscoverUtils.saveInfo(bean);
-        }
         if (id == CommonNotifications.netDisconnection) { //网络断开
             isShowWireDialog = false;
             setWifiUnknown();
