@@ -5,9 +5,9 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
-import android.text.TextUtils;
 
 import butterknife.ButterKnife;
 import sunmi.common.notification.BaseNotification;
@@ -123,9 +123,6 @@ public abstract class BaseActivity extends FragmentActivity
         }
     }
 
-    /**
-     * 显示加载框
-     */
     public void showLoadingDialog() {
         runOnUiThread(new Runnable() {
             @Override
@@ -133,42 +130,78 @@ public abstract class BaseActivity extends FragmentActivity
                 if (loadingDialog == null || loadingDialog.isShowing()) {
                     return;
                 }
-                loadingDialog.setLoadingContent(null);
+                loadingDialog.setLoadingLight();
+                loadingDialog.setContent(null);
                 loadingDialog.show();
             }
         });
     }
 
-    /**
-     * 显示加载框,content为null是不可点击消失
-     */
-    public void showLoadingDialog(final String text) {
+    public void showDarkLoading() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (loadingDialog == null || loadingDialog.isShowing()) {
                     return;
                 }
-                if (!TextUtils.isEmpty(text))
-                    loadingDialog.setLoadingContent(text);
+                loadingDialog.setLoadingDark();
+                loadingDialog.setContent(null);
                 loadingDialog.show();
             }
         });
     }
 
-    /**
-     * 显示加载框,content为null是不可点击消失
-     */
-    public void showLoadingDialog(final String text, final int textColor) {
+    public void showLoadingDialog(final String content) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (loadingDialog == null || loadingDialog.isShowing()) {
                     return;
                 }
-                loadingDialog.setCancelable(false);
-                if (!TextUtils.isEmpty(text))
-                    loadingDialog.setTipColorText(text, textColor);
+                loadingDialog.setLoadingLight();
+                loadingDialog.setContent(content);
+                loadingDialog.show();
+            }
+        });
+    }
+
+    public void showDarkLoading(final String content) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (loadingDialog == null || loadingDialog.isShowing()) {
+                    return;
+                }
+                loadingDialog.setLoadingDark();
+                loadingDialog.setContent(content);
+                loadingDialog.show();
+            }
+        });
+    }
+
+    public void showLoadingDialog(final String content, @ColorInt final int textColor) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (loadingDialog == null || loadingDialog.isShowing()) {
+                    return;
+                }
+                loadingDialog.setLoadingLight();
+                loadingDialog.setContent(content, textColor);
+                loadingDialog.show();
+            }
+        });
+    }
+
+    public void showDarkLoading(final String content, @ColorInt final int textColor) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (loadingDialog == null || loadingDialog.isShowing()) {
+                    return;
+                }
+                loadingDialog.setLoadingDark();
+                loadingDialog.setContent(content, textColor);
                 loadingDialog.show();
             }
         });
