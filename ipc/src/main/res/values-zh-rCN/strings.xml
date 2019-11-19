@@ -312,6 +312,12 @@
     <string name="ipc_setting_dialog_upgrade_download_time_fs">升级时间预计需要6分钟</string>
     <string name="ipc_setting_dev_downloading">软件下载中</string>
     <string name="ipc_setting_dev_writing">软件写入中</string>
+    <string name="ipc_setting_relaunch">设备重启</string>
+    <string name="ipc_setting_online_success">上线成功</string>
+    <string name="ipc_setting_dev_rebooting">重启时设备处于离线状态，\t\n 此过程无法存储视频，请勿断电！</string>
+    <string name="ipc_setting_right_now_reboot">立即重启</string>
+    <string name="ipc_setting_reboot_tip">重启后摄像机会重新上线，且配置保持不变</string>
+    <string name="ipc_setting_reboot_need_min2">重启大约需要2分钟左右，您可以通过 \t\n 摄像机的闪灯情况判断其当前状态：</string>
 </resources>
 
 
