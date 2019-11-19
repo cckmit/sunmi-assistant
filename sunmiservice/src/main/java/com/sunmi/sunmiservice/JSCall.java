@@ -85,9 +85,9 @@ public class JSCall {
             JSONObject jsonObject = new JSONObject(arg);
             LogCat.e("JSCall", "showLoading, jsonObject = " + jsonObject);
             if (jsonObject.has("content")) {
-                context.showLoadingDialog(jsonObject.getString("content"));
+                context.showDarkLoading(jsonObject.getString("content"));
             } else {
-                context.showLoadingDialog();
+                context.showDarkLoading();
             }
         } catch (JSONException e) {
             e.printStackTrace();

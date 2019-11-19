@@ -8,10 +8,12 @@ import android.support.constraint.Group;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
@@ -119,6 +121,8 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
     TextView tvNameTransparent;
     @ViewById(R.id.tv_address_transparent)
     TextView tvAddressTransparent;
+    @ViewById(R.id.btn_complete)
+    Button btnComplete;
     @ViewById(R.id.group)
     Group group;
     @ViewById(R.id.group_poi)
@@ -157,6 +161,25 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
         mPresenter.attachView(this);
         initSet();
         poiSearchShopName();
+        etShopName.getEditTextText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (TextUtils.isEmpty(s.toString().trim())) {
+                    btnComplete.setEnabled(false);
+                } else if (!btnComplete.isEnabled()) {
+                    updateCompleteBtn();
+                }
+            }
+        });
+        updateCompleteBtn();
     }
 
     private void initSet() {
@@ -317,6 +340,19 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
         } else {
             shortTip(R.string.str_create_store_fail);
         }
+    }
+
+    private void updateCompleteBtn() {
+        boolean completeEnable = true;
+        String shopRegion = tvRegionText.getText() == null ? null : tvRegionText.getText().toString().trim();
+        if (TextUtils.isEmpty(shopRegion) || mProvinceId <= 0 || mCityId <= 0 || mAreaId <= 0) {
+            completeEnable = false;
+        }
+        String shopName = etShopName.getEditTextText().getText() == null ? null : etShopName.getEditTextText().getText().toString().trim();
+        if (TextUtils.isEmpty(shopName)) {
+            completeEnable = false;
+        }
+        btnComplete.setEnabled(completeEnable);
     }
 
     private void showAllItemGroup(boolean allItem) {
@@ -598,6 +634,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
                     dialog.dismiss();
                     tvRegionText.setText(String.format("%s %s %s", btnAreaPro.getText().toString(),
                             btnAreaCity.getText().toString(), btnAreaRegion.getText().toString()));
+                    updateCompleteBtn();
                     tvNameTransparent.setVisibility(View.GONE);
                     tvAddressTransparent.setVisibility(View.GONE);
                     break;

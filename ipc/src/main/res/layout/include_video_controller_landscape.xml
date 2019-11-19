@@ -96,14 +96,10 @@
     <!--改变清晰度-->
     <LinearLayout
         android:id="@+id/ll_video_quality"
-        android:layout_width="@dimen/dp_42"
-        android:layout_height="@dimen/dp_48"
-        android:layout_above="@+id/rl_bottom"
+        android:layout_width="@dimen/dp_140"
+        android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="@dimen/dp_20"
-        android:layout_marginBottom="@dimen/dp_44"
-        android:background="@drawable/bg_set_video_quality"
+        android:background="@color/black_70"
         android:orientation="vertical"
         android:visibility="gone">
 
@@ -111,8 +107,10 @@
             android:id="@+id/tv_fhd_quality"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_100"
             android:layout_weight="1"
-            android:gravity="center"
+            android:gravity="center_horizontal|bottom"
+            android:paddingBottom="@dimen/dp_15"
             android:text="@string/str_FHD"
             android:textColor="@color/common_orange"
             android:textSize="@dimen/sp_10" />
@@ -121,8 +119,10 @@
             android:id="@+id/tv_hd_quality"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_100"
             android:layout_weight="1"
-            android:gravity="center"
+            android:gravity="center_horizontal|top"
+            android:paddingTop="@dimen/dp_15"
             android:text="@string/str_HD"
             android:textColor="@color/c_white"
             android:textSize="@dimen/sp_10" />
@@ -151,8 +151,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/dp_24"
-            android:layout_toStartOf="@+id/tv_calender"
+            android:layout_toStartOf="@+id/iv_volume"
             android:layout_toEndOf="@+id/iv_play"
             android:background="@color/transparent"
             android:visibility="visible" />
@@ -167,13 +166,15 @@
             android:background="@mipmap/ic_calendar"
             android:gravity="center"
             android:textColor="@color/c_white"
-            android:textSize="@dimen/sp_10" />
+            android:textSize="@dimen/sp_10"
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/iv_volume"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
             android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dp_24"
             android:layout_marginEnd="@dimen/dp_20"
             android:layout_toStartOf="@+id/tv_quality"
             android:background="@mipmap/ic_volume" />

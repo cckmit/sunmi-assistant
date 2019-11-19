@@ -145,7 +145,7 @@ public class IpcSettingWiFiActivity extends BaseMvpActivity<IpcSettingWifiPresen
         tvStatus.setText(R.string.ipc_setting_tip_wifi_discovery);
         if (CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
             ip = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid()).getIp();
-            showLoadingDialog(getString(R.string.ipc_setting_search_wifi));
+            showDarkLoading(getString(R.string.ipc_setting_search_wifi));
             IPCCall.getInstance().getWifiList(this, ip);//wifi list
         } else {
             shortTip(R.string.ipc_setting_tip_network_dismatch);
