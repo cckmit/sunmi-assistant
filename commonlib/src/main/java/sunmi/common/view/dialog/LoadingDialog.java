@@ -2,18 +2,21 @@ package sunmi.common.view.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.commonlibrary.R;
 
 /**
- * 全页面的Loading Dialog，支持亮色和暗色。
- * 其中亮色用于空白页面的Loading
+ * 全页面的Loading Dialog，支持橙色和暗色。
+ * 其中橙色用于空白页面的Loading
  * 暗色用于已有内容页面的Loading
  *
  * @author yinhui
@@ -21,52 +24,70 @@ import com.commonlibrary.R;
  */
 public class LoadingDialog extends Dialog {
 
+    public static final int MODE_ORANGE = 0;
+    public static final int MODE_DARK = 1;
+    public static final int MODE_WHITE = 2;
+
+    private LinearLayout llContainer;
+    private ProgressBar pbLoading;
     private TextView tvLoading;
 
-    private int mTextColorLightDialog;
-    private int mTextColorDarkDialog;
+    private static Drawable sLoadingOrange;
+    private static Drawable sLoadingWhite;
+    private static int mTextColorBlack;
+    private static int mTextColorWhite;
 
-    private boolean mIsDark;
-    private String mContent;
-    private int mContentColor;
+    private int mMode;
 
     public LoadingDialog(Context context) {
         super(context, R.style.LoadingDialog);
-        mTextColorLightDialog = ContextCompat.getColor(getContext(), R.color.text_normal);
-        mTextColorDarkDialog = ContextCompat.getColor(getContext(), R.color.c_white);
+        if (sLoadingOrange == null || sLoadingWhite == null) {
+            int loadingSize = (int) context.getResources().getDimension(R.dimen.dp_32);
+            sLoadingOrange = ContextCompat.getDrawable(context, R.drawable.loading_common);
+            sLoadingWhite = ContextCompat.getDrawable(context, R.drawable.loading_common_white);
+            sLoadingOrange.setBounds(0, 0, loadingSize, loadingSize);
+            sLoadingWhite.setBounds(0, 0, loadingSize, loadingSize);
+        }
+        if (mTextColorBlack == 0 || mTextColorWhite == 0) {
+            mTextColorBlack = ContextCompat.getColor(context, R.color.text_normal);
+            mTextColorWhite = ContextCompat.getColor(context, R.color.c_white);
+        }
+        mMode = MODE_ORANGE;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mIsDark = true;
-        setLoadingLight();
+        setContentView(R.layout.dialog_loading);
+        llContainer = findViewById(R.id.container);
+        pbLoading = findViewById(R.id.pb_loading);
+        tvLoading = findViewById(R.id.tv_loading);
     }
 
     /**
-     * 设置为亮色Loading（透明蒙版，橙色Loading）
+     * 设置为亮色Loading（透明蒙版，透明背景，橙色Loading）
      */
-    public void setLoadingLight() {
-        if (!mIsDark) {
+    public void setLoadingOrange() {
+        if (mMode == MODE_ORANGE) {
             return;
         }
-        mIsDark = false;
-        setContentView(R.layout.dialog_loading);
-        tvLoading = findViewById(R.id.tv_loading);
-        updateContent();
+        mMode = MODE_ORANGE;
+        llContainer.setBackground(null);
+        pbLoading.setIndeterminateDrawable(sLoadingOrange);
+        tvLoading.setVisibility(View.GONE);
     }
 
     /**
      * 设置为暗色Loading（透明蒙版，灰色圆角矩形背景，白色Loading）
      */
     public void setLoadingDark() {
-        if (mIsDark) {
+        if (mMode == MODE_DARK) {
             return;
         }
-        mIsDark = true;
-        setContentView(R.layout.dialog_loading_dark);
-        tvLoading = findViewById(R.id.tv_loading);
-        updateContent();
+        mMode = MODE_DARK;
+        llContainer.setBackgroundResource(R.drawable.bg_dialog_loading_dark);
+        pbLoading.setIndeterminateDrawable(sLoadingWhite);
+        tvLoading.setVisibility(View.GONE);
     }
 
     /**
@@ -78,9 +99,7 @@ public class LoadingDialog extends Dialog {
         if (tvLoading == null) {
             return;
         }
-        mContent = content;
-        mContentColor = 0;
-        updateContent();
+        setContent(content, 0);
     }
 
     /**
@@ -93,9 +112,18 @@ public class LoadingDialog extends Dialog {
         if (tvLoading == null) {
             return;
         }
-        mContent = content;
-        mContentColor = color;
-        updateContent();
+        if (TextUtils.isEmpty(content)) {
+            tvLoading.setVisibility(View.GONE);
+        } else {
+            tvLoading.setVisibility(View.VISIBLE);
+            if (color == 0) {
+                color = mMode == MODE_ORANGE ? mTextColorBlack : mTextColorWhite;
+            }
+            if (tvLoading.getCurrentTextColor() != color) {
+                tvLoading.setTextColor(color);
+            }
+            tvLoading.setText(content);
+        }
     }
 
     /**
@@ -109,22 +137,6 @@ public class LoadingDialog extends Dialog {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    private void updateContent() {
-        if (TextUtils.isEmpty(mContent)) {
-            tvLoading.setVisibility(View.GONE);
-        } else {
-            tvLoading.setVisibility(View.VISIBLE);
-            int color = mContentColor;
-            if (color == 0) {
-                color = mIsDark ? mTextColorDarkDialog : mTextColorLightDialog;
-            }
-            if (tvLoading.getCurrentTextColor() != color) {
-                tvLoading.setTextColor(color);
-            }
-            tvLoading.setText(mContent);
         }
     }
 
