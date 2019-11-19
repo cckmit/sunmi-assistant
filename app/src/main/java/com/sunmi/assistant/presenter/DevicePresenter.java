@@ -101,7 +101,21 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
     }
 
     @Override
-    public void unbindRouter(String sn) {
+    public void unbind(SunmiDevice device) {
+        switch (device.getType()) {
+            case "ROUTER":
+                unbindRouter(device.getDeviceid());
+                break;
+            case "IPC":
+                unbindIPC(device.getId());
+                break;
+            case "PRINTER":
+                unbindPrinter(device.getDeviceid());
+                break;
+        }
+    }
+
+    private void unbindRouter(String sn) {
         CloudApi.unbind(sn, new HttpCallback<String>(null) {
             @Override
             public void onSuccess(int code, String msg, String data) {
@@ -158,8 +172,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                 });
     }
 
-    @Override
-    public void unbindIPC(int deviceId) {
+    private void unbindIPC(int deviceId) {
         IpcCloudApi.getInstance().unbindIpc(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId,
                 new RetrofitCallback<Object>() {
                     @Override
@@ -209,7 +222,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
             @Override
             public void onSuccess(int code, String msg, String data) {
                 try {
-                    SunmiDevice device = getPrinterDevice(new JSONObject(data));
+                    getPrinterDevice(new JSONObject(data));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -217,8 +230,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
         });
     }
 
-    @Override
-    public void unBindPrinter(final String sn) {
+    private void unbindPrinter(final String sn) {
         IOTCloudApi.unbindPrinter(SpUtils.getShopId(), sn, new HttpCallback<String>(null) {
             @Override
             public void onSuccess(int code, String msg, String data) {

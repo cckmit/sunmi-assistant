@@ -37,17 +37,13 @@ public interface DeviceContract {
 
         void getRouterList();
 
-        void unbindRouter(String sn);
-
         void getIpcList();
-
-        void unbindIPC(int deviceId);
 
         void getPrinterList();
 
         void getPrinterStatus(String sn);
 
-        void unBindPrinter(String sn);
+        void unbind(SunmiDevice device);
 
         void getShopList();
     }
