@@ -5,9 +5,9 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
-import android.text.TextUtils;
 
 import butterknife.ButterKnife;
 import sunmi.common.notification.BaseNotification;
@@ -124,7 +124,8 @@ public abstract class BaseActivity extends FragmentActivity
     }
 
     /**
-     * 显示加载框
+     * 展示橙色Loading
+     * 常用于空白页面的Loading
      */
     public void showLoadingDialog() {
         runOnUiThread(new Runnable() {
@@ -133,49 +134,115 @@ public abstract class BaseActivity extends FragmentActivity
                 if (loadingDialog == null || loadingDialog.isShowing()) {
                     return;
                 }
-                loadingDialog.setLoadingContent(null);
+                loadingDialog.setLoadingOrange();
+                loadingDialog.setContent(null);
                 loadingDialog.show();
             }
         });
     }
 
     /**
-     * 显示加载框,content为null是不可点击消失
+     * 展示带文字说明的橙色Loading
+     * 常用于空白页面的Loading
+     *
+     * @param content 说明
      */
-    public void showLoadingDialog(final String text) {
+    public void showLoadingDialog(final String content) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (loadingDialog == null || loadingDialog.isShowing()) {
                     return;
                 }
-                if (!TextUtils.isEmpty(text))
-                    loadingDialog.setLoadingContent(text);
+                loadingDialog.setLoadingOrange();
+                loadingDialog.setContent(content);
                 loadingDialog.show();
             }
         });
     }
 
     /**
-     * 显示加载框,content为null是不可点击消失
+     * 展示带自定义颜色文字说明的橙色Loading
+     * 常用于空白页面的Loading
+     *
+     * @param content   说明
+     * @param textColor 文字颜色
      */
-    public void showLoadingDialog(final String text, final int textColor) {
+    public void showLoadingDialog(final String content, @ColorInt final int textColor) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (loadingDialog == null || loadingDialog.isShowing()) {
                     return;
                 }
-                loadingDialog.setCancelable(false);
-                if (!TextUtils.isEmpty(text))
-                    loadingDialog.setTipColorText(text, textColor);
+                loadingDialog.setLoadingOrange();
+                loadingDialog.setContent(content, textColor);
                 loadingDialog.show();
             }
         });
     }
 
     /**
-     * 关闭加载框
+     * 展示灰色背板的白色Loading
+     * 常用于已有内容页面的Loading
+     */
+    public void showDarkLoading() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (loadingDialog == null || loadingDialog.isShowing()) {
+                    return;
+                }
+                loadingDialog.setLoadingDark();
+                loadingDialog.setContent(null);
+                loadingDialog.show();
+            }
+        });
+    }
+
+    /**
+     * 展示带文字说明的灰色背板白色Loading
+     * 常用于已有内容页面的Loading
+     *
+     * @param content 说明
+     */
+    public void showDarkLoading(final String content) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (loadingDialog == null || loadingDialog.isShowing()) {
+                    return;
+                }
+                loadingDialog.setLoadingDark();
+                loadingDialog.setContent(content);
+                loadingDialog.show();
+            }
+        });
+    }
+
+    /**
+     * 展示带自定义颜色文字说明的灰色背板白色Loading
+     * 常用于已有内容页面的Loading
+     *
+     * @param content   说明
+     * @param textColor 文字颜色
+     */
+    public void showDarkLoading(final String content, @ColorInt final int textColor) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (loadingDialog == null || loadingDialog.isShowing()) {
+                    return;
+                }
+                loadingDialog.setLoadingDark();
+                loadingDialog.setContent(content, textColor);
+                loadingDialog.show();
+            }
+        });
+    }
+
+    /**
+     * 取消Loading
      */
     public void hideLoadingDialog() {
         runOnUiThread(new Runnable() {
@@ -184,7 +251,6 @@ public abstract class BaseActivity extends FragmentActivity
                 if (loadingDialog == null) {
                     return;
                 }
-                loadingDialog.setCancelable(true);
                 loadingDialog.dismiss();
             }
         });

@@ -3,6 +3,7 @@ package sunmi.common.base;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextPaint;
@@ -84,32 +85,42 @@ public class BaseFragment extends Fragment implements BaseNotification.Notificat
         });
     }
 
-    /**
-     * 显示加载框
-     */
     public void showLoadingDialog() {
-        mActivity.showLoadingDialog();
-    }
-
-    /**
-     * 显示加载框,content为null是不可点击消失
-     */
-    public void showLoadingDialog(final String text) {
-        mActivity.showLoadingDialog(text);
-    }
-
-    /**
-     * 显示加载框,content为null是不可点击消失
-     */
-    public void showLoadingDialog(final String text, final int textColor) {
         if (mActivity != null) {
-            mActivity.showLoadingDialog(text, textColor);
+            mActivity.showLoadingDialog();
         }
     }
 
-    /**
-     * 关闭加载框
-     */
+    public void showLoadingDialog(final String content) {
+        if (mActivity != null) {
+            mActivity.showLoadingDialog(content);
+        }
+    }
+
+    public void showLoadingDialog(final String content, @ColorInt final int textColor) {
+        if (mActivity != null) {
+            mActivity.showLoadingDialog(content, textColor);
+        }
+    }
+
+    public void showDarkLoading() {
+        if (mActivity != null) {
+            mActivity.showDarkLoading();
+        }
+    }
+
+    public void showDarkLoading(final String content) {
+        if (mActivity != null) {
+            mActivity.showDarkLoading(content);
+        }
+    }
+
+    public void showDarkLoading(final String content, @ColorInt final int textColor) {
+        if (mActivity != null) {
+            mActivity.showDarkLoading(content, textColor);
+        }
+    }
+
     public void hideLoadingDialog() {
         if (mActivity != null) {
             mActivity.hideLoadingDialog();
