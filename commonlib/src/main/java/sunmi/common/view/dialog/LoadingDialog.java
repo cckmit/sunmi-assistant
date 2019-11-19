@@ -15,6 +15,9 @@ import com.commonlibrary.R;
  * 全页面的Loading Dialog，支持亮色和暗色。
  * 其中亮色用于空白页面的Loading
  * 暗色用于已有内容页面的Loading
+ *
+ * @author yinhui
+ * @date 2019-11-18
  */
 public class LoadingDialog extends Dialog {
 
@@ -36,6 +39,7 @@ public class LoadingDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mIsDark = true;
         setLoadingLight();
     }
 
