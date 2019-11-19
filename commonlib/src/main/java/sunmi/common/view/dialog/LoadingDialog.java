@@ -12,7 +12,9 @@ import android.widget.TextView;
 import com.commonlibrary.R;
 
 /**
- *
+ * 全页面的Loading Dialog，支持亮色和暗色。
+ * 其中亮色用于空白页面的Loading
+ * 暗色用于已有内容页面的Loading
  */
 public class LoadingDialog extends Dialog {
 
@@ -37,6 +39,9 @@ public class LoadingDialog extends Dialog {
         setLoadingLight();
     }
 
+    /**
+     * 设置为亮色Loading（透明蒙版，橙色Loading）
+     */
     public void setLoadingLight() {
         if (!mIsDark) {
             return;
@@ -47,6 +52,9 @@ public class LoadingDialog extends Dialog {
         updateContent();
     }
 
+    /**
+     * 设置为暗色Loading（透明蒙版，灰色圆角矩形背景，白色Loading）
+     */
     public void setLoadingDark() {
         if (mIsDark) {
             return;
@@ -57,6 +65,11 @@ public class LoadingDialog extends Dialog {
         updateContent();
     }
 
+    /**
+     * 设置说明文字
+     *
+     * @param content 说明
+     */
     public void setContent(String content) {
         if (tvLoading == null) {
             return;
@@ -66,6 +79,12 @@ public class LoadingDialog extends Dialog {
         updateContent();
     }
 
+    /**
+     * 设置说明文字以及文字颜色
+     *
+     * @param content 说明
+     * @param color   色值（非资源id）
+     */
     public void setContent(String content, @ColorInt int color) {
         if (tvLoading == null) {
             return;
@@ -75,6 +94,9 @@ public class LoadingDialog extends Dialog {
         updateContent();
     }
 
+    /**
+     * 关闭Loading
+     */
     @Override
     public void dismiss() {
         try {
