@@ -89,6 +89,12 @@
             android:hardwareAccelerated="false"
             android:largeHeap="true"
             android:screenOrientation="landscape" />
+        <activity
+            android:name=".setting.RelaunchSettingActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".setting.RelaunchStartSettingActivity_"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

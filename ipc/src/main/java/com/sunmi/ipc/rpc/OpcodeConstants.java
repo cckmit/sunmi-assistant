@@ -29,5 +29,6 @@ public class OpcodeConstants {
     public static final int getIpcDetection = 0x3120;
     public static final int setIpcDetection = 0x3121;
     public static final int sdcardFormat = 0x3058;
+    public static final int ipcRelaunch = 0x3170;
 
 }
