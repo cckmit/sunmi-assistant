@@ -33,7 +33,13 @@ public class CloudPlaybackPresenter extends BasePresenter<CloudPlaybackContract.
             @Override
             public void onFail(int code, String msg, CloudTimeSlotResp data) {
                 if (isViewAttached()) {
-                    mView.getCloudTimeSlotFail();
+                    if (5087 == code) {
+                        //no matched record
+                    } else if (5019 == code) {
+                        //failed to find ipc device info
+                    } else {
+                        mView.getCloudTimeSlotFail();
+                    }
                 }
             }
         });
