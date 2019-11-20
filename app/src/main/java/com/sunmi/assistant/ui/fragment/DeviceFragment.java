@@ -68,6 +68,7 @@ import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.NetworkUtils;
+import sunmi.common.utils.SMDeviceDiscoverUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
@@ -388,7 +389,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 NotificationConstant.connectedTosunmiDevice, NotificationConstant.unBindRouterChanged,
                 CommonNotifications.ipcUpgradeComplete, CommonNotifications.ipcUpgrade, IpcConstants.refreshIpcList,
                 CommonNotifications.companyNameChanged, CommonNotifications.companySwitch,
-                CommonNotifications.shopNameChanged};
+                CommonNotifications.shopNameChanged, IpcConstants.ipcDiscovered};
     }
 
     @Override
@@ -481,6 +482,10 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             mPresenter.getPrinterList();
         } else if (IpcConstants.refreshIpcList == id) {
             mPresenter.getIpcList();
+        } else if (IpcConstants.ipcDiscovered == id) {
+            //上线成功发送udp保存设备数据
+            SunmiDevice bean = (SunmiDevice) args[0];
+            SMDeviceDiscoverUtils.saveInfo(bean);
         }
     }
 
