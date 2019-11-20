@@ -20,13 +20,12 @@ public class CloudPlaybackPresenter extends BasePresenter<CloudPlaybackContract.
         IpcCloudApi.getInstance().getTimeSlots(deviceId, startTime, endTime, new RetrofitCallback<CloudTimeSlotResp>() {
             @Override
             public void onSuccess(int code, String msg, CloudTimeSlotResp data) {
-                if (!isViewAttached()) {
-                    return;
-                }
-                if (data.getTotalCount() == 0) {
-                    mView.getCloudTimeSlotFail();
-                } else {
-                    mView.getCloudTimeSlotSuccess(startTime, endTime, data.getTimeslots());
+                if (isViewAttached()) {
+                    if (data.getTotalCount() == 0) {
+                        mView.getCloudTimeSlotFail();
+                    } else {
+                        mView.getCloudTimeSlotSuccess(startTime, endTime, data.getTimeslots());
+                    }
                 }
             }
 
