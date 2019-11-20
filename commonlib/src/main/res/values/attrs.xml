@@ -255,4 +255,8 @@
         <attr name="strokeColor" format="color" />
     </declare-styleable>
 
+    <declare-styleable name="TimeLine">
+        <attr name="scaleLineColor" format="color" />  <!-- 刻度线颜色 -->
+    </declare-styleable>
+
 </resources>

@@ -4,7 +4,6 @@
     android:id="@+id/rl_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/common_fill"
     android:orientation="vertical">
 
     <sunmi.common.view.TitleBarView
@@ -14,7 +13,6 @@
         android:background="@color/c_white"
         app:dividerShow="true"
         app:leftIcon="@drawable/ic_back_dark"
-        app:rightText="@string/str_setting"
         app:titleTextColor="@color/text_main" />
 
     <RelativeLayout
@@ -34,7 +32,7 @@
                 android:id="@+id/ivp_cloud"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"/>
+                android:layout_centerInParent="true" />
 
             <include layout="@layout/include_video_controller_landscape" />
 
@@ -105,6 +103,15 @@
                 android:scaleType="center"
                 android:src="@mipmap/ic_full_screen" />
         </LinearLayout>
+
+        <com.sunmi.ipc.view.ZFTimeLine
+            android:id="@+id/time_line"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_56"
+            android:layout_below="@+id/ll_portrait_controller_bar"
+            android:layout_marginTop="@dimen/dp_20"
+            android:background="@color/common_fill"
+            app:scaleLineColor="@color/c_303540_20a" />
 
         <RelativeLayout
             android:id="@+id/rl_loading"

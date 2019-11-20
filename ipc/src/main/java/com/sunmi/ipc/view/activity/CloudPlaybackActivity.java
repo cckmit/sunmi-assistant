@@ -31,6 +31,7 @@ import com.sunmi.ipc.presenter.CloudPlaybackPresenter;
 import com.sunmi.ipc.view.ZFTimeLine;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
@@ -68,7 +69,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         implements CloudPlaybackContract.View, IVideoPlayer.VideoPlayListener,
         ZFTimeLine.OnZFTimeLineListener, View.OnClickListener {
 
-    private final static long threeDaysSeconds = 3 * 24 * 60 * 60;//3天秒数
+    private final static long SECONDS_IN_ONE_DAY = 24 * 60 * 60;//3天秒数
     private final static int tenMinutes = 10 * 60;//10分钟
 
     @ViewById(resName = "rl_screen")
@@ -105,7 +106,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     ImageView ivPlay;//开始播放
     @ViewById(resName = "ll_play_fail")
     LinearLayout llPlayFail;
-    @ViewById(resName = "scale_panel")
+    @ViewById(resName = "time_line")
     ZFTimeLine scalePanel;
     @ViewById(resName = "tv_time_scroll")
     TextView tvTimeScroll;
@@ -131,19 +132,16 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     private boolean isStartRecord;//是否开始录制
     private boolean isControlPanelShow = true;//是否点击屏幕
     private boolean isVideoLess1Minute;//视频片段是否小于一分钟
-    private boolean isFirstScroll = true;//是否第一次滑动
-    //日历
-    private Calendar calendar;
-    //当前时间 ，三天前秒数
-    private long currentDateSeconds, threeDaysBeforeSeconds;
+
+    //选择日历当前的时间的0点
+    private long currentTime;
+    //当前时间，已选日期的开始和结束时间  in seconds
+    private long presentTime, startTimeCurrentDate, endTimeCurrentDate;
     //刻度尺移动定时器
     private ScheduledExecutorService executorService;
     //滑动停止的时间戳
     private long scrollTime;
-    //选择日历当前的时间的0点
-    private long selectedDate;
-    //是否为选择的日期
-    private boolean isSelectedDate;
+
     private Handler handler = new Handler();
     private VolumeHelper volumeHelper = null;
 
@@ -185,11 +183,13 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     void initData() {
         screenW = CommonHelper.getScreenWidth(context);
         //当前天
-        calendar = Calendar.getInstance();
+        //日历
+        Calendar calendar = Calendar.getInstance();
         int day = calendar.get(Calendar.DAY_OF_MONTH);
         setDay(day > 9 ? day + "" : "0" + day);
-        currentDateSeconds = System.currentTimeMillis() / 1000;
-        threeDaysBeforeSeconds = currentDateSeconds - threeDaysSeconds;
+        presentTime = System.currentTimeMillis() / 1000;
+        startTimeCurrentDate = DateTimeUtils.getDayStart(new Date()).getTime()/1000;
+        endTimeCurrentDate = presentTime;
     }
 
     private void setDay(String day) {
@@ -361,7 +361,9 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     public void getCloudTimeSlotSuccess(long startTime, long endTime, List<VideoTimeSlotBean> slots) {
         listCloud.clear();
         listCloud.addAll(slots);
-        timeCanvasList(listCloud);//组合时间轴渲染
+        refreshScaleTimePanel();
+        selectedTimeIsHaveVideo(currentTime);
+        hideVideoLoading();
     }
 
     @Override
@@ -641,56 +643,28 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         }
     }
 
-    //渲染时间轴并滚动到指定时间
     @UiThread
-    void timeCanvasList(final List<VideoTimeSlotBean> apCloudList) {
+    void refreshScaleTimePanel() {
+        scalePanel.setVideoData(listCloud);
         scalePanel.refresh();
-        if (isFirstScroll && !isSelectedDate) {
-            isFirstScroll = false;
-            selectedTimeIsHaveVideo(selectedDate); //初始化左滑渲染及回放
-        } else {
-            if (isSelectedDate) {
-                selectedTimeIsHaveVideo(selectedDate);//滑动到选择日期
-            } else {
-                scalePanel.refreshNow(); //滚动到当前时间
-            }
-        }
-        //渲染完成
-        hideVideoLoading();
     }
 
     //选择日历日期回调
     @SuppressLint("DefaultLocale")
     public void onSureButton(Date date) {
         resetCountdown();//重置隐藏控件计时
-        long currentTime = System.currentTimeMillis() / 1000;//当前时间戳秒
+        long presentTime = System.currentTimeMillis() / 1000;//当前时间戳秒
         scrollTime = date.getTime();//选择日期的时间戳毫秒
         long time = scrollTime / 1000; //设置日期的秒数
-        if (time > currentTime) {//未来时间或当前--滑动当前直播
-            isSelectedDate = false;
+        if (time > presentTime) {//未来时间或当前--滑动当前直播
             scrollTime = System.currentTimeMillis();
             setDay(String.format("%td", new Date()));
         } else {//回放时间
-            isFirstScroll = false;//非首次滑动
-            isSelectedDate = true;
             ivPlay.setBackgroundResource(R.mipmap.pause_normal);
             ivLive.setVisibility(View.VISIBLE);
-
-            String strDate = DateTimeUtils.secondToDate(time, "yyyy-MM-dd");
-            int year = Integer.valueOf(strDate.substring(0, 4));
-            int month = Integer.valueOf(strDate.substring(5, 7));
-            int day = Integer.valueOf(strDate.substring(8, 10));
-            //显示日历天数
-            setDay(String.format("%td", date));
-            //设置选择日期的年月日0时0分0秒
-            calendar.clear();
-            calendar.set(year, month - 1, day, 0, 0, 0);//设置时候月份减1即是当月
-            selectedDate = calendar.getTimeInMillis() / 1000;//设置日期的秒数
-            //当前时间秒数
-            currentDateSeconds = System.currentTimeMillis() / 1000;
-            //选择日期三天前的秒数
-            threeDaysBeforeSeconds = selectedDate - threeDaysSeconds;
-            //加载时间轴
+            setDay(String.format("%td", date));//显示日历天数
+            currentTime = startTimeCurrentDate = DateTimeUtils.getDayStart(date).getTime() / 1000;
+            endTimeCurrentDate = startTimeCurrentDate + SECONDS_IN_ONE_DAY;
             refreshTimeSlotVideoList();
         }
     }
@@ -701,38 +675,38 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     }
 
     //滑动回放定位的中间 position
-    private void scrollCurrentPlayBackTime(long currentTimeMinutes) {
+    @UiThread
+    void scrollCurrentPlayBackTime(long currentTimeMinutes) {
         ivPlay.setBackgroundResource(R.mipmap.pause_normal);
         isPaused = false;
         scalePanel.moveToTime(currentTimeMinutes);
         openMove();
     }
 
-    //拖动或选择的时间是否有video（ap或cloud）
-    private void selectedTimeIsHaveVideo(long currTime) {
+    //拖动或选择的时间是否有video
+    @Background
+    void selectedTimeIsHaveVideo(long currTime) {
         int apSize = listCloud.size();
-        long mStartTime = threeDaysBeforeSeconds, mEndTime = currentDateSeconds;
+        long mStartTime = startTimeCurrentDate, mEndTime = presentTime;
         for (int i = 0; i < apSize + 1; i++) {
             long startOpposite = 0, endOpposite = 0, start = 0, end = 0;
             //不包含ap时间轴内的时间
             if (i == 0) {
                 startOpposite = mStartTime;
                 endOpposite = listCloud.get(i).getStartTime();
-            } else if (i < apSize) {
+            } else if (i < apSize) {//包含ap时间内
                 startOpposite = listCloud.get(i - 1).getEndTime();
                 endOpposite = listCloud.get(i).getStartTime();
+                start = listCloud.get(i).getStartTime();
+                end = listCloud.get(i).getEndTime();
             } else if (i == apSize) {
                 startOpposite = listCloud.get(i - 1).getEndTime();
                 endOpposite = mEndTime;
             }
-            //包含ap时间内
-            if (i < apSize) {
-                start = listCloud.get(i).getStartTime();
-                end = listCloud.get(i).getEndTime();
-            }
+
             if (currTime >= startOpposite && currTime < endOpposite) {//空白区域
                 if (i == apSize) {//最后一个无视频区域跳转直播
-                    shortTip("没有更多回放视频");
+                    shortTip("没有回放视频");
                     return;
                 }
                 //当前的视频片段是否小于一分钟
@@ -767,7 +741,6 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
             VideoTimeSlotBean bean = listCloud.get(i);
             long start = bean.getStartTime();
             long end = bean.getEndTime();
-            //当滑动到最后前后一分钟时，判断下一个视频片段ap还是cloud
             if (end - currTime < 60 && currTime >= start && currTime < end) {
                 if (i != availableVideoSize - 1) {
                     final int delayMillis = (int) end - currTime < 0 ? 1 : (int) (end - currTime);
@@ -787,7 +760,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     private void refreshTimeSlotVideoList() {
         showVideoLoading();
         listCloud.clear();
-        getCloudTimeSlots(threeDaysBeforeSeconds, currentDateSeconds);
+        getCloudTimeSlots(startTimeCurrentDate, presentTime);
     }
 
     //获取cloud回放时间轴
@@ -829,18 +802,18 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         showVideoLoading();
         hideTimeScroll();
         if (timeStamp > System.currentTimeMillis() / 1000) {//超过当前时间
-            shortTip(getString(R.string.ipc_time_over_current_time));
+//            shortTip(getString(R.string.ipc_time_over_current_time));
             return;
         }
-        if (timeStamp < threeDaysBeforeSeconds) {
-            shortTip(getString(R.string.ipc_time_over_back_time));
-            selectedTimeIsHaveVideo(threeDaysBeforeSeconds);
+        if (timeStamp < startTimeCurrentDate) {
+//            shortTip(getString(R.string.ipc_time_over_back_time));
+//            selectedTimeIsHaveVideo(startTimeCurrentDate);
             return;
         }
-        if (isFirstScroll && listCloud.size() == 0) {
-            selectedDate = timeStamp;
+        if (listCloud.size() == 0) {
+            currentTime = timeStamp;
             scalePanel.clearData();//clear渲染时间轴
-            getCloudTimeSlots(threeDaysBeforeSeconds, currentDateSeconds);
+            getCloudTimeSlots(startTimeCurrentDate, presentTime);
             return;
         }
         selectedTimeIsHaveVideo(timeStamp);
