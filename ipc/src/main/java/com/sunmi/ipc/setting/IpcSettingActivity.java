@@ -23,7 +23,7 @@ import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.OpcodeConstants;
 import com.sunmi.ipc.setting.entity.DetectionConfig;
 import com.sunmi.ipc.utils.TimeoutTimer;
-import com.sunmi.ipc.utils.Utils;
+import com.sunmi.ipc.utils.IpcUtils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -143,7 +143,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         super.onResume();
         isRun = true;
         //查询升级状态
-        IPCCall.getInstance().ipcQueryUpgradeStatus(this, mDevice.getModel(), mDevice.getDeviceid());
+        IPCCall.getInstance().ipcQueryUpgradeStatus(context, mDevice.getModel(), mDevice.getDeviceid());
     }
 
     @Override
@@ -198,8 +198,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             } else if (TextUtils.isEmpty(resp.getLatest_bin_version())) {
                 mVersion.setContent(mDevice.getFirmware());
             } else {
-                if (Utils.getVersionCode(mDevice.getFirmware()) >=
-                        Utils.getVersionCode(mResp.getLatest_bin_version())) {
+                if (IpcUtils.getVersionCode(mDevice.getFirmware()) >=
+                        IpcUtils.getVersionCode(mResp.getLatest_bin_version())) {
                     mVersion.setContent(mDevice.getFirmware());
                 } else {
                     mVersion.setContent(resp.getLatest_bin_version());
@@ -588,7 +588,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
      */
     private void fsAdjust(SunmiDevice device) {
         String versionName = device.getFirmware();
-        if (Utils.getVersionCode(versionName) < IpcConstants.IPC_VERSION_NO_SDCARD_CHECK) {
+        if (IpcUtils.getVersionCode(versionName) < IpcConstants.IPC_VERSION_NO_SDCARD_CHECK) {
             getSdCardStatus(device);
         } else {
             startFsAdjust(device);
