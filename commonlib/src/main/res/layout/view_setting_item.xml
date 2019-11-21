@@ -64,9 +64,7 @@
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toEndOf="@+id/tv_title"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_goneMarginStart="@dimen/dp_20"
-
-        />
+        app:layout_goneMarginStart="@dimen/dp_20" />
 
     <TextView
         android:id="@+id/tv_end_content"
@@ -84,9 +82,7 @@
         app:layout_constraintStart_toEndOf="@+id/tv_tag"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_goneMarginEnd="@dimen/dp_20"
-        app:layout_goneMarginStart="@dimen/dp_16"
-
-        />
+        app:layout_goneMarginStart="@dimen/dp_16" />
 
     <ImageView
         android:id="@+id/iv_end_image"
@@ -130,9 +126,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_title"
         app:layout_goneMarginBottom="@dimen/dp_10"
         app:layout_goneMarginEnd="@dimen/dp_20"
-        app:layout_goneMarginStart="@dimen/dp_20"
-
-        />
+        app:layout_goneMarginStart="@dimen/dp_20" />
 
     <TextView
         android:id="@+id/tv_small_start_content"
@@ -150,9 +144,7 @@
         app:layout_constraintEnd_toStartOf="@+id/tv_small_end_content"
         app:layout_constraintStart_toEndOf="@+id/iv_start_image"
         app:layout_goneMarginEnd="@dimen/dp_20"
-        app:layout_goneMarginStart="@dimen/dp_20"
-
-        />
+        app:layout_goneMarginStart="@dimen/dp_20" />
 
     <TextView
         android:id="@+id/tv_small_end_content"
@@ -167,9 +159,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/iv_end_image"
         app:layout_goneMarginEnd="@dimen/dp_20"
-        app:layout_goneMarginStart="@dimen/dp_20"
-
-        />
+        app:layout_goneMarginStart="@dimen/dp_20" />
 
     <View
         android:id="@+id/bottom_divider"
