@@ -54,85 +54,32 @@
                 android:textColor="@color/text_caption"
                 android:textSize="@dimen/sp_14" />
 
-            <RelativeLayout
+            <sunmi.common.view.SettingItemLayout
+                android:id="@+id/switch_task"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_60"
-                android:background="@color/c_white">
+                android:layout_height="wrap_content"
+                app:checked="true"
+                app:showDivider="top"
+                app:title="@string/str_task_msg"
+                app:type="toggle" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/dp_25"
-                    android:text="@string/str_task_msg"
-                    android:textColor="@color/text_main"
-                    android:textSize="@dimen/sp_16" />
-
-                <Switch
-                    android:id="@+id/switch_task"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="@dimen/dp_15"
-                    android:checked="true"
-                    android:thumb="@drawable/switch_thumb"
-                    android:track="@drawable/switch_track" />
-            </RelativeLayout>
-
-            <RelativeLayout
+            <sunmi.common.view.SettingItemLayout
+                android:id="@+id/switch_service"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_60"
-                android:layout_marginTop="@dimen/dp_0_5"
-                android:background="@color/c_white">
+                android:layout_height="wrap_content"
+                app:checked="true"
+                app:showDivider="top"
+                app:title="@string/str_service_msg"
+                app:type="toggle" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/dp_25"
-                    android:text="@string/str_service_msg"
-                    android:textColor="@color/text_main"
-                    android:textSize="@dimen/sp_16" />
-
-                <Switch
-                    android:id="@+id/switch_service"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="@dimen/dp_15"
-                    android:checked="true"
-                    android:thumb="@drawable/switch_thumb"
-                    android:track="@drawable/switch_track" />
-            </RelativeLayout>
-
-            <RelativeLayout
+            <sunmi.common.view.SettingItemLayout
+                android:id="@+id/switch_promotion"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_60"
-                android:layout_marginTop="@dimen/dp_0_5"
-                android:background="@color/c_white">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/dp_25"
-                    android:text="@string/str_promotion_msg"
-                    android:textColor="@color/text_main"
-                    android:textSize="@dimen/sp_16" />
-
-                <Switch
-                    android:id="@+id/switch_promotion"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="@dimen/dp_15"
-                    android:checked="true"
-                    android:thumb="@drawable/switch_thumb"
-                    android:track="@drawable/switch_track" />
-            </RelativeLayout>
+                android:layout_height="wrap_content"
+                app:checked="true"
+                app:showDivider="top"
+                app:title="@string/str_promotion_msg"
+                app:type="toggle" />
 
         </LinearLayout>
 

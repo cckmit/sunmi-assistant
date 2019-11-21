@@ -3,7 +3,6 @@ package com.sunmi.ipc.face;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -12,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;
@@ -65,10 +63,8 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
     SettingItemLayout mSilThreshold;
     @ViewById(resName = "sil_face_group_mark")
     SettingItemLayout mSilMark;
-    @ViewById(resName = "layout_face_group_notification")
-    ConstraintLayout mLayoutNotification;
-    @ViewById(resName = "switch_face_group_notification")
-    Switch mSwitchNotification;
+    @ViewById(resName = "sil_face_group_notification")
+    SettingItemLayout mSilNotification;
     @ViewById(resName = "sil_face_group_manage")
     SettingItemLayout mSilManage;
 
@@ -91,7 +87,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
         if (mFaceGroup.isSystemType()) {
             mTitleBar.setRightTextViewEnable(false);
             mTitleBar.setRightTextViewText("");
-            mSilName.setRightImage(null);
+            mSilName.setEndImageDrawable(null);
         } else {
             mTitleBar.setRightTextViewEnable(true);
             mTitleBar.setRightTextViewText(R.string.ipc_setting_delete);
@@ -109,14 +105,14 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
             mTvTip.setText(R.string.ipc_face_group_black_desc);
         }
 
-        mSilName.setRightText(Utils.getGroupName(context, mFaceGroup));
-        mSilCapacity.setRightText(String.valueOf(mFaceGroup.getCapacity()));
+        mSilName.setContent(Utils.getGroupName(context, mFaceGroup));
+        mSilCapacity.setContent(String.valueOf(mFaceGroup.getCapacity()));
 
         if (mFaceGroup.getType() == FaceGroup.FACE_GROUP_TYPE_NEW) {
             mSilThreshold.setVisibility(View.VISIBLE);
             times = mFaceGroup.getThreshold();
             days = mFaceGroup.getPeriodDays();
-            mSilThreshold.setRightText(getString(R.string.ipc_face_group_threshold_content,
+            mSilThreshold.setContent(getString(R.string.ipc_face_group_threshold_content,
                     mFaceGroup.getPeriodDays(), mFaceGroup.getThreshold()));
         } else {
             mSilThreshold.setVisibility(View.GONE);
@@ -129,11 +125,9 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
             mLayoutNotification.setVisibility(View.GONE);
         }
 */
-        mLayoutNotification.setVisibility(View.GONE);
-        mSilMark.getRightText().setSingleLine();
-        mSilMark.getRightText().setEllipsize(TextUtils.TruncateAt.END);
-        mSilMark.setRightText(mFaceGroup.getMark());
-        mSilManage.setRightText(getString(R.string.ipc_face_group_count, mFaceGroup.getCount()));
+        mSilNotification.setVisibility(View.GONE);
+        mSilMark.setContent(mFaceGroup.getMark());
+        mSilManage.setContent(getString(R.string.ipc_face_group_count, mFaceGroup.getCount()));
 
         mPresenter = new FaceGroupDetailPresenter(mShopId, mFaceGroup, mOccupiedCapacity);
         mPresenter.attachView(this);
@@ -198,28 +192,28 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
     @Override
     public void updateNameView(String name) {
         mFaceGroup.setGroupName(name);
-        mSilName.setRightText(name);
+        mSilName.setContent(name);
         setResult(RESULT_OK);
     }
 
     @Override
     public void updateCapacityView(int capacity) {
         mFaceGroup.setCapacity(capacity);
-        mSilCapacity.setRightText(String.valueOf(capacity));
+        mSilCapacity.setContent(String.valueOf(capacity));
         setResult(RESULT_OK);
     }
 
     @Override
     public void updateThresholdView(int times, int days) {
         mFaceGroup.setThreshold(times, days);
-        mSilThreshold.setRightText(getString(R.string.ipc_face_group_threshold_content, days, times));
+        mSilThreshold.setContent(getString(R.string.ipc_face_group_threshold_content, days, times));
         setResult(RESULT_OK);
     }
 
     @Override
     public void updateMarkView(String mark) {
         mFaceGroup.setMark(mark);
-        mSilMark.setRightText(mark);
+        mSilMark.setContent(mark);
         setResult(RESULT_OK);
     }
 
@@ -235,7 +229,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
         if (resultCode == RESULT_OK && data != null) {
             int count = data.getIntExtra(Constants.EXTRA_UPDATE_COUNT, mFaceGroup.getCount());
             mFaceGroup.setCount(count);
-            mSilManage.setRightText(getString(R.string.ipc_face_group_count, mFaceGroup.getCount()));
+            mSilManage.setContent(getString(R.string.ipc_face_group_count, mFaceGroup.getCount()));
             setResult(RESULT_OK);
         }
     }

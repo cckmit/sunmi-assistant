@@ -52,13 +52,8 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/dp_20"
-            android:src="@mipmap/ic_right_arrow_small" />
+            android:src="@drawable/ic_right_arrow_small" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_alignParentBottom="true"
-            android:background="@color/c_divider" />
     </RelativeLayout>
 
     <ScrollView
@@ -78,34 +73,24 @@
                 android:id="@+id/sil_company"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/c_white"
-                app:dividerShow="true"
-                app:imageLeft="@mipmap/ic_company"
-                app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_26"
-                app:leftText="@string/str_current_company"
-                app:leftTextSize="@dimen/sp_18"
-                app:parentHeight="@dimen/dp_72"
-                app:rightPadding="@dimen/dp_20" />
+                app:showDivider="top"
+                app:startImage="@mipmap/ic_company"
+                app:title="@string/str_current_company"
+                app:type="arrow" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_shop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/c_white"
-                app:dividerShow="true"
-                app:imageLeft="@mipmap/ic_my_business"
-                app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_26"
-                app:leftText="@string/str_store_manage"
-                app:leftTextSize="@dimen/sp_18"
-                app:parentHeight="@dimen/dp_72"
-                app:rightPadding="@dimen/dp_20" />
+                app:showDivider="top"
+                app:startImage="@mipmap/ic_my_business"
+                app:title="@string/str_store_manage"
+                app:type="arrow" />
 
             <cn.bingoogolapple.badgeview.BGABadgeRelativeLayout
                 android:id="@+id/rl_msg"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_72"
+                android:layout_height="@dimen/dp_48"
                 android:layout_marginTop="@dimen/dp_12"
                 android:visibility="gone"
                 app:badge_horizontalMargin="@dimen/dp_40"
@@ -114,98 +99,70 @@
                 <sunmi.common.view.SettingItemLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/c_white"
-                    app:dividerShow="true"
-                    app:imageLeft="@mipmap/ic_my_msg"
-                    app:imageRight="@mipmap/ic_right_arrow_small"
-                    app:leftPadding="@dimen/dp_26"
-                    app:leftText="@string/str_my_msg"
-                    app:leftTextSize="@dimen/sp_18"
-                    app:parentHeight="@dimen/dp_72"
-                    app:rightPadding="@dimen/dp_20" />
+                    app:showDivider="top"
+                    app:startImage="@mipmap/ic_my_msg"
+                    app:title="@string/str_my_msg"
+                    app:type="arrow" />
+
             </cn.bingoogolapple.badgeview.BGABadgeRelativeLayout>
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_order"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/c_white"
                 android:visibility="gone"
-                app:dividerShow="true"
-                app:imageLeft="@mipmap/ic_my_order"
-                app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_26"
-                app:leftText="@string/str_my_order"
-                app:leftTextSize="@dimen/sp_18"
-                app:parentHeight="@dimen/dp_72"
-                app:rightPadding="@dimen/dp_20" />
+                app:showDivider="top"
+                app:startImage="@mipmap/ic_my_order"
+                app:title="@string/str_my_order"
+                app:type="arrow" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/c_white"
                 android:visibility="gone"
-                app:dividerShow="true"
-                app:imageLeft="@mipmap/ic_address"
-                app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_26"
-                app:leftText="@string/str_receive_address"
-                app:leftTextSize="@dimen/sp_18"
-                app:parentHeight="@dimen/dp_72"
-                app:rightPadding="@dimen/dp_20" />
+                app:showDivider="top"
+                app:startImage="@mipmap/ic_address"
+                app:title="@string/str_receive_address"
+                app:type="arrow" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_coupon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/c_white"
                 android:visibility="gone"
-                app:dividerShow="true"
-                app:imageLeft="@mipmap/ic_coupon"
-                app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_26"
-                app:leftText="@string/str_coupon"
-                app:leftTextSize="@dimen/sp_18"
-                app:parentHeight="@dimen/dp_72"
-                app:rightPadding="@dimen/dp_20" />
+                app:showDivider="top"
+                app:startImage="@mipmap/ic_coupon"
+                app:title="@string/str_coupon"
+                app:type="arrow" />
 
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_16"
-                android:background="@color/transparent"/>
+                android:background="@color/transparent" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_help"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/c_white"
                 android:visibility="gone"
-                app:dividerShow="true"
-                app:imageLeft="@mipmap/ic_help"
-                app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_26"
-                app:leftText="@string/str_help_feedback"
-                app:leftTextSize="@dimen/sp_18"
-                app:parentHeight="@dimen/dp_72"
-                app:rightPadding="@dimen/dp_20" />
+                app:showDivider="top"
+                app:startImage="@mipmap/ic_help"
+                app:title="@string/str_help_feedback"
+                app:type="arrow" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_setting"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_16"
-                android:background="@color/c_white"
-                app:dividerShow="true"
-                app:imageLeft="@mipmap/ic_setting"
-                app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_26"
-                app:leftText="@string/str_my_setting"
-                app:leftTextSize="@dimen/sp_18"
-                app:parentHeight="@dimen/dp_72"
-                app:rightPadding="@dimen/dp_20" />
+                app:showDivider="top"
+                app:startImage="@mipmap/ic_setting"
+                app:title="@string/str_my_setting"
+                app:type="arrow" />
 
         </LinearLayout>
+
     </ScrollView>
 
 </RelativeLayout>

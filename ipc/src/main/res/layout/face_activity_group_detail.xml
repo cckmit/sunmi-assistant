@@ -32,90 +32,49 @@
         android:id="@+id/sil_face_group_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/c_white"
-        app:dividerShow="true"
-        app:imageRight="@mipmap/ic_right_arrow_small"
-        app:leftPadding="@dimen/dp_20"
-        app:leftText="@string/ipc_face_group_name"
-        app:parentHeight="@dimen/dp_60"
-        app:rightPadding="@dimen/dp_20" />
+        app:showDivider="top"
+        app:title="@string/ipc_face_group_name"
+        app:type="arrow" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_face_group_capacity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/c_white"
-        app:dividerShow="true"
-        app:imageRight="@mipmap/ic_right_arrow_small"
-        app:leftPadding="@dimen/dp_20"
-        app:leftText="@string/ipc_face_group_capacity"
-        app:parentHeight="@dimen/dp_60"
-        app:rightPadding="@dimen/dp_20" />
+        app:showDivider="top"
+        app:title="@string/ipc_face_group_capacity"
+        app:type="arrow" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_face_group_threshold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/c_white"
-        app:dividerShow="true"
-        app:imageRight="@mipmap/ic_right_arrow_small"
-        app:leftPadding="@dimen/dp_20"
-        app:leftText="@string/ipc_face_group_threshold"
-        app:parentHeight="@dimen/dp_60"
-        app:rightPadding="@dimen/dp_20" />
+        app:showDivider="top"
+        app:title="@string/ipc_face_group_threshold"
+        app:type="arrow" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_face_group_mark"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/c_white"
-        app:dividerShow="true"
-        app:imageRight="@mipmap/ic_right_arrow_small"
-        app:leftPadding="@dimen/dp_20"
-        app:leftText="@string/ipc_face_group_mark"
-        app:parentHeight="@dimen/dp_60"
-        app:rightPadding="@dimen/dp_20" />
+        app:showDivider="top"
+        app:title="@string/ipc_face_group_mark"
+        app:type="arrow" />
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/layout_face_group_notification"
+    <sunmi.common.view.SettingItemLayout
+        android:id="@+id/sil_face_group_notification"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_60"
-        android:background="@color/c_white">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_20"
-            android:text="@string/ipc_face_group_notification"
-            android:textColor="@color/text_main"
-            android:textSize="@dimen/sp_16"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Switch
-            android:id="@+id/switch_face_group_notification"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_20"
-            android:thumb="@drawable/switch_thumb"
-            android:track="@drawable/switch_track"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </android.support.constraint.ConstraintLayout>
+        android:layout_height="wrap_content"
+        app:showDivider="top"
+        app:title="@string/ipc_face_group_notification"
+        app:type="toggle" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_face_group_manage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        android:background="@color/c_white"
-        app:imageRight="@mipmap/ic_right_arrow_small"
-        app:leftPadding="@dimen/dp_20"
-        app:leftText="@string/ipc_face_group_manage"
-        app:parentHeight="@dimen/dp_60"
-        app:rightPadding="@dimen/dp_20" />
+        app:showDivider="top"
+        app:title="@string/ipc_face_group_manage"
+        app:type="arrow" />
 
 </LinearLayout>
