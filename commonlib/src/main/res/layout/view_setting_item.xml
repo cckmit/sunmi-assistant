@@ -25,8 +25,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:background="@color/common_orange"
-        tools:visibility="visible" />
+        tools:background="@color/common_orange" />
 
     <TextView
         android:id="@+id/tv_title"
@@ -43,8 +42,7 @@
         app:layout_constraintStart_toEndOf="@+id/iv_start_image"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_goneMarginBottom="@dimen/dp_10"
-        app:layout_goneMarginStart="@dimen/dp_20"
-        tools:text="Title" />
+        app:layout_goneMarginStart="@dimen/dp_20" />
 
     <TextView
         android:id="@+id/tv_tag"
@@ -66,9 +64,7 @@
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toEndOf="@+id/tv_title"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_goneMarginStart="@dimen/dp_20"
-        tools:text="Fine"
-        tools:visibility="visible" />
+        app:layout_goneMarginStart="@dimen/dp_20" />
 
     <TextView
         android:id="@+id/tv_end_content"
@@ -86,9 +82,7 @@
         app:layout_constraintStart_toEndOf="@+id/tv_tag"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_goneMarginEnd="@dimen/dp_20"
-        app:layout_goneMarginStart="@dimen/dp_16"
-        tools:text="Secondary Content Text"
-        tools:visibility="visible" />
+        app:layout_goneMarginStart="@dimen/dp_16" />
 
     <ImageView
         android:id="@+id/iv_end_image"
@@ -99,8 +93,7 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Switch
         android:id="@+id/sc_end_switch"
@@ -133,9 +126,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_title"
         app:layout_goneMarginBottom="@dimen/dp_10"
         app:layout_goneMarginEnd="@dimen/dp_20"
-        app:layout_goneMarginStart="@dimen/dp_20"
-        tools:text="详细说明详细说明详说明细说明详细说明详说明详细说明详细说明详说明"
-        tools:visibility="visible" />
+        app:layout_goneMarginStart="@dimen/dp_20" />
 
     <TextView
         android:id="@+id/tv_small_start_content"
@@ -153,9 +144,7 @@
         app:layout_constraintEnd_toStartOf="@+id/tv_small_end_content"
         app:layout_constraintStart_toEndOf="@+id/iv_start_image"
         app:layout_goneMarginEnd="@dimen/dp_20"
-        app:layout_goneMarginStart="@dimen/dp_20"
-        tools:text="测试时间"
-        tools:visibility="visible" />
+        app:layout_goneMarginStart="@dimen/dp_20" />
 
     <TextView
         android:id="@+id/tv_small_end_content"
@@ -170,9 +159,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/iv_end_image"
         app:layout_goneMarginEnd="@dimen/dp_20"
-        app:layout_goneMarginStart="@dimen/dp_20"
-        tools:text="测试时间"
-        tools:visibility="visible" />
+        app:layout_goneMarginStart="@dimen/dp_20" />
 
     <View
         android:id="@+id/bottom_divider"
