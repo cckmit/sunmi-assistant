@@ -156,17 +156,27 @@ public class ZFTimeLine extends View {
         // 第一个刻度线的位置
         float x = (interval - currentInterval) / secondsOfIntervalValue() + centerX;
 
-        // 确定区域以及刻度线的top和bottom坐标
+        // 内容区域顶部坐标
         float displayTop;
+        // 内容区域底部坐标
         float displayBottom;
+        // 中心线顶部坐标
         float lineCenterTop;
+        // 中心线底部坐标
         float lineCenterBottom;
+        // 中心线宽度
         float lineCenterWidth;
+        // 短线刻度顶部坐标
         float lineSmallTop;
+        // 短线刻度底部坐标
         float lineSmallBottom;
+        // 长线刻度顶部坐标
         float lineBigTop;
+        // 长线刻度底部坐标
         float lineBigBottom;
+        // 文字开始位置偏移
         float textStartOffset;
+        // 文字基线位置坐标
         float textBaseline;
 
         if (style == STYLE_BIG) {
