@@ -90,7 +90,7 @@
             <cn.bingoogolapple.badgeview.BGABadgeRelativeLayout
                 android:id="@+id/rl_msg"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_72"
+                android:layout_height="@dimen/dp_48"
                 android:layout_marginTop="@dimen/dp_12"
                 android:visibility="gone"
                 app:badge_horizontalMargin="@dimen/dp_40"
