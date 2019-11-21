@@ -1,7 +1,6 @@
 package com.sunmi.assistant.ui.activity.login;
 
 import android.annotation.SuppressLint;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -123,7 +122,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
             silSelectedCompany.setVisibility(View.VISIBLE);
             tvSelectType.setText(R.string.company_can_switch);
             tvSelectedCompany.setText(R.string.company_now_selected);
-            silSelectedCompany.setLeftText(SpUtils.getCompanyName());
+            silSelectedCompany.setTitle(SpUtils.getCompanyName());
             btnEnterMain.setVisibility(View.GONE);
             mPresenter.getCompanyList();
         }
@@ -244,7 +243,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
             @Override
             public void convert(ViewHolder holder, final CompanyInfoResp item) {
                 SettingItemLayout silItem = holder.getView(R.id.sil_item);
-                silItem.setLeftText(item.getCompany_name());
+                silItem.setTitle(item.getCompany_name());
                 holder.itemView.setOnClickListener(v -> {
                     if (isFastClick(1200)) {
                         return;
@@ -268,7 +267,8 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
             @Override
             public void convert(ViewHolder holder, final ShopInfo item) {
                 SettingItemLayout shopItem = holder.getView(R.id.sil_item);
-                shopItem.setLeftText(item.getShopName());
+                shopItem.setType(SettingItemLayout.TYPE_CHECKED);
+                shopItem.setTitle(item.getShopName());
                 holder.itemView.setOnClickListener(v -> {
                     selectedIndex = holder.getAdapterPosition();
                     shopId = item.getShopId();
@@ -282,11 +282,9 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
                         shopName = item.getShopName();
                         btnEnterMain.setEnabled(true);
                     }
-                    shopItem.setRightImage(ContextCompat.getDrawable(context, com.sunmi.ipc.R.mipmap.ic_yes));
-                    shopItem.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.common_orange));
+                    shopItem.setChecked(true);
                 } else {
-                    shopItem.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.text_main));
-                    shopItem.setRightImage(null);
+                    shopItem.setChecked(false);
                 }
             }
         });

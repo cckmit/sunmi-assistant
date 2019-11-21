@@ -12,7 +12,7 @@ public class Utils {
 
     private static final String TAG = "IpcUtils";
 
-    private static final Pattern IPC_VERSION_NAME = Pattern.compile("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$");
+    private static final Pattern IPC_VERSION_NAME = Pattern.compile("^\\d{1,2}\\.\\d{1,2}\\.\\d{1,2}$");
 
     public static int getVersionCode(String version) {
         if (!isVersionValid(version)) {

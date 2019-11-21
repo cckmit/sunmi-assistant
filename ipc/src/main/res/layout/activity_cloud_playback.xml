@@ -4,7 +4,6 @@
     android:id="@+id/rl_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/common_fill"
     android:orientation="vertical">
 
     <sunmi.common.view.TitleBarView
@@ -14,7 +13,6 @@
         android:background="@color/c_white"
         app:dividerShow="true"
         app:leftIcon="@drawable/ic_back_dark"
-        app:rightText="@string/str_setting"
         app:titleTextColor="@color/text_main" />
 
     <RelativeLayout
@@ -34,7 +32,7 @@
                 android:id="@+id/ivp_cloud"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"/>
+                android:layout_centerInParent="true" />
 
             <include layout="@layout/include_video_controller_landscape" />
 
@@ -106,6 +104,15 @@
                 android:src="@mipmap/ic_full_screen" />
         </LinearLayout>
 
+        <com.sunmi.ipc.view.ZFTimeLine
+            android:id="@+id/time_line"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_56"
+            android:layout_below="@+id/ll_portrait_controller_bar"
+            android:layout_marginTop="@dimen/dp_20"
+            android:background="@color/common_fill"
+            app:scaleLineColor="@color/c_303540_20a" />
+
         <RelativeLayout
             android:id="@+id/rl_loading"
             android:layout_width="match_parent"
@@ -121,6 +128,39 @@
                 android:indeterminate="false"
                 android:indeterminateDrawable="@drawable/loading_common" />
         </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_no_service"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/rl_video"
+            android:layout_alignBottom="@+id/ll_portrait_controller_bar"
+            android:background="@color/black_60"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_109"
+                android:drawableTop="@mipmap/ic_video_play_error"
+                android:drawablePadding="@dimen/dp_10"
+                android:text="@string/tip_unopen_cloud_storage_service"
+                android:textColor="@color/text_normal"
+                android:textSize="@dimen/sp_12" />
+
+            <Button
+                android:id="@+id/btn_open_service"
+                style="@style/BtnBigOrange"
+                android:layout_width="@dimen/dp_118"
+                android:layout_height="@dimen/dp_36"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_28"
+                android:text="@string/str_open_cloud_storage"
+                android:textColor="@color/c_white"
+                android:textSize="@dimen/sp_14" />
+        </LinearLayout>
 
     </RelativeLayout>
 </LinearLayout>

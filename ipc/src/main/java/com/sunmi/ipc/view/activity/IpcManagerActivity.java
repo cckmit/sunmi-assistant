@@ -23,8 +23,8 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.datelibrary.DatePickDialog;
 import com.datelibrary.bean.DateType;
+import com.datelibrary.view.DatePickDialog;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.IpcManagerContract;
@@ -200,6 +200,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private BottomPopMenu qualityPop;
 
     private CommonListAdapter adapter;
+    private int cloudStorageServiceStatus;
     private List<IpcManageBean> list = new ArrayList<>();
 
     @AfterViews
@@ -464,7 +465,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             return;
         }
         pausePlay();
-        CloudPlaybackActivity_.intent(context).device(device).start();
+        CloudPlaybackActivity_.intent(context).device(device)
+                .cloudStorageServiceStatus(cloudStorageServiceStatus).start();
     }
 
     //点击屏幕
@@ -629,6 +631,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @Override
     public void getStorageSuccess(IpcManageBean bean) {
         list.add(0, bean);
+        cloudStorageServiceStatus = bean.getStatus();
         adapter.notifyDataSetChanged();
     }
 
@@ -1321,7 +1324,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     @Override
-    public void didMoveToDate(String date, long timeStamp) {
+    public void didMoveToTime(long timeStamp) {
         showVideoLoading();
         hideTimeScroll();
         if (timeStamp > System.currentTimeMillis() / 1000) {//超过当前时间

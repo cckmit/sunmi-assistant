@@ -41,8 +41,8 @@ public class IpcSettingDetailActivity extends BaseActivity {
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        mCameraModel.setRightText(mDevice.getModel());
-        mCameraSn.setRightText(mDevice.getDeviceid());
+        mCameraModel.setContent(mDevice.getModel());
+        mCameraSn.setContent(mDevice.getDeviceid());
         mTitleBar.getRightText().setOnClickListener(v -> deleteDevice(mDevice));
     }
 
