@@ -22,16 +22,11 @@
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_address"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/c_white"
-        app:imageRight="@mipmap/ic_right_arrow_small"
         app:layout_constraintTop_toBottomOf="@id/title_bar"
-        app:leftPadding="@dimen/dp_20"
-        app:leftText="@string/str_area"
-        app:parentHeight="@dimen/dp_60"
-        app:rightPadding="@dimen/dp_20"
-        tools:ignore="MissingConstraints" />
+        app:title="@string/str_area"
+        app:type="arrow" />
 
     <View
         android:id="@+id/v_space"
@@ -58,13 +53,13 @@
             android:layout_height="@dimen/dp_112"
             android:background="@color/c_white"
             android:hint="@string/tip_addr_empty"
+            android:imeOptions="actionDone"
             android:paddingStart="@dimen/dp_20"
             android:paddingTop="@dimen/dp_20"
             android:paddingEnd="@dimen/dp_25"
             android:paddingBottom="@dimen/dp_20"
             android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16"
-            android:imeOptions="actionDone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

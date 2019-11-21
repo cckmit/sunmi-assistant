@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_74">
 
@@ -31,7 +32,8 @@
         app:layout_constraintEnd_toStartOf="@+id/order_item_amount"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@+id/order_item_name"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="FS1249329o8479182348921" />
 
     <TextView
         android:id="@+id/order_item_pay_type"
@@ -42,7 +44,9 @@
         android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_12"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/order_item_name" />
+        app:layout_constraintTop_toBottomOf="@id/order_item_name"
+        tools:text="测试测试测试测试测试测试测试"
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/order_item_amount"
@@ -57,7 +61,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toEndOf="@+id/order_item_name"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="555555" />
 
     <TextView
         android:id="@+id/order_item_time"
@@ -68,7 +73,9 @@
         android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_12"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/order_item_amount" />
+        app:layout_constraintTop_toBottomOf="@id/order_item_amount"
+        tools:text="2019-11-19 18:00"
+        tools:visibility="visible" />
 
     <View
         android:layout_width="0dp"
