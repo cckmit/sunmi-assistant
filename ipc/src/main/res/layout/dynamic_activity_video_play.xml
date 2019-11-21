@@ -192,5 +192,4 @@
             android:textSize="@dimen/sp_12" />
     </LinearLayout>
 
-
 </android.support.constraint.ConstraintLayout>

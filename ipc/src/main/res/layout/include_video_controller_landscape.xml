@@ -163,7 +163,7 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/dp_20"
             android:layout_toStartOf="@+id/iv_volume"
-            android:background="@mipmap/ic_calendar"
+            android:background="@mipmap/ic_calendar_enabled"
             android:gravity="center"
             android:textColor="@color/c_white"
             android:textSize="@dimen/sp_10"
