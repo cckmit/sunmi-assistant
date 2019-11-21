@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
-import com.datelibrary.DatePicker;
+import com.datelibrary.view.DatePicker;
 import com.datelibrary.bean.DateType;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.rpc.IPCCall;

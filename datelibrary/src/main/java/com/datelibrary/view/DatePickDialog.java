@@ -1,16 +1,20 @@
-package com.datelibrary;
+package com.datelibrary.view;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.*;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
-
+import com.datelibrary.R;
 import com.datelibrary.bean.DateType;
+import com.datelibrary.listener.OnChangeListener;
+import com.datelibrary.listener.OnSureListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,13 +23,13 @@ import java.util.Date;
 /**
  * Created by codbking on 2016/8/11.
  */
-public class DatePickDialog extends Dialog implements OnChangeLisener {
+public class DatePickDialog extends Dialog implements OnChangeListener {
 
-    private TextView titleTv;
-    private FrameLayout wheelLayout;
-    private TextView cancel;
-    private TextView sure;
-    private TextView messgeTv;
+    private TextView tvTitle;
+    private FrameLayout flWheel;
+    private TextView tvCancel;
+    private TextView tvSure;
+    private TextView tvMessage;
 
     private String title;
     private String format = "yyyy-MM-dd";
@@ -34,9 +38,9 @@ public class DatePickDialog extends Dialog implements OnChangeLisener {
     //开始时间
     private Date startDate = new Date();
     //年分限制，默认上下100年
-    private int yearLimt = 100;
+    private int yearLimit = 100;
 
-    private OnChangeLisener onChangeLisener;
+    private OnChangeListener onChangeListener;
 
     private OnSureListener onSureListener;
 
@@ -63,13 +67,13 @@ public class DatePickDialog extends Dialog implements OnChangeLisener {
     }
 
     //设置年份限制，上下年份
-    public void setYearLimt(int yearLimt) {
-        this.yearLimt = yearLimt;
+    public void setYearLimit(int yearLimit) {
+        this.yearLimit = yearLimit;
     }
 
     //设置选择回调
-    public void setOnChangeListener(OnChangeLisener onChangeLisener) {
-        this.onChangeLisener = onChangeLisener;
+    public void setOnChangeListener(OnChangeListener onChangeListener) {
+        this.onChangeListener = onChangeListener;
     }
 
     //设置点击确定按钮，回调
@@ -93,33 +97,33 @@ public class DatePickDialog extends Dialog implements OnChangeLisener {
     private DatePicker getDatePicker() {
         DatePicker picker = new DatePicker(getContext(), type);
         picker.setStartDate(startDate);
-        picker.setYearLimt(yearLimt);
-        picker.setOnChangeLisener(this);
+        picker.setYearLimt(yearLimit);
+        picker.setOnChangeListener(this);
         picker.init();
         return picker;
     }
 
     private void initView() {
-        this.sure = findViewById(R.id.sure);
-        this.cancel = findViewById(R.id.cancel);
-        this.wheelLayout = findViewById(R.id.wheelLayout);
-        this.titleTv = findViewById(R.id.title);
-        messgeTv = findViewById(R.id.message);
+        this.tvSure = findViewById(R.id.sure);
+        this.tvCancel = findViewById(R.id.cancel);
+        this.flWheel = findViewById(R.id.wheelLayout);
+        this.tvTitle = findViewById(R.id.title);
+        tvMessage = findViewById(R.id.message);
 
         mDatePicker = getDatePicker();
-        this.wheelLayout.addView(mDatePicker);
+        this.flWheel.addView(mDatePicker);
 
         //setValue
-        this.titleTv.setText(title);
+        this.tvTitle.setText(title);
 
-        this.cancel.setOnClickListener(new View.OnClickListener() {
+        this.tvCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();
             }
         });
 
-        this.sure.setOnClickListener(new View.OnClickListener() {
+        this.tvSure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();
@@ -133,25 +137,31 @@ public class DatePickDialog extends Dialog implements OnChangeLisener {
     private void initParas() {
         WindowManager.LayoutParams params = getWindow().getAttributes();
         params.gravity = Gravity.BOTTOM;
-        params.width = DateUtils.getScreenWidth(getContext());
+        params.width = getScreenWidth(getContext());
         getWindow().setAttributes(params);
+    }
+
+    private int getScreenWidth(Context context) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(outMetrics);
+        return outMetrics.widthPixels;
     }
 
     @Override
     public void onChanged(Date date) {
-
-        if (onChangeLisener != null) {
-            onChangeLisener.onChanged(date);
+        if (onChangeListener != null) {
+            onChangeListener.onChanged(date);
         }
 
         if (!TextUtils.isEmpty(format)) {
-            String messge = "";
+            String message = "";
             try {
-                messge = new SimpleDateFormat(format).format(date);
+                message = new SimpleDateFormat(format).format(date);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            messgeTv.setText(messge);
+            tvMessage.setText(message);
         }
     }
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.datelibrary.genview;
+package com.datelibrary.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -23,8 +23,8 @@ import android.util.SparseIntArray;
 import android.view.View;
 import android.view.ViewGroup;
 
-
-import com.datelibrary.adapters.AbstractWheelAdapter;
+import com.datelibrary.view.genview.GenWheelView;
+import com.datelibrary.view.genview.UnSupportedWheelViewException;
 
 import java.util.ArrayList;
 import java.util.Iterator;

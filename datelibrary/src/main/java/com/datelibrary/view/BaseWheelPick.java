@@ -1,4 +1,4 @@
-package com.datelibrary;
+package com.datelibrary.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -8,21 +8,18 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 
-import com.datelibrary.genview.GenWheelText;
-import com.datelibrary.genview.WheelGeneralAdapter;
-import com.datelibrary.view.OnWheelChangedListener;
-import com.datelibrary.view.OnWheelScrollListener;
-import com.datelibrary.view.WheelView;
+import com.datelibrary.R;
+import com.datelibrary.view.genview.GenWheelText;
+import com.datelibrary.adapter.WheelGeneralAdapter;
+import com.datelibrary.listener.OnWheelChangedListener;
+import com.datelibrary.listener.OnWheelScrollListener;
 
 
 /**
  * Created by codbking on 2016/8/11.
  */
- abstract class BaseWheelPick
-        extends LinearLayout
-        implements OnWheelChangedListener
-        , OnWheelScrollListener
-         {
+abstract class BaseWheelPick extends LinearLayout
+        implements OnWheelChangedListener, OnWheelScrollListener {
 
     protected int textColor = 0xffdddddd;
     protected int selectColor = 0xff444444;

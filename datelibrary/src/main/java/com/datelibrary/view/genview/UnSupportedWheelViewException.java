@@ -1,4 +1,4 @@
-package com.datelibrary.genview;
+package com.datelibrary.view.genview;
 
 public class UnSupportedWheelViewException extends Exception {
     private static final long serialVersionUID = 1894662683963152958L;
@@ -6,7 +6,8 @@ public class UnSupportedWheelViewException extends Exception {
 
     public UnSupportedWheelViewException() {
         super();
-        mistake = "Only support List, Map,String Array,Cursor,SparseArray,SparseBooleanArray,SparseIntArray,Vector, and basic data type";
+        mistake = "Only support List, Map,String Array,Cursor,SparseArray,SparseBooleanArray," +
+                "SparseIntArray,Vector, and basic data type";
     }
 
     public UnSupportedWheelViewException(String err) {

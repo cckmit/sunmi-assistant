@@ -1,11 +1,14 @@
-package com.datelibrary;
+package com.datelibrary.view;
 
 import android.content.Context;
 import android.widget.TextView;
 
+import com.datelibrary.R;
 import com.datelibrary.bean.DateType;
-import com.datelibrary.genview.WheelGeneralAdapter;
-import com.datelibrary.view.WheelView;
+import com.datelibrary.adapter.WheelGeneralAdapter;
+import com.datelibrary.listener.OnChangeListener;
+import com.datelibrary.utils.DatePickerHelper;
+import com.datelibrary.utils.DateUtils;
 
 import java.util.Date;
 
@@ -31,12 +34,12 @@ public class DatePicker extends BaseWheelPick {
     //年分限制，默认上下5年
     private int yearLimt = 5;
 
-    private OnChangeLisener onChangeLisener;
+    private OnChangeListener onChangeListener;
     private int selectDay;
 
     //选择时间回调
-    public void setOnChangeLisener(OnChangeLisener onChangeLisener) {
-        this.onChangeLisener = onChangeLisener;
+    public void setOnChangeListener(OnChangeListener onChangeListener) {
+        this.onChangeListener = onChangeListener;
     }
 
     public DatePicker(Context context, DateType type) {
@@ -192,8 +195,8 @@ public class DatePicker extends BaseWheelPick {
             weekView.setText(datePicker.getDisplayWeek(year, moth, day));
         }
 
-        if (onChangeLisener != null) {
-            onChangeLisener.onChanged(DateUtils.getDate(year, moth, day, hour, minut));
+        if (onChangeListener != null) {
+            onChangeListener.onChanged(DateUtils.getDate(year, moth, day, hour, minut));
         }
     }
 

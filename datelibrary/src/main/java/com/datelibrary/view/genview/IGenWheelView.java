@@ -1,4 +1,4 @@
-package com.datelibrary.genview;
+package com.datelibrary.view.genview;
 
 import android.content.Context;
 import android.view.View;

@@ -35,6 +35,7 @@ public class ZFTimeLine extends View {
     private Paint pWhite, pOrange, pCenterLine;   //三种不同颜色的画笔
     private float moveStartX = 0;                 //用于记录单点触摸点位置,用于计算拖距离
 
+    private long leftBound, rightBound;
     private boolean onLock;                       //用于屏蔽时间轴拖动,为true时无法拖动
 
     private SimpleDateFormat formatterScale;      //日期格式化,用于秒数和时间字符的转换
@@ -120,7 +121,9 @@ public class ZFTimeLine extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
+        if (currentInterval < leftBound) {
+            currentInterval = leftBound;
+        }
         //初始化小刻度的间隔,在init里densityDpi的数据为0,所以放到这里了
         if (intervalValue == 0) {
             intervalValue = getIntervalValue();
@@ -130,6 +133,7 @@ public class ZFTimeLine extends View {
         long centerX = getWidth() / 2;
         //左边界线代表的秒数
         long leftInterval = currentInterval - centerX * secondsOfIntervalValue();
+
         //右边界线秒数
         long rightInterval = currentInterval + centerX * secondsOfIntervalValue();
 
@@ -140,7 +144,7 @@ public class ZFTimeLine extends View {
         //记录绘制刻度线的位置
         long x = (interval - leftInterval) / secondsOfIntervalValue();
 
-        //这里是这个项目特有的需求,根据视频数据绘制绿色和红色区域,分别代表该位置有已录制的普通视频和紧急视频
+        //有视频的区间绘制为橙色
         float displayTop = getHeight() / 2 - dip2px(15);
         float displayBottom = getHeight() / 2 + dip2px(1);
         //渲染回放视频区域
@@ -187,14 +191,14 @@ public class ZFTimeLine extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_DOWN: {
+            case MotionEvent.ACTION_DOWN: {//滑动开始
                 moveStartX = event.getX();
             }
             break;
             case MotionEvent.ACTION_MOVE: {
-                currentInterval = currentInterval - secondsOfIntervalValue()
-                        * ((long) (event.getX() - moveStartX));
-                if (listener != null) {
+                currentInterval = currentInterval
+                        - secondsOfIntervalValue() * ((long) (event.getX() - moveStartX));
+                if (listener != null && currentInterval > leftBound) {
                     listener.moveTo(DateTimeUtils.secondToDate(currentInterval, "yyyy-MM-dd HH:mm:ss"),
                             (moveStartX - event.getX()) < 0, currentInterval);
                 }
@@ -202,17 +206,17 @@ public class ZFTimeLine extends View {
             }
             break;
             case MotionEvent.ACTION_CANCEL:
-            case MotionEvent.ACTION_UP: {
-                //拖动结束  这里应该有Bug没有区分移动可缩放状态 不过影响不大
+            case MotionEvent.ACTION_UP: {//滑动结束
                 if (listener != null) {
-                    listener.didMoveToDate(formatterProject.format(currentInterval * 1000),
-                            currentInterval);
+                    listener.didMoveToTime(currentInterval < leftBound ? leftBound : currentInterval);
                 }
             }
             break;
         }
-        //重新绘制
-        invalidate();
+        if (currentInterval != leftBound) {
+            invalidate();//重新绘制
+        }
+
         return true;
     }
 
@@ -240,7 +244,7 @@ public class ZFTimeLine extends View {
             currentInterval = formatterProject.parse(timeStr).getTime() / 1000;
             invalidate();
             if (listener != null) {
-                listener.didMoveToDate(formatterProject.format(currentInterval * 1000), currentInterval);
+                listener.didMoveToTime(currentInterval);
             }
         } catch (ParseException e) {
             e.printStackTrace();
@@ -310,10 +314,18 @@ public class ZFTimeLine extends View {
         refresh();
     }
 
+    public void setLeftBound(long leftBound) {
+        this.leftBound = leftBound;
+    }
+
+    public void setRightBound(long rightBound) {
+        this.rightBound = rightBound;
+    }
+
     //拖动时间轴监听
     public interface OnZFTimeLineListener {
 
-        void didMoveToDate(String date, long timeStamp);
+        void didMoveToTime(long timeStamp);
 
         void moveTo(String data, boolean isLeftScroll, long timeStamp);
     }
