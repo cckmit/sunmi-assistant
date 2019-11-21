@@ -198,7 +198,10 @@ public class SettingItemLayout extends FrameLayout {
 
         // 设置标题
         String title = a.getString(R.styleable.SettingItemLayout_title);
-        setTextIfExist(tvTitle, title);
+        if (!TextUtils.isEmpty(title)) {
+            tvTitle.setVisibility(VISIBLE);
+            tvTitle.setText(title);
+        }
 
         // 设置内容（如果为单行列表项，则为右边辅助文字；如果为多行列表项，则为标题下方文字）
         String content = a.getString(R.styleable.SettingItemLayout_contentText);
@@ -425,6 +428,7 @@ public class SettingItemLayout extends FrameLayout {
         if (TextUtils.isEmpty(title)) {
             return;
         }
+        tvTitle.setVisibility(VISIBLE);
         tvTitle.setText(title);
     }
 
