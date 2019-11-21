@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.constant.NotificationConstant;
-import com.sunmi.apmanager.constant.enums.DeviceStatus;
 import com.sunmi.apmanager.receiver.MyNetworkCallback;
 import com.sunmi.apmanager.rpc.ap.APCall;
 import com.sunmi.apmanager.ui.activity.config.PrimaryRouteStartActivity;
@@ -33,6 +32,7 @@ import com.sunmi.assistant.utils.ShopTitlePopupWindow;
 import com.sunmi.cloudprinter.ui.activity.PrinterManageActivity_;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.setting.IpcSettingActivity_;
+import com.sunmi.ipc.utils.IpcUtils;
 import com.sunmi.ipc.view.activity.IpcManagerActivity_;
 import com.sunmi.sunmiservice.WebViewActivity_;
 import com.youth.banner.Banner;
@@ -60,6 +60,7 @@ import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
+import sunmi.common.constant.enums.DeviceStatus;
 import sunmi.common.model.AdListBean;
 import sunmi.common.model.AdListResp;
 import sunmi.common.model.ShopInfo;
@@ -304,7 +305,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 }
                 break;
             case "ROUTER":
-                if (canManagerDevice(device)) {
+                if (!cannotManagerRouter(device)) {
                     clickedDevice = device;
                     showLoadingDialog();
                     //校验ap是已初始化配置
@@ -349,7 +350,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         } else if (type == 1) {
             deleteDevice(device);
         } else if (type == 2) {
-            if (canManagerDevice(device)) {
+            if (IpcUtils.isIpcManageable(device.getDeviceid(), device.getStatus())) {
                 IpcSettingActivity_.intent(mActivity).mDevice(device).start();
             }
         }
@@ -489,9 +490,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         }
     }
 
-    private boolean canManagerDevice(SunmiDevice device) {
-        if (device.getStatus() == DeviceStatus.ONLINE.ordinal()
-                || device.getStatus() == DeviceStatus.EXCEPTION.ordinal()) {
+    private boolean cannotManagerRouter(SunmiDevice device) {
+        if (device.getStatus() == DeviceStatus.UNKNOWN.ordinal()
+                || device.getStatus() == DeviceStatus.OFFLINE.ordinal()) {
             shortTip(getString(R.string.str_cannot_manager_device));
             return true;
         }

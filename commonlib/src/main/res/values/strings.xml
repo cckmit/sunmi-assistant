@@ -135,4 +135,8 @@
     <string name="str_subscribe_now">立即订阅</string>
     <string name="str_choose_from_album">Choose from album</string>
     <string name="str_take_photo">Take photo</string>
+    <string name="device_status_online">Online</string>
+    <string name="device_status_offline">Offline</string>
+    <string name="device_status_exception">Exception</string>
+    <string name="device_status_unknown">——</string>
 </resources>

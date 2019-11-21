@@ -3,7 +3,7 @@ package com.sunmi.assistant.presenter;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.sunmi.apmanager.constant.enums.DeviceStatus;
+import sunmi.common.constant.enums.DeviceStatus;
 import com.sunmi.apmanager.receiver.MyNetworkCallback;
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.assistant.R;
