@@ -43,23 +43,54 @@
     </declare-styleable>
 
     <declare-styleable name="SettingItemLayout">
-        <attr name="parentWidth" /> <!--宽度-->
-        <attr name="parentHeight" /> <!--高度-->
-        <attr name="leftText" /> <!-- 左边文字内容-->
-        <attr name="leftTextSize" /><!-- 左边文字大小-->
-        <attr name="leftTextColor" /><!-- 左边文字颜色-->
-        <attr name="rightText" /><!-- 右边文字内容-->
-        <attr name="rightTextSize" /><!-- 右边文字大小-->
-        <attr name="rightTextColor" /><!-- 右边文字颜色-->
-        <attr name="toTextLeftText" format="string" /><!-- -->
-        <attr name="imageLeft" /><!-- 左边图片-->
-        <attr name="imageLeftSize" /><!-- 左边图片尺寸-->
-        <attr name="imageRight" format="reference" /><!-- 右边图片-->
-        <attr name="leftPadding" format="dimension" /><!-- 左边边距-->
-        <attr name="rightPadding" format="dimension" /><!-- 右边边距-->
-        <attr name="dividerShow" /><!-- 底部分割线是否显示-->
-        <attr name="dividerColor" /><!-- 底部分割线颜色-->
-        <attr name="dividerHeight" /><!-- 底部分割线高度-->
+        <!-- 是否可用 -->
+        <attr name="enabled" format="boolean" />
+        <!-- 是否可点击 -->
+        <attr name="clickable" format="boolean" />
+        <!-- 样式类型，包括单行列表，多行列表 -->
+        <attr name="styleType" format="enum">
+            <enum name="single" value="0" />
+            <enum name="multi" value="1" />
+        </attr>
+
+        <!-- 左边图片，null则不显示 -->
+        <attr name="startImage" format="reference" />
+        <!-- 左边图片大小 -->
+        <attr name="startImageSize" format="dimension" />
+        <!-- 右边元素，可以为箭头，Switch开关以及自定义图片 -->
+        <attr name="type" format="enum">
+            <enum name="none" value="0" />
+            <enum name="arrow" value="1" />
+            <enum name="checked" value="2" />
+            <enum name="toggle" value="3" />
+            <enum name="image" value="4" />
+        </attr>
+        <!-- 右边Switch开关状态，仅当endType为switch时有效 -->
+        <attr name="checked" format="boolean" />
+        <!-- 右边自定义图片，null则不显示 -->
+        <attr name="endImage" format="reference" />
+        <!-- 右边自定义图片大小 -->
+        <attr name="endImageSize" format="dimension" />
+
+        <!-- 标题 -->
+        <attr name="title" format="string" />
+        <!-- 内容 -->
+        <attr name="contentText" format="string" />
+        <!-- 内容最大行数 -->
+        <attr name="contentMaxLines" format="integer" />
+        <!-- 底部单行左边小字内容 -->
+        <attr name="smallStartContent" format="string" />
+        <!-- 底部单行右边小字内容 -->
+        <attr name="smallEndContent" format="string" />
+        <!-- Tag标签内容 -->
+        <attr name="tag" format="string" />
+        <!-- 分割线位置 -->
+        <attr name="showDivider" format="enum">
+            <enum name="none" value="0" />
+            <enum name="top" value="1" />
+            <enum name="bottom" value="2" />
+            <enum name="both" value="3" />
+        </attr>
     </declare-styleable>
 
     <declare-styleable name="SettingItemEdittextLayout">

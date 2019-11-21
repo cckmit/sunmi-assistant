@@ -48,102 +48,67 @@
                 android:id="@+id/sil_face_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/c_white"
-                app:dividerShow="true"
-                app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_20"
-                app:leftText="@string/ipc_face_name"
-                app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20" />
+                app:showDivider="top"
+                app:title="@string/ipc_face_name"
+                app:type="arrow" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_face_id"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/c_white"
-                app:dividerShow="true"
-                app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_20"
-                app:leftText="@string/ipc_face_id"
-                app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20" />
+                app:showDivider="top"
+                app:title="@string/ipc_face_id"
+                app:type="arrow" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_face_sex"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/c_white"
-                app:dividerShow="true"
-                app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_20"
-                app:leftText="@string/ipc_face_gender"
-                app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20" />
+                app:showDivider="top"
+                app:title="@string/ipc_face_gender"
+                app:type="arrow" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_face_age"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/c_white"
-                app:dividerShow="true"
-                app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_20"
-                app:leftText="@string/ipc_face_age"
-                app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20" />
+                app:showDivider="top"
+                app:title="@string/ipc_face_age"
+                app:type="arrow" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_face_enter_shop_num"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/c_white"
-                app:dividerShow="true"
-                app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_20"
-                app:leftText="@string/ipc_face_total_enter_shop"
-                app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20" />
+                app:showDivider="top"
+                app:title="@string/ipc_face_total_enter_shop"
+                app:type="arrow" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_face_register_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/c_white"
-                app:dividerShow="true"
-                app:imageRight="@null"
-                app:leftPadding="@dimen/dp_20"
-                app:leftText="@string/ipc_face_register_time"
-                app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20" />
+                app:showDivider="top"
+                app:title="@string/ipc_face_register_time" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_face_new_enter_shop_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/c_white"
-                app:dividerShow="true"
-                app:imageRight="@null"
-                app:leftPadding="@dimen/dp_20"
-                app:leftText="@string/ipc_face_new_enter_shop_time"
-                app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20" />
+                app:showDivider="top"
+                app:title="@string/ipc_face_new_enter_shop_time" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_face_enter_shop_time_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/c_white"
-                app:dividerShow="true"
-                app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_20"
-                app:leftText="@string/ipc_face_every_enter_time"
-                app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20" />
+                app:showDivider="top"
+                app:title="@string/ipc_face_every_enter_time"
+                app:type="arrow" />
+
         </LinearLayout>
 
-
     </android.support.v4.widget.NestedScrollView>
-
 
 </android.support.constraint.ConstraintLayout>
