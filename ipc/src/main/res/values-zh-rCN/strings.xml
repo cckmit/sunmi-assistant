@@ -315,8 +315,9 @@
     <string name="str_agree">同意</string>
     <string name="tip_indicator_light">指示灯显示不正确？点此查看</string>
     <string name="str_turn_on_ipc_power">接通摄像机电源</string>
-    <string name="tip_config_ipc_dialog1"><![CDATA[·检查摄像机电源是否正确接通<br>·确认当前没有插入网线<br>·长按<font color= \'#FF6000\'>RESET键</font>
-    5秒重置摄像机，等待设备重启]]></string>
+    <string name="tip_config_ipc_dialog1">检查摄像机电源是否正确接通</string>
+    <string name="tip_config_ipc_dialog2">确认当前没有插入网线</string>
+    <string name="tip_config_ipc_dialog3"><![CDATA[长按<font color= \'#FF6000\'>RESET键</font>5秒重置摄像机，等待设备重启]]></string>
     <string name="ipc_setting_relaunch">设备重启</string>
     <string name="ipc_setting_online_success">上线成功</string>
     <string name="ipc_setting_dev_rebooting">重启时设备处于离线状态，\t\n 此过程无法存储视频，请勿断电！</string>

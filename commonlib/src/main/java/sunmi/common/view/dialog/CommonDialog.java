@@ -8,6 +8,7 @@ import android.support.annotation.DimenRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,8 @@ public class CommonDialog extends Dialog {
     public static class Builder {
         private Context context;
         private String title;
-        private String message; // 对话框内容
+        private CharSequence message; // 对话框内容
+        private int msgGravity = Gravity.CENTER;
         private Drawable[] messageDrawable = new Drawable[4];
         private int[] messageDrawableRes = {0, 0, 0, 0};
         private int messageDrawablePaddingRes;
@@ -66,7 +68,7 @@ public class CommonDialog extends Dialog {
         /**
          * 使用字符串设置对话框消息
          */
-        public Builder setMessage(String message) {
+        public Builder setMessage(CharSequence message) {
             this.message = message;
             return this;
         }
@@ -75,9 +77,21 @@ public class CommonDialog extends Dialog {
          * 使用资源设置对话框消息
          */
         public Builder setMessage(int message) {
-            this.message = (String) context.getText(message);
+            this.message = context.getText(message);
             return this;
         }
+
+        /**
+         * 设置消息的Gravity
+         *
+         * @param gravity
+         * @return
+         */
+        public Builder setMesageGravity(int gravity) {
+            this.msgGravity = gravity;
+            return this;
+        }
+
 
         /**
          * 设置对话框消息附加图
@@ -239,6 +253,7 @@ public class CommonDialog extends Dialog {
                 TextView tvMessage = layout.findViewById(R.id.tv_message);
                 tvMessage.setVisibility(View.VISIBLE);
                 tvMessage.setText(message);
+                tvMessage.setGravity(msgGravity);
                 if (messageDrawable[0] != null || messageDrawable[1] != null
                         || messageDrawable[2] != null || messageDrawable[3] != null) {
                     tvMessage.setCompoundDrawablesRelativeWithIntrinsicBounds(messageDrawable[0],
