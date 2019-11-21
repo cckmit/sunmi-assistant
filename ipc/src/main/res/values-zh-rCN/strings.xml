@@ -312,6 +312,11 @@
     <string name="ipc_setting_dialog_upgrade_download_time_fs">升级时间预计需要6分钟</string>
     <string name="ipc_setting_dev_downloading">软件下载中</string>
     <string name="ipc_setting_dev_writing">软件写入中</string>
+    <string name="str_agree">同意</string>
+    <string name="tip_indicator_light">指示灯显示不正确？点此查看</string>
+    <string name="str_turn_on_ipc_power">接通摄像机电源</string>
+    <string name="tip_config_ipc_dialog1"><![CDATA[·检查摄像机电源是否正确接通<br>·确认当前没有插入网线<br>·长按<font color= \'#FF6000\'>RESET键</font>
+    5秒重置摄像机，等待设备重启]]></string>
 </resources>
 
 

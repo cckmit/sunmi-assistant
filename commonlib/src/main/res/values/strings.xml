@@ -46,7 +46,7 @@
     <string name="str_config_tip_ap_1"><![CDATA[1. Connect the power supply and network cable to the router, then wait till the system indicator stop blinking.]]></string>
     <string name="str_config_tip_ap_2"><![CDATA[2. Connect your mobile phone to<font color= \'#FF6000\'>「SUNMI_XX」</font> Wi-Fi]]></string>
     <string name="str_config_tip_ipc">Connect to the IP camera you need to setup</string>
-    <string name="str_config_tip_ipc_1"><![CDATA[1. Power on the IP camera, wait till the indicator is <font color= \'#FF6000\'>「white」</font>]]></string>
+    <string name="str_config_tip_ipc_1"><![CDATA[电源接通后，等待20秒，摄像机提示灯呈<font color= \'#FF6000\'>「绿色闪烁」</font>后，点击「下一步」]]></string>
     <string name="str_config_tip_ipc_2"><![CDATA[2. Connect your mobile phone to<font color= \'#FF6000\'>「SUNMI_XXXX」</font> Wi-Fi]]></string>
     <string name="str_config_tip_ipc_3"><![CDATA[3. If you want to use the wireless，please connect to the 「SUNMI_XXXX」 Wi-Fi in the label of router <font color= \'#FF6000\'>「SUNMI_XXXX」</font>]]></string>
     <string name="str_config_tip_printer">Connect the printer you wish to setup</string>

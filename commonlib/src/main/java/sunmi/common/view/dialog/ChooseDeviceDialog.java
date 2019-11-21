@@ -13,8 +13,11 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.commonlibrary.R;
+import com.xiaojinzi.component.impl.Router;
 
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.router.IpcApi;
+import sunmi.common.router.IpcCloudApiAnno;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.view.SimpleRecyclerViewAdapter;
 import sunmi.common.view.activity.StartConfigSMDeviceActivity_;
@@ -77,9 +80,11 @@ public class ChooseDeviceDialog extends Dialog {
                 dismiss();
                 if (pos == CommonConstants.TYPE_PRINTER) {
                     gotoPrinterConfig();
-                } else {
+                } else if(pos==CommonConstants.TYPE_AP) {
                     StartConfigSMDeviceActivity_.intent(getContext())
                             .deviceType(pos).shopId(shopId + "").start();
+                }else {
+                    Router.withApi(IpcApi.class).goToIpcStartConfig(pos);
                 }
             }
         });
