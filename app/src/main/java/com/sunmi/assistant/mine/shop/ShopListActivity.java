@@ -142,7 +142,7 @@ public class ShopListActivity extends BaseActivity {
         @Override
         public void convert(ViewHolder holder, ShopInfo info) {
             SettingItemLayout silCompanyDetail = holder.getView(R.id.tvName);
-            silCompanyDetail.setLeftText(info.getShopName());
+            silCompanyDetail.setTitle(info.getShopName());
             holder.itemView.setOnClickListener(v -> {
                 CommonUtils.trackCommonEvent(mContext, "defaultStore",
                         "主页_我的_我的店铺_默认店铺", Constants.EVENT_MY_INFO);

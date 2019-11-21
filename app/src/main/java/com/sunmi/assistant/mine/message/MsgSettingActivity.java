@@ -4,7 +4,6 @@ import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.Switch;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.MsgSettingContract;
@@ -50,11 +49,11 @@ public class MsgSettingActivity extends BaseMvpActivity<MsgSettingPresenter>
     @ViewById(R.id.layout_network_error)
     View networkError;
     @ViewById(R.id.switch_task)
-    Switch sTask;
+    SettingItemLayout sTask;
     @ViewById(R.id.switch_service)
-    Switch sService;
+    SettingItemLayout sService;
     @ViewById(R.id.switch_promotion)
-    Switch sPromotion;
+    SettingItemLayout sPromotion;
 
     private CommonListAdapter adapter;
     private MsgSettingChildren taskChild, serviceChild, promotionChild;
@@ -106,18 +105,17 @@ public class MsgSettingActivity extends BaseMvpActivity<MsgSettingPresenter>
                 public void convert(ViewHolder holder, MsgSettingChildren msgSettingChildren) {
                     SettingItemLayout silDevice = holder.getView(R.id.sil_device);
                     if (msgSettingChildren.getStatus() == 1) {
-                        silDevice.setRightText(getString(R.string.sm_enable));
+                        silDevice.setContent(R.string.sm_enable);
                     } else {
-                        silDevice.setRightText(getString(R.string.str_close));
+                        silDevice.setContent(R.string.str_close);
                     }
                     String title = MessageUtils.getInstance().getMsgFirst(msgSettingChildren.getName());
-                    silDevice.setLeftText(title);
-                    holder.itemView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            MsgSettingDetailActivity_.intent(context).child(msgSettingChildren).title(title).start();
-                        }
-                    });
+                    silDevice.setTitle(title);
+                    holder.itemView.setOnClickListener(v ->
+                            MsgSettingDetailActivity_.intent(context)
+                                    .child(msgSettingChildren)
+                                    .title(title)
+                                    .start());
                 }
             };
             rvDevice.setAdapter(adapter);
@@ -126,7 +124,7 @@ public class MsgSettingActivity extends BaseMvpActivity<MsgSettingPresenter>
         }
     }
 
-    private void initSystem(boolean status, Switch sw) {
+    private void initSystem(boolean status, SettingItemLayout sw) {
         sw.setChecked(status);
         sw.setOnCheckedChangeListener(this);
     }
@@ -193,7 +191,7 @@ public class MsgSettingActivity extends BaseMvpActivity<MsgSettingPresenter>
         return new int[]{CommonNotifications.msgSettingsChange};
     }
 
-    private void changeStatus(boolean isChecked, int settingId, Switch sw) {
+    private void changeStatus(boolean isChecked, int settingId, SettingItemLayout sw) {
         if (noNetCannotClick()) {
             sw.setChecked(!isChecked);
             return;

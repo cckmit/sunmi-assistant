@@ -114,7 +114,7 @@
         <item name="android:layout_width">@dimen/dp_104</item>
         <item name="android:layout_height">@dimen/dp_36</item>
         <item name="android:background">@drawable/btn_common_bg_medium</item>
-        <item name="android:textColor">@color/btn_common_text_medium</item>
+        <item name="android:textColor">@color/text_common_normal</item>
         <item name="android:gravity">center</item>
         <item name="android:textSize">@dimen/sp_14</item>
     </style>

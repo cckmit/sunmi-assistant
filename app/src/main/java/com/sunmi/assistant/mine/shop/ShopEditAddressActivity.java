@@ -122,7 +122,7 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
         lng = info.getLng();
         poiCityName = cityName(mList);
         if (!TextUtils.isEmpty(info.getRegion())) {
-            silAddress.setRightText(info.getRegion());
+            silAddress.setContent(info.getRegion());
             tvTransparent.setVisibility(View.GONE);
         }
         if (!TextUtils.isEmpty(info.getAddress())) {
@@ -168,8 +168,8 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
             cetDetailsAddress.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
         }
-        if (silAddress.getRightText().getText() == null ||
-                TextUtils.isEmpty(silAddress.getRightText().getText().toString())) {
+        if (silAddress.getContentText() == null ||
+                TextUtils.isEmpty(silAddress.getContentText())) {
             tvTransparent.setVisibility(View.VISIBLE);
         } else {
             tvTransparent.setVisibility(View.GONE);
@@ -190,8 +190,7 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
 
     @Click(R.id.tv_transparent)
     void clickAddress() {
-        if (silAddress.getRightText().getText() == null ||
-                TextUtils.isEmpty(silAddress.getRightText().getText().toString())) {
+        if (TextUtils.isEmpty(silAddress.getContentText())) {
             shortTip(getString(R.string.shop_input_region_tip));
             tvTransparent.setVisibility(View.VISIBLE);
         } else {
@@ -257,8 +256,7 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
     }
 
     private void showSoftInputWindow() {
-        if (silAddress.getRightText().getText() == null ||
-                TextUtils.isEmpty(silAddress.getRightText().getText().toString())) {
+        if (TextUtils.isEmpty(silAddress.getContentText())) {
             shortTip(getString(R.string.shop_input_region_tip));
             cetDetailsAddress.clearFocus();
             return;
@@ -440,7 +438,7 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
                     }
                     dialog.dismiss();
                     tvTransparent.setVisibility(View.GONE);
-                    silAddress.setRightText(btnAreaPro.getText().toString() + "," +
+                    silAddress.setContent(btnAreaPro.getText().toString() + "," +
                             btnAreaCity.getText().toString() + "," +
                             btnAreaRegion.getText().toString());
                     break;
