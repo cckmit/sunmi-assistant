@@ -352,6 +352,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         } else if (type == 2) {
             if (IpcUtils.isIpcManageable(device.getDeviceid(), device.getStatus())) {
                 IpcSettingActivity_.intent(mActivity).mDevice(device).start();
+            } else {
+                shortTip(getString(R.string.str_cannot_manager_device));
             }
         }
     }

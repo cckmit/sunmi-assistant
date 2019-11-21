@@ -143,7 +143,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         super.onResume();
         isRun = true;
         //查询升级状态
-        IPCCall.getInstance().ipcQueryUpgradeStatus(this, mDevice.getModel(), mDevice.getDeviceid());
+        IPCCall.getInstance().ipcQueryUpgradeStatus(context, mDevice.getModel(), mDevice.getDeviceid());
     }
 
     @Override

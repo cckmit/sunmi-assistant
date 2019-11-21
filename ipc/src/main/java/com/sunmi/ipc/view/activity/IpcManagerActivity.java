@@ -37,6 +37,7 @@ import com.sunmi.ipc.setting.IpcSettingActivity_;
 import com.sunmi.ipc.utils.AACDecoder;
 import com.sunmi.ipc.utils.H264Decoder;
 import com.sunmi.ipc.utils.IOTCClient;
+import com.sunmi.ipc.utils.IpcUtils;
 import com.sunmi.ipc.view.ZFTimeLine;
 import com.xiaojinzi.component.impl.Router;
 
@@ -79,6 +80,7 @@ import sunmi.common.view.VerticalSeekBar;
 import sunmi.common.view.ViewHolder;
 import sunmi.common.view.bottompopmenu.BottomPopMenu;
 import sunmi.common.view.bottompopmenu.PopItemAction;
+import sunmi.common.view.dialog.CommonDialog;
 
 /**
  * Description:
@@ -325,7 +327,14 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         if (v.getId() == R.id.ll_back_layout) {
             onBackPressed();
         } else if (v.getId() == R.id.txt_right) {
-            IpcSettingActivity_.intent(context).mDevice(device).disableAdjustScreen(true).start();
+            if (IpcUtils.isIpcManageable(device.getDeviceid(), device.getStatus())) {
+                IpcSettingActivity_.intent(context).mDevice(device).disableAdjustScreen(true).start();
+            } else {
+                new CommonDialog.Builder(context)
+                        .setTitle(R.string.str_device_offline)
+                        .setMessage(R.string.msg_device_offline)
+                        .setConfirmButton(R.string.str_confirm).create().show();
+            }
         }
     }
 
