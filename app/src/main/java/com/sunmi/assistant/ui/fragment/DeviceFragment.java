@@ -222,8 +222,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onDestroy() {
+        super.onDestroy();
         closeTimer();
     }
 
