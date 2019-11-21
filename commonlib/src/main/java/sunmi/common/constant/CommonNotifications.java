@@ -9,7 +9,7 @@ public class CommonNotifications {
     public static final int netConnected = totalEvents++;         //网络连接
     public static final int ipcUpgrade = totalEvents++;           //ipc升级
     public static final int ipcUpgradeComplete = totalEvents++;   //ipc升级完成
-    public static final int importShop = totalEvents++;   //刷新tab
+    public static final int importShop = totalEvents++;           //刷新tab
 
     public static final int shopNameChanged = totalEvents++;      //修改店铺名称
     public static final int shopSwitched = totalEvents++;         //店铺切换
@@ -26,6 +26,8 @@ public class CommonNotifications {
     public static final int ipcDeviceStatus = totalEvents++;       //ipc设备状态
 
     public static final int cloudStorageChange = totalEvents++;    //云存储订阅状态修改
-    public static final int ipcUpgradeSuccessUdp = totalEvents++;    //升级成功发送udp
-    public static final int activeCloudChange = totalEvents++;       //云存储绑定服务的状态修改
+    public static final int cloudStorageOpened = totalEvents++;    //云存储已开通
+    public static final int ipcUpgradeSuccessUdp = totalEvents++;  //升级成功发送udp
+    public static final int activeCloudChange = totalEvents++;     //云存储绑定服务的状态修改
+
 }

@@ -14,7 +14,9 @@
  *  limitations under the License.
  */
 
-package com.datelibrary.view;
+package com.datelibrary.listener;
+
+import com.datelibrary.view.WheelView;
 
 /**
  * Wheel scrolled listener interface.

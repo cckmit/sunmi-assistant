@@ -1,11 +1,5 @@
-package com.datelibrary;
+package com.datelibrary.utils;
 
-import android.content.Context;
-import android.util.DisplayMetrics;
-import android.view.WindowManager;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -13,7 +7,7 @@ import java.util.Date;
  * Created by codbking on 2016/12/15.
  */
 
-class DateUtils {
+public class DateUtils {
 
     //获取小时
     public static int getHour(Date date) {
@@ -69,24 +63,5 @@ class DateUtils {
         calendar.set(year, moth - 1, day, hour, minute);
         return calendar.getTime();
     }
-
-    public static int getScreenWidth(Context context) {
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(outMetrics);
-        return outMetrics.widthPixels;
-    }
-
-
-    public static void main(String[] args) {
-        SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd HH");
-        try {
-            Date date=format.parse("2016-12-15 12");
-            System.out.println(getHour(date));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-    }
-
 
 }

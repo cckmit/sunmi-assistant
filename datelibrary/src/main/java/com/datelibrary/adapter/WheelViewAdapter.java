@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.datelibrary.adapters;
+package com.datelibrary.adapter;
 
 import android.database.DataSetObserver;
 import android.view.View;

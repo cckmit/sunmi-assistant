@@ -1,15 +1,14 @@
-package com.datelibrary;
+package com.datelibrary.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
 /**
  * Created by codbking on 2016/8/10.
  */
-class DatePickerHelper {
+public class DatePickerHelper {
 
     //开始年
     private int YEAR_START;
@@ -28,11 +27,9 @@ class DatePickerHelper {
     //年份限制，上下5年
     private int yearLimt = 5;
 
-
     private ArrayList<Integer> tem = new ArrayList<>();
     private ArrayList<String> dispalyTem = new ArrayList<>();
     private String[] weeks = {"星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
-
 
     public enum Type {
         YEAR,
@@ -43,12 +40,12 @@ class DatePickerHelper {
         MINUTE
     }
 
-    public DatePickerHelper(){
+    public DatePickerHelper() {
         init();
     }
 
-    private void init(){
-        Date date=startDate;
+    private void init() {
+        Date date = startDate;
         //获取年 月 日 时 分
         YEAR_START = DateUtils.getYear(date);
         MONTH_START = DateUtils.getMoth(date);
@@ -57,7 +54,6 @@ class DatePickerHelper {
         HOUR_START = DateUtils.getHour(date);
         MINUTE_START = DateUtils.getMinute(date);
     }
-
 
     //设置初始化时间
     public void setStartDate(Date date, int yearLimt) {
@@ -132,17 +128,16 @@ class DatePickerHelper {
         return tem.toArray(new Integer[0]);
     }
 
-
-    public  Integer[] genDay(int year,int moth) {
+    public Integer[] genDay(int year, int moth) {
         Calendar calendar = Calendar.getInstance();
-        calendar.set(year,moth,1);
+        calendar.set(year, moth, 1);
         calendar.add(Calendar.DATE, -1);
         int day = Integer.parseInt(new SimpleDateFormat("d").format(calendar.getTime()));
         return genArr(day, false);
     }
 
-    public  Integer[] genDay() {
-       return genDay(YEAR_START,MONTH_START);
+    public Integer[] genDay() {
+        return genDay(YEAR_START, MONTH_START);
     }
 
 
@@ -156,18 +151,11 @@ class DatePickerHelper {
     }
 
     public String getDisplayWeek(int year, int moth, int day) {
-        return weeks[ DateUtils.getWeek(year,moth,day) - 1];
+        return weeks[DateUtils.getWeek(year, moth, day) - 1];
     }
 
-    public String getDisplayStartWeek(){
-          return getDisplayWeek(YEAR_START,MONTH_START,DAY_START);
+    public String getDisplayStartWeek() {
+        return getDisplayWeek(YEAR_START, MONTH_START, DAY_START);
     }
-
-
-    public static void main(String[] args) {
-        System.out.println(Arrays.toString(new DatePickerHelper().genDay(2016,2)));
-
-    }
-
 
 }
