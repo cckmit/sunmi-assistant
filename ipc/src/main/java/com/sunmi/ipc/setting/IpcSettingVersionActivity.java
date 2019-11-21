@@ -15,7 +15,7 @@ import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.model.IpcNewFirmwareResp;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.OpcodeConstants;
-import com.sunmi.ipc.utils.Utils;
+import com.sunmi.ipc.utils.IpcUtils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -128,7 +128,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
             ivIpc.setImageResource(R.mipmap.ic_no_fs);
         }
         tvDeviceId.setText(mDevice.getDeviceid());
-        mCurrentVersion = Utils.getVersionCode(mDevice.getFirmware());
+        mCurrentVersion = IpcUtils.getVersionCode(mDevice.getFirmware());
         if (mCurrentVersion < 0) {
             return;
         }
@@ -171,8 +171,8 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
             } else if (TextUtils.isEmpty(mResp.getLatest_bin_version())) {
                 strVersion = mDevice.getFirmware();
             } else {
-                if (Utils.getVersionCode(mDevice.getFirmware()) >=
-                        Utils.getVersionCode(mResp.getLatest_bin_version())) {
+                if (IpcUtils.getVersionCode(mDevice.getFirmware()) >=
+                        IpcUtils.getVersionCode(mResp.getLatest_bin_version())) {
                     strVersion = mDevice.getFirmware();
                 } else {
                     strVersion = mResp.getLatest_bin_version();

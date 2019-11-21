@@ -321,6 +321,8 @@
     <string name="ipc_setting_reboot_need_min2">重启大约需要2分钟左右，您可以通过 \t\n 摄像机的闪灯情况判断其当前状态：</string>
     <string name="tip_unopen_cloud_storage_service">暂未开通云存储服务</string>
     <string name="str_open_cloud_storage">开通云存储</string>
+    <string name="str_device_offline">设备离线</string>
+    <string name="msg_device_offline">设备已离线，暂不能进行设备管理</string>
 </resources>
 
 
