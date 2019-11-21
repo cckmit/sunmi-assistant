@@ -23,8 +23,8 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.datelibrary.DatePickDialog;
 import com.datelibrary.bean.DateType;
+import com.datelibrary.view.DatePickDialog;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.IpcManagerContract;
@@ -130,8 +130,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     Chronometer cmTimer;//录制时间
     @ViewById(resName = "rl_record")
     RelativeLayout rlRecord;
-    @ViewById(resName = "tv_calender")
-    TextView tvCalender;//日历
     @ViewById(resName = "iv_screenshot")
     ImageView ivScreenshot;//截图
     @ViewById(resName = "iv_live")
@@ -149,8 +147,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     @ViewById(resName = "rl_loading")
     RelativeLayout rlLoadingP;
+    @ViewById(resName = "rl_portrait_video_controller")
+    RelativeLayout rlVideoController;
     @ViewById(resName = "ll_portrait_controller_bar")
     LinearLayout llPortraitBar;
+    @ViewById(resName = "iv_play_portrait")
+    ImageView ivPlayP;//暂停
     @ViewById(resName = "tv_calender_portrait")
     TextView tvCalenderP;//日历
     @ViewById(resName = "iv_volume_portrait")
@@ -198,6 +200,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private BottomPopMenu qualityPop;
 
     private CommonListAdapter adapter;
+    private int cloudStorageServiceStatus;
     private List<IpcManageBean> list = new ArrayList<>();
 
     @AfterViews
@@ -252,7 +255,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     private void setCalendarText(String day) {
-        tvCalender.setText(day);
         tvCalenderP.setText(day);
     }
 
@@ -421,12 +423,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     //开始，暂停
-    @Click(resName = "iv_play")
+    @Click(resName = {"iv_play", "iv_play_portrait"})
     void pausePlayClick() {
         if (isFastClick(1000) || playType == PLAY_TYPE_LIVE) {
             return;
         }
-        ivPlay.setBackgroundResource(isPaused ? R.mipmap.pause_normal : R.mipmap.play_normal);
+        setIvPlayImage(isPaused);
         isPaused = !isPaused;
         if (playType == PLAY_TYPE_PLAYBACK_DEV) {
             if (iotcClient != null) {
@@ -448,12 +450,23 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     //显示日历
-    @Click(resName = {"tv_calender", "tv_calender_portrait"})
+    @Click(resName = {"tv_calender_portrait"})
     void calenderClick() {
         if (isFastClick(1000)) {
             return;
         }
         showDatePicker();
+    }
+
+    //云回放
+    @Click(resName = "iv_cloud_playback_portrait")
+    void cloudPlaybackClick() {
+        if (isFastClick(1000)) {
+            return;
+        }
+        pausePlay();
+        CloudPlaybackActivity_.intent(context).device(device)
+                .cloudStorageServiceStatus(cloudStorageServiceStatus).start();
     }
 
     //点击屏幕
@@ -574,7 +587,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @UiThread
     @Override
     public void startLiveSuccess() {
-        ivPlay.setBackgroundResource(R.mipmap.play_disable);
+        ivPlay.setImageResource(R.mipmap.play_disable);
+        ivPlayP.setImageResource(R.mipmap.play_disable);
         setPlayType(0);
         scrollCurrentLive();
         hideVideoLoading();
@@ -617,11 +631,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @Override
     public void getStorageSuccess(IpcManageBean bean) {
         list.add(0, bean);
+        cloudStorageServiceStatus = bean.getStatus();
         adapter.notifyDataSetChanged();
     }
 
     @Override
-    public int[] getStickNotificationId() {
+    public int[] getUnStickNotificationId() {
         return new int[]{IpcConstants.ipcNameChanged, CommonNotifications.cloudStorageChange};
     }
 
@@ -689,6 +704,11 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         }
     }
 
+    private void setIvPlayImage(boolean isPaused) {
+        ivPlay.setImageResource(isPaused ? R.mipmap.pause_normal : R.mipmap.play_normal);
+        ivPlayP.setImageResource(isPaused ? R.mipmap.pause_normal : R.mipmap.play_normal);
+    }
+
     private void setPlayType(int type) {
         playType = type;
         ivpCloud.setVisibility(type == 2 ? View.VISIBLE : View.GONE);
@@ -713,10 +733,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
      */
     public void switchOrientation(int orientation) {
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            ivPlay.setVisibility(View.VISIBLE);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//隐藏状态栏
             setPortraitViewVisible(View.GONE);
             setLandscapeViewVisible(View.VISIBLE);
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            ivPlay.setVisibility(View.GONE);
             setPortraitViewVisible(View.VISIBLE);
             setLandscapeViewVisible(View.GONE);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//显示状态栏
@@ -725,7 +747,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     private void setLandscapeViewVisible(int visibility) {
-        tvCalender.setVisibility(visibility);
         tvQuality.setVisibility(visibility);
         ivVolume.setVisibility(visibility);
         setPanelVisible(visibility);
@@ -734,6 +755,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private void setPortraitViewVisible(int visibility) {
         if (rvManager == null) return;
         titleBar.setVisibility(visibility);
+        rlVideoController.setVisibility(visibility);
         llPortraitBar.setVisibility(visibility);
         rvManager.setVisibility(visibility);
     }
@@ -1046,7 +1068,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         } else {//回放时间
             isFirstScroll = false;//非首次滑动
             isSelectedDate = true;
-            ivPlay.setBackgroundResource(R.mipmap.pause_normal);
+            setIvPlayImage(true);
             ivLive.setVisibility(View.VISIBLE);
 
             String strDate = DateTimeUtils.secondToDate(time, "yyyy-MM-dd");
@@ -1075,7 +1097,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     //滑动回放定位的中间 position
     private void scrollCurrentPlayBackTime(long currentTimeMinutes) {
-        ivPlay.setBackgroundResource(R.mipmap.pause_normal);
+        setIvPlayImage(true);
         isPaused = false;
         scalePanel.moveToTime(currentTimeMinutes);
         openMove();
@@ -1302,7 +1324,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     @Override
-    public void didMoveToDate(String date, long timeStamp) {
+    public void didMoveToTime(long timeStamp) {
         showVideoLoading();
         hideTimeScroll();
         if (timeStamp > System.currentTimeMillis() / 1000) {//超过当前时间

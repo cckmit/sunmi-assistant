@@ -13,7 +13,7 @@ import sunmi.common.constant.RouterConfig;
  * @author linyuanpeng on 2019-11-20.
  */
 @RouterApiAnno()
-@HostAnno(RouterConfig.Ipc.IPC_START_CONFIG)
+@HostAnno(RouterConfig.Ipc.NAME)
 public interface IpcApi {
 
     @PathAnno(RouterConfig.Ipc.IPC_START_CONFIG)

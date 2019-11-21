@@ -27,6 +27,7 @@ import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.OpcodeConstants;
 import com.sunmi.ipc.setting.entity.DetectionConfig;
 import com.sunmi.ipc.utils.TimeoutTimer;
+import com.sunmi.ipc.utils.Utils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.CheckedChange;
@@ -50,7 +51,6 @@ import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.NetworkUtils;
-import sunmi.common.utils.SMDeviceDiscoverUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.SettingItemLayout;
@@ -207,9 +207,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             } else if (TextUtils.isEmpty(resp.getLatest_bin_version())) {
                 mVersion.setRightText(mDevice.getFirmware());
             } else {
-                int mVerDve = Integer.valueOf(mDevice.getFirmware().replace(".", ""));
-                int mVerClo = Integer.valueOf(resp.getLatest_bin_version().replace(".", ""));
-                if (mVerDve >= mVerClo) {
+                if (Utils.getVersionCode(mDevice.getFirmware()) >=
+                        Utils.getVersionCode(mResp.getLatest_bin_version())) {
                     mVersion.setRightText(mDevice.getFirmware());
                 } else {
                     mVersion.setRightText(resp.getLatest_bin_version());
@@ -337,7 +336,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             return;
         }
         showLoadingDialog();
-        IPCCall.getInstance().getSdState(context, device.getModel(), device.getDeviceid());
+        fsAdjust(mDevice);
     }
 
     @Click(resName = "sil_voice_exception")
@@ -459,6 +458,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     void onVersionUpgradeResult(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (mResp != null) {
+                mDevice.setFirmware(mResp.getLatest_bin_version());
                 mVersion.setRightText(mResp.getLatest_bin_version());
                 mVersion.getIvToTextLeft().setVisibility(View.GONE);
                 isClickVersionUpgrade = false;
@@ -601,14 +601,52 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         IPCCall.getInstance().getSdStatus(context, mDevice.getModel(), mDevice.getDeviceid());
     }
 
+    /**
+     * FS画面调整入口，需要判断版本，新版无需SD卡就绪
+     */
+    private void fsAdjust(SunmiDevice device) {
+        String versionName = device.getFirmware();
+        if (Utils.getVersionCode(versionName) < IpcConstants.IPC_VERSION_NO_SDCARD_CHECK) {
+            getSdCardStatus(device);
+        } else {
+            startFsAdjust(device);
+        }
+    }
+
+    private void getSdCardStatus(SunmiDevice device) {
+        IPCCall.getInstance().getSdState(context, device.getModel(), device.getDeviceid());
+    }
+
+    private void startFsAdjust(SunmiDevice device) {
+        hideLoadingDialog();
+        if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(device.getDeviceid())) {
+            shortTip(R.string.ipc_setting_tip_network_dismatch);
+            return;
+        }
+        RecognitionSettingActivity_.intent(this)
+                .mDevice(device)
+                .mVideoRatio(16f / 9f)
+                .start();
+    }
+
+    /**
+     * 重启
+     */
+    @Click(resName = "sil_ipc_relaunch")
+    void relaunchClick() {
+        RelaunchSettingActivity_.intent(this)
+                .mDevice(mDevice)
+                .start();
+    }
+
+
     @Override
     public int[] getStickNotificationId() {
         return new int[]{OpcodeConstants.getIpcConnectApMsg, OpcodeConstants.getIpcNightIdeRotation,
                 OpcodeConstants.setIpcNightIdeRotation, OpcodeConstants.getIpcDetection,
                 OpcodeConstants.getIsWire, CommonNotifications.netConnected,
                 CommonNotifications.netDisconnection, CommonNotifications.ipcUpgrade,
-                CommonNotifications.mqttResponseTimeout, OpcodeConstants.ipcQueryUpgradeStatus,
-                IpcConstants.ipcDiscovered};
+                CommonNotifications.mqttResponseTimeout, OpcodeConstants.ipcQueryUpgradeStatus};
     }
 
     @Override
@@ -620,11 +658,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     public void didReceivedNotification(int id, Object... args) {
         super.didReceivedNotification(id, args);
         hideLoadingDialog();
-        if (id == IpcConstants.ipcDiscovered && args != null) {
-            LogCat.e(TAG, "1111111 ipcDiscovered");
-            SunmiDevice bean = (SunmiDevice) args[0];
-            SMDeviceDiscoverUtils.saveInfo(bean);
-        }
         if (id == CommonNotifications.netDisconnection) { //网络断开
             isShowWireDialog = false;
             setWifiUnknown();
@@ -662,6 +695,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             } else if (id == OpcodeConstants.getIsWire) {
                 checkWire(res);
             } else if (id == OpcodeConstants.getSdStatus) {
+                // 进sd卡管理获取SD卡状态状态
                 switch (getSdcardStatus(res)) {
                     case 1:
                     case 2:
@@ -683,10 +717,10 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                         break;
                 }
             } else if (IpcConstants.getSdcardStatus == id) {
+                // 画面调整前进行SD卡状态获取
                 switch (getSdcardStatus(res)) {
                     case 2:
-                        RecognitionSettingActivity_.intent(this).mDevice(mDevice)
-                                .mVideoRatio(16f / 9f).start();
+                        startFsAdjust(mDevice);
                         break;
                     case 0:
                         showErrorDialog(R.string.tip_no_tf_card, R.string.ipc_recognition_sd_none);

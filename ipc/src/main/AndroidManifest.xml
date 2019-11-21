@@ -92,6 +92,17 @@
         <activity
             android:name=".view.activity.IpcStartConfigActivity_"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".setting.RelaunchSettingActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".setting.RelaunchStartSettingActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.CloudPlaybackActivity_"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:hardwareAccelerated="false"
+            android:largeHeap="true" />
     </application>
 
 </manifest>

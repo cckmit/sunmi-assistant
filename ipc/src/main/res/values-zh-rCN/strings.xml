@@ -17,9 +17,9 @@
     <string name="str_quit_config">退出设置</string>
     <string name="dialog_msg_timeout_retry">连接超时，请检查网络并重试</string>
     <string name="tip_connect_ipc_fail">无法连接摄像机</string>
-    <string name="str_HD">高清</string>
+    <string name="str_HD">流畅</string>
     <string name="str_SD">标清</string>
-    <string name="str_FHD">超清</string>
+    <string name="str_FHD">清晰</string>
     <string name="str_record_text">录制中：</string>
     <string name="str_go_home">返回设备页</string>
     <string name="str_retry_add">重新添加</string>
@@ -317,6 +317,14 @@
     <string name="str_turn_on_ipc_power">接通摄像机电源</string>
     <string name="tip_config_ipc_dialog1"><![CDATA[·检查摄像机电源是否正确接通<br>·确认当前没有插入网线<br>·长按<font color= \'#FF6000\'>RESET键</font>
     5秒重置摄像机，等待设备重启]]></string>
+    <string name="ipc_setting_relaunch">设备重启</string>
+    <string name="ipc_setting_online_success">上线成功</string>
+    <string name="ipc_setting_dev_rebooting">重启时设备处于离线状态，\t\n 此过程无法存储视频，请勿断电！</string>
+    <string name="ipc_setting_right_now_reboot">立即重启</string>
+    <string name="ipc_setting_reboot_tip">重启后摄像机会重新上线，且配置保持不变</string>
+    <string name="ipc_setting_reboot_need_min2">重启大约需要2分钟左右，您可以通过 \t\n 摄像机的闪灯情况判断其当前状态：</string>
+    <string name="tip_unopen_cloud_storage_service">暂未开通云存储服务</string>
+    <string name="str_open_cloud_storage">开通云存储</string>
 </resources>
 
 

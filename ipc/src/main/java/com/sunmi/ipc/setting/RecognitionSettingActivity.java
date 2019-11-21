@@ -209,10 +209,10 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
     @Click(resName = "btn_setting_btn_plus")
     void onPlusClick() {
         if (mStepIndex == RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM) {
-            showLoadingDialog(mResLoading);
+            showDarkLoading(mResLoading);
             mPresenter.zoom(true);
         } else if (mStepIndex == RecognitionSettingContract.STEP_3_FOCUS) {
-            showLoadingDialog(mResLoading);
+            showDarkLoading(mResLoading);
             mPresenter.focus(true);
         } else {
             LogCat.e(TAG, "Step of recognition ERROR when plus clicked.");
@@ -222,10 +222,10 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
     @Click(resName = "btn_setting_btn_minus")
     void onMinusClick() {
         if (mStepIndex == RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM) {
-            showLoadingDialog(mResLoading);
+            showDarkLoading(mResLoading);
             mPresenter.zoom(false);
         } else if (mStepIndex == RecognitionSettingContract.STEP_3_FOCUS) {
-            showLoadingDialog(mResLoading);
+            showDarkLoading(mResLoading);
             mPresenter.focus(false);
         } else {
             LogCat.e(TAG, "Step of recognition ERROR when minus clicked.");
@@ -235,10 +235,10 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
     @Click(resName = "btn_setting_btn_reset")
     void onResetClick() {
         if (mStepIndex == RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM) {
-            showLoadingDialog(mResLoading);
+            showDarkLoading(mResLoading);
             mPresenter.zoomReset();
         } else if (mStepIndex == RecognitionSettingContract.STEP_3_FOCUS) {
-            showLoadingDialog(mResLoading);
+            showDarkLoading(mResLoading);
             mPresenter.focusReset();
         } else {
             LogCat.e(TAG, "Step of recognition ERROR when plus clicked.");
@@ -438,7 +438,7 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
                         int xRelative = (x - mVideoView.getLeft()) * 100 / mVideoView.getWidth();
                         int yRelative = (x - mVideoView.getTop()) * 100 / mVideoView.getHeight();
                         mPresenter.face(xRelative, yRelative);
-                        showLoadingDialog(mResLoading);
+                        showDarkLoading(mResLoading);
                     }
                 default:
                     break;
