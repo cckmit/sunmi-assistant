@@ -20,6 +20,8 @@ import java.util.List;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.base.BasePresenter;
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.constant.CommonNotifications;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.DateTimeUtils;
 
@@ -204,6 +206,7 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
                 cloudStorage.setRightText(context.getString(R.string.str_use_free));
                 cloudStorage.setTagImageResId(R.mipmap.ipc_cloud_free_half_year);
             } else if (data.getStatus() == CommonConstants.CLOUD_STORAGE_ALREADY_OPENED) {
+                BaseNotification.newInstance().postNotificationName(CommonNotifications.cloudStorageOpened);
                 cloudStorage.setTitle(data.getServiceName());
                 cloudStorage.setSummary(context.getString(R.string.str_remaining_validity_period,
                         DateTimeUtils.secondToPeriod(data.getValidTime())));
