@@ -256,7 +256,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         startTimeCurrentDate = startTimeCurrentDate - SECONDS_IN_ONE_DAY;
         endTimeCurrentDate = startTimeCurrentDate + SECONDS_IN_ONE_DAY;
         currentTime = startTimeCurrentDate;
-        ivNextDay.setEnabled(true);
+        ivNextDay.setEnabled(endTimeCurrentDate <= System.currentTimeMillis() / 1000);
         initTimeSlotData();
     }
 
@@ -268,9 +268,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         startTimeCurrentDate = startTimeCurrentDate + SECONDS_IN_ONE_DAY;
         endTimeCurrentDate = startTimeCurrentDate + SECONDS_IN_ONE_DAY;
         currentTime = startTimeCurrentDate;
-        if (endTimeCurrentDate > System.currentTimeMillis() / 1000) {
-            ivNextDay.setEnabled(false);
-        }
+        ivNextDay.setEnabled(endTimeCurrentDate <= System.currentTimeMillis() / 1000);
         initTimeSlotData();
     }
 
@@ -295,6 +293,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
                         endTimeCurrentDate = startTimeCurrentDate + SECONDS_IN_ONE_DAY;
                         initTimeSlotData();
                         setDay(DateTimeUtils.formatDateTime(new Date(calendarSelected.getTimeInMillis())));
+                        ivNextDay.setEnabled(endTimeCurrentDate <= System.currentTimeMillis() / 1000);
                     })
                     .create();
         }
