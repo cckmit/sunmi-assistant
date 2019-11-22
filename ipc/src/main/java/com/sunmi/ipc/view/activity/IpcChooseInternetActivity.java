@@ -15,8 +15,8 @@ import sunmi.common.utils.StatusBarUtils;
  *
  * @author linyuanpeng on 2019-11-21.
  */
-@EActivity(resName = "activity_ipc_chose_internet")
-public class IpcChoseInternetActivity extends BaseActivity {
+@EActivity(resName = "activity_ipc_choose_internet")
+public class IpcChooseInternetActivity extends BaseActivity {
 
     @Extra
     int ipcType;

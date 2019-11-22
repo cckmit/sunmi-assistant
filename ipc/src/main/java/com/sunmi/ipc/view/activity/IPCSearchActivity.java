@@ -218,7 +218,7 @@ public class IPCSearchActivity extends BaseActivity
                     hideLoadingDialog();
                     return;
                 }
-                if (res.getResult() != null && network == IpcConstants.IPC_WIRED_NETWORK || res.getResult().has("wire")
+                if (res.getResult() != null && res.getResult().has("wire")
                         && res.getResult().getInt("wire") == 1
                         || res.getResult().has("wireless")
                         && res.getResult().getInt("wireless") == 1) {

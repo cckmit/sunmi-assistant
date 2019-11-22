@@ -94,7 +94,7 @@ public class IpcStartConfigActivity extends BaseActivity {
             shortTip(R.string.tip_agree_protocol);
             return;
         }
-        IpcChoseInternetActivity_.intent(context).ipcType(ipcType).start();
+        IpcChooseInternetActivity_.intent(context).ipcType(ipcType).start();
     }
 
     @Click(resName = "tv_indicator_light")

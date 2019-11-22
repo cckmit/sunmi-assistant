@@ -104,7 +104,7 @@
             android:hardwareAccelerated="false"
             android:largeHeap="true" />
         <activity
-            android:name=".view.activity.IpcChoseInternetActivity_"
+            android:name=".view.activity.IpcChooseInternetActivity_"
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.IpcStartConfigNetworkActivity_"

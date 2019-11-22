@@ -92,7 +92,6 @@ public class CommonDialog extends Dialog {
             return this;
         }
 
-
         /**
          * 设置对话框消息附加图
          */
