@@ -100,7 +100,8 @@
             android:layout_below="@+id/ll_portrait_controller_bar"
             android:layout_marginTop="@dimen/dp_20"
             android:background="@color/common_fill"
-            app:scaleLineColor="@color/c_303540_20a" />
+            app:scaleLineColor="@color/c_303540_20a"
+            app:tl_style="big" />
 
         <RelativeLayout
             android:id="@+id/rl_loading"
