@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -113,9 +112,14 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     LinearLayout llNoService;
     @ViewById(resName = "ll_portrait_controller_bar")
     LinearLayout llPortraitBar;
-
+    @ViewById(resName = "tv_calender")
+    TextView tvCalendar;
+    @ViewById(resName = "iv_next_day")
+    ImageView ivNextDay;
     @ViewById(resName = "time_line")
     ZFTimeLine timeLine;
+    @ViewById(resName = "rl_loading")
+    RelativeLayout rlLoading;
 
     @Extra
     SunmiDevice device;
@@ -163,20 +167,13 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         initData();
         switchOrientation(Configuration.ORIENTATION_PORTRAIT);
         llNoService.setOnTouchListener((v, event) -> true);
+        rlLoading.setOnTouchListener((v, event) -> true);
         llPlayFail.setOnTouchListener((v, event) -> true);
         handler.postDelayed(this::initControllerPanel, 200);
     }
 
     @SuppressLint("ClickableViewAccessibility")
     void initControllerPanel() {
-        rlVideo.setOnTouchListener((v, event) -> {
-            if (MotionEvent.ACTION_DOWN == event.getAction()) {
-                if (!isControlPanelShow) {
-                    startTimer();
-                }
-            }
-            return false;
-        });
         openMove();
         initVolume();
         rlController.setVisibility(View.GONE);
@@ -194,7 +191,8 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         initTimeSlotData();
     }
 
-    private void setDay(String day) {
+    private void setDay(String date) {
+        tvCalendar.setText(date);
     }
 
     @Override
@@ -203,14 +201,13 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         stopPlay();
         removeCallbacks();
         closeMove();//关闭时间抽的timer
-        cancelTimer();//关闭屏幕控件自动hide计时器
     }
 
     @Override
     public void onBackPressed() {
         if (isPortrait()) {
-            if (llNoService != null && llNoService.isShown()) {
-                llNoService.setVisibility(View.GONE);
+            if (rlLoading != null && rlLoading.isShown()) {
+                rlLoading.setVisibility(View.GONE);
                 return;
             }
             stopPlay();
@@ -244,6 +241,30 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         if (v.getId() == R.id.ll_back_layout) {
             onBackPressed();
         }
+    }
+
+    @Click(resName = "iv_pre_day")
+    void preDayClick() {
+        startTimeCurrentDate = startTimeCurrentDate - SECONDS_IN_ONE_DAY;
+        endTimeCurrentDate = startTimeCurrentDate + SECONDS_IN_ONE_DAY;
+        ivNextDay.setClickable(true);
+        initTimeSlotData();
+    }
+
+    @Click(resName = "iv_next_day")
+    void nextDayClick() {
+        startTimeCurrentDate = startTimeCurrentDate - SECONDS_IN_ONE_DAY;
+        endTimeCurrentDate = startTimeCurrentDate + SECONDS_IN_ONE_DAY;
+        if (endTimeCurrentDate > System.currentTimeMillis() / 1000) {
+            ivNextDay.setClickable(false);
+        } else {
+            initTimeSlotData();
+        }
+    }
+
+    @Click(resName = "tv_calender")
+    void chooseCalendarClick() {
+        //TODO 日期选择
     }
 
     @Click(resName = "btn_open_service")
@@ -344,7 +365,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         timeSlotsInDay.addAll(slots);
         if (timeSlotsInDay.size() > 0) {
             refreshScaleTimePanel();
-            selectedTimeIsHaveVideo(currentTime);
+            selectedTimeIsHaveVideo(startTimeCurrentDate);
         } else {
             shortTip("no data");
         }
@@ -399,20 +420,12 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @UiThread
     public void showVideoLoading() {
-        if (isPortrait()) {
-            llNoService.setVisibility(View.VISIBLE);
-        } else {
-            showLoadingDialog();
-        }
+        rlLoading.setVisibility(View.VISIBLE);
     }
 
     @UiThread
     public void hideVideoLoading() {
-        if (isPortrait()) {
-            llNoService.setVisibility(View.GONE);
-        } else {
-            hideLoadingDialog();
-        }
+        rlLoading.setVisibility(View.GONE);
     }
 
     private void setTextViewClickable(TextView textView, boolean clickable) {
@@ -616,7 +629,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @UiThread
     void refreshScaleTimePanel() {
-        timeLine.setLeftBound(startTimeCurrentDate);
+        timeLine.setBound(startTimeCurrentDate, endTimeCurrentDate);
         timeLine.setVideoData(timeSlotsInDay);
         timeLine.refresh();
     }
@@ -624,7 +637,6 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     //选择日历日期回调
     @SuppressLint("DefaultLocale")
     public void onSureButton(Date date) {
-        resetCountdown();//重置隐藏控件计时
         long presentTime = System.currentTimeMillis() / 1000;//当前时间戳秒
         scrollTime = date.getTime();//选择日期的时间戳毫秒
         long time = scrollTime / 1000; //设置日期的秒数
@@ -736,39 +748,8 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         mPresenter.getTimeSlots(device.getId(), startTimeCurrentDate, endTimeCurrentDate);
     }
 
-    private void startTimer() {
-        if (hideControllerPanelTimer == null) {
-            hideControllerPanelTimer = new CountDownTimer(8000, 1000) {
-                @Override
-                public void onTick(long millisUntilFinished) {
-                }
-
-                @Override
-                public void onFinish() {
-                    hideControllerPanel();
-                    isControlPanelShow = false;
-                }
-            };
-        }
-        hideControllerPanelTimer.start();
-    }
-
-    private void cancelTimer() {
-        if (hideControllerPanelTimer != null) {
-            hideControllerPanelTimer.cancel();
-        }
-    }
-
-    //重置倒计时
-    private void resetCountdown() {
-        cancelTimer();
-        startTimer();
-    }
-
     /**
      * 延时执行滑动处理，防止无视频区域直接跳过
-     *
-     * @param timeStamp
      */
     private void startDelayPlay(long timeStamp) {
         cancelDelayPlay();
