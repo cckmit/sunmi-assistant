@@ -137,4 +137,8 @@
     <string name="str_choose_from_album">Choose from album</string>
     <string name="str_take_photo">Take photo</string>
     <string name="str_recommend">推荐</string>
+    <string name="device_status_online">Online</string>
+    <string name="device_status_offline">Offline</string>
+    <string name="device_status_exception">Exception</string>
+    <string name="device_status_unknown">——</string>
 </resources>

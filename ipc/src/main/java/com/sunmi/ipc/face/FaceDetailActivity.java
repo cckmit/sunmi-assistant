@@ -3,7 +3,6 @@ package com.sunmi.ipc.face;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -157,24 +156,16 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                 silFaceNewEnterShopTime.setContent(secondToDate(mFace.getLastArrivalTime(), DATE_FORMAT_ENTER_SHOP));
             }
         }
-        titleBar.getRightText().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mDeleteDialog == null) {
-                    mDeleteDialog = new CommonDialog.Builder(FaceDetailActivity.this)
-                            .setTitle(R.string.ipc_face_tip_delete)
-                            .setConfirmButton(R.string.ipc_setting_delete, R.color.common_orange,
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            mPresenter.delete();
-                                        }
-                                    })
-                            .setCancelButton(R.string.sm_cancel)
-                            .create();
-                }
-                mDeleteDialog.show();
+        titleBar.getRightText().setOnClickListener(v -> {
+            if (mDeleteDialog == null) {
+                mDeleteDialog = new CommonDialog.Builder(FaceDetailActivity.this)
+                        .setTitle(R.string.ipc_face_tip_delete)
+                        .setConfirmButton(R.string.ipc_setting_delete, R.color.common_orange,
+                                (dialog, which) -> mPresenter.delete())
+                        .setCancelButton(R.string.sm_cancel)
+                        .create();
             }
+            mDeleteDialog.show();
         });
     }
 
@@ -184,12 +175,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                 .setMessage(R.string.ipc_face_tip_album_content)
                 .setMessageDrawable(0, 0, 0, R.mipmap.face_tip_image)
                 .setMessageDrawablePadding(R.dimen.dp_12)
-                .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mPickerAgent.takePhoto();
-                    }
-                })
+                .setConfirmButton(R.string.str_confirm, (dialog, which) -> mPickerAgent.takePhoto())
                 .create()
                 .show();
     }
@@ -200,12 +186,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                 .setMessage(R.string.ipc_face_tip_album_content)
                 .setMessageDrawable(0, 0, 0, R.mipmap.face_tip_image)
                 .setMessageDrawablePadding(R.dimen.dp_12)
-                .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mPickerAgent.pickSinglePhoto();
-                    }
-                })
+                .setConfirmButton(R.string.str_confirm, (dialog, which) -> mPickerAgent.pickSinglePhoto())
                 .create()
                 .show();
     }
@@ -226,19 +207,9 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
         if (mPickerDialog == null) {
             mPickerDialog = new BottomPopMenu.Builder(this)
                     .addItemAction(new PopItemAction(R.string.ipc_face_take_photo,
-                            PopItemAction.PopItemStyle.Normal, new PopItemAction.OnClickListener() {
-                        @Override
-                        public void onClick() {
-                            takePhoto();
-                        }
-                    }))
+                            PopItemAction.PopItemStyle.Normal, () -> takePhoto()))
                     .addItemAction(new PopItemAction(R.string.ipc_face_album_choose,
-                            PopItemAction.PopItemStyle.Normal, new PopItemAction.OnClickListener() {
-                        @Override
-                        public void onClick() {
-                            openPicker();
-                        }
-                    }))
+                            PopItemAction.PopItemStyle.Normal, () -> openPicker()))
                     .addItemAction(new PopItemAction(R.string.sm_cancel,
                             PopItemAction.PopItemStyle.Cancel))
                     .create();
@@ -271,20 +242,17 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                     }
                 })
                 .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.str_confirm, new InputDialog.ConfirmClickListener() {
-                    @Override
-                    public void onConfirmClick(InputDialog dialog, String input) {
-                        if (input.length() > IPC_NAME_MAX_LENGTH) {
-                            shortTip(getString(R.string.ipc_face_name_length_tip));
-                            return;
-                        }
-                        if (input.trim().length() == 0) {
-                            shortTip(getString(R.string.ipc_face_input_name_tip));
-                            return;
-                        }
-                        dialog.dismiss();
-                        mPresenter.updateName(input);
+                .setConfirmButton(R.string.str_confirm, (dialog, input) -> {
+                    if (input.length() > IPC_NAME_MAX_LENGTH) {
+                        shortTip(getString(R.string.ipc_face_name_length_tip));
+                        return;
                     }
+                    if (input.trim().length() == 0) {
+                        shortTip(getString(R.string.ipc_face_input_name_tip));
+                        return;
+                    }
+                    dialog.dismiss();
+                    mPresenter.updateName(input);
                 })
                 .create()
                 .show();
@@ -345,14 +313,11 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                                 .setCancelButton(R.string.sm_cancel)
                                 .setConfirmButton(fromTakePhoto ? R.string.ipc_face_tack_photo_again
                                                 : R.string.ipc_face_pick_again,
-                                        new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                if (fromTakePhoto) {
-                                                    mPickerAgent.takePhoto();
-                                                } else {
-                                                    mPickerAgent.pickSinglePhoto();
-                                                }
+                                        (dialog, which) -> {
+                                            if (fromTakePhoto) {
+                                                mPickerAgent.takePhoto();
+                                            } else {
+                                                mPickerAgent.pickSinglePhoto();
                                             }
                                         })
                                 .create().show();
@@ -450,33 +415,25 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
         rvContent.setLayoutParams(params);
         rvContent.setLayoutManager(new LinearLayoutManager(context));
         if (updateIndex == UPDATE_INDEX_ID) {
-            rvContent.setAdapter(new IdentityAdapter(context, R.layout.item_common, groupList));
+            rvContent.setAdapter(new IdentityAdapter(context, R.layout.item_common_checked, groupList));
         } else if (updateIndex == UPDATE_INDEX_GENDER) {
             final List<String> list = new ArrayList<>();
             list.add(context.getString(R.string.ipc_face_gender_male));
             list.add(context.getString(R.string.ipc_face_gender_female));
-            rvContent.setAdapter(new GenderAdapter(context, R.layout.item_common, list));
+            rvContent.setAdapter(new GenderAdapter(context, R.layout.item_common_checked, list));
         } else if (updateIndex == UPDATE_INDEX_AGE) {
-            rvContent.setAdapter(new AgeAdapter(context, R.layout.item_common, faceAgesList));
+            rvContent.setAdapter(new AgeAdapter(context, R.layout.item_common_checked, faceAgesList));
         }
-        layout.findViewById(com.commonlibrary.R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
+        layout.findViewById(com.commonlibrary.R.id.btn_cancel).setOnClickListener(v -> dialog.dismiss());
+        layout.findViewById(com.commonlibrary.R.id.btn_sure).setOnClickListener(v -> {
+            if (updateIndex == UPDATE_INDEX_ID) {
+                mPresenter.updateIdentity(groupId, targetGroupId);
+            } else if (updateIndex == UPDATE_INDEX_GENDER) {
+                mPresenter.updateGender(gender);
+            } else if (updateIndex == UPDATE_INDEX_AGE) {
+                mPresenter.updateAge(ageRangeCode);
             }
-        });
-        layout.findViewById(com.commonlibrary.R.id.btn_sure).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (updateIndex == UPDATE_INDEX_ID) {
-                    mPresenter.updateIdentity(groupId, targetGroupId);
-                } else if (updateIndex == UPDATE_INDEX_GENDER) {
-                    mPresenter.updateGender(gender);
-                } else if (updateIndex == UPDATE_INDEX_AGE) {
-                    mPresenter.updateAge(ageRangeCode);
-                }
-                dialog.dismiss();
-            }
+            dialog.dismiss();
         });
         dialog.setContentView(layout);
         dialog.setCanceledOnTouchOutside(false);

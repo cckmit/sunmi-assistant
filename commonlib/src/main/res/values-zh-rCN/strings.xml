@@ -137,4 +137,8 @@
     <string name="str_take_photo">拍照</string>
     <string name="str_choose_from_album">从相册选择</string>
     <string name="str_recommend">推荐</string>
+    <string name="device_status_online">在线</string>
+    <string name="device_status_offline">离线</string>
+    <string name="device_status_exception">异常</string>
+    <string name="device_status_unknown">——</string>
 </resources>

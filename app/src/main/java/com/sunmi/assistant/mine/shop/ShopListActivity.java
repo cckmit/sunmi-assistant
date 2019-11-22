@@ -136,13 +136,13 @@ public class ShopListActivity extends BaseActivity {
     private static class ShopListAdapter extends CommonListAdapter<ShopInfo> {
 
         private ShopListAdapter(Context context) {
-            super(context, R.layout.item_mine_store, null);
+            super(context, R.layout.item_common_arrow, null);
         }
 
         @Override
         public void convert(ViewHolder holder, ShopInfo info) {
-            SettingItemLayout silCompanyDetail = holder.getView(R.id.tvName);
-            silCompanyDetail.setTitle(info.getShopName());
+            SettingItemLayout item = holder.getView(R.id.sil_item);
+            item.setTitle(info.getShopName());
             holder.itemView.setOnClickListener(v -> {
                 CommonUtils.trackCommonEvent(mContext, "defaultStore",
                         "主页_我的_我的店铺_默认店铺", Constants.EVENT_MY_INFO);

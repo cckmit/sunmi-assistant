@@ -2,13 +2,15 @@ package com.sunmi.ipc.utils;
 
 import java.util.regex.Pattern;
 
+import sunmi.common.constant.CommonConstants;
+import sunmi.common.constant.enums.DeviceStatus;
 import sunmi.common.utils.log.LogCat;
 
 /**
  * @author yinhui
  * @date 2019-11-14
  */
-public class Utils {
+public class IpcUtils {
 
     private static final String TAG = "IpcUtils";
 
@@ -29,6 +31,11 @@ public class Utils {
 
     public static boolean isVersionValid(String version) {
         return IPC_VERSION_NAME.matcher(version).matches();
+    }
+
+    public static boolean isIpcManageable(String deviceId, int status) {
+        return status == DeviceStatus.ONLINE.ordinal()
+                || CommonConstants.SUNMI_DEVICE_MAP.containsKey(deviceId);
     }
 
 }
