@@ -97,7 +97,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     ImageView ivScreenshot;//截图
     @ViewById(resName = "iv_live")
     ImageView ivLive;//直播
-    @ViewById(resName = "iv_play")
+    @ViewById(resName = "iv_pause")
     ImageView ivPlay;//开始播放
     @ViewById(resName = "iv_full_screen")
     ImageView ivFullScreen;
@@ -318,7 +318,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     }
 
     //开始，暂停
-    @Click(resName = "iv_play")
+    @Click(resName = "iv_pause")
     void pausePlayClick() {
         if (isFastClick(1000)) {
             return;
@@ -416,6 +416,16 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     void cloudStorageServiceOpened() {
         cloudStorageServiceStatus = CommonConstants.CLOUD_STORAGE_ALREADY_OPENED;
         llNoService.setVisibility(View.GONE);
+    }
+
+    @UiThread
+    public void showPlayFail(String tip) {
+        llPlayFail.setVisibility(View.VISIBLE);
+    }
+
+    @UiThread
+    public void hidePlayFail() {
+        llPlayFail.setVisibility(View.GONE);
     }
 
     @UiThread
@@ -677,43 +687,64 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     void selectedTimeIsHaveVideo(long currTime) {
         int apSize = timeSlotsInDay.size();
         if (apSize <= 0) {
+            hideVideoLoading();
             return;
         }
-        long mStartTime = startTimeCurrentDate, mEndTime = presentTime;
-        for (int i = 0; i < apSize + 1; i++) {
-            long startOpposite = 0, endOpposite = 0, start = 0, end = 0;
-            //不包含ap时间轴内的时间
-            if (i == 0) {
-                startOpposite = mStartTime;
-                endOpposite = timeSlotsInDay.get(i).getStartTime();
-            } else if (i < apSize) {//包含ap时间内
-                startOpposite = timeSlotsInDay.get(i - 1).getEndTime();
-                endOpposite = timeSlotsInDay.get(i).getStartTime();
-                start = timeSlotsInDay.get(i).getStartTime();
-                end = timeSlotsInDay.get(i).getEndTime();
-            } else if (i == apSize) {
-                startOpposite = timeSlotsInDay.get(i - 1).getEndTime();
-                endOpposite = mEndTime;
-            }
+        long slotStartTime, slotEndTime;
+        for (int i = 0; i < apSize; i++) {
+            slotStartTime = timeSlotsInDay.get(i).getStartTime();
+            slotEndTime = timeSlotsInDay.get(i).getEndTime();
 
-            if (currTime >= startOpposite && currTime < endOpposite) {//空白区域
-                if (i == apSize) {//最后一个无视频区域跳转直播
-                    shortTip("没有回放视频");
-                    return;
-                }
+            if (currTime <= slotStartTime) {
                 //当前的视频片段是否小于一分钟
-                isVideoLess1Minute = timeSlotsInDay.get(i).getEndTime() - timeSlotsInDay.get(i).getStartTime() <= 60;
-                getVideoList(endOpposite, endOpposite + tenMinutes);
-                scrollCurrentPlayBackTime(endOpposite);//回放到拖动的时间点
-                break;
-            } else if (currTime >= start && currTime < end) {//视频区域
-                //当前的视频片段是否小于一分钟
-                isVideoLess1Minute = timeSlotsInDay.get(i).getEndTime() - currTime <= 60;
+                isVideoLess1Minute = slotEndTime - slotStartTime <= 60;
+                getVideoList(slotStartTime, slotStartTime + tenMinutes);
+                scrollCurrentPlayBackTime(slotStartTime);//回放到拖动的时间点
+                return;
+            } else if (currTime < slotEndTime) {
+                isVideoLess1Minute = slotEndTime - slotStartTime <= 60;
                 getVideoList(currTime, currTime + tenMinutes);
                 scrollCurrentPlayBackTime(currTime);//回放到拖动的时间点
-                break;
+                return;
             }
         }
+        showPlayFail(getString(R.string.tip_video_played_over));
+
+//        long mStartTime = startTimeCurrentDate, mEndTime = presentTime;
+//        for (int i = 0; i < apSize + 1; i++) {
+//            long noVideoStartTime = 0, noVideoEndTime = 0, start = 0, end = 0;
+//            //不包含ap时间轴内的时间
+//            if (i == 0) {
+//                noVideoStartTime = mStartTime;
+//                noVideoEndTime = timeSlotsInDay.get(i).getStartTime();
+//            } else if (i < apSize) {//包含ap时间内
+//                noVideoStartTime = timeSlotsInDay.get(i - 1).getEndTime();
+//                noVideoEndTime = timeSlotsInDay.get(i).getStartTime();
+//                start = timeSlotsInDay.get(i).getStartTime();
+//                end = timeSlotsInDay.get(i).getEndTime();
+//            } else if (i == apSize) {
+//                noVideoStartTime = timeSlotsInDay.get(i - 1).getEndTime();
+//                noVideoEndTime = mEndTime;
+//            }
+//
+//            if (currTime >= noVideoStartTime && currTime < noVideoEndTime) {//空白区域
+//                if (i == apSize) {//最后一个无视频区域跳转直播
+//                    shortTip("没有回放视频");
+//                    return;
+//                }
+//                //当前的视频片段是否小于一分钟
+//                isVideoLess1Minute = timeSlotsInDay.get(i).getEndTime() - timeSlotsInDay.get(i).getStartTime() <= 60;
+//                getVideoList(noVideoEndTime, noVideoEndTime + tenMinutes);
+//                scrollCurrentPlayBackTime(noVideoEndTime);//回放到拖动的时间点
+//                break;
+//            } else if (currTime >= start && currTime < end) {//视频区域
+//                //当前的视频片段是否小于一分钟
+//                isVideoLess1Minute = timeSlotsInDay.get(i).getEndTime() - currTime <= 60;
+//                getVideoList(currTime, currTime + tenMinutes);
+//                scrollCurrentPlayBackTime(currTime);//回放到拖动的时间点
+//                break;
+//            }
+//        }
     }
 
     /**
