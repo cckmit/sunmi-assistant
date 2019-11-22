@@ -22,7 +22,7 @@ public class CloudPlaybackPresenter extends BasePresenter<CloudPlaybackContract.
             public void onSuccess(int code, String msg, CloudTimeSlotResp data) {
                 if (isViewAttached()) {
                     if (data.getTotalCount() == 0) {
-                        mView.getCloudTimeSlotFail();
+                        mView.showNoVideoTip();
                     } else {
                         mView.getCloudTimeSlotSuccess(startTime, endTime, data.getTimeslots());
                     }
@@ -34,6 +34,7 @@ public class CloudPlaybackPresenter extends BasePresenter<CloudPlaybackContract.
                 if (isViewAttached()) {
                     if (5087 == code) {
                         //no matched record
+                        mView.showNoVideoTip();
                     } else if (5019 == code) {
                         //failed to find ipc device info
                     } else {
@@ -61,7 +62,7 @@ public class CloudPlaybackPresenter extends BasePresenter<CloudPlaybackContract.
             @Override
             public void onFail(int code, String msg, VideoListResp data) {
                 if (isViewAttached()) {
-                    mView.hideLoadingDialog();
+                    mView.getCloudVideosFail();
                 }
             }
         });

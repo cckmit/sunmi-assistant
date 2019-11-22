@@ -16,9 +16,13 @@ public interface CloudPlaybackContract {
     interface View extends BaseView {
         void getCloudTimeSlotSuccess(long startTime, long endTime, List<VideoTimeSlotBean> slots);
 
+        void showNoVideoTip();
+
         void getCloudTimeSlotFail();
 
         void getCloudVideosSuccess(List<VideoListResp.VideoBean> videoBeans);
+
+        void getCloudVideosFail();
 
     }
 
