@@ -24,7 +24,8 @@
     <string name="str_go_home">Return to the devices page</string>
     <string name="str_retry_add">Re-add</string>
     <string name="tip_no_ipc_found">No IP camera was found</string>
-    <string name="tip_check_ipc_wifi">Please check whether the mobile phone has been connected with the same Wi-Fi of IP camera, whether the indicator is solid blue「solid blue」</string>
+    <string name="tip_check_ipc_wireless">请确保您的摄像头处于路由器信号范围内，将手机连接至摄像机的无线网络「SUNMI_XXXX」</string>
+    <string name="tip_check_ipc_wired">请确保您的摄像头处于路由器信号范围内，并请将手机与设备连接至同一网络</string>
     <string name="str_select_time">Choose date</string>
     <string name="tip_video_quality_fhd">Switch to Super definition</string>
     <string name="tip_video_quality_hd">Switch to high definition</string>
@@ -313,6 +314,12 @@
     <string name="ipc_setting_dialog_upgrade_download_time_fs">升级时间预计需要6分钟</string>
     <string name="ipc_setting_dev_downloading">软件下载中</string>
     <string name="ipc_setting_dev_writing">软件写入中</string>
+    <string name="str_agree">同意</string>
+    <string name="tip_indicator_light">指示灯显示不正确？点此查看</string>
+    <string name="str_turn_on_ipc_power">接通摄像机电源</string>
+    <string name="tip_config_ipc_dialog1">检查摄像机电源是否正确接通</string>
+    <string name="tip_config_ipc_dialog2">确认当前没有插入网线</string>
+    <string name="tip_config_ipc_dialog3"><![CDATA[长按<font color= \'#FF6000\'>RESET键</font>5秒重置摄像机，等待设备重启]]></string>
     <string name="ipc_setting_relaunch">设备重启</string>
     <string name="ipc_setting_online_success">上线成功</string>
     <string name="ipc_setting_dev_rebooting">重启时设备处于离线状态，\t\n 此过程无法存储视频，请勿断电！</string>
@@ -321,6 +328,16 @@
     <string name="ipc_setting_reboot_need_min2">重启大约需要2分钟左右，您可以通过 \t\n 摄像机的闪灯情况判断其当前状态：</string>
     <string name="tip_unopen_cloud_storage_service">暂未开通云存储服务</string>
     <string name="str_open_cloud_storage">开通云存储</string>
+    <string name="str_ipc_config_dialog_title">您可以尝试以下操作</string>
+    <string name="str_wired_network">有线网络连接</string>
+    <string name="tip_wired_network">网络更稳定，视频更流畅</string>
+    <string name="str_wireless_network">无线网络连接</string>
+    <string name="tip_wireless_network">无需插网线，布署更便捷</string>
+    <string name="tip_use_wired_network">请连接有线网络</string>
+    <string name="tip_use_wireless_network">请连接无线网络</string>
+    <string name="str_chose_network">选择网络连接方式</string>
+    <string name="str_confirm_ipc_linked">确认摄像机已连接</string>
+    <string name="tip_config_ipc_dialog4">检查摄像机连接的网络是否正常</string>
     <string name="str_device_offline">设备离线</string>
     <string name="msg_device_offline">设备已离线，暂不能进行设备管理</string>
     <string name="tip_ipc_offline">摄像机已离线</string>

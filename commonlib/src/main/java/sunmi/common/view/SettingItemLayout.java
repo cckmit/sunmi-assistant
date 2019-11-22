@@ -155,8 +155,6 @@ public class SettingItemLayout extends FrameLayout {
         // 设置可用和可点击
         boolean enabled = a.getBoolean(R.styleable.SettingItemLayout_enabled, isEnabled());
         setEnabled(enabled);
-        boolean clickable = a.getBoolean(R.styleable.SettingItemLayout_clickable, isClickable());
-        setClickable(clickable);
 
         // 设置左边图片大小
         float startImageSize = a.getDimension(R.styleable.SettingItemLayout_startImageSize, -1);
@@ -340,14 +338,6 @@ public class SettingItemLayout extends FrameLayout {
         super.setEnabled(enabled);
         for (int i = 0, size = getChildCount(); i < size; i++) {
             getChildAt(i).setEnabled(enabled);
-        }
-    }
-
-    @Override
-    public void setClickable(boolean clickable) {
-        super.setClickable(clickable);
-        for (int i = 0, size = getChildCount(); i < size; i++) {
-            getChildAt(i).setClickable(clickable);
         }
     }
 

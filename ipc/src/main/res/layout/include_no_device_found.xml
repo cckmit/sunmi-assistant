@@ -26,9 +26,12 @@
         android:layout_below="@+id/tv_no_ipc"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_8"
-        android:text="@string/tip_check_ipc_wifi"
+        android:text="@string/tip_check_ipc_wireless"
         android:textColor="@color/text_normal"
-        android:textSize="@dimen/sp_12" />
+        android:textSize="@dimen/sp_14"
+        android:layout_marginEnd="@dimen/dp_24"
+        android:layout_marginStart="@dimen/dp_24"
+        android:gravity="center"/>
 
     <Button
         android:id="@+id/btn_retry"
