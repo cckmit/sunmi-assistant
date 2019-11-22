@@ -17,7 +17,6 @@ import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.datelibrary.bean.DateType;
@@ -63,7 +62,6 @@ import sunmi.common.utils.IVideoPlayer;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.VolumeHelper;
 import sunmi.common.view.TitleBarView;
-import sunmi.common.view.VerticalSeekBar;
 
 /**
  * Description:
@@ -87,12 +85,8 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     RelativeLayout rlController;
     @ViewById(resName = "rl_top")
     RelativeLayout rlTopBar;
-    @ViewById(resName = "rl_bottom")
+    @ViewById(resName = "rl_bottom_playback")
     RelativeLayout rlBottomBar;
-    @ViewById(resName = "sBar_voice")
-    VerticalSeekBar sBarVoice;//音量控制
-    @ViewById(resName = "ll_change_volume")
-    LinearLayout llChangeVolume;//音量控制
     @ViewById(resName = "iv_record")
     ImageView ivRecord;//录制
     @ViewById(resName = "iv_volume")
@@ -107,21 +101,21 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     ImageView ivLive;//直播
     @ViewById(resName = "iv_play")
     ImageView ivPlay;//开始播放
-    @ViewById(resName = "ll_play_fail")
-    LinearLayout llPlayFail;
-    @ViewById(resName = "time_line")
-    ZFTimeLine timeLine;
+    @ViewById(resName = "iv_full_screen")
+    ImageView ivFullScreen;
     @ViewById(resName = "tv_time_scroll")
     TextView tvTimeScroll;
     @ViewById(resName = "rl_video")
     RelativeLayout rlVideo;
-
+    @ViewById(resName = "ll_play_fail")
+    LinearLayout llPlayFail;
     @ViewById(resName = "ll_no_service")
     LinearLayout llNoService;
     @ViewById(resName = "ll_portrait_controller_bar")
     LinearLayout llPortraitBar;
-    @ViewById(resName = "iv_volume_portrait")
-    ImageView ivVolumeP;//音量
+
+    @ViewById(resName = "time_line")
+    ZFTimeLine timeLine;
 
     @Extra
     SunmiDevice device;
@@ -163,10 +157,13 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         titleBar.getLeftLayout().setOnClickListener(this);
         if (cloudStorageServiceStatus == CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
             llNoService.setVisibility(View.VISIBLE);
+        } else {
+            rlBottomBar.setVisibility(View.VISIBLE);
         }
         initData();
         switchOrientation(Configuration.ORIENTATION_PORTRAIT);
         llNoService.setOnTouchListener((v, event) -> true);
+        llPlayFail.setOnTouchListener((v, event) -> true);
         handler.postDelayed(this::initControllerPanel, 200);
     }
 
@@ -235,7 +232,6 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-            llChangeVolume.setVisibility(View.GONE);
             setVolumeViewImage(volumeHelper.get100CurrentVolume());
             return false;
         } else {
@@ -259,9 +255,6 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @Click(resName = "rl_top")
     void backClick() {
-        if (llChangeVolume.isShown()) {
-            llChangeVolume.setVisibility(View.GONE);
-        }
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
@@ -287,21 +280,8 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     }
 
     //音量
-    @Click(resName = "iv_volume")
+    @Click(resName = "iv_mute")
     void volumeClick() {
-        if (llChangeVolume.isShown()) {
-            llChangeVolume.setVisibility(View.GONE);
-        } else {
-            llChangeVolume.setVisibility(View.VISIBLE);
-            int currentVolume100 = volumeHelper.get100CurrentVolume();//获取当前音量
-            sBarVoice.setProgress(currentVolume100);
-            setVolumeViewImage(currentVolume100);
-        }
-    }
-
-    //静音
-    @Click(resName = "iv_volume_portrait")
-    void muteClick() {
         if (volumeHelper.isMute()) {
             setVolumeViewImage(1);
             volumeHelper.unMute();
@@ -408,6 +388,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @UiThread
     void cloudStorageServiceOpened() {
+        cloudStorageServiceStatus = CommonConstants.CLOUD_STORAGE_ALREADY_OPENED;
         llNoService.setVisibility(View.GONE);
     }
 
@@ -461,11 +442,11 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     }
 
     private void setLandscapeViewVisible(int visibility) {
-        ivVolume.setVisibility(visibility);
         setPanelVisible(visibility);
     }
 
     private void setPortraitViewVisible(int visibility) {
+        ivFullScreen.setVisibility(visibility);
         titleBar.setVisibility(visibility);
         llPortraitBar.setVisibility(visibility);
     }
@@ -524,7 +505,6 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     @UiThread
     void hideControllerPanel() {
         setPanelVisible(View.GONE);
-        llChangeVolume.setVisibility(View.GONE);//音量
     }
 
     private void setPanelVisible(int visible) {
@@ -591,35 +571,14 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
      */
     private void initVolume() {
         volumeHelper = new VolumeHelper(context);
-        int currentVolume100 = volumeHelper.get100CurrentVolume();
-        sBarVoice.setMax(100);
-        sBarVoice.setProgress(currentVolume100);
-        sBarVoice.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                setVolumeViewImage(progress);
-                volumeHelper.setVoice100(progress);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
-        setVolumeViewImage(currentVolume100);
+        setVolumeViewImage(volumeHelper.get100CurrentVolume());
     }
 
     private void setVolumeViewImage(int currentVolume100) {
         if (currentVolume100 == 0) {
             ivVolume.setBackgroundResource(R.mipmap.ic_muse);
-            ivVolumeP.setImageResource(R.mipmap.ic_muse);
         } else {
             ivVolume.setBackgroundResource(R.mipmap.ic_volume);
-            ivVolumeP.setImageResource(R.mipmap.ic_volume);
         }
     }
 
