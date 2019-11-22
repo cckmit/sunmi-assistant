@@ -18,10 +18,10 @@ import sunmi.common.base.BaseApplication;
 import sunmi.common.utils.log.LogCat;
 
 public class DateTimeUtils {
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
     private DateTimeUtils() {
     }
-
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     /**
      * 根据字符串格式获取字符串日期
@@ -83,26 +83,6 @@ public class DateTimeUtils {
         long days = second / (3600 * 24);
         long hours = second % (3600 * 24) / 3600;
         return BaseApplication.getContext().getString(R.string.str_period, days, hours);
-    }
-
-
-    public enum DateTimePattern {
-        /**
-         * yyyy-MM-dd HH:mm:ss
-         */
-        LONG_DATETIME_1,
-        /**
-         * yyyy-MM-dd HH:mm
-         */
-        LONG_DATETIME_2,
-        /**
-         * yyyy-MM-dd
-         */
-        SHORT_DATETIME_1,
-        /**
-         * yyyy-MM
-         */
-        SHORT_DATETIME_2
     }
 
     /**
@@ -978,5 +958,42 @@ public class DateTimeUtils {
         }
         return currentTime;
     }
+
+    /**
+     * 将时间戳转换为时间
+     * s就是时间戳
+     */
+
+    public static String stampToDate(String s) {
+        if (s.length() == 10) {
+            s = s + "000";
+        }
+        String res;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日", Locale.getDefault());
+        long lt = Long.valueOf(s);
+        Date date = new Date(lt);
+        res = simpleDateFormat.format(date);
+        return res;
+    }
+
+    public enum DateTimePattern {
+        /**
+         * yyyy-MM-dd HH:mm:ss
+         */
+        LONG_DATETIME_1,
+        /**
+         * yyyy-MM-dd HH:mm
+         */
+        LONG_DATETIME_2,
+        /**
+         * yyyy-MM-dd
+         */
+        SHORT_DATETIME_1,
+        /**
+         * yyyy-MM
+         */
+        SHORT_DATETIME_2
+    }
+
 
 }
