@@ -59,15 +59,17 @@ public class PosArcView extends View {
 
     public PosArcView(Context context) {
         this(context, null);
+        initPaint();
     }
 
     public PosArcView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
+        initPaint();
     }
 
     public PosArcView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        //init();
+        initPaint();
     }
 
     private void initPaint() {
@@ -102,8 +104,6 @@ public class PosArcView extends View {
         super.onDraw(canvas);
         centerX = getWidth() / 2;
         centerY = getHeight() / 2;
-        //初始化paint
-        initPaint();
         //绘制弧度
         drawArc(canvas);
         //绘制文本

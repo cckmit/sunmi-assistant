@@ -9,12 +9,9 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
-import sunmi.common.constant.CommonConfig;
 import sunmi.common.rpc.cloud.SunmiStoreRetrofitClient;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
-import sunmi.common.utils.DateTimeUtils;
-import sunmi.common.utils.SafeUtils;
 import sunmi.common.utils.SpUtils;
 
 /**
@@ -101,22 +98,6 @@ public class PosApi {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-
-    private BaseRequest createRequestBody(String params) {
-        String timeStamp = DateTimeUtils.currentTimeSecond() + "";
-        String randomNum = (int) ((Math.random() * 9 + 1) * 100000) + "";
-        String isEncrypted = "0";
-        String sign = SafeUtils.md5(params + isEncrypted +
-                timeStamp + randomNum + SafeUtils.md5(CommonConfig.CLOUD_TOKEN));
-        return new BaseRequest.Builder()
-                .setTimeStamp(timeStamp)
-                .setRandomNum(randomNum)
-                .setIsEncrypted(isEncrypted)
-                .setParams(params)
-                .setSign(sign)
-                .setLang("zh").createBaseRequest();
     }
 
     private static final class Singleton {
