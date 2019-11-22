@@ -11,9 +11,9 @@ pipeline{
         {
           script{
             try{
-              git(branch: 'onl', credentialsId: 'lukai@sunmi.com', url: 'http://code.sunmi.com/wbu-app/sunmi-assistant-android.git', poll: true)
+              git(branch: 'onl', credentialsId: 'lukai@sunmi.com', url: 'https://code.sunmi.com/wbu-app/sunmi-assistant-android.git', poll: true)
               dir('apmanager'){
-                git(branch: 'onl', credentialsId: 'lukai@sunmi.com', url: 'http://code.sunmi.com/wbu-app/sunmi-assistant-android-ap-manager.git', poll: true)
+                git(branch: 'onl', credentialsId: 'lukai@sunmi.com', url: 'https://code.sunmi.com/wbu-app/sunmi-assistant-android-ap-manager.git', poll: true)
               }
               sh('''
                 export PATH="/usr/local/bin/:$PATH"
@@ -21,13 +21,13 @@ pipeline{
                 export LANG=en_US.UTF-8
                 curl http://api.fir.im/apps/latest/5c048efcca87a826b0c07ece?api_token=8abeee66a3604b68f707d9c2753f7fb4 > info.json
                 export ANDROID_HOME=/Users/admin/Library/Android/sdk
-                export ANDROID_NDK_HOME=/Users/admin/Library/Android/ndk-bundle/android-ndk-r19c
+                export ANDROID_NDK_HOME=/Users/admin/Library/Android/sdk/ndk-bundle
                 echo $ANDROID_HOME
                 mkdir -p build
                 rm -rf apmanager/build/outputs/*
                 fastlane releaseEnv
                 ''') 
-              stash(includes: 'app/build/outputs/apk/**/app-universal-*.apk', name: 'apk')
+              stash(includes: 'app/build/outputs/apk/**/app-myapp-universal-*.apk', name: 'apk')
             }catch(e){
               def stageName = 'build'
               echo "R ${currentBuild.result} C ${currentBuild.currentResult}"
@@ -53,7 +53,7 @@ pipeline{
             unstash(name: 'apk')
             sh('''
               export ANDROID_HOME=/Users/admin/Library/Android/sdk
-              export apk_path=app/build/outputs/apk/release/
+              export apk_path=app/build/outputs/apk/myapp/release/
               mkdir -p release
               rm -rf release/*
               cd $apk_path
@@ -61,7 +61,7 @@ pipeline{
               cd $WORKSPACE
               version=`$ANDROID_HOME/build-tools/28.0.3/aapt dump badging $apk_path$apk | grep versionName | awk '{print $4}' | sed s/versionName=//g | sed s/\\'//g`
               name=`$ANDROID_HOME/build-tools/28.0.3/aapt dump badging $apk_path$apk | grep application: | awk '{print $2}' | sed s/label=//g | sed s/\\'//g`
-              icon=`$ANDROID_HOME/build-tools/28.0.3/aapt dump badging $apk_path$apk | grep application: | awk '{print $3}' | sed s/icon=//g | sed s/\\'//g`
+              icon=`$ANDROID_HOME/build-tools/28.0.3/aapt dump badging $apk_path$apk | grep application: | awk '{print $4}' | sed s/icon=//g | sed s/\\'//g`
               echo name=$name > version.txt
               echo version=$version >> version.txt
               cp version.txt release
