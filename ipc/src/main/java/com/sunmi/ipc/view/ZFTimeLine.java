@@ -134,6 +134,8 @@ public class ZFTimeLine extends View {
         super.onDraw(canvas);
         if (currentInterval < leftBound) {
             currentInterval = leftBound;
+        } else if (currentInterval > rightBound) {
+            currentInterval = rightBound;
         }
         // 初始化小刻度的间隔,在init里densityDpi的数据为0,所以放到这里了
         if (intervalValue == 0) {
@@ -257,7 +259,7 @@ public class ZFTimeLine extends View {
             case MotionEvent.ACTION_MOVE:
                 currentInterval = currentInterval
                         - secondsOfIntervalValue() * ((long) (event.getX() - moveStartX));
-                if (listener != null && currentInterval > leftBound) {
+                if (listener != null && currentInterval > leftBound && currentInterval < rightBound) {
                     listener.moveTo(DateTimeUtils.secondToDate(currentInterval, "yyyy-MM-dd HH:mm:ss"),
                             (moveStartX - event.getX()) < 0, currentInterval);
                 }
@@ -268,13 +270,14 @@ public class ZFTimeLine extends View {
             case MotionEvent.ACTION_UP:
                 //滑动结束
                 if (listener != null) {
-                    listener.didMoveToTime(currentInterval < leftBound ? leftBound : currentInterval);
+                    listener.didMoveToTime(currentInterval < leftBound ? leftBound
+                            : currentInterval > rightBound ? rightBound : currentInterval);
                 }
 
                 break;
             default:
         }
-        if (currentInterval != leftBound) {
+        if (currentInterval != leftBound && currentInterval != rightBound) {
             invalidate();//重新绘制
         }
 
@@ -379,7 +382,8 @@ public class ZFTimeLine extends View {
         this.leftBound = leftBound;
     }
 
-    public void setRightBound(long rightBound) {
+    public void setBound(long leftBound, long rightBound) {
+        this.leftBound = leftBound;
         this.rightBound = rightBound;
     }
 

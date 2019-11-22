@@ -162,10 +162,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     ImageView ivVolumeP;//音量
     @ViewById(resName = "tv_quality_portrait")
     TextView tvQualityP;//画质
-    @ViewById(resName = "iv_full_screen")
+    @ViewById(resName = "iv_full_screen_portrait")
     ImageView ivFullScreen;
     @ViewById(resName = "ll_portrait_controller_bar")
     LinearLayout llPortraitBar;
+    @ViewById(resName = "iv_cloud_playback_portrait")
+    ImageView ivCloudPlayback;
     @ViewById(resName = "ll_calender_portrait")
     LinearLayout llCalender;
     @ViewById(resName = "tv_calender_portrait")
@@ -219,6 +221,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         mPresenter.attachView(this);
         if (isSS1()) {
             mPresenter.getStorageList(device.getDeviceid());
+            ivCloudPlayback.setVisibility(View.VISIBLE);
         }
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
@@ -226,6 +229,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         titleBar.setAppTitle(device.getName());
         titleBar.getLeftLayout().setOnClickListener(this);
         titleBar.getRightTextView().setOnClickListener(this);
+        rlBottomBar.setVisibility(View.VISIBLE);
         initData();
         llLoading.setOnTouchListener((v, event) -> true);
         llPlayFail.setOnTouchListener((v, event) -> true);
@@ -359,7 +363,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
-    @Click(resName = "iv_full_screen")
+    @Click(resName = "iv_full_screen_portrait")
     void fullScreenClick() {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
