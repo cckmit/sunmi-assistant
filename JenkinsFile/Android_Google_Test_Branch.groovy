@@ -21,7 +21,7 @@ pipeline{
                 export LANG=en_US.UTF-8
                 export ANDROID_HOME=/Users/admin/Library/Android/sdk
                 export ANDROID_NDK_HOME=/Users/admin/Library/Android/sdk/ndk-bundle
-                curl http://api.fir.im/apps/latest/5c048efcca87a826b0c07ece?api_token=8abeee66a3604b68f707d9c2753f7fb4 > info.json
+                curl http://api.fir.im/apps/latest/5d0067f3ca87a86608c23f57?api_token=01c4d7223e96d2504d4009515f0595de > info.json
                 mkdir -p build
                 fastlane googleTestEnv
                 ''')
@@ -53,8 +53,8 @@ pipeline{
               export PATH="/usr/local/bin/:$PATH"
               export LC_ALL=en_US.UTF-8
               export LANG=en_US.UTF-8
-              fir login 8abeee66a3604b68f707d9c2753f7fb4
-              fir publish app/build/outputs/apk/google/debug/app-google-universal-*.apk -s https://fir.im/sf4j
+              fir login 01c4d7223e96d2504d4009515f0595de
+              fir publish app/build/outputs/apk/google/debug/app-google-universal-*.apk
               ''')
           }catch(e){
             def stageName = 'release'
@@ -72,7 +72,7 @@ pipeline{
           script{
             def recipient_list = 'lukai@sunmi.com,xiaoxinwu@sunmi.com,hanruifeng@sunmi.com,ningrulin@sunmi.com,yangshijie@sunmi.com,yangjibin@sunmi.com,simayujing@sunmi.com,linianhan@sunmi.com,liuxiaoliang@sunmi.com,chaoheng.nong@sunmi.com,lixuanzhen@sunmi.com,yangzhen@sunmi.com,zhaiyongqing@sunmi.com'
             def changeString = getChangeString()
-            emailext(attachLog: false, body: '''Download url:	https://fir.im/sf4j<br/>更新内容：<br/>''' + changeString, mimeType: 'text/html', subject: 'Android Google Test Build Ready', to: recipient_list)
+            emailext(attachLog: false, body: '''Download url:	https://fir.im/a75b<br/>更新内容：<br/>''' + changeString, mimeType: 'text/html', subject: 'Android Google Test Build Ready', to: recipient_list)
           }
         } 
       }
