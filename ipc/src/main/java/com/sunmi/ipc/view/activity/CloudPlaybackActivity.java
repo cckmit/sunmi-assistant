@@ -122,6 +122,8 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     ZFTimeLine timeLine;
     @ViewById(resName = "rl_loading")
     RelativeLayout rlLoading;
+    @ViewById(resName = "tv_tip_no_video")
+    TextView tvTipNoVideo;
 
     @Extra
     SunmiDevice device;
@@ -181,6 +183,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @SuppressLint("ClickableViewAccessibility")
     void initControllerPanel() {
+        showDarkLoading();
         openMove();
         initVolume();
         rlController.setVisibility(View.GONE);
@@ -401,16 +404,31 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         timeSlotsInDay.clear();
         timeSlotsInDay.addAll(slots);
         if (timeSlotsInDay.size() > 0) {
+            tvTipNoVideo.setVisibility(View.GONE);
+            timeLine.setVisibility(View.VISIBLE);
             refreshScaleTimePanel();
             selectedTimeIsHaveVideo(startTimeCurrentDate);
         } else {
+            tvTipNoVideo.setVisibility(View.VISIBLE);
+            timeLine.setVisibility(View.GONE);
+            hideLoadingDialog();
             shortTip("no data");
         }
         hideVideoLoading();
     }
 
     @Override
+    public void showNoVideoTip() {
+        hideLoadingDialog();
+        hideVideoLoading();
+        tvTipNoVideo.setVisibility(View.VISIBLE);
+        timeLine.setVisibility(View.GONE);
+    }
+
+    @Override
     public void getCloudTimeSlotFail() {
+        hideLoadingDialog();
+        hideVideoLoading();
     }
 
     @UiThread
@@ -421,6 +439,13 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
             urlList.add(bean.getUrl());
         }
         cloudPlay(urlList);
+        hideLoadingDialog();
+    }
+
+    @Override
+    public void getCloudVideosFail() {
+        hideLoadingDialog();
+        hideVideoLoading();
     }
 
     @Override
