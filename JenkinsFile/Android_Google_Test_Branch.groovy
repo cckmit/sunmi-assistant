@@ -72,7 +72,7 @@ pipeline{
           script{
             def recipient_list = 'lukai@sunmi.com,xiaoxinwu@sunmi.com,hanruifeng@sunmi.com,ningrulin@sunmi.com,yangshijie@sunmi.com,yangjibin@sunmi.com,simayujing@sunmi.com,linianhan@sunmi.com,liuxiaoliang@sunmi.com,chaoheng.nong@sunmi.com,lixuanzhen@sunmi.com,yangzhen@sunmi.com,zhaiyongqing@sunmi.com'
             def changeString = getChangeString()
-            emailext(attachLog: false, body: '''Download url:	https://fir.im/a75b<br/>更新内容：<br/>''' + changeString, mimeType: 'text/html', subject: 'Android Google Test Build Ready', to: recipient_list)
+            emailext(attachLog: false, body: '''Download url:	https://fir.im/61d5<br/>更新内容：<br/>''' + changeString, mimeType: 'text/html', subject: 'Android Google Test Build Ready', to: recipient_list)
           }
         } 
       }
