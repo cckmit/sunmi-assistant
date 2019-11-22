@@ -63,6 +63,8 @@ public class IPCSearchActivity extends BaseActivity
     TextView tvNoIpc;
     @ViewById(resName = "btn_refresh")
     Button btnRefresh;
+    @ViewById(resName = "tv_check_network")
+    TextView tvCheckNetwork;
 
     @Extra
     String shopId;
@@ -70,6 +72,8 @@ public class IPCSearchActivity extends BaseActivity
     int deviceType;
     @Extra
     boolean isSunmiLink;//是否是sunmi link模式
+    @Extra
+    int network;
 
     private boolean isApMode;//是否ap模式
     IPCListAdapter ipcListAdapter;
@@ -81,6 +85,12 @@ public class IPCSearchActivity extends BaseActivity
     void init() {
         if (CommonConstants.TYPE_IPC_FS == deviceType) {
             tvNoIpc.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_no_fs, 0, 0);
+        }
+        isApMode = (network == IpcConstants.IPC_WIRELESS_NETWORK);
+        if (network == IpcConstants.IPC_WIRED_NETWORK) {
+            tvCheckNetwork.setText(R.string.tip_check_ipc_wired);
+        } else {
+            tvCheckNetwork.setText(R.string.tip_check_ipc_wireless);
         }
         startScan();
         initApList();
@@ -208,7 +218,7 @@ public class IPCSearchActivity extends BaseActivity
                     hideLoadingDialog();
                     return;
                 }
-                if (res.getResult() != null && res.getResult().has("wire")
+                if (res.getResult() != null && network == IpcConstants.IPC_WIRED_NETWORK || res.getResult().has("wire")
                         && res.getResult().getInt("wire") == 1
                         || res.getResult().has("wireless")
                         && res.getResult().getInt("wireless") == 1) {
@@ -252,7 +262,7 @@ public class IPCSearchActivity extends BaseActivity
         if (!ipcMap.containsKey(ipc.getDeviceid())) {
             ipc.setSelected(true);
             ipcMap.put(ipc.getDeviceid(), ipc);
-            isApMode = TextUtils.equals("AP", ipc.getNetwork());
+            // isApMode = TextUtils.equals("AP", ipc.getNetwork());
             getToken(ipc);
         }
     }

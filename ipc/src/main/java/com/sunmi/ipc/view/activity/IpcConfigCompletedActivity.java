@@ -36,6 +36,7 @@ import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.router.IpcApi;
 import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -159,8 +160,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
         if (isSunmiLink) {
             setResult(RESULT_OK);
         } else {
-            StartConfigSMDeviceActivity_.intent(context)
-                    .deviceType(deviceType).shopId(shopId).start();
+            Router.withApi(IpcApi.class).goToIpcStartConfig(deviceType);
         }
         finish();
     }

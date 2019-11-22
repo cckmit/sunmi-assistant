@@ -50,7 +50,8 @@
         android:layout_marginTop="@dimen/dp_140"
         android:text="@string/tip_indicator_light"
         android:textColor="@color/assist_primary"
-        android:textSize="@dimen/sp_12" />
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone"/>
 
     <ImageView
         android:id="@+id/iv_ipc"
@@ -76,7 +77,8 @@
         android:drawablePadding="@dimen/dp_3"
         android:text="@string/str_agree"
         android:textColor="@color/c_black"
-        android:textSize="@dimen/sp_10" />
+        android:textSize="@dimen/sp_10"
+        android:visibility="gone"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
