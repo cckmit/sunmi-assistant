@@ -153,10 +153,12 @@ public class ZFTimeLine extends View {
         // 右边界线秒数
         long rightInterval = Math.min(currentInterval + centerX * secondsOfIntervalValue(), rightBound);
 
-        // 第一个刻度线所代表的秒数
+        // 第一个和最后一个刻度线所代表的秒数
         long interval = (long) Math.ceil((double) leftInterval / INTERVAL_SECONDS) * INTERVAL_SECONDS;
+        long lastInterval = (long) Math.floor((double) rightInterval / INTERVAL_SECONDS) * INTERVAL_SECONDS;
         // 第一个刻度线的位置
         float x = (interval - currentInterval) / secondsOfIntervalValue() + centerX;
+        float lastX = (lastInterval - currentInterval) / secondsOfIntervalValue() + centerX;
 
         // 内容区域顶部坐标
         float displayTop;
@@ -225,7 +227,7 @@ public class ZFTimeLine extends View {
             }
         }
         // 画刻度线
-        while (x >= 0 && x <= width) {
+        while (x >= 0 && x <= lastX) {
             long rem = interval % (INTERVAL_SECONDS * 6);
             // 根据秒数值对大刻度间隔是否整除判断画长刻度或者短刻度
             if (rem != 0) {
