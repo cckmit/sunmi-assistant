@@ -1,6 +1,5 @@
 package sunmi.common.utils;
 
-import android.content.Context;
 import android.text.TextUtils;
 
 import com.commonlibrary.R;
@@ -398,7 +397,7 @@ public class DateTimeUtils {
     }
 
     /**
-     * 将日期转换成"yyyy-MM-dd HH:mm:ss"格式的字符串
+     * 将日期转换成"yyyy-MM-dd"格式的字符串
      *
      * @param date 待格式化的日期
      * @return 返回格式化后的日期字符串
@@ -407,7 +406,7 @@ public class DateTimeUtils {
         String formatStr = "";
 
         if (date != null) {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             formatStr = simpleDateFormat.format(date);
         }
 

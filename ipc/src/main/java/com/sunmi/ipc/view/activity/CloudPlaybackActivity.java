@@ -40,7 +40,6 @@ import org.androidannotations.annotations.ViewById;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -164,6 +163,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         } else {
             rlBottomBar.setVisibility(View.VISIBLE);
         }
+        ivNextDay.setEnabled(false);
         initData();
         switchOrientation(Configuration.ORIENTATION_PORTRAIT);
         llNoService.setOnTouchListener((v, event) -> true);
@@ -182,10 +182,8 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     void initData() {
         screenW = CommonHelper.getScreenWidth(context);
-        Calendar calendar = Calendar.getInstance();
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        setDay(day > 9 ? day + "" : "0" + day);
         presentTime = System.currentTimeMillis() / 1000;
+        setDay(DateTimeUtils.formatDateTime(new Date()));
         startTimeCurrentDate = DateTimeUtils.getDayStart(new Date()).getTime() / 1000;
         endTimeCurrentDate = presentTime;
         initTimeSlotData();
@@ -245,21 +243,28 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @Click(resName = "iv_pre_day")
     void preDayClick() {
+        if (isFastClick(1000)) {
+            return;
+        }
         startTimeCurrentDate = startTimeCurrentDate - SECONDS_IN_ONE_DAY;
         endTimeCurrentDate = startTimeCurrentDate + SECONDS_IN_ONE_DAY;
-        ivNextDay.setClickable(true);
+        currentTime = startTimeCurrentDate;
+        ivNextDay.setEnabled(true);
         initTimeSlotData();
     }
 
     @Click(resName = "iv_next_day")
     void nextDayClick() {
-        startTimeCurrentDate = startTimeCurrentDate - SECONDS_IN_ONE_DAY;
-        endTimeCurrentDate = startTimeCurrentDate + SECONDS_IN_ONE_DAY;
-        if (endTimeCurrentDate > System.currentTimeMillis() / 1000) {
-            ivNextDay.setClickable(false);
-        } else {
-            initTimeSlotData();
+        if (isFastClick(1000)) {
+            return;
         }
+        startTimeCurrentDate = startTimeCurrentDate + SECONDS_IN_ONE_DAY;
+        endTimeCurrentDate = startTimeCurrentDate + SECONDS_IN_ONE_DAY;
+        currentTime = startTimeCurrentDate;
+        if (endTimeCurrentDate > System.currentTimeMillis() / 1000) {
+            ivNextDay.setEnabled(false);
+        }
+        initTimeSlotData();
     }
 
     @Click(resName = "tv_calender")
@@ -671,6 +676,9 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     @Background
     void selectedTimeIsHaveVideo(long currTime) {
         int apSize = timeSlotsInDay.size();
+        if (apSize <= 0) {
+            return;
+        }
         long mStartTime = startTimeCurrentDate, mEndTime = presentTime;
         for (int i = 0; i < apSize + 1; i++) {
             long startOpposite = 0, endOpposite = 0, start = 0, end = 0;
