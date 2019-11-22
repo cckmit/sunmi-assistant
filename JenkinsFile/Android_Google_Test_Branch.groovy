@@ -25,8 +25,8 @@ pipeline{
                 mkdir -p build
                 fastlane googleTestEnv
                 ''')
-              archiveArtifacts(artifacts: 'app/build/outputs/apk/**/app-myapp-universal-debug.apk', onlyIfSuccessful: true)
-              stash(includes: 'app/build/outputs/apk/**/app-myapp-universal-debug.apk', name: 'apk')
+              archiveArtifacts(artifacts: 'app/build/outputs/apk/**/app-google-universal-debug.apk', onlyIfSuccessful: true)
+              stash(includes: 'app/build/outputs/apk/**/app-google-universal-debug.apk', name: 'apk')
             }catch(e){
               def stageName = 'build'
               if(currentBuild.currentResult == "FAILURE"){
@@ -54,7 +54,7 @@ pipeline{
               export LC_ALL=en_US.UTF-8
               export LANG=en_US.UTF-8
               fir login 8abeee66a3604b68f707d9c2753f7fb4
-              fir publish app/build/outputs/apk/myapp/debug/app-myapp-universal-*.apk
+              fir publish app/build/outputs/apk/myapp/google/app-myapp-universal-*.apk
               ''')
           }catch(e){
             def stageName = 'release'
@@ -70,7 +70,7 @@ pipeline{
         success {
           echo "R ${currentBuild.result} C ${currentBuild.currentResult}"
           script{
-            def recipient_list = 'lukai@sunmi.com,xiaoxinwu@sunmi.com,hanruifeng@sunmi.com,ningrulin@sunmi.com,yangshijie@sunmi.com,yangjibin@sunmi.com,simayujing@sunmi.com,linianhan@sunmi.com,liuxiaoliang@sunmi.com,chaoheng.nong@sunmi.com,lixuanzhen@sunmi.com,yangzhen@sunmi.com'
+            def recipient_list = 'lukai@sunmi.com,xiaoxinwu@sunmi.com,hanruifeng@sunmi.com,ningrulin@sunmi.com,yangshijie@sunmi.com,yangjibin@sunmi.com,simayujing@sunmi.com,linianhan@sunmi.com,liuxiaoliang@sunmi.com,chaoheng.nong@sunmi.com,lixuanzhen@sunmi.com,yangzhen@sunmi.com,zhaiyongqing@sunmi.com'
             def changeString = getChangeString()
             emailext(attachLog: false, body: '''Download url:	https://fir.im/sf4j<br/>更新内容：<br/>''' + changeString, mimeType: 'text/html', subject: 'Android Google Test Build Ready', to: recipient_list)
           }
