@@ -48,6 +48,11 @@ public class SettingItemLayout extends FrameLayout {
     public static final int TYPE_SWITCH = 3;
     public static final int TYPE_IMAGE = 4;
 
+    private static int sDimenSingleHeight;
+    private static int sDimenMarginHorizontal;
+    private static int sDimenMarginVertical;
+    private static int sDimenMarginGap;
+
     private ConstraintLayout clContainer;
 
     private TextView tvEndContent;
@@ -110,6 +115,19 @@ public class SettingItemLayout extends FrameLayout {
         tvTag = findViewById(R.id.tv_tag);
         vTopDivider = findViewById(R.id.top_divider);
         vBottomDivider = findViewById(R.id.bottom_divider);
+
+        if (sDimenSingleHeight == 0) {
+            sDimenSingleHeight = (int) getResources().getDimension(R.dimen.dp_48);
+        }
+        if (sDimenMarginHorizontal == 0) {
+            sDimenMarginHorizontal = (int) getResources().getDimension(R.dimen.dp_20);
+        }
+        if (sDimenMarginVertical == 0) {
+            sDimenMarginVertical = (int) getResources().getDimension(R.dimen.dp_16);
+        }
+        if (sDimenMarginGap == 0) {
+            sDimenMarginGap = (int) getResources().getDimension(R.dimen.dp_10);
+        }
     }
 
     private void setupAttr(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes, int style) {
@@ -125,7 +143,7 @@ public class SettingItemLayout extends FrameLayout {
         switch (style) {
             case STYLE_SINGLE:
                 tvContent = tvEndContent;
-                containerLp.height = (int) getResources().getDimension(R.dimen.dp_48);
+                containerLp.height = sDimenSingleHeight;
                 break;
             case STYLE_MULTI:
                 tvContent = tvMiddleContent;
@@ -137,8 +155,6 @@ public class SettingItemLayout extends FrameLayout {
         // 设置可用和可点击
         boolean enabled = a.getBoolean(R.styleable.SettingItemLayout_enabled, isEnabled());
         setEnabled(enabled);
-        boolean clickable = a.getBoolean(R.styleable.SettingItemLayout_clickable, isClickable());
-        setClickable(clickable);
 
         // 设置左边图片大小
         float startImageSize = a.getDimension(R.styleable.SettingItemLayout_startImageSize, -1);
@@ -192,9 +208,9 @@ public class SettingItemLayout extends FrameLayout {
             default:
         }
 
-        // 设置Switch'状态
+        // 设置Switch状态
         boolean isChecked = a.getBoolean(R.styleable.SettingItemLayout_checked, false);
-        scEndSwitch.setChecked(isChecked);
+        setChecked(isChecked);
 
         // 设置标题
         String title = a.getString(R.styleable.SettingItemLayout_title);
@@ -251,33 +267,37 @@ public class SettingItemLayout extends FrameLayout {
         }
     }
 
-    private void updateConstraintForNoneEnd() {
-        int margin = (int) getResources().getDimension(R.dimen.dp_20);
-        ConstraintSet set = new ConstraintSet();
-        set.clone(clContainer);
-        set.connect(R.id.tv_end_content, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, margin);
-        set.connect(R.id.tv_content, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, margin);
-        set.connect(R.id.tv_small_end_content, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, margin);
-        set.applyTo(clContainer);
+    private void setupGoneMargin(ConstraintSet set) {
+        set.setGoneMargin(R.id.tv_title, ConstraintSet.START, sDimenMarginHorizontal);
+        set.setGoneMargin(R.id.tv_title, ConstraintSet.BOTTOM, sDimenMarginVertical);
+        set.setGoneMargin(R.id.tv_end_content, ConstraintSet.START, sDimenMarginGap);
+        set.setGoneMargin(R.id.tv_end_content, ConstraintSet.END, sDimenMarginHorizontal);
+        set.setGoneMargin(R.id.tv_content, ConstraintSet.START, sDimenMarginHorizontal);
+        set.setGoneMargin(R.id.tv_content, ConstraintSet.END, sDimenMarginHorizontal);
+        set.setGoneMargin(R.id.tv_content, ConstraintSet.BOTTOM, sDimenMarginVertical);
+        set.setGoneMargin(R.id.tv_small_start_content, ConstraintSet.START, sDimenMarginHorizontal);
+        set.setGoneMargin(R.id.tv_small_start_content, ConstraintSet.END, sDimenMarginHorizontal);
+        set.setGoneMargin(R.id.tv_small_end_content, ConstraintSet.START, sDimenMarginHorizontal);
+        set.setGoneMargin(R.id.tv_small_end_content, ConstraintSet.END, sDimenMarginHorizontal);
     }
 
     private void updateConstraintForEndImage() {
-        int margin = (int) getResources().getDimension(R.dimen.dp_16);
         ConstraintSet set = new ConstraintSet();
         set.clone(clContainer);
-        set.connect(R.id.tv_end_content, ConstraintSet.END, R.id.iv_end_image, ConstraintSet.START, margin);
-        set.connect(R.id.tv_content, ConstraintSet.END, R.id.iv_end_image, ConstraintSet.START, margin);
-        set.connect(R.id.tv_small_end_content, ConstraintSet.END, R.id.iv_end_image, ConstraintSet.START, margin);
+        setupGoneMargin(set);
+        set.connect(R.id.tv_end_content, ConstraintSet.END, R.id.iv_end_image, ConstraintSet.START, sDimenMarginGap);
+        set.connect(R.id.tv_content, ConstraintSet.END, R.id.iv_end_image, ConstraintSet.START, sDimenMarginGap);
+        set.connect(R.id.tv_small_end_content, ConstraintSet.END, R.id.iv_end_image, ConstraintSet.START, sDimenMarginGap);
         set.applyTo(clContainer);
     }
 
     private void updateConstraintForEndSwitch() {
-        int margin = (int) getResources().getDimension(R.dimen.dp_16);
         ConstraintSet set = new ConstraintSet();
         set.clone(clContainer);
-        set.connect(R.id.tv_end_content, ConstraintSet.END, R.id.sc_end_switch, ConstraintSet.START, margin);
-        set.connect(R.id.tv_content, ConstraintSet.END, R.id.sc_end_switch, ConstraintSet.START, margin);
-        set.connect(R.id.tv_small_end_content, ConstraintSet.END, R.id.sc_end_switch, ConstraintSet.START, margin);
+        setupGoneMargin(set);
+        set.connect(R.id.tv_end_content, ConstraintSet.END, R.id.sc_end_switch, ConstraintSet.START, sDimenMarginGap);
+        set.connect(R.id.tv_content, ConstraintSet.END, R.id.sc_end_switch, ConstraintSet.START, sDimenMarginGap);
+        set.connect(R.id.tv_small_end_content, ConstraintSet.END, R.id.sc_end_switch, ConstraintSet.START, sDimenMarginGap);
         set.applyTo(clContainer);
     }
 
@@ -321,14 +341,6 @@ public class SettingItemLayout extends FrameLayout {
         }
     }
 
-    @Override
-    public void setClickable(boolean clickable) {
-        super.setClickable(clickable);
-        for (int i = 0, size = getChildCount(); i < size; i++) {
-            getChildAt(i).setEnabled(clickable);
-        }
-    }
-
     public void setType(int type) {
         if (this.type == type) {
             return;
@@ -345,7 +357,7 @@ public class SettingItemLayout extends FrameLayout {
             case TYPE_NONE:
                 clContainer.setBackgroundResource(R.drawable.bg_common_list_item);
                 tvTitle.setTextColor(ContextCompat.getColor(getContext(), R.color.text_common_main));
-                updateConstraintForNoneEnd();
+                updateConstraintForEndImage();
                 break;
             case TYPE_ARROW:
                 clContainer.setBackgroundResource(R.drawable.bg_common_list_item);

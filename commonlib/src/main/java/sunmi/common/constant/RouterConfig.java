@@ -13,6 +13,7 @@ public class RouterConfig {
 
     public static class Ipc{
         public static final String NAME = "ipc";
+        public static final String IPC_START_CONFIG = "ipcStartConfig";
 
     }
 

@@ -222,7 +222,7 @@
     <string name="company_can_switch">You can switch the below companies</string>
     <string name="company_shop_details">Detail</string>
     <string name="company_shop_face_group">人脸分组</string>
-    <string name="company_shop_to_create">No store now and please creat first</string>
+    <string name="company_shop_to_create">No store now and please create first</string>
     <string name="shop_create">Create new store</string>
     <string name="msg_ipc_tf_non_exist">网络摄像机%s的存储卡未插入或被拔出，请检查</string>
     <string name="msg_ipc_tf_exist">网络摄像机%s检测到有新存储卡插入，建议格式化，用于本地存储监控视频</string>

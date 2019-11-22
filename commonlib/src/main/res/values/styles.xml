@@ -80,7 +80,7 @@
         <item name="android:layout_marginStart">@dimen/dp_20</item>
         <item name="android:layout_marginEnd">@dimen/dp_20</item>
         <item name="android:background">@drawable/btn_common_bg_primary</item>
-        <item name="android:textColor">@color/btn_common_text_primary</item>
+        <item name="android:textColor">@color/text_common_white</item>
         <item name="android:gravity">center</item>
         <item name="android:textSize">@dimen/sp_16</item>
     </style>

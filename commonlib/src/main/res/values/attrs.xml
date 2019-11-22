@@ -45,8 +45,6 @@
     <declare-styleable name="SettingItemLayout">
         <!-- 是否可用 -->
         <attr name="enabled" format="boolean" />
-        <!-- 是否可点击 -->
-        <attr name="clickable" format="boolean" />
         <!-- 样式类型，包括单行列表，多行列表 -->
         <attr name="styleType" format="enum">
             <enum name="single" value="0" />
@@ -288,6 +286,10 @@
 
     <declare-styleable name="TimeLine">
         <attr name="scaleLineColor" format="color" />  <!-- 刻度线颜色 -->
+        <attr name="tl_style" format="enum">
+            <enum name="normal" value="0" />
+            <enum name="big" value="1" />
+        </attr>
     </declare-styleable>
 
 </resources>

@@ -65,7 +65,7 @@
                     android:layout_width="@dimen/dp_24"
                     android:layout_height="@dimen/dp_24"
                     android:layout_gravity="center"
-                    android:background="@mipmap/ic_calendar"
+                    android:background="@mipmap/ic_calendar_enabled"
                     android:gravity="center"
                     android:textColor="@color/c_white"
                     android:textSize="@dimen/sp_10" />
@@ -101,7 +101,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/bg_round_corner_black_15"
                 android:scaleType="center"
-                android:src="@mipmap/ic_full_screen" />
+                android:src="@mipmap/ic_full_screen_enabled" />
         </LinearLayout>
 
         <com.sunmi.ipc.view.ZFTimeLine
@@ -111,7 +111,8 @@
             android:layout_below="@+id/ll_portrait_controller_bar"
             android:layout_marginTop="@dimen/dp_20"
             android:background="@color/common_fill"
-            app:scaleLineColor="@color/c_303540_20a" />
+            app:scaleLineColor="@color/c_303540_20a"
+            app:tl_style="big" />
 
         <RelativeLayout
             android:id="@+id/rl_loading"

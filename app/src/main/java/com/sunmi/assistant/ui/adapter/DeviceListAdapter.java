@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
-import com.sunmi.apmanager.constant.enums.DeviceStatus;
+import sunmi.common.constant.enums.DeviceStatus;
 import com.sunmi.assistant.R;
 
 import java.util.List;

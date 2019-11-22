@@ -4,12 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -37,6 +35,7 @@ import com.sunmi.ipc.setting.IpcSettingActivity_;
 import com.sunmi.ipc.utils.AACDecoder;
 import com.sunmi.ipc.utils.H264Decoder;
 import com.sunmi.ipc.utils.IOTCClient;
+import com.sunmi.ipc.utils.IpcUtils;
 import com.sunmi.ipc.view.ZFTimeLine;
 import com.xiaojinzi.component.impl.Router;
 
@@ -64,6 +63,7 @@ import java.util.concurrent.TimeUnit;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonNotifications;
+import sunmi.common.constant.enums.DeviceStatus;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.DateTimeUtils;
@@ -79,6 +79,7 @@ import sunmi.common.view.VerticalSeekBar;
 import sunmi.common.view.ViewHolder;
 import sunmi.common.view.bottompopmenu.BottomPopMenu;
 import sunmi.common.view.bottompopmenu.PopItemAction;
+import sunmi.common.view.dialog.CommonDialog;
 
 /**
  * Description:
@@ -92,6 +93,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private final static int PLAY_TYPE_LIVE = 0;          // 直播
     private final static int PLAY_TYPE_PLAYBACK_DEV = 1;  // 设备回放
     private final static int PLAY_TYPE_PLAYBACK_CLOUD = 2;// 云回放
+    private final static int PLAY_FAIL_OFFLINE = 1;
+    private final static int PLAY_FAIL_NET_ERROR = 2;
 
     private final static long threeDaysSeconds = 3 * 24 * 60 * 60;//3天秒数
     private final static int tenMinutes = 10 * 60;//10分钟
@@ -138,6 +141,10 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     ImageView ivPlay;//开始播放
     @ViewById(resName = "ll_play_fail")
     LinearLayout llPlayFail;
+    @ViewById(resName = "tv_play_fail")
+    TextView tvPlayFail;
+    @ViewById(resName = "tv_retry")
+    TextView tvRetry;
     @ViewById(resName = "scale_panel")
     ZFTimeLine scalePanel;
     @ViewById(resName = "tv_time_scroll")
@@ -145,27 +152,30 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @ViewById(resName = "rl_video")
     RelativeLayout rlVideo;
 
-    @ViewById(resName = "rl_loading")
-    RelativeLayout rlLoadingP;
+    @ViewById(resName = "ll_loading")
+    LinearLayout llLoading;
     @ViewById(resName = "rl_portrait_video_controller")
     RelativeLayout rlVideoController;
-    @ViewById(resName = "ll_portrait_controller_bar")
-    LinearLayout llPortraitBar;
     @ViewById(resName = "iv_play_portrait")
     ImageView ivPlayP;//暂停
-    @ViewById(resName = "tv_calender_portrait")
-    TextView tvCalenderP;//日历
     @ViewById(resName = "iv_volume_portrait")
     ImageView ivVolumeP;//音量
     @ViewById(resName = "tv_quality_portrait")
-    TextView tvQualityP;//高清画质
+    TextView tvQualityP;//画质
+    @ViewById(resName = "iv_full_screen")
+    ImageView ivFullScreen;
+    @ViewById(resName = "ll_portrait_controller_bar")
+    LinearLayout llPortraitBar;
+    @ViewById(resName = "ll_calender_portrait")
+    LinearLayout llCalender;
+    @ViewById(resName = "tv_calender_portrait")
+    TextView tvCalenderP;//日历
     @ViewById(resName = "rv_manager")
     SmRecyclerView rvManager;
 
     @Extra
     SunmiDevice device;
-    //屏幕控件自动隐藏计时器
-    CountDownTimer hideControllerPanelTimer;
+
     private int screenW; //手机屏幕的宽
     private int playType;
     private boolean isPaused;//回放是否暂停
@@ -217,23 +227,26 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         titleBar.getLeftLayout().setOnClickListener(this);
         titleBar.getRightTextView().setOnClickListener(this);
         initData();
-        showVideoLoading();
-        rlLoadingP.setOnTouchListener((v, event) -> true);
+        llLoading.setOnTouchListener((v, event) -> true);
+        llPlayFail.setOnTouchListener((v, event) -> true);
+        if (isDeviceOffline()) {
+            showPlayFail(PLAY_FAIL_OFFLINE);
+            tvCalenderP.setEnabled(false);
+            llCalender.setClickable(false);
+        } else {
+            showVideoLoading();
+        }
         initSurfaceView();
         initManageList();
         handler.postDelayed(this::initControllerPanel, 200);
     }
 
+    private boolean isDeviceOffline() {
+        return device.getStatus() == DeviceStatus.OFFLINE.ordinal();
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     void initControllerPanel() {
-        rlVideo.setOnTouchListener((v, event) -> {
-            if (MotionEvent.ACTION_DOWN == event.getAction()) {
-                if (!isControlPanelShow) {
-                    startTimer();
-                }
-            }
-            return false;
-        });
         openMove();
         initVolume();
         rlController.setVisibility(View.GONE);
@@ -283,14 +296,13 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         stopPlay();
         removeCallbacks();
         closeMove();//关闭时间抽的timer
-        cancelTimer();//关闭屏幕控件自动hide计时器
     }
 
     @Override
     public void onBackPressed() {
         if (isPortrait()) {
-            if (rlLoadingP != null && rlLoadingP.isShown()) {
-                rlLoadingP.setVisibility(View.GONE);
+            if (llLoading != null && llLoading.isShown()) {
+                llLoading.setVisibility(View.GONE);
                 return;
             }
             stopPlay();
@@ -325,7 +337,14 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         if (v.getId() == R.id.ll_back_layout) {
             onBackPressed();
         } else if (v.getId() == R.id.txt_right) {
-            IpcSettingActivity_.intent(context).mDevice(device).disableAdjustScreen(true).start();
+            if (IpcUtils.isIpcManageable(device.getDeviceid(), device.getStatus())) {
+                IpcSettingActivity_.intent(context).mDevice(device).disableAdjustScreen(true).start();
+            } else {
+                new CommonDialog.Builder(context)
+                        .setTitle(R.string.str_device_offline)
+                        .setMessage(R.string.msg_device_offline)
+                        .setConfirmButton(R.string.str_confirm).create().show();
+            }
         }
     }
 
@@ -450,7 +469,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     //显示日历
-    @Click(resName = {"tv_calender_portrait"})
+    @Click(resName = "ll_calender_portrait")
     void calenderClick() {
         if (isFastClick(1000)) {
             return;
@@ -487,13 +506,16 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @Click(resName = "tv_retry")
     void retryClick() {
         isControlPanelShow = false;
-        setPlayFailVisibility(View.GONE);
+        hidePlayFail();
         showVideoLoading();
         initP2pLive();
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        if (isDeviceOffline()) {
+            return;
+        }
         if (videoDecoder == null) {
             videoDecoder = new H264Decoder(holder.getSurface(), 0);
             initP2pLive();
@@ -521,12 +543,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     public void initFail() {
         hideVideoLoading();
         hideControllerPanel();
-        setPlayFailVisibility(View.VISIBLE);
+        showPlayFail(PLAY_FAIL_NET_ERROR);
     }
 
     @Override
     public void onVideoReceived(byte[] videoBuffer) {
-        setPlayFailVisibility(View.GONE);
+        hidePlayFail();
         if (videoDecoder != null) {
             videoDecoder.setVideoData(videoBuffer);
             if (videoDecoder.isPlaying()) {
@@ -682,26 +704,30 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     @UiThread
-    public void setPlayFailVisibility(int visibility) {
-        llPlayFail.setVisibility(visibility);
-    }
-
-    @UiThread
     public void showVideoLoading() {
-        if (isPortrait()) {
-            rlLoadingP.setVisibility(View.VISIBLE);
-        } else {
-            showLoadingDialog();
-        }
+        llLoading.setVisibility(View.VISIBLE);
     }
 
     @UiThread
     public void hideVideoLoading() {
-        if (isPortrait()) {
-            rlLoadingP.setVisibility(View.GONE);
-        } else {
-            hideLoadingDialog();
+        llLoading.setVisibility(View.GONE);
+    }
+
+    @UiThread
+    public void showPlayFail(int type) {
+        if (PLAY_FAIL_OFFLINE == type) {
+            tvRetry.setVisibility(View.GONE);
+            tvPlayFail.setText(R.string.tip_ipc_offline);
+        } else if (PLAY_FAIL_NET_ERROR == type) {
+            tvRetry.setVisibility(View.VISIBLE);
+            tvPlayFail.setText(R.string.tip_network_fail_retry);
         }
+        llPlayFail.setVisibility(View.VISIBLE);
+    }
+
+    @UiThread
+    public void hidePlayFail() {
+        llPlayFail.setVisibility(View.GONE);
     }
 
     private void setIvPlayImage(boolean isPaused) {
@@ -1053,7 +1079,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     //选择日历日期回调
     @SuppressLint("DefaultLocale")
     public void onSureButton(Date date) {
-        resetCountdown();//重置隐藏控件计时
         long currentTime = System.currentTimeMillis() / 1000;//当前时间戳秒
         scrollTime = date.getTime();//选择日期的时间戳毫秒
         long time = scrollTime / 1000; //设置日期的秒数
@@ -1292,35 +1317,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         list.clear();
         list.addAll(tmpSet);
         return list;
-    }
-
-    private void startTimer() {
-        if (hideControllerPanelTimer == null) {
-            hideControllerPanelTimer = new CountDownTimer(8000, 1000) {
-                @Override
-                public void onTick(long millisUntilFinished) {
-                }
-
-                @Override
-                public void onFinish() {
-                    hideControllerPanel();
-                    isControlPanelShow = false;
-                }
-            };
-        }
-        hideControllerPanelTimer.start();
-    }
-
-    private void cancelTimer() {
-        if (hideControllerPanelTimer != null) {
-            hideControllerPanelTimer.cancel();
-        }
-    }
-
-    //重置倒计时
-    private void resetCountdown() {
-        cancelTimer();
-        startTimer();
     }
 
     @Override

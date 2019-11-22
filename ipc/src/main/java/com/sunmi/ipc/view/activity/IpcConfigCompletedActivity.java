@@ -17,7 +17,7 @@ import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.ipc.setting.IpcSettingSdcardActivity_;
 import com.sunmi.ipc.setting.RecognitionSettingActivity_;
-import com.sunmi.ipc.utils.Utils;
+import com.sunmi.ipc.utils.IpcUtils;
 import com.xiaojinzi.component.impl.Router;
 
 import org.androidannotations.annotations.AfterViews;
@@ -36,6 +36,7 @@ import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.router.IpcApi;
 import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -85,6 +86,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     boolean isSunmiLink;
     @Extra
     ArrayList<SunmiDevice> sunmiDevices;
+
     SunmiDevice deviceChoose;
     private List<SunmiDevice> list = new ArrayList<>();
     private List<SunmiDevice> successList = new ArrayList<>();
@@ -159,8 +161,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
         if (isSunmiLink) {
             setResult(RESULT_OK);
         } else {
-            StartConfigSMDeviceActivity_.intent(context)
-                    .deviceType(deviceType).shopId(shopId).start();
+            Router.withApi(IpcApi.class).goToIpcStartConfig(deviceType);
         }
         finish();
     }
@@ -387,7 +388,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     private void fsAdjust(SunmiDevice device) {
         deviceChoose = device;
         String versionName = device.getFirmware();
-        if (Utils.getVersionCode(versionName) < IpcConstants.IPC_VERSION_NO_SDCARD_CHECK) {
+        if (IpcUtils.getVersionCode(versionName) < IpcConstants.IPC_VERSION_NO_SDCARD_CHECK) {
             getSdCardStatus(device);
         } else {
             startFsAdjust(device);
