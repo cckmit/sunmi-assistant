@@ -248,6 +248,10 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         }
     }
 
+    private void updateCalendarBtnEnable() {
+        ivNextDay.setEnabled(endTimeCurrentDate <= System.currentTimeMillis() / 1000);
+    }
+
     @Click(resName = "iv_pre_day")
     void preDayClick() {
         if (isFastClick(1000)) {
@@ -256,7 +260,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         startTimeCurrentDate = startTimeCurrentDate - SECONDS_IN_ONE_DAY;
         endTimeCurrentDate = startTimeCurrentDate + SECONDS_IN_ONE_DAY;
         currentTime = startTimeCurrentDate;
-        ivNextDay.setEnabled(endTimeCurrentDate <= System.currentTimeMillis() / 1000);
+        updateCalendarBtnEnable();
         initTimeSlotData();
     }
 
@@ -268,7 +272,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         startTimeCurrentDate = startTimeCurrentDate + SECONDS_IN_ONE_DAY;
         endTimeCurrentDate = startTimeCurrentDate + SECONDS_IN_ONE_DAY;
         currentTime = startTimeCurrentDate;
-        ivNextDay.setEnabled(endTimeCurrentDate <= System.currentTimeMillis() / 1000);
+        updateCalendarBtnEnable();
         initTimeSlotData();
     }
 
@@ -291,9 +295,9 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
                     .setOkButton(R.string.str_confirm, (dialog, which) -> {
                         startTimeCurrentDate = calendarSelected.getTimeInMillis() / 1000;
                         endTimeCurrentDate = startTimeCurrentDate + SECONDS_IN_ONE_DAY;
-                        initTimeSlotData();
                         setDay(DateTimeUtils.formatDateTime(new Date(calendarSelected.getTimeInMillis())));
-                        ivNextDay.setEnabled(endTimeCurrentDate <= System.currentTimeMillis() / 1000);
+                        updateCalendarBtnEnable();
+                        initTimeSlotData();
                     })
                     .create();
         }
