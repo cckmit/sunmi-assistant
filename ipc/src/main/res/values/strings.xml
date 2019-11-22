@@ -343,6 +343,7 @@
     <string name="tip_ipc_offline">摄像机已离线</string>
     <string name="tip_no_video_current_day">当天无云视频</string>
     <string name="tip_video_played_over">当天视频已播完</string>
+    <string name="str_title_calendar">选择日期</string>
 </resources>
 
 
