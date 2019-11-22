@@ -1,6 +1,7 @@
 package com.sunmi.ipc.view.activity;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
@@ -12,14 +13,13 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.CalendarView;
 import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.datelibrary.bean.DateType;
-import com.datelibrary.view.DatePickDialog;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.CloudPlaybackContract;
@@ -40,6 +40,7 @@ import org.androidannotations.annotations.ViewById;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -59,7 +60,9 @@ import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.IVideoPlayer;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.VolumeHelper;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
+import sunmi.common.view.dialog.BottomDialog;
 
 /**
  * Description:
@@ -148,6 +151,10 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     private List<VideoTimeSlotBean> timeSlotsInDay = new ArrayList<>();
 
     private List<VideoTimeSlotBean> timeSlotsInMonth;
+
+    private Dialog calendarDialog;
+    private CalendarView calendarView;
+    private Calendar calendarSelected = Calendar.getInstance();
 
     @AfterViews
     void init() {
@@ -269,7 +276,29 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @Click(resName = "tv_calender")
     void chooseCalendarClick() {
-        //TODO 日期选择
+        if (calendarDialog == null || calendarView == null) {
+            calendarView = new CalendarView(this);
+            calendarView.setMaxDate(System.currentTimeMillis());
+            calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
+                calendarSelected.clear();
+                calendarSelected.set(year, month, dayOfMonth);
+                LogCat.d(TAG, "Selected date:" + calendarSelected);
+            });
+            calendarDialog = new BottomDialog.Builder(this)
+                    .setTitle(R.string.str_title_calendar)
+                    .setContent(calendarView, new ViewGroup.MarginLayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT))
+                    .setCancelButton(R.string.sm_cancel)
+                    .setOkButton(R.string.str_confirm, (dialog, which) -> {
+                        startTimeCurrentDate = calendarSelected.getTimeInMillis() / 1000;
+                        endTimeCurrentDate = startTimeCurrentDate + SECONDS_IN_ONE_DAY;
+                        initTimeSlotData();
+                        setDay(DateTimeUtils.formatDateTime(new Date(calendarSelected.getTimeInMillis())));
+                    })
+                    .create();
+        }
+        calendarDialog.show();
     }
 
     @Click(resName = "btn_open_service")
@@ -533,17 +562,6 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         }
     }
 
-    private void showDatePicker() {
-        DatePickDialog datePickDialog = new DatePickDialog(context);
-        datePickDialog.setType(DateType.TYPE_YMD);
-        //设置点击确定按钮回调
-        datePickDialog.setOnSureListener(this::onSureButton);
-
-        datePickDialog.setStartDate(scrollTime > 0 ? new Date(scrollTime)
-                : new Date(System.currentTimeMillis()));
-        datePickDialog.show();
-    }
-
     //开始计时录制
     private void startRecord() {
         cmTimer.setOnChronometerTickListener(cArg -> {
@@ -610,7 +628,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
             executorService = Executors.newSingleThreadScheduledExecutor();
         }
         scrollTime = timeLine.getCurrentInterval() * 1000;//获取实时滚动的时间
-        setDay(timeLine.currentTimeStr().substring(6, 8));
+        setDay(DateTimeUtils.formatDateTime(new Date(timeLine.getCurrentInterval() * 1000)));
         executorService.scheduleAtFixedRate(this::moveTo, 60, 60, TimeUnit.SECONDS);
     }
 
@@ -637,25 +655,6 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         timeLine.setBound(startTimeCurrentDate, endTimeCurrentDate);
         timeLine.setVideoData(timeSlotsInDay);
         timeLine.refresh();
-    }
-
-    //选择日历日期回调
-    @SuppressLint("DefaultLocale")
-    public void onSureButton(Date date) {
-        long presentTime = System.currentTimeMillis() / 1000;//当前时间戳秒
-        scrollTime = date.getTime();//选择日期的时间戳毫秒
-        long time = scrollTime / 1000; //设置日期的秒数
-        if (time > presentTime) {//未来时间或当前--滑动当前直播
-            scrollTime = System.currentTimeMillis();
-            setDay(String.format("%td", new Date()));
-        } else {//回放时间
-            ivPlay.setBackgroundResource(R.mipmap.pause_normal);
-            ivLive.setVisibility(View.VISIBLE);
-            setDay(String.format("%td", date));//显示日历天数
-            currentTime = startTimeCurrentDate = DateTimeUtils.getDayStart(date).getTime() / 1000;
-            endTimeCurrentDate = startTimeCurrentDate + SECONDS_IN_ONE_DAY;
-            initTimeSlotData();
-        }
     }
 
     //获取视频跳转播放的currentItemPosition

@@ -340,6 +340,7 @@
     <string name="msg_device_offline">设备已离线，暂不能进行设备管理</string>
     <string name="tip_ipc_offline">摄像机已离线</string>
     <string name="tip_no_video_current_day">当天无云视频</string>
+    <string name="str_title_calendar">选择日期</string>
 </resources>
 
 
