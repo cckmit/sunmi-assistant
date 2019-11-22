@@ -20,7 +20,7 @@ pipeline{
                 export LC_ALL=en_US.UTF-8
                 export LANG=en_US.UTF-8
                 export ANDROID_HOME=/Users/admin/Library/Android/sdk
-                export ANDROID_NDK_HOME=/Users/admin/Library/Android/ndk-bundle/android-ndk-r19c
+                export ANDROID_NDK_HOME=/Users/admin/Library/Android/sdk/ndk-bundle
                 curl http://api.fir.im/apps/latest/5c048efcca87a826b0c07ece?api_token=8abeee66a3604b68f707d9c2753f7fb4 > info.json
                 mkdir -p build
                 fastlane googleTestEnv
