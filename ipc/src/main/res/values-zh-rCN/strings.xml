@@ -27,8 +27,8 @@
     <string name="tip_check_ipc_wireless">请确保您的摄像头处于路由器信号范围内，将手机连接至摄像机的无线网络「SUNMI_XXXX」</string>
     <string name="tip_check_ipc_wired">请确保您的摄像头处于路由器信号范围内，并请将手机与设备连接至同一网络</string>
     <string name="str_select_time">选择时间</string>
-    <string name="tip_video_quality_fhd">已切换至超清</string>
-    <string name="tip_video_quality_hd">已切换至高清</string>
+    <string name="tip_video_quality_fhd">已切换至清晰</string>
+    <string name="tip_video_quality_hd">已切换至流畅</string>
     <string name="tip_device_not_exist">设备不存在</string>
     <string name="tip_already_bound">添加失败，已绑定其他账号</string>
     <string name="tip_device_offline">设备不在线</string>

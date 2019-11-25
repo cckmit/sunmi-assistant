@@ -154,8 +154,7 @@
             android:layout_marginTop="@dimen/dp_32"
             android:text="@string/tip_no_video_current_day"
             android:textColor="@color/text_disable"
-            android:textSize="@dimen/sp_16"
-            android:visibility="visible" />
+            android:textSize="@dimen/sp_16" />
 
         <com.sunmi.ipc.view.ZFTimeLine
             android:id="@+id/time_line"
