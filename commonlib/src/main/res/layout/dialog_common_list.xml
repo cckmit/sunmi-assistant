@@ -34,7 +34,7 @@
             android:layout_marginTop="@dimen/dp_25"
             android:background="@color/c_divider" />
 
-        <android.support.v7.widget.RecyclerView
+        <sunmi.common.view.SmRecyclerView
             android:id="@+id/rv_content"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_96"

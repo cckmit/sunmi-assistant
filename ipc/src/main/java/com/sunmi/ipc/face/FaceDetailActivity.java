@@ -9,8 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -53,6 +51,7 @@ import sunmi.common.mediapicker.data.model.Result;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SettingItemLayout;
+import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.ViewHolder;
 import sunmi.common.view.bottompopmenu.BottomPopMenu;
@@ -410,10 +409,10 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         TextView tvTitle = layout.findViewById(com.commonlibrary.R.id.tv_title);
         tvTitle.setText(title);
-        final RecyclerView rvContent = layout.findViewById(com.commonlibrary.R.id.rv_content);
+        final SmRecyclerView rvContent = layout.findViewById(com.commonlibrary.R.id.rv_content);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, viewHeight);
         rvContent.setLayoutParams(params);
-        rvContent.setLayoutManager(new LinearLayoutManager(context));
+        rvContent.init(R.drawable.shap_line_divider);
         if (updateIndex == UPDATE_INDEX_ID) {
             rvContent.setAdapter(new IdentityAdapter(context, R.layout.item_common_checked, groupList));
         } else if (updateIndex == UPDATE_INDEX_GENDER) {
