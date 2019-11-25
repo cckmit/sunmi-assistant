@@ -35,14 +35,24 @@
             android:textSize="@dimen/sp_28"
             android:textStyle="bold" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_1"
+            android:textSize="@dimen/sp_14"
+            android:textColor="@color/text_caption"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_centerHorizontal="true"
+            android:text="@string/tip_ipc_wifi_24g"/>
+
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/nsv_ipc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_1"
-            android:layout_marginStart="@dimen/dp_30"
-            android:layout_marginTop="@dimen/dp_40"
-            android:layout_marginEnd="@dimen/dp_30"
+            android:layout_marginStart="@dimen/dp_32"
+            android:layout_marginTop="@dimen/dp_74"
+            android:layout_marginEnd="@dimen/dp_32"
             android:layout_marginBottom="@dimen/dp_80">
 
             <LinearLayout

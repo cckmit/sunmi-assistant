@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.config.IpcConstants;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -44,8 +45,6 @@ public class IpcStartLinkedActivity extends BaseActivity {
 
     @Extra
     int ipcType;
-    @Extra
-    int network;
 
     private List<CharSequence> list = new ArrayList<>();
 
@@ -71,7 +70,7 @@ public class IpcStartLinkedActivity extends BaseActivity {
         if (isFastClick(500)) {
             return;
         }
-        IPCSearchActivity_.intent(context).deviceType(ipcType).network(network).shopId(SpUtils.getShopId() + "").start();
+        IPCSearchActivity_.intent(context).deviceType(ipcType).network(IpcConstants.IPC_WIRED_NETWORK).shopId(SpUtils.getShopId() + "").start();
     }
 
     @Click(resName = "tv_indicator_light")

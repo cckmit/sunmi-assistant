@@ -65,7 +65,10 @@ public class IpcStartConfigNetworkActivity extends BaseActivity {
         if (isFastClick(500)) {
             return;
         }
-        IpcStartLinkedActivity_.intent(context).ipcType(ipcType).network(network).start();
+        if (network == IpcConstants.IPC_WIRED_NETWORK) {
+            IpcStartLinkedActivity_.intent(context).ipcType(ipcType).start();
+        } else {
+            IPCSearchActivity_.intent(context).deviceType(ipcType).network(network).shopId(SpUtils.getShopId() + "").start();
+        }
     }
-
 }

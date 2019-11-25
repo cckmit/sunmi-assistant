@@ -292,7 +292,6 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                 } else {
                     holder.setText(R.id.tv_name, device.getName());
                 }
-                holder.getView(R.id.tv_adjust).setVisibility(View.GONE);
                 holder.setImageResource(R.id.iv_device, DeviceTypeUtils.getInstance()
                         .getSunmiDeviceImage(device.getModel()));
                 if (isBindSuccess(device)) {
