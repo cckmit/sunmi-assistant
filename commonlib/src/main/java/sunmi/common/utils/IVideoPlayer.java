@@ -152,7 +152,9 @@ public class IVideoPlayer extends RelativeLayout {
             mediaPlayer = null;
         }
         if (urlQueue.isEmpty()) {
-            if (videoPlayListener != null) videoPlayListener.onPlayComplete();
+            if (videoPlayListener != null) {
+                videoPlayListener.onPlayComplete();
+            }
             return;
         }
         mediaPlayer = createPlayer();
@@ -172,7 +174,9 @@ public class IVideoPlayer extends RelativeLayout {
                 public void onPrepared(IMediaPlayer iMediaPlayer) {
                     if (isFirstVideo) {
                         startPlayer();
-                        if (videoPlayListener != null) videoPlayListener.onStartPlay();
+                        if (videoPlayListener != null) {
+                            videoPlayListener.onStartPlay();
+                        }
                     } else {
                         mediaPlayer.start();
                         new Handler().postDelayed(new Runnable() {

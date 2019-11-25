@@ -57,7 +57,8 @@ public class DeviceSettingMenu extends PopupWindow {
                 onSettingsClickListener.onSettingsClick(device, 0);
             }
         });
-        viewLayout.findViewById(R.id.tv_delete).setOnClickListener(v -> {
+        TextView tvDelete = viewLayout.findViewById(R.id.tv_delete);
+        tvDelete.setOnClickListener(v -> {
             dismiss();
             if (onSettingsClickListener != null) {
                 onSettingsClickListener.onSettingsClick(device, 1);
@@ -74,6 +75,10 @@ public class DeviceSettingMenu extends PopupWindow {
                     onSettingsClickListener.onSettingsClick(device, 2);
                 }
             });
+        } else if ("POS".equalsIgnoreCase(device.getType())) {
+            divider1.setVisibility(View.GONE);
+            tvDelete.setVisibility(View.GONE);
+            tvSetting.setVisibility(View.GONE);
         } else {
             divider1.setVisibility(View.GONE);
             tvSetting.setVisibility(View.GONE);

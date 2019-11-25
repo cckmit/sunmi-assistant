@@ -33,14 +33,14 @@
         android:id="@+id/tv_quality_portrait"
         android:layout_width="@dimen/dp_42"
         android:layout_height="match_parent"
-        android:layout_toStartOf="@+id/iv_full_screen"
+        android:layout_toStartOf="@+id/iv_full_screen_portrait"
         android:gravity="center"
         android:text="@string/str_FHD"
         android:textColor="@color/c_white"
         android:textSize="@dimen/sp_12" />
 
     <ImageView
-        android:id="@+id/iv_full_screen"
+        android:id="@+id/iv_full_screen_portrait"
         android:layout_width="@dimen/dp_42"
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"

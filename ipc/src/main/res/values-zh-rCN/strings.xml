@@ -342,6 +342,9 @@
     <string name="str_confirm_connect">确认连接</string>
     <string name="tip_ipc_wifi_24g">暂只支持2.4GHz</string>
     <string name="hint_input_wifi_psw">请输入WI-FI密码</string>
+    <string name="tip_no_video_current_day">当天无云视频，您可尝试切换日期查看</string>
+    <string name="tip_video_played_over">当天视频已播完</string>
+    <string name="str_title_calendar">选择日期</string>
 </resources>
 
 

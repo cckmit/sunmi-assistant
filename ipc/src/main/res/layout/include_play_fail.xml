@@ -7,6 +7,7 @@
     android:background="@color/black_60"
     android:gravity="center"
     android:orientation="vertical"
+    android:paddingBottom="@dimen/dp_50"
     android:visibility="gone"
     tools:showIn="@layout/activity_ipc_manager">
 
@@ -30,4 +31,5 @@
         android:text="@string/str_refresh"
         android:textColor="@color/c_white"
         android:textSize="@dimen/sp_12" />
+
 </LinearLayout>

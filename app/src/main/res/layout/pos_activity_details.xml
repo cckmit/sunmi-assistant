@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/c_white">
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:dividerShow="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:leftDefaultClickEnable="true"
+        app:leftIcon="@drawable/ic_back_dark"
+        app:titleText="@string/pos_dev_details"
+        app:titleTextColor="@color/text_main" />
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_bar">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/rl_pos"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_120"
+                android:background="@color/bg_common"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/tv_pos_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_20"
+                    android:layout_marginTop="@dimen/dp_26"
+                    android:textColor="@color/text_caption"
+                    android:textSize="@dimen/sp_12" />
+
+                <TextView
+                    android:id="@+id/tv_pos_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_pos_type"
+                    android:layout_marginStart="@dimen/dp_20"
+                    android:textColor="@color/text_main"
+                    android:textSize="@dimen/sp_40" />
+
+                <ImageView
+                    android:id="@+id/iv_pos"
+                    android:layout_width="@dimen/dp_120"
+                    android:layout_height="@dimen/dp_120"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="@dimen/dp_20" />
+            </RelativeLayout>
+
+            <sunmi.common.view.SettingItemLayout
+                android:id="@+id/sil_wifi"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:contentText="--"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rl_pos"
+                app:showDivider="bottom"
+                app:title="@string/pos_details_net_connect" />
+
+            <sunmi.common.view.SettingItemLayout
+                android:id="@+id/sil_adds"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:contentText="--"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sil_wifi"
+                app:showDivider="bottom"
+                app:title="@string/pos_details_adds" />
+
+            <sunmi.common.view.SettingItemLayout
+                android:id="@+id/sil_sn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:contentText="--"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sil_adds"
+                app:showDivider="bottom"
+                app:title="@string/pos_details_sn" />
+
+            <sunmi.common.view.SettingItemLayout
+                android:id="@+id/sil_resolution"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:contentText="--"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sil_sn"
+                app:showDivider="bottom"
+                app:title="@string/pos_details_resolution" />
+
+            <sunmi.common.view.SettingItemLayout
+                android:id="@+id/sil_temper"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:contentText="--"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sil_resolution"
+                app:showDivider="bottom"
+                app:title="@string/pos_details_battery_temper" />
+
+            <sunmi.common.view.SettingItemLayout
+                android:id="@+id/sil_sys_version"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:contentText="--"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sil_temper"
+                app:showDivider="bottom"
+                app:title="@string/pos_details_system_version" />
+
+            <sunmi.common.view.SettingItemLayout
+                android:id="@+id/sil_rom"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:contentText="--"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sil_sys_version"
+                app:showDivider="bottom"
+                app:title="@string/pos_details_rom_version" />
+
+            <sunmi.common.view.SettingItemLayout
+                android:id="@+id/sil_ip"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:contentText="--"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sil_rom"
+                app:showDivider="bottom"
+                app:title="@string/str_ip_address" />
+
+            <sunmi.common.view.SettingItemLayout
+                android:id="@+id/sil_mac"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:contentText="--"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sil_ip"
+                app:showDivider="bottom"
+                app:title="@string/str_mac_address" />
+
+            <sunmi.common.view.SettingItemLayout
+                android:id="@+id/sil_imei"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:contentText="--"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sil_mac"
+                app:showDivider="bottom"
+                app:title="@string/pos_details_imei" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+</android.support.constraint.ConstraintLayout>

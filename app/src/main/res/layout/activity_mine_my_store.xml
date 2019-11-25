@@ -19,7 +19,7 @@
         app:titleText="@string/str_store_manage"
         app:titleTextColor="@color/text_main" />
 
-    <android.support.v7.widget.RecyclerView
+    <sunmi.common.view.SmRecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

@@ -239,7 +239,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     void initCompanyList(List<CompanyInfoResp> companyList) {
         activityVisible();
         rvChoose.setAdapter(new CommonListAdapter<CompanyInfoResp>(context,
-                R.layout.item_shop_company, companyList) {
+                R.layout.item_common_arrow, companyList) {
             @Override
             public void convert(ViewHolder holder, final CompanyInfoResp item) {
                 SettingItemLayout silItem = holder.getView(R.id.sil_item);
@@ -261,13 +261,12 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     void initShopList(final List<ShopInfo> shopList) {
         activityVisible();
         rvChoose.setAdapter(new CommonListAdapter<ShopInfo>(context,
-                R.layout.item_shop_company, shopList) {
+                R.layout.item_common_checked, shopList) {
             int selectedIndex = shopList.size() == 1 ? 0 : -1;
 
             @Override
             public void convert(ViewHolder holder, final ShopInfo item) {
                 SettingItemLayout shopItem = holder.getView(R.id.sil_item);
-                shopItem.setType(SettingItemLayout.TYPE_CHECKED);
                 shopItem.setTitle(item.getShopName());
                 holder.itemView.setOnClickListener(v -> {
                     selectedIndex = holder.getAdapterPosition();

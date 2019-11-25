@@ -39,7 +39,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/dp_171"
         android:layout_marginEnd="@dimen/dp_25"
-        android:background="@mipmap/ic_screenshot"
+        android:background="@drawable/ic_screenshot"
         android:visibility="gone" />
 
     <!--回直播-->
@@ -135,7 +135,8 @@
         android:layout_height="@dimen/dp_48"
         android:layout_alignParentBottom="true"
         android:animateLayoutChanges="true"
-        android:background="@mipmap/bg_video_controller_bottom">
+        android:background="@mipmap/bg_video_controller_bottom"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/iv_play"
@@ -155,19 +156,6 @@
             android:layout_toEndOf="@+id/iv_play"
             android:background="@color/transparent"
             android:visibility="visible" />
-
-        <TextView
-            android:id="@+id/tv_calender"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/dp_20"
-            android:layout_toStartOf="@+id/iv_volume"
-            android:background="@mipmap/ic_calendar_enabled"
-            android:gravity="center"
-            android:textColor="@color/c_white"
-            android:textSize="@dimen/sp_10"
-            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/iv_volume"
@@ -191,6 +179,67 @@
             android:text="@string/str_FHD"
             android:textColor="@color/c_white"
             android:textSize="@dimen/sp_12" />
+    </RelativeLayout>
+
+    <!--底部控制区-->
+    <RelativeLayout
+        android:id="@+id/rl_bottom_playback"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_48"
+        android:layout_alignParentBottom="true"
+        android:animateLayoutChanges="true"
+        android:background="@mipmap/bg_video_controller_bottom"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/iv_pause"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dp_20"
+            android:background="@mipmap/play_disable" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true">
+
+            <ImageView
+                android:id="@+id/iv_mute"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/dp_20"
+                android:src="@mipmap/ic_volume" />
+
+            <ImageView
+                android:id="@+id/iv_full_screen"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/dp_20"
+                android:scaleType="center"
+                android:src="@mipmap/ic_full_screen_enabled" />
+
+            <TextView
+                android:id="@+id/tv_multi_speed"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/dp_20"
+                android:gravity="center"
+                android:text="1x"
+                android:textColor="@color/c_white"
+                android:textSize="@dimen/sp_16"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/iv_roll_back"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/dp_20"
+                android:scaleType="center"
+                android:src="@mipmap/ic_roll_back_1"
+                android:visibility="gone" />
+        </LinearLayout>
+
     </RelativeLayout>
 
     <!--视频录制-->

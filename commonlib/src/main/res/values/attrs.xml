@@ -286,6 +286,10 @@
 
     <declare-styleable name="TimeLine">
         <attr name="scaleLineColor" format="color" />  <!-- 刻度线颜色 -->
+        <attr name="tl_style" format="enum">
+            <enum name="normal" value="0" />
+            <enum name="big" value="1" />
+        </attr>
     </declare-styleable>
 
 </resources>

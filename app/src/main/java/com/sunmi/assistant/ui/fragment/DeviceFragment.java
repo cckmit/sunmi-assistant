@@ -24,6 +24,7 @@ import com.sunmi.apmanager.utils.EncryptUtils;
 import com.sunmi.apmanager.utils.RouterDBHelper;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
+import com.sunmi.assistant.pos.PosManagerActivity_;
 import com.sunmi.assistant.presenter.DevicePresenter;
 import com.sunmi.assistant.ui.DeviceSettingMenu;
 import com.sunmi.assistant.ui.adapter.DeviceListAdapter;
@@ -115,6 +116,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     private List<SunmiDevice> routerList = new ArrayList<>();
     private List<SunmiDevice> ipcList = new ArrayList<>();
     private List<SunmiDevice> printerList = new ArrayList<>();
+    private List<SunmiDevice> posList = new ArrayList<>();
 
     @AfterViews
     protected void init() {
@@ -182,6 +184,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             mPresenter.getBannerList();
             mPresenter.getIpcList();
             mPresenter.getPrinterList();
+            mPresenter.getPosList();
         }
     }
 
@@ -272,6 +275,13 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     }
 
     @Override
+    public void getPosListSuccess(List<SunmiDevice> devices) {
+        posList.clear();
+        posList.addAll(devices);
+        refreshList();
+    }
+
+    @Override
     public void unbindIpcSuccess(int code, String msg, Object data) {
         BaseNotification.newInstance().postNotificationName(IpcConstants.refreshIpcList);
     }
@@ -322,6 +332,14 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 } else {
                     clickedDevice = device;
                     IpcManagerActivity_.intent(mActivity).device(device).start();
+                }
+                break;
+            case "POS":
+                if (device.getStatus() == DeviceStatus.ONLINE.ordinal()) {
+                    clickedDevice = device;
+                    PosManagerActivity_.intent(mActivity).device(device).start();
+                } else {
+                    shortTip(getString(R.string.str_cannot_manager_device));
                 }
                 break;
         }
@@ -639,6 +657,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             public void run() {
                 mPresenter.getIpcList();
                 mPresenter.getPrinterList();
+                mPresenter.getPosList();
             }
         }, 30000, 120000);
     }
@@ -659,6 +678,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             deviceList.addAll(ipcList);
             deviceList.addAll(routerList);
             deviceList.addAll(printerList);
+            deviceList.addAll(posList);
             showEmptyView();
             deviceListRefresh();
         }

@@ -38,6 +38,8 @@ public class LoadingDialog extends Dialog {
     private static int mTextColorWhite;
 
     private int mMode;
+    private String mContent;
+    private int mColor;
 
     public LoadingDialog(Context context) {
         super(context, R.style.LoadingDialog);
@@ -62,6 +64,14 @@ public class LoadingDialog extends Dialog {
         llContainer = findViewById(R.id.container);
         pbLoading = findViewById(R.id.pb_loading);
         tvLoading = findViewById(R.id.tv_loading);
+        if (mMode == MODE_DARK) {
+            llContainer.setBackgroundResource(R.drawable.bg_dialog_loading_dark);
+            pbLoading.setIndeterminateDrawable(sLoadingWhite);
+        } else {
+            llContainer.setBackground(null);
+            pbLoading.setIndeterminateDrawable(sLoadingOrange);
+        }
+        setContent(mContent, mColor);
     }
 
     /**
@@ -72,9 +82,11 @@ public class LoadingDialog extends Dialog {
             return;
         }
         mMode = MODE_ORANGE;
+        if (llContainer == null || pbLoading == null || tvLoading == null) {
+            return;
+        }
         llContainer.setBackground(null);
         pbLoading.setIndeterminateDrawable(sLoadingOrange);
-        tvLoading.setVisibility(View.GONE);
     }
 
     /**
@@ -85,9 +97,11 @@ public class LoadingDialog extends Dialog {
             return;
         }
         mMode = MODE_DARK;
+        if (llContainer == null || pbLoading == null || tvLoading == null) {
+            return;
+        }
         llContainer.setBackgroundResource(R.drawable.bg_dialog_loading_dark);
         pbLoading.setIndeterminateDrawable(sLoadingWhite);
-        tvLoading.setVisibility(View.GONE);
     }
 
     /**
@@ -96,9 +110,6 @@ public class LoadingDialog extends Dialog {
      * @param content 说明
      */
     public void setContent(String content) {
-        if (tvLoading == null) {
-            return;
-        }
         setContent(content, 0);
     }
 
@@ -109,6 +120,8 @@ public class LoadingDialog extends Dialog {
      * @param color   色值（非资源id）
      */
     public void setContent(String content, @ColorInt int color) {
+        mContent = content;
+        mColor = color;
         if (tvLoading == null) {
             return;
         }

@@ -15,9 +15,9 @@ import sunmi.common.base.BaseView;
 public interface VideoPlayContract {
 
     interface View extends BaseView {
-        void getCloudTimeSlotSuccess(long startTime, long endTime, List<VideoTimeSlotBean> slots);
-
-        void getCloudTimeSlotFail();
+//        void getCloudTimeSlotSuccess(long startTime, long endTime, List<VideoTimeSlotBean> slots);
+//
+//        void getCloudTimeSlotFail();
 
         void getDeviceTimeSlotSuccess(List<VideoTimeSlotBean> slots);
 
@@ -30,7 +30,7 @@ public interface VideoPlayContract {
     }
 
     interface Presenter {
-        void getTimeSlots(int deviceId, long startTime, long endTime);
+//        void getTimeSlots(int deviceId, long startTime, long endTime);
 
         void getPlaybackList(IOTCClient iotcClient, long start, long end);
 
@@ -38,6 +38,6 @@ public interface VideoPlayContract {
 
         void startPlayback(IOTCClient iotcClient, long start);
 
-        void getCloudVideoList(int deviceId, long start, long end);
+//        void getCloudVideoList(int deviceId, long start, long end);
     }
 }

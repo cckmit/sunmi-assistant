@@ -4,5 +4,4 @@
     android:id="@+id/sil_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:showDivider="top"
     app:type="checked" />
