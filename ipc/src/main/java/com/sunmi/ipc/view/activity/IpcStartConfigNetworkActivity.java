@@ -70,7 +70,6 @@ public class IpcStartConfigNetworkActivity extends BaseActivity {
         } else {
             IPCSearchActivity_.intent(context).deviceType(ipcType).network(network).shopId(SpUtils.getShopId() + "").start();
         }
-
     }
 
 }
