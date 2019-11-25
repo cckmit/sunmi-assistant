@@ -2,6 +2,7 @@ package com.sunmi.assistant.pos;
 
 import android.annotation.SuppressLint;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -66,8 +67,6 @@ public class PosDetailsActivity extends BaseActivity {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         getPosType();
         tvPosName.setText(device.getModel());
-        //ivPos.setImageResource(DeviceTypeUtils.getInstance().getSunmiDeviceImage(device.getModel()));
-        //Glide.with(context).load(device.getImgPath()).into(ivPos);
         if (posResp != null) {
             //是否在使用有线网 0:不使用 1:使用
             int useEthernet = posResp.getNetInfo().getUseEthernet();
@@ -127,10 +126,13 @@ public class PosDetailsActivity extends BaseActivity {
     private void devTag(String tag, String imgUrl) {
         if ("Mobile_Products".equalsIgnoreCase(tag)) {
             tvPosType.setText(R.string.pos_mobile_product);
+            silTemper.setVisibility(View.VISIBLE);
         } else if ("Smart_Payment_Products".equalsIgnoreCase(tag)) {
             tvPosType.setText(R.string.pos_smart_payment_product);
+            silTemper.setVisibility(View.VISIBLE);
         } else if ("Desktop_Products".equalsIgnoreCase(tag)) {
             tvPosType.setText(R.string.pos_desktop_product);
+            silTemper.setVisibility(View.GONE);
         }
         if (TextUtils.isEmpty(imgUrl)) {
             ivPos.setImageResource(DeviceTypeUtils.getInstance().getSunmiDeviceImage(device.getModel()));

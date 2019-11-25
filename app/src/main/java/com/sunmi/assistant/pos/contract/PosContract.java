@@ -15,11 +15,9 @@ public interface PosContract {
 
         void getPosDetailsSuccess(PosDetailsResp resp);
 
-//        void getPosDetailsFail(int code, String msg);
-
         void getPosGuaranteeSuccess(PosWarrantyResp resp);
 
-//        void getPosGuaranteeFail(int code, String msg);
+        void getPosTypeSuccess(boolean isDesktop);
     }
 
     interface Presenter {
@@ -28,6 +26,7 @@ public interface PosContract {
 
         void getPosGuarantee();
 
+        void getPosType(String model);
     }
 
 }
