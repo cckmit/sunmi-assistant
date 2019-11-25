@@ -82,8 +82,6 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     TitleBarView titleBar;
     @ViewById(resName = "ivp_cloud")
     IVideoPlayer ivpCloud;
-    @ViewById(resName = "rl_control_panel")
-    RelativeLayout rlController;
     @ViewById(resName = "rl_top")
     RelativeLayout rlTopBar;
     @ViewById(resName = "rl_bottom_playback")
@@ -184,7 +182,6 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     void initControllerPanel() {
         showDarkLoading();
         initVolume();
-        rlController.setVisibility(View.GONE);
         timeLine.setListener(this);
     }
 
@@ -523,12 +520,12 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//隐藏状态栏
             setPortraitViewVisible(View.GONE);
-            setPanelVisible(View.VISIBLE);
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             setPortraitViewVisible(View.VISIBLE);
             setPanelVisible(View.GONE);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//显示状态栏
         }
+        setPanelVisible(View.VISIBLE);
         setVideoParams(orientation);
     }
 
@@ -591,6 +588,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     private void stopPlay() {
         try {
             if (ivpCloud != null) {
+                ivpCloud.setVisibility(View.GONE);
                 ivpCloud.release();
             }
         } catch (Exception e) {
@@ -601,7 +599,6 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     @UiThread
     void setPanelVisible(int visible) {
         if (rlTopBar != null && rlBottomBar != null) {
-            rlController.setVisibility(View.VISIBLE);
             rlTopBar.setVisibility(isPortrait() ? View.GONE : visible);
             rlBottomBar.setVisibility(visible);
         }
@@ -626,6 +623,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     private void cloudPlay(List<String> urlList) {
         ivpCloud.setUrlQueue(urlList);
         try {
+            ivpCloud.setVisibility(View.VISIBLE);
             ivpCloud.startPlay();
         } catch (Exception e) {
             shortTip(R.string.tip_play_fail);

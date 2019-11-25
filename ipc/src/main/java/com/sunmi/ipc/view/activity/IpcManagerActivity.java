@@ -106,8 +106,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     SurfaceView videoView;
     //    @ViewById(resName = "ivp_cloud")
 //    IVideoPlayer ivpCloud;
-    @ViewById(resName = "rl_control_panel")
-    RelativeLayout rlController;
+//    @ViewById(resName = "rl_control_panel")
+//    RelativeLayout rlController;
     @ViewById(resName = "rl_top")
     RelativeLayout rlTopBar;
     @ViewById(resName = "rl_bottom")
@@ -253,7 +253,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     void initControllerPanel() {
         openMove();
         initVolume();
-        rlController.setVisibility(View.GONE);
         scalePanel.setListener(this);
     }
 
@@ -786,7 +785,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private void setLandscapeViewVisible(int visibility) {
         tvQuality.setVisibility(visibility);
         ivVolume.setVisibility(visibility);
-        setPanelVisible(visibility);
+        setPanelVisible(View.VISIBLE);
     }
 
     private void setPortraitViewVisible(int visibility) {
@@ -882,7 +881,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     private void setPanelVisible(int visible) {
         if (rlTopBar != null && rlBottomBar != null) {
-            rlController.setVisibility(View.VISIBLE);
             rlTopBar.setVisibility(isPortrait() ? View.GONE : visible);
             rlBottomBar.setVisibility(visible);
         }

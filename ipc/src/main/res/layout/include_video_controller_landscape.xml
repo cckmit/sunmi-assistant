@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_64"
         android:animateLayoutChanges="true"
+        android:visibility="gone"
         android:background="@mipmap/bg_video_controller_top">
 
         <ImageView
