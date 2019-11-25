@@ -29,6 +29,8 @@ public interface DeviceContract {
         void endRefresh();
 
         void getShopListSuccess(List<ShopInfo> shopList);
+
+        void getPosListSuccess(List<SunmiDevice> devices);
     }
 
     interface Presenter {
@@ -46,6 +48,8 @@ public interface DeviceContract {
         void unbind(SunmiDevice device);
 
         void getShopList();
+
+        void getPosList();
     }
 
 }

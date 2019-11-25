@@ -134,6 +134,8 @@ public class ZFTimeLine extends View {
         super.onDraw(canvas);
         if (currentInterval < leftBound) {
             currentInterval = leftBound;
+        } else if (currentInterval > rightBound) {
+            currentInterval = rightBound;
         }
         // 初始化小刻度的间隔,在init里densityDpi的数据为0,所以放到这里了
         if (intervalValue == 0) {
@@ -151,10 +153,12 @@ public class ZFTimeLine extends View {
         // 右边界线秒数
         long rightInterval = Math.min(currentInterval + centerX * secondsOfIntervalValue(), rightBound);
 
-        // 第一个刻度线所代表的秒数
+        // 第一个和最后一个刻度线所代表的秒数
         long interval = (long) Math.ceil((double) leftInterval / INTERVAL_SECONDS) * INTERVAL_SECONDS;
+        long lastInterval = (long) Math.floor((double) rightInterval / INTERVAL_SECONDS) * INTERVAL_SECONDS;
         // 第一个刻度线的位置
         float x = (interval - currentInterval) / secondsOfIntervalValue() + centerX;
+        float lastX = (lastInterval - currentInterval) / secondsOfIntervalValue() + centerX;
 
         // 内容区域顶部坐标
         float displayTop;
@@ -223,7 +227,7 @@ public class ZFTimeLine extends View {
             }
         }
         // 画刻度线
-        while (x >= 0 && x <= width) {
+        while (x >= 0 && x <= lastX) {
             long rem = interval % (INTERVAL_SECONDS * 6);
             // 根据秒数值对大刻度间隔是否整除判断画长刻度或者短刻度
             if (rem != 0) {
@@ -257,7 +261,7 @@ public class ZFTimeLine extends View {
             case MotionEvent.ACTION_MOVE:
                 currentInterval = currentInterval
                         - secondsOfIntervalValue() * ((long) (event.getX() - moveStartX));
-                if (listener != null && currentInterval > leftBound) {
+                if (listener != null && currentInterval > leftBound && currentInterval < rightBound) {
                     listener.moveTo(DateTimeUtils.secondToDate(currentInterval, "yyyy-MM-dd HH:mm:ss"),
                             (moveStartX - event.getX()) < 0, currentInterval);
                 }
@@ -268,13 +272,14 @@ public class ZFTimeLine extends View {
             case MotionEvent.ACTION_UP:
                 //滑动结束
                 if (listener != null) {
-                    listener.didMoveToTime(currentInterval < leftBound ? leftBound : currentInterval);
+                    listener.didMoveToTime(currentInterval < leftBound ? leftBound
+                            : currentInterval > rightBound ? rightBound : currentInterval);
                 }
 
                 break;
             default:
         }
-        if (currentInterval != leftBound) {
+        if (currentInterval != leftBound && currentInterval != rightBound) {
             invalidate();//重新绘制
         }
 
@@ -379,7 +384,8 @@ public class ZFTimeLine extends View {
         this.leftBound = leftBound;
     }
 
-    public void setRightBound(long rightBound) {
+    public void setBound(long leftBound, long rightBound) {
+        this.leftBound = leftBound;
         this.rightBound = rightBound;
     }
 

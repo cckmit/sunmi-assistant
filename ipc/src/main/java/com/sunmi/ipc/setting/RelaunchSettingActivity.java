@@ -53,7 +53,8 @@ public class RelaunchSettingActivity extends BaseActivity {
                     if (!NetworkUtils.isNetworkAvailable(context)) {
                         shortTip(R.string.str_net_exception);
                     } else {
-                        relaunch();
+                        RelaunchStartSettingActivity_.intent(context).mDevice(mDevice).start();
+                        //relaunch();
                         dialog.dismiss();
                     }
                 }).setCancelButton(R.string.sm_cancel, R.color.text_main).create();

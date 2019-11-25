@@ -36,8 +36,6 @@
 
             <include layout="@layout/include_video_controller_landscape" />
 
-            <include layout="@layout/include_play_fail" />
-
         </RelativeLayout>
 
         <LinearLayout
@@ -52,63 +50,118 @@
             android:paddingEnd="@dimen/dp_15"
             android:paddingBottom="@dimen/dp_10">
 
-            <LinearLayout
-                android:id="@+id/ll_calender_portrait"
+            <ImageView
+                android:id="@+id/iv_screenshot"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/bg_round_corner_black_15"
-                android:gravity="center">
-
-                <TextView
-                    android:id="@+id/tv_calender_portrait"
-                    android:layout_width="@dimen/dp_24"
-                    android:layout_height="@dimen/dp_24"
-                    android:layout_gravity="center"
-                    android:background="@mipmap/ic_calendar_enabled"
-                    android:gravity="center"
-                    android:textColor="@color/c_white"
-                    android:textSize="@dimen/sp_10" />
-            </LinearLayout>
+                android:gravity="center"
+                android:scaleType="center"
+                android:src="@mipmap/ic_screenshot_disable" />
 
             <ImageView
-                android:id="@+id/iv_volume_portrait"
+                android:id="@+id/iv_record_portrait"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_weight="1"
                 android:background="@drawable/bg_round_corner_black_15"
                 android:scaleType="center"
-                android:src="@mipmap/ic_volume" />
+                android:src="@mipmap/ic_record_disable" />
 
             <TextView
-                android:id="@+id/tv_quality_portrait"
+                android:id="@+id/tv_multi_speed_portrait"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_weight="1"
                 android:background="@drawable/bg_round_corner_black_15"
                 android:gravity="center"
-                android:text="@string/str_FHD"
-                android:textColor="@color/c_white"
-                android:textSize="@dimen/sp_12" />
+                android:text="1x"
+                android:textColor="@color/white_60a"
+                android:textSize="@dimen/sp_16" />
 
             <ImageView
-                android:id="@+id/iv_full_screen"
+                android:id="@+id/iv_roll_back_portrait"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_weight="1"
                 android:background="@drawable/bg_round_corner_black_15"
                 android:scaleType="center"
-                android:src="@mipmap/ic_full_screen_enabled" />
+                android:src="@mipmap/ic_roll_back_1" />
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_calender"
+            android:layout_width="@dimen/dp_228"
+            android:layout_height="@dimen/dp_32"
+            android:layout_below="@+id/ll_portrait_controller_bar"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_24"
+            android:background="@drawable/btn_bg_cloud_playback_date">
+
+            <ImageView
+                android:id="@+id/iv_pre_day"
+                android:layout_width="@dimen/dp_48"
+                android:layout_height="match_parent"
+                android:background="@drawable/btn_bg_left_radius"
+                android:scaleType="center"
+                android:src="@drawable/ic_previous_day" />
+
+            <View
+                android:layout_width="@dimen/dp_1"
+                android:layout_height="match_parent"
+                android:background="@color/c_divider" />
+
+            <TextView
+                android:id="@+id/tv_calender"
+                android:layout_width="@dimen/dp_130"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/dp_1"
+                android:layout_marginBottom="@dimen/dp_1"
+                android:background="@drawable/bg_cloud_playback_calendar"
+                android:drawableStart="@mipmap/ic_choose_calendar"
+                android:drawablePadding="@dimen/dp_3"
+                android:gravity="center"
+                android:paddingStart="@dimen/dp_14"
+                android:paddingEnd="@dimen/dp_14"
+                android:textColor="@color/text_main"
+                android:textSize="@dimen/sp_16" />
+
+            <View
+                android:layout_width="@dimen/dp_1"
+                android:layout_height="match_parent"
+                android:background="@color/c_divider" />
+
+            <ImageView
+                android:id="@+id/iv_next_day"
+                android:layout_width="@dimen/dp_48"
+                android:layout_height="match_parent"
+                android:background="@drawable/btn_bg_right_radius"
+                android:scaleType="center"
+                android:src="@drawable/ic_next_day" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_tip_no_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ll_calender"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_32"
+            android:text="@string/tip_no_video_current_day"
+            android:textColor="@color/text_disable"
+            android:textSize="@dimen/sp_16"
+            android:visibility="visible" />
 
         <com.sunmi.ipc.view.ZFTimeLine
             android:id="@+id/time_line"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_56"
-            android:layout_below="@+id/ll_portrait_controller_bar"
+            android:layout_below="@+id/ll_calender"
             android:layout_marginTop="@dimen/dp_20"
             android:background="@color/common_fill"
             app:scaleLineColor="@color/c_303540_20a"
@@ -120,15 +173,41 @@
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/rl_video"
             android:layout_alignBottom="@+id/ll_portrait_controller_bar"
-            android:background="@color/black_60">
+            android:background="@color/black_60"
+            android:visibility="gone">
 
             <ProgressBar
-                android:layout_width="@dimen/dp_60"
-                android:layout_height="@dimen/dp_60"
+                android:layout_width="@dimen/dp_32"
+                android:layout_height="@dimen/dp_32"
                 android:layout_centerInParent="true"
                 android:indeterminate="false"
-                android:indeterminateDrawable="@drawable/loading_common" />
+                android:indeterminateDrawable="@drawable/loading_common_white" />
         </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_play_fail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignTop="@+id/rl_video"
+            android:layout_alignBottom="@+id/rl_video"
+            android:layout_marginTop="@dimen/dp_50"
+            android:background="@color/black_60"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/dp_50"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_play_fail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@mipmap/ic_video_play_error"
+                android:drawablePadding="@dimen/dp_10"
+                android:text="@string/tip_network_fail_retry"
+                android:textColor="@color/text_normal"
+                android:textSize="@dimen/sp_12" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/ll_no_service"
