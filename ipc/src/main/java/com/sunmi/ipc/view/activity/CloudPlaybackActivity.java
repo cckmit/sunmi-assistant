@@ -785,7 +785,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
      */
     private void startDelayPlay(long timeStamp) {
         cancelDelayPlay();
-        timeLineScrollTimer = new CountDownTimer(800, 200) {
+        timeLineScrollTimer = new CountDownTimer(500, 100) {
             @Override
             public void onTick(long millisUntilFinished) {
 
@@ -793,6 +793,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
             @Override
             public void onFinish() {
+                showVideoLoading();
                 openMove();
                 selectedTimeIsHaveVideo(timeStamp);
             }
@@ -809,7 +810,6 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @Override
     public void didMoveToTime(long timeStamp) {
-        showVideoLoading();
         hideTimeScroll();
         if (isPlayOver(timeStamp)) {
             playOver();
