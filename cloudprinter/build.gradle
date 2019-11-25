@@ -16,6 +16,7 @@ android {
         javaCompileOptions {
             annotationProcessorOptions {
                 includeCompileClasspath = true
+                arguments = ["HOST": "cloudprinter"]
             }
         }
         multiDexEnabled true
@@ -77,5 +78,5 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:${SUPPORT_VERSION}"
     //注解
     annotationProcessor "org.androidannotations:androidannotations:${AAVersion}"
-
+    annotationProcessor "com.github.xiaojinzi123.Component:component-compiler:${CVersion}"
 }

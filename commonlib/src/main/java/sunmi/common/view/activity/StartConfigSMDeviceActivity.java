@@ -127,16 +127,6 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
         }
         if (deviceType == CommonConstants.TYPE_AP) {
             startPrimaryRouteSearchActivity();
-        } else if (deviceType == CommonConstants.TYPE_IPC_FS || deviceType == CommonConstants.TYPE_IPC_SS) {
-            try {
-                Class<?> ipcSearchActivity = Class.forName("com.sunmi.ipc.view.activity.IPCSearchActivity_");
-                Intent intent = new Intent(context, ipcSearchActivity);
-                intent.putExtra("shopId", shopId);
-                intent.putExtra("deviceType", deviceType);
-                context.startActivity(intent);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         } else if (deviceType == CommonConstants.TYPE_PRINTER) {
             try {
                 Class<?> printerSearchActivity = Class.forName("com.sunmi.cloudprinter.ui.activity.PrinterSearchActivity_");

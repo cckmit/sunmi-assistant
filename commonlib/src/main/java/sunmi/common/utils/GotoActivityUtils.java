@@ -4,7 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
+import com.xiaojinzi.component.impl.Router;
+
 import sunmi.common.base.BaseApplication;
+import sunmi.common.router.AppApi;
 import sunmi.common.utils.log.LogCat;
 
 /**
@@ -34,25 +37,14 @@ public class GotoActivityUtils {
                 && !className.contains("CreateShopActivity")
                 && !className.contains("CreateShopNewActivity")
                 && !className.contains("CreateShopPreviewActivity")
-                ) {
+        ) {
             LogCat.e("TAG", "gotoLoginActivity= " + className);
             gotoLoginActivity(BaseApplication.getContext(), "1"); //1 剔除多端登录
         }
     }
 
     public static void gotoLoginActivity(Context context, String extra) {
-        try {
-            Class<?> loginActivity = Class.forName("com.sunmi.assistant.ui.activity.login.LoginActivity_");
-            Intent intent = new Intent(context, loginActivity);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY);
-
-            if (!TextUtils.isEmpty(extra))
-                intent.putExtra("reason", extra);
-            context.startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Router.withApi(AppApi.class).goToLogin(extra);
     }
 
     public static void gotoMainActivityClearTask(Context context) {

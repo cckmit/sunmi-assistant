@@ -31,7 +31,7 @@ import com.sunmi.ipc.model.IpcManageBean;
 import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.model.VideoTimeSlotBean;
 import com.sunmi.ipc.presenter.IpcManagerPresenter;
-import com.sunmi.ipc.router.SunmiServiceApi;
+import sunmi.common.router.SunmiServiceApi;
 import com.sunmi.ipc.setting.IpcSettingActivity_;
 import com.sunmi.ipc.utils.AACDecoder;
 import com.sunmi.ipc.utils.H264Decoder;

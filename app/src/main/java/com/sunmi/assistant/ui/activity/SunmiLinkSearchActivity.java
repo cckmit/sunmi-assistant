@@ -93,6 +93,8 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
     private TimerTask myTask = null;
     private boolean isTimeoutStart;
 
+
+
     @AfterViews
     void init() {
         mPresenter = new IpcConfiguringPresenter();

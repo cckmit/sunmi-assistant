@@ -7,8 +7,17 @@ package sunmi.common.constant;
  */
 public class RouterConfig {
 
+    public static class ApManager{
+        public static final String NAME = "apmanager";
+    }
+
     public static class App {
         public static final String NAME = "app";
+        public static final String LOGIN = "login";
+    }
+
+    public static class CloudPrinter{
+        public static final String NAME = "cloudprinter";
     }
 
     public static class Ipc{

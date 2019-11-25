@@ -22,6 +22,10 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.LoginContract;
 import com.sunmi.assistant.presenter.LoginPresenter;
 import com.sunmi.assistant.ui.activity.merchant.CreateCompanyActivity_;
+import com.sunmi.ipc.view.activity.IpcStartConfigActivity_;
+import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.anno.router.PathAnno;
+import com.xiaojinzi.component.impl.RouterRequest;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -34,6 +38,7 @@ import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.constant.RouterConfig;
 import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.PermissionUtils;
@@ -73,6 +78,14 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
     private boolean psdIsVisible;//密码是否可见
 
     private CommonDialog kickedDialog;
+
+    @RouterAnno(
+            path = RouterConfig.App.LOGIN
+    )
+    public static Intent start(RouterRequest request){
+        Intent intent = new Intent(request.getRawContext(), LoginActivity_.class);
+        return intent;
+    }
 
     @AfterViews
     protected void init() {
