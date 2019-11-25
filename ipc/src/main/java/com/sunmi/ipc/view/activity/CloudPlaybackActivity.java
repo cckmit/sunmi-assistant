@@ -164,8 +164,10 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         titleBar.setAppTitle(device.getName());
         titleBar.getLeftLayout().setOnClickListener(this);
         if (cloudStorageServiceStatus == CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
+            timeLine.setVisibility(View.GONE);
             llNoService.setVisibility(View.VISIBLE);
         } else {
+            showDarkLoading();
             rlBottomBar.setVisibility(View.VISIBLE);
         }
         ivNextDay.setEnabled(false);
@@ -180,7 +182,6 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @SuppressLint("ClickableViewAccessibility")
     void initControllerPanel() {
-        showDarkLoading();
         initVolume();
         timeLine.setListener(this);
     }
@@ -191,7 +192,9 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         startTimeCurrentDate = DateTimeUtils.getDayStart(new Date()).getTime() / 1000;
         endTimeCurrentDate = presentTime;
         refreshDay();
-        initTimeSlotData(true);
+        if (cloudStorageServiceStatus != CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
+            initTimeSlotData(true);
+        }
     }
 
     private void refreshDay() {
