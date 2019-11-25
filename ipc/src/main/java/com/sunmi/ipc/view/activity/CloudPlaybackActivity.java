@@ -171,6 +171,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
             rlBottomBar.setVisibility(View.VISIBLE);
         }
         ivNextDay.setEnabled(false);
+        ivpCloud.setVideoPlayListener(this);
         initData();
         switchOrientation(Configuration.ORIENTATION_PORTRAIT);
         llNoService.setOnTouchListener((v, event) -> true);
@@ -193,7 +194,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         startTimeCurrentDate = DateTimeUtils.getDayStart(new Date()).getTime() / 1000;
         endTimeCurrentDate = presentTime;
         refreshDay();
-        initTimeSlotData();
+        initTimeSlotData(true);
     }
 
     private void refreshDay() {
@@ -298,7 +299,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         endTimeCurrentDate = startTimeCurrentDate + SECONDS_IN_ONE_DAY;
         refreshDay();
         updateCalendarBtnEnable();
-        initTimeSlotData();
+        initTimeSlotData(false);
     }
 
     @Click(resName = "btn_open_service")
@@ -385,6 +386,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @Override
     public void onStartPlay() {
+        hideLoadingDialog();
         hideVideoLoading();
     }
 
@@ -443,7 +445,6 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
             urlList.add(bean.getUrl());
         }
         cloudPlay(urlList);
-        hideLoadingDialog();
     }
 
     @Override
@@ -772,8 +773,10 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     }
 
     //初始化时间轴
-    private void initTimeSlotData() {
-        showVideoLoading();
+    private void initTimeSlotData(boolean isFirstInit) {
+        if (!isFirstInit) {
+            showVideoLoading();
+        }
         timeSlotsInDay.clear();
         timeLine.clearData();
         mPresenter.getTimeSlots(device.getId(), startTimeCurrentDate, endTimeCurrentDate);
