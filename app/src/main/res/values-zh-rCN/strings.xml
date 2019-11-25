@@ -296,7 +296,7 @@
     <string name="company_shop_region_hint">必选</string>
     <string name="shop_create_new">创建门店</string>
     <string name="str_free_half_year">首次免半年</string>
-    <string name="pos_handle_sunmi_dev_manager">手持收银机管理</string>
+    <string name="pos_handle_sunmi_dev_manager">收银设备管理</string>
     <string name="pos_text_0_0">0.0</string>
     <string name="pos_ghz">GHZ</string>
     <string name="pos_cpu">CPU</string>
@@ -307,7 +307,7 @@
     <string name="pos_g">G</string>
     <string name="pos_sd">机身存储</string>
     <string name="pos_dev_details">设备详情</string>
-    <string name="pos_query_dev_details">查看设备详情</string>
+    <string name="pos_query_dev_details">查看设备信息</string>
     <string name="pos_guarantee_info">保修信息</string>
     <string name="pos_total_data">共%s</string>
     <string name="pos_activated">没过保</string>

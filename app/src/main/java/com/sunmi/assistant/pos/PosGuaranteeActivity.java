@@ -63,4 +63,9 @@ public class PosGuaranteeActivity extends BaseMvpActivity<PosPresenter> implemen
         silActivatedTime.setContent(TextUtils.isEmpty(resp.getActivatedTime()) ? "" : resp.getActivatedTime());
         silExpireTime.setContent(TextUtils.isEmpty(resp.getExpireTime()) ? "" : resp.getExpireTime());
     }
+
+    @Override
+    public void getPosTypeSuccess(boolean isDesktop) {
+
+    }
 }

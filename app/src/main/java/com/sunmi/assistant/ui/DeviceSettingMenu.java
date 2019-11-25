@@ -64,6 +64,7 @@ public class DeviceSettingMenu extends PopupWindow {
                 onSettingsClickListener.onSettingsClick(device, 1);
             }
         });
+        View divider = viewLayout.findViewById(R.id.divider);
         View divider1 = viewLayout.findViewById(R.id.divider1);
         TextView tvSetting = viewLayout.findViewById(R.id.tv_setting);
         if ("IPC".equalsIgnoreCase(device.getType())) {
@@ -76,6 +77,7 @@ public class DeviceSettingMenu extends PopupWindow {
                 }
             });
         } else if ("POS".equalsIgnoreCase(device.getType())) {
+            divider.setVisibility(View.GONE);
             divider1.setVisibility(View.GONE);
             tvDelete.setVisibility(View.GONE);
             tvSetting.setVisibility(View.GONE);
@@ -88,7 +90,9 @@ public class DeviceSettingMenu extends PopupWindow {
     public void show(View parent) {
         int width = llRoot.getMeasuredWidth();
         int height = llRoot.getMeasuredHeight();
-        if (!"IPC".equalsIgnoreCase(device.getType())) {
+        if ("POS".equalsIgnoreCase(device.getType())) {
+            height = height - CommonHelper.dp2px(context, 48) * 2;
+        } else if (!"IPC".equalsIgnoreCase(device.getType())) {
             height = height - CommonHelper.dp2px(context, 48);
         }
         int[] outLocation = new int[2];//锚点view的位置

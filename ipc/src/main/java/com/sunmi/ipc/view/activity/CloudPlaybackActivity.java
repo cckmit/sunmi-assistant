@@ -82,8 +82,6 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     TitleBarView titleBar;
     @ViewById(resName = "ivp_cloud")
     IVideoPlayer ivpCloud;
-    @ViewById(resName = "rl_control_panel")
-    RelativeLayout rlController;
     @ViewById(resName = "rl_top")
     RelativeLayout rlTopBar;
     @ViewById(resName = "rl_bottom_playback")
@@ -166,8 +164,10 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         titleBar.setAppTitle(device.getName());
         titleBar.getLeftLayout().setOnClickListener(this);
         if (cloudStorageServiceStatus == CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
+            timeLine.setVisibility(View.GONE);
             llNoService.setVisibility(View.VISIBLE);
         } else {
+            showDarkLoading();
             rlBottomBar.setVisibility(View.VISIBLE);
         }
         ivNextDay.setEnabled(false);
@@ -182,9 +182,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @SuppressLint("ClickableViewAccessibility")
     void initControllerPanel() {
-        showDarkLoading();
         initVolume();
-        rlController.setVisibility(View.GONE);
         timeLine.setListener(this);
     }
 
@@ -194,7 +192,9 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         startTimeCurrentDate = DateTimeUtils.getDayStart(new Date()).getTime() / 1000;
         endTimeCurrentDate = presentTime;
         refreshDay();
-        initTimeSlotData(true);
+        if (cloudStorageServiceStatus != CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
+            initTimeSlotData(true);
+        }
     }
 
     private void refreshDay() {
@@ -255,7 +255,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @Click(resName = "iv_pre_day")
     void preDayClick() {
-        if (isFastClick(1000)) {
+        if (isFastClick(1000) || cloudStorageServiceStatus == CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
             return;
         }
         switchDay(startTimeCurrentDate - SECONDS_IN_ONE_DAY);
@@ -263,7 +263,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @Click(resName = "iv_next_day")
     void nextDayClick() {
-        if (isFastClick(1000)) {
+        if (isFastClick(1000) || cloudStorageServiceStatus == CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
             return;
         }
         switchDay(startTimeCurrentDate + SECONDS_IN_ONE_DAY);
@@ -271,6 +271,9 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @Click(resName = "tv_calender")
     void chooseCalendarClick() {
+        if (isFastClick(1000) || cloudStorageServiceStatus == CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
+            return;
+        }
         if (calendarDialog == null || calendarView == null) {
             calendarView = new CalendarView(this);
             calendarView.setMaxDate(System.currentTimeMillis());
@@ -523,12 +526,12 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//隐藏状态栏
             setPortraitViewVisible(View.GONE);
-            setPanelVisible(View.VISIBLE);
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             setPortraitViewVisible(View.VISIBLE);
             setPanelVisible(View.GONE);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//显示状态栏
         }
+        setPanelVisible(View.VISIBLE);
         setVideoParams(orientation);
     }
 
@@ -591,6 +594,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     private void stopPlay() {
         try {
             if (ivpCloud != null) {
+                ivpCloud.setVisibility(View.GONE);
                 ivpCloud.release();
             }
         } catch (Exception e) {
@@ -601,7 +605,6 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     @UiThread
     void setPanelVisible(int visible) {
         if (rlTopBar != null && rlBottomBar != null) {
-            rlController.setVisibility(View.VISIBLE);
             rlTopBar.setVisibility(isPortrait() ? View.GONE : visible);
             rlBottomBar.setVisibility(visible);
         }
@@ -626,6 +629,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     private void cloudPlay(List<String> urlList) {
         ivpCloud.setUrlQueue(urlList);
         try {
+            ivpCloud.setVisibility(View.VISIBLE);
             ivpCloud.startPlay();
         } catch (Exception e) {
             shortTip(R.string.tip_play_fail);
@@ -787,7 +791,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
      */
     private void startDelayPlay(long timeStamp) {
         cancelDelayPlay();
-        timeLineScrollTimer = new CountDownTimer(800, 200) {
+        timeLineScrollTimer = new CountDownTimer(500, 100) {
             @Override
             public void onTick(long millisUntilFinished) {
 
@@ -795,6 +799,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
             @Override
             public void onFinish() {
+                showVideoLoading();
                 openMove();
                 selectedTimeIsHaveVideo(timeStamp);
             }
@@ -811,7 +816,6 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @Override
     public void didMoveToTime(long timeStamp) {
-        showVideoLoading();
         hideTimeScroll();
         if (isPlayOver(timeStamp)) {
             playOver();
