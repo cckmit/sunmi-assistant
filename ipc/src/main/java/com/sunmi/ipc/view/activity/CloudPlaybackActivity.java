@@ -591,6 +591,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     private void stopPlay() {
         try {
             if (ivpCloud != null) {
+                ivpCloud.setVisibility(View.GONE);
                 ivpCloud.release();
             }
         } catch (Exception e) {
@@ -626,6 +627,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     private void cloudPlay(List<String> urlList) {
         ivpCloud.setUrlQueue(urlList);
         try {
+            ivpCloud.setVisibility(View.VISIBLE);
             ivpCloud.startPlay();
         } catch (Exception e) {
             shortTip(R.string.tip_play_fail);
