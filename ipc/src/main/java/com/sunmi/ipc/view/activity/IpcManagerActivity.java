@@ -52,7 +52,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -1312,19 +1311,18 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 //        }
 //        timeCanvasList(listAp);//组合时间轴渲染
 //    }
-
-    //去重
-    private List<VideoTimeSlotBean> duplicateRemoval(List<VideoTimeSlotBean> list) {
-        LinkedHashSet<VideoTimeSlotBean> tmpSet = new LinkedHashSet<>(list.size());
-        tmpSet.addAll(list);
-        list.clear();
-        list.addAll(tmpSet);
-        return list;
-    }
+//
+//    //去重
+//    private List<VideoTimeSlotBean> duplicateRemoval(List<VideoTimeSlotBean> list) {
+//        LinkedHashSet<VideoTimeSlotBean> tmpSet = new LinkedHashSet<>(list.size());
+//        tmpSet.addAll(list);
+//        list.clear();
+//        list.addAll(tmpSet);
+//        return list;
+//    }
 
     @Override
     public void didMoveToTime(long timeStamp) {
-        showVideoLoading();
         hideTimeScroll();
         if (timeStamp > System.currentTimeMillis() / 1000) {//超过当前时间
             shortTip(getString(R.string.ipc_time_over_current_time));
@@ -1337,7 +1335,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         }
         if (timeStamp < threeDaysBeforeSeconds) {
             shortTip(getString(R.string.ipc_time_over_back_time));
-            selectedTimeIsHaveVideo(threeDaysBeforeSeconds);
+            startDelayPlay(threeDaysBeforeSeconds);
             return;
         }
         if (isFirstScroll && listAp.size() == 0) {
@@ -1346,11 +1344,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             getDeviceTimeSlots(threeDaysBeforeSeconds, currentDateSeconds);
             return;
         }
-        selectedTimeIsHaveVideo(timeStamp);
+        startDelayPlay(timeStamp);
     }
 
     @Override
     public void moveTo(String data, boolean isLeftScroll, long timeStamp) {
+        cancelDelayPlay();
         showTimeScroll(data.substring(11), isLeftScroll);//toast显示时间
     }
 
@@ -1384,7 +1383,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
      */
     private void startDelayPlay(long timeStamp) {
         cancelDelayPlay();
-        timeLineScrollTimer = new CountDownTimer(800, 200) {
+        timeLineScrollTimer = new CountDownTimer(500, 100) {
             @Override
             public void onTick(long millisUntilFinished) {
 
@@ -1392,7 +1391,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
             @Override
             public void onFinish() {
-                openMove();
+                showVideoLoading();
                 selectedTimeIsHaveVideo(timeStamp);
             }
         };
