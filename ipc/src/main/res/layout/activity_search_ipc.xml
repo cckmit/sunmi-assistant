@@ -33,8 +33,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_1"
-            android:layout_marginStart="@dimen/dp_30"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_8"
             android:text="@string/tip_choose_multi_ipc"
             android:textColor="@color/text_normal"
             android:textSize="@dimen/sp_16" />
@@ -44,9 +44,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_1"
-            android:layout_marginStart="@dimen/dp_30"
+            android:layout_marginStart="@dimen/dp_32"
             android:layout_marginTop="@dimen/dp_80"
-            android:layout_marginEnd="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_32"
             android:layout_marginBottom="@dimen/dp_80">
 
             <LinearLayout
@@ -86,13 +86,20 @@
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
 
-        <Button
-            android:id="@+id/btn_config"
-            style="@style/BtnBigOrange"
+        <RelativeLayout
+            android:id="@+id/rl_start"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_84"
             android:layout_alignParentBottom="true"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_20"
-            android:text="@string/str_next" />
+            android:background="@color/c_white">
+
+            <Button
+                android:id="@+id/btn_config"
+                style="@style/BtnBigOrange"
+                android:layout_centerInParent="true"
+                android:text="@string/str_confirm_connect" />
+
+        </RelativeLayout>
 
     </RelativeLayout>
 

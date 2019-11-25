@@ -135,11 +135,11 @@
     <style name="ConfigTitleText">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginStart">@dimen/dp_30</item>
-        <item name="android:layout_marginTop">@dimen/dp_24</item>
+        <item name="android:layout_marginTop">@dimen/dp_32</item>
         <item name="android:textColor">@color/text_main</item>
         <item name="android:textSize">@dimen/sp_28</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:layout_centerHorizontal">true</item>
     </style>
 
     <style name="ConfigTipText">
