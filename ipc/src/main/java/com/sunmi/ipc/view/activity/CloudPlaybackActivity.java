@@ -255,7 +255,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @Click(resName = "iv_pre_day")
     void preDayClick() {
-        if (isFastClick(1000)) {
+        if (isFastClick(1000) || cloudStorageServiceStatus == CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
             return;
         }
         switchDay(startTimeCurrentDate - SECONDS_IN_ONE_DAY);
@@ -263,7 +263,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @Click(resName = "iv_next_day")
     void nextDayClick() {
-        if (isFastClick(1000)) {
+        if (isFastClick(1000) || cloudStorageServiceStatus == CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
             return;
         }
         switchDay(startTimeCurrentDate + SECONDS_IN_ONE_DAY);
@@ -271,6 +271,9 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @Click(resName = "tv_calender")
     void chooseCalendarClick() {
+        if (isFastClick(1000) || cloudStorageServiceStatus == CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
+            return;
+        }
         if (calendarDialog == null || calendarView == null) {
             calendarView = new CalendarView(this);
             calendarView.setMaxDate(System.currentTimeMillis());
