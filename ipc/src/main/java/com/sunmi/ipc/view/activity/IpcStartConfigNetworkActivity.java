@@ -71,5 +71,4 @@ public class IpcStartConfigNetworkActivity extends BaseActivity {
             IPCSearchActivity_.intent(context).deviceType(ipcType).network(network).shopId(SpUtils.getShopId() + "").start();
         }
     }
-
 }
