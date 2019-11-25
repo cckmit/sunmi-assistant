@@ -35,9 +35,9 @@ public class ProtocolActivity extends BaseActivity {
     //用户协议英文
     public final static String PROTOCOL_USER_ENGLISH = "https://wifi.cdn.sunmi.com/Privacy/user_sunmi_english.html";
     //隐私协议
-    public final static String PROTOCOL_PRIVATE = "https://wifi.cdn.sunmi.com/Privacy/private_sunmi.html";
+    public final static String PROTOCOL_PRIVATE = "http://172.16.1.137:8080/index.html#/privacy/zh/private";
     //隐私协议英文
-    public final static String PROTOCOL_PRIVATE_ENGLISH = "https://wifi.cdn.sunmi.com/Privacy/private_sunmi_english.html";
+    public final static String PROTOCOL_PRIVATE_ENGLISH = "http://172.16.1.137:8080/index.html#/privacy/en/private";
 
     //本地用户协议
     public final static String LOCAL_PROTOCOL_USER = "file:///android_asset/user_sunmi.html";
@@ -188,11 +188,11 @@ public class ProtocolActivity extends BaseActivity {
 
             @Override
             protected void receiverError(WebView view, WebResourceRequest request, WebResourceError error) {
-                if (!loadFail) {
+                /*if (!loadFail) {
                     loadFail = true;
                     hideLoadingDialog();
                     localHtml();
-                }
+                }*/
             }
         });
     }
