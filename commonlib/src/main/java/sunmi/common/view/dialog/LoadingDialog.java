@@ -67,11 +67,9 @@ public class LoadingDialog extends Dialog {
         if (mMode == MODE_DARK) {
             llContainer.setBackgroundResource(R.drawable.bg_dialog_loading_dark);
             pbLoading.setIndeterminateDrawable(sLoadingWhite);
-            tvLoading.setVisibility(View.GONE);
         } else {
             llContainer.setBackground(null);
             pbLoading.setIndeterminateDrawable(sLoadingOrange);
-            tvLoading.setVisibility(View.GONE);
         }
         setContent(mContent, mColor);
     }
@@ -89,7 +87,6 @@ public class LoadingDialog extends Dialog {
         }
         llContainer.setBackground(null);
         pbLoading.setIndeterminateDrawable(sLoadingOrange);
-        tvLoading.setVisibility(View.GONE);
     }
 
     /**
@@ -105,7 +102,6 @@ public class LoadingDialog extends Dialog {
         }
         llContainer.setBackgroundResource(R.drawable.bg_dialog_loading_dark);
         pbLoading.setIndeterminateDrawable(sLoadingWhite);
-        tvLoading.setVisibility(View.GONE);
     }
 
     /**
@@ -114,11 +110,6 @@ public class LoadingDialog extends Dialog {
      * @param content 说明
      */
     public void setContent(String content) {
-        mContent = content;
-        mColor = 0;
-        if (tvLoading == null) {
-            return;
-        }
         setContent(content, 0);
     }
 

@@ -2,6 +2,7 @@ package com.sunmi.assistant.pos;
 
 import android.annotation.SuppressLint;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.pos.contract.PosContract;
@@ -18,8 +19,6 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.SettingItemLayout;
-
-import static sunmi.common.utils.DateTimeUtils.stampToDate;
 
 /**
  * @author yangShiJie
@@ -61,7 +60,7 @@ public class PosGuaranteeActivity extends BaseMvpActivity<PosPresenter> implemen
             silStatus.setContent(R.string.pos_expire);
             silStatus.getContent().setTextColor(ContextCompat.getColor(this, R.color.caution_primary));
         }
-        silActivatedTime.setContent(stampToDate(resp.getActivatedTime()));
-        silExpireTime.setContent(stampToDate(resp.getExpireTime()));
+        silActivatedTime.setContent(TextUtils.isEmpty(resp.getActivatedTime()) ? "" : resp.getActivatedTime());
+        silExpireTime.setContent(TextUtils.isEmpty(resp.getExpireTime()) ? "" : resp.getExpireTime());
     }
 }
