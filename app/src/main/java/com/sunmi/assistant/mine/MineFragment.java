@@ -10,10 +10,10 @@ import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.company.CompanyDetailActivity_;
 import com.sunmi.assistant.mine.contract.MineContract;
+import com.sunmi.assistant.mine.message.MsgCenterActivity_;
 import com.sunmi.assistant.mine.presenter.MinePresenter;
 import com.sunmi.assistant.mine.setting.SettingActivity_;
 import com.sunmi.assistant.mine.shop.ShopListActivity_;
-import com.sunmi.assistant.pos.PosManagerActivity_;
 import com.sunmi.sunmiservice.SunmiServiceConfig;
 import com.sunmi.sunmiservice.WebViewSunmiMallActivity_;
 
@@ -151,8 +151,7 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
 
     @Click(R.id.rl_msg)
     public void msgClick() {
-//        MsgCenterActivity_.intent(mActivity).start();
-        PosManagerActivity_.intent(mActivity).start();
+        MsgCenterActivity_.intent(mActivity).start();
     }
 
     /**
