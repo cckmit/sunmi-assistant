@@ -27,7 +27,6 @@ import com.sunmi.ipc.contract.CloudPlaybackContract;
 import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.model.VideoTimeSlotBean;
 import com.sunmi.ipc.presenter.CloudPlaybackPresenter;
-import sunmi.common.router.SunmiServiceApi;
 import com.sunmi.ipc.view.ZFTimeLine;
 import com.xiaojinzi.component.impl.Router;
 
@@ -55,12 +54,14 @@ import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.router.SunmiServiceApi;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.IVideoPlayer;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.Utils;
 import sunmi.common.utils.VolumeHelper;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
@@ -290,7 +291,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
                     .setMinDate(c)
                     .setPoint(getTimeSlotOfCalendar(timeSlotsInMonth))
                     .build();
-            int height = getResources().getDimensionPixelSize(R.dimen.dp_500);
+            int height = (int) (Utils.getScreenHeight(this) * 0.75);
             calendarView = new VerticalCalendar(this, config);
             calendarView.setOnCalendarSelectListener(calendar -> calendarSelected = calendar);
             ViewGroup.MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(
