@@ -3,6 +3,7 @@ package com.sunmi.assistant.pos;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -128,21 +129,30 @@ public class PosManagerActivity extends BaseMvpActivity<PosPresenter> implements
         //cpu
         String useCpuPercent = resp.getRunningInfo().getUsedCpuPercent();
         int mUseCpuPercent = Integer.valueOf(useCpuPercent.replace("%", ""));
-        circlePercent(arcViewCpu, mUseCpuPercent);
         String cpu = resp.getRunningInfo().getCpuFrequency().replaceAll(" ", "");
         double totalCpu = Double.valueOf(replaceA_Z(cpu));
         double useCpu = mUseCpuPercent * totalCpu / 100;
         tvGhzValue.setText(strDecimal(useCpu));
         tvCpuTotal.setText(String.format(getString(R.string.pos_total_data), cpu));
+        circlePercent(arcViewCpu, mUseCpuPercent, tvGhzValue.getText().toString());
         //running mem
         String useMemPercent = resp.getRunningInfo().getUsedMemPercent();
         int mUseMemPercent = Integer.valueOf(useMemPercent.replace("%", ""));
-        circlePercent(arcViewStorage, mUseMemPercent);
         String totalMem = resp.getRunningInfo().getTotalMem().replaceAll(" ", "");
-        double mTotalMem = Double.valueOf(replaceA_Z(totalMem));
-        double mUseMemG = mUseMemPercent * mTotalMem / 100;
-        tvStorageValue.setText(strDecimal(mUseMemG));
-        tvStorageName.setText(R.string.pos_g);
+        String useMem = resp.getRunningInfo().getUsedMem().replaceAll(" ", "");
+        double mUseMem = Double.valueOf(replaceA_Z(useMem));
+        if (useMem.contains(getString(R.string.pos_g))) {
+            tvStorageValue.setText(strDecimal(mUseMem));
+        } else if (useMem.contains(getString(R.string.pos_m))) {
+            if (mUseMem >= 1000) {
+                tvStorageName.setText(R.string.pos_g);
+                tvStorageValue.setText(strDecimal(mUseMem / 1024));
+            } else {
+                tvStorageName.setText(R.string.pos_m);
+                tvStorageValue.setText(strDecimal(mUseMem));
+            }
+        }
+        circlePercent(arcViewStorage, mUseMemPercent, tvStorageValue.getText().toString());
         tvStorageTotal.setText(String.format(getString(R.string.pos_total_data), totalMem));
         //sd
         String useSd = resp.getRunningInfo().getUsedSd().replaceAll(" ", "");
@@ -162,7 +172,7 @@ public class PosManagerActivity extends BaseMvpActivity<PosPresenter> implements
         }
         double mTotalSd = Double.valueOf(replaceA_Z(totalSd));
         int useSdPercent = (int) (mUseSd * 100 / mTotalSd);
-        circlePercent(arcViewSd, useSdPercent);
+        circlePercent(arcViewSd, useSdPercent, tvSdValue.getText().toString());
         tvSdTotal.setText(String.format(getString(R.string.pos_total_data), totalSd));
         //battery
         String batteryPercent = resp.getRunningInfo().getBatteryPercent();
@@ -179,9 +189,9 @@ public class PosManagerActivity extends BaseMvpActivity<PosPresenter> implements
 
     @Override
     public void getPosGuaranteeSuccess(PosWarrantyResp resp) {
-        //0=没过保，1=已过保
+        //1=没过保，0=已过保
         int status = resp.getStatus();
-        if (status == 0) {
+        if (status == 1) {
             tvGuaranteeStatus.setText(R.string.pos_activated);
             tvGuaranteeStatus.setTextColor(ContextCompat.getColor(this, R.color.text_caption));
         } else {
@@ -208,7 +218,10 @@ public class PosManagerActivity extends BaseMvpActivity<PosPresenter> implements
         return df.format(d);
     }
 
-    private void circlePercent(PosArcView view, int percent) {
+    private void circlePercent(PosArcView view, int percent, String used) {
+        if (TextUtils.equals("0.0", used)) {
+            percent = 0;
+        }
         if (percent <= 50) {
             view.setValues(colorLightBlue, percent);
         } else if (percent <= 80) {
