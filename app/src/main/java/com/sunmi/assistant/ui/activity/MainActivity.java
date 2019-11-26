@@ -1,6 +1,7 @@
 package com.sunmi.assistant.ui.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkRequest;
@@ -27,6 +28,8 @@ import com.sunmi.assistant.mine.model.MessageCountBean;
 import com.sunmi.assistant.mine.presenter.MessageCountPresenter;
 import com.sunmi.assistant.utils.MainTab;
 import com.tencent.bugly.crashreport.CrashReport;
+import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.impl.RouterRequest;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -40,6 +43,7 @@ import sunmi.common.base.BaseApplication;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
+import sunmi.common.constant.RouterConfig;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.mqtt.MqttManager;
 import sunmi.common.utils.CommonHelper;
@@ -63,6 +67,14 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
     int currentTabIndex;// 要显示的fragment的index
     private long mExitTime;
     private BGABadgeTextView mineTitle;
+
+    @RouterAnno(
+            path = RouterConfig.App.MAIN
+    )
+    public static Intent start(RouterRequest request) {
+        Intent intent = new Intent(request.getRawContext(), MainActivity_.class);
+        return intent;
+    }
 
     @AfterViews
     void init() {

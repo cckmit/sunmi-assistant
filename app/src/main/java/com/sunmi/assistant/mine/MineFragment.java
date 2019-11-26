@@ -27,6 +27,7 @@ import cn.bingoogolapple.badgeview.BGABadgeRelativeLayout;
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.utils.CommonHelper;
+import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StringHelper;

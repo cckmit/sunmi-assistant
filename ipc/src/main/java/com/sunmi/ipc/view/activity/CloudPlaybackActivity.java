@@ -27,7 +27,7 @@ import com.sunmi.ipc.contract.CloudPlaybackContract;
 import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.model.VideoTimeSlotBean;
 import com.sunmi.ipc.presenter.CloudPlaybackPresenter;
-import com.sunmi.ipc.router.SunmiServiceApi;
+import sunmi.common.router.SunmiServiceApi;
 import com.sunmi.ipc.view.ZFTimeLine;
 import com.xiaojinzi.component.impl.Router;
 
@@ -341,7 +341,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     void openServiceClick() {
         ArrayList<String> snList = new ArrayList<>();
         snList.add(device.getDeviceid());
-        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(CommonConfig.CLOUD_STORAGE_URL, snList);
+        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context,CommonConfig.CLOUD_STORAGE_URL, snList);
     }
 
     @Click(resName = "rl_top")

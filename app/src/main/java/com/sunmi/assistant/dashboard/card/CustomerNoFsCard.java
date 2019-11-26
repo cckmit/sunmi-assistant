@@ -79,7 +79,7 @@ public class CustomerNoFsCard extends BaseRefreshCard<CustomerNoFsCard.Model, Ob
         view.setPaddingRelative(0, 0, 0, (int) context.getResources().getDimension(R.dimen.dp_32));
 
         holder.addOnClickListener(R.id.btn_dashboard_add, (h, model, position) ->
-                Router.withApi(IpcApi.class).goToIpcStartConfig(CommonConstants.TYPE_IPC_FS));
+                Router.withApi(IpcApi.class).goToIpcStartConfig(context, CommonConstants.TYPE_IPC_FS));
         return holder;
     }
 
