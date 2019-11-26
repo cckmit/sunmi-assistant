@@ -60,6 +60,10 @@ public class VerticalCalendar extends LinearLayout {
 
     private void init(Config config) {
         this.config = config;
+        points.clear();
+        for (Calendar point : config.getPoints()) {
+            points.add(calendarToTimestamp(point));
+        }
         initViews();
         initCalendarDatas();
     }
@@ -124,7 +128,6 @@ public class VerticalCalendar extends LinearLayout {
 
         //设置Adapter
         initAdapter();
-
     }
 
     private long calendarToTimestamp(Calendar c) {
@@ -143,6 +146,7 @@ public class VerticalCalendar extends LinearLayout {
         } else {
             mAdapter.updateDatas(data, config);
         }
+        recyclerViewCalendar.scrollToPosition(data.size() - 1);
     }
 
     public void setConfig(Config config) {
