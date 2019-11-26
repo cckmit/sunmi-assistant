@@ -283,7 +283,10 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
             return;
         }
         if (calendarDialog == null || calendarView == null) {
+            Calendar c = Calendar.getInstance();
+            c.add(Calendar.MONTH, -24);
             Config config = new Config.Builder()
+                    .setMinDate(c)
                     .setPoint(getTimeSlotOfCalendar(timeSlotsInMonth))
                     .build();
             int height = getResources().getDimensionPixelSize(R.dimen.dp_500);
