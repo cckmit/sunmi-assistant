@@ -102,8 +102,11 @@ public class VerticalCalendar extends LinearLayout {
         //计算日期
         Calendar min = config.getMinDate();
         Calendar max = config.getMaxDate();
-        Calendar month = (Calendar) min.clone();
-        month.set(Calendar.DATE, 1);
+        Calendar month = Calendar.getInstance();
+        int yearInt = min.get(Calendar.YEAR);
+        int monthInt = min.get(Calendar.MONTH);
+        month.clear();
+        month.set(yearInt, monthInt, 1);
         while (month.before(max)) {
             int monthIndex = month.get(Calendar.MONTH);
             Calendar date = (Calendar) month.clone();
