@@ -84,7 +84,7 @@ public class InputCaptchaPresenter extends BasePresenter<InputCaptchaContract.Vi
     //验证码登录
     @Override
     public void captchaLogin(String mobile, String captcha) {
-        mView.showLoadingDialog();
+        mView.showDarkLoading();
         SunmiStoreApi.getInstance().quickLogin(mobile, captcha, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
