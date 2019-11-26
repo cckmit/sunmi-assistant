@@ -53,15 +53,15 @@ public class PosGuaranteeActivity extends BaseMvpActivity<PosPresenter> implemen
     public void getPosGuaranteeSuccess(PosWarrantyResp resp) {
         //0=没过保，1=已过保
         int status = resp.getStatus();
-        if (status == 0) {
+        if (status == 1) {
             silStatus.setContent(R.string.pos_activated);
             silStatus.getContent().setTextColor(ContextCompat.getColor(this, R.color.text_caption));
         } else {
             silStatus.setContent(R.string.pos_expire);
             silStatus.getContent().setTextColor(ContextCompat.getColor(this, R.color.caution_primary));
         }
-        silActivatedTime.setContent(TextUtils.isEmpty(resp.getActivatedTime()) ? "" : resp.getActivatedTime());
-        silExpireTime.setContent(TextUtils.isEmpty(resp.getExpireTime()) ? "" : resp.getExpireTime());
+        silActivatedTime.setContent(TextUtils.isEmpty(resp.getActivatedTime()) ? getString(R.string.pos_text_empty) : resp.getActivatedTime());
+        silExpireTime.setContent(TextUtils.isEmpty(resp.getExpireTime()) ? getString(R.string.pos_text_empty) : resp.getExpireTime());
     }
 
     @Override

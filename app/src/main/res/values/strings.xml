@@ -300,7 +300,7 @@
     <string name="pos_query_dev_details">查看设备信息</string>
     <string name="pos_guarantee_info">保修信息</string>
     <string name="pos_total_data">共%s</string>
-    <string name="pos_activated">没过保</string>
+    <string name="pos_activated">未过保</string>
     <string name="pos_expire">已过保</string>
     <string name="pos_wifi">WIFI</string>
     <string name="pos_3g">3G</string>
@@ -320,4 +320,5 @@
     <string name="pos_mobile_product">手持非金融设备</string>
     <string name="pos_smart_payment_product">手持金融设备</string>
     <string name="pos_desktop_product">台式收银设备</string>
+    <string name="pos_text_empty">--</string>
 </resources>

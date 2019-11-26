@@ -56,6 +56,10 @@
     "model": "P2 lite"
   },
   {
+    "brand": "p2lite",
+    "model": "P2lite"
+  },
+  {
     "brand": "s2",
     "model": "S2"
   },
@@ -68,8 +72,16 @@
     "model": "T2 lite"
   },
   {
+    "brand": "t2lite",
+    "model": "T2lite"
+  },
+  {
     "brand": "t2mini",
     "model": "T2 mini"
+  },
+  {
+    "brand": "t2mini",
+    "model": "T2mini"
   },
   {
     "brand": "t2",
@@ -82,6 +94,10 @@
   {
     "brand": "v1s",
     "model": "V1S"
+  },
+  {
+    "brand": "v1s",
+    "model": "V1s"
   },
   {
     "brand": "v2",

@@ -1,6 +1,5 @@
 package com.sunmi.ipc.setting;
 
-import android.os.CountDownTimer;
 import android.text.TextUtils;
 
 import com.sunmi.ipc.R;
@@ -33,7 +32,6 @@ public class RelaunchSettingActivity extends BaseActivity {
     private static final int IPC_EVENT_OPCODE_ONLINE = 4200;
     @Extra
     SunmiDevice mDevice;
-    private MyCountDownTimer mqttConnectTimeout = null;
 
     @AfterViews
     void init() {
@@ -53,33 +51,16 @@ public class RelaunchSettingActivity extends BaseActivity {
                     if (!NetworkUtils.isNetworkAvailable(context)) {
                         shortTip(R.string.str_net_exception);
                     } else {
-                        RelaunchStartSettingActivity_.intent(context).mDevice(mDevice).start();
-                        //relaunch();
+                        relaunch();
                         dialog.dismiss();
                     }
                 }).setCancelButton(R.string.sm_cancel, R.color.text_main).create();
         commonDialog.showWithOutTouchable(false);
     }
 
-    private void startCountDown() {
-        if (mqttConnectTimeout == null) {
-            mqttConnectTimeout = new MyCountDownTimer(10 * 1000, 1000);
-            mqttConnectTimeout.start();
-        }
-    }
-
-    private void cancelCountDown() {
-        hideLoadingDialog();
-        if (mqttConnectTimeout != null) {
-            mqttConnectTimeout.cancel();
-            mqttConnectTimeout = null;
-        }
-    }
-
     private void relaunch() {
-        showLoadingDialog();
-        startCountDown();
         IPCCall.getInstance().ipcRelaunch(this, mDevice.getDeviceid(), mDevice.getModel());
+        RelaunchStartSettingActivity_.intent(context).mDevice(mDevice).start();
     }
 
     @Override
@@ -111,29 +92,13 @@ public class RelaunchSettingActivity extends BaseActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        } else if (id == OpcodeConstants.ipcRelaunch) {
-            cancelCountDown();
-            if (res.getDataErrCode() == 1) {
-                RelaunchStartSettingActivity_.intent(context).mDevice(mDevice).start();
-            } else {
-                shortTip(R.string.str_net_exception);
-            }
         }
-    }
-
-    private class MyCountDownTimer extends CountDownTimer {
-        MyCountDownTimer(long millisInFuture, long countDownInterval) {
-            super(millisInFuture, countDownInterval);
-        }
-
-        @Override
-        public void onTick(long l) {
-        }
-
-        @Override
-        public void onFinish() {
-            cancelCountDown();
-            shortTip(R.string.str_net_exception);
-        }
+//        else if (id == OpcodeConstants.ipcRelaunch) {
+//            if (res.getDataErrCode() == 1) {
+//                RelaunchStartSettingActivity_.intent(context).mDevice(mDevice).start();
+//            } else {
+//                shortTip(R.string.str_net_exception);
+//            }
+//        }
     }
 }
