@@ -553,15 +553,15 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     public void onVideoReceived(byte[] videoBuffer) {
         hidePlayFail();
         if (videoDecoder != null) {
-            videoDecoder.setVideoData(videoBuffer);
             if (videoDecoder.isPlaying()) {
                 if (playType == PLAY_TYPE_LIVE) {
                     hideVideoLoading();
-                } else if (playType == PLAY_TYPE_PLAYBACK_DEV && (tvTimeScroll != null && tvTimeScroll.isShown())) {
-//            hideVideoLoading();
+                } else if (playType == PLAY_TYPE_PLAYBACK_DEV
+                        && (tvTimeScroll != null && tvTimeScroll.isShown())) {
                     hideTimeScroll();
                 }
             }
+            videoDecoder.setVideoData(videoBuffer);
         }
     }
 
