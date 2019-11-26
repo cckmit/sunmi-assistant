@@ -15,6 +15,8 @@ import com.sunmi.assistant.mine.model.MessageCountBean;
 import com.sunmi.assistant.rpc.MessageCenterApi;
 import com.sunmi.assistant.utils.MsgCommonCache;
 import com.sunmi.assistant.utils.PushUtils;
+import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.impl.RouterRequest;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -26,6 +28,7 @@ import java.util.ArrayList;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonNotifications;
+import sunmi.common.constant.RouterConfig;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.FileHelper;
@@ -60,6 +63,14 @@ public class MsgCenterActivity extends BaseActivity implements View.OnClickListe
 
     DeviceMessageFragment deviceF;
     SystemMessageFragment systemF;
+
+    @RouterAnno(
+            path = RouterConfig.App.MSGCENTER
+    )
+    public static Intent start(RouterRequest request){
+        Intent intent = new Intent(request.getRawContext(),MsgCenterActivity_.class);
+        return intent;
+    }
 
     @AfterViews
     void init() {

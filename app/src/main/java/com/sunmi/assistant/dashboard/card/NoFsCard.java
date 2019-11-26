@@ -78,7 +78,7 @@ public class NoFsCard extends BaseRefreshCard<NoFsCard.Model, Object> {
         this.mContentBg.setCornerRadii(new float[]{radius, radius, radius, radius, radius, radius, radius, radius});
 
         holder.addOnClickListener(R.id.btn_dashboard_add, (h, model, position) ->
-                Router.withApi(IpcApi.class).goToIpcStartConfig(CommonConstants.TYPE_IPC_FS));
+                Router.withApi(IpcApi.class).goToIpcStartConfig(context, CommonConstants.TYPE_IPC_FS));
         return holder;
     }
 

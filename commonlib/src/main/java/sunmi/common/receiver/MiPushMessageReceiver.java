@@ -6,6 +6,7 @@ import android.os.Build;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.xiaojinzi.component.impl.Router;
 import com.xiaomi.mipush.sdk.MiPushCommandMessage;
 import com.xiaomi.mipush.sdk.MiPushMessage;
 import com.xiaomi.mipush.sdk.PushMessageReceiver;
@@ -15,6 +16,7 @@ import sunmi.common.base.BaseApplication;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.MiPushMsgBean;
 import sunmi.common.notification.BaseNotification;
+import sunmi.common.router.AppApi;
 import sunmi.common.service.BadgeIntentService;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.SpUtils;
@@ -35,7 +37,7 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
             LogCat.e(TAG, "mipush onNotificationMessageClicked mAlias = " + message.getAlias());
             String params = message.getExtra().get("params");
             MiPushMsgBean msg = new Gson().fromJson(params, MiPushMsgBean.class);
-            GotoActivityUtils.gotoMsgDetailActivity(context, msg.getModelId(), msg.getModelName());
+            Router.withApi(AppApi.class).goToMsgDetail(context,msg.getModelId(),msg.getModelName());
         }
     }
 
