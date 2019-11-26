@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
+import com.xiaojinzi.component.impl.Router;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -25,6 +26,7 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.notification.BaseNotification;
+import sunmi.common.router.AppApi;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.GotoActivityUtils;
@@ -83,7 +85,7 @@ public class ImportOrderSelectShopActivity extends BaseActivity {
                         hideLoadingDialog();
                         shortTip(R.string.import_order_access_data_success);
                         BaseNotification.newInstance().postNotificationName(CommonNotifications.shopSaasDock);
-                        GotoActivityUtils.gotoMainActivity(context);
+                        Router.withApi(AppApi.class).goToMain(context);
                     }
 
                     @Override

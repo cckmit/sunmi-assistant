@@ -6,6 +6,7 @@ import android.support.v4.widget.NestedScrollView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -58,6 +59,8 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
     CheckedTextView ctvPrivacy;
     @ViewById(resName = "view_divider_bottom")
     View viewDivider;
+    @ViewById(resName = "btn_start")
+    Button btnStart;
 
     @Extra
     String shopId;
@@ -101,6 +104,11 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
         }
         setViewDividerVisible();
         ViewUtils.setPrivacy(this, ctvPrivacy, R.color.white_40a, false);
+        btnStart.setEnabled(ctvPrivacy.isChecked());
+        ctvPrivacy.setOnClickListener(v -> {
+            ctvPrivacy.toggle();
+            btnStart.setEnabled(ctvPrivacy.isChecked());
+        });
     }
 
     @UiThread

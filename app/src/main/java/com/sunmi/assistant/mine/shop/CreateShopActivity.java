@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.sunmi.apmanager.utils.SomeMonitorEditTextNew;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.utils.GetUserInfoUtils;
+import com.xiaojinzi.component.impl.Router;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -22,6 +23,7 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.CreateShopInfo;
 import sunmi.common.notification.BaseNotification;
+import sunmi.common.router.AppApi;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.CommonHelper;
@@ -129,7 +131,7 @@ public class CreateShopActivity extends BaseActivity {
             BaseNotification.newInstance().postNotificationName(CommonNotifications.shopCreate);
             if (isLoginSuccessSwitchCompany) {
                 CommonHelper.saveCompanyShopInfo(companyId, companyName, saasExist, resp.getShop_id(), resp.getShop_name());
-                GotoActivityUtils.gotoMainActivityClearTask(context);
+                Router.withApi(AppApi.class).goToMainClearTask(context);
             } else {
                 setResult(RESULT_OK);
             }

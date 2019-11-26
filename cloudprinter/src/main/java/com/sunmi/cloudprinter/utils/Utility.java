@@ -1,6 +1,6 @@
 package com.sunmi.cloudprinter.utils;
 
-import com.sunmi.cloudprinter.bean.Router;
+import com.sunmi.cloudprinter.bean.PrintRouter;
 import com.sunmi.cloudprinter.constant.Constants;
 
 import java.io.UnsupportedEncodingException;
@@ -70,26 +70,26 @@ public class Utility {
     /**
      * 命令码 02
      */
-    public static Router getRouter(byte[] data) {
-        Router router = new Router();
+    public static PrintRouter getRouter(byte[] data) {
+        PrintRouter printRouter = new PrintRouter();
         try {
             byte[] bName = new byte[64];
             byte[] bRssi = new byte[4];
             System.arraycopy(data, 6, bName, 0, bName.length);
             byte bHasPwd = data[6 + bName.length];
             System.arraycopy(data, 7 + bName.length, bRssi, 0, bRssi.length);
-            router.setName(new String(bName, "utf-8"));
+            printRouter.setName(new String(bName, "utf-8"));
             if (bHasPwd == 0) {
-                router.setHasPwd(false);
+                printRouter.setHasPwd(false);
             } else {
-                router.setHasPwd(true);
+                printRouter.setHasPwd(true);
             }
-            router.setRssi(ByteUtils.byte4ToIntL(bRssi));
-            router.setEssid(bName);
+            printRouter.setRssi(ByteUtils.byte4ToIntL(bRssi));
+            printRouter.setEssid(bName);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        return router;
+        return printRouter;
     }
 
     /**

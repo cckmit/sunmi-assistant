@@ -86,6 +86,11 @@ public class IpcStartConfigActivity extends BaseActivity {
         tvIndicator.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         tvIndicator.getPaint().setAntiAlias(true);
         ViewUtils.setPrivacy(this, ctvPrivacy, com.commonlibrary.R.color.white_40a, false);
+        btnStart.setEnabled(ctvPrivacy.isChecked());
+        ctvPrivacy.setOnClickListener(v -> {
+            ctvPrivacy.toggle();
+            btnStart.setEnabled(ctvPrivacy.isChecked());
+        });
     }
 
     @Click(resName = "btn_start")

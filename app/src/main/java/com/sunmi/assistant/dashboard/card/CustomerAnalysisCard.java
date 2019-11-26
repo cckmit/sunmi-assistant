@@ -213,7 +213,8 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
 
         mAdapter.setDatas(model.list);
         mAdapter.notifyDataSetChanged();
-        view.post(view::requestLayout);
+        ListView lv = holder.getView(R.id.lv_dashboard_list);
+        view.post(lv::requestLayout);
     }
 
     @Override

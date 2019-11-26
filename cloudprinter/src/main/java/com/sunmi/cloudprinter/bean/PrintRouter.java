@@ -2,7 +2,7 @@ package com.sunmi.cloudprinter.bean;
 
 import java.io.Serializable;
 
-public class Router implements Serializable {
+public class PrintRouter implements Serializable {
     private String name;
     private boolean hasPwd;
     private String pwd;

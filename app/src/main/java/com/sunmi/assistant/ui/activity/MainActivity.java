@@ -29,6 +29,7 @@ import com.sunmi.assistant.mine.presenter.MessageCountPresenter;
 import com.sunmi.assistant.utils.MainTab;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.impl.RouterRequest;
 
 import org.androidannotations.annotations.AfterViews;
@@ -45,6 +46,7 @@ import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.constant.RouterConfig;
 import sunmi.common.notification.BaseNotification;
+import sunmi.common.router.AppApi;
 import sunmi.common.rpc.mqtt.MqttManager;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.GotoActivityUtils;
@@ -90,7 +92,7 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
             initIpc();
         }
         if (TextUtils.isEmpty(SpUtils.getCompanyName())) {
-            GotoActivityUtils.gotoLoginActivity(context, "");
+            Router.withApi(AppApi.class).goToLogin(context,"");
         } else {
             initTabs();
             initMessageBadge();
