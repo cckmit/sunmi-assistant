@@ -3,6 +3,7 @@ package com.sunmi.assistant.pos;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -62,6 +63,8 @@ public class PosManagerActivity extends BaseMvpActivity<PosPresenter> implements
     TextView posBattery;
     @ViewById(R.id.iv_battery)
     ImageView ivBattery;
+    @ViewById(R.id.iv_dev)
+    ImageView ivDev;
     @ViewById(R.id.tv_guarantee_status)
     TextView tvGuaranteeStatus;
 
@@ -81,6 +84,7 @@ public class PosManagerActivity extends BaseMvpActivity<PosPresenter> implements
     void init() {
         mPresenter = new PosPresenter(device.getDeviceid());
         mPresenter.attachView(this);
+        mPresenter.getPosType(device.getModel());
         posName.setText("SUNMI " + device.getModel());
         getPosDetails();
         startExecutorService();
@@ -184,6 +188,13 @@ public class PosManagerActivity extends BaseMvpActivity<PosPresenter> implements
             tvGuaranteeStatus.setText(R.string.pos_expire);
             tvGuaranteeStatus.setTextColor(ContextCompat.getColor(this, R.color.caution_primary));
         }
+    }
+
+    @Override
+    public void getPosTypeSuccess(boolean isDesktop) {
+        ivDev.setBackgroundResource(isDesktop ? R.mipmap.ic_pos_dev_desktop : R.mipmap.ic_pos_dev);
+        posBattery.setVisibility(isDesktop ? View.GONE : View.VISIBLE);
+        ivBattery.setVisibility(isDesktop ? View.GONE : View.VISIBLE);
     }
 
     @Override

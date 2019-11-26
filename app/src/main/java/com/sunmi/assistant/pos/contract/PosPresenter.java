@@ -64,4 +64,23 @@ public class PosPresenter extends BasePresenter<PosContract.View>
             }
         });
     }
+
+    @Override
+    public void getPosType(String model) {
+        String[] arrays = {"\"" + model + "\""};
+        PosApi.getInstance().getCategoryByModel(arrays, new RetrofitCallback<Object>() {
+            @Override
+            public void onSuccess(int code, String msg, Object data) {
+                String mData = data.toString();
+                if (isViewAttached()) {
+                    mView.getPosTypeSuccess(mData.contains("Desktop_Products"));
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, Object data) {
+                LogCat.e("TAG", "code=" + code + " , msg=" + msg);
+            }
+        });
+    }
 }

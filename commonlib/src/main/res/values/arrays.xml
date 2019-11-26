@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string-array name="sunmi_devices">
         <item>@string/sunmi_device_w1</item>
         <item>@string/sunmi_device_ss</item>
@@ -22,5 +22,13 @@
         <item>@string/ipc_setting_detection_day_saturday</item>
         <item>@string/ipc_setting_detection_day_sunday</item>
     </string-array>
-
+    <string-array name="week_name_abbr">
+        <item>日</item>
+        <item>一</item>
+        <item>二</item>
+        <item>三</item>
+        <item>四</item>
+        <item>五</item>
+        <item>六</item>
+    </string-array>
 </resources>

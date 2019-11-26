@@ -95,7 +95,6 @@ public class PosArcView extends View {
         //设置文本的对齐方式
         mTextPaint.setTextAlign(Paint.Align.CENTER);
         mTextPaint.setTextSize(dp2px(25));
-
     }
 
     @SuppressLint("DrawAllocation")
@@ -106,8 +105,7 @@ public class PosArcView extends View {
         centerY = getHeight() / 2;
         //绘制弧度
         drawArc(canvas);
-        //绘制文本
-//        drawText(canvas);
+        //绘制大圆
         initBigPaint(canvas);
     }
 
@@ -140,7 +138,7 @@ public class PosArcView extends View {
         RectF mRectF = new RectF(mStrokeWith + dp2px(5), mStrokeWith + dp2px(5), getWidth() - mStrokeWith - dp2px(5), getHeight() - mStrokeWith);
         canvas.drawArc(mRectF, startAngle, mAngle, false, mArcPaint);
         //绘制当前数值对应的圆弧
-        mArcPaint.setColor(Color.parseColor("#00000000"));//透明
+//        mArcPaint.setColor(Color.parseColor("#00000000"));//透明
         //根据当前数据绘制对应的圆弧
         canvas.drawArc(mRectF, startAngle, mIncludedAngle, false, mArcPaint);
     }

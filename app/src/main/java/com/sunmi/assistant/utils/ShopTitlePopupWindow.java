@@ -41,7 +41,8 @@ public class ShopTitlePopupWindow extends PopupWindow implements View.OnTouchLis
      */
     private static final int SHOP_ITEM_SIZE = 7;
     private Activity mContext;
-    private TextView mSetViewImg;
+    private TextView mSetTitleView;
+    private List<ShopInfo> mShopList;
 
     @SuppressLint("ClickableViewAccessibility")
     public ShopTitlePopupWindow(Activity activity, View topToPopupWindowView,
@@ -49,7 +50,8 @@ public class ShopTitlePopupWindow extends PopupWindow implements View.OnTouchLis
         super();
         if (activity != null) {
             this.mContext = activity;
-            this.mSetViewImg = mSetViewImg;
+            this.mSetTitleView = mSetViewImg;
+            this.mShopList = shopList;
         }
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View viewLayout = inflater.inflate(R.layout.device_popwindow_shop_list, null);
@@ -93,8 +95,8 @@ public class ShopTitlePopupWindow extends PopupWindow implements View.OnTouchLis
     }
 
     private void setImageBackground() {
-        if (mSetViewImg != null) {
-            mSetViewImg.setCompoundDrawablesWithIntrinsicBounds(null, null,
+        if (mSetTitleView != null) {
+            mSetTitleView.setCompoundDrawablesWithIntrinsicBounds(null, null,
                     ContextCompat.getDrawable(mContext, R.drawable.ic_arrow_drop_down_white), null);
         }
     }
@@ -108,7 +110,9 @@ public class ShopTitlePopupWindow extends PopupWindow implements View.OnTouchLis
             //title+statusBar高度
             int titleHeight = (int) mContext.getResources().getDimension(R.dimen.dp_64) + Utils.getStatusBarHeight(mContext);
             //RecyclerView底部Y高度坐标
-            int recyclerViewBottomHeight = (int) (mContext.getResources().getDimension(R.dimen.dp_48) * 7.5 + (int) mContext.getResources().getDimension(R.dimen.dp_32));
+            int recyclerViewBottomHeight = mShopList.size() > SHOP_ITEM_SIZE ?
+                    (int) (mContext.getResources().getDimension(R.dimen.dp_48) * 7.5 + (int) mContext.getResources().getDimension(R.dimen.dp_32)) :
+                    (int) (mContext.getResources().getDimension(R.dimen.dp_48) * mShopList.size() + (int) mContext.getResources().getDimension(R.dimen.dp_32));
             if (this.isShowing() && event.getY() < titleHeight || event.getY() > recyclerViewBottomHeight) {
                 dismiss();
                 setImageBackground();
@@ -157,6 +161,7 @@ public class ShopTitlePopupWindow extends PopupWindow implements View.OnTouchLis
                 dropdownItemName.setTextColor(ContextCompat.getColor(mContext, R.color.text_normal));
             }
             holder.itemView.setOnClickListener(v -> {
+                mSetTitleView.setText(shopInfo.getShopName());
                 SpUtils.setShopId(shopInfo.getShopId());
                 SpUtils.setShopName(shopInfo.getShopName());
                 BaseNotification.newInstance().postNotificationName(CommonNotifications.shopSwitched);
