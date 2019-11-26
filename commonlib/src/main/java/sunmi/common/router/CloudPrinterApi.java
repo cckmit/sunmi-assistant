@@ -12,12 +12,13 @@ import sunmi.common.constant.RouterConfig;
 /**
  * Description:
  *
- * @author linyuanpeng on 2019-11-20.
+ * @author linyuanpeng on 2019-11-26.
  */
-@RouterApiAnno()
-@HostAnno(RouterConfig.Ipc.NAME)
-public interface IpcApi {
+@RouterApiAnno
+@HostAnno(RouterConfig.CloudPrinter.NAME)
+public interface CloudPrinterApi {
 
-    @PathAnno(RouterConfig.Ipc.IPC_START_CONFIG)
-    void goToIpcStartConfig(Context context, @ParameterAnno("ipcType") int type);
+    @PathAnno(RouterConfig.CloudPrinter.START_CONFIG_PRINTER)
+    void goToSartConfigPrinter(Context context, @ParameterAnno("shopId") int shopId);
+
 }

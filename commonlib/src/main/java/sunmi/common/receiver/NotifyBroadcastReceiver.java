@@ -5,6 +5,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.xiaojinzi.component.impl.Router;
+
+import sunmi.common.router.AppApi;
 import sunmi.common.utils.GotoActivityUtils;
 
 /**
@@ -14,7 +17,7 @@ import sunmi.common.utils.GotoActivityUtils;
 public class NotifyBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        GotoActivityUtils.gotoMsgCenterActivity(context);
+        Router.withApi(AppApi.class).goToMsgCenter(context);
         NotificationManager nm = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
         nm.cancelAll();

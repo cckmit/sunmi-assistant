@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.model.StorageListResp;
-import com.sunmi.ipc.router.SunmiServiceApi;
+import sunmi.common.router.SunmiServiceApi;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.ipc.setting.IpcSettingSdcardActivity_;
@@ -50,7 +50,6 @@ import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.ViewHolder;
-import sunmi.common.view.activity.StartConfigSMDeviceActivity_;
 import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.dialog.ListDialog;
 
@@ -161,14 +160,14 @@ public class IpcConfigCompletedActivity extends BaseActivity {
         if (isSunmiLink) {
             setResult(RESULT_OK);
         } else {
-            Router.withApi(IpcApi.class).goToIpcStartConfig(deviceType);
+            Router.withApi(IpcApi.class).goToIpcStartConfig(context,deviceType);
         }
         finish();
     }
 
     @Click(resName = "btn_cloud")
     void cloudClick() {
-        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(CommonConfig.CLOUD_STORAGE_URL, snList);
+        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context,CommonConfig.CLOUD_STORAGE_URL, snList);
     }
 
     @Override
