@@ -37,21 +37,29 @@ public class VerticalCalendar extends LinearLayout {
     private Calendar selected;
 
     public VerticalCalendar(Context context) {
-        this(context, null);
+        this(context, new Config());
     }
 
-    public VerticalCalendar(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+    public VerticalCalendar(Context context, Config config) {
+        this(context, null, config);
     }
 
     public VerticalCalendar(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        this.context = context;
-        init();
+        this(context, attrs, defStyleAttr, new Config());
     }
 
-    private void init() {
-        config = new Config();
+    public VerticalCalendar(Context context, AttributeSet attrs, Config config) {
+        this(context, attrs, 0, config);
+    }
+
+    public VerticalCalendar(Context context, AttributeSet attrs, int defStyleAttr, Config config) {
+        super(context, attrs, defStyleAttr);
+        this.context = context;
+        init(config);
+    }
+
+    private void init(Config config) {
+        this.config = config;
         initViews();
         initCalendarDatas();
     }
