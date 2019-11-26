@@ -30,7 +30,10 @@ public class ZFTimeLine extends View {
     public static final int STYLE_NORMAL = 0;
     public static final int STYLE_BIG = 1;
 
-    private final int INTERVAL_SECONDS = 60 * 10; //小刻度代表的秒数
+    // 每小刻度时间（秒），默认10分钟
+    private int intervalSeconds = 60 * 10;
+    // 每大刻度包含小刻度的个数，默认6个，即1小时
+    private int intervalCount = 6;
     private int intervalValue;                    //小刻度宽度
     private long currentInterval;                 //中间刻度对应的秒数
 
@@ -111,6 +114,17 @@ public class ZFTimeLine extends View {
         this.listener = listener;
     }
 
+    /**
+     * 设定自定义的小刻度时间间隔以及每个大刻度包含小刻度的个数
+     *
+     * @param second 每个小刻度代表的时间段（秒）
+     * @param count  每个大刻度包含小刻度的个数
+     */
+    public void setInterval(int second, int count) {
+        intervalSeconds = second;
+        intervalCount = count;
+    }
+
     //把当前秒数设置我中间刻度对应的秒数
     private void timeNow() {
         currentInterval = System.currentTimeMillis() / 1000;
@@ -118,7 +132,7 @@ public class ZFTimeLine extends View {
 
     //宽度1所代表的秒数
     private long secondsOfIntervalValue() {
-        return (long) (INTERVAL_SECONDS / intervalValue);
+        return (long) (intervalSeconds / intervalValue);
     }
 
     private float dip2px(float dipValue) {
@@ -154,8 +168,8 @@ public class ZFTimeLine extends View {
         long rightInterval = Math.min(currentInterval + centerX * secondsOfIntervalValue(), rightBound);
 
         // 第一个和最后一个刻度线所代表的秒数
-        long interval = (long) Math.ceil((double) leftInterval / INTERVAL_SECONDS) * INTERVAL_SECONDS;
-        long lastInterval = (long) Math.floor((double) rightInterval / INTERVAL_SECONDS) * INTERVAL_SECONDS;
+        long interval = (long) Math.ceil((double) leftInterval / intervalSeconds) * intervalSeconds;
+        long lastInterval = (long) Math.floor((double) rightInterval / intervalSeconds) * intervalSeconds;
         // 第一个刻度线的位置
         float x = (interval - currentInterval) / secondsOfIntervalValue() + centerX;
         float lastX = (lastInterval - currentInterval) / secondsOfIntervalValue() + centerX;
@@ -228,7 +242,7 @@ public class ZFTimeLine extends View {
         }
         // 画刻度线
         while (x >= 0 && x <= lastX) {
-            long rem = interval % (INTERVAL_SECONDS * 6);
+            long rem = interval % (intervalSeconds * intervalCount);
             // 根据秒数值对大刻度间隔是否整除判断画长刻度或者短刻度
             if (rem != 0) {
                 // 不可整除，小刻度
@@ -242,7 +256,7 @@ public class ZFTimeLine extends View {
             }
             //下一个刻度
             x = x + intervalValue;
-            interval = interval + INTERVAL_SECONDS;
+            interval = interval + intervalSeconds;
         }
         //画中间线
         canvas.drawRoundRect(centerX - lineCenterWidth / 2, lineCenterTop,
@@ -322,7 +336,9 @@ public class ZFTimeLine extends View {
         if (onLock) {
             return;
         }
-        if (timeInterval == 0) return;
+        if (timeInterval == 0) {
+            return;
+        }
         currentInterval = timeInterval;
         invalidate();
     }

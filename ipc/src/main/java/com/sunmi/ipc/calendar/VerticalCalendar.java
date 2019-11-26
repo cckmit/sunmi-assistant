@@ -37,21 +37,33 @@ public class VerticalCalendar extends LinearLayout {
     private Calendar selected;
 
     public VerticalCalendar(Context context) {
-        this(context, null);
+        this(context, new Config());
     }
 
-    public VerticalCalendar(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+    public VerticalCalendar(Context context, Config config) {
+        this(context, null, config);
     }
 
     public VerticalCalendar(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        this.context = context;
-        init();
+        this(context, attrs, defStyleAttr, new Config());
     }
 
-    private void init() {
-        config = new Config();
+    public VerticalCalendar(Context context, AttributeSet attrs, Config config) {
+        this(context, attrs, 0, config);
+    }
+
+    public VerticalCalendar(Context context, AttributeSet attrs, int defStyleAttr, Config config) {
+        super(context, attrs, defStyleAttr);
+        this.context = context;
+        init(config);
+    }
+
+    private void init(Config config) {
+        this.config = config;
+        points.clear();
+        for (Calendar point : config.getPoints()) {
+            points.add(calendarToTimestamp(point));
+        }
         initViews();
         initCalendarDatas();
     }
@@ -90,8 +102,11 @@ public class VerticalCalendar extends LinearLayout {
         //计算日期
         Calendar min = config.getMinDate();
         Calendar max = config.getMaxDate();
-        Calendar month = (Calendar) min.clone();
-        month.set(Calendar.DATE, 1);
+        Calendar month = Calendar.getInstance();
+        int yearInt = min.get(Calendar.YEAR);
+        int monthInt = min.get(Calendar.MONTH);
+        month.clear();
+        month.set(yearInt, monthInt, 1);
         while (month.before(max)) {
             int monthIndex = month.get(Calendar.MONTH);
             Calendar date = (Calendar) month.clone();
@@ -116,7 +131,6 @@ public class VerticalCalendar extends LinearLayout {
 
         //设置Adapter
         initAdapter();
-
     }
 
     private long calendarToTimestamp(Calendar c) {
@@ -135,6 +149,7 @@ public class VerticalCalendar extends LinearLayout {
         } else {
             mAdapter.updateDatas(data, config);
         }
+        recyclerViewCalendar.scrollToPosition(data.size() - 1);
     }
 
     public void setConfig(Config config) {
