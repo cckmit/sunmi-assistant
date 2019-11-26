@@ -61,6 +61,7 @@ import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.IVideoPlayer;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.Utils;
 import sunmi.common.utils.VolumeHelper;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
@@ -290,7 +291,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
                     .setMinDate(c)
                     .setPoint(getTimeSlotOfCalendar(timeSlotsInMonth))
                     .build();
-            int height = getResources().getDimensionPixelSize(R.dimen.dp_500);
+            int height = (int) (Utils.getScreenHeight(this) * 0.75);
             calendarView = new VerticalCalendar(this, config);
             calendarView.setOnCalendarSelectListener(calendar -> calendarSelected = calendar);
             ViewGroup.MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(
