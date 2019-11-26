@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.commonlibrary.R;
 import com.google.gson.Gson;
+import com.xiaojinzi.component.impl.Router;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -14,6 +15,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import sunmi.common.base.BaseApplication;
+import sunmi.common.router.AppApi;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.GotoActivityUtils;
@@ -39,7 +41,7 @@ public abstract class RetrofitCallback<T> implements Callback<BaseResponse<T>> {
                             || RpcErrorCode.HTTP_EXPIRE_TOKEN == errorResp.getCode()
                             || RpcErrorCode.HTTP_JWT_TOKEN_EXPIRED == errorResp.getCode()) {
                         CommonHelper.logout();
-                        GotoActivityUtils.gotoLoginActivity(BaseApplication.getContext(), "1");
+                        Router.withApi(AppApi.class).goToLogin(BaseApplication.getContext(), "1");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

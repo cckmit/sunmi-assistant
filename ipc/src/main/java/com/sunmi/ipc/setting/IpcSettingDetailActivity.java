@@ -3,6 +3,7 @@ package com.sunmi.ipc.setting;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.rpc.IpcCloudApi;
+import com.xiaojinzi.component.impl.Router;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -12,6 +13,7 @@ import org.androidannotations.annotations.ViewById;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.notification.BaseNotification;
+import sunmi.common.router.AppApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.NetworkUtils;
@@ -74,7 +76,7 @@ public class IpcSettingDetailActivity extends BaseActivity {
                     public void onSuccess(int code, String msg, Object data) {
                         shortTip(R.string.str_delete_success);
                         BaseNotification.newInstance().postNotificationName(IpcConstants.refreshIpcList);
-                        GotoActivityUtils.gotoMainActivity(IpcSettingDetailActivity.this);
+                        Router.withApi(AppApi.class).goToMain(context);
                     }
 
                     @Override

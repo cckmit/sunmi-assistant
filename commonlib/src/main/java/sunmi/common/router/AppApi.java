@@ -4,10 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.xiaojinzi.component.anno.ParameterAnno;
+import com.xiaojinzi.component.anno.router.AfterActionAnno;
 import com.xiaojinzi.component.anno.router.FlagAnno;
 import com.xiaojinzi.component.anno.router.HostAnno;
 import com.xiaojinzi.component.anno.router.PathAnno;
 import com.xiaojinzi.component.anno.router.RouterApiAnno;
+import com.xiaojinzi.component.support.Action;
 
 import sunmi.common.constant.RouterConfig;
 
@@ -30,6 +32,9 @@ public interface AppApi {
 
     @PathAnno(RouterConfig.App.MAIN)
     void goToMain(Context context);
+
+    @PathAnno(RouterConfig.App.MAIN)
+    void goToMain(Context context, @AfterActionAnno Action action);
 
     @PathAnno(RouterConfig.App.SUNMILINK)
     void goToSunmiLink(Context context, @ParameterAnno("shopId") String shopId, @ParameterAnno("sn") String sn);
