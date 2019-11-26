@@ -192,7 +192,8 @@ public class IVideoPlayer extends RelativeLayout {
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                mediaPlayer.pause();
+                                if (mediaPlayer != null)
+                                    mediaPlayer.pause();
                             }
                         }, 100);
                     }
