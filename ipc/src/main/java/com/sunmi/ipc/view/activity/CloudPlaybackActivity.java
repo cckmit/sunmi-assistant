@@ -153,7 +153,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     private Dialog calendarDialog;
     private VerticalCalendar calendarView;
-    private Calendar calendarSelected = Calendar.getInstance();
+    private Calendar calendarSelected;
 
     @AfterViews
     void init() {
@@ -300,10 +300,14 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
                     .setTitle(R.string.str_title_calendar)
                     .setContent(calendarView, lp)
                     .setCancelButton(R.string.sm_cancel)
-                    .setOkButton(R.string.str_confirm, (dialog, which) ->
-                            switchDay(calendarSelected.getTimeInMillis() / 1000))
+                    .setOkButton(R.string.str_confirm, (dialog, which) -> {
+                        if (calendarSelected != null) {
+                            switchDay(calendarSelected.getTimeInMillis() / 1000);
+                        }
+                    })
                     .create();
         }
+        calendarSelected = null;
         calendarDialog.show();
     }
 
