@@ -121,6 +121,9 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
 
     @Override
     public void deleteMessageSuccess() {
+        if (dataList == null || dataList.size() == 0) {
+            return;
+        }
         dataList.remove(deletePosition);
         adapter.notifyItemRemoved(deletePosition);
     }
