@@ -309,8 +309,8 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         List<Calendar> result = new ArrayList<>();
         Calendar c = Calendar.getInstance();
         for (VideoTimeSlotBean slot : slots) {
-            long start = slot.getStartTime();
-            long end = slot.getEndTime();
+            long start = slot.getStartTime() * 1000;
+            long end = slot.getEndTime() * 1000;
             c.clear();
             c.setTimeInMillis(start);
             while (c.getTimeInMillis() < end) {
