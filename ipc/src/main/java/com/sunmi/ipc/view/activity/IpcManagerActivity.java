@@ -31,7 +31,6 @@ import com.sunmi.ipc.model.IpcManageBean;
 import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.model.VideoTimeSlotBean;
 import com.sunmi.ipc.presenter.IpcManagerPresenter;
-import sunmi.common.router.SunmiServiceApi;
 import com.sunmi.ipc.setting.IpcSettingActivity_;
 import com.sunmi.ipc.utils.AACDecoder;
 import com.sunmi.ipc.utils.H264Decoder;
@@ -64,6 +63,7 @@ import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.constant.enums.DeviceStatus;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.router.SunmiServiceApi;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.DeviceTypeUtils;
@@ -236,6 +236,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             showPlayFail(PLAY_FAIL_OFFLINE);
             tvCalenderP.setEnabled(false);
             llCalender.setClickable(false);
+            hideControllerPanel();
         } else {
             showVideoLoading();
         }
@@ -428,6 +429,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     void qualityPortraitClick() {
         if (playType == PLAY_TYPE_LIVE) {
             switchQuality();
+            setPanelVisible(View.GONE);
         }
     }
 
@@ -488,7 +490,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         }
         pausePlay();
         CloudPlaybackActivity_.intent(context).device(device)
-                .cloudStorageServiceStatus(cloudStorageServiceStatus).start();
+                .cloudStorageServiceStatus(cloudStorageServiceStatus)
+                .start().withAnimation(R.anim.slide_in_right, 0);
     }
 
     //点击屏幕
@@ -1440,13 +1443,13 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                 btnDetail.setOnClickListener(v -> {
                     if (bean.getLeftImageResId() == R.mipmap.ipc_cloud_storage) {
                         if (TextUtils.equals(bean.getRightText(), getString(R.string.str_setting_detail))) {
-                            Router.withApi(SunmiServiceApi.class).goToServiceDetail(context,device.getDeviceid(),
+                            Router.withApi(SunmiServiceApi.class).goToServiceDetail(context, device.getDeviceid(),
                                     true, device.getName());
                         } else {
                             ArrayList<String> snList = new ArrayList<>();
                             snList.add(device.getDeviceid());
                             Router.withApi(SunmiServiceApi.class)
-                                    .goToWebViewCloud(context,CommonConfig.CLOUD_STORAGE_URL, snList);
+                                    .goToWebViewCloud(context, CommonConfig.CLOUD_STORAGE_URL, snList);
                         }
                     }
                 });

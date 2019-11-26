@@ -27,7 +27,6 @@ import com.sunmi.ipc.contract.CloudPlaybackContract;
 import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.model.VideoTimeSlotBean;
 import com.sunmi.ipc.presenter.CloudPlaybackPresenter;
-import sunmi.common.router.SunmiServiceApi;
 import com.sunmi.ipc.view.ZFTimeLine;
 import com.xiaojinzi.component.impl.Router;
 
@@ -55,6 +54,7 @@ import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.router.SunmiServiceApi;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.DeviceTypeUtils;
@@ -341,7 +341,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     void openServiceClick() {
         ArrayList<String> snList = new ArrayList<>();
         snList.add(device.getDeviceid());
-        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context,CommonConfig.CLOUD_STORAGE_URL, snList);
+        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.CLOUD_STORAGE_URL, snList);
     }
 
     @Click(resName = "rl_top")
@@ -421,7 +421,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @Override
     public void onStartPlay() {
-        hideVideoLoading();
+        hideLoading();
     }
 
     @Override
@@ -520,7 +520,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @UiThread
     public void showPlayFail(String tip) {
-        hideVideoLoading();
+        hideLoading();
         tvPlayFail.setText(tip);
         llPlayFail.setVisibility(View.VISIBLE);
     }
@@ -542,8 +542,13 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @UiThread
     public void hideVideoLoading() {
-        hideLoadingDialog();
         rlLoading.setVisibility(View.GONE);
+    }
+
+    @UiThread
+    public void hideLoading() {
+        hideLoadingDialog();
+        hideVideoLoading();
     }
 
     private void setTextViewClickable(TextView textView, boolean clickable) {
