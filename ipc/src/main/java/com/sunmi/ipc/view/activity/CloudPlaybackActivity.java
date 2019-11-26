@@ -184,6 +184,8 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     @SuppressLint("ClickableViewAccessibility")
     void initControllerPanel() {
         initVolume();
+        // 设置时间轴每个小刻度5分钟，每个大刻度包含6个小刻度
+        timeLine.setInterval(300, 6);
         timeLine.setListener(this);
     }
 
