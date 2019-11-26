@@ -55,8 +55,8 @@
 
     <ImageView
         android:id="@+id/iv_ipc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_345"
+        android:layout_height="@dimen/dp_294"
         android:layout_below="@id/title_bar"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_170"

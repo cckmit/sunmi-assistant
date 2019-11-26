@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import com.xiaojinzi.component.impl.Router;
 
 import sunmi.common.base.BaseApplication;
+import sunmi.common.constant.RouterConfig;
 import sunmi.common.router.AppApi;
 import sunmi.common.utils.log.LogCat;
 
@@ -44,78 +45,15 @@ public class GotoActivityUtils {
     }
 
     public static void gotoLoginActivity(Context context, String extra) {
-        Router.withApi(AppApi.class).goToLogin(extra);
+        Router.withApi(AppApi.class).goToLogin(context,extra);
     }
 
     public static void gotoMainActivityClearTask(Context context) {
-        try {
-            Class<?> mainActivity = Class.forName("com.sunmi.assistant.ui.activity.MainActivity_");
-            Intent intent = new Intent(context, mainActivity);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            context.startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Router.withApi(AppApi.class).goToMainClearTask(context);
     }
 
     public static void gotoMainActivity(Context context) {
-        try {
-            Class<?> mainActivity = Class.forName("com.sunmi.assistant.ui.activity.MainActivity_");
-            Intent intent = new Intent(context, mainActivity);
-            context.startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void gotoSunmiLinkSearchActivity(Context context, String shopId, String sn) {
-        try {
-            Class<?> loginActivity = Class.forName("com.sunmi.assistant.ui.activity.SunmiLinkSearchActivity_");
-            Intent intent = new Intent(context, loginActivity);
-            if (!TextUtils.isEmpty(sn))
-                intent.putExtra("sn", sn);
-            if (!TextUtils.isEmpty(shopId))
-                intent.putExtra("shopId", shopId);
-            context.startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void gotoMsgDetailActivity(Context context, int modelId, String modelName) {
-        try {
-            Class<?> activity = Class.forName("com.sunmi.assistant.mine.message.MsgDetailActivity_");
-            Intent intent = new Intent(context, activity);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                    Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra("modelId", modelId);
-            intent.putExtra("modelName", modelName);
-            context.startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void gotoMsgCenterActivity(Context context) {
-        try {
-            Class<?> activity = Class.forName("com.sunmi.assistant.mine.message.MsgCenterActivity_");
-            Intent intent = new Intent(context, activity);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                    Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void gotoRegisterActivity(Context context) {
-        try {
-            Class<?> registerActivity = Class.forName("com.sunmi.assistant.ui.activity.login.RegisterActivity");
-            Intent intent = new Intent(context, registerActivity);
-            context.startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Router.withApi(AppApi.class).goToMain(context);
     }
 
 }

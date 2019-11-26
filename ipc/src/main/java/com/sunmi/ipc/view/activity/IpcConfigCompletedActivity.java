@@ -160,14 +160,14 @@ public class IpcConfigCompletedActivity extends BaseActivity {
         if (isSunmiLink) {
             setResult(RESULT_OK);
         } else {
-            Router.withApi(IpcApi.class).goToIpcStartConfig(deviceType);
+            Router.withApi(IpcApi.class).goToIpcStartConfig(context,deviceType);
         }
         finish();
     }
 
     @Click(resName = "btn_cloud")
     void cloudClick() {
-        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(CommonConfig.CLOUD_STORAGE_URL, snList);
+        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context,CommonConfig.CLOUD_STORAGE_URL, snList);
     }
 
     @Override
