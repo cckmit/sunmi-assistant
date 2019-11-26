@@ -18,6 +18,12 @@ android {
                 arguments = ["HOST": "commonlib"]
             }
         }
+
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
+
         multiDexEnabled true
     }
 

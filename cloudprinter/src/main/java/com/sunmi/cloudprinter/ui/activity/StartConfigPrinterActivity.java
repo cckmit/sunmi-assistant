@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -49,6 +50,8 @@ public class StartConfigPrinterActivity extends BaseActivity {
     TextView tvTip4;
     @ViewById(resName = "ctv_privacy")
     CheckedTextView ctvPrivacy;
+    @ViewById(resName = "btn_start")
+    Button btnStart;
 
     @Extra
     int shopId;
@@ -84,6 +87,11 @@ public class StartConfigPrinterActivity extends BaseActivity {
 //        tvTip4.setVisibility(View.VISIBLE);
         ViewUtils.setPrivacy(this, ctvPrivacy, R.color.white_40a, false);
         BluetoothClient mClient = new BluetoothClient(context);
+        btnStart.setEnabled(ctvPrivacy.isChecked());
+        ctvPrivacy.setOnClickListener(v -> {
+            ctvPrivacy.toggle();
+            btnStart.setEnabled(ctvPrivacy.isChecked());
+        });
     }
 
     @Click(resName = "btn_start")
