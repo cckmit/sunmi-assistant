@@ -35,8 +35,7 @@ public class CloudPlaybackPresenter extends BasePresenter<CloudPlaybackContract.
                         if (isViewAttached()) {
                             if (5087 == code) {//no matched record
                                 mView.showNoVideoTip();
-                            } else if (5019 == code) {//failed to find ipc device info
-
+//                            } else if (5019 == code) {//failed to find ipc device info
                             } else {
                                 mView.getCloudTimeSlotFail();
                             }
