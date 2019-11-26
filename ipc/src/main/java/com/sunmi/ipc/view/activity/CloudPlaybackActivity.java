@@ -184,6 +184,8 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     @SuppressLint("ClickableViewAccessibility")
     void initControllerPanel() {
         initVolume();
+        // 设置时间轴每个小刻度5分钟，每个大刻度包含6个小刻度
+        timeLine.setInterval(300, 6);
         timeLine.setListener(this);
     }
 
@@ -309,8 +311,8 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         List<Calendar> result = new ArrayList<>();
         Calendar c = Calendar.getInstance();
         for (VideoTimeSlotBean slot : slots) {
-            long start = slot.getStartTime();
-            long end = slot.getEndTime();
+            long start = slot.getStartTime() * 1000;
+            long end = slot.getEndTime() * 1000;
             c.clear();
             c.setTimeInMillis(start);
             while (c.getTimeInMillis() < end) {
