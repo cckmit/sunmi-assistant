@@ -13,7 +13,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.CalendarView;
 import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.calendar.VerticalCalendar;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.CloudPlaybackContract;
 import com.sunmi.ipc.model.VideoListResp;
@@ -60,7 +60,6 @@ import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.IVideoPlayer;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.VolumeHelper;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.dialog.BottomDialog;
 
@@ -151,7 +150,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     private List<VideoTimeSlotBean> timeSlotsInMonth;
 
     private Dialog calendarDialog;
-    private CalendarView calendarView;
+    private VerticalCalendar calendarView;
     private Calendar calendarSelected = Calendar.getInstance();
 
     @AfterViews
@@ -275,22 +274,17 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
             return;
         }
         if (calendarDialog == null || calendarView == null) {
-            calendarView = new CalendarView(this);
-            calendarView.setMaxDate(System.currentTimeMillis());
-            calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
-                calendarSelected.clear();
-                calendarSelected.set(year, month, dayOfMonth);
-                LogCat.d(TAG, "Selected date:" + calendarSelected);
-            });
-            calendarDialog = new BottomDialog.Builder(context)
+            int height = getResources().getDimensionPixelSize(R.dimen.dp_500);
+            calendarView = new VerticalCalendar(this);
+            calendarView.setOnCalendarSelectListener(calendar -> calendarSelected = calendar);
+            ViewGroup.MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, height);
+            calendarDialog = new BottomDialog.Builder(this)
                     .setTitle(R.string.str_title_calendar)
-                    .setContent(calendarView, new ViewGroup.MarginLayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT))
+                    .setContent(calendarView, lp)
                     .setCancelButton(R.string.sm_cancel)
-                    .setOkButton(R.string.str_confirm, (dialog, which) -> {
-                        switchDay(calendarSelected.getTimeInMillis() / 1000);
-                    })
+                    .setOkButton(R.string.str_confirm, (dialog, which) ->
+                            switchDay(calendarSelected.getTimeInMillis() / 1000))
                     .create();
         }
         calendarDialog.show();
