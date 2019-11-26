@@ -436,7 +436,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @Override
     public void getCloudTimeSlotSuccess(long startTime, long endTime, List<VideoTimeSlotBean> slots) {
-        if (startTime == startTimeCurrentDate + 29 * SECONDS_IN_ONE_DAY) {
+        if (startTime == startTimeCurrentDate + 30 * SECONDS_IN_ONE_DAY) {
             timeSlotsInMonth = slots;
             return;
         }
