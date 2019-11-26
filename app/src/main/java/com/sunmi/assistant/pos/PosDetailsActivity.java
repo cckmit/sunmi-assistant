@@ -141,7 +141,9 @@ public class PosDetailsActivity extends BaseActivity {
         if (TextUtils.isEmpty(imgUrl)) {
             ivPos.setImageResource(DeviceTypeUtils.getInstance().getSunmiDeviceImage(device.getModel()));
         } else {
-            Glide.with(context).load(imgUrl).into(ivPos);
+            if (!PosDetailsActivity.this.isFinishing()) {
+                Glide.with(PosDetailsActivity.this).load(imgUrl).into(ivPos);
+            }
         }
     }
 }
