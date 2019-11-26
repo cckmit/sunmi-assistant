@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.calendar.Config;
 import com.sunmi.ipc.calendar.VerticalCalendar;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.CloudPlaybackContract;
@@ -60,6 +61,7 @@ import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.IVideoPlayer;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.VolumeHelper;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.dialog.BottomDialog;
 
@@ -276,9 +278,19 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         if (isFastClick(1000) || cloudStorageServiceStatus == CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
             return;
         }
+        if (timeSlotsInMonth == null) {
+            LogCat.e(TAG, "Time slots in month is Empty.");
+            return;
+        }
         if (calendarDialog == null || calendarView == null) {
+            Calendar c = Calendar.getInstance();
+            c.add(Calendar.MONTH, -24);
+            Config config = new Config.Builder()
+                    .setMinDate(c)
+                    .setPoint(getTimeSlotOfCalendar(timeSlotsInMonth))
+                    .build();
             int height = getResources().getDimensionPixelSize(R.dimen.dp_500);
-            calendarView = new VerticalCalendar(this);
+            calendarView = new VerticalCalendar(this, config);
             calendarView.setOnCalendarSelectListener(calendar -> calendarSelected = calendar);
             ViewGroup.MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, height);
@@ -291,6 +303,24 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
                     .create();
         }
         calendarDialog.show();
+    }
+
+    private List<Calendar> getTimeSlotOfCalendar(List<VideoTimeSlotBean> slots) {
+        List<Calendar> result = new ArrayList<>();
+        Calendar c = Calendar.getInstance();
+        for (VideoTimeSlotBean slot : slots) {
+            long start = slot.getStartTime();
+            long end = slot.getEndTime();
+            c.clear();
+            c.setTimeInMillis(start);
+            while (c.getTimeInMillis() < end) {
+                result.add((Calendar) c.clone());
+                c.add(Calendar.DATE, 1);
+            }
+            c.setTimeInMillis(end);
+            result.add((Calendar) c.clone());
+        }
+        return result;
     }
 
     private void switchDay(long currentDay) {
