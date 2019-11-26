@@ -3,9 +3,11 @@ package com.sunmi.assistant.utils;
 import android.content.Context;
 
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
+import com.xiaojinzi.component.impl.Router;
 
 import sunmi.common.model.SsoTokenResp;
 import sunmi.common.model.UserInfoBean;
+import sunmi.common.router.AppApi;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.http.RpcCallback;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -54,12 +56,12 @@ public class GetUserInfoUtils {
         CloudApi.checkSession(new RpcCallback(context, false) {
             @Override
             public void onSuccess(int code, String msg, String data) {
-                GotoActivityUtils.gotoMainActivityClearTask(context);
+                Router.withApi(AppApi.class).goToMainClearTask(context);
             }
 
             @Override
             public void onError(int code, String msg, String data) {
-                GotoActivityUtils.gotoMainActivityClearTask(context);
+                Router.withApi(AppApi.class).goToMainClearTask(context);
             }
         });
     }

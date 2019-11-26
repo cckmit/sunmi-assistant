@@ -40,20 +40,8 @@ public class GotoActivityUtils {
                 && !className.contains("CreateShopPreviewActivity")
         ) {
             LogCat.e("TAG", "gotoLoginActivity= " + className);
-            gotoLoginActivity(BaseApplication.getContext(), "1"); //1 剔除多端登录
+            Router.withApi(AppApi.class).goToLogin(BaseApplication.getContext(), "1"); //1 剔除多端登录
         }
-    }
-
-    public static void gotoLoginActivity(Context context, String extra) {
-        Router.withApi(AppApi.class).goToLogin(context,extra);
-    }
-
-    public static void gotoMainActivityClearTask(Context context) {
-        Router.withApi(AppApi.class).goToMainClearTask(context);
-    }
-
-    public static void gotoMainActivity(Context context) {
-        Router.withApi(AppApi.class).goToMain(context);
     }
 
 }

@@ -19,11 +19,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sunmi.cloudprinter.R;
+import com.sunmi.cloudprinter.bean.PrintRouter;
 import com.sunmi.cloudprinter.bean.PrinterDevice;
-import com.sunmi.cloudprinter.bean.Router;
 import com.sunmi.cloudprinter.constant.Constants;
 import com.sunmi.cloudprinter.presenter.SunmiPrinterClient;
 import com.sunmi.cloudprinter.ui.adaper.RouterListAdapter;
+import com.xiaojinzi.component.impl.Router;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -37,7 +38,7 @@ import java.util.List;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.notification.BaseNotification;
-import sunmi.common.utils.GotoActivityUtils;
+import sunmi.common.router.AppApi;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.ToastUtils;
 import sunmi.common.view.SmRecyclerView;
@@ -80,7 +81,7 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
     private CountDownTimer wifiListTimer, wifiConfigTimer;
     private CommonDialog getWifiConfigTimeoutDialog;
 
-    private List<Router> wifiList = new ArrayList<>();
+    private List<PrintRouter> wifiList = new ArrayList<>();
     private RouterListAdapter adapter;
 
     @AfterViews
@@ -157,8 +158,7 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
         if (printerClient != null) {
             printerClient.quitConfig(bleAddress);
         }
-        GotoActivityUtils.gotoMainActivity(context);
-        finish();
+        Router.withApi(AppApi.class).goToMain(context);
     }
 
     @Override
@@ -168,7 +168,7 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
         adapter = new RouterListAdapter(wifiList);
         adapter.setOnItemClickListener(new RouterListAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(int position, List<Router> data) {
+            public void onItemClick(int position, List<PrintRouter> data) {
                 showMessageDialog(data.get(position));
             }
         });
@@ -252,7 +252,7 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
                 }
                 ToastUtils.toastCenter(context, getString(R.string.tip_config_success), R.mipmap.ic_toast_success);
                 BaseNotification.newInstance().postNotificationName(Constants.NOTIFICATION_PRINTER_ADDED);
-                GotoActivityUtils.gotoMainActivity(context);
+                Router.withApi(AppApi.class).goToMain(context);
             }
         }, 1500);
     }
@@ -275,28 +275,28 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
 
     @UiThread
     @Override
-    public void routerFound(Router router) {
-        wifiList.add(router);
+    public void routerFound(PrintRouter printRouter) {
+        wifiList.add(printRouter);
         adapter.notifyDataSetChanged();
     }
 
-    private void showMessageDialog(final Router router) {
-        if (!router.isHasPwd()) {
+    private void showMessageDialog(final PrintRouter printRouter) {
+        if (!printRouter.isHasPwd()) {
             new CommonDialog.Builder(context)
-                    .setTitle(getString(R.string.title_confirm_connect_to_wifi, router.getName()))
+                    .setTitle(getString(R.string.title_confirm_connect_to_wifi, printRouter.getName()))
                     .setCancelButton(R.string.sm_cancel)
                     .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             showLoadingDialog();
                             if (printerClient != null) {
-                                printerClient.setPrinterWifi(bleAddress, router.getEssid(), "");
+                                printerClient.setPrinterWifi(bleAddress, printRouter.getEssid(), "");
                             }
                         }
                     }).create().show();
         } else {
             new InputDialog.Builder(context)
-                    .setTitle(getString(R.string.dialog_msg_input_password, router.getName()))
+                    .setTitle(getString(R.string.dialog_msg_input_password, printRouter.getName()))
                     .setCancelButton(R.string.sm_cancel)
                     .setConfirmButton(R.string.str_confirm, new InputDialog.ConfirmClickListener() {
                         @Override
@@ -307,7 +307,7 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
                             }
                             showLoadingDialog();
                             if (printerClient != null) {
-                                printerClient.setPrinterWifi(bleAddress, router.getEssid(), input);
+                                printerClient.setPrinterWifi(bleAddress, printRouter.getEssid(), input);
                             }
                         }
                     }).create().show();
@@ -333,7 +333,7 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
                         if (wifiConfigTimer != null) {
                             wifiConfigTimer.cancel();
                         }
-                        GotoActivityUtils.gotoMainActivity(context);
+                        Router.withApi(AppApi.class).goToMain(context);
                     }
                 }).setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
                     @Override
@@ -364,8 +364,7 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
                             public void run() {
                                 hideLoadingDialog();
                                 BaseNotification.newInstance().postNotificationName(Constants.NOTIFICATION_PRINTER_ADDED);
-                                GotoActivityUtils.gotoMainActivity(context);
-                                finish();
+                                Router.withApi(AppApi.class).goToMain(context);
                             }
                         }, 1500);
                     }

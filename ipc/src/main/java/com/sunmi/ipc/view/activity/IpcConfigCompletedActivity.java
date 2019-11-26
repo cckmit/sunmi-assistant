@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.model.StorageListResp;
-import sunmi.common.router.SunmiServiceApi;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.ipc.setting.IpcSettingSdcardActivity_;
@@ -36,13 +35,13 @@ import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.SunmiDevice;
-import sunmi.common.router.IpcApi;
+import sunmi.common.router.AppApi;
+import sunmi.common.router.SunmiServiceApi;
 import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DeviceTypeUtils;
-import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SMDeviceDiscoverUtils;
 import sunmi.common.utils.SpUtils;
@@ -142,17 +141,16 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                 Intent intent = new Intent();
                 intent.putExtra("isComplete", true);
                 setResult(RESULT_OK, intent);
+                finish();
             } else {
-                GotoActivityUtils.gotoMainActivity(context);
+                Router.withApi(AppApi.class).goToMain(context);
             }
-            finish();
         }
     }
 
     @Click(resName = "btn_finish")
     void finishClick() {
-        GotoActivityUtils.gotoMainActivity(context);
-        finish();
+        Router.withApi(AppApi.class).goToMain(context, this::finish);
     }
 
     @Click(resName = "btn_retry")
@@ -160,14 +158,14 @@ public class IpcConfigCompletedActivity extends BaseActivity {
         if (isSunmiLink) {
             setResult(RESULT_OK);
         } else {
-            Router.withApi(IpcApi.class).goToIpcStartConfig(context,deviceType);
+            IpcStartConfigActivity_.intent(context).ipcType(deviceType).start();
         }
         finish();
     }
 
     @Click(resName = "btn_cloud")
     void cloudClick() {
-        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context,CommonConfig.CLOUD_STORAGE_URL, snList);
+        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.CLOUD_STORAGE_URL, snList);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.sunmi.cloudprinter.contract;
 
-import com.sunmi.cloudprinter.bean.Router;
+import com.sunmi.cloudprinter.bean.PrintRouter;
 
 import sunmi.common.base.BaseView;
 
@@ -13,7 +13,7 @@ public interface SetPrinterContract {
 
         void onInitNotify();
 
-        void initRouter(Router router);
+        void initRouter(PrintRouter printRouter);
 
 //        void hideProgressBar();
 
