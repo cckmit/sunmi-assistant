@@ -322,6 +322,8 @@ public class PosDetailsResp implements Serializable {
         private String cpuFrequency;
         @SerializedName("used_mem_percent")
         private String usedMemPercent;
+        @SerializedName("used_mem")
+        private String usedMem;
         @SerializedName("total_mem")
         private String totalMem;
         @SerializedName("used_sd")
@@ -399,6 +401,14 @@ public class PosDetailsResp implements Serializable {
 
         public void setTotalSd(String totalSd) {
             this.totalSd = totalSd;
+        }
+
+        public String getUsedMem() {
+            return usedMem;
+        }
+
+        public void setUsedMem(String usedMem) {
+            this.usedMem = usedMem;
         }
     }
 }

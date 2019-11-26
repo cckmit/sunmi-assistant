@@ -31,7 +31,7 @@ import com.sunmi.ipc.model.IpcManageBean;
 import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.model.VideoTimeSlotBean;
 import com.sunmi.ipc.presenter.IpcManagerPresenter;
-import com.sunmi.ipc.router.SunmiServiceApi;
+import sunmi.common.router.SunmiServiceApi;
 import com.sunmi.ipc.setting.IpcSettingActivity_;
 import com.sunmi.ipc.utils.AACDecoder;
 import com.sunmi.ipc.utils.H264Decoder;
@@ -553,15 +553,15 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     public void onVideoReceived(byte[] videoBuffer) {
         hidePlayFail();
         if (videoDecoder != null) {
-            videoDecoder.setVideoData(videoBuffer);
             if (videoDecoder.isPlaying()) {
                 if (playType == PLAY_TYPE_LIVE) {
                     hideVideoLoading();
-                } else if (playType == PLAY_TYPE_PLAYBACK_DEV && (tvTimeScroll != null && tvTimeScroll.isShown())) {
-//            hideVideoLoading();
+                } else if (playType == PLAY_TYPE_PLAYBACK_DEV
+                        && (tvTimeScroll != null && tvTimeScroll.isShown())) {
                     hideTimeScroll();
                 }
             }
+            videoDecoder.setVideoData(videoBuffer);
         }
     }
 
@@ -1440,13 +1440,13 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                 btnDetail.setOnClickListener(v -> {
                     if (bean.getLeftImageResId() == R.mipmap.ipc_cloud_storage) {
                         if (TextUtils.equals(bean.getRightText(), getString(R.string.str_setting_detail))) {
-                            Router.withApi(SunmiServiceApi.class).goToServiceDetail(device.getDeviceid(),
+                            Router.withApi(SunmiServiceApi.class).goToServiceDetail(context,device.getDeviceid(),
                                     true, device.getName());
                         } else {
                             ArrayList<String> snList = new ArrayList<>();
                             snList.add(device.getDeviceid());
                             Router.withApi(SunmiServiceApi.class)
-                                    .goToWebViewCloud(CommonConfig.CLOUD_STORAGE_URL, snList);
+                                    .goToWebViewCloud(context,CommonConfig.CLOUD_STORAGE_URL, snList);
                         }
                     }
                 });

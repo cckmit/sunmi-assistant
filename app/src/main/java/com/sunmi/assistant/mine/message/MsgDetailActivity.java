@@ -1,5 +1,6 @@
 package com.sunmi.assistant.mine.message;
 
+import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +14,8 @@ import com.sunmi.assistant.mine.contract.MessageDetailContract;
 import com.sunmi.assistant.mine.model.MessageListBean;
 import com.sunmi.assistant.mine.presenter.MessageDetailPresenter;
 import com.sunmi.assistant.utils.MessageUtils;
+import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.impl.RouterRequest;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -29,6 +32,7 @@ import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonNotifications;
+import sunmi.common.constant.RouterConfig;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.TitleBarView;
@@ -58,6 +62,14 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
     private boolean loadFinish = false;
     List<MessageListBean.MsgListBean> dataList = new ArrayList<>();
     private int deletePosition;
+
+    @RouterAnno(
+            path = RouterConfig.App.MSGDETAIL
+    )
+    public static Intent start(RouterRequest request){
+        Intent intent = new Intent(request.getRawContext(),MsgDetailActivity_.class);
+        return intent;
+    }
 
     @AfterViews
     void init() {
@@ -121,6 +133,9 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
 
     @Override
     public void deleteMessageSuccess() {
+        if (dataList == null || dataList.size() == 0) {
+            return;
+        }
         dataList.remove(deletePosition);
         adapter.notifyItemRemoved(deletePosition);
     }

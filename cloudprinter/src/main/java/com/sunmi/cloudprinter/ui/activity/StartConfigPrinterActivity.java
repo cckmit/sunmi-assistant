@@ -15,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sunmi.cloudprinter.R;
+import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.impl.RouterRequest;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -24,6 +26,7 @@ import org.androidannotations.annotations.ViewById;
 
 import library.BluetoothClient;
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.RouterConfig;
 import sunmi.common.utils.PermissionUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.ViewUtils;
@@ -74,6 +77,14 @@ public class StartConfigPrinterActivity extends BaseActivity {
             }
         }
     };
+
+    @RouterAnno(
+            path = RouterConfig.CloudPrinter.START_CONFIG_PRINTER
+    )
+    public static Intent start(RouterRequest request) {
+        Intent intent = new Intent(request.getRawContext(), StartConfigPrinterActivity_.class);
+        return intent;
+    }
 
     @AfterViews
     protected void init() {
