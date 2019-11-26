@@ -193,6 +193,9 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         refreshDay();
         if (cloudStorageServiceStatus != CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
             initTimeSlotData(true);
+            mPresenter.getTimeSlots(device.getId(),
+                    startTimeCurrentDate - 30 * SECONDS_IN_ONE_DAY, endTimeCurrentDate);
+
         }
     }
 
@@ -403,6 +406,10 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @Override
     public void getCloudTimeSlotSuccess(long startTime, long endTime, List<VideoTimeSlotBean> slots) {
+        if (startTime == startTimeCurrentDate + 29 * SECONDS_IN_ONE_DAY) {
+            timeSlotsInMonth = slots;
+            return;
+        }
         timeSlotsInDay.clear();
         timeSlotsInDay.addAll(slots);
         if (timeSlotsInDay.size() > 0) {
