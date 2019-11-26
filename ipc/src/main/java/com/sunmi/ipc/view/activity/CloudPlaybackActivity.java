@@ -27,7 +27,7 @@ import com.sunmi.ipc.contract.CloudPlaybackContract;
 import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.model.VideoTimeSlotBean;
 import com.sunmi.ipc.presenter.CloudPlaybackPresenter;
-import com.sunmi.ipc.router.SunmiServiceApi;
+import sunmi.common.router.SunmiServiceApi;
 import com.sunmi.ipc.view.ZFTimeLine;
 import com.xiaojinzi.component.impl.Router;
 
@@ -154,7 +154,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     private Dialog calendarDialog;
     private VerticalCalendar calendarView;
-    private Calendar calendarSelected = Calendar.getInstance();
+    private Calendar calendarSelected;
 
     @AfterViews
     void init() {
@@ -299,10 +299,14 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
                     .setTitle(R.string.str_title_calendar)
                     .setContent(calendarView, lp)
                     .setCancelButton(R.string.sm_cancel)
-                    .setOkButton(R.string.str_confirm, (dialog, which) ->
-                            switchDay(calendarSelected.getTimeInMillis() / 1000))
+                    .setOkButton(R.string.str_confirm, (dialog, which) -> {
+                        if (calendarSelected != null) {
+                            switchDay(calendarSelected.getTimeInMillis() / 1000);
+                        }
+                    })
                     .create();
         }
+        calendarSelected = null;
         calendarDialog.show();
     }
 
@@ -337,7 +341,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     void openServiceClick() {
         ArrayList<String> snList = new ArrayList<>();
         snList.add(device.getDeviceid());
-        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(CommonConfig.CLOUD_STORAGE_URL, snList);
+        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context,CommonConfig.CLOUD_STORAGE_URL, snList);
     }
 
     @Click(resName = "rl_top")

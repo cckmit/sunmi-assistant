@@ -20,6 +20,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
+import java.util.Locale;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -149,7 +150,7 @@ public class PosManagerActivity extends BaseMvpActivity<PosPresenter> implements
                 tvStorageValue.setText(strDecimal(mUseMem / 1024));
             } else {
                 tvStorageName.setText(R.string.pos_m);
-                tvStorageValue.setText(strDecimal(mUseMem));
+                tvStorageValue.setText(String.format(Locale.getDefault(), "%d", (int) mUseMem));
             }
         }
         circlePercent(arcViewStorage, mUseMemPercent, tvStorageValue.getText().toString());
@@ -167,7 +168,7 @@ public class PosManagerActivity extends BaseMvpActivity<PosPresenter> implements
                 tvSdValue.setText(strDecimal(mUseSd / 1024));
             } else {
                 tvSdName.setText(R.string.pos_m);
-                tvSdValue.setText(strDecimal(mUseSd));
+                tvSdValue.setText(String.format(Locale.getDefault(), "%d", (int) mUseSd));
             }
         }
         double mTotalSd = Double.valueOf(replaceA_Z(totalSd));
@@ -214,12 +215,12 @@ public class PosManagerActivity extends BaseMvpActivity<PosPresenter> implements
     }
 
     private String strDecimal(double d) {
-        java.text.DecimalFormat df = new java.text.DecimalFormat("0.0");
+        java.text.DecimalFormat df = new java.text.DecimalFormat("0.00");
         return df.format(d);
     }
 
     private void circlePercent(PosArcView view, int percent, String used) {
-        if (TextUtils.equals("0.0", used)) {
+        if (TextUtils.equals("0.00", used)) {
             percent = 0;
         }
         if (percent <= 50) {
