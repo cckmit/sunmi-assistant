@@ -59,6 +59,7 @@ import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.IVideoPlayer;
+import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.VolumeHelper;
 import sunmi.common.utils.log.LogCat;
@@ -184,8 +185,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     @SuppressLint("ClickableViewAccessibility")
     void initControllerPanel() {
         initVolume();
-        // 设置时间轴每个小刻度5分钟，每个大刻度包含6个小刻度
-        timeLine.setInterval(300, 6);
+        timeLine.setInterval(300, 6);// 设置时间轴每个小刻度5分钟，每个大刻度包含6个小刻度
         timeLine.setListener(this);
     }
 
@@ -199,7 +199,6 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
             initTimeSlotData(true);
             mPresenter.getTimeSlots(device.getId(),
                     startTimeCurrentDate - 30 * SECONDS_IN_ONE_DAY, endTimeCurrentDate);
-
         }
     }
 
@@ -422,7 +421,6 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @Override
     public void onStartPlay() {
-        hideLoadingDialog();
         hideVideoLoading();
     }
 
@@ -431,8 +429,13 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         if (isPlayOver(timeLine.getCurrentInterval())) {
             playOver();
         } else {
-            selectedTimeIsHaveVideo(timeLine.getCurrentInterval());
+            selectedTimeHasVideo(timeLine.getCurrentInterval());
         }
+    }
+
+    @Override
+    public void onPlayFail() {
+        showPlayFail(getStringById(R.string.network_error));
     }
 
     private boolean isPlayOver(long time) {
@@ -453,7 +456,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
             timeLine.setVisibility(View.VISIBLE);
             refreshScaleTimePanel();
             openMove();
-            selectedTimeIsHaveVideo(startTimeCurrentDate);
+            selectedTimeHasVideo(startTimeCurrentDate);
         } else {
             showNoVideoTip();
         }
@@ -463,8 +466,6 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     @Override
     public void showNoVideoTip() {
         stopPlay();
-        hideLoadingDialog();
-        hideVideoLoading();
         tvTipNoVideo.setVisibility(View.VISIBLE);
         timeLine.setVisibility(View.GONE);
         showPlayFail(getStringById(R.string.tip_no_video_current_day));
@@ -472,9 +473,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @Override
     public void getCloudTimeSlotFail() {
-        hideLoadingDialog();
-        hideVideoLoading();
-        shortTip(R.string.network_error);
+        showPlayFail(getStringById(R.string.network_error));
     }
 
     @UiThread
@@ -489,8 +488,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @Override
     public void getCloudVideosFail() {
-        hideLoadingDialog();
-        hideVideoLoading();
+        showPlayFail(getStringById(R.string.network_error));
     }
 
     @Override
@@ -522,6 +520,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @UiThread
     public void showPlayFail(String tip) {
+        hideVideoLoading();
         tvPlayFail.setText(tip);
         llPlayFail.setVisibility(View.VISIBLE);
     }
@@ -543,6 +542,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @UiThread
     public void hideVideoLoading() {
+        hideLoadingDialog();
         rlLoading.setVisibility(View.GONE);
     }
 
@@ -744,7 +744,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     //拖动或选择的时间是否有video
     @Background
-    void selectedTimeIsHaveVideo(long currTime) {
+    void selectedTimeHasVideo(long currTime) {
         int apSize = timeSlotsInDay.size();
         if (apSize <= 0) {
             hideVideoLoading();
@@ -756,15 +756,14 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
             slotEndTime = timeSlotsInDay.get(i).getEndTime();
 
             if (currTime <= slotStartTime) {
-                //当前的视频片段是否小于一分钟
                 isVideoLess1Minute = slotEndTime - slotStartTime <= 60;
                 getVideoList(slotStartTime, slotStartTime + tenMinutes);
-                scrollCurrentPlayBackTime(slotStartTime);//回放到拖动的时间点
+                scrollCurrentPlayBackTime(slotStartTime);
                 return;
             } else if (currTime < slotEndTime) {
                 isVideoLess1Minute = slotEndTime - slotStartTime <= 60;
                 getVideoList(currTime, currTime + tenMinutes);
-                scrollCurrentPlayBackTime(currTime);//回放到拖动的时间点
+                scrollCurrentPlayBackTime(currTime);
                 return;
             }
         }
@@ -772,7 +771,6 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     }
 
     private void playOver() {
-        hideVideoLoading();
         if (llPlayFail != null && llPlayFail.isShown()) {
             return;
         }
@@ -838,7 +836,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
             public void onFinish() {
                 showVideoLoading();
                 openMove();
-                selectedTimeIsHaveVideo(timeStamp);
+                selectedTimeHasVideo(timeStamp);
             }
         };
         timeLineScrollTimer.start();
@@ -856,6 +854,8 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         hideTimeScroll();
         if (isPlayOver(timeStamp)) {
             playOver();
+        } else if (!NetworkUtils.isNetworkAvailable(context)) {
+            showPlayFail(getStringById(R.string.network_error));
         } else {
             hidePlayFail();
             startDelayPlay(timeStamp);
