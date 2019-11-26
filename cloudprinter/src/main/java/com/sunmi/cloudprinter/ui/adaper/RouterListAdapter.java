@@ -9,21 +9,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sunmi.cloudprinter.R;
-import com.sunmi.cloudprinter.bean.Router;
+import com.sunmi.cloudprinter.bean.PrintRouter;
 
 import java.util.List;
 
 public class RouterListAdapter extends RecyclerView.Adapter<RouterListAdapter.ViewHolder> {
 
-    private List<Router> routers;
+    private List<PrintRouter> printRouters;
     private OnItemClickListener listener;
 
-    public RouterListAdapter(List<Router> routers) {
-        this.routers = routers;
+    public RouterListAdapter(List<PrintRouter> printRouters) {
+        this.printRouters = printRouters;
     }
 
     public interface OnItemClickListener {
-        void onItemClick(int position, List<Router> data);
+        void onItemClick(int position, List<PrintRouter> data);
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -40,7 +40,7 @@ public class RouterListAdapter extends RecyclerView.Adapter<RouterListAdapter.Vi
             @Override
             public void onClick(View v) {
                 int position = viewHolder.getAdapterPosition();
-                listener.onItemClick(position, routers);
+                listener.onItemClick(position, printRouters);
             }
         });
         return viewHolder;
@@ -48,11 +48,11 @@ public class RouterListAdapter extends RecyclerView.Adapter<RouterListAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        viewHolder.routerName.setText(routers.get(i).getName());
-        if (routers.get(i).isHasPwd()) {
+        viewHolder.routerName.setText(printRouters.get(i).getName());
+        if (printRouters.get(i).isHasPwd()) {
             viewHolder.routerLocked.setVisibility(View.VISIBLE);
         }
-        showRssi(viewHolder.ivRssi, routers.get(i).getRssi());
+        showRssi(viewHolder.ivRssi, printRouters.get(i).getRssi());
     }
 
     /**
@@ -77,7 +77,7 @@ public class RouterListAdapter extends RecyclerView.Adapter<RouterListAdapter.Vi
 
     @Override
     public int getItemCount() {
-        return routers.size();
+        return printRouters.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

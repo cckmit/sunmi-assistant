@@ -14,6 +14,7 @@ import com.sunmi.assistant.mine.shop.CreateShopPreviewActivity_;
 import com.sunmi.assistant.presenter.ChooseShopPresenter;
 import com.sunmi.assistant.ui.activity.merchant.CreateCompanyActivity_;
 import com.sunmi.assistant.utils.GetUserInfoUtils;
+import com.xiaojinzi.component.impl.Router;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -33,6 +34,7 @@ import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.model.CompanyListResp;
 import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopListResp;
+import sunmi.common.router.AppApi;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.SpUtils;
@@ -152,7 +154,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
         //切换商户保存信息直接跳转MainActivity
         if (isLoginSuccessSwitchCompany) {
             CommonHelper.saveCompanyShopInfo(companyId, companyName, saasExist, shopId, shopName);
-            GotoActivityUtils.gotoMainActivityClearTask(context);
+            Router.withApi(AppApi.class).goToMainClearTask(context);
             return;
         }
         showLoadingDialog();

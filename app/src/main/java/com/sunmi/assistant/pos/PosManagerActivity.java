@@ -143,6 +143,7 @@ public class PosManagerActivity extends BaseMvpActivity<PosPresenter> implements
         String useMem = resp.getRunningInfo().getUsedMem().replaceAll(" ", "");
         double mUseMem = Double.valueOf(replaceA_Z(useMem));
         if (useMem.contains(getString(R.string.pos_g))) {
+            tvStorageName.setText(R.string.pos_g);
             tvStorageValue.setText(strDecimal(mUseMem));
         } else if (useMem.contains(getString(R.string.pos_m))) {
             if (mUseMem >= 1000) {

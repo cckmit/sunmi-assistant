@@ -91,7 +91,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     RelativeLayout rlBottomBar;
     @ViewById(resName = "iv_record")
     ImageView ivRecord;//录制
-    @ViewById(resName = "iv_volume")
+    @ViewById(resName = "iv_mute")
     ImageView ivVolume;//音量
     @ViewById(resName = "cm_timer")
     Chronometer cmTimer;//录制时间
@@ -176,16 +176,16 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         ivNextDay.setEnabled(false);
         ivpCloud.setVideoPlayListener(this);
         initData();
+        initVolume();
         switchOrientation(Configuration.ORIENTATION_PORTRAIT);
         llNoService.setOnTouchListener((v, event) -> true);
         rlLoading.setOnTouchListener((v, event) -> true);
         llPlayFail.setOnTouchListener((v, event) -> true);
-        handler.postDelayed(this::initControllerPanel, 200);
+        handler.postDelayed(this::initTimeLine, 200);
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    void initControllerPanel() {
-        initVolume();
+    void initTimeLine() {
         timeLine.setInterval(300, 6);// 设置时间轴每个小刻度5分钟，每个大刻度包含6个小刻度
         timeLine.setListener(this);
     }
@@ -342,7 +342,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     void openServiceClick() {
         ArrayList<String> snList = new ArrayList<>();
         snList.add(device.getDeviceid());
-        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context,CommonConfig.CLOUD_STORAGE_URL, snList);
+        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.CLOUD_STORAGE_URL, snList);
     }
 
     @Click(resName = "rl_top")
@@ -422,7 +422,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @Override
     public void onStartPlay() {
-        hideVideoLoading();
+        hideLoading();
     }
 
     @Override
@@ -521,7 +521,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @UiThread
     public void showPlayFail(String tip) {
-        hideVideoLoading();
+        hideLoading();
         tvPlayFail.setText(tip);
         llPlayFail.setVisibility(View.VISIBLE);
     }
@@ -543,8 +543,13 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @UiThread
     public void hideVideoLoading() {
-        hideLoadingDialog();
         rlLoading.setVisibility(View.GONE);
+    }
+
+    @UiThread
+    public void hideLoading() {
+        hideLoadingDialog();
+        hideVideoLoading();
     }
 
     private void setTextViewClickable(TextView textView, boolean clickable) {
@@ -686,9 +691,9 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     private void setVolumeViewImage(int currentVolume100) {
         if (currentVolume100 == 0) {
-            ivVolume.setBackgroundResource(R.mipmap.ic_muse);
+            ivVolume.setImageResource(R.mipmap.ic_muse);
         } else {
-            ivVolume.setBackgroundResource(R.mipmap.ic_volume);
+            ivVolume.setImageResource(R.mipmap.ic_volume);
         }
     }
 
