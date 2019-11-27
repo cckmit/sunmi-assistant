@@ -900,7 +900,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
             if (drawableRight == null) {
                 drawableRight = ContextCompat.getDrawable(this, R.mipmap.ic_forward);
             }
-            tvTimeScroll.setCompoundDrawablesWithIntrinsicBounds(null, null, drawableRight, null);
+            tvTimeScroll.setCompoundDrawablesWithIntrinsicBounds(drawableRight, null, null, null);
         }
     }
 
