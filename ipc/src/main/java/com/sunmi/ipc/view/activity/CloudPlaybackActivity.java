@@ -291,12 +291,12 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
                     .setMinDate(c)
                     .setPoint(getTimeSlotOfCalendar(timeSlotsInMonth))
                     .build();
-            int height = (int) (Utils.getScreenHeight(this) * 0.75);
+            int height = (int) (Utils.getScreenHeight(context) * 0.85);
             calendarView = new VerticalCalendar(this, config);
             calendarView.setOnCalendarSelectListener(calendar -> calendarSelected = calendar);
             ViewGroup.MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, height);
-            calendarDialog = new BottomDialog.Builder(this)
+            calendarDialog = new BottomDialog.Builder(context)
                     .setTitle(R.string.str_title_calendar)
                     .setContent(calendarView, lp)
                     .setCancelButton(R.string.sm_cancel)
@@ -304,8 +304,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
                         if (calendarSelected != null) {
                             switchDay(calendarSelected.getTimeInMillis() / 1000);
                         }
-                    })
-                    .create();
+                    }).create();
         }
         calendarSelected = null;
         calendarDialog.show();
