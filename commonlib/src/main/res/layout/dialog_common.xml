@@ -29,7 +29,7 @@
             android:layout_marginTop="@dimen/dp_15"
             android:layout_marginRight="@dimen/dp_15"
             android:gravity="center"
-            android:textColor="@color/text_main"
+            android:textColor="@color/text_normal"
             android:textSize="@dimen/sp_14"
             android:visibility="gone" />
 

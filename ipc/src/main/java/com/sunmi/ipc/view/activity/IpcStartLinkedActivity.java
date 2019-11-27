@@ -3,6 +3,7 @@ package com.sunmi.ipc.view.activity;
 import android.graphics.Paint;
 import android.text.Html;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -84,6 +85,7 @@ public class IpcStartLinkedActivity extends BaseActivity {
         new ListDialog.Builder<CommonListAdapter>(context)
                 .setTitle(R.string.str_ipc_config_dialog_title)
                 .setItemDecoration(false)
+                .setListHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
                 .setAdapter(adapter)
                 .setConfirmButton(R.string.str_confirm)
                 .create().show();
