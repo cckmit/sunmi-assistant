@@ -74,7 +74,7 @@ import sunmi.common.view.dialog.BottomDialog;
 @EActivity(resName = "activity_cloud_playback")
 public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresenter>
         implements CloudPlaybackContract.View, IVideoPlayer.VideoPlayListener,
-        ZFTimeLine.OnZFTimeLineListener, View.OnClickListener {
+        ZFTimeLine.OnZFTimeLineListener, View.OnClickListener, VolumeHelper.VolumeChangeListener {
 
     private final static long SECONDS_IN_ONE_DAY = 24 * 60 * 60;//3天秒数
     private final static int tenMinutes = 10 * 60;//10分钟
@@ -210,6 +210,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        volumeHelper.unregisterVolumeReceiver();
         stopPlay();
         removeCallbacks();
         closeMove();//关闭时间抽的timer
@@ -685,6 +686,8 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
      */
     private void initVolume() {
         volumeHelper = new VolumeHelper(context);
+        volumeHelper.setVolumeChangeListener(this);
+        volumeHelper.registerVolumeReceiver();
         setVolumeViewImage(volumeHelper.get100CurrentVolume());
     }
 
@@ -900,4 +903,8 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         handler.postDelayed(() -> tvTimeScroll.setVisibility(View.GONE), 500);
     }
 
+    @Override
+    public void onVolumeChanged(int volume) {
+        setVolumeViewImage(volume);
+    }
 }

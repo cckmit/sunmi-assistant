@@ -44,6 +44,8 @@ public class PosListResp {
         private String imgPath;
         @SerializedName("active_status")
         private int activeStatus;
+        @SerializedName("display_model")
+        private String displayModel;
 
         public String getSn() {
             return sn;
@@ -91,6 +93,14 @@ public class PosListResp {
 
         public void setActiveStatus(int activeStatus) {
             this.activeStatus = activeStatus;
+        }
+
+        public String getDisplayModel() {
+            return displayModel;
+        }
+
+        public void setDisplayModel(String displayModel) {
+            this.displayModel = displayModel;
         }
     }
 }

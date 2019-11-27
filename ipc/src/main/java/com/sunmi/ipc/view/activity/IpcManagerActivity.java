@@ -86,7 +86,7 @@ import sunmi.common.view.dialog.CommonDialog;
 public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         implements IpcManagerContract.View, SurfaceHolder.Callback, IOTCClient.Callback,
 //        IVideoPlayer.VideoPlayListener,
-        ZFTimeLine.OnZFTimeLineListener, View.OnClickListener {
+        ZFTimeLine.OnZFTimeLineListener, View.OnClickListener, VolumeHelper.VolumeChangeListener {
 
     private final static int PLAY_TYPE_LIVE = 0;          // 直播
     private final static int PLAY_TYPE_PLAYBACK_DEV = 1;  // 设备回放
@@ -113,8 +113,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     RelativeLayout rlBottomBar;
     @ViewById(resName = "sBar_voice")
     VerticalSeekBar sBarVoice;//音量控制
-    @ViewById(resName = "ll_change_volume")
-    LinearLayout llChangeVolume;//音量控制
+    //    @ViewById(resName = "ll_change_volume")
+//    LinearLayout llChangeVolume;//音量控制
     @ViewById(resName = "iv_record")
     ImageView ivRecord;//录制
     @ViewById(resName = "iv_volume")
@@ -268,6 +268,10 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         iotcClient = new IOTCClient(device.getUid());
         iotcClient.setCallback(this);//直播回调
         audioDecoder = new AACDecoder();
+        //初始化音量
+        volumeHelper = new VolumeHelper(this);
+        volumeHelper.setVolumeChangeListener(this);
+        volumeHelper.registerVolumeReceiver();
     }
 
     private void setCalendarText(String day) {
@@ -296,6 +300,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        volumeHelper.unregisterVolumeReceiver();
         stopPlay();
         removeCallbacks();
         closeMove();//关闭时间抽的timer
@@ -327,7 +332,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-            llChangeVolume.setVisibility(View.GONE);
             setVolumeViewImage(volumeHelper.get100CurrentVolume());
             return false;
         } else {
@@ -353,9 +357,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     @Click(resName = "rl_top")
     void backClick() {
-        if (llChangeVolume.isShown()) {
-            llChangeVolume.setVisibility(View.GONE);
-        }
         if (llVideoQuality.isShown()) {
             llVideoQuality.setVisibility(View.GONE);
         }
@@ -386,13 +387,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     //音量
     @Click(resName = "iv_volume")
     void volumeClick() {
-        if (llChangeVolume.isShown()) {
-            llChangeVolume.setVisibility(View.GONE);
+        if (volumeHelper.isMute()) {
+            setVolumeViewImage(1);
+            volumeHelper.unMute();
         } else {
-            llChangeVolume.setVisibility(View.VISIBLE);
-            int currentVolume100 = volumeHelper.get100CurrentVolume();//获取当前音量
-            sBarVoice.setProgress(currentVolume100);
-            setVolumeViewImage(currentVolume100);
+            volumeHelper.mute();
+            setVolumeViewImage(0);
         }
     }
 
@@ -791,7 +791,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     private void setPortraitViewVisible(int visibility) {
-        if (rvManager == null) return;
+        if (rvManager == null) {
+            return;
+        }
         titleBar.setVisibility(visibility);
         rlVideoController.setVisibility(visibility);
         llPortraitBar.setVisibility(visibility);
@@ -877,7 +879,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @UiThread
     void hideControllerPanel() {
         setPanelVisible(View.GONE);
-        llChangeVolume.setVisibility(View.GONE);//音量
         llVideoQuality.setVisibility(View.GONE);//画质
     }
 
@@ -997,7 +998,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
      * 调节音量
      */
     private void initVolume() {
-        volumeHelper = new VolumeHelper(this);
         int currentVolume100 = volumeHelper.get100CurrentVolume();
         sBarVoice.setMax(100);
         sBarVoice.setProgress(currentVolume100);
@@ -1458,4 +1458,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         rvManager.setAdapter(adapter);
     }
 
+    @Override
+    public void onVolumeChanged(int volume) {
+        setVolumeViewImage(volume);
+    }
 }
