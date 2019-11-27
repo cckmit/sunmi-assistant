@@ -87,7 +87,7 @@ public class PosManagerActivity extends BaseMvpActivity<PosPresenter> implements
         mPresenter = new PosPresenter(device.getDeviceid());
         mPresenter.attachView(this);
         mPresenter.getPosType(device.getModel());
-        posName.setText("SUNMI " + device.getModel());
+        posName.setText(String.format("SUNMI %s", TextUtils.isEmpty(device.getDisplayModel()) ? device.getModel() : device.getDisplayModel()));
         getPosDetails();
         startExecutorService();
     }

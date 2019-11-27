@@ -39,6 +39,7 @@ public class SunmiDevice extends DataSupport implements Serializable {
     private int channelId;
     private String imgPath;
     private String posModelDetails;
+    private String displayModel;
 
     @Column(defaultValue = "3")
     private int status;
@@ -198,5 +199,13 @@ public class SunmiDevice extends DataSupport implements Serializable {
 
     public void setPosModelDetails(String posModelDetails) {
         this.posModelDetails = posModelDetails;
+    }
+
+    public String getDisplayModel() {
+        return displayModel;
+    }
+
+    public void setDisplayModel(String displayModel) {
+        this.displayModel = displayModel;
     }
 }
