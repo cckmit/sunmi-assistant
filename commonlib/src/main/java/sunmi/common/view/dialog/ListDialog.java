@@ -205,8 +205,11 @@ public class ListDialog extends Dialog {
             rv.setVisibility(View.VISIBLE);
             if (hasItemDecoration) {
                 rv.init(R.drawable.shap_line_divider);
-            }else {
+            } else {
                 rv.init(0);
+                ViewGroup.LayoutParams params = rv.getLayoutParams();
+                params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                rv.setLayoutParams(params);
             }
             rv.setAdapter(adapter);
 

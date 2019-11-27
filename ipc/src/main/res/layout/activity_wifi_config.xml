@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/c_white">
+    android:layout_height="match_parent">
 
     <sunmi.common.view.TitleBarView
         android:id="@+id/title_bar"
@@ -61,17 +60,16 @@
                 android:orientation="vertical">
 
                 <View
-                    android:id="@+id/divider"
+                    android:id="@+id/v_divider"
                     android:layout_width="wrap_content"
-                    android:layout_height="1dp"
+                    android:layout_height="@dimen/dp_0_5"
                     android:background="@color/c_divider"
                     android:visibility="gone" />
 
-                <android.support.v7.widget.RecyclerView
+                <sunmi.common.view.SmRecyclerView
                     android:id="@+id/rv_wifi"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/c_white"
                     android:overScrollMode="never"
                     android:scrollbars="none" />
             </LinearLayout>
