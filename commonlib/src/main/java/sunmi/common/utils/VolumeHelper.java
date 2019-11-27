@@ -1,17 +1,22 @@
 package sunmi.common.utils;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.os.Build;
 import android.support.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.ref.WeakReference;
 
 /**
  * Created by YangShiJie on 2019/4/29.
  */
 public class VolumeHelper {
+    private Context mContext;
     private AudioManager audioManager;
     private int NOW_AUDIO_TYPE = TYPE_MUSIC;
     private int NOW_FLAG = FLAG_NOTHING;
@@ -47,6 +52,7 @@ public class VolumeHelper {
      * @param context 上下文
      */
     public VolumeHelper(Context context) {
+        this.mContext = context;
         audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
     }
 
@@ -178,6 +184,74 @@ public class VolumeHelper {
             return audioManager.isStreamMute(AudioManager.STREAM_MUSIC);//API 23
         } else {//todo
             return 0 == audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);//API 23
+        }
+    }
+
+    private VolumeChangeListener volumeChangeListener;
+    private VolumeBroadcastReceiver mBroadcastReceiver;
+    private boolean mRegistered = false;
+    private static final String VOLUME_CHANGED_ACTION = "android.media.VOLUME_CHANGED_ACTION";
+    private static final String EXTRA_VOLUME_STREAM_TYPE = "android.media.EXTRA_VOLUME_STREAM_TYPE";
+
+    public interface VolumeChangeListener {
+        /**
+         * 系统媒体音量变化
+         *
+         * @param volume volume
+         */
+        void onVolumeChanged(int volume);
+    }
+
+    private VolumeChangeListener getVolumeChangeListener() {
+        return volumeChangeListener;
+    }
+
+    public void setVolumeChangeListener(VolumeChangeListener volumeChangeListener) {
+        this.volumeChangeListener = volumeChangeListener;
+    }
+
+    public void registerVolumeReceiver() {
+        mBroadcastReceiver = new VolumeBroadcastReceiver(this);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(VOLUME_CHANGED_ACTION);
+        mContext.registerReceiver(mBroadcastReceiver, filter);
+        mRegistered = true;
+    }
+
+    public void unregisterVolumeReceiver() {
+        if (mRegistered) {
+            try {
+                mContext.unregisterReceiver(mBroadcastReceiver);
+                volumeChangeListener = null;
+                mRegistered = false;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static class VolumeBroadcastReceiver extends BroadcastReceiver {
+        private WeakReference<VolumeHelper> mObserverWeakReference;
+
+        public VolumeBroadcastReceiver(VolumeHelper observer) {
+            mObserverWeakReference = new WeakReference<>(observer);
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (VOLUME_CHANGED_ACTION.equals(intent.getAction()) &&
+                    (intent.getIntExtra(EXTRA_VOLUME_STREAM_TYPE, -1) == AudioManager.STREAM_MUSIC)) {
+                VolumeHelper volumeHelper = mObserverWeakReference.get();
+                if (volumeHelper != null) {
+                    VolumeChangeListener listener = volumeHelper.getVolumeChangeListener();
+                    if (listener != null) {
+                        int volume = volumeHelper.get100CurrentVolume();
+                        if (volume >= 0) {
+                            listener.onVolumeChanged(volume);
+                        }
+                    }
+                }
+            }
         }
     }
 

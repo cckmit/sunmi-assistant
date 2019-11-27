@@ -66,7 +66,7 @@ public class PosDetailsActivity extends BaseActivity {
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         getPosType();
-        tvPosName.setText(device.getModel());
+        tvPosName.setText(TextUtils.isEmpty(device.getDisplayModel()) ? device.getModel() : device.getDisplayModel());
         if (posResp != null) {
             //是否在使用有线网 0:不使用 1:使用
             int useEthernet = posResp.getNetInfo().getUseEthernet();
@@ -76,7 +76,7 @@ public class PosDetailsActivity extends BaseActivity {
             int use3g = posResp.getNetInfo().getUse3g();
             String netConnectStatus;
             if (useEthernet == 1) {
-                netConnectStatus = getString(R.string.str_text_white);
+                netConnectStatus = getString(R.string.pos_wire);
             } else if (wifi == 1) {
                 netConnectStatus = getString(R.string.pos_wifi);
             } else if (use3g == 1) {
