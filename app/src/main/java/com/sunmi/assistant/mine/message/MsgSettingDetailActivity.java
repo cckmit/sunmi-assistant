@@ -45,7 +45,7 @@ public class MsgSettingDetailActivity extends BaseMvpActivity<MsgSettingDetailPr
     @Extra
     MsgSettingChildren child;
 
-    private SettingItemLayout changedSil;
+    private SettingItemLayout silChange;
     private boolean allowCheck = true;
 
 
@@ -72,7 +72,7 @@ public class MsgSettingDetailActivity extends BaseMvpActivity<MsgSettingDetailPr
                 item.setChecked(children.getStatus() == 1);
                 item.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     changeStatus(isChecked, children.getId(), item);
-                    changedSil = item;
+                    silChange = item;
                 });
 
             }
@@ -102,14 +102,14 @@ public class MsgSettingDetailActivity extends BaseMvpActivity<MsgSettingDetailPr
     @Override
     public void updateSettingStatusFail(int msgId, int status) {
         allowCheck = false;
-        changedSil.setChecked(status == 0);
+        silChange.setChecked(status == 0);
     }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (buttonView.getId() == R.id.switch_main) {
             changeStatus(isChecked, child.getId(), sMian);
-            changedSil = sMian;
+            silChange = sMian;
         }
     }
 
