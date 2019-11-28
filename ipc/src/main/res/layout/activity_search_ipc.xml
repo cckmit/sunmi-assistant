@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/c_white">
+    android:layout_height="match_parent">
 
     <sunmi.common.view.TitleBarView
         android:id="@+id/title_bar"
@@ -57,14 +56,13 @@
                 <View
                     android:id="@+id/divider"
                     android:layout_width="wrap_content"
-                    android:layout_height="1dp"
+                    android:layout_height="@dimen/dp_0_5"
                     android:background="@color/c_divider" />
 
-                <android.support.v7.widget.RecyclerView
+                <sunmi.common.view.SmRecyclerView
                     android:id="@+id/rv_ipc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/c_white"
                     android:overScrollMode="never"
                     android:scrollbars="none" />
 
@@ -92,6 +90,11 @@
             android:layout_height="@dimen/dp_84"
             android:layout_alignParentBottom="true"
             android:background="@color/c_white">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_0_5"
+                android:background="@color/c_divider" />
 
             <Button
                 android:id="@+id/btn_config"

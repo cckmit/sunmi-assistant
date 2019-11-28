@@ -13,7 +13,6 @@ import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.mine.message.MsgDetailActivity_;
 import com.sunmi.assistant.ui.activity.contract.InputMobileContract;
 import com.sunmi.assistant.ui.activity.presenter.InputMobilePresenter;
 import com.xiaojinzi.component.anno.RouterAnno;
@@ -97,7 +96,7 @@ public class RegisterActivity extends BaseMvpActivity<InputMobilePresenter>
     }
 
     private void invalidAccount() {
-        showLoadingDialog();
+        showDarkLoading();
         mPresenter.isUserExist(mobile);
     }
 
@@ -121,7 +120,7 @@ public class RegisterActivity extends BaseMvpActivity<InputMobilePresenter>
         if (etMobile.getText() == null) return;
         String user = etMobile.getText().toString();//email test: esyzim06497@chacuo.net
         if (RegexUtils.isCorrectAccount(user)) {
-            showLoadingDialog();
+            showDarkLoading();
             mPresenter.checkUserName(user);
         }
     }

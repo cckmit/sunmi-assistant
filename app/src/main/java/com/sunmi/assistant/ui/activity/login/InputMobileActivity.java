@@ -137,7 +137,7 @@ public class InputMobileActivity extends BaseMvpActivity<InputMobilePresenter>
     }
 
     private void invalidAccount() {
-        showLoadingDialog();
+        showDarkLoading();
         mPresenter.isUserExist(mobile);
     }
 
@@ -148,7 +148,7 @@ public class InputMobileActivity extends BaseMvpActivity<InputMobilePresenter>
         }
         String user = etMobile.getText().toString();//email test: esyzim06497@chacuo.net
         if (RegexUtils.isCorrectAccount(user)) {
-            showLoadingDialog();
+            showDarkLoading();
             mPresenter.checkUserName(user);
         }
     }

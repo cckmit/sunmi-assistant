@@ -46,10 +46,10 @@
     <string name="str_config_tip_ap_1"><![CDATA[1. 接通电源并连接网线，待系统指示灯停止闪烁]]></string>
     <string name="str_config_tip_ap_2"><![CDATA[2. 如使用无线连接，请将手机连接机身背面标识的无线网络<font color= \'#FF6000\'>「SUNMI_XX」</font>]]></string>
     <string name="str_config_tip_ipc">连接您要设置的摄像机</string>
-    <string name="str_config_tip_ipc_1"><![CDATA[电源接通后，等待20秒，摄像机提示灯呈<font color= \'#FF6000\'>「绿色闪烁」</font>后，点击「下一步」]]></string>
-    <string name="str_config_tip_ipc_2">为摄像机插入网线，并将手机连接至同一网络后，点击「下一步」</string>
-    <string name="str_config_tip_ipc_3"><![CDATA[将手机连接至摄像机的无线网络<font color= \'#FF6000\'>「SUNMI_XXXX」</font>（可以在机身或包装盒上找到），点击「下一步」]]></string>
-    <string name="str_config_tip_ipc_4"><![CDATA[待摄像机信号灯呈<font color= \'#FF6000\'>「蓝色常亮」</font>状态后，点击「下一步」]]></string>
+    <string name="str_config_tip_ipc_1"><![CDATA[电源接通后，等待20秒，摄像机提示灯呈<b><font color= \'#FF6000\'>「绿色闪烁」</font></b>后，点击「下一步」]]></string>
+    <string name="str_config_tip_ipc_2">为摄像机插入网线，并将手机连接至同一网络后，\n点击「下一步」</string>
+    <string name="str_config_tip_ipc_3"><![CDATA[将手机连接至摄像机的无线网络<b><font color= \'#FF6000\'>「SUNMI_XXXX」</font></b>（可以在机身或包装盒上找到），点击「下一步」]]></string>
+    <string name="str_config_tip_ipc_4"><![CDATA[待摄像机信号灯呈<b><font color= \'#FF6000\'>「蓝色常亮」</font></b>状态后，点击「下一步」]]></string>
     <string name="str_config_tip_printer">连接您要设置的云打印机</string>
     <string name="str_config_tip_printer_1">1. 将云打印机接通电源，长按配对按钮3秒以开启配对模式。听到提示音后，松开配对按钮；</string>
     <string name="str_config_tip_printer_2">2. 听到提示音后，松开配对按钮；</string>

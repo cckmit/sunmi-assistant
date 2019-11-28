@@ -168,8 +168,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     ImageView ivCloudPlayback;
     @ViewById(resName = "ll_calender_portrait")
     LinearLayout llCalender;
-    @ViewById(resName = "tv_calender_portrait")
-    TextView tvCalenderP;//日历
+    @ViewById(resName = "tv_calendar_portrait")
+    TextView tvCalendarP;//日历
     @ViewById(resName = "rv_manager")
     SmRecyclerView rvManager;
 
@@ -234,7 +234,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         llPlayFail.setOnTouchListener((v, event) -> true);
         if (isDeviceOffline()) {
             showPlayFail(PLAY_FAIL_OFFLINE);
-            tvCalenderP.setEnabled(false);
+            tvCalendarP.setEnabled(false);
             llCalender.setClickable(false);
             hideControllerPanel();
         } else {
@@ -275,7 +275,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     private void setCalendarText(String day) {
-        tvCalenderP.setText(day);
+        tvCalendarP.setText(day);
     }
 
     private void initSurfaceView() {
@@ -1184,7 +1184,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             if (drawableRight == null) {
                 drawableRight = ContextCompat.getDrawable(this, R.mipmap.ic_forward);
             }
-            tvTimeScroll.setCompoundDrawablesWithIntrinsicBounds(null, null, drawableRight, null);
+            tvTimeScroll.setCompoundDrawablesWithIntrinsicBounds(drawableRight, null, null, null);
         }
     }
 

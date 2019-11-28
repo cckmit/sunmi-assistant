@@ -119,7 +119,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     LinearLayout llPortraitBar;
     @ViewById(resName = "iv_pre_day")
     ImageView ivPreDay;
-    @ViewById(resName = "tv_calender")
+    @ViewById(resName = "tv_calendar")
     TextView tvCalendar;
     @ViewById(resName = "iv_next_day")
     ImageView ivNextDay;
@@ -259,6 +259,12 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         }
     }
 
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(0, R.anim.slide_out_right);
+    }
+
     private void updateCalendarBtnEnable() {
         ivNextDay.setEnabled(endTimeCurrentDate <= System.currentTimeMillis() / 1000);
     }
@@ -279,7 +285,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         switchDay(startTimeCurrentDate + SECONDS_IN_ONE_DAY);
     }
 
-    @Click(resName = "tv_calender")
+    @Click(resName = "tv_calendar")
     void chooseCalendarClick() {
         if (isFastClick(1000) || cloudStorageServiceStatus == CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
             return;
@@ -900,7 +906,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
             if (drawableRight == null) {
                 drawableRight = ContextCompat.getDrawable(this, R.mipmap.ic_forward);
             }
-            tvTimeScroll.setCompoundDrawablesWithIntrinsicBounds(null, null, drawableRight, null);
+            tvTimeScroll.setCompoundDrawablesWithIntrinsicBounds(drawableRight, null, null, null);
         }
     }
 
