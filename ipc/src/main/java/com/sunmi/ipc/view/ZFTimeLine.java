@@ -30,6 +30,29 @@ public class ZFTimeLine extends View {
     public static final int STYLE_NORMAL = 0;
     public static final int STYLE_BIG = 1;
 
+    // 内容区域顶部坐标
+    float displayTop;
+    // 内容区域底部坐标
+    float displayBottom;
+    // 中心线顶部坐标
+    float lineCenterTop;
+    // 中心线底部坐标
+    float lineCenterBottom;
+    // 中心线宽度
+    float lineCenterWidth;
+    // 短线刻度顶部坐标
+    float lineSmallTop;
+    // 短线刻度底部坐标
+    float lineSmallBottom;
+    // 长线刻度顶部坐标
+    float lineBigTop;
+    // 长线刻度底部坐标
+    float lineBigBottom;
+    // 文字开始位置偏移
+    float textStartOffset;
+    // 文字基线位置坐标
+    float textBaseline;
+
     // 每小刻度时间（秒），默认10分钟
     private int intervalSeconds = 60 * 10;
     // 每大刻度包含小刻度的个数，默认6个，即1小时
@@ -43,6 +66,8 @@ public class ZFTimeLine extends View {
 
     private long leftBound = 0;
     private long rightBound = Long.MAX_VALUE;
+    private long leftMoveBound = 0;
+    private long rightMoveBound = Long.MAX_VALUE;
     private boolean onLock;                       //用于屏蔽时间轴拖动,为true时无法拖动
     private int style;
 
@@ -109,94 +134,14 @@ public class ZFTimeLine extends View {
         pCenterLine.setColor(ContextCompat.getColor(getContext(), R.color.common_orange));
     }
 
-    //设置监听
-    public void setListener(OnZFTimeLineListener listener) {
-        this.listener = listener;
-    }
-
-    /**
-     * 设定自定义的小刻度时间间隔以及每个大刻度包含小刻度的个数
-     *
-     * @param second 每个小刻度代表的时间段（秒）
-     * @param count  每个大刻度包含小刻度的个数
-     */
-    public void setInterval(int second, int count) {
-        intervalSeconds = second;
-        intervalCount = count;
-    }
-
-    //把当前秒数设置我中间刻度对应的秒数
-    private void timeNow() {
-        currentInterval = System.currentTimeMillis() / 1000;
-    }
-
-    //宽度1所代表的秒数
-    private float secondsOfIntervalValue() {
-        return (float) intervalSeconds / intervalValue;
-    }
-
-    private float dip2px(float dipValue) {
-        return dipValue * ((float) getResources().getDisplayMetrics().densityDpi / 160);
-    }
-
-    private int getIntervalValue() {
-        return (int) (dip2px((float) 10) + 0.5);
-    }
-
     @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        if (currentInterval < leftBound) {
-            currentInterval = leftBound;
-        } else if (currentInterval > rightBound) {
-            currentInterval = rightBound;
-        }
-        // 初始化小刻度的间隔,在init里densityDpi的数据为0,所以放到这里了
-        if (intervalValue == 0) {
-            intervalValue = getIntervalValue();
-        }
-        int width = getWidth();
-        int height = getHeight();
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        int width = getMeasuredWidth();
+        int height = getMeasuredHeight();
 
         // 中央点位坐标
         int centerX = width / 2;
         int centerY = height / 2;
-
-        // 左边界线代表的秒数
-        long leftInterval = (long) Math.max(currentInterval - centerX * secondsOfIntervalValue(), leftBound);
-        // 右边界线秒数
-        long rightInterval = (long) Math.min(currentInterval + centerX * secondsOfIntervalValue(), rightBound);
-
-        // 第一个和最后一个刻度线所代表的秒数
-        long interval = (long) Math.ceil((double) leftInterval / intervalSeconds) * intervalSeconds;
-        long lastInterval = (long) Math.floor((double) rightInterval / intervalSeconds) * intervalSeconds;
-        // 第一个刻度线的位置
-        float x = (interval - currentInterval) / secondsOfIntervalValue() + centerX;
-        float lastX = (lastInterval - currentInterval) / secondsOfIntervalValue() + centerX;
-
-        // 内容区域顶部坐标
-        float displayTop;
-        // 内容区域底部坐标
-        float displayBottom;
-        // 中心线顶部坐标
-        float lineCenterTop;
-        // 中心线底部坐标
-        float lineCenterBottom;
-        // 中心线宽度
-        float lineCenterWidth;
-        // 短线刻度顶部坐标
-        float lineSmallTop;
-        // 短线刻度底部坐标
-        float lineSmallBottom;
-        // 长线刻度顶部坐标
-        float lineBigTop;
-        // 长线刻度底部坐标
-        float lineBigBottom;
-        // 文字开始位置偏移
-        float textStartOffset;
-        // 文字基线位置坐标
-        float textBaseline;
-
         if (style == STYLE_BIG) {
             displayTop = 0;
             displayBottom = height;
@@ -222,6 +167,60 @@ public class ZFTimeLine extends View {
             textStartOffset = 0;
             textBaseline = centerY + dip2px(14);
         }
+        intervalValue = getIntervalValue();
+    }
+
+    //设置监听
+    public void setListener(OnZFTimeLineListener listener) {
+        this.listener = listener;
+    }
+
+    /**
+     * 设定自定义的小刻度时间间隔以及每个大刻度包含小刻度的个数
+     *
+     * @param second 每个小刻度代表的时间段（秒）
+     * @param count  每个大刻度包含小刻度的个数
+     */
+    public void setInterval(int second, int count) {
+        intervalSeconds = second;
+        intervalCount = count;
+    }
+
+    //把当前秒数设置我中间刻度对应的秒数
+    private void timeNow() {
+        currentInterval = System.currentTimeMillis() / 1000;
+    }
+
+    private float dip2px(float dipValue) {
+        return dipValue * ((float) getResources().getDisplayMetrics().densityDpi / 160);
+    }
+
+    private int getIntervalValue() {
+        return (int) (dip2px((float) 10) + 0.5);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        if (currentInterval < leftBound) {
+            currentInterval = leftBound;
+        } else if (currentInterval > rightBound) {
+            currentInterval = rightBound;
+        }
+
+        int width = getWidth();
+        int height = getHeight();
+        int centerX = width / 2;
+        int centerY = height / 2;
+        double secondsPerPixel = (double) intervalSeconds / intervalValue;
+
+        // 左边第一个刻度代表的秒数
+        long leftInterval = (long) Math.max(currentInterval - centerX * secondsPerPixel, leftBound);
+        // 右边界线秒数
+        long rightInterval = (long) Math.min(currentInterval + centerX * secondsPerPixel, rightBound);
+
+        // 第一个刻度线所代表的秒数
+        long interval = (long) Math.ceil(leftInterval / intervalSeconds) * intervalSeconds;
 
         //渲染回放视频区域
         if (videoData != null) {
@@ -235,13 +234,17 @@ public class ZFTimeLine extends View {
                     continue;
                 }
                 // 根据中心线计算区域的左右边界位置
-                float start = Math.max((startInterval - currentInterval) / secondsOfIntervalValue() + centerX, 0f);
-                float end = Math.min((endInterval - currentInterval) / secondsOfIntervalValue() + centerX, width);
+                float start = (float) Math.max((startInterval - currentInterval) / secondsPerPixel + centerX, 0f);
+                float end = (float) Math.min((endInterval - currentInterval) / secondsPerPixel + centerX, width);
                 canvas.drawRect(start, displayTop, end, displayBottom, pOrange);
             }
         }
         // 画刻度线
-        while (x >= 0 && x <= lastX) {
+        while (interval <= rightInterval) {
+            // 计算刻度线的位置
+            float x = (float) ((interval - currentInterval) / secondsPerPixel + centerX);
+            x = Math.max(0, Math.min(x, width));
+            // 计算是否为大刻度
             long rem = interval % (intervalSeconds * intervalCount);
             // 根据秒数值对大刻度间隔是否整除判断画长刻度或者短刻度
             if (rem != 0) {
@@ -254,8 +257,6 @@ public class ZFTimeLine extends View {
                 String time = formatterScale.format(interval * 1000);
                 canvas.drawText(time, x + textStartOffset, textBaseline, pWhite);
             }
-            //下一个刻度
-            x = x + intervalValue;
             interval = interval + intervalSeconds;
         }
         //画中间线
@@ -273,9 +274,14 @@ public class ZFTimeLine extends View {
                 moveStartX = event.getX();
                 break;
             case MotionEvent.ACTION_MOVE:
-                currentInterval = (long) (currentInterval -
-                        secondsOfIntervalValue() * ((long) (event.getX() - moveStartX)));
-                if (listener != null && currentInterval > leftBound && currentInterval < rightBound) {
+                double secondsPerPixel = (double) intervalSeconds / intervalValue;
+                currentInterval = (long) (currentInterval - secondsPerPixel * (event.getX() - moveStartX));
+                if (currentInterval < leftMoveBound) {
+                    currentInterval = leftMoveBound;
+                } else if (currentInterval > rightMoveBound) {
+                    currentInterval = rightMoveBound;
+                }
+                if (listener != null && currentInterval > leftMoveBound && currentInterval < rightMoveBound) {
                     listener.moveTo(DateTimeUtils.secondToDate(currentInterval, "yyyy-MM-dd HH:mm:ss"),
                             (moveStartX - event.getX()) < 0, currentInterval);
                 }
@@ -286,17 +292,15 @@ public class ZFTimeLine extends View {
             case MotionEvent.ACTION_UP:
                 //滑动结束
                 if (listener != null) {
-                    listener.didMoveToTime(currentInterval < leftBound ? leftBound
-                            : currentInterval > rightBound ? rightBound : currentInterval);
+                    listener.didMoveToTime(currentInterval < leftMoveBound ? leftMoveBound
+                            : currentInterval > rightMoveBound ? rightMoveBound : currentInterval);
                 }
 
                 break;
             default:
         }
-        if (currentInterval != leftBound && currentInterval != rightBound) {
-            invalidate();//重新绘制
-        }
 
+        invalidate();
         return true;
     }
 
@@ -396,13 +400,18 @@ public class ZFTimeLine extends View {
         refresh();
     }
 
-    public void setLeftBound(long leftBound) {
-        this.leftBound = leftBound;
-    }
-
     public void setBound(long leftBound, long rightBound) {
         this.leftBound = leftBound;
         this.rightBound = rightBound;
+        this.leftMoveBound = leftBound;
+        this.rightMoveBound = rightBound;
+    }
+
+    public void setBound(long leftBound, long rightBound, long leftMoveBound, long rightMoveBound) {
+        this.leftBound = leftBound;
+        this.rightBound = rightBound;
+        this.leftMoveBound = Math.max(leftBound, leftMoveBound);
+        this.rightMoveBound = Math.min(rightBound, rightMoveBound);
     }
 
     //拖动时间轴监听
