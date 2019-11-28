@@ -175,6 +175,7 @@ public class VerticalCalendar extends LinearLayout {
         if (this.mListener != null) {
             mListener.onCalendarSelect(c);
         }
+        mAdapter.notifyDataSetChanged();
         return true;
     }
 

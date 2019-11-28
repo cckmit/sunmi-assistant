@@ -28,15 +28,13 @@
         android:text="@string/company_shop_select_one_or_more"
         android:textSize="@dimen/sp_12" />
 
-    <android.support.v7.widget.RecyclerView
+    <sunmi.common.view.SmRecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/tv_tip"
         android:layout_marginBottom="@dimen/dp_84"
-        android:background="@color/c_white">
-
-    </android.support.v7.widget.RecyclerView>
+        android:background="@color/c_white" />
 
     <Button
         android:id="@+id/btnComplete"

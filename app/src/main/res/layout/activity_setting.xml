@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,17 +11,17 @@
         android:layout_height="wrap_content"
         android:background="@color/c_white"
         app:dividerShow="true"
+        app:layout_constraintTop_toTopOf="parent"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/str_setting"
         app:titleTextColor="@color/text_main" />
 
     <sunmi.common.view.SettingItemLayout
-        android:id="@+id/sil_accountSafe"
+        android:id="@+id/sil_account"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title_bar"
-        app:showDivider="bottom"
+        app:layout_constraintTop_toBottomOf="@+id/title_bar"
         app:title="@string/str_account_safety"
         app:type="arrow" />
 
@@ -29,8 +29,8 @@
         android:id="@+id/sil_about"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/sil_accountSafe"
-        app:showDivider="bottom"
+        app:layout_constraintTop_toBottomOf="@+id/sil_account"
+        app:showDivider="top"
         app:title="@string/str_about"
         app:type="arrow" />
 
@@ -38,11 +38,11 @@
         android:id="@+id/btnLogout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_60"
-        android:layout_alignParentBottom="true"
         android:background="@color/c_white"
         android:gravity="center"
         android:text="@string/str_logout"
         android:textColor="@color/common_orange"
-        android:textSize="@dimen/sp_18" />
+        android:textSize="@dimen/sp_18"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

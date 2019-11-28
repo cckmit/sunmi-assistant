@@ -33,6 +33,7 @@ import sunmi.common.view.bottompopmenu.PopItemAction;
  */
 @EActivity(R.layout.activity_setting)
 public class SettingActivity extends BaseActivity {
+
     @ViewById(R.id.sil_about)
     SettingItemLayout silAbout;
 
@@ -45,10 +46,10 @@ public class SettingActivity extends BaseActivity {
                 CommonHelper.getAppVersionName(context)));
     }
 
-    @Click({R.id.sil_accountSafe, R.id.sil_about, R.id.btnLogout})
+    @Click({R.id.sil_account, R.id.sil_about, R.id.btnLogout})
     public void click(View v) {
         switch (v.getId()) {
-            case R.id.sil_accountSafe:
+            case R.id.sil_account:
                 SecurityActivity_.intent(context).start();
                 break;
             case R.id.sil_about:
