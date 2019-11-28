@@ -191,6 +191,7 @@ public class ZFTimeLine extends View {
     public void setInterval(int second, int count) {
         intervalSeconds = second;
         intervalCount = count;
+        secondsPerPixel = (double) intervalSeconds / intervalValue;
     }
 
     //把当前秒数设置我中间刻度对应的秒数
