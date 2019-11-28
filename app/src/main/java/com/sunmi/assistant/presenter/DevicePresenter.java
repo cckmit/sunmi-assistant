@@ -395,6 +395,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
         device.setType("POS");
         device.setDeviceid(bean.getSn());
         device.setModel(bean.getModel());
+        device.setDisplayModel(bean.getDisplayModel());
         device.setPosModelDetails(bean.getModelDetail());
         device.setChannelId(bean.getChannelId());
         device.setStatus(bean.getActiveStatus());

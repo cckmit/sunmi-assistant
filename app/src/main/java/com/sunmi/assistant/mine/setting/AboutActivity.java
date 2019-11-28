@@ -3,7 +3,6 @@ package com.sunmi.assistant.mine.setting;
 import android.app.Activity;
 import android.view.View;
 import android.widget.CheckedTextView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
@@ -25,6 +24,7 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.ViewUtils;
+import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.dialog.CommonDialog;
 
 /**
@@ -38,8 +38,8 @@ public class AboutActivity extends BaseActivity {
     TextView tvVersion;
     @ViewById(R.id.ctv_privacy)
     CheckedTextView ctvPrivacy;
-    @ViewById(R.id.rlVersion)
-    RelativeLayout rlVersion;
+    @ViewById(R.id.sil_version)
+    SettingItemLayout silVersion;
 
     @AfterViews
     void init() {
@@ -47,11 +47,11 @@ public class AboutActivity extends BaseActivity {
         ViewUtils.setPrivacy(this, ctvPrivacy, R.color.common_orange, false);
         tvVersion.setText(getString(R.string.str_version, CommonHelper.getAppVersionName(this)));
         if (!CommonHelper.isGooglePlay()){
-            rlVersion.setVisibility(View.VISIBLE);
+            silVersion.setVisibility(View.VISIBLE);
         }
     }
 
-    @Click(R.id.rlVersion)
+    @Click(R.id.sil_version)
     public void onClick(View v) {
         checkUpdate();
     }
