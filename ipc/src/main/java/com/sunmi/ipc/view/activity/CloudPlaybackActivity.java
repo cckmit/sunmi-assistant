@@ -76,7 +76,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         implements CloudPlaybackContract.View, IVideoPlayer.VideoPlayListener,
         ZFTimeLine.OnZFTimeLineListener, View.OnClickListener, VolumeHelper.VolumeChangeListener {
 
-    private final static long SECONDS_IN_ONE_DAY = 24 * 60 * 60;//3天秒数
+    private final static long SECONDS_IN_ONE_DAY = 24 * 60 * 60;
     private final static int tenMinutes = 10 * 60;//10分钟
 
     @ViewById(resName = "rl_screen")
