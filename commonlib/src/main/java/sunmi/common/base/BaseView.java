@@ -14,6 +14,13 @@ public interface BaseView {
     void showLoadingDialog(final String text);
 
     /**
+     * 显示加载中
+     */
+    void showDarkLoading();
+
+    void showDarkLoading(final String text);
+
+    /**
      * 隐藏加载
      */
     void hideLoadingDialog();
