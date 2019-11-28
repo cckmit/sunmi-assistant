@@ -211,6 +211,14 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        if (!isPaused) {
+            pausePlayClick();
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         volumeHelper.unregisterVolumeReceiver();
