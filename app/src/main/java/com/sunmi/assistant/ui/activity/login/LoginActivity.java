@@ -22,9 +22,7 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.LoginContract;
 import com.sunmi.assistant.presenter.LoginPresenter;
 import com.sunmi.assistant.ui.activity.merchant.CreateCompanyActivity_;
-import com.sunmi.ipc.view.activity.IpcStartConfigActivity_;
 import com.xiaojinzi.component.anno.RouterAnno;
-import com.xiaojinzi.component.anno.router.PathAnno;
 import com.xiaojinzi.component.impl.RouterRequest;
 
 import org.androidannotations.annotations.AfterViews;
@@ -232,7 +230,7 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
     //账号合并
     private void userMerge(final String password) {
         CommonUtils.trackCommonEvent(context, "login", "登录", Constants.EVENT_LOGIN);
-        showLoadingDialog();
+        showDarkLoading();
         mPresenter.userMerge(mobile, mobile, password);
     }
 

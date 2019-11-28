@@ -131,8 +131,8 @@ public class ZFTimeLine extends View {
     }
 
     //宽度1所代表的秒数
-    private long secondsOfIntervalValue() {
-        return (long) (intervalSeconds / intervalValue);
+    private float secondsOfIntervalValue() {
+        return (float) intervalSeconds / intervalValue;
     }
 
     private float dip2px(float dipValue) {
@@ -163,9 +163,9 @@ public class ZFTimeLine extends View {
         int centerY = height / 2;
 
         // 左边界线代表的秒数
-        long leftInterval = Math.max(currentInterval - centerX * secondsOfIntervalValue(), leftBound);
+        long leftInterval = (long) Math.max(currentInterval - centerX * secondsOfIntervalValue(), leftBound);
         // 右边界线秒数
-        long rightInterval = Math.min(currentInterval + centerX * secondsOfIntervalValue(), rightBound);
+        long rightInterval = (long) Math.min(currentInterval + centerX * secondsOfIntervalValue(), rightBound);
 
         // 第一个和最后一个刻度线所代表的秒数
         long interval = (long) Math.ceil((double) leftInterval / intervalSeconds) * intervalSeconds;
@@ -273,8 +273,8 @@ public class ZFTimeLine extends View {
                 moveStartX = event.getX();
                 break;
             case MotionEvent.ACTION_MOVE:
-                currentInterval = currentInterval
-                        - secondsOfIntervalValue() * ((long) (event.getX() - moveStartX));
+                currentInterval = (long) (currentInterval -
+                        secondsOfIntervalValue() * ((long) (event.getX() - moveStartX)));
                 if (listener != null && currentInterval > leftBound && currentInterval < rightBound) {
                     listener.moveTo(DateTimeUtils.secondToDate(currentInterval, "yyyy-MM-dd HH:mm:ss"),
                             (moveStartX - event.getX()) < 0, currentInterval);

@@ -1,5 +1,6 @@
 package com.sunmi.ipc.calendar.adapter;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,28 +20,27 @@ import java.util.Calendar;
 
 public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder> {
 
-
     private ArrayList<CalendarInfo> data;
 
     private MonthAdapter adapter;
 
     private Calendar temp = Calendar.getInstance();
 
-    public DateAdapter(ArrayList<CalendarInfo> data, MonthAdapter adapter) {
+    DateAdapter(ArrayList<CalendarInfo> data, MonthAdapter adapter) {
         this.data = data;
         this.adapter = adapter;
-
     }
 
+    @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.calendar_item_date, parent, false);
         return new MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
         final CalendarInfo model = data.get(position);
         if (model.date == 0) {
             holder.itemView.setVisibility(View.GONE);
@@ -65,7 +65,6 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder> 
                 notifyDataSetChanged();
             }
         });
-
     }
 
     @Override
@@ -73,18 +72,16 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder> 
         return data.size();
     }
 
-
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    static class MyViewHolder extends RecyclerView.ViewHolder {
 
         private TextView tvDay;
         private ImageView ivPoint;
 
-        public MyViewHolder(View itemView) {
+        MyViewHolder(View itemView) {
             super(itemView);
             tvDay = itemView.findViewById(R.id.tvDay);
             ivPoint = itemView.findViewById(R.id.ivPoint);
         }
-
     }
 
 }

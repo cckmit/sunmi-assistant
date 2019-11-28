@@ -116,18 +116,18 @@
                 android:background="@color/c_divider" />
 
             <TextView
-                android:id="@+id/tv_calender"
+                android:id="@+id/tv_calendar"
                 android:layout_width="@dimen/dp_130"
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/dp_1"
                 android:layout_marginBottom="@dimen/dp_1"
                 android:background="@drawable/bg_cloud_playback_calendar"
-                android:drawableStart="@mipmap/ic_choose_calendar"
+                android:drawableStart="@drawable/ic_choose_calendar"
                 android:drawablePadding="@dimen/dp_3"
                 android:gravity="center"
                 android:paddingStart="@dimen/dp_14"
                 android:paddingEnd="@dimen/dp_14"
-                android:textColor="@color/text_main"
+                android:textColor="@color/text_common_normal"
                 android:textSize="@dimen/sp_16" />
 
             <View
@@ -144,17 +144,6 @@
                 android:src="@drawable/ic_next_day" />
 
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/tv_tip_no_video"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/ll_calender"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/dp_32"
-            android:text="@string/tip_no_video_current_day"
-            android:textColor="@color/text_disable"
-            android:textSize="@dimen/sp_16" />
 
         <com.sunmi.ipc.view.ZFTimeLine
             android:id="@+id/time_line"
