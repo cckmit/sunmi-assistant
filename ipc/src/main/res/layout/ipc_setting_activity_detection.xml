@@ -16,35 +16,11 @@
         app:leftIcon="@drawable/ic_back_dark"
         app:titleTextColor="@color/text_main" />
 
-
-    <android.support.constraint.ConstraintLayout
+    <sunmi.common.view.SettingItemLayout
+        android:id="@+id/sil_ipc_setting_detection"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_48"
-        android:layout_marginTop="@dimen/dp_0_5"
-        android:background="@color/c_white">
-
-        <TextView
-            android:id="@+id/tv_ipc_setting_switch_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_25"
-            android:textColor="@color/text_main"
-            android:textSize="@dimen/sp_16"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Switch
-            android:id="@+id/switch_ipc_setting_detection"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_20"
-            android:thumb="@drawable/switch_thumb"
-            android:track="@drawable/switch_track"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </android.support.constraint.ConstraintLayout>
+        android:layout_height="wrap_content"
+        app:type="toggle" />
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
