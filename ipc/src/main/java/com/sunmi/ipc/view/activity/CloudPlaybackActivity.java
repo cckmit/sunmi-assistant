@@ -730,7 +730,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @UiThread
     void refreshScaleTimePanel() {
-        timeLine.setBound(startTimeCurrentDate, startTimeCurrentDate + SECONDS_IN_ONE_DAY);
+        timeLine.setBound(startTimeCurrentDate, endTimeCurrentDate);
         timeLine.setVideoData(timeSlotsInDay);
         timeLine.refresh();
     }
