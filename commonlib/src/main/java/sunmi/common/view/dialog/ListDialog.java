@@ -38,6 +38,7 @@ public class ListDialog extends Dialog {
         private int cancelBtnTextColor, confirmBtnTextColor; // 对话框确定文本颜色
         private boolean hasItemDecoration = true;  //是否显示下划线，默认显示
         private T adapter;
+        private int listHeight = 0;
         // 对话框按钮监听事件
         private DialogInterface.OnClickListener cancelButtonClickListener, confirmButtonClickListener;
 
@@ -182,6 +183,16 @@ public class ListDialog extends Dialog {
         }
 
         /**
+         * 设置list的高度
+         * @param height
+         * @return
+         */
+        public Builder setListHeight(int height) {
+            this.listHeight = height;
+            return this;
+        }
+
+        /**
          * 创建自定义的对话框
          */
         public ListDialog create() {
@@ -205,8 +216,13 @@ public class ListDialog extends Dialog {
             rv.setVisibility(View.VISIBLE);
             if (hasItemDecoration) {
                 rv.init(R.drawable.shap_line_divider);
-            }else {
+            } else {
                 rv.init(0);
+            }
+            if (listHeight != 0) {
+                ViewGroup.LayoutParams params = rv.getLayoutParams();
+                params.height = listHeight;
+                rv.setLayoutParams(params);
             }
             rv.setAdapter(adapter);
 

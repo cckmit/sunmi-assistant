@@ -35,10 +35,9 @@
         android:id="@+id/tv_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_name"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginTop="@dimen/dp_2"
+        android:layout_marginTop="@dimen/dp_42"
         android:layout_toEndOf="@+id/iv_status"
         android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_14" />
