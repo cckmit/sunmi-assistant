@@ -103,7 +103,7 @@
                     android:gravity="center">
 
                     <TextView
-                        android:id="@+id/tv_calender_portrait"
+                        android:id="@+id/tv_calendar_portrait"
                         android:layout_width="@dimen/dp_24"
                         android:layout_height="@dimen/dp_24"
                         android:layout_gravity="center"

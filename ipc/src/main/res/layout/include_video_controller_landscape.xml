@@ -10,8 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_64"
         android:animateLayoutChanges="true"
-        android:visibility="gone"
-        android:background="@mipmap/bg_video_controller_top">
+        android:background="@mipmap/bg_video_controller_top"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/iv_back"
@@ -146,7 +146,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_20"
             android:layout_marginEnd="@dimen/dp_24"
-            android:background="@mipmap/play_disable" />
+            android:src="@mipmap/play_disable" />
 
         <com.sunmi.ipc.view.ZFTimeLine
             android:id="@+id/scale_panel"
