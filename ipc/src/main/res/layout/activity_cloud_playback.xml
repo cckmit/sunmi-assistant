@@ -145,17 +145,6 @@
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_tip_no_video"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/ll_calender"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/dp_32"
-            android:text="@string/tip_no_video_current_day"
-            android:textColor="@color/text_disable"
-            android:textSize="@dimen/sp_16" />
-
         <com.sunmi.ipc.view.ZFTimeLine
             android:id="@+id/time_line"
             android:layout_width="match_parent"
