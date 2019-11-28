@@ -1,10 +1,7 @@
 package com.sunmi.assistant.mine.message;
 
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.Switch;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.MsgSettingDetailContract;
