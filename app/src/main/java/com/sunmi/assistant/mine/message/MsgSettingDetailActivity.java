@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
-import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.MsgSettingDetailContract;
@@ -24,6 +23,8 @@ import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
+import sunmi.common.view.SettingItemLayout;
+import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.ViewHolder;
 
@@ -38,18 +39,16 @@ public class MsgSettingDetailActivity extends BaseMvpActivity<MsgSettingDetailPr
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
     @ViewById(R.id.switch_main)
-    Switch sMian;
+    SettingItemLayout sMian;
     @ViewById(R.id.rv_setting_detail)
-    RecyclerView rvSetting;
-    @ViewById(R.id.tv_main)
-    TextView tvMain;
+    SmRecyclerView rvSetting;
 
     @Extra
     String title;
     @Extra
     MsgSettingChildren child;
 
-    private Switch changedSwitch;
+    private SettingItemLayout changedSil;
     private boolean allowCheck = true;
 
 
@@ -58,26 +57,25 @@ public class MsgSettingDetailActivity extends BaseMvpActivity<MsgSettingDetailPr
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         titleBar.setAppTitle(getString(R.string.str_msg_setting_detail, title));
         titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
-        tvMain.setText(title);
+        sMian.setTitle(title);
         sMian.setChecked(child.getStatus() == 1);
         mPresenter = new MsgSettingDetailPresenter();
         mPresenter.attachView(this);
         sMian.setOnCheckedChangeListener(this);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
-        rvSetting.setLayoutManager(layoutManager);
+        rvSetting.init(R.drawable.shap_line_divider);
         initDetail();
     }
 
     private void initDetail() {
-        rvSetting.setAdapter(new CommonListAdapter<MsgSettingChildren>(context, R.layout.item_msg_device_setting_detail, child.getChildren()) {
+        rvSetting.setAdapter(new CommonListAdapter<MsgSettingChildren>(context, R.layout.item_common_switch, child.getChildren()) {
             @Override
             public void convert(ViewHolder holder, MsgSettingChildren children) {
-                holder.setText(R.id.tv_msg_setting, MessageUtils.getInstance().getMsgFirst(children.getName()));
-                Switch sw = holder.getView(R.id.switch_msg);
-                sw.setChecked(children.getStatus() == 1);
-                sw.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                    changeStatus(isChecked, children.getId(), sw);
-                    changedSwitch = sw;
+                SettingItemLayout item = holder.getView(R.id.sil_item);
+                item.setTitle(MessageUtils.getInstance().getMsgFirst(children.getName()));
+                item.setChecked(children.getStatus() == 1);
+                item.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    changeStatus(isChecked, children.getId(), item);
+                    changedSil = item;
                 });
 
             }
@@ -107,20 +105,20 @@ public class MsgSettingDetailActivity extends BaseMvpActivity<MsgSettingDetailPr
     @Override
     public void updateSettingStatusFail(int msgId, int status) {
         allowCheck = false;
-        changedSwitch.setChecked(status == 0);
+        changedSil.setChecked(status == 0);
     }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (buttonView.getId() == R.id.switch_main) {
             changeStatus(isChecked, child.getId(), sMian);
-            changedSwitch = sMian;
+            changedSil = sMian;
         }
     }
 
-    private void changeStatus(boolean isChecked, int settingId, Switch sw) {
+    private void changeStatus(boolean isChecked, int settingId, SettingItemLayout sil) {
         if (noNetCannotClick()) {
-            sw.setChecked(!isChecked);
+            sil.setChecked(!isChecked);
             return;
         }
         if (!allowCheck) {
