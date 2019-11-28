@@ -38,7 +38,7 @@ public class RelaunchSettingActivity extends BaseActivity {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
     }
 
-    @Click(resName = "ll_relaunch")
+    @Click(resName = "sil_relaunch")
     void relaunchClick() {
         relaunchDialog();
     }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -94,14 +95,15 @@
                 android:layout_marginTop="@dimen/dp_12"
                 android:visibility="gone"
                 app:badge_horizontalMargin="@dimen/dp_40"
-                app:badge_textSize="@dimen/sp_12">
+                app:badge_textSize="@dimen/sp_12"
+                tools:visibility="visible">
 
                 <sunmi.common.view.SettingItemLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:showDivider="top"
                     app:startImage="@mipmap/ic_my_msg"
-                    app:title="@string/str_my_msg"
+                    app:title="@string/str_msg_center"
                     app:type="arrow" />
 
             </cn.bingoogolapple.badgeview.BGABadgeRelativeLayout>
@@ -113,8 +115,9 @@
                 android:visibility="gone"
                 app:showDivider="top"
                 app:startImage="@mipmap/ic_my_order"
-                app:title="@string/str_my_order"
-                app:type="arrow" />
+                app:title="@string/service_order_info"
+                app:type="arrow"
+                tools:visibility="visible" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_address"
@@ -124,7 +127,8 @@
                 app:showDivider="top"
                 app:startImage="@mipmap/ic_address"
                 app:title="@string/str_receive_address"
-                app:type="arrow" />
+                app:type="arrow"
+                tools:visibility="visible" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_coupon"
@@ -134,7 +138,8 @@
                 app:showDivider="top"
                 app:startImage="@mipmap/ic_coupon"
                 app:title="@string/str_coupon"
-                app:type="arrow" />
+                app:type="arrow"
+                tools:visibility="visible" />
 
             <View
                 android:layout_width="wrap_content"
@@ -149,7 +154,8 @@
                 app:showDivider="top"
                 app:startImage="@mipmap/ic_help"
                 app:title="@string/str_help_feedback"
-                app:type="arrow" />
+                app:type="arrow"
+                tools:visibility="visible" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_setting"
@@ -158,7 +164,7 @@
                 android:layout_marginBottom="@dimen/dp_16"
                 app:showDivider="top"
                 app:startImage="@mipmap/ic_setting"
-                app:title="@string/str_my_setting"
+                app:title="@string/str_setting"
                 app:type="arrow" />
 
         </LinearLayout>

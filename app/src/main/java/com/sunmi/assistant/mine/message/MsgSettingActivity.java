@@ -100,10 +100,10 @@ public class MsgSettingActivity extends BaseMvpActivity<MsgSettingPresenter>
 
     private void initDevice() {
         if (adapter == null) {
-            adapter = new CommonListAdapter<MsgSettingChildren>(context, R.layout.item_msg_device_setting, deviceMsg) {
+            adapter = new CommonListAdapter<MsgSettingChildren>(context, R.layout.item_common_arrow, deviceMsg) {
                 @Override
                 public void convert(ViewHolder holder, MsgSettingChildren msgSettingChildren) {
-                    SettingItemLayout silDevice = holder.getView(R.id.sil_device);
+                    SettingItemLayout silDevice = holder.getView(R.id.sil_item);
                     if (msgSettingChildren.getStatus() == 1) {
                         silDevice.setContent(R.string.sm_enable);
                     } else {

@@ -19,35 +19,17 @@
         app:titleText="@string/ipc_setting_relaunch"
         app:titleTextColor="@color/text_main" />
 
-    <LinearLayout
-        android:id="@+id/ll_relaunch"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_60"
-        android:background="@color/c_white"
-        android:orientation="vertical"
+    <sunmi.common.view.SettingItemLayout
+        android:id="@+id/sil_relaunch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:contentText="@string/ipc_setting_reboot_tip"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_bar">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_20"
-            android:layout_marginTop="@dimen/dp_9"
-            android:text="@string/ipc_setting_right_now_reboot"
-            android:textColor="@color/text_main"
-            android:textSize="@dimen/sp_16"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_20"
-            android:layout_marginTop="@dimen/dp_2"
-            android:text="@string/ipc_setting_reboot_tip"
-            android:textColor="@color/text_caption"
-            android:textSize="@dimen/sp_14" />
-
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@id/title_bar"
+        app:showDivider="none"
+        app:styleType="multi"
+        app:title="@string/ipc_setting_right_now_reboot"
+        app:type="arrow" />
 
 </android.support.constraint.ConstraintLayout>

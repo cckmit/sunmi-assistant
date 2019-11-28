@@ -1,7 +1,5 @@
 package com.sunmi.assistant.mine.setting;
 
-import android.view.View;
-
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
@@ -25,14 +23,10 @@ public class SecurityActivity extends BaseActivity {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
     }
 
-    @Click({R.id.rlPassword, R.id.rlMobile, R.id.rlEmail})
-    public void onClick(View v) {
-        int id = v.getId();
-        if (id == R.id.rlPassword) {
-            CommonUtils.trackCommonEvent(context, "accountSecurityChangePwd",
-                    "主页_设置_账号安全_密码修改", Constants.EVENT_MY_INFO);
-            ChangePasswordActivity_.intent(context).start();
-        }
+    @Click({R.id.sil_password})
+    void passwordClick() {
+        CommonUtils.trackCommonEvent(context, "accountSecurityChangePwd",
+                "主页_设置_账号安全_密码修改", Constants.EVENT_MY_INFO);
+        ChangePasswordActivity_.intent(context).start();
     }
-
 }
