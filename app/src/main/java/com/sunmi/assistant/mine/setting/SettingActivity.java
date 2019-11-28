@@ -3,7 +3,6 @@ package com.sunmi.assistant.mine.setting;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.view.View;
-import android.widget.TextView;
 
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.utils.CommonUtils;
@@ -23,6 +22,7 @@ import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.bottompopmenu.BottomPopMenu;
 import sunmi.common.view.bottompopmenu.PopItemAction;
 
@@ -33,28 +33,25 @@ import sunmi.common.view.bottompopmenu.PopItemAction;
  */
 @EActivity(R.layout.activity_setting)
 public class SettingActivity extends BaseActivity {
-
-    @ViewById(R.id.tvVersion)
-    TextView tvVersion;
-    @ViewById(R.id.tvCash)
-    TextView tvCash;
+    @ViewById(R.id.sil_about)
+    SettingItemLayout silAbout;
 
     private BottomPopMenu choosePhotoMenu;
 
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        tvVersion.setText(getString(R.string.str_version_placeholder,
+        silAbout.setContent(getString(R.string.str_version_placeholder,
                 CommonHelper.getAppVersionName(context)));
     }
 
-    @Click({R.id.rlAccountSafe, R.id.rlAbout, R.id.rlClearCash, R.id.btnLogout})
+    @Click({R.id.sil_accountSafe, R.id.sil_about, R.id.btnLogout})
     public void click(View v) {
         switch (v.getId()) {
-            case R.id.rlAccountSafe:
+            case R.id.sil_accountSafe:
                 SecurityActivity_.intent(context).start();
                 break;
-            case R.id.rlAbout:
+            case R.id.sil_about:
                 AboutActivity_.intent(context).start();
                 break;
             case R.id.btnLogout:
