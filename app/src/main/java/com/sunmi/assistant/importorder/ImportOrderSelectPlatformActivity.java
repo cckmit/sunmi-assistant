@@ -2,12 +2,7 @@ package com.sunmi.assistant.importorder;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
@@ -26,6 +21,8 @@ import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
+import sunmi.common.view.SettingItemLayout;
+import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.ViewHolder;
 
@@ -44,7 +41,7 @@ public class ImportOrderSelectPlatformActivity extends BaseActivity {
     @ViewById(R.id.tv_tip)
     TextView tvTip;
     @ViewById(R.id.recyclerView)
-    RecyclerView recyclerView;
+    SmRecyclerView recyclerView;
     @ViewById(R.id.btnComplete)
     Button btnComplete;
 
@@ -56,7 +53,7 @@ public class ImportOrderSelectPlatformActivity extends BaseActivity {
         titleBar.setAppTitle(R.string.import_order_select_cash_register_software);
         tvTip.setText(R.string.import_order_select_shop_cash_register_software);
         btnComplete.setText(R.string.str_next);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.init(R.drawable.shap_line_divider);
         btnComplete.setEnabled(false);
         getPlatformList();
     }
@@ -97,28 +94,22 @@ public class ImportOrderSelectPlatformActivity extends BaseActivity {
         int selectedIndex;
 
         private PlatformListAdapter(Context context, List<PlatformInfo.SaasListBean> list) {
-            super(context, R.layout.item_merchant_platform, list);
+            super(context, R.layout.item_common_checked, list);
             selectedIndex = -1;
         }
 
         @Override
         public void convert(ViewHolder holder, final PlatformInfo.SaasListBean bean) {
-            TextView tvPlatform = holder.getView(R.id.tv_platform);
-            tvPlatform.setText(bean.getSaas_name());
-            ImageView ivSelect = holder.getView(R.id.iv_select);
+            SettingItemLayout item = holder.getView(R.id.sil_item);
+            item.setTitle(bean.getSaas_name());
+            item.setChecked(selectedIndex == holder.getAdapterPosition());
+
             holder.itemView.setOnClickListener(v -> {
                 selectedIndex = holder.getAdapterPosition();
                 selectPlatformBean = bean;
                 notifyDataSetChanged();
                 btnComplete.setEnabled(true);
             });
-            if (selectedIndex == holder.getAdapterPosition()) {
-                tvPlatform.setTextColor(ContextCompat.getColor(mContext, R.color.common_orange));
-                ivSelect.setVisibility(View.VISIBLE);
-            } else {
-                tvPlatform.setTextColor(ContextCompat.getColor(mContext, R.color.text_main));
-                ivSelect.setVisibility(View.GONE);
-            }
         }
     }
 }
