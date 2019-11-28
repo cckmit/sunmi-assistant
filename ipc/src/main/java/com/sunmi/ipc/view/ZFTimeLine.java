@@ -30,6 +30,12 @@ public class ZFTimeLine extends View {
     public static final int STYLE_NORMAL = 0;
     public static final int STYLE_BIG = 1;
 
+    private int width;
+    private int height;
+    private int centerX;
+    private int centerY;
+    // 每像素代表的秒数
+    private double secondsPerPixel;
     // 内容区域顶部坐标
     float displayTop;
     // 内容区域底部坐标
@@ -136,12 +142,12 @@ public class ZFTimeLine extends View {
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        int width = getMeasuredWidth();
-        int height = getMeasuredHeight();
+        width = getMeasuredWidth();
+        height = getMeasuredHeight();
 
         // 中央点位坐标
-        int centerX = width / 2;
-        int centerY = height / 2;
+        centerX = width / 2;
+        centerY = height / 2;
         if (style == STYLE_BIG) {
             displayTop = 0;
             displayBottom = height;
@@ -168,6 +174,7 @@ public class ZFTimeLine extends View {
             textBaseline = centerY + dip2px(14);
         }
         intervalValue = getIntervalValue();
+        secondsPerPixel = (double) intervalSeconds / intervalValue;
     }
 
     //设置监听
@@ -207,12 +214,6 @@ public class ZFTimeLine extends View {
         } else if (currentInterval > rightBound) {
             currentInterval = rightBound;
         }
-
-        int width = getWidth();
-        int height = getHeight();
-        int centerX = width / 2;
-        int centerY = height / 2;
-        double secondsPerPixel = (double) intervalSeconds / intervalValue;
 
         // 左边第一个刻度代表的秒数
         long leftInterval = (long) Math.max(currentInterval - centerX * secondsPerPixel, leftBound);
