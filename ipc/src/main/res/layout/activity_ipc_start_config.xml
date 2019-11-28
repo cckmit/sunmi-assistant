@@ -10,6 +10,7 @@
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/c_white"
         app:dividerColor="@color/c_divider"
         app:dividerShow="true"
         app:leftDefaultClickEnable="true"
@@ -91,6 +92,11 @@
         android:layout_height="@dimen/dp_84"
         android:layout_alignParentBottom="true"
         android:background="@color/c_white">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_0_5"
+            android:background="@color/c_divider" />
 
         <Button
             android:id="@+id/btn_start"

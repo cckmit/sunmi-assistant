@@ -2,9 +2,7 @@ package com.sunmi.ipc.view.activity;
 
 import android.os.Handler;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -40,6 +38,8 @@ import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.SMDeviceDiscoverUtils;
+import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.view.SmRecyclerView;
 
 /**
  * Description: 搜索ipc设备
@@ -54,7 +54,7 @@ public class IPCSearchActivity extends BaseActivity
     @ViewById(resName = "rl_search")
     RelativeLayout rlSearch;
     @ViewById(resName = "rv_ipc")
-    RecyclerView rvDevice;
+    SmRecyclerView rvDevice;
     @ViewById(resName = "rl_no_device")
     RelativeLayout rlNoWifi;
     @ViewById(resName = "rl_loading")
@@ -83,6 +83,7 @@ public class IPCSearchActivity extends BaseActivity
 
     @AfterViews
     void init() {
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         if (CommonConstants.TYPE_IPC_FS == deviceType) {
             tvNoIpc.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_no_fs, 0, 0);
         }
@@ -92,6 +93,7 @@ public class IPCSearchActivity extends BaseActivity
         } else {
             tvCheckNetwork.setText(R.string.tip_check_ipc_wireless);
         }
+        rvDevice.init(R.drawable.shap_line_divider);
         startScan();
         initApList();
     }
@@ -100,15 +102,13 @@ public class IPCSearchActivity extends BaseActivity
         rlNoWifi.setVisibility(View.GONE);
         rlSearch.setVisibility(View.VISIBLE);
         SMDeviceDiscoverUtils.scanDevice(context, IpcConstants.ipcDiscovered);
-        new Handler().postDelayed(new Runnable() {
-            public void run() {
-                if (ipcList.size() <= 0) {
-                    rlSearch.setVisibility(View.GONE);
-                    rlNoWifi.setVisibility(View.VISIBLE);
-                } else {
-                    rlLoading.setVisibility(View.GONE);
-                    btnRefresh.setVisibility(View.VISIBLE);
-                }
+        new Handler().postDelayed(() -> {
+            if (ipcList.size() <= 0) {
+                rlSearch.setVisibility(View.GONE);
+                rlNoWifi.setVisibility(View.VISIBLE);
+            } else {
+                rlLoading.setVisibility(View.GONE);
+                btnRefresh.setVisibility(View.VISIBLE);
             }
         }, 3000);
     }
@@ -117,7 +117,6 @@ public class IPCSearchActivity extends BaseActivity
     void initApList() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         rvDevice.setLayoutManager(layoutManager);
-        rvDevice.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
         ipcListAdapter = new IPCListAdapter(context, ipcList);
         rvDevice.setAdapter(ipcListAdapter);
     }
