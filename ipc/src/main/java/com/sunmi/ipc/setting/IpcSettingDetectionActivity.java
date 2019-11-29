@@ -2,9 +2,7 @@ package com.sunmi.ipc.setting;
 
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
-import android.widget.CompoundButton;
 import android.widget.SeekBar;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;
@@ -20,6 +18,7 @@ import org.androidannotations.annotations.ViewById;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.sunmicall.ResponseBean;
+import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.TitleBarView;
 
 import static com.sunmi.ipc.setting.entity.DetectionConfig.INTENT_EXTRA_DETECTION_CONFIG;
@@ -39,10 +38,8 @@ public class IpcSettingDetectionActivity extends BaseActivity {
     @ViewById(resName = "title_bar")
     TitleBarView mTitleBar;
 
-    @ViewById(resName = "tv_ipc_setting_switch_title")
-    TextView mDetectionTitle;
-    @ViewById(resName = "switch_ipc_setting_detection")
-    Switch mDetectionSwitch;
+    @ViewById(resName = "sil_ipc_setting_detection")
+    SettingItemLayout silDetection;
     @ViewById(resName = "tv_ipc_setting_sensitivity_title")
     TextView mSensitivityTitle;
     @ViewById(resName = "sb_ipc_setting_sensitivity")
@@ -69,13 +66,10 @@ public class IpcSettingDetectionActivity extends BaseActivity {
         initData(mType, mConfig);
         setViewType(mType);
         updateView(mEnable, mSensitivity);
-        mDetectionSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mEnable = isChecked;
-                updateView(isChecked, mSensitivity);
-                setEnable(isChecked);
-            }
+        silDetection.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            mEnable = isChecked;
+            updateView(isChecked, mSensitivity);
+            setEnable(isChecked);
         });
         mSensitivitySeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -110,15 +104,15 @@ public class IpcSettingDetectionActivity extends BaseActivity {
     private void setViewType(int type) {
         if (type == TYPE_SOUND) {
             mTitleBar.setAppTitle(R.string.ipc_setting_sound_abnormal_detection);
-            mDetectionTitle.setText(R.string.ipc_setting_sound_abnormal_detection);
+            silDetection.setTitle(R.string.ipc_setting_sound_abnormal_detection);
         } else if (type == TYPE_ACTIVE) {
             mTitleBar.setAppTitle(R.string.ipc_setting_active_abnormal_detection);
-            mDetectionTitle.setText(R.string.ipc_setting_active_abnormal_detection);
+            silDetection.setTitle(R.string.ipc_setting_active_abnormal_detection);
         }
     }
 
     private void updateView(boolean enable, int sensitivity) {
-        mDetectionSwitch.setChecked(enable);
+        silDetection.setChecked(enable);
         mSensitivitySeekBar.setEnabled(enable);
         mSensitivitySeekBar.setProgress(sensitivity);
         if (enable) {

@@ -47,6 +47,7 @@ platform :android do
     gradle(
       task: "clean assemble",
       build_type: "uat",
+      flavor: "myapp",
       properties: {
         "android.injected.signing.store.file" => ENV["WORKSPACE"] + "/Keystore.jks",
         "android.injected.signing.store.password" => "SUNMIwireless388",

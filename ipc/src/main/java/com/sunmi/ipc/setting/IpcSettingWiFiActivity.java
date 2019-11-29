@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +37,7 @@ import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
+import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.ViewHolder;
 import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.dialog.InputDialog;
@@ -55,7 +55,7 @@ public class IpcSettingWiFiActivity extends BaseMvpActivity<IpcSettingWifiPresen
     @ViewById(resName = "tv_status")
     TextView tvStatus;
     @ViewById(resName = "recyclerView")
-    RecyclerView recyclerView;
+    SmRecyclerView recyclerView;
     @ViewById(resName = "iv_lock")
     ImageView ivLock;
     @ViewById(resName = "rl_wifi")
@@ -131,7 +131,7 @@ public class IpcSettingWiFiActivity extends BaseMvpActivity<IpcSettingWifiPresen
         mPresenter = new IpcSettingWifiPresenter();
         mPresenter.attachView(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
-        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.init(R.drawable.shap_line_divider);
         tvWifiNme.setText(wifiSsid);
         if ("NONE".equalsIgnoreCase(wifiMgmt)) {
             ivLock.setVisibility(View.GONE);
@@ -247,16 +247,13 @@ public class IpcSettingWiFiActivity extends BaseMvpActivity<IpcSettingWifiPresen
                 } else {
                     ivLock.setVisibility(View.VISIBLE);
                 }
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mSsid = bean.getSsid();
-                        mMgmt = bean.getKey_mgmt();
-                        if (isNoneKey) {
-                            connectWifi(mSsid, mMgmt, "NONE");
-                        } else {
-                            inputPasswordDialog();
-                        }
+                holder.itemView.setOnClickListener(v -> {
+                    mSsid = bean.getSsid();
+                    mMgmt = bean.getKey_mgmt();
+                    if (isNoneKey) {
+                        connectWifi(mSsid, mMgmt, "NONE");
+                    } else {
+                        inputPasswordDialog();
                     }
                 });
             }
