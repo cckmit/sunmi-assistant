@@ -25,6 +25,7 @@ import org.androidannotations.annotations.ViewById;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.router.ApManagerApi;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.ViewUtils;
 import sunmi.common.view.TitleBarView;
@@ -72,7 +73,11 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         if (deviceType == CommonConstants.TYPE_AP) {
             titleBar.setAppTitle(R.string.str_title_ap_set);
-            ivImage.setImageResource(R.mipmap.ic_device_config_ap);
+            if (CommonHelper.isGooglePlay()) {
+                ivImage.setImageResource(R.mipmap.ic_device_config_ap_foreign);
+            } else {
+                ivImage.setImageResource(R.mipmap.ic_device_config_ap);
+            }
             tvTip1.setText(R.string.str_config_tip_ap);
             tvTip2.setText(Html.fromHtml(getString(R.string.str_config_tip_ap_1)));
             tvTip3.setText(Html.fromHtml(getString(R.string.str_config_tip_ap_2)));
