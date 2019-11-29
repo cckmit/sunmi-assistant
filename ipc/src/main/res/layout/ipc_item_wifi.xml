@@ -38,9 +38,4 @@
         android:background="@mipmap/ic_wifi"
         tools:ignore="ContentDescription" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_0_5"
-        android:layout_alignParentBottom="true"
-        android:background="@color/bg_common" />
 </RelativeLayout>
