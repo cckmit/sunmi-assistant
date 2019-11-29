@@ -1,5 +1,6 @@
 package com.sunmi.assistant.ui.activity.login;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -14,6 +15,8 @@ import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.contract.InputMobileContract;
 import com.sunmi.assistant.ui.activity.presenter.InputMobilePresenter;
+import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.impl.RouterRequest;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -23,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.constant.RouterConfig;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.RegexUtils;
 import sunmi.common.utils.ViewUtils;
@@ -44,6 +48,14 @@ public class RegisterActivity extends BaseMvpActivity<InputMobilePresenter>
     CheckedTextView ctvPrivacy;
 
     private String mobile;
+
+    @RouterAnno(
+            path = RouterConfig.App.REGISTER
+    )
+    public static Intent start(RouterRequest request){
+        Intent intent = new Intent(request.getRawContext(), RegisterActivity_.class);
+        return intent;
+    }
 
     @AfterViews
     protected void init() {
@@ -84,7 +96,7 @@ public class RegisterActivity extends BaseMvpActivity<InputMobilePresenter>
     }
 
     private void invalidAccount() {
-        showLoadingDialog();
+        showDarkLoading();
         mPresenter.isUserExist(mobile);
     }
 
@@ -108,7 +120,7 @@ public class RegisterActivity extends BaseMvpActivity<InputMobilePresenter>
         if (etMobile.getText() == null) return;
         String user = etMobile.getText().toString();//email test: esyzim06497@chacuo.net
         if (RegexUtils.isCorrectAccount(user)) {
-            showLoadingDialog();
+            showDarkLoading();
             mPresenter.checkUserName(user);
         }
     }

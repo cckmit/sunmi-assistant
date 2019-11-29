@@ -12,11 +12,11 @@ import android.widget.TextView;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.model.StorageListResp;
-import com.sunmi.ipc.router.SunmiServiceApi;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.ipc.setting.IpcSettingSdcardActivity_;
 import com.sunmi.ipc.setting.RecognitionSettingActivity_;
+import com.sunmi.ipc.utils.IpcUtils;
 import com.xiaojinzi.component.impl.Router;
 
 import org.androidannotations.annotations.AfterViews;
@@ -35,12 +35,13 @@ import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.router.AppApi;
+import sunmi.common.router.SunmiServiceApi;
 import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DeviceTypeUtils;
-import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SMDeviceDiscoverUtils;
 import sunmi.common.utils.SpUtils;
@@ -48,7 +49,6 @@ import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.ViewHolder;
-import sunmi.common.view.activity.StartConfigSMDeviceActivity_;
 import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.dialog.ListDialog;
 
@@ -84,6 +84,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     boolean isSunmiLink;
     @Extra
     ArrayList<SunmiDevice> sunmiDevices;
+
     SunmiDevice deviceChoose;
     private List<SunmiDevice> list = new ArrayList<>();
     private List<SunmiDevice> successList = new ArrayList<>();
@@ -131,7 +132,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     void completeClick() {
         if (CommonConstants.TYPE_IPC_FS == deviceType) {
             if (successList.size() == 1) {
-                getSDCardStatus(successList.get(0));
+                fsAdjustPrepare(successList.get(0));
             } else if (successList.size() > 1) {
                 chooseFsAdjust();
             }
@@ -140,17 +141,16 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                 Intent intent = new Intent();
                 intent.putExtra("isComplete", true);
                 setResult(RESULT_OK, intent);
+                finish();
             } else {
-                GotoActivityUtils.gotoMainActivity(context);
+                Router.withApi(AppApi.class).goToMain(context);
             }
-            finish();
         }
     }
 
     @Click(resName = "btn_finish")
     void finishClick() {
-        GotoActivityUtils.gotoMainActivity(context);
-        finish();
+        Router.withApi(AppApi.class).goToMain(context, this::finish);
     }
 
     @Click(resName = "btn_retry")
@@ -158,15 +158,14 @@ public class IpcConfigCompletedActivity extends BaseActivity {
         if (isSunmiLink) {
             setResult(RESULT_OK);
         } else {
-            StartConfigSMDeviceActivity_.intent(context)
-                    .deviceType(deviceType).shopId(shopId).start();
+            IpcStartConfigActivity_.intent(context).ipcType(deviceType).start();
         }
         finish();
     }
 
     @Click(resName = "btn_cloud")
     void cloudClick() {
-        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(CommonConfig.CLOUD_STORAGE_URL, snList);
+        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.CLOUD_STORAGE_URL, snList);
     }
 
     @Override
@@ -199,7 +198,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                     int status = res.getResult().getInt("sd_status_code");
                     switch (status) {
                         case 2:
-                            startCameraAdjust(deviceChoose);
+                            startFsAdjust(deviceChoose);
                             break;
                         case 0:
                             showErrorDialog(R.string.tip_no_tf_card,
@@ -245,9 +244,9 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                 .setTitle(R.string.tip_sdcard_unformat)
                 .setMessage(R.string.msg_dialog_format_sd_before_adjust)
                 .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.str_confirm, (dialog, which) -> {
-                    IpcSettingSdcardActivity_.intent(this).mDevice(device).start();
-                }).create().show();
+                .setConfirmButton(R.string.str_confirm, (dialog, which) ->
+                        IpcSettingSdcardActivity_.intent(this).mDevice(device).start())
+                .create().show();
     }
 
 
@@ -290,7 +289,6 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                 } else {
                     holder.setText(R.id.tv_name, device.getName());
                 }
-                holder.getView(R.id.tv_adjust).setVisibility(View.GONE);
                 holder.setImageResource(R.id.iv_device, DeviceTypeUtils.getInstance()
                         .getSunmiDeviceImage(device.getModel()));
                 if (isBindSuccess(device)) {
@@ -336,48 +334,38 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                 .setConfirmButton(R.string.str_confirm, (dialog, which) -> {
                     if (adapter.getSelectedIndex() != -1) {
                         dialog.dismiss();
-                        getSDCardStatus(successList.get(adapter.getSelectedIndex()));
+                        fsAdjustPrepare(successList.get(adapter.getSelectedIndex()));
                     }
                 }).create().show();
     }
 
-    private void getSDCardStatus(SunmiDevice device) {
-        showLoadingDialog();
-        deviceChoose = device;
+    /**
+     * FS画面调整的准备，包括网络判断，局域网判断，获取FS直播UID。
+     * 注：绑定完的MQTT消息未给UID，后续MQTT消息携带UID后，可以免去接口调用
+     */
+    private void fsAdjustPrepare(SunmiDevice device) {
         if (!NetworkUtils.isNetworkAvailable(context)) {
             shortTip(R.string.str_net_exception);
-            hideLoadingDialog();
             return;
         }
         SunmiDevice sunmiDevice = CommonConstants.SUNMI_DEVICE_MAP.get(device.getDeviceid());
         if (sunmiDevice == null) {
             shortTip(R.string.ipc_setting_tip_network_dismatch);
-            hideLoadingDialog();
             return;
         }
-        IPCCall.getInstance().getSdState(context, sunmiDevice.getModel(), sunmiDevice.getDeviceid());
-    }
-
-    /**
-     * 绑定完的mqtt消息未给UID。。。校准需要看直播，必须要有UID。。。todo 等云端mqtt返回UID可以去掉接口调用
-     */
-    public void startCameraAdjust(final SunmiDevice device) {
         showLoadingDialog();
         IpcCloudApi.getInstance().getDetailList(SpUtils.getCompanyId(), SpUtils.getShopId(),
                 new RetrofitCallback<IpcListResp>() {
                     @Override
                     public void onSuccess(int code, String msg, IpcListResp data) {
-                        hideLoadingDialog();
-                        boolean success = false;
                         if (data.getFs_list() != null && data.getFs_list().size() > 0) {
                             for (IpcListResp.SsListBean bean : data.getFs_list()) {
                                 if (device.getDeviceid().equalsIgnoreCase(bean.getSn())) {
-                                    startCameraAdjustActivity(getSunmiDevice(bean));
-                                    success = true;
+                                    fsAdjust(getSunmiDevice(bean));
+                                    return;
                                 }
                             }
-                        }
-                        if (!success) {
+                            hideLoadingDialog();
                             shortTip(R.string.tip_device_not_exist);
                         }
                     }
@@ -388,6 +376,40 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                         shortTip(R.string.str_net_exception);
                     }
                 });
+    }
+
+    /**
+     * FS画面调整入口，需要判断版本，新版无需SD卡就绪
+     */
+    private void fsAdjust(SunmiDevice device) {
+        deviceChoose = device;
+        String versionName = device.getFirmware();
+        if (IpcUtils.getVersionCode(versionName) < IpcConstants.IPC_VERSION_NO_SDCARD_CHECK) {
+            getSdCardStatus(device);
+        } else {
+            startFsAdjust(device);
+        }
+    }
+
+    private void getSdCardStatus(SunmiDevice device) {
+        SunmiDevice sunmiDevice = CommonConstants.SUNMI_DEVICE_MAP.get(device.getDeviceid());
+        if (sunmiDevice == null) {
+            shortTip(R.string.ipc_setting_tip_network_dismatch);
+            return;
+        }
+        IPCCall.getInstance().getSdState(context, sunmiDevice.getModel(), sunmiDevice.getDeviceid());
+    }
+
+    private void startFsAdjust(SunmiDevice device) {
+        hideLoadingDialog();
+        if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(device.getDeviceid())) {
+            shortTip(R.string.ipc_setting_tip_network_dismatch);
+            return;
+        }
+        RecognitionSettingActivity_.intent(this)
+                .mDevice(device)
+                .mVideoRatio(16f / 9f)
+                .start();
     }
 
     private SunmiDevice getSunmiDevice(IpcListResp.SsListBean bean) {
@@ -403,15 +425,6 @@ public class IpcConfigCompletedActivity extends BaseActivity {
         device.setId(bean.getId());
         device.setFirmware(bean.getBin_version());
         return device;
-    }
-
-    private void startCameraAdjustActivity(SunmiDevice device) {
-        hideLoadingDialog();
-        if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(device.getDeviceid())) {
-            shortTip(R.string.ipc_setting_tip_network_dismatch);
-            return;
-        }
-        RecognitionSettingActivity_.intent(this).mDevice(device).mVideoRatio(16f / 9f).start();
     }
 
     public static class FsAdjustAdapter extends CommonListAdapter<SunmiDevice> {

@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_common"
+    tools:ignore="MissingDefaultResource">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/ctl_pos"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_310"
+        android:background="@drawable/dashboard_bg_top"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <sunmi.common.view.TitleBarView
+            android:id="@+id/title_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:dividerColor="@color/white_20a"
+            app:dividerShow="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:leftDefaultClickEnable="true"
+            app:leftIcon="@drawable/ic_back_light"
+            app:titleText="@string/pos_handle_sunmi_dev_manager"
+            app:titleTextColor="@color/c_white" />
+
+        <RelativeLayout
+            android:id="@+id/rl_cpu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_32"
+            android:layout_marginEnd="@dimen/dp_14"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/rl_storage"
+            app:layout_constraintTop_toBottomOf="@id/title_bar">
+
+            <com.sunmi.assistant.pos.PosArcView
+                android:id="@+id/av_view_cup"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="@dimen/dp_90"
+                tools:ignore="MissingConstraints" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dp_30">
+
+                <TextView
+                    android:id="@+id/tv_ghz_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/pos_text_0_0"
+                    android:textColor="@color/c_white"
+                    android:textSize="@dimen/sp_22" />
+
+                <TextView
+                    android:id="@+id/tv_ghz_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/tv_ghz_value"
+                    android:layout_toEndOf="@id/tv_ghz_value"
+                    android:text="@string/pos_ghz"
+                    android:textColor="@color/c_white"
+                    android:textSize="@dimen/sp_12" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_cpu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dp_78"
+                android:text="@string/pos_cpu"
+                android:textColor="@color/c_white"
+                android:textSize="@dimen/sp_12" />
+
+            <TextView
+                android:id="@+id/tv_cpu_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_cpu"
+                android:layout_centerHorizontal="true"
+                android:text="@string/pos_default_0ghz"
+                android:textColor="@color/white_60a"
+                android:textSize="@dimen/sp_12" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_storage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_32"
+            android:layout_marginEnd="@dimen/dp_14"
+            app:layout_constraintLeft_toRightOf="@id/rl_cpu"
+            app:layout_constraintRight_toLeftOf="@id/rl_store"
+            app:layout_constraintTop_toBottomOf="@id/title_bar">
+
+            <com.sunmi.assistant.pos.PosArcView
+                android:id="@+id/av_view_storage"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="@dimen/dp_90"
+                tools:ignore="MissingConstraints" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dp_30">
+
+                <TextView
+                    android:id="@+id/tv_storage_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/pos_text_0_0"
+                    android:textColor="@color/c_white"
+                    android:textSize="@dimen/sp_22" />
+
+                <TextView
+                    android:id="@+id/tv_storage_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/tv_storage_value"
+                    android:layout_toEndOf="@id/tv_storage_value"
+                    android:text="@string/pos_m"
+                    android:textColor="@color/c_white"
+                    android:textSize="@dimen/sp_12" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_storage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dp_78"
+                android:text="@string/pos_runnig_member"
+                android:textColor="@color/c_white"
+                android:textSize="@dimen/sp_12" />
+
+            <TextView
+                android:id="@+id/tv_storage_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_storage"
+                android:layout_centerHorizontal="true"
+                android:text="@string/pos_default_mem_0g"
+                android:textColor="@color/white_60a"
+                android:textSize="@dimen/sp_12" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_store"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_32"
+            app:layout_constraintLeft_toRightOf="@id/rl_storage"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title_bar">
+
+            <com.sunmi.assistant.pos.PosArcView
+                android:id="@+id/av_view_store"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="@dimen/dp_90"
+                tools:ignore="MissingConstraints" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dp_30">
+
+                <TextView
+                    android:id="@+id/tv_store_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/pos_text_0_0"
+                    android:textColor="@color/c_white"
+                    android:textSize="@dimen/sp_22" />
+
+                <TextView
+                    android:id="@+id/tv_store_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/tv_store_value"
+                    android:layout_toEndOf="@id/tv_store_value"
+                    android:text="@string/pos_g"
+                    android:textColor="@color/c_white"
+                    android:textSize="@dimen/sp_12" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_store"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dp_78"
+                android:text="@string/pos_sd"
+                android:textColor="@color/c_white"
+                android:textSize="@dimen/sp_12" />
+
+            <TextView
+                android:id="@+id/tv_store_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_store"
+                android:layout_centerHorizontal="true"
+                android:text="@string/pos_default_mem_0g"
+                android:textColor="@color/white_60a"
+                android:textSize="@dimen/sp_12" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/pos_name"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_48"
+            android:layout_marginStart="@dimen/dp_16"
+            android:gravity="center_vertical"
+            android:textColor="@color/c_white"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <TextView
+            android:id="@+id/pos_battery"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_48"
+            android:layout_marginEnd="@dimen/dp_46"
+            android:gravity="center_vertical"
+            android:textColor="@color/c_white"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_battery"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_48"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:gravity="center_vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_1"
+            android:layout_marginBottom="@dimen/dp_48"
+            android:background="@color/white_20a"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/ctl_dev"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_96"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:background="@drawable/bg_shap"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ctl_pos">
+
+        <ImageView
+            android:id="@+id/iv_dev"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:layout_marginStart="@dimen/dp_24"
+            android:background="@mipmap/ic_pos_dev"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_dev_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_26"
+            android:text="@string/pos_dev_details"
+            android:textColor="@color/text_main"
+            android:textSize="@dimen/sp_16"
+            app:layout_constraintLeft_toRightOf="@id/iv_dev"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_4"
+            android:text="@string/pos_query_dev_details"
+            android:textColor="@color/text_caption"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintLeft_toRightOf="@id/iv_dev"
+            app:layout_constraintTop_toBottomOf="@id/tv_dev_details" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:background="@mipmap/ic_item_right"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/ctl_guarantee"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_96"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:background="@drawable/bg_shap"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ctl_dev">
+
+        <ImageView
+            android:id="@+id/iv_guarantee"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:layout_marginStart="@dimen/dp_24"
+            android:background="@mipmap/ic_pos_guarantee"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_guarantee_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_26"
+            android:text="@string/pos_guarantee_info"
+            android:textColor="@color/text_main"
+            android:textSize="@dimen/sp_16"
+            app:layout_constraintLeft_toRightOf="@id/iv_guarantee"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_guarantee_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_4"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintLeft_toRightOf="@id/iv_guarantee"
+            app:layout_constraintTop_toBottomOf="@id/tv_guarantee_detail" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:background="@mipmap/ic_item_right"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/ctl_application"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_96"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:background="@drawable/bg_shap"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ctl_guarantee">
+
+        <ImageView
+            android:id="@+id/iv_application"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:layout_marginStart="@dimen/dp_24"
+            android:background="@mipmap/ic_pos_application"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_application"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_26"
+            android:textColor="@color/text_main"
+            android:textSize="@dimen/sp_16"
+            app:layout_constraintLeft_toRightOf="@id/iv_application"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_app_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_4"
+            android:textColor="@color/text_caption"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintLeft_toRightOf="@id/iv_application"
+            app:layout_constraintTop_toBottomOf="@id/tv_application" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:background="@mipmap/ic_item_right"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+
+</android.support.constraint.ConstraintLayout>

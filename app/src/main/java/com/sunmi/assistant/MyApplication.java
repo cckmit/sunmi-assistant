@@ -50,7 +50,8 @@ public class MyApplication extends BaseApplication {
 
         // 装载各个业务组件
         ModuleManager.getInstance().registerArr(
-                RouterConfig.App.NAME, RouterConfig.Ipc.NAME, RouterConfig.SunmiService.NAME
+                RouterConfig.App.NAME, RouterConfig.Ipc.NAME, RouterConfig.SunmiService.NAME,
+                RouterConfig.ApManager.NAME,RouterConfig.CloudPrinter.NAME
         );
         if (BuildConfig.DEBUG) {
             ModuleManager.getInstance().check();

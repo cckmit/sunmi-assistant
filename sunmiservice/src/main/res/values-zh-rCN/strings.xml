@@ -13,7 +13,7 @@
     <string name="str_renewal">续费</string>
     <string name="tip_device_unbind">原绑定设备已解绑</string>
     <string name="tip_not_open_cloud">您尚未开通云存储服务</string>
-    <string name="str_go_open">去开通</string>
+    <string name="service_go_open">去开通</string>
     <string name="str_service_detail">服务详情</string>
     <string name="service_device_name">设备名称</string>
     <string name="service_device_model">设备型号</string>

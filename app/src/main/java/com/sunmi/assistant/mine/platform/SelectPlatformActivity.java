@@ -5,13 +5,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 
@@ -31,6 +27,8 @@ import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
+import sunmi.common.view.SettingItemLayout;
+import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.ViewHolder;
 
@@ -49,7 +47,7 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
     @ViewById(R.id.recyclerView)
-    RecyclerView recyclerView;
+    SmRecyclerView recyclerView;
     @ViewById(R.id.btn_next)
     Button btnNext;
 
@@ -130,7 +128,7 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
 
     private void initRecycler() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
-        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.init(R.drawable.shap_line_divider);
         titleBar.getLeftImg().setOnClickListener(this);
         titleBar.getRightTextView().setOnClickListener(this);
     }
@@ -144,15 +142,16 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
         int selectedIndex;
 
         private PlatformListAdapter(Context context, List<PlatformInfo.SaasListBean> list) {
-            super(context, R.layout.item_merchant_platform, list);
+            super(context, R.layout.item_common_checked, list);
             selectedIndex = -1;
         }
 
         @Override
         public void convert(ViewHolder holder, final PlatformInfo.SaasListBean bean) {
-            TextView tvPlatform = holder.getView(R.id.tv_platform);
-            tvPlatform.setText(bean.getSaas_name());
-            ImageView ivSelect = holder.getView(R.id.iv_select);
+            SettingItemLayout item = holder.getView(R.id.sil_item);
+            item.setTitle(bean.getSaas_name());
+            item.setChecked(selectedIndex == holder.getAdapterPosition());
+
             holder.itemView.setOnClickListener(v -> {
                 selectedIndex = holder.getAdapterPosition();
                 selectPlatform = bean.getSaas_name();
@@ -160,13 +159,6 @@ public class SelectPlatformActivity extends BaseActivity implements View.OnClick
                 notifyDataSetChanged();
                 btnNext.setEnabled(true);
             });
-            if (selectedIndex == holder.getAdapterPosition()) {
-                tvPlatform.setTextColor(ContextCompat.getColor(mContext, R.color.common_orange));
-                ivSelect.setVisibility(View.VISIBLE);
-            } else {
-                tvPlatform.setTextColor(ContextCompat.getColor(mContext, R.color.text_main));
-                ivSelect.setVisibility(View.GONE);
-            }
         }
     }
 }

@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -23,8 +22,8 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.datelibrary.DatePickDialog;
 import com.datelibrary.bean.DateType;
+import com.datelibrary.view.DatePickDialog;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.IpcManagerContract;
@@ -32,11 +31,11 @@ import com.sunmi.ipc.model.IpcManageBean;
 import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.model.VideoTimeSlotBean;
 import com.sunmi.ipc.presenter.IpcManagerPresenter;
-import com.sunmi.ipc.router.SunmiServiceApi;
 import com.sunmi.ipc.setting.IpcSettingActivity_;
 import com.sunmi.ipc.utils.AACDecoder;
 import com.sunmi.ipc.utils.H264Decoder;
 import com.sunmi.ipc.utils.IOTCClient;
+import com.sunmi.ipc.utils.IpcUtils;
 import com.sunmi.ipc.view.ZFTimeLine;
 import com.xiaojinzi.component.impl.Router;
 
@@ -51,9 +50,7 @@ import org.androidannotations.annotations.ViewById;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -64,14 +61,14 @@ import java.util.concurrent.TimeUnit;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonNotifications;
+import sunmi.common.constant.enums.DeviceStatus;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.router.SunmiServiceApi;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.DeviceTypeUtils;
-import sunmi.common.utils.IVideoPlayer;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.VolumeHelper;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.TitleBarView;
@@ -79,6 +76,7 @@ import sunmi.common.view.VerticalSeekBar;
 import sunmi.common.view.ViewHolder;
 import sunmi.common.view.bottompopmenu.BottomPopMenu;
 import sunmi.common.view.bottompopmenu.PopItemAction;
+import sunmi.common.view.dialog.CommonDialog;
 
 /**
  * Description:
@@ -87,14 +85,17 @@ import sunmi.common.view.bottompopmenu.PopItemAction;
 @EActivity(resName = "activity_ipc_manager")
 public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         implements IpcManagerContract.View, SurfaceHolder.Callback, IOTCClient.Callback,
-        IVideoPlayer.VideoPlayListener, ZFTimeLine.OnZFTimeLineListener, View.OnClickListener {
+//        IVideoPlayer.VideoPlayListener,
+        ZFTimeLine.OnZFTimeLineListener, View.OnClickListener, VolumeHelper.VolumeChangeListener {
 
     private final static int PLAY_TYPE_LIVE = 0;          // 直播
     private final static int PLAY_TYPE_PLAYBACK_DEV = 1;  // 设备回放
-    private final static int PLAY_TYPE_PLAYBACK_CLOUD = 2;// 云回放
+    //    private final static int PLAY_TYPE_PLAYBACK_CLOUD = 2;// 云回放
+    private final static int PLAY_FAIL_OFFLINE = 1;
+    private final static int PLAY_FAIL_NET_ERROR = 2;
 
     private final static long threeDaysSeconds = 3 * 24 * 60 * 60;//3天秒数
-    private final static int tenMinutes = 10 * 60;//10分钟
+//    private final static int tenMinutes = 10 * 60;//10分钟
 
     @ViewById(resName = "rl_screen")
     LinearLayout rlScreen;
@@ -102,18 +103,18 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     TitleBarView titleBar;
     @ViewById(resName = "vv_ipc")
     SurfaceView videoView;
-    @ViewById(resName = "ivp_cloud")
-    IVideoPlayer ivpCloud;
-    @ViewById(resName = "rl_control_panel")
-    RelativeLayout rlController;
+    //    @ViewById(resName = "ivp_cloud")
+//    IVideoPlayer ivpCloud;
+//    @ViewById(resName = "rl_control_panel")
+//    RelativeLayout rlController;
     @ViewById(resName = "rl_top")
     RelativeLayout rlTopBar;
     @ViewById(resName = "rl_bottom")
     RelativeLayout rlBottomBar;
     @ViewById(resName = "sBar_voice")
     VerticalSeekBar sBarVoice;//音量控制
-    @ViewById(resName = "ll_change_volume")
-    LinearLayout llChangeVolume;//音量控制
+    //    @ViewById(resName = "ll_change_volume")
+//    LinearLayout llChangeVolume;//音量控制
     @ViewById(resName = "iv_record")
     ImageView ivRecord;//录制
     @ViewById(resName = "iv_volume")
@@ -130,8 +131,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     Chronometer cmTimer;//录制时间
     @ViewById(resName = "rl_record")
     RelativeLayout rlRecord;
-    @ViewById(resName = "tv_calender")
-    TextView tvCalender;//日历
     @ViewById(resName = "iv_screenshot")
     ImageView ivScreenshot;//截图
     @ViewById(resName = "iv_live")
@@ -140,6 +139,10 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     ImageView ivPlay;//开始播放
     @ViewById(resName = "ll_play_fail")
     LinearLayout llPlayFail;
+    @ViewById(resName = "tv_play_fail")
+    TextView tvPlayFail;
+    @ViewById(resName = "tv_retry")
+    TextView tvRetry;
     @ViewById(resName = "scale_panel")
     ZFTimeLine scalePanel;
     @ViewById(resName = "tv_time_scroll")
@@ -147,23 +150,32 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @ViewById(resName = "rl_video")
     RelativeLayout rlVideo;
 
-    @ViewById(resName = "rl_loading")
-    RelativeLayout rlLoadingP;
-    @ViewById(resName = "ll_portrait_controller_bar")
-    LinearLayout llPortraitBar;
-    @ViewById(resName = "tv_calender_portrait")
-    TextView tvCalenderP;//日历
+    @ViewById(resName = "ll_loading")
+    LinearLayout llLoading;
+    @ViewById(resName = "rl_portrait_video_controller")
+    RelativeLayout rlVideoController;
+    @ViewById(resName = "iv_play_portrait")
+    ImageView ivPlayP;//暂停
     @ViewById(resName = "iv_volume_portrait")
     ImageView ivVolumeP;//音量
     @ViewById(resName = "tv_quality_portrait")
-    TextView tvQualityP;//高清画质
+    TextView tvQualityP;//画质
+    @ViewById(resName = "iv_full_screen_portrait")
+    ImageView ivFullScreen;
+    @ViewById(resName = "ll_portrait_controller_bar")
+    LinearLayout llPortraitBar;
+    @ViewById(resName = "iv_cloud_playback_portrait")
+    ImageView ivCloudPlayback;
+    @ViewById(resName = "ll_calender_portrait")
+    LinearLayout llCalender;
+    @ViewById(resName = "tv_calendar_portrait")
+    TextView tvCalendarP;//日历
     @ViewById(resName = "rv_manager")
     SmRecyclerView rvManager;
 
     @Extra
     SunmiDevice device;
-    //屏幕控件自动隐藏计时器
-    CountDownTimer hideControllerPanelTimer;
+
     private int screenW; //手机屏幕的宽
     private int playType;
     private boolean isPaused;//回放是否暂停
@@ -192,12 +204,14 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private Drawable drawableLeft, drawableRight;
 
     private List<VideoTimeSlotBean> listAp = new ArrayList<>();
-    private List<VideoTimeSlotBean> listCloud = new ArrayList<>();
+
+    private CountDownTimer timeLineScrollTimer;
 
     //竖屏切换高清
     private BottomPopMenu qualityPop;
 
     private CommonListAdapter adapter;
+    private int cloudStorageServiceStatus;
     private List<IpcManageBean> list = new ArrayList<>();
 
     @AfterViews
@@ -206,6 +220,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         mPresenter.attachView(this);
         if (isSS1()) {
             mPresenter.getStorageList(device.getDeviceid());
+            ivCloudPlayback.setVisibility(View.VISIBLE);
         }
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
@@ -213,27 +228,31 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         titleBar.setAppTitle(device.getName());
         titleBar.getLeftLayout().setOnClickListener(this);
         titleBar.getRightTextView().setOnClickListener(this);
+        rlBottomBar.setVisibility(View.VISIBLE);
         initData();
-        showVideoLoading();
-        rlLoadingP.setOnTouchListener((v, event) -> true);
+        llLoading.setOnTouchListener((v, event) -> true);
+        llPlayFail.setOnTouchListener((v, event) -> true);
+        if (isDeviceOffline()) {
+            showPlayFail(PLAY_FAIL_OFFLINE);
+            tvCalendarP.setEnabled(false);
+            llCalender.setClickable(false);
+            hideControllerPanel();
+        } else {
+            showVideoLoading();
+        }
         initSurfaceView();
         initManageList();
         handler.postDelayed(this::initControllerPanel, 200);
     }
 
+    private boolean isDeviceOffline() {
+        return device.getStatus() == DeviceStatus.OFFLINE.ordinal();
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     void initControllerPanel() {
-        rlVideo.setOnTouchListener((v, event) -> {
-            if (MotionEvent.ACTION_DOWN == event.getAction()) {
-                if (!isControlPanelShow) {
-                    startTimer();
-                }
-            }
-            return false;
-        });
         openMove();
         initVolume();
-        rlController.setVisibility(View.GONE);
         scalePanel.setListener(this);
     }
 
@@ -249,18 +268,20 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         iotcClient = new IOTCClient(device.getUid());
         iotcClient.setCallback(this);//直播回调
         audioDecoder = new AACDecoder();
+        //初始化音量
+        volumeHelper = new VolumeHelper(this);
+        volumeHelper.setVolumeChangeListener(this);
+        volumeHelper.registerVolumeReceiver();
     }
 
     private void setCalendarText(String day) {
-        tvCalender.setText(day);
-        tvCalenderP.setText(day);
+        tvCalendarP.setText(day);
     }
 
     private void initSurfaceView() {
         switchOrientation(Configuration.ORIENTATION_PORTRAIT);
         SurfaceHolder surfaceHolder = videoView.getHolder();
         surfaceHolder.addCallback(this);
-        ivpCloud.setVideoPlayListener(this);
     }
 
     @Override
@@ -278,17 +299,17 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        volumeHelper.unregisterVolumeReceiver();
         stopPlay();
         removeCallbacks();
         closeMove();//关闭时间抽的timer
-        cancelTimer();//关闭屏幕控件自动hide计时器
     }
 
     @Override
     public void onBackPressed() {
         if (isPortrait()) {
-            if (rlLoadingP != null && rlLoadingP.isShown()) {
-                rlLoadingP.setVisibility(View.GONE);
+            if (llLoading != null && llLoading.isShown()) {
+                llLoading.setVisibility(View.GONE);
                 return;
             }
             stopPlay();
@@ -310,7 +331,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-            llChangeVolume.setVisibility(View.GONE);
             setVolumeViewImage(volumeHelper.get100CurrentVolume());
             return false;
         } else {
@@ -323,22 +343,26 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         if (v.getId() == R.id.ll_back_layout) {
             onBackPressed();
         } else if (v.getId() == R.id.txt_right) {
-            IpcSettingActivity_.intent(context).mDevice(device).disableAdjustScreen(true).start();
+            if (IpcUtils.isIpcManageable(device.getDeviceid(), device.getStatus())) {
+                IpcSettingActivity_.intent(context).mDevice(device).disableAdjustScreen(true).start();
+            } else {
+                new CommonDialog.Builder(context)
+                        .setTitle(R.string.str_device_offline)
+                        .setMessage(R.string.msg_device_offline)
+                        .setConfirmButton(R.string.str_confirm).create().show();
+            }
         }
     }
 
     @Click(resName = "rl_top")
     void backClick() {
-        if (llChangeVolume.isShown()) {
-            llChangeVolume.setVisibility(View.GONE);
-        }
         if (llVideoQuality.isShown()) {
             llVideoQuality.setVisibility(View.GONE);
         }
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
-    @Click(resName = "iv_full_screen")
+    @Click(resName = "iv_full_screen_portrait")
     void fullScreenClick() {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
@@ -362,13 +386,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     //音量
     @Click(resName = "iv_volume")
     void volumeClick() {
-        if (llChangeVolume.isShown()) {
-            llChangeVolume.setVisibility(View.GONE);
+        if (volumeHelper.isMute()) {
+            setVolumeViewImage(1);
+            volumeHelper.unMute();
         } else {
-            llChangeVolume.setVisibility(View.VISIBLE);
-            int currentVolume100 = volumeHelper.get100CurrentVolume();//获取当前音量
-            sBarVoice.setProgress(currentVolume100);
-            setVolumeViewImage(currentVolume100);
+            volumeHelper.mute();
+            setVolumeViewImage(0);
         }
     }
 
@@ -405,6 +428,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     void qualityPortraitClick() {
         if (playType == PLAY_TYPE_LIVE) {
             switchQuality();
+            setPanelVisible(View.GONE);
         }
     }
 
@@ -421,22 +445,16 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     //开始，暂停
-    @Click(resName = "iv_play")
+    @Click(resName = {"iv_play", "iv_play_portrait"})
     void pausePlayClick() {
         if (isFastClick(1000) || playType == PLAY_TYPE_LIVE) {
             return;
         }
-        ivPlay.setBackgroundResource(isPaused ? R.mipmap.pause_normal : R.mipmap.play_normal);
+        setIvPlayImage(isPaused);
         isPaused = !isPaused;
         if (playType == PLAY_TYPE_PLAYBACK_DEV) {
             if (iotcClient != null) {
                 iotcClient.pausePlayback(isPaused);
-            }
-        } else if (playType == PLAY_TYPE_PLAYBACK_CLOUD) {
-            if (isPaused) {
-                ivpCloud.pause();
-            } else {
-                ivpCloud.play();
             }
         }
     }
@@ -448,12 +466,24 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     //显示日历
-    @Click(resName = {"tv_calender", "tv_calender_portrait"})
+    @Click(resName = "ll_calender_portrait")
     void calenderClick() {
         if (isFastClick(1000)) {
             return;
         }
         showDatePicker();
+    }
+
+    //云回放
+    @Click(resName = "iv_cloud_playback_portrait")
+    void cloudPlaybackClick() {
+        if (isFastClick(1000)) {
+            return;
+        }
+        pausePlay();
+        CloudPlaybackActivity_.intent(context).device(device)
+                .cloudStorageServiceStatus(cloudStorageServiceStatus)
+                .start().withAnimation(R.anim.slide_in_right, 0);
     }
 
     //点击屏幕
@@ -474,13 +504,16 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @Click(resName = "tv_retry")
     void retryClick() {
         isControlPanelShow = false;
-        setPlayFailVisibility(View.GONE);
+        hidePlayFail();
         showVideoLoading();
         initP2pLive();
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        if (isDeviceOffline()) {
+            return;
+        }
         if (videoDecoder == null) {
             videoDecoder = new H264Decoder(holder.getSurface(), 0);
             initP2pLive();
@@ -508,22 +541,22 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     public void initFail() {
         hideVideoLoading();
         hideControllerPanel();
-        setPlayFailVisibility(View.VISIBLE);
+        showPlayFail(PLAY_FAIL_NET_ERROR);
     }
 
     @Override
     public void onVideoReceived(byte[] videoBuffer) {
-        setPlayFailVisibility(View.GONE);
+        hidePlayFail();
         if (videoDecoder != null) {
-            videoDecoder.setVideoData(videoBuffer);
             if (videoDecoder.isPlaying()) {
                 if (playType == PLAY_TYPE_LIVE) {
                     hideVideoLoading();
-                } else if (playType == PLAY_TYPE_PLAYBACK_DEV && (tvTimeScroll != null && tvTimeScroll.isShown())) {
-//            hideVideoLoading();
+                } else if (playType == PLAY_TYPE_PLAYBACK_DEV
+                        && (tvTimeScroll != null && tvTimeScroll.isShown())) {
                     hideTimeScroll();
                 }
             }
+            videoDecoder.setVideoData(videoBuffer);
         }
     }
 
@@ -535,46 +568,25 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     @Override
-    public void onStartPlay() {
-//        hideVideoLoading();
-    }
-
-    @Override
-    public void onPlayComplete() {//获取当前播放完毕时间判断是否cloud or ap
-        selectedTimeIsHaveVideo(scalePanel.getCurrentInterval());
-    }
-
-    @Override
-    public void getCloudTimeSlotSuccess(long startTime, long endTime, List<VideoTimeSlotBean> slots) {
-        listCloud.clear();
-        listCloud.addAll(slots);
-        getCanvasList(startTime, endTime);
-    }
-
-    @Override
-    public void getCloudTimeSlotFail() {
-        if (listAp == null || listAp.size() == 0) {
-            hideVideoLoading();
-            switch2Live();//无ap且无cloud的时间列表
-        } else {
-            timeCanvasList(listAp); //ap时间列表>0且cloud列表=0
-        }
-    }
-
-    @Override
     public void getDeviceTimeSlotSuccess(List<VideoTimeSlotBean> slots) {
         if (slots != null && slots.size() > 0) {
             listAp.addAll(slots);
             getDeviceTimeSlots(slots.get(slots.size() - 1).getEndTime(), currentDateSeconds);
         } else {
-            getCloudTimeSlots(device.getId(), threeDaysBeforeSeconds, currentDateSeconds);
+            if (listAp == null || listAp.size() == 0) {
+                hideVideoLoading();
+                switch2Live();//无ap且无cloud的时间列表
+            } else {
+                timeCanvasList(listAp); //ap时间列表>0且cloud列表=0
+            }
         }
     }
 
     @UiThread
     @Override
     public void startLiveSuccess() {
-        ivPlay.setBackgroundResource(R.mipmap.play_disable);
+        ivPlay.setImageResource(R.mipmap.play_disable);
+        ivPlayP.setImageResource(R.mipmap.play_disable);
         setPlayType(0);
         scrollCurrentLive();
         hideVideoLoading();
@@ -595,7 +607,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         for (VideoListResp.VideoBean bean : videoBeans) {
             urlList.add(bean.getUrl());
         }
-        cloudPlay(urlList);
     }
 
     @UiThread
@@ -617,11 +628,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @Override
     public void getStorageSuccess(IpcManageBean bean) {
         list.add(0, bean);
+        cloudStorageServiceStatus = bean.getStatus();
         adapter.notifyDataSetChanged();
     }
 
     @Override
-    public int[] getStickNotificationId() {
+    public int[] getUnStickNotificationId() {
         return new int[]{IpcConstants.ipcNameChanged, CommonNotifications.cloudStorageChange};
     }
 
@@ -667,31 +679,39 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     @UiThread
-    public void setPlayFailVisibility(int visibility) {
-        llPlayFail.setVisibility(visibility);
-    }
-
-    @UiThread
     public void showVideoLoading() {
-        if (isPortrait()) {
-            rlLoadingP.setVisibility(View.VISIBLE);
-        } else {
-            showLoadingDialog();
-        }
+        llLoading.setVisibility(View.VISIBLE);
     }
 
     @UiThread
     public void hideVideoLoading() {
-        if (isPortrait()) {
-            rlLoadingP.setVisibility(View.GONE);
-        } else {
-            hideLoadingDialog();
+        llLoading.setVisibility(View.GONE);
+    }
+
+    @UiThread
+    public void showPlayFail(int type) {
+        if (PLAY_FAIL_OFFLINE == type) {
+            tvRetry.setVisibility(View.GONE);
+            tvPlayFail.setText(R.string.tip_ipc_offline);
+        } else if (PLAY_FAIL_NET_ERROR == type) {
+            tvRetry.setVisibility(View.VISIBLE);
+            tvPlayFail.setText(R.string.tip_network_fail_retry);
         }
+        llPlayFail.setVisibility(View.VISIBLE);
+    }
+
+    @UiThread
+    public void hidePlayFail() {
+        llPlayFail.setVisibility(View.GONE);
+    }
+
+    private void setIvPlayImage(boolean isPaused) {
+        ivPlay.setImageResource(isPaused ? R.mipmap.pause_normal : R.mipmap.play_normal);
+        ivPlayP.setImageResource(isPaused ? R.mipmap.pause_normal : R.mipmap.play_normal);
     }
 
     private void setPlayType(int type) {
         playType = type;
-        ivpCloud.setVisibility(type == 2 ? View.VISIBLE : View.GONE);
         videoView.setVisibility(type != 2 ? View.VISIBLE : View.GONE);
         ivLive.setVisibility(type != 0 ? View.VISIBLE : View.GONE);
         setTextViewClickable(tvQuality, type == 0);
@@ -713,10 +733,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
      */
     public void switchOrientation(int orientation) {
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            ivPlay.setVisibility(View.VISIBLE);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//隐藏状态栏
             setPortraitViewVisible(View.GONE);
             setLandscapeViewVisible(View.VISIBLE);
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            ivPlay.setVisibility(View.GONE);
             setPortraitViewVisible(View.VISIBLE);
             setLandscapeViewVisible(View.GONE);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//显示状态栏
@@ -725,15 +747,17 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     private void setLandscapeViewVisible(int visibility) {
-        tvCalender.setVisibility(visibility);
         tvQuality.setVisibility(visibility);
         ivVolume.setVisibility(visibility);
-        setPanelVisible(visibility);
+        setPanelVisible(View.VISIBLE);
     }
 
     private void setPortraitViewVisible(int visibility) {
-        if (rvManager == null) return;
+        if (rvManager == null) {
+            return;
+        }
         titleBar.setVisibility(visibility);
+        rlVideoController.setVisibility(visibility);
         llPortraitBar.setVisibility(visibility);
         rvManager.setVisibility(visibility);
     }
@@ -779,11 +803,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         lp.width = videoW;
         lp.height = videoH;
         videoView.setLayoutParams(lp);
-
-        ViewGroup.LayoutParams lpCloud = ivpCloud.getLayoutParams();
-        lpCloud.width = videoW;
-        lpCloud.height = videoH;
-        ivpCloud.setLayoutParams(lpCloud);
     }
 
     private boolean isSS1() {
@@ -791,7 +810,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     private void stopPlay() {
-        cloudPlayDestroy();//关闭云端视频
         if (iotcClient != null) {
             iotcClient.close();
             iotcClient = null;
@@ -817,13 +835,11 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @UiThread
     void hideControllerPanel() {
         setPanelVisible(View.GONE);
-        llChangeVolume.setVisibility(View.GONE);//音量
         llVideoQuality.setVisibility(View.GONE);//画质
     }
 
     private void setPanelVisible(int visible) {
         if (rlTopBar != null && rlBottomBar != null) {
-            rlController.setVisibility(View.VISIBLE);
             rlTopBar.setVisibility(isPortrait() ? View.GONE : visible);
             rlBottomBar.setVisibility(visible);
         }
@@ -846,10 +862,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private void switch2Live() {
         isFirstScroll = true;
         showVideoLoading();
-        //如果是云端回放此时需要调用停止操作然后直播
-        if (playType == PLAY_TYPE_PLAYBACK_CLOUD) {
-            cloudPlayDestroy();
-        }
         //当前时间秒数 TODO 需优化播放中渲染的时间
         currentDateSeconds = System.currentTimeMillis() / 1000;
         selectedDate = currentDateSeconds;
@@ -864,28 +876,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
      */
     void switch2DevPlayback(long start) {
         showVideoLoading();
-        if (playType == PLAY_TYPE_PLAYBACK_CLOUD) {
-            cloudPlayDestroy();
-        }
         mPresenter.startPlayback(iotcClient, start);
-    }
-
-    //********************************* 云端回放 ***********************************
-
-    /**
-     * 切到云端回放
-     */
-    void switch2CloudPlayback(long start, long end) {
-        if (iotcClient == null) {
-            return;
-        }
-        showVideoLoading();
-        if (playType == PLAY_TYPE_PLAYBACK_DEV) {
-            iotcClient.stopPlayback();//先停止设备回放
-        } else if (playType == PLAY_TYPE_LIVE) {
-            iotcClient.stopLive();//先停止直播
-        }
-        mPresenter.getCloudVideoList(device.getId(), start, end);
     }
 
     //开始计时录制
@@ -900,7 +891,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         cmTimer.setBase(System.currentTimeMillis());
         cmTimer.start();
     }
-//***********************云端回放***************************************
 
     private void changeQuality(int type) {
         llVideoQuality.setVisibility(View.GONE);
@@ -911,39 +901,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     /**
-     * 播放云端回放
-     */
-    private void cloudPlay(List<String> urlList) {
-        hideVideoLoading();
-        ivpCloud.setUrlQueue(urlList);
-        try {
-            ivpCloud.startPlay();
-        } catch (Exception e) {
-            shortTip(R.string.tip_play_fail);
-            e.printStackTrace();
-        }
-    }
-
-//*********************时间滑动条***************************
-
-    /*
-     * 云端回放销毁
-     */
-    private void cloudPlayDestroy() {
-        try {
-            if (ivpCloud != null) {
-                ivpCloud.release();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * 调节音量
      */
     private void initVolume() {
-        volumeHelper = new VolumeHelper(this);
         int currentVolume100 = volumeHelper.get100CurrentVolume();
         sBarVoice.setMax(100);
         sBarVoice.setProgress(currentVolume100);
@@ -992,7 +952,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     @UiThread
     void moveTo() {
-        LogCat.e(TAG, "11111 moveTo currentInteval = " + scalePanel.getCurrentInterval());
         scalePanel.autoMove();
         //自动滑动时下一个视频ap还是cloud播放
         if (playType != PLAY_TYPE_LIVE && isVideoLess1Minute) {
@@ -1031,7 +990,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     //选择日历日期回调
     @SuppressLint("DefaultLocale")
     public void onSureButton(Date date) {
-        resetCountdown();//重置隐藏控件计时
         long currentTime = System.currentTimeMillis() / 1000;//当前时间戳秒
         scrollTime = date.getTime();//选择日期的时间戳毫秒
         long time = scrollTime / 1000; //设置日期的秒数
@@ -1046,7 +1004,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         } else {//回放时间
             isFirstScroll = false;//非首次滑动
             isSelectedDate = true;
-            ivPlay.setBackgroundResource(R.mipmap.pause_normal);
+            setIvPlayImage(true);
             ivLive.setVisibility(View.VISIBLE);
 
             String strDate = DateTimeUtils.secondToDate(time, "yyyy-MM-dd");
@@ -1075,7 +1033,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     //滑动回放定位的中间 position
     private void scrollCurrentPlayBackTime(long currentTimeMinutes) {
-        ivPlay.setBackgroundResource(R.mipmap.pause_normal);
+        setIvPlayImage(true);
         isPaused = false;
         scalePanel.moveToTime(currentTimeMinutes);
         openMove();
@@ -1124,25 +1082,15 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                     switch2Live();
                     return;
                 }
-                boolean isCloud = !listAp.get(i).isApPlay();
                 //当前的视频片段是否小于一分钟
                 isVideoLess1Minute = listAp.get(i).getEndTime() - listAp.get(i).getStartTime() <= 60;
-                if (isCloud) {
-                    switch2CloudPlayback(endOpposite, endOpposite + tenMinutes);
-                } else {
-                    switch2DevPlayback(endOpposite);
-                }
+                switch2DevPlayback(endOpposite);
                 scrollCurrentPlayBackTime(endOpposite);//回放到拖动的时间点
                 break;
             } else if (currTime >= start && currTime < end) {//视频区域
-                boolean isCloud = !listAp.get(i).isApPlay();
                 //当前的视频片段是否小于一分钟
                 isVideoLess1Minute = listAp.get(i).getEndTime() - currTime <= 60;
-                if (isCloud) {
-                    switch2CloudPlayback(currTime, currTime + tenMinutes);
-                } else {
-                    switch2DevPlayback(currTime);
-                }
+                switch2DevPlayback(currTime);
                 scrollCurrentPlayBackTime(currTime);//回放到拖动的时间点
                 break;
             }
@@ -1164,23 +1112,13 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                 if (i == availableVideoSize - 1) {//todo 最后一个，需要渲染后面的数据
 //                    refreshTimeSlotVideoList();//i是最后一个，基于i的end作为start再拉7天的数据。
                 } else {
-                    boolean isCloud = !listAp.get(i + 1).isApPlay();
                     final int delayMillis = (int) end - currTime < 0 ? 1 : (int) (end - currTime);
                     final int finalI = i;
-                    if (isCloud) {
-                        handler.postDelayed(() -> {
-                            switch2CloudPlayback(listAp.get(finalI + 1).getStartTime(),
-                                    listAp.get(finalI + 1).getStartTime() + tenMinutes);
-                            videoSkipScrollPosition(listAp.get(finalI + 1).getStartTime()); //偏移跳转
-                        }, delayMillis * 1000);
-                        break;
-                    } else {
-                        handler.postDelayed(() -> {
-                            switch2DevPlayback(listAp.get(finalI + 1).getStartTime());
-                            videoSkipScrollPosition(listAp.get(finalI + 1).getStartTime());//偏移跳转
-                        }, delayMillis * 1000);
-                        break;
-                    }
+                    handler.postDelayed(() -> {
+                        switch2DevPlayback(listAp.get(finalI + 1).getStartTime());
+                        videoSkipScrollPosition(listAp.get(finalI + 1).getStartTime());//偏移跳转
+                    }, delayMillis * 1000);
+                    break;
                 }
             }
         }
@@ -1193,117 +1131,13 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         getDeviceTimeSlots(threeDaysBeforeSeconds, currentDateSeconds);
     }
 
-    //获取cloud回放时间轴
-    public void getCloudTimeSlots(int deviceId, long startTime, long endTime) {
-        mPresenter.getTimeSlots(deviceId, startTime, endTime);
-    }
-
     //获取设备sd卡回放时间轴
     public void getDeviceTimeSlots(long startTime, long endTime) {
         mPresenter.getPlaybackList(iotcClient, startTime, endTime);
     }
 
-    //时间轴组合
-    private void getCanvasList(long mStartTime, long mEndTime) {
-        int apSize = listAp.size();
-        int cloudSize = listCloud.size();
-        if (apSize == 0 && cloudSize > 0) {
-            listAp = listCloud;
-            timeCanvasList(listAp);//组合时间轴渲染
-            return;
-        }
-        VideoTimeSlotBean bean;
-        //AP时间
-        for (int i = 0; i < apSize + 1; i++) {
-            long startAp = 0, endAp = 0;
-            //不包含ap时间轴内的时间
-            if (i == 0) {
-                startAp = mStartTime;
-                endAp = listAp.get(i).getStartTime();
-            } else if (i < apSize) {
-                startAp = listAp.get(i - 1).getEndTime();
-                endAp = listAp.get(i).getStartTime();
-            } else if (i == apSize) {
-                startAp = listAp.get(i - 1).getEndTime();
-                endAp = mEndTime;
-            }
-            //cloud时间
-            for (int j = 0; j < cloudSize; j++) {
-                bean = new VideoTimeSlotBean();
-                long startCloud = listCloud.get(j).getStartTime();
-                long endCloud = listCloud.get(j).getEndTime();
-
-                if (startCloud >= startAp && endAp > startCloud && endCloud >= endAp) {
-                    bean.setStartTime(startCloud);
-                    bean.setEndTime(endAp);
-                    bean.setApPlay(false);
-                    listAp.add(bean);
-                } else if (startAp >= startCloud && endCloud > startAp && endAp >= endCloud) {
-                    bean.setStartTime(startAp);
-                    bean.setEndTime(endCloud);
-                    bean.setApPlay(false);
-                    listAp.add(bean);
-                } else if (startAp != endAp && startAp >= startCloud && endAp <= endCloud) {
-                    bean.setStartTime(startAp);
-                    bean.setEndTime(endAp);
-                    bean.setApPlay(false);
-                    listAp.add(bean);
-                } else if (startCloud != endCloud && startCloud >= startAp && endCloud <= endAp) {
-                    bean.setStartTime(startCloud);
-                    bean.setEndTime(endCloud);
-                    bean.setApPlay(false);
-                    listAp.add(bean);
-                }
-            }
-        }
-        if (cloudSize > 0) {
-            listAp = duplicateRemoval(listAp);//去重
-            Collections.sort(listAp);//正序比较
-        }
-        timeCanvasList(listAp);//组合时间轴渲染
-    }
-
-    //去重
-    private List<VideoTimeSlotBean> duplicateRemoval(List<VideoTimeSlotBean> list) {
-        LinkedHashSet<VideoTimeSlotBean> tmpSet = new LinkedHashSet<>(list.size());
-        tmpSet.addAll(list);
-        list.clear();
-        list.addAll(tmpSet);
-        return list;
-    }
-
-    private void startTimer() {
-        if (hideControllerPanelTimer == null) {
-            hideControllerPanelTimer = new CountDownTimer(8000, 1000) {
-                @Override
-                public void onTick(long millisUntilFinished) {
-                }
-
-                @Override
-                public void onFinish() {
-                    hideControllerPanel();
-                    isControlPanelShow = false;
-                }
-            };
-        }
-        hideControllerPanelTimer.start();
-    }
-
-    private void cancelTimer() {
-        if (hideControllerPanelTimer != null) {
-            hideControllerPanelTimer.cancel();
-        }
-    }
-
-    //重置倒计时
-    private void resetCountdown() {
-        cancelTimer();
-        startTimer();
-    }
-
     @Override
-    public void didMoveToDate(String date, long timeStamp) {
-        showVideoLoading();
+    public void didMoveToTime(long timeStamp) {
         hideTimeScroll();
         if (timeStamp > System.currentTimeMillis() / 1000) {//超过当前时间
             shortTip(getString(R.string.ipc_time_over_current_time));
@@ -1316,7 +1150,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         }
         if (timeStamp < threeDaysBeforeSeconds) {
             shortTip(getString(R.string.ipc_time_over_back_time));
-            selectedTimeIsHaveVideo(threeDaysBeforeSeconds);
+            startDelayPlay(threeDaysBeforeSeconds);
             return;
         }
         if (isFirstScroll && listAp.size() == 0) {
@@ -1325,11 +1159,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             getDeviceTimeSlots(threeDaysBeforeSeconds, currentDateSeconds);
             return;
         }
-        selectedTimeIsHaveVideo(timeStamp);
+        startDelayPlay(timeStamp);
     }
 
     @Override
     public void moveTo(String data, boolean isLeftScroll, long timeStamp) {
+        cancelDelayPlay();
         showTimeScroll(data.substring(11), isLeftScroll);//toast显示时间
     }
 
@@ -1349,13 +1184,40 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             if (drawableRight == null) {
                 drawableRight = ContextCompat.getDrawable(this, R.mipmap.ic_forward);
             }
-            tvTimeScroll.setCompoundDrawablesWithIntrinsicBounds(null, null, drawableRight, null);
+            tvTimeScroll.setCompoundDrawablesWithIntrinsicBounds(drawableRight, null, null, null);
         }
     }
 
     @UiThread
     void hideTimeScroll() {
         handler.postDelayed(() -> tvTimeScroll.setVisibility(View.GONE), 500);
+    }
+
+    /**
+     * 延时执行滑动处理，防止无视频区域直接跳过
+     */
+    private void startDelayPlay(long timeStamp) {
+        cancelDelayPlay();
+        timeLineScrollTimer = new CountDownTimer(500, 100) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                showVideoLoading();
+                selectedTimeIsHaveVideo(timeStamp);
+            }
+        };
+        timeLineScrollTimer.start();
+    }
+
+    private void cancelDelayPlay() {
+        if (timeLineScrollTimer != null) {
+            timeLineScrollTimer.cancel();
+            timeLineScrollTimer = null;
+        }
     }
 
     private void switchQuality() {
@@ -1393,17 +1255,24 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                 btnDetail.setOnClickListener(v -> {
                     if (bean.getLeftImageResId() == R.mipmap.ipc_cloud_storage) {
                         if (TextUtils.equals(bean.getRightText(), getString(R.string.str_setting_detail))) {
-                            Router.withApi(SunmiServiceApi.class).goToServiceDetail(device.getDeviceid(), true, device.getName());
+                            Router.withApi(SunmiServiceApi.class).goToServiceDetail(context, device.getDeviceid(),
+                                    true, device.getName());
                         } else {
                             ArrayList<String> snList = new ArrayList<>();
                             snList.add(device.getDeviceid());
-                            Router.withApi(SunmiServiceApi.class).goToWebViewCloud(CommonConfig.CLOUD_STORAGE_URL, snList);
+                            Router.withApi(SunmiServiceApi.class)
+                                    .goToWebViewCloud(context, CommonConfig.CLOUD_STORAGE_URL, snList);
                         }
                     }
                 });
             }
         };
         rvManager.setAdapter(adapter);
+    }
+
+    @Override
+    public void onVolumeChanged(int volume) {
+        setVolumeViewImage(volume);
     }
 
 }

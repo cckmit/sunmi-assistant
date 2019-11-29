@@ -20,7 +20,7 @@
     <RelativeLayout
         android:id="@+id/rlOri"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_60"
+        android:layout_height="@dimen/dp_48"
         android:layout_below="@id/title_bar"
         android:background="@color/c_white">
 
@@ -40,7 +40,7 @@
             android:layout_height="@dimen/dp_40"
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_32"
-            android:layout_marginEnd="@dimen/dp_60"
+            android:layout_marginEnd="@dimen/dp_48"
             android:layout_toEndOf="@id/tvOri"
             android:background="@null"
             android:hint="@string/tip_input_original_psw"
@@ -62,7 +62,7 @@
     <RelativeLayout
         android:id="@+id/rlNew"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_60"
+        android:layout_height="@dimen/dp_48"
         android:layout_below="@id/rlOri"
         android:layout_marginTop="0.5dp"
         android:background="@color/c_white">
@@ -83,7 +83,7 @@
             android:layout_height="@dimen/dp_40"
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_32"
-            android:layout_marginEnd="@dimen/dp_60"
+            android:layout_marginEnd="@dimen/dp_48"
             android:layout_toEndOf="@id/tvNew"
             android:background="@null"
             android:hint="@string/tip_input_new_psw"
@@ -106,7 +106,7 @@
     <RelativeLayout
         android:id="@+id/rlSureNew"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_60"
+        android:layout_height="@dimen/dp_48"
         android:layout_below="@id/rlNew"
         android:layout_marginTop="0.5dp"
         android:background="@color/c_white">
@@ -128,7 +128,7 @@
             android:layout_height="@dimen/dp_40"
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_60"
+            android:layout_marginEnd="@dimen/dp_48"
             android:layout_toEndOf="@id/tvSureNew"
             android:background="@null"
             android:hint="@string/tip_input_psw_again"

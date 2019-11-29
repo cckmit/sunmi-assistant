@@ -428,6 +428,27 @@ public class IPCCall extends BaseIpcApi {
         }
     }
 
+    /**
+     * ipc重启
+     * action--reset:恢复出厂设置，reboot:重启设备
+     *
+     * @param context
+     * @param sn
+     */
+    public void ipcRelaunch(Context context, String sn, String model) {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("sn", sn);
+            object.put("action", "reboot");
+            int opCode = OpcodeConstants.ipcRelaunch;
+            RequestBean requestBean = new RequestBean(Utils.getMsgId(),
+                    "0x" + Integer.toHexString(opCode), object);
+            new IpcRemoteSettingApi().post(context, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void post(Context context, String sn, String msgId, int opCode, String json) {
 

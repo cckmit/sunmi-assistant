@@ -17,11 +17,15 @@ import com.sunmi.apmanager.rpc.ap.APCall;
 import com.sunmi.assistant.R;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.IpcConfiguringContract;
+
+import sunmi.common.constant.RouterConfig;
 import sunmi.common.router.model.IpcListResp;
 import com.sunmi.ipc.presenter.IpcConfiguringPresenter;
 import com.sunmi.ipc.rpc.OpcodeConstants;
 import com.sunmi.ipc.view.IPCListAdapter;
 import com.sunmi.ipc.view.activity.IpcConfigCompletedActivity_;
+import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.impl.RouterRequest;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -92,6 +96,15 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
     private Timer timer = null;//定时器用于主动获取ap搜到的设备
     private TimerTask myTask = null;
     private boolean isTimeoutStart;
+
+
+    @RouterAnno(
+            path = RouterConfig.App.SUNMILINK
+    )
+    public static Intent start(RouterRequest request){
+        Intent intent = new Intent(request.getRawContext(),SunmiLinkSearchActivity_.class);
+        return intent;
+    }
 
     @AfterViews
     void init() {

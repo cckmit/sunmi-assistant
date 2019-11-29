@@ -3,7 +3,6 @@ package com.sunmi.assistant.mine.shop;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 
 import com.sunmi.apmanager.constant.Constants;
@@ -90,35 +89,19 @@ public class ShopDetailActivity extends BaseActivity {
             silShopArea.setVisibility(View.VISIBLE);
             silShopMobile.setVisibility(View.VISIBLE);
         }
-        setSingleLine();
         setupItems();
         getShopInfo(info.getShopId());
     }
 
-    private void setSingleLine() {
-        silShopName.getRightText().setSingleLine();
-        silShopName.getRightText().setEllipsize(TextUtils.TruncateAt.END);
-        silShopCategory.getRightText().setSingleLine();
-        silShopCategory.getRightText().setEllipsize(TextUtils.TruncateAt.END);
-        silShopRegion.getRightText().setSingleLine();
-        silShopRegion.getRightText().setEllipsize(TextUtils.TruncateAt.END);
-        silShopAddress.getRightText().setSingleLine();
-        silShopAddress.getRightText().setEllipsize(TextUtils.TruncateAt.END);
-        silShopContact.getRightText().setSingleLine();
-        silShopContact.getRightText().setEllipsize(TextUtils.TruncateAt.END);
-        silShopMobile.getRightText().setSingleLine();
-        silShopMobile.getRightText().setEllipsize(TextUtils.TruncateAt.END);
-    }
-
     private void setupItems() {
-        silShopName.setRightText(info.getShopName());
-        silShopCategory.setRightText(info.getTypeName());
-        silShopRegion.setRightText(info.getRegion());
-        silShopAddress.setRightText(info.getAddress());
-        silShopContact.setRightText(info.getContactPerson());
-        silShopMobile.setRightText(info.getContactTel());
+        silShopName.setContent(info.getShopName());
+        silShopCategory.setContent(info.getTypeName());
+        silShopRegion.setContent(info.getRegion());
+        silShopAddress.setContent(info.getAddress());
+        silShopContact.setContent(info.getContactPerson());
+        silShopMobile.setContent(info.getContactTel());
         if (info.getBusinessArea() > 0) {
-            silShopArea.setRightText(floatTrans(info.getBusinessArea()) + "㎡");
+            silShopArea.setContent(floatTrans(info.getBusinessArea()) + "㎡");
         }
     }
 
@@ -207,7 +190,7 @@ public class ShopDetailActivity extends BaseActivity {
         if (resultCode == Activity.RESULT_OK) {
             isUpdateShopInfo = true;
             info.setShopName(data.getStringExtra(INTENT_EXTRA_NAME));
-            silShopName.setRightText(info.getShopName());
+            silShopName.setContent(info.getShopName());
         }
     }
 
@@ -232,7 +215,7 @@ public class ShopDetailActivity extends BaseActivity {
         if (resultCode == Activity.RESULT_OK) {
             isUpdateShopInfo = true;
             info.setAddress(data.getStringExtra(INTENT_EXTRA_ADDRESS));
-            silShopAddress.setRightText(info.getAddress());
+            silShopAddress.setContent(info.getAddress());
         }
     }
 
@@ -241,7 +224,7 @@ public class ShopDetailActivity extends BaseActivity {
         if (resultCode == Activity.RESULT_OK) {
             isUpdateShopInfo = true;
             info.setContactPerson(data.getStringExtra(INTENT_EXTRA_CONTACT));
-            silShopContact.setRightText(info.getContactPerson());
+            silShopContact.setContent(info.getContactPerson());
         }
     }
 
@@ -250,7 +233,7 @@ public class ShopDetailActivity extends BaseActivity {
         if (resultCode == Activity.RESULT_OK) {
             isUpdateShopInfo = true;
             info.setContactTel(data.getStringExtra(INTENT_EXTRA_CONTACT_TEL));
-            silShopMobile.setRightText(info.getContactTel());
+            silShopMobile.setContent(info.getContactTel());
         }
     }
 
@@ -259,7 +242,7 @@ public class ShopDetailActivity extends BaseActivity {
         if (resultCode == Activity.RESULT_OK) {
             isUpdateShopInfo = true;
             info.setBusinessArea(Float.parseFloat(data.getStringExtra(INTENT_EXTRA_AREA)));
-            silShopArea.setRightText(floatTrans(info.getBusinessArea()) + "㎡");
+            silShopArea.setContent(floatTrans(info.getBusinessArea()) + "㎡");
         }
     }
 

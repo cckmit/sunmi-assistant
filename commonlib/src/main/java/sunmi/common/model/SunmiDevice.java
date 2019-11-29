@@ -37,6 +37,9 @@ public class SunmiDevice extends DataSupport implements Serializable {
     private String token;//绑定设备使用
     private String uid;
     private int channelId;
+    private String imgPath;
+    private String posModelDetails;
+    private String displayModel;
 
     @Column(defaultValue = "3")
     private int status;
@@ -182,4 +185,27 @@ public class SunmiDevice extends DataSupport implements Serializable {
         this.channelId = channelId;
     }
 
+    public String getImgPath() {
+        return imgPath;
+    }
+
+    public void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
+    }
+
+    public String getPosModelDetails() {
+        return posModelDetails;
+    }
+
+    public void setPosModelDetails(String posModelDetails) {
+        this.posModelDetails = posModelDetails;
+    }
+
+    public String getDisplayModel() {
+        return displayModel;
+    }
+
+    public void setDisplayModel(String displayModel) {
+        this.displayModel = displayModel;
+    }
 }

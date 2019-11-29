@@ -8,14 +8,14 @@ import android.view.View;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
+import com.xiaojinzi.component.impl.Router;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.router.IpcApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
-import sunmi.common.utils.SpUtils;
-import sunmi.common.view.activity.StartConfigSMDeviceActivity_;
 
 /**
  * @author yinhui
@@ -78,11 +78,7 @@ public class NoFsCard extends BaseRefreshCard<NoFsCard.Model, Object> {
         this.mContentBg.setCornerRadii(new float[]{radius, radius, radius, radius, radius, radius, radius, radius});
 
         holder.addOnClickListener(R.id.btn_dashboard_add, (h, model, position) ->
-                StartConfigSMDeviceActivity_.intent(context)
-                        .deviceType(CommonConstants.TYPE_IPC_FS)
-                        .shopId(SpUtils.getShopId() + "")
-                        .start());
-
+                Router.withApi(IpcApi.class).goToIpcStartConfig(context, CommonConstants.TYPE_IPC_FS));
         return holder;
     }
 

@@ -2,7 +2,6 @@ package sunmi.common.view.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,8 +12,11 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.commonlibrary.R;
+import com.xiaojinzi.component.impl.Router;
 
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.router.CloudPrinterApi;
+import sunmi.common.router.IpcApi;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.view.SimpleRecyclerViewAdapter;
 import sunmi.common.view.activity.StartConfigSMDeviceActivity_;
@@ -76,7 +78,9 @@ public class ChooseDeviceDialog extends Dialog {
                 }
                 dismiss();
                 if (pos == CommonConstants.TYPE_PRINTER) {
-                    gotoPrinterConfig();
+                    Router.withApi(CloudPrinterApi.class).goToSartConfigPrinter(getContext(), shopId);
+                } else if (pos == CommonConstants.TYPE_IPC_FS || pos == CommonConstants.TYPE_IPC_SS) {
+                    Router.withApi(IpcApi.class).goToIpcStartConfig(getContext(), pos);
                 } else {
                     StartConfigSMDeviceActivity_.intent(getContext())
                             .deviceType(pos).shopId(shopId + "").start();
@@ -85,17 +89,4 @@ public class ChooseDeviceDialog extends Dialog {
         });
         return adapter;
     }
-
-    private void gotoPrinterConfig() {
-        try {
-            Class<?> printerSearchActivity =
-                    Class.forName("com.sunmi.cloudprinter.ui.activity.StartConfigPrinterActivity_");
-            Intent intent = new Intent(getContext(), printerSearchActivity);
-            intent.putExtra("shopId", shopId);
-            getContext().startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 }

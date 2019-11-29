@@ -2,9 +2,7 @@ package com.sunmi.ipc.view.activity;
 
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -35,6 +33,7 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.sunmicall.ResponseBean;
+import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.dialog.InputDialog;
 
 /**
@@ -52,10 +51,10 @@ public class WifiConfigActivity extends BaseActivity
     @ViewById(resName = "tv_progress_tip")
     TextView tvProgressTip;
     @ViewById(resName = "rv_wifi")
-    RecyclerView rvWifi;
+    SmRecyclerView rvWifi;
     @ViewById(resName = "rl_no_device")
     RelativeLayout rlNoWifi;
-    @ViewById(resName = "divider")
+    @ViewById(resName = "v_divider")
     View vTopDivider;
 
     @Extra
@@ -79,6 +78,7 @@ public class WifiConfigActivity extends BaseActivity
     @AfterViews
     void init() {
         tvProgressTip.setText(R.string.loading_search_wifi);
+        rvWifi.init(R.drawable.shap_line_divider);
         getWifiList();
     }
 
@@ -87,7 +87,6 @@ public class WifiConfigActivity extends BaseActivity
         vTopDivider.setVisibility(View.VISIBLE);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         rvWifi.setLayoutManager(layoutManager);
-        rvWifi.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
         WifiListAdapter wifiListAdapter = new WifiListAdapter(context, list);
         wifiListAdapter.setOnItemClickListener(this);
         rvWifi.setAdapter(wifiListAdapter);
@@ -290,8 +289,9 @@ public class WifiConfigActivity extends BaseActivity
     private void createDialog(final String ssid, final String mgmt) {
         new InputDialog.Builder(context)
                 .setTitle(R.string.str_input_psw)
+                .setHint(R.string.hint_input_wifi_psw)
                 .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.str_confirm, (dialog, input) -> {
+                .setConfirmButton(R.string.str_save, (dialog, input) -> {
                     if (TextUtils.isEmpty(input)) {
                         shortTip(R.string.str_text_password_no_null);
                         return;

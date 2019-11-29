@@ -31,191 +31,113 @@
                 android:id="@+id/sil_camera_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/c_white"
-                app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_20"
-                app:leftText="@string/ipc_setting_name"
-                app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20" />
+                app:title="@string/ipc_setting_name"
+                app:type="arrow" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_camera_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_0_5"
-                android:background="@color/c_white"
-                app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_20"
-                app:leftText="@string/ipc_setting_detail"
-                app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20" />
+                app:showDivider="top"
+                app:title="@string/ipc_setting_detail"
+                app:type="arrow" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_camera_adjust"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/c_white"
-                app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_20"
-                app:leftText="@string/str_adjust_screen"
-                app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20" />
+                app:title="@string/str_adjust_screen"
+                app:type="arrow" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_voice_exception"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_0_5"
-                android:background="@color/c_white"
-                app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_20"
-                app:leftText="@string/ipc_setting_sound_abnormal_detection"
-                app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20" />
+                app:showDivider="top"
+                app:title="@string/ipc_setting_sound_abnormal_detection"
+                app:type="arrow" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_active_exception"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_0_5"
-                android:background="@color/c_white"
-                app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_20"
-                app:leftText="@string/ipc_setting_active_abnormal_detection"
-                app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20" />
+                app:showDivider="top"
+                app:title="@string/ipc_setting_active_abnormal_detection"
+                app:type="arrow" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_time_setting"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_0_5"
-                android:background="@color/c_white"
-                app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_20"
-                app:leftText="@string/ipc_setting_detection_time"
-                app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20" />
+                app:showDivider="top"
+                app:title="@string/ipc_setting_detection_time"
+                app:type="arrow" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_night_style"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:background="@color/c_white"
-                app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_20"
-                app:leftText="@string/ipc_setting_night_vision_mode"
-                app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20" />
+                app:title="@string/ipc_setting_night_vision_mode"
+                app:type="arrow" />
 
-            <RelativeLayout
-                android:id="@+id/rl_wdr"
+            <sunmi.common.view.SettingItemLayout
+                android:id="@+id/sil_wdr"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_72"
-                android:layout_marginTop="@dimen/dp_0_5"
-                android:background="@color/c_white">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:title="@string/ipc_setting_state_wdr"
+                app:type="toggle" />
 
-                <TextView
-                    android:id="@+id/tv_wdr"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/dp_20"
-                    android:text="@string/ipc_setting_state_wdr"
-                    android:textColor="@color/text_main"
-                    android:textSize="@dimen/sp_16" />
-
-                <Switch
-                    android:id="@+id/switch_wdr"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="@dimen/dp_20"
-                    android:checked="false"
-                    android:thumb="@drawable/switch_thumb"
-                    android:track="@drawable/switch_track" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/rl_light"
+            <sunmi.common.view.SettingItemLayout
+                android:id="@+id/sil_light"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_72"
-                android:layout_marginTop="@dimen/dp_0_5"
-                android:background="@color/c_white">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/dp_20"
-                    android:text="@string/ipc_setting_state_light"
-                    android:textColor="@color/text_main"
-                    android:textSize="@dimen/sp_16" />
-
-                <Switch
-                    android:id="@+id/switch_light"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="@dimen/dp_20"
-                    android:checked="false"
-                    android:thumb="@drawable/switch_thumb"
-                    android:track="@drawable/switch_track" />
-            </RelativeLayout>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:title="@string/ipc_setting_state_light"
+                app:type="toggle" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_view_rotate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_0_5"
-                android:background="@color/c_white"
-                app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_20"
-                app:leftText="@string/ipc_setting_rotate"
-                app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20" />
+                app:showDivider="top"
+                app:title="@string/ipc_setting_rotate"
+                app:type="arrow" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_sd_manager"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/c_white"
-                app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_20"
-                app:leftText="@string/str_sd_manager"
-                app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20" />
+                app:title="@string/str_sd_manager"
+                app:type="arrow" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_wifi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/c_white"
-                app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_20"
-                app:leftText="@string/ipc_setting_wifi"
-                app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20"
-                app:rightText="@string/ipc_setting_unknown" />
+                app:contentText="@string/ipc_setting_unknown"
+                app:title="@string/ipc_setting_wifi"
+                app:type="arrow" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_ipc_version"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:background="@color/c_white"
-                app:imageRight="@mipmap/ic_right_arrow_small"
-                app:leftPadding="@dimen/dp_20"
-                app:leftText="@string/ipc_setting_version_current_name"
-                app:parentHeight="@dimen/dp_60"
-                app:rightPadding="@dimen/dp_20" />
+                app:title="@string/ipc_setting_version_current_name"
+                app:type="arrow" />
 
+            <sunmi.common.view.SettingItemLayout
+                android:id="@+id/sil_ipc_relaunch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:showDivider="top"
+                app:title="@string/ipc_setting_relaunch"
+                app:type="arrow" />
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>

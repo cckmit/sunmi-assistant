@@ -55,7 +55,8 @@ public class DynamicVideoActivity extends BaseActivity implements
         IMediaPlayer.OnCompletionListener,
         IMediaPlayer.OnPreparedListener,
         IMediaPlayer.OnErrorListener,
-        IMediaPlayer.OnSeekCompleteListener {
+        IMediaPlayer.OnSeekCompleteListener,
+        VolumeHelper.VolumeChangeListener {
     /**
      * 同步进度
      */
@@ -149,6 +150,8 @@ public class DynamicVideoActivity extends BaseActivity implements
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//保持屏幕常亮
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//隐藏状态栏
         volumeHelper = new VolumeHelper(this);
+        volumeHelper.setVolumeChangeListener(this);
+        volumeHelper.registerVolumeReceiver();
         initScreenWidthHeight();
         if (TextUtils.isEmpty(url)) {
             return;
@@ -327,6 +330,18 @@ public class DynamicVideoActivity extends BaseActivity implements
             volumeHelper.mute();
         } else {
             volumeHelper.unMute();
+        }
+    }
+
+    private void setVolumeViewImage(int currentVolume100) {
+        if (currentVolume100 == 0) {
+            isOpenVolume = true;
+            volumeHelper.mute();
+            ibVolume.setBackgroundResource(R.mipmap.ic_muse);
+        } else {
+            isOpenVolume = false;
+            volumeHelper.unMute();
+            ibVolume.setBackgroundResource(R.mipmap.ic_volume);
         }
     }
 
@@ -512,6 +527,7 @@ public class DynamicVideoActivity extends BaseActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        volumeHelper.unregisterVolumeReceiver();
         timeoutStop();
         if (mHandler != null) {
             mHandler.removeCallbacksAndMessages(null);
@@ -533,5 +549,10 @@ public class DynamicVideoActivity extends BaseActivity implements
             shortTip(R.string.str_server_exception);
             errorView();
         }
+    }
+
+    @Override
+    public void onVolumeChanged(int volume) {
+        setVolumeViewImage(volume);
     }
 }

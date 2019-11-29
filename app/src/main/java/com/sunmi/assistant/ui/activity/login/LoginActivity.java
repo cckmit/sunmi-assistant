@@ -22,6 +22,8 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.LoginContract;
 import com.sunmi.assistant.presenter.LoginPresenter;
 import com.sunmi.assistant.ui.activity.merchant.CreateCompanyActivity_;
+import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.impl.RouterRequest;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -34,6 +36,7 @@ import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.constant.RouterConfig;
 import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.PermissionUtils;
@@ -73,6 +76,14 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
     private boolean psdIsVisible;//密码是否可见
 
     private CommonDialog kickedDialog;
+
+    @RouterAnno(
+            path = RouterConfig.App.LOGIN
+    )
+    public static Intent start(RouterRequest request){
+        Intent intent = new Intent(request.getRawContext(), LoginActivity_.class);
+        return intent;
+    }
 
     @AfterViews
     protected void init() {
@@ -219,7 +230,7 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
     //账号合并
     private void userMerge(final String password) {
         CommonUtils.trackCommonEvent(context, "login", "登录", Constants.EVENT_LOGIN);
-        showLoadingDialog();
+        showDarkLoading();
         mPresenter.userMerge(mobile, mobile, password);
     }
 

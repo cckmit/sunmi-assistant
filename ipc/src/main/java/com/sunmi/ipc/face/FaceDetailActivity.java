@@ -3,15 +3,12 @@ package com.sunmi.ipc.face;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -54,6 +51,7 @@ import sunmi.common.mediapicker.data.model.Result;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SettingItemLayout;
+import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.ViewHolder;
 import sunmi.common.view.bottompopmenu.BottomPopMenu;
@@ -139,44 +137,34 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                 .apply(requestOptions)
                 .into(ivFaceImage);
         if (mFaceGroup != null) {
-            silFaceId.setRightText(Utils.getGroupName(this, mFaceGroup));
+            silFaceId.setContent(Utils.getGroupName(this, mFaceGroup));
             targetGroupId = mFaceGroup.getGroupId();
         }
         if (mFace != null) {
             groupId = mFace.getGroupId();
             gender = mFace.getGender();
-            silFaceName.getRightText().setSingleLine();
-            silFaceName.getRightText().setEllipsize(TextUtils.TruncateAt.END);
-            silFaceName.setRightText(mFace.getName());
-            silFaceSex.setRightText(mFace.getGender() == 1 ? context.getString(R.string.ipc_face_gender_male) :
+            silFaceName.setContent(mFace.getName());
+            silFaceSex.setContent(mFace.getGender() == 1 ? context.getString(R.string.ipc_face_gender_male) :
                     context.getString(R.string.ipc_face_gender_female));
-            silFaceEnterShopNum.setRightText(mFace.getArrivalCount() + "");
-            silFaceEnterShopNum.setRightImage(null);
+            silFaceEnterShopNum.setContent(mFace.getArrivalCount() + "");
+            silFaceEnterShopNum.setEndImageDrawable(null);
             if (mFace.getCreateTime() != 0) {
-                silFaceRegisterTime.setRightText(secondToDate(mFace.getCreateTime(), DATE_FORMAT_REGISTER));
+                silFaceRegisterTime.setContent(secondToDate(mFace.getCreateTime(), DATE_FORMAT_REGISTER));
             }
             if (mFace.getLastArrivalTime() != 0) {
-                silFaceNewEnterShopTime.setRightText(secondToDate(mFace.getLastArrivalTime(), DATE_FORMAT_ENTER_SHOP));
+                silFaceNewEnterShopTime.setContent(secondToDate(mFace.getLastArrivalTime(), DATE_FORMAT_ENTER_SHOP));
             }
         }
-        titleBar.getRightText().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mDeleteDialog == null) {
-                    mDeleteDialog = new CommonDialog.Builder(FaceDetailActivity.this)
-                            .setTitle(R.string.ipc_face_tip_delete)
-                            .setConfirmButton(R.string.ipc_setting_delete, R.color.common_orange,
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            mPresenter.delete();
-                                        }
-                                    })
-                            .setCancelButton(R.string.sm_cancel)
-                            .create();
-                }
-                mDeleteDialog.show();
+        titleBar.getRightText().setOnClickListener(v -> {
+            if (mDeleteDialog == null) {
+                mDeleteDialog = new CommonDialog.Builder(FaceDetailActivity.this)
+                        .setTitle(R.string.ipc_face_tip_delete)
+                        .setConfirmButton(R.string.ipc_setting_delete, R.color.common_orange,
+                                (dialog, which) -> mPresenter.delete())
+                        .setCancelButton(R.string.sm_cancel)
+                        .create();
             }
+            mDeleteDialog.show();
         });
     }
 
@@ -186,12 +174,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                 .setMessage(R.string.ipc_face_tip_album_content)
                 .setMessageDrawable(0, 0, 0, R.mipmap.face_tip_image)
                 .setMessageDrawablePadding(R.dimen.dp_12)
-                .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mPickerAgent.takePhoto();
-                    }
-                })
+                .setConfirmButton(R.string.str_confirm, (dialog, which) -> mPickerAgent.takePhoto())
                 .create()
                 .show();
     }
@@ -202,12 +185,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                 .setMessage(R.string.ipc_face_tip_album_content)
                 .setMessageDrawable(0, 0, 0, R.mipmap.face_tip_image)
                 .setMessageDrawablePadding(R.dimen.dp_12)
-                .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mPickerAgent.pickSinglePhoto();
-                    }
-                })
+                .setConfirmButton(R.string.str_confirm, (dialog, which) -> mPickerAgent.pickSinglePhoto())
                 .create()
                 .show();
     }
@@ -228,19 +206,9 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
         if (mPickerDialog == null) {
             mPickerDialog = new BottomPopMenu.Builder(this)
                     .addItemAction(new PopItemAction(R.string.ipc_face_take_photo,
-                            PopItemAction.PopItemStyle.Normal, new PopItemAction.OnClickListener() {
-                        @Override
-                        public void onClick() {
-                            takePhoto();
-                        }
-                    }))
+                            PopItemAction.PopItemStyle.Normal, () -> takePhoto()))
                     .addItemAction(new PopItemAction(R.string.ipc_face_album_choose,
-                            PopItemAction.PopItemStyle.Normal, new PopItemAction.OnClickListener() {
-                        @Override
-                        public void onClick() {
-                            openPicker();
-                        }
-                    }))
+                            PopItemAction.PopItemStyle.Normal, () -> openPicker()))
                     .addItemAction(new PopItemAction(R.string.sm_cancel,
                             PopItemAction.PopItemStyle.Cancel))
                     .create();
@@ -253,7 +221,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
         new InputDialog.Builder(this)
                 .setTitle(R.string.ipc_face_name)
                 .setHint(getString(R.string.ipc_face_input_name_tip))
-                .setInitInputContent(silFaceName.getRightText().getText().toString().trim())
+                .setInitInputContent(silFaceName.getContentText().toString().trim())
                 .setInputWatcher(new InputDialog.TextChangeListener() {
                     @Override
                     public void onTextChange(EditText view, Editable s) {
@@ -273,20 +241,17 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                     }
                 })
                 .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.str_confirm, new InputDialog.ConfirmClickListener() {
-                    @Override
-                    public void onConfirmClick(InputDialog dialog, String input) {
-                        if (input.length() > IPC_NAME_MAX_LENGTH) {
-                            shortTip(getString(R.string.ipc_face_name_length_tip));
-                            return;
-                        }
-                        if (input.trim().length() == 0) {
-                            shortTip(getString(R.string.ipc_face_input_name_tip));
-                            return;
-                        }
-                        dialog.dismiss();
-                        mPresenter.updateName(input);
+                .setConfirmButton(R.string.str_confirm, (dialog, input) -> {
+                    if (input.length() > IPC_NAME_MAX_LENGTH) {
+                        shortTip(getString(R.string.ipc_face_name_length_tip));
+                        return;
                     }
+                    if (input.trim().length() == 0) {
+                        shortTip(getString(R.string.ipc_face_input_name_tip));
+                        return;
+                    }
+                    dialog.dismiss();
+                    mPresenter.updateName(input);
                 })
                 .create()
                 .show();
@@ -347,14 +312,11 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                                 .setCancelButton(R.string.sm_cancel)
                                 .setConfirmButton(fromTakePhoto ? R.string.ipc_face_tack_photo_again
                                                 : R.string.ipc_face_pick_again,
-                                        new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                if (fromTakePhoto) {
-                                                    mPickerAgent.takePhoto();
-                                                } else {
-                                                    mPickerAgent.pickSinglePhoto();
-                                                }
+                                        (dialog, which) -> {
+                                            if (fromTakePhoto) {
+                                                mPickerAgent.takePhoto();
+                                            } else {
+                                                mPickerAgent.pickSinglePhoto();
                                             }
                                         })
                                 .create().show();
@@ -368,13 +330,13 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
 
     @Override
     public void updateNameSuccessView(String name) {
-        silFaceName.setRightText(name);
+        silFaceName.setContent(name);
         setResult(RESULT_OK);
     }
 
     @Override
     public void updateIdentitySuccessView(int targetGroupId) {
-        silFaceId.setRightText(groupName);
+        silFaceId.setContent(groupName);
         groupId = targetGroupId;//设置成功后的targetGroupId转化为groupId
         mPresenter.loadGroup();//刷新分组
         setResult(RESULT_OK);
@@ -382,7 +344,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
 
     @Override
     public void updateGenderSuccessView(int gender) {
-        silFaceSex.setRightText(gender == 1 ? context.getString(R.string.ipc_face_gender_male) :
+        silFaceSex.setContent(gender == 1 ? context.getString(R.string.ipc_face_gender_male) :
                 context.getString(R.string.ipc_face_gender_female));
         setResult(RESULT_OK);
     }
@@ -391,7 +353,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
     public void updateAgeSuccessView(int ageRangeCode) {
         for (FaceAge age : faceAgesList) {
             if (ageRangeCode == age.getCode()) {
-                silFaceAge.setRightText(age.getName());
+                silFaceAge.setContent(age.getName());
             }
         }
         setResult(RESULT_OK);
@@ -402,7 +364,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
         faceAgesList = data.getAgeRangeList();
         for (FaceAge age : faceAgesList) {
             if (mFace.getAgeRangeCode() == age.getCode()) {
-                silFaceAge.setRightText(age.getName());
+                silFaceAge.setContent(age.getName());
                 ageRangeCode = age.getCode();
             }
         }
@@ -429,15 +391,15 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
         int viewHeight = 0;
         if (updateIndex == UPDATE_INDEX_ID) {
             viewHeight = 600;
-            groupName = silFaceId.getRightText() == null || TextUtils.isEmpty(silFaceId.getRightText().getText().toString())
-                    ? "" : silFaceId.getRightText().getText().toString();
+            groupName = TextUtils.isEmpty(silFaceId.getContentText())
+                    ? "" : silFaceId.getContentText().toString();
         } else if (updateIndex == UPDATE_INDEX_GENDER) {
             viewHeight = 350;
-            gender = TextUtils.equals(context.getString(R.string.ipc_face_gender_male), silFaceSex.getRightText().getText().toString()) ? 1 : 2;
+            gender = TextUtils.equals(context.getString(R.string.ipc_face_gender_male), silFaceSex.getContentText().toString()) ? 1 : 2;
         } else if (updateIndex == UPDATE_INDEX_AGE) {
             viewHeight = 600;
-            ageRange = silFaceAge.getRightText() == null || TextUtils.isEmpty(silFaceAge.getRightText().getText().toString())
-                    ? "" : silFaceAge.getRightText().getText().toString();
+            ageRange = TextUtils.isEmpty(silFaceAge.getContentText())
+                    ? "" : silFaceAge.getContentText().toString();
         }
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final Dialog dialog = new Dialog(context, com.commonlibrary.R.style.Son_dialog);
@@ -447,38 +409,30 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         TextView tvTitle = layout.findViewById(com.commonlibrary.R.id.tv_title);
         tvTitle.setText(title);
-        final RecyclerView rvContent = layout.findViewById(com.commonlibrary.R.id.rv_content);
+        final SmRecyclerView rvContent = layout.findViewById(com.commonlibrary.R.id.rv_content);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, viewHeight);
         rvContent.setLayoutParams(params);
-        rvContent.setLayoutManager(new LinearLayoutManager(context));
+        rvContent.init(R.drawable.shap_line_divider);
         if (updateIndex == UPDATE_INDEX_ID) {
-            rvContent.setAdapter(new IdentityAdapter(context, R.layout.item_common, groupList));
+            rvContent.setAdapter(new IdentityAdapter(context, R.layout.item_common_checked, groupList));
         } else if (updateIndex == UPDATE_INDEX_GENDER) {
             final List<String> list = new ArrayList<>();
             list.add(context.getString(R.string.ipc_face_gender_male));
             list.add(context.getString(R.string.ipc_face_gender_female));
-            rvContent.setAdapter(new GenderAdapter(context, R.layout.item_common, list));
+            rvContent.setAdapter(new GenderAdapter(context, R.layout.item_common_checked, list));
         } else if (updateIndex == UPDATE_INDEX_AGE) {
-            rvContent.setAdapter(new AgeAdapter(context, R.layout.item_common, faceAgesList));
+            rvContent.setAdapter(new AgeAdapter(context, R.layout.item_common_checked, faceAgesList));
         }
-        layout.findViewById(com.commonlibrary.R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
+        layout.findViewById(com.commonlibrary.R.id.btn_cancel).setOnClickListener(v -> dialog.dismiss());
+        layout.findViewById(com.commonlibrary.R.id.btn_sure).setOnClickListener(v -> {
+            if (updateIndex == UPDATE_INDEX_ID) {
+                mPresenter.updateIdentity(groupId, targetGroupId);
+            } else if (updateIndex == UPDATE_INDEX_GENDER) {
+                mPresenter.updateGender(gender);
+            } else if (updateIndex == UPDATE_INDEX_AGE) {
+                mPresenter.updateAge(ageRangeCode);
             }
-        });
-        layout.findViewById(com.commonlibrary.R.id.btn_sure).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (updateIndex == UPDATE_INDEX_ID) {
-                    mPresenter.updateIdentity(groupId, targetGroupId);
-                } else if (updateIndex == UPDATE_INDEX_GENDER) {
-                    mPresenter.updateGender(gender);
-                } else if (updateIndex == UPDATE_INDEX_AGE) {
-                    mPresenter.updateAge(ageRangeCode);
-                }
-                dialog.dismiss();
-            }
+            dialog.dismiss();
         });
         dialog.setContentView(layout);
         dialog.setCanceledOnTouchOutside(false);
@@ -564,20 +518,17 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
         @Override
         public void convert(final ViewHolder holder, final String data) {
             SettingItemLayout item = holder.getView(R.id.sil_item);
-            item.setLeftText(data);
+            item.setTitle(data);
             String genderName = gender == 1 ? context.getString(R.string.ipc_face_gender_male) : context.getString(R.string.ipc_face_gender_female);
             if (TextUtils.equals(genderName, data)) {
                 selectedIndex = holder.getAdapterPosition();
             }
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    selectedIndex = holder.getAdapterPosition();
-                    gender = TextUtils.equals(context.getString(R.string.ipc_face_gender_male), data) ? 1 : 2;
-                    notifyDataSetChanged();
-                }
+            holder.itemView.setOnClickListener(v -> {
+                selectedIndex = holder.getAdapterPosition();
+                gender = TextUtils.equals(context.getString(R.string.ipc_face_gender_male), data) ? 1 : 2;
+                notifyDataSetChanged();
             });
-            selectedItem(selectedIndex, holder, item);
+            item.setChecked(selectedIndex == holder.getAdapterPosition());
         }
     }
 
@@ -598,27 +549,24 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
         public void convert(final ViewHolder holder, final FaceGroup data) {
             final SettingItemLayout item = holder.getView(R.id.sil_item);
             final int count = data.getCapacity() - data.getCount();
-            item.setLeftText(Utils.getGroupName(context, data) + getString(R.string.ipc_face_need_max_num, count));
+            item.setTitle(Utils.getGroupName(context, data) + getString(R.string.ipc_face_need_max_num, count));
             if (TextUtils.equals(Utils.getGroupName(context, data), groupName) && count != 0) {
                 selectedIndex = holder.getAdapterPosition();
             }
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (count == 0) {
-                        shortTip(getString(R.string.ipc_face_full_capacity));
-                        return;
-                    }
-                    selectedIndex = holder.getAdapterPosition();
-                    targetGroupId = data.getGroupId();
-                    groupName = Utils.getGroupName(context, data);
-                    notifyDataSetChanged();
+            holder.itemView.setOnClickListener(v -> {
+                if (count == 0) {
+                    shortTip(getString(R.string.ipc_face_full_capacity));
+                    return;
                 }
+                selectedIndex = holder.getAdapterPosition();
+                targetGroupId = data.getGroupId();
+                groupName = Utils.getGroupName(context, data);
+                notifyDataSetChanged();
             });
-            selectedItem(selectedIndex, holder, item);
+            item.setChecked(selectedIndex == holder.getAdapterPosition());
             if (count == 0) {
-                item.setLeftTextColor(ContextCompat.getColor(context, R.color.text_disable));
-                item.setRightImage(null);
+                item.getTitle().setTextColor(ContextCompat.getColor(context, R.color.text_disable));
+                item.setEndImageDrawable(null);
             }
         }
     }
@@ -639,31 +587,17 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
         @Override
         public void convert(final ViewHolder holder, final FaceAge data) {
             SettingItemLayout item = holder.getView(R.id.sil_item);
-            item.setLeftText(data.getName());
+            item.setTitle(data.getName());
             if (TextUtils.equals(ageRange, data.getName())) {
                 selectedIndex = holder.getAdapterPosition();
             }
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    selectedIndex = holder.getAdapterPosition();
-                    ageRangeCode = data.getCode();
-                    notifyDataSetChanged();
-                }
+            holder.itemView.setOnClickListener(v -> {
+                selectedIndex = holder.getAdapterPosition();
+                ageRangeCode = data.getCode();
+                notifyDataSetChanged();
             });
-            selectedItem(selectedIndex, holder, item);
+            item.setChecked(selectedIndex == holder.getAdapterPosition());
         }
     }
-
-    private void selectedItem(int selectedIndex, ViewHolder holder, SettingItemLayout item) {
-        if (selectedIndex == holder.getAdapterPosition()) {
-            item.setRightImage(ContextCompat.getDrawable(context, com.sunmi.ipc.R.mipmap.ic_yes));
-            item.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.common_orange));
-        } else {
-            item.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.text_main));
-            item.setRightImage(null);
-        }
-    }
-
 
 }

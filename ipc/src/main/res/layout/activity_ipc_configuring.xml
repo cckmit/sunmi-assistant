@@ -15,11 +15,11 @@
 
     <RelativeLayout
         android:id="@+id/rl_loading"
-        android:layout_width="@dimen/dp_250"
-        android:layout_height="@dimen/dp_250"
+        android:layout_width="@dimen/dp_224"
+        android:layout_height="@dimen/dp_224"
         android:layout_below="@+id/title_bar"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dp_50">
+        android:layout_marginTop="@dimen/dp_68">
 
         <ImageView
             android:id="@+id/iv_device"
@@ -43,10 +43,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/rl_loading"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_52"
         android:text="@string/tip_setting_ipc"
         android:textColor="@color/text_main"
-        android:textSize="@dimen/sp_28"
+        android:textSize="@dimen/sp_16"
         android:textStyle="bold" />
 
     <TextView
@@ -55,8 +55,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_1"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dp_16"
-        android:textColor="@color/text_main"
-        android:textSize="@dimen/sp_16" />
+        android:layout_marginTop="@dimen/dp_8"
+        android:textColor="@color/text_caption"
+        android:textSize="@dimen/sp_14" />
 
 </RelativeLayout>

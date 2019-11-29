@@ -46,9 +46,10 @@
     <string name="str_config_tip_ap_1"><![CDATA[1. Connect the power supply and network cable to the router, then wait till the system indicator stop blinking.]]></string>
     <string name="str_config_tip_ap_2"><![CDATA[2. Connect your mobile phone to<font color= \'#FF6000\'>「SUNMI_XX」</font> Wi-Fi]]></string>
     <string name="str_config_tip_ipc">Connect to the IP camera you need to setup</string>
-    <string name="str_config_tip_ipc_1"><![CDATA[1. Power on the IP camera, wait till the indicator is <font color= \'#FF6000\'>「white」</font>]]></string>
-    <string name="str_config_tip_ipc_2"><![CDATA[2. Connect your mobile phone to<font color= \'#FF6000\'>「SUNMI_XXXX」</font> Wi-Fi]]></string>
-    <string name="str_config_tip_ipc_3"><![CDATA[3. If you want to use the wireless，please connect to the 「SUNMI_XXXX」 Wi-Fi in the label of router <font color= \'#FF6000\'>「SUNMI_XXXX」</font>]]></string>
+    <string name="str_config_tip_ipc_1"><![CDATA[电源接通后，等待20秒，摄像机提示灯呈<b><font color= \'#FF6000\'>「绿色闪烁」</font></b>后，点击「下一步」]]></string>
+    <string name="str_config_tip_ipc_2">为摄像机插入网线，并将手机连接至同一网络后，\n点击「下一步」</string>
+    <string name="str_config_tip_ipc_3"><![CDATA[将手机连接至摄像机的无线网络<b><font color= \'#FF6000\'>「SUNMI_XXXX」</font></b>（可以在机身或包装盒上找到），点击「下一步」]]></string>
+    <string name="str_config_tip_ipc_4"><![CDATA[待摄像机信号灯呈<b><font color= \'#FF6000\'>「蓝色常亮」</font></b>状态后，点击「下一步」]]></string>
     <string name="str_config_tip_printer">Connect the printer you wish to setup</string>
     <string name="str_config_tip_printer_1">1. Turn the cloud printer on and press and hold the pairing button for 3 seconds.When you hear the tone, release the pairing button.</string>
     <string name="str_config_tip_printer_2">2. When you hear the tone, release the pairing button.</string>
@@ -135,4 +136,10 @@
     <string name="str_subscribe_now">立即订阅</string>
     <string name="str_choose_from_album">Choose from album</string>
     <string name="str_take_photo">Take photo</string>
+    <string name="str_recommend">推荐</string>
+    <string name="device_status_online">Online</string>
+    <string name="device_status_offline">Offline</string>
+    <string name="device_status_exception">Exception</string>
+    <string name="device_status_unknown">——</string>
+    <string name="str_save">Save</string>
 </resources>
