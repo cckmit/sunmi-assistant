@@ -3,7 +3,6 @@ package com.sunmi.assistant.mine.message;
 import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.CompoundButton;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.MsgSettingContract;
@@ -38,7 +37,7 @@ import sunmi.common.view.ViewHolder;
  */
 @EActivity(R.layout.activity_msg_setting)
 public class MsgSettingActivity extends BaseMvpActivity<MsgSettingPresenter>
-        implements MsgSettingContract.View, CompoundButton.OnCheckedChangeListener {
+        implements MsgSettingContract.View {
 
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
@@ -85,9 +84,12 @@ public class MsgSettingActivity extends BaseMvpActivity<MsgSettingPresenter>
                 promotionChild = child;
             }
         }
-        initSystem(taskChild.getStatus() == 1, sTask);
-        initSystem(serviceChild.getStatus() == 1, sService);
-        initSystem(promotionChild.getStatus() == 1, sPromotion);
+        sTask.setChecked(taskChild.getStatus() == 1);
+        sTask.setOnCheckedChangeListener((buttonView, isChecked) -> changeStatus(isChecked, taskChild.getId(), sTask));
+        sService.setChecked(serviceChild.getStatus() == 1);
+        sService.setOnCheckedChangeListener((buttonView, isChecked) -> changeStatus(isChecked, serviceChild.getId(), sService));
+        sPromotion.setChecked(promotionChild.getStatus() == 1);
+        sPromotion.setOnCheckedChangeListener((buttonView, isChecked) -> changeStatus(isChecked, promotionChild.getId(), sPromotion));
     }
 
     private void addData(List<MsgSettingChildren> data) {
@@ -124,11 +126,6 @@ public class MsgSettingActivity extends BaseMvpActivity<MsgSettingPresenter>
         }
     }
 
-    private void initSystem(boolean status, SettingItemLayout sw) {
-        sw.setChecked(status);
-        sw.setOnCheckedChangeListener(this);
-    }
-
     @Override
     public void onBackPressed() {
         BaseNotification.newInstance().postNotificationName(CommonNotifications.msgCenterBadgeUpdate);
@@ -149,34 +146,17 @@ public class MsgSettingActivity extends BaseMvpActivity<MsgSettingPresenter>
     public void updateSettingStatusFail(int msgId, int status) {
         allowCheck = false;
         if (msgId == taskChild.getId()) {
-            initSystem(status == 0, sTask);    //由于更改状态失败，现在的状态和需要更改的状态相反
+            sTask.setChecked(status == 0);//由于更改状态失败，现在的状态和需要更改的状态相反
         } else if (msgId == serviceChild.getId()) {
-            initSystem(status == 0, sService);
+            sService.setChecked(status == 0);
         } else {
-            initSystem(status == 0, sPromotion);
+            sPromotion.setChecked(status == 0);
         }
     }
 
     @Click(R.id.btn_refresh)
     void refeshClick() {
         mPresenter.getSettingList();
-    }
-
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        switch (buttonView.getId()) {
-            case R.id.switch_task:
-                changeStatus(isChecked, taskChild.getId(), sTask);
-                break;
-            case R.id.switch_service:
-                changeStatus(isChecked, serviceChild.getId(), sService);
-                break;
-            case R.id.switch_promotion:
-                changeStatus(isChecked, promotionChild.getId(), sPromotion);
-                break;
-            default:
-                break;
-        }
     }
 
     @Override
