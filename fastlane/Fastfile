@@ -68,11 +68,10 @@ platform :android do
       } )
   end
   
-  lane :googleEnv do
+  lane :uatEnv do
     gradle(
       task: "clean assemble",
-      build_type: "release",
-	  flavor: "google",
+      build_type: "uat",
       properties: {
         "android.injected.signing.store.file" => ENV["WORKSPACE"] + "/Keystore.jks",
         "android.injected.signing.store.password" => "SUNMIwireless388",
