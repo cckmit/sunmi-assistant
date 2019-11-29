@@ -210,11 +210,12 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
             int paddingBottom = (int) context.getResources().getDimension(R.dimen.dp_32);
             view.setPaddingRelative(0, 0, 0, paddingBottom);
         }
-
         mAdapter.setDatas(model.list);
         mAdapter.notifyDataSetChanged();
-        ListView lv = holder.getView(R.id.lv_dashboard_list);
-        view.post(lv::requestLayout);
+        view.post(() -> {
+            mAdapter.notifyDataSetChanged();
+            holder.getView(R.id.lv_dashboard_list).requestLayout();
+        });
     }
 
     @Override
