@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:id="@+id/container"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/dp_96"
+    android:layout_height="@dimen/dp_96"
     android:background="@color/transparent"
+    android:gravity="center"
     android:orientation="vertical">
 
     <ProgressBar
+        android:id="@+id/pb_loading"
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
-        android:layout_gravity="center"
-        android:layout_margin="@dimen/dp_35"
         android:indeterminate="false"
         android:indeterminateDrawable="@drawable/loading_common" />
 
@@ -17,9 +19,10 @@
         android:id="@+id/tv_loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_6"
         android:textColor="@color/c_white"
-        android:textSize="@dimen/sp_16" />
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone"
+        tools:text="Test" />
 
 </LinearLayout>

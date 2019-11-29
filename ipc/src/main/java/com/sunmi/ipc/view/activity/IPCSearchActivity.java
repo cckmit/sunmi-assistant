@@ -2,9 +2,7 @@ package com.sunmi.ipc.view.activity;
 
 import android.os.Handler;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -40,6 +38,8 @@ import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.SMDeviceDiscoverUtils;
+import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.view.SmRecyclerView;
 
 /**
  * Description: 搜索ipc设备
@@ -54,7 +54,7 @@ public class IPCSearchActivity extends BaseActivity
     @ViewById(resName = "rl_search")
     RelativeLayout rlSearch;
     @ViewById(resName = "rv_ipc")
-    RecyclerView rvDevice;
+    SmRecyclerView rvDevice;
     @ViewById(resName = "rl_no_device")
     RelativeLayout rlNoWifi;
     @ViewById(resName = "rl_loading")
@@ -63,6 +63,8 @@ public class IPCSearchActivity extends BaseActivity
     TextView tvNoIpc;
     @ViewById(resName = "btn_refresh")
     Button btnRefresh;
+    @ViewById(resName = "tv_check_network")
+    TextView tvCheckNetwork;
 
     @Extra
     String shopId;
@@ -70,6 +72,8 @@ public class IPCSearchActivity extends BaseActivity
     int deviceType;
     @Extra
     boolean isSunmiLink;//是否是sunmi link模式
+    @Extra
+    int network;
 
     private boolean isApMode;//是否ap模式
     IPCListAdapter ipcListAdapter;
@@ -79,9 +83,17 @@ public class IPCSearchActivity extends BaseActivity
 
     @AfterViews
     void init() {
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         if (CommonConstants.TYPE_IPC_FS == deviceType) {
             tvNoIpc.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_no_fs, 0, 0);
         }
+        isApMode = (network == IpcConstants.IPC_WIRELESS_NETWORK);
+        if (network == IpcConstants.IPC_WIRED_NETWORK) {
+            tvCheckNetwork.setText(R.string.tip_check_ipc_wired);
+        } else {
+            tvCheckNetwork.setText(R.string.tip_check_ipc_wireless);
+        }
+        rvDevice.init(R.drawable.shap_line_divider);
         startScan();
         initApList();
     }
@@ -90,15 +102,13 @@ public class IPCSearchActivity extends BaseActivity
         rlNoWifi.setVisibility(View.GONE);
         rlSearch.setVisibility(View.VISIBLE);
         SMDeviceDiscoverUtils.scanDevice(context, IpcConstants.ipcDiscovered);
-        new Handler().postDelayed(new Runnable() {
-            public void run() {
-                if (ipcList.size() <= 0) {
-                    rlSearch.setVisibility(View.GONE);
-                    rlNoWifi.setVisibility(View.VISIBLE);
-                } else {
-                    rlLoading.setVisibility(View.GONE);
-                    btnRefresh.setVisibility(View.VISIBLE);
-                }
+        new Handler().postDelayed(() -> {
+            if (ipcList.size() <= 0) {
+                rlSearch.setVisibility(View.GONE);
+                rlNoWifi.setVisibility(View.VISIBLE);
+            } else {
+                rlLoading.setVisibility(View.GONE);
+                btnRefresh.setVisibility(View.VISIBLE);
             }
         }, 3000);
     }
@@ -107,7 +117,6 @@ public class IPCSearchActivity extends BaseActivity
     void initApList() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         rvDevice.setLayoutManager(layoutManager);
-        rvDevice.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
         ipcListAdapter = new IPCListAdapter(context, ipcList);
         rvDevice.setAdapter(ipcListAdapter);
     }
@@ -252,7 +261,7 @@ public class IPCSearchActivity extends BaseActivity
         if (!ipcMap.containsKey(ipc.getDeviceid())) {
             ipc.setSelected(true);
             ipcMap.put(ipc.getDeviceid(), ipc);
-            isApMode = TextUtils.equals("AP", ipc.getNetwork());
+            // isApMode = TextUtils.equals("AP", ipc.getNetwork());
             getToken(ipc);
         }
     }

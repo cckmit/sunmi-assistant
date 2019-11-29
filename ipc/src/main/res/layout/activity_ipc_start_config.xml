@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/c_white"
+        app:dividerColor="@color/c_divider"
+        app:dividerShow="true"
+        app:leftDefaultClickEnable="true"
+        app:leftIcon="@drawable/ic_back_dark"
+        app:titleText="@string/str_title_ipc_set"
+        app:titleTextColor="@color/text_main" />
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title_bar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_32"
+        android:text="@string/str_turn_on_ipc_power"
+        android:textColor="@color/text_main"
+        android:textSize="@dimen/sp_28"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_config_tip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_bar"
+        android:layout_marginStart="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_92"
+        android:layout_marginEnd="@dimen/dp_24"
+        android:gravity="center"
+        android:text="@string/str_config_tip_ipc_1"
+        android:textColor="@color/text_main" />
+
+    <TextView
+        android:id="@+id/tv_indicator_light"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_bar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_140"
+        android:text="@string/tip_indicator_light"
+        android:textColor="@color/assist_primary"
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/iv_ipc"
+        android:layout_width="@dimen/dp_345"
+        android:layout_height="@dimen/dp_294"
+        android:layout_below="@id/title_bar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_170"
+        android:background="@drawable/ipc_config_fs"
+        tools:ignore="ContentDescription" />
+
+    <CheckedTextView
+        android:id="@+id/ctv_privacy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/rl_start"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:checked="false"
+        android:drawableStart="@drawable/selector_privacy"
+        android:drawablePadding="@dimen/dp_3"
+        android:paddingStart="@dimen/dp_10"
+        android:paddingTop="@dimen/dp_2"
+        android:paddingEnd="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_2"
+        android:text="@string/str_agree"
+        android:textColor="@color/c_black"
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <RelativeLayout
+        android:id="@+id/rl_start"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_84"
+        android:layout_alignParentBottom="true"
+        android:background="@color/c_white">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_0_5"
+            android:background="@color/c_divider" />
+
+        <Button
+            android:id="@+id/btn_start"
+            style="@style/BtnBigOrange"
+            android:layout_centerInParent="true"
+            android:text="@string/str_next" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,14 +1,15 @@
 package com.sunmi.assistant.ui.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
-import com.sunmi.apmanager.constant.enums.DeviceStatus;
 import com.sunmi.assistant.R;
 
 import java.util.List;
 
+import sunmi.common.constant.enums.DeviceStatus;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.utils.DeviceTypeUtils;
 
@@ -30,7 +31,13 @@ public class DeviceListAdapter extends BaseQuickAdapter<SunmiDevice, BaseViewHol
 
     @Override
     protected void convert(BaseViewHolder holder, SunmiDevice item) {
-        holder.setText(R.id.tv_name, item.getModel());
+        String model;
+        if ("POS".equals(item.getType()) && !TextUtils.isEmpty(item.getDisplayModel())) {
+            model = item.getDisplayModel();
+        } else {
+            model = item.getModel();
+        }
+        holder.setText(R.id.tv_name, model);
         holder.setText(R.id.tv_sn, item.getDeviceid());
         holder.setImageResource(R.id.iv_device, DeviceTypeUtils.getInstance().getSunmiDeviceImage(item.getModel()));
         showStatus(holder, item);

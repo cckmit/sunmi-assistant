@@ -20,11 +20,7 @@
         android:id="@+id/sil_cloud_storage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/c_white"
-        app:imageRight="@mipmap/ic_right_arrow_small"
-        app:leftPadding="@dimen/dp_10"
-        app:leftText="@string/str_cloud_manage"
-        app:parentHeight="@dimen/dp_48"
-        app:rightPadding="@dimen/dp_16" />
+        app:title="@string/str_cloud_manage"
+        app:type="arrow" />
 
 </LinearLayout>

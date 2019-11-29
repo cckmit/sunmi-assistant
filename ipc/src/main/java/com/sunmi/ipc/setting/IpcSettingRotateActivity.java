@@ -123,56 +123,17 @@ public class IpcSettingRotateActivity extends BaseActivity implements View.OnCli
     private void selectRotate(int type) {
         //0  180
         if (DeviceTypeUtils.getInstance().isFS1(mDevice.getModel()) && type == ROTATE_DEGREE1) {
-            silDegree0.setRightImage(null);
-            silDegree0.setLeftTextColor(getResources().getColor(R.color.text_main));
-            silDegree90.setRightImage(null);
-            silDegree90.setLeftTextColor(getResources().getColor(R.color.text_main));
-            silDegree180.setRightImage(getResources().getDrawable(R.mipmap.ic_yes));
-            silDegree180.setLeftTextColor(getResources().getColor(R.color.common_orange));
-            silDegree270.setRightImage(null);
-            silDegree270.setLeftTextColor(getResources().getColor(R.color.text_main));
-            setModelRotate(ROTATE_DEGREE1);
-        } else if (type == ROTATE_DEGREE0) {
-            silDegree0.setRightImage(getResources().getDrawable(R.mipmap.ic_yes));
-            silDegree0.setLeftTextColor(getResources().getColor(R.color.common_orange));
-            silDegree90.setRightImage(null);
-            silDegree90.setLeftTextColor(getResources().getColor(R.color.text_main));
-            silDegree180.setRightImage(null);
-            silDegree180.setLeftTextColor(getResources().getColor(R.color.text_main));
-            silDegree270.setRightImage(null);
-            silDegree270.setLeftTextColor(getResources().getColor(R.color.text_main));
-            setModelRotate(ROTATE_DEGREE0);
-        } else if (type == ROTATE_DEGREE1) {
-            silDegree0.setRightImage(null);
-            silDegree0.setLeftTextColor(getResources().getColor(R.color.text_main));
-            silDegree90.setRightImage(getResources().getDrawable(R.mipmap.ic_yes));
-            silDegree90.setLeftTextColor(getResources().getColor(R.color.common_orange));
-            silDegree180.setRightImage(null);
-            silDegree180.setLeftTextColor(getResources().getColor(R.color.text_main));
-            silDegree270.setRightImage(null);
-            silDegree270.setLeftTextColor(getResources().getColor(R.color.text_main));
-            setModelRotate(ROTATE_DEGREE1);
-        } else if (type == ROTATE_DEGREE2) {
-            silDegree0.setRightImage(null);
-            silDegree0.setLeftTextColor(getResources().getColor(R.color.text_main));
-            silDegree90.setRightImage(null);
-            silDegree90.setLeftTextColor(getResources().getColor(R.color.text_main));
-            silDegree180.setRightImage(getResources().getDrawable(R.mipmap.ic_yes));
-            silDegree180.setLeftTextColor(getResources().getColor(R.color.common_orange));
-            silDegree270.setRightImage(null);
-            silDegree270.setLeftTextColor(getResources().getColor(R.color.text_main));
-            setModelRotate(ROTATE_DEGREE2);
-        } else if (type == ROTATE_DEGREE3) {
-            silDegree0.setRightImage(null);
-            silDegree0.setLeftTextColor(getResources().getColor(R.color.text_main));
-            silDegree90.setRightImage(null);
-            silDegree90.setLeftTextColor(getResources().getColor(R.color.text_main));
-            silDegree180.setRightImage(null);
-            silDegree180.setLeftTextColor(getResources().getColor(R.color.text_main));
-            silDegree270.setRightImage(getResources().getDrawable(R.mipmap.ic_yes));
-            silDegree270.setLeftTextColor(getResources().getColor(R.color.common_orange));
-            setModelRotate(ROTATE_DEGREE3);
+            silDegree0.setChecked(false);
+            silDegree90.setChecked(false);
+            silDegree180.setChecked(true);
+            silDegree270.setChecked(false);
+        } else {
+            silDegree0.setChecked(type == ROTATE_DEGREE0);
+            silDegree90.setChecked(type == ROTATE_DEGREE1);
+            silDegree180.setChecked(type == ROTATE_DEGREE2);
+            silDegree270.setChecked(type == ROTATE_DEGREE3);
         }
+        setModelRotate(type);
     }
 
     private void setModelRotate(int type) {

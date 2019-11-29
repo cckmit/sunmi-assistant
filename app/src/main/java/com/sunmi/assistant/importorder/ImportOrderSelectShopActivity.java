@@ -2,15 +2,11 @@ package com.sunmi.assistant.importorder;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
+import com.xiaojinzi.component.impl.Router;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -25,13 +21,15 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.notification.BaseNotification;
+import sunmi.common.router.AppApi;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
-import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
+import sunmi.common.view.SettingItemLayout;
+import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.ViewHolder;
 
@@ -48,7 +46,7 @@ public class ImportOrderSelectShopActivity extends BaseActivity {
     @ViewById(R.id.tv_tip)
     TextView tvTip;
     @ViewById(R.id.recyclerView)
-    RecyclerView recyclerView;
+    SmRecyclerView recyclerView;
     @ViewById(R.id.btnComplete)
     Button btnComplete;
     @Extra
@@ -61,7 +59,7 @@ public class ImportOrderSelectShopActivity extends BaseActivity {
         titleBar.setAppTitle(R.string.str_select_store);
         tvTip.setText(R.string.import_order_selecte_shop);
         btnComplete.setText(R.string.import_order_access_data);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.init(R.drawable.shap_line_divider);
         recyclerView.setAdapter(new ShopListAdapter(this, list));
     }
 
@@ -83,7 +81,7 @@ public class ImportOrderSelectShopActivity extends BaseActivity {
                         hideLoadingDialog();
                         shortTip(R.string.import_order_access_data_success);
                         BaseNotification.newInstance().postNotificationName(CommonNotifications.shopSaasDock);
-                        GotoActivityUtils.gotoMainActivity(context);
+                        Router.withApi(AppApi.class).goToMain(context);
                     }
 
                     @Override
@@ -115,7 +113,7 @@ public class ImportOrderSelectShopActivity extends BaseActivity {
         int selectedIndex = -1;
 
         private ShopListAdapter(Context context, List<AuthStoreInfo.SaasUserInfoListBean> list) {
-            super(context, R.layout.item_import_order_select_shop, list);
+            super(context, R.layout.item_common_checked, list);
             if (list.size() > 1) {
                 enableCompleteBtn(false);
             }
@@ -127,22 +125,16 @@ public class ImportOrderSelectShopActivity extends BaseActivity {
 
         @Override
         public void convert(ViewHolder holder, AuthStoreInfo.SaasUserInfoListBean info) {
-            TextView tvName = holder.getView(R.id.tv_shop_name);
-            ImageView ivSelect = holder.getView(R.id.iv_select);
-            tvName.setText(info.getShop_name());
+            SettingItemLayout item = holder.getView(R.id.sil_item);
+            item.setTitle(info.getShop_name());
+            item.setChecked(list.size() == 1 || selectedIndex == holder.getAdapterPosition());
+
             holder.itemView.setOnClickListener(v -> {
                 selectedIndex = holder.getAdapterPosition();
                 selectBean = info;
                 enableCompleteBtn(true);
                 notifyDataSetChanged();
             });
-            if (list.size() == 1 || selectedIndex == holder.getAdapterPosition()) {
-                tvName.setTextColor(ContextCompat.getColor(mContext, R.color.common_orange));
-                ivSelect.setVisibility(View.VISIBLE);
-            } else {
-                tvName.setTextColor(ContextCompat.getColor(mContext, R.color.text_main));
-                ivSelect.setVisibility(View.GONE);
-            }
         }
     }
 }

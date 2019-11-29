@@ -3,6 +3,7 @@ package com.sunmi.assistant.ui.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
@@ -13,7 +14,6 @@ import android.widget.TextView;
 import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.constant.NotificationConstant;
-import com.sunmi.apmanager.constant.enums.DeviceStatus;
 import com.sunmi.apmanager.receiver.MyNetworkCallback;
 import com.sunmi.apmanager.rpc.ap.APCall;
 import com.sunmi.apmanager.ui.activity.config.PrimaryRouteStartActivity;
@@ -24,6 +24,7 @@ import com.sunmi.apmanager.utils.EncryptUtils;
 import com.sunmi.apmanager.utils.RouterDBHelper;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
+import com.sunmi.assistant.pos.PosManagerActivity_;
 import com.sunmi.assistant.presenter.DevicePresenter;
 import com.sunmi.assistant.ui.DeviceSettingMenu;
 import com.sunmi.assistant.ui.adapter.DeviceListAdapter;
@@ -32,6 +33,7 @@ import com.sunmi.assistant.utils.ShopTitlePopupWindow;
 import com.sunmi.cloudprinter.ui.activity.PrinterManageActivity_;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.setting.IpcSettingActivity_;
+import com.sunmi.ipc.utils.IpcUtils;
 import com.sunmi.ipc.view.activity.IpcManagerActivity_;
 import com.sunmi.sunmiservice.WebViewActivity_;
 import com.youth.banner.Banner;
@@ -59,6 +61,7 @@ import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
+import sunmi.common.constant.enums.DeviceStatus;
 import sunmi.common.model.AdListBean;
 import sunmi.common.model.AdListResp;
 import sunmi.common.model.ShopInfo;
@@ -67,10 +70,10 @@ import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.NetworkUtils;
+import sunmi.common.utils.SMDeviceDiscoverUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.dialog.ChooseDeviceDialog;
 import sunmi.common.view.dialog.CommonDialog;
@@ -96,10 +99,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     RelativeLayout rlShopTitle;
     @ViewById(R.id.tv_shop_title)
     TextView tvShopTitle;
-    List<AdListBean> adList = new ArrayList<>();//广告
-    List<SunmiDevice> routerList = new ArrayList<>();
-    List<SunmiDevice> ipcList = new ArrayList<>();
-    List<SunmiDevice> printerList = new ArrayList<>();
+
     private Banner vpBanner;
     private RelativeLayout rlNoDevice;
     private ShopTitlePopupWindow popupWindow;
@@ -111,6 +111,12 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     private String password = "";    //路由管理密码
     private String mPassword;
     private SunmiDevice clickedDevice;
+
+    private List<AdListBean> adList = new ArrayList<>();//广告
+    private List<SunmiDevice> routerList = new ArrayList<>();
+    private List<SunmiDevice> ipcList = new ArrayList<>();
+    private List<SunmiDevice> printerList = new ArrayList<>();
+    private List<SunmiDevice> posList = new ArrayList<>();
 
     @AfterViews
     protected void init() {
@@ -178,6 +184,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             mPresenter.getBannerList();
             mPresenter.getIpcList();
             mPresenter.getPrinterList();
+            mPresenter.getPosList();
         }
     }
 
@@ -218,8 +225,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onDestroy() {
+        super.onDestroy();
         closeTimer();
     }
 
@@ -268,6 +275,13 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     }
 
     @Override
+    public void getPosListSuccess(List<SunmiDevice> devices) {
+        posList.clear();
+        posList.addAll(devices);
+        refreshList();
+    }
+
+    @Override
     public void unbindIpcSuccess(int code, String msg, Object data) {
         BaseNotification.newInstance().postNotificationName(IpcConstants.refreshIpcList);
     }
@@ -289,32 +303,45 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     @Override
     public void onDeviceClick(SunmiDevice device) {
         if (isFastClick(1500)) return;
-        if (TextUtils.equals(device.getType(), "PRINTER")) {
-            if (device.getStatus() != DeviceStatus.UNKNOWN.ordinal()) {
-                PrinterManageActivity_.intent(mActivity).sn(device.getDeviceid()).userId(SpUtils.getUID())
-                        .shopId(SpUtils.getShopId() + "").channelId(device.getChannelId()).start();
-                clickedDevice = device;
-                return;
-            }
-        }
-        if (cannotManagerDevice(device)) {
-            return;
-        }
-        clickedDevice = device;
-        if (TextUtils.equals(device.getType(), "ROUTER")) {
-            showLoadingDialog();
-            //校验ap是已初始化配置
-            if (TextUtils.equals(device.getDeviceid(), MyNetworkCallback.CURRENT_ROUTER)) {
-                APCall.getInstance().apIsConfig(mActivity, device.getDeviceid());
-            } else {
-                isComeRouterManager(device.getDeviceid(), device.getStatus());
-            }
-        } else if (TextUtils.equals(device.getType(), "IPC")) {
-            if (TextUtils.isEmpty(device.getUid())) {
-                shortTip(R.string.tip_play_fail);
-            } else {
-                IpcManagerActivity_.intent(mActivity).device(device).start();
-            }
+        switch (device.getType()) {
+            case "PRINTER":
+                if (device.getStatus() != DeviceStatus.UNKNOWN.ordinal()) {
+                    PrinterManageActivity_.intent(mActivity)
+                            .sn(device.getDeviceid())
+                            .userId(SpUtils.getUID())
+                            .shopId(SpUtils.getShopId() + "")
+                            .channelId(device.getChannelId()).start();
+                    clickedDevice = device;
+                }
+                break;
+            case "ROUTER":
+                if (!cannotManagerRouter(device)) {
+                    clickedDevice = device;
+                    showLoadingDialog();
+                    //校验ap是已初始化配置
+                    if (TextUtils.equals(device.getDeviceid(), MyNetworkCallback.CURRENT_ROUTER)) {
+                        APCall.getInstance().apIsConfig(mActivity, device.getDeviceid());
+                    } else {
+                        isComeRouterManager(device.getDeviceid(), device.getStatus());
+                    }
+                }
+                break;
+            case "IPC":
+                if (TextUtils.isEmpty(device.getUid())) {
+                    shortTip(R.string.tip_play_fail);
+                } else {
+                    clickedDevice = device;
+                    IpcManagerActivity_.intent(mActivity).device(device).start();
+                }
+                break;
+            case "POS":
+                if (device.getStatus() == DeviceStatus.ONLINE.ordinal()) {
+                    clickedDevice = device;
+                    PosManagerActivity_.intent(mActivity).device(device).start();
+                } else {
+                    shortTip(getString(R.string.str_cannot_manager_device));
+                }
+                break;
         }
     }
 
@@ -334,15 +361,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         }
     }
 
-    private boolean cannotManagerDevice(SunmiDevice device) {
-        if (device.getStatus() == DeviceStatus.UNKNOWN.ordinal()
-                || device.getStatus() == DeviceStatus.OFFLINE.ordinal()) {
-            shortTip(getString(R.string.str_cannot_manager_device));
-            return true;
-        }
-        return false;
-    }
-
     @Override
     public void onSettingsClick(SunmiDevice device, int type) {
         if (type == 0) {
@@ -350,8 +368,10 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         } else if (type == 1) {
             deleteDevice(device);
         } else if (type == 2) {
-            if (!cannotManagerDevice(device)) {
+            if (IpcUtils.isIpcManageable(device.getDeviceid(), device.getStatus())) {
                 IpcSettingActivity_.intent(mActivity).mDevice(device).start();
+            } else {
+                shortTip(getString(R.string.str_cannot_manager_device));
             }
         }
     }
@@ -390,7 +410,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 NotificationConstant.connectedTosunmiDevice, NotificationConstant.unBindRouterChanged,
                 CommonNotifications.ipcUpgradeComplete, CommonNotifications.ipcUpgrade, IpcConstants.refreshIpcList,
                 CommonNotifications.companyNameChanged, CommonNotifications.companySwitch,
-                CommonNotifications.shopNameChanged};
+                CommonNotifications.shopNameChanged, IpcConstants.ipcDiscovered};
     }
 
     @Override
@@ -483,7 +503,20 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             mPresenter.getPrinterList();
         } else if (IpcConstants.refreshIpcList == id) {
             mPresenter.getIpcList();
+        } else if (IpcConstants.ipcDiscovered == id) {
+            //上线成功发送udp保存设备数据
+            SunmiDevice bean = (SunmiDevice) args[0];
+            SMDeviceDiscoverUtils.saveInfo(bean);
         }
+    }
+
+    private boolean cannotManagerRouter(SunmiDevice device) {
+        if (device.getStatus() == DeviceStatus.UNKNOWN.ordinal()
+                || device.getStatus() == DeviceStatus.OFFLINE.ordinal()) {
+            shortTip(getString(R.string.str_cannot_manager_device));
+            return true;
+        }
+        return false;
     }
 
     @UiThread
@@ -516,7 +549,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     //设备ap登录，检测管理密码item  dialogPassword
     private void apLoginCheckPsdAgain(ResponseBean res) {
-        LogCat.e(TAG, "what_ap_login_check_mangerPsd  again>>>" + res);
         try {
             if (TextUtils.equals(res.getErrCode(), "0")) {//成功
                 JSONObject object2 = res.getResult();
@@ -564,7 +596,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     //设备ap登录，检测管理密码item
     private void checkApLoginMangerPsd(ResponseBean res) {
-        LogCat.e(TAG, "checkApLoginMangerPsd res = " + res);
         try {
             if (TextUtils.equals(res.getErrCode(), "0")) {//成功
                 JSONObject object2 = res.getResult();
@@ -626,6 +657,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             public void run() {
                 mPresenter.getIpcList();
                 mPresenter.getPrinterList();
+                mPresenter.getPosList();
             }
         }, 30000, 120000);
     }
@@ -640,15 +672,16 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     @UiThread
     void refreshList() {
         hideLoadingDialog();
-        if (deviceList == null) return;
-
-        endRefresh();
-        deviceList.clear();
-        deviceList.addAll(ipcList);
-        deviceList.addAll(routerList);
-        deviceList.addAll(printerList);
-        showEmptyView();
-        deviceListRefresh();
+        if (deviceList != null) {
+            endRefresh();
+            deviceList.clear();
+            deviceList.addAll(ipcList);
+            deviceList.addAll(routerList);
+            deviceList.addAll(printerList);
+            deviceList.addAll(posList);
+            showEmptyView();
+            deviceListRefresh();
+        }
     }
 
     @UiThread
@@ -699,15 +732,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     }
 
     private void deleteDevice(SunmiDevice device) {
-        String msg = "";
-        if (TextUtils.equals(device.getType(), "ROUTER")) {
-            msg = getString(R.string.str_unbind_ap_dialog_tip);
-        } else if (TextUtils.equals(device.getType(), "IPC")) {
-            msg = getString(R.string.tip_delete_ipc);
-        } else if (TextUtils.equals(device.getType(), "PRINTER")) {
-            msg = getString(R.string.tip_delete_printer);
-        }
-        new CommonDialog.Builder(mActivity).setTitle(msg)
+        new CommonDialog.Builder(mActivity).setTitle(getDeleteDeviceTitle(device))
                 .setCancelButton(R.string.sm_cancel)
                 .setConfirmButton(R.string.str_delete, R.color.caution_primary,
                         (dialog, which) -> {
@@ -715,14 +740,20 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                                 unBindNetDisConnected();
                                 return;
                             }
-                            if (TextUtils.equals(device.getType(), "ROUTER")) {
-                                mPresenter.unbindRouter(device.getDeviceid());
-                            } else if (TextUtils.equals(device.getType(), "IPC")) {
-                                mPresenter.unbindIPC(device.getId());
-                            } else if (TextUtils.equals(device.getType(), "PRINTER")) {
-                                mPresenter.unBindPrinter(device.getDeviceid());
-                            }
+                            mPresenter.unbind(device);
                         }).create().show();
+    }
+
+    @NonNull
+    private String getDeleteDeviceTitle(SunmiDevice device) {
+        if (TextUtils.equals(device.getType(), "ROUTER")) {
+            return getString(R.string.str_unbind_ap_dialog_tip);
+        } else if (TextUtils.equals(device.getType(), "IPC")) {
+            return getString(R.string.tip_delete_ipc);
+        } else if (TextUtils.equals(device.getType(), "PRINTER")) {
+            return getString(R.string.tip_delete_printer);
+        }
+        return "";
     }
 
     //无网络
@@ -731,4 +762,5 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 .setTitle(R.string.str_dialog_net_disconnected)
                 .setCancelButton(R.string.str_confirm, (dialog, which) -> dialog.dismiss()).create().show();
     }
+
 }

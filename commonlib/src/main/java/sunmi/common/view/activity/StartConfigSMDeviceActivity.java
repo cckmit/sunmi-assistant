@@ -1,18 +1,19 @@
 package sunmi.common.view.activity;
 
 import android.app.Dialog;
-import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.widget.NestedScrollView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.commonlibrary.R;
+import com.xiaojinzi.component.impl.Router;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -23,6 +24,7 @@ import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.router.ApManagerApi;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.ViewUtils;
 import sunmi.common.view.TitleBarView;
@@ -57,6 +59,8 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
     CheckedTextView ctvPrivacy;
     @ViewById(resName = "view_divider_bottom")
     View viewDivider;
+    @ViewById(resName = "btn_start")
+    Button btnStart;
 
     @Extra
     String shopId;
@@ -100,6 +104,11 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
         }
         setViewDividerVisible();
         ViewUtils.setPrivacy(this, ctvPrivacy, R.color.white_40a, false);
+        btnStart.setEnabled(ctvPrivacy.isChecked());
+        ctvPrivacy.setOnClickListener(v -> {
+            ctvPrivacy.toggle();
+            btnStart.setEnabled(ctvPrivacy.isChecked());
+        });
     }
 
     @UiThread
@@ -127,36 +136,11 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
         }
         if (deviceType == CommonConstants.TYPE_AP) {
             startPrimaryRouteSearchActivity();
-        } else if (deviceType == CommonConstants.TYPE_IPC_FS || deviceType == CommonConstants.TYPE_IPC_SS) {
-            try {
-                Class<?> ipcSearchActivity = Class.forName("com.sunmi.ipc.view.activity.IPCSearchActivity_");
-                Intent intent = new Intent(context, ipcSearchActivity);
-                intent.putExtra("shopId", shopId);
-                intent.putExtra("deviceType", deviceType);
-                context.startActivity(intent);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else if (deviceType == CommonConstants.TYPE_PRINTER) {
-            try {
-                Class<?> printerSearchActivity = Class.forName("com.sunmi.cloudprinter.ui.activity.PrinterSearchActivity_");
-                Intent intent = new Intent(context, printerSearchActivity);
-                intent.putExtra("shopId", shopId);
-                context.startActivity(intent);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 
     private void startPrimaryRouteSearchActivity() {
-        try {
-            Class<?> activity = Class.forName("com.sunmi.apmanager.ui.activity.config.PrimaryRouteSearchActivity");
-            Intent intent = new Intent(context, activity);
-            context.startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Router.withApi(ApManagerApi.class).goToPrimaryRouteSearch(context);
     }
 
     private void configChildDialog() {

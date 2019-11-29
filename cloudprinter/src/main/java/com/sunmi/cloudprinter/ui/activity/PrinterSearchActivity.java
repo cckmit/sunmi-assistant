@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.sunmi.cloudprinter.R;
 import com.sunmi.cloudprinter.bean.PrinterDevice;
-import com.sunmi.cloudprinter.bean.Router;
+import com.sunmi.cloudprinter.bean.PrintRouter;
 import com.sunmi.cloudprinter.constant.Constants;
 import com.sunmi.cloudprinter.presenter.SunmiPrinterClient;
 import com.sunmi.cloudprinter.ui.adaper.PrinterListAdapter;
@@ -253,7 +253,7 @@ public class PrinterSearchActivity extends BaseActivity
     }
 
     @Override
-    public void routerFound(Router router) {
+    public void routerFound(PrintRouter printRouter) {
 
     }
 

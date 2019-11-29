@@ -11,6 +11,7 @@ import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.IpcConfiguringContract;
 import com.sunmi.ipc.presenter.IpcConfiguringPresenter;
 import com.sunmi.ipc.rpc.OpcodeConstants;
+import com.xiaojinzi.component.impl.Router;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -28,6 +29,7 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.notification.BaseNotification;
+import sunmi.common.router.AppApi;
 import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.mqtt.MqttManager;
@@ -216,7 +218,7 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
         failDialog = new CommonDialog.Builder(context).setTitle(titleRes).setMessage(messageRes)
                 .setCancelButton(R.string.str_quit_config,
                         (dialogInterface, i) -> {
-                            GotoActivityUtils.gotoMainActivity(context);
+                            Router.withApi(AppApi.class).goToMain(context);
                             failDialog = null;
                         })
                 .setConfirmButton(R.string.str_retry, (dialogInterface, i) -> {

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_common">
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/c_white"
+        app:dividerShow="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:leftDefaultClickEnable="true"
+        app:leftIcon="@drawable/ic_back_dark"
+        app:titleText="@string/ipc_setting_relaunch"
+        app:titleTextColor="@color/text_main" />
+
+    <sunmi.common.view.SettingItemLayout
+        android:id="@+id/sil_relaunch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:contentText="@string/ipc_setting_reboot_tip"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_bar"
+        app:showDivider="none"
+        app:styleType="multi"
+        app:title="@string/ipc_setting_right_now_reboot"
+        app:type="arrow" />
+
+</android.support.constraint.ConstraintLayout>

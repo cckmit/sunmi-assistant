@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:background="@color/c_white"
         app:dividerShow="true"
+        app:layout_constraintTop_toTopOf="parent"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/company_show_now"
@@ -21,80 +22,53 @@
         android:id="@+id/sil_company_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/c_white"
-        app:imageRight="@mipmap/ic_right_arrow_small"
+        app:type="arrow"
         app:layout_constraintTop_toBottomOf="@id/title_bar"
-        app:leftPadding="@dimen/dp_20"
-        app:leftText="@string/company_name"
-        app:parentHeight="@dimen/dp_60"
-        app:rightPadding="@dimen/dp_16" />
+        app:title="@string/company_name" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_company_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_0_5"
-        android:background="@color/c_white"
-        app:imageRight="@mipmap/ic_right_arrow_small"
+        app:showDivider="top"
         app:layout_constraintTop_toBottomOf="@id/sil_company_name"
-        app:leftPadding="@dimen/dp_20"
-        app:leftText="@string/company_id"
-        app:parentHeight="@dimen/dp_60"
-        app:rightPadding="@dimen/dp_16" />
+        app:title="@string/company_id" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_company_create_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_0_5"
-        android:background="@color/c_white"
-        app:imageRight="@mipmap/ic_right_arrow_small"
+        app:showDivider="top"
         app:layout_constraintTop_toBottomOf="@id/sil_company_id"
-        app:leftPadding="@dimen/dp_20"
-        app:leftText="@string/company_create_time"
-        app:parentHeight="@dimen/dp_60"
-        app:rightPadding="@dimen/dp_16" />
+        app:title="@string/company_create_time" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_company_contact"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_0_5"
-        android:background="@color/c_white"
-        app:imageRight="@mipmap/ic_right_arrow_small"
+        app:showDivider="top"
+        app:type="arrow"
         app:layout_constraintTop_toBottomOf="@id/sil_company_create_time"
-        app:leftPadding="@dimen/dp_20"
-        app:leftText="@string/company_shop_contact"
-        app:parentHeight="@dimen/dp_60"
-        app:rightPadding="@dimen/dp_16" />
+        app:title="@string/company_shop_contact" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_company_contact_tel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_0_5"
-        android:background="@color/c_white"
         android:visibility="gone"
-        app:imageRight="@mipmap/ic_right_arrow_small"
+        app:showDivider="top"
+        app:type="arrow"
         app:layout_constraintTop_toBottomOf="@id/sil_company_contact"
-        app:leftPadding="@dimen/dp_20"
-        app:leftText="@string/company_shop_mobile"
-        app:parentHeight="@dimen/dp_60"
-        app:rightPadding="@dimen/dp_16" />
+        app:title="@string/company_shop_mobile" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_company_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_0_5"
-        android:background="@color/c_white"
-        app:imageRight="@mipmap/ic_right_arrow_small"
+        app:showDivider="top"
+        app:type="arrow"
         app:layout_constraintTop_toBottomOf="@id/sil_company_contact_tel"
-        app:leftPadding="@dimen/dp_20"
-        app:leftText="@string/company_email"
-        app:parentHeight="@dimen/dp_60"
-        app:rightPadding="@dimen/dp_16" />
-
+        app:title="@string/company_email" />
 
     <RelativeLayout
         android:id="@+id/rl_company_switch"
@@ -115,7 +89,7 @@
             android:text="@string/company_switch"
             android:textColor="@color/text_caption"
             android:textSize="@dimen/sp_16" />
-    </RelativeLayout>
 
+    </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

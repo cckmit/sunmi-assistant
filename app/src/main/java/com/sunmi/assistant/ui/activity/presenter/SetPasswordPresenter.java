@@ -19,7 +19,7 @@ public class SetPasswordPresenter extends BasePresenter<SetPasswordContract.View
 
     @Override
     public void register(String username, String password, String code) {
-        mView.showLoadingDialog();
+        mView.showDarkLoading();
         SunmiStoreApi.getInstance().register(username, password, code, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
@@ -63,7 +63,7 @@ public class SetPasswordPresenter extends BasePresenter<SetPasswordContract.View
 
     @Override
     public void getCompanyList() {
-        mView.showLoadingDialog();
+        mView.showDarkLoading();
         SunmiStoreApi.getInstance().getCompanyList(new RetrofitCallback<CompanyListResp>() {
             @Override
             public void onSuccess(int code, String msg, CompanyListResp data) {

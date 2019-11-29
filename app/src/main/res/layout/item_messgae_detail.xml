@@ -94,7 +94,6 @@
         android:layout_marginTop="@dimen/dp_8"
         android:background="@color/bg_common" />
 
-
     <TextView
         android:id="@+id/tv_msg_time"
         android:layout_width="wrap_content"
@@ -112,7 +111,7 @@
         android:layout_below="@+id/v_line_bottom"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginEnd="@dimen/dp_25"
+        android:layout_marginEnd="@dimen/dp_20"
         android:text="@string/ipc_right_now_play" />
 
 </RelativeLayout>

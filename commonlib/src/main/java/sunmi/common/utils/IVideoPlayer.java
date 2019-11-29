@@ -54,6 +54,15 @@ public class IVideoPlayer extends RelativeLayout {
             }
         }
     };
+    IMediaPlayer.OnErrorListener errorListener = new IMediaPlayer.OnErrorListener() {
+        @Override
+        public boolean onError(IMediaPlayer iMediaPlayer, int i, int i1) {
+            if (videoPlayListener != null) {
+                videoPlayListener.onPlayFail();
+            }
+            return false;
+        }
+    };
 
     public IVideoPlayer(@NonNull Context context) {
         this(context, null);
@@ -152,7 +161,9 @@ public class IVideoPlayer extends RelativeLayout {
             mediaPlayer = null;
         }
         if (urlQueue.isEmpty()) {
-            if (videoPlayListener != null) videoPlayListener.onPlayComplete();
+            if (videoPlayListener != null) {
+                videoPlayListener.onPlayComplete();
+            }
             return;
         }
         mediaPlayer = createPlayer();
@@ -166,19 +177,23 @@ public class IVideoPlayer extends RelativeLayout {
         }
         mediaPlayer.prepareAsync();
         mediaPlayer.setOnCompletionListener(completionListener);
+        mediaPlayer.setOnErrorListener(errorListener);
         if (mediaPlayer != null)
             mediaPlayer.setOnPreparedListener(new IMediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(IMediaPlayer iMediaPlayer) {
                     if (isFirstVideo) {
                         startPlayer();
-                        if (videoPlayListener != null) videoPlayListener.onStartPlay();
+                        if (videoPlayListener != null) {
+                            videoPlayListener.onStartPlay();
+                        }
                     } else {
                         mediaPlayer.start();
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                mediaPlayer.pause();
+                                if (mediaPlayer != null)
+                                    mediaPlayer.pause();
                             }
                         }, 100);
                     }
@@ -193,7 +208,9 @@ public class IVideoPlayer extends RelativeLayout {
             cacheMediaPlayer = null;
         }
         if (urlQueue.isEmpty()) {
-            if (videoPlayListener != null) videoPlayListener.onPlayComplete();
+            if (videoPlayListener != null) {
+                videoPlayListener.onPlayComplete();
+            }
             return;
         }
         cacheMediaPlayer = createPlayer();
@@ -207,6 +224,7 @@ public class IVideoPlayer extends RelativeLayout {
         }
         cacheMediaPlayer.prepareAsync();
         cacheMediaPlayer.setOnCompletionListener(completionListener);
+        cacheMediaPlayer.setOnErrorListener(errorListener);
         cacheMediaPlayer.setOnPreparedListener(new IMediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(IMediaPlayer iMediaPlayer) {
@@ -409,8 +427,6 @@ public class IVideoPlayer extends RelativeLayout {
 
     /**
      * 加载视频
-     *
-     * @param url
      */
     public void load(String url) {
         if (mediaPlayer != null) {
@@ -466,6 +482,35 @@ public class IVideoPlayer extends RelativeLayout {
         }
     }
 
+    //截图
+    public void snapshotPicture() {
+        if (surfaceView != null && surfaceView.isShown()) {
+        }
+        //        mediaPlayer.
+//        switch (render) {
+//            case 0:
+//                .setRenderView((IRenderView) null);
+//                break;
+//            case 1:
+//                SurfaceRenderView renderView1 = new SurfaceRenderView(this.getContext());
+//                this.setRenderView(renderView1);
+//                break;
+//            case 2:
+//                TextureRenderView renderView = new TextureRenderView(this.getContext());
+//                if (this.mMediaPlayer != null) {
+//                    renderView.getSurfaceHolder().bindToMediaPlayer(this.mMediaPlayer);
+//                    renderView.setVideoSize(this.mMediaPlayer.getVideoWidth(), this.mMediaPlayer.getVideoHeight());
+//                    renderView.setVideoSampleAspectRatio(this.mMediaPlayer.getVideoSarNum(), this.mMediaPlayer.getVideoSarDen());
+//                    renderView.setAspectRatio(this.mCurrentAspectRatio);
+//                }
+//
+//                this.setRenderView(renderView);
+//                break;
+//            default:
+//                Log.e(this.TAG, String.format(Locale.getDefault(), "invalid render %d\n", render));
+//        }
+    }
+
     /**
      * 时长格式化显示
      */
@@ -482,6 +527,8 @@ public class IVideoPlayer extends RelativeLayout {
         void onStartPlay();
 
         void onPlayComplete();
+
+        void onPlayFail();
     }
 
 }

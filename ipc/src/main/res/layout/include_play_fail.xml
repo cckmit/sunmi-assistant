@@ -4,14 +4,15 @@
     android:id="@+id/ll_play_fail"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_centerInParent="true"
-    android:layout_centerHorizontal="true"
-    android:gravity="center_horizontal"
+    android:background="@color/black_60"
+    android:gravity="center"
     android:orientation="vertical"
+    android:paddingBottom="@dimen/dp_50"
     android:visibility="gone"
     tools:showIn="@layout/activity_ipc_manager">
 
     <TextView
+        android:id="@+id/tv_play_fail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawableTop="@mipmap/ic_video_play_error"
@@ -20,14 +21,10 @@
         android:textColor="@color/text_normal"
         android:textSize="@dimen/sp_12" />
 
-    <TextView
+    <Button
         android:id="@+id/tv_retry"
-        android:layout_width="@dimen/dp_96"
-        android:layout_height="@dimen/dp_32"
+        style="@style/BtnMediumVideo"
         android:layout_marginTop="@dimen/dp_16"
-        android:background="@drawable/setting_bg_tip_btn"
-        android:gravity="center"
-        android:text="@string/str_refresh"
-        android:textColor="@color/c_white"
-        android:textSize="@dimen/sp_12" />
+        android:text="@string/str_refresh" />
+
 </LinearLayout>

@@ -1,7 +1,6 @@
 package com.sunmi.assistant.ui.activity.login;
 
 import android.annotation.SuppressLint;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +14,7 @@ import com.sunmi.assistant.mine.shop.CreateShopPreviewActivity_;
 import com.sunmi.assistant.presenter.ChooseShopPresenter;
 import com.sunmi.assistant.ui.activity.merchant.CreateCompanyActivity_;
 import com.sunmi.assistant.utils.GetUserInfoUtils;
+import com.xiaojinzi.component.impl.Router;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -34,6 +34,7 @@ import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.model.CompanyListResp;
 import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopListResp;
+import sunmi.common.router.AppApi;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.SpUtils;
@@ -123,7 +124,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
             silSelectedCompany.setVisibility(View.VISIBLE);
             tvSelectType.setText(R.string.company_can_switch);
             tvSelectedCompany.setText(R.string.company_now_selected);
-            silSelectedCompany.setLeftText(SpUtils.getCompanyName());
+            silSelectedCompany.setTitle(SpUtils.getCompanyName());
             btnEnterMain.setVisibility(View.GONE);
             mPresenter.getCompanyList();
         }
@@ -153,7 +154,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
         //切换商户保存信息直接跳转MainActivity
         if (isLoginSuccessSwitchCompany) {
             CommonHelper.saveCompanyShopInfo(companyId, companyName, saasExist, shopId, shopName);
-            GotoActivityUtils.gotoMainActivityClearTask(context);
+            Router.withApi(AppApi.class).goToMainClearTask(context);
             return;
         }
         showLoadingDialog();
@@ -240,11 +241,11 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     void initCompanyList(List<CompanyInfoResp> companyList) {
         activityVisible();
         rvChoose.setAdapter(new CommonListAdapter<CompanyInfoResp>(context,
-                R.layout.item_shop_company, companyList) {
+                R.layout.item_common_arrow, companyList) {
             @Override
             public void convert(ViewHolder holder, final CompanyInfoResp item) {
                 SettingItemLayout silItem = holder.getView(R.id.sil_item);
-                silItem.setLeftText(item.getCompany_name());
+                silItem.setTitle(item.getCompany_name());
                 holder.itemView.setOnClickListener(v -> {
                     if (isFastClick(1200)) {
                         return;
@@ -262,13 +263,13 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     void initShopList(final List<ShopInfo> shopList) {
         activityVisible();
         rvChoose.setAdapter(new CommonListAdapter<ShopInfo>(context,
-                R.layout.item_shop_company, shopList) {
+                R.layout.item_common_checked, shopList) {
             int selectedIndex = shopList.size() == 1 ? 0 : -1;
 
             @Override
             public void convert(ViewHolder holder, final ShopInfo item) {
                 SettingItemLayout shopItem = holder.getView(R.id.sil_item);
-                shopItem.setLeftText(item.getShopName());
+                shopItem.setTitle(item.getShopName());
                 holder.itemView.setOnClickListener(v -> {
                     selectedIndex = holder.getAdapterPosition();
                     shopId = item.getShopId();
@@ -282,11 +283,9 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
                         shopName = item.getShopName();
                         btnEnterMain.setEnabled(true);
                     }
-                    shopItem.setRightImage(ContextCompat.getDrawable(context, com.sunmi.ipc.R.mipmap.ic_yes));
-                    shopItem.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.common_orange));
+                    shopItem.setChecked(true);
                 } else {
-                    shopItem.setLeftTextColor(ContextCompat.getColor(context, com.sunmi.ipc.R.color.text_main));
-                    shopItem.setRightImage(null);
+                    shopItem.setChecked(false);
                 }
             }
         });

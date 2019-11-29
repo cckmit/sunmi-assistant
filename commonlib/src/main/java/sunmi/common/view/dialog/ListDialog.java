@@ -36,7 +36,9 @@ public class ListDialog extends Dialog {
         private String backBtnText; // 对话框返回按钮文本
         private String confirmBtnText; // 对话框确定文本
         private int cancelBtnTextColor, confirmBtnTextColor; // 对话框确定文本颜色
+        private boolean hasItemDecoration = true;  //是否显示下划线，默认显示
         private T adapter;
+        private int listHeight = 0;
         // 对话框按钮监听事件
         private DialogInterface.OnClickListener cancelButtonClickListener, confirmButtonClickListener;
 
@@ -167,11 +169,26 @@ public class ListDialog extends Dialog {
             return this;
         }
 
+        public Builder setItemDecoration(boolean isShow) {
+            this.hasItemDecoration = isShow;
+            return this;
+        }
+
         /**
          * 设置确定按钮事件和文本（字符串）
          */
         public Builder setAdapter(T adapter) {
             this.adapter = adapter;
+            return this;
+        }
+
+        /**
+         * 设置list的高度
+         * @param height
+         * @return
+         */
+        public Builder setListHeight(int height) {
+            this.listHeight = height;
             return this;
         }
 
@@ -197,7 +214,16 @@ public class ListDialog extends Dialog {
 
             SmRecyclerView rv = layout.findViewById(R.id.rv_content);
             rv.setVisibility(View.VISIBLE);
-            rv.init(R.drawable.shap_line_divider);
+            if (hasItemDecoration) {
+                rv.init(R.drawable.shap_line_divider);
+            } else {
+                rv.init(0);
+            }
+            if (listHeight != 0) {
+                ViewGroup.LayoutParams params = rv.getLayoutParams();
+                params.height = listHeight;
+                rv.setLayoutParams(params);
+            }
             rv.setAdapter(adapter);
 
             // 设置返回按钮事件和文本

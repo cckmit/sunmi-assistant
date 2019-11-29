@@ -3,7 +3,6 @@ package com.sunmi.assistant.mine.company;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -78,22 +77,8 @@ public class CompanyDetailActivity extends BaseActivity {
         if (!isGooglePlay()) {
             silCompanyContactTel.setVisibility(View.VISIBLE);
         }
-        setSingleLine();
-        silCompanyId.setRightImage(null);
-        silCompanyCreateTime.setRightImage(null);
         companyList();
         getCompanyInfo();
-    }
-
-    private void setSingleLine() {
-        silCompanyName.getRightText().setSingleLine();
-        silCompanyName.getRightText().setEllipsize(TextUtils.TruncateAt.END);
-        silCompanyContact.getRightText().setSingleLine();
-        silCompanyContact.getRightText().setEllipsize(TextUtils.TruncateAt.END);
-        silCompanyContactTel.getRightText().setSingleLine();
-        silCompanyContactTel.getRightText().setEllipsize(TextUtils.TruncateAt.END);
-        silCompanyEmail.getRightText().setSingleLine();
-        silCompanyEmail.getRightText().setEllipsize(TextUtils.TruncateAt.END);
     }
 
     private String createTime(long time) {
@@ -125,12 +110,12 @@ public class CompanyDetailActivity extends BaseActivity {
             public void onSuccess(int code, String msg, CompanyInfoResp mInfo) {
                 hideLoadingDialog();
                 mCompanyInfo = mInfo;
-                silCompanyName.setRightText(mInfo.getCompany_name());
-                silCompanyId.setRightText(mInfo.getCompany_id() + "");
-                silCompanyCreateTime.setRightText(createTime(mInfo.getCreated_time() * 1000));
-                silCompanyContact.setRightText(mInfo.getContact_person());
-                silCompanyContactTel.setRightText(mInfo.getContact_tel());
-                silCompanyEmail.setRightText(mInfo.getContact_email());
+                silCompanyName.setContent(mInfo.getCompany_name());
+                silCompanyId.setContent(mInfo.getCompany_id() + "");
+                silCompanyCreateTime.setContent(createTime(mInfo.getCreated_time() * 1000));
+                silCompanyContact.setContent(mInfo.getContact_person());
+                silCompanyContactTel.setContent(mInfo.getContact_tel());
+                silCompanyEmail.setContent(mInfo.getContact_email());
             }
 
             @Override
@@ -194,7 +179,7 @@ public class CompanyDetailActivity extends BaseActivity {
     void onNameResult(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             mCompanyInfo.setCompany_name(data.getStringExtra(INTENT_EXTRA_NAME));
-            silCompanyName.setRightText(mCompanyInfo.getCompany_name());
+            silCompanyName.setContent(mCompanyInfo.getCompany_name());
         }
     }
 
@@ -202,7 +187,7 @@ public class CompanyDetailActivity extends BaseActivity {
     void onContactResult(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             mCompanyInfo.setContact_person(data.getStringExtra(INTENT_EXTRA_CONTACT));
-            silCompanyContact.setRightText(mCompanyInfo.getContact_person());
+            silCompanyContact.setContent(mCompanyInfo.getContact_person());
         }
     }
 
@@ -210,7 +195,7 @@ public class CompanyDetailActivity extends BaseActivity {
     void onContactTelResult(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             mCompanyInfo.setContact_tel(data.getStringExtra(INTENT_EXTRA_CONTACT_TEL));
-            silCompanyContactTel.setRightText(mCompanyInfo.getContact_tel());
+            silCompanyContactTel.setContent(mCompanyInfo.getContact_tel());
         }
     }
 
@@ -218,7 +203,7 @@ public class CompanyDetailActivity extends BaseActivity {
     void onEmailResult(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             mCompanyInfo.setContact_email(data.getStringExtra(INTENT_EXTRA_EMAIL));
-            silCompanyEmail.setRightText(mCompanyInfo.getContact_email());
+            silCompanyEmail.setContent(mCompanyInfo.getContact_email());
         }
     }
 

@@ -9,8 +9,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.sunmi.cloudprinter.R;
+import com.sunmi.cloudprinter.bean.PrintRouter;
 import com.sunmi.cloudprinter.bean.PrinterDevice;
-import com.sunmi.cloudprinter.bean.Router;
 import com.sunmi.cloudprinter.constant.Constants;
 import com.sunmi.cloudprinter.rpc.IOTCloudApi;
 import com.sunmi.cloudprinter.utils.Utility;
@@ -369,7 +369,7 @@ public class SunmiPrinterClient implements BluetoothAdapter.LeScanCallback {
 
         void bindPrinterFail(int code, String msg, String data);
 
-        void routerFound(Router router);
+        void routerFound(PrintRouter printRouter);
 
     }
 

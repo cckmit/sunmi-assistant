@@ -5,8 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
@@ -32,6 +30,7 @@ import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SettingItemLayout;
+import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.ViewHolder;
 
 /**
@@ -46,7 +45,7 @@ public class ShopListActivity extends BaseActivity {
     public static final int REQUEST_CODE_SHOP = 100;
 
     @ViewById(R.id.recyclerView)
-    RecyclerView recyclerView;
+    SmRecyclerView recyclerView;
     @ViewById(R.id.tv_empty)
     TextView tvEmpty;
     @ViewById(R.id.include_network_error)
@@ -56,7 +55,7 @@ public class ShopListActivity extends BaseActivity {
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.init(R.drawable.shap_line_divider);
         mAdapter = new ShopListAdapter(this);
         recyclerView.setAdapter(mAdapter);
         getShopList();
@@ -136,13 +135,13 @@ public class ShopListActivity extends BaseActivity {
     private static class ShopListAdapter extends CommonListAdapter<ShopInfo> {
 
         private ShopListAdapter(Context context) {
-            super(context, R.layout.item_mine_store, null);
+            super(context, R.layout.item_common_arrow, null);
         }
 
         @Override
         public void convert(ViewHolder holder, ShopInfo info) {
-            SettingItemLayout silCompanyDetail = holder.getView(R.id.tvName);
-            silCompanyDetail.setLeftText(info.getShopName());
+            SettingItemLayout item = holder.getView(R.id.sil_item);
+            item.setTitle(info.getShopName());
             holder.itemView.setOnClickListener(v -> {
                 CommonUtils.trackCommonEvent(mContext, "defaultStore",
                         "主页_我的_我的店铺_默认店铺", Constants.EVENT_MY_INFO);

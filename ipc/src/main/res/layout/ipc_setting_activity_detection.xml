@@ -19,7 +19,7 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_60"
+        android:layout_height="@dimen/dp_48"
         android:layout_marginTop="@dimen/dp_0_5"
         android:background="@color/c_white">
 

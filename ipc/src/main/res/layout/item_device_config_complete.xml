@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rl_root"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_84">
+    android:layout_height="@dimen/dp_80">
 
     <ImageView
         android:id="@+id/iv_device"
@@ -12,10 +12,11 @@
 
     <ImageView
         android:id="@+id/iv_status"
-        android:layout_width="@dimen/dp_14"
-        android:layout_height="@dimen/dp_14"
-        android:layout_alignEnd="@+id/iv_device"
-        android:layout_marginTop="@dimen/dp_20" />
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_40"
+        android:layout_toEndOf="@+id/iv_device" />
 
     <TextView
         android:id="@+id/tv_name"
@@ -34,23 +35,11 @@
         android:id="@+id/tv_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_name"
-        android:layout_alignStart="@+id/tv_name"
         android:layout_alignParentEnd="true"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_42"
+        android:layout_toEndOf="@+id/iv_status"
         android:textColor="@color/text_caption"
-        android:textSize="@dimen/sp_14" />
-
-    <TextView
-        android:id="@+id/tv_adjust"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:visibility="gone"
-        android:layout_centerVertical="true"
-        android:drawableEnd="@mipmap/ic_right_arrow_small"
-        android:drawablePadding="@dimen/dp_4"
-        android:text="@string/str_adjust_screen"
-        android:textColor="@color/text_normal"
         android:textSize="@dimen/sp_14" />
 
 </RelativeLayout>

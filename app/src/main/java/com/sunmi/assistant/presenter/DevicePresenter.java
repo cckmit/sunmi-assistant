@@ -3,11 +3,12 @@ package com.sunmi.assistant.presenter;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.sunmi.apmanager.constant.enums.DeviceStatus;
 import com.sunmi.apmanager.receiver.MyNetworkCallback;
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
+import com.sunmi.assistant.pos.data.PosApi;
+import com.sunmi.assistant.pos.response.PosListResp;
 import com.sunmi.cloudprinter.rpc.IOTCloudApi;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
@@ -22,6 +23,7 @@ import java.util.List;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.base.BasePresenter;
 import sunmi.common.constant.CommonConfig;
+import sunmi.common.constant.enums.DeviceStatus;
 import sunmi.common.model.AdListBean;
 import sunmi.common.model.AdListResp;
 import sunmi.common.model.ShopInfo;
@@ -101,7 +103,21 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
     }
 
     @Override
-    public void unbindRouter(String sn) {
+    public void unbind(SunmiDevice device) {
+        switch (device.getType()) {
+            case "ROUTER":
+                unbindRouter(device.getDeviceid());
+                break;
+            case "IPC":
+                unbindIPC(device.getId());
+                break;
+            case "PRINTER":
+                unbindPrinter(device.getDeviceid());
+                break;
+        }
+    }
+
+    private void unbindRouter(String sn) {
         CloudApi.unbind(sn, new HttpCallback<String>(null) {
             @Override
             public void onSuccess(int code, String msg, String data) {
@@ -158,8 +174,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                 });
     }
 
-    @Override
-    public void unbindIPC(int deviceId) {
+    private void unbindIPC(int deviceId) {
         IpcCloudApi.getInstance().unbindIpc(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId,
                 new RetrofitCallback<Object>() {
                     @Override
@@ -204,12 +219,38 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
     }
 
     @Override
+    public void getPosList() {
+        PosApi.getInstance().getPosList(new RetrofitCallback<PosListResp>() {
+            @Override
+            public void onSuccess(int code, String msg, PosListResp data) {
+                ThreadPool.getCachedThreadPool().submit(() -> {
+                    DBUtils.deleteSunmiDeviceByType("POS");
+                    if (data.getDeviceList().size() > 0) {
+                        List<SunmiDevice> posList = new ArrayList<>();
+                        for (PosListResp.DeviceListBean bean : data.getDeviceList()) {
+                            posList.add(getPosDevice(bean));
+                        }
+                        if (isViewAttached()) {
+                            mView.endRefresh();
+                            mView.getPosListSuccess(posList);
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onFail(int code, String msg, PosListResp data) {
+            }
+        });
+    }
+
+    @Override
     public void getPrinterStatus(final String sn) {
         IOTCloudApi.getPrinterStatus(sn, new HttpCallback<String>(null) {
             @Override
             public void onSuccess(int code, String msg, String data) {
                 try {
-                    SunmiDevice device = getPrinterDevice(new JSONObject(data));
+                    getPrinterDevice(new JSONObject(data));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -217,8 +258,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
         });
     }
 
-    @Override
-    public void unBindPrinter(final String sn) {
+    private void unbindPrinter(final String sn) {
         IOTCloudApi.unbindPrinter(SpUtils.getShopId(), sn, new HttpCallback<String>(null) {
             @Override
             public void onSuccess(int code, String msg, String data) {
@@ -349,9 +389,22 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
         return device;
     }
 
+    @NonNull
+    private SunmiDevice getPosDevice(PosListResp.DeviceListBean bean) {
+        SunmiDevice device = new SunmiDevice();
+        device.setType("POS");
+        device.setDeviceid(bean.getSn());
+        device.setModel(bean.getModel());
+        device.setDisplayModel(bean.getDisplayModel());
+        device.setPosModelDetails(bean.getModelDetail());
+        device.setChannelId(bean.getChannelId());
+        device.setStatus(bean.getActiveStatus());
+        device.setImgPath(bean.getImgPath());
+        saveDevice(device);
+        return device;
+    }
+
     private void saveDevice(SunmiDevice device) {
         device.saveOrUpdate("deviceid=?", device.getDeviceid());
     }
-
-
 }

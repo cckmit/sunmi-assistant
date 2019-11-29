@@ -15,8 +15,15 @@ android {
         javaCompileOptions {
             annotationProcessorOptions {
                 includeCompileClasspath = true
+                arguments = ["HOST": "commonlib"]
             }
         }
+
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
+
         multiDexEnabled true
     }
 
@@ -161,6 +168,7 @@ dependencies {
     api 'com.amap.api:search:6.9.2'
 
     api "com.github.xiaojinzi123.Component:component-impl:${CVersion}"
+    annotationProcessor "com.github.xiaojinzi123.Component:component-compiler:${CVersion}"
     //美团多渠道打包
     api 'com.meituan.android.walle:library:1.1.6'
 
