@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import sunmi.common.utils.SpUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.login.LoginActivity_;
 
@@ -21,6 +20,8 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.utils.CommonHelper;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
 
 @EActivity(R.layout.viewpager_view)
@@ -97,13 +98,21 @@ public class LeadPagesActivity extends BaseActivity {
                         btnText.setVisibility(View.INVISIBLE);
                         break;
                     case 1:
-                        imgContent.setImageResource(R.mipmap.ic_lead_b);
+                        if (CommonHelper.isGooglePlay()) {
+                            imgContent.setImageResource(R.mipmap.ic_lead_b_foreign);
+                        } else {
+                            imgContent.setImageResource(R.mipmap.ic_lead_b);
+                        }
                         tvTitle.setText(R.string.str_text_lead_tem);
                         tvContent.setText(R.string.str_text_lead_set_perm);
                         btnText.setVisibility(View.INVISIBLE);
                         break;
                     case 2:
-                        imgContent.setImageResource(R.mipmap.ic_lead_c);
+                        if (CommonHelper.isGooglePlay()) {
+                            imgContent.setImageResource(R.mipmap.ic_lead_c_foreign);
+                        } else {
+                            imgContent.setImageResource(R.mipmap.ic_lead_c);
+                        }
                         tvTitle.setText(R.string.str_text_lead_allo);
                         tvContent.setText(R.string.str_text_lead_service);
                         btnText.setVisibility(View.INVISIBLE);
