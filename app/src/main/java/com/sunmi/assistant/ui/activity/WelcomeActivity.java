@@ -10,6 +10,8 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.view.View;
+import android.widget.TextView;
 
 import com.sunmi.apmanager.update.AppUpdate;
 import com.sunmi.assistant.R;
@@ -23,6 +25,7 @@ import com.tencent.stat.common.StatConstants;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
+import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseApplication;
 import sunmi.common.base.BaseMvpActivity;
@@ -37,6 +40,10 @@ import sunmi.common.view.dialog.CommonDialog;
 @EActivity(R.layout.activity_welcome)
 public class WelcomeActivity extends BaseMvpActivity<WelcomePresenter>
         implements WelcomeContract.View {
+
+    @ViewById(R.id.name)
+    TextView name;
+
     private static final int INSTALL_PERMISSION_CODE = 900;
     private static final String TENCENT_MAT = "A6INR132MGAI";
 
@@ -47,6 +54,7 @@ public class WelcomeActivity extends BaseMvpActivity<WelcomePresenter>
         mPresenter = new WelcomePresenter();
         mPresenter.attachView(this);
         if (!CommonHelper.isGooglePlay()) {
+            name.setVisibility(View.VISIBLE);
             new Handler().postDelayed(() -> mPresenter.checkUpgrade(), 500);
         } else {
             gotoLeadPagesActivity();

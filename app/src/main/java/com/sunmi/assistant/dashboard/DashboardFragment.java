@@ -26,6 +26,7 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.ui.ScrollableViewPager;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.sunmiservice.cloud.WebViewCloudServiceActivity_;
+import com.xiaojinzi.component.impl.Router;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -41,10 +42,10 @@ import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.FilterItem;
+import sunmi.common.router.IpcApi;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.DropdownMenu;
-import sunmi.common.view.activity.StartConfigSMDeviceActivity_;
 import sunmi.common.view.tablayout.CommonTabLayout;
 import sunmi.common.view.tablayout.listener.CustomTabEntity;
 import sunmi.common.view.tablayout.listener.OnTabSelectListener;
@@ -271,10 +272,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Click(R.id.btn_dashboard_tip_add_fs)
     void clickAddFs() {
-        StartConfigSMDeviceActivity_.intent(getContext())
-                .deviceType(CommonConstants.TYPE_IPC_FS)
-                .shopId(SpUtils.getShopId() + "")
-                .start();
+        Router.withApi(IpcApi.class).goToIpcStartConfig(getContext(), CommonConstants.TYPE_IPC_FS);
     }
 
     @Click(R.id.btn_refresh)
