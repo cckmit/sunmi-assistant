@@ -336,8 +336,10 @@ public class SettingItemLayout extends FrameLayout {
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-        for (int i = 0, size = getChildCount(); i < size; i++) {
-            getChildAt(i).setEnabled(enabled);
+        clContainer.setEnabled(enabled);
+        int count = clContainer.getChildCount();
+        for (int i = 0; i < count; i++) {
+            clContainer.getChildAt(i).setEnabled(enabled);
         }
     }
 
