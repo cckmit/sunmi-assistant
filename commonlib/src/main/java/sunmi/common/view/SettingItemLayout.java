@@ -505,6 +505,7 @@ public class SettingItemLayout extends FrameLayout {
 
     public void setOnCheckedChangeListener(@Nullable OnCheckedChangeListener listener) {
         if (listener == null) {
+            scEndSwitch.setOnCheckedChangeListener(null);
             return;
         }
         scEndSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
