@@ -106,6 +106,7 @@ public class PosDetailsActivity extends BaseActivity {
         PosApi.getInstance().getCategoryByModel(arrays, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
+                LogCat.e("TAG", "11111 code=" + code + " , msg=" + data.toString() + "");
                 String mData = data.toString();
                 if (mData.contains(device.getModel())) {
                     String tag = mData.substring(mData.indexOf("tag=") + 4, mData.indexOf(","));
