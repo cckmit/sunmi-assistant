@@ -17,7 +17,6 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -504,8 +503,12 @@ public class SettingItemLayout extends FrameLayout {
         }
     }
 
-    public void setOnCheckedChangeListener(@Nullable CompoundButton.OnCheckedChangeListener listener) {
-        scEndSwitch.setOnCheckedChangeListener(listener);
+    public void setOnCheckedChangeListener(@Nullable OnCheckedChangeListener listener) {
+        if (listener == null) {
+            return;
+        }
+        scEndSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
+                listener.onCheckedChanged(SettingItemLayout.this, isChecked));
     }
 
     public void setDivider(int divider) {
@@ -525,6 +528,20 @@ public class SettingItemLayout extends FrameLayout {
 
     public boolean isChecked() {
         return scEndSwitch.isChecked();
+    }
+
+    /**
+     * Interface definition for a callback to be invoked when the checked state
+     * of a compound button changed.
+     */
+    public interface OnCheckedChangeListener {
+        /**
+         * Called when the checked state of a compound button has changed.
+         *
+         * @param view      The compound button view whose state has changed.
+         * @param isChecked The new checked state of buttonView.
+         */
+        void onCheckedChanged(SettingItemLayout view, boolean isChecked);
     }
 
 }
