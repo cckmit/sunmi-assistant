@@ -225,21 +225,24 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
             public void onSuccess(int code, String msg, PosListResp data) {
                 ThreadPool.getCachedThreadPool().submit(() -> {
                     DBUtils.deleteSunmiDeviceByType("POS");
+                    List<SunmiDevice> posList = new ArrayList<>();
                     if (data.getDeviceList().size() > 0) {
-                        List<SunmiDevice> posList = new ArrayList<>();
                         for (PosListResp.DeviceListBean bean : data.getDeviceList()) {
                             posList.add(getPosDevice(bean));
                         }
-                        if (isViewAttached()) {
-                            mView.endRefresh();
-                            mView.getPosListSuccess(posList);
-                        }
+                    }
+                    if (isViewAttached()) {
+                        mView.endRefresh();
+                        mView.getPosListSuccess(posList);
                     }
                 });
             }
 
             @Override
             public void onFail(int code, String msg, PosListResp data) {
+                if (isViewAttached()) {
+                    mView.endRefresh();
+                }
             }
         });
     }
@@ -400,6 +403,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
         device.setChannelId(bean.getChannelId());
         device.setStatus(bean.getActiveStatus());
         device.setImgPath(bean.getImgPath());
+        device.setShopId(SpUtils.getShopId());
         saveDevice(device);
         return device;
     }
