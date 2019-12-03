@@ -1,7 +1,6 @@
 package com.sunmi.assistant.mine.message;
 
 import android.view.View;
-import android.widget.CompoundButton;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.MsgSettingDetailContract;
@@ -31,7 +30,7 @@ import sunmi.common.view.ViewHolder;
 
 @EActivity(R.layout.activity_msg_setting_detail)
 public class MsgSettingDetailActivity extends BaseMvpActivity<MsgSettingDetailPresenter>
-        implements MsgSettingDetailContract.View, CompoundButton.OnCheckedChangeListener {
+        implements MsgSettingDetailContract.View {
 
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
@@ -58,7 +57,10 @@ public class MsgSettingDetailActivity extends BaseMvpActivity<MsgSettingDetailPr
         sMian.setChecked(child.getStatus() == 1);
         mPresenter = new MsgSettingDetailPresenter();
         mPresenter.attachView(this);
-        sMian.setOnCheckedChangeListener(this);
+        sMian.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            changeStatus(isChecked, child.getId(), sMian);
+            silChange = sMian;
+        });
         rvSetting.init(R.drawable.shap_line_divider);
         initDetail();
     }
@@ -103,14 +105,6 @@ public class MsgSettingDetailActivity extends BaseMvpActivity<MsgSettingDetailPr
     public void updateSettingStatusFail(int msgId, int status) {
         allowCheck = false;
         silChange.setChecked(status == 0);
-    }
-
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if (buttonView.getId() == R.id.switch_main) {
-            changeStatus(isChecked, child.getId(), sMian);
-            silChange = sMian;
-        }
     }
 
     private void changeStatus(boolean isChecked, int settingId, SettingItemLayout sil) {
