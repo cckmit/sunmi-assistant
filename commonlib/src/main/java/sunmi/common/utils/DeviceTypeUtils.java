@@ -43,13 +43,13 @@ public class DeviceTypeUtils {
     }
 
     public int getBrandImage(String mac) {
-        int resourceId = R.mipmap.unknow;//设置默认
+        int resourceId = R.mipmap.unknown;//设置默认
         for (DeviceTypeBean object : list) {
             if (object.getMac() != null)
                 for (String s : object.getMac()) {
                     if (s.substring(0, 8).equalsIgnoreCase(mac.substring(0, 8))) {
                         resourceId = CommonHelper.getResource(BaseApplication.getContext(),
-                                object.getBrand(), R.mipmap.unknow);
+                                object.getBrand(), R.mipmap.unknown);
                         break;
                     }
                 }
@@ -58,10 +58,10 @@ public class DeviceTypeUtils {
     }
 
     public int getSunmiDeviceImage(String model) {
-        int resourceId = R.mipmap.unknow;
+        int resourceId = R.mipmap.unknown;
         if (sunmiDevice.get(model) != null) {
             resourceId = CommonHelper.getResource(BaseApplication.getContext(),
-                    sunmiDevice.get(model).getBrand(), R.mipmap.unknow);
+                    sunmiDevice.get(model).getBrand(), R.mipmap.unknown);
         }
         return resourceId;
     }
