@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_56"
+    android:id="@+id/ctl_bottom_setting"
+    android:background="@color/c_black"
+    app:layout_constraintTop_toBottomOf="@id/rl_cash">
+
+    <ImageView
+        android:id="@+id/iv_screenshot"
+        android:layout_width="@dimen/dp_64"
+        android:layout_height="@dimen/dp_36"
+        android:layout_marginEnd="@dimen/dp_6"
+        android:background="@drawable/bg_round_corner_black_15"
+        android:scaleType="center"
+        android:src="@mipmap/ic_screenshot_enable"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/iv_volume"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <ImageView
+        android:id="@+id/iv_volume"
+        android:layout_width="@dimen/dp_64"
+        android:layout_height="@dimen/dp_36"
+        android:layout_marginEnd="@dimen/dp_6"
+        android:background="@drawable/bg_round_corner_black_15"
+        android:scaleType="center"
+        android:src="@mipmap/ic_volume"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/iv_screenshot"
+        app:layout_constraintRight_toLeftOf="@id/iv_type"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <ImageView
+        android:id="@+id/iv_type"
+        android:layout_width="@dimen/dp_64"
+        android:layout_height="@dimen/dp_36"
+        android:layout_marginEnd="@dimen/dp_6"
+        android:background="@drawable/bg_round_corner_black_15"
+        android:scaleType="center"
+        android:src="@mipmap/ic_loop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/iv_volume"
+        app:layout_constraintRight_toLeftOf="@id/iv_cloud"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <ImageView
+        android:id="@+id/iv_cloud"
+        android:layout_width="@dimen/dp_64"
+        android:layout_height="@dimen/dp_36"
+        android:layout_marginEnd="@dimen/dp_6"
+        android:background="@drawable/bg_round_corner_black_15"
+        android:scaleType="center"
+        android:src="@mipmap/ic_cloud_playback"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/iv_type"
+        app:layout_constraintRight_toLeftOf="@id/tv_tag"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/tv_tag"
+        android:layout_width="@dimen/dp_64"
+        android:layout_height="@dimen/dp_36"
+        android:background="@drawable/bg_round_corner_black_15"
+        android:gravity="center"
+        android:text="标记异常"
+        android:textColor="@color/c_white"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/iv_cloud"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+</android.support.constraint.ConstraintLayout>
