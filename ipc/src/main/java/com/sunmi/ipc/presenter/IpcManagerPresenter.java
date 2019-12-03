@@ -6,7 +6,7 @@ import com.sunmi.ipc.R;
 import com.sunmi.ipc.contract.IpcManagerContract;
 import com.sunmi.ipc.model.IotcCmdResp;
 import com.sunmi.ipc.model.IpcManageBean;
-import com.sunmi.ipc.model.StorageListResp;
+import sunmi.common.model.ServiceListResp;
 import com.sunmi.ipc.model.VideoTimeSlotBean;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.ipc.utils.IOTCClient;
@@ -170,9 +170,9 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
     public void getStorageList(String deviceSn) {
         List<String> snList = new ArrayList<>();
         snList.add(deviceSn);
-        IpcCloudApi.getInstance().getStorageList(snList, new RetrofitCallback<StorageListResp>() {
+        IpcCloudApi.getInstance().getStorageList(snList, new RetrofitCallback<ServiceListResp>() {
             @Override
-            public void onSuccess(int code, String msg, StorageListResp data) {
+            public void onSuccess(int code, String msg, ServiceListResp data) {
                 if (isViewAttached()) {
                     if (data.getDeviceList().size() > 0) {
                         mView.getStorageSuccess(getStorage(data.getDeviceList().get(0), BaseApplication.getContext()));
@@ -184,7 +184,7 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
             }
 
             @Override
-            public void onFail(int code, String msg, StorageListResp data) {
+            public void onFail(int code, String msg, ServiceListResp data) {
                 if (isViewAttached()) {
                     mView.getStorageSuccess(getStorage(null, BaseApplication.getContext()));
                     mView.shortTip(R.string.tip_cloud_storage_error);
@@ -193,7 +193,7 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
         });
     }
 
-    private IpcManageBean getStorage(StorageListResp.DeviceListBean data, Context context) {
+    private IpcManageBean getStorage(ServiceListResp.DeviceListBean data, Context context) {
         IpcManageBean cloudStorage = new IpcManageBean(R.mipmap.ipc_cloud_storage, context.getString(R.string.str_cloud_storage),
                 context.getString(R.string.str_setting_detail));
         if (data != null) {

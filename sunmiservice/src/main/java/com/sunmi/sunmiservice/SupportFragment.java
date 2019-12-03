@@ -15,6 +15,8 @@ import com.tencent.mm.opensdk.modelmsg.WXMiniProgramObject;
 import com.tencent.mm.opensdk.modelmsg.WXTextObject;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+import com.xiaojinzi.component.impl.Router;
+import com.xiaojinzi.component.impl.service.ServiceManager;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -26,7 +28,11 @@ import org.litepal.crud.DataSupport;
 import sunmi.common.base.BaseFragment;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonNotifications;
+import sunmi.common.model.ServiceListResp;
 import sunmi.common.model.ShopBundledCloudInfo;
+import sunmi.common.router.IpcApi;
+import sunmi.common.router.IpcCloudApiAnno;
+import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.view.TitleBarView;
@@ -42,6 +48,8 @@ public class SupportFragment extends BaseFragment
     TextView tvCloudStorage;
     @ViewById(resName = "iv_tip_free")
     ImageView ivTipFree;
+    @ViewById(resName = "tv_cash_video")
+    TextView tvCashVideo;
 
 
     private IWXAPI api;// 第三方app和微信通信的openApi接口
@@ -55,6 +63,20 @@ public class SupportFragment extends BaseFragment
     @AfterViews
     void init() {
         titleBar.getRightTextView().setOnClickListener(this);
+        final IpcCloudApiAnno ipcCloudApi = ServiceManager.get(IpcCloudApiAnno.class);
+        if (ipcCloudApi!=null){
+            ipcCloudApi.getAuditVideoServiceList(null, new RetrofitCallback<ServiceListResp>() {
+                @Override
+                public void onSuccess(int code, String msg, ServiceListResp data) {
+
+                }
+
+                @Override
+                public void onFail(int code, String msg, ServiceListResp data) {
+
+                }
+            });
+        }
         changeCloudCard();
     }
 
@@ -73,6 +95,14 @@ public class SupportFragment extends BaseFragment
     @Override
     public void onClick(View v) {
         ServiceManageActivity_.intent(mActivity).start();
+    }
+
+    @Click(resName = "ll_cash_video")
+    void cashVidoClick() {
+        if (isFastClick(500)) {
+            return;
+        }
+        Router.withApi(IpcApi.class).goToCashVideoOverview(mActivity);
     }
 
     @Click(resName = "ll_cloud_storage")

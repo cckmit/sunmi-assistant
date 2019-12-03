@@ -11,7 +11,7 @@
         android:id="@+id/ctl_pos"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_310"
-        android:background="@drawable/dashboard_bg_top"
+        android:background="@drawable/bg_dark_top"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">

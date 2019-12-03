@@ -85,6 +85,13 @@ public class DateTimeUtils {
         return BaseApplication.getContext().getString(R.string.str_period, days, hours);
     }
 
+    public static String calendarToDate(Calendar calendar, String pattern) {
+        Date date = calendar.getTime();
+        SimpleDateFormat format = new SimpleDateFormat(pattern, Locale.getDefault());
+        return format.format(date);
+    }
+
+
     /**
      * 获取当前日期
      *

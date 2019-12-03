@@ -24,14 +24,13 @@ public class RouterConfig {
 
     public static class CloudPrinter {
         public static final String NAME = "cloudprinter";
-        public static final String PRINTER_SEARCH = "printerSearch";
         public static final String START_CONFIG_PRINTER ="startConfigPrinter";
     }
 
     public static class Ipc {
         public static final String NAME = "ipc";
         public static final String IPC_START_CONFIG = "ipcStartConfig";
-
+        public static final String CASH_VIDEO_OVERVIEW = "cashVideoOverview";
     }
 
     public static class SunmiService {

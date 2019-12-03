@@ -28,6 +28,7 @@
     <color name="assist_secondary">#5A97FC</color>   <!--点缀色1-->
     <color name="caution_secondary">#FF6680</color>  <!--点缀色2-->
     <color name="success_secondary">#4CC3FF</color>  <!--点缀色3-->
+    <color name="assist_primary_light">#4BA2FA</color> <!--辅助色渐变浅-->
 
     <color name="transparent">#00000000</color>      <!--透明-->
     <color name="c_white">#FFFFFF</color>            <!--白色-->

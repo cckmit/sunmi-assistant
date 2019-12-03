@@ -66,7 +66,7 @@
         android:id="@+id/layout_shop_title"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_54"
-        android:background="@drawable/dashboard_bg_top"
+        android:background="@drawable/bg_dark_top"
         android:gravity="center"
         android:paddingStart="@dimen/dp_20"
         android:paddingEnd="@dimen/dp_20"

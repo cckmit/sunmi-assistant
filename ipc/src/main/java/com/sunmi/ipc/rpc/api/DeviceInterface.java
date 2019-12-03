@@ -1,12 +1,12 @@
 package com.sunmi.ipc.rpc.api;
 
-import sunmi.common.router.model.IpcListResp;
 import com.sunmi.ipc.model.IpcNewFirmwareResp;
-import com.sunmi.ipc.model.StorageListResp;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
+import sunmi.common.model.ServiceListResp;
+import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
@@ -53,6 +53,14 @@ public interface DeviceInterface {
      * @return
      */
     @POST(path + "getStorageList")
-    Call<BaseResponse<StorageListResp>> getStorageList(@Body BaseRequest request);
+    Call<BaseResponse<ServiceListResp>> getStorageList(@Body BaseRequest request);
+
+    /**
+     * 通过设备sn或shopId查询ipc设备收银视频服务信息
+     * @param request
+     * @return
+     */
+    @POST(path + "getAuditVideoServiceList")
+    Call<BaseResponse<ServiceListResp>> getAuditVideoServiceList(@Body BaseRequest request);
 
 }

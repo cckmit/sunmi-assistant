@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/v1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_dark_top"
+        app:layout_constraintBottom_toBottomOf="@+id/rl_calender"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        app:dividerShow="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:leftDefaultClickEnable="true"
+        app:leftIcon="@drawable/ic_back_light"
+        app:titleText="收银视屏"
+        app:titleTextColor="@color/c_white" />
+
+    <RelativeLayout
+        android:id="@+id/rl_calender"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_88"
+        android:background="@color/transparent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_bar">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_calendar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_48"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_56"
+            android:overScrollMode="never" />
+
+        <View
+            android:layout_width="@dimen/dp_0_5"
+            android:layout_height="@dimen/dp_24"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_48"
+            android:background="@color/c_white" />
+
+        <ImageView
+            android:id="@+id/iv_calendar"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:src="@mipmap/ic_cash_calendar"
+            tools:ignore="ContentDescription" />
+    </RelativeLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/cl_shop_cash"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_116"
+        android:background="@drawable/bg_top_white_radius"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rl_calender">
+
+        <LinearLayout
+            android:id="@+id/ll_cash_video"
+            android:layout_width="@dimen/dp_150"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toStartOf="@+id/ll_abnormal_video"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:layout_width="@dimen/dp_32"
+                android:layout_height="@dimen/dp_32"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_16"
+                android:src="@mipmap/ic_total_cash_video" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_4"
+                android:text="总收银视屏"
+                android:textColor="@color/text_normal"
+                android:textSize="@dimen/sp_12" />
+
+            <TextView
+                android:id="@+id/tv_total_count_cash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="105"
+                android:textColor="@color/text_normal"
+                android:textSize="@dimen/sp_20"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_abnormal_video"
+            android:layout_width="@dimen/dp_150"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/ll_cash_video">
+
+            <ImageView
+                android:layout_width="@dimen/dp_32"
+                android:layout_height="@dimen/dp_32"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_16"
+                android:src="@mipmap/ic_total_abnormal_video" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_4"
+                android:text="总异常视屏"
+                android:textColor="@color/text_normal"
+                android:textSize="@dimen/sp_12" />
+
+            <TextView
+                android:id="@+id/tv_total_count_abnormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="3"
+                android:textColor="@color/text_normal"
+                android:textSize="@dimen/sp_20"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_top_gray_radius"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cl_shop_cash">
+
+        <sunmi.common.view.CircleImage
+            android:id="@+id/civ_ipc"
+            android:layout_width="@dimen/dp_112"
+            android:layout_height="@dimen/dp_112"
+            android:layout_marginStart="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_24"
+            android:src="@mipmap/ic_ipc_cut"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:radius="@dimen/dp_6" />
+
+        <TextView
+            android:id="@+id/tv_ipc_name"
+            android:layout_width="@dimen/dp_199"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_24"
+            android:singleLine="true"
+            android:text="设备昵称"
+            android:textColor="@color/text_main"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/civ_ipc"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_ipc_sn"
+            android:layout_width="@dimen/dp_199"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_2"
+            android:singleLine="true"
+            android:text="@string/ipc_sn"
+            android:textColor="@color/text_caption"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintStart_toEndOf="@id/civ_ipc"
+            app:layout_constraintTop_toBottomOf="@id/tv_ipc_name" />
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cv_cash"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_52"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_22"
+            android:layout_marginEnd="@dimen/dp_7"
+            android:background="@color/c_white"
+            app:cardCornerRadius="@dimen/dp_6"
+            app:cardElevation="0dp"
+            app:layout_constraintEnd_toStartOf="@+id/cv_abnormal"
+            app:layout_constraintStart_toEndOf="@id/civ_ipc"
+            app:layout_constraintTop_toBottomOf="@id/tv_ipc_sn">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_6"
+                android:text="收银视屏"
+                android:textColor="@color/text_normal"
+                android:textSize="@dimen/sp_12" />
+
+            <TextView
+                android:id="@+id/tv_count_cash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_26"
+                android:text="111"
+                android:textColor="@color/text_normal"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold" />
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cv_abnormal"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_52"
+            android:layout_marginTop="@dimen/dp_22"
+            android:layout_marginEnd="@dimen/dp_24"
+            android:background="@color/c_white"
+            app:cardCornerRadius="@dimen/dp_6"
+            app:cardElevation="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/cv_cash"
+            app:layout_constraintTop_toBottomOf="@id/tv_ipc_sn">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_6"
+                android:text="异常视屏"
+                android:textColor="@color/text_normal"
+                android:textSize="@dimen/sp_12" />
+
+            <TextView
+                android:id="@+id/tv_count_abnorlmal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_26"
+                android:text="111"
+                android:textColor="@color/text_normal"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold" />
+
+        </android.support.v7.widget.CardView>
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>
