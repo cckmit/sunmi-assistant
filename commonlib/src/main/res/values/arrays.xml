@@ -14,13 +14,13 @@
     </string-array>
 
     <string-array name="week_name">
+        <item>@string/ipc_setting_detection_day_sunday</item>
         <item>@string/ipc_setting_detection_day_monday</item>
         <item>@string/ipc_setting_detection_day_tuesday</item>
         <item>@string/ipc_setting_detection_day_wednesday</item>
         <item>@string/ipc_setting_detection_day_thursday</item>
         <item>@string/ipc_setting_detection_day_friday</item>
         <item>@string/ipc_setting_detection_day_saturday</item>
-        <item>@string/ipc_setting_detection_day_sunday</item>
     </string-array>
     <string-array name="week_name_abbr">
         <item>日</item>
