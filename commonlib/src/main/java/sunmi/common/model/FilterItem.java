@@ -1,14 +1,15 @@
 package sunmi.common.model;
 
+import sunmi.common.view.DropdownMenuNew;
+
 /**
  * @author yinhui
  * @since 2019-06-27
  */
-public class FilterItem {
+public class FilterItem extends DropdownMenuNew.Model {
     private int id;
     private String titleName;
     private String itemName;
-    private boolean isChecked;
 
     public FilterItem(int id, String name) {
         this.id = id;
@@ -34,11 +35,4 @@ public class FilterItem {
         return itemName;
     }
 
-    public boolean isChecked() {
-        return isChecked;
-    }
-
-    public void setChecked(boolean checked) {
-        isChecked = checked;
-    }
 }
