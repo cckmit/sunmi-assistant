@@ -120,7 +120,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
             tvDeviceSn.setText(sn);
             tvSubScribeTime.setText(DateTimeUtils.secondToDate(bean.getSubscribeTime(), "yyyy-MM-dd HH:mm"));
             tvExpireTime.setText(DateTimeUtils.secondToDate(bean.getExpireTime(), "yyyy-MM-dd HH:mm"));
-            if (bean.getStatus() != CommonConstants.CLOUD_STORAGE_EXPIRED) {
+            if (bean.getStatus() != CommonConstants.SERVICE_EXPIRED) {
                 tvRemaining.setText(DateTimeUtils.secondToPeriod(bean.getValidTime()));
             } else {
                 tvStatus.setText(R.string.str_expired);

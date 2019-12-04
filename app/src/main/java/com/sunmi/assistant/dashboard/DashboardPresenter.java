@@ -365,7 +365,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 Set<String> newSet = new HashSet<>();
                 if (beans != null && beans.size() > 0) {
                     for (BundleServiceMsg.SubscriptionListBean bean : beans) {
-                        if (bean.getActiveStatus() == CommonConstants.ACTIVE_CLOUD_INACTIVATED) {
+                        if (bean.getActiveStatus() == CommonConstants.SERVICE_INACTIVATED) {
                             newSet.add(bean.getDeviceSn());
                             if (!oldSet.contains(bean.getDeviceSn())) {
                                 mShowFloating = true;

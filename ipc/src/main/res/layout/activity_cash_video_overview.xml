@@ -27,7 +27,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_light"
-        app:titleText="收银视屏"
+        app:titleText="@string/cash_video"
         app:titleTextColor="@color/c_white" />
 
     <RelativeLayout
@@ -97,7 +97,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/dp_4"
-                android:text="总收银视屏"
+                android:text="@string/total_cash_video"
                 android:textColor="@color/text_normal"
                 android:textSize="@dimen/sp_12" />
 
@@ -134,7 +134,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/dp_4"
-                android:text="总异常视屏"
+                android:text="@string/total_abnormal_video"
                 android:textColor="@color/text_normal"
                 android:textSize="@dimen/sp_12" />
 
@@ -167,35 +167,39 @@
             android:layout_height="@dimen/dp_112"
             android:layout_marginStart="@dimen/dp_24"
             android:layout_marginTop="@dimen/dp_24"
-            android:src="@mipmap/ic_ipc_cut"
+            android:src="@mipmap/ic_logo"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:radius="@dimen/dp_6" />
 
         <TextView
             android:id="@+id/tv_ipc_name"
-            android:layout_width="@dimen/dp_199"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginEnd="@dimen/dp_24"
             android:singleLine="true"
             android:text="设备昵称"
             android:textColor="@color/text_main"
             android:textSize="@dimen/sp_14"
             android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/civ_ipc"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_ipc_sn"
-            android:layout_width="@dimen/dp_199"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_2"
+            android:layout_marginEnd="@dimen/dp_24"
             android:singleLine="true"
             android:text="@string/ipc_sn"
             android:textColor="@color/text_caption"
             android:textSize="@dimen/sp_12"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/civ_ipc"
             app:layout_constraintTop_toBottomOf="@id/tv_ipc_name" />
 
@@ -218,7 +222,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/dp_6"
-                android:text="收银视屏"
+                android:text="@string/cash_video"
                 android:textColor="@color/text_normal"
                 android:textSize="@dimen/sp_12" />
 
@@ -253,12 +257,12 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/dp_6"
-                android:text="异常视屏"
+                android:text="@string/abnorlmal_video"
                 android:textColor="@color/text_normal"
                 android:textSize="@dimen/sp_12" />
 
             <TextView
-                android:id="@+id/tv_count_abnorlmal"
+                android:id="@+id/tv_count_abnormal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"

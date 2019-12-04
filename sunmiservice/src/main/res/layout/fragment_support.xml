@@ -48,14 +48,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_24"
-                    android:text="收银视屏"
+                    android:text="@string/cash_video"
                     android:textColor="@color/c_white"
                     android:textSize="@dimen/sp_24" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="帮您更高效便捷地校验异常收银视频"
+                    android:text="@string/tip_cash_video"
                     android:textColor="@color/c_white"
                     android:textSize="@dimen/sp_14" />
 

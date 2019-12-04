@@ -257,7 +257,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                 List<ServiceListResp.DeviceListBean> beans = data.getDeviceList();
                 snList.clear();
                 for (ServiceListResp.DeviceListBean bean : beans) {
-                    if (bean.getActiveStatus() == CommonConstants.ACTIVE_CLOUD_INACTIVATED) {
+                    if (bean.getActiveStatus() == CommonConstants.SERVICE_INACTIVATED) {
                         snList.add(bean.getDeviceSn());
                     }
                 }

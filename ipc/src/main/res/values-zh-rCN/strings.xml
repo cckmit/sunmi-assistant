@@ -350,7 +350,9 @@
     <string name="cash_goods_quality">商品总数：</string>
     <string name="cash_trade_type">交易类型：</string>
     <string name="cash_pos_device">收银设备：</string>
-    <string name="cash_video">收银视频</string>
+    <string name="total_cash_video">总收银视频</string>
+    <string name="total_abnormal_video">总异常视频</string>
+    <string name="abnorlmal_video">异常视频</string>
 </resources>
 
 

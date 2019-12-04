@@ -199,19 +199,19 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
         if (data != null) {
             cloudStorage.setEnabled(true);
             cloudStorage.setStatus(data.getStatus());
-            if (data.getActiveStatus() == CommonConstants.ACTIVE_CLOUD_INACTIVATED && data.getStatus() != CommonConstants.CLOUD_STORAGE_ALREADY_OPENED) {
+            if (data.getActiveStatus() == CommonConstants.SERVICE_INACTIVATED && data.getStatus() != CommonConstants.SERVICE_ALREADY_OPENED) {
                 cloudStorage.setSummary(context.getString(R.string.str_subscribe_free));
                 cloudStorage.setRightText(context.getString(R.string.str_use_free));
                 cloudStorage.setTagImageResId(R.mipmap.ipc_cloud_free_half_year);
-            } else if (data.getStatus() == CommonConstants.CLOUD_STORAGE_ALREADY_OPENED) {
+            } else if (data.getStatus() == CommonConstants.SERVICE_ALREADY_OPENED) {
                 BaseNotification.newInstance().postNotificationName(CommonNotifications.cloudStorageOpened);
                 cloudStorage.setTitle(data.getServiceName());
                 cloudStorage.setSummary(context.getString(R.string.str_remaining_validity_period,
                         DateTimeUtils.secondToPeriod(data.getValidTime())));
-            } else if (data.getStatus() == CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
+            } else if (data.getStatus() == CommonConstants.SERVICE_NOT_OPENED) {
                 cloudStorage.setSummary(context.getString(R.string.str_subscribe_free));
                 cloudStorage.setRightText(context.getString(R.string.str_subscribe_now));
-            } else if (data.getStatus() == CommonConstants.CLOUD_STORAGE_EXPIRED) {
+            } else if (data.getStatus() == CommonConstants.SERVICE_EXPIRED) {
                 cloudStorage.setSummary(context.getString(R.string.str_expired));
             }
         } else {

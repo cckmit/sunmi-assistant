@@ -66,9 +66,6 @@ public class CashCalendarAdapter extends RecyclerView.Adapter<CashCalendarAdapte
         }
         viewHolder.tvDate.setText(date);
         int timeIndex = c.get(Calendar.DAY_OF_WEEK) - 1;
-        if (timeIndex <= 0) {
-            timeIndex += 7;
-        }
         viewHolder.tvWeek.setText(getWeekName(timeIndex));
     }
 
@@ -81,7 +78,7 @@ public class CashCalendarAdapter extends RecyclerView.Adapter<CashCalendarAdapte
         if (sWeekName == null) {
             sWeekName = context.getResources().getStringArray(R.array.week_name);
         }
-        return sWeekName[timeIndex - 1];
+        return sWeekName[timeIndex];
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
