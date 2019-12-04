@@ -2,6 +2,7 @@ package com.sunmi.ipc.cash;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
@@ -61,9 +62,13 @@ public class CashVideoOverviewActivity extends BaseMvpActivity {
     TextView tvCountCash;
     @ViewById(resName = "tv_count_abnormal")
     TextView tvCountAbnormal;
+    @ViewById(resName = "cl_shop_cash")
+    ConstraintLayout clShopCash;
 
     @Extra
     ArrayList<CashVideoService> services;
+    @Extra
+    CashVideoService service;
 
 
     private CenterLayoutManager llManager;

@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@drawable/bg_dark_top"
-        app:layout_constraintBottom_toBottomOf="@+id/rl_calender"
+        app:layout_constraintBottom_toBottomOf="@+id/rl_quick"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -31,7 +31,7 @@
         app:titleTextColor="@color/c_white" />
 
     <RelativeLayout
-        android:id="@+id/rl_calender"
+        android:id="@+id/rl_quick"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_88"
         android:background="@color/transparent"
@@ -72,9 +72,10 @@
         android:layout_height="@dimen/dp_116"
         android:background="@drawable/bg_top_white_radius"
         android:orientation="horizontal"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rl_calender">
+        app:layout_constraintTop_toBottomOf="@id/rl_quick">
 
         <LinearLayout
             android:id="@+id/ll_cash_video"

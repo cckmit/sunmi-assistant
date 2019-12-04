@@ -104,7 +104,7 @@
             android:id="@+id/btn_dashboard_tip_add_fs"
             style="@style/BtnSmallOrangeBorder"
             android:layout_marginEnd="@dimen/dp_20"
-            android:background="@drawable/dashboard_btn_no_fs_tip"
+            android:background="@drawable/btn_edge_white60"
             android:text="@string/dashboard_no_fs_tip_add"
             android:textColor="@color/c_white"
             app:layout_constraintBottom_toBottomOf="parent"
