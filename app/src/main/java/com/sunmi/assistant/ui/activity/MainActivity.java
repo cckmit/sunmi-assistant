@@ -52,6 +52,7 @@ import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.ThreadPool;
 import sunmi.common.view.MyFragmentTabHost;
 
 /**
@@ -83,7 +84,10 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
         mPresenter = new MessageCountPresenter();
         mPresenter.attachView(this);
-        mPresenter.getMessageCount();
+        if(!CommonHelper.isGooglePlay()) {
+            mPresenter.getMessageCount();
+            ThreadPool.getCachedThreadPool().submit(() -> mPresenter.syncIpcDevice());
+        }
         registerNetworkReceiver();
         CrashReport.setUserId(SpUtils.getUID());
 
