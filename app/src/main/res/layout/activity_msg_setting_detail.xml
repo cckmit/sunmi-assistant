@@ -10,7 +10,6 @@
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_2"
         android:background="@color/c_white"
         app:dividerShow="true"
         app:leftIcon="@drawable/ic_back_dark"

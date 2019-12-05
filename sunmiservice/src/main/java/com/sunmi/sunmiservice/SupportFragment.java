@@ -15,6 +15,7 @@ import com.tencent.mm.opensdk.modelmsg.WXMiniProgramObject;
 import com.tencent.mm.opensdk.modelmsg.WXTextObject;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+import com.xiaojinzi.component.impl.Router;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -23,10 +24,14 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.litepal.crud.DataSupport;
 
+import java.util.ArrayList;
+
 import sunmi.common.base.BaseFragment;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonNotifications;
+import sunmi.common.model.CashVideoServiceBean;
 import sunmi.common.model.ShopBundledCloudInfo;
+import sunmi.common.router.IpcApi;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.view.TitleBarView;
@@ -42,9 +47,12 @@ public class SupportFragment extends BaseFragment
     TextView tvCloudStorage;
     @ViewById(resName = "iv_tip_free")
     ImageView ivTipFree;
+    @ViewById(resName = "tv_cash_video")
+    TextView tvCashVideo;
 
 
     private IWXAPI api;// 第三方app和微信通信的openApi接口
+    private ArrayList<CashVideoServiceBean> cashVideoServiceBeans = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,6 +63,36 @@ public class SupportFragment extends BaseFragment
     @AfterViews
     void init() {
         titleBar.getRightTextView().setOnClickListener(this);
+        /*final IpcCloudApiAnno ipcCloudApi = ServiceManager.get(IpcCloudApiAnno.class);
+        if (ipcCloudApi != null) {
+            ipcCloudApi.getAuditVideoServiceList(null, new RetrofitCallback<ServiceListResp>() {
+                @Override
+                public void onSuccess(int code, String msg, ServiceListResp data) {
+                    List<ServiceListResp.DeviceListBean> beans = data.getDeviceList();
+                    if (beans.size() > 0) {
+                        for (ServiceListResp.DeviceListBean bean : beans) {
+                            if (bean.getStatus() == CommonConstants.SERVICE_ALREADY_OPENED) {
+                                CashVideoServiceBean info = new CashVideoServiceBean();
+                                info.setDeviceId(bean.getDeviceId());
+                                info.setDeviceSn(bean.getDeviceSn());
+                                info.setDeviceName(bean.getDeviceName());
+                                cashVideoServiceBeans.add(info);
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onFail(int code, String msg, ServiceListResp data) {
+
+                }
+            });
+        }
+        if (cashVideoServiceBeans.size() > 0) {
+            tvCashVideo.setText(R.string.str_setting_detail);
+        } else {
+            tvCashVideo.setText(R.string.str_learn_more);
+        }*/
         changeCloudCard();
     }
 
@@ -73,6 +111,14 @@ public class SupportFragment extends BaseFragment
     @Override
     public void onClick(View v) {
         ServiceManageActivity_.intent(mActivity).start();
+    }
+
+    @Click(resName = "ll_cash_video")
+    void cashVidoClick() {
+        if (isFastClick(500)) {
+            return;
+        }
+        Router.withApi(IpcApi.class).goToCashVideoOverview(mActivity);
     }
 
     @Click(resName = "ll_cloud_storage")

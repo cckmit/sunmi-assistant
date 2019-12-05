@@ -91,9 +91,6 @@ public class CustomerLineMarkerView extends MarkerView {
                 Calendar c = Calendar.getInstance();
                 c.setTimeInMillis(time);
                 int timeIndex = c.get(Calendar.DAY_OF_WEEK) - 1;
-                if (timeIndex <= 0) {
-                    timeIndex += 7;
-                }
                 title = Utils.formatDateTime("MM.dd", time) + " "
                         + Utils.getWeekName(getContext(), timeIndex);
             } else if (mPeriod == Constants.TIME_PERIOD_MONTH) {

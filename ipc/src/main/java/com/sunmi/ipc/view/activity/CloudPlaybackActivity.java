@@ -167,7 +167,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//保持屏幕常亮
         titleBar.setAppTitle(device.getName());
         titleBar.getLeftLayout().setOnClickListener(this);
-        if (cloudStorageServiceStatus == CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
+        if (cloudStorageServiceStatus == CommonConstants.SERVICE_NOT_OPENED) {
             ivPreDay.setEnabled(false);
             tvCalendar.setEnabled(false);
             timeLine.setVisibility(View.GONE);
@@ -199,7 +199,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         startTimeCurrentDate = DateTimeUtils.getDayStart(new Date()).getTime() / 1000;
         endTimeCurrentDate = presentTime;
         refreshDay();
-        if (cloudStorageServiceStatus != CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
+        if (cloudStorageServiceStatus != CommonConstants.SERVICE_NOT_OPENED) {
             initTimeSlotData(true);
             mPresenter.getTimeSlots(device.getId(),
                     startTimeCurrentDate - 30 * SECONDS_IN_ONE_DAY, endTimeCurrentDate);
@@ -279,7 +279,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @Click(resName = "iv_pre_day")
     void preDayClick() {
-        if (isFastClick(1000) || cloudStorageServiceStatus == CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
+        if (isFastClick(1000) || cloudStorageServiceStatus == CommonConstants.SERVICE_NOT_OPENED) {
             return;
         }
         switchDay(startTimeCurrentDate - SECONDS_IN_ONE_DAY);
@@ -287,7 +287,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @Click(resName = "iv_next_day")
     void nextDayClick() {
-        if (isFastClick(1000) || cloudStorageServiceStatus == CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
+        if (isFastClick(1000) || cloudStorageServiceStatus == CommonConstants.SERVICE_NOT_OPENED) {
             return;
         }
         switchDay(startTimeCurrentDate + SECONDS_IN_ONE_DAY);
@@ -295,7 +295,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @Click(resName = "tv_calendar")
     void chooseCalendarClick() {
-        if (isFastClick(1000) || cloudStorageServiceStatus == CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
+        if (isFastClick(1000) || cloudStorageServiceStatus == CommonConstants.SERVICE_NOT_OPENED) {
             return;
         }
         if (timeSlotsInMonth == null) {
@@ -525,7 +525,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @UiThread
     void cloudStorageServiceOpened() {
-        cloudStorageServiceStatus = CommonConstants.CLOUD_STORAGE_ALREADY_OPENED;
+        cloudStorageServiceStatus = CommonConstants.SERVICE_ALREADY_OPENED;
         llNoService.setVisibility(View.GONE);
         ivPreDay.setEnabled(true);
         tvCalendar.setEnabled(true);
