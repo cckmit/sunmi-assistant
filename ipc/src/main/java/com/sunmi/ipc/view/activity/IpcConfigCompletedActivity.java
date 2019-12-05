@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.config.IpcConstants;
-import com.sunmi.ipc.model.StorageListResp;
+import sunmi.common.model.ServiceListResp;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.ipc.setting.IpcSettingSdcardActivity_;
@@ -251,13 +251,13 @@ public class IpcConfigCompletedActivity extends BaseActivity {
 
 
     protected void initSs() {
-        IpcCloudApi.getInstance().getStorageList(snList, new RetrofitCallback<StorageListResp>() {
+        IpcCloudApi.getInstance().getStorageList(snList, new RetrofitCallback<ServiceListResp>() {
             @Override
-            public void onSuccess(int code, String msg, StorageListResp data) {
-                List<StorageListResp.DeviceListBean> beans = data.getDeviceList();
+            public void onSuccess(int code, String msg, ServiceListResp data) {
+                List<ServiceListResp.DeviceListBean> beans = data.getDeviceList();
                 snList.clear();
-                for (StorageListResp.DeviceListBean bean : beans) {
-                    if (bean.getActiveStatus() == CommonConstants.ACTIVE_CLOUD_INACTIVATED) {
+                for (ServiceListResp.DeviceListBean bean : beans) {
+                    if (bean.getActiveStatus() == CommonConstants.SERVICE_INACTIVATED) {
                         snList.add(bean.getDeviceSn());
                     }
                 }
@@ -272,7 +272,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
             }
 
             @Override
-            public void onFail(int code, String msg, StorageListResp data) {
+            public void onFail(int code, String msg, ServiceListResp data) {
                 btnComplete.setVisibility(View.VISIBLE);
             }
         });

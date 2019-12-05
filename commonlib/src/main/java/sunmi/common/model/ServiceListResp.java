@@ -1,4 +1,4 @@
-package com.sunmi.ipc.model;
+package sunmi.common.model;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -9,7 +9,7 @@ import java.util.List;
  *
  * @author linyuanpeng on 2019-10-24.
  */
-public class StorageListResp {
+public class ServiceListResp {
 
     @SerializedName("device_list")
     private List<DeviceListBean> deviceList;

@@ -9,7 +9,7 @@
         android:id="@+id/rl_shop_title"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_64"
-        android:background="@drawable/dashboard_bg_top"
+        android:background="@drawable/bg_dark_top"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
