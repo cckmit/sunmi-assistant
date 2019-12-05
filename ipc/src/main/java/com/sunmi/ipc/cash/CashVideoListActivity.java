@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.view.DropdownMenuNew;
 
 /**
  * Description:
@@ -29,6 +30,13 @@ public class CashVideoListActivity extends BaseMvpActivity {
     @ViewById(resName = "rv_cash_video")
     RecyclerView rvCashVideo;
 
+    @ViewById(resName = "dm_device")
+    DropdownMenuNew dmDevice;
+    @ViewById(resName = "dm_time")
+    DropdownMenuNew dmTime;
+    @ViewById(resName = "tv_abnormal")
+    TextView tvAbnormal;
+
     @Extra
     int deviceId;
     @Extra
@@ -44,4 +52,5 @@ public class CashVideoListActivity extends BaseMvpActivity {
     void init(){
 
     }
+
 }

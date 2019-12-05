@@ -49,8 +49,8 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
     private boolean isAutoDismiss = true;
     private boolean isMultiSelect = false;
 
-    private DropdownPopup popup;
-    private DropdownAnimation animation;
+    private Popup popup;
+    private Animation animation;
     private RecyclerView.LayoutManager manager;
 
     private ViewHolder title;
@@ -179,7 +179,7 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
      * Implements some sort of popup selection interface for selecting a dropdown menu option.
      * Allows for different dropdown menu modes.
      */
-    private interface DropdownPopup {
+    private interface Popup {
 
         /**
          * Initiation for popup
@@ -223,7 +223,7 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
 
     }
 
-    private class ViewListPopup implements DropdownPopup {
+    private class ViewListPopup implements Popup {
 
         private Context context;
         private ViewHolder title;
@@ -402,10 +402,10 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
             }
             isShowing = true;
             if (menuContainer.getVisibility() == INVISIBLE) {
-                dismissWithoutAnim();
+                animation.dismissImmediately(title, menuContainer, overlay);
                 menuContainer.setVisibility(VISIBLE);
             }
-            if (animated && animation != null) {
+            if (animated) {
                 AnimatorSet set = animation.showAnimator(title, menuContainer, overlay);
                 addShowAnimListener(set);
                 if (currentAnim != null && currentAnim.isRunning()) {
@@ -414,7 +414,7 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
                 set.start();
                 currentAnim = set;
             } else {
-                showWithoutAnim();
+                animation.showImmediately(title, menuContainer, overlay);
             }
         }
 
@@ -424,7 +424,7 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
                 return;
             }
             isShowing = false;
-            if (animated && animation != null) {
+            if (animated) {
                 AnimatorSet set = animation.dismissAnimator(title, menuContainer, overlay);
                 addDismissAnimListener(set);
                 if (currentAnim != null && currentAnim.isRunning()) {
@@ -433,7 +433,7 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
                 set.start();
                 currentAnim = set;
             } else {
-                dismissWithoutAnim();
+                animation.dismissImmediately(title, menuContainer, overlay);
             }
         }
 
@@ -452,8 +452,8 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
             if (set.getListeners() == null || set.getListeners().isEmpty()) {
                 set.addListener(new AnimatorListenerAdapter() {
                     @Override
-                    public void onAnimationEnd(Animator animation) {
-                        showWithoutAnim();
+                    public void onAnimationEnd(Animator anim) {
+                        animation.showImmediately(title, menuContainer, overlay);
                     }
                 });
             }
@@ -463,21 +463,11 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
             if (set.getListeners() == null || set.getListeners().isEmpty()) {
                 set.addListener(new AnimatorListenerAdapter() {
                     @Override
-                    public void onAnimationEnd(Animator animation) {
-                        dismissWithoutAnim();
+                    public void onAnimationEnd(Animator anim) {
+                        animation.dismissImmediately(title, menuContainer, overlay);
                     }
                 });
             }
-        }
-
-        private void showWithoutAnim() {
-            menuContainer.setTranslationY(0);
-            overlay.setAlpha(1f);
-        }
-
-        private void dismissWithoutAnim() {
-            menuContainer.setTranslationY(-menuContainer.getHeight());
-            overlay.setAlpha(0f);
         }
 
     }
@@ -569,7 +559,7 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
 
         public void updateTitleAndContent() {
             setupTitle(title, selected);
-            setupContent(title, selected);
+            setupContent(content, selected);
         }
 
         public void setData(@NonNull Collection<? extends T> items) {
@@ -697,10 +687,10 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
         }
     }
 
-    private static class DefaultAnimation implements DropdownAnimation {
+    private static class DefaultAnimation implements Animation {
 
         @Override
-        public AnimatorSet showAnimator(ViewHolder title, View menu, View overlay) {
+        public AnimatorSet showAnimator(ViewHolder titleHolder, View menu, View overlay) {
             AnimatorSet set = new AnimatorSet();
             ObjectAnimator menuAnim = ObjectAnimator.ofFloat(menu, "translationY",
                     menu.getTranslationY(), 0);
@@ -713,7 +703,14 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
         }
 
         @Override
-        public AnimatorSet dismissAnimator(ViewHolder title, View menu, View overlay) {
+        public void showImmediately(ViewHolder titleHolder, View menu, View overlay) {
+            menu.setTranslationY(0);
+            overlay.setAlpha(1f);
+            overlay.setVisibility(VISIBLE);
+        }
+
+        @Override
+        public AnimatorSet dismissAnimator(ViewHolder titleHolder, View menu, View overlay) {
             AnimatorSet set = new AnimatorSet();
             ObjectAnimator menuAnim = ObjectAnimator.ofFloat(menu, "translationY",
                     menu.getTranslationY(), -menu.getHeight());
@@ -723,6 +720,13 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
             set.setDuration(250);
             set.setInterpolator(new DecelerateInterpolator());
             return set;
+        }
+
+        @Override
+        public void dismissImmediately(ViewHolder titleHolder, View menu, View overlay) {
+            menu.setTranslationY(-menu.getHeight());
+            overlay.setAlpha(0f);
+            overlay.setVisibility(INVISIBLE);
         }
     }
 
@@ -739,27 +743,45 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
         }
     }
 
-    public interface DropdownAnimation {
+    public interface Animation {
 
         /**
          * 菜单展示时的动画
          *
-         * @param title   标题
+         * @param titleHolder   标题
          * @param menu    菜单
          * @param overlay 遮罩
          * @return 动画集
          */
-        AnimatorSet showAnimator(ViewHolder title, View menu, View overlay);
+        AnimatorSet showAnimator(ViewHolder titleHolder, View menu, View overlay);
+
+        /**
+         * 菜单无动画立即展示
+         *
+         * @param titleHolder 标题
+         * @param menu        菜单
+         * @param overlay     遮罩
+         */
+        void showImmediately(ViewHolder titleHolder, View menu, View overlay);
 
         /**
          * 菜单消失时的动画
          *
-         * @param title   标题
+         * @param titleHolder   标题
          * @param menu    菜单
          * @param overlay 遮罩
          * @return 动画集
          */
-        AnimatorSet dismissAnimator(ViewHolder title, View menu, View overlay);
+        AnimatorSet dismissAnimator(ViewHolder titleHolder, View menu, View overlay);
+
+        /**
+         * 菜单无动画立即消失
+         *
+         * @param titleHolder 标题
+         * @param menu        菜单
+         * @param overlay     遮罩
+         */
+        void dismissImmediately(ViewHolder titleHolder, View menu, View overlay);
     }
 
     public interface OnItemClickListener<T extends Model> {
