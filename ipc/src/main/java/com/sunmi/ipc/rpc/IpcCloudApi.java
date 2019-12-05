@@ -16,7 +16,6 @@ import com.sunmi.ipc.model.FaceGroupUpdateReq;
 import com.sunmi.ipc.model.FaceListResp;
 import com.sunmi.ipc.model.FaceSaveResp;
 import com.sunmi.ipc.model.IpcNewFirmwareResp;
-import com.sunmi.ipc.model.StorageListResp;
 import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.rpc.api.DeviceInterface;
 import com.sunmi.ipc.rpc.api.FaceInterface;
@@ -37,6 +36,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import sunmi.common.constant.CommonConfig;
+import sunmi.common.model.ServiceListResp;
 import sunmi.common.router.IpcCloudApiAnno;
 import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.cloud.SunmiStoreRetrofitClient;
@@ -601,7 +601,7 @@ public class IpcCloudApi implements IpcCloudApiAnno {
      * shop_id	是	int64	店铺id
      * device_id	否	int64	设备id 不传为查询所有设
      */
-    public void getStorageList(List<String> snList, RetrofitCallback<StorageListResp> callback) {
+    public void getStorageList(List<String> snList, RetrofitCallback<ServiceListResp> callback) {
         try {
             JSONArray array = new JSONArray(snList);
             String params = new JSONObject()
@@ -616,6 +616,31 @@ public class IpcCloudApi implements IpcCloudApiAnno {
             e.printStackTrace();
         }
     }
+
+    /**
+     * company_id	是	int64	商户id
+     * shop_id	是	int64	店铺id
+     * device_id	否	int64	设备id 不传为查询所有设
+     */
+    @Override
+    public void getAuditVideoServiceList(List<String> snList, RetrofitCallback<ServiceListResp> callback) {
+        try {
+            JSONObject jsonObject = new JSONObject()
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", SpUtils.getShopId());
+            if (snList != null) {
+                JSONArray array = new JSONArray(snList);
+                jsonObject.put("device_sn_list", array);
+            }
+            String params = jsonObject.toString();
+            SunmiStoreRetrofitClient.getInstance().create(DeviceInterface.class)
+                    .getAuditVideoServiceList(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * 对参数进行加签

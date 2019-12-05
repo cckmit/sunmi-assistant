@@ -6,7 +6,7 @@ import com.sunmi.ipc.R;
 import com.sunmi.ipc.contract.IpcManagerContract;
 import com.sunmi.ipc.model.IotcCmdResp;
 import com.sunmi.ipc.model.IpcManageBean;
-import com.sunmi.ipc.model.StorageListResp;
+import sunmi.common.model.ServiceListResp;
 import com.sunmi.ipc.model.VideoTimeSlotBean;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.ipc.utils.IOTCClient;
@@ -170,9 +170,9 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
     public void getStorageList(String deviceSn) {
         List<String> snList = new ArrayList<>();
         snList.add(deviceSn);
-        IpcCloudApi.getInstance().getStorageList(snList, new RetrofitCallback<StorageListResp>() {
+        IpcCloudApi.getInstance().getStorageList(snList, new RetrofitCallback<ServiceListResp>() {
             @Override
-            public void onSuccess(int code, String msg, StorageListResp data) {
+            public void onSuccess(int code, String msg, ServiceListResp data) {
                 if (isViewAttached()) {
                     if (data.getDeviceList().size() > 0) {
                         mView.getStorageSuccess(getStorage(data.getDeviceList().get(0), BaseApplication.getContext()));
@@ -184,7 +184,7 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
             }
 
             @Override
-            public void onFail(int code, String msg, StorageListResp data) {
+            public void onFail(int code, String msg, ServiceListResp data) {
                 if (isViewAttached()) {
                     mView.getStorageSuccess(getStorage(null, BaseApplication.getContext()));
                     mView.shortTip(R.string.tip_cloud_storage_error);
@@ -193,25 +193,25 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
         });
     }
 
-    private IpcManageBean getStorage(StorageListResp.DeviceListBean data, Context context) {
+    private IpcManageBean getStorage(ServiceListResp.DeviceListBean data, Context context) {
         IpcManageBean cloudStorage = new IpcManageBean(R.mipmap.ipc_cloud_storage, context.getString(R.string.str_cloud_storage),
                 context.getString(R.string.str_setting_detail));
         if (data != null) {
             cloudStorage.setEnabled(true);
             cloudStorage.setStatus(data.getStatus());
-            if (data.getActiveStatus() == CommonConstants.ACTIVE_CLOUD_INACTIVATED && data.getStatus() != CommonConstants.CLOUD_STORAGE_ALREADY_OPENED) {
+            if (data.getActiveStatus() == CommonConstants.SERVICE_INACTIVATED && data.getStatus() != CommonConstants.SERVICE_ALREADY_OPENED) {
                 cloudStorage.setSummary(context.getString(R.string.str_subscribe_free));
                 cloudStorage.setRightText(context.getString(R.string.str_use_free));
                 cloudStorage.setTagImageResId(R.mipmap.ipc_cloud_free_half_year);
-            } else if (data.getStatus() == CommonConstants.CLOUD_STORAGE_ALREADY_OPENED) {
+            } else if (data.getStatus() == CommonConstants.SERVICE_ALREADY_OPENED) {
                 BaseNotification.newInstance().postNotificationName(CommonNotifications.cloudStorageOpened);
                 cloudStorage.setTitle(data.getServiceName());
                 cloudStorage.setSummary(context.getString(R.string.str_remaining_validity_period,
                         DateTimeUtils.secondToPeriod(data.getValidTime())));
-            } else if (data.getStatus() == CommonConstants.CLOUD_STORAGE_NOT_OPENED) {
+            } else if (data.getStatus() == CommonConstants.SERVICE_NOT_OPENED) {
                 cloudStorage.setSummary(context.getString(R.string.str_subscribe_free));
                 cloudStorage.setRightText(context.getString(R.string.str_subscribe_now));
-            } else if (data.getStatus() == CommonConstants.CLOUD_STORAGE_EXPIRED) {
+            } else if (data.getStatus() == CommonConstants.SERVICE_EXPIRED) {
                 cloudStorage.setSummary(context.getString(R.string.str_expired));
             }
         } else {

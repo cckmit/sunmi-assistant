@@ -20,4 +20,7 @@ public interface IpcApi {
 
     @PathAnno(RouterConfig.Ipc.IPC_START_CONFIG)
     void goToIpcStartConfig(Context context, @ParameterAnno("ipcType") int type);
+
+    @PathAnno(RouterConfig.Ipc.CASH_VIDEO_OVERVIEW)
+    void goToCashVideoOverview(Context context);
 }
