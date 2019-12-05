@@ -50,7 +50,7 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
     private boolean isMultiSelect = false;
 
     private Popup popup;
-    private Animation animation;
+    private Anim animation;
     private RecyclerView.LayoutManager manager;
 
     private ViewHolder title;
@@ -96,7 +96,7 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
         }
         // 获取指定的下拉菜单父亲布局的ID
         int menuParent = a.getResourceId(R.styleable.DropdownMenuNew_dm_menuParent, 0);
-        int menuIndex = a.getResourceId(R.styleable.DropdownMenuNew_dm_menuIndex, -1);
+        int menuIndex = a.getInteger(R.styleable.DropdownMenuNew_dm_menuIndex, -1);
 
         // 获取下拉菜单的样式
         if (mode == MODE_DEFAULT) {
@@ -148,6 +148,10 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
     public void setLayoutManager(RecyclerView.LayoutManager manager) {
         this.manager = manager;
         popup.setLayoutManager(manager);
+    }
+
+    public void setAnim(Anim anim) {
+        this.animation = anim;
     }
 
     public boolean isShowing() {
@@ -236,6 +240,7 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
 
         boolean isInit = false;
         boolean isShowing = false;
+        private Adapter adapter;
 
         private ViewGroup menuParent;
         private ViewGroup menuTitleGroup;
@@ -285,7 +290,9 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
                 // 校验menuIndex
                 if (menuIndex < 0 || menuIndex >= menuParent.getChildCount()) {
                     throw new InvalidParameterException(
-                            "If dm_parent is set, dm_menuIndex must be set an index greater than or equal to 0 and less than or equal to the number of children ");
+                            "If dm_parent is set, dm_menuIndex must be set an index greater than " +
+                                    "or equal to 0 and less than the number of children. dm_menuIndex:"
+                                    + menuIndex);
                 }
             }
             if (menuTitleGroup.getId() == View.NO_ID) {
@@ -378,6 +385,7 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
 
         @Override
         public void setAdapter(Adapter adapter) {
+            this.adapter = adapter;
             title = adapter.getTitle();
             menuList.setAdapter(adapter);
             adapter.setContent(menuContainer);
@@ -434,6 +442,7 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
                 currentAnim = set;
             } else {
                 animation.dismissImmediately(title, menuContainer, overlay);
+                adapter.updateTitleAndContent();
             }
         }
 
@@ -465,6 +474,7 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
                     @Override
                     public void onAnimationEnd(Animator anim) {
                         animation.dismissImmediately(title, menuContainer, overlay);
+                        adapter.updateTitleAndContent();
                     }
                 });
             }
@@ -552,6 +562,7 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
                 selected.add(model);
             }
             updateTitleAndContent();
+            notifyDataSetChanged();
             if (dropdownMenu.isAutoDismiss) {
                 dropdownMenu.dismiss(dropdownMenu.isAnimated);
             }
@@ -687,7 +698,7 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
         }
     }
 
-    private static class DefaultAnimation implements Animation {
+    private static class DefaultAnimation implements Anim {
 
         @Override
         public AnimatorSet showAnimator(ViewHolder titleHolder, View menu, View overlay) {
@@ -706,7 +717,6 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
         public void showImmediately(ViewHolder titleHolder, View menu, View overlay) {
             menu.setTranslationY(0);
             overlay.setAlpha(1f);
-            overlay.setVisibility(VISIBLE);
         }
 
         @Override
@@ -726,13 +736,19 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
         public void dismissImmediately(ViewHolder titleHolder, View menu, View overlay) {
             menu.setTranslationY(-menu.getHeight());
             overlay.setAlpha(0f);
-            overlay.setVisibility(INVISIBLE);
         }
     }
 
     public static class Model {
 
         private boolean isChecked;
+
+        public Model() {
+        }
+
+        public Model(boolean isChecked) {
+            this.isChecked = isChecked;
+        }
 
         public boolean isChecked() {
             return isChecked;
@@ -743,14 +759,14 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
         }
     }
 
-    public interface Animation {
+    public interface Anim {
 
         /**
          * 菜单展示时的动画
          *
-         * @param titleHolder   标题
-         * @param menu    菜单
-         * @param overlay 遮罩
+         * @param titleHolder 标题
+         * @param menu        菜单
+         * @param overlay     遮罩
          * @return 动画集
          */
         AnimatorSet showAnimator(ViewHolder titleHolder, View menu, View overlay);
@@ -767,9 +783,9 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
         /**
          * 菜单消失时的动画
          *
-         * @param titleHolder   标题
-         * @param menu    菜单
-         * @param overlay 遮罩
+         * @param titleHolder 标题
+         * @param menu        菜单
+         * @param overlay     遮罩
          * @return 动画集
          */
         AnimatorSet dismissAnimator(ViewHolder titleHolder, View menu, View overlay);

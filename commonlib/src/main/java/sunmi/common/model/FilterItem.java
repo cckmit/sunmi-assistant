@@ -23,6 +23,13 @@ public class FilterItem extends DropdownMenuNew.Model {
         this.itemName = itemName;
     }
 
+    public FilterItem(int id, String titleName, String itemName, boolean isChecked) {
+        super(isChecked);
+        this.id = id;
+        this.titleName = titleName;
+        this.itemName = itemName;
+    }
+
     public int getId() {
         return id;
     }
