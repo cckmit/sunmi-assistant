@@ -69,6 +69,8 @@ public class CashVideoResp {
         @SerializedName("video_type")
         private int videoType;
 
+        private String deviceName;
+
         public String getOrderNo() {
             return orderNo;
         }
@@ -139,6 +141,14 @@ public class CashVideoResp {
 
         public void setVideoType(int videoType) {
             this.videoType = videoType;
+        }
+
+        public String getDeviceName() {
+            return deviceName;
+        }
+
+        public void setDeviceName(String deviceName) {
+            this.deviceName = deviceName;
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.sunmi.assistant.mine.presenter;
 
 import com.google.gson.Gson;
-import com.sunmi.assistant.mine.contract.MessageCountContract;
+import com.sunmi.assistant.mine.contract.MainContract;
 import com.sunmi.assistant.mine.model.MessageCountBean;
 import com.sunmi.assistant.rpc.MessageCenterApi;
 import com.sunmi.assistant.utils.PushUtils;
@@ -21,8 +21,8 @@ import sunmi.common.utils.SpUtils;
  *
  * @author linyuanpeng on 2019-08-14.
  */
-public class MessageCountPresenter extends BasePresenter<MessageCountContract.View>
-        implements MessageCountContract.Presenter {
+public class MainPresenter extends BasePresenter<MainContract.View>
+        implements MainContract.Presenter {
 
     @Override
     public void getMessageCount() {
