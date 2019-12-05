@@ -19,9 +19,11 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;
-import com.sunmi.ipc.adapter.CashAdapter;
+import com.sunmi.ipc.cash.adapter.CashAdapter;
+import com.sunmi.ipc.contract.CashVideoContract;
 import com.sunmi.ipc.model.CashOrderResp;
 import com.sunmi.ipc.model.VideoListResp;
+import com.sunmi.ipc.presenter.CashVideoPresenter;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
 import org.androidannotations.annotations.AfterViews;
@@ -35,7 +37,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-import sunmi.common.base.BaseActivity;
+import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.IVideoPlayer;
@@ -52,7 +54,8 @@ import tv.danmaku.ijk.media.player.IMediaPlayer;
  */
 @EActivity(resName = "cash_activity_play")
 @SuppressLint("ClickableViewAccessibility")
-public class CashPlayActivity extends BaseActivity implements
+public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implements
+        CashVideoContract.View,
         VolumeHelper.VolumeChangeListener,
         SeekBar.OnSeekBarChangeListener,
         IMediaPlayer.OnCompletionListener,
@@ -70,6 +73,11 @@ public class CashPlayActivity extends BaseActivity implements
      * 延迟毫秒数
      */
     private static final int DELAY_MILLIS = 10;
+    /**
+     * 正常，异常视频标记
+     */
+    private static final int CASH_TAG_NORMAL = 1;
+    private static final int CASH_TAG_EXCEPTION = 2;
     @ViewById(resName = "title_bar")
     TitleBarView titleBar;
     @ViewById(resName = "recyclerView")
@@ -151,7 +159,6 @@ public class CashPlayActivity extends BaseActivity implements
                         return false;
                     }
                     if ((curPosX - posX > 0) && (Math.abs(curPosX - posX) > MOVE_SCREEN_POSITION)) {
-//                        shortTip("向左滑动");
                         if (playIndex > 0) {
                             playIndex--;
                             initCashVideoPlay();
@@ -159,7 +166,6 @@ public class CashPlayActivity extends BaseActivity implements
                             shortTip("最左视频了");
                         }
                     } else if ((curPosX - posX < 0) && (Math.abs(curPosX - posX) > MOVE_SCREEN_POSITION)) {
-//                        shortTip("向右滑动");
                         if (playIndex < videoList.size()) {
                             playIndex++;
                             initCashVideoPlay();
@@ -194,14 +200,11 @@ public class CashPlayActivity extends BaseActivity implements
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
+        mPresenter = new CashVideoPresenter();
+        mPresenter.attachView(this);
         initVolume();
         initScreenWidthHeight();
-        titleBar.getAppTitle().setCompoundDrawablesWithIntrinsicBounds(null, null,
-                ContextCompat.getDrawable(this, R.drawable.ic_drop_down_black), null);
-        titleBar.getAppTitle().setCompoundDrawablePadding((int) context.getResources().getDimension(R.dimen.dp_5));
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        titleBar.getAppTitle().setOnClickListener(v -> setTitleView());
-        new Handler().postDelayed(() -> ivpCash.setVisibility(View.VISIBLE), 800);
+        initInfo();
         showLoading();
 
         goodsList();
@@ -220,6 +223,16 @@ public class CashPlayActivity extends BaseActivity implements
         ivpCash.setLayoutParams(paramsCash);
     }
 
+    private void initInfo() {
+        titleBar.getAppTitle().setCompoundDrawablesWithIntrinsicBounds(null, null,
+                ContextCompat.getDrawable(this, R.drawable.ic_drop_down_black), null);
+        titleBar.getAppTitle().setCompoundDrawablePadding((int) context.getResources().getDimension(R.dimen.dp_5));
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        titleBar.getAppTitle().setOnClickListener(v -> setTitleView());
+        new Handler().postDelayed(() -> ivpCash.setVisibility(View.VISIBLE), 800);
+        ivpCash.setOnTouchListener(cashTouchListener);
+    }
+
     private void initVolume() {
         volumeHelper = new VolumeHelper(this);
         volumeHelper.setVolumeChangeListener(this);
@@ -227,7 +240,7 @@ public class CashPlayActivity extends BaseActivity implements
     }
 
     private void setVideoListener() {
-        ivpCash.setOnTouchListener(cashTouchListener);
+
         sbBar.setOnSeekBarChangeListener(this);
         ivpCash.setOnPreparedListener(this);
         ivpCash.setOnCompletionListener(this);
@@ -302,7 +315,7 @@ public class CashPlayActivity extends BaseActivity implements
     @Click(resName = "iv_play_type")
     void playTypeClick() {
         isPlayLoop = !isPlayLoop;
-        ivPlayType.setImageResource(isPlayLoop ? R.mipmap.ic_single : R.mipmap.ic_loop);
+        ivPlayType.setImageResource(isPlayLoop ? R.mipmap.ic_loop : R.mipmap.ic_single);
     }
 
     /**
@@ -314,10 +327,11 @@ public class CashPlayActivity extends BaseActivity implements
     }
 
     /**
-     * 标记
+     * 标记 1:正常视频，2:异常视频
      */
     @Click(resName = "tv_tag")
     void tagClick() {
+        //TODO 是否取消异常
         new InputDialog.Builder(this)
                 .setTitle("请输入异常类型")
                 .setHint("如：现金交易未入钱箱等")
@@ -331,6 +345,7 @@ public class CashPlayActivity extends BaseActivity implements
                         shortTip(R.string.ipc_face_name_length_tip);
                         return;
                     }
+                    mPresenter.updateTag(0, input, CASH_TAG_EXCEPTION);
                     dialog.dismiss();
                 }).create().show();
     }
@@ -405,16 +420,17 @@ public class CashPlayActivity extends BaseActivity implements
      * 初始化播放
      */
     private void initCashVideoPlay() {
-        showLoading();
         if (videoList != null) {
-            if (playIndex == videoList.size()) {
+            if (playIndex >= videoList.size() - 1) {
                 shortTip("播放完毕");
                 return;
             }
+            showLoading();
             //自动下一段播放
             if (isPlayLoop) {
                 playIndex++;
             }
+            LogCat.e(TAG, "11111 playIndex=" + playIndex);
             ivpCash.release();
             sbBar.setProgress(0);
             new Handler().postDelayed(() -> {
@@ -591,5 +607,25 @@ public class CashPlayActivity extends BaseActivity implements
     public void onPrepared(IMediaPlayer iMediaPlayer) {
         LogCat.e(TAG, "1111 onPrepared");
         startCashPreparedPlay();
+    }
+
+    @Override
+    public void updateTagSuccess() {
+        shortTip("标记成功");
+    }
+
+    @Override
+    public void updateTagFail(int code, String msg) {
+        shortTip("标记失败");
+    }
+
+    @Override
+    public void getOrderInfoSuccess(CashOrderResp data) {
+
+    }
+
+    @Override
+    public void getOrderInfoFail(int code, String msg) {
+
     }
 }

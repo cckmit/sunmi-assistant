@@ -118,6 +118,9 @@
         <activity
             android:name=".cash.CashVideoListActivity_"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".cash.CashPlayActivity_"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
