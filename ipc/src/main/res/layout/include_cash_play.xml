@@ -71,7 +71,7 @@
         android:layout_height="@dimen/dp_36"
         android:background="@drawable/bg_round_corner_black_15"
         android:gravity="center"
-        android:text="标记异常"
+        android:text="@string/cash_tag_exception"
         android:textColor="@color/c_white"
         android:textSize="@dimen/sp_12"
         app:layout_constraintBottom_toBottomOf="parent"
