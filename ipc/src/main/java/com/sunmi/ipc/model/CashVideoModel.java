@@ -23,23 +23,14 @@ import sunmi.common.utils.ThreadPool;
 public class CashVideoModel {
 
     private Map<Integer, String> ipcName;
-    private List<CashVideoResp.AuditVideoListBean> videoListBeans = new ArrayList<>();
     private int pageNum, pageSize = 10;
     private boolean hasMore;
     private int deviceId, videoType;
     private long startTime, endTime;
     private int total;
 
-    private CashVideoModel() {
+    public CashVideoModel() {
         initMap();
-    }
-
-    private static final class Single {
-        private static final CashVideoModel INSTANCE = new CashVideoModel();
-    }
-
-    public CashVideoModel getInstance() {
-        return Single.INSTANCE;
     }
 
     private void initMap() {
@@ -63,7 +54,6 @@ public class CashVideoModel {
         this.startTime = startTime;
         this.endTime = endTime;
         hasMore = true;
-        videoListBeans.clear();
         IpcCloudApi.getInstance().getCashVideoList(deviceId, videoType, startTime,
                 endTime, pageNum, pageSize, new RetrofitCallback<CashVideoResp>() {
                     @Override
@@ -74,9 +64,8 @@ public class CashVideoModel {
                             for (int i = 0; i < beans.size(); i++) {
                                 beans.get(i).setDeviceName(ipcName.get(beans.get(i).getDeviceId()));
                             }
-                            videoListBeans.addAll(beans);
                             total = data.getTotalCount();
-                            if (videoListBeans.size() == total) {
+                            if (n == total) {
                                 hasMore = false;
                             }
                             callBack.getCashVideoSuccess(beans, hasMore, total);
@@ -105,12 +94,11 @@ public class CashVideoModel {
                             for (int i = 0; i < beans.size(); i++) {
                                 beans.get(i).setDeviceName(ipcName.get(beans.get(i).getDeviceId()));
                             }
-                            videoListBeans.addAll(beans);
                             total = data.getTotalCount();
-                            if (videoListBeans.size() == total) {
-                                hasMore = false;
-                            } else {
+                            if (total > (pageNum - 1) * pageSize + n) {
                                 pageNum++;
+                            } else {
+                                hasMore = false;
                             }
                             callBack.getCashVideoSuccess(beans, hasMore, total);
                         }
@@ -122,10 +110,6 @@ public class CashVideoModel {
                     }
                 });
 
-    }
-
-    public List<CashVideoResp.AuditVideoListBean> getList() {
-        return videoListBeans;
     }
 
     public Map<Integer, String> getIpcNameMap() {
