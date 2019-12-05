@@ -301,8 +301,12 @@
         </attr>
         <!-- 下拉菜单自定义布局，当下拉菜单样式为custom时有效 -->
         <attr name="dm_layout" format="reference" />
-        <!-- 制定下拉菜单自定义布局中的List ID，下拉菜单样式为custom，并且设定了dm_layout时有效 -->
+        <!-- 指定下拉菜单自定义布局中的List ID，下拉菜单样式为custom，并且设定了dm_layout时有效 -->
         <attr name="dm_list" format="reference" />
+        <!-- 指定下拉菜单自定义布局的父亲布局ID，该项必须和dm_menuIndex同时指定 -->
+        <attr name="dm_menuParent" format="reference" />
+        <!-- 指定下拉菜单自定义布局在父亲布局中的位置（index） -->
+        <attr name="dm_menuIndex" format="integer" />
         <!-- 下拉菜单列表最大高度可展示的元素数量 -->
         <attr name="dm_maxHeightCount" format="float" />
         <!-- 下拉菜单列表最大高度 -->

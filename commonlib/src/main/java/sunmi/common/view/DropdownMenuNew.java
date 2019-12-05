@@ -28,6 +28,7 @@ import android.widget.RelativeLayout;
 
 import com.commonlibrary.R;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -93,6 +94,9 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
             layoutId = R.layout.dropdown_menu_item_rv;
             listId = R.id.dropdown_rv;
         }
+        // 获取指定的下拉菜单父亲布局的ID
+        int menuParent = a.getResourceId(R.styleable.DropdownMenuNew_dm_menuParent, 0);
+        int menuIndex = a.getResourceId(R.styleable.DropdownMenuNew_dm_menuIndex, -1);
 
         // 获取下拉菜单的样式
         if (mode == MODE_DEFAULT) {
@@ -105,7 +109,7 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
             case MODE_POPUP:
                 break;
             case MODE_CUSTOM:
-                popup = new ViewListPopup(context, layoutId, listId);
+                popup = new ViewListPopup(context, layoutId, listId, menuParent, menuIndex);
                 break;
             default:
         }
@@ -227,16 +231,26 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
         private int layoutId;
         private int listId;
 
+        private int menuParentId;
+        private int menuIndex;
+
         boolean isInit = false;
         boolean isShowing = false;
-        private ViewGroup container;
-        private RecyclerView list;
+
+        private ViewGroup menuParent;
+        private ViewGroup menuTitleGroup;
+
+        private ViewGroup menuContainer;
+        private RecyclerView menuList;
         private View overlay;
 
-        public ViewListPopup(Context context, @LayoutRes int layoutId, @IdRes int listId) {
+        public ViewListPopup(Context context, @LayoutRes int layoutId, @IdRes int listId,
+                             @IdRes int menuParentId, int menuIndex) {
             this.context = context;
             this.layoutId = layoutId;
             this.listId = listId;
+            this.menuParentId = menuParentId;
+            this.menuIndex = menuIndex;
         }
 
         @Override
@@ -244,46 +258,70 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
             if (isInit) {
                 return;
             }
-            if (getId() == View.NO_ID) {
-                setId(View.generateViewId());
+            // 获取下拉菜单的容器View，DropdownMenu容器布局View，下拉菜单在父亲容器中的索引
+            if (menuParentId == 0) {
+                menuParent = (ViewGroup) getParent();
+                menuTitleGroup = DropdownMenuNew.this;
+                menuIndex = getIndexOfMenu();
+                if (menuIndex < 0) {
+                    throw new IllegalStateException("No DropdownMenu in the layout: "
+                            + menuParent.getClass().getSimpleName());
+                }
+            } else {
+                ViewGroup parent = DropdownMenuNew.this;
+                while (parent.getParent() instanceof ViewGroup) {
+                    ViewGroup target = (ViewGroup) parent.getParent();
+                    if (target.getId() == menuParentId) {
+                        menuParent = target;
+                        menuTitleGroup = parent;
+                        break;
+                    }
+                    parent = target;
+                }
+                if (menuParent == null) {
+                    throw new InvalidParameterException(
+                            "Attr dm_parent is not EXIST or ancestor of DropdownMenu.");
+                }
+                // 校验menuIndex
+                if (menuIndex < 0 || menuIndex >= menuParent.getChildCount()) {
+                    throw new InvalidParameterException(
+                            "If dm_parent is set, dm_menuIndex must be set an index greater than or equal to 0 and less than or equal to the number of children ");
+                }
             }
-            // 获取添加Menu和Overlay的视图index
-            ViewGroup parent = (ViewGroup) getParent();
-            int index = getIndexOfMenu();
-            if (index < 0) {
-                throw new IllegalStateException("No DropdownMenu in the layout: "
-                        + parent.getClass().getSimpleName());
+            if (menuTitleGroup.getId() == View.NO_ID) {
+                menuTitleGroup.setId(View.generateViewId());
             }
 
             // 创建和初始化Menu列表View
-            container = (ViewGroup) LayoutInflater.from(context).inflate(layoutId, parent, false);
-            parent.addView(container, index);
-            initContainer(parent);
+            menuContainer = (ViewGroup) LayoutInflater.from(context).inflate(
+                    layoutId, menuParent, false);
+            menuParent.addView(menuContainer, menuIndex);
+            initContainer(menuParent);
 
             // 创建和初始化Overlay
             overlay = new View(context);
             ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            parent.addView(overlay, index, lp);
-            initOverlay(parent);
+            menuParent.addView(overlay, menuIndex, lp);
+            initOverlay(menuParent);
 
             // 查找并获取Menu列表中的RecyclerView对象
             int count;
             if (listId == 0) {
-                count = container.getChildCount();
+                count = menuContainer.getChildCount();
                 for (int i = 0; i < count; i++) {
-                    View child = container.getChildAt(i);
+                    View child = menuContainer.getChildAt(i);
                     if (child instanceof RecyclerView) {
-                        list = (RecyclerView) child;
+                        menuList = (RecyclerView) child;
                         break;
                     }
                 }
-                if (list == null) {
+                if (menuList == null) {
                     throw new RuntimeException("No RecyclerView in container layout: "
-                            + container.getClass().getSimpleName());
+                            + menuContainer.getClass().getSimpleName());
                 }
             } else {
-                list = container.findViewById(listId);
+                menuList = menuContainer.findViewById(listId);
             }
 
             // 初始化List动画和布局管理器
@@ -291,36 +329,36 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
                 animation = new DefaultAnimation();
             }
             if (manager == null) {
-                manager = new LinearLayoutManager(container.getContext());
+                manager = new LinearLayoutManager(menuContainer.getContext());
             }
-            list.setLayoutManager(manager);
+            menuList.setLayoutManager(manager);
             isInit = true;
         }
 
         private void initContainer(ViewGroup parent) {
-            ViewGroup.LayoutParams layoutParams = container.getLayoutParams();
-            container.setVisibility(INVISIBLE);
-            if (container.getId() == View.NO_ID) {
-                container.setId(View.generateViewId());
+            ViewGroup.LayoutParams layoutParams = menuContainer.getLayoutParams();
+            menuContainer.setVisibility(INVISIBLE);
+            if (menuContainer.getId() == View.NO_ID) {
+                menuContainer.setId(View.generateViewId());
             }
-            container.setBackgroundColor(ContextCompat.getColor(context, R.color.c_white));
+            menuContainer.setBackgroundColor(ContextCompat.getColor(context, R.color.c_white));
             int menuTop = getBottom();
             if (parent instanceof FrameLayout) {
                 FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) layoutParams;
                 lp.setMargins(0, menuTop, 0, 0);
             } else if (parent instanceof RelativeLayout) {
                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) layoutParams;
-                lp.addRule(RelativeLayout.BELOW, getId());
+                lp.addRule(RelativeLayout.BELOW, menuTitleGroup.getId());
             } else if (parent instanceof ConstraintLayout) {
                 ConstraintSet set = new ConstraintSet();
                 set.clone((ConstraintLayout) parent);
-                set.connect(container.getId(), ConstraintSet.TOP, getId(), ConstraintSet.BOTTOM, 0);
+                set.connect(menuContainer.getId(), ConstraintSet.TOP, menuTitleGroup.getId(), ConstraintSet.BOTTOM, 0);
                 if (layoutParams.height == ViewGroup.LayoutParams.WRAP_CONTENT) {
-                    set.connect(container.getId(), ConstraintSet.BOTTOM,
+                    set.connect(menuContainer.getId(), ConstraintSet.BOTTOM,
                             ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0);
-                    set.setVerticalBias(container.getId(), 0f);
-                    set.constrainDefaultHeight(container.getId(), ConstraintSet.MATCH_CONSTRAINT_WRAP);
-                    set.constrainHeight(container.getId(), ConstraintSet.MATCH_CONSTRAINT);
+                    set.setVerticalBias(menuContainer.getId(), 0f);
+                    set.constrainDefaultHeight(menuContainer.getId(), ConstraintSet.MATCH_CONSTRAINT_WRAP);
+                    set.constrainHeight(menuContainer.getId(), ConstraintSet.MATCH_CONSTRAINT);
                 }
                 set.applyTo((ConstraintLayout) parent);
             } else {
@@ -341,14 +379,14 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
         @Override
         public void setAdapter(Adapter adapter) {
             title = adapter.getTitle();
-            list.setAdapter(adapter);
-            adapter.setContent(container);
+            menuList.setAdapter(adapter);
+            adapter.setContent(menuContainer);
         }
 
         @Override
         public void setLayoutManager(RecyclerView.LayoutManager manager) {
-            if (list != null) {
-                list.setLayoutManager(manager);
+            if (menuList != null) {
+                menuList.setLayoutManager(manager);
             }
         }
 
@@ -363,12 +401,12 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
                 return;
             }
             isShowing = true;
-            if (container.getVisibility() == INVISIBLE) {
+            if (menuContainer.getVisibility() == INVISIBLE) {
                 dismissWithoutAnim();
-                container.setVisibility(VISIBLE);
+                menuContainer.setVisibility(VISIBLE);
             }
             if (animated && animation != null) {
-                AnimatorSet set = animation.showAnimator(title, container, overlay);
+                AnimatorSet set = animation.showAnimator(title, menuContainer, overlay);
                 addShowAnimListener(set);
                 if (currentAnim != null && currentAnim.isRunning()) {
                     currentAnim.cancel();
@@ -387,7 +425,7 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
             }
             isShowing = false;
             if (animated && animation != null) {
-                AnimatorSet set = animation.dismissAnimator(title, container, overlay);
+                AnimatorSet set = animation.dismissAnimator(title, menuContainer, overlay);
                 addDismissAnimListener(set);
                 if (currentAnim != null && currentAnim.isRunning()) {
                     currentAnim.cancel();
@@ -400,11 +438,10 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
         }
 
         private int getIndexOfMenu() {
-            ViewGroup parent = (ViewGroup) getParent();
-            int count = parent.getChildCount();
+            int count = menuParent.getChildCount();
             int index = 0;
             for (; index < count; index++) {
-                if (parent.getChildAt(index) instanceof DropdownMenuNew) {
+                if (menuParent.getChildAt(index) instanceof DropdownMenuNew) {
                     return index;
                 }
             }
@@ -434,12 +471,12 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
         }
 
         private void showWithoutAnim() {
-            container.setTranslationY(0);
+            menuContainer.setTranslationY(0);
             overlay.setAlpha(1f);
         }
 
         private void dismissWithoutAnim() {
-            container.setTranslationY(-container.getHeight());
+            menuContainer.setTranslationY(-menuContainer.getHeight());
             overlay.setAlpha(0f);
         }
 
@@ -448,7 +485,7 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
     public static abstract class Adapter<T extends Model>
             extends RecyclerView.Adapter<ViewHolder<T>> {
 
-        private DropdownMenuNew menu;
+        private DropdownMenuNew dropdownMenu;
         private ViewHolder<T> title;
         private ViewHolder<T> content;
 
@@ -472,7 +509,7 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
         }
 
         public void setMenu(DropdownMenuNew menu) {
-            this.menu = menu;
+            this.dropdownMenu = menu;
         }
 
         public void setContent(View content) {
@@ -508,7 +545,7 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
 
         public void setSelected(int position) {
             T model = data.get(position);
-            if (menu.isMultiSelect) {
+            if (dropdownMenu.isMultiSelect) {
                 boolean checked = !model.isChecked();
                 model.setChecked(checked);
                 if (!checked) {
@@ -525,8 +562,8 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
                 selected.add(model);
             }
             updateTitleAndContent();
-            if (menu.isAutoDismiss) {
-                menu.dismiss(menu.isAnimated);
+            if (dropdownMenu.isAutoDismiss) {
+                dropdownMenu.dismiss(dropdownMenu.isAnimated);
             }
         }
 
