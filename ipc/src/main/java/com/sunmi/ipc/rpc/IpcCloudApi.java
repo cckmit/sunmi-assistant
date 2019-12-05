@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.sunmi.ipc.face.model.FaceArrivalCount;
 import com.sunmi.ipc.face.model.FaceArrivalLogResp;
+import com.sunmi.ipc.model.CashOrderResp;
 import com.sunmi.ipc.model.CloudTimeSlotResp;
 import com.sunmi.ipc.model.FaceAgeRangeResp;
 import com.sunmi.ipc.model.FaceCheckResp;
@@ -17,6 +18,7 @@ import com.sunmi.ipc.model.FaceListResp;
 import com.sunmi.ipc.model.FaceSaveResp;
 import com.sunmi.ipc.model.IpcNewFirmwareResp;
 import com.sunmi.ipc.model.VideoListResp;
+import com.sunmi.ipc.rpc.api.CashInterface;
 import com.sunmi.ipc.rpc.api.DeviceInterface;
 import com.sunmi.ipc.rpc.api.FaceInterface;
 import com.sunmi.ipc.rpc.api.MediaInterface;
@@ -57,12 +59,30 @@ import sunmi.common.utils.SpUtils;
 @ServiceAnno(value = {IpcCloudApiAnno.class}, singleTon = true)
 public class IpcCloudApi implements IpcCloudApiAnno {
 
-    private static final class Single {
-        private static final IpcCloudApi INSTANCE = new IpcCloudApi();
-    }
-
     public static IpcCloudApi getInstance() {
         return Single.INSTANCE;
+    }
+
+    /**
+     * 对参数进行加签
+     *
+     * @param params 参数
+     * @return 加签后的Map
+     */
+    private static HashMap<String, String> getSignedMap(String params) {
+        HashMap<String, String> map = new HashMap<>(6);
+        String timeStamp = DateTimeUtils.currentTimeSecond() + "";
+        String randomNum = (int) ((Math.random() * 9 + 1) * 100000) + "";
+        String isEncrypted = "0";
+        String sign = SecurityUtils.md5(params + isEncrypted +
+                timeStamp + randomNum + SecurityUtils.md5(CommonConfig.CLOUD_TOKEN));
+        map.put("timeStamp", timeStamp);
+        map.put("randomNum", randomNum);
+        map.put("isEncrypted", isEncrypted);
+        map.put("params", params);
+        map.put("sign", sign);
+        map.put("lang", "zh");
+        return map;
     }
 
     /**
@@ -643,25 +663,54 @@ public class IpcCloudApi implements IpcCloudApiAnno {
 
 
     /**
-     * 对参数进行加签
-     *
-     * @param params 参数
-     * @return 加签后的Map
+     * 收银审计视频--是否异常视频tag
+     * company_id	是	int64	商户id
+     * shop_id	是	int64	店铺id
+     * audit_video_id	是	int64	收银视频id
+     * description	是	string	标记文本内容
+     * video_type  是	int32	标记类型 1:正常视频，2:异常视频
      */
-    private static HashMap<String, String> getSignedMap(String params) {
-        HashMap<String, String> map = new HashMap<>(6);
-        String timeStamp = DateTimeUtils.currentTimeSecond() + "";
-        String randomNum = (int) ((Math.random() * 9 + 1) * 100000) + "";
-        String isEncrypted = "0";
-        String sign = SecurityUtils.md5(params + isEncrypted +
-                timeStamp + randomNum + SecurityUtils.md5(CommonConfig.CLOUD_TOKEN));
-        map.put("timeStamp", timeStamp);
-        map.put("randomNum", randomNum);
-        map.put("isEncrypted", isEncrypted);
-        map.put("params", params);
-        map.put("sign", sign);
-        map.put("lang", "zh");
-        return map;
+    public void updateTag(int auditVideoId, String description, int videoType, RetrofitCallback<Object> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", SpUtils.getShopId())
+                    .put("audit_video_id", auditVideoId)
+                    .put("description", description)
+                    .put("video_type", videoType)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CashInterface.class)
+                    .updateTag(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 收银审计订单信息
+     * company_id	是	int64	商户id
+     * shop_id	是	int64	店铺id
+     * order_no	是	string	订单编号
+     */
+    public void getOrderInfo(int orderNo, RetrofitCallback<CashOrderResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", SpUtils.getShopId())
+                    .put("order_no", orderNo)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CashInterface.class)
+                    .getOrderInfo(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private static final class Single {
+        private static final IpcCloudApi INSTANCE = new IpcCloudApi();
     }
 
 }
