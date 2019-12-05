@@ -697,7 +697,7 @@ public class IpcCloudApi implements IpcCloudApiAnno {
      * shop_id	是	int64	店铺id
      * order_no	是	string	订单编号
      */
-    public void getOrderInfo(int orderNo, RetrofitCallback<CashOrderResp> callback) {
+    public void getOrderInfo(String orderNo, RetrofitCallback<CashOrderResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", SpUtils.getCompanyId())

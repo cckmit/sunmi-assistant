@@ -19,21 +19,21 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
-                    mView.updateTagSuccess();
+                    mView.updateTagSuccess(videoType);
                 }
             }
 
             @Override
             public void onFail(int code, String msg, Object data) {
                 if (isViewAttached()) {
-                    mView.updateTagFail(code, msg);
+                    mView.updateTagFail(code, msg, videoType);
                 }
             }
         });
     }
 
     @Override
-    public void getOrderInfo(int orderNo) {
+    public void getOrderInfo(String orderNo) {
         IpcCloudApi.getInstance().getOrderInfo(orderNo, new RetrofitCallback<CashOrderResp>() {
             @Override
             public void onSuccess(int code, String msg, CashOrderResp data) {
