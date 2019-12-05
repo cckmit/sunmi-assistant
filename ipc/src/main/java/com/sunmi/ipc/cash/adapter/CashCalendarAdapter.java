@@ -34,7 +34,7 @@ public class CashCalendarAdapter extends RecyclerView.Adapter<CashCalendarAdapte
     }
 
     public interface OnItemClickListener {
-        void onClick(Calendar calendar, int pos);
+        void onItemClick(Calendar calendar, int pos);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -97,7 +97,7 @@ public class CashCalendarAdapter extends RecyclerView.Adapter<CashCalendarAdapte
         public void onClick(View v) {
             if (listener != null) {
                 selectPosition = getAdapterPosition();
-                listener.onClick(calendars.get(selectPosition), selectPosition);
+                listener.onItemClick(calendars.get(selectPosition), selectPosition);
                 notifyDataSetChanged();
             }
         }

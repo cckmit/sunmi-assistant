@@ -28,7 +28,7 @@ import java.util.List;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.RouterConfig;
-import sunmi.common.model.CashVideoService;
+import sunmi.common.model.CashVideoServiceBean;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
@@ -66,9 +66,9 @@ public class CashVideoOverviewActivity extends BaseMvpActivity {
     ConstraintLayout clShopCash;
 
     @Extra
-    ArrayList<CashVideoService> services;
+    ArrayList<CashVideoServiceBean> serviceBeans;
     @Extra
-    CashVideoService service;
+    CashVideoServiceBean serviceBean;
 
 
     private CenterLayoutManager llManager;

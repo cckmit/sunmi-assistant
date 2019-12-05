@@ -9,7 +9,7 @@
                 android:startColor="@color/assist_primary"
                 android:endColor="@color/assist_primary_light" />
         </shape>
-    </item>¬
+    </item>
     <item android:state_selected="false">
         <shape android:shape="rectangle">
             <corners android:radius="@dimen/dp_8"/>

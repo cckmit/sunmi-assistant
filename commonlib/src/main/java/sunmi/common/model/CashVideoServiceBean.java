@@ -8,7 +8,7 @@ import android.os.Parcelable;
  *
  * @author linyuanpeng on 2019-12-03.
  */
-public class CashVideoService implements Parcelable {
+public class CashVideoServiceBean implements Parcelable {
 
     private int deviceId;
     private String deviceSn;
@@ -17,11 +17,11 @@ public class CashVideoService implements Parcelable {
     private int abnormalVideoCount;
     private String imgUrl;
 
-    public CashVideoService() {
+    public CashVideoServiceBean() {
 
     }
 
-    protected CashVideoService(Parcel in) {
+    protected CashVideoServiceBean(Parcel in) {
         deviceId = in.readInt();
         deviceSn = in.readString();
         deviceName = in.readString();
@@ -45,15 +45,15 @@ public class CashVideoService implements Parcelable {
         return 0;
     }
 
-    public static final Creator<CashVideoService> CREATOR = new Creator<CashVideoService>() {
+    public static final Creator<CashVideoServiceBean> CREATOR = new Creator<CashVideoServiceBean>() {
         @Override
-        public CashVideoService createFromParcel(Parcel in) {
-            return new CashVideoService(in);
+        public CashVideoServiceBean createFromParcel(Parcel in) {
+            return new CashVideoServiceBean(in);
         }
 
         @Override
-        public CashVideoService[] newArray(int size) {
-            return new CashVideoService[size];
+        public CashVideoServiceBean[] newArray(int size) {
+            return new CashVideoServiceBean[size];
         }
     };
 

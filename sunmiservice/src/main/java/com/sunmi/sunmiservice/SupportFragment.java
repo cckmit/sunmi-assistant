@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import sunmi.common.base.BaseFragment;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonNotifications;
-import sunmi.common.model.CashVideoService;
+import sunmi.common.model.CashVideoServiceBean;
 import sunmi.common.model.ShopBundledCloudInfo;
 import sunmi.common.router.IpcApi;
 import sunmi.common.utils.NetworkUtils;
@@ -52,7 +52,7 @@ public class SupportFragment extends BaseFragment
 
 
     private IWXAPI api;// 第三方app和微信通信的openApi接口
-    private ArrayList<CashVideoService> cashVideoServices = new ArrayList<>();
+    private ArrayList<CashVideoServiceBean> cashVideoServiceBeans = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,11 +72,11 @@ public class SupportFragment extends BaseFragment
                     if (beans.size() > 0) {
                         for (ServiceListResp.DeviceListBean bean : beans) {
                             if (bean.getStatus() == CommonConstants.SERVICE_ALREADY_OPENED) {
-                                CashVideoService info = new CashVideoService();
+                                CashVideoServiceBean info = new CashVideoServiceBean();
                                 info.setDeviceId(bean.getDeviceId());
                                 info.setDeviceSn(bean.getDeviceSn());
                                 info.setDeviceName(bean.getDeviceName());
-                                cashVideoServices.add(info);
+                                cashVideoServiceBeans.add(info);
                             }
                         }
                     }
@@ -88,7 +88,7 @@ public class SupportFragment extends BaseFragment
                 }
             });
         }
-        if (cashVideoServices.size() > 0) {
+        if (cashVideoServiceBeans.size() > 0) {
             tvCashVideo.setText(R.string.str_setting_detail);
         } else {
             tvCashVideo.setText(R.string.str_learn_more);
