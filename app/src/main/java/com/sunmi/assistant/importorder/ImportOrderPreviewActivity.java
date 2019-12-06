@@ -3,11 +3,15 @@ package com.sunmi.assistant.importorder;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.text.Html;
 import android.view.View;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.merchant.AuthDialog;
+import com.sunmi.sunmiservice.cloud.WebViewCloudServiceActivity_;
+import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.impl.RouterRequest;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -17,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.RouterConfig;
 import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -31,6 +36,20 @@ import sunmi.common.view.dialog.CommonDialog;
 @SuppressLint("Registered")
 @EActivity(R.layout.import_order_activity_preview)
 public class ImportOrderPreviewActivity extends BaseActivity {
+
+    /**
+     * 路由启动Activity
+     *
+     * @param request
+     * @return
+     */
+    @RouterAnno(
+            path = RouterConfig.App.IMPORT_ORDER_PREVIEW
+    )
+    public static Intent start(RouterRequest request) {
+        Intent intent = new Intent(request.getRawContext(), ImportOrderPreviewActivity_.class);
+        return intent;
+    }
 
     @AfterViews
     void init() {

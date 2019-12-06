@@ -9,13 +9,17 @@ import android.webkit.JavascriptInterface;
 import com.tencent.mm.opensdk.modelbiz.WXLaunchMiniProgram;
 import com.tencent.mm.opensdk.modelmsg.WXMiniProgramObject;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.xiaojinzi.component.impl.Router;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
+import sunmi.common.router.AppApi;
+import sunmi.common.router.IpcApi;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
@@ -188,6 +192,26 @@ public class JSCall {
                         StatusBarUtils.setStatusBarFullTransparent(context);
                     } else {
                         StatusBarUtils.StatusBarLightMode(context);
+                    }
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @JavascriptInterface
+    public void jumpPage(String arg){
+        try {
+            JSONObject jsonObject = new JSONObject(arg);
+            final String url = jsonObject.getString("url");
+            context.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (TextUtils.equals(url, SsConstants.JS_BIND_SS)) {
+                        Router.withApi(IpcApi.class).goToIpcStartConfig(context, CommonConstants.TYPE_IPC_SS);
+                    } else if (TextUtils.equals(url, SsConstants.JS_BIND_SAAS)){
+                        Router.withApi(AppApi.class).gotoImportOrderPreview(context);
                     }
                 }
             });
