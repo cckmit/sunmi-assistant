@@ -150,7 +150,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/dp_16"
-            android:background="@mipmap/ic_logo"
+            android:background="@mipmap/ic_cash_default_img"
             tools:ignore="ContentDescription" />
     </RelativeLayout>
 
