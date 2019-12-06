@@ -122,7 +122,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
                 LinearLayoutManager.HORIZONTAL, false);
         rvCalender.setLayoutManager(llManager);
         selectedCalendar = Calendar.getInstance();
-        items.add(new FilterItem(-1, getString(R.string.str_all_device)));
+        items.add(new FilterItem(-1, getString(R.string.str_all_device), true));
         threeMonth.add(Calendar.MONTH, -3);
         threeMonth.add(Calendar.DATE, 1);
         threeMonth.set(Calendar.HOUR_OF_DAY, 0);
