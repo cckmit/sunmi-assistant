@@ -139,13 +139,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
             if (!model.isCustom()) {
                 selectIndex = position;
                 dmTime.dismiss(true);
-                long newStart = model.getTimeStart() / 1000;
-                long newEnd = model.getTimeEnd() / 1000;
-                if (startTime != newStart || endTime != newEnd) {
-                    startTime = newStart;
-                    endTime = newEnd;
-                    mPresenter.load(deviceId, videoType, startTime, endTime);
-                }
+                reloadForTimeChange(model);
             }
         });
 
@@ -164,13 +158,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
             if (state == CashDropdownTimeAdapter.STATE_SUCCESS) {
                 selectIndex = -1;
                 dmTime.dismiss(true);
-                long newStart = select.getTimeStart() / 1000;
-                long newEnd = select.getTimeEnd() / 1000;
-                if (startTime != newStart || endTime != newEnd) {
-                    startTime = newStart;
-                    endTime = newEnd;
-                    mPresenter.load(deviceId, videoType, startTime, endTime);
-                }
+                reloadForTimeChange(select);
             } else {
                 if (state == CashDropdownTimeAdapter.STATE_RANGE_ERROR) {
                     shortTip(R.string.cash_time_range_error_tip);
@@ -189,6 +177,16 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
 
         initTimeWheel();
         initFilterData();
+    }
+
+    private void reloadForTimeChange(DropdownTime model) {
+        long newStart = model.getTimeStart() / 1000;
+        long newEnd = model.getTimeEnd() / 1000;
+        if (startTime != newStart || endTime != newEnd) {
+            startTime = newStart;
+            endTime = newEnd;
+            mPresenter.load(deviceId, videoType, startTime, endTime);
+        }
     }
 
     private void initFilterData() {
