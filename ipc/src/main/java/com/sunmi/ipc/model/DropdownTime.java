@@ -8,6 +8,7 @@ import sunmi.common.view.DropdownMenuNew;
  */
 public class DropdownTime extends DropdownMenuNew.Model {
     private int id;
+    private boolean isCustom;
     private String title;
     private String itemName;
     private long timeStart;
@@ -21,21 +22,23 @@ public class DropdownTime extends DropdownMenuNew.Model {
         this.timeEnd = timeEnd;
     }
 
-    public DropdownTime(int id, String title, String itemName, long timeStart, long timeEnd) {
+    public DropdownTime(int id, String name, long timeStart, long timeEnd, boolean isChecked) {
+        super(isChecked);
         this.id = id;
-        this.title = title;
-        this.itemName = itemName;
+        this.title = name;
+        this.itemName = name;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
     }
 
-    public DropdownTime(int id, String title, String itemName, long timeStart, long timeEnd, boolean isChecked) {
+    public DropdownTime(int id, String name, long timeStart, long timeEnd, boolean isChecked, boolean isCustom) {
         super(isChecked);
         this.id = id;
-        this.title = title;
-        this.itemName = itemName;
+        this.title = name;
+        this.itemName = name;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
+        this.isCustom = isCustom;
     }
 
     public int getId() {
@@ -56,5 +59,9 @@ public class DropdownTime extends DropdownMenuNew.Model {
 
     public long getTimeEnd() {
         return timeEnd;
+    }
+
+    public boolean isCustom() {
+        return isCustom;
     }
 }
