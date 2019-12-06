@@ -42,7 +42,7 @@ public class CashVideoListPresenter extends BasePresenter<CashVideoListConstract
     }
 
     @Override
-    public void getCashVideofail(int code, String msg, int count) {
+    public void getCashVideoFail(int code, String msg, int count) {
         if (isViewAttached()) {
             mView.shortTip(R.string.toast_network_error);
             mView.hideLoadingDialog();

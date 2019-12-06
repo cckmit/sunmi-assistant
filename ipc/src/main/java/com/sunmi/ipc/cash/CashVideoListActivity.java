@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.cash.adapter.CashDropdownTimeAdapter;
 import com.sunmi.ipc.cash.adapter.CashVideoAdapter;
+import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.CashVideoListConstract;
 import com.sunmi.ipc.model.CashVideoResp;
 import com.sunmi.ipc.model.DropdownTime;
@@ -94,6 +95,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     void init() {
         StatusBarUtils.setStatusBarFullTransparent(this);
         mPresenter = new CashVideoListPresenter();
+        mPresenter.attachView(this);
         if (deviceId != 0) {
             dmDevice.setVisibility(View.GONE);
         }
@@ -113,8 +115,10 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
         int gap = (int) getResources().getDimension(R.dimen.dp_6);
         filterDeviceAdapter = new DropdownAdapterNew(this);
         filterDeviceAdapter.setOnItemClickListener((adapter, model, position) -> {
-            deviceId = model.getId();
-            mPresenter.load(deviceId, videoType, startTime, endTime);
+            if (deviceId != model.getId()) {
+                deviceId = model.getId();
+                mPresenter.load(deviceId, videoType, startTime, endTime);
+            }
         });
         dmDevice.setAnim(new DropdownAnimNew());
         dmDevice.setAdapter(filterDeviceAdapter);
@@ -129,9 +133,13 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
             if (!model.isCustom()) {
                 selectIndex = position;
                 dmTime.dismiss(true);
-                startTime = model.getTimeStart() / 1000;
-                endTime = model.getTimeEnd() / 1000;
-                mPresenter.load(deviceId, videoType, startTime, endTime);
+                long newStart = model.getTimeStart() / 1000;
+                long newEnd = model.getTimeEnd() / 1000;
+                if (startTime != newStart || endTime != newEnd) {
+                    startTime = newStart;
+                    endTime = newEnd;
+                    mPresenter.load(deviceId, videoType, startTime, endTime);
+                }
             }
         });
 
@@ -150,9 +158,13 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
             if (state == CashDropdownTimeAdapter.STATE_SUCCESS) {
                 selectIndex = -1;
                 dmTime.dismiss(true);
-                startTime = select.getTimeStart() / 1000;
-                endTime = select.getTimeEnd() / 1000;
-                mPresenter.load(deviceId, videoType, startTime, endTime);
+                long newStart = select.getTimeStart() / 1000;
+                long newEnd = select.getTimeEnd() / 1000;
+                if (startTime != newStart || endTime != newEnd) {
+                    startTime = newStart;
+                    endTime = newEnd;
+                    mPresenter.load(deviceId, videoType, startTime, endTime);
+                }
             } else {
                 if (state == CashDropdownTimeAdapter.STATE_RANGE_ERROR) {
                     shortTip(R.string.cash_time_range_error_tip);
@@ -160,6 +172,13 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
                     shortTip(R.string.cash_time_empty_error_tip);
                 }
             }
+        });
+
+        tvAbnormal.setOnClickListener(v -> {
+            tvAbnormal.setSelected(!tvAbnormal.isSelected());
+            videoType = tvAbnormal.isSelected() ?
+                    IpcConstants.CASH_VIDEO_ABNORMAL : IpcConstants.CASH_VIDEO_ALL;
+            mPresenter.load(deviceId, videoType, startTime, endTime);
         });
 
         initTimeWheel();

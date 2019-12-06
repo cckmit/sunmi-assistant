@@ -78,9 +78,15 @@ public class CashOverviewPresenter extends BasePresenter<CashOverviewContract.Vi
             @Override
             public void onSuccess(int code, String msg, CashVideoCountResp data) {
                 ThreadPool.getCachedThreadPool().submit(() -> {
-                    for (CashVideoListBean bean : data.getStatInfoList()) {
-                        beanMap.get(bean.getDeviceId()).setTotalCount(bean.getTotalCount());
-                        beanMap.get(bean.getDeviceId()).setAbnormalVideoCount(bean.getAbnormalVideoCount());
+                    List<CashVideoListBean> list = data.getStatInfoList();
+                    if (list != null) {
+                        for (CashVideoListBean bean : list) {
+                            CashVideoServiceBean info = beanMap.get(bean.getDeviceId());
+                            if (info != null) {
+                                info.setTotalCount(bean.getTotalCount());
+                                info.setAbnormalVideoCount(bean.getAbnormalVideoCount());
+                            }
+                        }
                     }
                     Collection<CashVideoServiceBean> collection = beanMap.values();
                     if (isViewAttached()) {

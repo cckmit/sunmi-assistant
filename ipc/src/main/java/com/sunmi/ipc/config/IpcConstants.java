@@ -16,6 +16,7 @@ public class IpcConstants {
     public static final int IPC_WIRED_NETWORK = 1;
     public static final int IPC_WIRELESS_NETWORK = 2;
 
+    public static final int CASH_VIDEO_ALL = 0;
     public static final int CASH_VIDEO_NORMAL = 1;
     public static final int CASH_VIDEO_ABNORMAL = 2;
 
