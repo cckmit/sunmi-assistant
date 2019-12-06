@@ -5,6 +5,7 @@ import com.sunmi.ipc.contract.CashVideoListConstract;
 import com.sunmi.ipc.model.CashVideoModel;
 import com.sunmi.ipc.model.CashVideoResp;
 
+import java.util.HashMap;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
@@ -34,9 +35,9 @@ public class CashVideoListPresenter extends BasePresenter<CashVideoListConstract
     }
 
     @Override
-    public void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, boolean hasMore, int total) {
+    public void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, boolean hasMore, int total, int pageNum) {
         if (isViewAttached()) {
-            mView.getCashVideoSuccess(beans, hasMore, total);
+            mView.getCashVideoSuccess(beans, hasMore, total, pageNum);
             mView.hideLoadingDialog();
         }
     }
@@ -50,5 +51,9 @@ public class CashVideoListPresenter extends BasePresenter<CashVideoListConstract
                 mView.netWorkError();
             }
         }
+    }
+
+    public HashMap<Integer,String> getIpcName(){
+        return videoModel.getIpcNameMap();
     }
 }

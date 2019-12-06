@@ -14,7 +14,7 @@ import sunmi.common.base.BaseView;
 public interface CashVideoListConstract {
 
     interface View extends BaseView {
-        void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, boolean hasMore, int total);
+        void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, boolean hasMore, int total,int page);
 
         void netWorkError();
     }

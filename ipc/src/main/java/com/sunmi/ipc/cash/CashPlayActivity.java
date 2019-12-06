@@ -151,6 +151,10 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     int deviceId;
     @Extra
     long startTime, endTime;
+    @Extra
+    boolean hasMore;
+    @Extra
+    int pageNum,videoListPosition,videoType;
     /**
      * 是否在拖动进度条中，默认为停止拖动，true为在拖动中，false为停止拖动
      */

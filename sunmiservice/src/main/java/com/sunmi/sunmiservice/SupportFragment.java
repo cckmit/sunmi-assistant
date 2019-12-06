@@ -124,7 +124,11 @@ public class SupportFragment extends BaseFragment
         if (isFastClick(500)) {
             return;
         }
-        Router.withApi(IpcApi.class).goToCashVideoOverview(mActivity, cashVideoServiceBeans, false);
+        if (cashVideoServiceBeans.size() > 0) {
+            Router.withApi(IpcApi.class).goToCashVideoOverview(mActivity, cashVideoServiceBeans, false);
+        } else {
+            WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConfig.CASH_VIDEO_URL).start();
+        }
     }
 
     @Click(resName = "ll_cloud_storage")

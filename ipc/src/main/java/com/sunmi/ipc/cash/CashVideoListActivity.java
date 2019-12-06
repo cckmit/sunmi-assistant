@@ -19,6 +19,7 @@ import com.sunmi.ipc.model.DropdownTime;
 import com.sunmi.ipc.presenter.CashVideoListPresenter;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
@@ -81,7 +82,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     @Extra
     ArrayList<FilterItem> items;
 
-    private List<CashVideoResp.AuditVideoListBean> dataList = new ArrayList<>();
+    private ArrayList<CashVideoResp.AuditVideoListBean> dataList = new ArrayList<>();
     private boolean hasMore;
     private CashVideoAdapter adapter;
 
@@ -90,12 +91,17 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
 
     private int selectIndex = -1;
     private DropdownTime select;
+    private long fastPlayStart;
+    private long fastPlayEnd;
+    private int pageNum;
 
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarFullTransparent(this);
         mPresenter = new CashVideoListPresenter();
         mPresenter.attachView(this);
+        fastPlayStart = startTime;
+        fastPlayEnd = endTime;
         if (deviceId != 0) {
             dmDevice.setVisibility(View.GONE);
         }
@@ -254,9 +260,16 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
         lvWheelMinute.setInitPosition(0);
     }
 
+    @Click(resName = "tv_fast_play")
+    void fastPlayClick() {
+        CashPlayActivity_.intent(context).deviceId(deviceId).startTime(fastPlayStart).endTime(fastPlayEnd).isWholeDayVideoPlay(true)
+                .ipcName(mPresenter.getIpcName()).start();
+    }
+
     @Override
-    public void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, boolean hasMore, int total) {
+    public void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, boolean hasMore, int total, int pageNum) {
         this.hasMore = hasMore;
+        this.pageNum = pageNum;
         addData(beans);
     }
 
@@ -295,8 +308,12 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
             rvCashVideo.setLayoutManager(new LinearLayoutManager(context));
             adapter.setOnItemClickListener(new CashVideoAdapter.OnItemClickListener() {
                 @Override
-                public void onItemClick(List<CashVideoResp.AuditVideoListBean> data, int pos) {
-
+                public void onItemClick(ArrayList<CashVideoResp.AuditVideoListBean> data, int pos) {
+                    CashPlayActivity_.intent(context).deviceId(deviceId)
+                            .startTime(startTime).endTime(endTime).isWholeDayVideoPlay(false)
+                            .ipcName(mPresenter.getIpcName()).videoList(data)
+                            .hasMore(hasMore).pageNum(pageNum).videoListPosition(pos)
+                            .videoType(videoType).start();
                 }
             });
             rvCashVideo.setAdapter(adapter);

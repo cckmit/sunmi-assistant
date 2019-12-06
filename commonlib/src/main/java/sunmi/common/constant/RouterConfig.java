@@ -20,6 +20,7 @@ public class RouterConfig {
         public static final String MSGDETAIL = "msgDetail";
         public static final String MSGCENTER = "msgCenter";
         public static final String REGISTER = "register";
+        public static final String IMPORT_ORDER_PREVIEW = "ImportOrderPreview";
     }
 
     public static class CloudPrinter {
