@@ -569,10 +569,10 @@ public class IpcCloudApi implements IpcCloudApiAnno {
             if (endTime != null) {
                 params.put("end_time", endTime);
             }
-            if (groupId != 0) {
+            if (groupId != -1) {
                 params.put("group_id", groupId);
             }
-            if (deviceId != 0) {
+            if (deviceId != -1) {
                 params.put("device_id", deviceId);
             }
             if (ageRange != null) {
@@ -725,7 +725,7 @@ public class IpcCloudApi implements IpcCloudApiAnno {
             JSONObject jsonObject = new JSONObject()
                     .put("company_id", SpUtils.getCompanyId())
                     .put("shop_id", SpUtils.getShopId());
-            if (deviceId != 0) {
+            if (deviceId != -1) {
                 jsonObject.put("device_id", deviceId);
             }
             jsonObject.put("time_range_start", startTime);
@@ -745,17 +745,18 @@ public class IpcCloudApi implements IpcCloudApiAnno {
      * shop_id	是	integer	店铺id
      * time_range_start	是
      * time_range_end	是
+     *
      * @param startTime
      * @param endTime
      * @param callback
      */
-    public void getShopCashVideoCount(long startTime, long endTime, RetrofitCallback<CashVideoListBean> callback){
+    public void getShopCashVideoCount(long startTime, long endTime, RetrofitCallback<CashVideoListBean> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", SpUtils.getCompanyId())
                     .put("shop_id", SpUtils.getShopId())
                     .put("time_range_start", startTime)
-                    .put("time_range_end",endTime)
+                    .put("time_range_end", endTime)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(CashInterface.class)
                     .getShopCashVideoCount(new BaseRequest(params))
@@ -772,19 +773,20 @@ public class IpcCloudApi implements IpcCloudApiAnno {
      * device_id_list	是	array[integer]	ipc设备列表
      * time_range_start	是	integer	交易开始时间搜索范围起始日,单位为秒,闭区间(包含该时间)
      * time_range_end	是	integer	交易开始时间搜索范围结束日,单位为秒,开区间(不包含该时间)
+     *
      * @param deviceId
      * @param startTime
      * @param endTime
      * @param callback
      */
-    public void getIpcCashVideoCount(List<Integer> deviceId, long startTime, long endTime, RetrofitCallback<CashVideoCountResp> callback){
+    public void getIpcCashVideoCount(List<Integer> deviceId, long startTime, long endTime, RetrofitCallback<CashVideoCountResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", SpUtils.getCompanyId())
                     .put("shop_id", SpUtils.getShopId())
-                    .put("device_id_list",deviceId)
+                    .put("device_id_list", deviceId)
                     .put("time_range_start", startTime)
-                    .put("time_range_end",endTime)
+                    .put("time_range_end", endTime)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(CashInterface.class)
                     .getIpcCashVideoCount(new BaseRequest(params))
@@ -805,22 +807,22 @@ public class IpcCloudApi implements IpcCloudApiAnno {
      * page_num	否	int32	每页条数
      */
     public void getCashVideoList(int deviceId, int videoType, long startTime, long endTime, int pageNum, int pageSize,
-                                 RetrofitCallback<CashVideoResp> callback){
+                                 RetrofitCallback<CashVideoResp> callback) {
 
         try {
             JSONObject jsonObject = new JSONObject()
                     .put("company_id", SpUtils.getCompanyId())
                     .put("shop_id", SpUtils.getShopId());
-            if (deviceId != 0) {
+            if (deviceId != -1) {
                 jsonObject.put("device_id", deviceId);
             }
-            if (videoType!=0){
-                jsonObject.put("video_type",videoType);
+            if (videoType != 0) {
+                jsonObject.put("video_type", videoType);
             }
             jsonObject.put("time_range_start", startTime);
             jsonObject.put("time_range_end", endTime);
-            jsonObject.put("page_num",pageNum);
-            jsonObject.put("page_size",pageSize);
+            jsonObject.put("page_num", pageNum);
+            jsonObject.put("page_size", pageSize);
             String params = jsonObject.toString();
             SunmiStoreRetrofitClient.getInstance().create(CashInterface.class)
                     .getCashVideoList(new BaseRequest(params))
