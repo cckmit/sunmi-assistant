@@ -56,13 +56,13 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     TextView tvAbnormal;
 
     @Extra
-    int deviceId = 0;
+    int deviceId = -1;
     @Extra
     long startTime;
     @Extra
     long endTime;
     @Extra
-    int videoType = 0;
+    int videoType;
     @Extra
     ArrayList<FilterItem> items;
 

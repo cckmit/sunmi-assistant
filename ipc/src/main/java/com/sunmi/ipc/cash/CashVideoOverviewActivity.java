@@ -22,9 +22,11 @@ import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.impl.RouterRequest;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
@@ -98,7 +100,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     private long startTime;
     private long endTime;
     private int deviceId;
-    private List<Integer> idList = new ArrayList<>();
+    private List<Integer> idList;
     private ScheduledExecutorService service;
     private List<Calendar> points = new ArrayList<>();
     private ArrayList<FilterItem> items = new ArrayList<>();
@@ -120,7 +122,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
                 LinearLayoutManager.HORIZONTAL, false);
         rvCalender.setLayoutManager(llManager);
         selectedCalendar = Calendar.getInstance();
-        items.add(new FilterItem(0, getString(R.string.str_all_device)));
+        items.add(new FilterItem(-1, getString(R.string.str_all_device)));
         threeMonth.add(Calendar.MONTH, -3);
         threeMonth.add(Calendar.DATE, 1);
         threeMonth.set(Calendar.HOUR_OF_DAY, 0);
@@ -133,11 +135,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
             clShopCash.setVisibility(View.GONE);
             clDevice.setBackgroundResource(R.drawable.bg_top_gray_black_radius);
         } else {
-            deviceId = 0;
-        }
-        for (CashVideoServiceBean bean : serviceBeans) {
-            idList.add(bean.getDeviceId());
-            items.add(new FilterItem(bean.getDeviceId(), bean.getDeviceName()));
+            deviceId = -1;
         }
         initDate();
     }
@@ -186,8 +184,16 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     /**
      * 计算开始时间和结束时间并定时调用接口
      */
-    private void initStartAndEndTime() {
+    @Background
+    protected void initStartAndEndTime() {
         showLoadingDialog();
+        if (idList == null) {
+            idList = new ArrayList<>();
+            for (CashVideoServiceBean bean : serviceBeans) {
+                idList.add(bean.getDeviceId());
+                items.add(new FilterItem(bean.getDeviceId(), bean.getDeviceName()));
+            }
+        }
         startTime = (DateTimeUtils.getDayStart(selectedCalendar).getTimeInMillis()) / 1000;
         endTime = startTime + 3600 * 24;
         service = Executors.newScheduledThreadPool(1);
@@ -289,6 +295,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         tvTotalCountAbnormal.setText(bean.getAbnormalVideoCount());
     }
 
+    @UiThread
     @Override
     public void getIpcCashVideoCountSuccess(List<CashVideoServiceBean> beans) {
         if (networkError.isShown()) {

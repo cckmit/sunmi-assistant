@@ -17,6 +17,7 @@ import java.util.Map;
 import sunmi.common.base.BasePresenter;
 import sunmi.common.model.CashVideoServiceBean;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.ThreadPool;
 
 /**
  * Description:
@@ -76,14 +77,16 @@ public class CashOverviewPresenter extends BasePresenter<CashOverviewContract.Vi
         IpcCloudApi.getInstance().getIpcCashVideoCount(deviceId, startTime, endTime, new RetrofitCallback<CashVideoCountResp>() {
             @Override
             public void onSuccess(int code, String msg, CashVideoCountResp data) {
-                for (CashVideoListBean bean : data.getStatInfoList()) {
-                    beanMap.get(bean.getDeviceId()).setTotalCount(bean.getTotalCount());
-                    beanMap.get(bean.getDeviceId()).setAbnormalVideoCount(bean.getAbnormalVideoCount());
-                }
-                Collection<CashVideoServiceBean> collection = beanMap.values();
-                if (isViewAttached()) {
-                    mView.getIpcCashVideoCountSuccess(new ArrayList<>(collection));
-                }
+                ThreadPool.getCachedThreadPool().submit(() -> {
+                    for (CashVideoListBean bean : data.getStatInfoList()) {
+                        beanMap.get(bean.getDeviceId()).setTotalCount(bean.getTotalCount());
+                        beanMap.get(bean.getDeviceId()).setAbnormalVideoCount(bean.getAbnormalVideoCount());
+                    }
+                    Collection<CashVideoServiceBean> collection = beanMap.values();
+                    if (isViewAttached()) {
+                        mView.getIpcCashVideoCountSuccess(new ArrayList<>(collection));
+                    }
+                });
             }
 
             @Override
