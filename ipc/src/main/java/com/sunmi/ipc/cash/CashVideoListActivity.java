@@ -1,18 +1,18 @@
 package com.sunmi.ipc.cash;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
-import java.util.HashMap;
-
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.utils.DateTimeUtils;
+import sunmi.common.utils.StatusBarUtils;
 
 /**
  * Description:
@@ -29,20 +29,21 @@ public class CashVideoListActivity extends BaseMvpActivity {
     BGARefreshLayout refreshLayout;
     @ViewById(resName = "rv_cash_video")
     RecyclerView rvCashVideo;
+    @ViewById(resName = "layout_network_error")
+    View networkError;
 
     @Extra
-    int deviceId;
+    int deviceId = 0;
     @Extra
     long startTime;
     @Extra
-    long EndTime;
+    long endTime;
     @Extra
-    String deviceName;
-    @Extra
-    HashMap<Integer,String> ipcName;
+    int videoType = 0;
 
     @AfterViews
-    void init(){
-
+    void init() {
+        StatusBarUtils.setStatusBarFullTransparent(this);
+        tvDate.setText(DateTimeUtils.secondToDate(startTime,"yyyy.MM.dd"));
     }
 }

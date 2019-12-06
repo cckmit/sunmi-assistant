@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,6 +14,10 @@ import com.sunmi.ipc.R;
 import com.sunmi.ipc.calendar.Config;
 import com.sunmi.ipc.calendar.VerticalCalendar;
 import com.sunmi.ipc.cash.adapter.CashCalendarAdapter;
+import com.sunmi.ipc.config.IpcConstants;
+import com.sunmi.ipc.contract.CashOverviewContract;
+import com.sunmi.ipc.model.CashVideoListBean;
+import com.sunmi.ipc.presenter.CashOverviewPresenter;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.impl.RouterRequest;
 
@@ -24,12 +29,18 @@ import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.RouterConfig;
 import sunmi.common.model.CashVideoServiceBean;
 import sunmi.common.utils.DateTimeUtils;
+import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
 import sunmi.common.view.CircleImage;
@@ -42,7 +53,7 @@ import sunmi.common.view.widget.CenterLayoutManager;
  * @author linyuanpeng on 2019-12-02.
  */
 @EActivity(resName = "activity_cash_video_overview")
-public class CashVideoOverviewActivity extends BaseMvpActivity {
+public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPresenter> implements CashOverviewContract.View {
 
     @ViewById(resName = "rv_calendar")
     RecyclerView rvCalender;
@@ -51,7 +62,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity {
     @ViewById(resName = "tv_total_count_cash")
     TextView tvTotalCountCash;
     @ViewById(resName = "tv_total_count_abnormal")
-    TextView tvCashCountAbnormal;
+    TextView tvTotalCountAbnormal;
     @ViewById(resName = "civ_ipc")
     CircleImage civIpc;
     @ViewById(resName = "tv_ipc_name")
@@ -64,11 +75,15 @@ public class CashVideoOverviewActivity extends BaseMvpActivity {
     TextView tvCountAbnormal;
     @ViewById(resName = "cl_shop_cash")
     ConstraintLayout clShopCash;
+    @ViewById(resName = "cl_device")
+    ConstraintLayout clDevice;
+    @ViewById(resName = "layout_network_error")
+    View networkError;
 
     @Extra
     ArrayList<CashVideoServiceBean> serviceBeans;
     @Extra
-    CashVideoServiceBean serviceBean;
+    boolean isSingleDevice;
 
 
     private CenterLayoutManager llManager;
@@ -81,6 +96,10 @@ public class CashVideoOverviewActivity extends BaseMvpActivity {
     private int selectPos = 14;
     private long startTime;
     private long endTime;
+    private int deviceId;
+    private List<Integer> idList = new ArrayList<>();
+    private ScheduledExecutorService service;
+    private List<Calendar> points;
 
     @RouterAnno(
             path = RouterConfig.Ipc.CASH_VIDEO_OVERVIEW
@@ -93,6 +112,8 @@ public class CashVideoOverviewActivity extends BaseMvpActivity {
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarFullTransparent(this);
+        mPresenter = new CashOverviewPresenter(serviceBeans);
+        mPresenter.attachView(this);
         llManager = new CenterLayoutManager(context,
                 LinearLayoutManager.HORIZONTAL, false);
         rvCalender.setLayoutManager(llManager);
@@ -103,6 +124,17 @@ public class CashVideoOverviewActivity extends BaseMvpActivity {
         threeMonth.set(Calendar.MINUTE, 0);
         threeMonth.set(Calendar.SECOND, 0);
         threeMonth.set(Calendar.MILLISECOND, 0);
+        mPresenter.getCashVidoTimeSlots(deviceId, (threeMonth.getTimeInMillis() / 1000), (DateTimeUtils.getTomorrow().getTime() / 1000));
+        if (isSingleDevice) {
+            deviceId = serviceBeans.get(0).getDeviceId();
+            clShopCash.setVisibility(View.GONE);
+            clDevice.setBackgroundResource(R.drawable.bg_top_gray_black_radius);
+        } else {
+            deviceId = 0;
+        }
+        for (CashVideoServiceBean bean : serviceBeans) {
+            idList.add(bean.getDeviceId());
+        }
         initDate();
     }
 
@@ -150,6 +182,14 @@ public class CashVideoOverviewActivity extends BaseMvpActivity {
     private void initStartAndEndTime() {
         startTime = (DateTimeUtils.getDayStart(selectedCalendar).getTimeInMillis()) / 1000;
         endTime = startTime + 3600 * 24;
+        service = Executors.newScheduledThreadPool(1);
+        service.scheduleAtFixedRate(() -> {
+            if (isSingleDevice) {
+                mPresenter.getIpcCashVideoCount(idList, startTime, endTime);
+            } else {
+                mPresenter.getShopCashVideoCount(startTime, endTime);
+            }
+        }, 0, 2, TimeUnit.MINUTES);
     }
 
     @Click(resName = "iv_calendar")
@@ -162,6 +202,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity {
             c.add(Calendar.MONTH, -3);
             Config config = new Config.Builder()
                     .setMinDate(c)
+                    .setPoint(points)
                     .build();
             int height = (int) (Utils.getScreenHeight(context) * 0.85);
             calendarView = new VerticalCalendar(this, config);
@@ -180,4 +221,81 @@ public class CashVideoOverviewActivity extends BaseMvpActivity {
         calendarDialog.show();
     }
 
+    @Click(resName = "btn_refresh")
+    public void refreshClick() {
+        if (isSingleDevice) {
+            mPresenter.getIpcCashVideoCount(idList, startTime, endTime);
+        } else {
+            mPresenter.getShopCashVideoCount(startTime, endTime);
+        }
+    }
+
+    @Click(resName = "ll_cash_video")
+    public void totalCashClick() {
+        CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime).start();
+    }
+
+    @Click(resName = "ll_abnormal_video")
+    public void totalAbnormalClick() {
+        CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
+                .videoType(IpcConstants.CASH_VIDEO_ABNORMAL).start();
+    }
+
+    @Click(resName = "cv_cash")
+    public void deviceCashClick() {
+        CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
+                .deviceId(idList.get(0)).start();
+    }
+
+    @Click(resName = "cv_abnormal")
+    public void deviceAbnormalClick() {
+        CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
+                .deviceId(idList.get(0)).videoType(IpcConstants.CASH_VIDEO_ABNORMAL).start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        service.shutdown();
+    }
+
+    @Override
+    public void getCashVideoTimeSlotsSuccess(List<Long> timeSlots) {
+        Set<Long> times = new HashSet<>(timeSlots);
+        points = new ArrayList<>(times.size());
+        for (long time : times) {
+            Calendar c = Calendar.getInstance();
+            c.setTimeInMillis(time * 1000);
+            c.set(Calendar.HOUR_OF_DAY, 0);
+            c.set(Calendar.MINUTE, 0);
+            c.set(Calendar.SECOND, 0);
+            c.set(Calendar.MILLISECOND, 0);
+            points.add((Calendar) c.clone());
+        }
+    }
+
+    @Override
+    public void getShopCashVideoCountSuccess(CashVideoListBean bean) {
+        mPresenter.getIpcCashVideoCount(idList, startTime, endTime);
+        tvTotalCountCash.setText(bean.getTotalCount());
+        tvTotalCountAbnormal.setText(bean.getAbnormalVideoCount());
+    }
+
+    @Override
+    public void getIpcCashVideoCountSuccess(List<CashVideoServiceBean> beans) {
+        if (networkError.isShown()) {
+            networkError.setVisibility(View.GONE);
+        }
+        CashVideoServiceBean bean = beans.get(0);
+        ImageUtils.loadImage(context, bean.getImgUrl(), civIpc, false, -1);
+        tvIpcName.setText(bean.getDeviceName());
+        tvIpcSn.setText(getString(R.string.ipc_sn, bean.getDeviceSn()));
+        tvCountCash.setText(bean.getTotalCount());
+        tvCountAbnormal.setText(bean.getAbnormalVideoCount());
+    }
+
+    @Override
+    public void netWorkError() {
+        networkError.setVisibility(View.VISIBLE);
+    }
 }
