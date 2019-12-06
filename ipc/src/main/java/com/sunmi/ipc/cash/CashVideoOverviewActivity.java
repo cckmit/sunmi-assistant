@@ -39,6 +39,7 @@ import java.util.concurrent.TimeUnit;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.RouterConfig;
 import sunmi.common.model.CashVideoServiceBean;
+import sunmi.common.model.FilterItem;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -99,7 +100,8 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     private int deviceId;
     private List<Integer> idList = new ArrayList<>();
     private ScheduledExecutorService service;
-    private List<Calendar> points;
+    private List<Calendar> points = new ArrayList<>();
+    private ArrayList<FilterItem> items = new ArrayList<>();
 
     @RouterAnno(
             path = RouterConfig.Ipc.CASH_VIDEO_OVERVIEW
@@ -118,6 +120,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
                 LinearLayoutManager.HORIZONTAL, false);
         rvCalender.setLayoutManager(llManager);
         selectedCalendar = Calendar.getInstance();
+        items.add(new FilterItem(0, getString(R.string.str_all_device)));
         threeMonth.add(Calendar.MONTH, -3);
         threeMonth.add(Calendar.DATE, 1);
         threeMonth.set(Calendar.HOUR_OF_DAY, 0);
@@ -134,6 +137,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         }
         for (CashVideoServiceBean bean : serviceBeans) {
             idList.add(bean.getDeviceId());
+            items.add(new FilterItem(bean.getDeviceId(), bean.getDeviceName()));
         }
         initDate();
     }
@@ -237,25 +241,25 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
 
     @Click(resName = "ll_cash_video")
     public void totalCashClick() {
-        CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime).start();
+        CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime).items(items).start();
     }
 
     @Click(resName = "ll_abnormal_video")
     public void totalAbnormalClick() {
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
-                .videoType(IpcConstants.CASH_VIDEO_ABNORMAL).start();
+                .videoType(IpcConstants.CASH_VIDEO_ABNORMAL).items(items).start();
     }
 
     @Click(resName = "cv_cash")
     public void deviceCashClick() {
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
-                .deviceId(idList.get(0)).start();
+                .deviceId(idList.get(0)).items(items).start();
     }
 
     @Click(resName = "cv_abnormal")
     public void deviceAbnormalClick() {
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
-                .deviceId(idList.get(0)).videoType(IpcConstants.CASH_VIDEO_ABNORMAL).start();
+                .deviceId(idList.get(0)).videoType(IpcConstants.CASH_VIDEO_ABNORMAL).items(items).start();
     }
 
     @Override
@@ -267,7 +271,6 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     @Override
     public void getCashVideoTimeSlotsSuccess(List<Long> timeSlots) {
         Set<Long> times = new HashSet<>(timeSlots);
-        points = new ArrayList<>(times.size());
         for (long time : times) {
             Calendar c = Calendar.getInstance();
             c.setTimeInMillis(time * 1000);
@@ -302,6 +305,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
 
     @Override
     public void netWorkError() {
+        hideLoadingDialog();
         networkError.setVisibility(View.VISIBLE);
     }
 }

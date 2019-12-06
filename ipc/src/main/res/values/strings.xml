@@ -367,6 +367,7 @@
     <string name="cash_tag_fail">标记失败</string>
     <string name="cash_tag_cancel_fail">取消失败</string>
     <string name="cash_creenshot_permission_tip">如果不允许，将无法将截图保存至本地</string>
+    <string name="str_all_device">全部设备</string>
 </resources>
 
 

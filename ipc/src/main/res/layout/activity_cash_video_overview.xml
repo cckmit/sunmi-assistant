@@ -75,7 +75,7 @@
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rl_quick">
+        app:layout_constraintTop_toBottomOf="@id/rl_calendar">
 
         <LinearLayout
             android:id="@+id/ll_cash_video"

@@ -24,6 +24,7 @@ import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.model.FilterItem;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -62,6 +63,8 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     long endTime;
     @Extra
     int videoType = 0;
+    @Extra
+    ArrayList<FilterItem> items;
 
     private List<CashVideoResp.AuditVideoListBean> dataList = new ArrayList<>();
     private boolean hasMore;
