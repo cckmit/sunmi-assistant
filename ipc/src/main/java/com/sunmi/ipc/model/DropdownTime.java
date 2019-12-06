@@ -64,4 +64,13 @@ public class DropdownTime extends DropdownMenuNew.Model {
     public boolean isCustom() {
         return isCustom;
     }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setTime(long timeStart, long timeEnd) {
+        this.timeStart = timeStart;
+        this.timeEnd = timeEnd;
+    }
 }
