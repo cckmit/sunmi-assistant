@@ -49,4 +49,7 @@ public interface AppApi {
 
     @PathAnno(RouterConfig.App.REGISTER)
     void goToRegister(Context context);
+
+    @PathAnno(RouterConfig.App.IMPORT_ORDER_PREVIEW)
+    void gotoImportOrderPreview(Context context);
 }

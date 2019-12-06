@@ -22,7 +22,7 @@ import sunmi.common.utils.ThreadPool;
  */
 public class CashVideoModel {
 
-    private Map<Integer, String> ipcName;
+    private HashMap<Integer, String> ipcName;
     private int pageNum, pageSize = 10;
     private boolean hasMore;
     private int deviceId, videoType;
@@ -74,7 +74,7 @@ public class CashVideoModel {
                             hasMore = false;
                             total = 0;
                         }
-                        callBack.getCashVideoSuccess(beans, hasMore, total);
+                        callBack.getCashVideoSuccess(beans, hasMore, total, pageNum - 1);
                     }
 
                     @Override
@@ -86,7 +86,7 @@ public class CashVideoModel {
 
     public void loadMore(CallBack callBack) {
         if (!hasMore) {
-            callBack.getCashVideoSuccess(new ArrayList<>(0), hasMore, total);
+            callBack.getCashVideoSuccess(new ArrayList<>(0), hasMore, total, pageNum);
             return;
         }
         IpcCloudApi.getInstance().getCashVideoList(deviceId, videoType, startTime,
@@ -108,7 +108,7 @@ public class CashVideoModel {
                         } else {
                             hasMore = false;
                         }
-                        callBack.getCashVideoSuccess(beans, hasMore, total);
+                        callBack.getCashVideoSuccess(beans, hasMore, total, pageNum - 1);
                     }
 
                     @Override
@@ -119,12 +119,12 @@ public class CashVideoModel {
 
     }
 
-    public Map<Integer, String> getIpcNameMap() {
+    public HashMap<Integer, String> getIpcNameMap() {
         return ipcName;
     }
 
     public interface CallBack {
-        void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, boolean hasMore, int total);
+        void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, boolean hasMore, int total, int pageNum);
 
         void getCashVideoFail(int code, String msg, int count);
 

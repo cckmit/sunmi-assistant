@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.model.CashVideoResp;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.utils.DateTimeUtils;
@@ -25,18 +26,18 @@ import sunmi.common.utils.DateTimeUtils;
  */
 public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.ViewHolder> {
 
-    private List<CashVideoResp.AuditVideoListBean> data;
+    private ArrayList<CashVideoResp.AuditVideoListBean> data;
     private Context context;
     private OnItemClickListener listener;
     private int selectPosition = -1;
 
-    public CashVideoAdapter(List<CashVideoResp.AuditVideoListBean> data, Context context) {
+    public CashVideoAdapter(ArrayList<CashVideoResp.AuditVideoListBean> data, Context context) {
         this.data = data;
         this.context = context;
     }
 
     public interface OnItemClickListener {
-        void onItemClick(List<CashVideoResp.AuditVideoListBean> data, int pos);
+        void onItemClick(ArrayList<CashVideoResp.AuditVideoListBean> data, int pos);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
