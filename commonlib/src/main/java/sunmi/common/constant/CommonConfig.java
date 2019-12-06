@@ -68,7 +68,7 @@ public class CommonConfig extends BaseConfig {
         MI_PUSH_APP_KEY = "5611813137146";
 
         CLOUD_STORAGE_URL = "https://wifi.cdn.sunmi.com/H5/CloudStorage/index.html#/cloudStorage?topPadding=";
-        CASH_VIDEO_URL = "http://172.16.2.92:8080/#/cashvideo/welcome?topPadding=";
+        CASH_VIDEO_URL = "";
     }
 
     @Override
@@ -81,7 +81,7 @@ public class CommonConfig extends BaseConfig {
         MI_PUSH_APP_KEY = "5611813137146";
 
         CLOUD_STORAGE_URL = "https://wifi.cdn.sunmi.com/UAT/H5/CloudStorage/index.html#/cloudStorage?topPadding=";
-        CASH_VIDEO_URL = "http://172.16.2.92:8080/#/cashvideo/welcome?topPadding=";
+        CASH_VIDEO_URL = "";
     }
 
 }
