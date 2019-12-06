@@ -291,8 +291,8 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     @Override
     public void getShopCashVideoCountSuccess(CashVideoListBean bean) {
         mPresenter.getIpcCashVideoCount(idList, startTime, endTime);
-        tvTotalCountCash.setText(bean.getTotalCount());
-        tvTotalCountAbnormal.setText(bean.getAbnormalVideoCount());
+        tvTotalCountCash.setText(String.valueOf(bean.getTotalCount()));
+        tvTotalCountAbnormal.setText(String.valueOf(bean.getAbnormalVideoCount()));
     }
 
     @UiThread
@@ -302,12 +302,15 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
             networkError.setVisibility(View.GONE);
         }
         hideLoadingDialog();
+        if (beans.isEmpty()) {
+            return;
+        }
         CashVideoServiceBean bean = beans.get(0);
         ImageUtils.loadImage(context, bean.getImgUrl(), civIpc, false, -1);
         tvIpcName.setText(bean.getDeviceName());
         tvIpcSn.setText(getString(R.string.ipc_sn, bean.getDeviceSn()));
-        tvCountCash.setText(bean.getTotalCount());
-        tvCountAbnormal.setText(bean.getAbnormalVideoCount());
+        tvCountCash.setText(String.valueOf(bean.getTotalCount()));
+        tvCountAbnormal.setText(String.valueOf(bean.getAbnormalVideoCount()));
     }
 
     @Override

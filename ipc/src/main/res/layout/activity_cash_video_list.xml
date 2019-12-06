@@ -5,6 +5,89 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <cn.bingoogolapple.refreshlayout.BGARefreshLayout
+        android:id="@+id/bga_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/c_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cl_filter">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_cash_video"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:overScrollMode="never"
+            android:scrollbars="none"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
+
+    <include
+        android:id="@+id/layout_network_error"
+        layout="@layout/include_network_error"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rl_quick"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/cl_filter"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_44"
+        android:background="@drawable/bg_top_white_radius"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rl_quick">
+
+        <sunmi.common.view.DropdownMenuNew
+            android:id="@+id/dm_device"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:dm_menuIndex="2"
+            app:dm_menuParent="@+id/content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/dm_time"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <sunmi.common.view.DropdownMenuNew
+            android:id="@+id/dm_time"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:dm_autoDismiss="false"
+            app:dm_layout="@layout/cash_video_dropdown_time"
+            app:dm_list="@+id/rv_list"
+            app:dm_menuIndex="2"
+            app:dm_menuParent="@+id/content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tv_abnormal"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/dm_device"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_abnormal"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:textColor="@color/text_common_normal_checkable"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/dm_time"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
     <View
         android:id="@+id/v1"
         android:layout_width="match_parent"
@@ -69,88 +152,5 @@
             android:textColor="@color/c_white"
             android:textSize="@dimen/sp_14" />
     </RelativeLayout>
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/cl_filter"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_44"
-        android:background="@drawable/bg_top_white_radius"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rl_quick">
-
-        <sunmi.common.view.DropdownMenuNew
-            android:id="@+id/dm_device"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:dm_menuIndex="3"
-            app:dm_menuParent="@+id/content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/dm_time"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <sunmi.common.view.DropdownMenuNew
-            android:id="@+id/dm_time"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:dm_autoDismiss="false"
-            app:dm_layout="@layout/cash_video_dropdown_time"
-            app:dm_list="@+id/rv_list"
-            app:dm_menuIndex="3"
-            app:dm_menuParent="@+id/content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tv_abnormal"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/dm_device"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tv_abnormal"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:gravity="center"
-            android:textColor="@color/text_common_normal_checkable"
-            android:textSize="@dimen/sp_12"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/dm_time"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </android.support.constraint.ConstraintLayout>
-
-    <cn.bingoogolapple.refreshlayout.BGARefreshLayout
-        android:id="@+id/bga_refresh"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/c_white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cl_filter">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_cash_video"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:overScrollMode="never"
-            android:scrollbars="none"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
-
-    <include
-        android:id="@+id/layout_network_error"
-        layout="@layout/include_network_error"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rl_quick"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
 
 </android.support.constraint.ConstraintLayout>

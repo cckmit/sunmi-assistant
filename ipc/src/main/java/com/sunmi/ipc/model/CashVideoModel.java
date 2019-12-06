@@ -70,13 +70,16 @@ public class CashVideoModel {
                             } else {
                                 pageNum++;
                             }
-                            callBack.getCashVideoSuccess(beans, hasMore, total);
+                        } else {
+                            hasMore = false;
+                            total = 0;
                         }
+                        callBack.getCashVideoSuccess(beans, hasMore, total);
                     }
 
                     @Override
                     public void onFail(int code, String msg, CashVideoResp data) {
-                        callBack.getCashVideofail(code, msg, -1);
+                        callBack.getCashVideoFail(code, msg, -1);
                     }
                 });
     }
@@ -102,13 +105,15 @@ public class CashVideoModel {
                             } else {
                                 hasMore = false;
                             }
-                            callBack.getCashVideoSuccess(beans, hasMore, total);
+                        } else {
+                            hasMore = false;
                         }
+                        callBack.getCashVideoSuccess(beans, hasMore, total);
                     }
 
                     @Override
                     public void onFail(int code, String msg, CashVideoResp data) {
-                        callBack.getCashVideofail(code, msg, (pageNum - 1) * pageSize);
+                        callBack.getCashVideoFail(code, msg, (pageNum - 1) * pageSize);
                     }
                 });
 
@@ -121,7 +126,7 @@ public class CashVideoModel {
     public interface CallBack {
         void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, boolean hasMore, int total);
 
-        void getCashVideofail(int code, String msg, int count);
+        void getCashVideoFail(int code, String msg, int count);
 
     }
 }
