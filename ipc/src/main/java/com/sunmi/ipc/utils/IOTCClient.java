@@ -1,8 +1,5 @@
 package com.sunmi.ipc.utils;
 
-import android.os.CountDownTimer;
-import android.os.Handler;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.sunmi.ipc.model.IotcCmdReq;
@@ -14,8 +11,8 @@ import com.tutk.IOTC.P2pCmdCallback;
 
 import org.androidannotations.api.BackgroundExecutor;
 
+import java.io.Serializable;
 import java.util.List;
-import java.util.Timer;
 
 import sunmi.common.utils.ByteUtils;
 import sunmi.common.utils.ThreadPool;
@@ -26,7 +23,7 @@ import sunmi.common.utils.log.LogCat;
  * Description:
  * Created by bruce on 2019/8/1.
  */
-public class IOTCClient {
+public class IOTCClient implements Serializable {
     private String TAG = "IOTCClient";
 
     private static int IOTC_CONNECT_TIMEOUT = 4000;
@@ -46,12 +43,10 @@ public class IOTCClient {
     private int CMD_PLAYBACK_STOP = 0x22;
     private int CMD_PLAYBACK_PAUSE = 0x23;
 
-    private Callback callback;
+    private StatusCallback statusCallback;
+    private ReceiverCallback receiverCallback;
     private boolean alreadyQuit;
     private boolean isRunning = true;
-    private Timer timer;
-    private CountDownTimer countDownTimer;
-    private Handler handler;
 
     private boolean isNewInterface;//是否用新接口发命令
 
@@ -65,8 +60,8 @@ public class IOTCClient {
         if (ret != IOTCAPIs.IOTC_ER_NoERROR) {
             if (IOTCAPIs.IOTC_ER_ALREADY_INITIALIZED != ret) {
                 IOTCAPIs.IOTC_DeInitialize();
-                if (callback != null) {
-                    callback.initFail();
+                if (statusCallback != null) {
+                    statusCallback.initFail();
                 }
                 return;
             }
@@ -75,8 +70,8 @@ public class IOTCClient {
         ret = AVAPIs.avInitialize(4);// alloc 3 sessions for video and two-way audio
         if (ret < 0) {
             IOTCAPIs.IOTC_DeInitialize();
-            if (callback != null) {
-                callback.initFail();
+            if (statusCallback != null) {
+                statusCallback.initFail();
             }
             return;
         }
@@ -85,8 +80,8 @@ public class IOTCClient {
         LogCat.e(TAG, "IOTC_Get_SessionID error code, sid = " + SID);
         if (SID < 0) {
             IOTCAPIs.IOTC_DeInitialize();
-            if (callback != null) {
-                callback.initFail();
+            if (statusCallback != null) {
+                statusCallback.initFail();
             }
             return;
         }
@@ -99,8 +94,8 @@ public class IOTCClient {
                 LogCat.e(TAG, "IOTC_Connect_ByUID_Parallel timeout, quit");
                 IOTCAPIs.IOTC_Connect_Stop_BySID(SID);
                 AVAPIs.avDeInitialize();
-                if (callback != null) {
-                    callback.initFail();
+                if (statusCallback != null) {
+                    statusCallback.initFail();
                 }
             }
         }, IOTC_CONNECT_TIMEOUT);
@@ -109,8 +104,8 @@ public class IOTCClient {
         LogCat.e(TAG, "IOTC_CONNECT_RESULT = " + IOTC_CONNECT_RESULT);
         if (IOTC_CONNECT_RESULT < 0 || alreadyQuit) {
             LogCat.e(TAG, "IOTC_Connect_ByUID_Parallel failed ret = " + IOTC_CONNECT_RESULT);
-            if (callback != null) {
-                callback.initFail();
+            if (statusCallback != null) {
+                statusCallback.initFail();
             }
             return;
         }
@@ -129,8 +124,8 @@ public class IOTCClient {
             AVAPIs.avDeInitialize();
             IOTCAPIs.IOTC_Session_Close(SID);
             IOTCAPIs.IOTC_DeInitialize();
-            if (callback != null) {
-                callback.initFail();
+            if (statusCallback != null) {
+                statusCallback.initFail();
             }
             IOTC_CONNECT_RESULT = -1000;
             return;
@@ -186,8 +181,8 @@ public class IOTCClient {
 
             @Override
             public void onError() {
-                if (callback != null) {
-                    callback.initFail();
+                if (statusCallback != null) {
+                    statusCallback.initFail();
                 }
             }
         });
@@ -215,30 +210,6 @@ public class IOTCClient {
     }
 
     /**
-     * 切换分辨率
-     *
-     * @param type 分辨率，0：超清，1：高清，2：标清
-     */
-    public void changeValue(int type) {
-        IotcCmdReq cmd = new IotcCmdReq.Builder()
-                .setMsg_id(Utils.getMsgId())
-                .setCmd(CMD_LIVE_START)
-                .setChannel(1)
-                .setParam("resolution", type).builder();
-        cmdCall(CMD_LIVE_START, cmd, new P2pCmdCallback() {
-            @Override
-            public void onResponse(int cmd, IotcCmdResp result) {
-
-            }
-
-            @Override
-            public void onError() {
-
-            }
-        });
-    }
-
-    /**
      * 停止直播参数
      */
     public void stopLive() {
@@ -246,17 +217,7 @@ public class IOTCClient {
                 .setMsg_id(Utils.getMsgId())
                 .setCmd(CMD_LIVE_STOP)
                 .setChannel(1).builder();
-        cmdCall(CMD_LIVE_STOP, cmd, new P2pCmdCallback() {
-            @Override
-            public void onResponse(int cmd, IotcCmdResp result) {
-
-            }
-
-            @Override
-            public void onError() {
-
-            }
-        });
+        cmdCall(CMD_LIVE_STOP, cmd, null);
     }
 
     public void getPlaybackList(long start, long end, P2pCmdCallback callback) {
@@ -269,12 +230,13 @@ public class IOTCClient {
         cmdCall(CMD_PLAYBACK_LIST, cmd, callback);
     }
 
-    public void startPlayback(long startTime, P2pCmdCallback callback) {
+    public void startPlayback(long startTime, long endTime, P2pCmdCallback callback) {
         IotcCmdReq cmd = new IotcCmdReq.Builder()
                 .setMsg_id(Utils.getMsgId())
                 .setCmd(CMD_PLAYBACK_START)
                 .setChannel(1)
-                .setParam("start_time", startTime).builder();
+                .setParam("start_time", startTime)
+                .setParam("end_time", endTime).builder();
         cmdCall(CMD_PLAYBACK_START, cmd, callback);
     }
 
@@ -294,6 +256,15 @@ public class IOTCClient {
 
             }
         });
+    }
+
+    public void pausePlayback(boolean isPause, P2pCmdCallback callback) {
+        IotcCmdReq cmd = new IotcCmdReq.Builder()
+                .setMsg_id(Utils.getMsgId())
+                .setCmd(CMD_PLAYBACK_PAUSE)
+                .setChannel(1)
+                .setParam("pause", isPause ? 1 : 0).builder();
+        cmdCall(CMD_PLAYBACK_PAUSE, cmd, callback);
     }
 
     public void pausePlayback(boolean isPause) {
@@ -426,7 +397,9 @@ public class IOTCClient {
                 if (ret > 0) {
                     byte[] data = new byte[ret];
                     System.arraycopy(videoBuffer, 0, data, 0, ret);
-                    if (callback != null) callback.onVideoReceived(data);
+                    if (receiverCallback != null) {
+                        receiverCallback.onVideoReceived(frameInfo, data);
+                    }
                 }
             }
         }
@@ -476,22 +449,29 @@ public class IOTCClient {
                 if (ret < 0) return;
                 byte[] data = new byte[ret];
                 System.arraycopy(audioBuffer, 0, data, 0, ret);
-                if (callback != null) callback.onAudioReceived(data);
+                if (receiverCallback != null) {
+                    receiverCallback.onAudioReceived(data);
+                }
             }
         }
     }
 
-    public void setCallback(Callback callback) {
-        this.callback = callback;
+    public void setStatusCallback(StatusCallback statusCallback) {
+        this.statusCallback = statusCallback;
     }
 
-    public interface Callback {
+    public void setReceiverCallback(ReceiverCallback callback) {
+        this.receiverCallback = callback;
+    }
 
-        void initSuccess();
+    public interface StatusCallback {
 
         void initFail();
 
-        void onVideoReceived(byte[] videoBuffer);
+    }
+
+    public interface ReceiverCallback {
+        void onVideoReceived(byte[] frameInfo, byte[] videoBuffer);
 
         void onAudioReceived(byte[] audioBuffer);
 

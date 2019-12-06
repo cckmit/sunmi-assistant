@@ -61,7 +61,6 @@
     <string name="dashboard_card_tab_customer">客流量</string>
     <string name="dashboard_card_tab_new_old">新老</string>
     <string name="dashboard_card_tab_gender">性别</string>
-    <string name="dashboard_card_tab_age">年龄</string>
     <string name="dashboard_card_tab_all">全部</string>
     <string name="dashboard_card_tab_new">新客</string>
     <string name="dashboard_card_tab_old">熟客</string>
@@ -69,8 +68,6 @@
     <string name="dashboard_card_marker_time">时间</string>
     <string name="dashboard_card_male">男性</string>
     <string name="dashboard_card_female">女性</string>
-    <string name="dashboard_card_male_label">男</string>
-    <string name="dashboard_card_female_label">女</string>
     <string name="dashboard_card_age_label">岁</string>
     <string name="dashboard_card_pie_hole_ratio">%s占比</string>
 

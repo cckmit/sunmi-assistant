@@ -1,5 +1,7 @@
 package sunmi.common.rpc.retrofit;
 
+import android.text.TextUtils;
+
 import java.io.File;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,8 +13,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.internal.platform.Platform;
 import retrofit2.Retrofit;
 import sunmi.common.base.BaseApplication;
+import sunmi.common.base.BaseConfig;
 import sunmi.common.rpc.retrofit.logging.Level;
 import sunmi.common.rpc.retrofit.logging.LoggingInterceptor;
+import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 
 /**
@@ -55,7 +59,8 @@ public class BaseRetrofitClient {
                 .hostnameVerifier(HttpsUtils.UnSafeHostnameVerifier)
                 .addInterceptor(new LoggingInterceptor
                         .Builder()//构建者模式
-                        .loggable(true) //是否开启日志打印
+                        .loggable(!TextUtils.equals(Utils.getMetaValue(BaseApplication.getContext(),
+                                "ENV_DATA", BaseConfig.ENV_RELEASE), BaseConfig.ENV_RELEASE)) //是否开启日志打印
                         .setLevel(Level.BASIC) //打印的等级
                         .log(Platform.INFO) // 打印类型
                         .request("Request") // request的Tag

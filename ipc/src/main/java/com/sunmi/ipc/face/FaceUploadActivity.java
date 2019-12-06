@@ -335,20 +335,10 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
                     }
                     if (mPickerDialog == null) {
                         mPickerDialog = new BottomPopMenu.Builder(FaceUploadActivity.this)
-                                .addItemAction(new PopItemAction(R.string.ipc_face_take_photo,
-                                        PopItemAction.PopItemStyle.Normal, new PopItemAction.OnClickListener() {
-                                    @Override
-                                    public void onClick() {
-                                        takePhoto();
-                                    }
-                                }))
-                                .addItemAction(new PopItemAction(R.string.ipc_face_album_choose,
-                                        PopItemAction.PopItemStyle.Normal, new PopItemAction.OnClickListener() {
-                                    @Override
-                                    public void onClick() {
-                                        pickImage();
-                                    }
-                                }))
+                                .addItemAction(new PopItemAction(R.string.str_take_photo,
+                                        PopItemAction.PopItemStyle.Normal, () -> takePhoto()))
+                                .addItemAction(new PopItemAction(R.string.str_choose_from_album,
+                                        PopItemAction.PopItemStyle.Normal, () -> pickImage()))
                                 .addItemAction(new PopItemAction(R.string.sm_cancel,
                                         PopItemAction.PopItemStyle.Cancel))
                                 .create();

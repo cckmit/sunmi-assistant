@@ -9,17 +9,16 @@ import sunmi.common.base.BaseView;
 
 /**
  * Description:
- * Created by bruce on 2019/8/14.
+ * Created by bruce on 2019/12/3.
  */
-public interface VideoPlayContract {
-
+public interface SDCardPlaybackContract {
     interface View extends BaseView {
 
         void getDeviceTimeSlotSuccess(List<VideoTimeSlotBean> slots);
 
-        void startLiveSuccess();
-
         void startPlaybackSuccess();
+
+        void getAllTimeSlotSuccess(List<VideoTimeSlotBean> slots);
 
     }
 
@@ -27,9 +26,7 @@ public interface VideoPlayContract {
 
         void getPlaybackList(IOTCClient iotcClient, long start, long end);
 
-        void startLive(IOTCClient iotcClient);
-
-        void startPlayback(IOTCClient iotcClient, long start);
+        void startPlayback(IOTCClient iotcClient, long start, long end);
 
     }
 

@@ -36,57 +36,33 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
     private static final int STATE_CASH_VIDEO_SERVICE_EXPIRED = 3;
 
 //    @Override
-//    public void getTimeSlots(int deviceId, final long startTime, final long endTime) {
-//        IpcCloudApi.getInstance().getTimeSlots(deviceId, startTime, endTime, new RetrofitCallback<CloudTimeSlotResp>() {
+//    public void getPlaybackList(IOTCClient iotcClient, long start, long end) {
+//        if (iotcClient == null) {
+//            return;
+//        }
+//        iotcClient.getPlaybackList(start, end, new P2pCmdCallback<List<VideoTimeSlotBean>>() {
 //            @Override
-//            public void onSuccess(int code, String msg, CloudTimeSlotResp data) {
-//                if (!isViewAttached()) {
-//                    return;
+//            public void onResponse(int cmd, IotcCmdResp<List<VideoTimeSlotBean>> result) {
+//                List<VideoTimeSlotBean> slots = new ArrayList<>();
+//                if (result.getData() != null && result.getData().size() > 0) {
+//                    for (VideoTimeSlotBean slotBean : result.getData().get(0).getResult()) {
+//                        slotBean.setApPlay(true);
+//                        slots.add(slotBean);
+//                    }
 //                }
-//                if (data.getTotalCount() == 0) {
-//                    mView.getCloudTimeSlotFail();
-//                } else {
-//                    mView.getCloudTimeSlotSuccess(startTime, endTime, data.getTimeslots());
+//                if (isViewAttached()) {
+//                    mView.getDeviceTimeSlotSuccess(slots);
 //                }
 //            }
 //
 //            @Override
-//            public void onFail(int code, String msg, CloudTimeSlotResp data) {
+//            public void onError() {
 //                if (isViewAttached()) {
-//                    mView.getCloudTimeSlotFail();
+//                    mView.getDeviceTimeSlotSuccess(null);
 //                }
 //            }
 //        });
 //    }
-
-    @Override
-    public void getPlaybackList(IOTCClient iotcClient, long start, long end) {
-        if (iotcClient == null) {
-            return;
-        }
-        iotcClient.getPlaybackList(start, end, new P2pCmdCallback<List<VideoTimeSlotBean>>() {
-            @Override
-            public void onResponse(int cmd, IotcCmdResp<List<VideoTimeSlotBean>> result) {
-                List<VideoTimeSlotBean> slots = new ArrayList<>();
-                if (result.getData() != null && result.getData().size() > 0) {
-                    for (VideoTimeSlotBean slotBean : result.getData().get(0).getResult()) {
-                        slotBean.setApPlay(true);
-                        slots.add(slotBean);
-                    }
-                }
-                if (isViewAttached()) {
-                    mView.getDeviceTimeSlotSuccess(slots);
-                }
-            }
-
-            @Override
-            public void onError() {
-                if (isViewAttached()) {
-                    mView.getDeviceTimeSlotSuccess(null);
-                }
-            }
-        });
-    }
 
     @Override
     public void startLive(IOTCClient iotcClient) {
@@ -108,45 +84,22 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
         });
     }
 
-    @Override
-    public void startPlayback(IOTCClient iotcClient, long start) {
-        if (iotcClient == null) {
-            return;
-        }
-        iotcClient.startPlayback(start, new P2pCmdCallback<List<VideoTimeSlotBean>>() {
-            @Override
-            public void onResponse(int cmd, IotcCmdResp<List<VideoTimeSlotBean>> result) {
-                if (isViewAttached()) {
-                    mView.startPlaybackSuccess();
-                }
-            }
-
-            @Override
-            public void onError() {
-
-            }
-        });
-    }
-
 //    @Override
-//    public void getCloudVideoList(int deviceId, long start, long end) {
-//        if (deviceId <= 0) {
-//            mView.shortTip("设备信息不完整");
+//    public void startPlayback(IOTCClient iotcClient, long start) {
+//        if (iotcClient == null) {
 //            return;
 //        }
-//        IpcCloudApi.getInstance().getVideoList(deviceId, start, end, new RetrofitCallback<VideoListResp>() {
+//        iotcClient.startPlayback(start, new P2pCmdCallback<List<VideoTimeSlotBean>>() {
 //            @Override
-//            public void onSuccess(int code, String msg, VideoListResp data) {
+//            public void onResponse(int cmd, IotcCmdResp<List<VideoTimeSlotBean>> result) {
 //                if (isViewAttached()) {
-//                    mView.getCloudVideosSuccess(data.getVideo_list());
+//                    mView.startPlaybackSuccess();
 //                }
 //            }
 //
 //            @Override
-//            public void onFail(int code, String msg, VideoListResp data) {
-//                if (isViewAttached()) {
-//                    mView.hideLoadingDialog();
-//                }
+//            public void onError() {
+//
 //            }
 //        });
 //    }

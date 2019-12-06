@@ -71,7 +71,7 @@ public class LineChartMarkerView extends MarkerView {
                 mTvTitle.setText(R.string.dashboard_card_tab_gender);
                 break;
             case Constants.DATA_TYPE_AGE:
-                mTvTitle.setText(R.string.dashboard_card_tab_age);
+                mTvTitle.setText(R.string.str_common_age);
                 break;
             case Constants.DATA_TYPE_ALL:
                 mTvTitle.setText(R.string.dashboard_card_tab_all);

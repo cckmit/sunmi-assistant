@@ -144,8 +144,8 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
             groupId = mFace.getGroupId();
             gender = mFace.getGender();
             silFaceName.setContent(mFace.getName());
-            silFaceSex.setContent(mFace.getGender() == 1 ? context.getString(R.string.ipc_face_gender_male) :
-                    context.getString(R.string.ipc_face_gender_female));
+            silFaceSex.setContent(mFace.getGender() == 1 ? context.getString(R.string.str_gender_male) :
+                    context.getString(R.string.str_gender_female));
             silFaceEnterShopNum.setContent(mFace.getArrivalCount() + "");
             silFaceEnterShopNum.setEndImageDrawable(null);
             if (mFace.getCreateTime() != 0) {
@@ -205,9 +205,9 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
     void imageClick() {
         if (mPickerDialog == null) {
             mPickerDialog = new BottomPopMenu.Builder(this)
-                    .addItemAction(new PopItemAction(R.string.ipc_face_take_photo,
+                    .addItemAction(new PopItemAction(R.string.str_take_photo,
                             PopItemAction.PopItemStyle.Normal, () -> takePhoto()))
-                    .addItemAction(new PopItemAction(R.string.ipc_face_album_choose,
+                    .addItemAction(new PopItemAction(R.string.str_choose_from_album,
                             PopItemAction.PopItemStyle.Normal, () -> openPicker()))
                     .addItemAction(new PopItemAction(R.string.sm_cancel,
                             PopItemAction.PopItemStyle.Cancel))
@@ -344,8 +344,8 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
 
     @Override
     public void updateGenderSuccessView(int gender) {
-        silFaceSex.setContent(gender == 1 ? context.getString(R.string.ipc_face_gender_male) :
-                context.getString(R.string.ipc_face_gender_female));
+        silFaceSex.setContent(gender == 1 ? context.getString(R.string.str_gender_male) :
+                context.getString(R.string.str_gender_female));
         setResult(RESULT_OK);
     }
 
@@ -395,7 +395,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                     ? "" : silFaceId.getContentText().toString();
         } else if (updateIndex == UPDATE_INDEX_GENDER) {
             viewHeight = 350;
-            gender = TextUtils.equals(context.getString(R.string.ipc_face_gender_male), silFaceSex.getContentText().toString()) ? 1 : 2;
+            gender = TextUtils.equals(context.getString(R.string.str_gender_male), silFaceSex.getContentText().toString()) ? 1 : 2;
         } else if (updateIndex == UPDATE_INDEX_AGE) {
             viewHeight = 600;
             ageRange = TextUtils.isEmpty(silFaceAge.getContentText())
@@ -417,8 +417,8 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
             rvContent.setAdapter(new IdentityAdapter(context, R.layout.item_common_checked, groupList));
         } else if (updateIndex == UPDATE_INDEX_GENDER) {
             final List<String> list = new ArrayList<>();
-            list.add(context.getString(R.string.ipc_face_gender_male));
-            list.add(context.getString(R.string.ipc_face_gender_female));
+            list.add(context.getString(R.string.str_gender_male));
+            list.add(context.getString(R.string.str_gender_female));
             rvContent.setAdapter(new GenderAdapter(context, R.layout.item_common_checked, list));
         } else if (updateIndex == UPDATE_INDEX_AGE) {
             rvContent.setAdapter(new AgeAdapter(context, R.layout.item_common_checked, faceAgesList));
@@ -519,13 +519,13 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
         public void convert(final ViewHolder holder, final String data) {
             SettingItemLayout item = holder.getView(R.id.sil_item);
             item.setTitle(data);
-            String genderName = gender == 1 ? context.getString(R.string.ipc_face_gender_male) : context.getString(R.string.ipc_face_gender_female);
+            String genderName = gender == 1 ? context.getString(R.string.str_gender_male) : context.getString(R.string.str_gender_female);
             if (TextUtils.equals(genderName, data)) {
                 selectedIndex = holder.getAdapterPosition();
             }
             holder.itemView.setOnClickListener(v -> {
                 selectedIndex = holder.getAdapterPosition();
-                gender = TextUtils.equals(context.getString(R.string.ipc_face_gender_male), data) ? 1 : 2;
+                gender = TextUtils.equals(context.getString(R.string.str_gender_male), data) ? 1 : 2;
                 notifyDataSetChanged();
             });
             item.setChecked(selectedIndex == holder.getAdapterPosition());
