@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.datelibrary.view.DatePicker;
 import com.datelibrary.bean.DateType;
+import com.datelibrary.view.DatePicker;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.OpcodeConstants;
@@ -210,7 +210,8 @@ public class IpcSettingDetectionTimeActivity extends BaseActivity {
         String[] weekName = getResources().getStringArray(R.array.week_name);
         StringBuilder sb = new StringBuilder();
         boolean isFirst = true;
-        for (String day : weekName) {
+        for (int i = 1; i < 8; i++) {
+            String day = weekName[i % 7];
             if ((days & WEEK_FIRST_DAY_MASK) != 0) {
                 if (isFirst) {
                     sb.append(day);

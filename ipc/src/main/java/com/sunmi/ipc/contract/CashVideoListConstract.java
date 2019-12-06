@@ -1,5 +1,9 @@
 package com.sunmi.ipc.contract;
 
+import com.sunmi.ipc.model.CashVideoResp;
+
+import java.util.List;
+
 import sunmi.common.base.BaseView;
 
 /**
@@ -10,7 +14,7 @@ import sunmi.common.base.BaseView;
 public interface CashVideoListConstract {
 
     interface View extends BaseView {
-        void getCashVideoSuccess();
+        void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, boolean hasMore, int total);
 
         void netWorkError();
     }

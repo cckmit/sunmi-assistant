@@ -11,9 +11,9 @@ import sunmi.common.base.BaseView;
 public interface CashVideoContract {
     interface View extends BaseView {
 
-        void updateTagSuccess();
+        void updateTagSuccess(int videoType);
 
-        void updateTagFail(int code, String msg);
+        void updateTagFail(int code, String msg, int videoType);
 
         void getOrderInfoSuccess(CashOrderResp data);
 
@@ -23,6 +23,6 @@ public interface CashVideoContract {
     interface Presenter {
         void updateTag(int auditVideoId, String description, int videoType);
 
-        void getOrderInfo(int orderNo);
+        void getOrderInfo(String orderNo);
     }
 }

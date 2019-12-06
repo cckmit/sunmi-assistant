@@ -358,6 +358,15 @@
     <string name="cash_video_list">收银视频列表</string>
     <string name="str_fast_play">一天快放</string>
     <string name="tip_fast_play">支持今日收银视频连续播放</string>
+    <string name="cash_tag_exception">标记异常</string>
+    <string name="cash_tag_cancel_exception">取消标记</string>
+    <string name="cash_input_title_tag_type">请输入异常类型</string>
+    <string name="cash_input_title_tag_tip">如：现金交易 未入钱箱等</string>
+    <string name="cash_tag_success">标记成功</string>
+    <string name="cash_tag_cancel_success">取消成功</string>
+    <string name="cash_tag_fail">标记失败</string>
+    <string name="cash_tag_cancel_fail">取消失败</string>
+    <string name="cash_creenshot_permission_tip">如果不允许，将无法将截图保存至本地</string>
 </resources>
 
 

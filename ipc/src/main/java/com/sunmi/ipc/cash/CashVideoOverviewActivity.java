@@ -179,7 +179,11 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         }
     }
 
+    /**
+     * 计算开始时间和结束时间并定时调用接口
+     */
     private void initStartAndEndTime() {
+        showLoadingDialog();
         startTime = (DateTimeUtils.getDayStart(selectedCalendar).getTimeInMillis()) / 1000;
         endTime = startTime + 3600 * 24;
         service = Executors.newScheduledThreadPool(1);
@@ -223,6 +227,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
 
     @Click(resName = "btn_refresh")
     public void refreshClick() {
+        showLoadingDialog();
         if (isSingleDevice) {
             mPresenter.getIpcCashVideoCount(idList, startTime, endTime);
         } else {
@@ -286,6 +291,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         if (networkError.isShown()) {
             networkError.setVisibility(View.GONE);
         }
+        hideLoadingDialog();
         CashVideoServiceBean bean = beans.get(0);
         ImageUtils.loadImage(context, bean.getImgUrl(), civIpc, false, -1);
         tvIpcName.setText(bean.getDeviceName());
