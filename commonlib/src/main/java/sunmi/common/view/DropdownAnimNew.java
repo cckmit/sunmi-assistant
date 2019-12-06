@@ -34,13 +34,18 @@ public class DropdownAnimNew implements DropdownMenuNew.Anim {
     }
 
     @Override
-    public void showImmediately(DropdownMenuNew.ViewHolder titleHolder, View menu, View overlay) {
+    public void onPostShow(DropdownMenuNew.ViewHolder titleHolder, View menu, View overlay) {
         TextView title = (TextView) titleHolder.getView(R.id.dropdown_title);
         ImageView arrow = (ImageView) titleHolder.getView(R.id.dropdown_arrow);
         title.setSelected(true);
         menu.setTranslationY(0);
         overlay.setAlpha(1f);
         arrow.setRotation(180);
+    }
+
+    @Override
+    public void onPreShow(DropdownMenuNew.ViewHolder titleHolder, View menu, View overlay) {
+        overlay.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -60,11 +65,16 @@ public class DropdownAnimNew implements DropdownMenuNew.Anim {
     }
 
     @Override
-    public void dismissImmediately(DropdownMenuNew.ViewHolder titleHolder, View menu, View overlay) {
+    public void onPostDismiss(DropdownMenuNew.ViewHolder titleHolder, View menu, View overlay) {
         ImageView arrow = (ImageView) titleHolder.getView(R.id.dropdown_arrow);
         menu.setTranslationY(-menu.getHeight());
         overlay.setAlpha(0f);
         arrow.setRotation(0);
+        overlay.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onPreDismiss(DropdownMenuNew.ViewHolder titleHolder, View menu, View overlay) {
     }
 
 }
