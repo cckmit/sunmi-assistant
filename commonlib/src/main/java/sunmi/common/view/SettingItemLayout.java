@@ -185,7 +185,7 @@ public class SettingItemLayout extends FrameLayout {
                 break;
             case TYPE_CHECKED:
                 clContainer.setBackgroundResource(R.color.c_white);
-                tvTitle.setTextColor(ContextCompat.getColorStateList(context, R.color.text_common_checkable));
+                tvTitle.setTextColor(ContextCompat.getColorStateList(context, R.color.text_common_main_checkable));
                 ivEndImage.setVisibility(VISIBLE);
                 ivEndImage.setImageResource(R.drawable.ic_right_check);
                 break;
@@ -369,7 +369,7 @@ public class SettingItemLayout extends FrameLayout {
                 break;
             case TYPE_CHECKED:
                 clContainer.setBackgroundResource(R.color.c_white);
-                tvTitle.setTextColor(ContextCompat.getColorStateList(getContext(), R.color.text_common_checkable));
+                tvTitle.setTextColor(ContextCompat.getColorStateList(getContext(), R.color.text_common_main_checkable));
                 ivEndImage.setVisibility(VISIBLE);
                 ivEndImage.setImageResource(R.drawable.ic_right_check);
                 updateConstraintForEndImage();
