@@ -6,7 +6,6 @@ import com.sunmi.ipc.R;
 import com.sunmi.ipc.contract.IpcManagerContract;
 import com.sunmi.ipc.model.IotcCmdResp;
 import com.sunmi.ipc.model.IpcManageBean;
-import sunmi.common.model.ServiceListResp;
 import com.sunmi.ipc.model.VideoTimeSlotBean;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.ipc.utils.IOTCClient;
@@ -19,6 +18,8 @@ import sunmi.common.base.BaseApplication;
 import sunmi.common.base.BasePresenter;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
+import sunmi.common.model.CashVideoServiceBean;
+import sunmi.common.model.ServiceListResp;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.DateTimeUtils;
@@ -29,6 +30,10 @@ import sunmi.common.utils.DateTimeUtils;
  */
 public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
         implements IpcManagerContract.Presenter {
+
+    private static final int STATE_CASH_VIDEO_SERVICE_ON = 1;
+    private static final int STATE_CASH_VIDEO_SERVICE_OFF = 2;
+    private static final int STATE_CASH_VIDEO_SERVICE_EXPIRED = 3;
 
 //    @Override
 //    public void getTimeSlots(int deviceId, final long startTime, final long endTime) {
@@ -167,7 +172,7 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
     }
 
     @Override
-    public void getStorageList(String deviceSn) {
+    public void getStorageList(String deviceSn, final IpcManageBean item) {
         List<String> snList = new ArrayList<>();
         snList.add(deviceSn);
         IpcCloudApi.getInstance().getStorageList(snList, new RetrofitCallback<ServiceListResp>() {
@@ -175,9 +180,9 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
             public void onSuccess(int code, String msg, ServiceListResp data) {
                 if (isViewAttached()) {
                     if (data.getDeviceList().size() > 0) {
-                        mView.getStorageSuccess(getStorage(data.getDeviceList().get(0), BaseApplication.getContext()));
+                        mView.getStorageSuccess(getStorage(item, data.getDeviceList().get(0), BaseApplication.getContext()));
                     } else {
-                        mView.getStorageSuccess(getStorage(null, BaseApplication.getContext()));
+                        mView.getStorageSuccess(getStorage(item, null, BaseApplication.getContext()));
                         mView.shortTip(R.string.tip_cloud_storage_error);
                     }
                 }
@@ -186,39 +191,82 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
             @Override
             public void onFail(int code, String msg, ServiceListResp data) {
                 if (isViewAttached()) {
-                    mView.getStorageSuccess(getStorage(null, BaseApplication.getContext()));
+                    mView.getStorageSuccess(getStorage(item, null, BaseApplication.getContext()));
                     mView.shortTip(R.string.tip_cloud_storage_error);
                 }
             }
         });
     }
 
-    private IpcManageBean getStorage(ServiceListResp.DeviceListBean data, Context context) {
-        IpcManageBean cloudStorage = new IpcManageBean(R.mipmap.ipc_cloud_storage, context.getString(R.string.str_cloud_storage),
-                context.getString(R.string.str_setting_detail));
+    @Override
+    public void getCashVideoService(final int deviceId) {
+        IpcCloudApi.getInstance().getAuditVideoServiceList(null,
+                new RetrofitCallback<ServiceListResp>() {
+
+                    @Override
+                    public void onSuccess(int code, String msg, ServiceListResp data) {
+                        List<ServiceListResp.DeviceListBean> list = data.getDeviceList();
+                        ArrayList<CashVideoServiceBean> devices = new ArrayList<>();
+                        if (list == null || list.isEmpty()) {
+                            if (isViewAttached()) {
+                                mView.getCashVideoServiceSuccess(devices, false);
+                            }
+                            return;
+                        }
+                        boolean hasCashVideoService = false;
+                        for (ServiceListResp.DeviceListBean device : list) {
+                            if (device.getStatus() == STATE_CASH_VIDEO_SERVICE_ON) {
+                                hasCashVideoService = true;
+                            }
+                            if (device.getStatus() == STATE_CASH_VIDEO_SERVICE_ON
+                                    && device.getDeviceId() == deviceId) {
+                                CashVideoServiceBean info = new CashVideoServiceBean();
+                                info.setDeviceId(deviceId);
+                                info.setDeviceSn(device.getDeviceSn());
+                                info.setDeviceName(device.getDeviceName());
+                                devices.add(info);
+                                break;
+                            }
+                        }
+                        if (isViewAttached()) {
+                            mView.getCashVideoServiceSuccess(devices, hasCashVideoService);
+                        }
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg, ServiceListResp data) {
+                        if (isViewAttached()) {
+                            mView.shortTip(R.string.toast_network_error);
+                            mView.hideLoadingDialog();
+                        }
+                    }
+                });
+    }
+
+    private IpcManageBean getStorage(IpcManageBean item, ServiceListResp.DeviceListBean data, Context context) {
         if (data != null) {
-            cloudStorage.setEnabled(true);
-            cloudStorage.setStatus(data.getStatus());
+            item.setEnabled(true);
+            item.setStatus(data.getStatus());
             if (data.getActiveStatus() == CommonConstants.SERVICE_INACTIVATED && data.getStatus() != CommonConstants.SERVICE_ALREADY_OPENED) {
-                cloudStorage.setSummary(context.getString(R.string.str_subscribe_free));
-                cloudStorage.setRightText(context.getString(R.string.str_use_free));
-                cloudStorage.setTagImageResId(R.mipmap.ipc_cloud_free_half_year);
+                item.setSummary(context.getString(R.string.str_subscribe_free));
+                item.setRightText(context.getString(R.string.str_use_free));
+                item.setTagImageResId(R.mipmap.ipc_cloud_free_half_year);
             } else if (data.getStatus() == CommonConstants.SERVICE_ALREADY_OPENED) {
                 BaseNotification.newInstance().postNotificationName(CommonNotifications.cloudStorageOpened);
-                cloudStorage.setTitle(data.getServiceName());
-                cloudStorage.setSummary(context.getString(R.string.str_remaining_validity_period,
+                item.setTitle(data.getServiceName());
+                item.setSummary(context.getString(R.string.str_remaining_validity_period,
                         DateTimeUtils.secondToPeriod(data.getValidTime())));
             } else if (data.getStatus() == CommonConstants.SERVICE_NOT_OPENED) {
-                cloudStorage.setSummary(context.getString(R.string.str_subscribe_free));
-                cloudStorage.setRightText(context.getString(R.string.str_subscribe_now));
+                item.setSummary(context.getString(R.string.str_subscribe_free));
+                item.setRightText(context.getString(R.string.str_subscribe_now));
             } else if (data.getStatus() == CommonConstants.SERVICE_EXPIRED) {
-                cloudStorage.setSummary(context.getString(R.string.str_expired));
+                item.setSummary(context.getString(R.string.str_expired));
             }
         } else {
-            cloudStorage.setRightText(context.getString(R.string.str_coming_soon));
-            cloudStorage.setEnabled(false);
+            item.setRightText(context.getString(R.string.str_coming_soon));
+            item.setEnabled(false);
         }
-        return cloudStorage;
+        return item;
     }
 
 }

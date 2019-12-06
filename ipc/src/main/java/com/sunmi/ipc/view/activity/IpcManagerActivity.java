@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.datelibrary.bean.DateType;
 import com.datelibrary.view.DatePickDialog;
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.cash.CashVideoOverviewActivity_;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.IpcManagerContract;
 import com.sunmi.ipc.model.IpcManageBean;
@@ -62,6 +63,7 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.constant.enums.DeviceStatus;
+import sunmi.common.model.CashVideoServiceBean;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.router.SunmiServiceApi;
 import sunmi.common.utils.CommonHelper;
@@ -213,15 +215,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private CommonListAdapter adapter;
     private int cloudStorageServiceStatus;
     private List<IpcManageBean> list = new ArrayList<>();
+    private IpcManageBean cloudStorageItem;
 
     @AfterViews
     void init() {
         mPresenter = new IpcManagerPresenter();
         mPresenter.attachView(this);
-        if (isSS1()) {
-            mPresenter.getStorageList(device.getDeviceid());
-            ivCloudPlayback.setVisibility(View.VISIBLE);
-        }
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//保持屏幕常亮
@@ -242,6 +241,10 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         }
         initSurfaceView();
         initManageList();
+        if (isSS1()) {
+            mPresenter.getStorageList(device.getDeviceid(), cloudStorageItem);
+            ivCloudPlayback.setVisibility(View.VISIBLE);
+        }
         handler.postDelayed(this::initControllerPanel, 200);
     }
 
@@ -627,9 +630,26 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @UiThread
     @Override
     public void getStorageSuccess(IpcManageBean bean) {
-        list.add(0, bean);
         cloudStorageServiceStatus = bean.getStatus();
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void getCashVideoServiceSuccess(ArrayList<CashVideoServiceBean> devices, boolean alreadySubscribe) {
+        hideLoadingDialog();
+        if (!devices.isEmpty()) {
+            // 跳转收银视频页面
+            CashVideoOverviewActivity_.intent(this)
+                    .isSingleDevice(true)
+                    .serviceBeans(devices)
+                    .start();
+        } else if (alreadySubscribe) {
+            // 已经有其他摄像机开通了收银视频服务
+            shortTip(R.string.cash_video_other_device_already_subscribe_tip);
+        } else {
+            // 未开通收银视频服务，跳转开通服务页
+            // TODO: 未开通收银视频服务，跳转开通服务页
+        }
     }
 
     @Override
@@ -649,8 +669,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                 }
             }
         } else if (id == CommonNotifications.cloudStorageChange) {
-            list.remove(0);
-            mPresenter.getStorageList(device.getDeviceid());
+            mPresenter.getStorageList(device.getDeviceid(), cloudStorageItem);
         }
     }
 
@@ -1239,6 +1258,14 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                     getString(R.string.str_face_history),
                     getString(R.string.str_view_face_history), getString(R.string.str_coming_soon), false));
         }*/
+        if (isSS1()) {
+            list.add(new IpcManageBean(R.mipmap.ipc_manage_cashier, getString(R.string.cash_video),
+                    getString(R.string.cash_video_item_content), getString(R.string.str_learn_more), true));
+            cloudStorageItem = new IpcManageBean(R.mipmap.ipc_cloud_storage, context.getString(R.string.str_cloud_storage),
+                    context.getString(R.string.str_setting_detail));
+            cloudStorageItem.setEnabled(false);
+            list.add(cloudStorageItem);
+        }
         list.add(new IpcManageBean(R.mipmap.ipc_manage_md, getString(R.string.str_motion_detection),
                 getString(R.string.str_md_exception), getString(R.string.str_coming_soon), false));
         adapter = new CommonListAdapter<IpcManageBean>(context,
@@ -1263,6 +1290,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                             Router.withApi(SunmiServiceApi.class)
                                     .goToWebViewCloud(context, CommonConfig.CLOUD_STORAGE_URL, snList);
                         }
+                    } else if (bean.getLeftImageResId() == R.mipmap.ipc_manage_cashier) {
+                        showLoadingDialog();
+                        mPresenter.getCashVideoService(device.getId());
                     }
                 });
             }
