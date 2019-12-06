@@ -20,7 +20,7 @@
         android:layout_height="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_12"
         android:layout_marginTop="@dimen/dp_19"
-        android:background="@mipmap/ic_cash_flag_gray"
+        android:background="@drawable/bg_cash_flag"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -62,6 +62,7 @@
         android:paddingBottom="@dimen/dp_3"
         android:textColor="@color/common_orange"
         android:textSize="@dimen/sp_12"
+        android:visibility="gone"
         app:layout_constraintLeft_toRightOf="@id/tv_time"
         app:layout_constraintTop_toTopOf="parent" />
 

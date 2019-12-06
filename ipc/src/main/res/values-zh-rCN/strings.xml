@@ -364,11 +364,11 @@
     <string name="cash_tag_fail">标记失败</string>
     <string name="cash_tag_cancel_fail">取消失败</string>
     <string name="cash_creenshot_permission_tip">如果不允许，将无法将截图保存至本地</string>
+    <string name="str_all_device">全部设备</string>
     <string name="cash_time_choose">时段选择</string>
     <string name="cash_time_start_hint">开始时间</string>
     <string name="cash_time_end_hint">结束时间</string>
     <string name="cash_time_to">至</string>
-
 </resources>
 
 

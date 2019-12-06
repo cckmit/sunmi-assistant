@@ -7,6 +7,8 @@ import com.xiaojinzi.component.anno.router.HostAnno;
 import com.xiaojinzi.component.anno.router.PathAnno;
 import com.xiaojinzi.component.anno.router.RouterApiAnno;
 
+import java.util.ArrayList;
+
 import sunmi.common.constant.RouterConfig;
 
 /**
@@ -22,5 +24,5 @@ public interface IpcApi {
     void goToIpcStartConfig(Context context, @ParameterAnno("ipcType") int type);
 
     @PathAnno(RouterConfig.Ipc.CASH_VIDEO_OVERVIEW)
-    void goToCashVideoOverview(Context context);
+    void goToCashVideoOverview(Context context, @ParameterAnno("serviceBeans") ArrayList beans, @ParameterAnno("isSingleDevice") boolean isSingle);
 }

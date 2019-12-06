@@ -67,6 +67,8 @@ public class CashVideoModel {
                             total = data.getTotalCount();
                             if (n == total) {
                                 hasMore = false;
+                            } else {
+                                pageNum++;
                             }
                             callBack.getCashVideoSuccess(beans, hasMore, total);
                         }
@@ -74,7 +76,7 @@ public class CashVideoModel {
 
                     @Override
                     public void onFail(int code, String msg, CashVideoResp data) {
-                        callBack.getCashVideofail(code, msg);
+                        callBack.getCashVideofail(code, msg, -1);
                     }
                 });
     }
@@ -106,7 +108,7 @@ public class CashVideoModel {
 
                     @Override
                     public void onFail(int code, String msg, CashVideoResp data) {
-                        callBack.getCashVideofail(code, msg);
+                        callBack.getCashVideofail(code, msg, (pageNum - 1) * pageSize);
                     }
                 });
 
@@ -119,7 +121,7 @@ public class CashVideoModel {
     public interface CallBack {
         void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, boolean hasMore, int total);
 
-        void getCashVideofail(int code, String msg);
+        void getCashVideofail(int code, String msg, int count);
 
     }
 }
