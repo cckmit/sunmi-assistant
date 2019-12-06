@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.DateTimeUtils;
-import sunmi.common.utils.Utils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.ViewHolder;
 
@@ -77,6 +76,7 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
         }
         itemRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         itemRecyclerView.setAdapter(new CashRecyclerViewAdapter(mContext, mList));
+        itemRecyclerView.scrollToPosition(currentPlayPosition);
         viewLayout.setOnTouchListener(this);
         this.setTouchInterceptor(this);
     }
@@ -109,7 +109,7 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
         if (event.getAction() == MotionEvent.ACTION_OUTSIDE ||
                 event.getAction() == MotionEvent.ACTION_DOWN) {
             //title+statusBar高度
-            int titleHeight = (int) mContext.getResources().getDimension(R.dimen.dp_64) + Utils.getStatusBarHeight(mContext);
+            int titleHeight = (int) mContext.getResources().getDimension(R.dimen.dp_64);
             //RecyclerView底部Y高度坐标
             int recyclerViewBottomHeight = mList.size() > SHOP_ITEM_SIZE ?
                     (int) (mContext.getResources().getDimension(R.dimen.dp_152) * maxLength) : (int) (mContext.getResources().getDimension(R.dimen.dp_152) * mList.size());
@@ -178,7 +178,8 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
             }
             holder.itemView.setOnClickListener(v -> {
                 //获取当前的点击的视频位置
-                BaseNotification.newInstance().postNotificationName(CommonNotifications.cashVideoPlayPosition, holder.getAdapterPosition());
+                BaseNotification.newInstance().postNotificationName(
+                        CommonNotifications.cashVideoPlayPosition, holder.getAdapterPosition());
                 dismiss();
                 setImageBackground();
             });
