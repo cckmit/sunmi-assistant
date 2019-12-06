@@ -14,31 +14,22 @@ public class DropdownTime extends DropdownMenuNew.Model {
     private long timeStart;
     private long timeEnd;
 
+    public DropdownTime(int id, String name, boolean isChecked, boolean isCustom) {
+        super(isChecked);
+        this.id = id;
+        this.title = name;
+        this.itemName = name;
+        this.timeStart = -1;
+        this.timeEnd = -1;
+        this.isCustom = isCustom;
+    }
+
     public DropdownTime(int id, String name, long timeStart, long timeEnd) {
         this.id = id;
         this.title = name;
         this.itemName = name;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
-    }
-
-    public DropdownTime(int id, String name, long timeStart, long timeEnd, boolean isChecked) {
-        super(isChecked);
-        this.id = id;
-        this.title = name;
-        this.itemName = name;
-        this.timeStart = timeStart;
-        this.timeEnd = timeEnd;
-    }
-
-    public DropdownTime(int id, String name, long timeStart, long timeEnd, boolean isChecked, boolean isCustom) {
-        super(isChecked);
-        this.id = id;
-        this.title = name;
-        this.itemName = name;
-        this.timeStart = timeStart;
-        this.timeEnd = timeEnd;
-        this.isCustom = isCustom;
     }
 
     public int getId() {
@@ -63,5 +54,14 @@ public class DropdownTime extends DropdownMenuNew.Model {
 
     public boolean isCustom() {
         return isCustom;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setTime(long timeStart, long timeEnd) {
+        this.timeStart = timeStart;
+        this.timeEnd = timeEnd;
     }
 }

@@ -479,8 +479,8 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
                 set.start();
                 currentAnim = set;
             } else {
-                dropdownAnim.onPostDismiss(title, menuContainer, overlay);
                 adapter.updateTitle();
+                dropdownAnim.onPostDismiss(title, menuContainer, overlay);
             }
         }
 

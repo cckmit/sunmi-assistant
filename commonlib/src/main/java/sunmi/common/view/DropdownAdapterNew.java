@@ -28,7 +28,7 @@ public class DropdownAdapterNew extends DropdownMenuNew.Adapter<FilterItem> {
         FilterItem model = models.get(0);
         TextView title = holder.getView(R.id.dropdown_title);
         title.setText(model.getTitleName());
-        title.setSelected(model.getId() != 0);
+        title.setSelected(model.getId() != -1);
     }
 
     @Override
