@@ -23,9 +23,9 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.DashboardFragment;
 import com.sunmi.assistant.mine.MineFragment;
 import com.sunmi.assistant.mine.MineFragment_;
-import com.sunmi.assistant.mine.contract.MessageCountContract;
+import com.sunmi.assistant.mine.contract.MainContract;
 import com.sunmi.assistant.mine.model.MessageCountBean;
-import com.sunmi.assistant.mine.presenter.MessageCountPresenter;
+import com.sunmi.assistant.mine.presenter.MainPresenter;
 import com.sunmi.assistant.utils.MainTab;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xiaojinzi.component.anno.RouterAnno;
@@ -49,17 +49,17 @@ import sunmi.common.notification.BaseNotification;
 import sunmi.common.router.AppApi;
 import sunmi.common.rpc.mqtt.MqttManager;
 import sunmi.common.utils.CommonHelper;
-import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.ThreadPool;
 import sunmi.common.view.MyFragmentTabHost;
 
 /**
  * main activity
  */
 @EActivity(R.layout.activity_main)
-public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
-        implements TabHost.OnTabChangeListener, MessageCountContract.View {
+public class MainActivity extends BaseMvpActivity<MainPresenter>
+        implements TabHost.OnTabChangeListener, MainContract.View {
 
     @ViewById(android.R.id.tabhost)
     MyFragmentTabHost mTabHost;
@@ -81,9 +81,12 @@ public class MainActivity extends BaseMvpActivity<MessageCountPresenter>
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
-        mPresenter = new MessageCountPresenter();
+        mPresenter = new MainPresenter();
         mPresenter.attachView(this);
-        mPresenter.getMessageCount();
+        if(!CommonHelper.isGooglePlay()) {
+            mPresenter.getMessageCount();
+            ThreadPool.getCachedThreadPool().submit(() -> mPresenter.syncIpcDevice());
+        }
         registerNetworkReceiver();
         CrashReport.setUserId(SpUtils.getUID());
 

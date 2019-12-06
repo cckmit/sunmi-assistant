@@ -28,7 +28,7 @@ public class Utils {
     private static final int PERIOD_WEEK_OFFSET = 100;
     private static final int PERIOD_MONTH_OFFSET = 10000;
 
-    private static final int MIN_DAYS_OF_MONTH = 28;
+    private static final int DAYS_OF_WEEK = 7;
 
     private static String[] sWeekName;
 
@@ -59,9 +59,9 @@ public class Utils {
         } else if (period == Constants.TIME_PERIOD_WEEK) {
             int dayOfWeek = temp.get(Calendar.DAY_OF_WEEK);
             int offset = temp.getFirstDayOfWeek() - dayOfWeek;
-            temp.add(Calendar.DATE, offset > 0 ? offset - 7 : offset);
+            temp.add(Calendar.DATE, offset > 0 ? offset - DAYS_OF_WEEK : offset);
             timeStart = temp.getTimeInMillis();
-            temp.add(Calendar.DATE, 7);
+            temp.add(Calendar.DATE, DAYS_OF_WEEK);
             timeEnd = temp.getTimeInMillis();
         } else {
             temp.set(Calendar.DATE, 1);
@@ -139,7 +139,7 @@ public class Utils {
         } else if (period == Constants.TIME_PERIOD_WEEK) {
             temp.setFirstDayOfWeek(Calendar.MONDAY);
             int dayOfWeek = temp.get(Calendar.DAY_OF_WEEK) - 1;
-            return PERIOD_WEEK_OFFSET + (dayOfWeek < 1 ? dayOfWeek + 7 : dayOfWeek);
+            return PERIOD_WEEK_OFFSET + (dayOfWeek < 1 ? dayOfWeek + DAYS_OF_WEEK : dayOfWeek);
         } else {
             return PERIOD_MONTH_OFFSET + temp.get(Calendar.DATE);
         }
@@ -152,7 +152,7 @@ public class Utils {
         if (value > PERIOD_MONTH_OFFSET) {
             return String.valueOf((int) (value - PERIOD_MONTH_OFFSET));
         } else if (value > PERIOD_WEEK_OFFSET) {
-            return sWeekName[(int) (value - PERIOD_WEEK_OFFSET - 1)];
+            return sWeekName[(int) (value - PERIOD_WEEK_OFFSET) % DAYS_OF_WEEK];
         } else {
             return String.format(Locale.getDefault(), "%02.0f:00", value - 1);
         }
@@ -168,8 +168,7 @@ public class Utils {
             return String.format(Locale.getDefault(), "%02d:00-%02d:00", hour, hour + 1);
         } else if (period == Constants.TIME_PERIOD_WEEK) {
             temp.setFirstDayOfWeek(Calendar.MONDAY);
-            int dayOfWeek = temp.get(Calendar.DAY_OF_WEEK) - 2;
-            return sWeekName[dayOfWeek < 0 ? dayOfWeek + 7 : dayOfWeek];
+            return sWeekName[temp.get(Calendar.DAY_OF_WEEK) - 1];
         } else {
             int month = temp.get(Calendar.MONTH) + 1;
             int day = temp.get(Calendar.DATE);
@@ -193,7 +192,7 @@ public class Utils {
         if (sWeekName == null) {
             sWeekName = context.getResources().getStringArray(R.array.week_name);
         }
-        return sWeekName[timeIndex - 1];
+        return sWeekName[timeIndex % DAYS_OF_WEEK];
     }
 
     public static long parseDateTime(String pattern, String str) throws ParseException {

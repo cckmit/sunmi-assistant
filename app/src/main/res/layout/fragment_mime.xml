@@ -83,7 +83,7 @@
                 android:id="@+id/sil_shop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:showDivider="top"
+                app:showDivider="both"
                 app:startImage="@mipmap/ic_my_business"
                 app:title="@string/str_store_manage"
                 app:type="arrow" />
@@ -135,7 +135,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:showDivider="top"
+                app:showDivider="both"
                 app:startImage="@mipmap/ic_coupon"
                 app:title="@string/str_coupon"
                 app:type="arrow"
@@ -162,7 +162,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_16"
-                app:showDivider="top"
+                app:showDivider="both"
                 app:startImage="@mipmap/ic_setting"
                 app:title="@string/str_setting"
                 app:type="arrow" />

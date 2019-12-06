@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/c_white">
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/c_white"
+        app:dividerShow="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:leftDefaultClickEnable="true"
+        app:leftIcon="@drawable/ic_back_dark"
+        app:titleText="@string/cash_video"
+        app:titleTextColor="@color/text_main" />
+
+    <RelativeLayout
+        android:id="@+id/rl_cash"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_300"
+        android:background="@color/c_black"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_bar">
+
+        <sunmi.common.utils.IVideoPlayer
+            android:id="@+id/ivp_cash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/c_black"
+            android:visibility="invisible" />
+
+        <RelativeLayout
+            android:layout_width="@dimen/dp_160"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_56"
+            android:background="@drawable/bg_round_corner_transparent"
+            android:padding="@dimen/dp_8">
+
+            <TextView
+                android:id="@+id/tv_amount_left"
+                android:layout_width="@dimen/dp_68"
+                android:layout_height="wrap_content"
+                android:text="@string/cash_trade_amount"
+                android:textColor="@color/c_white"
+                android:textSize="@dimen/sp_12" />
+
+            <TextView
+                android:id="@+id/tv_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/tv_amount_left"
+                android:textColor="@color/c_white"
+                android:textSize="@dimen/sp_12" />
+
+            <TextView
+                android:id="@+id/tv_order_no_left"
+                android:layout_width="@dimen/dp_68"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_amount"
+                android:layout_marginTop="@dimen/dp_8"
+                android:text="@string/cash_order_num"
+                android:textColor="@color/c_white"
+                android:textSize="@dimen/sp_12" />
+
+            <TextView
+                android:id="@+id/tv_order_no"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_amount"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_toEndOf="@id/tv_order_no_left"
+                android:lines="1"
+                android:textColor="@color/c_white"
+                android:textSize="@dimen/sp_12" />
+
+            <TextView
+                android:id="@+id/tv_total_commodity_left"
+                android:layout_width="@dimen/dp_68"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_order_no"
+                android:layout_marginTop="@dimen/dp_8"
+                android:text="@string/cash_goods_quality"
+                android:textColor="@color/c_white"
+                android:textSize="@dimen/sp_12" />
+
+            <TextView
+                android:id="@+id/tv_total_commodity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_order_no"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_toEndOf="@id/tv_total_commodity_left"
+                android:textColor="@color/c_white"
+                android:textSize="@dimen/sp_12" />
+
+            <TextView
+                android:id="@+id/tv_trade_type_left"
+                android:layout_width="@dimen/dp_68"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_total_commodity"
+                android:layout_marginTop="@dimen/dp_8"
+                android:text="@string/cash_trade_type"
+                android:textColor="@color/c_white"
+                android:textSize="@dimen/sp_12" />
+
+            <TextView
+                android:id="@+id/tv_trade_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_total_commodity"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_toEndOf="@id/tv_trade_type_left"
+                android:lines="1"
+                android:textColor="@color/c_white"
+                android:textSize="@dimen/sp_12" />
+
+        </RelativeLayout>
+
+        <!--底部控制区-->
+        <include
+            android:id="@+id/icd_bottom_progress"
+            layout="@layout/include_ipc_bottom_progress" />
+    </RelativeLayout>
+
+    <include layout="@layout/include_cash_play" />
+
+    <TextView
+        android:id="@+id/tv_screenshot_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_35"
+        android:layout_marginBottom="@dimen/dp_112"
+        android:background="@drawable/setting_bg_tip_text"
+        android:gravity="center"
+        android:padding="@dimen/dp_8"
+        android:text="@string/ipc_save_picture_tip"
+        android:textColor="@color/c_white"
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/recyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/pBar_loading"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
+        android:indeterminate="false"
+        android:indeterminateDrawable="@drawable/loading_common_white"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/recyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_bar" />
+
+    <TextView
+        android:id="@+id/tv_play_fail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@mipmap/ic_video_play_error"
+        android:drawablePadding="@dimen/dp_10"
+        android:text="@string/tip_network_fail_retry"
+        android:textColor="@color/text_normal"
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/recyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_bar" />
+
+    <ImageView
+        android:id="@+id/iv_video_change"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/recyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_bar" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ctl_bottom_setting" />
+
+</android.support.constraint.ConstraintLayout>

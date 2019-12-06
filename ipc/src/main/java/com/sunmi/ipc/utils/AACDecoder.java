@@ -57,6 +57,7 @@ public class AACDecoder {
     }
 
     public void stopRunning() {
+        isRunning = false;
         if (audioDataQueue != null) {
             audioDataQueue.clear();
         }

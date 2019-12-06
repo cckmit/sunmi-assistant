@@ -292,4 +292,31 @@
         </attr>
     </declare-styleable>
 
+    <declare-styleable name="DropdownMenuNew">
+        <!-- 下拉菜单样式 -->
+        <attr name="dm_style" format="enum">
+            <enum name="dialog" value="0" />
+            <enum name="popup" value="1" />
+            <enum name="custom" value="2" />
+        </attr>
+        <!-- 下拉菜单自定义布局，当下拉菜单样式为custom时有效 -->
+        <attr name="dm_layout" format="reference" />
+        <!-- 指定下拉菜单自定义布局中的List ID，下拉菜单样式为custom，并且设定了dm_layout时有效 -->
+        <attr name="dm_list" format="reference" />
+        <!-- 指定下拉菜单自定义布局的父亲布局ID，该项必须和dm_menuIndex同时指定 -->
+        <attr name="dm_menuParent" format="reference" />
+        <!-- 指定下拉菜单自定义布局在父亲布局中的位置（index） -->
+        <attr name="dm_menuIndex" format="integer" />
+        <!-- 下拉菜单列表最大高度可展示的元素数量 -->
+        <attr name="dm_maxHeightCount" format="float" />
+        <!-- 下拉菜单列表最大高度 -->
+        <attr name="dm_maxHeight" format="dimension" />
+        <!-- 下拉菜单列表选择后自动dismiss下拉菜单，默认为true -->
+        <attr name="dm_autoDismiss" format="boolean" />
+        <!-- 下拉菜单列表使用多选模式，默认为false -->
+        <attr name="dm_multiSelect" format="boolean" />
+        <!-- 下拉菜单展开和收起使用动画，默认为true -->
+        <attr name="dm_animated" format="boolean" />
+    </declare-styleable>
+
 </resources>

@@ -72,8 +72,8 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
     @Override
     public void init(Context context) {
         mAgeLabel = context.getString(R.string.dashboard_card_age_label);
-        mMaleLabel = context.getString(R.string.dashboard_card_male_label);
-        mFemaleLabel = context.getString(R.string.dashboard_card_female_label);
+        mMaleLabel = context.getString(R.string.str_gender_male);
+        mFemaleLabel = context.getString(R.string.str_gender_female);
     }
 
     @Override

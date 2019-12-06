@@ -9,7 +9,7 @@ import sunmi.common.base.BaseView;
  *
  * @author linyuanpeng on 2019-08-14.
  */
-public interface MessageCountContract {
+public interface MainContract {
 
     interface View extends BaseView {
         void getMessageCountSuccess(MessageCountBean data);

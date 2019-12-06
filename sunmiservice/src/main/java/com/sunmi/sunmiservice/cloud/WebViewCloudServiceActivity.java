@@ -230,7 +230,8 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
                                 .put("token", SpUtils.getStoreToken())
                                 .put("company_id", SpUtils.getCompanyId())
                                 .put("shop_id", SpUtils.getShopId())
-                                .put("sn_list", array).toString();
+                                .put("sn_list", array)
+                                .put("shop_name",SpUtils.getShopName()).toString();
                         webView.evaluateJavascript("javascript:getDeviceInfo('" + params + "')", new ValueCallback<String>() {
                             @Override
                             public void onReceiveValue(String value) {
@@ -246,7 +247,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
 
             @Override
             protected void receiverError(WebView view, WebResourceRequest request, WebResourceError error) {
-                loadError();
+               // loadError();
                 LogCat.e(TAG, "receiverError 111111" + " networkError");
             }
 

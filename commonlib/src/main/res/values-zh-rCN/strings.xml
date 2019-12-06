@@ -12,6 +12,9 @@
     <string name="str_next">下一步</string>
     <string name="str_close">关闭</string>
     <string name="str_setting">设置</string>
+    <string name="str_gender_male">男</string>
+    <string name="str_gender_female">女</string>
+    <string name="str_common_age">年龄</string>
     <string name="str_click_consent">点击“开始配置”代表你同意</string>
     <string name="sunmi_user_protocol">《商米用户协议》</string>
     <string name="str_privacy">《隐私政策》</string>
@@ -92,7 +95,7 @@
     <string name="update_app_exception">版本更新异常,请检查网络连接状态是否良好。</string>
     <string name="str_loding_more">加载中</string>
     <string name="tip_no_more_data">没有更多数据了</string>
-    <string name="picker_title">选择照片</string>
+    <string name="str_pick_photo">选择照片</string>
     <string name="picker_toast_no_permission">请开启拍照权限</string>
     <string name="picker_toast_no_camera">未找到拍照应用。</string>
     <string name="picker_toast_create_dir_error">创建文件目录失败!</string>
@@ -142,4 +145,11 @@
     <string name="device_status_exception">异常</string>
     <string name="device_status_unknown">——</string>
     <string name="str_save">保存</string>
+    <string name="cash_video">收银视频</string>
+    <string name="str_learn_more">了解详情</string>
+    <string name="str_cashier">收银审计</string>
+    <string name="text_day">天</string>
+    <string name="text_hour">时</string>
+    <string name="text_minute">分</string>
+    <string name="text_second">秒</string>
 </resources>
