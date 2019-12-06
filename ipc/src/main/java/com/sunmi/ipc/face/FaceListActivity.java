@@ -278,7 +278,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                 }
             });
         } else {
-            mTitleBar.setAppTitle(R.string.ipc_face_list_title);
+            mTitleBar.setAppTitle(R.string.ipc_face_group_manage);
             mTitleBar.setRightTextViewText(R.string.ipc_face_select);
             mTitleBar.getRightText().setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -877,20 +877,10 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
                     }
                     if (mPickerDialog == null) {
                         mPickerDialog = new BottomPopMenu.Builder(FaceListActivity.this)
-                                .addItemAction(new PopItemAction(R.string.ipc_face_take_photo,
-                                        PopItemAction.PopItemStyle.Normal, new PopItemAction.OnClickListener() {
-                                    @Override
-                                    public void onClick() {
-                                        takePhoto();
-                                    }
-                                }))
-                                .addItemAction(new PopItemAction(R.string.ipc_face_album_choose,
-                                        PopItemAction.PopItemStyle.Normal, new PopItemAction.OnClickListener() {
-                                    @Override
-                                    public void onClick() {
-                                        openPicker();
-                                    }
-                                }))
+                                .addItemAction(new PopItemAction(R.string.str_take_photo,
+                                        PopItemAction.PopItemStyle.Normal, () -> takePhoto()))
+                                .addItemAction(new PopItemAction(R.string.str_choose_from_album,
+                                        PopItemAction.PopItemStyle.Normal, () -> openPicker()))
                                 .addItemAction(new PopItemAction(R.string.sm_cancel,
                                         PopItemAction.PopItemStyle.Cancel))
                                 .create();

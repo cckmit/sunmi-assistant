@@ -10,8 +10,7 @@ import com.sunmi.ipc.utils.AACDecoder;
 import com.sunmi.ipc.utils.H264Decoder;
 import com.sunmi.ipc.utils.IOTCClient;
 
-import org.androidannotations.api.BackgroundExecutor;
-
+import sunmi.common.utils.ThreadPool;
 import sunmi.common.utils.log.LogCat;
 
 /**
@@ -21,7 +20,7 @@ import sunmi.common.utils.log.LogCat;
  * @date 2019-07-25
  */
 public class IpcVideoView extends SurfaceView
-        implements SurfaceHolder.Callback, IOTCClient.Callback {
+        implements SurfaceHolder.Callback, IOTCClient.StatusCallback, IOTCClient.ReceiverCallback {
 
     private static final String TAG = IpcVideoView.class.getSimpleName();
 
@@ -58,7 +57,7 @@ public class IpcVideoView extends SurfaceView
         mVideoHolder = getHolder();
         mVideoHolder.addCallback(this);
         iotcClient = new IOTCClient(uid);
-        iotcClient.setCallback(this);
+        iotcClient.setStatusCallback(this);
     }
 
     public Rect getRect() {
@@ -66,12 +65,7 @@ public class IpcVideoView extends SurfaceView
     }
 
     void initLive() {
-        BackgroundExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                iotcClient.init();
-            }
-        });
+        ThreadPool.getCachedThreadPool().submit(() -> iotcClient.init());
     }
 
     @Override
@@ -101,17 +95,12 @@ public class IpcVideoView extends SurfaceView
     }
 
     @Override
-    public void initSuccess() {
-
-    }
-
-    @Override
     public void initFail() {
 
     }
 
     @Override
-    public void onVideoReceived(byte[] videoBuffer) {
+    public void onVideoReceived(byte[] frameInfo, byte[] videoBuffer) {
         if (mVideoDecoder != null) {
             mVideoDecoder.setVideoData(videoBuffer);
         }

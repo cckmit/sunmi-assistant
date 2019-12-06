@@ -39,7 +39,7 @@
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
         app:rightText="@string/str_confirm"
-        app:titleText="@string/picker_title"
+        app:titleText="@string/str_pick_photo"
         app:rightTextColor="@color/text_main"
         app:titleTextColor="@color/text_main" />
 

@@ -12,6 +12,9 @@
     <string name="str_next">Next</string>
     <string name="str_close">Disable</string>
     <string name="str_setting">Settings</string>
+    <string name="str_gender_male">男</string>
+    <string name="str_gender_female">女</string>
+    <string name="str_common_age">年龄</string>
     <string name="str_click_consent">By clicking the button of "Start Configuration", you agree</string>
     <string name="sunmi_user_protocol">《Sunmi User Protocol》</string>
     <string name="str_privacy">《Privacy Policy》</string>
@@ -92,7 +95,7 @@
     <string name="update_app_exception">版本更新异常,请检查网络连接状态是否良好。</string>
     <string name="str_loding_more">Loading</string>
     <string name="tip_no_more_data">No more data</string>
-    <string name="picker_title">选择照片</string>
+    <string name="str_pick_photo">选择照片</string>
     <string name="picker_toast_no_permission">Permission denied!</string>
     <string name="picker_toast_no_camera">No camera app installed.</string>
     <string name="picker_toast_create_dir_error">Create directory FAILED!</string>

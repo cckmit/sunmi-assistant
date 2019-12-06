@@ -6,6 +6,7 @@ import com.sunmi.ipc.utils.IOTCClient;
 import java.util.ArrayList;
 
 import sunmi.common.model.CashVideoServiceBean;
+import sunmi.common.base.BaseView;
 
 /**
  * Description:
@@ -13,7 +14,9 @@ import sunmi.common.model.CashVideoServiceBean;
  */
 public interface IpcManagerContract {
 
-    interface View extends VideoPlayContract.View {
+    interface View extends BaseView {
+        void startLiveSuccess();
+
         void changeQualitySuccess(int quality);
 
         void getStorageSuccess(IpcManageBean bean);
@@ -21,7 +24,9 @@ public interface IpcManagerContract {
         void getCashVideoServiceSuccess(ArrayList<CashVideoServiceBean> devices, boolean alreadySubscribe);
     }
 
-    interface Presenter extends VideoPlayContract.Presenter {
+    interface Presenter {
+        void startLive(IOTCClient iotcClient);
+
         void changeQuality(int quality, IOTCClient iotcClient);
 
         void getStorageList(String deviceSn, IpcManageBean item);
