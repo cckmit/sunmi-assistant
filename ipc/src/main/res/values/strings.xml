@@ -372,6 +372,7 @@
     <string name="cash_time_start_hint">开始时间</string>
     <string name="cash_time_end_hint">结束时间</string>
     <string name="cash_time_to">至</string>
+    <string name="cash_init_screenshot_exception">初始化截屏异常</string>
 </resources>
 
 

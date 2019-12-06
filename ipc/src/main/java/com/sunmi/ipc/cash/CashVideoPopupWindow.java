@@ -13,13 +13,19 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.model.CashVideoResp;
 
-import java.util.List;
+import java.util.ArrayList;
 
+import sunmi.common.constant.CommonNotifications;
+import sunmi.common.notification.BaseNotification;
+import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.Utils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.ViewHolder;
@@ -37,15 +43,17 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
     private static final int SHOP_ITEM_SIZE = 3;
     private Activity mContext;
     private TextView mSetTitleView;
-    private List<String> mList;
+    private ArrayList<CashVideoResp.AuditVideoListBean> mList;
+    private int currentPlayPosition;
     private double maxLength = 3.5;
 
     @SuppressLint("ClickableViewAccessibility")
-    public CashVideoPopupWindow(Activity activity, View topToPopupWindowView,
-                                List<String> list, TextView mSetViewImg) {
+    public CashVideoPopupWindow(Activity activity, View topToPopupWindowView, int currentPlayPosition,
+                                ArrayList<CashVideoResp.AuditVideoListBean> list, TextView mSetViewImg) {
         super();
         if (activity != null) {
             this.mContext = activity;
+            this.currentPlayPosition = currentPlayPosition;
             this.mSetTitleView = mSetViewImg;
             this.mList = list;
         }
@@ -95,7 +103,6 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
         }
     }
 
-
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouch(View v, MotionEvent event) {
@@ -132,20 +139,36 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
         super.showAsDropDown(anchor);
     }
 
-    private class CashRecyclerViewAdapter extends CommonListAdapter<String> {
+    private class CashRecyclerViewAdapter extends CommonListAdapter<CashVideoResp.AuditVideoListBean> {
         /**
          * @param context 上下文
          * @param list    列表数据
          */
-        public CashRecyclerViewAdapter(Context context, List<String> list) {
+        public CashRecyclerViewAdapter(Context context, ArrayList<CashVideoResp.AuditVideoListBean> list) {
             super(context, R.layout.cash_item_trade_details, list);
         }
 
         @Override
-        public void convert(ViewHolder holder, String res) {
-            holder.setText(R.id.tv_exception_des, res);
+        public void convert(ViewHolder holder, CashVideoResp.AuditVideoListBean res) {
+            holder.setText(R.id.tv_time, DateTimeUtils.secondToDate(res.getPurchaseTime(), "HH:mm:ss"));
+            holder.setText(R.id.tv_amount, String.format("¥%s", res.getAmount()));
+            holder.setText(R.id.tv_order_num, res.getOrderNo());
+            holder.setText(R.id.tv_pos, res.getDeviceName());
+            ImageView imgVideo = holder.getView(R.id.iv_preview_img);
+            ImageView ivFlag = holder.getView(R.id.iv_left_flag);
+            TextView tvTag = holder.getView(R.id.tv_exception_des);
             TextView tvLineTop = holder.getView(R.id.tv_left_top_line);
             TextView tvLineBottom = holder.getView(R.id.tv_left_bottom_line);
+            ivFlag.setSelected(holder.getAdapterPosition() == currentPlayPosition);
+            if (isShowing()) {
+                Glide.with(mContext).load(res.getSnapshotUrl()).into(imgVideo);
+            }
+            if (res.getVideoType() == 1) {
+                tvTag.setVisibility(View.GONE);
+            } else {
+                tvTag.setText(res.getDescription());
+                tvTag.setVisibility(View.VISIBLE);
+            }
             if (holder.getAdapterPosition() == mList.size() - 1) {
                 tvLineBottom.setVisibility(View.INVISIBLE);
             } else if (holder.getAdapterPosition() == 0) {
@@ -154,10 +177,12 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
                 tvLineTop.setVisibility(View.VISIBLE);
             }
             holder.itemView.setOnClickListener(v -> {
-                //TODO
+                //获取当前的点击的视频位置
+                BaseNotification.newInstance().postNotificationName(CommonNotifications.cashVideoPlayPosition, holder.getAdapterPosition());
                 dismiss();
                 setImageBackground();
             });
         }
     }
+
 }
