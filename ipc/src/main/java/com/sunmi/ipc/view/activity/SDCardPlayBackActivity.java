@@ -162,6 +162,8 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     private boolean isStartRecord;//是否开始录制
     private boolean isControlPanelShow = true;//是否点击屏幕
 
+    private boolean switchSuccess;//是否切换到新的时间开始播放
+
     //当前时间，已选日期的开始和结束时间  in seconds
     private long presentTime, startTimeCurrentDate, endTimeCurrentDate;
     private long lastVideoEndTime;    //已经在播放的视频结束时间
@@ -521,6 +523,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     @Override
     public void moveTo(String data, boolean isLeftScroll, long timeStamp) {
         cancelDelayPlay();
+        switchSuccess = false;
         showTimeScroll(data.substring(11), isLeftScroll);//toast显示时间
     }
 
@@ -977,12 +980,17 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     }
 
     @Override
-    public void onPlaying(long time) {
-//        if (timeLineScrollTimer != null) {
-//            if (timeLine.getCurrentInterval() + 60 > time) {
-//                moveToTime(time);
-//            }
-//        }
+    public void onPlaying(long time, int flag) {
+        if (flag == 10) {
+            switchSuccess = true;
+            moveToTime(time);
+        } else {
+            if (switchSuccess) {
+                if (timeLine.getCurrentInterval() + 60 < time) {
+                    moveToTime(time);
+                }
+            }
+        }
     }
 
 }

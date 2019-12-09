@@ -112,7 +112,7 @@ public class P2pService extends Service
                 }
             } else {
                 if (onPlayingListener != null) {
-                    onPlayingListener.onPlaying(currentTime);
+                    onPlayingListener.onPlaying(currentTime, frameInfo[2]);
                 }
             }
         }
@@ -240,7 +240,7 @@ public class P2pService extends Service
 
     public interface OnPlayingListener {
 
-        void onPlaying(long time);
+        void onPlaying(long time, int flag);
 
     }
 
