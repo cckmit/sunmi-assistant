@@ -1,4 +1,4 @@
-package com.sunmi.ipc.setting;
+package com.sunmi.ipc.view.activity.setting;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -10,7 +10,7 @@ import com.datelibrary.view.DatePicker;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.OpcodeConstants;
-import com.sunmi.ipc.setting.entity.DetectionConfig;
+import com.sunmi.ipc.model.DetectionConfig;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -28,7 +28,7 @@ import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.dialog.BottomDialog;
 
-import static com.sunmi.ipc.setting.entity.DetectionConfig.INTENT_EXTRA_DETECTION_CONFIG;
+import static com.sunmi.ipc.model.DetectionConfig.INTENT_EXTRA_DETECTION_CONFIG;
 
 /**
  * @author yinhui

@@ -1,4 +1,4 @@
-package com.sunmi.ipc.setting;
+package com.sunmi.ipc.view.activity.setting;
 
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.OpcodeConstants;
-import com.sunmi.ipc.setting.entity.DetectionConfig;
+import com.sunmi.ipc.model.DetectionConfig;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -21,7 +21,7 @@ import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.TitleBarView;
 
-import static com.sunmi.ipc.setting.entity.DetectionConfig.INTENT_EXTRA_DETECTION_CONFIG;
+import static com.sunmi.ipc.model.DetectionConfig.INTENT_EXTRA_DETECTION_CONFIG;
 
 /**
  * @author yinhui

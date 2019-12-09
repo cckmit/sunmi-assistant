@@ -14,8 +14,8 @@ import com.sunmi.ipc.config.IpcConstants;
 import sunmi.common.model.ServiceListResp;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcCloudApi;
-import com.sunmi.ipc.setting.IpcSettingSdcardActivity_;
-import com.sunmi.ipc.setting.RecognitionSettingActivity_;
+import com.sunmi.ipc.view.activity.setting.IpcSettingSdcardActivity_;
+import com.sunmi.ipc.view.activity.setting.RecognitionSettingActivity_;
 import com.sunmi.ipc.utils.IpcUtils;
 import com.xiaojinzi.component.impl.Router;
 

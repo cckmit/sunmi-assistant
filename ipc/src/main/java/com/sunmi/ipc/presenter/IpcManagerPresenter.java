@@ -209,11 +209,16 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
                 item.setTitle(data.getServiceName());
                 item.setSummary(context.getString(R.string.str_remaining_validity_period,
                         DateTimeUtils.secondToPeriod(data.getValidTime())));
+                item.setRightText(context.getString(R.string.str_setting_detail));
+                item.setTagImageResId(-1);
             } else if (data.getStatus() == CommonConstants.SERVICE_NOT_OPENED) {
                 item.setSummary(context.getString(R.string.str_subscribe_free));
                 item.setRightText(context.getString(R.string.str_subscribe_now));
+                item.setTagImageResId(-1);
             } else if (data.getStatus() == CommonConstants.SERVICE_EXPIRED) {
                 item.setSummary(context.getString(R.string.str_expired));
+                item.setRightText(context.getString(R.string.str_setting_detail));
+                item.setTagImageResId(-1);
             }
         } else {
             item.setRightText(context.getString(R.string.str_coming_soon));

@@ -32,7 +32,7 @@ import com.sunmi.assistant.utils.GlideImageLoader;
 import com.sunmi.assistant.utils.ShopTitlePopupWindow;
 import com.sunmi.cloudprinter.ui.activity.PrinterManageActivity_;
 import com.sunmi.ipc.config.IpcConstants;
-import com.sunmi.ipc.setting.IpcSettingActivity_;
+import com.sunmi.ipc.view.activity.setting.IpcSettingActivity_;
 import com.sunmi.ipc.utils.IpcUtils;
 import com.sunmi.ipc.view.activity.IpcManagerActivity_;
 import com.sunmi.sunmiservice.WebViewActivity_;

@@ -6,7 +6,6 @@ import com.sunmi.ipc.rpc.IpcCloudApi;
 
 import org.litepal.crud.DataSupport;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -46,13 +45,7 @@ public class CashVideoModel {
         });
     }
 
-    public void load(int deviceId, int videoType, long startTime, long endTime, CallBack callBack) {
-        pageNum = 1;
-        this.deviceId = deviceId;
-        this.videoType = videoType;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        hasMore = true;
+    public void load(int deviceId, int videoType, long startTime, long endTime, int pageNum, int pageSize, CallBack callBack) {
         IpcCloudApi.getInstance().getCashVideoList(deviceId, videoType, startTime,
                 endTime, pageNum, pageSize, new RetrofitCallback<CashVideoResp>() {
                     @Override
@@ -63,73 +56,26 @@ public class CashVideoModel {
                             for (int i = 0; i < beans.size(); i++) {
                                 beans.get(i).setDeviceName(ipcName.get(beans.get(i).getDeviceId()));
                             }
-                            total = data.getTotalCount();
-                            if (n == total) {
-                                hasMore = false;
-                            } else {
-                                pageNum++;
-                            }
-                        } else {
-                            hasMore = false;
-                            total = 0;
                         }
-                        callBack.getCashVideoSuccess(beans, hasMore, total, pageNum - 1);
+                        callBack.getCashVideoSuccess(beans, data.getTotalCount());
                     }
 
                     @Override
                     public void onFail(int code, String msg, CashVideoResp data) {
-                        callBack.getCashVideoFail(code, msg, -1);
+                        callBack.getCashVideoFail(code, msg);
                     }
                 });
     }
 
-    public void loadMore(CallBack callBack) {
-        if (!hasMore) {
-            callBack.getCashVideoSuccess(new ArrayList<>(0), hasMore, total, pageNum);
-            return;
-        }
-        IpcCloudApi.getInstance().getCashVideoList(deviceId, videoType, startTime,
-                endTime, pageNum, pageSize, new RetrofitCallback<CashVideoResp>() {
-                    @Override
-                    public void onSuccess(int code, String msg, CashVideoResp data) {
-                        List<CashVideoResp.AuditVideoListBean> beans = data.getAuditVideoList();
-                        int n = beans.size();
-                        if (n > 0) {
-                            for (int i = 0; i < beans.size(); i++) {
-                                beans.get(i).setDeviceName(ipcName.get(beans.get(i).getDeviceId()));
-                            }
-                            total = data.getTotalCount();
-                            if (total > (pageNum - 1) * pageSize + n) {
-                                pageNum++;
-                            } else {
-                                hasMore = false;
-                            }
-                        } else {
-                            hasMore = false;
-                        }
-                        callBack.getCashVideoSuccess(beans, hasMore, total, pageNum);
-                    }
-
-                    @Override
-                    public void onFail(int code, String msg, CashVideoResp data) {
-                        callBack.getCashVideoFail(code, msg, (pageNum - 1) * pageSize);
-                    }
-                });
-
-    }
-
-    public void setPageNum(int pageNum) {
-        this.pageNum = pageNum;
-    }
 
     public HashMap<Integer, String> getIpcNameMap() {
         return ipcName;
     }
 
     public interface CallBack {
-        void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, boolean hasMore, int total, int pageNum);
+        void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, int total);
 
-        void getCashVideoFail(int code, String msg, int count);
+        void getCashVideoFail(int code, String msg);
 
     }
 }

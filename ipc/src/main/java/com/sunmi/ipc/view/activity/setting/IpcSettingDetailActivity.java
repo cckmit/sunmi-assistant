@@ -1,4 +1,4 @@
-package com.sunmi.ipc.setting;
+package com.sunmi.ipc.view.activity.setting;
 
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.config.IpcConstants;

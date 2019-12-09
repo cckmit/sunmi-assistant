@@ -1,4 +1,4 @@
-package com.sunmi.ipc.motion;
+package com.sunmi.ipc.view.activity;
 
 
 import android.Manifest;

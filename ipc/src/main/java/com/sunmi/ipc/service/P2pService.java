@@ -26,6 +26,7 @@ public class P2pService extends Service
     private AACDecoder audioDecoder;
     private IOTCClient iotcClient;
     private OnPlayStatusChangedListener statusChangedListener;
+    private OnPlayingListener onPlayingListener;
 
     private boolean isPlaying;//是否正在播放
     private long endTime;
@@ -62,7 +63,8 @@ public class P2pService extends Service
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        LogCat.e("p2pService", "onStartCommand - startId = " + startId + ", Thread = " + Thread.currentThread().getName());
+        LogCat.e("p2pService", "onStartCommand - startId = "
+                + startId + ", Thread = " + Thread.currentThread().getName());
         return START_NOT_STICKY;
     }
 
@@ -103,9 +105,14 @@ public class P2pService extends Service
                 statusChangedListener.onPlayStarted();
             }
         } else {
-            if (endTime > 0 && getFrameInfoTime(frameInfo) >= endTime - 2) {
+            long currentTime = getFrameInfoTime(frameInfo);
+            if (endTime > 0 && currentTime >= endTime - 2) {
                 if (statusChangedListener != null) {
                     statusChangedListener.onPlayFinished();
+                }
+            } else {
+                if (onPlayingListener != null) {
+                    onPlayingListener.onPlaying(currentTime, frameInfo[2]);
                 }
             }
         }
@@ -134,6 +141,12 @@ public class P2pService extends Service
         } else {
             videoDecoder.changeSurface(surface);
         }
+    }
+
+    public void init(Surface surface, OnPlayStatusChangedListener statusCallback,
+                     OnPlayingListener onPlayingListener) {
+        init(surface, statusCallback);
+        this.onPlayingListener = onPlayingListener;
     }
 
     public long getCurrentVideoTime() {
@@ -222,6 +235,13 @@ public class P2pService extends Service
         void onPlayFinished();
 
         void onPlayFail();
+
+    }
+
+    public interface OnPlayingListener {
+
+        void onPlaying(long time, int flag);
+
     }
 
 }

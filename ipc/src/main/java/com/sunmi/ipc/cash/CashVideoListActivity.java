@@ -41,6 +41,7 @@ import sunmi.common.model.FilterItem;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.DropdownAdapterNew;
 import sunmi.common.view.DropdownAnimNew;
 import sunmi.common.view.DropdownMenuNew;
@@ -74,6 +75,8 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     DropdownMenuNew dmTime;
     @ViewById(resName = "tv_abnormal")
     TextView tvAbnormal;
+    @ViewById(resName = "tv_no_cash")
+    TextView tvNoCash;
 
     @Extra
     int deviceId = -1;
@@ -100,6 +103,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     private long fastPlayStart;
     private long fastPlayEnd;
     private int pageNum;
+    private int pageSize = 10;
 
     @AfterViews
     void init() {
@@ -120,7 +124,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
         refreshLayout.setRefreshViewHolder(viewHolder);
         showLoadingDialog();
         initFilter();
-        mPresenter.load(deviceId, videoType, startTime, endTime);
+        refreshList();
     }
 
     private void initFilter() {
@@ -129,7 +133,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
         filterDeviceAdapter.setOnItemClickListener((adapter, model, position) -> {
             if (deviceId != model.getId()) {
                 deviceId = model.getId();
-                mPresenter.load(deviceId, videoType, startTime, endTime);
+                refreshList();
             }
         });
         dmDevice.setAnim(new DropdownAnimNew(dmTime));
@@ -173,14 +177,14 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
                 }
             }
         });
-
+        tvAbnormal.setSelected(videoType == IpcConstants.CASH_VIDEO_ABNORMAL);
         tvAbnormal.setOnClickListener(v -> {
             dmDevice.dismiss(true);
             dmTime.dismiss(true);
             tvAbnormal.setSelected(!tvAbnormal.isSelected());
             videoType = tvAbnormal.isSelected() ?
                     IpcConstants.CASH_VIDEO_ABNORMAL : IpcConstants.CASH_VIDEO_ALL;
-            mPresenter.load(deviceId, videoType, startTime, endTime);
+            refreshList();
         });
 
         initTimeWheel();
@@ -193,7 +197,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
         if (startTime != newStart || endTime != newEnd) {
             startTime = newStart;
             endTime = newEnd;
-            mPresenter.load(deviceId, videoType, startTime, endTime);
+            refreshList();
         }
     }
 
@@ -276,15 +280,29 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     }
 
     @Override
-    public void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, boolean hasMore, int total, int pageNum) {
-        this.hasMore = hasMore;
-        this.pageNum = pageNum;
-        addData(beans);
+    public void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, int total) {
+        if (total <= 0) {
+            tvNoCash.setVisibility(View.VISIBLE);
+            addData(beans, pageNum == 1);
+        } else {
+            tvNoCash.setVisibility(View.GONE);
+            if (pageNum == 1 || total > dataList.size()) {
+                addData(beans, pageNum == 1);
+                if (total <= (pageNum - 1) * pageSize + beans.size()) {
+                    hasMore = false;
+                }
+            } else {
+                hasMore = false;
+            }
+        }
+
     }
 
     @Override
     public void netWorkError() {
-        networkError.setVisibility(View.VISIBLE);
+        if (dataList.size() <= 0) {
+            networkError.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -295,26 +313,34 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
 
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
-        mPresenter.load(deviceId, videoType, startTime, endTime);
-        dataList.clear();
+        refreshList();
     }
 
     @Override
     public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
         if (NetworkUtils.isNetworkAvailable(context) && hasMore) {
-            mPresenter.loadMore();
+            pageNum++;
+            mPresenter.loadMore(pageNum, pageSize);
             return true;
         }
         return false;
     }
 
     @UiThread
-    protected void addData(List<CashVideoResp.AuditVideoListBean> beans) {
-        if (beans.size() > 0) {
-            initAdapter();
-            dataList.addAll(beans);
-            adapter.notifyDataSetChanged();
+    protected void addData(List<CashVideoResp.AuditVideoListBean> beans, boolean isRefresh) {
+        initAdapter();
+        if (isRefresh) {
+            dataList.clear();
         }
+        dataList.addAll(beans);
+        adapter.notifyDataSetChanged();
+
+    }
+
+    private void refreshList() {
+        pageNum = 1;
+        hasMore = true;
+        mPresenter.load(deviceId, videoType, startTime, endTime, pageNum, pageSize);
     }
 
     private void initAdapter() {
@@ -362,10 +388,10 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
                     dataList.clear();
                     dataList.addAll(list);
                     adapter.setSelectPosition(bundle.getInt("videoListPosition"));
+                    hasMore = true;
+                    pageNum = list.size() / pageNum + 1;
                 }
-
             }
-
         }
     }
 

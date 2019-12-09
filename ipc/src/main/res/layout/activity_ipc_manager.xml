@@ -55,11 +55,11 @@
                 </RelativeLayout>
 
                 <!--<include-->
-                    <!--android:id="@+id/rl_portrait_video_controller"-->
-                    <!--layout="@layout/include_video_controller_bar"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="@dimen/dp_42"-->
-                    <!--android:layout_below="@+id/rl_video" />-->
+                <!--android:id="@+id/rl_portrait_video_controller"-->
+                <!--layout="@layout/include_video_controller_bar"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="@dimen/dp_42"-->
+                <!--android:layout_below="@+id/rl_video" />-->
             </RelativeLayout>
 
             <LinearLayout
@@ -94,17 +94,17 @@
                     android:layout_weight="1"
                     android:background="@drawable/bg_round_corner_black_15"
                     android:scaleType="center"
-                    android:src="@mipmap/ic_sdcard" />
+                    android:src="@drawable/ic_sdcard" />
 
                 <LinearLayout
                     android:id="@+id/ll_calender_portrait"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/dp_8"
-                    android:visibility="gone"
                     android:layout_weight="1"
                     android:background="@drawable/bg_round_corner_black_15"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/tv_calendar_portrait"
@@ -164,7 +164,7 @@
                 android:layout_height="match_parent"
                 android:layout_alignTop="@+id/rl_video_play"
                 android:layout_alignBottom="@+id/rl_video_play"
-                android:layout_marginTop="@dimen/dp_50" />
+                android:layout_marginTop="@dimen/dp_45" />
 
             <sunmi.common.view.SmRecyclerView
                 android:id="@+id/rv_manager"

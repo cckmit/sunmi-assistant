@@ -30,9 +30,9 @@ import com.sunmi.ipc.contract.IpcManagerContract;
 import com.sunmi.ipc.model.IpcManageBean;
 import com.sunmi.ipc.presenter.IpcManagerPresenter;
 import com.sunmi.ipc.service.P2pService;
-import com.sunmi.ipc.setting.IpcSettingActivity_;
 import com.sunmi.ipc.utils.IOTCClient;
 import com.sunmi.ipc.utils.IpcUtils;
+import com.sunmi.ipc.view.activity.setting.IpcSettingActivity_;
 import com.xiaojinzi.component.impl.Router;
 
 import org.androidannotations.annotations.AfterViews;
@@ -133,10 +133,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     LinearLayout llPortraitBar;
     @ViewById(resName = "iv_cloud_playback_portrait")
     ImageView ivCloudPlayback;
-    @ViewById(resName = "ll_calender_portrait")
-    LinearLayout llCalender;
-    @ViewById(resName = "tv_calendar_portrait")
-    TextView tvCalendarP;//日历
+    @ViewById(resName = "iv_sdcard_playback")
+    ImageView ivSdcardPlayback;//sd回放
     @ViewById(resName = "rv_manager")
     SmRecyclerView rvManager;
     //    @ViewById(resName = "sBar_voice")
@@ -195,6 +193,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private int cloudStorageServiceStatus;
     private List<IpcManageBean> list = new ArrayList<>();
     private IpcManageBean cloudStorageItem;
+    private IpcManageBean cashVideoItem;
+    private boolean cashVideoSubscribed = false;
+    ArrayList<CashVideoServiceBean> serviceBeans = new ArrayList<>();
 
     P2pService p2pService;
     boolean isBind;
@@ -230,8 +231,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         llPlayFail.setOnTouchListener((v, event) -> true);
         if (isDeviceOffline()) {
             showPlayFail(PLAY_FAIL_OFFLINE);
-            tvCalendarP.setEnabled(false);
-            llCalender.setClickable(false);
+            ivSdcardPlayback.setEnabled(false);
             hideControllerPanel();
         } else {
             showVideoLoading();
@@ -240,6 +240,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         initManageList();
         if (isSS1()) {
             mPresenter.getStorageList(device.getDeviceid(), cloudStorageItem);
+            mPresenter.getCashVideoService(device.getId());
             ivCloudPlayback.setVisibility(View.VISIBLE);
         }
         initVolume();
@@ -526,6 +527,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     void p2pPrepare() {
+        if (isDeviceOffline()) {
+            return;
+        }
         p2pService.init(videoView.getHolder().getSurface(), this);
         initP2pLive();
     }
@@ -627,24 +631,20 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @Override
     public void getCashVideoServiceSuccess(ArrayList<CashVideoServiceBean> devices, boolean alreadySubscribe) {
         hideLoadingDialog();
+        serviceBeans = devices;
         if (!devices.isEmpty()) {
-            // 跳转收银视频页面
-            CashVideoOverviewActivity_.intent(this)
-                    .isSingleDevice(true)
-                    .serviceBeans(devices)
-                    .start();
+            cashVideoItem.setRightText(context.getString(R.string.str_setting_detail));
+            adapter.notifyDataSetChanged();
+
         } else if (alreadySubscribe) {
             // 已经有其他摄像机开通了收银视频服务
-            shortTip(R.string.cash_video_other_device_already_subscribe_tip);
-        } else {
-            // 未开通收银视频服务，跳转开通服务页
-            Router.withApi(SunmiServiceApi.class).goToWebViewCash(context, CommonConfig.CASH_VIDEO_URL);
+            cashVideoSubscribed = true;
         }
     }
 
     @Override
     public int[] getUnStickNotificationId() {
-        return new int[]{IpcConstants.ipcNameChanged, CommonNotifications.cloudStorageChange};
+        return new int[]{IpcConstants.ipcNameChanged, CommonNotifications.cloudStorageChange, CommonNotifications.cashVideoSubscribe};
     }
 
     @Override
@@ -660,6 +660,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             }
         } else if (id == CommonNotifications.cloudStorageChange) {
             mPresenter.getStorageList(device.getDeviceid(), cloudStorageItem);
+        } else if (id == CommonNotifications.cashVideoSubscribe) {
+            mPresenter.getCashVideoService(device.getId());
         }
     }
 
@@ -671,8 +673,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         if (playType == PLAY_TYPE_LIVE && p2pService != null) {
             showVideoLoading();
             p2pService.startPlay();
-        } else if (playType == PLAY_TYPE_PLAYBACK_DEV) {
-            p2pService.startDecode();
         }
     }
 
@@ -1234,8 +1234,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private void initManageList() {
         rvManager.init(0);
         if (isSS1()) {
-            list.add(new IpcManageBean(R.mipmap.ipc_manage_cashier, getString(R.string.cash_video),
-                    getString(R.string.cash_video_item_content), getString(R.string.str_learn_more), true));
+            cashVideoItem = new IpcManageBean(R.mipmap.ipc_manage_cashier, getString(R.string.cash_video),
+                    getString(R.string.cash_video_item_content), getString(R.string.str_learn_more), true);
+            list.add(cashVideoItem);
             cloudStorageItem = new IpcManageBean(R.mipmap.ipc_cloud_storage, context.getString(R.string.str_cloud_storage),
                     context.getString(R.string.str_setting_detail));
             cloudStorageItem.setEnabled(false);
@@ -1267,8 +1268,19 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                                     .goToWebViewCloud(context, CommonConfig.CLOUD_STORAGE_URL, snList);
                         }
                     } else if (bean.getLeftImageResId() == R.mipmap.ipc_manage_cashier) {
-                        showLoadingDialog();
-                        mPresenter.getCashVideoService(device.getId());
+                        if (!serviceBeans.isEmpty()) {
+                            // 跳转收银视频页面
+                            CashVideoOverviewActivity_.intent(context)
+                                    .isSingleDevice(true)
+                                    .serviceBeans(serviceBeans)
+                                    .start();
+                        } else if (cashVideoSubscribed) {
+                            // 已经有其他摄像机开通了收银视频服务
+                            shortTip(R.string.cash_video_other_device_already_subscribe_tip);
+                        } else {
+                            //去开通
+                            Router.withApi(SunmiServiceApi.class).goToWebViewCash(context, CommonConfig.CASH_VIDEO_URL);
+                        }
                     }
                 });
             }
