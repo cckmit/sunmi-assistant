@@ -381,9 +381,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
                     hasMore = true;
                     pageNum = list.size() / pageNum + 1;
                 }
-
             }
-
         }
     }
 
