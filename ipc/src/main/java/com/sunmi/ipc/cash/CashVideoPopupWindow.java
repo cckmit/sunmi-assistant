@@ -165,14 +165,14 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
             }
             if (res.getVideoType() == 1) {
                 tvTag.setVisibility(View.GONE);
-            } else {
+            } else if (res.getVideoType() == 2) {
                 tvTag.setText(res.getDescription());
                 tvTag.setVisibility(View.VISIBLE);
             }
-            if (holder.getAdapterPosition() == mList.size() - 1) {
-                tvLineBottom.setVisibility(View.INVISIBLE);
-            } else if (holder.getAdapterPosition() == 0) {
+            if (holder.getAdapterPosition() == 0 && mList.size() > 0) {
                 tvLineTop.setVisibility(View.INVISIBLE);
+            } else if (holder.getAdapterPosition() == mList.size() - 1) {
+                tvLineBottom.setVisibility(View.INVISIBLE);
             } else {
                 tvLineTop.setVisibility(View.VISIBLE);
             }
