@@ -41,6 +41,7 @@ import sunmi.common.model.FilterItem;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.DropdownAdapterNew;
 import sunmi.common.view.DropdownAnimNew;
 import sunmi.common.view.DropdownMenuNew;
@@ -274,8 +275,10 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
 
     @Override
     public void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, int total) {
+        LogCat.e(TAG, "AuditVideoListBean" + beans.size());
         if (total <= 0) {
             tvNoCash.setVisibility(View.VISIBLE);
+            addData(beans, pageNum == 1);
         } else {
             tvNoCash.setVisibility(View.GONE);
             if (pageNum == 1 || total > dataList.size()) {
@@ -320,14 +323,13 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
 
     @UiThread
     protected void addData(List<CashVideoResp.AuditVideoListBean> beans, boolean isRefresh) {
-        if (beans.size() > 0) {
-            initAdapter();
-            if (isRefresh) {
-                dataList.clear();
-            }
-            dataList.addAll(beans);
-            adapter.notifyDataSetChanged();
+        initAdapter();
+        if (isRefresh) {
+            dataList.clear();
         }
+        dataList.addAll(beans);
+        adapter.notifyDataSetChanged();
+
     }
 
     private void refreshList() {
