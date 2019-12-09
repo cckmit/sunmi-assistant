@@ -12,7 +12,7 @@ import java.util.List;
 public class CashVideoCountResp {
 
 
-    @SerializedName("stat_info_list")
+    @SerializedName("stats_info_list")
     private List<CashVideoListBean> statInfoList;
 
     public List<CashVideoListBean> getStatInfoList() {

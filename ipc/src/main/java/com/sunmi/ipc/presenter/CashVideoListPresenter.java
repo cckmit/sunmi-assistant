@@ -36,9 +36,13 @@ public class CashVideoListPresenter extends BasePresenter<CashVideoListConstract
 
     @Override
     public void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, boolean hasMore, int total, int pageNum) {
+        if (hasMore) {
+            pageNum--;
+        }
         if (isViewAttached()) {
             mView.getCashVideoSuccess(beans, hasMore, total, pageNum);
             mView.hideLoadingDialog();
+            mView.endRefesh();
         }
     }
 
@@ -47,13 +51,18 @@ public class CashVideoListPresenter extends BasePresenter<CashVideoListConstract
         if (isViewAttached()) {
             mView.shortTip(R.string.toast_network_error);
             mView.hideLoadingDialog();
+            mView.endRefesh();
             if (count == -1) {
                 mView.netWorkError();
             }
         }
     }
 
-    public HashMap<Integer,String> getIpcName(){
+    public HashMap<Integer, String> getIpcName() {
         return videoModel.getIpcNameMap();
+    }
+
+    public void setPageNum(int pageNum) {
+        videoModel.setPageNum(pageNum);
     }
 }

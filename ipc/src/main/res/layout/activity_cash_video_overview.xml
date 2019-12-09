@@ -167,7 +167,7 @@
             android:layout_height="@dimen/dp_112"
             android:layout_marginStart="@dimen/dp_24"
             android:layout_marginTop="@dimen/dp_24"
-            android:src="@mipmap/ic_logo"
+            android:src="@mipmap/ic_cash_default_img"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:radius="@dimen/dp_6" />
@@ -255,7 +255,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/dp_6"
-                android:text="@string/abnorlmal_video"
+                android:text="@string/abnormal_video"
                 android:textColor="@color/text_normal"
                 android:textSize="@dimen/sp_12" />
 

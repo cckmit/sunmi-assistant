@@ -45,9 +45,8 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
     }
 
     public void setSelectPosition(int selectPosition) {
-        notifyItemChanged(this.selectPosition);
-        notifyItemChanged(selectPosition);
         this.selectPosition = selectPosition;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -71,8 +70,9 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
         } else {
             viewHolder.tvDescription.setVisibility(View.GONE);
         }
-        viewHolder.tvAmount.setText(bean.getAmount());
+        viewHolder.tvAmount.setText(String.valueOf(bean.getAmount()));
         viewHolder.tvOrderNum.setText(bean.getOrderNo());
+        viewHolder.tvName.setText(bean.getDeviceName());
         Glide.with(context).load(bean.getSnapshotUrl()).into(viewHolder.ivPreview);
         if (i == data.size() - 1) {
             viewHolder.tvLineBottom.setVisibility(View.INVISIBLE);
@@ -95,6 +95,7 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
         TextView tvAmount;
         TextView tvOrderNum;
         ImageView ivPreview;
+        TextView tvName;
         TextView tvLineTop;
         TextView tvLineBottom;
 
@@ -104,6 +105,7 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
             tvDescription = itemView.findViewById(R.id.tv_exception_des);
             tvAmount = itemView.findViewById(R.id.tv_amount);
             tvOrderNum = itemView.findViewById(R.id.tv_order_num);
+            tvName = itemView.findViewById(R.id.tv_pos);
             ivPreview = itemView.findViewById(R.id.iv_preview_img);
             tvLineTop = itemView.findViewById(R.id.tv_left_top_line);
             tvLineBottom = itemView.findViewById(R.id.tv_left_bottom_line);

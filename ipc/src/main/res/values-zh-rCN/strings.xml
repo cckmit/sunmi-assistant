@@ -348,7 +348,7 @@
     <string name="cash_trade_type">交易类型：</string>
     <string name="total_cash_video">总收银视频</string>
     <string name="total_abnormal_video">总异常视频</string>
-    <string name="abnorlmal_video">异常视频</string>
+    <string name="abnormal_video">异常视频</string>
     <string name="cash_pos_device">摄像机：</string>
     <string name="cash_video_list">收银视频列表</string>
     <string name="str_fast_play">一天快放</string>

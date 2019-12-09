@@ -1,6 +1,8 @@
 package com.sunmi.ipc.cash;
 
+import android.content.Intent;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +24,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
@@ -82,6 +85,8 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     @Extra
     ArrayList<FilterItem> items;
 
+    private final int REQUEST = 0x101;
+
     private ArrayList<CashVideoResp.AuditVideoListBean> dataList = new ArrayList<>();
     private boolean hasMore;
     private CashVideoAdapter adapter;
@@ -102,7 +107,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
         mPresenter.attachView(this);
         fastPlayStart = startTime;
         fastPlayEnd = endTime;
-        if (deviceId != 0) {
+        if (deviceId != -1) {
             dmDevice.setVisibility(View.GONE);
         }
         tvDate.setText(DateTimeUtils.secondToDate(startTime, "yyyy.MM.dd"));
@@ -277,6 +282,12 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     }
 
     @Override
+    public void endRefesh() {
+        refreshLayout.endLoadingMore();
+        refreshLayout.endRefreshing();
+    }
+
+    @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
         mPresenter.load(deviceId, videoType, startTime, endTime);
         dataList.clear();
@@ -301,7 +312,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     }
 
     private void initAdapter() {
-        if (adapter != null) {
+        if (adapter == null) {
             adapter = new CashVideoAdapter(dataList, context);
             rvCashVideo.setLayoutManager(new LinearLayoutManager(context));
             adapter.setOnItemClickListener(new CashVideoAdapter.OnItemClickListener() {
@@ -311,7 +322,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
                             .startTime(startTime).endTime(endTime).isWholeDayVideoPlay(false)
                             .ipcName(mPresenter.getIpcName()).videoList(data)
                             .hasMore(hasMore).pageNum(pageNum).videoListPosition(pos)
-                            .videoType(videoType).start();
+                            .videoType(videoType).startForResult(REQUEST);
                 }
             });
             rvCashVideo.setAdapter(adapter);
@@ -328,6 +339,24 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
             }
         }
 
+    }
+
+    @SuppressWarnings("unchecked")
+    @OnActivityResult(REQUEST)
+    void onResult(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            Bundle bundle = data.getExtras();
+            if (bundle != null) {
+                ArrayList<CashVideoResp.AuditVideoListBean> list = (ArrayList<CashVideoResp.AuditVideoListBean>) bundle.getSerializable("videoList");
+                if (list != null) {
+                    dataList.clear();
+                    dataList.addAll(list);
+                    adapter.setSelectPosition(bundle.getInt("videoListPosition"));
+                }
+
+            }
+
+        }
     }
 
 }
