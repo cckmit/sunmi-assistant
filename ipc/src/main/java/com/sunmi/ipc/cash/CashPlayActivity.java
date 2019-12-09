@@ -641,7 +641,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             }
             sbBar.setMax((int) duration);
             //视频总时长
-            tvCountPlayTime.setText(Objects.requireNonNull(ivpCash).generateTime(duration));
+            tvCountPlayTime.setText(String.format("/ %s", Objects.requireNonNull(ivpCash).generateTime(duration)));
             //发送当前播放时间点通知
             mHandler.sendEmptyMessageDelayed(MESSAGE_SHOW_PROGRESS, DELAY_MILLIS);
         }
