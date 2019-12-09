@@ -397,20 +397,16 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      * 手势滑动到最后一个,或自动播放最后一个
      */
     private void loadMoreVideoList() {
-        if (isWholeDayVideoPlay) {
-            //一天快放
-            if (hasMore) {
+        if (hasMore) {
+            if (isWholeDayVideoPlay) {
+                //一天快放
                 mPresenter.getCashVideoList(ipcName, deviceId, -1, startTime, endTime, mWholeDayPlayPageNum++, 10);
             } else {
-                shortTip(R.string.tip_no_more_data);
+                //item点击进入是否有更多
+                mPresenter.getCashVideoList(ipcName, deviceId, videoType, startTime, endTime, pageNum++, 10);
             }
         } else {
-            //item点击进入是否有更多
-            if (hasMore) {
-                mPresenter.getCashVideoList(ipcName, deviceId, videoType, startTime, endTime, pageNum++, 10);
-            } else {
-                shortTip(R.string.tip_no_more_data);
-            }
+            shortTip(R.string.tip_no_more_data);
         }
     }
 
