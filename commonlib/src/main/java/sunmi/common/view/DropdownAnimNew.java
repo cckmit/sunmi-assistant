@@ -17,6 +17,15 @@ import com.commonlibrary.R;
  */
 public class DropdownAnimNew implements DropdownMenuNew.Anim {
 
+    private DropdownMenuNew[] menus;
+
+    public DropdownAnimNew() {
+    }
+
+    public DropdownAnimNew(DropdownMenuNew... menus) {
+        this.menus = menus;
+    }
+
     @Override
     public AnimatorSet showAnimator(DropdownMenuNew.ViewHolder titleHolder, View menu, View overlay) {
         ImageView arrow = (ImageView) titleHolder.getView(R.id.dropdown_arrow);
@@ -46,6 +55,11 @@ public class DropdownAnimNew implements DropdownMenuNew.Anim {
     @Override
     public void onPreShow(DropdownMenuNew.ViewHolder titleHolder, View menu, View overlay) {
         overlay.setVisibility(View.VISIBLE);
+        if (menus != null) {
+            for (DropdownMenuNew item : menus) {
+                item.dismiss(true);
+            }
+        }
     }
 
     @Override
