@@ -107,7 +107,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
         mPresenter.attachView(this);
         fastPlayStart = startTime;
         fastPlayEnd = endTime;
-        if (deviceId != 0) {
+        if (deviceId != -1) {
             dmDevice.setVisibility(View.GONE);
         }
         tvDate.setText(DateTimeUtils.secondToDate(startTime, "yyyy.MM.dd"));
@@ -348,7 +348,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
             Bundle bundle = data.getExtras();
             if (bundle != null) {
                 ArrayList<CashVideoResp.AuditVideoListBean> list = (ArrayList<CashVideoResp.AuditVideoListBean>) bundle.getSerializable("videoList");
-                if (list !=null){
+                if (list != null) {
                     dataList.clear();
                     dataList.addAll(list);
                     adapter.setSelectPosition(bundle.getInt("videoListPosition"));

@@ -101,7 +101,7 @@ public class CashDropdownTimeAdapter extends DropdownMenuNew.Adapter<DropdownTim
         DropdownTime model = models.get(0);
         TextView title = holder.getView(R.id.dropdown_title);
         title.setText(model.getTitle());
-        title.setSelected(model.getId() != 0);
+        title.setSelected(model.getId() != -1);
     }
 
     @Override
