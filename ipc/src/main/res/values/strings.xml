@@ -373,6 +373,7 @@
     <string name="cash_time_empty_error_tip">请设置开始/结束时间</string>
     <string name="cash_video_other_device_already_subscribe_tip">当前门店已有摄像机开通了该服务</string>
     <string name="cash_video_item_content">校验风险交易</string>
+    <string name="str_no_cash_video">暂无收银视频</string>
 </resources>
 
 
