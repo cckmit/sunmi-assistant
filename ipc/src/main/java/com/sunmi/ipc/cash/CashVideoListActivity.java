@@ -279,7 +279,6 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
 
     @Override
     public void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, int total) {
-        LogCat.e(TAG, "AuditVideoListBean" + beans.size());
         if (total <= 0) {
             tvNoCash.setVisibility(View.VISIBLE);
             addData(beans, pageNum == 1);
