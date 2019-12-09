@@ -255,7 +255,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/dp_6"
-                android:text="@string/abnorlmal_video"
+                android:text="@string/abnormal_video"
                 android:textColor="@color/text_normal"
                 android:textSize="@dimen/sp_12" />
 
