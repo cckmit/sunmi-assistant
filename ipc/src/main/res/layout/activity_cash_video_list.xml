@@ -75,6 +75,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:gravity="center"
+            android:text="@string/abnormal_video"
             android:textColor="@color/text_common_normal_checkable"
             android:textSize="@dimen/sp_12"
             app:layout_constraintBottom_toBottomOf="parent"

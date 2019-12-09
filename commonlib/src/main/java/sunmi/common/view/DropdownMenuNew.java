@@ -816,7 +816,7 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
 
     public static class Model {
 
-        private boolean isChecked;
+        protected boolean isChecked;
 
         public Model() {
         }

@@ -56,6 +56,7 @@ public class FilterItem extends DropdownMenuNew.Model implements Parcelable {
         id = in.readInt();
         titleName = in.readString();
         itemName = in.readString();
+        isChecked = in.readByte() != 0;
     }
 
     @Override
@@ -63,6 +64,7 @@ public class FilterItem extends DropdownMenuNew.Model implements Parcelable {
         dest.writeInt(id);
         dest.writeString(titleName);
         dest.writeString(itemName);
+        dest.writeByte((byte) (isChecked ? 1 : 0));
     }
 
     @Override
