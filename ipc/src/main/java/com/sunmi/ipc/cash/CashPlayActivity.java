@@ -496,7 +496,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     @Click(resName = "ib_play")
     void onPlayClick() {
-        if (ivpCash == null || pBarLoading.getVisibility() == View.VISIBLE || sbBar.getProgress() >= ivpCash.getDuration()) {
+        if (ivpCash == null || pBarLoading.isShown() || sbBar.getProgress() >= ivpCash.getDuration()) {
             return;
         }
         ibPlay.setBackgroundResource(isPaused ? R.mipmap.pause_normal : R.mipmap.play_normal);
@@ -513,7 +513,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     @Click(resName = "iv_screenshot")
     void screenShotClick() {
-        if (pBarLoading.getVisibility() == View.VISIBLE) {
+        if (pBarLoading.isShown()) {
             return;
         }
         LogCat.e(TAG, "1111 screenshot isPlayLoop=" + isPlayLoop);
@@ -560,7 +560,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     @Click(resName = "iv_cloud")
     void cloudPlayClick() {
-        if (pBarLoading.getVisibility() == View.VISIBLE) {
+        if (pBarLoading.isShown()) {
             return;
         }
         //TODO
@@ -659,7 +659,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
 
     @UiThread
     public void showLoading() {
-        if (pBarLoading.getVisibility() != View.VISIBLE) {
+        if (!pBarLoading.isShown()) {
             pBarLoading.setVisibility(View.VISIBLE);
         }
         tvPlayFail.setVisibility(View.GONE);
@@ -735,7 +735,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        if (pBarLoading.getVisibility() == View.VISIBLE) {
+        if (pBarLoading.isShown()) {
             return;
         }
         if (fromUser) {
@@ -749,7 +749,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
-        if (pBarLoading.getVisibility() == View.VISIBLE) {
+        if (pBarLoading.isShown()) {
             return;
         }
         isDragging = true;
