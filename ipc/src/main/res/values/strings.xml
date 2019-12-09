@@ -377,6 +377,7 @@
     <string name="str_no_cash_video">暂无收银视频</string>
     <string name="cash_empty_data">暂无收银信息</string>
     <string name="cash_play_complete">播放完毕</string>
+    <string name="cash_no_more_video">无更多视频了</string>
 </resources>
 
 

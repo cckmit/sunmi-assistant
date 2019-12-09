@@ -26,7 +26,7 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
-                    mView.updateTagSuccess(videoType);
+                    mView.updateTagSuccess(videoType, description);
                 }
             }
 

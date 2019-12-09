@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -102,6 +103,10 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      * 请求状态码
      */
     private static int REQUEST_PERMISSION_CODE = 1;
+    /**
+     * 超时
+     */
+    private final CashCountDownTimer connectTimeout = new CashCountDownTimer(15 * 1000, 1000);
     @ViewById(resName = "title_bar")
     TitleBarView titleBar;
     @ViewById(resName = "recyclerView")
@@ -182,7 +187,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      * 点击item页码
      */
     private int mWholeDayPlayPageNum;
-
     private CashAdapter adapter;
     private CashVideoPopupWindow popupWindow;
     private float posX, posY, curPosX;
@@ -215,7 +219,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
                             playIndex--;
                             initCashVideoPlay();
                         } else {
-                            shortTip("最左视频了");
+                            shortTip(R.string.cash_no_more_video);
                         }
                     } else if ((curPosX - posX < 0) && (Math.abs(curPosX - posX) > MOVE_SCREEN_POSITION)) {
                         if (playIndex < videoList.size() - 1) {
@@ -256,6 +260,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         initScreenWidthHeight();
         initInfo();
         showLoading();
+        startCountDownTimer();
         if (isWholeDayVideoPlay) {
             //初始化一天快放
             hasMore = true;
@@ -270,39 +275,30 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
 
     @Override
     public void onBackPressed() {
-        Bundle bundle = new Bundle();
-        Intent intent = getIntent();
-        bundle.putInt("videoListPosition", playIndex);
-        bundle.putSerializable("videoList", videoList);
-        intent.putExtras(bundle);
-        setResult(RESULT_OK, intent);
+        if (!isWholeDayVideoPlay) {
+            Bundle bundle = new Bundle();
+            Intent intent = getIntent();
+            bundle.putInt("videoListPosition", playIndex);
+            bundle.putSerializable("videoList", videoList);
+            intent.putExtras(bundle);
+            setResult(RESULT_OK, intent);
+        }
         super.onBackPressed();
     }
 
-//    private void testCashPlay() {
-//        IpcCloudApi.getInstance().getVideoList(2261, 1575426400, 1575426510, new RetrofitCallback<VideoListResp>() {
-//            //        IpcCloudApi.getInstance().getVideoList(2261, 1575426500, 1575426510, new RetrofitCallback<VideoListResp>() {
-//            @Override
-//            public void onSuccess(int code, String msg, VideoListResp data) {
-//                CashVideoResp.AuditVideoListBean bean;
-//                for (int i = 0; i < data.getVideo_list().size(); i++) {
-//                    bean = new CashVideoResp.AuditVideoListBean();
-//                    bean.setVideoUrl(data.getVideo_list().get(i).getUrl());
-//                    bean.setVideoType(2);
-//                    bean.setAmount(20);
-//                    bean.setDescription("未关");
-//                    bean.setOrderNo("123456789");
-//                    bean.setDeviceName("IPC");
-//                    bean.setPurchaseTime(1575426500);
-//                    videoList.add(bean);
-//                }
-//                initCashVideoPlay();
-//            }
-//            @Override
-//            public void onFail(int code, String msg, VideoListResp data) {
-//            }
-//        });
-//    }
+    /**
+     * 开启计时
+     */
+    private void startCountDownTimer() {
+        connectTimeout.start();
+    }
+
+    /**
+     * 关闭计时
+     */
+    private void stopCountDownTimer() {
+        connectTimeout.cancel();
+    }
 
     private void initScreenWidthHeight() {
         int screenWidth = CommonHelper.getScreenWidth(context);
@@ -318,7 +314,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
 
     private void initInfo() {
         titleBar.getAppTitle().setCompoundDrawablesWithIntrinsicBounds(null, null,
-                ContextCompat.getDrawable(this, R.drawable.ic_drop_down_black), null);
+                ContextCompat.getDrawable(this, R.drawable.ic_arrow_down_gray), null);
         titleBar.getAppTitle().setCompoundDrawablePadding((int) context.getResources().getDimension(R.dimen.dp_5));
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         titleBar.getAppTitle().setOnClickListener(v -> setTitleView());
@@ -341,17 +337,17 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
 
     private void setTitleView() {
         if (videoList == null || videoList.size() == 0) {
-            shortTip("无收银视频");
+            shortTip(R.string.str_no_cash_video);
             return;
         }
         if (popupWindow != null && popupWindow.isShowing()) {
             titleBar.getAppTitle().setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    ContextCompat.getDrawable(this, R.drawable.ic_drop_down_black), null);
+                    ContextCompat.getDrawable(this, R.drawable.ic_arrow_down_gray), null);
             popupWindow.dismiss();
             return;
         }
         titleBar.getAppTitle().setCompoundDrawablesWithIntrinsicBounds(null, null,
-                ContextCompat.getDrawable(this, R.drawable.ic_drop_up_black), null);
+                ContextCompat.getDrawable(this, R.drawable.ic_arrow_up_gray), null);
         popupWindow = new CashVideoPopupWindow(CashPlayActivity.this, titleBar, currentPlayPosition,
                 videoList, titleBar.getAppTitle());
     }
@@ -371,6 +367,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     protected void onDestroy() {
         super.onDestroy();
         stopPlay();
+        stopCountDownTimer();
         volumeHelper.unregisterVolumeReceiver();
         if (mHandler != null) {
             mHandler.removeCallbacksAndMessages(null);
@@ -563,13 +560,15 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         if (pBarLoading.isShown()) {
             return;
         }
-        //TODO
         SunmiDevice device = new SunmiDevice();
         device.setId(videoList.get(playIndex).getDeviceId());
-        device.setDeviceid("");
+        device.setDeviceid(videoList.get(playIndex).getDeviceSn());
         device.setName(videoList.get(playIndex).getDeviceName());
-        CloudPlaybackActivity_.intent(context).device(device)
+        long cashVideoStartTime = videoList.get(playIndex).getPurchaseTime();
+        CloudPlaybackActivity_.intent(context)
+                .device(device)
                 .cloudStorageServiceStatus(CommonConstants.SERVICE_ALREADY_OPENED)
+                .cashVideoStartTime(cashVideoStartTime)
                 .start().withAnimation(R.anim.slide_in_right, 0);
     }
 
@@ -621,7 +620,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             //异常标记
             setViewVideoTag();
             currentPlayPosition = playIndex;
-            LogCat.e(TAG, "11111 playIndex=" + playIndex + ", currentPlayPosition=" + currentPlayPosition);
+            //LogCat.e(TAG, "11111 playIndex=" + playIndex + ", currentPlayPosition=" + currentPlayPosition);
             ivpCash.release();
             sbBar.setProgress(0);
             new Handler().postDelayed(() -> {
@@ -659,6 +658,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
 
     @UiThread
     public void showLoading() {
+        startCountDownTimer();
         if (!pBarLoading.isShown()) {
             pBarLoading.setVisibility(View.VISIBLE);
         }
@@ -667,6 +667,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
 
     @UiThread
     public void hideLoading() {
+        stopCountDownTimer();
         pBarLoading.setVisibility(View.GONE);
     }
 
@@ -813,16 +814,36 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         startCashPreparedPlay();
     }
 
+    /**
+     * 设置标记更新列表
+     */
+    private void updateVideoTag(int videoType, String description) {
+        CashVideoResp.AuditVideoListBean bean = new CashVideoResp.AuditVideoListBean();
+        bean.setVideoType(videoType);
+        bean.setDescription(description);
+        bean.setAmount(videoList.get(playIndex).getAmount());
+        bean.setDeviceName(videoList.get(playIndex).getDeviceName());
+        bean.setOrderNo(videoList.get(playIndex).getOrderNo());
+        bean.setPurchaseTime(videoList.get(playIndex).getPurchaseTime());
+        bean.setVideoUrl(videoList.get(playIndex).getVideoUrl());
+        bean.setVideoId(videoList.get(playIndex).getVideoId());
+        bean.setDeviceSn(videoList.get(playIndex).getDeviceSn());
+        bean.setSnapshotUrl(videoList.get(playIndex).getSnapshotUrl());
+        videoList.set(playIndex, bean);
+    }
+
     @Override
-    public void updateTagSuccess(int videoType) {
+    public void updateTagSuccess(int videoType, String description) {
         if (videoType == CASH_TAG_NORMAL) {
             tvTag.setText(R.string.cash_tag_exception);
             tvTag.setTextColor(ContextCompat.getColor(this, R.color.c_white));
             shortTip(R.string.cash_tag_cancel_success);
+            updateVideoTag(CASH_TAG_NORMAL, description);
         } else if (videoType == CASH_TAG_EXCEPTION) {
             tvTag.setText(R.string.cash_tag_cancel_exception);
             tvTag.setTextColor(ContextCompat.getColor(this, R.color.common_orange));
             shortTip(R.string.cash_tag_success);
+            updateVideoTag(CASH_TAG_EXCEPTION, description);
         }
     }
 
@@ -886,6 +907,24 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             playIndex = (int) args[0];
             LogCat.e(TAG, "1111 didReceivedNotification playIndex=" + playIndex);
             initCashVideoPlay();
+        }
+    }
+
+    /**
+     * 倒计时函数
+     */
+    private class CashCountDownTimer extends CountDownTimer {
+        CashCountDownTimer(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onTick(long l) {
+        }
+
+        @Override
+        public void onFinish() {
+            showPlayFail(getStringById(R.string.network_error));
         }
     }
 }
