@@ -12,8 +12,7 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.model.MessageListBean;
 import com.sunmi.assistant.mine.model.MsgTag;
 import com.sunmi.assistant.utils.MessageUtils;
-import com.sunmi.ipc.dynamic.DynamicVideoActivity_;
-import sunmi.common.router.model.IpcListResp;
+import com.sunmi.ipc.motion.DynamicVideoActivity_;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.ipc.setting.IpcSettingSdcardActivity_;
 
@@ -21,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.view.dialog.CommonDialog;

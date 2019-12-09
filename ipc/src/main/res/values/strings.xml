@@ -373,6 +373,14 @@
     <string name="cash_time_empty_error_tip">请设置开始/结束时间</string>
     <string name="cash_video_other_device_already_subscribe_tip">当前门店已有摄像机开通了该服务</string>
     <string name="cash_video_item_content">校验风险交易</string>
+
+    <string name="motion_detection_source_all">全部事件</string>
+    <string name="motion_detection_source_video">画面异常</string>
+    <string name="motion_detection_source_sound">声音异常</string>
+    <string name="motion_detection_source_both">声音和画面异常</string>
+    <string name="motion_detection_source_video_name">画面异常变动</string>
+    <string name="motion_detection_source_sound_name">声音异常变动</string>
+    <string name="motion_detection_source_both_name">声音和画面异常变动</string>
 </resources>
 
 

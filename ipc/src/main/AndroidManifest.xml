@@ -85,10 +85,13 @@
             android:largeHeap="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".dynamic.DynamicVideoActivity_"
+            android:name=".motion.DynamicVideoActivity_"
             android:hardwareAccelerated="false"
             android:largeHeap="true"
             android:screenOrientation="landscape" />
+        <activity
+            android:name=".motion.MotionVideoListActivity_"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.IpcStartConfigActivity_"
             android:screenOrientation="portrait" />

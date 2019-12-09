@@ -1,4 +1,4 @@
-package com.sunmi.ipc.dynamic;
+package com.sunmi.ipc.motion;
 
 
 import android.Manifest;
