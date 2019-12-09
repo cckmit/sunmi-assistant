@@ -9,7 +9,6 @@ import org.litepal.crud.DataSupport;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -108,7 +107,7 @@ public class CashVideoModel {
                         } else {
                             hasMore = false;
                         }
-                        callBack.getCashVideoSuccess(beans, hasMore, total, pageNum - 1);
+                        callBack.getCashVideoSuccess(beans, hasMore, total, pageNum);
                     }
 
                     @Override
@@ -117,6 +116,10 @@ public class CashVideoModel {
                     }
                 });
 
+    }
+
+    public void setPageNum(int pageNum) {
+        this.pageNum = pageNum;
     }
 
     public HashMap<Integer, String> getIpcNameMap() {

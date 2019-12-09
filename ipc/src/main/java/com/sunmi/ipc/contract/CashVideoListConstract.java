@@ -17,6 +17,8 @@ public interface CashVideoListConstract {
         void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, boolean hasMore, int total,int page);
 
         void netWorkError();
+
+        void endRefesh();
     }
 
     interface Presenter {

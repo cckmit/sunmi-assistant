@@ -638,7 +638,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             shortTip(R.string.cash_video_other_device_already_subscribe_tip);
         } else {
             // 未开通收银视频服务，跳转开通服务页
-            // TODO: 未开通收银视频服务，跳转开通服务页
+            Router.withApi(SunmiServiceApi.class).goToWebViewCash(context, CommonConfig.CASH_VIDEO_URL);
         }
     }
 

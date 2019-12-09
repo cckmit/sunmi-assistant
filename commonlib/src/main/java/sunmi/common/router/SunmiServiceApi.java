@@ -27,4 +27,7 @@ public interface SunmiServiceApi {
     @PathAnno(RouterConfig.SunmiService.SERVICE_DETAIL)
     void goToServiceDetail(Context context, @ParameterAnno("mSn") String sn, @ParameterAnno("isBind") boolean isBind, @ParameterAnno("deviceName") String deviceName);
 
+    @PathAnno(RouterConfig.SunmiService.WEB_VIEW_CASH)
+    void goToWebViewCash(Context context,@ParameterAnno("mUrl") String url);
+
 }
