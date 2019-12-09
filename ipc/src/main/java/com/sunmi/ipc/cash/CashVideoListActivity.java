@@ -95,7 +95,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     private DropdownAdapterNew filterDeviceAdapter;
     private CashDropdownTimeAdapter filterTimeAdapter;
 
-    private int selectIndex = -1;
+    private int selectIndex = 0;
     private DropdownTime select;
     private long fastPlayStart;
     private long fastPlayEnd;
@@ -132,7 +132,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
                 mPresenter.load(deviceId, videoType, startTime, endTime);
             }
         });
-        dmDevice.setAnim(new DropdownAnimNew());
+        dmDevice.setAnim(new DropdownAnimNew(dmTime));
         dmDevice.setAdapter(filterDeviceAdapter);
 
         filterTimeAdapter = new CashDropdownTimeAdapter(this);
@@ -149,7 +149,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
             }
         });
 
-        dmTime.setAnim(new DropdownTimeAnim());
+        dmTime.setAnim(new DropdownTimeAnim(dmDevice));
         dmTime.setLayoutManager(new GridLayoutManager(this, 3));
         dmTime.setDecoration(new RecyclerView.ItemDecoration() {
             @Override
@@ -175,6 +175,8 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
         });
 
         tvAbnormal.setOnClickListener(v -> {
+            dmDevice.dismiss(true);
+            dmTime.dismiss(true);
             tvAbnormal.setSelected(!tvAbnormal.isSelected());
             videoType = tvAbnormal.isSelected() ?
                     IpcConstants.CASH_VIDEO_ABNORMAL : IpcConstants.CASH_VIDEO_ALL;
@@ -334,6 +336,10 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     }
 
     private class DropdownTimeAnim extends DropdownAnimNew {
+
+        public DropdownTimeAnim(DropdownMenuNew... menus) {
+            super(menus);
+        }
 
         @Override
         public void onPostDismiss(DropdownMenuNew.ViewHolder titleHolder, View menu, View overlay) {
