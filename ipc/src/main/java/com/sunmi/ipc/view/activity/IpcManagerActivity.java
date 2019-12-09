@@ -133,10 +133,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     LinearLayout llPortraitBar;
     @ViewById(resName = "iv_cloud_playback_portrait")
     ImageView ivCloudPlayback;
-    @ViewById(resName = "ll_calender_portrait")
-    LinearLayout llCalender;
-    @ViewById(resName = "tv_calendar_portrait")
-    TextView tvCalendarP;//日历
+    @ViewById(resName = "iv_sdcard_playback")
+    ImageView ivSdcardPlayback;//sd回放
     @ViewById(resName = "rv_manager")
     SmRecyclerView rvManager;
     //    @ViewById(resName = "sBar_voice")
@@ -230,8 +228,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         llPlayFail.setOnTouchListener((v, event) -> true);
         if (isDeviceOffline()) {
             showPlayFail(PLAY_FAIL_OFFLINE);
-            tvCalendarP.setEnabled(false);
-            llCalender.setClickable(false);
+            ivSdcardPlayback.setEnabled(false);
             hideControllerPanel();
         } else {
             showVideoLoading();
@@ -526,6 +523,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     void p2pPrepare() {
+        if (isDeviceOffline()) {
+            return;
+        }
         p2pService.init(videoView.getHolder().getSurface(), this);
         initP2pLive();
     }
@@ -671,8 +671,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         if (playType == PLAY_TYPE_LIVE && p2pService != null) {
             showVideoLoading();
             p2pService.startPlay();
-        } else if (playType == PLAY_TYPE_PLAYBACK_DEV) {
-            p2pService.startDecode();
         }
     }
 

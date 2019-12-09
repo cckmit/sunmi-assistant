@@ -164,7 +164,7 @@
                 android:layout_height="match_parent"
                 android:layout_alignTop="@+id/rl_video_play"
                 android:layout_alignBottom="@+id/rl_video_play"
-                android:layout_marginTop="@dimen/dp_50" />
+                android:layout_marginTop="@dimen/dp_45" />
 
             <sunmi.common.view.SmRecyclerView
                 android:id="@+id/rv_manager"

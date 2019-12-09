@@ -297,7 +297,9 @@ public class IOTCClient implements Serializable {
                     getCmdResponse(cmd, callback);
                 } else {
                     LogCat.e(TAG, "avCmdCall write fail");
-                    callback.onError();
+                    if (callback != null) {
+                        callback.onError();
+                    }
                 }
             } else {
                 if (IOTCAPIs.IOTC_Session_Write(SID, req, req.length, 0) > 0) {
@@ -305,7 +307,9 @@ public class IOTCClient implements Serializable {
                     getCmdResponse(cmd, callback);
                 } else {
                     LogCat.e(TAG, "write fail");
-                    callback.onError();
+                    if (callback != null) {
+                        callback.onError();
+                    }
                 }
             }
         });
