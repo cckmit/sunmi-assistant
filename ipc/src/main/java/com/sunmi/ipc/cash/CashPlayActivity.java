@@ -49,8 +49,8 @@ import java.util.Locale;
 import java.util.Objects;
 
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
+import sunmi.common.model.ServiceListResp;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.IVideoPlayer;
@@ -560,16 +560,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         if (pBarLoading.isShown()) {
             return;
         }
-        SunmiDevice device = new SunmiDevice();
-        device.setId(videoList.get(playIndex).getDeviceId());
-        device.setDeviceid(videoList.get(playIndex).getDeviceSn());
-        device.setName(videoList.get(playIndex).getDeviceName());
-        long cashVideoStartTime = videoList.get(playIndex).getPurchaseTime();
-        CloudPlaybackActivity_.intent(context)
-                .device(device)
-                .cloudStorageServiceStatus(CommonConstants.SERVICE_ALREADY_OPENED)
-                .currentTime(cashVideoStartTime)
-                .start().withAnimation(R.anim.slide_in_right, 0);
+        mPresenter.getStorageList(videoList.get(playIndex).getDeviceSn());
     }
 
     /**
@@ -890,6 +881,32 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     @Override
     public void cashVideoListFail(int code, String msg) {
         showPlayFail(getStringById(R.string.network_error));
+    }
+
+    /**
+     * 当前云存储服务状态，1：开通；2：未开通 3：已过期
+     *
+     * @param data
+     */
+    @Override
+    public void getStorageSuccess(ServiceListResp.DeviceListBean data) {
+        int status = data.getStatus();
+        gotoCloudPlaybackActivity(status);
+    }
+
+    //进入云回放
+    private void gotoCloudPlaybackActivity(int status) {
+        SunmiDevice device = new SunmiDevice();
+        device.setId(videoList.get(playIndex).getDeviceId());
+        device.setDeviceid(videoList.get(playIndex).getDeviceSn());
+        device.setName(videoList.get(playIndex).getDeviceName());
+        device.setModel("ss1");
+        long cashVideoStartTime = videoList.get(playIndex).getPurchaseTime();
+        CloudPlaybackActivity_.intent(context)
+                .device(device)
+                .cloudStorageServiceStatus(status)
+                .currentTime(cashVideoStartTime)
+                .start().withAnimation(R.anim.slide_in_right, 0);
     }
 
     @Override

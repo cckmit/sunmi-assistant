@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import sunmi.common.base.BaseView;
+import sunmi.common.model.ServiceListResp;
 
 /**
  * @author yangShiJie
@@ -23,10 +24,11 @@ public interface CashVideoContract {
 
         void getOrderInfoFail(int code, String msg);
 
-
         void cashVideoListSuccess(List<CashVideoResp.AuditVideoListBean> videoList);
 
         void cashVideoListFail(int code, String msg);
+
+        void getStorageSuccess(ServiceListResp.DeviceListBean data);
     }
 
     interface Presenter {
@@ -36,5 +38,7 @@ public interface CashVideoContract {
 
         void getCashVideoList(Map<Integer, String> ipcName, int deviceId, int videoType,
                               long startTime, long endTime, int pageNum, int pageSize);
+
+        void getStorageList(String deviceSn);
     }
 }
