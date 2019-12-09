@@ -58,6 +58,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
 
     private static final int MINUTE_PER_HOUR = 60;
     private static final int HOUR_PER_DAY = 24;
+    private static final long MILLISECONDS_PER_DAY = 3600 * 24 * 1000;
 
     @ViewById(resName = "tv_date")
     TextView tvDate;
@@ -219,10 +220,13 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
         int month = c.get(Calendar.MONTH);
         int date = c.get(Calendar.DATE);
         c.clear();
+        c.set(year, month, date);
+        long today = c.getTimeInMillis();
 
         List<DropdownTime> time = new ArrayList<>();
         DropdownTime all = new DropdownTime(-1, customTimeAll, true, false);
         DropdownTime custom = new DropdownTime(100, customName, false, true);
+        all.setTime(today, today + MILLISECONDS_PER_DAY);
         time.add(all);
         for (Pair<Integer, Integer> item : info) {
             String name = String.format(Locale.getDefault(),
