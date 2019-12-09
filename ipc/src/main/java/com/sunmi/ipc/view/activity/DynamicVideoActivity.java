@@ -1,4 +1,4 @@
-package com.sunmi.ipc.dynamic;
+package com.sunmi.ipc.view.activity;
 
 
 import android.Manifest;

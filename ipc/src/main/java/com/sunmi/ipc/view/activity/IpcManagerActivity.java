@@ -30,7 +30,7 @@ import com.sunmi.ipc.contract.IpcManagerContract;
 import com.sunmi.ipc.model.IpcManageBean;
 import com.sunmi.ipc.presenter.IpcManagerPresenter;
 import com.sunmi.ipc.service.P2pService;
-import com.sunmi.ipc.setting.IpcSettingActivity_;
+import com.sunmi.ipc.view.activity.setting.IpcSettingActivity_;
 import com.sunmi.ipc.utils.IOTCClient;
 import com.sunmi.ipc.utils.IpcUtils;
 import com.xiaojinzi.component.impl.Router;

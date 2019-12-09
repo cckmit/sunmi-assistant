@@ -933,7 +933,8 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     }
 
     //初始化时间轴
-    private void initTimeSlotData(boolean isFirstInit) {
+    @UiThread
+    void initTimeSlotData(boolean isFirstInit) {
         if (!isFirstInit) {
             showVideoLoading();
         }

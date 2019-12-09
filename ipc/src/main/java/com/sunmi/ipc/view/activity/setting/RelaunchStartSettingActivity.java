@@ -1,4 +1,4 @@
-package com.sunmi.ipc.setting;
+package com.sunmi.ipc.view.activity.setting;
 
 import android.widget.ImageView;
 import android.widget.TextView;

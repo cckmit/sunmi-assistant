@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_common"
-    android:orientation="vertical"
-    tools:context=".view.activity.setting.IpcSettingDetailActivity">
+    android:orientation="vertical">
 
     <sunmi.common.view.TitleBarView
         android:id="@+id/title_bar"
@@ -16,21 +13,31 @@
         app:dividerShow="true"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
-        app:rightText="@string/ipc_setting_delete"
-        app:titleText="@string/ipc_setting_detail"
+        app:titleText="@string/str_setting_md"
         app:titleTextColor="@color/text_main" />
 
     <sunmi.common.view.SettingItemLayout
-        android:id="@+id/sil_camera_model"
+        android:id="@+id/sil_voice_exception"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:title="@string/ipc_setting_detail_model" />
+        app:showDivider="bottom"
+        app:title="@string/ipc_setting_sound_abnormal_detection"
+        app:type="arrow" />
 
     <sunmi.common.view.SettingItemLayout
-        android:id="@+id/sil_camera_sn"
+        android:id="@+id/sil_active_exception"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:showDivider="top"
-        app:title="@string/ipc_setting_detail_sn" />
+        app:showDivider="bottom"
+        app:title="@string/ipc_setting_active_abnormal_detection"
+        app:type="arrow" />
+
+    <sunmi.common.view.SettingItemLayout
+        android:id="@+id/sil_time_setting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:showDivider="bottom"
+        app:title="@string/ipc_setting_detection_time"
+        app:type="arrow" />
 
 </LinearLayout>
