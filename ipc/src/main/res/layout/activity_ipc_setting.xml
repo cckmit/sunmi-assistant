@@ -43,42 +43,28 @@
                 app:type="arrow" />
 
             <sunmi.common.view.SettingItemLayout
+                android:id="@+id/sil_md"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:showDivider="both"
+                app:title="@string/str_setting_md"
+                app:type="arrow" />
+
+            <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_camera_adjust"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
+                app:showDivider="both"
                 app:title="@string/str_adjust_screen"
-                app:type="arrow" />
-
-            <sunmi.common.view.SettingItemLayout
-                android:id="@+id/sil_voice_exception"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:showDivider="top"
-                app:title="@string/ipc_setting_sound_abnormal_detection"
-                app:type="arrow" />
-
-            <sunmi.common.view.SettingItemLayout
-                android:id="@+id/sil_active_exception"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:showDivider="top"
-                app:title="@string/ipc_setting_active_abnormal_detection"
-                app:type="arrow" />
-
-            <sunmi.common.view.SettingItemLayout
-                android:id="@+id/sil_time_setting"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:showDivider="top"
-                app:title="@string/ipc_setting_detection_time"
                 app:type="arrow" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_night_style"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/dp_16"
+                app:showDivider="both"
                 app:title="@string/ipc_setting_night_vision_mode"
                 app:type="arrow" />
 
@@ -86,7 +72,8 @@
                 android:id="@+id/sil_wdr"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/dp_16"
+                app:showDivider="both"
                 app:title="@string/ipc_setting_state_wdr"
                 app:type="toggle" />
 
@@ -94,7 +81,8 @@
                 android:id="@+id/sil_light"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/dp_16"
+                app:showDivider="top"
                 app:title="@string/ipc_setting_state_light"
                 app:type="toggle" />
 
@@ -111,6 +99,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
+                app:showDivider="both"
                 app:title="@string/str_sd_manager"
                 app:type="arrow" />
 
@@ -120,6 +109,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
                 app:contentText="@string/ipc_setting_unknown"
+                app:showDivider="both"
                 app:title="@string/ipc_setting_wifi"
                 app:type="arrow" />
 
@@ -127,7 +117,8 @@
                 android:id="@+id/sil_ipc_version"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/dp_16"
+                app:showDivider="top"
                 app:title="@string/ipc_setting_version_current_name"
                 app:type="arrow" />
 
@@ -139,6 +130,6 @@
                 app:title="@string/ipc_setting_relaunch"
                 app:type="arrow" />
         </LinearLayout>
-
     </android.support.v4.widget.NestedScrollView>
+
 </RelativeLayout>
