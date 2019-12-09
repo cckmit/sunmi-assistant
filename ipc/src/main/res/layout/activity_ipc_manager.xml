@@ -94,7 +94,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/bg_round_corner_black_15"
                     android:scaleType="center"
-                    android:src="@mipmap/ic_sdcard" />
+                    android:src="@drawable/ic_sdcard" />
 
                 <LinearLayout
                     android:id="@+id/ll_calender_portrait"
