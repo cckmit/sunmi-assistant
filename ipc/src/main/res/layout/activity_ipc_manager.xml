@@ -55,11 +55,11 @@
                 </RelativeLayout>
 
                 <!--<include-->
-                    <!--android:id="@+id/rl_portrait_video_controller"-->
-                    <!--layout="@layout/include_video_controller_bar"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="@dimen/dp_42"-->
-                    <!--android:layout_below="@+id/rl_video" />-->
+                <!--android:id="@+id/rl_portrait_video_controller"-->
+                <!--layout="@layout/include_video_controller_bar"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="@dimen/dp_42"-->
+                <!--android:layout_below="@+id/rl_video" />-->
             </RelativeLayout>
 
             <LinearLayout
@@ -101,10 +101,10 @@
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/dp_8"
-                    android:visibility="gone"
                     android:layout_weight="1"
                     android:background="@drawable/bg_round_corner_black_15"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/tv_calendar_portrait"

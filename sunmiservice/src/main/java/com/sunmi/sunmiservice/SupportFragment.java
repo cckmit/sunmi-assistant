@@ -60,6 +60,7 @@ public class SupportFragment extends BaseFragment
 
     private IWXAPI api;// 第三方app和微信通信的openApi接口
     private ArrayList<CashVideoServiceBean> cashVideoServiceBeans = new ArrayList<>();
+    private IpcCloudApiAnno ipcCloudApi;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,36 +71,8 @@ public class SupportFragment extends BaseFragment
     @AfterViews
     void init() {
         titleBar.getRightTextView().setOnClickListener(this);
-        final IpcCloudApiAnno ipcCloudApi = ServiceManager.get(IpcCloudApiAnno.class);
-        if (ipcCloudApi != null) {
-            ipcCloudApi.getAuditVideoServiceList(null, new RetrofitCallback<ServiceListResp>() {
-                @Override
-                public void onSuccess(int code, String msg, ServiceListResp data) {
-                    List<ServiceListResp.DeviceListBean> beans = data.getDeviceList();
-                    if (beans.size() > 0) {
-                        for (ServiceListResp.DeviceListBean bean : beans) {
-                            if (bean.getStatus() == CommonConstants.SERVICE_ALREADY_OPENED) {
-                                CashVideoServiceBean info = new CashVideoServiceBean();
-                                info.setDeviceId(bean.getDeviceId());
-                                info.setDeviceSn(bean.getDeviceSn());
-                                info.setDeviceName(bean.getDeviceName());
-                                cashVideoServiceBeans.add(info);
-                            }
-                        }
-                    }
-                }
-
-                @Override
-                public void onFail(int code, String msg, ServiceListResp data) {
-
-                }
-            });
-        }
-        if (cashVideoServiceBeans.size() > 0) {
-            tvCashVideo.setText(R.string.str_setting_detail);
-        } else {
-            tvCashVideo.setText(R.string.str_learn_more);
-        }
+        ipcCloudApi = ServiceManager.get(IpcCloudApiAnno.class);
+        changeCashVideoCard();
         changeCloudCard();
     }
 
@@ -173,6 +146,38 @@ public class SupportFragment extends BaseFragment
         return true;
     }
 
+    private void changeCashVideoCard() {
+        if (ipcCloudApi != null) {
+            ipcCloudApi.getAuditVideoServiceList(null, new RetrofitCallback<ServiceListResp>() {
+                @Override
+                public void onSuccess(int code, String msg, ServiceListResp data) {
+                    List<ServiceListResp.DeviceListBean> beans = data.getDeviceList();
+                    if (beans.size() > 0) {
+                        for (ServiceListResp.DeviceListBean bean : beans) {
+                            if (bean.getStatus() == CommonConstants.SERVICE_ALREADY_OPENED) {
+                                CashVideoServiceBean info = new CashVideoServiceBean();
+                                info.setDeviceId(bean.getDeviceId());
+                                info.setDeviceSn(bean.getDeviceSn());
+                                info.setDeviceName(bean.getDeviceName());
+                                cashVideoServiceBeans.add(info);
+                            }
+                        }
+                    }
+                    if (cashVideoServiceBeans.size() > 0) {
+                        tvCashVideo.setText(R.string.str_setting_detail);
+                    } else {
+                        tvCashVideo.setText(R.string.str_learn_more);
+                    }
+                }
+
+                @Override
+                public void onFail(int code, String msg, ServiceListResp data) {
+                    changeCashVideoCard();
+                }
+            });
+        }
+    }
+
     /*private void initRefreshLayout() {
         mRefreshLayout.setDelegate(this);
         // 设置下拉刷新和上拉加载更多的风格     参数1：应用程序上下文，参数2：是否具有上拉加载更多功能
@@ -227,7 +232,7 @@ public class SupportFragment extends BaseFragment
     @Override
     public int[] getStickNotificationId() {
         return new int[]{
-                CommonNotifications.activeCloudChange
+                CommonNotifications.activeCloudChange, CommonNotifications.cashVideoSubscribe
         };
     }
 
@@ -235,6 +240,8 @@ public class SupportFragment extends BaseFragment
     public void didReceivedNotification(int id, Object... args) {
         if (id == CommonNotifications.activeCloudChange) {
             changeCloudCard();
+        } else if (id == CommonNotifications.cashVideoSubscribe) {
+            changeCashVideoCard();
         }
     }
 

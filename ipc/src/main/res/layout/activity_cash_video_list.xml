@@ -18,7 +18,8 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_cash_video"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:overScrollMode="never"
             android:scrollbars="none" />
 
@@ -34,6 +35,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rl_quick" />
 
+    <TextView
+        android:id="@+id/tv_no_cash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@mipmap/ic_no_cash_video"
+        android:drawablePadding="@dimen/dp_8"
+        android:text="@string/str_no_cash_video"
+        android:textColor="@color/text_caption"
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cl_filter" />
+
     <android.support.constraint.ConstraintLayout
         android:id="@+id/cl_filter"
         android:layout_width="match_parent"
@@ -47,7 +63,7 @@
             android:id="@+id/dm_device"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:dm_menuIndex="2"
+            app:dm_menuIndex="3"
             app:dm_menuParent="@+id/content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/dm_time"
@@ -62,7 +78,7 @@
             app:dm_autoDismiss="false"
             app:dm_layout="@layout/cash_video_dropdown_time"
             app:dm_list="@+id/rv_list"
-            app:dm_menuIndex="2"
+            app:dm_menuIndex="3"
             app:dm_menuParent="@+id/content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tv_abnormal"

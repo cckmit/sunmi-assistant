@@ -27,7 +27,7 @@ public class CommonConfig extends BaseConfig {
     public static String MI_PUSH_APP_KEY = "";
 
     public static String CLOUD_STORAGE_URL = "";
-    public static String CASH_VIDEO_URL ="";
+    public static String CASH_VIDEO_URL = "";
 
     @Override
     protected void initDev(Context context, String env) {
@@ -54,7 +54,7 @@ public class CommonConfig extends BaseConfig {
         MI_PUSH_APP_KEY = "5601813178246";
 
         CLOUD_STORAGE_URL = "https://sunmi-test.oss-cn-hangzhou.aliyuncs.com/h5/cloud-storage/index.html#/cloudStorage?topPadding=";
-        CASH_VIDEO_URL = "http://172.16.2.92:8080/#/cashvideo/welcome?topPadding=";
+        CASH_VIDEO_URL = "https://sunmi-test.oss-cn-hangzhou.aliyuncs.com/h5/sunmi-assistant/index.html#/cashvideo/welcome?topPadding=";
     }
 
     @Override

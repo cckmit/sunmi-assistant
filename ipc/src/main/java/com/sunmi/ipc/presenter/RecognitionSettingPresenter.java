@@ -5,7 +5,7 @@ import com.sunmi.ipc.R;
 import com.sunmi.ipc.contract.RecognitionSettingContract;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.OpcodeConstants;
-import com.sunmi.ipc.setting.entity.CameraConfig;
+import com.sunmi.ipc.model.CameraConfig;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.constant.CommonConstants;
