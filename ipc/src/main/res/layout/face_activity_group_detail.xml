@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/bg_common"
     android:orientation="vertical"
-    tools:context=".setting.IpcSettingDetailActivity">
+    tools:context=".view.activity.setting.IpcSettingDetailActivity">
 
     <sunmi.common.view.TitleBarView
         android:id="@+id/title_bar"

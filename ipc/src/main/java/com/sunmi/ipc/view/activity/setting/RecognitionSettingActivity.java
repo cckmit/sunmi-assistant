@@ -1,4 +1,4 @@
-package com.sunmi.ipc.setting;
+package com.sunmi.ipc.view.activity.setting;
 
 import android.annotation.SuppressLint;
 import android.graphics.Rect;

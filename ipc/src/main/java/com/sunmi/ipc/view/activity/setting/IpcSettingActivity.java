@@ -1,4 +1,4 @@
-package com.sunmi.ipc.setting;
+package com.sunmi.ipc.view.activity.setting;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,10 +7,8 @@ import android.support.annotation.StringRes;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.config.IpcConstants;
@@ -21,9 +19,8 @@ import com.sunmi.ipc.model.IpcNightModeResp;
 import com.sunmi.ipc.presenter.IpcSettingPresenter;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.OpcodeConstants;
-import com.sunmi.ipc.setting.entity.DetectionConfig;
-import com.sunmi.ipc.utils.TimeoutTimer;
 import com.sunmi.ipc.utils.IpcUtils;
+import com.sunmi.ipc.utils.TimeoutTimer;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -52,8 +49,6 @@ import sunmi.common.view.SettingItemLayout;
 import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.dialog.InputDialog;
 
-import static com.sunmi.ipc.setting.entity.DetectionConfig.INTENT_EXTRA_DETECTION_CONFIG;
-
 /**
  * @author YangShiJie
  * @date 2019/7/12
@@ -63,9 +58,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         implements IpcSettingContract.View {
 
     private static final int IPC_NAME_MAX_LENGTH = 36;
-    private static final int REQUEST_CODE_SOUND_DETECTION = 1001;
-    private static final int REQUEST_CODE_ACTIVE_DETECTION = 1002;
-    private static final int REQUEST_CODE_DETECTION_TIME = 1003;
     private static final int REQUEST_CODE_WIFI = 1004;
     private static final int REQUEST_CODE_ROTATE = 1005;
     private static final int REQUEST_COMPLETE = 1000;
@@ -77,12 +69,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     SettingItemLayout mNameView;
     @ViewById(resName = "sil_camera_adjust")
     SettingItemLayout mAdjustScreen;
-    @ViewById(resName = "sil_voice_exception")
-    SettingItemLayout mSoundDetection;
-    @ViewById(resName = "sil_active_exception")
-    SettingItemLayout mActiveDetection;
-    @ViewById(resName = "sil_time_setting")
-    SettingItemLayout mDetectionTime;
     @ViewById(resName = "sil_night_style")
     SettingItemLayout mNightStyle;
     @ViewById(resName = "sil_view_rotate")
@@ -100,7 +86,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     SunmiDevice mDevice;
     @Extra
     boolean disableAdjustScreen;
-    DetectionConfig mDetectionConfig;
 
     //夜视模式，指示灯，画面旋转
     private int nightMode, wdrMode, ledIndicator, rotation;
@@ -128,9 +113,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         }
         if (!DeviceTypeUtils.getInstance().isFS1(mDevice.getModel()) || disableAdjustScreen) {
             mAdjustScreen.setVisibility(View.GONE);
-            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) mSoundDetection.getLayoutParams();
-            lp.topMargin = (int) getResources().getDimension(R.dimen.dp_16);
-            mSoundDetection.setLayoutParams(lp);
         } else if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
             mAdjustScreen.setEnabled(false);
         }
@@ -222,14 +204,11 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     private boolean noNetCannotClick(boolean isOnlyHttp) {
         if (!NetworkUtils.isNetworkAvailable(context)) {
-            if (isOnlyHttp) {
-                shortTip(R.string.str_net_exception);
-                return true;
+            if (CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
+                return false;
             }
-            if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
-                shortTip(R.string.str_net_exception);
-                return true;
-            }
+            shortTip(R.string.str_net_exception);
+            return true;
         }
         return false;
     }
@@ -309,6 +288,14 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 .start();
     }
 
+    @Click(resName = "sil_md")
+    void mdClick() {
+        if (noNetCannotClick(true)) {
+            return;
+        }
+        MDSettingActivity_.intent(this).mDevice(mDevice).start();
+    }
+
     @Click(resName = "sil_camera_adjust")
     void cameraAdjust() {
         if (disableAdjustScreen) {
@@ -328,74 +315,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         }
         showLoadingDialog();
         fsAdjust(mDevice);
-    }
-
-    @Click(resName = "sil_voice_exception")
-    void soundAbnormalDetection() {
-        if (noNetCannotClick(false)) {
-            return;
-        }
-        if (mDetectionConfig == null) {
-            return;
-        }
-        IpcSettingDetectionActivity_.intent(this)
-                .mType(IpcSettingDetectionActivity.TYPE_SOUND)
-                .mDevice(mDevice)
-                .mConfig(mDetectionConfig)
-                .startForResult(REQUEST_CODE_SOUND_DETECTION);
-    }
-
-    @OnActivityResult(REQUEST_CODE_SOUND_DETECTION)
-    void onSoundDetectionResult(int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            mDetectionConfig = data.getParcelableExtra(INTENT_EXTRA_DETECTION_CONFIG);
-            updateDetectionView();
-        }
-    }
-
-    @Click(resName = "sil_active_exception")
-    void activeAbnormalDetection() {
-        if (noNetCannotClick(false)) {
-            return;
-        }
-        if (mDetectionConfig == null) {
-            return;
-        }
-        IpcSettingDetectionActivity_.intent(this)
-                .mType(IpcSettingDetectionActivity.TYPE_ACTIVE)
-                .mDevice(mDevice)
-                .mConfig(mDetectionConfig)
-                .startForResult(REQUEST_CODE_ACTIVE_DETECTION);
-    }
-
-    @OnActivityResult(REQUEST_CODE_ACTIVE_DETECTION)
-    void onActiveDetectionResult(int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            mDetectionConfig = data.getParcelableExtra(INTENT_EXTRA_DETECTION_CONFIG);
-            updateDetectionView();
-        }
-    }
-
-    @Click(resName = "sil_time_setting")
-    void detectionTimeSetting() {
-        if (noNetCannotClick(false)) {
-            return;
-        }
-        if (mDetectionConfig == null) {
-            return;
-        }
-        IpcSettingDetectionTimeActivity_.intent(this)
-                .mDevice(mDevice)
-                .mConfig(mDetectionConfig)
-                .startForResult(REQUEST_CODE_DETECTION_TIME);
-    }
-
-    @OnActivityResult(REQUEST_CODE_DETECTION_TIME)
-    void onDetectionTimeResult(int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            mDetectionConfig = data.getParcelableExtra(INTENT_EXTRA_DETECTION_CONFIG);
-            updateDetectionView();
-        }
     }
 
     @Click(resName = "sil_night_style")
@@ -616,16 +535,13 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
      */
     @Click(resName = "sil_ipc_relaunch")
     void relaunchClick() {
-        RelaunchSettingActivity_.intent(this)
-                .mDevice(mDevice)
-                .start();
+        RelaunchSettingActivity_.intent(this).mDevice(mDevice).start();
     }
-
 
     @Override
     public int[] getStickNotificationId() {
         return new int[]{OpcodeConstants.getIpcConnectApMsg, OpcodeConstants.getIpcNightIdeRotation,
-                OpcodeConstants.setIpcNightIdeRotation, OpcodeConstants.getIpcDetection,
+                OpcodeConstants.setIpcNightIdeRotation,
                 OpcodeConstants.getIsWire, CommonNotifications.netConnected,
                 CommonNotifications.netDisconnection, CommonNotifications.ipcUpgrade,
                 CommonNotifications.mqttResponseTimeout, OpcodeConstants.ipcQueryUpgradeStatus};
@@ -667,13 +583,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 getIpcNightIdeRotation(res);
             } else if (id == OpcodeConstants.setIpcNightIdeRotation) {
                 setIpcNightIdeRotation(res);
-            } else if (id == OpcodeConstants.getIpcDetection) {
-                if (res.getDataErrCode() == 1) {
-                    mDetectionConfig = new Gson().fromJson(res.getResult().toString(), DetectionConfig.class);
-                    updateDetectionView();
-                } else {
-                    shortTip(R.string.toast_network_Exception);
-                }
             } else if (id == OpcodeConstants.getIsWire) {
                 checkWire(res);
             } else if (id == OpcodeConstants.getSdStatus) {
@@ -780,19 +689,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 .setConfirmButton(R.string.str_sd_format, (dialog, which) -> {
                     IpcSettingSdcardActivity_.intent(this).mDevice(device).start();
                 }).create().show();
-    }
-
-    @UiThread
-    void updateDetectionView() {
-        if (mDetectionConfig == null) {
-            return;
-        }
-        mSoundDetection.setContent(mDetectionConfig.soundDetection != 0 ?
-                getString(R.string.ipc_setting_open) : getString(R.string.ipc_setting_close));
-        mActiveDetection.setContent(mDetectionConfig.activeDetection != 0 ?
-                getString(R.string.ipc_setting_open) : getString(R.string.ipc_setting_close));
-        mDetectionTime.setContent(mDetectionConfig.detectionDays == DetectionConfig.DETECTION_ALL_TIME ?
-                getString(R.string.ipc_setting_detection_time_all_time) : getString(R.string.ipc_setting_detection_time_custom));
     }
 
     @UiThread
