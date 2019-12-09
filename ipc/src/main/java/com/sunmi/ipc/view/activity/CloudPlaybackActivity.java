@@ -132,6 +132,8 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     SunmiDevice device;
     @Extra
     int cloudStorageServiceStatus;
+    @Extra
+    long cashVideoStartTime;
 
     private CountDownTimer timeLineScrollTimer; //时间轴滑动延时
 
