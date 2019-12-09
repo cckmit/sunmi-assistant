@@ -1,14 +1,17 @@
 package com.sunmi.ipc.presenter;
 
+import com.sunmi.ipc.R;
 import com.sunmi.ipc.contract.CashVideoContract;
 import com.sunmi.ipc.model.CashOrderResp;
 import com.sunmi.ipc.model.CashVideoResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.model.ServiceListResp;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.log.LogCat;
 
@@ -26,7 +29,7 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
-                    mView.updateTagSuccess(videoType);
+                    mView.updateTagSuccess(videoType, description);
                 }
             }
 
@@ -91,5 +94,28 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
                 });
     }
 
+    @Override
+    public void getStorageList(String deviceSn) {
+        List<String> snList = new ArrayList<>();
+        snList.add(deviceSn);
+        IpcCloudApi.getInstance().getStorageList(snList, new RetrofitCallback<ServiceListResp>() {
+            @Override
+            public void onSuccess(int code, String msg, ServiceListResp data) {
+                if (isViewAttached()) {
+                    if (data.getDeviceList().size() > 0) {
+                        mView.getStorageSuccess(data.getDeviceList().get(0));
+                    } else {
+                        mView.shortTip(R.string.tip_cloud_storage_error);
+                    }
+                }
+            }
 
+            @Override
+            public void onFail(int code, String msg, ServiceListResp data) {
+                if (isViewAttached()) {
+                    mView.shortTip(R.string.tip_cloud_storage_error);
+                }
+            }
+        });
+    }
 }

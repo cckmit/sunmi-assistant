@@ -15,9 +15,9 @@ import com.sunmi.ipc.R;
 import com.sunmi.ipc.model.CashVideoResp;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import sunmi.common.utils.DateTimeUtils;
+import sunmi.common.utils.GlideRoundTransform;
 
 /**
  * Description:
@@ -73,7 +73,7 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
         viewHolder.tvAmount.setText(String.format("¥%s", bean.getAmount()));
         viewHolder.tvOrderNum.setText(bean.getOrderNo());
         viewHolder.tvName.setText(bean.getDeviceName());
-        Glide.with(context).load(bean.getSnapshotUrl()).into(viewHolder.ivPreview);
+        Glide.with(context).load(bean.getSnapshotUrl()).transform(new GlideRoundTransform(context)).into(viewHolder.ivPreview);
         if (i == data.size() - 1) {
             viewHolder.tvLineBottom.setVisibility(View.INVISIBLE);
         } else if (i == 0) {

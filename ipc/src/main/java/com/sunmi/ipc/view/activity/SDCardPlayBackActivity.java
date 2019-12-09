@@ -14,7 +14,6 @@ import android.os.IBinder;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -58,9 +57,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConfig;
@@ -87,9 +83,8 @@ import sunmi.common.view.dialog.BottomDialog;
 @EActivity(resName = "activity_sdcard_playback")
 public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresenter>
         implements SDCardPlaybackContract.View, ZFTimeLine.OnZFTimeLineListener,
-        View.OnClickListener, VolumeHelper.VolumeChangeListener,
-//        IOTCClient.StatusCallback,
-        SurfaceHolder.Callback, P2pService.OnPlayStatusChangedListener {
+        View.OnClickListener, VolumeHelper.VolumeChangeListener, SurfaceHolder.Callback,
+        P2pService.OnPlayStatusChangedListener, P2pService.OnPlayingListener {
 
     private static final int PLAY_FAIL_STATUS_COMMON = 0;
     private static final int PLAY_FAIL_STATUS_OFFLINE = 1;
@@ -167,11 +162,11 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     private boolean isStartRecord;//是否开始录制
     private boolean isControlPanelShow = true;//是否点击屏幕
 
+    private boolean switchSuccess;//是否切换到新的时间开始播放
+
     //当前时间，已选日期的开始和结束时间  in seconds
     private long presentTime, startTimeCurrentDate, endTimeCurrentDate;
     private long lastVideoEndTime;    //已经在播放的视频结束时间
-    //刻度尺移动定时器
-    private ScheduledExecutorService executorService;
 
     private Handler handler = new Handler();
     private VolumeHelper volumeHelper = null;
@@ -201,7 +196,6 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
         @Override
         public void onServiceDisconnected(ComponentName name) {
             isBind = false;
-            Log.i("Kathy", "ActivityA - onServiceDisconnected");
         }
     };
 
@@ -264,7 +258,6 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
         volumeHelper.unregisterVolumeReceiver();
         stopPlay();
         removeCallbacks();
-        closeMove();
     }
 
     @Override
@@ -412,7 +405,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
 
     @Click(resName = "iv_pre_day")
     void preDayClick() {
-        if (isFastClick(1000) || cloudStorageServiceStatus == CommonConstants.SERVICE_NOT_OPENED) {
+        if (isFastClick(1000) || isServiceUnopened()) {
             return;
         }
         switchDay(startTimeCurrentDate - SECONDS_IN_ONE_DAY);
@@ -420,7 +413,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
 
     @Click(resName = "iv_next_day")
     void nextDayClick() {
-        if (isFastClick(1000) || cloudStorageServiceStatus == CommonConstants.SERVICE_NOT_OPENED) {
+        if (isFastClick(1000) || isServiceUnopened()) {
             return;
         }
         switchDay(startTimeCurrentDate + SECONDS_IN_ONE_DAY);
@@ -428,11 +421,10 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
 
     @Click(resName = "tv_calendar")
     void chooseCalendarClick() {
-        if (isFastClick(1000) || cloudStorageServiceStatus == CommonConstants.SERVICE_NOT_OPENED) {
+        if (isFastClick(1000) || isServiceUnopened()) {
             return;
         }
         if (timeSlotsAll == null) {
-            LogCat.e(TAG, "Time slots in month is Empty.");
             return;
         }
         if (calendarDialog == null || calendarView == null) {
@@ -496,7 +488,6 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
         } else {
             if (timeSlotsInDay.size() > 0) {
                 refreshScaleTimePanel();
-                openMove();
                 selectedTimeHasVideo(startTimeCurrentDate);
             } else {
                 showNoVideoTip();
@@ -532,6 +523,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     @Override
     public void moveTo(String data, boolean isLeftScroll, long timeStamp) {
         cancelDelayPlay();
+        switchSuccess = false;
         showTimeScroll(data.substring(11), isLeftScroll);//toast显示时间
     }
 
@@ -582,8 +574,6 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
             switch (getSdcardStatus(res)) {
                 case 2:
                     initTimeSlotData(true);
-                    tvCalendar.setEnabled(true);
-                    ivPreDay.setEnabled(true);
                     break;
                 case 0:
                     showPlayFail(PLAY_FAIL_STATUS_NO_SD, R.string.tip_no_sd_to_cloud_playback);
@@ -592,7 +582,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
                     showPlayFail(PLAY_FAIL_STATUS_SD_EXCEPTION, R.string.tip_sd_exception_to_cloud_playback);
                     break;
             }
-            p2pService.init(svPlayback.getHolder().getSurface(), SDCardPlayBackActivity.this);
+            p2pService.init(svPlayback.getHolder().getSurface(), this, this);
         }
     }
 
@@ -807,30 +797,10 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
         ivVolume.setImageResource(currentVolume100 == 0 ? R.mipmap.ic_muse : R.mipmap.ic_volume);
     }
 
-    /**
-     * 一分钟轮询一次
-     * 开始移动
-     */
-    public void openMove() {
-        closeMove();
-        if (executorService == null) {
-            executorService = Executors.newSingleThreadScheduledExecutor();
-        }
-        executorService.scheduleAtFixedRate(this::moveTo, 60, 60, TimeUnit.SECONDS);
-    }
-
     @UiThread
-    void moveTo() {
-        if (p2pService != null) {
-            timeLine.moveToTime(p2pService.getCurrentVideoTime());
-        }
-    }
-
-    //停止时间轴自动移动
-    public void closeMove() {
-        if (executorService != null) {
-            executorService.shutdownNow();
-            executorService = null;
+    void moveToTime(long time) {
+        if (p2pService != null && timeLine != null) {
+            timeLine.moveToTime(time);
         }
     }
 
@@ -843,18 +813,12 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
         timeLine.refresh();
     }
 
-    //获取视频跳转播放的currentItemPosition
-    private void videoSkipScrollPosition(long currentTimeMinutes) {
-        timeLine.moveToTime(currentTimeMinutes);
-    }
-
     //滑动回放定位的中间 position
     @UiThread
     void scrollCurrentPlayBackTime(long currentTimeMinutes) {
         ivPlay.setBackgroundResource(R.mipmap.pause_normal);
         isPaused = false;
         timeLine.moveToTime(currentTimeMinutes);
-        openMove();
     }
 
     //拖动或选择的时间是否有video
@@ -902,7 +866,6 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
         if (llPlayFail != null && llPlayFail.isShown()) {
             return;
         }
-        closeMove();
         showPlayFail(PLAY_FAIL_STATUS_COMMON, R.string.tip_video_played_over);
     }
 
@@ -910,32 +873,35 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
         handler.removeCallbacksAndMessages(null);
     }
 
-    private void switch2Playback(long currTime) {
-        int availableVideoSize = timeSlotsInDay.size();
-        for (int i = 0; i < availableVideoSize; i++) {
-            VideoTimeSlotBean bean = timeSlotsInDay.get(i);
-            long start = bean.getStartTime();
-            long end = bean.getEndTime();
-            if (end - currTime < 60 && currTime >= start && currTime < end) {
-                if (i != availableVideoSize - 1) {
-                    final int delayMillis = (int) end - currTime < 0 ? 1 : (int) (end - currTime);
-                    final int finalI = i;
-                    handler.postDelayed(() -> {
-                        mPresenter.startPlayback(getIOTCClient(),
-                                timeSlotsInDay.get(finalI + 1).getStartTime(),
-                                timeSlotsInDay.get(finalI + 1).getEndTime());
-                        videoSkipScrollPosition(timeSlotsInDay.get(finalI + 1).getStartTime());
-                    }, delayMillis * 1000);
-                    break;
-                }
-            }
-        }
-    }
+//    private void switch2Playback(long currTime) {
+//        int availableVideoSize = timeSlotsInDay.size();
+//        for (int i = 0; i < availableVideoSize; i++) {
+//            VideoTimeSlotBean bean = timeSlotsInDay.get(i);
+//            long start = bean.getStartTime();
+//            long end = bean.getEndTime();
+//            if (end - currTime < 60 && currTime >= start && currTime < end) {
+//                if (i != availableVideoSize - 1) {
+//                    final int delayMillis = (int) end - currTime < 0 ? 1 : (int) (end - currTime);
+//                    final int finalI = i;
+//                    handler.postDelayed(() -> {
+//                        mPresenter.startPlayback(getIOTCClient(),
+//                                timeSlotsInDay.get(finalI + 1).getStartTime(),
+//                                timeSlotsInDay.get(finalI + 1).getEndTime());
+//                        videoSkipScrollPosition(timeSlotsInDay.get(finalI + 1).getStartTime());
+//                    }, delayMillis * 1000);
+//                    break;
+//                }
+//            }
+//        }
+//    }
 
     //初始化时间轴
     @UiThread
     void initTimeSlotData(boolean isFirstInit) {
-        if (!isFirstInit) {
+        if (isFirstInit) {
+            tvCalendar.setEnabled(true);
+            ivPreDay.setEnabled(true);
+        } else {
             showVideoLoading();
         }
         timeSlotsInDay.clear();
@@ -957,7 +923,6 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
             @Override
             public void onFinish() {
                 showVideoLoading();
-                openMove();
                 selectedTimeHasVideo(timeStamp);
             }
         };
@@ -1012,6 +977,20 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
             result.add((Calendar) c.clone());
         }
         return result;
+    }
+
+    @Override
+    public void onPlaying(long time, int flag) {
+        if (flag == 10) {
+            switchSuccess = true;
+            moveToTime(time);
+        } else {
+            if (switchSuccess) {
+                if (timeLine.getCurrentInterval() + 60 < time) {
+                    moveToTime(time);
+                }
+            }
+        }
     }
 
 }

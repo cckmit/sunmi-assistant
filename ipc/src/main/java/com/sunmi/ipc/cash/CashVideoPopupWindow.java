@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.DateTimeUtils;
+import sunmi.common.utils.GlideRoundTransform;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.ViewHolder;
 
@@ -99,7 +100,7 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
     private void setImageBackground() {
         if (mSetTitleView != null) {
             mSetTitleView.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    ContextCompat.getDrawable(mContext, R.drawable.ic_drop_down_black), null);
+                    ContextCompat.getDrawable(mContext, R.drawable.ic_arrow_down_gray), null);
         }
     }
 
@@ -161,7 +162,7 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
             TextView tvLineBottom = holder.getView(R.id.tv_left_bottom_line);
             ivFlag.setSelected(holder.getAdapterPosition() == currentPlayPosition);
             if (isShowing()) {
-                Glide.with(mContext).load(res.getSnapshotUrl()).into(imgVideo);
+                Glide.with(mContext).load(res.getSnapshotUrl()).transform(new GlideRoundTransform(mContext)).into(imgVideo);
             }
             if (res.getVideoType() == 1) {
                 tvTag.setVisibility(View.GONE);
