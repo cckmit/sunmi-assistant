@@ -230,8 +230,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
                                 .put("token", SpUtils.getStoreToken())
                                 .put("company_id", SpUtils.getCompanyId())
                                 .put("shop_id", SpUtils.getShopId())
-                                .put("sn_list", array)
-                                .put("shop_name",SpUtils.getShopName()).toString();
+                                .put("sn_list", array).toString();
                         webView.evaluateJavascript("javascript:getDeviceInfo('" + params + "')", new ValueCallback<String>() {
                             @Override
                             public void onReceiveValue(String value) {
@@ -247,7 +246,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
 
             @Override
             protected void receiverError(WebView view, WebResourceRequest request, WebResourceError error) {
-               // loadError();
+                loadError();
                 LogCat.e(TAG, "receiverError 111111" + " networkError");
             }
 
@@ -295,14 +294,14 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
 
     @Override
     public void onBackPressed() {
-        if (webView.isShown()) {
-            webView.evaluateJavascript("javascript:nativePageBack()", new ValueCallback<String>() {
-                @Override
-                public void onReceiveValue(String value) {
-                }
-            });
+        if (webView == null) {
             return;
         }
+        if (webView.canGoBack()) {
+            webView.goBack();
+            return;
+        }
+        webView.clearCache(true);
         super.onBackPressed();
     }
 }
