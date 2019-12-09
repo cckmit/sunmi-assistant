@@ -88,7 +88,7 @@ import sunmi.common.view.dialog.BottomDialog;
 public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresenter>
         implements SDCardPlaybackContract.View, ZFTimeLine.OnZFTimeLineListener,
         View.OnClickListener, VolumeHelper.VolumeChangeListener,
-//        IOTCClient.StatusCallback,SurfaceHolder.Callback,
+//        IOTCClient.StatusCallback,
         SurfaceHolder.Callback, P2pService.OnPlayStatusChangedListener {
 
     private static final int PLAY_FAIL_STATUS_COMMON = 0;
@@ -166,7 +166,6 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     private boolean isPaused;//回放是否暂停
     private boolean isStartRecord;//是否开始录制
     private boolean isControlPanelShow = true;//是否点击屏幕
-    private boolean isVideoLess1Minute;//视频片段是否小于一分钟
 
     //当前时间，已选日期的开始和结束时间  in seconds
     private long presentTime, startTimeCurrentDate, endTimeCurrentDate;
@@ -194,7 +193,6 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
             isBind = true;
             P2pService.MyBinder myBinder = (P2pService.MyBinder) binder;
             p2pService = myBinder.getService();
-            p2pService.init(svPlayback.getHolder().getSurface(), SDCardPlayBackActivity.this);
             IPCCall.getInstance().getSdStatus(context, device.getModel(), device.getDeviceid());
             mPresenter.getPlaybackListForCalendar(getIOTCClient(),
                     startTimeCurrentDate - SECONDS_IN_ONE_DAY * 730, endTimeCurrentDate);
@@ -249,7 +247,6 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     @Override
     protected void onResume() {
         super.onResume();
-        LogCat.e(TAG, "666666 onresume");
     }
 
     @Override
@@ -595,6 +592,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
                     showPlayFail(PLAY_FAIL_STATUS_SD_EXCEPTION, R.string.tip_sd_exception_to_cloud_playback);
                     break;
             }
+            p2pService.init(svPlayback.getHolder().getSurface(), SDCardPlayBackActivity.this);
         }
     }
 

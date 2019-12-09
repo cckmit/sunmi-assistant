@@ -6,7 +6,7 @@
     android:background="@color/black_60"
     android:gravity="center"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/dp_50"
+    android:paddingBottom="@dimen/dp_42"
     android:visibility="gone">
 
     <TextView
