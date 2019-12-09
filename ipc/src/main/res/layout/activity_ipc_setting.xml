@@ -90,7 +90,7 @@
                 android:id="@+id/sil_view_rotate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:showDivider="top"
+                app:showDivider="both"
                 app:title="@string/ipc_setting_rotate"
                 app:type="arrow" />
 

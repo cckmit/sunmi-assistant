@@ -17,7 +17,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.ScheduledExecutorService;
 
 import sunmi.common.utils.DateTimeUtils;
 
@@ -83,9 +82,6 @@ public class ZFTimeLine extends View {
     private OnZFTimeLineListener listener;        //时间轴拖动监听,这个只在拖动完成时返回数据
 
     List<VideoTimeSlotBean> videoData;            //已录制视频数据信息
-
-    //刻度尺移动定时器
-    private ScheduledExecutorService executorService;
 
     public ZFTimeLine(Context context) {
         this(context, null);
