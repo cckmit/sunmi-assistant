@@ -220,6 +220,11 @@ public class JSCall {
         }
     }
 
+    @JavascriptInterface
+    public void cashVideoSubscribe(){
+        BaseNotification.newInstance().postNotificationName(CommonNotifications.cashVideoSubscribe);
+    }
+
     private void launchMiniProgram(String userName, String path, String miniProgramType) {
         if (api == null) return;
         if (!api.isWXAppInstalled()) {
