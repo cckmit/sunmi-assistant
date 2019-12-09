@@ -122,7 +122,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
         refreshLayout.setRefreshViewHolder(viewHolder);
         showLoadingDialog();
         initFilter();
-        reFreshList();
+        refreshList();
     }
 
     private void initFilter() {
@@ -131,7 +131,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
         filterDeviceAdapter.setOnItemClickListener((adapter, model, position) -> {
             if (deviceId != model.getId()) {
                 deviceId = model.getId();
-                reFreshList();
+                refreshList();
             }
         });
         dmDevice.setAnim(new DropdownAnimNew());
@@ -180,7 +180,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
             tvAbnormal.setSelected(!tvAbnormal.isSelected());
             videoType = tvAbnormal.isSelected() ?
                     IpcConstants.CASH_VIDEO_ABNORMAL : IpcConstants.CASH_VIDEO_ALL;
-            reFreshList();
+            refreshList();
         });
 
         initTimeWheel();
@@ -193,7 +193,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
         if (startTime != newStart || endTime != newEnd) {
             startTime = newStart;
             endTime = newEnd;
-            reFreshList();
+            refreshList();
         }
     }
 
@@ -292,7 +292,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
 
     @Override
     public void netWorkError() {
-        if (dataList.size() > 0) {
+        if (dataList.size() <= 0) {
             networkError.setVisibility(View.VISIBLE);
         }
     }
@@ -305,7 +305,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
 
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
-        reFreshList();
+        refreshList();
     }
 
     @Override
@@ -330,11 +330,10 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
         }
     }
 
-    private void reFreshList() {
+    private void refreshList() {
         pageNum = 1;
         hasMore = true;
         mPresenter.load(deviceId, videoType, startTime, endTime, pageNum, pageSize);
-
     }
 
     private void initAdapter() {
