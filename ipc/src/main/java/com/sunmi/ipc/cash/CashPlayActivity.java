@@ -31,9 +31,7 @@ import com.sunmi.ipc.cash.adapter.CashAdapter;
 import com.sunmi.ipc.contract.CashVideoContract;
 import com.sunmi.ipc.model.CashOrderResp;
 import com.sunmi.ipc.model.CashVideoResp;
-import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.presenter.CashVideoPresenter;
-import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.ipc.view.activity.CloudPlaybackActivity_;
 
 import org.androidannotations.annotations.AfterViews;
@@ -53,7 +51,6 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.SunmiDevice;
-import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.IVideoPlayer;
 import sunmi.common.utils.ImageUtils;
@@ -143,8 +140,10 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     TextView tvTag;
     @ViewById(resName = "iv_video_change")
     ImageView ivVideoChange;
+    @ViewById(resName = "tv_empty")
+    TextView tvEmpty;
     /**
-     * ipc名称 ，视频列表 ，是否一天快放,设备id, 一天快放的开始结束时间 ,是否有更多列表数据
+     * ipc名称 ，视频列表 ，是否一天快放,设备id, 一天快放的开始结束时间 ,是否有更多列表数据（一天快放或点击item进入）
      */
     @Extra
     HashMap<Integer, String> ipcName;
@@ -180,9 +179,10 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     private int playIndex, currentPlayPosition;
     /**
-     * 页码，每页获取数据数量
+     * 点击item页码
      */
-    private int mPageNum = 1, mPageSize = 5000;
+    private int mWholeDayPlayPageNum;
+
     private CashAdapter adapter;
     private CashVideoPopupWindow popupWindow;
     private float posX, posY, curPosX;
@@ -222,7 +222,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
                             playIndex++;
                             initCashVideoPlay();
                         } else {
-                            //TODO 分页加载下一页数据
                             //shortTip("最右视频了");
                             loadMoreVideoList();
                         }
@@ -258,9 +257,11 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         initInfo();
         showLoading();
         if (isWholeDayVideoPlay) {
-            requestCashVideoList();
+            //初始化一天快放
+            hasMore = true;
+            isPlayLoop = true;
+            loadMoreVideoList();
         } else {
-//            testCashPlay();
             playIndex = videoListPosition;
             initCashVideoPlay();
         }
@@ -278,31 +279,30 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         super.onBackPressed();
     }
 
-    private void testCashPlay() {
-        IpcCloudApi.getInstance().getVideoList(2261, 1575426400, 1575426510, new RetrofitCallback<VideoListResp>() {
-            //        IpcCloudApi.getInstance().getVideoList(2261, 1575426500, 1575426510, new RetrofitCallback<VideoListResp>() {
-            @Override
-            public void onSuccess(int code, String msg, VideoListResp data) {
-                CashVideoResp.AuditVideoListBean bean;
-                for (int i = 0; i < data.getVideo_list().size(); i++) {
-                    bean = new CashVideoResp.AuditVideoListBean();
-                    bean.setVideoUrl(data.getVideo_list().get(i).getUrl());
-                    bean.setVideoType(2);
-                    bean.setAmount(20);
-                    bean.setDescription("未关");
-                    bean.setOrderNo("123456789");
-                    bean.setDeviceName("IPC");
-                    bean.setPurchaseTime(1575426500);
-                    videoList.add(bean);
-                }
-                initCashVideoPlay();
-            }
-
-            @Override
-            public void onFail(int code, String msg, VideoListResp data) {
-            }
-        });
-    }
+//    private void testCashPlay() {
+//        IpcCloudApi.getInstance().getVideoList(2261, 1575426400, 1575426510, new RetrofitCallback<VideoListResp>() {
+//            //        IpcCloudApi.getInstance().getVideoList(2261, 1575426500, 1575426510, new RetrofitCallback<VideoListResp>() {
+//            @Override
+//            public void onSuccess(int code, String msg, VideoListResp data) {
+//                CashVideoResp.AuditVideoListBean bean;
+//                for (int i = 0; i < data.getVideo_list().size(); i++) {
+//                    bean = new CashVideoResp.AuditVideoListBean();
+//                    bean.setVideoUrl(data.getVideo_list().get(i).getUrl());
+//                    bean.setVideoType(2);
+//                    bean.setAmount(20);
+//                    bean.setDescription("未关");
+//                    bean.setOrderNo("123456789");
+//                    bean.setDeviceName("IPC");
+//                    bean.setPurchaseTime(1575426500);
+//                    videoList.add(bean);
+//                }
+//                initCashVideoPlay();
+//            }
+//            @Override
+//            public void onFail(int code, String msg, VideoListResp data) {
+//            }
+//        });
+//    }
 
     private void initScreenWidthHeight() {
         int screenWidth = CommonHelper.getScreenWidth(context);
@@ -393,9 +393,25 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         return videoList.get(playIndex).getVideoId();
     }
 
-    //获取视频列表
-    private void requestCashVideoList() {
-        mPresenter.getCashVideoList(ipcName, deviceId, videoType, startTime, endTime, mPageNum, mPageSize);
+    /**
+     * 手势滑动到最后一个,或自动播放最后一个
+     */
+    private void loadMoreVideoList() {
+        if (isWholeDayVideoPlay) {
+            //一天快放
+            if (hasMore) {
+                mPresenter.getCashVideoList(ipcName, deviceId, -1, startTime, endTime, mWholeDayPlayPageNum++, 10);
+            } else {
+                shortTip(R.string.tip_no_more_data);
+            }
+        } else {
+            //item点击进入是否有更多
+            if (hasMore) {
+                mPresenter.getCashVideoList(ipcName, deviceId, videoType, startTime, endTime, pageNum++, 10);
+            } else {
+                shortTip(R.string.tip_no_more_data);
+            }
+        }
     }
 
     //取消标记
@@ -484,7 +500,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     @Click(resName = "ib_play")
     void onPlayClick() {
-        if (ivpCash == null || sbBar.getProgress() >= ivpCash.getDuration()) {
+        if (ivpCash == null || pBarLoading.getVisibility() == View.VISIBLE || sbBar.getProgress() >= ivpCash.getDuration()) {
             return;
         }
         ibPlay.setBackgroundResource(isPaused ? R.mipmap.pause_normal : R.mipmap.play_normal);
@@ -501,6 +517,9 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     @Click(resName = "iv_screenshot")
     void screenShotClick() {
+        if (pBarLoading.getVisibility() == View.VISIBLE) {
+            return;
+        }
         LogCat.e(TAG, "1111 screenshot isPlayLoop=" + isPlayLoop);
         checkRequestPermissions();
     }
@@ -545,10 +564,14 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     @Click(resName = "iv_cloud")
     void cloudPlayClick() {
+        if (pBarLoading.getVisibility() == View.VISIBLE) {
+            return;
+        }
+        //TODO
         SunmiDevice device = new SunmiDevice();
-        device.setDeviceid(videoList.get(playIndex).getDeviceName());
-//        device.setId();
-
+        device.setId(videoList.get(playIndex).getDeviceId());
+        device.setDeviceid("");
+        device.setName(videoList.get(playIndex).getDeviceName());
         CloudPlaybackActivity_.intent(context).device(device)
                 .cloudStorageServiceStatus(CommonConstants.SERVICE_ALREADY_OPENED)
                 .start().withAnimation(R.anim.slide_in_right, 0);
@@ -590,7 +613,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
                 if (hasMore) {
                     loadMoreVideoList();
                 } else {
-                    shortTip("播放完毕");
+                    shortTip(R.string.cash_play_complete);
                 }
                 return;
             }
@@ -716,6 +739,9 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        if (pBarLoading.getVisibility() == View.VISIBLE) {
+            return;
+        }
         if (fromUser) {
             String time = ivpCash.generateTime(progress);
             tvCurrentPlayTime.setText(time);
@@ -727,6 +753,9 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
+        if (pBarLoading.getVisibility() == View.VISIBLE) {
+            return;
+        }
         isDragging = true;
         mHandler.removeMessages(MESSAGE_SHOW_PROGRESS);
     }
@@ -791,13 +820,13 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     @Override
     public void updateTagSuccess(int videoType) {
         if (videoType == CASH_TAG_NORMAL) {
-            tvTag.setText(R.string.cash_tag_cancel_exception);
-            tvTag.setTextColor(ContextCompat.getColor(this, R.color.common_orange));
-            shortTip(R.string.cash_tag_success);
-        } else if (videoType == CASH_TAG_EXCEPTION) {
             tvTag.setText(R.string.cash_tag_exception);
             tvTag.setTextColor(ContextCompat.getColor(this, R.color.c_white));
             shortTip(R.string.cash_tag_cancel_success);
+        } else if (videoType == CASH_TAG_EXCEPTION) {
+            tvTag.setText(R.string.cash_tag_cancel_exception);
+            tvTag.setTextColor(ContextCompat.getColor(this, R.color.common_orange));
+            shortTip(R.string.cash_tag_success);
         }
     }
 
@@ -816,6 +845,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
 
     @Override
     public void getOrderInfoSuccess(CashOrderResp resp) {
+        tvEmpty.setVisibility(View.GONE);
         tvAmount.setText(String.format("¥%s", resp.getAmount()));
         tvOrderNo.setText(resp.getOrderNo());
         tvTotalCommodity.setText(String.format(Locale.getDefault(), "%d", resp.getTotalQuantity()));
@@ -826,38 +856,18 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
 
     @Override
     public void getOrderInfoFail(int code, String msg) {
-
+        tvEmpty.setVisibility(View.VISIBLE);
+        tvEmpty.setText(R.string.cash_empty_data);
     }
 
     /**
-     * 获取一天快放的视频
+     * 获取一天快放,item列表选择播放的视频
      */
     @Override
     public void cashVideoListSuccess(List<CashVideoResp.AuditVideoListBean> list) {
-        if (isWholeDayVideoPlay) {
-            //一天快放
-            isPlayLoop = true;
-            videoList = (ArrayList<CashVideoResp.AuditVideoListBean>) list;
-            initCashVideoPlay();
-        } else {
-            //item列表选择播放
-            hasMore = list.size() >= 10;
-            videoList.add((CashVideoResp.AuditVideoListBean) list);
-            //从获取的列表index播放
-            initCashVideoPlay();
-        }
-    }
-
-    /**
-     * 手势滑动到最后一个,或自动播放最后一个
-     */
-    private void loadMoreVideoList() {
-        //是否有更多
-        if (hasMore) {
-            mPresenter.getCashVideoList(ipcName, deviceId, videoType, startTime, endTime, pageNum++, 10);
-        } else {
-            shortTip(R.string.tip_no_more_data);
-        }
+        hasMore = list.size() >= 10;
+        videoList.addAll(list);
+        initCashVideoPlay();
     }
 
     @Override

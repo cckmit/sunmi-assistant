@@ -37,7 +37,7 @@
             android:visibility="invisible" />
 
         <RelativeLayout
-            android:layout_width="@dimen/dp_160"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="@dimen/dp_8"
@@ -46,71 +46,71 @@
             android:padding="@dimen/dp_8">
 
             <TextView
-                android:id="@+id/tv_amount_left"
-                android:layout_width="@dimen/dp_68"
-                android:layout_height="wrap_content"
-                android:text="@string/cash_trade_amount"
-                android:textColor="@color/c_white"
-                android:textSize="@dimen/sp_12" />
-
-            <TextView
-                android:id="@+id/tv_amount"
+                android:id="@+id/tv_order_no_left"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/tv_amount_left"
-                android:textColor="@color/c_white"
-                android:textSize="@dimen/sp_12" />
-
-            <TextView
-                android:id="@+id/tv_order_no_left"
-                android:layout_width="@dimen/dp_68"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tv_amount"
-                android:layout_marginTop="@dimen/dp_8"
                 android:text="@string/cash_order_num"
                 android:textColor="@color/c_white"
-                android:textSize="@dimen/sp_12" />
+                android:textSize="@dimen/sp_10" />
 
             <TextView
                 android:id="@+id/tv_order_no"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tv_amount"
-                android:layout_marginTop="@dimen/dp_8"
                 android:layout_toEndOf="@id/tv_order_no_left"
                 android:lines="1"
                 android:textColor="@color/c_white"
-                android:textSize="@dimen/sp_12" />
+                android:textSize="@dimen/sp_10" />
 
             <TextView
-                android:id="@+id/tv_total_commodity_left"
-                android:layout_width="@dimen/dp_68"
+                android:id="@+id/tv_amount_left"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_order_no"
                 android:layout_marginTop="@dimen/dp_8"
+                android:text="@string/cash_trade_amount"
+                android:textColor="@color/c_white"
+                android:textSize="@dimen/sp_10" />
+
+            <TextView
+                android:id="@+id/tv_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_order_no"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_toEndOf="@id/tv_amount_left"
+                android:textColor="@color/c_white"
+                android:textSize="@dimen/sp_10" />
+
+            <TextView
+                android:id="@+id/tv_total_commodity_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_amount_left"
+                android:layout_marginTop="@dimen/dp_8"
                 android:text="@string/cash_goods_quality"
                 android:textColor="@color/c_white"
-                android:textSize="@dimen/sp_12" />
+                android:textSize="@dimen/sp_10" />
 
             <TextView
                 android:id="@+id/tv_total_commodity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tv_order_no"
+                android:layout_below="@id/tv_amount_left"
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_toEndOf="@id/tv_total_commodity_left"
                 android:textColor="@color/c_white"
-                android:textSize="@dimen/sp_12" />
+                android:textSize="@dimen/sp_10" />
 
             <TextView
                 android:id="@+id/tv_trade_type_left"
-                android:layout_width="@dimen/dp_68"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_total_commodity"
                 android:layout_marginTop="@dimen/dp_8"
                 android:text="@string/cash_trade_type"
                 android:textColor="@color/c_white"
-                android:textSize="@dimen/sp_12" />
+                android:textSize="@dimen/sp_10" />
 
             <TextView
                 android:id="@+id/tv_trade_type"
@@ -121,7 +121,7 @@
                 android:layout_toEndOf="@id/tv_trade_type_left"
                 android:lines="1"
                 android:textColor="@color/c_white"
-                android:textSize="@dimen/sp_12" />
+                android:textSize="@dimen/sp_10" />
 
         </RelativeLayout>
 
@@ -195,5 +195,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ctl_bottom_setting" />
+
+    <TextView
+        android:id="@+id/tv_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@mipmap/ic_empty"
+        android:drawablePadding="@dimen/dp_4"
+        android:gravity="center_horizontal"
+        android:text="@string/cash_empty_data"
+        android:textColor="@color/text_caption"
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ctl_bottom_setting" />
+
 
 </android.support.constraint.ConstraintLayout>
