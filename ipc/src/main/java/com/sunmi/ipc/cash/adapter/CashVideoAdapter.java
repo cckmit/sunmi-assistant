@@ -70,7 +70,7 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
         } else {
             viewHolder.tvDescription.setVisibility(View.GONE);
         }
-        viewHolder.tvAmount.setText(String.valueOf(bean.getAmount()));
+        viewHolder.tvAmount.setText(String.format("¥%0.2f", bean.getAmount()));
         viewHolder.tvOrderNum.setText(bean.getOrderNo());
         viewHolder.tvName.setText(bean.getDeviceName());
         Glide.with(context).load(bean.getSnapshotUrl()).into(viewHolder.ivPreview);

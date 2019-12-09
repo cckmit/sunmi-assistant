@@ -375,4 +375,7 @@
     <string name="cash_video_other_device_already_subscribe_tip">当前门店已有摄像机开通了该服务</string>
     <string name="cash_video_item_content">校验风险交易</string>
     <string name="str_setting_md">闲时看店设置</string>
+    <string name="str_no_cash_video">暂无收银视频</string>
+    <string name="cash_empty_data">暂无收银信息</string>
+    <string name="cash_play_complete">播放完毕</string>
 </resources>

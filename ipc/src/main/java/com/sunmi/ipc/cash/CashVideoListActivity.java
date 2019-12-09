@@ -58,6 +58,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
 
     private static final int MINUTE_PER_HOUR = 60;
     private static final int HOUR_PER_DAY = 24;
+    private static final long MILLISECONDS_PER_DAY = 3600 * 24 * 1000;
 
     @ViewById(resName = "tv_date")
     TextView tvDate;
@@ -73,6 +74,8 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     DropdownMenuNew dmTime;
     @ViewById(resName = "tv_abnormal")
     TextView tvAbnormal;
+    @ViewById(resName = "tv_no_cash")
+    TextView tvNoCash;
 
     @Extra
     int deviceId = -1;
@@ -99,6 +102,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     private long fastPlayStart;
     private long fastPlayEnd;
     private int pageNum;
+    private int pageSize = 10;
 
     @AfterViews
     void init() {
@@ -119,7 +123,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
         refreshLayout.setRefreshViewHolder(viewHolder);
         showLoadingDialog();
         initFilter();
-        mPresenter.load(deviceId, videoType, startTime, endTime);
+        refreshList();
     }
 
     private void initFilter() {
@@ -128,7 +132,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
         filterDeviceAdapter.setOnItemClickListener((adapter, model, position) -> {
             if (deviceId != model.getId()) {
                 deviceId = model.getId();
-                mPresenter.load(deviceId, videoType, startTime, endTime);
+                refreshList();
             }
         });
         dmDevice.setAnim(new DropdownAnimNew());
@@ -172,12 +176,12 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
                 }
             }
         });
-
+        tvAbnormal.setSelected(videoType == IpcConstants.CASH_VIDEO_ABNORMAL);
         tvAbnormal.setOnClickListener(v -> {
             tvAbnormal.setSelected(!tvAbnormal.isSelected());
             videoType = tvAbnormal.isSelected() ?
                     IpcConstants.CASH_VIDEO_ABNORMAL : IpcConstants.CASH_VIDEO_ALL;
-            mPresenter.load(deviceId, videoType, startTime, endTime);
+            refreshList();
         });
 
         initTimeWheel();
@@ -190,7 +194,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
         if (startTime != newStart || endTime != newEnd) {
             startTime = newStart;
             endTime = newEnd;
-            mPresenter.load(deviceId, videoType, startTime, endTime);
+            refreshList();
         }
     }
 
@@ -216,10 +220,13 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
         int month = c.get(Calendar.MONTH);
         int date = c.get(Calendar.DATE);
         c.clear();
+        c.set(year, month, date);
+        long today = c.getTimeInMillis();
 
         List<DropdownTime> time = new ArrayList<>();
         DropdownTime all = new DropdownTime(-1, customTimeAll, true, false);
         DropdownTime custom = new DropdownTime(100, customName, false, true);
+        all.setTime(today, today + MILLISECONDS_PER_DAY);
         time.add(all);
         for (Pair<Integer, Integer> item : info) {
             String name = String.format(Locale.getDefault(),
@@ -270,15 +277,28 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     }
 
     @Override
-    public void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, boolean hasMore, int total, int pageNum) {
-        this.hasMore = hasMore;
-        this.pageNum = pageNum;
-        addData(beans);
+    public void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, int total) {
+        if (total <= 0) {
+            tvNoCash.setVisibility(View.VISIBLE);
+        } else {
+            tvNoCash.setVisibility(View.GONE);
+            if (pageNum == 1 || total > dataList.size()) {
+                addData(beans, pageNum == 1);
+                if (total <= (pageNum - 1) * pageSize + beans.size()) {
+                    hasMore = false;
+                }
+            } else {
+                hasMore = false;
+            }
+        }
+
     }
 
     @Override
     public void netWorkError() {
-        networkError.setVisibility(View.VISIBLE);
+        if (dataList.size() <= 0) {
+            networkError.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -289,26 +309,35 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
 
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
-        mPresenter.load(deviceId, videoType, startTime, endTime);
-        dataList.clear();
+        refreshList();
     }
 
     @Override
     public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
         if (NetworkUtils.isNetworkAvailable(context) && hasMore) {
-            mPresenter.loadMore();
+            pageNum++;
+            mPresenter.loadMore(pageNum, pageSize);
             return true;
         }
         return false;
     }
 
     @UiThread
-    protected void addData(List<CashVideoResp.AuditVideoListBean> beans) {
+    protected void addData(List<CashVideoResp.AuditVideoListBean> beans, boolean isRefresh) {
         if (beans.size() > 0) {
             initAdapter();
+            if (isRefresh) {
+                dataList.clear();
+            }
             dataList.addAll(beans);
             adapter.notifyDataSetChanged();
         }
+    }
+
+    private void refreshList() {
+        pageNum = 1;
+        hasMore = true;
+        mPresenter.load(deviceId, videoType, startTime, endTime, pageNum, pageSize);
     }
 
     private void initAdapter() {
@@ -352,10 +381,10 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
                     dataList.clear();
                     dataList.addAll(list);
                     adapter.setSelectPosition(bundle.getInt("videoListPosition"));
+                    hasMore = true;
+                    pageNum = list.size() / pageNum + 1;
                 }
-
             }
-
         }
     }
 
