@@ -64,6 +64,8 @@ public class CashVideoResp {
         private int amount;
         @SerializedName("device_id")
         private int deviceId;
+        @SerializedName("device_sn")
+        private String deviceSn;
         @SerializedName("description")
         private String description;
         @SerializedName("video_type")
@@ -125,6 +127,14 @@ public class CashVideoResp {
 
         public void setDeviceId(int deviceId) {
             this.deviceId = deviceId;
+        }
+
+        public String getDeviceSn() {
+            return deviceSn;
+        }
+
+        public void setDeviceSn(String deviceSn) {
+            this.deviceSn = deviceSn;
         }
 
         public String getDescription() {

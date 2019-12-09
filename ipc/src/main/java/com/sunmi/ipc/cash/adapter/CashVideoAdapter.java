@@ -15,7 +15,6 @@ import com.sunmi.ipc.R;
 import com.sunmi.ipc.model.CashVideoResp;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import sunmi.common.utils.DateTimeUtils;
 
@@ -70,7 +69,7 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
         } else {
             viewHolder.tvDescription.setVisibility(View.GONE);
         }
-        viewHolder.tvAmount.setText(String.format("¥%0.2f", bean.getAmount()));
+        viewHolder.tvAmount.setText(String.format("¥%s", bean.getAmount()));
         viewHolder.tvOrderNum.setText(bean.getOrderNo());
         viewHolder.tvName.setText(bean.getDeviceName());
         Glide.with(context).load(bean.getSnapshotUrl()).into(viewHolder.ivPreview);

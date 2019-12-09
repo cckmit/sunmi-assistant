@@ -15,7 +15,7 @@ import sunmi.common.base.BaseView;
 public interface CashVideoContract {
     interface View extends BaseView {
 
-        void updateTagSuccess(int videoType);
+        void updateTagSuccess(int videoType, String description);
 
         void updateTagFail(int code, String msg, int videoType);
 

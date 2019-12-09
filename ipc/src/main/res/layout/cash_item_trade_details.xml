@@ -38,7 +38,7 @@
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginStart="@dimen/dp_14"
         android:layout_marginTop="@dimen/dp_16"
         android:text="17:19:30-17:19:54"
         android:textColor="@color/text_main"
@@ -80,7 +80,7 @@
 
         <TextView
             android:id="@+id/tv_amount_text"
-            android:layout_width="@dimen/dp_68"
+            android:layout_width="@dimen/dp_64"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_16"
@@ -100,7 +100,7 @@
 
         <TextView
             android:id="@+id/tv_order_num_text"
-            android:layout_width="@dimen/dp_68"
+            android:layout_width="@dimen/dp_64"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_amount"
             android:layout_marginStart="@dimen/dp_16"
@@ -122,7 +122,7 @@
 
         <TextView
             android:id="@+id/tv_pos_text"
-            android:layout_width="@dimen/dp_68"
+            android:layout_width="@dimen/dp_64"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_order_num"
             android:layout_marginStart="@dimen/dp_16"
