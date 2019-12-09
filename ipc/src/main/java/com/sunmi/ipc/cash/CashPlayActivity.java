@@ -568,7 +568,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         CloudPlaybackActivity_.intent(context)
                 .device(device)
                 .cloudStorageServiceStatus(CommonConstants.SERVICE_ALREADY_OPENED)
-                .cashVideoStartTime(cashVideoStartTime)
+                .currentTime(cashVideoStartTime)
                 .start().withAnimation(R.anim.slide_in_right, 0);
     }
 

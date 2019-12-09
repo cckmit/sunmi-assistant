@@ -131,24 +131,30 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     @Extra
     SunmiDevice device;
     @Extra
+    int deviceId;//设备id
+    @Extra
+    String deviceName;//设备名称
+    @Extra
+    String deviceSn;//设备sn
+    @Extra
+    String deviceType;//ipc类型
+    @Extra
     int cloudStorageServiceStatus;
     @Extra
-    long cashVideoStartTime;
+    long currentTime;//进页面开始播放的时间 in seconds
 
-    private CountDownTimer timeLineScrollTimer; //时间轴滑动延时
-
+    long startTimeCurrentDate, endTimeCurrentDate;    //已选日期的开始和结束时间  in seconds
     private int screenW; //手机屏幕的宽
     private boolean isPaused;//回放是否暂停
     private boolean isStartRecord;//是否开始录制
     private boolean isControlPanelShow = true;//是否点击屏幕
     private boolean isVideoLess1Minute;//视频片段是否小于一分钟
 
-    //当前时间，已选日期的开始和结束时间  in seconds
-    private long presentTime, startTimeCurrentDate, endTimeCurrentDate;
     private long lastVideoEndTime;    //已经在播放的视频结束时间
-    //刻度尺移动定时器
-    private ScheduledExecutorService executorService;
 
+    private ScheduledExecutorService executorService;//刻度尺移动定时器
+
+    private CountDownTimer timeLineScrollTimer; //时间轴滑动延时
     private Handler handler = new Handler();
     private VolumeHelper volumeHelper = null;
 
@@ -170,8 +176,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         titleBar.setAppTitle(device.getName());
         titleBar.getLeftLayout().setOnClickListener(this);
         if (isServiceUnopened()) {
-            ivPreDay.setEnabled(false);
-            tvCalendar.setEnabled(false);
+            setCalendarEnable(false);
             timeLine.setVisibility(View.GONE);
             llNoService.setVisibility(View.VISIBLE);
         } else {
@@ -179,6 +184,9 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
             rlBottomBar.setVisibility(View.VISIBLE);
         }
         ivNextDay.setEnabled(false);
+        if (currentTime > 0) {
+            setCalendarEnable(false);
+        }
         ivpCloud.setVideoPlayListener(this);
         initData();
         initVolume();
@@ -187,6 +195,11 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         rlLoading.setOnTouchListener((v, event) -> true);
         llPlayFail.setOnTouchListener((v, event) -> true);
         handler.postDelayed(this::initTimeLine, 200);
+    }
+
+    private void setCalendarEnable(boolean enable) {
+        ivPreDay.setEnabled(enable);
+        tvCalendar.setEnabled(enable);
     }
 
     private boolean isServiceUnopened() {
@@ -201,14 +214,20 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     void initData() {
         screenW = CommonHelper.getScreenWidth(context);
-        presentTime = System.currentTimeMillis() / 1000;
-        startTimeCurrentDate = DateTimeUtils.getDayStart(new Date()).getTime() / 1000;
-        endTimeCurrentDate = presentTime;
+        if (currentTime > 0) {//指定某天开始
+            startTimeCurrentDate = DateTimeUtils.getDayStart(new Date(currentTime * 1000)).getTime() / 1000;
+            endTimeCurrentDate = startTimeCurrentDate + SECONDS_IN_ONE_DAY;
+        } else {
+            startTimeCurrentDate = DateTimeUtils.getDayStart(new Date()).getTime() / 1000;
+            endTimeCurrentDate = System.currentTimeMillis() / 1000;
+        }
         refreshDay();
         if (cloudStorageServiceStatus != CommonConstants.SERVICE_NOT_OPENED) {
             initTimeSlotData(true);
-            mPresenter.getTimeSlots(device.getId(),
-                    startTimeCurrentDate - 30 * SECONDS_IN_ONE_DAY, endTimeCurrentDate);
+            if (currentTime <= 0) {
+                mPresenter.getTimeSlots(device.getId(),
+                        startTimeCurrentDate - 30 * SECONDS_IN_ONE_DAY, endTimeCurrentDate);
+            }
         }
     }
 
@@ -475,7 +494,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
             timeLine.setVisibility(View.VISIBLE);
             refreshScaleTimePanel();
             openMove();
-            selectedTimeHasVideo(startTimeCurrentDate);
+            selectedTimeHasVideo(currentTime > 0 ? currentTime : startTimeCurrentDate);
         } else {
             showNoVideoTip();
         }
@@ -533,8 +552,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     void cloudStorageServiceOpened() {
         cloudStorageServiceStatus = CommonConstants.SERVICE_ALREADY_OPENED;
         llNoService.setVisibility(View.GONE);
-        ivPreDay.setEnabled(true);
-        tvCalendar.setEnabled(true);
+        setCalendarEnable(true);
     }
 
     @UiThread
