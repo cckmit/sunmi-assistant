@@ -19,42 +19,43 @@ public class CashVideoListPresenter extends BasePresenter<CashVideoListConstract
         implements CashVideoListConstract.Presenter, CashVideoModel.CallBack {
 
     private CashVideoModel videoModel;
+    private int deviceId, videoType;
+    private long startTime, endTime;
 
     public CashVideoListPresenter() {
         videoModel = new CashVideoModel();
     }
 
     @Override
-    public void load(int deviceId, int videoType, long startTime, long endTime) {
-        videoModel.load(deviceId, videoType, startTime, endTime, this);
+    public void load(int deviceId, int videoType, long startTime, long endTime, int pageNum, int pageSize) {
+        this.deviceId = deviceId;
+        this.videoType = videoType;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        videoModel.load(deviceId, videoType, startTime, endTime, pageNum, pageSize, this);
     }
 
     @Override
-    public void loadMore() {
-        videoModel.loadMore(this);
+    public void loadMore(int pageNum, int pageSize) {
+        videoModel.load(deviceId, videoType, startTime, endTime, pageNum, pageSize, this);
     }
 
     @Override
-    public void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, boolean hasMore, int total, int pageNum) {
-        if (hasMore) {
-            pageNum--;
-        }
+    public void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, int total) {
         if (isViewAttached()) {
-            mView.getCashVideoSuccess(beans, hasMore, total, pageNum);
+            mView.getCashVideoSuccess(beans, total);
             mView.hideLoadingDialog();
             mView.endRefesh();
         }
     }
 
     @Override
-    public void getCashVideoFail(int code, String msg, int count) {
+    public void getCashVideoFail(int code, String msg) {
         if (isViewAttached()) {
             mView.shortTip(R.string.toast_network_error);
             mView.hideLoadingDialog();
             mView.endRefesh();
-            if (count == -1) {
-                mView.netWorkError();
-            }
+            mView.netWorkError();
         }
     }
 
@@ -62,7 +63,4 @@ public class CashVideoListPresenter extends BasePresenter<CashVideoListConstract
         return videoModel.getIpcNameMap();
     }
 
-    public void setPageNum(int pageNum) {
-        videoModel.setPageNum(pageNum);
-    }
 }

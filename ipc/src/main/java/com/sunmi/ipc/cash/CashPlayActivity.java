@@ -260,9 +260,9 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         if (isWholeDayVideoPlay) {
             requestCashVideoList();
         } else {
-            testCashPlay();
-//            playIndex = videoListPosition;
-//            initCashVideoPlay();
+//            testCashPlay();
+            playIndex = videoListPosition;
+            initCashVideoPlay();
         }
         titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
     }
