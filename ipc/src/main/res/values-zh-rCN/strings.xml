@@ -387,4 +387,5 @@
     <string name="motion_detection_source_video_name">画面异常变动</string>
     <string name="motion_detection_source_sound_name">声音异常变动</string>
     <string name="motion_detection_source_both_name">声音和画面异常变动</string>
+    <string name="cash_video_total_commodity">共%d个商品</string>
 </resources>
