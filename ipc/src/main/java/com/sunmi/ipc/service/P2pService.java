@@ -192,6 +192,9 @@ public class P2pService extends Service
         if (videoDecoder != null) {
             videoDecoder.startDecode();
         }
+//        if (audioDecoder != null) {
+//            audioDecoder.resumeRunning();
+//        }
     }
 
     public void release() {

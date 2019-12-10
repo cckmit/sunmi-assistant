@@ -1226,12 +1226,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 //        tvTimeScroll.setText(time);
 //        if (isLeft) {
 //            if (drawableLeft == null) {
-//                drawableLeft = ContextCompat.getDrawable(this, R.mipmap.ic_fast_forward);
+//                drawableLeft = ContextCompat.getDrawable(this, R.mipmap.ic_fast_backward);
 //            }
 //            tvTimeScroll.setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null);
 //        } else {
 //            if (drawableRight == null) {
-//                drawableRight = ContextCompat.getDrawable(this, R.mipmap.ic_forward);
+//                drawableRight = ContextCompat.getDrawable(this, R.mipmap.ic_fast_forward);
 //            }
 //            tvTimeScroll.setCompoundDrawablesWithIntrinsicBounds(drawableRight, null, null, null);
 //        }
