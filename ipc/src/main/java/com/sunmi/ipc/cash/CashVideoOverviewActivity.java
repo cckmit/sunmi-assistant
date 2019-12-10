@@ -247,6 +247,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
 
     @Click(resName = "ll_cash_video")
     public void totalCashClick() {
+        clearItems();
         items.get(0).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime).items(items)
                 .isSingleDevice(isSingleDevice).start();
@@ -254,6 +255,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
 
     @Click(resName = "ll_abnormal_video")
     public void totalAbnormalClick() {
+        clearItems();
         items.get(0).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
                 .videoType(IpcConstants.CASH_VIDEO_ABNORMAL).items(items).isSingleDevice(isSingleDevice).start();
@@ -261,6 +263,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
 
     @Click(resName = "cv_cash")
     public void deviceCashClick() {
+        clearItems();
         items.get(1).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
                 .deviceId(idList.get(0)).items(items).isSingleDevice(isSingleDevice).start();
@@ -268,19 +271,13 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
 
     @Click(resName = "cv_abnormal")
     public void deviceAbnormalClick() {
+        clearItems();
         items.get(1).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
                 .deviceId(idList.get(0)).videoType(IpcConstants.CASH_VIDEO_ABNORMAL).items(items).start();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        clearItems();
-    }
-
-    @Background
-    protected void clearItems() {
+    private void clearItems() {
         for (FilterItem item : items) {
             item.setChecked(false);
         }
