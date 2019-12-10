@@ -170,10 +170,7 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
                 tvTag.setText(res.getDescription());
                 tvTag.setVisibility(View.VISIBLE);
             }
-            if (mList.size() == 1) {
-                tvLineTop.setVisibility(View.INVISIBLE);
-                tvLineBottom.setVisibility(View.INVISIBLE);
-            } else if (mList.size() > 1) {
+            if (mList.size() > 1) {
                 if (holder.getAdapterPosition() == mList.size() - 1) {
                     tvLineTop.setVisibility(View.VISIBLE);
                     tvLineBottom.setVisibility(View.INVISIBLE);
@@ -184,6 +181,9 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
                     tvLineTop.setVisibility(View.VISIBLE);
                     tvLineBottom.setVisibility(View.VISIBLE);
                 }
+            } else {
+                tvLineTop.setVisibility(View.INVISIBLE);
+                tvLineBottom.setVisibility(View.INVISIBLE);
             }
             holder.itemView.setOnClickListener(v -> {
                 //获取当前的点击的视频位置

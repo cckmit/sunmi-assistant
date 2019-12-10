@@ -36,10 +36,6 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
         this.context = context;
     }
 
-    public interface OnItemClickListener {
-        void onItemClick(ArrayList<CashVideoResp.AuditVideoListBean> data, int pos);
-    }
-
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
@@ -74,10 +70,7 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
         viewHolder.tvOrderNum.setText(bean.getOrderNo());
         viewHolder.tvName.setText(bean.getDeviceName());
         Glide.with(context).load(bean.getSnapshotUrl()).transform(new GlideRoundTransform(context)).into(viewHolder.ivPreview);
-        if (data.size() == 1) {
-            viewHolder.tvLineTop.setVisibility(View.INVISIBLE);
-            viewHolder.tvLineBottom.setVisibility(View.INVISIBLE);
-        } else if (data.size() > 1) {
+        if (data.size() > 1) {
             if (i == data.size() - 1) {
                 viewHolder.tvLineTop.setVisibility(View.VISIBLE);
                 viewHolder.tvLineBottom.setVisibility(View.INVISIBLE);
@@ -88,12 +81,19 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
                 viewHolder.tvLineTop.setVisibility(View.VISIBLE);
                 viewHolder.tvLineBottom.setVisibility(View.VISIBLE);
             }
+        } else {
+            viewHolder.tvLineTop.setVisibility(View.INVISIBLE);
+            viewHolder.tvLineBottom.setVisibility(View.INVISIBLE);
         }
     }
 
     @Override
     public int getItemCount() {
         return data.size();
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(ArrayList<CashVideoResp.AuditVideoListBean> data, int pos);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
