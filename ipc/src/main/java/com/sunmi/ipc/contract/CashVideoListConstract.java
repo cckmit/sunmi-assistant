@@ -18,7 +18,7 @@ public interface CashVideoListConstract {
 
         void netWorkError();
 
-        void endRefesh();
+        void endRefresh();
     }
 
     interface Presenter {

@@ -45,7 +45,7 @@ public class CashVideoListPresenter extends BasePresenter<CashVideoListConstract
         if (isViewAttached()) {
             mView.getCashVideoSuccess(beans, total);
             mView.hideLoadingDialog();
-            mView.endRefesh();
+            mView.endRefresh();
         }
     }
 
@@ -54,7 +54,7 @@ public class CashVideoListPresenter extends BasePresenter<CashVideoListConstract
         if (isViewAttached()) {
             mView.shortTip(R.string.toast_network_error);
             mView.hideLoadingDialog();
-            mView.endRefesh();
+            mView.endRefresh();
             mView.netWorkError();
         }
     }
