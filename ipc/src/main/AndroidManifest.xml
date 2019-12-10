@@ -93,6 +93,9 @@
             android:largeHeap="true"
             android:screenOrientation="landscape" />
         <activity
+            android:name=".view.activity.MotionVideoListActivity_"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".view.activity.IpcStartConfigActivity_"
             android:screenOrientation="portrait" />
         <activity
