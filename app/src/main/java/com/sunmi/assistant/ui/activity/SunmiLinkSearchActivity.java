@@ -17,9 +17,6 @@ import com.sunmi.apmanager.rpc.ap.APCall;
 import com.sunmi.assistant.R;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.IpcConfiguringContract;
-
-import sunmi.common.constant.RouterConfig;
-import sunmi.common.router.model.IpcListResp;
 import com.sunmi.ipc.presenter.IpcConfiguringPresenter;
 import com.sunmi.ipc.rpc.OpcodeConstants;
 import com.sunmi.ipc.view.IPCListAdapter;
@@ -45,7 +42,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.constant.RouterConfig;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DeviceTypeUtils;
@@ -218,15 +217,13 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
         rlSearch.setVisibility(View.VISIBLE);
         rlLoading.setVisibility(View.VISIBLE);
         APCall.getInstance().searchStart(context, sn);//开始搜索商米设备
-        new Handler().postDelayed(new Runnable() {
-            public void run() {
-                stopSearch();
-                if (devList.size() <= 0) {
-                    rlSearch.setVisibility(View.GONE);
-                    rlNoWifi.setVisibility(View.VISIBLE);
-                } else {
-                    rlLoading.setVisibility(View.GONE);
-                }
+        new Handler().postDelayed(() -> {
+            stopSearch();
+            if (devList.size() <= 0) {
+                rlSearch.setVisibility(View.GONE);
+                rlNoWifi.setVisibility(View.VISIBLE);
+            } else {
+                rlLoading.setVisibility(View.GONE);
             }
         }, 120000);
         startGetDeviceInfoTimer();

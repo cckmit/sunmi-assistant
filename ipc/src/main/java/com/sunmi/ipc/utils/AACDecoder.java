@@ -57,10 +57,15 @@ public class AACDecoder {
     }
 
     public void stopRunning() {
-        isRunning = false;
+//        isRunning = false;
         if (audioDataQueue != null) {
             audioDataQueue.clear();
         }
+    }
+
+    public void resumeRunning() {
+        isRunning = true;
+        ThreadPool.getCachedThreadPool().submit(new DecodeAACWorker());//开启解码线程
     }
 
     /**
@@ -181,19 +186,15 @@ public class AACDecoder {
         public void run() {
             try {
                 byte[] readData;
-                //循环读取数据
-                while (isRunning) {
+                while (isRunning) {//循环读取数据
+//                    LogCat.e(TAG, "888888aaa AUDIO play");
                     if (!audioDataQueue.isEmpty()) {
-//                        LogCat.e(TAG, "888888aaa AUDIO play 111");
                         readData = audioDataQueue.take();
-//                        LogCat.e(TAG, "888888aaa AUDIO play 222");
                         int readLen = readData.length;
                         if (!isHeader(readData)) {
                             byte[] data = new byte[readLen - 13 - 4];
                             System.arraycopy(readData, 13, data, 0, data.length);
-//                            LogCat.e(TAG, "888888aaa AUDIO play 333");
                             decode(data, 0, data.length);
-//                            LogCat.e(TAG, "888888aaa AUDIO play 444");
                         } else {
                             int channelC = (readData[14] >> 3) & 0x0F;
                             channelCount = channelC;
