@@ -311,7 +311,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     }
 
     @Override
-    public void endRefesh() {
+    public void endRefresh() {
         refreshLayout.endLoadingMore();
         refreshLayout.endRefreshing();
     }
