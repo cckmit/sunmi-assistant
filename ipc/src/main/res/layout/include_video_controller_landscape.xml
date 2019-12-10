@@ -113,7 +113,7 @@
         android:layout_height="@dimen/dp_48"
         android:layout_alignParentBottom="true"
         android:animateLayoutChanges="true"
-        android:background="@mipmap/bg_video_controller_bottom"
+        android:background="@mipmap/bg_video_controller_bottom_h"
         android:visibility="gone">
 
         <TextView
@@ -198,7 +198,7 @@
         android:layout_height="@dimen/dp_48"
         android:layout_alignParentBottom="true"
         android:animateLayoutChanges="true"
-        android:background="@mipmap/bg_video_controller_bottom"
+        android:background="@mipmap/bg_video_controller_bottom_h"
         android:visibility="gone">
 
         <ImageView
