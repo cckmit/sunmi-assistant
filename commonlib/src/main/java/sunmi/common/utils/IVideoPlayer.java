@@ -49,7 +49,7 @@ public class IVideoPlayer extends RelativeLayout {
                 return;
             }
             if (currentMediaPlayer == cacheMediaPlayer) {
-                initCachePlayer();
+                initCachePlayer(false);
                 startPlayer();
             }
         }
@@ -201,14 +201,14 @@ public class IVideoPlayer extends RelativeLayout {
             });
     }
 
-    private void initCachePlayer() {
+    private void initCachePlayer(boolean isFirstVideo) {
         if (cacheMediaPlayer != null) {
             cacheMediaPlayer.stop();
             cacheMediaPlayer.release();
             cacheMediaPlayer = null;
         }
         if (urlQueue.isEmpty()) {
-            if (videoPlayListener != null) {
+            if (videoPlayListener != null && !isFirstVideo) {
                 videoPlayListener.onPlayComplete();
             }
             return;
@@ -315,7 +315,7 @@ public class IVideoPlayer extends RelativeLayout {
     public void startPlay() {
         release();
         initPlayer(true);
-        initCachePlayer();
+        initCachePlayer(true);
     }
 
     /**

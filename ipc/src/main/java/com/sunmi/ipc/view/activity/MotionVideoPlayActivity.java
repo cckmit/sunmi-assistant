@@ -1,11 +1,13 @@
 package com.sunmi.ipc.view.activity;
 
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
@@ -39,7 +41,6 @@ import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.IVideoPlayer;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.VolumeHelper;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 
 /**
@@ -54,6 +55,7 @@ public class MotionVideoPlayActivity extends BaseActivity implements
 
     private static final int CLICK_SHAKE_THRESHOLD = 1000;
     private static final int PLAY_DELAY = 200;
+    private static final int PLAY_UPDATE_INTERVAL = 10;
 
     @ViewById(resName = "content")
     ConstraintLayout clContent;
@@ -62,12 +64,19 @@ public class MotionVideoPlayActivity extends BaseActivity implements
     @ViewById(resName = "player_video")
     IVideoPlayer player;
 
-    @ViewById(resName = "iv_pause")
+    @ViewById(resName = "ib_play")
     ImageButton ibPause;
+    @ViewById(resName = "sb_bar")
+    SeekBar sbProgress;
+    @ViewById(resName = "tv_current_play_time")
+    TextView tvCurrentTime;
+    @ViewById(resName = "tv_count_play_time")
+    TextView tvTotalTime;
     @ViewById(resName = "iv_volume")
     ImageView ivVolume;
     @ViewById(resName = "iv_full_screen")
     ImageView ivFullScreen;
+
     @ViewById(resName = "tv_screenshot_tip")
     TextView tvScreenshotTip;
 
@@ -89,11 +98,15 @@ public class MotionVideoPlayActivity extends BaseActivity implements
     MotionVideo motionVideo;
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
+    private Runnable mTask = new UpdateSeekBarTask();
     private VolumeHelper mVolumeHelper;
     private SimpleArrayAdapter<MotionVideo> mAdapter;
     private SparseArray<String> mSourceName = new SparseArray<>(3);
 
+    private List<String> urls = new ArrayList<>();
     private boolean isPaused;
+    private boolean isComplete;
+    private boolean isDragging;
 
     @AfterViews
     void init() {
@@ -123,11 +136,16 @@ public class MotionVideoPlayActivity extends BaseActivity implements
         tbTitle.getRightText().setOnClickListener(v -> {
             // TODO: 跳设置
         });
+        tvDateTip.setText(DateTimeUtils.secondToDate(motionVideo.getDetectTime(), "yyyy-MM-dd"));
     }
 
     private void initList() {
         List<MotionVideo> list = new ArrayList<>();
         list.add(motionVideo);
+        urls.clear();
+        for (MotionVideo video : list) {
+            urls.add(video.getCdnAddress());
+        }
         mAdapter = new Adapter();
         mAdapter.setData(list);
         rvList.setLayoutManager(new LinearLayoutManager(this));
@@ -150,8 +168,10 @@ public class MotionVideoPlayActivity extends BaseActivity implements
     }
 
     private void initPlayer() {
+        sbProgress.setOnSeekBarChangeListener(this);
         player.setVideoPlayListener(this);
-        startPlay(motionVideo.getCdnAddress());
+        player.setUrlQueue(urls);
+        startPlay();
     }
 
     private void showLoading() {
@@ -170,13 +190,36 @@ public class MotionVideoPlayActivity extends BaseActivity implements
         stopPlay();
     }
 
+    private void switchOrientation(int orientation) {
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            tbTitle.setVisibility(View.GONE);
+            ivFullScreen.setVisibility(View.GONE);
+            tvDateTip.setVisibility(View.GONE);
+            rvList.setVisibility(View.GONE);
+            clContent.setBackgroundColor(ContextCompat.getColor(this, R.color.c_black));
+        } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            tbTitle.setVisibility(View.VISIBLE);
+            ivFullScreen.setVisibility(View.VISIBLE);
+            tvDateTip.setVisibility(View.VISIBLE);
+            rvList.setVisibility(View.VISIBLE);
+            clContent.setBackgroundColor(ContextCompat.getColor(this, R.color.c_white));
+        }
+    }
+
     private void updateVolumeIcon(boolean isMute) {
         ivVolume.setImageResource(isMute ? R.mipmap.ic_muse : R.mipmap.ic_volume);
     }
 
-    private void startPlay(String url) {
+    private void updateSeekBar(int pos) {
+        sbProgress.setProgress(pos);
+        tvCurrentTime.setText(player.generateTime(pos));
+    }
+
+    private void startPlay() {
         showLoading();
-        player.load(url);
+        player.startPlay();
     }
 
     private void stopPlay() {
@@ -197,17 +240,22 @@ public class MotionVideoPlayActivity extends BaseActivity implements
     /**
      * 暂停
      */
-    @Click(resName = "iv_pause")
+    @Click(resName = "ib_play")
     void pausePlayClick() {
         if (isFastClick(CLICK_SHAKE_THRESHOLD)) {
             return;
         }
-        ibPause.setBackgroundResource(isPaused ? R.mipmap.pause_normal : R.mipmap.play_normal);
         isPaused = !isPaused;
+        ibPause.setBackgroundResource(isPaused ? R.mipmap.play_normal : R.mipmap.pause_normal);
+        if (!isPaused && isComplete) {
+            startPlay();
+            return;
+        }
         if (isPaused) {
             player.pause();
         } else {
             player.play();
+            mHandler.post(mTask);
         }
     }
 
@@ -235,17 +283,27 @@ public class MotionVideoPlayActivity extends BaseActivity implements
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
+        if (fromUser) {
+            tvCurrentTime.setText(player.generateTime(progress));
+        }
     }
 
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
-
+        isDragging = true;
     }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-
+        isDragging = false;
+        isPaused = false;
+        player.seekTo(seekBar.getProgress());
+        if (isPaused && !isComplete) {
+            ibPause.setBackgroundResource(R.mipmap.pause_normal);
+            player.play();
+        }
+        mHandler.removeCallbacks(mTask);
+        mHandler.post(mTask);
     }
 
     @Override
@@ -255,17 +313,36 @@ public class MotionVideoPlayActivity extends BaseActivity implements
 
     @Override
     public void onStartPlay() {
-        LogCat.d("yinhui", "onStartPlay");
+        hideLoading();
+        isPaused = false;
+        isComplete = false;
+        mHandler.post(mTask);
+        long duration = player.getDuration();
+        sbProgress.setMax((int) duration);
+        tvTotalTime.setText(player.generateTime(duration));
+        tvCurrentTime.setText(player.generateTime(0));
     }
 
     @Override
     public void onPlayComplete() {
-        LogCat.d("yinhui", "onPlayComplete");
+        isPaused = true;
+        isComplete = true;
+        player.setUrlQueue(urls);
+        tvCurrentTime.setText(player.generateTime(0));
+        ibPause.setBackgroundResource(isPaused ? R.mipmap.play_normal : R.mipmap.pause_normal);
+        sbProgress.setProgress(0);
     }
 
     @Override
     public void onPlayFail() {
-        LogCat.d("yinhui", "onPlayFail");
+        isPaused = true;
+        showError();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        switchOrientation(newConfig.orientation);
     }
 
     @Override
@@ -293,6 +370,18 @@ public class MotionVideoPlayActivity extends BaseActivity implements
         super.onDestroy();
         mVolumeHelper.unregisterVolumeReceiver();
         stopPlay();
+    }
+
+    private class UpdateSeekBarTask implements Runnable {
+
+        @Override
+        public void run() {
+            if (isPaused || isDragging) {
+                return;
+            }
+            updateSeekBar((int) player.getCurrentPosition());
+            mHandler.postDelayed(this, PLAY_UPDATE_INTERVAL);
+        }
     }
 
     private class Adapter extends SimpleArrayAdapter<MotionVideo> {

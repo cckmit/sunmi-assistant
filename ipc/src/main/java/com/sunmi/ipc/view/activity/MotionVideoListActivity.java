@@ -257,9 +257,12 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
     private class Adapter extends SimpleArrayAdapter<MotionVideo> {
 
         public Adapter() {
-            setOnItemClickListener((holder, model, position) -> {
-                // TODO
-            });
+            setOnItemClickListener((holder, model, position) ->
+                    MotionVideoPlayActivity_.intent(holder.getContext())
+                            .deviceId(deviceId)
+                            .deviceModel(deviceModel)
+                            .motionVideo(model)
+                            .start());
         }
 
         @Override
