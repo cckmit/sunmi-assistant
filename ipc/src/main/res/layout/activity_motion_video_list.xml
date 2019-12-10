@@ -19,6 +19,31 @@
     </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
 
     <include
+        android:id="@+id/layout_error"
+        layout="@layout/include_network_error"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_bar" />
+
+    <TextView
+        android:id="@+id/tv_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@mipmap/ic_empty"
+        android:drawablePadding="@dimen/dp_4"
+        android:text="@string/info_empty"
+        android:textColor="@color/text_caption"
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dm_motion_date" />
+
+    <include
         android:id="@+id/dm_motion_date"
         layout="@layout/dropdown_title_new"
         android:layout_width="0dp"
@@ -55,30 +80,5 @@
         app:leftIcon="@drawable/ic_back_light"
         app:titleText="@string/cash_video_list"
         app:titleTextColor="@color/c_white" />
-
-    <include
-        android:id="@+id/layout_error"
-        layout="@layout/include_network_error"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_bar" />
-
-    <TextView
-        android:id="@+id/tv_empty"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawableTop="@mipmap/ic_empty"
-        android:drawablePadding="@dimen/dp_4"
-        android:text="@string/info_empty"
-        android:textColor="@color/text_caption"
-        android:textSize="@dimen/sp_12"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dm_motion_date" />
 
 </android.support.constraint.ConstraintLayout>
