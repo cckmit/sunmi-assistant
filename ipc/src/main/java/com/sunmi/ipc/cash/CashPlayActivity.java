@@ -319,7 +319,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
 
     private void initInfo() {
         titleBar.getAppTitle().setCompoundDrawablesWithIntrinsicBounds(null, null,
-                ContextCompat.getDrawable(this, R.drawable.ic_arrow_down_gray), null);
+                ContextCompat.getDrawable(this, R.drawable.ic_arrow_down_big_gray), null);
         titleBar.getAppTitle().setCompoundDrawablePadding((int) context.getResources().getDimension(R.dimen.dp_5));
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         titleBar.getAppTitle().setOnClickListener(v -> setTitleView());
@@ -347,12 +347,12 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         }
         if (popupWindow != null && popupWindow.isShowing()) {
             titleBar.getAppTitle().setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    ContextCompat.getDrawable(this, R.drawable.ic_arrow_down_gray), null);
+                    ContextCompat.getDrawable(this, R.drawable.ic_arrow_down_big_gray), null);
             popupWindow.dismiss();
             return;
         }
         titleBar.getAppTitle().setCompoundDrawablesWithIntrinsicBounds(null, null,
-                ContextCompat.getDrawable(this, R.drawable.ic_arrow_up_gray), null);
+                ContextCompat.getDrawable(this, R.drawable.ic_arrow_up_big_gray), null);
         popupWindow = new CashVideoPopupWindow(CashPlayActivity.this, titleBar, currentPlayPosition,
                 videoList, titleBar.getAppTitle());
     }

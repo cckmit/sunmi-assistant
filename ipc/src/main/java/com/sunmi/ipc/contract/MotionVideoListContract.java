@@ -11,9 +11,9 @@ import sunmi.common.base.BaseView;
  * @author yinhui
  * @date 2019-12-09
  */
-public class MotionVideoListContract {
+public interface MotionVideoListContract {
 
-    public interface View extends BaseView {
+    interface View extends BaseView {
 
         void updateCalendar(List<Calendar> selected, boolean open);
 
@@ -26,7 +26,7 @@ public class MotionVideoListContract {
         void showEmpty();
     }
 
-    public interface Presenter {
+    interface Presenter {
 
         void loadTimeSlots(boolean openCalendar);
 

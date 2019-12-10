@@ -100,7 +100,7 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
     private void setImageBackground() {
         if (mSetTitleView != null) {
             mSetTitleView.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    ContextCompat.getDrawable(mContext, R.drawable.ic_arrow_down_gray), null);
+                    ContextCompat.getDrawable(mContext, R.drawable.ic_arrow_down_big_gray), null);
         }
     }
 
