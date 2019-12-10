@@ -89,6 +89,8 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     ArrayList<FilterItem> items;
     @Extra
     boolean isSingleDevice;
+    @Extra
+    int total;
 
     private final int REQUEST = 0x101;
 
@@ -278,6 +280,10 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     void fastPlayClick() {
         if (!NetworkUtils.isNetworkAvailable(context)) {
             shortTip(R.string.network_error);
+            return;
+        }
+        if (total <= 0) {
+            shortTip(R.string.str_no_cash_video);
             return;
         }
         CashPlayActivity_.intent(context).deviceId(deviceId).startTime(fastPlayStart).endTime(fastPlayEnd).isWholeDayVideoPlay(true)

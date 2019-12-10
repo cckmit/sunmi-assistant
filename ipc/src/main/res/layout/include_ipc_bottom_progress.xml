@@ -5,7 +5,6 @@
     android:layout_height="@dimen/dp_48"
     android:layout_alignParentBottom="true"
     android:animateLayoutChanges="true"
-    android:background="@mipmap/ic_cash_bg"
     android:gravity="center_vertical">
 
     <ImageButton
