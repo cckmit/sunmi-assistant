@@ -104,6 +104,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     private ScheduledExecutorService service;
     private List<Calendar> points = new ArrayList<>();
     private ArrayList<FilterItem> items = new ArrayList<>();
+    private int shopCashCount, deviceCashCount;
 
     @RouterAnno(
             path = RouterConfig.Ipc.CASH_VIDEO_OVERVIEW
@@ -250,7 +251,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         clearItems();
         items.get(0).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime).items(items)
-                .isSingleDevice(isSingleDevice).start();
+                .isSingleDevice(isSingleDevice).total(shopCashCount).start();
     }
 
     @Click(resName = "ll_abnormal_video")
@@ -258,7 +259,8 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         clearItems();
         items.get(0).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
-                .videoType(IpcConstants.CASH_VIDEO_ABNORMAL).items(items).isSingleDevice(isSingleDevice).start();
+                .videoType(IpcConstants.CASH_VIDEO_ABNORMAL).items(items).isSingleDevice(isSingleDevice)
+                .total(shopCashCount).start();
     }
 
     @Click(resName = "cv_cash")
@@ -266,7 +268,8 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         clearItems();
         items.get(1).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
-                .deviceId(idList.get(0)).items(items).isSingleDevice(isSingleDevice).start();
+                .deviceId(idList.get(0)).items(items).isSingleDevice(isSingleDevice)
+                .total(deviceCashCount).start();
     }
 
     @Click(resName = "cv_abnormal")
@@ -274,7 +277,8 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         clearItems();
         items.get(1).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
-                .deviceId(idList.get(0)).videoType(IpcConstants.CASH_VIDEO_ABNORMAL).items(items).start();
+                .deviceId(idList.get(0)).videoType(IpcConstants.CASH_VIDEO_ABNORMAL).items(items)
+                .total(deviceCashCount).start();
     }
 
     private void clearItems() {
@@ -306,7 +310,8 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     @Override
     public void getShopCashVideoCountSuccess(CashVideoListBean bean) {
         mPresenter.getIpcCashVideoCount(idList, startTime, endTime);
-        tvTotalCountCash.setText(String.valueOf(bean.getTotalCount()));
+        shopCashCount =bean.getTotalCount();
+        tvTotalCountCash.setText(String.valueOf(shopCashCount));
         tvTotalCountAbnormal.setText(String.valueOf(bean.getAbnormalVideoCount()));
     }
 
@@ -324,7 +329,8 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         ImageUtils.loadImage(context, bean.getImgUrl(), civIpc, false, -1);
         tvIpcName.setText(bean.getDeviceName());
         tvIpcSn.setText(getString(R.string.ipc_sn, bean.getDeviceSn()));
-        tvCountCash.setText(String.valueOf(bean.getTotalCount()));
+        deviceCashCount =bean.getTotalCount();
+        tvCountCash.setText(String.valueOf(deviceCashCount));
         tvCountAbnormal.setText(String.valueOf(bean.getAbnormalVideoCount()));
     }
 
