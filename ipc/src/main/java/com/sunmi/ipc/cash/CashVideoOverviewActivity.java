@@ -122,7 +122,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
                 LinearLayoutManager.HORIZONTAL, false);
         rvCalender.setLayoutManager(llManager);
         selectedCalendar = Calendar.getInstance();
-        items.add(new FilterItem(-1, getString(R.string.str_all_device), true));
+        items.add(new FilterItem(-1, getString(R.string.str_all_device), false));
         threeMonth.add(Calendar.MONTH, -3);
         threeMonth.add(Calendar.DATE, 1);
         threeMonth.set(Calendar.HOUR_OF_DAY, 0);
@@ -247,25 +247,43 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
 
     @Click(resName = "ll_cash_video")
     public void totalCashClick() {
-        CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime).items(items).start();
+        items.get(0).setChecked(true);
+        CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime).items(items)
+                .isSingleDevice(isSingleDevice).start();
     }
 
     @Click(resName = "ll_abnormal_video")
     public void totalAbnormalClick() {
+        items.get(0).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
-                .videoType(IpcConstants.CASH_VIDEO_ABNORMAL).items(items).start();
+                .videoType(IpcConstants.CASH_VIDEO_ABNORMAL).items(items).isSingleDevice(isSingleDevice).start();
     }
 
     @Click(resName = "cv_cash")
     public void deviceCashClick() {
+        items.get(1).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
-                .deviceId(idList.get(0)).items(items).start();
+                .deviceId(idList.get(0)).items(items).isSingleDevice(isSingleDevice).start();
     }
 
     @Click(resName = "cv_abnormal")
     public void deviceAbnormalClick() {
+        items.get(1).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
                 .deviceId(idList.get(0)).videoType(IpcConstants.CASH_VIDEO_ABNORMAL).items(items).start();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        clearItems();
+    }
+
+    @Background
+    protected void clearItems() {
+        for (FilterItem item : items) {
+            item.setChecked(false);
+        }
     }
 
     @Override

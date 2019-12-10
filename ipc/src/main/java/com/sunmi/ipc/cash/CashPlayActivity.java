@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -55,6 +56,7 @@ import sunmi.common.model.SunmiDevice;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.IVideoPlayer;
 import sunmi.common.utils.ImageUtils;
+import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.VolumeHelper;
 import sunmi.common.utils.log.LogCat;
@@ -117,6 +119,10 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     RelativeLayout rlCashVideo;
     @ViewById(resName = "tv_play_fail")
     TextView tvPlayFail;
+    @ViewById(resName = "ll_play_fail")
+    LinearLayout llPlayFail;
+    @ViewById(resName = "rl_order_info")
+    RelativeLayout rlOrderInfo;
     @ViewById(resName = "pBar_loading")
     ProgressBar pBarLoading;
     @ViewById(resName = "tv_amount")
@@ -256,11 +262,11 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         mPresenter = new CashVideoPresenter();
         mPresenter.attachView(this);
+        titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
         initVolume();
         initScreenWidthHeight();
         initInfo();
         showLoading();
-        startCountDownTimer();
         if (isWholeDayVideoPlay) {
             //初始化一天快放
             hasMore = true;
@@ -270,7 +276,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             playIndex = videoListPosition;
             initCashVideoPlay();
         }
-        titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
     }
 
     @Override
@@ -394,6 +399,10 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      * 手势滑动到最后一个,或自动播放最后一个
      */
     private void loadMoreVideoList() {
+        if (!NetworkUtils.isNetworkAvailable(context)) {
+            showPlayFail(getStringById(R.string.network_error));
+            return;
+        }
         if (hasMore) {
             if (isWholeDayVideoPlay) {
                 //一天快放
@@ -485,6 +494,18 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
                 }
                 tvScreenshotTip.setVisibility(View.GONE);
             }, 1000);
+        }
+    }
+
+    /**
+     * 重试
+     */
+    @Click(resName = "btn_retry")
+    void retryClick() {
+        if (isWholeDayVideoPlay) {
+            loadMoreVideoList();
+        } else {
+            initCashVideoPlay();
         }
     }
 
@@ -594,6 +615,10 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      * 初始化播放
      */
     private void initCashVideoPlay() {
+        if (!NetworkUtils.isNetworkAvailable(context)) {
+            showPlayFail(getStringById(R.string.network_error));
+            return;
+        }
         if (videoList != null) {
             if (playIndex >= videoList.size() - 1 && isPlayLoop) {
                 if (hasMore) {
@@ -653,7 +678,8 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         if (!pBarLoading.isShown()) {
             pBarLoading.setVisibility(View.VISIBLE);
         }
-        tvPlayFail.setVisibility(View.GONE);
+        llPlayFail.setVisibility(View.GONE);
+        rlOrderInfo.setVisibility(View.VISIBLE);
     }
 
     @UiThread
@@ -672,7 +698,8 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         hideLoading();
         stopPlay();
         tvPlayFail.setText(tip);
-        tvPlayFail.setVisibility(View.VISIBLE);
+        llPlayFail.setVisibility(View.VISIBLE);
+        rlOrderInfo.setVisibility(View.GONE);
     }
 
     /**
