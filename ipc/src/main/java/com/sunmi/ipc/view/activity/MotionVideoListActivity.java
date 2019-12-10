@@ -38,6 +38,7 @@ import sunmi.common.base.recycle.SimpleArrayAdapter;
 import sunmi.common.model.FilterItem;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.NetworkUtils;
+import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
 import sunmi.common.view.DropdownAdapterNew;
 import sunmi.common.view.DropdownAnimNew;
@@ -75,6 +76,8 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
 
     @Extra
     int deviceId;
+    @Extra
+    String deviceModel;
 
     private DropdownAdapterNew mFilterSourceAdapter;
     private SimpleArrayAdapter<MotionVideo> mAdapter;
@@ -86,6 +89,7 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
 
     @AfterViews
     void init() {
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         mPresenter = new MotionVideoListPresenter(deviceId);
         mPresenter.attachView(this);
         initResource();
