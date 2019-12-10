@@ -488,11 +488,19 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
         } else {
             if (timeSlotsInDay.size() > 0) {
                 refreshScaleTimePanel();
-                selectedTimeHasVideo(startTimeCurrentDate);
+                selectedTimeHasVideo(getDefaultPlayTime());
             } else {
                 showNoVideoTip();
             }
             hideVideoLoading();
+        }
+    }
+
+    private long getDefaultPlayTime() {
+        if (presentTime - startTimeCurrentDate < SECONDS_IN_ONE_DAY) {
+            return timeSlotsInDay.get(timeSlotsInDay.size() - 1).getStartTime();
+        } else {
+            return startTimeCurrentDate;
         }
     }
 
@@ -872,28 +880,6 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     private void removeCallbacks() {
         handler.removeCallbacksAndMessages(null);
     }
-
-//    private void switch2Playback(long currTime) {
-//        int availableVideoSize = timeSlotsInDay.size();
-//        for (int i = 0; i < availableVideoSize; i++) {
-//            VideoTimeSlotBean bean = timeSlotsInDay.get(i);
-//            long start = bean.getStartTime();
-//            long end = bean.getEndTime();
-//            if (end - currTime < 60 && currTime >= start && currTime < end) {
-//                if (i != availableVideoSize - 1) {
-//                    final int delayMillis = (int) end - currTime < 0 ? 1 : (int) (end - currTime);
-//                    final int finalI = i;
-//                    handler.postDelayed(() -> {
-//                        mPresenter.startPlayback(getIOTCClient(),
-//                                timeSlotsInDay.get(finalI + 1).getStartTime(),
-//                                timeSlotsInDay.get(finalI + 1).getEndTime());
-//                        videoSkipScrollPosition(timeSlotsInDay.get(finalI + 1).getStartTime());
-//                    }, delayMillis * 1000);
-//                    break;
-//                }
-//            }
-//        }
-//    }
 
     //初始化时间轴
     @UiThread
