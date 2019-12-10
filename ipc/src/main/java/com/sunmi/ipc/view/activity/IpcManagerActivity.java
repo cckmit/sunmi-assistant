@@ -623,6 +623,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         ViewGroup.LayoutParams rlLP = rlVideo.getLayoutParams();
         ViewGroup.LayoutParams bottomBarLp = rlBottomBar.getLayoutParams();
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            rlBottomBar.setBackgroundResource(R.mipmap.bg_video_controller_bottom_h);
             bottomBarLp.height = CommonHelper.dp2px(context, 64);
             int screenH = CommonHelper.getScreenWidth(context);//横屏
             float aspectRatio = screenW / screenH;//宽高比
@@ -639,6 +640,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             rlLP.height = screenW;
             rlLP.width = screenH;
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            rlBottomBar.setBackgroundResource(R.mipmap.bg_video_controller_bottom_v);
             bottomBarLp.height = CommonHelper.dp2px(context, 48);
             if (isSS1()) {
                 videoH = screenW;
@@ -758,7 +760,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             list.add(cloudStorageItem);
         }
         list.add(new IpcManageBean(R.mipmap.ipc_manage_md, getString(R.string.str_motion_detection),
-                getString(R.string.str_md_exception), getString(R.string.str_coming_soon), true));
+                getString(R.string.str_md_exception), getString(R.string.str_setting_detail), true));
         adapter = new CommonListAdapter<IpcManageBean>(context, R.layout.item_ipc_manager, list) {
             @Override
             public void convert(ViewHolder holder, IpcManageBean bean) {
