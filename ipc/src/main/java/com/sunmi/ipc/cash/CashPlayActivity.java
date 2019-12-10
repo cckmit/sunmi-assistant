@@ -369,6 +369,36 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        pausedVideo(false);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        pausedVideo(true);
+    }
+
+    /**
+     * 退到后台
+     *
+     * @param paused 是否暂停
+     */
+    private void pausedVideo(boolean paused) {
+        if (ivpCash == null || pBarLoading.isShown() || sbBar.getProgress() >= ivpCash.getDuration()) {
+            return;
+        }
+        if (paused) {
+            ivpCash.pauseVideo();
+        } else {
+            ivpCash.startVideo();
+        }
+        isPaused = paused;
+        ibPlay.setBackgroundResource(isPaused ? R.mipmap.play_normal : R.mipmap.pause_normal);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         stopPlay();
@@ -619,6 +649,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             showPlayFail(getStringById(R.string.network_error));
             return;
         }
+        LogCat.e(TAG, "11111 00playIndex=" + playIndex + ", currentPlayPosition=" + currentPlayPosition);
         if (videoList != null) {
             if (playIndex >= videoList.size() - 1 && isPlayLoop) {
                 if (hasMore) {
@@ -636,7 +667,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             //异常标记
             setViewVideoTag();
             currentPlayPosition = playIndex;
-            //LogCat.e(TAG, "11111 playIndex=" + playIndex + ", currentPlayPosition=" + currentPlayPosition);
+            LogCat.e(TAG, "11111 11playIndex=" + playIndex + ", currentPlayPosition=" + currentPlayPosition);
             ivpCash.release();
             sbBar.setProgress(0);
             new Handler().postDelayed(() -> {
@@ -923,6 +954,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
 
     //进入云回放
     private void gotoCloudPlaybackActivity(int status) {
+        pausedVideo(true);
         SunmiDevice device = new SunmiDevice();
         device.setId(videoList.get(playIndex).getDeviceId());
         device.setDeviceid(videoList.get(playIndex).getDeviceSn());
