@@ -378,6 +378,14 @@
     <string name="cash_empty_data">暂无收银信息</string>
     <string name="cash_play_complete">播放完毕</string>
     <string name="cash_no_more_video">无更多视频了</string>
+
+    <string name="motion_detection_source_all">全部事件</string>
+    <string name="motion_detection_source_video">画面异常</string>
+    <string name="motion_detection_source_sound">声音异常</string>
+    <string name="motion_detection_source_both">声音和画面异常</string>
+    <string name="motion_detection_source_video_name">画面异常变动</string>
+    <string name="motion_detection_source_sound_name">声音异常变动</string>
+    <string name="motion_detection_source_both_name">声音和画面异常变动</string>
 </resources>
 
 

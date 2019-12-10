@@ -21,11 +21,14 @@ import com.sunmi.ipc.model.FaceGroupUpdateReq;
 import com.sunmi.ipc.model.FaceListResp;
 import com.sunmi.ipc.model.FaceSaveResp;
 import com.sunmi.ipc.model.IpcNewFirmwareResp;
+import com.sunmi.ipc.model.MotionVideoListResp;
+import com.sunmi.ipc.model.MotionVideoTimeSlotsResp;
 import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.rpc.api.CashInterface;
 import com.sunmi.ipc.rpc.api.DeviceInterface;
 import com.sunmi.ipc.rpc.api.FaceInterface;
 import com.sunmi.ipc.rpc.api.MediaInterface;
+import com.sunmi.ipc.rpc.api.MotionDetectionInterface;
 import com.xiaojinzi.component.anno.ServiceAnno;
 
 import org.json.JSONArray;
@@ -826,6 +829,75 @@ public class IpcCloudApi implements IpcCloudApiAnno {
             String params = jsonObject.toString();
             SunmiStoreRetrofitClient.getInstance().create(CashInterface.class)
                     .getCashVideoList(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取门店下设备动态侦测/闲时看店事件视频时间信息（天）
+     *
+     * @param companyId 是	int	商户id
+     * @param shopId    是	int	店铺id
+     * @param deviceId  否	int	没有设备id，查询的是店铺下所有动态侦测视频。有设备id，查询特定设备的动态侦测视频
+     * @param timeStart 是	int64	筛选开始时间，闭区间 ，包括这个时间
+     * @param timeEnd   是	int64	筛选结束时间，开区间，不包括这个时间
+     * @param callback  回调
+     */
+    public void getMotionTimeSlots(int companyId, int shopId, int deviceId, long timeStart, long timeEnd,
+                                   RetrofitCallback<MotionVideoTimeSlotsResp> callback) {
+        try {
+            JSONObject jsonObject = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId);
+            if (deviceId != -1) {
+                jsonObject.put("device_id", deviceId);
+            }
+            jsonObject.put("time_range_start", timeStart);
+            jsonObject.put("time_range_end", timeEnd);
+            String params = jsonObject.toString();
+            SunmiStoreRetrofitClient.getInstance().create(MotionDetectionInterface.class)
+                    .getTimeSlots(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取设备动态侦测/闲时看店事件视频列表
+     *
+     * @param companyId 是	int	商户id
+     * @param shopId    是	int	店铺id
+     * @param deviceId  否	int	设备id
+     * @param source    否	int	事件来源
+     * @param timeStart 是	int	搜索起始时间
+     * @param timeEnd   是	int	搜索结束时间
+     * @param pageNum   否	int	页码
+     * @param pageSize  否	int	每页条数
+     * @param callback  回调
+     */
+    public void getMotionVideoList(int companyId, int shopId, int deviceId, int source,
+                                   long timeStart, long timeEnd, int pageNum, int pageSize,
+                                   RetrofitCallback<MotionVideoListResp> callback) {
+        try {
+            JSONObject jsonObject = new JSONObject()
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", SpUtils.getShopId());
+            if (deviceId != -1) {
+                jsonObject.put("device_id", deviceId);
+            }
+            if (source != 0) {
+                jsonObject.put("source", source);
+            }
+            jsonObject.put("time_range_start", timeStart);
+            jsonObject.put("time_range_end", timeEnd);
+            jsonObject.put("page_num", pageNum);
+            jsonObject.put("page_size", pageSize);
+            String params = jsonObject.toString();
+            SunmiStoreRetrofitClient.getInstance().create(MotionDetectionInterface.class)
+                    .getVideoList(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();

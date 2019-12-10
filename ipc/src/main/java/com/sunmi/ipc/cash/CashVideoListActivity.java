@@ -88,6 +88,8 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     int videoType;
     @Extra
     ArrayList<FilterItem> items;
+    @Extra
+    boolean isSingleDevice;
 
     private final int REQUEST = 0x101;
 
@@ -112,7 +114,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
         mPresenter.attachView(this);
         fastPlayStart = startTime;
         fastPlayEnd = endTime;
-        if (deviceId != -1) {
+        if (isSingleDevice) {
             dmDevice.setVisibility(View.GONE);
         }
         tvDate.setText(DateTimeUtils.secondToDate(startTime, "yyyy.MM.dd"));

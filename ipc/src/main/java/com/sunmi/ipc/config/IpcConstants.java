@@ -20,4 +20,9 @@ public class IpcConstants {
     public static final int CASH_VIDEO_NORMAL = 1;
     public static final int CASH_VIDEO_ABNORMAL = 2;
 
+    public static final int MOTION_DETECTION_SOURCE_ALL = 0;
+    public static final int MOTION_DETECTION_SOURCE_VIDEO = 1;
+    public static final int MOTION_DETECTION_SOURCE_SOUND = 2;
+    public static final int MOTION_DETECTION_SOURCE_BOTH = 3;
+
 }

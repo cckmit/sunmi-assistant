@@ -117,6 +117,7 @@
         android:visibility="gone">
 
         <TextView
+            android:id="@+id/tv_living"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/dp_20"
@@ -126,6 +127,7 @@
             android:text="@string/tip_ipc_live"
             android:textColor="@color/c_white"
             android:textSize="@dimen/sp_12"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
