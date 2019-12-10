@@ -371,13 +371,13 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     @Override
     protected void onResume() {
         super.onResume();
-        isPausedVideo(false);
+        pausedVideo(false);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        isPausedVideo(true);
+        pausedVideo(true);
     }
 
     /**
@@ -385,7 +385,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      *
      * @param paused 是否暂停
      */
-    private void isPausedVideo(boolean paused) {
+    private void pausedVideo(boolean paused) {
         if (ivpCash == null || pBarLoading.isShown() || sbBar.getProgress() >= ivpCash.getDuration()) {
             return;
         }
@@ -954,7 +954,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
 
     //进入云回放
     private void gotoCloudPlaybackActivity(int status) {
-        isPausedVideo(true);
+        pausedVideo(true);
         SunmiDevice device = new SunmiDevice();
         device.setId(videoList.get(playIndex).getDeviceId());
         device.setDeviceid(videoList.get(playIndex).getDeviceSn());
