@@ -37,6 +37,7 @@
             android:visibility="invisible" />
 
         <RelativeLayout
+            android:id="@+id/rl_order_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -162,16 +163,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_bar" />
 
-    <TextView
-        android:id="@+id/tv_play_fail"
+    <include
+        layout="@layout/include_play_fail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableTop="@mipmap/ic_video_play_error"
-        android:drawablePadding="@dimen/dp_10"
-        android:text="@string/tip_network_fail_retry"
-        android:textColor="@color/text_normal"
-        android:textSize="@dimen/sp_12"
-        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/recyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
