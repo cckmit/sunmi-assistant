@@ -12,7 +12,6 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.StringRes;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
@@ -72,7 +71,6 @@ import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
 import sunmi.common.utils.VolumeHelper;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.dialog.BottomDialog;
 
@@ -91,7 +89,6 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     private static final int PLAY_FAIL_STATUS_NO_SD = 2;
     private static final int PLAY_FAIL_STATUS_SD_EXCEPTION = 3;
     private static final int PLAY_FAIL_STATUS_NET_EXCEPTION = 4;
-//    showPlayFail("设备不在线，无法查看存储卡回放，推荐使用云回放");
 
     private final static long SECONDS_IN_ONE_DAY = 24 * 60 * 60;
 
@@ -289,21 +286,17 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        LogCat.e(TAG, "666666 surfaceCreated");
         if (p2pService != null) {
-            LogCat.e(TAG, "666666 surfaceCreated 111111 ");
             p2pService.startDecode();
         }
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        LogCat.e(TAG, "666666 surfaceChanged");
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        LogCat.e(TAG, "666666 surfaceDestroyed");
     }
 
     /**
@@ -460,6 +453,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     }
 
     private void switchDay(long currentDay) {
+        switchSuccess = false;
         startTimeCurrentDate = currentDay;
         hidePlayFail();
         endTimeCurrentDate = startTimeCurrentDate + SECONDS_IN_ONE_DAY;
@@ -553,10 +547,10 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
 
     @Override
     public void onPlayFinished() {
-        playOver();
+        if (switchSuccess) {
+            playOver();
+        }
     }
-
-    private Drawable drawableLeft, drawableRight;
 
     @Override
     public int[] getUnStickNotificationId() {
@@ -931,17 +925,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
         }
         tvTimeScroll.setVisibility(View.VISIBLE);
         tvTimeScroll.setText(time);
-        if (isLeft) {
-            if (drawableLeft == null) {
-                drawableLeft = ContextCompat.getDrawable(this, R.mipmap.ic_fast_forward);
-            }
-            tvTimeScroll.setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null);
-        } else {
-            if (drawableRight == null) {
-                drawableRight = ContextCompat.getDrawable(this, R.mipmap.ic_forward);
-            }
-            tvTimeScroll.setCompoundDrawablesWithIntrinsicBounds(drawableRight, null, null, null);
-        }
+        tvTimeScroll.setEnabled(isLeft);
     }
 
     @UiThread

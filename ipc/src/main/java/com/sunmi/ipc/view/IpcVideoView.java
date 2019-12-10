@@ -57,6 +57,7 @@ public class IpcVideoView extends SurfaceView
         mVideoHolder = getHolder();
         mVideoHolder.addCallback(this);
         iotcClient = new IOTCClient(uid);
+        iotcClient.setReceiverCallback(this);
         iotcClient.setStatusCallback(this);
     }
 
