@@ -13,6 +13,7 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_motion_list"
+            android:background="@color/c_white"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
@@ -73,12 +74,12 @@
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/transparent"
+        android:background="@color/c_white"
         app:dividerShow="true"
         app:layout_constraintTop_toTopOf="parent"
         app:leftDefaultClickEnable="true"
-        app:leftIcon="@drawable/ic_back_light"
+        app:leftIcon="@drawable/ic_back_dark"
         app:titleText="@string/cash_video_list"
-        app:titleTextColor="@color/c_white" />
+        app:titleTextColor="@color/c_black" />
 
 </android.support.constraint.ConstraintLayout>
