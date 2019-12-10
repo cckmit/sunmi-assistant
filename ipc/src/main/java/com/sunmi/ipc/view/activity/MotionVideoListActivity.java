@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,7 @@ import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.SimpleArrayAdapter;
 import sunmi.common.model.FilterItem;
 import sunmi.common.utils.DateTimeUtils;
+import sunmi.common.utils.GlideRoundTransform;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
@@ -273,8 +275,10 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
             title.setText(DateTimeUtils.secondToDate(model.getDetectTime(), "HH:mm:ss"));
             String type = mSourceName.get(model.getSource());
             content.setText(type == null ? "" : type);
-            Glide.with(holder.getContext()).load(model.getSnapshotAddress()).into(snapshot);
+            if (!TextUtils.isEmpty(model.getSnapshotAddress())) {
+                Glide.with(holder.getContext()).load(model.getSnapshotAddress())
+                        .transform(new GlideRoundTransform(holder.getContext())).into(snapshot);
+            }
         }
-
     }
 }

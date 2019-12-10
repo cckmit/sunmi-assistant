@@ -170,15 +170,20 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
                 tvTag.setText(res.getDescription());
                 tvTag.setVisibility(View.VISIBLE);
             }
-            if (holder.getAdapterPosition() == 0 && mList.size() > 0) {
+            if (mList.size() == 1) {
                 tvLineTop.setVisibility(View.INVISIBLE);
-                tvLineBottom.setVisibility(View.VISIBLE);
-            } else if (holder.getAdapterPosition() == mList.size() - 1) {
-                tvLineTop.setVisibility(View.VISIBLE);
                 tvLineBottom.setVisibility(View.INVISIBLE);
-            } else {
-                tvLineTop.setVisibility(View.VISIBLE);
-                tvLineBottom.setVisibility(View.VISIBLE);
+            } else if (mList.size() > 1) {
+                if (holder.getAdapterPosition() == mList.size() - 1) {
+                    tvLineTop.setVisibility(View.VISIBLE);
+                    tvLineBottom.setVisibility(View.INVISIBLE);
+                } else if (holder.getAdapterPosition() == 0) {
+                    tvLineTop.setVisibility(View.INVISIBLE);
+                    tvLineBottom.setVisibility(View.VISIBLE);
+                } else {
+                    tvLineTop.setVisibility(View.VISIBLE);
+                    tvLineBottom.setVisibility(View.VISIBLE);
+                }
             }
             holder.itemView.setOnClickListener(v -> {
                 //获取当前的点击的视频位置
@@ -189,5 +194,4 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
             });
         }
     }
-
 }

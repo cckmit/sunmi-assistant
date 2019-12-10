@@ -74,15 +74,20 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
         viewHolder.tvOrderNum.setText(bean.getOrderNo());
         viewHolder.tvName.setText(bean.getDeviceName());
         Glide.with(context).load(bean.getSnapshotUrl()).transform(new GlideRoundTransform(context)).into(viewHolder.ivPreview);
-        if (i == data.size() - 1) {
-            viewHolder.tvLineTop.setVisibility(View.VISIBLE);
-            viewHolder.tvLineBottom.setVisibility(View.INVISIBLE);
-        } else if (i == 0) {
+        if (data.size() == 1) {
             viewHolder.tvLineTop.setVisibility(View.INVISIBLE);
-            viewHolder.tvLineBottom.setVisibility(View.VISIBLE);
-        } else {
-            viewHolder.tvLineTop.setVisibility(View.VISIBLE);
-            viewHolder.tvLineBottom.setVisibility(View.VISIBLE);
+            viewHolder.tvLineBottom.setVisibility(View.INVISIBLE);
+        } else if (data.size() > 1) {
+            if (i == data.size() - 1) {
+                viewHolder.tvLineTop.setVisibility(View.VISIBLE);
+                viewHolder.tvLineBottom.setVisibility(View.INVISIBLE);
+            } else if (i == 0) {
+                viewHolder.tvLineTop.setVisibility(View.INVISIBLE);
+                viewHolder.tvLineBottom.setVisibility(View.VISIBLE);
+            } else {
+                viewHolder.tvLineTop.setVisibility(View.VISIBLE);
+                viewHolder.tvLineBottom.setVisibility(View.VISIBLE);
+            }
         }
     }
 
