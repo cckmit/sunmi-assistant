@@ -274,6 +274,19 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        clearItems();
+    }
+
+    @Background
+    protected void clearItems() {
+        for (FilterItem item : items) {
+            item.setChecked(false);
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         service.shutdown();

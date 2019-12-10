@@ -41,7 +41,6 @@ import sunmi.common.model.FilterItem;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.DropdownAdapterNew;
 import sunmi.common.view.DropdownAnimNew;
 import sunmi.common.view.DropdownMenuNew;
@@ -277,6 +276,10 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
 
     @Click(resName = "tv_fast_play")
     void fastPlayClick() {
+        if (!NetworkUtils.isNetworkAvailable(context)) {
+            shortTip(R.string.network_error);
+            return;
+        }
         CashPlayActivity_.intent(context).deviceId(deviceId).startTime(fastPlayStart).endTime(fastPlayEnd).isWholeDayVideoPlay(true)
                 .ipcName(mPresenter.getIpcName()).start();
     }
@@ -352,6 +355,10 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
             adapter.setOnItemClickListener(new CashVideoAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(ArrayList<CashVideoResp.AuditVideoListBean> data, int pos) {
+                    if (!NetworkUtils.isNetworkAvailable(context)) {
+                        shortTip(R.string.network_error);
+                        return;
+                    }
                     CashPlayActivity_.intent(context).deviceId(deviceId)
                             .startTime(startTime).endTime(endTime).isWholeDayVideoPlay(false)
                             .ipcName(mPresenter.getIpcName()).videoList(data)
