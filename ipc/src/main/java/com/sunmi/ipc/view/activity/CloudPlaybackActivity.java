@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
@@ -923,8 +922,6 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         showTimeScroll(data.substring(11), isLeftScroll);//toast显示时间
     }
 
-    private Drawable drawableLeft, drawableRight;
-
     @UiThread
     void showTimeScroll(final String time, final boolean isLeft) {
         if (TextUtils.isEmpty(time)) {
@@ -932,17 +929,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         }
         tvTimeScroll.setVisibility(View.VISIBLE);
         tvTimeScroll.setText(time);
-        if (isLeft) {
-            if (drawableLeft == null) {
-                drawableLeft = ContextCompat.getDrawable(this, R.mipmap.ic_fast_forward);
-            }
-            tvTimeScroll.setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null);
-        } else {
-            if (drawableRight == null) {
-                drawableRight = ContextCompat.getDrawable(this, R.mipmap.ic_forward);
-            }
-            tvTimeScroll.setCompoundDrawablesWithIntrinsicBounds(drawableRight, null, null, null);
-        }
+        tvTimeScroll.setEnabled(isLeft);
     }
 
     @UiThread
