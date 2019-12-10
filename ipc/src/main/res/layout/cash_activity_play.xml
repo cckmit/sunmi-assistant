@@ -37,6 +37,7 @@
             android:visibility="invisible" />
 
         <RelativeLayout
+            android:id="@+id/rl_order_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -125,10 +126,16 @@
 
         </RelativeLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_48"
+            android:layout_alignParentBottom="true"
+            android:background="@mipmap/ic_cash_bg" />
         <!--底部控制区-->
         <include
             android:id="@+id/icd_bottom_progress"
             layout="@layout/include_ipc_bottom_progress" />
+
     </RelativeLayout>
 
     <include layout="@layout/include_cash_play" />
@@ -137,7 +144,7 @@
         android:id="@+id/tv_screenshot_tip"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_35"
-        android:layout_marginBottom="@dimen/dp_112"
+        android:layout_marginBottom="@dimen/dp_60"
         android:background="@drawable/setting_bg_tip_text"
         android:gravity="center"
         android:padding="@dimen/dp_8"
@@ -145,8 +152,7 @@
         android:textColor="@color/c_white"
         android:textSize="@dimen/sp_12"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/recyclerView"
+        app:layout_constraintBottom_toBottomOf="@+id/rl_cash"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -157,35 +163,29 @@
         android:indeterminate="false"
         android:indeterminateDrawable="@drawable/loading_common_white"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/recyclerView"
+        app:layout_constraintBottom_toBottomOf="@id/rl_cash"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_bar" />
+        app:layout_constraintTop_toTopOf="@id/rl_cash" />
 
-    <TextView
-        android:id="@+id/tv_play_fail"
+    <include
+        layout="@layout/include_play_fail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableTop="@mipmap/ic_video_play_error"
-        android:drawablePadding="@dimen/dp_10"
-        android:text="@string/tip_network_fail_retry"
-        android:textColor="@color/text_normal"
-        android:textSize="@dimen/sp_12"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/recyclerView"
+        app:layout_constraintBottom_toBottomOf="@id/rl_cash"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_bar" />
+        app:layout_constraintTop_toTopOf="@id/rl_cash" />
 
     <ImageView
         android:id="@+id/iv_video_change"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/recyclerView"
+        app:layout_constraintBottom_toBottomOf="@id/rl_cash"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_bar" />
+        app:layout_constraintTop_toTopOf="@id/rl_cash" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -200,10 +200,10 @@
         android:id="@+id/tv_empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableTop="@mipmap/ic_empty"
+        android:drawableTop="@mipmap/ic_no_cash_video"
         android:drawablePadding="@dimen/dp_4"
         android:gravity="center_horizontal"
-        android:text="@string/cash_empty_data"
+        android:text="@string/str_no_cash_video"
         android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_12"
         android:visibility="gone"
@@ -211,6 +211,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ctl_bottom_setting" />
-
 
 </android.support.constraint.ConstraintLayout>

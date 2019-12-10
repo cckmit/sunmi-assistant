@@ -49,7 +49,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_64"
         android:animateLayoutChanges="true"
-        android:background="@mipmap/bg_video_controller_bottom"
+        android:background="@mipmap/bg_video_controller_bottom_h"
         android:gravity="center_vertical"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"

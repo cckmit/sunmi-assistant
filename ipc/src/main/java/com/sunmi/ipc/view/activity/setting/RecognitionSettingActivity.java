@@ -65,11 +65,8 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
     TextView mTvTipContent;
     @ViewById(resName = "btn_setting_tip_ok")
     Button mBtnTipOk;
-
     @ViewById(resName = "iv_setting_face_case")
     ImageView mFaceCase;
-    private Rect mFacePos = new Rect();
-
     @ViewById(resName = "v_line_draw")
     DoorLineView mLineView;
 

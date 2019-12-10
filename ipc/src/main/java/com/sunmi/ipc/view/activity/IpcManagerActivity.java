@@ -28,6 +28,7 @@ import com.sunmi.ipc.cash.CashVideoOverviewActivity_;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.IpcManagerContract;
 import com.sunmi.ipc.model.IpcManageBean;
+import com.sunmi.ipc.view.activity.MotionVideoListActivity_;
 import com.sunmi.ipc.presenter.IpcManagerPresenter;
 import com.sunmi.ipc.service.P2pService;
 import com.sunmi.ipc.utils.IOTCClient;
@@ -623,6 +624,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         ViewGroup.LayoutParams rlLP = rlVideo.getLayoutParams();
         ViewGroup.LayoutParams bottomBarLp = rlBottomBar.getLayoutParams();
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            rlBottomBar.setBackgroundResource(R.mipmap.bg_video_controller_bottom_h);
             bottomBarLp.height = CommonHelper.dp2px(context, 64);
             int screenH = CommonHelper.getScreenWidth(context);//横屏
             float aspectRatio = screenW / screenH;//宽高比
@@ -639,6 +641,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             rlLP.height = screenW;
             rlLP.width = screenH;
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            rlBottomBar.setBackgroundResource(R.mipmap.bg_video_controller_bottom_v);
             bottomBarLp.height = CommonHelper.dp2px(context, 48);
             if (isSS1()) {
                 videoH = screenW;
@@ -749,16 +752,16 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private void initManageList() {
         rvManager.init(0);
         if (isSS1()) {
-            cashVideoItem = new IpcManageBean(R.mipmap.ipc_manage_cashier, getString(R.string.cash_video),
+            cashVideoItem = new IpcManageBean(IpcConstants.IPC_MANAGE_TYPE_CASH, R.mipmap.ipc_manage_cashier, getString(R.string.cash_video),
                     getString(R.string.cash_video_item_content), getString(R.string.str_learn_more), true);
             list.add(cashVideoItem);
-            cloudStorageItem = new IpcManageBean(R.mipmap.ipc_cloud_storage, context.getString(R.string.str_cloud_storage),
+            cloudStorageItem = new IpcManageBean(IpcConstants.IPC_MANAGE_TYPE_CLOUD, R.mipmap.ipc_cloud_storage, context.getString(R.string.str_cloud_storage),
                     context.getString(R.string.str_setting_detail));
             cloudStorageItem.setEnabled(false);
             list.add(cloudStorageItem);
         }
-        list.add(new IpcManageBean(R.mipmap.ipc_manage_md, getString(R.string.str_motion_detection),
-                getString(R.string.str_md_exception), getString(R.string.str_coming_soon), true));
+        list.add(new IpcManageBean(IpcConstants.IPC_MANAGE_TYPE_DETECT, R.mipmap.ipc_manage_md, getString(R.string.str_motion_detection),
+                getString(R.string.str_md_exception), getString(R.string.str_setting_detail), true));
         adapter = new CommonListAdapter<IpcManageBean>(context, R.layout.item_ipc_manager, list) {
             @Override
             public void convert(ViewHolder holder, IpcManageBean bean) {
@@ -772,26 +775,34 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                     holder.setImageResource(R.id.iv_tag, bean.getTagImageResId());
                 }
                 btnDetail.setOnClickListener(v -> {
-                    if (bean.getLeftImageResId() == R.mipmap.ipc_cloud_storage) {
-                        if (TextUtils.equals(bean.getRightText(), getString(R.string.str_setting_detail))) {
-                            Router.withApi(SunmiServiceApi.class).goToServiceDetail(context,
-                                    device.getDeviceid(), true, device.getName());
-                        } else {
-                            ArrayList<String> snList = new ArrayList<>();
-                            snList.add(device.getDeviceid());
-                            Router.withApi(SunmiServiceApi.class)
-                                    .goToWebViewCloud(context, CommonConfig.CLOUD_STORAGE_URL, snList);
-                        }
-                    } else if (bean.getLeftImageResId() == R.mipmap.ipc_manage_cashier) {
-                        if (!serviceBeans.isEmpty()) {// 跳转收银视频页面
-                            CashVideoOverviewActivity_.intent(context).isSingleDevice(true)
-                                    .serviceBeans(serviceBeans).start();
-                        } else if (cashVideoSubscribed) {// 已经有其他摄像机开通了收银视频服务
-                            shortTip(R.string.cash_video_other_device_already_subscribe_tip);
-                        } else {//去开通
-                            Router.withApi(SunmiServiceApi.class)
-                                    .goToWebViewCash(context, CommonConfig.CASH_VIDEO_URL);
-                        }
+                    switch (bean.getType()) {
+                        case IpcConstants.IPC_MANAGE_TYPE_CLOUD:
+                            if (TextUtils.equals(bean.getRightText(), getString(R.string.str_setting_detail))) {
+                                Router.withApi(SunmiServiceApi.class).goToServiceDetail(context,
+                                        device.getDeviceid(), true, device.getName());
+                            } else {
+                                ArrayList<String> snList = new ArrayList<>();
+                                snList.add(device.getDeviceid());
+                                Router.withApi(SunmiServiceApi.class)
+                                        .goToWebViewCloud(context, CommonConfig.CLOUD_STORAGE_URL, snList);
+                            }
+                            break;
+                        case IpcConstants.IPC_MANAGE_TYPE_CASH:
+                            if (!serviceBeans.isEmpty()) {// 跳转收银视频页面
+                                CashVideoOverviewActivity_.intent(context).isSingleDevice(true)
+                                        .serviceBeans(serviceBeans).start();
+                            } else if (cashVideoSubscribed) {// 已经有其他摄像机开通了收银视频服务
+                                shortTip(R.string.cash_video_other_device_already_subscribe_tip);
+                            } else {//去开通
+                                Router.withApi(SunmiServiceApi.class)
+                                        .goToWebViewCash(context, CommonConfig.CASH_VIDEO_URL);
+                            }
+                            break;
+                        case IpcConstants.IPC_MANAGE_TYPE_DETECT:
+                            MotionVideoListActivity_.intent(context).deviceId(device.getId()).deviceModel(device.getModel()).start();
+                            break;
+                        default:
+                            break;
                     }
                 });
             }
