@@ -46,7 +46,6 @@ import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 import sunmi.common.base.BaseMvpActivity;
@@ -232,7 +231,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
                             playIndex++;
                             initCashVideoPlay();
                         } else {
-                            //shortTip("最右视频了");
                             loadMoreVideoList();
                         }
                     }
@@ -532,7 +530,8 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     @Click(resName = "btn_retry")
     void retryClick() {
-        if (isWholeDayVideoPlay) {
+        ivpCash.setVisibility(View.VISIBLE);
+        if (isWholeDayVideoPlay && videoList.size() == 0) {
             loadMoreVideoList();
         } else {
             initCashVideoPlay();
@@ -711,6 +710,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         }
         llPlayFail.setVisibility(View.GONE);
         rlOrderInfo.setVisibility(View.VISIBLE);
+        tvEmpty.setVisibility(View.GONE);
     }
 
     @UiThread
@@ -731,6 +731,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         tvPlayFail.setText(tip);
         llPlayFail.setVisibility(View.VISIBLE);
         rlOrderInfo.setVisibility(View.GONE);
+        tvEmpty.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -914,7 +915,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         tvEmpty.setVisibility(View.GONE);
         tvAmount.setText(String.format("¥%s", resp.getAmount()));
         tvOrderNo.setText(resp.getOrderNo());
-        tvTotalCommodity.setText(String.format(Locale.getDefault(), "%d", resp.getTotalQuantity()));
+        tvTotalCommodity.setText(getString(R.string.cash_video_total_commodity, resp.getTotalQuantity()));
         tvTradeType.setText(resp.getPurchaseType());
         adapter = new CashAdapter(context, resp.getProductList());
         recyclerView.setAdapter(adapter);
@@ -933,6 +934,10 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     public void cashVideoListSuccess(List<CashVideoResp.AuditVideoListBean> list) {
         hasMore = list.size() >= 10;
         videoList.addAll(list);
+        if (videoList.size() == 0) {
+            showPlayFail(getString(R.string.str_no_cash_video));
+            return;
+        }
         initCashVideoPlay();
     }
 
