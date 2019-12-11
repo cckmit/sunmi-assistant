@@ -18,19 +18,19 @@ public class OrderTotalAmountResp {
      */
 
     @SerializedName("total_amount")
-    private float totalAmount;
+    private double totalAmount;
     @SerializedName("day_amount")
-    private float dayAmount;
+    private double dayAmount;
     @SerializedName("yesterday_amount")
-    private float yesterdayAmount;
+    private double yesterdayAmount;
     @SerializedName("week_amount")
-    private float weekAmount;
+    private double weekAmount;
     @SerializedName("last_week_amount")
-    private float lastWeekAmount;
+    private double lastWeekAmount;
     @SerializedName("month_amount")
-    private float monthAmount;
+    private double monthAmount;
     @SerializedName("last_month_amount")
-    private float lastMonthAmount;
+    private double lastMonthAmount;
     @SerializedName("day_rate")
     private String dayRate;
     @SerializedName("week_rate")
@@ -38,31 +38,31 @@ public class OrderTotalAmountResp {
     @SerializedName("month_rate")
     private String monthRate;
 
-    public float getTotalAmount() {
+    public double getTotalAmount() {
         return totalAmount;
     }
 
-    public float getDayAmount() {
+    public double getDayAmount() {
         return dayAmount;
     }
 
-    public float getYesterdayAmount() {
+    public double getYesterdayAmount() {
         return yesterdayAmount;
     }
 
-    public float getWeekAmount() {
+    public double getWeekAmount() {
         return weekAmount;
     }
 
-    public float getLastWeekAmount() {
+    public double getLastWeekAmount() {
         return lastWeekAmount;
     }
 
-    public float getMonthAmount() {
+    public double getMonthAmount() {
         return monthAmount;
     }
 
-    public float getLastMonthAmount() {
+    public double getLastMonthAmount() {
         return lastMonthAmount;
     }
 
