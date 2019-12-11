@@ -1,5 +1,6 @@
 package com.sunmi.ipc.cash;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -44,6 +45,7 @@ import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.DropdownAdapterNew;
 import sunmi.common.view.DropdownAnimNew;
 import sunmi.common.view.DropdownMenuNew;
+import sunmi.common.view.TitleBarView;
 import sunmi.common.view.loopview.LoopView;
 
 /**
@@ -76,6 +78,8 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     TextView tvAbnormal;
     @ViewById(resName = "tv_no_cash")
     TextView tvNoCash;
+    @ViewById(resName = "title_bar")
+    TitleBarView titleBar;
 
     @Extra
     int deviceId = -1;
@@ -290,6 +294,12 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
                 .ipcName(mPresenter.getIpcName()).start();
     }
 
+    @Click(resName = "btn_refresh")
+    public void refreshClick() {
+        showLoadingDialog();
+        refreshList();
+    }
+
     @Override
     public void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, int total) {
         if (total <= 0) {
@@ -390,6 +400,12 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
             }
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        setResult(Activity.RESULT_OK);
+        finish();
     }
 
     @SuppressWarnings("unchecked")

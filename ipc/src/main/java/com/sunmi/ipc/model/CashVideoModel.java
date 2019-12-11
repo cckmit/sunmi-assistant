@@ -21,11 +21,6 @@ import sunmi.common.utils.ThreadPool;
 public class CashVideoModel {
 
     private HashMap<Integer, String> ipcName;
-    private int pageNum, pageSize = 10;
-    private boolean hasMore;
-    private int deviceId, videoType;
-    private long startTime, endTime;
-    private int total;
 
     public CashVideoModel() {
         initMap();

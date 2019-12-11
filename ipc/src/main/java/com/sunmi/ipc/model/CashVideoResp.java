@@ -61,7 +61,7 @@ public class CashVideoResp {
         @SerializedName("purchase_time")
         private int purchaseTime;
         @SerializedName("amount")
-        private int amount;
+        private double amount;
         @SerializedName("device_id")
         private int deviceId;
         @SerializedName("device_sn")
@@ -113,11 +113,11 @@ public class CashVideoResp {
             this.purchaseTime = purchaseTime;
         }
 
-        public int getAmount() {
+        public double getAmount() {
             return amount;
         }
 
-        public void setAmount(int amount) {
+        public void setAmount(double amount) {
             this.amount = amount;
         }
 

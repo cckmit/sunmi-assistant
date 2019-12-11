@@ -26,6 +26,7 @@ import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
@@ -87,6 +88,8 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     ArrayList<CashVideoServiceBean> serviceBeans;
     @Extra
     boolean isSingleDevice;
+
+    private final int REQUEST = 0x102;
 
 
     private CenterLayoutManager llManager;
@@ -251,7 +254,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         clearItems();
         items.get(0).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime).items(items)
-                .isSingleDevice(isSingleDevice).total(shopCashCount).start();
+                .isSingleDevice(isSingleDevice).total(shopCashCount).startForResult(REQUEST);
     }
 
     @Click(resName = "ll_abnormal_video")
@@ -260,7 +263,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         items.get(0).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
                 .videoType(IpcConstants.CASH_VIDEO_ABNORMAL).items(items).isSingleDevice(isSingleDevice)
-                .total(shopCashCount).start();
+                .total(shopCashCount).startForResult(REQUEST);
     }
 
     @Click(resName = "cv_cash")
@@ -269,7 +272,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         items.get(1).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
                 .deviceId(idList.get(0)).items(items).isSingleDevice(isSingleDevice)
-                .total(deviceCashCount).start();
+                .total(deviceCashCount).startForResult(REQUEST);
     }
 
     @Click(resName = "cv_abnormal")
@@ -278,7 +281,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         items.get(1).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
                 .deviceId(idList.get(0)).videoType(IpcConstants.CASH_VIDEO_ABNORMAL).items(items)
-                .total(deviceCashCount).start();
+                .total(deviceCashCount).startForResult(REQUEST);
     }
 
     private void clearItems() {
@@ -310,7 +313,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     @Override
     public void getShopCashVideoCountSuccess(CashVideoListBean bean) {
         mPresenter.getIpcCashVideoCount(idList, startTime, endTime);
-        shopCashCount =bean.getTotalCount();
+        shopCashCount = bean.getTotalCount();
         tvTotalCountCash.setText(String.valueOf(shopCashCount));
         tvTotalCountAbnormal.setText(String.valueOf(bean.getAbnormalVideoCount()));
     }
@@ -329,7 +332,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         ImageUtils.loadImage(context, bean.getImgUrl(), civIpc, false, -1);
         tvIpcName.setText(bean.getDeviceName());
         tvIpcSn.setText(getString(R.string.ipc_sn, bean.getDeviceSn()));
-        deviceCashCount =bean.getTotalCount();
+        deviceCashCount = bean.getTotalCount();
         tvCountCash.setText(String.valueOf(deviceCashCount));
         tvCountAbnormal.setText(String.valueOf(bean.getAbnormalVideoCount()));
     }
@@ -338,5 +341,16 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     public void netWorkError() {
         hideLoadingDialog();
         networkError.setVisibility(View.VISIBLE);
+    }
+
+    @OnActivityResult(REQUEST)
+    void onResult(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (isSingleDevice) {
+                mPresenter.getIpcCashVideoCount(idList, startTime, endTime);
+            } else {
+                mPresenter.getShopCashVideoCount(startTime, endTime);
+            }
+        }
     }
 }

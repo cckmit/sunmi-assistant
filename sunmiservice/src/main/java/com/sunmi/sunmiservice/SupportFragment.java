@@ -110,7 +110,7 @@ public class SupportFragment extends BaseFragment
         if (!checkNetwork() || isFastClick(500)) {
             return;
         }
-        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConfig.CLOUD_STORAGE_URL).start();
+        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConfig.SERVICE_H5_URL + "cloudStorage?topPadding=").start();
     }
 
     @Click(resName = "ll_after_sales")
@@ -159,6 +159,7 @@ public class SupportFragment extends BaseFragment
                                 info.setDeviceId(bean.getDeviceId());
                                 info.setDeviceSn(bean.getDeviceSn());
                                 info.setDeviceName(bean.getDeviceName());
+                                info.setImgUrl(bean.getImgUrl());
                                 cashVideoServiceBeans.add(info);
                             }
                         }
@@ -240,7 +241,7 @@ public class SupportFragment extends BaseFragment
     public void didReceivedNotification(int id, Object... args) {
         if (id == CommonNotifications.activeCloudChange) {
             changeCloudCard();
-        } else if (id == CommonNotifications.cashVideoSubscribe) {
+        } else if (id == CommonNotifications.cashVideoSubscribe || id == CommonNotifications.shopSwitched) {
             changeCashVideoCard();
         }
     }

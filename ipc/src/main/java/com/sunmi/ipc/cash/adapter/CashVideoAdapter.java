@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.model.CashVideoResp;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import sunmi.common.utils.DateTimeUtils;
@@ -30,10 +31,13 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
     private Context context;
     private OnItemClickListener listener;
     private int selectPosition = -1;
+    private NumberFormat numberFormat;
 
     public CashVideoAdapter(ArrayList<CashVideoResp.AuditVideoListBean> data, Context context) {
         this.data = data;
         this.context = context;
+        numberFormat = NumberFormat.getNumberInstance();
+        numberFormat.setMinimumFractionDigits(2);
     }
 
     public interface OnItemClickListener {
@@ -70,7 +74,7 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
         } else {
             viewHolder.tvDescription.setVisibility(View.GONE);
         }
-        viewHolder.tvAmount.setText(String.format("¥%s", bean.getAmount()));
+        viewHolder.tvAmount.setText(String.format("¥%s", numberFormat.format(bean.getAmount())));
         viewHolder.tvOrderNum.setText(bean.getOrderNo());
         viewHolder.tvName.setText(bean.getDeviceName());
         Glide.with(context).load(bean.getSnapshotUrl()).transform(new GlideRoundTransform(context)).into(viewHolder.ivPreview);
