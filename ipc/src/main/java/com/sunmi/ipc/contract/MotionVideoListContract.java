@@ -28,6 +28,8 @@ public interface MotionVideoListContract {
 
     interface Presenter {
 
+        Calendar getCurrent();
+
         void loadTimeSlots(boolean openCalendar);
 
         void load();
