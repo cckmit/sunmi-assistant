@@ -63,11 +63,6 @@ public class AACDecoder {
         }
     }
 
-    public void resumeRunning() {
-        isRunning = true;
-        ThreadPool.getCachedThreadPool().submit(new DecodeAACWorker());//开启解码线程
-    }
-
     /**
      * 判断aac帧头
      */
