@@ -10,19 +10,23 @@ import com.google.gson.annotations.SerializedName;
  * @date 2019-12-09
  */
 public class MotionVideo implements Parcelable {
+
     /**
-     * id : 40
+     * id : 49
      * device_name : 绑定测试1
+     * sn : yyyyyyyyyyyyy
      * source : 1
-     * detect_time : 1554201061
-     * cdn_address : http://test.cdn.sunmi.com/VIDEO/IPC/d42eeebbc9a6c7ddce5db13a07943bb7cfcee7552045c1af4ff5aef65d681dd1
-     * snapshot_address : http://test.cdn.sunmi.com/VIDEO/IPC/d42eeebbc9a6c7ddce5db13a07943bb7cfcee7552045c1af4ff5aef65d681dd1?x-oss-process=video/snapshot,t_2300,f_jpg,m_fast
+     * detect_time : 1554202517
+     * cdn_address : http://test.cdn.sunmi.com/VIDEO/IPC/41dd3f089ee0746efa4f9c0500719e71d1cf474b111f2a72e832906e619bc6f8
+     * snapshot_address : http://test.cdn.sunmi.com/VIDEO/IPC/41dd3f089ee0746efa4f9c0500719e71d1cf474b111f2a72e832906e619bc6f8?x-oss-process=video/snapshot,t_2300,f_jpg,m_fast
      */
 
     @SerializedName("id")
     private int id;
     @SerializedName("device_name")
     private String deviceName;
+    @SerializedName("sn")
+    private String sn;
     @SerializedName("source")
     private int source;
     @SerializedName("detect_time")
@@ -38,6 +42,10 @@ public class MotionVideo implements Parcelable {
 
     public String getDeviceName() {
         return deviceName;
+    }
+
+    public String getSn() {
+        return sn;
     }
 
     public int getSource() {
@@ -59,6 +67,7 @@ public class MotionVideo implements Parcelable {
     protected MotionVideo(Parcel in) {
         id = in.readInt();
         deviceName = in.readString();
+        sn = in.readString();
         source = in.readInt();
         detectTime = in.readInt();
         cdnAddress = in.readString();
@@ -69,6 +78,7 @@ public class MotionVideo implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeString(deviceName);
+        dest.writeString(sn);
         dest.writeInt(source);
         dest.writeInt(detectTime);
         dest.writeString(cdnAddress);
