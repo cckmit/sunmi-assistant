@@ -630,7 +630,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         InputDialog inputDialog = new InputDialog.Builder(this)
                 .setTitle(R.string.cash_input_title_tag_type)
                 .setHint(R.string.cash_input_title_tag_tip)
-                .setCancelButton(R.string.sm_cancel)
+                .setCancelButton(R.string.sm_cancel, (dialog, which) -> pausedVideo(false))
                 .setConfirmButton(R.string.str_confirm, (dialog, input) -> {
                     if (TextUtils.isEmpty(input)) {
                         shortTip(R.string.cash_input_title_tag_type);
@@ -640,6 +640,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
                         shortTip(R.string.ipc_face_name_length_tip);
                         return;
                     }
+                    pausedVideo(false);
                     dialog.dismiss();
                     requestAddTag(input);
                 }).create();
