@@ -10,4 +10,5 @@ public class SsConstants {
     public static final String JS_COLOR_BLACK = "black";
     public static final String JS_BIND_SS = "bindSs";
     public static final String JS_BIND_SAAS = "bindSaas";
+    public static final String JS_MALL_ORDER = "mallOrder";
 }

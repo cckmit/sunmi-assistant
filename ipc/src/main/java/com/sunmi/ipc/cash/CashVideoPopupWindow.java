@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.model.CashVideoResp;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import sunmi.common.constant.CommonNotifications;
@@ -46,6 +47,7 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
     private ArrayList<CashVideoResp.AuditVideoListBean> mList;
     private int currentPlayPosition;
     private double maxLength = 3.5;
+    private NumberFormat numberFormat;
 
     @SuppressLint("ClickableViewAccessibility")
     public CashVideoPopupWindow(Activity activity, View topToPopupWindowView, int currentPlayPosition,
@@ -95,6 +97,8 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
         //获取isShowing()的状态
         setFocusable(true);
         update();
+        numberFormat = NumberFormat.getNumberInstance();
+        numberFormat.setMinimumFractionDigits(2);
     }
 
     private void setImageBackground() {
@@ -152,7 +156,7 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
         @Override
         public void convert(ViewHolder holder, CashVideoResp.AuditVideoListBean res) {
             holder.setText(R.id.tv_time, DateTimeUtils.secondToDate(res.getPurchaseTime(), "HH:mm:ss"));
-            holder.setText(R.id.tv_amount, String.format("¥%s", res.getAmount()));
+            holder.setText(R.id.tv_amount, String.format("¥%s", numberFormat.format(res.getAmount())));
             holder.setText(R.id.tv_order_num, res.getOrderNo());
             holder.setText(R.id.tv_pos, res.getDeviceName());
             ImageView imgVideo = holder.getView(R.id.iv_preview_img);
