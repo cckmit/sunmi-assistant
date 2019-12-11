@@ -96,6 +96,11 @@
             android:name=".view.activity.MotionVideoListActivity_"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".view.activity.MotionVideoPlayActivity_"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:hardwareAccelerated="false"
+            android:largeHeap="true" />
+        <activity
             android:name=".view.activity.IpcStartConfigActivity_"
             android:screenOrientation="portrait" />
         <activity
