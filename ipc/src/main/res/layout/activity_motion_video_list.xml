@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:drawableTop="@mipmap/ic_no_cash_video"
         android:drawablePadding="@dimen/dp_4"
-        android:text="@string/info_empty"
+        android:text="@string/motion_detection_video_empty"
         android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_12"
         android:visibility="gone"
