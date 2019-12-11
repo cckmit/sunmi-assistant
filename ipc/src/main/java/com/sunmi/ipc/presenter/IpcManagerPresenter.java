@@ -222,6 +222,7 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
             }
         } else {
             item.setRightText(context.getString(R.string.str_coming_soon));
+            item.setTagImageResId(-1);
             item.setEnabled(false);
         }
         return item;

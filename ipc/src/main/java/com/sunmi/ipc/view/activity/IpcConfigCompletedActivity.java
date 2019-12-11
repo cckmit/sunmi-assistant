@@ -1,5 +1,6 @@
 package com.sunmi.ipc.view.activity;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.StringRes;

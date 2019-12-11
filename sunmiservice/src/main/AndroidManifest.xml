@@ -49,6 +49,7 @@
         <activity
             android:name=".cloud.WebViewCashServiceActivity_"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="stateHidden|adjustPan" />
     </application>
 
