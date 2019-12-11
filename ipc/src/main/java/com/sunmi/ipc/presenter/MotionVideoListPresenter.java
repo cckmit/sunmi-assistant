@@ -52,6 +52,11 @@ public class MotionVideoListPresenter extends BasePresenter<MotionVideoListContr
     }
 
     @Override
+    public Calendar getCurrent() {
+        return mCurrent;
+    }
+
+    @Override
     public void loadTimeSlots(boolean openCalendar) {
         Calendar today = Calendar.getInstance();
         today.set(Calendar.HOUR_OF_DAY, 0);

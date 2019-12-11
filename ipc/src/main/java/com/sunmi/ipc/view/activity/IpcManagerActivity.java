@@ -807,7 +807,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                             }
                             break;
                         case IpcConstants.IPC_MANAGE_TYPE_DETECT:
-                            MotionVideoListActivity_.intent(context).deviceId(device.getId()).deviceModel(device.getModel()).start();
+                            MotionVideoListActivity_.intent(context).device(device).start();
                             break;
                         default:
                             break;

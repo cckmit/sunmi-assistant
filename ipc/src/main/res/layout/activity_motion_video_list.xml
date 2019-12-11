@@ -77,9 +77,9 @@
     <sunmi.common.view.DropdownMenuNew
         android:id="@+id/dm_motion_source"
         android:layout_width="0dp"
-        app:dm_menuIndex="3"
         android:layout_height="@dimen/dp_44"
         android:background="@color/c_white"
+        app:dm_menuIndex="3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/dm_motion_date"
@@ -101,7 +101,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
-        app:titleText="@string/cash_video_list"
+        app:rightText="@string/str_setting"
+        app:titleText="@string/str_motion_detection"
         app:titleTextColor="@color/c_black" />
 
 </android.support.constraint.ConstraintLayout>
