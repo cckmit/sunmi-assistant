@@ -40,7 +40,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_14"
         android:layout_marginTop="@dimen/dp_16"
-        android:text="17:19:30-17:19:54"
         android:textColor="@color/text_main"
         android:textSize="@dimen/sp_16"
         android:textStyle="bold"
@@ -96,7 +95,8 @@
             android:layout_toEndOf="@id/tv_amount_text"
             android:textColor="@color/text_main"
             android:textSize="@dimen/sp_12"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:ignore="RelativeOverlap" />
 
         <TextView
             android:id="@+id/tv_order_num_text"
