@@ -19,6 +19,7 @@ import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.MotionVideoListContract;
 import com.sunmi.ipc.model.MotionVideo;
 import com.sunmi.ipc.presenter.MotionVideoListPresenter;
+import com.sunmi.ipc.view.activity.setting.MDSettingActivity_;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -37,6 +38,7 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.SimpleArrayAdapter;
 import sunmi.common.model.FilterItem;
+import sunmi.common.model.SunmiDevice;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.GlideRoundTransform;
 import sunmi.common.utils.NetworkUtils;
@@ -77,9 +79,7 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
     View layoutEmpty;
 
     @Extra
-    int deviceId;
-    @Extra
-    String deviceModel;
+    SunmiDevice device;
 
     private DropdownAdapterNew mFilterSourceAdapter;
     private SimpleArrayAdapter<MotionVideo> mAdapter;
@@ -92,8 +92,10 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        mPresenter = new MotionVideoListPresenter(deviceId);
+        mPresenter = new MotionVideoListPresenter(device.getId());
         mPresenter.attachView(this);
+        tbTitle.getRightText().setOnClickListener(v ->
+                MDSettingActivity_.intent(this).mDevice(device).start());
         initResource();
         initFilters();
         initRefresh();
@@ -114,7 +116,10 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
 
     private void initFilters() {
         dmFilterDateTitle.setText(DateTimeUtils.formatDateTime(new Date()));
-        dmFilterDate.setOnClickListener(v -> openCalendar());
+        dmFilterDate.setOnClickListener(v -> {
+            dmFilterSource.dismiss(true);
+            openCalendar();
+        });
 
         mFilterSourceAdapter = new DropdownAdapterNew(this);
         mFilterSourceAdapter.setOnItemClickListener((adapter, model, position) ->
@@ -172,6 +177,7 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
                     .setCancelButton(R.string.sm_cancel)
                     .setOkButton(R.string.str_confirm, (dialog, which) -> {
                         if (calendarSelected != null) {
+                            dmFilterDateTitle.setText(DateTimeUtils.formatDateTime(calendarSelected.getTime()));
                             mPresenter.load(calendarSelected);
                         }
                     }).create();
@@ -194,6 +200,7 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
                 .setPoint(selected)
                 .build();
         calendarView = new VerticalCalendar(this, config);
+        calendarView.setSelected(mPresenter.getCurrent().getTimeInMillis());
         calendarView.setOnCalendarSelectListener(date -> calendarSelected = date);
         if (open) {
             hideLoadingDialog();
@@ -259,8 +266,7 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
         public Adapter() {
             setOnItemClickListener((holder, model, position) ->
                     MotionVideoPlayActivity_.intent(holder.getContext())
-                            .deviceId(deviceId)
-                            .deviceModel(deviceModel)
+                            .device(device)
                             .motionVideo(model)
                             .start());
         }

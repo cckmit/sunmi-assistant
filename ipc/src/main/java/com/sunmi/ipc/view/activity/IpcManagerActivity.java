@@ -28,7 +28,6 @@ import com.sunmi.ipc.cash.CashVideoOverviewActivity_;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.IpcManagerContract;
 import com.sunmi.ipc.model.IpcManageBean;
-import com.sunmi.ipc.view.activity.MotionVideoListActivity_;
 import com.sunmi.ipc.presenter.IpcManagerPresenter;
 import com.sunmi.ipc.service.P2pService;
 import com.sunmi.ipc.utils.IOTCClient;
@@ -799,7 +798,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                             }
                             break;
                         case IpcConstants.IPC_MANAGE_TYPE_DETECT:
-                            MotionVideoListActivity_.intent(context).deviceId(device.getId()).deviceModel(device.getModel()).start();
+                            MotionVideoListActivity_.intent(context).device(device).start();
                             break;
                         default:
                             break;
