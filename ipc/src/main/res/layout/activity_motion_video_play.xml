@@ -22,18 +22,44 @@
         app:titleText="@string/str_motion_detection"
         app:titleTextColor="@color/text_main" />
 
+    <View
+        android:id="@+id/player_mask"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/c_black"
+        app:layout_constraintBottom_toBottomOf="@+id/player_video"
+        app:layout_constraintTop_toTopOf="@+id/player_video" />
+
     <sunmi.common.utils.IVideoPlayer
         android:id="@+id/player_video"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/c_black"
-        android:visibility="visible"
+        android:visibility="invisible"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="4:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_bar"
         app:layout_constraintVertical_bias="0" />
+
+    <LinearLayout
+        android:id="@+id/layout_landscape_top"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_64"
+        android:animateLayoutChanges="true"
+        android:background="@mipmap/bg_video_controller_top"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="@dimen/dp_64"
+            android:layout_height="match_parent"
+            android:scaleType="center"
+            android:src="@drawable/ic_back_light_shadow" />
+
+    </LinearLayout>
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/layout_control_panel"
@@ -97,10 +123,10 @@
         android:id="@+id/tv_date_tip"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_34"
+        android:background="@color/bg_common"
         android:gravity="center_vertical"
         android:paddingStart="@dimen/dp_20"
         android:paddingEnd="@dimen/dp_20"
-        android:background="@color/bg_common"
         android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_12"
         app:layout_constraintTop_toBottomOf="@+id/player_video" />

@@ -7,7 +7,6 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
@@ -66,6 +65,8 @@ public class MotionVideoPlayActivity extends BaseActivity implements
     @ViewById(resName = "player_video")
     IVideoPlayer player;
 
+    @ViewById(resName = "layout_landscape_top")
+    View layoutTop;
     @ViewById(resName = "ib_play")
     ImageButton ibPause;
     @ViewById(resName = "sb_bar")
@@ -192,18 +193,18 @@ public class MotionVideoPlayActivity extends BaseActivity implements
     private void switchOrientation(int orientation) {
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            layoutTop.setVisibility(View.VISIBLE);
             tbTitle.setVisibility(View.GONE);
             ivFullScreen.setVisibility(View.GONE);
             tvDateTip.setVisibility(View.GONE);
             rvList.setVisibility(View.GONE);
-            clContent.setBackgroundColor(ContextCompat.getColor(this, R.color.c_black));
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            layoutTop.setVisibility(View.GONE);
             tbTitle.setVisibility(View.VISIBLE);
             ivFullScreen.setVisibility(View.VISIBLE);
             tvDateTip.setVisibility(View.VISIBLE);
             rvList.setVisibility(View.VISIBLE);
-            clContent.setBackgroundColor(ContextCompat.getColor(this, R.color.c_white));
         }
     }
 
@@ -234,6 +235,11 @@ public class MotionVideoPlayActivity extends BaseActivity implements
 
     private boolean isLandscape() {
         return getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+    }
+
+    @Click(resName = "iv_back")
+    void back() {
+        onBackPressed();
     }
 
     /**
@@ -313,6 +319,7 @@ public class MotionVideoPlayActivity extends BaseActivity implements
     @Override
     public void onStartPlay() {
         hideLoading();
+        player.setVisibility(View.VISIBLE);
         isPaused = false;
         isComplete = false;
         mHandler.post(mTask);

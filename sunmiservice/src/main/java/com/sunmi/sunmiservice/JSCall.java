@@ -1,5 +1,8 @@
 package com.sunmi.sunmiservice;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
@@ -175,8 +178,21 @@ public class JSCall {
     }
 
     @JavascriptInterface
+    public void lastPageBack(String arg) {
+        try {
+            JSONObject jsonObject = new JSONObject(arg);
+            int result = jsonObject.getInt("subscribeResult");
+            if (result == 1) {
+                BaseNotification.newInstance().postNotificationName(CommonNotifications.cloudStorageChange);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        context.finish();
+    }
+
+    @JavascriptInterface
     public void lastPageBack() {
-        BaseNotification.newInstance().postNotificationName(CommonNotifications.cloudStorageChange);
         context.finish();
     }
 
@@ -201,7 +217,7 @@ public class JSCall {
     }
 
     @JavascriptInterface
-    public void jumpPage(String arg){
+    public void jumpPage(String arg) {
         try {
             JSONObject jsonObject = new JSONObject(arg);
             final String url = jsonObject.getString("url");
@@ -210,8 +226,11 @@ public class JSCall {
                 public void run() {
                     if (TextUtils.equals(url, SsConstants.JS_BIND_SS)) {
                         Router.withApi(IpcApi.class).goToIpcStartConfig(context, CommonConstants.TYPE_IPC_SS);
-                    } else if (TextUtils.equals(url, SsConstants.JS_BIND_SAAS)){
+                    } else if (TextUtils.equals(url, SsConstants.JS_BIND_SAAS)) {
                         Router.withApi(AppApi.class).gotoImportOrderPreview(context);
+                    } else if (TextUtils.equals(url, SsConstants.JS_MALL_ORDER)) {
+                        WebViewSunmiMallActivity_.intent(context).mUrl(SunmiServiceConfig.SUNMI_MALL_HOST
+                                + "my-order?channel=2&subchannel=4").start();
                     }
                 }
             });
@@ -221,8 +240,25 @@ public class JSCall {
     }
 
     @JavascriptInterface
-    public void cashVideoSubscribe(){
+    public void cashVideoSubscribe() {
         BaseNotification.newInstance().postNotificationName(CommonNotifications.cashVideoSubscribe);
+        context.finish();
+    }
+
+    @JavascriptInterface
+    public void copy(String arg) {
+        try {
+            JSONObject jsonObject = new JSONObject(arg);
+            String content = jsonObject.getString("content");
+            if (content != null) {
+                ClipboardManager cm = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clipData = ClipData.newPlainText("content", content);
+                cm.setPrimaryClip(clipData);
+                context.shortTip(R.string.tip_copy_success);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void launchMiniProgram(String userName, String path, String miniProgramType) {

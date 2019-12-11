@@ -34,39 +34,27 @@
             android:focusableInTouchMode="true">
 
             <RelativeLayout
-                android:id="@+id/rl_video_play"
+                android:id="@+id/rl_video"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="@color/c_black">
 
-                <RelativeLayout
-                    android:id="@+id/rl_video"
-                    android:layout_width="wrap_content"
+                <SurfaceView
+                    android:id="@+id/vv_ipc"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/c_black">
+                    android:layout_centerInParent="true" />
 
-                    <SurfaceView
-                        android:id="@+id/vv_ipc"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true" />
+                <!--<include layout="@layout/include_video_controller_landscape" />-->
+                <include layout="@layout/include_video_control_panel" />
 
-                    <include layout="@layout/include_video_controller_landscape" />
-
-                </RelativeLayout>
-
-                <!--<include-->
-                <!--android:id="@+id/rl_portrait_video_controller"-->
-                <!--layout="@layout/include_video_controller_bar"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="@dimen/dp_42"-->
-                <!--android:layout_below="@+id/rl_video" />-->
             </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/ll_portrait_controller_bar"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_56"
-                android:layout_below="@+id/rl_video_play"
+                android:layout_below="@+id/rl_video"
                 android:background="@color/c_black"
                 android:orientation="horizontal"
                 android:paddingStart="@dimen/dp_8"
@@ -139,32 +127,6 @@
                     android:scaleType="center"
                     android:src="@mipmap/ic_record_disable" />
             </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_loading"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignTop="@+id/rl_video_play"
-                android:layout_alignBottom="@+id/rl_video_play"
-                android:background="@color/black_60"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <ProgressBar
-                    android:layout_width="@dimen/dp_32"
-                    android:layout_height="@dimen/dp_32"
-                    android:indeterminate="false"
-                    android:indeterminateDrawable="@drawable/loading_common_white" />
-            </LinearLayout>
-
-            <include
-                layout="@layout/include_play_fail"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignTop="@+id/rl_video_play"
-                android:layout_alignBottom="@+id/rl_video_play"
-                android:layout_marginTop="@dimen/dp_45" />
 
             <sunmi.common.view.SmRecyclerView
                 android:id="@+id/rv_manager"

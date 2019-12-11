@@ -156,7 +156,7 @@ public class CashOrderResp {
         @SerializedName("name")
         private String name;
         @SerializedName("quantity")
-        private int quantity;
+        private double quantity;
 
         public String getName() {
             return name;
@@ -166,11 +166,11 @@ public class CashOrderResp {
             this.name = name;
         }
 
-        public int getQuantity() {
+        public double getQuantity() {
             return quantity;
         }
 
-        public void setQuantity(int quantity) {
+        public void setQuantity(double quantity) {
             this.quantity = quantity;
         }
     }

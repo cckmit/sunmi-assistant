@@ -40,6 +40,7 @@ import sunmi.common.base.recycle.SimpleArrayAdapter;
 import sunmi.common.model.FilterItem;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.utils.DateTimeUtils;
+import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.GlideRoundTransform;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -89,11 +90,14 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
     private VerticalCalendar calendarView;
     private Calendar calendarSelected;
 
+    private boolean isSs;
+
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         mPresenter = new MotionVideoListPresenter(device.getId());
         mPresenter.attachView(this);
+        isSs = DeviceTypeUtils.getInstance().isSS1(device.getModel());
         tbTitle.getRightText().setOnClickListener(v ->
                 MDSettingActivity_.intent(this).mDevice(device).start());
         initResource();
@@ -280,7 +284,15 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
         public void setupView(@NonNull BaseViewHolder<MotionVideo> holder, MotionVideo model, int position) {
             TextView title = holder.getView(R.id.item_motion_title);
             TextView content = holder.getView(R.id.item_motion_content);
-            ImageView snapshot = holder.getView(R.id.item_motion_image);
+            ImageView snapshot;
+            if (isSs) {
+                snapshot = holder.getView(R.id.item_motion_image_ss);
+                holder.getView(R.id.item_motion_image_fs).setVisibility(View.GONE);
+            } else {
+                snapshot = holder.getView(R.id.item_motion_image_fs);
+                holder.getView(R.id.item_motion_image_ss).setVisibility(View.GONE);
+            }
+            snapshot.setVisibility(View.VISIBLE);
             title.setText(DateTimeUtils.secondToDate(model.getDetectTime(), "HH:mm:ss"));
             String type = mSourceName.get(model.getSource());
             content.setText(type == null ? "" : type);

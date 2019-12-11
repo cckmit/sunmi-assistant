@@ -39,19 +39,16 @@ public class IVideoPlayer extends RelativeLayout {
 
     //    private AudioManager audioManager;
 //    private AudioFocusHelper audioFocusHelper;
-    IMediaPlayer.OnCompletionListener completionListener = new IMediaPlayer.OnCompletionListener() {
-        @Override
-        public void onCompletion(IMediaPlayer iMediaPlayer) {
-            iMediaPlayer.setDisplay(null);
-            if (currentMediaPlayer == mediaPlayer) {
-                initPlayer(false);
-                startCachePlayer();
-                return;
-            }
-            if (currentMediaPlayer == cacheMediaPlayer) {
-                initCachePlayer(false);
-                startPlayer();
-            }
+    IMediaPlayer.OnCompletionListener completionListener = iMediaPlayer -> {
+        iMediaPlayer.setDisplay(null);
+        if (currentMediaPlayer == mediaPlayer) {
+            initPlayer(false);
+            startCachePlayer();
+            return;
+        }
+        if (currentMediaPlayer == cacheMediaPlayer) {
+            initCachePlayer(false);
+            startPlayer();
         }
     };
     IMediaPlayer.OnErrorListener errorListener = new IMediaPlayer.OnErrorListener() {
@@ -179,24 +176,18 @@ public class IVideoPlayer extends RelativeLayout {
         mediaPlayer.setOnCompletionListener(completionListener);
         mediaPlayer.setOnErrorListener(errorListener);
         if (mediaPlayer != null)
-            mediaPlayer.setOnPreparedListener(new IMediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(IMediaPlayer iMediaPlayer) {
-                    if (isFirstVideo) {
-                        startPlayer();
-                        if (videoPlayListener != null) {
-                            videoPlayListener.onStartPlay();
-                        }
-                    } else {
-                        mediaPlayer.start();
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (mediaPlayer != null)
-                                    mediaPlayer.pause();
-                            }
-                        }, 100);
+            mediaPlayer.setOnPreparedListener(iMediaPlayer -> {
+                if (isFirstVideo) {
+                    startPlayer();
+                    if (videoPlayListener != null) {
+                        videoPlayListener.onStartPlay();
                     }
+                } else {
+                    mediaPlayer.start();
+                    new Handler().postDelayed(() -> {
+                        if (mediaPlayer != null)
+                            mediaPlayer.pause();
+                    }, 100);
                 }
             });
     }
@@ -225,19 +216,13 @@ public class IVideoPlayer extends RelativeLayout {
         cacheMediaPlayer.prepareAsync();
         cacheMediaPlayer.setOnCompletionListener(completionListener);
         cacheMediaPlayer.setOnErrorListener(errorListener);
-        cacheMediaPlayer.setOnPreparedListener(new IMediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(IMediaPlayer iMediaPlayer) {
-                cacheMediaPlayer.start();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (cacheMediaPlayer != null) {
-                            cacheMediaPlayer.pause();
-                        }
-                    }
-                }, 100);
-            }
+        cacheMediaPlayer.setOnPreparedListener(iMediaPlayer -> {
+            cacheMediaPlayer.start();
+            new Handler().postDelayed(() -> {
+                if (cacheMediaPlayer != null) {
+                    cacheMediaPlayer.pause();
+                }
+            }, 100);
         });
     }
 
@@ -246,8 +231,7 @@ public class IVideoPlayer extends RelativeLayout {
             currentMediaPlayer = mediaPlayer;
             mediaPlayer.start();
 //            audioFocusHelper.requestFocus();
-//            LayoutParams lp1 = new LayoutParams(LayoutParams.MATCH_PARENT,
-//                    LayoutParams.MATCH_PARENT);
+//            LayoutParams lp1 = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 //            surfaceView.setLayoutParams(lp1);
             surfaceView.setVisibility(VISIBLE);
             new Handler().postDelayed(new Runnable() {
@@ -266,8 +250,7 @@ public class IVideoPlayer extends RelativeLayout {
             currentMediaPlayer = cacheMediaPlayer;
             cacheMediaPlayer.start();
 //            audioFocusHelper.requestFocus();
-//            LayoutParams lp1 = new LayoutParams(LayoutParams.MATCH_PARENT,
-//                    LayoutParams.MATCH_PARENT);
+//            LayoutParams lp1 = new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT);
 //            cacheSurfaceView.setLayoutParams(lp1);
             cacheSurfaceView.setVisibility(VISIBLE);
             new Handler().postDelayed(new Runnable() {
