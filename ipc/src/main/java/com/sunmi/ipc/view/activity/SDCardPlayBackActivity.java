@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
@@ -89,6 +88,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     private static final int PLAY_FAIL_STATUS_NO_SD = 2;
     private static final int PLAY_FAIL_STATUS_SD_EXCEPTION = 3;
     private static final int PLAY_FAIL_STATUS_NET_EXCEPTION = 4;
+    private static final int PLAY_FAIL_STATUS_GET_SD_TIMEOUT = 5;
 
     private final static long SECONDS_IN_ONE_DAY = 24 * 60 * 60;
 
@@ -178,6 +178,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
 
     private P2pService p2pService;
     private boolean isBind;
+    private boolean hasGetSdcardStatus;
 
     private ServiceConnection conn = new ServiceConnection() {
         @Override
@@ -185,9 +186,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
             isBind = true;
             P2pService.MyBinder myBinder = (P2pService.MyBinder) binder;
             p2pService = myBinder.getService();
-            IPCCall.getInstance().getSdStatus(context, device.getModel(), device.getDeviceid());
-            mPresenter.getPlaybackListForCalendar(getIOTCClient(),
-                    startTimeCurrentDate - SECONDS_IN_ONE_DAY * 730, endTimeCurrentDate);
+            getSdcardStatus();
         }
 
         @Override
@@ -195,6 +194,26 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
             isBind = false;
         }
     };
+
+    private void getSdcardStatus() {
+        new CountDownTimer(10_000, 2_000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                if (!hasGetSdcardStatus) {
+                    hasGetSdcardStatus = true;
+                    showPlayFail(PLAY_FAIL_STATUS_GET_SD_TIMEOUT, R.string.network_error);
+                }
+            }
+        }.start();
+        IPCCall.getInstance().getSdStatus(context, device.getModel(), device.getDeviceid());
+        mPresenter.getPlaybackListForCalendar(getIOTCClient(),
+                startTimeCurrentDate - SECONDS_IN_ONE_DAY * 730, endTimeCurrentDate);
+    }
 
     @AfterViews
     void init() {
@@ -572,6 +591,8 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
         } else if (id == CommonNotifications.cloudStorageOpened) {
             cloudStorageServiceOpened();
         } else if (id == OpcodeConstants.getSdStatus) {
+            if (hasGetSdcardStatus) return;
+            hasGetSdcardStatus = true;
             ResponseBean res = (ResponseBean) args[0];
             switch (getSdcardStatus(res)) {
                 case 2:

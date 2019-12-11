@@ -128,7 +128,8 @@
     <string name="str_cloud_manage">云存储服务管理</string>
     <string name="str_remaining_validity_period">剩余有效期：%s</string>
     <string name="ipc_device_name">设备名称：%s</string>
-    <string name="ipc_sn">SN：%s</string>
+    <string name="str_dev_sn">SN：%s</string>
+    <string name="str_dev_mac">MAC：%s</string>
     <string name="str_period">%d天%d小时</string>
     <string name="str_cloud_storage">云存储</string>
     <string name="str_cloud_storage_service">云存储服务</string>

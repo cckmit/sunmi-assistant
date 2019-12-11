@@ -195,7 +195,7 @@
             android:layout_marginTop="@dimen/dp_2"
             android:layout_marginEnd="@dimen/dp_24"
             android:singleLine="true"
-            android:text="@string/ipc_sn"
+            android:text="@string/str_dev_sn"
             android:textColor="@color/text_caption"
             android:textSize="@dimen/sp_12"
             app:layout_constraintEnd_toEndOf="parent"
