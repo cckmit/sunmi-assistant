@@ -193,6 +193,10 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     private int mWholeDayPlayPageNum;
     private CashAdapter adapter;
+    /**
+     * 视频订单详情
+     */
+    private List<CashOrderResp.ProductListBean> productList = new ArrayList<>();
     private CashVideoPopupWindow popupWindow;
     private float posX, posY, curPosX;
     private VolumeHelper volumeHelper = null;
@@ -268,7 +272,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         if (isWholeDayVideoPlay) {
             //初始化一天快放
             hasMore = true;
-            isPlayLoop = true;
+//            isPlayLoop = true;
             loadMoreVideoList();
         } else {
             playIndex = videoListPosition;
@@ -369,7 +373,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     @Override
     protected void onResume() {
         super.onResume();
-        pausedVideo(false);
+//        pausedVideo(false);
     }
 
     @Override
@@ -622,10 +626,11 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             requestCancelTag();
             return;
         }
-        new InputDialog.Builder(this)
+        pausedVideo(true);
+        InputDialog inputDialog = new InputDialog.Builder(this)
                 .setTitle(R.string.cash_input_title_tag_type)
                 .setHint(R.string.cash_input_title_tag_tip)
-                .setCancelButton(R.string.sm_cancel)
+                .setCancelButton(R.string.sm_cancel, (dialog, which) -> pausedVideo(false))
                 .setConfirmButton(R.string.str_confirm, (dialog, input) -> {
                     if (TextUtils.isEmpty(input)) {
                         shortTip(R.string.cash_input_title_tag_type);
@@ -635,9 +640,12 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
                         shortTip(R.string.ipc_face_name_length_tip);
                         return;
                     }
+                    pausedVideo(false);
                     dialog.dismiss();
                     requestAddTag(input);
-                }).create().show();
+                }).create();
+        inputDialog.setCancelable(false);
+        inputDialog.showWithOutTouchable(false);
     }
 
     /**
@@ -732,6 +740,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         llPlayFail.setVisibility(View.VISIBLE);
         rlOrderInfo.setVisibility(View.GONE);
         tvEmpty.setVisibility(View.VISIBLE);
+        productList.clear();
     }
 
     /**
@@ -910,19 +919,26 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         }
     }
 
+    @SuppressLint("StringFormatInvalid")
     @Override
     public void getOrderInfoSuccess(CashOrderResp resp) {
+        productList = resp.getProductList();
         tvEmpty.setVisibility(View.GONE);
         tvAmount.setText(String.format("¥%s", resp.getAmount()));
         tvOrderNo.setText(resp.getOrderNo());
         tvTotalCommodity.setText(getString(R.string.cash_video_total_commodity, resp.getTotalQuantity()));
         tvTradeType.setText(resp.getPurchaseType());
-        adapter = new CashAdapter(context, resp.getProductList());
+        adapter = new CashAdapter(context, productList);
         recyclerView.setAdapter(adapter);
     }
 
     @Override
     public void getOrderInfoFail(int code, String msg) {
+        productList.clear();
+        tvAmount.setText("");
+        tvOrderNo.setText("");
+        tvTotalCommodity.setText("");
+        tvTradeType.setText("");
         tvEmpty.setVisibility(View.VISIBLE);
         tvEmpty.setText(R.string.cash_empty_data);
     }
@@ -964,7 +980,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         device.setId(videoList.get(playIndex).getDeviceId());
         device.setDeviceid(videoList.get(playIndex).getDeviceSn());
         device.setName(videoList.get(playIndex).getDeviceName());
-        device.setModel("ss1");
+        device.setModel("SS1");
         long cashVideoStartTime = videoList.get(playIndex).getPurchaseTime();
         CloudPlaybackActivity_.intent(context)
                 .device(device)

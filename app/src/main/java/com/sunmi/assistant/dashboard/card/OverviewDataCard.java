@@ -341,8 +341,8 @@ public class OverviewDataCard extends BaseRefreshCard<OverviewDataCard.Model, Ob
         private String mNum100Million;
         private String mNum10Thousands;
 
-        float sales;
-        float lastSales;
+        double sales;
+        double lastSales;
         int volume;
         int lastVolume;
         int customer;

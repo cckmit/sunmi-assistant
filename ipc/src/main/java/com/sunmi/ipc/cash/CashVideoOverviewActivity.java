@@ -331,8 +331,8 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         CashVideoServiceBean bean = beans.get(0);
         ImageUtils.loadImage(context, bean.getImgUrl(), civIpc, false, -1);
         tvIpcName.setText(bean.getDeviceName());
-        tvIpcSn.setText(getString(R.string.ipc_sn, bean.getDeviceSn()));
-        deviceCashCount = bean.getTotalCount();
+        tvIpcSn.setText(getString(R.string.str_dev_sn, bean.getDeviceSn()));
+        deviceCashCount =bean.getTotalCount();
         tvCountCash.setText(String.valueOf(deviceCashCount));
         tvCountAbnormal.setText(String.valueOf(bean.getAbnormalVideoCount()));
     }

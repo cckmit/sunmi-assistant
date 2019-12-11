@@ -149,6 +149,7 @@ public class MDSettingActivity extends BaseActivity {
 
     private boolean unclickable() {
         if (mDetectionConfig == null) {
+            shortTip(R.string.motion_detection_get_config_error);
             return true;
         }
         if (!NetworkUtils.isNetworkAvailable(context)) {

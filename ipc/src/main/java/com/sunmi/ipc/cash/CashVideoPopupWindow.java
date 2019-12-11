@@ -70,8 +70,8 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
         //显示位置
         showAsDropDown(topToPopupWindowView);
         init();
-
         RecyclerView itemRecyclerView = viewLayout.findViewById(R.id.item_cash_recycler_view);
+        itemRecyclerView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
 
         if (mList.size() > SHOP_ITEM_SIZE) {
             itemRecyclerView.getLayoutParams().height =
@@ -174,15 +174,20 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
                 tvTag.setText(res.getDescription());
                 tvTag.setVisibility(View.VISIBLE);
             }
-            if (holder.getAdapterPosition() == 0 && mList.size() > 0) {
-                tvLineTop.setVisibility(View.INVISIBLE);
-                tvLineBottom.setVisibility(View.VISIBLE);
-            } else if (holder.getAdapterPosition() == mList.size() - 1) {
-                tvLineTop.setVisibility(View.VISIBLE);
-                tvLineBottom.setVisibility(View.INVISIBLE);
+            if (mList.size() > 1) {
+                if (holder.getAdapterPosition() == mList.size() - 1) {
+                    tvLineTop.setVisibility(View.VISIBLE);
+                    tvLineBottom.setVisibility(View.INVISIBLE);
+                } else if (holder.getAdapterPosition() == 0) {
+                    tvLineTop.setVisibility(View.INVISIBLE);
+                    tvLineBottom.setVisibility(View.VISIBLE);
+                } else {
+                    tvLineTop.setVisibility(View.VISIBLE);
+                    tvLineBottom.setVisibility(View.VISIBLE);
+                }
             } else {
-                tvLineTop.setVisibility(View.VISIBLE);
-                tvLineBottom.setVisibility(View.VISIBLE);
+                tvLineTop.setVisibility(View.INVISIBLE);
+                tvLineBottom.setVisibility(View.INVISIBLE);
             }
             holder.itemView.setOnClickListener(v -> {
                 //获取当前的点击的视频位置

@@ -4,10 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -99,8 +97,6 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     RelativeLayout rlRecord;
     @ViewById(resName = "iv_screenshot")
     ImageView ivScreenshot;//截图
-    @ViewById(resName = "iv_live")
-    ImageView ivLive;//直播
     @ViewById(resName = "iv_pause")
     ImageView ivPlay;//开始播放
     @ViewById(resName = "iv_full_screen")
@@ -194,7 +190,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         llNoService.setOnTouchListener((v, event) -> true);
         rlLoading.setOnTouchListener((v, event) -> true);
         llPlayFail.setOnTouchListener((v, event) -> true);
-        handler.postDelayed(this::initTimeLine, 200);
+        initTimeLine();
     }
 
     private void setCalendarEnable(boolean enable) {
@@ -584,12 +580,6 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         hideVideoLoading();
     }
 
-    private void setTextViewClickable(TextView textView, boolean clickable) {
-        textView.setClickable(clickable);
-        textView.setTextColor(clickable ? ContextCompat.getColor(context, R.color.c_white)
-                : ContextCompat.getColor(context, R.color.white_40a));
-    }
-
     private boolean isPortrait() {
         return getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
     }
@@ -747,10 +737,10 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @UiThread
     void moveTo() {
-        timeLine.autoMove();
-        if (isVideoLess1Minute) {
+        if (!isVideoLess1Minute) {
+            timeLine.autoMove();
+        } else {
             isVideoLess1Minute = false;
-            switch2Playback(timeLine.getCurrentInterval());
         }
     }
 
@@ -771,7 +761,8 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     }
 
     //获取视频跳转播放的currentItemPosition
-    private void videoSkipScrollPosition(long currentTimeMinutes) {
+    @UiThread
+    void timeLineScrollTo(long currentTimeMinutes) {
         timeLine.moveToTime(currentTimeMinutes);
     }
 
@@ -800,28 +791,26 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         for (int i = 0; i < apSize; i++) {
             slotStartTime = timeSlotsInDay.get(i).getStartTime();
             slotEndTime = timeSlotsInDay.get(i).getEndTime();
-
             if (currTime <= slotStartTime) {
-                isVideoLess1Minute = slotEndTime - slotStartTime <= 60;
-                if (slotEndTime <= slotStartTime + tenMinutes) {
-                    getVideoList(slotStartTime, slotEndTime);
-                } else {
-                    getVideoList(slotStartTime, slotStartTime + tenMinutes);
-                }
-                scrollCurrentPlayBackTime(slotStartTime);
+                getVideoList(slotStartTime, slotEndTime);
                 return;
             } else if (currTime < slotEndTime) {
-                isVideoLess1Minute = slotEndTime - slotStartTime <= 60;
-                if (slotEndTime <= currTime + tenMinutes) {
-                    getVideoList(currTime, slotEndTime);
-                } else {
-                    getVideoList(currTime, currTime + tenMinutes);
-                }
-                scrollCurrentPlayBackTime(currTime);
+                getVideoList(currTime, slotEndTime);
                 return;
             }
         }
         playOver();
+    }
+
+    /**
+     * 云端回放
+     */
+    void getVideoList(long start, long end) {
+        lastVideoEndTime = end;
+        isVideoLess1Minute = end - start < 60;
+        mPresenter.getCloudVideoList(device.getId(), start,
+                end <= start + tenMinutes ? end : start + tenMinutes);
+        scrollCurrentPlayBackTime(isVideoLess1Minute ? end : start);
     }
 
     private void playOver() {
@@ -832,37 +821,8 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         showPlayFail(getString(R.string.tip_video_played_over));
     }
 
-    /**
-     * 切到云端回放
-     */
-    void getVideoList(long start, long end) {
-        lastVideoEndTime = end;
-        mPresenter.getCloudVideoList(device.getId(), start, end);
-    }
-
     private void removeCallbacks() {
         handler.removeCallbacksAndMessages(null);
-    }
-
-    private void switch2Playback(long currTime) {
-        int availableVideoSize = timeSlotsInDay.size();
-        for (int i = 0; i < availableVideoSize; i++) {
-            VideoTimeSlotBean bean = timeSlotsInDay.get(i);
-            long start = bean.getStartTime();
-            long end = bean.getEndTime();
-            if (end - currTime < 60 && currTime >= start && currTime < end) {
-                if (i != availableVideoSize - 1) {
-                    final int delayMillis = (int) end - currTime < 0 ? 1 : (int) (end - currTime);
-                    final int finalI = i;
-                    handler.postDelayed(() -> {
-                        getVideoList(timeSlotsInDay.get(finalI + 1).getStartTime(),
-                                timeSlotsInDay.get(finalI + 1).getStartTime() + tenMinutes);
-                        videoSkipScrollPosition(timeSlotsInDay.get(finalI + 1).getStartTime()); //偏移跳转
-                    }, delayMillis * 1000);
-                    break;
-                }
-            }
-        }
     }
 
     //初始化时间轴
@@ -880,7 +840,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
      */
     private void startDelayPlay(long timeStamp) {
         cancelDelayPlay();
-        timeLineScrollTimer = new CountDownTimer(500, 100) {
+        timeLineScrollTimer = new CountDownTimer(600, 100) {
             @Override
             public void onTick(long millisUntilFinished) {
 
@@ -923,8 +883,6 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         showTimeScroll(data.substring(11), isLeftScroll);//toast显示时间
     }
 
-    private Drawable drawableLeft, drawableRight;
-
     @UiThread
     void showTimeScroll(final String time, final boolean isLeft) {
         if (TextUtils.isEmpty(time)) {
@@ -932,17 +890,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         }
         tvTimeScroll.setVisibility(View.VISIBLE);
         tvTimeScroll.setText(time);
-        if (isLeft) {
-            if (drawableLeft == null) {
-                drawableLeft = ContextCompat.getDrawable(this, R.mipmap.ic_fast_forward);
-            }
-            tvTimeScroll.setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null);
-        } else {
-            if (drawableRight == null) {
-                drawableRight = ContextCompat.getDrawable(this, R.mipmap.ic_forward);
-            }
-            tvTimeScroll.setCompoundDrawablesWithIntrinsicBounds(drawableRight, null, null, null);
-        }
+        tvTimeScroll.setEnabled(isLeft);
     }
 
     @UiThread

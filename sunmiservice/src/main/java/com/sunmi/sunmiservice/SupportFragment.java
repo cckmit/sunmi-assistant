@@ -110,7 +110,7 @@ public class SupportFragment extends BaseFragment
         if (!checkNetwork() || isFastClick(500)) {
             return;
         }
-        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConfig.SERVICE_H5_URL + "cloudStorage?topPadding=").start();
+        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConfig.CLOUD_STORAGE_URL).start();
     }
 
     @Click(resName = "ll_after_sales")

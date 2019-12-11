@@ -1,12 +1,15 @@
 package com.sunmi.ipc.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
  * @author yinhui
  * @date 2019-12-09
  */
-public class MotionVideo {
+public class MotionVideo implements Parcelable {
     /**
      * id : 40
      * device_name : 绑定测试1
@@ -52,4 +55,41 @@ public class MotionVideo {
     public String getSnapshotAddress() {
         return snapshotAddress;
     }
+
+    protected MotionVideo(Parcel in) {
+        id = in.readInt();
+        deviceName = in.readString();
+        source = in.readInt();
+        detectTime = in.readInt();
+        cdnAddress = in.readString();
+        snapshotAddress = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(deviceName);
+        dest.writeInt(source);
+        dest.writeInt(detectTime);
+        dest.writeString(cdnAddress);
+        dest.writeString(snapshotAddress);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<MotionVideo> CREATOR = new Creator<MotionVideo>() {
+        @Override
+        public MotionVideo createFromParcel(Parcel in) {
+            return new MotionVideo(in);
+        }
+
+        @Override
+        public MotionVideo[] newArray(int size) {
+            return new MotionVideo[size];
+        }
+    };
+
 }

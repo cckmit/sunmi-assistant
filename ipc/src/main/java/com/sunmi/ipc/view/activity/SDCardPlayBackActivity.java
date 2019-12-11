@@ -7,12 +7,10 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.StringRes;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
@@ -72,7 +70,6 @@ import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
 import sunmi.common.utils.VolumeHelper;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.dialog.BottomDialog;
 
@@ -91,7 +88,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     private static final int PLAY_FAIL_STATUS_NO_SD = 2;
     private static final int PLAY_FAIL_STATUS_SD_EXCEPTION = 3;
     private static final int PLAY_FAIL_STATUS_NET_EXCEPTION = 4;
-//    showPlayFail("设备不在线，无法查看存储卡回放，推荐使用云回放");
+    private static final int PLAY_FAIL_STATUS_GET_SD_TIMEOUT = 5;
 
     private final static long SECONDS_IN_ONE_DAY = 24 * 60 * 60;
 
@@ -115,8 +112,6 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     RelativeLayout rlRecord;
     @ViewById(resName = "iv_screenshot")
     ImageView ivScreenshot;//截图
-    @ViewById(resName = "iv_live")
-    ImageView ivLive;//直播
     @ViewById(resName = "iv_pause")
     ImageView ivPlay;//开始播放
     @ViewById(resName = "iv_full_screen")
@@ -181,6 +176,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
 
     private P2pService p2pService;
     private boolean isBind;
+    private boolean hasGetSdcardStatus;
 
     private ServiceConnection conn = new ServiceConnection() {
         @Override
@@ -188,9 +184,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
             isBind = true;
             P2pService.MyBinder myBinder = (P2pService.MyBinder) binder;
             p2pService = myBinder.getService();
-            IPCCall.getInstance().getSdStatus(context, device.getModel(), device.getDeviceid());
-            mPresenter.getPlaybackListForCalendar(getIOTCClient(),
-                    startTimeCurrentDate - SECONDS_IN_ONE_DAY * 730, endTimeCurrentDate);
+            getSdcardStatus();
         }
 
         @Override
@@ -198,6 +192,26 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
             isBind = false;
         }
     };
+
+    private void getSdcardStatus() {
+        new CountDownTimer(10_000, 2_000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                if (!hasGetSdcardStatus) {
+                    hasGetSdcardStatus = true;
+                    showPlayFail(PLAY_FAIL_STATUS_GET_SD_TIMEOUT, R.string.network_error);
+                }
+            }
+        }.start();
+        IPCCall.getInstance().getSdStatus(context, device.getModel(), device.getDeviceid());
+        mPresenter.getPlaybackListForCalendar(getIOTCClient(),
+                startTimeCurrentDate - SECONDS_IN_ONE_DAY * 730, endTimeCurrentDate);
+    }
 
     @AfterViews
     void init() {
@@ -289,21 +303,17 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        LogCat.e(TAG, "666666 surfaceCreated");
         if (p2pService != null) {
-            LogCat.e(TAG, "666666 surfaceCreated 111111 ");
             p2pService.startDecode();
         }
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        LogCat.e(TAG, "666666 surfaceChanged");
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        LogCat.e(TAG, "666666 surfaceDestroyed");
     }
 
     /**
@@ -460,6 +470,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     }
 
     private void switchDay(long currentDay) {
+        switchSuccess = false;
         startTimeCurrentDate = currentDay;
         hidePlayFail();
         endTimeCurrentDate = startTimeCurrentDate + SECONDS_IN_ONE_DAY;
@@ -553,10 +564,10 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
 
     @Override
     public void onPlayFinished() {
-        playOver();
+        if (switchSuccess) {
+            playOver();
+        }
     }
-
-    private Drawable drawableLeft, drawableRight;
 
     @Override
     public int[] getUnStickNotificationId() {
@@ -578,6 +589,8 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
         } else if (id == CommonNotifications.cloudStorageOpened) {
             cloudStorageServiceOpened();
         } else if (id == OpcodeConstants.getSdStatus) {
+            if (hasGetSdcardStatus) return;
+            hasGetSdcardStatus = true;
             ResponseBean res = (ResponseBean) args[0];
             switch (getSdcardStatus(res)) {
                 case 2:
@@ -931,17 +944,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
         }
         tvTimeScroll.setVisibility(View.VISIBLE);
         tvTimeScroll.setText(time);
-        if (isLeft) {
-            if (drawableLeft == null) {
-                drawableLeft = ContextCompat.getDrawable(this, R.mipmap.ic_fast_forward);
-            }
-            tvTimeScroll.setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null);
-        } else {
-            if (drawableRight == null) {
-                drawableRight = ContextCompat.getDrawable(this, R.mipmap.ic_forward);
-            }
-            tvTimeScroll.setCompoundDrawablesWithIntrinsicBounds(drawableRight, null, null, null);
-        }
+        tvTimeScroll.setEnabled(isLeft);
     }
 
     @UiThread

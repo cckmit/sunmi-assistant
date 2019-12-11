@@ -56,7 +56,7 @@ public class CashDropdownTimeAdapter extends DropdownMenuNew.Adapter<DropdownTim
             return STATE_START_EMPTY;
         } else if (!customEndReady) {
             return STATE_END_EMPTY;
-        } else if (timeStartMinutes > timeEndMinutes) {
+        } else if (timeStartMinutes >= timeEndMinutes) {
             return STATE_RANGE_ERROR;
         }
         temp.setTimeInMillis(timestamp);

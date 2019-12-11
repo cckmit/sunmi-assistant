@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.MotionVideoListContract;
 import com.sunmi.ipc.model.MotionVideo;
 import com.sunmi.ipc.presenter.MotionVideoListPresenter;
+import com.sunmi.ipc.view.activity.setting.MDSettingActivity_;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -36,7 +38,10 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.SimpleArrayAdapter;
 import sunmi.common.model.FilterItem;
+import sunmi.common.model.SunmiDevice;
 import sunmi.common.utils.DateTimeUtils;
+import sunmi.common.utils.DeviceTypeUtils;
+import sunmi.common.utils.GlideRoundTransform;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
@@ -75,9 +80,7 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
     View layoutEmpty;
 
     @Extra
-    int deviceId;
-    @Extra
-    String deviceModel;
+    SunmiDevice device;
 
     private DropdownAdapterNew mFilterSourceAdapter;
     private SimpleArrayAdapter<MotionVideo> mAdapter;
@@ -87,11 +90,16 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
     private VerticalCalendar calendarView;
     private Calendar calendarSelected;
 
+    private boolean isSs;
+
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        mPresenter = new MotionVideoListPresenter(deviceId);
+        mPresenter = new MotionVideoListPresenter(device.getId());
         mPresenter.attachView(this);
+        isSs = DeviceTypeUtils.getInstance().isSS1(device.getModel());
+        tbTitle.getRightText().setOnClickListener(v ->
+                MDSettingActivity_.intent(this).mDevice(device).start());
         initResource();
         initFilters();
         initRefresh();
@@ -112,7 +120,10 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
 
     private void initFilters() {
         dmFilterDateTitle.setText(DateTimeUtils.formatDateTime(new Date()));
-        dmFilterDate.setOnClickListener(v -> openCalendar());
+        dmFilterDate.setOnClickListener(v -> {
+            dmFilterSource.dismiss(true);
+            openCalendar();
+        });
 
         mFilterSourceAdapter = new DropdownAdapterNew(this);
         mFilterSourceAdapter.setOnItemClickListener((adapter, model, position) ->
@@ -170,6 +181,7 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
                     .setCancelButton(R.string.sm_cancel)
                     .setOkButton(R.string.str_confirm, (dialog, which) -> {
                         if (calendarSelected != null) {
+                            dmFilterDateTitle.setText(DateTimeUtils.formatDateTime(calendarSelected.getTime()));
                             mPresenter.load(calendarSelected);
                         }
                     }).create();
@@ -192,6 +204,7 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
                 .setPoint(selected)
                 .build();
         calendarView = new VerticalCalendar(this, config);
+        calendarView.setSelected(mPresenter.getCurrent().getTimeInMillis());
         calendarView.setOnCalendarSelectListener(date -> calendarSelected = date);
         if (open) {
             hideLoadingDialog();
@@ -255,9 +268,11 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
     private class Adapter extends SimpleArrayAdapter<MotionVideo> {
 
         public Adapter() {
-            setOnItemClickListener((holder, model, position) -> {
-                // TODO
-            });
+            setOnItemClickListener((holder, model, position) ->
+                    MotionVideoPlayActivity_.intent(holder.getContext())
+                            .device(device)
+                            .motionVideo(model)
+                            .start());
         }
 
         @Override
@@ -269,12 +284,22 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
         public void setupView(@NonNull BaseViewHolder<MotionVideo> holder, MotionVideo model, int position) {
             TextView title = holder.getView(R.id.item_motion_title);
             TextView content = holder.getView(R.id.item_motion_content);
-            ImageView snapshot = holder.getView(R.id.item_motion_image);
+            ImageView snapshot;
+            if (isSs) {
+                snapshot = holder.getView(R.id.item_motion_image_ss);
+                holder.getView(R.id.item_motion_image_fs).setVisibility(View.GONE);
+            } else {
+                snapshot = holder.getView(R.id.item_motion_image_fs);
+                holder.getView(R.id.item_motion_image_ss).setVisibility(View.GONE);
+            }
+            snapshot.setVisibility(View.VISIBLE);
             title.setText(DateTimeUtils.secondToDate(model.getDetectTime(), "HH:mm:ss"));
             String type = mSourceName.get(model.getSource());
             content.setText(type == null ? "" : type);
-            Glide.with(holder.getContext()).load(model.getSnapshotAddress()).into(snapshot);
+            if (!TextUtils.isEmpty(model.getSnapshotAddress())) {
+                Glide.with(holder.getContext()).load(model.getSnapshotAddress())
+                        .transform(new GlideRoundTransform(holder.getContext())).into(snapshot);
+            }
         }
-
     }
 }

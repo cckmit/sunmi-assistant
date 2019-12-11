@@ -14,24 +14,72 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_motion_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:background="@color/c_white" />
 
     </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
 
     <include
+        android:id="@+id/layout_error"
+        layout="@layout/include_network_error"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_bar" />
+
+    <TextView
+        android:id="@+id/tv_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@mipmap/ic_no_cash_video"
+        android:drawablePadding="@dimen/dp_4"
+        android:text="@string/motion_detection_video_empty"
+        android:textColor="@color/text_caption"
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dm_motion_date" />
+
+    <LinearLayout
         android:id="@+id/dm_motion_date"
-        layout="@layout/dropdown_title_new"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_44"
+        android:background="@color/c_white"
+        android:gravity="center"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toStartOf="@+id/dm_motion_source"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_bar" />
+        app:layout_constraintTop_toBottomOf="@+id/title_bar">
+
+        <TextView
+            android:id="@+id/dropdown_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textColor="@color/text_common_normal_checkable"
+            android:textSize="@dimen/sp_12" />
+
+        <ImageView
+            android:id="@+id/dropdown_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_down_small_gray" />
+
+    </LinearLayout>
 
     <sunmi.common.view.DropdownMenuNew
         android:id="@+id/dm_motion_source"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_44"
+        android:background="@color/c_white"
+        app:dm_menuIndex="3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/dm_motion_date"
@@ -48,37 +96,13 @@
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/transparent"
+        android:background="@color/c_white"
         app:dividerShow="true"
         app:layout_constraintTop_toTopOf="parent"
         app:leftDefaultClickEnable="true"
-        app:leftIcon="@drawable/ic_back_light"
-        app:titleText="@string/cash_video_list"
-        app:titleTextColor="@color/c_white" />
-
-    <include
-        android:id="@+id/layout_error"
-        layout="@layout/include_network_error"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_bar" />
-
-    <TextView
-        android:id="@+id/tv_empty"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawableTop="@mipmap/ic_empty"
-        android:drawablePadding="@dimen/dp_4"
-        android:text="@string/info_empty"
-        android:textColor="@color/text_caption"
-        android:textSize="@dimen/sp_12"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dm_motion_date" />
+        app:leftIcon="@drawable/ic_back_dark"
+        app:rightText="@string/str_setting"
+        app:titleText="@string/str_motion_detection"
+        app:titleTextColor="@color/c_black" />
 
 </android.support.constraint.ConstraintLayout>
